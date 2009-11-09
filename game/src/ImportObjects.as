@@ -1,0 +1,86 @@
+﻿package src 
+{
+	
+	/**
+	 * Required to have the compiler include these items in the final build
+	 * @author Giuliano
+	 */
+	public class ImportObjects 
+	{
+		
+		public function ImportObjects() 
+		{
+			//Icons
+			ICON_CROP;
+			ICON_BATTLE;
+			ICON_CLOCK;
+			ICON_IRON;
+			ICON_GOLD;
+			ICON_WOOD;
+			ICON_LABOR;
+			
+			//Passive Action Icons
+			PASSIVE_ATTACKING;
+			PASSIVE_DEFENDING;
+			PASSIVE_RETREATING;
+			
+			//Tiles
+			DOT_SPRITE;
+			DOT_SPRITE_ORANGE;
+			MASK_TILE;
+			TILE_MINI;
+			
+			//Walls
+			WALL_E;
+			WALL_N;
+			WALL_NE;
+			WALL_NW;
+			WALL_S;
+			WALL_SE;
+			WALL_SW;
+			WALL_W;
+			
+			//Troops
+			DEFAULT_TROOP;			
+			
+			//UNITS
+			DEFAULT_UNIT;
+			
+			//Structures
+			ARMORY_STRUCTURE;
+			BARRACK_STRUCTURE;
+			DEFAULT_BUILDING;
+			DEFAULT_BUILDING_ANIM;
+			DEFAULT_STRUCTURE_SIMPLE;
+			DEFAULT_STRUCTURE_COMPLEX;
+			EMBASSY_STRUCTURE;
+			FACILITY_STRUCTURE;
+			FACTORY_STRUCTURE;
+			FARM_STRUCTURE;
+			LAB_STRUCTURE;
+			MARKET_STRUCTURE;
+			REFINERY_STRUCTURE;
+			STABLE_STRUCTURE;
+			TOWER_STRUCTURE;
+			TOWNCENTER_STRUCTURE;
+			TRANSPORT_STRUCTURE;
+			UNIVERSITY_STRUCTURE;
+			WOODLAND_STRUCTURE;
+			WORKSHOP_STRUCTURE;			
+			
+			//Object Info Sidebar Buttons
+			DEFAULT_LABOR_MOVE_BUTTON;
+			DEFAULT_BUILD_BUTTON;
+			DEFAULT_CHANGE_BUTTON;
+			DEFAULT_ACTION_BUTTON;
+			DEFAULT_MARKET_BUY_BUTTON;
+			DEFAULT_MARKET_SELL_BUTTON;
+			DEFAULT_TECHNOLOGY_BUTTON;
+			DEFAULT_TRAIN_BUTTON;
+			DEFAULT_STRUCTURE_UPGRADE_BUTTON;
+			DEFAULT_UNIT_UPGRADE_BUTTON;			
+		}
+		
+	}
+	
+}

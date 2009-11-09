@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+"http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0" xml:lang="en">
+<file datatype="plaintext" original="MultiLingualContent.fla" source-language="EN">
+		<header></header>
+		<body>	
+			<trans-unit resname="ERROR_-1">
+				<source>An unexpected error has occurred</source>
+			</trans-unit>
+			<trans-unit resname="ERROR_100">
+				<source>The maximum number of allowed actions has been reached</source>
+			</trans-unit>		
+			<trans-unit resname="ERROR_102">
+				<source>The maximum number of allowed actions has been reached</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_103">
+				<source>The maximum number of allowed actions has been reached</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_104">
+				<source>The specified action was not found</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_105">
+				<source>The specified action is invalid</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_106">
+				<source>The specified action is already in progress</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_200">
+				<source>You do not have enough resources</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_201">
+				<source>The specified resource is not tradable</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_400">
+				<source>The specified object does not exist</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_401">
+				<source>The specified structure does not exist</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_402">
+				<source>The specified player does not exist</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_410">
+				<source>The map is full!</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_411">
+				<source>Unable to build on the specified tile</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_250">
+				<source>The requirements for this action have not been met</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_251">
+				<source>The requirements for this action have not been met</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_300">
+				<source>The market price has changed since you opened the market dialog. Close the dialog and try again.</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_301">
+				<source>An invalid quantity was specified</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_600">
+				<source>You can't attack yourself!</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_601">
+				<source>Not allowed while city is in battle</source>
+			</trans-unit>			
+			<trans-unit resname="ERROR_602">
+				<source>Why would you want to defend yourself?</source>
+			</trans-unit>			
+		</body>
+	</file>
+</xliff>

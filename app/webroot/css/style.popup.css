@@ -1,0 +1,72 @@
+.box
+{
+	padding: 0.5em;
+	margin: 0;
+	border-top: 1px solid #C0C0C0;
+	border-left: 1px solid #C0C0C0;
+	border-right: 2px solid #C0C0C0;
+	border-bottom: 2px solid #C0C0C0;
+	background: #FFF;
+}
+
+/* MESSAGING */
+
+#messaging {
+	border-right: 2px #CCC solid;
+}
+
+#messaging td {
+	border: 0;
+	border-bottom: 1px solid #CCC;
+}
+
+#messaging div.input {
+	margin: 0;
+}
+
+#messaging input {
+	top: 0;
+}
+
+#messaging td.sel {
+	width: 25px;
+}
+
+#messaging td.user {
+	width: 13%;
+}
+
+#messaging td.subject {
+	width: 85%;
+}
+
+#messaging td.date {
+	text-align: right;
+}
+
+#messaging-menu {
+	margin-left: 0;
+}
+
+#messaging-menu li {
+	list-style-type: none;
+	margin-left: 0;	
+}
+
+#messaging-menu a.sel {
+	color: #FFF;
+	padding: 2px;
+	background: #C0C0C0;
+}
+
+#messaging .prev a {
+	text-decoration: none;
+	font-weight: normal;
+}
+
+/* READING MESSAGE */
+#message h1 {
+	font-weight: bold;
+	font-size: 11pt;
+}
+

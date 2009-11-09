@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN"
+"http://www.oasis-open.org/committees/xliff/documents/xliff.dtd" >
+<xliff version="1.0" xml:lang="en">
+<file datatype="plaintext" original="MultiLingualContent.fla" source-language="EN">
+		<header></header>
+		<body>
+		
+			<trans-unit resname="TECH_MARTIAL_ARTS">
+				<source>Martial Arts</source>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

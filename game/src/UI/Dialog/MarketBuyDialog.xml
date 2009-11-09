@@ -1,0 +1,646 @@
+<AsWingUI name="MarketBuyDialog" packageName="src.UI.Dialog">
+  <Com name="JPanel" id="panel16">
+    <Properties>
+      <Property name="attr_scope" type="attr_scope">
+        <Value value="private"/>
+      </Property>
+      <Property name="getter_scope" type="getter_scope">
+        <Value value="none"/>
+      </Property>
+      <Property name="Size" type="Size">
+        <Value value="210,232"/>
+      </Property>
+      <Property name="Border" type="Border">
+        <Value>
+          <Border name="EmptyBorder">
+            <Properties>
+              <Property name="Top" type="Top">
+                <Value value="5"/>
+              </Property>
+              <Property name="Left" type="Left">
+                <Value value="5"/>
+              </Property>
+              <Property name="Bottom" type="Bottom">
+                <Value value="5"/>
+              </Property>
+              <Property name="Right" type="Right">
+                <Value value="5"/>
+              </Property>
+            </Properties>
+          </Border>
+        </Value>
+      </Property>
+      <Property name="Layout" type="Layout">
+        <Value>
+          <Layout name="SoftBoxLayout">
+            <Properties>
+              <Property name="Axis" type="Axis">
+                <Value value="1"/>
+              </Property>
+              <Property name="Align" type="Align">
+                <Value value="1"/>
+              </Property>
+              <Property name="Gap" type="Gap">
+                <Value value="0"/>
+              </Property>
+            </Properties>
+          </Layout>
+        </Value>
+      </Property>
+    </Properties>
+    <Com name="JLabel" id="lblTitle1">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="lblTitle1"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="5,5"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="200,17"/>
+        </Property>
+        <Property name="Text" type="Text">
+          <Value value="Current Resource Trading Prices"/>
+        </Property>
+        <Property name="HorizontalAlignment" type="HorizontalAlignment">
+          <Value value="2"/>
+        </Property>
+      </Properties>
+    </Com>
+    <Com name="JPanel" id="pnlResourcePrices">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="pnlResourcePrices"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="36,8"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="200,75"/>
+        </Property>
+        <Property name="PreferredSize" type="PreferredSize">
+          <Value value="200,75"/>
+        </Property>
+        <Property name="Layout" type="Layout">
+          <Value>
+            <Layout name="FlowWrapLayout">
+              <Properties>
+                <Property name="Alignment" type="Alignment">
+                  <Value value="2"/>
+                </Property>
+                <Property name="Hgap" type="Hgap">
+                  <Value value="15"/>
+                </Property>
+                <Property name="Vgap" type="Vgap">
+                  <Value value="15"/>
+                </Property>
+              </Properties>
+            </Layout>
+          </Value>
+        </Property>
+      </Properties>
+      <Com name="JPanel" id="pnlCrop">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="pnlCrop"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="0,27"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="55,17"/>
+          </Property>
+          <Property name="Layout" type="Layout">
+            <Value>
+              <Layout name="FlowLayout">
+                <Properties>
+                  <Property name="Alignment" type="Alignment">
+                    <Value value="2"/>
+                  </Property>
+                  <Property name="Hgap" type="Hgap">
+                    <Value value="0"/>
+                  </Property>
+                  <Property name="Vgap" type="Vgap">
+                    <Value value="0"/>
+                  </Property>
+                </Properties>
+              </Layout>
+            </Value>
+          </Property>
+        </Properties>
+        <Com name="JLabel" id="lblCropAmount">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblCropAmount"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="5,5"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="26,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="100 ="/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JLabel" id="lblCropPrice">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblCropPrice"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="73,20"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="26,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="350"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+      <Com name="JPanel" id="pnlIron">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="pnlIron"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="85,18"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="56,17"/>
+          </Property>
+          <Property name="Layout" type="Layout">
+            <Value>
+              <Layout name="FlowLayout">
+                <Properties>
+                  <Property name="Hgap" type="Hgap">
+                    <Value value="0"/>
+                  </Property>
+                  <Property name="Vgap" type="Vgap">
+                    <Value value="0"/>
+                  </Property>
+                </Properties>
+              </Layout>
+            </Value>
+          </Property>
+        </Properties>
+        <Com name="JLabel" id="lblIronAmount">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblIronAmount"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="5,5"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="26,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="100="/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JLabel" id="lblIronPrice">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblIronPrice"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="36,5"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="26,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="400"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+      <Com name="JPanel" id="pnlWood">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="pnlWood"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="152,23"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="30,17"/>
+          </Property>
+          <Property name="Layout" type="Layout">
+            <Value>
+              <Layout name="FlowLayout">
+                <Properties>
+                  <Property name="Alignment" type="Alignment">
+                    <Value value="0"/>
+                  </Property>
+                  <Property name="Hgap" type="Hgap">
+                    <Value value="0"/>
+                  </Property>
+                  <Property name="Vgap" type="Vgap">
+                    <Value value="0"/>
+                  </Property>
+                </Properties>
+              </Layout>
+            </Value>
+          </Property>
+        </Properties>
+        <Com name="JLabel" id="lblWoodAmount">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblWoodAmount"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="26,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="100="/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JLabel" id="lblWoodPrice">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblWoodPrice"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="30,0"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="26,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="350"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+    </Com>
+    <Com name="JSeparator" id="separator">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="separator"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="0,67"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="200,2"/>
+        </Property>
+      </Properties>
+    </Com>
+    <Com name="JLabel" id="lblTitle2">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="lblTitle2"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="5,99"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="200,17"/>
+        </Property>
+        <Property name="Text" type="Text">
+          <Value value="Choose resource and amount to buy"/>
+        </Property>
+        <Property name="HorizontalAlignment" type="HorizontalAlignment">
+          <Value value="2"/>
+        </Property>
+      </Properties>
+    </Com>
+    <Com name="JPanel" id="pnlTrade">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="pnlTrade"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="0,94"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="200,54"/>
+        </Property>
+        <Property name="Layout" type="Layout">
+          <Value>
+            <Layout name="BoxLayout">
+              <Properties>
+                <Property name="Axis" type="Axis">
+                  <Value value="1"/>
+                </Property>
+              </Properties>
+            </Layout>
+          </Value>
+        </Property>
+      </Properties>
+      <Com name="JPanel" id="pnlTrade2">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="pnlTrade2"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="5,5"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="40,27"/>
+          </Property>
+          <Property name="Constraints" type="Constraints">
+            <Value value="North"/>
+          </Property>
+          <Property name="Layout" type="Layout">
+            <Value>
+              <Layout name="FlowLayout">
+                <Properties>
+                  <Property name="Alignment" type="Alignment">
+                    <Value value="0"/>
+                  </Property>
+                </Properties>
+              </Layout>
+            </Value>
+          </Property>
+        </Properties>
+        <Com name="JLabel" id="lblTradeAmount">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblTradeAmount"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="89,5"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="26,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="100"/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JComboBox" id="lstResourceType">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lstResourceType"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="public"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="93,5"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="40,21"/>
+            </Property>
+            <Property name="Editable" type="Editable">
+              <Value value="false"/>
+            </Property>
+            <Property name="MaximumRowCount" type="MaximumRowCount">
+              <Value value="7"/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JLabel" id="lblTradePrice">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblTradePrice"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="122,7"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="28,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="=991*"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+      <Com name="JSlider" id="sldAmount">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="sldAmount"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="public"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="0,27"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="200,18"/>
+          </Property>
+          <Property name="Value" type="Value">
+            <Value value="0"/>
+          </Property>
+          <Property name="Extent" type="Extent">
+            <Value value="0"/>
+          </Property>
+          <Property name="Minimum" type="Minimum">
+            <Value value="0"/>
+          </Property>
+          <Property name="Maximum" type="Maximum">
+            <Value value="15"/>
+          </Property>
+          <Property name="MajorTickSpacing" type="MajorTickSpacing">
+            <Value value="0"/>
+          </Property>
+          <Property name="PaintTicks" type="PaintTicks">
+            <Value value="true"/>
+          </Property>
+          <Property name="SnapToTicks" type="SnapToTicks">
+            <Value value="true"/>
+          </Property>
+          <Property name="ShowValueTip" type="ShowValueTip">
+            <Value value="true"/>
+          </Property>
+        </Properties>
+      </Com>
+    </Com>
+    <Com name="JPanel" id="pnlBottom">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="pnlBottom"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="0,69"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="200,10"/>
+        </Property>
+        <Property name="Layout" type="Layout">
+          <Value>
+            <Layout name="FlowLayout">
+              <Properties>
+                <Property name="Alignment" type="Alignment">
+                  <Value value="0"/>
+                </Property>
+              </Properties>
+            </Layout>
+          </Value>
+        </Property>
+      </Properties>
+      <Com name="JButton" id="btnOk">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="btnOk"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="public"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="86,5"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="27,22"/>
+          </Property>
+          <Property name="Text" type="Text">
+            <Value value="Buy"/>
+          </Property>
+        </Properties>
+      </Com>
+    </Com>
+    <Com name="JLabel" id="lblTax">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="lblTax"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="103,7"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="26,17"/>
+        </Property>
+        <Property name="Text" type="Text">
+          <Value value="* 99% tax included"/>
+        </Property>
+        <Property name="HorizontalAlignment" type="HorizontalAlignment">
+          <Value value="2"/>
+        </Property>
+      </Properties>
+    </Com>
+  </Com>
+</AsWingUI>

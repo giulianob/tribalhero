@@ -1,0 +1,329 @@
+<AsWingUI name="LoginDialog" packageName="src.UI.Dialog">
+  <Com name="JPanel" id="Main">
+    <Properties>
+      <Property name="id" type="id">
+        <Value value="Main"/>
+      </Property>
+      <Property name="attr_scope" type="attr_scope">
+        <Value value="private"/>
+      </Property>
+      <Property name="getter_scope" type="getter_scope">
+        <Value value="none"/>
+      </Property>
+      <Property name="Size" type="Size">
+        <Value value="228,137"/>
+      </Property>
+      <Property name="Constraints" type="Constraints">
+        <Value value="Center"/>
+      </Property>
+      <Property name="Border" type="Border">
+        <Value>
+          <Border name="EmptyBorder">
+            <Properties>
+              <Property name="Top" type="Top">
+                <Value value="10"/>
+              </Property>
+              <Property name="Left" type="Left">
+                <Value value="10"/>
+              </Property>
+              <Property name="Bottom" type="Bottom">
+                <Value value="10"/>
+              </Property>
+              <Property name="Right" type="Right">
+                <Value value="10"/>
+              </Property>
+            </Properties>
+          </Border>
+        </Value>
+      </Property>
+    </Properties>
+    <Com name="Form" id="form42">
+      <Properties>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="10,10"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="208,117"/>
+        </Property>
+        <Property name="VGap" type="VGap">
+          <Value value="5"/>
+        </Property>
+      </Properties>
+      <Com name="FormRow" id="rowAddress">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="rowAddress"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="0,42"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="256,21"/>
+          </Property>
+          <Property name="ColumnChildrenIndecis" type="ColumnChildrenIndecis">
+            <Value value="-1,0,1,2"/>
+          </Property>
+        </Properties>
+        <Com name="JLabel" id="lblAddress">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblAddress"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="0,2"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="52,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="Address"/>
+            </Property>
+            <Property name="HorizontalAlignment" type="HorizontalAlignment">
+              <Value value="4"/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JTextField" id="txtAddress">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="txtAddress"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="public"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="74,20"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="150,21"/>
+            </Property>
+            <Property name="PreferredSize" type="PreferredSize">
+              <Value value="150,21"/>
+            </Property>
+            <Property name="HtmlText" type="HtmlText">
+              <Value value="127.0.0.1"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+      <Com name="JSeparator" id="separator14">
+        <Properties>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="10,33"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="206,2"/>
+          </Property>
+        </Properties>
+      </Com>
+      <Com name="FormRow" id="formrow8">
+        <Properties>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="0,23"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="256,21"/>
+          </Property>
+          <Property name="ColumnChildrenIndecis" type="ColumnChildrenIndecis">
+            <Value value="-1,0,1,2"/>
+          </Property>
+        </Properties>
+        <Com name="JLabel" id="lblUsername">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblUsername"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="13,51"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="52,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="Username"/>
+            </Property>
+            <Property name="HorizontalAlignment" type="HorizontalAlignment">
+              <Value value="4"/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JTextField" id="txtUsername">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="txtUsername"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="public"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="79,51"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="150,21"/>
+            </Property>
+            <Property name="PreferredSize" type="PreferredSize">
+              <Value value="150,21"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+      <Com name="FormRow" id="formrow10">
+        <Properties>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="10,56"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="194,0"/>
+          </Property>
+          <Property name="ColumnChildrenIndecis" type="ColumnChildrenIndecis">
+            <Value value="-1,0,1,2"/>
+          </Property>
+        </Properties>
+        <Com name="JLabel" id="lblPassword">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="lblPassword"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="none"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="2,0"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="52,17"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="Password"/>
+            </Property>
+            <Property name="HorizontalAlignment" type="HorizontalAlignment">
+              <Value value="4"/>
+            </Property>
+          </Properties>
+        </Com>
+        <Com name="JTextField" id="txtPassword">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="txtPassword"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="public"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="56,0"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="150,21"/>
+            </Property>
+            <Property name="DisplayAsPassword" type="DisplayAsPassword">
+              <Value value="true"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+      <Com name="JPanel" id="panel16">
+        <Properties>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="208,0"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="10,10"/>
+          </Property>
+          <Property name="Layout" type="Layout">
+            <Value>
+              <Layout name="FlowLayout">
+                <Properties>
+                  <Property name="Alignment" type="Alignment">
+                    <Value value="0"/>
+                  </Property>
+                </Properties>
+              </Layout>
+            </Value>
+          </Property>
+        </Properties>
+        <Com name="JButton" id="btnLogin">
+          <Properties>
+            <Property name="id" type="id">
+              <Value value="btnLogin"/>
+            </Property>
+            <Property name="attr_scope" type="attr_scope">
+              <Value value="private"/>
+            </Property>
+            <Property name="getter_scope" type="getter_scope">
+              <Value value="public"/>
+            </Property>
+            <Property name="Location" type="Location">
+              <Value value="87,5"/>
+            </Property>
+            <Property name="Size" type="Size">
+              <Value value="34,22"/>
+            </Property>
+            <Property name="Text" type="Text">
+              <Value value="Login"/>
+            </Property>
+          </Properties>
+        </Com>
+      </Com>
+    </Com>
+  </Com>
+</AsWingUI>

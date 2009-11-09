@@ -1,0 +1,200 @@
+<AsWingUI name="LaborMoveDialog" packageName="src.UI.Dialog">
+  <Com name="JPanel" id="Main">
+    <Properties>
+      <Property name="id" type="id">
+        <Value value="Main"/>
+      </Property>
+      <Property name="attr_scope" type="attr_scope">
+        <Value value="private"/>
+      </Property>
+      <Property name="getter_scope" type="getter_scope">
+        <Value value="none"/>
+      </Property>
+      <Property name="Size" type="Size">
+        <Value value="220,124"/>
+      </Property>
+      <Property name="Layout" type="Layout">
+        <Value>
+          <Layout name="BorderLayout">
+            <Properties/>
+          </Layout>
+        </Value>
+      </Property>
+    </Properties>
+    <Com name="JLabel" id="label81">
+      <Properties>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="5,5"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="220,30"/>
+        </Property>
+        <Property name="PreferredSize" type="PreferredSize">
+          <Value value="220,30"/>
+        </Property>
+        <Property name="Constraints" type="Constraints">
+          <Value value="North"/>
+        </Property>
+        <Property name="Text" type="Text">
+          <Value value="How many laborers to place in this structure?"/>
+        </Property>
+        <Property name="HorizontalAlignment" type="HorizontalAlignment">
+          <Value value="2"/>
+        </Property>
+      </Properties>
+    </Com>
+    <Com name="JPanel" id="panel82">
+      <Properties>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="5,37"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="230,164"/>
+        </Property>
+        <Property name="Constraints" type="Constraints">
+          <Value value="Center"/>
+        </Property>
+        <Property name="Layout" type="Layout">
+          <Value>
+            <Layout name="FlowWrapLayout">
+              <Properties>
+                <Property name="PreferWidth" type="PreferWidth">
+                  <Value value="150"/>
+                </Property>
+                <Property name="Alignment" type="Alignment">
+                  <Value value="0"/>
+                </Property>
+              </Properties>
+            </Layout>
+          </Value>
+        </Property>
+      </Properties>
+      <Com name="JLabel" id="lblCount">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="lblCount"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="none"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="49,5"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="150,17"/>
+          </Property>
+          <Property name="PreferredSize" type="PreferredSize">
+            <Value value="150,17"/>
+          </Property>
+          <Property name="Constraints" type="Constraints">
+            <Value value="North"/>
+          </Property>
+          <Property name="Text" type="Text">
+            <Value value="0 out of 3"/>
+          </Property>
+        </Properties>
+      </Com>
+      <Com name="JSlider" id="sldCount">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="sldCount"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="public"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="0,0"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="200,30"/>
+          </Property>
+          <Property name="Constraints" type="Constraints">
+            <Value value="Center"/>
+          </Property>
+          <Property name="Minimum" type="Minimum">
+            <Value value="0"/>
+          </Property>
+          <Property name="MajorTickSpacing" type="MajorTickSpacing">
+            <Value value="1"/>
+          </Property>
+          <Property name="PaintTicks" type="PaintTicks">
+            <Value value="true"/>
+          </Property>
+          <Property name="SnapToTicks" type="SnapToTicks">
+            <Value value="true"/>
+          </Property>
+        </Properties>
+      </Com>
+    </Com>
+    <Com name="JPanel" id="panel86">
+      <Properties>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="0,159"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="230,32"/>
+        </Property>
+        <Property name="Constraints" type="Constraints">
+          <Value value="South"/>
+        </Property>
+        <Property name="Layout" type="Layout">
+          <Value>
+            <Layout name="FlowLayout">
+              <Properties>
+                <Property name="Alignment" type="Alignment">
+                  <Value value="0"/>
+                </Property>
+              </Properties>
+            </Layout>
+          </Value>
+        </Property>
+      </Properties>
+      <Com name="JButton" id="btnOk">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="btnOk"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="public"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="113,5"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="22,22"/>
+          </Property>
+          <Property name="Text" type="Text">
+            <Value value="Ok"/>
+          </Property>
+        </Properties>
+      </Com>
+    </Com>
+  </Com>
+</AsWingUI>

@@ -1,0 +1,170 @@
+<AsWingUI name="TextBattleViewer" packageName="src.UI.Dialog">
+  <Com name="JPanel" id="panel1">
+    <Properties>
+      <Property name="attr_scope" type="attr_scope">
+        <Value value="private"/>
+      </Property>
+      <Property name="getter_scope" type="getter_scope">
+        <Value value="none"/>
+      </Property>
+      <Property name="Size" type="Size">
+        <Value value="758,250"/>
+      </Property>
+      <Property name="Layout" type="Layout">
+        <Value>
+          <Layout name="SoftBoxLayout">
+            <Properties>
+              <Property name="Axis" type="Axis">
+                <Value value="0"/>
+              </Property>
+            </Properties>
+          </Layout>
+        </Value>
+      </Property>
+    </Properties>
+    <Com name="JTabbedPane" id="tabDefensive">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="tabDefensive"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="public"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="125,15"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="250,250"/>
+        </Property>
+        <Property name="PreferredSize" type="PreferredSize">
+          <Value value="250,250"/>
+        </Property>
+        <Property name="Border" type="Border">
+          <Value>
+            <Border name="TitledBorder">
+              <Properties>
+                <Property name="Color" type="Color">
+                  <Value value="0,1"/>
+                </Property>
+                <Property name="Title" type="Title">
+                  <Value value="Defensive"/>
+                </Property>
+                <Property name="Position" type="Position">
+                  <Value value="1"/>
+                </Property>
+                <Property name="Align" type="Align">
+                  <Value value="2"/>
+                </Property>
+                <Property name="Beveled" type="Beveled">
+                  <Value value="true"/>
+                </Property>
+                <Property name="Round" type="Round">
+                  <Value value="5"/>
+                </Property>
+              </Properties>
+            </Border>
+          </Value>
+        </Property>
+      </Properties>
+    </Com>
+    <Com name="JList" id="lstLog">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="lstLog"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="public"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="250,0"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="258,250"/>
+        </Property>
+        <Property name="Border" type="Border">
+          <Value>
+            <Border name="TitledBorder">
+              <Properties>
+                <Property name="Color" type="Color">
+                  <Value value="0,1"/>
+                </Property>
+                <Property name="Title" type="Title">
+                  <Value value="Battle Log"/>
+                </Property>
+                <Property name="Position" type="Position">
+                  <Value value="1"/>
+                </Property>
+                <Property name="Beveled" type="Beveled">
+                  <Value value="true"/>
+                </Property>
+                <Property name="Round" type="Round">
+                  <Value value="5"/>
+                </Property>
+              </Properties>
+            </Border>
+          </Value>
+        </Property>
+        <Property name="ListData" type="ListData">
+          <Value value="item1,item2,item3,item4,item5,itemABC,itemDEF,itemHIJKLMN,itemOPQ,itemRST,AnyOtherItem,addHere"/>
+        </Property>
+        <Property name="PreferredCellWidthWhenNoCount" type="PreferredCellWidthWhenNoCount">
+          <Value value="250"/>
+        </Property>
+      </Properties>
+    </Com>
+    <Com name="JTabbedPane" id="tabOffensive">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="tabOffensive"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="public"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="500,0"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="250,250"/>
+        </Property>
+        <Property name="PreferredSize" type="PreferredSize">
+          <Value value="250,250"/>
+        </Property>
+        <Property name="Border" type="Border">
+          <Value>
+            <Border name="TitledBorder">
+              <Properties>
+                <Property name="Color" type="Color">
+                  <Value value="0,1"/>
+                </Property>
+                <Property name="Title" type="Title">
+                  <Value value="Offensive"/>
+                </Property>
+                <Property name="Position" type="Position">
+                  <Value value="1"/>
+                </Property>
+                <Property name="Align" type="Align">
+                  <Value value="4"/>
+                </Property>
+                <Property name="Beveled" type="Beveled">
+                  <Value value="true"/>
+                </Property>
+                <Property name="Round" type="Round">
+                  <Value value="5"/>
+                </Property>
+              </Properties>
+            </Border>
+          </Value>
+        </Property>
+      </Properties>
+    </Com>
+  </Com>
+</AsWingUI>

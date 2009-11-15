@@ -1,0 +1,12 @@
+LaborEfficiency,2106,2107,2501,,,,,,,,,
+Wood,2107,,,,,,,,,,,
+Crop,2106,,,,,,,,,,,
+Undestroyable,2000,,,,,,,,,,,
+Port,2501,,,,,,,,,,,
+MainBuilding,2000,,,,,,,,,,,
+TileNonBuildable,,,,,,,,,,,,
+TileTree,131,,,,,,,,,,,
+TileCrop,130,,,,,,,,,,,
+TileBuildable,0,29,30,31,82,83,84,85,86,87,88,89
+RepairBuilding,2110,,,,,,,,,,,
+NonRepairable,2106,,,,,,,,,,,

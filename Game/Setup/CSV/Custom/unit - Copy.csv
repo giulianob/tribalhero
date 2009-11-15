@@ -1,0 +1,18 @@
+Name,Type,Lvl,Weapon,Armor,Class,SpriteClass,Hp,Atk,Matk,Def,Vsn,Stl,Rng,Spd,Crop,Gold,Iron,Wood,Time,UpgrdCrop,UpgrdGold,UpgrdIron,UpgrdWood,UpgrdTime,GrpSize,Upkeep
+// Short range ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Swordsman A(normal),101,1,Sword,Leather,UNIT,INFANTRY_UNIT,50,50,0,40,2,5,0,6,100,0,0,90,1900,1,1,0,1,400,10,1
+Swordsman B(Tank),104,1,Sword,Metal,UNIT,INFANTRY_UNIT,90,20,0,35,2,3,0,5,180,50,0,55,2350,1,1,0,1,400,10,1
+Hoplite,102,1,Pike,Leather,UNIT,BAZOOKA_UNIT,75,85,0,25,5,5,0,7,150,0,0,110,2600,1,1,0,1,400,10,1
+Archer,103,1,Bow,Leather,UNIT,NINJA_UNIT,40,40,0,45,15,8,0,5,80,80,0,130,2100,1,1,0,1,1200,10,2
+Cavalry,201,1,Pike,Leather,UNIT,HUMMER_UNIT,250,120,0,60,5,2,0,14,500,100,0,180,6800,1,1,0,1,4000,4,2
+Heavy Cavalry,202,1,Sword,Metal,UNIT,TANK_UNIT,600,180,0,105,5,0,0,10,1200,150,0,285,14850,1,1,0,1,6000,2,2
+Helepolis,302,1,FireBall,Wooden,UNIT,ARTILLERY_UNIT,2000,250,0,250,8,20,0,2,4000,300,0,500,45000,1,1,0,1,12000,1,5
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+Swordsman A(normal),101,2,Sword,Leather,UNIT,INFANTRY_UNIT,50,50,0,40,2,5,0,6,100,0,0,90,1900,1,1,0,1,400,10,1
+Swordsman B(Tank),104,2,Sword,Metal,UNIT,INFANTRY_UNIT,90,20,0,35,2,3,0,5,180,50,0,55,2350,1,1,0,1,400,10,1
+Hoplite,102,2,Pike,Leather,UNIT,BAZOOKA_UNIT,75,85,0,25,5,5,0,7,150,0,0,110,2600,1,1,0,1,400,10,1
+Archer,103,2,Bow,Leather,UNIT,NINJA_UNIT,40,40,0,45,15,8,0,5,80,80,0,130,2100,1,1,0,1,1200,10,2
+Cavalry,201,2,Pike,Leather,UNIT,HUMMER_UNIT,250,120,0,60,5,2,0,14,500,100,0,180,6800,1,1,0,1,4000,4,2
+Heavy Cavalry,202,2,Sword,Metal,UNIT,TANK_UNIT,600,180,0,105,5,0,0,10,1200,150,0,285,14850,1,1,0,1,6000,2,2
+Helepolis,302,2,FireBall,Wooden,UNIT,ARTILLERY_UNIT,2000,250,0,250,8,20,0,2,4000,300,0,500,45000,1,1,0,1,12000,1,5

@@ -44,6 +44,11 @@
             }
             return value + delta;
 		}
+		
+		public function getHourlyRate(): int
+		{
+			return int(3600000 / rate);
+		}
 	}
 
 }

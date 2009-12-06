@@ -29,6 +29,7 @@
 			frame.setTitleBar(null);
 			frame.setDragable(false);
 			frame.setClosable(false);
+			frame.setResizable(false);
 			frame.pack();
 			frame.show();
 			

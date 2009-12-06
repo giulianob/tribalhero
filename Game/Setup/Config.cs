@@ -7,8 +7,16 @@ using System.Reflection;
 namespace Game.Setup {
     public class Config {
 
-        public static readonly int PORT = 48888;
-        public static readonly string ADDRESS = "0.0.0.0";
+        public static readonly int server_port = 48888;
+        public static readonly string server_listen_address = "0.0.0.0";
+
+        public static readonly string flash_domain = "*";
+
+        public static readonly string csv_folder = "Game/Setup/CSV/Custom/";
+        public static readonly string csv_compiled_folder = "Game/Setup/CSV/";
+        public static readonly string settings_folder = "";
+        public static readonly string maps_folder = "";
+        public static readonly string data_folder = "Game/Setup/CSV/";
 
         public static readonly uint map_width = 3808;
         public static readonly uint map_height = 6944;
@@ -44,7 +52,7 @@ namespace Game.Setup {
         public static readonly string database_database = "";
         public static readonly string database_salt = "";
 
-        public static readonly bool ai_enabled = true;
+        public static readonly bool ai_enabled = false;
 
         public static Random Random = new Random();
 

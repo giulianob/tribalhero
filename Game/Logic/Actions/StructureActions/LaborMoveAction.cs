@@ -101,7 +101,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                Scheduler.del(this);
+                Global.Scheduler.del(this);
                 switch (state) {
                     case ActionInterrupt.KILLED:
                         stateChange(ActionState.FAILED);

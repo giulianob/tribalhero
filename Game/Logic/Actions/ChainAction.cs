@@ -53,9 +53,9 @@ namespace Game.Logic.Actions {
                 case ActionState.RESCHEDULED:
                     Global.dbManager.Save(action);
                     if (action is ScheduledPassiveAction)
-                        Scheduler.put(new ActionDispatcher(action as ScheduledPassiveAction));                    
+                        Global.Scheduler.put(new ActionDispatcher(action as ScheduledPassiveAction));                    
                     else if (action is ScheduledActiveAction)
-                        Scheduler.put(new ActionDispatcher(action as ScheduledActiveAction));                    
+                        Global.Scheduler.put(new ActionDispatcher(action as ScheduledActiveAction));                    
 
                     Global.dbManager.Save(this);
                     
@@ -77,7 +77,7 @@ namespace Game.Logic.Actions {
             ChainCallback currentChain = chainCallback;
             Global.dbManager.Save(this);
 
-            Scheduler.put(new ChainExecuter(currentChain, state));
+            Global.Scheduler.put(new ChainExecuter(currentChain, state));
         }
 
         public override void interrupt(ActionInterrupt state) {
@@ -109,14 +109,14 @@ namespace Game.Logic.Actions {
                 case ActionState.COMPLETED:
                 case ActionState.FAILED:
                 case ActionState.INTERRUPTED:
-                    Scheduler.put(new ChainExecuter(this.chainCallback, chainState));                    
+                    Global.Scheduler.put(new ChainExecuter(this.chainCallback, chainState));                    
                     break;
                 default:
                     current.IsChain = true;
                     current.OnNotify += new ActionNotify(ChainNotify);
 
                     if (current is ScheduledPassiveAction) {
-                        Scheduler.put(new ActionDispatcher(current as ScheduledPassiveAction));
+                        Global.Scheduler.put(new ActionDispatcher(current as ScheduledPassiveAction));
                     }
                     break;
             }

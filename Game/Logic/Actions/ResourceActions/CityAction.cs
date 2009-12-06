@@ -34,16 +34,16 @@ namespace Game.Logic.Actions {
         public override void interrupt(ActionInterrupt state) {
             switch (state) {
                 case ActionInterrupt.Abort:
-                    Scheduler.del(this);
+                    Global.Scheduler.del(this);
                     break;
                 case ActionInterrupt.KILLED:
-                    Scheduler.del(this);
+                    Global.Scheduler.del(this);
                     break;
             }
         }
 
         public override ActionType Type {
-            get { return ActionType.CITY_RESOURCE; }
+            get { return ActionType.CITY; }
         }
 
         #region ISchedule Members

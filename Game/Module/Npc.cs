@@ -46,7 +46,7 @@ namespace Game.Module {
         public void callback(object custom) {
             if (playerList.Count == 0) {
                 time = DateTime.Now.AddSeconds(5);
-                Scheduler.put(this);
+                Global.Scheduler.put(this);
                 return;
             }
 
@@ -108,7 +108,7 @@ namespace Game.Module {
             }
 
             time = DateTime.Now.AddSeconds(8);
-            Scheduler.put(this);
+            Global.Scheduler.put(this);
         }
 
         bool SetLabor(City city) {
@@ -215,7 +215,7 @@ namespace Game.Module {
         #endregion
 
         public static void Init() {
-            Scheduler.pause();
+            Global.Scheduler.pause();
 
             Random rand = new Random();
 
@@ -262,11 +262,11 @@ namespace Game.Module {
             }
 
             Global.AI.time = DateTime.Now.AddSeconds(10);
-            Scheduler.put(Global.AI);
+            Global.Scheduler.put(Global.AI);
 
             Global.Logger.Info("Loading AI finished.");
 
-            Scheduler.resume();
+            Global.Scheduler.resume();
         }
 
         static bool BuildBasicStructures(uint origX, uint origY, uint x, uint y, object custom) {

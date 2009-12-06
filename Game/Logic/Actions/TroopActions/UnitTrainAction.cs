@@ -97,7 +97,7 @@ namespace Game.Logic.Actions {
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
 
-                Scheduler.del(this);
+                Global.Scheduler.del(this);
 
                 if (!city.tryGetStructure(structureId, out structure)) {
                     stateChange(ActionState.FAILED);

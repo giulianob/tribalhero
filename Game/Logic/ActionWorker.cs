@@ -342,12 +342,12 @@ namespace Game.Logic {
 
         void schedule(ScheduledActiveAction action) {
             ActionDispatcher dispatcher = new ActionDispatcher(action);
-            Scheduler.put(dispatcher);
+            Global.Scheduler.put(dispatcher);
         }
 
         void schedule(ScheduledPassiveAction action) {
             ActionDispatcher dispatcher = new ActionDispatcher(action);
-            Scheduler.put(dispatcher);
+            Global.Scheduler.put(dispatcher);
         }
         #endregion
 

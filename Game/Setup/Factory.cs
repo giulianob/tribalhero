@@ -8,6 +8,7 @@ using System.IO;
 namespace Game.Setup {
     public class Factory {
         internal static void BuildFiles(string output_file, string dir, string pattern) {
+            Global.Logger.Info("Building CSV file " + output_file);
             BuildFiles2(output_file,Directory.GetFiles(dir, pattern));
         }
 
@@ -29,38 +30,35 @@ namespace Game.Setup {
         }
 
         public static void initAll() {
-            string csv_folder = "Game\\Setup\\CSV\\";
-            string custom_folder = "Game\\Setup\\CSV\\Custom\\";
+            BuildFiles(Config.csv_compiled_folder + "structure.csv", Config.csv_folder, "*structure.csv");
+            StructureFactory.init(Config.csv_compiled_folder + "structure.csv");
 
-            BuildFiles(csv_folder + "structure.csv", custom_folder, "*structure.csv");
-            StructureFactory.init("Game\\Setup\\CSV\\structure.csv");
+            BuildFiles(Config.csv_compiled_folder + "action.csv", Config.csv_folder, "*action.csv");
+            ActionFactory.init(Config.csv_compiled_folder + "action.csv");
 
-            BuildFiles(csv_folder + "action.csv", custom_folder, "*action.csv");
-            ActionFactory.init("Game\\Setup\\CSV\\action.csv");
+            BuildFiles(Config.csv_compiled_folder + "effect_requirement.csv", Config.csv_folder, "*effect_requirement.csv");
+            EffectRequirementFactory.init(Config.csv_compiled_folder + "effect_requirement.csv");
 
-            BuildFiles(csv_folder + "effect_requirement.csv", custom_folder, "*effect_requirement.csv");
-            EffectRequirementFactory.init("Game\\Setup\\CSV\\effect_requirement.csv");
+            BuildFiles(Config.csv_compiled_folder + "init.csv", Config.csv_folder, "*init.csv");
+            InitFactory.init(Config.csv_compiled_folder + "init.csv");
 
-            BuildFiles(csv_folder + "init.csv", custom_folder, "*init.csv");
-            InitFactory.init("Game\\Setup\\CSV\\init.csv");
+            BuildFiles(Config.csv_compiled_folder + "property.csv", Config.csv_folder, "*property.csv");
+            PropertyFactory.init(Config.csv_compiled_folder + "property.csv");
 
-            BuildFiles(csv_folder + "property.csv", custom_folder, "*property.csv");
-            PropertyFactory.init("Game\\Setup\\CSV\\property.csv");
+            BuildFiles(Config.csv_compiled_folder + "layout.csv", Config.csv_folder, "*layout.csv");
+            ReqirementFactory.init(Config.csv_compiled_folder + "layout.csv");
 
-            BuildFiles(csv_folder + "layout.csv", custom_folder, "*layout.csv");
-            ReqirementFactory.init("Game\\Setup\\CSV\\layout.csv");
+            BuildFiles(Config.csv_compiled_folder + "technology.csv", Config.csv_folder, "*technology.csv");
+            BuildFiles(Config.csv_compiled_folder + "technology_effects.csv", Config.csv_folder, "*technology_effects.csv");
+            TechnologyFactory.init(Config.csv_compiled_folder + "technology.csv", Config.csv_folder + "technology_effects.csv");
 
-            BuildFiles(csv_folder + "technology.csv", custom_folder, "*technology.csv");
-            BuildFiles(csv_folder + "technology_effects.csv", custom_folder, "*technology_effects.csv");
-            TechnologyFactory.init("Game\\Setup\\CSV\\technology.csv", "Game\\Setup\\CSV\\technology_effects.csv");
+            BuildFiles(Config.csv_compiled_folder + "unit.csv", Config.csv_folder, "*unit.csv");
+            UnitFactory.init(Config.csv_compiled_folder + "unit.csv");
 
-            BuildFiles(csv_folder + "unit.csv", custom_folder, "*unit.csv");
-            UnitFactory.init("Game\\Setup\\CSV\\unit.csv");
+            File.Copy(Config.csv_folder + "object_type.csv", Config.csv_compiled_folder + "object_type.csv", true);
+            ObjectTypeFactory.init(Config.csv_compiled_folder + "object_type.csv");
 
-            File.Copy("Game\\Setup\\CSV\\Custom\\object_type.csv", "Game\\Setup\\CSV\\object_type.csv", true);
-            ObjectTypeFactory.init("Game\\Setup\\CSV\\object_type.csv");
-
-            MapFactory.init("CityLocations.txt");
+            MapFactory.init(Config.settings_folder + "CityLocations.txt");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Game.Comm {
         }
 
         public override bool write(Packet packet) {
-            Console.Out.WriteLine("Sending: " + packet.ToString());
+            Console.Out.WriteLine("Sending: " + packet.ToString(256));
             byte[] packetBytes = packet.getBytes();
             int ret;
             if (socket == null) return false;

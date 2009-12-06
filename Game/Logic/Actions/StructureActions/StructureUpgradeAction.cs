@@ -98,18 +98,18 @@ namespace Game.Logic.Actions {
             using (new MultiObjectLock(cityId, out city)) {
 
                 if (!city.tryGetStructure(structureId, out structure)) {
-                    Scheduler.del(this);
+                    Global.Scheduler.del(this);
                     stateChange(ActionState.FAILED);
                     return;
                 }
 
                 switch (state) {
                     case ActionInterrupt.KILLED:
-                        Scheduler.del(this);
+                        Global.Scheduler.del(this);
                         stateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        Scheduler.del(this);
+                        Global.Scheduler.del(this);
                         Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
                         city.Resource.Add(cost / 2);
                         stateChange(ActionState.INTERRUPTED);

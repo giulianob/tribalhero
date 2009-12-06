@@ -87,7 +87,7 @@ namespace Game.Comm {
         }
 
         public virtual void execute(Session session, Packet packet) {
-            Global.Logger.Info(packet.ToString());
+            Global.Logger.Info(packet.ToString(256));
             try {
                 ProcessorCommand cmd = commands[packet.Cmd];
                 Player player = session.Player;
@@ -103,7 +103,7 @@ namespace Game.Comm {
         }
 
         public virtual void executeEvent(Session session, Packet packet) {
-            Global.Logger.Info("Event: " + packet.ToString());
+            Global.Logger.Info("Event: " + packet.ToString(256));
             try {
                 lock (session) {
                     events[packet.Cmd].function(session, packet);

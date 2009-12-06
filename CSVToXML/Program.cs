@@ -5,21 +5,23 @@ using System.Xml;
 using System.IO;
 using System.Collections;
 using Game.Data;
+using Game.Setup;
 
 namespace CSVToXML
 {
     public class Program
     {
-        static string directory = "c:\\source\\gameserver\\game\\setup\\csv\\";
-        static string constant_as = "c:\\source\\game\\src\\constants.as";
+        static string directory = Config.csv_compiled_folder;
+        static string data_output_folder = Config.data_folder;
 
         #region WriteToConstant
-        static void write_to_constant() {
+        static void write_to_constant(string constant_as) {
             FileStream xmlfile = new FileStream(directory + "data.xml", FileMode.Open, FileAccess.Read);
             StreamReader xml_stream = new StreamReader(xmlfile);
             string new_xml = xml_stream.ReadToEnd();
             xml_stream.Close();
             xmlfile.Close();
+            
             try
             {
                 File.Copy(constant_as, constant_as + ".bak", true);
@@ -170,7 +172,7 @@ namespace CSVToXML
 
         public static void Main(string[] args)
         {
-            XmlTextWriter writer = new XmlTextWriter(new StreamWriter(File.Open(directory+"data.xml", FileMode.Create)));
+            XmlTextWriter writer = new XmlTextWriter(new StreamWriter(File.Open(data_output_folder + "data.xml", FileMode.Create)));
             writer.Formatting = Formatting.Indented;
 
             List<Property> properties = new List<Property>();

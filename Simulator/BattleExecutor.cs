@@ -18,7 +18,7 @@ namespace Simulator
         DateTime time;
         public void execute()
         {
-            Scheduler.put(this);
+            Global.Scheduler.put(this);
            
         }
 
@@ -38,7 +38,7 @@ namespace Simulator
             if (this.executeTurn())
             {
                 this.time = DateTime.Now.Add(delay);
-                Scheduler.put(this);
+                Global.Scheduler.put(this);
             }
         }
 

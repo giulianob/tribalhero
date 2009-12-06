@@ -177,7 +177,7 @@ namespace Game.Logic.Actions {
 
                 switch (state) {
                     case ActionInterrupt.KILLED:
-                        Scheduler.del(this);
+                        Global.Scheduler.del(this);
                         city.Worker.References.remove(structure, this);
                         Global.World.lockRegion(x, y);
                         Global.dbManager.Delete(structure);
@@ -186,7 +186,7 @@ namespace Game.Logic.Actions {
                         stateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        Scheduler.del(this);
+                        Global.Scheduler.del(this);
 
                         city.Worker.References.remove(structure, this);
 

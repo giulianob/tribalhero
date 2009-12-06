@@ -132,7 +132,7 @@ namespace Game.Logic.Actions {
         }
 
         public override void interrupt(ActionInterrupt state) {
-            Scheduler.del(this);
+            Global.Scheduler.del(this);
         }
 
         public override ActionType Type {

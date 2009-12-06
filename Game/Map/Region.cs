@@ -16,7 +16,7 @@ namespace Game {
         #endregion
 
         #region Members
-        public ObjectList objlist; // public for the foo comment, will change back in the future
+        ObjectList objlist = new ObjectList();
         object objLock = new object();
         byte[] map;
         byte[] objects;
@@ -42,8 +42,7 @@ namespace Game {
         #region Constructors
         public Region() {
         }
-        public Region(Byte[] bytes) {
-            objlist = new ObjectList();
+        public Region(Byte[] bytes) {            
             map = (byte[])bytes.Clone();
         }
         #endregion
@@ -89,7 +88,6 @@ namespace Game {
         public byte[] getObjectBytes() {
             if (isDirty || objects == null) {
                 lock (objlist) {
-
                     using (MemoryStream ms = new MemoryStream()) {
                         BinaryWriter bw = new BinaryWriter(ms);
                         bw.Write(Count);

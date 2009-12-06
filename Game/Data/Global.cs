@@ -9,6 +9,7 @@ using System.Threading;
 using Game.Util;
 using Game.Setup;
 using Game.Module;
+using Game.Logic;
 
 namespace Game {
     public class Global {
@@ -18,6 +19,7 @@ namespace Game {
         public static ILog DbLogger = LogManager.GetLogger(typeof(IDbManager));
         public static IDbManager dbManager = new MySqlDbManager(Config.database_host, Config.database_username, Config.database_password, Config.database_database);
         public static AI AI = new AI();
+        public static Scheduler Scheduler = new Scheduler();
 
         static Dictionary<uint, Player> players = new Dictionary<uint, Player>();
         

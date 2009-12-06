@@ -29,7 +29,7 @@ namespace Game.Logic {
         RESOURCE_SELL = 307,
 
         CITY_LABOR = 501,
-        CITY_RESOURCE = 502,
+        CITY = 502,
 
         TECHNOLOGY_UPGRADE = 402,
         UNIT_TRAIN = 601,

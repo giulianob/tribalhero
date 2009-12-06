@@ -114,7 +114,7 @@ namespace Game.Logic.Actions {
         #endregion
 
         public override void interrupt(ActionInterrupt state) {
-            Scheduler.del(this);
+            Global.Scheduler.del(this);
             switch (state) {
                 case ActionInterrupt.CANCEL:
                     break;

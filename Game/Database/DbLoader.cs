@@ -18,7 +18,7 @@ namespace Game.Database
 	{
         public static bool LoadFromDatabase(IDbManager dbManager) {
             
-            Scheduler.pause();
+            Global.Scheduler.pause();
             Global.pauseEvents();
 
             Global.Logger.Info("Loading database...");
@@ -619,7 +619,7 @@ namespace Game.Database
             Global.Logger.Info("Database loading finished");
 
             SystemTimeUpdater.resume();
-            Scheduler.resume();
+            Global.Scheduler.resume();
             Global.resumeEvents();
             return true;
         }

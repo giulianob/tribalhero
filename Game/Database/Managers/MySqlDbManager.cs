@@ -43,7 +43,6 @@ namespace Game.Database {
                     Global.Logger.Error("An exception of type " + ex.GetType() + " was encountered while attempting to open the connection.", ex);
                     Environment.Exit(-1);
                 }
-
                 return connection;
             }                       
         }

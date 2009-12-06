@@ -10,18 +10,18 @@ namespace Game.Comm {
         System.Threading.Thread listening_thread;
 
         private TcpListener listener;
-        private readonly int port = Config.PORT;
+        private readonly int port = Config.server_port;
         private bool isStopped = true;
         private Processor processor;
 
         public TcpServer() {
-            IPAddress localAddr = IPAddress.Parse(Config.ADDRESS);
+            IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
             this.listener = new TcpListener(localAddr, port);
             listening_thread = new Thread(new ThreadStart(this.listener_handler));
         }
         public TcpServer(Processor processor) {
             this.processor = processor;
-            IPAddress localAddr = IPAddress.Parse(Config.ADDRESS);
+            IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
             this.listener = new TcpListener(localAddr, port);
             listening_thread = new Thread(new ThreadStart(this.listener_handler));
         }
@@ -36,6 +36,15 @@ namespace Game.Comm {
         public void listener_handler() {            
             this.listener.Start();
             
+            string policy = "<?xml version=\"1.0\"?>" +
+                "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">" +
+                "<cross-domain-policy>" +
+                "<site-control permitted-cross-domain-policies=\"all\"/>" +
+                "<allow-access-from domain=\"" + Config.flash_domain + "\" to-ports=\"" + Config.server_port + "\" />" +
+                "</cross-domain-policy>";
+
+            Global.Logger.Info("Ready to serve policy file: " + policy);
+
             Socket s;
             while (!this.isStopped) {
                 try {
@@ -60,15 +69,14 @@ namespace Game.Comm {
                 if (len == 23) {
                     s.NoDelay = true;
                     s.LingerState = new LingerOption(true, 3);
-                    byte [] xml = System.Text.Encoding.UTF8.GetBytes("<?xml version=\"1.0\"?>" +
-                        "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">" +
-                        "<cross-domain-policy>" +
-                        "<site-control permitted-cross-domain-policies=\"all\"/>" +
-                        "<allow-access-from domain=\"*\" to-ports=\"48888\" />" +
-                        "</cross-domain-policy>");
+
+                    byte [] xml = System.Text.Encoding.UTF8.GetBytes(policy);
                     s.Send(xml);
+
                     Global.Logger.Info("Served policy file to " + s.RemoteEndPoint.ToString());
+
                     s.Close();                    
+
                     continue;
                 }
 

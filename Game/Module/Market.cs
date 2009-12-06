@@ -42,7 +42,7 @@ namespace Game.Module {
             this.quantityPerChange = quantityPerChange;
             this.time = DateTime.Now;
             this.resource = resource;
-            Scheduler.put(this);
+            Global.Scheduler.put(this);
         }
 
         public void dbLoad(int outgoing, int incoming) {
@@ -83,7 +83,7 @@ namespace Game.Module {
                     outgoing = incoming = 0;
                     time = DateTime.Now.AddSeconds(UpdateIntervalInSecond);
                     Global.dbManager.Save(this);
-                    Scheduler.put(this);
+                    Global.Scheduler.put(this);
                 }
             }
         }

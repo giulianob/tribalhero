@@ -245,9 +245,14 @@ namespace Game.Comm {
             return ret;
         }
 
-        public override string ToString() {
-            string str = HexDump.GetString(getBytes(), 8, 16);
-            return "Cmd[" + cmd + "] Len[" + length.ToString() + "]:" + Environment.NewLine + str;
+        public string ToString(int maxLength) {
+            string str = "<Too Large To Display>";
+            byte[] dump = getBytes();
+
+            if (dump.Length <= maxLength)
+                str = HexDump.GetString(dump, 8, 16);
+
+            return "Cmd[" + cmd + "] Len[" + dump.Length + "]:" + Environment.NewLine + str;
         }
 
         #endregion

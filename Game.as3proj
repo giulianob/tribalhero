@@ -5,7 +5,7 @@
     <movie disabled="False" />
     <movie input="" />
     <movie path="bin\Game.swf" />
-    <movie fps="60" />
+    <movie fps="30" />
     <movie width="976" />
     <movie height="640" />
     <movie version="10" />

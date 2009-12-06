@@ -33,7 +33,7 @@
 		public var miniMap: MiniMap;
 		private var mapOverlay: Sprite;
 		private var mapOverlayTarget: Sprite;
-		private var resourcesContainer: GameJBox;
+		private var resourcesContainer: ResourcesContainer;
 		
 		private var miniMapMask: Sprite;
 		private var dialogHolder: Sprite;
@@ -189,8 +189,8 @@
 					map.gameContainer.camera.ScrollToCenter(pt.x, pt.y);					
 				}												
 				
-				resourcesContainer = new GameJBox();
-				displayResources();				
+				resourcesContainer = new ResourcesContainer();				
+				displayResources();
 			}
 			
 			if (miniMap != null)
@@ -353,6 +353,22 @@
 			}
 		}
 		
+		public function displayResources(e: Event = null):void {
+			if (!resourcesContainer) return;
+			
+			if (selectedCity == null)
+			{
+				if (resourcesContainer.getFrame())
+					resourcesContainer.getFrame().dispose();				
+				
+				return;									
+			}
+			
+			Global.gameContainer.selectedCity.dispatchEvent(new Event(City.RESOURCES_UPDATE));
+			
+			resourcesContainer.displayResources();
+		}
+		
 		public function setOverlaySprite(object: Sprite):void
 		{
 			if (this.mapOverlayTarget != null)
@@ -375,49 +391,7 @@
 				mapHolder.addChild(this.mapOverlayTarget);
 				this.mapOverlayTarget.hitArea = this.mapOverlay;				
 			}
-		}
-		
-		public function displayResources(e: Event = null):void
-		{										
-			if (!resourcesContainer) return;
-			
-			if (selectedCity == null)
-			{
-				if (resourcesContainer.getFrame())
-					resourcesContainer.getFrame().dispose();				
-				
-				return;									
-			}
-			
-			selectedCity.dispatchEvent(new Event(City.RESOURCES_UPDATE));
-			
-			var resourceLabelMaker: Function = function(value: int, max : int, icon: Icon = null) : JLabel {				
-				var label: JLabel = new JLabel(value.toString(), icon);
-				if (max != -1 && value >= max)
-					GameLookAndFeel.changeClass(label, "Label.success Label.small");
-				else
-					GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
-					
-				label.setIconTextGap(0);			
-				label.setHorizontalTextPosition(AsWingConstants.LEFT);				
-				return label;
-			};						
-			
-			resourcesContainer.setLayout(new FlowLayout(AsWingConstants.LEFT, 10, 5, true));
-			resourcesContainer.removeAll();
-			
-			resourcesContainer.append(resourceLabelMaker(selectedCity.resources.labor.getValue(), -1, new AssetIcon(new ICON_LABOR())));
-			resourcesContainer.append(resourceLabelMaker(selectedCity.resources.gold.getValue(), -1, new AssetIcon(new ICON_GOLD())));			
-			resourcesContainer.append(resourceLabelMaker(selectedCity.resources.wood.getValue(), selectedCity.resources.wood.getLimit(), new AssetIcon(new ICON_WOOD())));			
-			resourcesContainer.append(resourceLabelMaker(selectedCity.resources.crop.getValue(), selectedCity.resources.crop.getLimit(), new AssetIcon(new ICON_CROP())));			
-			resourcesContainer.append(resourceLabelMaker(selectedCity.resources.iron.getValue(), selectedCity.resources.iron.getLimit(), new AssetIcon(new ICON_IRON())));			
-			
-			if (!resourcesContainer.getFrame())
-				resourcesContainer.show()
-			
-			resourcesContainer.getFrame().pack();			
-			resourcesContainer.getFrame().setLocationXY(Constants.screenW - resourcesContainer.getFrame().getWidth() + 10, 3);
-		}
+		}		
 		
 		public function onChangeCitySelection(e: Event):void {		
 			selectedCity = null;

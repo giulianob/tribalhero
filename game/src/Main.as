@@ -106,7 +106,7 @@
 			
 			if (Constants.webVersion)			
 			{				
-				Locale.addXMLPath(Constants.defLang, "http://"+hostname+"/Game_" + Constants.defLang + ".xml");			
+				Locale.addXMLPath(Constants.defLang, "http://"+hostname+":8085/Game_" + Constants.defLang + ".xml");			
 			}
 			else
 			{

@@ -43,6 +43,8 @@ package src.UI.Tooltips {
 			if (ui.getFrame() == null || ui.getFrame().stage == null)
 				return;
 			
+			ui.getFrame().pack();
+			
 			var boxX: Number = ui.getFrame().stage.mouseX + 15;
 			var boxY: Number = ui.getFrame().stage.mouseY + 15;
 			

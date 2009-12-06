@@ -58,6 +58,11 @@
 					"Label.foreground", new ASColorUIResource(0xFFFFFF)
 				],
 				
+				"Class.darkHeader", [
+					"Label.font", new ASFontUIResource("Arial", 13, true),
+					"Label.foreground", new ASColorUIResource(0x000000)
+				],				
+				
 				"Class.Tooltip.text", [
 					"Label.font", new ASFontUIResource("Arial", 13, false),
 					"Label.foreground", new ASColorUIResource(0xFFFFFF)

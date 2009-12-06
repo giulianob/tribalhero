@@ -19,7 +19,7 @@
     <path-element>C:\source\Game\game\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
-  <default-frame-rate>60</default-frame-rate>
+  <default-frame-rate>30</default-frame-rate>
   <default-size>
     <width>976</width>
     <height>640</height>

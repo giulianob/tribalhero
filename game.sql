@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 28, 2009 at 10:10 AM
+-- Generation Time: Dec 12, 2009 at 02:36 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -54,7 +54,7 @@ CREATE TABLE `battles` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `city_id` (`city_id`,`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -69,6 +69,7 @@ CREATE TABLE `battle_managers` (
   `battle_started` tinyint(1) NOT NULL,
   `round` int(10) unsigned NOT NULL,
   `turn` int(10) unsigned NOT NULL,
+  `stamina` smallint(6) unsigned NOT NULL,
   `report_flag` tinyint(1) NOT NULL,
   `report_started` tinyint(1) NOT NULL,
   `report_id` int(10) unsigned NOT NULL,
@@ -92,7 +93,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -113,7 +114,7 @@ CREATE TABLE `battle_report_objects` (
   `formation_type` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -138,7 +139,7 @@ CREATE TABLE `battle_report_troops` (
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`),
   KEY `state` (`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -274,7 +275,7 @@ CREATE TABLE `messages` (
   KEY `recipient_player_id` (`recipient_player_id`),
   KEY `sender_player_id` (`sender_player_id`),
   KEY `created` (`created`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -345,7 +346,7 @@ CREATE TABLE `players` (
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
   KEY `login_key` (`login_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1236 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

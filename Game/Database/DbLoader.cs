@@ -251,6 +251,7 @@ namespace Game.Database
                             bm.BattleStarted = (bool)reader["battle_started"];
                             bm.Round = (uint)reader["round"];
                             bm.Turn = (uint)reader["round"];
+                            bm.Stamina = (ushort)reader["stamina"];
 
                             bm.BattleReport.ReportFlag = (bool)reader["report_flag"];
                             bm.BattleReport.ReportStarted = (bool)reader["report_started"];

@@ -125,8 +125,7 @@ namespace Game.Battle {
 
         BattleOrder battleOrder = new BattleOrder(0);
         BattleChannel channel;
-        BattleReport report;
-        ushort stamina;
+        BattleReport report;        
         
         #region Properties Members
 
@@ -152,6 +151,13 @@ namespace Game.Battle {
         public uint Turn {
             get { return turn; }
             set { turn = value; }
+        }
+
+        ushort stamina;
+        public ushort Stamina
+        {
+            get { return stamina; }
+            set { stamina = value; }
         }
 
         City city;
@@ -684,6 +690,7 @@ namespace Game.Battle {
                 return new DbColumn[] {
                     new DbColumn("battle_id", battleId, System.Data.DbType.UInt32),
                     new DbColumn("battle_started", battleStarted, System.Data.DbType.Boolean),
+                    new DbColumn("stamina", stamina, System.Data.DbType.UInt16),
                     new DbColumn("round", round, System.Data.DbType.UInt32),
                     new DbColumn("turn", turn, System.Data.DbType.UInt32),
                     new DbColumn("report_flag", report.ReportFlag, System.Data.DbType.Boolean),

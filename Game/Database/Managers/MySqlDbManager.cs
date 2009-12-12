@@ -614,29 +614,12 @@ namespace Game.Database {
                 Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter.ToString() + "}");
             }
 
-            for (int i = 0; i < 100; i++) {
-                try {
-                    command.ExecuteNonQuery();
-                    return;
-                }
-                catch (MySqlException e) {
-                    /*
-                    if (e.Number == 1213) //deadlock
-                    {
-                        Global.DbLogger.Warn("(" + Thread.CurrentThread.ManagedThreadId + ") Dead lock detected at attempt " + i + " on command " + command.CommandText);
-                        continue;
-                    }
-                    */
-                    HandleGeneralException(e, command);
-                    return;
-                }
-                catch (Exception e) {
-                    HandleGeneralException(e, command);
-                    return;
-                }
+            try {
+                command.ExecuteNonQuery();
             }
-
-            throw new Exception("Maximum deadlock reached");
+            catch (Exception e) {
+                HandleGeneralException(e, command);
+            }
         }
 
         public void HandleGeneralException(Exception e, MySqlCommand command) {

@@ -78,7 +78,7 @@ package src.Objects {
                 "Wood " + wood.getValue() + "/" + wood.getRawValue() + "/" + wood.getRate() +
                 "Iron " + iron.getValue() + "/" + iron.getRawValue() + "/" + iron.getRate() +
                 "Crop " + crop.getValue() + "/" + crop.getRawValue() + "/" + crop.getRate() +
-                "Gold " + labor.getValue() + "/" + labor.getRawValue() + "/" + labor.getRate();        
+                "Labor " + labor.getValue() + "/" + labor.getRawValue() + "/" + labor.getRate();        
 		}
 	}
 	

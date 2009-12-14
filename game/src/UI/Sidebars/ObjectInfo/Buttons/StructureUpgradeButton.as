@@ -82,8 +82,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			upgradeToolTip.missingRequirements = missingReqs;
 			upgradeToolTip.draw(currentCount, parentAction.maxCount);
 			
-			if (!enabled) return false; //max action has disabled this button, we don't care about the rest
-			
 			if (nextStructPrototype == null)
 			{
 				upgradeToolTip.draw(currentCount, parentAction.maxCount);

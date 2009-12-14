@@ -23,6 +23,11 @@
 			this.labor = labor;
 		}
 		
+		public function toString():String 
+		{
+			return "Gold: " + gold.toString() + " Wood:" + wood.toString() + " Iron:" + iron.toString() + " Crop:" + crop.toString() + " Labor:" + labor.toString();
+		}
+		
 	}
 
 }

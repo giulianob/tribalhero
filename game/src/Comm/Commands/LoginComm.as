@@ -117,6 +117,9 @@
 					troop.id = packet.readUByte();
 					troop.state = packet.readUByte();
 					
+					if (troop.id == 1)
+						troop.upkeep = packet.readInt();
+					
 					switch (troop.state)
 					{
 						case Troop.MOVING:

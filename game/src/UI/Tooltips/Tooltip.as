@@ -22,6 +22,8 @@ package src.UI.Tooltips {
 	{		
 		protected var ui: GameJBox = new GameJBox();
 		
+		private var viewObj: DisplayObject;
+		
 		public function show(obj: DisplayObject):void
 		{																
 			var pos:Point = obj.localToGlobal(new Point(obj.x, obj.y));
@@ -30,6 +32,9 @@ package src.UI.Tooltips {
 			
 			hide();
 			
+			this.viewObj = obj;						
+			viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
+			
 			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));			
 			ui.show();			
 			ui.getFrame().tabEnabled = false;
@@ -37,6 +42,10 @@ package src.UI.Tooltips {
 			
 			adjustPosition();
 		}		
+		
+		public function parentHidden(e: Event) : void {
+			hide();
+		}
 		
 		public function adjustPosition() : void
 		{
@@ -61,6 +70,12 @@ package src.UI.Tooltips {
 		
 		public function hide():void
 		{
+			if (this.viewObj != null)
+			{
+				this.viewObj.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
+				this.viewObj = null;
+			}
+			
 			if (ui.getFrame())
 				ui.getFrame().dispose();	
 		}

@@ -81,25 +81,16 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
 			
 			upgradeToolTip.missingRequirements = missingReqs;
-			upgradeToolTip.draw(currentCount, parentAction.maxCount);
-			
-			if (!enabled) return false; //max action has disabled this button, we don't care about the rest
+			upgradeToolTip.draw(currentCount, parentAction.maxCount);		
 			
 			var unitUpgradeAction: UnitUpgradeAction = parentAction as UnitUpgradeAction;			
 			
-			if (nextUnitPrototype == null)
+			if (nextUnitPrototype == null || nextUnitPrototype.level > unitUpgradeAction.maxlevel)
 			{
 				upgradeToolTip.draw(currentCount, parentAction.maxCount);
 				disable();
 				return false;
 			}
-			
-			if (nextUnitPrototype.level > unitUpgradeAction.maxlevel)
-			{	
-				upgradeToolTip.draw(currentCount, parentAction.maxCount);
-				disable();
-				return false;
-			}			
 			
 			city = Global.map.cities.get(parentObj.cityId);
 			

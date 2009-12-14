@@ -297,7 +297,7 @@ package src.UI.Sidebars.ObjectInfo {
 		{			
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 			var workerPrototype: Worker = null;
-
+			
 			if (structPrototype)						
 				workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
 			

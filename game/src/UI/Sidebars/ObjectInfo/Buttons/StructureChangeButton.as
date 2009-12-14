@@ -79,9 +79,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			
 			changeToolTip.missingRequirements = missingReqs;
 			changeToolTip.draw(currentCount, parentAction.maxCount);
-			
-			if (!enabled) return false; //max action has disabled this button, we don't care about the rest
-			
+				
 			if (nextStructPrototype == null)
 			{
 				changeToolTip.draw(currentCount, parentAction.maxCount);

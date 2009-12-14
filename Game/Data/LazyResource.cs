@@ -57,6 +57,8 @@ namespace Game.Data {
             get { return rate; }
             set {
                 Realize();
+                if (value < 0)
+                    throw new Exception("Rate can not be negative");
                 rate = value;
                 Update();
             }

@@ -42,7 +42,12 @@ namespace Game.Comm {
             }   
         }
 
-        public static void AddToPacket(GameObject obj, Packet packet, bool sendState) {
+        //sendRegularObject defines whether to send the state and labor count. Basicaly the sendRegularObject should be true
+        //when sending the object where the client will accept it as a regular StructureObject and should be false if the client
+        //will be accepting it as a CityObject
+        //
+        //These add to packet methods might need to be broken up a bit since this one has too many "cases"
+        public static void AddToPacket(GameObject obj, Packet packet, bool sendRegularObject) {
             packet.addByte(obj.Lvl);
             packet.addUInt16(obj.Type);
             if (obj.City == null) {
@@ -56,11 +61,10 @@ namespace Game.Comm {
             packet.addUInt32(obj.ObjectID);
             packet.addUInt16((ushort)(obj.RelX));
             packet.addUInt16((ushort)(obj.RelY));
-            if (sendState)
-            {
+
+            if (sendRegularObject) {
                 packet.addByte((byte)obj.State.Type);
-                foreach (object parameter in obj.State.Parameters)
-                {
+                foreach (object parameter in obj.State.Parameters) {
                     if (parameter is byte) packet.addByte((byte)parameter);
                     else if (parameter is short) packet.addInt16((short)parameter);
                     else if (parameter is int) packet.addInt32((int)parameter);
@@ -71,6 +75,9 @@ namespace Game.Comm {
 
                 if (obj.ObjectID == 1) //main building, send radius
                     packet.addByte(obj.City.Radius);
+            }
+            else if (obj is Structure) { //if obj is a structure and we are sending it as CityObj we include the labor
+                packet.addByte((obj as Structure).Labor);
             }
         }
 

@@ -16,11 +16,11 @@ namespace Game.Setup {
             if (dict != null) return;
             dict = new Dictionary<string, HashSet<ushort>>();
             using (CSVReader reader = new CSVReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
-                String[] toks=reader.Columns;
+                String[] toks;
                 HashSet<ushort> set;
                 Dictionary<string, int> col = new Dictionary<string, int>();
                 ushort value;
-                do {
+                while ((toks = reader.ReadRow()) != null) {
                     if (toks[0].Length <= 0) continue;
                     if (!dict.TryGetValue(toks[0], out set)) {
                         set = new HashSet<ushort>();
@@ -31,7 +31,7 @@ namespace Game.Setup {
                             set.Add(value);
                         }
                     }
-                } while ((toks = reader.ReadRow()) != null);
+                }
             }
         }
 

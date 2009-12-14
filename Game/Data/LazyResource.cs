@@ -31,12 +31,18 @@ namespace Game.Data {
         public int Value {
             get {
                 int delta = 0;
-                if (rate != 0) {
-                    delta = (int)(DateTime.Now.Subtract(last).TotalMilliseconds / Config.seconds_per_unit) / rate;
+
+                if ((int)(rate * Config.seconds_per_unit) > 0) {
+                    int elapsed = (int)DateTime.Now.Subtract(last).TotalMilliseconds;
+                    delta = (int)(elapsed / (int)(rate * Config.seconds_per_unit));
+                    if (delta < 0)
+                        throw new Exception("Delta is negative?");
                 }
+
                 if (limit > 0 && (value + delta) > limit) {
                     return limit;
                 }
+                
                 return value + delta;
             }
         }
@@ -50,14 +56,7 @@ namespace Game.Data {
         public int Rate {
             get { return rate; }
             set {
-                if (rate > 0) {
-                    int elapsed = (int)DateTime.Now.Subtract(last).TotalMilliseconds;
-                    this.value += elapsed / rate;
-                    last = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 0, elapsed % rate * (100 + ((value - rate) * 100 / rate)) / 100));
-                }
-                else {
-                    last = DateTime.Now;
-                }
+                Realize();
                 rate = value;
                 Update();
             }
@@ -95,13 +94,20 @@ namespace Game.Data {
         }
 
         private void Realize() {
-            if (rate > 0) {
+            if (rate > 0)
+            {
                 int elapsed = (int)DateTime.Now.Subtract(last).TotalMilliseconds;
-                value += elapsed / rate;
-                last = DateTime.Now.Subtract(new TimeSpan(0, 0, 0, 0, elapsed % rate));
+                int delta = (int)(elapsed / (int)(rate * Config.seconds_per_unit));
+                value += delta;
+                int leftOver = elapsed % (int)(rate * Config.seconds_per_unit);
+                DateTime now = DateTime.Now;
+                last = now.Subtract(new TimeSpan(0, 0, 0, 0, leftOver));
                 CheckLimit();
             }
+            else
+                last = DateTime.Now;
         }
+
         private void CheckLimit() {
             if (limit > 0 && value > limit) value = limit;
             if (value < 0) value = 0;
@@ -301,11 +307,11 @@ namespace Game.Data {
         }
 
         public override string ToString() {
-            return "Gold " + gold.Value + "/" + gold.RawValue + "/" + gold.Rate +
-                " Wood " + wood.Value + "/" + wood.RawValue + "/" + wood.Rate +
-                " Iron " + iron.Value + "/" + iron.RawValue + "/" + iron.Rate +
-                " Crop " + crop.Value + "/" + crop.RawValue + "/" + crop.Rate +
-                " Gold " + labor.Value + "/" + labor.RawValue + "/" + labor.Rate;
+            return "Gold " + gold.Value + "/" + gold.RawValue + "/" + gold.Rate + gold.LastRealizeTime + Environment.NewLine +
+                " Wood " + wood.Value + "/" + wood.RawValue + "/" + wood.Rate + wood.LastRealizeTime + Environment.NewLine +
+                " Iron " + iron.Value + "/" + iron.RawValue + "/" + iron.Rate + iron.LastRealizeTime + Environment.NewLine +
+                " Crop " + crop.Value + "/" + crop.RawValue + "/" + crop.Rate + crop.LastRealizeTime + Environment.NewLine +
+                " Labor " + labor.Value + "/" + labor.RawValue + "/" + labor.Rate + labor.LastRealizeTime + Environment.NewLine;
         }
     }
 }

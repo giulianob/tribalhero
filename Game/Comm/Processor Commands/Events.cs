@@ -16,8 +16,6 @@ namespace Game.Comm {
                 foreach (City city in list)
                     city.Unsubscribe(session);
                 Global.World.unsubscribeAll(session);
-                session.Player.Session = null;
-                session.Player = null;
             }
         }
     }

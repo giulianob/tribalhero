@@ -119,7 +119,7 @@ namespace Game.Comm {
                             if (len == 0) {
                                 //create disconnect packet to send to processor
                                 SocketSession dcSession = sessions[s];
-
+                                dcSession.Player.Session = null;
                                 sessions.Remove(s);
                                 sockList.Remove(s);
 

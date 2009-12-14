@@ -69,6 +69,17 @@ package src.Map {
 			return ret;
 		}
 		
+		public function getBusyLaborCount() : int {
+			var labors: int = 0;
+			
+			for each(var obj: CityObject in objects.each())
+			{
+				labors += obj.labor;
+			}
+			
+			return labors;
+		}
+		
 		public static function sortOnId(a:City, b:City):Number 
 		{
 			var aId:Number = a.id;

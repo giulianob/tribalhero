@@ -2,12 +2,15 @@
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
+	import src.Map.Map;
+	import src.Objects.Prototypes.ObjectTypePrototype;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
 	import src.Objects.Factories.*;
 	import src.Objects.StructureObject;
 	import src.Objects.TroopObject;
 	import src.UI.SmartMovieClip;
+	import src.Util.BinaryList;
 	
 	import flash.utils.getDefinitionByName;	
 	
@@ -16,6 +19,29 @@
 		public static const TYPE_UNIT: int = 1;
 		public static const TYPE_STRUCTURE: int = 2;
 		public static const TYPE_TROOP_OBJ: int = 3;
+		
+		private static var objectTypes: BinaryList;
+		
+		public static function init(_map: Map, data: XML):void
+		{		
+			objectTypes = new BinaryList(ObjectTypePrototype.sortOnNameAndType, ObjectTypePrototype.compareNameAndType);
+			
+			for each (var objTypeNode: XML in data.ObjectTypes.*)
+			{				
+				var objType: ObjectTypePrototype = new ObjectTypePrototype();				
+				objType.name = objTypeNode.@name;
+				objType.type = objTypeNode.@type;
+				
+				objectTypes.add(objType, false);
+			}
+			
+			objectTypes.sort();			
+		}
+		
+		public static function isType(name: String, type: int) : Boolean
+		{
+			return objectTypes.get([name, type]) != null;
+		}
 		
 		public static function getClassType(type: int) : int
 		{

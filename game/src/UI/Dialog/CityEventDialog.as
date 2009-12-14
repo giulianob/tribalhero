@@ -51,8 +51,8 @@ public class CityEventDialog extends GameJPanel{
 		gridNotifications.dispose();
 	}
 	
-	private function simpleLabelMaker(value: int, tooltip: String, hourly: Boolean = false, icon: Icon = null) : JLabel {
-		var label: JLabel = new JLabel(value.toString() + (hourly?" per hour":""), icon);
+	private function simpleLabelMaker(value: String, tooltip: String, hourly: Boolean = false, negative: Boolean = false, icon: Icon = null) : JLabel {
+		var label: JLabel = new JLabel((hourly?(negative?"-":"+"):"") + value + (hourly?" per hour":""), icon);
 					
 		label.setIconTextGap(0);
 		label.setHorizontalTextPosition(AsWingConstants.RIGHT);
@@ -77,6 +77,16 @@ public class CityEventDialog extends GameJPanel{
 		return label;
 	}	
 		
+	private function drawResources() : void {
+		pnlResources.removeAll();
+		pnlResources.append(resourceLabelMaker(city.resources.gold, "Gold", new AssetIcon(new ICON_GOLD()), false, false));
+		pnlResources.append(resourceLabelMaker(city.resources.wood, "Wood", new AssetIcon(new ICON_WOOD())));
+		pnlResources.append(resourceLabelMaker(city.resources.crop, "Crop", new AssetIcon(new ICON_CROP())));
+		pnlResources.append(resourceLabelMaker(city.resources.iron, "Iron", new AssetIcon(new ICON_IRON())));
+		pnlResources.append(simpleLabelMaker(city.resources.labor.getValue().toString() + " are idle and " + city.getBusyLaborCount().toString() + " are working", "Labor", false, false, new AssetIcon(new ICON_LABOR())));
+		pnlResources.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep.toString(), "Troop Upkeep", true, true, new AssetIcon(new ICON_CROP())));
+	}
+	
 	private function createUI(): void {
 		//component creation
 		var layout0:SoftBoxLayout = new SoftBoxLayout();
@@ -88,12 +98,7 @@ public class CityEventDialog extends GameJPanel{
 		title = cityName.name + " - Overview";
 		
 		pnlResources = new JPanel(new GridLayout(3, 2, 20, 10));
-		pnlResources.append(resourceLabelMaker(city.resources.gold, "Gold", new AssetIcon(new ICON_GOLD()), false, false));
-		pnlResources.append(resourceLabelMaker(city.resources.wood, "Wood", new AssetIcon(new ICON_WOOD())));
-		pnlResources.append(resourceLabelMaker(city.resources.crop, "Crop", new AssetIcon(new ICON_CROP())));
-		pnlResources.append(resourceLabelMaker(city.resources.iron, "Iron", new AssetIcon(new ICON_IRON())));
-		pnlResources.append(resourceLabelMaker(city.resources.labor, "Labor", new AssetIcon(new ICON_LABOR()), false, false));
-		pnlResources.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep, "Upkeep", true, new AssetIcon(new ICON_CROP())));		
+		drawResources();
 		
 		pnlLocalEvents = new JPanel();
 		var border1:TitledBorder = new TitledBorder();

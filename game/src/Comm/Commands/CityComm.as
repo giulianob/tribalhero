@@ -103,8 +103,11 @@
 			var objId: int = packet.readUInt();
 			var objHpPercent: int = 100;
 			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);;
-
+			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);			
+			var objLabor: int = 0;
+			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
+				objLabor = packet.readUByte();
+				
 			var city: City = map.cities.get(objCityId);			
 			
 			if (city == null)
@@ -118,6 +121,7 @@
 			if (obj == null)
 				return;
 			
+			obj.labor = objLabor;
 			obj.level = objLvl;
 			obj.x = objX;
 			obj.y = objY;
@@ -135,6 +139,9 @@
 			var objHpPercent: int = 100;
 			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
 			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
+			var objLabor: int = 0;
+			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
+				objLabor = packet.readUByte();			
 					
 			var city: City = map.cities.get(objCityId);
 						
@@ -144,7 +151,7 @@
 				return;
 			}
 			
-			city.objects.add(new CityObject(city, objId, objType, objLvl, objX, objY));
+			city.objects.add(new CityObject(city, objId, objType, objLvl, objX, objY, objLabor));
 		}
 		
 		public function onCityRemoveObject(packet: Packet):void

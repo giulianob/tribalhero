@@ -48,13 +48,13 @@
 			ui.append(resourceLabelMaker(city.resources.wood, new AssetIcon(new ICON_WOOD())));
 			ui.append(resourceLabelMaker(city.resources.crop, new AssetIcon(new ICON_CROP())));
 			ui.append(resourceLabelMaker(city.resources.iron, new AssetIcon(new ICON_IRON())));
-			ui.append(resourceLabelMaker(city.resources.labor, new AssetIcon(new ICON_LABOR()), false, false));
-			ui.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep, true, new AssetIcon(new ICON_CROP())));
+			ui.append(simpleLabelMaker(city.resources.labor.getValue().toString() + " are idle and " + city.getBusyLaborCount().toString() + " are working", false, false, new AssetIcon(new ICON_LABOR())));
+			ui.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep.toString(), true, true, new AssetIcon(new ICON_CROP())));
 		}
 		
-		private function simpleLabelMaker(value: int, hourly: Boolean = false, icon: Icon = null) : JLabel {
-			var label: JLabel = new JLabel(value.toString() + (hourly?" per hour":""), icon);
-		
+		private function simpleLabelMaker(value: String, hourly: Boolean = false, negative: Boolean = false, icon: Icon = null) : JLabel {
+			var label: JLabel = new JLabel((hourly?(negative?"-":"+"):"") + value + (hourly?" per hour":""), icon);
+			
 			GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
 			
 			label.setIconTextGap(0);
@@ -63,6 +63,7 @@
 			
 			return label;
 		}		
+
 		
 		private function resourceLabelMaker(resource: LazyValue, icon: Icon = null, includeLimit: Boolean = true, includeRate: Boolean = true) : JLabel {
 			var value: int = resource.getValue();

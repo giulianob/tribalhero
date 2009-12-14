@@ -49,6 +49,12 @@ namespace Game.Logic.Actions {
                 return Error.RESOURCE_NOT_ENOUGH;
             }
 
+            // radius requirements
+            if (city.MainBuilding.distance(x, y) >= city.Radius) {
+                Global.World.unlockRegion(x, y);
+                return Error.LAYOUT_NOT_FULLFILLED;
+            }
+
             // layout requirement
             if (!ReqirementFactory.getLayoutRequirement(type, (byte)1).validate(city, x, y)) {
                 Global.World.unlockRegion(x, y);
@@ -72,6 +78,7 @@ namespace Game.Logic.Actions {
             structure.Y = y;
 
             city.Resource.Subtract(cost);
+
             Global.dbManager.Save(city);
             city.add(structure);
 

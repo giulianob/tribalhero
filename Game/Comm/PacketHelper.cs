@@ -161,8 +161,11 @@ namespace Game.Comm {
             packet.addUInt32(stub.City.CityId);            
 
             packet.addByte(stub.TroopId);
-
             packet.addByte((byte)stub.State);
+
+            if (stub.TroopId == 1)            
+                packet.addInt32(stub.Upkeep);
+
             switch (stub.State) {
                 case TroopStub.TroopState.MOVING:
                     packet.addUInt32(stub.TroopObject.ObjectID);

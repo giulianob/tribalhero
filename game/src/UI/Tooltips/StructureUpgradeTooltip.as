@@ -100,7 +100,7 @@ package src.UI.Tooltips {
 					pnlRequired.setVisible(false);
 				
 				pnlResources.removeAll();
-				pnlResources.append(new ResourcesPanel(structPrototype.buildResources, Global.map.cities.get(parentObj.cityId)));										
+				pnlResources.append(new ResourcesPanel(nextStructPrototype.buildResources, Global.map.cities.get(parentObj.cityId)));										
 			}					
 			else
 				ui.remove(pnlNextLvl);

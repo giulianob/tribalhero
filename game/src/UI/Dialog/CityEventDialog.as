@@ -51,8 +51,8 @@ public class CityEventDialog extends GameJPanel{
 		gridNotifications.dispose();
 	}
 	
-	private function simpleLabelMaker(value: int, tooltip: String, icon: Icon = null) : JLabel {
-		var label: JLabel = new JLabel(value.toString(), icon);
+	private function simpleLabelMaker(value: int, tooltip: String, hourly: Boolean = false, icon: Icon = null) : JLabel {
+		var label: JLabel = new JLabel(value.toString() + (hourly?" per hour":""), icon);
 					
 		label.setIconTextGap(0);
 		label.setHorizontalTextPosition(AsWingConstants.RIGHT);
@@ -93,7 +93,7 @@ public class CityEventDialog extends GameJPanel{
 		pnlResources.append(resourceLabelMaker(city.resources.crop, "Crop", new AssetIcon(new ICON_CROP())));
 		pnlResources.append(resourceLabelMaker(city.resources.iron, "Iron", new AssetIcon(new ICON_IRON())));
 		pnlResources.append(resourceLabelMaker(city.resources.labor, "Labor", new AssetIcon(new ICON_LABOR()), false, false));
-		pnlResources.append(simpleLabelMaker(0, "Upkeep", new AssetIcon(new ICON_CROP())));		
+		pnlResources.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep, "Upkeep", true, new AssetIcon(new ICON_CROP())));		
 		
 		pnlLocalEvents = new JPanel();
 		var border1:TitledBorder = new TitledBorder();

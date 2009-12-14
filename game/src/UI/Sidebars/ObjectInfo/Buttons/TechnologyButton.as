@@ -75,6 +75,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			
 			if (!techPrototype)
 			{
+				trace("TechnologyButton.validateButton: Missing techprototype. Enabling tech button by default.");
 				enable();
 				return true;								
 			}			
@@ -82,12 +83,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			techToolTip.techPrototype = techPrototype;		
 			
 			if (parentAction == null)
-			{
+			{				
+				trace("TechnologyButton.validateButton: missing parent action");
 				techToolTip.draw(currentCount, 999);
 				disable();
 				return false;
 			}
-	
+			
 			var techUpgradeAction: TechUpgradeAction = parentAction as TechUpgradeAction;
 			
 			if (techPrototype.level >= techUpgradeAction.maxlevel)
@@ -97,7 +99,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 			
-			techToolTip.nextTechPrototype = TechnologyFactory.getPrototype(techPrototype.techtype, techPrototype.level + 1);		
+			var nextTechPrototype: TechnologyPrototype = TechnologyFactory.getPrototype(techPrototype.techtype, techPrototype.level + 1);
+			techToolTip.nextTechPrototype = nextTechPrototype;
 			
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
@@ -116,18 +119,18 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			{
 				disable();
 				return false;
-			}			
+			}
 			
-			if (Global.map.cities.get(parentObj.cityId).resources < techPrototype.resources)
-			{				
+			if (Global.map.cities.get(parentObj.cityId).resources.GreaterThanOrEqual(nextTechPrototype.resources))
+			{	
+				enable();
+				return true;
+			}
+			else
+			{
 				disable();
 				return false;
 			}
-		
-			if (!enabled) return false;
-			
-			enable();
-			return true;
 		}
 	}
 	

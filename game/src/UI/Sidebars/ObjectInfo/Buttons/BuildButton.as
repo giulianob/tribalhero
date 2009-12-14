@@ -83,8 +83,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			buildToolTip.missingRequirements = missingReqs;
 			buildToolTip.draw(currentCount, parentAction.maxCount);
 			
-			if (!enabled) return false; //max action has disabled this button, we don't care about the rest
-			
 			if (missingReqs != null && missingReqs.length > 0)
 			{
 				disable();

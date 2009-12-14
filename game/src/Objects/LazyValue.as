@@ -34,10 +34,11 @@
 		}
 		
 		public function getValue(): int 
-		{
+		{			
             var delta: int = 0;
             if (rate != 0) {
-				delta = (((Global.map.getServerTime() - lastRealizeTime) * 1000) / Constants.secondsPerUnit) / rate;
+				var elapsed: int = (Global.map.getServerTime() - lastRealizeTime) * 1000;
+				delta = int(elapsed / (rate * Constants.secondsPerUnit));
             }
             if (limit > 0 && (value + delta) > limit) {
 				return limit;
@@ -47,7 +48,7 @@
 		
 		public function getHourlyRate(): int
 		{
-			return int(3600000 / rate);
+			return int(3600000 / (rate * Constants.secondsPerUnit));
 		}
 	}
 

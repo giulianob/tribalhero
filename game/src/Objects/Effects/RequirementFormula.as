@@ -19,7 +19,8 @@
 			{name: "CanBuild", method: canBuild, message: canBuildMsg},
 			{name: "HaveTechnology", method: haveTechnology, message: haveTechnologyMsg },
 			{name: "CanTrain", method: canTrain, message: canTrainMsg },
-			{name: "HaveStructure", method: haveStructure, message: haveStructureMsg }
+			{name: "HaveStructure", method: haveStructure, message: haveStructureMsg },
+			{name: "HaveNoStructure", method: haveNoStructure, message: haveNoStructureMsg }
 		);
 		
 		private static var methodsSorted: Boolean = false;
@@ -196,6 +197,27 @@
 			
 			return structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
 		}		
+
+		/*HAVE NO STRUCTURE*/
+		private static function haveNoStructure(parentObj: GameObject,effects: Array, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): Boolean
+		{
+			var city: City = map.cities.get(parentObj.cityId);
+			
+			for each (var obj: CityObject in city.objects.each())
+			{	
+				if (obj.type == type && obj.level >= minlevel && obj.level <= maxlevel)
+					return false;
+			}		
+			
+			return true;
+		}
+		
+		private static function haveNoStructureMsg(parentObj: GameObject, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): String
+		{
+			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
+			
+			return "Has not built " + structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
+		}				
 	}
 	
 }

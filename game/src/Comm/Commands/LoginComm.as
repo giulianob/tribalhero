@@ -97,8 +97,11 @@
 					var objHpPercent: int = 100;
 					var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
 					var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
+					var objLabor: int = 0;
+					if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
+						objLabor = packet.readUByte();
 					
-					var cityObj: CityObject = new CityObject(city, objId, objType, objLvl, objX, objY);													
+					var cityObj: CityObject = new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);													
 					
 					var technologyCount: int = packet.readUShort();					
 					for (k = 0; k < technologyCount; k++)

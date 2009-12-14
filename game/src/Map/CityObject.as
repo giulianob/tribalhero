@@ -18,16 +18,18 @@
 		public var y: int;
 		public var objectId: int;
 		public var city: City;
+		public var labor: int;
 		
 		public var techManager: TechnologyManager;
 		
-		public function CityObject(city: City, objectId: int, type: int, level: int, x: int, y: int) {
+		public function CityObject(city: City, objectId: int, type: int, level: int, x: int, y: int, labor: int) {
 			this.city = city;
 			this.objectId = objectId;
 			this.type = type;
 			this.level = level;
 			this.x = x;
 			this.y = y;			
+			this.labor = labor;
 			techManager = new TechnologyManager(EffectPrototype.LOCATION_OBJECT, city.techManager);
 		}	
 		

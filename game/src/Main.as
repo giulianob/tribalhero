@@ -235,6 +235,7 @@
 			TechnologyFactory.init(map, Constants.objData);
 			UnitFactory.init(map, Constants.objData);
 			WorkerFactory.init(map, Constants.objData);						
+			ObjectFactory.init(map, Constants.objData);		
 			
 			mapComm.Login.onLogin(packet);
 			gameContainer.setMap(map, miniMap);

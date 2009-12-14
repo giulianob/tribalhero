@@ -5,6 +5,7 @@
 */
 
 package src.Objects {
+	import src.Constants;
 
 	public class LazyResources {
 				
@@ -72,6 +73,12 @@ package src.Objects {
 			
 			return true;
 		}
+				
+		public static function getHourlyRate(rate: int): int
+		{
+			return int(3600000 / (rate * Constants.secondsPerUnit));
+		}
+		
 		public function toString(): String
 		{
             return "Gold " + gold.getValue() + "/" + gold.getRawValue() + "/" + gold.getRate() +

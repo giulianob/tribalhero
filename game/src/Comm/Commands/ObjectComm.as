@@ -263,7 +263,7 @@
 				var radius: int = packet.readUByte();
 				if (obj) obj.wall.draw(radius);
 			}
-					
+			
 			if (obj)
 			{
 				obj.State = objState;

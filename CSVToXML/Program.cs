@@ -366,6 +366,31 @@ namespace CSVToXML
             }
             writer.WriteEndElement();
 
+            writer.WriteStartElement("ObjectTypes");
+            using (CSVReader statsReader = new CSVReader(new StreamReader(File.Open(directory + "object_type.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
+                    string[] obj = statsReader.ReadRow();
+                    if (obj != null) {
+                        if (obj[0] == string.Empty)
+                            continue;
+
+                        string name = obj[0];
+                        for (int i = 1; i < obj.Length; i++) {
+                            if (obj[i] == string.Empty) 
+                                continue;
+
+                            writer.WriteStartElement("ObjectType");
+                            writer.WriteAttributeString("name", name);
+                            writer.WriteAttributeString("type", obj[i]);
+                            writer.WriteEndElement();
+                        }
+                    }
+                    else
+                        break;
+                }
+            }
+            writer.WriteEndElement();
+
 
             writer.WriteStartElement("Workers");
             

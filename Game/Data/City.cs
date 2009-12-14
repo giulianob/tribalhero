@@ -356,7 +356,7 @@ namespace Game {
 
             Packet packet = new Packet(Command.CITY_OBJECT_UPDATE);
             packet.addUInt16(Region.getRegionIndex(sender));
-            PacketHelper.AddToPacket(sender, packet, true);
+            PacketHelper.AddToPacket(sender, packet, false);
             channel.post(packet);
         }
 

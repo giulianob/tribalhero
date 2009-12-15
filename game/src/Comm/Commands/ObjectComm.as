@@ -181,7 +181,7 @@
 			
 			session.write(packet, onReceiveStructureInfo, obj);
 		}
-				
+		
 		public function onReceiveStructureInfo(packet: Packet, custom: *):void
 		{
 			if (Constants.debug == 1)
@@ -224,7 +224,7 @@
 			
 			for (var i: int = 0; i < currentActionCount; i++)				
 				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUShort()));			
-								
+			
 			map.doSelectedObject(obj);
 		}
 		
@@ -268,7 +268,13 @@
 			{
 				obj.State = objState;
 				obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
-			}			
+				
+				if (obj as GameObject != null && obj == map.selectedObject)
+				{
+					map.selectObject(null);
+					map.selectObject(obj as GameObject);
+				}
+			}						
 		}
 		
 		public function onAddObject(packet: Packet):void

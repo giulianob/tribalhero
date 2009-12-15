@@ -66,8 +66,6 @@
 				
 				obj.moveWithCamera(map.gameContainer.camera);
 			}
-						
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 			
 			return obj;
 		}		

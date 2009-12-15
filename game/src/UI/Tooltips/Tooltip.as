@@ -30,15 +30,18 @@ package src.UI.Tooltips {
 			
 			var objStage: Stage = obj.stage;
 			
-			hide();
+			if (this.viewObj == null)
+			{
+				this.viewObj = obj;						
+				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);			
 			
-			this.viewObj = obj;						
-			viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
-			
-			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));			
-			ui.show();			
-			ui.getFrame().tabEnabled = false;
-			ui.getFrame().mouseEnabled = false;
+				ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));			
+				ui.show();			
+				ui.getFrame().tabEnabled = false;
+				ui.getFrame().mouseEnabled = false;
+			}
+			else
+				ui.getFrame().pack();
 			
 			adjustPosition();
 		}		

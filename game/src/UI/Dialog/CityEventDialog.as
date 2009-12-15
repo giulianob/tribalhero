@@ -1,7 +1,9 @@
 ﻿package src.UI.Dialog{
 
+import flash.events.Event;
 import org.aswing.*;
 import org.aswing.border.*;
+import org.aswing.event.PopupEvent;
 import org.aswing.geom.*;
 import org.aswing.colorchooser.*;
 import org.aswing.ext.*;
@@ -27,6 +29,13 @@ public class CityEventDialog extends GameJPanel{
 	private var gridLocalActions: CityActionGridList;	
 	private var gridNotifications: NotificationGridList;	
 	
+	private var lblGold: JLabel;
+	private var lblWood: JLabel;
+	private var lblCrop: JLabel;
+	private var lblIron: JLabel;
+	private var lblLabor: JLabel;
+	private var lblUpkeep: JLabel;	
+	
 	private var city: City;
 	
 	public function CityEventDialog(city: City) {
@@ -42,18 +51,29 @@ public class CityEventDialog extends GameJPanel{
 	public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
 	{
 		super.showSelf(owner, modal, onClose, dispose);
+		
+		city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);		
+		
+		frame.addEventListener(PopupEvent.POPUP_CLOSED, function(e: PopupEvent):void {
+			city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
+		});
+		
 		Global.gameContainer.showFrame(frame);
 		return frame;
 	}			
+	
+	private function onResourceChange(e: Event) : void {
+		drawResources();
+	}
 	
 	private function dispose(): void {
 		gridLocalActions.dispose();
 		gridNotifications.dispose();
 	}
 	
-	private function simpleLabelMaker(value: String, tooltip: String, hourly: Boolean = false, negative: Boolean = false, icon: Icon = null) : JLabel {
-		var label: JLabel = new JLabel((hourly?(negative?"-":"+"):"") + value + (hourly?" per hour":""), icon);
-					
+	private function simpleLabelMaker(tooltip: String, icon: Icon = null) : JLabel {
+		var label: JLabel = new JLabel("", icon);
+		
 		label.setIconTextGap(0);
 		label.setHorizontalTextPosition(AsWingConstants.RIGHT);
 		label.setHorizontalAlignment(AsWingConstants.LEFT);
@@ -63,10 +83,12 @@ public class CityEventDialog extends GameJPanel{
 		return label;
 	}		
 	
-	private function resourceLabelMaker(resource: LazyValue, tooltip: String, icon: Icon = null, includeLimit: Boolean = true, includeRate: Boolean = true) : JLabel {
-		var value: int = resource.getValue();
-					
-		var label: JLabel = new JLabel(value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (+" + resource.getHourlyRate() + " per hour)" : ""), icon);					
+	private function simpleLabelText(value: String, hourly: Boolean = false, negative: Boolean = false) : String {
+		return (hourly?(negative?"-":"+"):"") + value + (hourly?" per hour":"");
+	}			
+	
+	private function resourceLabelMaker(tooltip: String, icon: Icon = null) : JLabel {					
+		var label: JLabel = new JLabel("", icon);					
 		
 		label.setIconTextGap(0);
 		label.setHorizontalTextPosition(AsWingConstants.RIGHT);
@@ -76,15 +98,20 @@ public class CityEventDialog extends GameJPanel{
 		
 		return label;
 	}	
+	
+	private function resourceLabelText(resource: LazyValue, includeLimit: Boolean = true, includeRate: Boolean = true) : String {
+		var value: int = resource.getValue();
 		
+		return value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (+" + resource.getHourlyRate() + " per hour)" : "");
+	}		
+	
 	private function drawResources() : void {
-		pnlResources.removeAll();
-		pnlResources.append(resourceLabelMaker(city.resources.gold, "Gold", new AssetIcon(new ICON_GOLD()), false, false));
-		pnlResources.append(resourceLabelMaker(city.resources.wood, "Wood", new AssetIcon(new ICON_WOOD())));
-		pnlResources.append(resourceLabelMaker(city.resources.crop, "Crop", new AssetIcon(new ICON_CROP())));
-		pnlResources.append(resourceLabelMaker(city.resources.iron, "Iron", new AssetIcon(new ICON_IRON())));
-		pnlResources.append(simpleLabelMaker(city.resources.labor.getValue().toString() + " are idle and " + city.getBusyLaborCount().toString() + " are working", "Labor", false, false, new AssetIcon(new ICON_LABOR())));
-		pnlResources.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep.toString(), "Troop Upkeep", true, true, new AssetIcon(new ICON_CROP())));
+		lblGold.setText(resourceLabelText(city.resources.gold, false, false));
+		lblWood.setText(resourceLabelText(city.resources.wood));
+		lblCrop.setText(resourceLabelText(city.resources.crop));
+		lblIron.setText(resourceLabelText(city.resources.iron));
+		lblLabor.setText(simpleLabelText(city.resources.labor.getValue().toString() + " are idle and " + city.getBusyLaborCount().toString() + " are working", false, false));
+		lblUpkeep.setText(simpleLabelText(city.troops.getDefaultTroop().upkeep.toString(), true, true));		
 	}
 	
 	private function createUI(): void {
@@ -98,7 +125,6 @@ public class CityEventDialog extends GameJPanel{
 		title = cityName.name + " - Overview";
 		
 		pnlResources = new JPanel(new GridLayout(3, 2, 20, 10));
-		drawResources();
 		
 		pnlLocalEvents = new JPanel();
 		var border1:TitledBorder = new TitledBorder();
@@ -129,11 +155,27 @@ public class CityEventDialog extends GameJPanel{
 		pnlNotifications.setLayout(layout4);
 		
 		pnlNotifications.append(new JScrollPane(gridNotifications));
-				
+		
+		lblGold = resourceLabelMaker("Gold", new AssetIcon(new ICON_GOLD()));
+		lblWood = resourceLabelMaker("Wood", new AssetIcon(new ICON_WOOD()))
+		lblCrop = resourceLabelMaker("Crop", new AssetIcon(new ICON_CROP()));
+		lblIron = resourceLabelMaker("Iron", new AssetIcon(new ICON_IRON()));
+		lblLabor = simpleLabelMaker("Labor", new AssetIcon(new ICON_LABOR()));
+		lblUpkeep = simpleLabelMaker("Troop Upkeep", new AssetIcon(new ICON_CROP()))
+		
+		pnlResources.append(lblGold);
+		pnlResources.append(lblWood);
+		pnlResources.append(lblCrop);
+		pnlResources.append(lblIron);
+		pnlResources.append(lblLabor);
+		pnlResources.append(lblUpkeep);
+		
 		//component layoution
 		append(pnlResources);
 		append(pnlLocalEvents);
 		append(pnlNotifications);		
+		
+		drawResources();
 	}
 	
 	

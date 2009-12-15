@@ -39,7 +39,6 @@
 			city.removeEventListener(City.RESOURCES_UPDATE, draw);
 		}
 		
-		
 		private function draw(e: Event = null) : void
 		{
 			ui.removeAll();

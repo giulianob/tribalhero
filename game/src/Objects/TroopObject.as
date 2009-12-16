@@ -21,6 +21,14 @@
 			
 		}
 		
+		override public function setSelected(bool:Boolean = false):void 
+		{
+			super.setSelected(bool);
+			
+			if (bool) showRadius(attackRadius);
+			else hideRadius();
+		}
+		
 		public override function copy(obj: SimpleGameObject):void
 		{
 			var copyObj: TroopObject = obj as TroopObject;

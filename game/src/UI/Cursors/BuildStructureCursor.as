@@ -17,8 +17,10 @@ package src.UI.Cursors {
 	import src.Objects.GameObject;
 	import src.Objects.IScrollableObject;	
 	import src.Objects.IDisposable;
+	import src.Objects.ObjectContainer;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleObject;
+	import src.UI.Components.GroundCircle;
 	import src.UI.PaintBox;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.UI.SmartMovieClip;
@@ -32,7 +34,8 @@ package src.UI.Cursors {
 		private var originPoint: Point;
 		
 		private var cursor: SimpleObject;
-		private var structPrototype: StructurePrototype;
+		private var rangeCursor: GroundCircle;
+		private var structPrototype: StructurePrototype;		
 		private var parentObj: GameObject;
 		private var type: int;
 		private var level: int;
@@ -52,23 +55,24 @@ package src.UI.Cursors {
 			
 			this.map = map;
 			map.gameContainer.setOverlaySprite(this);
-			map.doSelectedObject(null);
+			map.selectObject(null);
 			
 			structPrototype = StructureFactory.getPrototype(type, level);
 			cursor = StructureFactory.getSimpleObject(type, level);
 			 
-			if (cursor == null)
+			if (StructureFactory.getSimpleObject(type, level) == null)
 			{				
 				trace("Missing building cursor " + type);
 				return;
 			}
 			
-			cursor.alpha = 0.7;
+			cursor.alpha = 0.7;						
+			
+			rangeCursor = new GroundCircle(structPrototype.range);
+			rangeCursor.alpha = 0.6;				
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			map.gameContainer.setSidebar(sidebar);
-			
-			map.objContainer.addObject(cursor);
 			
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);
@@ -82,9 +86,20 @@ package src.UI.Cursors {
 			if (cursor != null)
 			{								
 				setErrorMsg(null);
-				map.objContainer.removeObject(cursor);							
+				if (cursor.stage != null) map.objContainer.removeObject(cursor);			
+				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
 			}
 		}	
+		
+		private function showCursors() : void {
+			if (cursor) cursor.visible = true;
+			if (rangeCursor) rangeCursor.visible = true;
+		}
+		
+		private function hideCursors() : void {
+			if (cursor) cursor.visible = false;
+			if (rangeCursor) rangeCursor.visible = false;			
+		}
 		
 		public function onMouseStop(event: MouseEvent):void
 		{
@@ -103,7 +118,7 @@ package src.UI.Cursors {
 			
 			map.gameContainer.setOverlaySprite(null);
 			map.gameContainer.setSidebar(null);
-			map.doSelectedObject(parentObj);
+			map.selectObject(parentObj, false);
 		}		
 		
 		public function onMouseDown(event: MouseEvent):void
@@ -119,19 +134,21 @@ package src.UI.Cursors {
 			var pos: Point = MapUtil.getActualCoord(map.gameContainer.camera.x + Math.max(event.stageX, 0), map.gameContainer.camera.y + Math.max(event.stageY, 0));			
 			
 			if (pos.x != objX || pos.y != objY)
-			{	
-				map.objContainer.removeObject(cursor);										
-				
+			{					
 				objX = pos.x;
-				objY = pos.y;		
+				objY = pos.y;	
 				
-				cursor.setX(objX);
-				cursor.setY(objY);
+				//Range cursor
+				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);				
+				rangeCursor.setX(objX); rangeCursor.setY(objY);				
+				rangeCursor.moveWithCamera(map.gameContainer.camera);				
+				map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
 				
-				cursor.moveWithCamera(map.gameContainer.camera);													
-				
-				map.objContainer.addObject(cursor);
-				
+				//Object cursor
+				if (cursor.stage != null) map.objContainer.removeObject(cursor);																		
+				cursor.setX(objX); cursor.setY(objY);				
+				cursor.moveWithCamera(map.gameContainer.camera);																	
+				map.objContainer.addObject(cursor);				
 				validateBuilding();
 			}
 		}
@@ -160,7 +177,7 @@ package src.UI.Cursors {
 			
 			if (map.regions.getObjectAt(objX, objY) != null)
 			{
-					cursor.visible = false;			
+					hideCursors();
 					
 					msg = 	
 						<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
@@ -176,7 +193,7 @@ package src.UI.Cursors {
 					return;
 			}
 			else if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
-					cursor.visible = false;			
+					hideCursors();
 					
 					msg = 	
 						<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
@@ -193,7 +210,7 @@ package src.UI.Cursors {
 			}
 			else
 			{
-				cursor.visible = true;
+				showCursors();
 				setErrorMsg(null);
 			}
 			
@@ -223,8 +240,7 @@ package src.UI.Cursors {
 					setErrorMsg(new PaintBox(msg));				
 				}
 				
-				//cursor.filters = filters;
-				cursor.visible = true;
+				showCursors();
 			}
 		}
 	}

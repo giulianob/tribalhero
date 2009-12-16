@@ -151,7 +151,7 @@
 			if (e.charCode == Keyboard.ESCAPE)
 			{
 				if (map != null)
-					map.doSelectedObject(null);
+					map.selectObject(null);
 			}
 		}
 		

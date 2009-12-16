@@ -61,8 +61,8 @@
 			this.troop = troop;
 			this.cityId = cityId;
 			this.mode = mode;
-
-			map.doSelectedObject(null);
+			
+			map.selectObject(null);
 			map.objContainer.resetObjects();									
 			
 			var size: int = Math.max(1, int(troop.getIndividualUnitCount() / 25));
@@ -125,7 +125,7 @@
 			
 			map.gameContainer.setOverlaySprite(null);
 			map.gameContainer.setSidebar(null);
-			map.doSelectedObject(null);			
+			map.selectObject(null);			
 		}		
 		
 		public function onMouseDown(event: MouseEvent):void

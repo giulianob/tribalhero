@@ -186,7 +186,7 @@
 		{
 			if (Constants.debug == 1)
 				trace("Receiving structure info");
-				
+			
 			var obj:StructureObject = custom as StructureObject;
 			
 			obj.level = packet.readUByte();
@@ -225,7 +225,7 @@
 			for (var i: int = 0; i < currentActionCount; i++)				
 				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUShort()));			
 			
-			map.doSelectedObject(obj);
+			map.selectObject(obj, false);
 		}
 		
 		public function onUpdateObject(packet: Packet):void

@@ -42,7 +42,7 @@ namespace Game.Logic {
                     count += kvp.Value;
                 }
             }
-            return (byte)(10-Math.Max(count / 100, 5));
+            return (byte)Math.Min(15, (10-Math.Max(count / 100, 5))); //limiting it to max of 15 because Formula.MoveTime will return negative if greater than 20
         }
         
 

@@ -120,7 +120,7 @@ namespace Game.Logic.Actions {
                 } else {
                     laborTotal += city.Resource.Labor.Value;
                 }
-                city.MainBuilding["Total Labor"] = (uint)laborTotal;
+                
                 #endregion
 
 /********************************** Pre Loop2 ****************************************/

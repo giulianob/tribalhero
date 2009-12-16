@@ -92,7 +92,7 @@ namespace Game.Comm {
             using (new MultiObjectLock(player)) {
                 if (!newPlayer) {
                     if (player.Session != null) {
-                        player.Session.close();
+                        player.Session.CloseSession();
                         player.Session = null;
                     }
                     player.Session = session;

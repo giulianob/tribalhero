@@ -11,7 +11,9 @@
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import src.Constants;
+	import src.Map.City;
 	import src.Objects.Actions.StructureUpgradeAction;
+	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
 	import src.Objects.SimpleGameObject;
@@ -24,6 +26,7 @@
 	import src.Objects.Troop;
 	import src.UI.Components.GroundCircle;
 	import src.UI.PaintBox;
+	import src.Util.Util;
 	
 	/**
 	* ...
@@ -39,12 +42,11 @@
 		private var originPoint: Point;
 		
 		private var cursor: GroundCircle;		
-		private var errorMsg: PaintBox;
 		
 		private var tiles: Array = new Array();
 		
 		private var troop: Troop;
-		private var cityId: int;		
+		private var city: City;		
 		
 		private var highlightedObj: GameObject;
 		
@@ -58,7 +60,7 @@
 						
 			this.map = map;
 			this.troop = troop;
-			this.cityId = cityId;
+			this.city = map.cities.get(cityId);
 
 			map.selectObject(null);
 			map.objContainer.resetObjects();									
@@ -93,7 +95,7 @@
 				cursor.dispose();
 			}
 			
-			setErrorMsg(null);			
+			map.gameContainer.message.hide();
 			
 			if (highlightedObj)
 			{
@@ -119,7 +121,7 @@
 			if (gameObj == null || gameObj.objectId != 1)
 				return;									
 			
-			map.mapComm.Troop.troopReinforce(cityId, gameObj.cityId, troop);
+			map.mapComm.Troop.troopReinforce(city.id, gameObj.cityId, troop);
 			
 			map.gameContainer.setOverlaySprite(null);
 			map.gameContainer.setSidebar(null);
@@ -175,49 +177,21 @@
 			
 			if (gameObj == null || (gameObj as StructureObject) == null || (gameObj as StructureObject).objectId != 1)			
 			{				
-				msg = 	
-					<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
-						<Row>
-							<Column>
-								<Text width="-1">Choose town center to defend</Text>
-							</Column>
-						</Row>
-					</PaintBox>;
-				
-				setErrorMsg(new PaintBox(msg));
+				map.gameContainer.message.showMessage("Choose a town center to defend");
 			}			
 			else
 			{
-				(gameObj as StructureObject).setHighlighted(true);
+				var structObj: StructureObject = gameObj as StructureObject;
+				structObj.setHighlighted(true);
 				highlightedObj = (gameObj as GameObject);
 				
-				msg = 	
-					<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
-						<Row>
-							<Column>
-								<Text width="-1">Double click to defend target</Text>
-							</Column>
-						</Row>
-					</PaintBox>;
+				var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
+				var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+				var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
 				
-				setErrorMsg(new PaintBox(msg));				
+				map.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");			
 			}
 		}
-		
-		public function setErrorMsg(errorMsg: PaintBox):void
-		{
-			if (this.errorMsg != null)			
-				stage.removeChild(this.errorMsg);
-				
-			this.errorMsg = errorMsg;
-			
-			if (errorMsg != null)
-			{
-				errorMsg.x = int(Constants.screenW / 2) - int(errorMsg.width / 2);
-				errorMsg.y = Constants.screenH - 150 - int(errorMsg.height / 2);
-				stage.addChild(errorMsg);					
-			}
-		}				
 	}
 	
 }

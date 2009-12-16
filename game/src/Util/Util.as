@@ -132,9 +132,42 @@ package src.Util {
 			time -= minutes * 60;
 			var seconds: int = time;
 				
-			return (hours <= 9 ? "0" + hours : hours) + ":" + (minutes <= 9 ? "0" + minutes : minutes) + ":" + (seconds <= 9 ? "0" + seconds : seconds);												
-			
+			return (hours <= 9 ? "0" + hours : hours) + ":" + (minutes <= 9 ? "0" + minutes : minutes) + ":" + (seconds <= 9 ? "0" + seconds : seconds);															
 		}
+		
+		public static function niceTime(time: int): String
+		{
+			if (time < 60)
+				return "less than a minute";
+			
+			var hours: int = int(time / (60 * 60));
+			time -= hours * 60 * 60;
+			var minutes: int = int(time / 60);
+			time -= minutes * 60;
+			var seconds: int = time;
+			
+			if (seconds > 30) //add 1 minute if seconds is greater than 30
+				minutes++;
+				
+			var nice: String = "";
+			
+			if (hours > 0) {
+				if (hours > 1)
+					nice += hours + " hours";
+				else
+					nice += " an hour";
+					
+				if (minutes > 0)
+					nice += " and ";
+			}
+			
+			if (minutes > 1)
+				nice += minutes + " minutes";
+			else if (minutes == 1)
+				nice += "a minute";
+				
+			return nice;															
+		}		
 	}
 	
 }

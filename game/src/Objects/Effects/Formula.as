@@ -26,6 +26,10 @@
 			return baseValue * Constants.secondsPerUnit;
 		}				
 		
+		public static function moveTime(speed: int) : int {
+			return 20 - speed;
+		}
+		
 		public static function marketBuyCost(price: int, amount: int, tax: Number): int
 		{
 			return Math.round(((amount / RESOURCE_CHUNK) * price) * (1.0 + tax));

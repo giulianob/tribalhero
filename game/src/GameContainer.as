@@ -27,27 +27,42 @@
 	
 	public class GameContainer extends GameContainer_base {
 		
+		//Currently selected sidebar
 		private var sidebar: GameJSidebar;
+		
+		//Container for sidebar
 		private var sidebarHolder: Sprite;
+		
 		public var map: Map;
 		public var miniMap: MiniMap;
+		
+		//Holds any overlay. Overlays are used for different cursor types.
 		private var mapOverlay: Sprite;
-		private var mapOverlayTarget: Sprite;
+		private var mapOverlayTarget: Sprite;		
+		
+		//HUD resources container
 		private var resourcesContainer: ResourcesContainer;
 		
+		//Container for messages that can be set by different sidebars
+		public var message: MessageContainer = new MessageContainer();
+		
+		//Minimap background image
 		private var miniMapMask: Sprite;
+		
+		//Holds all of the dialogs. This MIGHT be able to be removed once aswing is fully implemented.
 		private var dialogHolder: Sprite;
 		
+		//Black background image used when displaying dialogs. This should be removed once AsWing is used for all panels.
 		private var overlay: Sprite;
 		private var dialogs: Array = new Array();
+		
+		//Holds all currently open aswing frames
 		private var frames: Array = new Array();
-		
-		private var menuItems: PaintBox;
-		
-		public var selectedCity: City;
-		
+			
+		public var selectedCity: City;		
 		public var camera: Camera = new Camera(0, 0);
 		
+		//Resources timer that fires every second
 		public var resourcesTimer: Timer = new Timer(1000);
 		
 		public function GameContainer()

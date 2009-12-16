@@ -8,8 +8,6 @@ namespace Game.Setup {
         const int BUFFER_LEN = 1024;
         const char DELIMITER = ',';
 
-        int filetype;
-        int offset;
         Byte[] data;
         bool data_empty;
         string data_string;
@@ -18,7 +16,6 @@ namespace Game.Setup {
         
         public ASCIIStream(string filename): base(filename,FileMode.Open) {
             data = new byte[BUFFER_LEN];
-            offset = 0;
             data_empty = true;
         }
 

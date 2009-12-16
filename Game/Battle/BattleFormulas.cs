@@ -95,7 +95,7 @@ namespace Game.Battle {
                 double type_modifier = getArmorTypeModifier(attacker.Stats.Weapon, target.Stats.Armor);
                 rawDmg = (int)(type_modifier * rawDmg);
                 return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
-            } else if (true) {
+            } /*else if (true) {
                 int rawDmg = (int)(attacker.Stats.Atk * attacker.Count);
                 int drate = target.Stats.Def;
                 int arate = attacker.Stats.Atk;
@@ -114,7 +114,7 @@ namespace Game.Battle {
                 double base_dmg = attacker.Stats.Atk * attacker.Count;
                 double ret = base_dmg * power_modifier * type_modifier;
                 return ret > ushort.MaxValue ? ushort.MaxValue : (ushort)ret;
-            }
+            }*/
         }
 
 

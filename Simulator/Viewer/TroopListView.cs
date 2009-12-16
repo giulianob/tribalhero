@@ -156,7 +156,6 @@ namespace Simulator.Viewer {
                 type = (item as DefenseCombatUnit).Type;
                 count = (item as DefenseCombatUnit).Count;
             }
-            Bitmap image;
       //      image = (Bitmap)ImageFactory.getImage(type);
            /* if (unit != null) {
             } else {

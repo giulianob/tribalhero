@@ -12,10 +12,7 @@ namespace Game.Comm {
         public void EventOnDisconnect(Session session, Packet packet) {
             if (session.Player == null) return;
             using (new MultiObjectLock(session.Player)) {
-                List<City> list = session.Player.getCityList();
-                foreach (City city in list)
-                    city.Unsubscribe(session);
-                Global.World.unsubscribeAll(session);
+                Global.Channel.Unsubscribe(session);
             }
         }
     }

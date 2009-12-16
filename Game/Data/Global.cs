@@ -20,6 +20,7 @@ namespace Game {
         public static IDbManager dbManager = new MySqlDbManager(Config.database_host, Config.database_username, Config.database_password, Config.database_database);
         public static AI AI = new AI();
         public static Scheduler Scheduler = new Scheduler();
+        public static Channel Channel = new Channel();
 
         static Dictionary<uint, Player> players = new Dictionary<uint, Player>();
         

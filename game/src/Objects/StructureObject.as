@@ -7,6 +7,7 @@
 	import src.Map.CityObject;
 	import src.Objects.Prototypes.EffectPrototype;	
 	import src.Objects.Factories.StructureFactory;
+	import src.Objects.Prototypes.StructurePrototype;
 	
 	public class StructureObject extends GameObject {
 			
@@ -15,6 +16,17 @@
 		
 		public function StructureObject() {
 			
+		}
+		
+		override public function setSelected(bool:Boolean = false):void 
+		{
+			super.setSelected(bool);
+			
+			var prototype: StructurePrototype = StructureFactory.getPrototype(type, level);
+			if (prototype != null) {
+				if (bool) showRadius(prototype.range);
+				else hideRadius();
+			}
 		}
 		
 		public function clearProperties():void

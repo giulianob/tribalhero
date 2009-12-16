@@ -6,7 +6,6 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Prototypes.*;
 	import src.Objects.*;
-	import src.UI.Components.GroundCircle;
 	import src.UI.Dialog.*;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;

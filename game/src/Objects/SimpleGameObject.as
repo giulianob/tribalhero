@@ -90,7 +90,8 @@ package src.Objects {
 			moveRadius();
 		}
 		
-		public function showRadius():void {
+		public function showRadius(radius: int):void {
+			this.radius = radius;
 			radiusVisible = true;
 			moveRadius();
 		}
@@ -128,17 +129,6 @@ package src.Objects {
 			
 			Global.map.objContainer.addObject(circle, ObjectContainer.LOWER);
 		}		
-		
-		public function get Radius(): int 
-		{
-			return radius;
-		}
-		
-		public function set Radius(value: int):void
-		{
-			radius = value;
-			moveRadius();
-		}
 		
 		public function get State(): int 
 		{

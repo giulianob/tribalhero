@@ -60,7 +60,7 @@
 			this.troop = troop;
 			this.cityId = cityId;
 
-			map.doSelectedObject(null);
+			map.selectObject(null);
 			map.objContainer.resetObjects();									
 			
 			var size: int = 0;
@@ -113,7 +113,7 @@
 				return;
 				
 			event.stopImmediatePropagation();	
-						
+			
 			var gameObj: SimpleGameObject = map.regions.getObjectAt(objX, objY);
 			
 			if (gameObj == null || gameObj.objectId != 1)
@@ -123,7 +123,7 @@
 			
 			map.gameContainer.setOverlaySprite(null);
 			map.gameContainer.setSidebar(null);
-			map.doSelectedObject(null);			
+			map.selectObject(null);			
 		}		
 		
 		public function onMouseDown(event: MouseEvent):void

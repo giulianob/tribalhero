@@ -95,7 +95,7 @@
 			
 			city.template.sort();
 			
-			map.doSelectedObject(map.selectedObject);
+			map.selectObject(map.selectedObject, false);
 		}
 		
 		public function onCityUpdateTroop(packet: Packet):void
@@ -153,7 +153,7 @@
 			obj.troop = new Troop();
 			
 			if (obj.playerId == map.playerId) {
-				obj.attackRadius = obj.Radius = packet.readUByte();
+				obj.attackRadius = packet.readUByte();
 				obj.speed = packet.readUByte();
 					
 				var formationCnt: int = packet.readUByte();
@@ -187,7 +187,7 @@
 					obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUShort()));
 			}
 			
-			map.doSelectedObject(obj);
+			map.selectObject(obj, false);
 		}
 		
 		public function trainUnit(city: int, parent: int, type: int, count: int):void		

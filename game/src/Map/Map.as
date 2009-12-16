@@ -335,37 +335,36 @@
 			{
 				if (deselectIfSelected)
 					obj = null;
-				else 
-					return;					
 			}
 			
 			gameContainer.setSidebar(null);
 		
 			if (selectedObject != null)
 			{
-				selectedObject.hideRadius();
 				selectedObject.setSelected(false);
 			}
 			
 			selectedObject = obj;
 			
-			if (obj != null && query)
+			if (obj != null)			
 			{			
-				obj.setSelected(true);
-				obj.showRadius();
-				
-				if (obj is StructureObject)
-					mapComm.Object.getStructureInfo(obj as StructureObject);
-				else if (obj is TroopObject)
-					mapComm.Troop.getTroopInfo(obj as TroopObject);
-			}
-			else if (obj != null && !query)
-			{
-				doSelectedObject(obj);
+				if (query)
+				{
+					obj.setSelected(true);
+					
+					if (obj is StructureObject)
+						mapComm.Object.getStructureInfo(obj as StructureObject);
+					else if (obj is TroopObject)
+						mapComm.Troop.getTroopInfo(obj as TroopObject);
+				}
+				else
+				{
+					doSelectedObject(obj);
+				}
 			}
 		}
 		
-		public function doSelectedObject(obj: GameObject):void
+		private function doSelectedObject(obj: GameObject):void
 		{	
 			selectViewable = null;
 			
@@ -377,13 +376,14 @@
 			
 			selectedObject = obj;
 			
-			obj.setSelected(true);		
-			obj.showRadius();
+			obj.setSelected(true);
 			
 			var sidebar: GameJSidebar;
 			
-			if (obj is StructureObject)			
+			if (obj is StructureObject) {
+				//(obj as StructureObject).showRange();
 				sidebar = new ObjectInfoSidebar(obj as StructureObject);			
+			}
 			else if (obj is TroopObject)			
 				sidebar = new TroopInfoSidebar(obj);			
 			

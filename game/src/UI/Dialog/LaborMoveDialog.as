@@ -72,11 +72,18 @@ public class LaborMoveDialog extends GameJPanel{
 	
 	private function onSlideChange(e: InteractiveEvent = null):void {
 		
-		var labor: int = 3600000 / resource.getRate(); //total labors of this resource type (easier than looping through all buildings)
-		var laborDelta: int = sldCount.getValue() - structure.labor;
-		var newLabor: int = labor + laborDelta;
+		if (resource) 
+		{
+			var labor: int = 0;
+			if (resource.getRate() > 0)
+				labor = 3600000 / resource.getRate(); //total labors of this resource type (easier than looping through all buildings)
+			
+			var laborDelta: int = sldCount.getValue() - structure.labor;
+			var newLabor: int = labor + laborDelta;
+			
+			lblRate.setText((labor == 0? "0" : "+" + LazyResources.getHourlyRate(int(3600000 / newLabor))) + " per hour");
+		}
 		
-		lblRate.setText((labor == 0? "0" : "+" + LazyResources.getHourlyRate(int(3600000 / newLabor))) + " per hour");
 		lblCount.setText(sldCount.getValue().toString() + " out of " + sldCount.getMaximum().toString());
 	}
 	

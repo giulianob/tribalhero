@@ -31,6 +31,9 @@ namespace Game.Comm {
         protected Processor processor;
         private PacketMaker packetMaker;
 
+        public delegate void CloseCallback();
+        public event CloseCallback OnClose;
+
         public Session(string name, Processor processor) {
             this.name = name;
             this.processor = processor;
@@ -48,7 +51,14 @@ namespace Game.Comm {
 
         public abstract bool write(Packet packet);
 
-        public abstract void close();
+        public void CloseSession() {
+            if (OnClose != null) {
+                OnClose();
+            }
+            close();
+        }
+
+        protected abstract void close();
 
         public void appendBytes(byte[] data) {
             packetMaker.append(data);

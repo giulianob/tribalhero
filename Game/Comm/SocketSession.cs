@@ -11,8 +11,8 @@ namespace Game.Comm {
             this.socket = socket;
         }
 
-        public override void close() {
-            socket.Disconnect(false);
+        protected override void close() {
+             socket.Disconnect(false);
         }
 
         public override bool write(Packet packet) {

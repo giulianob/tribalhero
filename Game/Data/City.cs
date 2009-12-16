@@ -26,7 +26,6 @@ namespace Game {
         ActionWorker worker;
         LazyResource resource;
         
-        Channel channel = new Channel();
         TroopManager troopManager;
         UnitTemplate unitTemplate;
         BattleManager battleManager;
@@ -47,10 +46,6 @@ namespace Game {
                     radius_UpdateEvent();
                 }
             }
-        }
-
-        public Channel Channel {
-            get { return channel; }
         }
 
         public Structure MainBuilding {
@@ -303,11 +298,11 @@ namespace Game {
 
         #region Channel Events
         public void Subscribe(IChannel s) {
-            channel.subscribe(s);
+            Global.Channel.Subscribe(s,"/CITY/"+this.cityId);
         }
 
         public void Unsubscribe(IChannel s) {
-            channel.unsubscribe(s);
+            Global.Channel.Unsubscribe(s, "/CITY/" + this.cityId);
         }
 
         public void resource_UpdateEvent() {
@@ -316,7 +311,7 @@ namespace Game {
             Packet packet = new Packet(Command.CITY_RESOURCES_UPDATE);
             packet.addUInt32(CityId);
             PacketHelper.AddToPacket(resource, packet);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         public void radius_UpdateEvent() {
@@ -329,8 +324,8 @@ namespace Game {
             
             packet.addUInt32(CityId);
             packet.addByte(radius);
-            
-            channel.post(packet);
+
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         public void obj_AddEvent(GameObject obj) {
@@ -339,7 +334,7 @@ namespace Game {
             Packet packet = new Packet(Command.CITY_OBJECT_ADD);
             packet.addUInt16(Region.getRegionIndex(obj));
             PacketHelper.AddToPacket(obj, packet, false);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         public void obj_RemoveEvent(GameObject obj) {
@@ -348,7 +343,7 @@ namespace Game {
             Packet packet = new Packet(Command.CITY_OBJECT_REMOVE);
             packet.addUInt32(CityId);
             packet.addUInt32(obj.ObjectID);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         public void obj_UpdateEvent(GameObject sender, uint origX, uint origY) {
@@ -357,7 +352,7 @@ namespace Game {
             Packet packet = new Packet(Command.CITY_OBJECT_UPDATE);
             packet.addUInt16(Region.getRegionIndex(sender));
             PacketHelper.AddToPacket(sender, packet, false);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void worker_ActionRescheduled(Game.Logic.Action stub) {
@@ -367,7 +362,7 @@ namespace Game {
             Packet packet = new Packet(Command.ACTION_RESCHEDULED);
             packet.addUInt32(CityId);
             PacketHelper.AddToPacket(stub, packet, true);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void worker_ActionAdded(Game.Logic.Action stub) {
@@ -377,7 +372,7 @@ namespace Game {
             Packet packet = new Packet(Command.ACTION_STARTED);
             packet.addUInt32(CityId);
             PacketHelper.AddToPacket(stub, packet, true);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void worker_ActionRemoved(Game.Logic.Action stub) {
@@ -387,7 +382,7 @@ namespace Game {
             Packet packet = new Packet(Command.ACTION_COMPLETED);
             packet.addUInt32(CityId);
             PacketHelper.AddToPacket(stub, packet, true);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void Technologies_TechnologyUpgraded(Technology tech) {
@@ -402,7 +397,7 @@ namespace Game {
             packet.addUInt32(tech.Type);
             packet.addByte(tech.Level);
 
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void Technologies_TechnologyRemoved(Technology tech) {
@@ -417,7 +412,7 @@ namespace Game {
             packet.addUInt32(tech.Type);
             packet.addByte(tech.Level);
 
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void Technologies_TechnologyAdded(Technology tech) {
@@ -432,28 +427,28 @@ namespace Game {
             packet.addUInt32(tech.Type);
             packet.addByte(tech.Level);
 
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void troop_manager_TroopUpdated(TroopStub stub) {
             Packet packet = new Packet(Command.TROOP_UPDATED);
             packet.addUInt32(CityId);
             PacketHelper.AddToPacket(stub, packet);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void troop_manager_TroopAdded(TroopStub stub) {
             Packet packet = new Packet(Command.TROOP_ADDED);
             packet.addUInt32(CityId);
             PacketHelper.AddToPacket(stub, packet);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         void troop_manager_TroopRemoved(TroopStub stub) {
             Packet packet = new Packet(Command.TROOP_REMOVED);
             packet.addUInt32(CityId);
             packet.addByte(stub.TroopId);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
 
         public void unitTemplate_UnitUpdated(UnitTemplate sender) {
@@ -461,7 +456,7 @@ namespace Game {
             Packet packet = new Packet(Command.UNIT_TEMPLATE_UPGRADED);
             packet.addUInt32(CityId);
             PacketHelper.AddToPacket(sender, packet);
-            channel.post(packet);
+            Global.Channel.Post("/CITY/" + this.cityId, packet);
         }
         #endregion
 

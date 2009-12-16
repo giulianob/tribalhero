@@ -32,7 +32,6 @@ namespace Game {
         Dictionary<uint, City> cities = new Dictionary<uint, City>();
         LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
 
-        Channel channel = new Channel();
         #endregion
 
         #region Object Getters
@@ -178,7 +177,7 @@ namespace Game {
                 PacketHelper.AddToPacket(obj, packet, true);
 
                 if (Global.FireEvents)
-                    channel.post(region_id, packet);
+                    Global.Channel.Post("/WORLD/" + region_id, packet);
                 return true;
             }
             else {
@@ -204,7 +203,7 @@ namespace Game {
             packet.addUInt32(obj.ObjectID);
 
             region.remove(obj);
-            channel.post(region_id, packet);
+            Global.Channel.Post("/WORLD/" + region_id, packet);
         }
 
         public List<GameObject> getObjects(uint x, uint y) {
@@ -228,7 +227,7 @@ namespace Game {
                     Packet packet = new Packet(Command.OBJECT_UPDATE);
                     packet.addUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
-                    channel.post(newRegionId, packet);
+                    Global.Channel.Post("/WORLD/" + newRegionId, packet);
                 }
                 else {
                     regions[oldRegionId].remove(sender, origX, origY);
@@ -237,12 +236,12 @@ namespace Game {
                     packet.addUInt16(oldRegionId);
                     packet.addUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
-                    channel.post(oldRegionId, packet);
+                    Global.Channel.Post("/WORLD/" + oldRegionId, packet);
 
                     packet = new Packet(Command.OBJECT_ADD);
                     packet.addUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
-                    channel.post(newRegionId, packet);
+                    Global.Channel.Post("/WORLD/" + newRegionId, packet);
                 }
             }
             else {
@@ -251,7 +250,7 @@ namespace Game {
                 Packet packet = new Packet(Command.OBJECT_UPDATE);
                 packet.addUInt16(region_id);
                 PacketHelper.AddToPacket(sender, packet, true);
-                channel.post(region_id, packet);
+                Global.Channel.Post("/WORLD/" + region_id, packet);
             }
         }
         #endregion
@@ -276,17 +275,12 @@ namespace Game {
 
         #region Channel Subscriptions
         internal void subscribeRegion(Session session, ushort id) {
-            channel.subscribe(session, id);
+            Global.Channel.Subscribe(session, "/WORLD/" + id);
         }
         internal void unsubscribeRegion(Session session, ushort id) {
-            channel.unsubscribe(session, id);
+            Global.Channel.Unsubscribe(session, "/WORLD/" + id);
         }
-        internal void unsubscribeRegion(Session session) {
-            channel.unsubscribe(session);
-        }
-        internal void unsubscribeAll(Session session) {
-            channel.unsubscribeAll(session);
-        }
+
         #endregion
 
         internal void lockRegion(uint x, uint y) {

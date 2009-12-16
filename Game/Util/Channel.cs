@@ -8,17 +8,17 @@ namespace Game.Util {
         #region Structs
         struct Subscriber {
             public IChannel session;
-            public List<int> channels;
+            public List<string> channels;
             public Subscriber(IChannel session) {
                 this.session = session;
-                channels = new List<int>();
+                channels = new List<string>();
             }
         }
         #endregion
 
         #region Members
         Dictionary<IChannel, Subscriber> subscribers_by_session = new Dictionary<IChannel, Subscriber>();
-        Dictionary<int, List<Subscriber>> subscribers_by_channel = new Dictionary<int, List<Subscriber>>();
+        Dictionary<string, List<Subscriber>> subscribers_by_channel = new Dictionary<string, List<Subscriber>>();
         object channelLock = new Object();
         #endregion
 
@@ -27,11 +27,7 @@ namespace Game.Util {
         #endregion
 
         #region Methods
-        public void post(object message) {
-            post(0, message);
-        }
-
-        public void post(int channel_id, object message) {
+        public void Post(string channel_id, object message) {
             lock (channelLock) {
                 if (!subscribers_by_channel.ContainsKey(channel_id)) return;
                 foreach (Subscriber sub in subscribers_by_channel[channel_id]) {
@@ -40,11 +36,7 @@ namespace Game.Util {
             }
         }
 
-        public void subscribe(IChannel session) {
-            subscribe(session, 0);
-        }
-
-        public void subscribe(IChannel session, int channel_id) {
+        public void Subscribe(IChannel session, string channel_id) {
             lock (channelLock) {
                 Subscriber sub;
                 List<Subscriber> sublist;
@@ -65,11 +57,7 @@ namespace Game.Util {
             return;
         }
 
-        public bool unsubscribe(IChannel session) {
-            return unsubscribe(session, 0);
-        }
-
-        public bool unsubscribe(IChannel session, int channel_id) {
+        public bool Unsubscribe(IChannel session, string channel_id) {
             lock (channelLock) {
                 Subscriber sub;
                 if (subscribers_by_session.TryGetValue(session, out sub)) {                    
@@ -90,14 +78,22 @@ namespace Game.Util {
             return false;
         }
 
-        public bool unsubscribeAll(IChannel session) {
+        public bool Unsubscribe(IChannel session) {
             lock (channelLock) {
                 
                 Subscriber sub;
                 if (subscribers_by_session.TryGetValue(session, out sub)) {
-                    foreach (int id in sub.channels) {
-                        subscribers_by_channel.Remove(id);
+                    foreach (string id in sub.channels) {
+                        List<Subscriber> sublist;
+                        if (subscribers_by_channel.TryGetValue(id, out sublist)) {
+                            sublist.Remove(sub);
+
+                            if (sublist.Count == 0)
+                                subscribers_by_channel.Remove(id);
+                        }
                     }
+
+                    sub.channels = new List<string>();
                     subscribers_by_session.Remove(session);
                     return true;
                 }

@@ -163,7 +163,7 @@ namespace Game.Logic {
                 packet.addUInt32(actionWorker.City.CityId);
                 PacketHelper.AddToPacket(notification, packet);
 
-                actionWorker.City.Channel.post(packet);
+                Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
             }
         }
 
@@ -180,7 +180,7 @@ namespace Game.Logic {
                     packet.addUInt32(notification.Action.WorkerObject.City.CityId);
                     packet.addUInt16(notification.Action.ActionId);
 
-                    actionWorker.City.Channel.post(packet);
+                    Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
                 }                
             }
         }
@@ -189,7 +189,7 @@ namespace Game.Logic {
             Packet packet = new Packet(Command.NOTIFICATION_UPDATE);
             packet.addUInt32(actionWorker.City.CityId);
             PacketHelper.AddToPacket(notification, packet);
-            actionWorker.City.Channel.post(packet);
+            Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
         }
 
         void worker_ActionRescheduled(Game.Logic.Action action) {

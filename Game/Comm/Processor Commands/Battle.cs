@@ -22,14 +22,17 @@ namespace Game.Comm {
                 if (city == null || city.Battle == null) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
-                }                
-
+                }
                 Packet reply = new Packet(packet);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.subscribe(session);
                 session.write(reply);
             }
+        }
+
+        void session_OnClose(Session session) {
+            
         }
 
         public void CmdBattleUnsubscribe(Session session, Packet packet) {

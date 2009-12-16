@@ -10,10 +10,12 @@ using Game.Database;
 using Game.Data.Troop;
 
 namespace Game.Battle {
-    public class BattleChannel : Channel {
+    public class BattleChannel {
+        string channelName;
         BattleBase battle;
-        public BattleChannel(BattleBase battle) {
+        public BattleChannel(BattleBase battle, string channelName) {
             this.battle = battle;
+            this.channelName = channelName;
             battle.ActionAttacked += new BattleBase.OnAttack(battle_ActionAttacked);
             battle.ReinforceAttacker += new BattleBase.OnReinforce(battle_ReinforceAttacker);
             battle.ReinforceDefender += new BattleBase.OnReinforce(battle_ReinforceDefender);
@@ -22,21 +24,21 @@ namespace Game.Battle {
 
         void battle_ExitBattle(CombatList atk, CombatList def) {
             Packet packet = new Packet(Command.BATTLE_ENDED);
-            post(packet);
+            Global.Channel.Post(channelName, packet);
         }
 
         void battle_ReinforceDefender(IEnumerable<CombatObject> list) {
             List<CombatObject> combatObjectList = new List<CombatObject>(list);
             Packet packet = new Packet(Command.BATTLE_REINFORCE_DEFENDER);
             PacketHelper.AddToPacket(combatObjectList, packet);
-            post(packet);
+            Global.Channel.Post(channelName, packet);
         }
 
         void battle_ReinforceAttacker(IEnumerable<CombatObject> list) {
             List<CombatObject> combatObjectList = new List<CombatObject>(list);
             Packet packet = new Packet(Command.BATTLE_REINFORCE_ATTACKER);
             PacketHelper.AddToPacket(combatObjectList, packet);
-            post(packet);
+            Global.Channel.Post(channelName, packet);
         }
 
         void battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
@@ -44,7 +46,7 @@ namespace Game.Battle {
             packet.addUInt32(source.Id);
             packet.addUInt32(target.Id);
             packet.addUInt16(damage);
-            post(packet);
+            Global.Channel.Post(channelName, packet);
         }
     }
 
@@ -206,7 +208,7 @@ namespace Game.Battle {
         #endregion
 
         public BattleManager(City owner) {
-            channel = new BattleChannel(this);
+            channel = new BattleChannel(this, "/BATTLE/" + city.CityId);
             this.city = owner;
             this.stamina = BattleFormulas.getStamina(city);
             report = new BattleReport(this);
@@ -214,11 +216,11 @@ namespace Game.Battle {
         }
 
         public void subscribe(Session session) {
-            channel.subscribe(session);
+            Global.Channel.Subscribe(session, "/BATTLE/" + city.CityId);
         }
 
         public void unsubscribe(Session session) {
-            channel.unsubscribe(session);
+            Global.Channel.Unsubscribe(session, "/BATTLE/" + city.CityId);
         }
 
         public CombatObject getCombatObject(uint id) {

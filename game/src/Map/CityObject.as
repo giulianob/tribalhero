@@ -81,6 +81,7 @@
 				return 0;
 		}
 		
+		
 		public function distance(x_1: int, y_1: int): int
 		{
             var offset: int = 0;

@@ -140,6 +140,23 @@ package src.Objects {
 			return tilelists;
 		}
 		
+		public function getSpeed() : int 
+		{
+            var count: int = 0;
+			
+			for each (var formation: Formation in each())
+			{
+				if (formation.type == Formation.Scout) continue;
+				for each (var unit: Unit in formation.each()) {
+					count += unit.count;
+				}
+			}
+			
+			count /= 100;
+			
+            return Math.min(15, 10 - Math.max(count, 5));
+		}
+		
 		public function getIndividualUnitCount(): int
 		{
 			var total: int = 0;

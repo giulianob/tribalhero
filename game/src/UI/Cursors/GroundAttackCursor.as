@@ -11,7 +11,9 @@
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import src.Constants;
+	import src.Map.City;
 	import src.Objects.Actions.StructureUpgradeAction;
+	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
 	import src.Objects.SimpleGameObject;
@@ -24,6 +26,8 @@
 	import src.Objects.Troop;
 	import src.UI.Components.GroundCircle;
 	import src.UI.PaintBox;
+	import src.UI.Tooltips.Tooltip;
+	import src.Util.Util;
 	
 	/**
 	* ...
@@ -39,15 +43,16 @@
 		private var originPoint: Point;
 		
 		private var cursor: GroundCircle;		
-		private var errorMsg: PaintBox;
 		
 		private var tiles: Array = new Array();
 		
 		private var troop: Troop;
-		private var cityId: int;
+		private var city: City;
 		private var mode: int;
 		
 		private var highlightedObj: GameObject;
+		
+		private var tooltip: Tooltip = new Tooltip();
 		
 		public function GroundAttackCursor() {
 			
@@ -59,7 +64,7 @@
 						
 			this.map = map;
 			this.troop = troop;
-			this.cityId = cityId;
+			this.city = map.cities.get(cityId);
 			this.mode = mode;
 			
 			map.selectObject(null);
@@ -95,7 +100,7 @@
 				cursor.dispose();
 			}
 			
-			setErrorMsg(null);			
+			map.gameContainer.message.hide();
 			
 			if (highlightedObj)
 			{
@@ -121,7 +126,7 @@
 			if (gameObj == null)
 				return;												
 			
-			map.mapComm.Troop.troopAttack(cityId, gameObj.cityId, gameObj.objectId, mode, troop);
+			map.mapComm.Troop.troopAttack(city.id, gameObj.cityId, gameObj.objectId, mode, troop);
 			
 			map.gameContainer.setOverlaySprite(null);
 			map.gameContainer.setSidebar(null);
@@ -177,49 +182,21 @@
 			
 			if (gameObj == null || (gameObj as StructureObject) == null)			
 			{				
-				msg = 	
-					<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
-						<Row>
-							<Column>
-								<Text width="-1">Choose target to attack</Text>
-							</Column>
-						</Row>
-					</PaintBox>;
-				
-				setErrorMsg(new PaintBox(msg));
+				map.gameContainer.message.showMessage("Choose target to attack");
 			}			
 			else
 			{
-				(gameObj as StructureObject).setHighlighted(true);
+				var structObj: StructureObject = gameObj as StructureObject;
+				structObj.setHighlighted(true);
 				highlightedObj = (gameObj as GameObject);
 				
-				msg = 	
-					<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
-						<Row>
-							<Column>
-								<Text width="-1">Double click to attack target</Text>
-							</Column>
-						</Row>
-					</PaintBox>;
+				var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
+				var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+				var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
 				
-				setErrorMsg(new PaintBox(msg));				
+				map.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to attack.");			
 			}
-		}
-		
-		public function setErrorMsg(errorMsg: PaintBox):void
-		{
-			if (this.errorMsg != null)			
-				stage.removeChild(this.errorMsg);
-				
-			this.errorMsg = errorMsg;
-			
-			if (errorMsg != null)
-			{
-				errorMsg.x = int(Constants.screenW / 2) - int(errorMsg.width / 2);
-				errorMsg.y = Constants.screenH - 150 - int(errorMsg.height / 2);
-				stage.addChild(errorMsg);					
-			}
-		}				
+		}		
 	}
 	
 }

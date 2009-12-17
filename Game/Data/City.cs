@@ -14,7 +14,7 @@ using Game.Logic.Actions;
 namespace Game {
     public class City : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject {
         uint cityId = 0;
-        string name = "NEW MODULE";
+        string name = "Washington";
         uint nextObjectId = 0;
         byte radius = 4;
 
@@ -80,18 +80,12 @@ namespace Game {
         
         public uint CityId {
             get { return cityId; }
-            set { cityId = value; }
+            set { CheckUpdateMode(); cityId = value; }
         }
         
         public string Name {
             get { return name; }
-            set { name = value; }
-        }
-        
-        public uint Population {
-            get {
-                return 0;
-            }
+            set { CheckUpdateMode(); name = value; }
         }
 
         public Player Owner {
@@ -123,8 +117,6 @@ namespace Game {
         public City(Player owner, string name, LazyResource resource, Structure mainBuilding) {
             this.owner = owner;
             this.name = name;
-            resource.City = this;            
-            this.resource = resource;
 
             worker = new ActionWorker(this);
 
@@ -149,10 +141,16 @@ namespace Game {
             worker.ActionRescheduled += new ActionWorker.UpdateCallback(worker_ActionRescheduled);
             owner.add(this);
 
+            this.resource = resource;
+            resource.Labor.Add(10);
+
             if (mainBuilding != null) {
                 mainBuilding.ObjectID = 1;
                 add(1, mainBuilding, false);
-            }            
+                Formula.ResourceCap(this);
+            }
+
+            resource.City = this;            
         }
         #endregion
 
@@ -296,6 +294,29 @@ namespace Game {
         }
         #endregion
 
+        #region Updates
+        bool updating = false;
+
+        void CheckUpdateMode() {
+            if (!Global.FireEvents) return;
+
+            if (!updating)
+                throw new Exception("Changed state outside of begin/end update block");
+        }
+
+        public void BeginUpdate() {
+            updating = true;
+        }
+
+        public void EndUpdate() {
+            if (!updating)
+                throw new Exception("Called EndUpdate without first calling BeginUpdate");
+
+            Global.dbManager.Save(this);
+            updating = false;
+        }
+        #endregion
+
         #region Channel Events
         public void Subscribe(IChannel s) {
             Global.Channel.Subscribe(s,"/CITY/"+this.cityId);
@@ -305,8 +326,10 @@ namespace Game {
             Global.Channel.Unsubscribe(s, "/CITY/" + this.cityId);
         }
 
-        public void resource_UpdateEvent() {
-            if (!Global.FireEvents) return; 
+        public void resource_UpdateEvent() {          
+            if (!Global.FireEvents) return;
+
+            CheckUpdateMode();
 
             Packet packet = new Packet(Command.CITY_RESOURCES_UPDATE);
             packet.addUInt32(CityId);

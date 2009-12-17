@@ -67,12 +67,12 @@ namespace Game.Logic.Actions {
                 endTime = DateTime.Now;
             }
             else {
-                if (!city.Resource.HasEnough(techBase.resources)) {
+                if (!city.Resource.HasEnough(techBase.resources))
                     return Error.RESOURCE_NOT_ENOUGH;
-                }
-                city.Resource.Subtract(techBase.resources);
 
-                Global.dbManager.Save(city);
+                city.BeginUpdate();
+                city.Resource.Subtract(techBase.resources);
+                city.EndUpdate();
 
                 beginTime = DateTime.Now;
                 endTime = DateTime.Now.AddSeconds(techBase.time * Setup.Config.seconds_per_unit);
@@ -106,8 +106,9 @@ namespace Game.Logic.Actions {
                         break;
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
+                        city.BeginUpdate();
                         city.Resource.Add(techBase.resources / 2);
-                        Global.dbManager.Save(city);
+                        city.EndUpdate();
                         stateChange(ActionState.INTERRUPTED);
                         break;
                 }

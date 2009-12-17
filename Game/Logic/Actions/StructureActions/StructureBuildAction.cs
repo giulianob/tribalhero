@@ -77,15 +77,18 @@ namespace Game.Logic.Actions {
             structure.X = x;
             structure.Y = y;
 
+            city.BeginUpdate();
             city.Resource.Subtract(cost);
+            city.EndUpdate();
 
-            Global.dbManager.Save(city);
             city.add(structure);
 
             if (!Global.World.add(structure)) {
                 city.remove(structure);
+                city.BeginUpdate();
                 city.Resource.Add(cost);
-                Global.dbManager.Save(city);
+                city.EndUpdate();
+
                 Global.World.unlockRegion(x, y);
                 return Error.MAP_FULL;
             }
@@ -198,9 +201,11 @@ namespace Game.Logic.Actions {
                         city.Worker.References.remove(structure, this);
 
                         Global.World.lockRegion(x, y);
-                        city.Resource.Subtract(cost / 2);
 
-                        Global.dbManager.Save(city);
+                        city.BeginUpdate();
+                        city.Resource.Subtract(cost / 2);
+                        city.EndUpdate();
+                        
                         Global.dbManager.Delete(structure);
 
                         Global.World.remove(structure);

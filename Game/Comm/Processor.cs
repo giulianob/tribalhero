@@ -88,18 +88,18 @@ namespace Game.Comm {
 
         public virtual void execute(Session session, Packet packet) {
             Global.Logger.Info(packet.ToString(256));
-            try {
+            //try {
                 ProcessorCommand cmd = commands[packet.Cmd];
                 Player player = session.Player;
 
                 lock (session) {
                     cmd.function(session, packet);
                 }
-            }
+            /*}
             catch (Exception e) {
                 Global.Logger.Error(string.Format("Session[{0}] Cmd[{1}] failed[{2}]", session.name, Enum.GetName(typeof(Command), packet.Cmd), e));
-                return;
-            }
+                Environment.Exit(-1);
+            }*/
         }
 
         public virtual void executeEvent(Session session, Packet packet) {

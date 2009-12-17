@@ -638,9 +638,10 @@ namespace Game.Battle {
 
                     if (attacker.CombatList == Attacker) {
                         Resource loot = BattleFormulas.getRewardResource(attacker, defender, actualDmg);
+                        city.BeginUpdate();
                         city.Resource.Subtract(loot, out loot);
                         attacker.ReceiveReward(defender.Stats.Reward * actualDmg, loot);
-                        Global.dbManager.Save(city);
+                        city.EndUpdate();
                     }
 
                     EventActionAttacked(attacker, defender, (ushort)actualDmg);

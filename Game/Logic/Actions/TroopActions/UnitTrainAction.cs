@@ -43,9 +43,11 @@ namespace Game.Logic.Actions {
             Resource totalCost = cost * actionCount;
             if (!structure.City.Resource.HasEnough(totalCost))
                 return Error.RESOURCE_NOT_ENOUGH;
-
+            
+            structure.City.BeginUpdate();
             structure.City.Resource.Subtract(totalCost);
-            Global.dbManager.Save(structure.City);
+            structure.City.EndUpdate();
+
             int buildtime = Formula.TrainTime((int)UnitFactory.getTime(type, 1), (structure.Lvl - 1) * 3, structure.Technologies);
 
             // add to queue for completion
@@ -110,8 +112,9 @@ namespace Game.Logic.Actions {
                         break;
                     case ActionInterrupt.CANCEL:
                         Resource totalCost = cost * actionCount;
+                        structure.City.BeginUpdate();
                         structure.City.Resource.Add(totalCost / 2);
-                        Global.dbManager.Save(structure.City);
+                        structure.City.EndUpdate();
                         stateChange(ActionState.INTERRUPTED);
                         break;
                 }

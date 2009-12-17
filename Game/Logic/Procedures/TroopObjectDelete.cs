@@ -13,8 +13,10 @@ namespace Game.Logic.Procedures {
         public static bool TroopObjectDelete(TroopObject troop, bool addBackToNormal) {
             if (addBackToNormal) {
                 addToNormal(troop.Stub, troop.City.DefaultTroop);
+
+                troop.City.BeginUpdate();
                 troop.City.Resource.Add(troop.Loot);
-                Global.dbManager.Save(troop.City);
+                troop.City.EndUpdate();
             }
 
             troop.City.Troops.Remove(troop.Stub.TroopId);

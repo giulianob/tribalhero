@@ -47,11 +47,12 @@ namespace Game.Logic.Actions {
             if (!structure.City.Resource.HasEnough(cost))
                 return Error.RESOURCE_NOT_ENOUGH;
 
+            structure.City.BeginUpdate();
             structure.City.Resource.Subtract(cost);
+            structure.City.EndUpdate();
+
             endTime = DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.getTime(structure.Type, (byte)(structure.Lvl + 1)), structure.Technologies));
             beginTime = DateTime.Now;
-
-            Global.dbManager.Save(structure.City);
 
             return Error.OK;
         }
@@ -111,7 +112,11 @@ namespace Game.Logic.Actions {
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
                         Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
+                        
+                        city.BeginUpdate();
                         city.Resource.Add(cost / 2);
+                        city.EndUpdate();
+
                         stateChange(ActionState.INTERRUPTED);
                         break;
                 }

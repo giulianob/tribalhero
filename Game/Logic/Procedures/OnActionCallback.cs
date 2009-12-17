@@ -39,8 +39,9 @@ namespace Game.Logic.Procedures {
         }
 
         internal static void OnStructureUpgrade(Structure structure) {
+            structure.City.BeginUpdate();
             Formula.ResourceCap(structure.City);
-
+            structure.City.EndUpdate();
         }
     }
 }

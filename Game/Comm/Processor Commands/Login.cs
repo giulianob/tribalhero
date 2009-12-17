@@ -117,8 +117,7 @@ namespace Game.Comm {
                         res = new Resource(500, 0, 0, 500, 0);
 
                     City city = new City(player, "City " + player.PlayerId, res, structure);
-                    city.Resource.Labor.Add(10);
-                    Formula.ResourceCap(city);
+                    
                     Global.World.add(city);
                     Global.World.add(structure);
 

@@ -64,12 +64,12 @@ namespace Game.Logic.Actions {
                 return Error.RESOURCE_NOT_ENOUGH;
             }
 
+            structure.City.BeginUpdate();
             structure.City.Resource.Subtract(cost);
+            structure.City.EndUpdate();
 
             endTime = DateTime.Now.AddSeconds(Formula.TradeTime(structure));
             beginTime = DateTime.Now;
-
-            Global.dbManager.Save(structure.City);
 
             return Error.OK;
         }
@@ -86,6 +86,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
+                structure.City.BeginUpdate();
                 switch (resourceType) {
                     case ResourceType.Crop:
                         structure.City.Resource.Crop.Add(quantity);
@@ -97,8 +98,8 @@ namespace Game.Logic.Actions {
                         structure.City.Resource.Iron.Add(quantity);
                         break;
                 }
-                
-                Global.dbManager.Save(structure.City);
+                structure.City.EndUpdate();                
+
                 stateChange(ActionState.COMPLETED);
             }
         }

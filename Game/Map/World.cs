@@ -128,9 +128,13 @@ namespace Game {
         }
 
         public bool add(City city) {
+            city.BeginUpdate();
             city.CityId = (uint)cityIdGen.getNext();
+            city.EndUpdate();
             cities[city.CityId] = city;
-            Global.dbManager.Save(city, city.MainBuilding);
+
+            //Initial save of these objects
+            Global.dbManager.Save(city.MainBuilding);
             foreach (TroopStub stub in city.Troops)
                 Global.dbManager.Save(stub);
 

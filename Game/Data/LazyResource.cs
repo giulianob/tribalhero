@@ -48,8 +48,7 @@ namespace Game.Data {
         }
 
         public int RawValue {
-            get { return value; }
-            set { this.value = value; }
+            get { return value; }            
         }
 
         private int rate = 0;
@@ -186,11 +185,13 @@ namespace Game.Data {
         }
 
         public void SetLimits(int crop, int gold, int iron, int wood, int labor) {
+            BeginUpdate();
             this.crop.Limit = crop;
             this.gold.Limit = gold;
             this.iron.Limit = iron;
             this.wood.Limit = wood;
             this.labor.Limit = labor;
+            EndUpdate();
         }
 
         public int FindMaxAffordable(Resource costPerUnit) {
@@ -270,6 +271,7 @@ namespace Game.Data {
 
         public void Add(Resource resource) {
             Add(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor);
+            Update();
         }
 
         public void Add(int crop, int gold, int iron, int wood, int labor) {
@@ -302,8 +304,10 @@ namespace Game.Data {
         }
 
         private void Update() {
-            if (!isUpdating)
-                city.resource_UpdateEvent();
+            if (!isUpdating) {
+                if (city != null)
+                    city.resource_UpdateEvent();
+            }
             else
                 isDirty = true;
         }

@@ -61,8 +61,10 @@ namespace Game.Logic.Actions {
                 return Error.RESOURCE_NOT_ENOUGH;
             }
 
+            city.BeginUpdate();
             city.Resource.Subtract(cost);
-            Global.dbManager.Save(city);
+            city.EndUpdate();
+            
             endTime = DateTime.Now.AddSeconds(Formula.BuildTime(UnitFactory.getUpgradeTime(type, (byte)(unitStats.lvl + 1)), structure.Technologies));
             beginTime = DateTime.Now;
 

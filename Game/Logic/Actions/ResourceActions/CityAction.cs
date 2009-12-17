@@ -51,6 +51,8 @@ namespace Game.Logic.Actions {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!isValid()) return;
+
+                city.BeginUpdate();
 /********************************** Pre Loop1 ****************************************/
 
                 #region ResourceGet
@@ -139,7 +141,7 @@ namespace Game.Logic.Actions {
                     Global.dbManager.Save(structure);
                 }
 /********************************* Post Loop2 ****************************************/
-                Global.dbManager.Save(city);
+                city.EndUpdate();
 
                 beginTime = DateTime.Now;
                 endTime = DateTime.Now.AddSeconds(INTERVAL * Setup.Config.seconds_per_unit);

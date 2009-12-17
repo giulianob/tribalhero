@@ -74,12 +74,12 @@ namespace Game.Logic.Actions {
 
             if (!market.Sell(quantity, price)) return Error.MARKET_PRICE_CHANGED;
 
+            structure.City.BeginUpdate();
             structure.City.Resource.Subtract(cost);
+            structure.City.EndUpdate();
 
             endTime = DateTime.Now.AddSeconds(Formula.TradeTime(structure));
             beginTime = DateTime.Now;
-
-            Global.dbManager.Save(structure.City);
 
             return Error.OK;
         }
@@ -95,8 +95,10 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
+                structure.City.BeginUpdate();
                 structure.City.Resource.Add(0, (int)Math.Round(price * (quantity / TradeSize) * (1.0 - Formula.MarketTax(structure))), 0, 0, 0);
-                Global.dbManager.Save(structure.City);
+                structure.City.EndUpdate();
+
                 stateChange(ActionState.COMPLETED);
             }
         }

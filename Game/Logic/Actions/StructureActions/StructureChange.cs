@@ -56,8 +56,9 @@ namespace Game.Logic.Actions {
                     return Error.RESOURCE_NOT_ENOUGH;
                 }
 
+                structure.City.BeginUpdate();
                 structure.City.Resource.Subtract(cost);
-                Global.dbManager.Save(structure.City);
+                structure.City.EndUpdate();
             }
 
             if (!ignoreTime) {
@@ -86,10 +87,13 @@ namespace Game.Logic.Actions {
                         stateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        if (!ignoreTime) {
+                        if (!ignoreTime)
                             Global.Scheduler.del(this);
-                        }
+
+                        city.BeginUpdate();
                         city.Resource.Add(cost / 2);
+                        city.EndUpdate();
+
                         stateChange(ActionState.INTERRUPTED);
                         break;
                 }

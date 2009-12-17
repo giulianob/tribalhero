@@ -41,15 +41,18 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             if (city2structure) {
+                structure.City.BeginUpdate();
                 structure.City.Resource.Labor.Subtract(actionCount);
-                Global.dbManager.Save(structure.City);
+                structure.City.EndUpdate();
             }
             else {
                 structure.BeginUpdate();
                 structure.Labor -= (byte)actionCount;
                 structure.EndUpdate();
-                Procedure.OnLaborUpdate(structure, -1 * actionCount);  // labor got taken out immediately
-                Global.dbManager.Save(structure.City);
+
+                structure.City.BeginUpdate();
+                Procedure.OnLaborUpdate(structure, -1 * actionCount);  // labor got taken out immediately                
+                structure.City.EndUpdate();
             }
 
             // add to queue for completion
@@ -81,10 +84,14 @@ namespace Game.Logic.Actions {
                     structure.BeginUpdate();
                     structure.Labor += (byte)actionCount;
                     structure.EndUpdate();
+
+                    structure.City.BeginUpdate();
                     Procedure.OnLaborUpdate(structure, actionCount);  // labor got put in here
+                    structure.City.EndUpdate();
                 } else {
+                    structure.City.BeginUpdate();
                     structure.City.Resource.Labor.Add(actionCount);
-                    Global.dbManager.Save(structure.City);
+                    structure.City.EndUpdate();
                 }
                 stateChange(ActionState.COMPLETED);
                 return;
@@ -108,14 +115,17 @@ namespace Game.Logic.Actions {
                         break;
                     case ActionInterrupt.CANCEL:
                         if (city2structure) {
+                            structure.City.BeginUpdate();
                             structure.City.Resource.Labor.Add(actionCount);
-                            Global.dbManager.Save(structure.City);
+                            structure.City.EndUpdate();
                         } else {
                             structure.BeginUpdate();
                             structure.Labor += (byte)actionCount;
                             structure.EndUpdate();
+
+                            structure.City.BeginUpdate();
                             Procedure.OnLaborUpdate(structure, -1 * actionCount);  // need to add production back to structures
-                            Global.dbManager.Save(structure.City);
+                            structure.City.EndUpdate();
                         }
                         stateChange(ActionState.INTERRUPTED);
                         break;

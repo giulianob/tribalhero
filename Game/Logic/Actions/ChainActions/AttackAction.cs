@@ -87,6 +87,9 @@ namespace Game.Logic.Actions {
                         ExecuteChainAndWait(tma, new ChainCallback(this.AfterTroopMovedHome));
                     }
                     else {
+                        targetCity.BeginUpdate();
+                        city.BeginUpdate();
+
                         targetCity.Resource.Add(stub.TroopObject.Loot);
 
                         city.Worker.References.remove(stub.TroopObject, this);
@@ -94,7 +97,8 @@ namespace Game.Logic.Actions {
 
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
 
-                        Global.dbManager.Save(city, targetCity);
+                        targetCity.EndUpdate();
+                        city.EndUpdate();
 
                         stateChange(ActionState.COMPLETED);
                     }

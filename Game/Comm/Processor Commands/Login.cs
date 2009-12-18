@@ -121,7 +121,7 @@ namespace Game.Comm {
                     Global.World.add(city);
                     Global.World.add(structure);
 
-                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
 
                     city.Worker.doPassive(city, new CityAction(city.CityId), false);
                 }

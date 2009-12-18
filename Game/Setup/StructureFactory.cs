@@ -6,31 +6,13 @@ using Game.Util;
 using System.IO;
 using System.Collections.Specialized;
 using Game.Logic;
+using Game.Data.Stats;
 
 namespace Game.Setup {
-    enum ClassID : ushort {
+    public enum ClassID : ushort {
         RESOURCE = 50,
         STRUCTURE = 100,
         UNIT = 200,
-    }
-
-    class StructureBaseStats {
-        public string name;
-        public byte lvl;
-        public Resource resource;
-        public StructureStats stats;
-        public int build_time;
-        public ClassID base_class;
-        public int worker_id;
-
-        public StructureBaseStats(string name, byte lvl, Resource resource, BattleStats stats, byte maxLabor, int build_time, ClassID base_class) {
-            this.name = name;
-            this.lvl = lvl;
-            this.resource = resource;
-            this.stats = new StructureStats(stats, maxLabor);
-            this.build_time = build_time;
-            this.base_class = base_class;
-        }
     }
 
     public class StructureFactory {
@@ -66,13 +48,15 @@ namespace Game.Setup {
 
 
                     StructureBaseStats basestats = new StructureBaseStats(toks[col["Name"]],
+                                                    ushort.Parse(toks[col["Type"]]),
                                                     byte.Parse(toks[col["Lvl"]]),
                                                     resource,
                                                     stats,
                                                     byte.Parse(toks[col["MaxLabor"]]),
                                                     int.Parse(toks[col["Time"]]),
+                                                    int.Parse(toks[col["Worker"]]),
                                                     (ClassID)Enum.Parse(typeof(ClassID), (toks[col["Class"]]), true));
-                    basestats.worker_id = int.Parse(toks[col["Worker"]]);
+                    
                     Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
                     dict[int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }
@@ -82,20 +66,14 @@ namespace Game.Setup {
         static public Resource getCost(int type, int lvl) {
             if (dict == null) return null;
             StructureBaseStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (Resource)tmp.resource.Clone();
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (Resource)tmp.Cost.Clone();
             return null;
         }
 
-        internal static StructureStats getStats(ushort type, byte lvl) {
-            if (dict == null) return null;
-            StructureBaseStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (StructureStats)tmp.stats;
-            return null;
-        }
         internal static int getTime(ushort type, byte lvl) {
             if (dict == null) return -1;
             StructureBaseStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (int)tmp.build_time;
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (int)tmp.BuildTime;
             return -1;
         }
 
@@ -109,47 +87,45 @@ namespace Game.Setup {
 
         public static Structure getStructure(Structure oldStructure, ushort type, byte lvl, bool append, bool init) {
             if (dict == null) return null;
-            StructureBaseStats tmp;
+            StructureBaseStats baseStats;
 
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) {
+            if (dict.TryGetValue(type * 100 + lvl, out baseStats)) {
+                //Creating new structure
                 if (oldStructure == null) {
-                    Structure obj = new Structure(type, lvl, tmp.stats);
+                    Structure obj = new Structure(new StructureStats(baseStats));
                     return obj;
                 }
-                else if (append == false) {
-                    Global.dbManager.Delete(oldStructure.Properties);
-                    oldStructure.Type = type;
-                    oldStructure.Lvl = lvl;                    
-                    if( tmp.stats.Battle.MaxHp> oldStructure.Stats.Battle.MaxHp ) {
-                        oldStructure.Hp += (ushort)(tmp.stats.Battle.MaxHp - oldStructure.Stats.Battle.MaxHp);                                     
-                    }
-                    oldStructure.Stats = tmp.stats;                     
-                    oldStructure.Properties = new StructureProperties(oldStructure);
+                
+                if (append == false) {                   
+                    //Calculate the different in MAXHP between the new and old structures and add it to the current hp if the new one is greater.
+                    ushort newHp = oldStructure.Stats.Hp;
+                    if(baseStats.Battle.MaxHp > oldStructure.Stats.Battle.MaxHp)
+                        newHp = (ushort)(oldStructure.Stats.Hp + (baseStats.Battle.MaxHp - oldStructure.Stats.Battle.MaxHp));
+                    
+                    oldStructure.Stats = new StructureStats(baseStats);
+                    oldStructure.Stats.Hp = newHp;
+                    oldStructure.Properties.clear();
                     return null;
                 }
                 else if (append == true) {
-                    oldStructure.Type = type;
-                    oldStructure.Lvl = lvl;
-                    if (tmp.stats.Battle.MaxHp > oldStructure.Stats.Battle.MaxHp) {
-                        oldStructure.Hp += (ushort)(tmp.stats.Battle.MaxHp - oldStructure.Stats.Battle.MaxHp);
-                    }
-                    oldStructure.Stats = tmp.stats;
+                    //Calculate the different in MAXHP between the new and old structures and add it to the current hp if the new one is greater.
+                    ushort newHp = oldStructure.Stats.Hp;
+                    if (baseStats.Battle.MaxHp > oldStructure.Stats.Battle.MaxHp)
+                        newHp = (ushort)(oldStructure.Stats.Hp + (baseStats.Battle.MaxHp - oldStructure.Stats.Battle.MaxHp));
+
+                    oldStructure.Stats = new StructureStats(baseStats);
+                    oldStructure.Stats.Hp = newHp;
                     return null;
                 }
             }
             return null;
         }
 
-        internal static void getProperties() {
-        }
-
-
-
         internal static int getActionWorkerType(Structure structure) {
             if (dict == null) return 0;
             StructureBaseStats tmp;
             if (dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp)) {
-                return tmp.worker_id;
+                return tmp.WorkerId;
             }
             return 0;
         }
@@ -158,7 +134,7 @@ namespace Game.Setup {
             if (dict == null) return null;
             StructureBaseStats tmp;
             if (dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp)) {
-                return tmp.name;
+                return tmp.Name;
             }
             return null;
         }

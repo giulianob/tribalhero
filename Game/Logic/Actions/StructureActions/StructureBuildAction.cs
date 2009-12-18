@@ -73,7 +73,8 @@ namespace Game.Logic.Actions {
 
             // add structure to the map                    
             Structure structure = StructureFactory.getStructure(type, 0);
-            
+
+            structure.BeginUpdate();
             structure.X = x;
             structure.Y = y;
 
@@ -92,7 +93,9 @@ namespace Game.Logic.Actions {
                 Global.World.unlockRegion(x, y);
                 return Error.MAP_FULL;
             }
-            Global.dbManager.Save(structure);
+            
+            structure.EndUpdate();
+
             structureId = structure.ObjectID;
 
             // add to queue for completion

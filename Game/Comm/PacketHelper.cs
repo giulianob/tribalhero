@@ -77,7 +77,7 @@ namespace Game.Comm {
                     packet.addByte(obj.City.Radius);
             }
             else if (obj is Structure) { //if obj is a structure and we are sending it as CityObj we include the labor
-                packet.addByte((obj as Structure).Labor);
+                packet.addByte((obj as Structure).Stats.Labor);
             }
         }
 

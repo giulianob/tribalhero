@@ -11,17 +11,11 @@ using Game.Util;
 namespace Game.Data {
 
     public abstract class GameObject: ICanDo {
-        #region Type Related Members
-        ushort type;
-        #endregion
-
         #region Position Related Members
         protected uint objectID;
         protected City city;
         protected uint x = 0;
         protected uint y = 0;
-        protected byte height;
-        protected byte width;
         #endregion
 
         #region Properties
@@ -29,34 +23,26 @@ namespace Game.Data {
 
         public GameObjectState State {
             get { return state; }
-            set { state = value; }
-        }
-        
-        byte lvl = 1;
-        
-        public byte Lvl {
-            get { return lvl; }
-            set { lvl = value; }
+            set { CheckUpdateMode(); state = value; }
         }
 
         public City City {
             get { return city; }
             set { city = value; }
         }
-        
+
+        public abstract ushort Type { get; }
+        public abstract byte Lvl { get; }
+
         public virtual uint ObjectID {
             get { return objectID; }
-            set { objectID = value; }
+            set { CheckUpdateMode();  objectID = value; }
         }
-        
-        public ushort Type {
-            get { return type; }
-            set { type = value; }
-        }
-        
+               
         public uint X {
             get { return x; }
             set {
+                CheckUpdateMode();
                 origX = x;
                 x = value;
                 Update();
@@ -66,6 +52,7 @@ namespace Game.Data {
         public uint Y {
             get { return y; }
             set {
+                CheckUpdateMode();
                 origY = y;
                 y = value;
                 Update();
@@ -88,35 +75,16 @@ namespace Game.Data {
             get { return (uint)(y % Setup.Config.city_region_height); }
         }
 
-        public byte Width {
-            get { return width; }
-            set { width = value; }
-        }
-        
-        public byte Height {
-            get { return height; }
-            set { height = value; }
-        }
-        public byte Size {
-            get { return (byte)(width * height); }
-        }
-
         #endregion
 
         #region Constructors
         public GameObject() {
 
         }
-        public GameObject(ushort type) {
-            this.type = type;
-        }
 
-        public GameObject(uint x, uint y, byte lvl) {
+        public GameObject(uint x, uint y) {
             this.x = this.origX = x;
             this.y = this.origY = y;
-            this.width = 1;
-            this.height = 1;
-            this.Lvl = lvl;
         }
         #endregion
 
@@ -124,6 +92,13 @@ namespace Game.Data {
         protected bool updating = false;
         uint origX = 0;
         uint origY = 0;
+
+        public void CheckUpdateMode() {
+            if (!Global.FireEvents) return;
+
+            if (!updating && city != null)
+                throw new Exception("Changed state outside of begin/end update block");
+        }
 
         public void BeginUpdate() {
             updating = true;

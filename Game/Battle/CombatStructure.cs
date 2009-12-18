@@ -20,7 +20,7 @@ namespace Game.Battle {
         }
 
         public override BattleStats Stats {
-            get { return StructureFactory.getStats(type, lvl).Battle; }
+            get { return structure.Stats.Battle; }
         }
 
         public CombatStructure(BattleManager owner, Structure structure) {
@@ -28,7 +28,7 @@ namespace Game.Battle {
             this.structure = structure;
             this.type = structure.Type;
             this.lvl = structure.Lvl;
-            this.hp = structure.Hp;
+            this.hp = structure.Stats.Hp;
         }
 
         public CombatStructure(BattleManager owner, Structure structure, uint hp, ushort type, byte lvl) {
@@ -113,8 +113,8 @@ namespace Game.Battle {
         public override void TakeDamage(int Dmg)
         {
             structure.BeginUpdate();
-            structure.Hp -= (ushort)Dmg;
-            if (structure.Hp < 0) structure.Hp = 0;
+            structure.Stats.Hp -= (ushort)Dmg;
+            if (structure.Stats.Hp < 0) structure.Stats.Hp = 0;
 
             hp -= (ushort)Dmg;
             if (hp < 0) hp = 0;

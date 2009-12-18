@@ -77,13 +77,13 @@ namespace Game.Logic.Actions {
 
                     #region Repair
                     if (ObjectTypeFactory.IsStructureType("RepairBuilding", structure)) {
-                        repairPower += (ushort)(structure.Lvl * (50 + city.MainBuilding.Lvl * 10));
+                        repairPower += (ushort)(structure.Stats.Base.Lvl * (50 + city.MainBuilding.Stats.Base.Lvl * 10));
                     }
                     #endregion
 
                     #region Labor
-                    if (structure.Labor > 0) {
-                        laborTotal += structure.Labor;
+                    if (structure.Stats.Labor > 0) {
+                        laborTotal += structure.Stats.Labor;
                     }
                     #endregion
                 }
@@ -130,10 +130,10 @@ namespace Game.Logic.Actions {
                 foreach (Structure structure in city) {
                     #region Repair
                     if (repairPower > 0) {
-                        if (structure.Stats.Battle.MaxHp>structure.Hp && 
+                        if (structure.Stats.Battle.MaxHp > structure.Stats.Hp && 
                             !ObjectTypeFactory.IsStructureType("NonRepairable", structure) &&
                             structure.State.Type != ObjectState.BATTLE) {
-                            if ((structure.Hp += repairPower) > structure.Stats.Battle.MaxHp) structure.Hp = structure.Stats.Battle.MaxHp;
+                            if ((structure.Stats.Hp += repairPower) > structure.Stats.Battle.MaxHp) structure.Stats.Hp = structure.Stats.Battle.MaxHp;
                         }
                     }
                     #endregion

@@ -120,7 +120,7 @@ namespace Game.Module {
 
                 if (structure.Stats.MaxLabor > 0) {
                     structure.BeginUpdate();
-                    structure.Labor = Math.Min(structure.Stats.MaxLabor, (byte)city.Resource.Labor.Value);
+                    structure.Stats.Labor = Math.Min(structure.Stats.MaxLabor, (byte)city.Resource.Labor.Value);
                     structure.EndUpdate();
                 }
 
@@ -179,7 +179,7 @@ namespace Game.Module {
 
                         StructureBuildAction action = new StructureBuildAction(city.CityId, buildingType, x, y);
                         if (city.Worker.doActive(workerType, structure, action, structure.Technologies) == Error.OK) {
-                            Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Lvl, x, y));
+                            Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
                             return true;
                         }
                     }
@@ -205,7 +205,7 @@ namespace Game.Module {
             StructureUpgradeAction action = new StructureUpgradeAction(city.CityId, structure.ObjectID);
 
             if (city.Worker.doActive(StructureFactory.getActionWorkerType(structure), structure, action, structure.Technologies) == Error.OK) {
-                Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Lvl, x, y));
+                Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Stats.Base.Lvl, x, y));
                 return true;
             }
             else {
@@ -243,7 +243,7 @@ namespace Game.Module {
                     List<City> cities = npc.getCityList();
 
                     Structure structure;
-                    if (!Randomizer.MainBuilding(out structure, 2)) {
+                    if (!Randomizer.MainBuilding(out structure)) {
                         Global.Logger.Info(npc.Name);
                         break;
                     }
@@ -253,7 +253,7 @@ namespace Game.Module {
                     Global.World.add(city);
                     Global.World.add(structure);
 
-                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
 
                     city.Worker.doPassive(city, new CityAction(city.CityId), false);
 
@@ -277,7 +277,7 @@ namespace Game.Module {
                 Structure structure = StructureFactory.getStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
-                structure.Labor = structure.Stats.MaxLabor;
+                structure.Stats.Labor = structure.Stats.MaxLabor;
 
                 city.add(structure);
                 Global.World.add(structure);
@@ -286,7 +286,7 @@ namespace Game.Module {
                 Structure structure = StructureFactory.getStructure(2106, 1);
                 structure.X = x;
                 structure.Y = y;
-                structure.Labor = structure.Stats.MaxLabor;
+                structure.Stats.Labor = structure.Stats.MaxLabor;
 
                 city.add(structure);
                 Global.World.add(structure);

@@ -16,7 +16,7 @@ namespace Game.Data {
         int rewardPoint;
         public int RewardPoint {
             get { return rewardPoint; }
-            set { rewardPoint = value; }
+            set { CheckUpdateMode(); rewardPoint = value; }
         }
 
         Resource loot = new Resource();
@@ -33,9 +33,15 @@ namespace Game.Data {
 
         public override uint ObjectID {
             get { return objectID; }
-            set { 
-                objectID = value;
-            }
+            set { CheckUpdateMode(); objectID = value; }
+        }
+
+        public override ushort Type {
+            get { return 100; }
+        }
+
+        public override byte Lvl {
+            get { return 0; }
         }
 
         #region Constructors
@@ -43,7 +49,6 @@ namespace Game.Data {
         }
 
         public TroopObject(TroopStub stub) {
-            Type = 100;
             troopStub = stub;            
             UpdateStatus();
         }
@@ -55,9 +60,12 @@ namespace Game.Data {
         }
         #endregion
 
-        #region Events
-
+        #region Updates
+        
         public override void EndUpdate() {
+            if (!updating)
+                throw new Exception("Called an endupdate without first calling a beginupdate");
+
             updating = false;
 
             Update();

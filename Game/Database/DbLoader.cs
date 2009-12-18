@@ -112,9 +112,9 @@ namespace Game.Database
                             structure.Technologies.Parent = city.Technologies;
                             structure.X = (uint)reader["x"];
                             structure.Y = (uint)reader["y"];
-                            structure.Hp = (ushort)reader["hp"];
+                            structure.Stats.Hp = (ushort)reader["hp"];
                             structure.ObjectID = (uint)reader["id"];
-                            structure.Labor = (byte)reader["labor"];
+                            structure.Stats.Labor = (byte)reader["labor"];
                             structure.DbPersisted = true;
                             structure.State.Type = (ObjectState)((byte)reader["state"]);
 
@@ -138,7 +138,7 @@ namespace Game.Database
 
                             using (DbDataReader listReader = dbManager.SelectList(structure.Properties)) {
                                 while (listReader.Read())
-                                    structure.Properties.Add((string)listReader["name"], DataTypeSerializer.Deserialize((string)listReader["value"], (byte)listReader["datatype"]));
+                                    structure.Properties.add((string)listReader["name"], DataTypeSerializer.Deserialize((string)listReader["value"], (byte)listReader["datatype"]));
                             }
 
                         }

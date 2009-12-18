@@ -69,21 +69,21 @@ namespace Game.Comm {
                 }
 
                 LaborMoveAction lma = null;
-                if (obj.Labor < count) { //move from city to obj
-                    count = (byte)(count - obj.Labor);
+                if (obj.Stats.Labor < count) { //move from city to obj
+                    count = (byte)(count - obj.Stats.Labor);
 
                     if (city.Resource.Labor.Value < count) { //not enough available in city
                         reply_error(session, packet, Error.LABOR_NOT_ENOUGH);
                         return;
                     }
-                    else if (obj.Labor + count > obj.Stats.MaxLabor) { //adding too much to obj
+                    else if (obj.Stats.Labor + count > obj.Stats.MaxLabor) { //adding too much to obj
                         reply_error(session, packet, Error.LABOR_OVERFLOW);
                         return;
                     }
                     lma = new LaborMoveAction(cityId, objectId, true, count);
                 }
-                else if (obj.Labor > count) { //move from obj to city
-                    count = (byte)(obj.Labor - count);
+                else if (obj.Stats.Labor > count) { //move from obj to city
+                    count = (byte)(obj.Stats.Labor - count);
                     lma = new LaborMoveAction(cityId, objectId, false, count);
                 }
                 else {

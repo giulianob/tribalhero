@@ -235,12 +235,12 @@ namespace Game.Comm {
                 }
 
                 Packet reply = new Packet(packet);
-                reply.addByte(structure.Lvl);
-                reply.addByte(structure.Labor);
-                reply.addUInt16(structure.Hp);
+                reply.addByte(structure.Stats.Base.Lvl);
+                reply.addByte(structure.Stats.Labor);
+                reply.addUInt16(structure.Stats.Hp);
 
                 foreach (Property prop in PropertyFactory.getProperties(structure.Type)) {
-                    if (!structure.Properties.Contains(prop.name)) {
+                    if (!structure.Properties.contains(prop.name)) {
                         switch (prop.type) {
                             case DataType.Byte:
                                 reply.addByte(Byte.MaxValue);

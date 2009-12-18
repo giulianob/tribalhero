@@ -47,7 +47,7 @@ namespace Game.Logic.Actions {
             }
             else {
                 structure.BeginUpdate();
-                structure.Labor -= (byte)actionCount;
+                structure.Stats.Labor -= (byte)actionCount;
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
@@ -82,7 +82,7 @@ namespace Game.Logic.Actions {
 
                 if (city2structure) {
                     structure.BeginUpdate();
-                    structure.Labor += (byte)actionCount;
+                    structure.Stats.Labor += (byte)actionCount;
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
@@ -120,7 +120,7 @@ namespace Game.Logic.Actions {
                             structure.City.EndUpdate();
                         } else {
                             structure.BeginUpdate();
-                            structure.Labor += (byte)actionCount;
+                            structure.Stats.Labor += (byte)actionCount;
                             structure.EndUpdate();
 
                             structure.City.BeginUpdate();

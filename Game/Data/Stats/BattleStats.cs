@@ -17,7 +17,7 @@ namespace Game.Data {
         Pike = 1,
         Bow = 2,
         FireBall = 3,
-        StoneBall =4
+        StoneBall = 4
     }
     [Serializable()]
     public class BattleStats : ICloneable {
@@ -26,20 +26,17 @@ namespace Game.Data {
 
         ushort groupSize;
         public ushort GroupSize {
-            get { return groupSize; }
-            set { groupSize = value; }
+            get { return groupSize; }            
         }
 
         WeaponType weapon;
         public WeaponType Weapon {
             get { return weapon; }
-            set { weapon = value; }
         }
 
         ArmorType armor;
         public ArmorType Armor {
             get { return armor; }
-            set { armor = value; }
         }
 
         ushort maxHp = 0;

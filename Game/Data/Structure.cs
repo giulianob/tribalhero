@@ -5,31 +5,38 @@ using System.Collections.Specialized;
 using Game.Logic;
 using Game.Database;
 using Game.Util;
+using Game.Data.Stats;
 
 namespace Game.Data {
     public class Structure : GameObject, IPersistableObject {
         StructureProperties properties;
         TechnologyManager techmanager;
 
-        ushort hp = 0;
-        public ushort Hp {
-            get { return hp; }
-            set { hp = value; }
-        }
-
-        byte labor=0;
-        public byte Labor {
-            get { return labor; }
-            set { labor = value; }
-        }
-
         StructureStats stats;
         public StructureStats Stats {
             get { return stats; }
-            set { stats = value; }
+            set {
+                if (stats != null)
+                    stats.StatsUpdate -= new BaseStats.OnStatsUpdate(CheckUpdateMode);
+                
+                CheckUpdateMode(); 
+                stats = value;
+                stats.StatsUpdate += new BaseStats.OnStatsUpdate(CheckUpdateMode);
+            }
+        }
+
+        public override ushort Type {
+            get { return stats.Base.Type; }
+        }
+
+        public override byte Lvl {
+            get { return stats.Base.Lvl; }
         }
 
         public override void EndUpdate() {
+            if (!updating)
+                throw new Exception("Called endupdate without first calling begin update");
+
             updating = false;            
             Update();
         }
@@ -46,23 +53,21 @@ namespace Game.Data {
             Global.dbManager.Save(this);
         }
 
-        public Structure(ushort type, byte lvl, StructureStats stats) {
+        public Structure(StructureStats stats) {
             techmanager = new TechnologyManager(EffectLocation.Object, this, 0);
 
-            this.Type = type;
-            this.Lvl = lvl;
             this.stats = stats;
-            this.hp = stats.Battle.MaxHp;
             this.properties = new StructureProperties(this);
         }
 
         #region Indexers
         public object this[string name] {
             get {
-                return properties[name];
+                return properties.get(name);
             }
             set {
-                properties[name] = value;
+                CheckUpdateMode();
+                properties.add(name, value);
             }
         }
 
@@ -83,6 +88,7 @@ namespace Game.Data {
                 return base.ObjectID;
             }
             set {
+                CheckUpdateMode();
                 techmanager.ID = value;
                 base.ObjectID = value;
             }
@@ -101,10 +107,10 @@ namespace Game.Data {
                 return new DbColumn[] {                                        
                     new DbColumn("x", X, System.Data.DbType.UInt32),
                     new DbColumn("y", Y, System.Data.DbType.Int32),
-                    new DbColumn("hp", Hp, System.Data.DbType.UInt16),
+                    new DbColumn("hp", stats.Hp, System.Data.DbType.UInt16),
                     new DbColumn("type", Type, System.Data.DbType.Int16),
                     new DbColumn("level", Lvl, System.Data.DbType.Byte),
-                    new DbColumn("labor", labor, System.Data.DbType.Byte),
+                    new DbColumn("labor", stats.Labor, System.Data.DbType.Byte),
                     new DbColumn("state", (byte)State.Type, System.Data.DbType.Boolean),
                     new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), System.Data.DbType.String)
                 };

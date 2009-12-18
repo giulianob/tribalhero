@@ -207,10 +207,10 @@ namespace Game.Battle {
         }
         #endregion
 
-        public BattleManager(City owner) {
-            channel = new BattleChannel(this, "/BATTLE/" + city.CityId);
+        public BattleManager(City owner) {            
             this.city = owner;
             this.stamina = BattleFormulas.getStamina(city);
+            channel = new BattleChannel(this, "/BATTLE/" + owner.CityId);
             report = new BattleReport(this);
             groupIdGen.set(1);
         }
@@ -281,7 +281,7 @@ namespace Game.Battle {
                 bool added = false;
 
                 foreach (Structure obj in objects) {
-                    if (obj.Hp == 0 || defenders.Contains(obj))
+                    if (obj.Stats.Hp == 0 || defenders.Contains(obj))
                         continue;
                     
                     if (obj == obj.City.MainBuilding && obj.Lvl <= 1)

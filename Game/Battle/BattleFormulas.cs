@@ -153,7 +153,9 @@ namespace Game.Battle {
         }
 
         internal static void LoadStats(BattleStats stats, IEnumerable<Effect> effects) {
-            int hp=0, atk=0;
+            int hp = 0;
+            int atk = 0;
+
             foreach (Effect effect in effects) {
                 if (effect.id == EffectCode.BattleStatsArmoryMod &&
                     stats.Armor==(ArmorType)Enum.Parse(typeof(ArmorType),(string)effect.value[0]) ) {
@@ -164,6 +166,7 @@ namespace Game.Battle {
                     atk = Math.Max((int)effect.value[1], atk);
                 }
             }
+
             stats.MaxHp = (ushort)((100 + hp) * stats.MaxHp / 100);
             stats.Atk = (byte)((100 + atk) * stats.Atk / 100);
             stats.Def = (byte)((100 + atk) * stats.Def / 100);        

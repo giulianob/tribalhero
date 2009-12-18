@@ -162,8 +162,10 @@ namespace Game.Battle {
         }
 
         public override void ReceiveReward(int reward, Resource resource) {
+            stub.TroopObject.BeginUpdate();
             stub.TroopObject.RewardPoint += reward;
             stub.TroopObject.Loot += resource;
+            stub.TroopObject.EndUpdate();
         }
 
         #region IComparable<GameObject> Members

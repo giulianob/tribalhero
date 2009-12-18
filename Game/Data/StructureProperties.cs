@@ -7,7 +7,10 @@ using System.Collections;
 using Game.Util;
 
 namespace Game.Data {
-    public class StructureProperties : ListDictionary, IPersistableList {
+    public class StructureProperties : IPersistableList {
+        
+        ListDictionary properties = new ListDictionary();
+
         Structure structure;
 
         public StructureProperties(Structure owner) {
@@ -16,7 +19,25 @@ namespace Game.Data {
 
         public Structure Owner {
             get { return structure; }
-            set { structure = value; }
+            set { value.CheckUpdateMode(); structure = value; }
+        }
+
+        public bool contains(object key) {
+            return properties.Contains(key);
+        }
+
+        public void add(object key, object value) {
+            structure.CheckUpdateMode();
+            properties.Add(key, value);
+        }
+
+        public object get(object key) {
+            return properties[key];
+        }
+
+        public void clear() {
+            structure.CheckUpdateMode();
+            properties.Clear();
         }
 
         #region IPersistable Members
@@ -64,7 +85,7 @@ namespace Game.Data {
         }
 
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
-            IDictionaryEnumerator itr = GetEnumerator();
+            IDictionaryEnumerator itr = properties.GetEnumerator();
             
             while (itr.MoveNext()) {
                 byte datatype = DataTypeSerializer.Serialize(itr.Value);
@@ -75,6 +96,10 @@ namespace Game.Data {
                         new DbColumn("datatype", datatype, System.Data.DbType.Byte)
                     };
             }            
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return properties.GetEnumerator();
         }
 
         #endregion

@@ -9,10 +9,10 @@ namespace Game.Logic.Procedures {
         public static bool StructureDowngrade(Structure structure) {
             structure.BeginUpdate();
             structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL);
-            byte oldLabor = structure.Labor;
+            byte oldLabor = structure.Stats.Labor;
             StructureFactory.getStructure(structure, structure.Type, (byte)(structure.Lvl - 1), true);
-            structure.Hp = structure.Stats.Battle.MaxHp;
-            structure.Labor = Math.Min(oldLabor, structure.Stats.MaxLabor);
+            structure.Stats.Hp = structure.Stats.Battle.MaxHp;
+            structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.MaxLabor);
             //structure["Efficiency"] = Formula.GetNewEfficiency((ushort)structure["Efficiency"], structure.Labor, oldLabor, structure.Stats.MaxLabor);
             InitFactory.initGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);
             structure.EndUpdate();

@@ -4,6 +4,7 @@ using System.Text;
 using Game.Data;
 using Game.Fighting;
 using Game.Database;
+using Game.Data.Stats;
 
 namespace Game.Battle {
     public enum BattleClass : byte {

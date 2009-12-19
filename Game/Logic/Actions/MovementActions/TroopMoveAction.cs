@@ -74,7 +74,7 @@ namespace Game.Logic.Actions {
             RadiusLocator.foreach_object(obj.X, obj.Y, 1, false, work, record_foreach);
             nextX = record_foreach.x;
             nextY = record_foreach.y;
-            nextTime = DateTime.Now.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.BaseSpeed) * Setup.Config.seconds_per_unit));
+            nextTime = DateTime.Now.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Setup.Config.seconds_per_unit));
             return true;
         }
 
@@ -87,7 +87,7 @@ namespace Game.Logic.Actions {
             }
 
             distanceRemaining = troopObj.distance(x, y);
-            endTime = DateTime.Now.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.BaseSpeed) * Setup.Config.seconds_per_unit) * distanceRemaining);
+            endTime = DateTime.Now.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Setup.Config.seconds_per_unit) * distanceRemaining);
             beginTime = DateTime.Now;
 
             troopObj.Stub.BeginUpdate();

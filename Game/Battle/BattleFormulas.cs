@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Game.Data;
 using Game.Setup;
+using Game.Data.Stats;
 
 namespace Game.Battle {
     public class BattleFormulas {
@@ -162,7 +163,7 @@ namespace Game.Battle {
             int hp = 0;
             int atk = 0;
 
-            BaseBattleStats stats = UnitFactory.getUnitStats(type, lvl).stats;
+            BaseBattleStats stats = UnitFactory.getUnitStats(type, lvl).Battle;
             BattleStats modifiedStats = new BattleStats(stats);
 
             foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {

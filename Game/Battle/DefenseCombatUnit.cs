@@ -6,6 +6,7 @@ using Game.Fighting;
 using Game.Setup;
 using Game.Util;
 using Game.Database;
+using Game.Data.Stats;
 
 namespace Game.Battle {
     public class DefenseCombatUnit: CombatObject, IComparable<object>, ICombatUnit {
@@ -51,7 +52,7 @@ namespace Game.Battle {
 
         public override BaseBattleStats BaseStats {
             get {
-                return UnitFactory.getStats(type, lvl);
+                return UnitFactory.getBattleStats(type, lvl);
             }
         }
 

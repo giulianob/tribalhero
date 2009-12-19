@@ -90,7 +90,7 @@ namespace Game.Logic.Actions {
                         targetCity.BeginUpdate();
                         city.BeginUpdate();
 
-                        targetCity.Resource.Add(stub.TroopObject.Loot);
+                        targetCity.Resource.Add(stub.TroopObject.Stats.Loot);
 
                         city.Worker.References.remove(stub.TroopObject, this);
                         city.Worker.Notifications.remove(this);

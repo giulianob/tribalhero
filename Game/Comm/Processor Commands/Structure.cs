@@ -76,7 +76,7 @@ namespace Game.Comm {
                         reply_error(session, packet, Error.LABOR_NOT_ENOUGH);
                         return;
                     }
-                    else if (obj.Stats.Labor + count > obj.Stats.MaxLabor) { //adding too much to obj
+                    else if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor) { //adding too much to obj
                         reply_error(session, packet, Error.LABOR_OVERFLOW);
                         return;
                     }

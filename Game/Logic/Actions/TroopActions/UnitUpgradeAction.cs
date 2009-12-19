@@ -5,6 +5,7 @@ using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Game.Fighting;
+using Game.Data.Stats;
 
 namespace Game.Logic.Actions {
     class UnitUpgradeAction : ScheduledActiveAction {
@@ -51,8 +52,8 @@ namespace Game.Logic.Actions {
                 return Error.ACTION_ALREADY_IN_PROGRESS;
             }
 
-            UnitStats unitStats = city.Template[type];
-            Resource cost = UnitFactory.getUpgradeCost(type, unitStats.lvl + 1);
+            BaseUnitStats unitStats = city.Template[type];
+            Resource cost = UnitFactory.getUpgradeCost(type, unitStats.Lvl + 1);
 
             if (cost == null) {
                 return Error.OBJECT_NOT_FOUND;
@@ -65,7 +66,7 @@ namespace Game.Logic.Actions {
             city.Resource.Subtract(cost);
             city.EndUpdate();
             
-            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(UnitFactory.getUpgradeTime(type, (byte)(unitStats.lvl + 1)), structure.Technologies));
+            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(UnitFactory.getUpgradeTime(type, (byte)(unitStats.Lvl + 1)), structure.Technologies));
             beginTime = DateTime.Now;
 
             return Error.OK;
@@ -99,7 +100,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                structure.City.Template[type] = UnitFactory.getUnitStats(type, (byte)(structure.City.Template[type].lvl + 1));                
+                structure.City.Template[type] = UnitFactory.getUnitStats(type, (byte)(structure.City.Template[type].Lvl + 1));                
 
                 this.stateChange(ActionState.COMPLETED);
             }

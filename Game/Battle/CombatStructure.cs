@@ -7,6 +7,7 @@ using Game.Logic.Procedures;
 using Game.Util;
 using Game.Database;
 using Game.Setup;
+using Game.Data.Stats;
 
 namespace Game.Battle {
     public class CombatStructure: CombatObject, IComparable<object>, IPersistableObject {
@@ -52,7 +53,7 @@ namespace Game.Battle {
 
             if (obj is AttackCombatUnit) { //building can attack anyone who can attack them
                 dist = obj.Distance(structure.X, structure.Y);
-                if (dist <= (obj as AttackCombatUnit).TroopStub.TroopObject.Stats.TotalAttackRadius)
+                if (dist <= (obj as AttackCombatUnit).TroopStub.TroopObject.Stats.AttackRadius)
                     return true;
             }
             else if (obj is DefenseCombatUnit)
@@ -137,9 +138,8 @@ namespace Game.Battle {
 
                 Global.World.lockRegion(structure.X, structure.Y);
                 if (structure.Lvl > 1) {
-                    Procedure.StructureDowngrade(structure);
-
                     structure.BeginUpdate();
+                    Procedure.StructureDowngrade(structure);
                     structure.State = GameObjectState.NormalState();
                     structure.EndUpdate();
                 }

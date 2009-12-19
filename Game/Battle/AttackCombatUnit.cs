@@ -6,6 +6,7 @@ using Game.Fighting;
 using Game.Setup;
 using Game.Util;
 using Game.Database;
+using Game.Data.Stats;
 
 namespace Game.Battle {
     public class AttackCombatUnit: CombatObject, ICombatUnit, IComparable<object> {
@@ -33,7 +34,7 @@ namespace Game.Battle {
         }
 
         public Resource Loot {
-            get { return TroopStub.TroopObject.Loot; }
+            get { return TroopStub.TroopObject.Stats.Loot; }
         }
 
         public override bool IsDead {
@@ -54,7 +55,7 @@ namespace Game.Battle {
 
         public override BaseBattleStats BaseStats {
             get {
-                return UnitFactory.getStats(type, lvl);
+                return UnitFactory.getBattleStats(type, lvl);
             }
         }
 
@@ -86,7 +87,7 @@ namespace Game.Battle {
 
             int dist = obj.Distance(stub.TroopObject.X, stub.TroopObject.Y);
 
-            return dist <= stub.TroopObject.Stats.TotalAttackRadius;
+            return dist <= stub.TroopObject.Stats.AttackRadius;
         }
 
         public override int Distance(uint x, uint y) {
@@ -169,8 +170,8 @@ namespace Game.Battle {
 
         public override void ReceiveReward(int reward, Resource resource) {
             stub.TroopObject.BeginUpdate();
-            stub.TroopObject.RewardPoint += reward;
-            stub.TroopObject.Loot += resource;
+            stub.TroopObject.Stats.RewardPoint += reward;
+            stub.TroopObject.Stats.Loot.add(resource);
             stub.TroopObject.EndUpdate();
         }
 

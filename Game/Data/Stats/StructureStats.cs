@@ -4,13 +4,6 @@ using System.Text;
 
 namespace Game.Data.Stats {    
     public class StructureStats : BaseStats {
-
-        byte maxLabor;
-        public byte MaxLabor {
-            get { return maxLabor; }
-            set { maxLabor = value; fireStatsUpdate(); }
-        }
-
         ushort hp;
         public ushort Hp {
             get { return hp; }
@@ -31,8 +24,6 @@ namespace Game.Data.Stats {
         public StructureStats(StructureBaseStats baseStats) {
             this.baseStats = baseStats;
             
-            //Set the defaults below for stats that can be modified
-            this.maxLabor = baseStats.MaxLabor;
             this.hp = baseStats.Battle.MaxHp;
         }        
     }

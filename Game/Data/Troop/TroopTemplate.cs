@@ -6,6 +6,7 @@ using Game.Fighting;
 using Game.Setup;
 using Game.Logic;
 using Game.Battle;
+using Game.Data.Stats;
 
 namespace Game.Data.Troop {
     public class TroopTemplate : IPersistable {
@@ -17,7 +18,7 @@ namespace Game.Data.Troop {
                 foreach(ushort type in formation.Keys) {
                     if (stats.ContainsKey(type)) continue;
 
-                    BattleStats stat = BattleFormulas.LoadStats(type, stub.City.Template[type].lvl, stub.City);
+                    BattleStats stat = BattleFormulas.LoadStats(type, stub.City.Template[type].Lvl, stub.City);
                     stats.Add(type, stat);
                 }
             }      

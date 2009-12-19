@@ -14,17 +14,25 @@ namespace Game.Battle {
         byte lvl;
         ushort type;
         uint hp; //need to keep a copy track of the hp for reporting
+        BattleStats stats;
 
         public Structure Structure {
             get { return structure; }
         }
 
-        public override BattleStats Stats {
-            get { return structure.Stats.Battle; }
+        public override BaseBattleStats BaseStats {
+            get {
+                return structure.Stats.Base.Battle;
+            }
         }
 
-        public CombatStructure(BattleManager owner, Structure structure) {
+        public override BattleStats Stats {
+            get { return stats; }
+        }
+
+        public CombatStructure(BattleManager owner, Structure structure, BattleStats stats) {
             this.battleManager = owner;
+            this.stats = stats;
             this.structure = structure;
             this.type = structure.Type;
             this.lvl = structure.Lvl;

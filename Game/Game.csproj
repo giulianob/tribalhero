@@ -177,8 +177,9 @@
     </Compile>
     <Compile Include="Data\GlobalListLock.cs" />
     <Compile Include="Data\LazyResource.cs" />
-    <Compile Include="Data\Stats\BattleStats.cs" />
+    <Compile Include="Data\Stats\BaseBattleStats.cs" />
     <Compile Include="Data\Stats\BaseStats.cs" />
+    <Compile Include="Data\Stats\BattleStats.cs" />
     <Compile Include="Data\Stats\StructureBaseStats.cs" />
     <Compile Include="Data\Stats\StructureStats.cs" />
     <Compile Include="Data\StructureProperties.cs" />

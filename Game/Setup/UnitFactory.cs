@@ -12,14 +12,14 @@ namespace Game.Setup {
         public string name;
         public Resource resource;
         public Resource upgrade_resource;
-        public BattleStats stats;
+        public BaseBattleStats stats;
         public int type;
         public byte lvl;
         public int build_time;
         public int upgrade_time;
         public byte upkeep;
 
-        public UnitStats(string name,int type, byte lvl, Resource resource, Resource upgrade_resource, BattleStats stats, int build_time, int upgrade_time, byte upkeep) {
+        public UnitStats(string name,int type, byte lvl, Resource resource, Resource upgrade_resource, BaseBattleStats stats, int build_time, int upgrade_time, byte upkeep) {
             this.name = name;
             this.type = type;
             this.lvl = lvl;
@@ -58,7 +58,7 @@ namespace Game.Setup {
                                             int.Parse(toks[col["UpgrdWood"]]),
                                             int.Parse(toks[col["UpgrdLabor"]]));
                     
-                    BattleStats stats = new BattleStats((WeaponType)Enum.Parse(typeof(WeaponType),toks[col["Weapon"]]),
+                    BaseBattleStats stats = new BaseBattleStats((WeaponType)Enum.Parse(typeof(WeaponType),toks[col["Weapon"]]),
                                             (ArmorType)Enum.Parse(typeof(ArmorType), toks[col["Armor"]]),
                                             ushort.Parse(toks[col["Hp"]]),
                                             byte.Parse(toks[col["Atk"]]),
@@ -105,10 +105,10 @@ namespace Game.Setup {
             return null;
         }
 
-        internal static BattleStats getStats(ushort type, byte lvl) {
+        internal static BaseBattleStats getStats(ushort type, byte lvl) {
             if (dict == null) return null;
             UnitStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (BattleStats)tmp.stats.Clone();
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return tmp.stats;
             return null;
         }
         internal static int getTime(ushort type, byte lvl) {

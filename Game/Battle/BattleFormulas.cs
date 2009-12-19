@@ -92,10 +92,12 @@ namespace Game.Battle {
             if (true) {
                 int rawDmg = (useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk) * attacker.Count;
                 rawDmg /= 10;
-                double type_modifier = getArmorTypeModifier(attacker.Stats.Weapon, target.Stats.Armor);
-                rawDmg = (int)(type_modifier * rawDmg);
+                double typeModifier = getArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
+                rawDmg = (int)(typeModifier * rawDmg);
                 return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
-            } /*else if (true) {
+            } 
+            
+            /*else if (true) {
                 int rawDmg = (int)(attacker.Stats.Atk * attacker.Count);
                 int drate = target.Stats.Def;
                 int arate = attacker.Stats.Atk;
@@ -152,24 +154,32 @@ namespace Game.Battle {
             return 100-stealth > Setup.Config.Random.Next(0, 100);
         }
 
-        internal static void LoadStats(BattleStats stats, IEnumerable<Effect> effects) {
+        internal static BattleStats LoadStats(Structure structure) {          
+            return new BattleStats(structure.Stats.Base.Battle);
+        }
+
+        internal static BattleStats LoadStats(ushort type, byte lvl, City city) {
             int hp = 0;
             int atk = 0;
 
-            foreach (Effect effect in effects) {
-                if (effect.id == EffectCode.BattleStatsArmoryMod &&
-                    stats.Armor==(ArmorType)Enum.Parse(typeof(ArmorType),(string)effect.value[0]) ) {
+            BaseBattleStats stats = UnitFactory.getUnitStats(type, lvl).stats;
+            BattleStats modifiedStats = new BattleStats(stats);
+
+            foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
+                if (effect.id == EffectCode.BattleStatsArmoryMod && stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)effect.value[0])) {
                     hp = Math.Max((int)effect.value[1], hp);
                 }
-                if( effect.id == EffectCode.BattleStatsBlacksmithMod &&
-                    stats.Weapon==(WeaponType)Enum.Parse(typeof(WeaponType),(string)effect.value[0]) ) {
+
+                if (effect.id == EffectCode.BattleStatsBlacksmithMod && stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), (string)effect.value[0])) {
                     atk = Math.Max((int)effect.value[1], atk);
                 }
             }
 
-            stats.MaxHp = (ushort)((100 + hp) * stats.MaxHp / 100);
-            stats.Atk = (byte)((100 + atk) * stats.Atk / 100);
-            stats.Def = (byte)((100 + atk) * stats.Def / 100);        
+            modifiedStats.MaxHp = (ushort)((100 + hp) * stats.MaxHp / 100);
+            modifiedStats.Atk = (byte)((100 + atk) * stats.Atk / 100);
+            modifiedStats.Def = (byte)((100 + atk) * stats.Def / 100);
+
+            return modifiedStats;
         }
     }
 }

@@ -52,6 +52,12 @@ namespace Game.Battle {
             }
         }
 
+        public override BaseBattleStats BaseStats {
+            get {
+                return UnitFactory.getStats(type, lvl);
+            }
+        }
+
         public override BattleStats Stats {
             get {
                 return stats;

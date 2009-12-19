@@ -13,6 +13,7 @@ namespace Game.Battle {
         TroopStub stub;
         FormationType formation;
         BattleStats stats;
+
         byte lvl;
         ushort type;
         ushort count;
@@ -45,6 +46,12 @@ namespace Game.Battle {
         public override ushort Type {
             get {
                 return type;
+            }
+        }
+
+        public override BaseBattleStats BaseStats {
+            get {
+                return UnitFactory.getStats(type, lvl);
             }
         }
 

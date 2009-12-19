@@ -44,7 +44,8 @@ namespace Game.Battle {
                 int score = 0;
 
                 //have to compare armor and weapon type here to give some sort of score
-                score += ((int)BattleFormulas.getArmorTypeModifier(attacker.Stats.Weapon, obj.Stats.Armor) * 10);
+                score += ((int)BattleFormulas.getArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor) * 10);
+
            /*     if (obj.Stats.Armor == ArmorType.HEAVY && attacker.Stats.Weapon == WeaponType.HEAVY)
                     score += 10;
                 else if (obj.Stats.ArmorType == Stats.Armor.LIGHT && attacker.Stats.WeaponType == Stats.Weapon.LIGHT)

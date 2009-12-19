@@ -35,7 +35,7 @@ namespace Game.Setup {
                                             int.Parse(toks[col["Wood"]]),
                                             int.Parse(toks[col["Labor"]]));
 
-                    BattleStats stats = new BattleStats((WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]]),
+                    BaseBattleStats stats = new BaseBattleStats((WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]]),
                                             ArmorType.Stone, 
                                             ushort.Parse(toks[col["Hp"]]),
                                             byte.Parse(toks[col["Atk"]]),
@@ -99,8 +99,8 @@ namespace Game.Setup {
                 if (append == false) {                   
                     //Calculate the different in MAXHP between the new and old structures and add it to the current hp if the new one is greater.
                     ushort newHp = oldStructure.Stats.Hp;
-                    if(baseStats.Battle.MaxHp > oldStructure.Stats.Battle.MaxHp)
-                        newHp = (ushort)(oldStructure.Stats.Hp + (baseStats.Battle.MaxHp - oldStructure.Stats.Battle.MaxHp));
+                    if (baseStats.Battle.MaxHp > oldStructure.Stats.Base.Battle.MaxHp)
+                        newHp = (ushort)(oldStructure.Stats.Hp + (baseStats.Battle.MaxHp - oldStructure.Stats.Base.Battle.MaxHp));
                     
                     oldStructure.Stats = new StructureStats(baseStats);
                     oldStructure.Stats.Hp = newHp;
@@ -110,8 +110,8 @@ namespace Game.Setup {
                 else if (append == true) {
                     //Calculate the different in MAXHP between the new and old structures and add it to the current hp if the new one is greater.
                     ushort newHp = oldStructure.Stats.Hp;
-                    if (baseStats.Battle.MaxHp > oldStructure.Stats.Battle.MaxHp)
-                        newHp = (ushort)(oldStructure.Stats.Hp + (baseStats.Battle.MaxHp - oldStructure.Stats.Battle.MaxHp));
+                    if (baseStats.Battle.MaxHp > oldStructure.Stats.Base.Battle.MaxHp)
+                        newHp = (ushort)(oldStructure.Stats.Hp + (baseStats.Battle.MaxHp - oldStructure.Stats.Base.Battle.MaxHp));
 
                     oldStructure.Stats = new StructureStats(baseStats);
                     oldStructure.Stats.Hp = newHp;

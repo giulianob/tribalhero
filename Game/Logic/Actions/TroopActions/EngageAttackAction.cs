@@ -47,7 +47,7 @@ namespace Game.Logic.Actions {
         private List<Structure> getStructuresInRadius(City city, TroopObject obj) {
             List<Structure> listStruct = new List<Structure>();
             foreach (Structure structure in city) {
-                if (structure.distance(obj) <= obj.Stats.TotalAttackRadius || structure.distance(obj) <= structure.Stats.Battle.Rng)
+                if (structure.distance(obj) <= obj.Stats.TotalAttackRadius || structure.distance(obj) <= structure.Stats.Base.Battle.Rng)
                     listStruct.Add(structure);
             }
 

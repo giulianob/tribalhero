@@ -295,7 +295,7 @@ namespace Game.Battle {
 
                     CombatObject combatObject = null;
 
-                    combatObject = new CombatStructure(this, obj as Structure);
+                    combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj));
                     combatObject.Id = (uint)idGen.getNext();
                     combatObject.GroupId = 1;
                     defenders.Add(combatObject);

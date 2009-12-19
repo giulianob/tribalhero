@@ -12,18 +12,17 @@ namespace Game.Data.Troop {
         Dictionary<ushort, BattleStats> stats;
 
         public TroopTemplate(TroopStub stub) {
-            stats = new Dictionary<ushort,BattleStats>();
+            stats = new Dictionary<ushort, BattleStats>();
             foreach (Formation formation in stub) {
-                foreach( ushort type in formation.Keys ) {
-                    if (!stats.ContainsKey(type)) {
-                        UnitStats unitStats = UnitFactory.getUnitStats(type,stub.City.Template[type].lvl);
-                        BattleStats stat = new BattleStats(unitStats.stats);
-                        BattleFormulas.LoadStats(stat, stub.City.Technologies.GetAllEffects(EffectInheritance.All));
-                        stats.Add(type, stat);
-                    }
+                foreach(ushort type in formation.Keys) {
+                    if (stats.ContainsKey(type)) continue;
+
+                    BattleStats stat = BattleFormulas.LoadStats(type, stub.City.Template[type].lvl, stub.City);
+                    stats.Add(type, stat);
                 }
             }      
         }
+
         public BattleStats this[ushort type] {
             get { return stats[type]; }
         }

@@ -27,20 +27,13 @@ namespace Game.Data.Stats {
         public StructureBaseStats Base {
             get { return baseStats; }
         }
-
-        BattleStats battleStats;
-        public BattleStats Battle {
-            get { return battleStats; }
-        }
         
         public StructureStats(StructureBaseStats baseStats) {
             this.baseStats = baseStats;
-            this.battleStats = (BattleStats)baseStats.Battle.Clone();  
             
             //Set the defaults below for stats that can be modified
             this.maxLabor = baseStats.MaxLabor;
-            this.hp = battleStats.MaxHp;                           
-        }
-        
+            this.hp = baseStats.Battle.MaxHp;
+        }        
     }
 }

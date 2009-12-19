@@ -130,10 +130,10 @@ namespace Game.Logic.Actions {
                 foreach (Structure structure in city) {
                     #region Repair
                     if (repairPower > 0) {
-                        if (structure.Stats.Battle.MaxHp > structure.Stats.Hp && 
+                        if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp && 
                             !ObjectTypeFactory.IsStructureType("NonRepairable", structure) &&
                             structure.State.Type != ObjectState.BATTLE) {
-                            if ((structure.Stats.Hp += repairPower) > structure.Stats.Battle.MaxHp) structure.Stats.Hp = structure.Stats.Battle.MaxHp;
+                            if ((structure.Stats.Hp += repairPower) > structure.Stats.Base.Battle.MaxHp) structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                         }
                     }
                     #endregion

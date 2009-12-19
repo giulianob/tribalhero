@@ -109,13 +109,20 @@ namespace Game.Battle {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
 
+        public virtual BaseBattleStats BaseStats {
+            get { throw new Exception("NOT IMPLEMENTED"); }
+            set { throw new Exception("NOT IMPLEMENTED"); }
+        }
+
         public virtual BattleStats Stats {
             get { throw new Exception("NOT IMPLEMENTED"); }
             set { throw new Exception("NOT IMPLEMENTED"); }
         }
+
         public virtual ushort Type {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
+        
         public virtual BattleClass ClassType {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }

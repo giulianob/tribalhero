@@ -45,12 +45,12 @@ namespace Game.Data.Stats {
             get { return maxLabor; }
         }
 
-        BattleStats battleStats;
-        public BattleStats Battle {
+        BaseBattleStats battleStats;
+        public BaseBattleStats Battle {
             get { return battleStats; }
         }
 
-        public StructureBaseStats(string name, ushort type, byte lvl, Resource cost, BattleStats baseBattleStats, byte maxLabor, int buildTime, int workerId, ClassID baseClass) {
+        public StructureBaseStats(string name, ushort type, byte lvl, Resource cost, BaseBattleStats baseBattleStats, byte maxLabor, int buildTime, int workerId, ClassID baseClass) {
             this.name = name;
             this.type = type;
             this.lvl = lvl;

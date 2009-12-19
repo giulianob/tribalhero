@@ -41,7 +41,7 @@ namespace Game.Data {
             Update();
         }
 
-        public new void Update() {
+        protected new void Update() {
             base.Update();
 
             if (!Global.FireEvents)

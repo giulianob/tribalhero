@@ -5,15 +5,16 @@ using System.Collections.Specialized;
 using Game.Database;
 using Game.Setup;
 using Game.Comm;
+using Game.Data.Stats;
 
 namespace Game.Fighting {
-    public class UnitTemplate : IEnumerable<KeyValuePair<ushort, UnitStats>>, IPersistableList {
+    public class UnitTemplate : IEnumerable<KeyValuePair<ushort, BaseUnitStats>>, IPersistableList {
         #region Event
         public delegate void UpdateCallback(UnitTemplate template);
         public event UpdateCallback UnitUpdated;
         #endregion
 
-        Dictionary<ushort, UnitStats> dict = new Dictionary<ushort, UnitStats>();
+        Dictionary<ushort, BaseUnitStats> dict = new Dictionary<ushort, BaseUnitStats>();
 
         bool isUpdating = false;
 
@@ -22,9 +23,9 @@ namespace Game.Fighting {
             get { return city; }
         }
 
-        public UnitStats this[ushort type] {
+        public BaseUnitStats this[ushort type] {
             get {
-                UnitStats ret;
+                BaseUnitStats ret;
                 if (dict.TryGetValue(type, out ret)) return ret;
                 return UnitFactory.getUnitStats(type,1);
             }
@@ -54,7 +55,7 @@ namespace Game.Fighting {
             updateClient();            
         }
 
-        public void dbLoaderAdd(ushort type, UnitStats stats) {
+        public void dbLoaderAdd(ushort type, BaseUnitStats stats) {
             dict[type] = stats;
         }
 
@@ -65,7 +66,7 @@ namespace Game.Fighting {
 
         #region IEnumerable<KeyValuePair<ushort,UnitStats>> Members
 
-        public IEnumerator<KeyValuePair<ushort, UnitStats>> GetEnumerator() {
+        public IEnumerator<KeyValuePair<ushort, BaseUnitStats>> GetEnumerator() {
             return dict.GetEnumerator();
         }
 
@@ -125,11 +126,11 @@ namespace Game.Fighting {
         #region IEnumerable<DbColumn[]> Members
 
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
-            Dictionary<ushort, UnitStats>.Enumerator itr = dict.GetEnumerator();
+            Dictionary<ushort, BaseUnitStats>.Enumerator itr = dict.GetEnumerator();
             while (itr.MoveNext()) {
                 yield return new DbColumn[] {
                     new DbColumn("type", itr.Current.Key, System.Data.DbType.UInt16),
-                    new DbColumn("level", itr.Current.Value.lvl, System.Data.DbType.Byte),
+                    new DbColumn("level", itr.Current.Value.Lvl, System.Data.DbType.Byte),
                 };
             }
         }
@@ -138,7 +139,7 @@ namespace Game.Fighting {
 
         #region IEnumerable<KeyValuePair<ushort,UnitStats>> Members
 
-        IEnumerator<KeyValuePair<ushort, UnitStats>> IEnumerable<KeyValuePair<ushort, UnitStats>>.GetEnumerator() {
+        IEnumerator<KeyValuePair<ushort, BaseUnitStats>> IEnumerable<KeyValuePair<ushort, BaseUnitStats>>.GetEnumerator() {
             throw new Exception("The method or operation is not implemented.");
         }
 

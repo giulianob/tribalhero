@@ -101,7 +101,7 @@ namespace Game.Data {
                 lock (objLock) {
                     foreach (Formation formation in this.data.Values) {
                         foreach (KeyValuePair<ushort, ushort> kvp in formation) {
-                            count += (kvp.Value * city.Template[kvp.Key].stats.MaxHp);
+                            count += (kvp.Value * city.Template[kvp.Key].Battle.MaxHp);
                         }
                     }
                 }
@@ -116,7 +116,7 @@ namespace Game.Data {
                 lock (objLock) {
                     foreach (Formation formation in this.data.Values) {
                         foreach (KeyValuePair<ushort, ushort> kvp in formation) {
-                            count += (kvp.Value * city.Template[kvp.Key].upkeep);
+                            count += (kvp.Value * city.Template[kvp.Key].Upkeep);
                         }
                     }
                 }

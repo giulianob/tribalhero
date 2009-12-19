@@ -45,7 +45,6 @@ namespace Game.Data {
                 CheckUpdateMode();
                 origX = x;
                 x = value;
-                Update();
             }
         }
         
@@ -55,7 +54,6 @@ namespace Game.Data {
                 CheckUpdateMode();
                 origY = y;
                 y = value;
-                Update();
             }
         }
         
@@ -94,10 +92,14 @@ namespace Game.Data {
         uint origY = 0;
 
         public void CheckUpdateMode() {
-            if (!Global.FireEvents) return;
-
+            //If city is null then we dont care about being inside of a begin/end update block
+            if (!Global.FireEvents || city == null) return;
+            
             if (!updating && city != null)
                 throw new Exception("Changed state outside of begin/end update block");
+
+            if (!MultiObjectLock.IsLocked(city))
+                throw new Exception("Object not locked");
         }
 
         public void BeginUpdate() {
@@ -108,7 +110,7 @@ namespace Game.Data {
 
         public abstract void EndUpdate();
 
-        public void Update() {
+        protected void Update() {
             if (!Global.FireEvents) 
                 return;
 

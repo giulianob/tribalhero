@@ -42,7 +42,6 @@
       <HintPath>.\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -80,7 +79,7 @@
     <Compile Include="Database\Managers\MySqlDbTransaction.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
-    <Compile Include="Data\TroopStats.cs" />
+    <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />
     <Compile Include="Data\Player.cs" />
@@ -182,6 +181,7 @@
     <Compile Include="Data\Stats\BattleStats.cs" />
     <Compile Include="Data\Stats\StructureBaseStats.cs" />
     <Compile Include="Data\Stats\StructureStats.cs" />
+    <Compile Include="Data\Stats\UnitStats.cs" />
     <Compile Include="Data\StructureProperties.cs" />
     <Compile Include="Data\Troop\TroopTemplate.cs" />
     <Compile Include="Logic\ActionDispatcher.cs" />

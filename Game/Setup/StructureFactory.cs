@@ -66,7 +66,7 @@ namespace Game.Setup {
         static public Resource getCost(int type, int lvl) {
             if (dict == null) return null;
             StructureBaseStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (Resource)tmp.Cost.Clone();
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return new Resource(tmp.Cost);
             return null;
         }
 

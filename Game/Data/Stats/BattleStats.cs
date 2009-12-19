@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Game.Setup;
 
-namespace Game.Data {
-    [Serializable()]
-    public class BattleStats : ICloneable {
+namespace Game.Data.Stats {    
+    public class BattleStats : BaseStats {
 
         #region Base Stats
 
@@ -67,14 +66,6 @@ namespace Game.Data {
             this.stl = baseStats.Stl;
             this.spd = baseStats.Spd;
         }
-        #endregion
-
-        #region ICloneable Members
-
-        public object Clone() {
-            return this.MemberwiseClone();
-        }
-
         #endregion
     }
 }

@@ -7,6 +7,7 @@ using Game.Setup;
 using Game.Logic;
 using Game.Fighting;
 using Game.Util;
+using Game.Data.Stats;
 
 namespace Game.Comm {
     public partial class Processor {
@@ -181,8 +182,8 @@ namespace Game.Comm {
                 Packet reply = new Packet(packet);
 
                 if (city.Owner == session.Player) {
-                    reply.addByte((byte)troop.Stats.TotalAttackRadius);
-                    reply.addByte((byte)troop.Stats.TotalSpeed);                   
+                    reply.addByte((byte)troop.Stats.AttackRadius);
+                    reply.addByte((byte)troop.Stats.Speed);                   
 
                     UnitTemplate template = new UnitTemplate(city);
 
@@ -198,11 +199,11 @@ namespace Game.Comm {
                     }
 
                     reply.addUInt16((ushort)template.Size);
-                    IEnumerator<KeyValuePair<ushort, UnitStats>> templateIter = template.GetEnumerator();
+                    IEnumerator<KeyValuePair<ushort, BaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext()) {
-                        KeyValuePair<ushort, UnitStats> kvp = templateIter.Current;
+                        KeyValuePair<ushort, BaseUnitStats> kvp = templateIter.Current;
                         reply.addUInt16(kvp.Key);
-                        reply.addByte(kvp.Value.lvl);
+                        reply.addByte(kvp.Value.Lvl);
                     }
                     
                     PacketHelper.AddToPacket(new List<ReferenceStub>(troop.City.Worker.References.getReferences(troop)), reply);

@@ -15,7 +15,7 @@ namespace Game.Logic.Procedures {
                 addToNormal(troop.Stub, troop.City.DefaultTroop);
 
                 troop.City.BeginUpdate();
-                troop.City.Resource.Add(troop.Loot);
+                troop.City.Resource.Add(troop.Stats.Loot);
                 troop.City.EndUpdate();
             }
 

@@ -4,6 +4,7 @@ using System.Text;
 using Game.Database;
 using Game.Logic;
 using Game.Util;
+using Game.Data.Stats;
 
 namespace Game.Data {
   
@@ -13,22 +14,9 @@ namespace Game.Data {
             get { return troopStub; }
         }
 
-        int rewardPoint;
-        public int RewardPoint {
-            get { return rewardPoint; }
-            set { CheckUpdateMode(); rewardPoint = value; }
-        }
-
-        Resource loot = new Resource();
-        public Resource Loot {
-            get { return loot; }
-            set { loot = value; }
-        }
-
         TroopStats stats;
         public TroopStats Stats {
             get { return stats; }
-            set { stats = value; }
         }
 
         public override uint ObjectID {
@@ -45,23 +33,19 @@ namespace Game.Data {
         }
 
         #region Constructors
-        private TroopObject() {
-        }
-
         public TroopObject(TroopStub stub) {
-            troopStub = stub;            
-            UpdateStatus();
-        }
-        #endregion
-
-        #region Members
-        private void UpdateStatus() {
-            this.Stats = new TroopStats((byte)Formula.GetTroopRadius(troopStub,null), Formula.GetTroopSpeed(troopStub,null));
+            troopStub = stub;
+            
+            stats = new TroopStats(Formula.GetTroopRadius(troopStub, null), Formula.GetTroopSpeed(troopStub, null));
+            stats.StatsUpdate +=new BaseStats.OnStatsUpdate(stats_StatsUpdate);
         }
         #endregion
 
         #region Updates
-        
+        void stats_StatsUpdate() {
+            CheckUpdateMode();
+        }
+
         public override void EndUpdate() {
             if (!updating)
                 throw new Exception("Called an endupdate without first calling a beginupdate");
@@ -71,7 +55,7 @@ namespace Game.Data {
             Update();
         }
 
-        public new void Update() {            
+        protected new void Update() {            
             base.Update();
 
             if (!Global.FireEvents) 

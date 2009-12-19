@@ -7,14 +7,15 @@ using Game.Setup;
 using Game.Util;
 using Game.Fighting;
 using Game.Battle;
+using Game.Data.Stats;
 
 namespace Game.Comm {
     public class PacketHelper {
         public static void AddToPacket(UnitTemplate template, Packet packet) {
             packet.addUInt16((ushort)template.Size);
-            foreach (KeyValuePair<ushort, UnitStats> kvp in template) {
+            foreach (KeyValuePair<ushort, BaseUnitStats> kvp in template) {
                 packet.addUInt16(kvp.Key);
-                packet.addByte(kvp.Value.lvl);
+                packet.addByte(kvp.Value.Lvl);
             }
         }
 

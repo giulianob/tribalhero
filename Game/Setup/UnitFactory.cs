@@ -6,38 +6,15 @@ using Game.Util;
 using System.IO;
 using System.Collections.Specialized;
 using Game.Logic;
+using Game.Data.Stats;
 
 namespace Game.Setup {
-    public class UnitStats {
-        public string name;
-        public Resource resource;
-        public Resource upgrade_resource;
-        public BaseBattleStats stats;
-        public int type;
-        public byte lvl;
-        public int build_time;
-        public int upgrade_time;
-        public byte upkeep;
-
-        public UnitStats(string name,int type, byte lvl, Resource resource, Resource upgrade_resource, BaseBattleStats stats, int build_time, int upgrade_time, byte upkeep) {
-            this.name = name;
-            this.type = type;
-            this.lvl = lvl;
-            this.resource = resource;
-            this.upgrade_resource = upgrade_resource;
-            this.stats = stats;
-            this.build_time = build_time;
-            this.upgrade_time = upgrade_time;
-            this.upkeep = upkeep;
-        }
-    }
-
     public class UnitFactory {
-        public static Dictionary<int, UnitStats> dict;
+        public static Dictionary<int, BaseUnitStats> dict;
         
         public static void init(string filename) {
             if (dict != null) return;
-            dict = new Dictionary<int, UnitStats>();
+            dict = new Dictionary<int, BaseUnitStats>();
             using (CSVReader reader = new CSVReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 String[] toks;
                 Dictionary<string, int> col = new Dictionary<string, int>();
@@ -70,7 +47,7 @@ namespace Game.Setup {
                                             Formula.GetRewardPoint(resource, ushort.Parse(toks[col["Hp"]])));
 
 
-                    UnitStats basestats = new UnitStats(toks[col["Name"]],
+                    BaseUnitStats basestats = new BaseUnitStats(toks[col["Name"]],
                                                     int.Parse(toks[col["Type"]]),
                                                     byte.Parse(toks[col["Lvl"]]),
                                                     resource,
@@ -87,50 +64,55 @@ namespace Game.Setup {
 
         static public Resource getCost(int type, int lvl) {
             if (dict == null) return null;
-            UnitStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (Resource)tmp.resource.Clone();
-            return null;
-        }
-        static public Resource getUpgradeCost(int type, int lvl) {
-            if (dict == null) return null;
-            UnitStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (Resource)tmp.upgrade_resource.Clone();
+            BaseUnitStats tmp;
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return new Resource(tmp.Cost);
             return null;
         }
 
-        public static UnitStats getUnitStats(ushort type, byte lvl) {
+        static public Resource getUpgradeCost(int type, int lvl) {
             if (dict == null) return null;
-            UnitStats tmp;
+            BaseUnitStats tmp;
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return new Resource(tmp.UpgradeCost);
+            return null;
+        }
+
+        public static BaseUnitStats getUnitStats(ushort type, byte lvl) {
+            if (dict == null) return null;
+            BaseUnitStats tmp;
             if (dict.TryGetValue(type * 100 + lvl, out tmp)) return tmp;
             return null;
         }
 
-        internal static BaseBattleStats getStats(ushort type, byte lvl) {
+        internal static BaseBattleStats getBattleStats(ushort type, byte lvl) {
             if (dict == null) return null;
-            UnitStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return tmp.stats;
+            BaseUnitStats tmp;
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return tmp.Battle;
             return null;
         }
+        
         internal static int getTime(ushort type, byte lvl) {
             if (dict == null) return -1;
-            UnitStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (int)tmp.build_time;
+            BaseUnitStats tmp;
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (int)tmp.BuildTime;
             return -1;
         }
+        
         internal static int getUpgradeTime(ushort type, byte lvl) {
             if (dict == null) return -1;
-            UnitStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (int)tmp.upgrade_time;
+            BaseUnitStats tmp;
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return (int)tmp.UpgradeTime;
             return -1;
         }
+
         public static string getName(ushort type, byte lvl) {
             if (dict == null) return null;
-            UnitStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return tmp.name;
+            BaseUnitStats tmp;
+            if (dict.TryGetValue(type * 100 + lvl, out tmp)) return tmp.Name;
             return null;
         }
-        public static Dictionary<int, UnitStats> getList() {
-            return new Dictionary<int, UnitStats>(dict);
+
+        public static Dictionary<int, BaseUnitStats> getList() {
+            return new Dictionary<int, BaseUnitStats>(dict);
         }
 
     }

@@ -18,6 +18,18 @@ namespace Game.Util {
 
         DbTransaction transaction = null;
 
+        public static bool IsLocked(ILockable obj) {
+            return true;
+            if (currentLock == null) return false;
+
+            foreach (object locks in currentLock.lockedObjects) {
+                if (currentLock == obj.Lock)
+                    return true;
+            }
+
+            return false;
+        }
+
         private static int CompareObject(ILockable x, ILockable y) {
             return x.Hash.CompareTo(y.Hash);
         }

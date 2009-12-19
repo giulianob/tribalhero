@@ -118,9 +118,9 @@ namespace Game.Module {
             while (enumerator.MoveNext()) {
                 Structure structure = enumerator.Current.Value;
 
-                if (structure.Stats.MaxLabor > 0) {
+                if (structure.Stats.Base.MaxLabor > 0) {
                     structure.BeginUpdate();
-                    structure.Stats.Labor = Math.Min(structure.Stats.MaxLabor, (byte)city.Resource.Labor.Value);
+                    structure.Stats.Labor = Math.Min(structure.Stats.Base.MaxLabor, (byte)city.Resource.Labor.Value);
                     structure.EndUpdate();
                 }
 
@@ -144,7 +144,7 @@ namespace Game.Module {
 
                     if (req.type == ActionType.UNIT_TRAIN) {                        
                         ushort unitType = ushort.Parse(req.parms[0]);
-                        Resource costPerUnit = city.Template[unitType].resource;
+                        Resource costPerUnit = city.Template[unitType].Cost;
                         ushort count = Math.Min((ushort)15, (ushort)(city.Resource.FindMaxAffordable(costPerUnit) * intelligence.military));
 
                         UnitTrainAction action = new UnitTrainAction(city.CityId, structure.ObjectID, unitType, count);
@@ -277,7 +277,7 @@ namespace Game.Module {
                 Structure structure = StructureFactory.getStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
-                structure.Stats.Labor = structure.Stats.MaxLabor;
+                structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.add(structure);
                 Global.World.add(structure);
@@ -286,7 +286,7 @@ namespace Game.Module {
                 Structure structure = StructureFactory.getStructure(2106, 1);
                 structure.X = x;
                 structure.Y = y;
-                structure.Stats.Labor = structure.Stats.MaxLabor;
+                structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.add(structure);
                 Global.World.add(structure);

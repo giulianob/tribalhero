@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Game.Data.Stats;
 
 namespace Game.Data {
     public enum ResourceType: byte {
@@ -9,40 +10,48 @@ namespace Game.Data {
         Wood = 2,
         Iron = 3
     }
-    [Serializable()]
-    public class Resource : ICloneable, IComparable {
-        private int gold = 0;
 
+    public class Resource : BaseStats, IComparable {
+
+        private int gold = 0;
         public int Gold {
             get { return gold; }
-            set { gold = value; }
+            set { gold = value; fireStatsUpdate();  }
         }
-        private int wood = 0;
 
+        private int wood = 0;
         public int Wood {
             get { return wood; }
-            set { wood = value; }
+            set { wood = value; fireStatsUpdate(); }
         }
-        private int iron = 0;
 
+        private int iron = 0;
         public int Iron {
             get { return iron; }
-            set { iron = value; }
+            set { iron = value; fireStatsUpdate(); }
         }
-        private int crop = 0;
 
+        private int crop = 0;
         public int Crop {
             get { return crop; }
-            set { crop = value; }
+            set { crop = value; fireStatsUpdate(); }
         }
 
         private int labor = 0;
         public int Labor {
             get { return labor; }
-            set { labor = value; }
+            set { labor = value; fireStatsUpdate(); }
         }
 
         public Resource() {
+        }
+
+        public Resource(Resource copy) {
+            this.crop = copy.Crop;
+            this.gold = copy.Gold;
+            this.wood = copy.Wood;
+            this.labor = copy.Labor;
+            this.Iron = copy.Iron;
         }
 
         public Resource(int crop, int gold, int iron, int wood, int labor) {
@@ -52,14 +61,6 @@ namespace Game.Data {
             this.wood = wood;
             this.labor = labor;
         }
-
-        #region ICloneable Members
-
-        public object Clone() {
-            return this.MemberwiseClone();
-        }
-
-        #endregion
 
         #region IComparable Members
 
@@ -157,6 +158,16 @@ namespace Game.Data {
             this.iron -= (actual.iron = this.iron > cost.iron ? cost.iron : this.crop);
             this.wood -= (actual.wood = this.wood > cost.wood ? cost.wood : this.wood);
             this.labor -= (actual.labor = this.labor > cost.labor ? cost.labor : this.labor);
+            fireStatsUpdate();
+        }
+
+        public void add(Resource cost) {
+            this.crop += cost.crop;
+            this.gold += cost.gold;
+            this.iron += cost.iron;
+            this.wood += cost.wood;
+            this.labor += cost.labor;
+            fireStatsUpdate();
         }
 
         internal void Clear() {
@@ -165,6 +176,7 @@ namespace Game.Data {
             this.iron = 0;
             this.wood = 0;
             this.labor = 0;
+            fireStatsUpdate();
         }
     }
 }

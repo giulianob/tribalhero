@@ -22,7 +22,7 @@ namespace Game.Logic {
             return Config.Random.Next(0, 1000) < em.Min(EffectCode.OverDigging, EffectInheritance.SelfAll, 0);
         }
 
-        internal static int GetTroopRadius(TroopStub stub, TechnologyManager em) {
+        internal static byte GetTroopRadius(TroopStub stub, TechnologyManager em) {
             int count = 0;
             foreach (KeyValuePair<FormationType, Formation> formation in stub as IEnumerable<KeyValuePair<FormationType,Formation>>) {
                 if (formation.Key == FormationType.Scout) continue;
@@ -31,7 +31,7 @@ namespace Game.Logic {
                 }
             }
 
-            return Math.Min((int)Math.Ceiling((decimal)count / 100), 5);            
+            return (byte)Math.Min((int)Math.Ceiling((decimal)count / 100), 5);            
         }
 
         internal static byte GetTroopSpeed(TroopStub stub, object p) {

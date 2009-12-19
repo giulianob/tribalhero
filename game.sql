@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 16, 2009 at 04:09 PM
+-- Generation Time: Dec 18, 2009 at 08:58 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -54,7 +54,7 @@ CREATE TABLE `battles` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `city_id` (`city_id`,`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -114,7 +114,7 @@ CREATE TABLE `battle_report_objects` (
   `formation_type` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -139,7 +139,7 @@ CREATE TABLE `battle_report_troops` (
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`),
   KEY `state` (`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -338,7 +338,7 @@ DROP TABLE IF EXISTS `players`;
 CREATE TABLE `players` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
-  `password` varchar(64) NOT NULL DEFAULT 'b001bc0abfa46db2dd2e34747ef95efc8897b9ad',
+  `password` varchar(64) NOT NULL DEFAULT '8a9719ce5a3aa86d1ccb00047497291274f7feae',
   `email_address` varchar(256) NOT NULL,
   `login_key` varchar(64) DEFAULT NULL,
   `login_key_date` datetime DEFAULT NULL,

@@ -190,7 +190,7 @@ namespace Game.Database {
                     else
                         startComma = true;
 
-                    values += string.Format("{0}=@{0}", column.Column);
+                    values += string.Format("`{0}`=@{0}", column.Column);
                 }
 
                 startComma = false;
@@ -425,7 +425,7 @@ namespace Game.Database {
                     else
                         startComma = true;
 
-                    where += string.Format("{0}=@{0}", column.Column);
+                    where += string.Format("`{0}`=@{0}", column.Column);
                 }
 
                 commandText = string.Format("DELETE FROM `{0}_list` WHERE {1}", obj.DbTable, where);
@@ -459,7 +459,7 @@ namespace Game.Database {
                     else
                         startComma = true;
 
-                    where += string.Format("{0}=@{0}", column.Column);
+                    where += string.Format("`{0}`=@{0}", column.Column);
                 }
 
                 commandText = string.Format("DELETE FROM `{0}` WHERE {1} LIMIT 1", obj.DbTable, where);
@@ -522,7 +522,7 @@ namespace Game.Database {
                 else
                     startComma = true;
 
-                where += string.Format("{0}=@{0}", column.Column);
+                where += string.Format("`{0}`=@{0}", column.Column);
             }
 
             command.CommandText = string.Format("SELECT * FROM `{0}_list` WHERE {1}", obj.DbTable, where);
@@ -548,7 +548,7 @@ namespace Game.Database {
                 else
                     startComma = true;
 
-                where += string.Format("{0}=@{0}", column.Column);
+                where += string.Format("`{0}`=@{0}", column.Column);
             }
 
             command.CommandText = string.Format("SELECT * FROM `{0}` WHERE {1}", table, where);
@@ -700,7 +700,6 @@ namespace Game.Database {
                 "TRUNCATE TABLE `structures`;" +
                 "TRUNCATE TABLE `structure_properties`;" +
                 "TRUNCATE TABLE `structure_properties_list`;" +
-                "TRUNCATE TABLE `reference_stubs`;" +
                 "TRUNCATE TABLE `technologies`;" +
                 "TRUNCATE TABLE `technologies_list`;" +
                 "TRUNCATE TABLE `troops`;" +
@@ -721,7 +720,10 @@ namespace Game.Database {
                 "TRUNCATE TABLE `combat_units`;" +
                 "TRUNCATE TABLE `notifications`;" +
                 "TRUNCATE TABLE `notifications_list`;" +
-                "TRUNCATE TABLE `market`;"
+                "TRUNCATE TABLE `market`;" +
+                "TRUNCATE TABLE `system_variables`;" +
+                "TRUNCATE TABLE `troop_templates`;" +
+                "TRUNCATE TABLE `troop_templates_list`;"
                 ;
 
             command.Connection = connection;

@@ -11,7 +11,7 @@ namespace Game.Logic.Actions {
         int INTERVAL = 1800;
         uint cityId;
         int laborRoundBeforeIncrements;
-       
+        
         public CityAction(uint cityId) {
             this.cityId = cityId;
         }
@@ -19,6 +19,7 @@ namespace Game.Logic.Actions {
         public CityAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
+            laborRoundBeforeIncrements = int.Parse(properties["labor_round_before_increments"]);
         }
 
         public override Error validate(string[] parms) {
@@ -156,7 +157,8 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return XMLSerializer.Serialize(new XMLKVPair[] {
-                        new XMLKVPair("city_id", cityId)
+                        new XMLKVPair("city_id", cityId),
+                        new XMLKVPair("labor_round_before_increments", laborRoundBeforeIncrements)
                     }
                 );
             }

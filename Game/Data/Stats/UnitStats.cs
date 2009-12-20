@@ -24,8 +24,8 @@ namespace Game.Data.Stats {
             get { return battleStats; }
         }
 
-        int type;
-        public int Type {
+        ushort type;
+        public ushort Type {
             get { return type; }
         }
 
@@ -41,7 +41,7 @@ namespace Game.Data.Stats {
 
         int upgradeTime;
         public int UpgradeTime {
-            get { return UpgradeTime; }
+            get { return upgradeTime; }
         }
 
         byte upkeep;
@@ -49,7 +49,7 @@ namespace Game.Data.Stats {
             get { return upkeep; }
         }
 
-        public BaseUnitStats(string name, int type, byte lvl, Resource cost, Resource upgradeCost, BaseBattleStats battleStats, int buildTime, int upgradeTime, byte upkeep) {
+        public BaseUnitStats(string name, ushort type, byte lvl, Resource cost, Resource upgradeCost, BaseBattleStats battleStats, int buildTime, int upgradeTime, byte upkeep) {
             this.name = name;
             this.type = type;
             this.lvl = lvl;

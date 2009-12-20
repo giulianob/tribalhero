@@ -25,9 +25,8 @@ namespace Game.Data {
 
         #region Properties
         TroopTemplate troopTemplate;
-        public TroopTemplate TroopTemplate {
+        public TroopTemplate Template {
             get { return troopTemplate; }
-            set { troopTemplate = value; }
         }
 
         TroopManager troopManager;
@@ -189,7 +188,8 @@ namespace Game.Data {
         #endregion
 
         public TroopStub(TroopManager troopManager) {
-            this.troopManager = troopManager;            
+            this.troopManager = troopManager;
+            this.troopTemplate = new TroopTemplate(this);
         }
 
         public void FireUpdated() {
@@ -387,7 +387,9 @@ namespace Game.Data {
 
         public DbDependency[] DbDependencies {
             get {
-                return new DbDependency[] { };
+                return new DbDependency[] { 
+                    new DbDependency("Template", true, true)
+                };
             }
         }
 

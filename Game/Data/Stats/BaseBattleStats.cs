@@ -23,6 +23,15 @@ namespace Game.Data {
     public class BaseBattleStats {
 
         #region Base Stats
+        ushort type;
+        public ushort Type {
+            get { return type; }
+        }
+
+        byte lvl;
+        public byte Lvl {
+            get { return lvl; }
+        }
 
         ushort groupSize;
         public ushort GroupSize {
@@ -77,7 +86,9 @@ namespace Game.Data {
         #endregion
 
         #region Constructors
-        public BaseBattleStats(WeaponType weapon, ArmorType armor, ushort maxHp, byte atk, byte def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
+        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, byte atk, byte def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
+            this.type = type;
+            this.lvl = lvl;
             this.weapon = weapon;
             this.armor = armor;
             this.maxHp = maxHp;
@@ -90,18 +101,6 @@ namespace Game.Data {
             this.reward = reward;
         }
 
-        public BaseBattleStats(BaseBattleStats stats) {
-            this.weapon = stats.weapon;
-            this.armor = stats.armor;
-            this.maxHp = stats.maxHp;
-            this.atk = stats.atk;
-            this.def = stats.def;
-            this.rng = stats.rng;
-            this.stl = stats.stl;
-            this.spd = stats.spd;
-            this.groupSize = stats.groupSize;
-            this.reward = stats.reward;            
-        }
         #endregion
     }
 }

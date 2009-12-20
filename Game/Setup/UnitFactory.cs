@@ -29,13 +29,16 @@ namespace Game.Setup {
                                             int.Parse(toks[col["Iron"]]),
                                             int.Parse(toks[col["Wood"]]),
                                             int.Parse(toks[col["Labor"]]));
+
                     Resource upgrade_resource = new Resource(int.Parse(toks[col["UpgrdCrop"]]),
                                             int.Parse(toks[col["UpgrdGold"]]),
                                             int.Parse(toks[col["UpgrdIron"]]),
                                             int.Parse(toks[col["UpgrdWood"]]),
                                             int.Parse(toks[col["UpgrdLabor"]]));
                     
-                    BaseBattleStats stats = new BaseBattleStats((WeaponType)Enum.Parse(typeof(WeaponType),toks[col["Weapon"]]),
+                    BaseBattleStats stats = new BaseBattleStats(ushort.Parse(toks[col["Type"]]),
+                                            byte.Parse(toks[col["Lvl"]]),
+                                            (WeaponType)Enum.Parse(typeof(WeaponType),toks[col["Weapon"]]),
                                             (ArmorType)Enum.Parse(typeof(ArmorType), toks[col["Armor"]]),
                                             ushort.Parse(toks[col["Hp"]]),
                                             byte.Parse(toks[col["Atk"]]),
@@ -48,7 +51,7 @@ namespace Game.Setup {
 
 
                     BaseUnitStats basestats = new BaseUnitStats(toks[col["Name"]],
-                                                    int.Parse(toks[col["Type"]]),
+                                                    ushort.Parse(toks[col["Type"]]),
                                                     byte.Parse(toks[col["Lvl"]]),
                                                     resource,
                                                     upgrade_resource,

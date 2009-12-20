@@ -116,14 +116,10 @@ namespace Game.Data {
     }
 
     public class LazyResource {
+        public event LazyValue.OnResourcesUpdate ResourcesUpdate;
+
         bool isUpdating = false;
         bool isDirty = false;
-
-        private City city;
-        public City City {
-            get { return city; }
-            set { city = value; }
-        }
 
         private LazyValue crop;
         public LazyValue Crop {
@@ -150,14 +146,13 @@ namespace Game.Data {
             get { return labor; }
         }
 
-        public LazyResource(City city,
+        public LazyResource(
             int crop, DateTime cropRealizeTime, int cropRate,
             int gold, DateTime goldRealizeTime, int goldRate,
             int iron, DateTime ironRealizeTime, int ironRate,
             int wood, DateTime woodRealizeTime, int woodRate,
             int labor, DateTime laborRealizeTime, int laborRate) {
 
-            this.city = city;
             this.crop = new LazyValue(crop, cropRealizeTime, cropRate);
             this.gold = new LazyValue(gold, goldRealizeTime, goldRate);
             this.iron = new LazyValue(iron, ironRealizeTime, ironRate);
@@ -166,8 +161,7 @@ namespace Game.Data {
             SetEvents();
         }
 
-        public LazyResource(City city, int crop, int gold, int iron, int wood, int labor) {
-            this.city = city;
+        public LazyResource(int crop, int gold, int iron, int wood, int labor) {
             this.crop = new LazyValue(crop);
             this.gold = new LazyValue(gold);
             this.iron = new LazyValue(iron);
@@ -305,8 +299,8 @@ namespace Game.Data {
 
         private void Update() {
             if (!isUpdating) {
-                if (city != null)
-                    city.resource_UpdateEvent();
+                if (ResourcesUpdate != null)
+                    ResourcesUpdate();
             }
             else
                 isDirty = true;

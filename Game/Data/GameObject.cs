@@ -95,7 +95,7 @@ namespace Game.Data {
             //If city is null then we dont care about being inside of a begin/end update block
             if (!Global.FireEvents || city == null) return;
             
-            if (!updating && city != null)
+            if (!updating)
                 throw new Exception("Changed state outside of begin/end update block");
 
             if (!MultiObjectLock.IsLocked(city))

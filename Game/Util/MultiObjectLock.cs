@@ -19,11 +19,10 @@ namespace Game.Util {
         DbTransaction transaction = null;
 
         public static bool IsLocked(ILockable obj) {
-            return true;
             if (currentLock == null) return false;
 
-            foreach (object locks in currentLock.lockedObjects) {
-                if (currentLock == obj.Lock)
+            foreach (object lck in currentLock.lockedObjects) {
+                if (lck == obj.Lock)
                     return true;
             }
 

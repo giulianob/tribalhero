@@ -11,6 +11,8 @@ using Game.Logic.Actions;
 using Game.Util;
 using Game.Battle;
 using Game.Module;
+using Game.Data.Troop;
+using Game.Data.Stats;
 
 namespace Game.Database
 {
@@ -75,7 +77,7 @@ namespace Game.Database
                     #region Cities
                     using (reader = dbManager.Select(City.DB_TABLE)) {
                         while (reader.Read()) {                           
-                            LazyResource resource = new LazyResource(null,
+                            LazyResource resource = new LazyResource(
                                 (int)reader["crop"], (DateTime)reader["crop_realize_time"], (int)reader["crop_production_rate"],
                                 (int)reader["gold"], (DateTime)reader["gold_realize_time"], (int)reader["gold_production_rate"],
                                 (int)reader["iron"], (DateTime)reader["iron_realize_time"], (int)reader["iron_production_rate"],
@@ -216,6 +218,34 @@ namespace Game.Database
                     }
                     #endregion
 
+                    #region Troop Stub's Templates
+                    using (reader = dbManager.Select(TroopTemplate.DB_TABLE)) {
+                        while (reader.Read()) {
+                            City city;
+                            Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                            TroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
+                            stub.Template.DbPersisted = true;
+
+                            using (DbDataReader listReader = dbManager.SelectList(stub.Template)) {
+                                while (listReader.Read()) {
+                                    //First we load the BaseBattleStats and pass it into the BattleStats
+                                    //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
+                                    BattleStats battleStats = new BattleStats(UnitFactory.getBattleStats((ushort)listReader["type"], (byte)listReader["level"]));
+                                    battleStats.MaxHp = (ushort)listReader["max_hp"];
+                                    battleStats.Atk = (byte)listReader["attack"];
+                                    battleStats.Def = (byte)listReader["defense"];
+                                    battleStats.Rng = (byte)listReader["range"];
+                                    battleStats.Stl = (byte)listReader["stealth"];
+                                    battleStats.Spd = (byte)listReader["speed"];
+                                    battleStats.Reward = (ushort)listReader["reward"];
+
+                                    stub.Template.dbLoaderAdd(battleStats);                                    
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
                     #region Troops
                     using (reader = dbManager.Select(TroopObject.DB_TABLE)) {
                         while (reader.Read()) {
@@ -263,16 +293,30 @@ namespace Game.Database
 
                                 while (listReader.Read()) {
                                     City structureCity;
-                                    Global.World.TryGetObjects((uint)reader["structure_city_id"], out structureCity);
-                                    CombatStructure structure = new CombatStructure(bm, (Structure)structureCity[(uint)listReader["structure_id"]], (uint)listReader["hp"], (ushort)listReader["type"], (byte)listReader["level"]);
-                                    structure.GroupId = (uint)listReader["group_id"];
-                                    structure.DmgDealt = (int)listReader["damage_dealt"];
-                                    structure.DmgRecv = (int)listReader["damage_received"];
-                                    structure.LastRound = (uint)listReader["last_round"];
-                                    structure.RoundsParicipated = (int)listReader["rounds_participated"];
-                                    structure.DbPersisted = true;
+                                    Global.World.TryGetObjects((uint)listReader["structure_city_id"], out structureCity);
 
-                                    bm.dbLoaderAddToLocal(structure, (uint)listReader["id"]);
+                                    Structure structure = (Structure)structureCity[(uint)listReader["structure_id"]];
+
+                                    //First we load the BaseBattleStats and pass it into the BattleStats
+                                    //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
+                                    BattleStats battleStats = new BattleStats(structure.Stats.Base.Battle);
+                                    battleStats.MaxHp = (ushort)listReader["max_hp"];
+                                    battleStats.Atk = (byte)listReader["attack"];
+                                    battleStats.Def = (byte)listReader["defense"];
+                                    battleStats.Rng = (byte)listReader["range"];
+                                    battleStats.Stl = (byte)listReader["stealth"];
+                                    battleStats.Spd = (byte)listReader["speed"];
+                                    battleStats.Reward = (ushort)listReader["reward"];
+
+                                    CombatStructure combatStructure = new CombatStructure(bm, structure, battleStats, (uint)listReader["hp"], (ushort)listReader["type"], (byte)listReader["level"]);
+                                    combatStructure.GroupId = (uint)listReader["group_id"];
+                                    combatStructure.DmgDealt = (int)listReader["damage_dealt"];
+                                    combatStructure.DmgRecv = (int)listReader["damage_received"];
+                                    combatStructure.LastRound = (uint)listReader["last_round"];
+                                    combatStructure.RoundsParicipated = (int)listReader["rounds_participated"];
+                                    combatStructure.DbPersisted = true;
+
+                                    bm.dbLoaderAddToLocal(combatStructure, (uint)listReader["id"]);
                                 }
                             }
 
@@ -283,7 +327,7 @@ namespace Game.Database
 
                                 while (listReader.Read()) {
                                     City troopStubCity;
-                                    Global.World.TryGetObjects((uint)reader["troop_stub_city_id"], out troopStubCity);
+                                    Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity);
                                     TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                                     CombatObject combatObj;
@@ -307,7 +351,7 @@ namespace Game.Database
                             using (DbDataReader listReader = dbManager.SelectList(bm.ReportedTroops)) {
                                 while (listReader.Read()) {
                                     City troopStubCity;
-                                    Global.World.TryGetObjects((uint)reader["troop_stub_city_id"], out troopStubCity);
+                                    Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity);
                                     TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                                     if (troopStub == null)
@@ -592,7 +636,7 @@ namespace Game.Database
                             using (DbDataReader listReader = dbManager.SelectList(notification)) {
                                 while (listReader.Read()) {
                                     City subscriptionCity;
-                                    Global.World.TryGetObjects((uint)reader["subscription_city_id"], out subscriptionCity);
+                                    Global.World.TryGetObjects((uint)listReader["subscription_city_id"], out subscriptionCity);
                                     notification.Subscriptions.Add(subscriptionCity);
                                 }
                             }

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 18, 2009 at 08:58 PM
+-- Generation Time: Dec 19, 2009 at 08:56 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -211,6 +211,13 @@ CREATE TABLE `combat_structures` (
   `hp` mediumint(8) unsigned NOT NULL,
   `type` smallint(5) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
+  `max_hp` smallint(5) unsigned NOT NULL,
+  `attack` tinyint(3) unsigned NOT NULL,
+  `defense` tinyint(3) unsigned NOT NULL,
+  `range` tinyint(3) unsigned NOT NULL,
+  `stealth` tinyint(3) unsigned NOT NULL,
+  `speed` tinyint(3) unsigned NOT NULL,
+  `reward` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -564,6 +571,41 @@ CREATE TABLE `troop_stubs_list` (
   `count` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`,`city_id`,`formation_type`,`type`),
   KEY `city_id` (`city_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `troop_templates`
+--
+
+DROP TABLE IF EXISTS `troop_templates`;
+CREATE TABLE `troop_templates` (
+  `city_id` int(11) unsigned NOT NULL,
+  `troop_stub_id` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`city_id`,`troop_stub_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `troop_templates_list`
+--
+
+DROP TABLE IF EXISTS `troop_templates_list`;
+CREATE TABLE `troop_templates_list` (
+  `city_id` int(11) unsigned NOT NULL,
+  `troop_stub_id` tinyint(3) unsigned NOT NULL,
+  `type` smallint(5) unsigned NOT NULL,
+  `level` tinyint(3) unsigned NOT NULL,
+  `max_hp` smallint(5) unsigned NOT NULL,
+  `attack` tinyint(3) unsigned NOT NULL,
+  `defense` tinyint(3) unsigned NOT NULL,
+  `range` tinyint(3) unsigned NOT NULL,
+  `stealth` tinyint(3) unsigned NOT NULL,
+  `speed` tinyint(3) unsigned NOT NULL,
+  `reward` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`city_id`,`troop_stub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

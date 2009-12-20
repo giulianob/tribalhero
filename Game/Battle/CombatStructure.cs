@@ -40,9 +40,10 @@ namespace Game.Battle {
             this.hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(BattleManager owner, Structure structure, uint hp, ushort type, byte lvl) {
+        public CombatStructure(BattleManager owner, Structure structure, BattleStats stats, uint hp, ushort type, byte lvl) {
             this.battleManager = owner;
             this.structure = structure;
+            this.stats = stats;
             this.hp = hp;
             this.type = type;
             this.lvl = lvl;
@@ -213,7 +214,15 @@ namespace Game.Battle {
                     new DbColumn("structure_id", structure.ObjectID, System.Data.DbType.UInt32),
                     new DbColumn("hp", hp, System.Data.DbType.UInt16),
                     new DbColumn("type", type, System.Data.DbType.UInt16),
-                    new DbColumn("level", lvl, System.Data.DbType.Byte)
+                    new DbColumn("level", lvl, System.Data.DbType.Byte),
+                    //BattleStats
+                    new DbColumn("max_hp", stats.MaxHp, System.Data.DbType.UInt16),
+                    new DbColumn("attack", stats.Atk, System.Data.DbType.Byte),
+                    new DbColumn("defense", stats.Def, System.Data.DbType.Byte),
+                    new DbColumn("range", stats.Rng, System.Data.DbType.Byte),
+                    new DbColumn("stealth", stats.Stl, System.Data.DbType.Byte),
+                    new DbColumn("speed", stats.Spd, System.Data.DbType.Byte),
+                    new DbColumn("reward", stats.Reward, System.Data.DbType.UInt16)
                 };
             }
         }

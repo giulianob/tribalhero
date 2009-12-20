@@ -121,9 +121,6 @@ namespace Game.Fighting {
             get { return dbPersisted; }
             set { dbPersisted = value; }
         }
-        #endregion
-
-        #region IEnumerable<DbColumn[]> Members
 
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
             Dictionary<ushort, BaseUnitStats>.Enumerator itr = dict.GetEnumerator();
@@ -133,14 +130,6 @@ namespace Game.Fighting {
                     new DbColumn("level", itr.Current.Value.Lvl, System.Data.DbType.Byte),
                 };
             }
-        }
-
-        #endregion
-
-        #region IEnumerable<KeyValuePair<ushort,UnitStats>> Members
-
-        IEnumerator<KeyValuePair<ushort, BaseUnitStats>> IEnumerable<KeyValuePair<ushort, BaseUnitStats>>.GetEnumerator() {
-            throw new Exception("The method or operation is not implemented.");
         }
 
         #endregion

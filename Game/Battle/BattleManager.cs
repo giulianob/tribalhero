@@ -310,6 +310,7 @@ namespace Game.Battle {
                 }                
             }
         }
+
         public void addToAttack(TroopStub stub) {
             List<TroopStub> list = new List<TroopStub>();
             list.Add(stub);
@@ -370,7 +371,9 @@ namespace Game.Battle {
                     if (!isLocal)
                         id = (uint)idGen.getNext();
 
-                    obj.TroopTemplate = new TroopTemplate(obj);
+                    obj.BeginUpdate();
+                    obj.Template.LoadStats();
+                    obj.EndUpdate();
 
                     foreach (KeyValuePair<FormationType, Formation> formation in obj as IEnumerable<KeyValuePair<FormationType, Formation>>) {
                         if (formation.Key == FormationType.Garrison || formation.Key == FormationType.InBattle) continue;

@@ -35,7 +35,9 @@ namespace Game.Setup {
                                             int.Parse(toks[col["Wood"]]),
                                             int.Parse(toks[col["Labor"]]));
 
-                    BaseBattleStats stats = new BaseBattleStats((WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]]),
+                    BaseBattleStats stats = new BaseBattleStats(ushort.Parse(toks[col["Type"]]),
+                                            byte.Parse(toks[col["Lvl"]]), 
+                                            (WeaponType)Enum.Parse(typeof(WeaponType), toks[col["Weapon"]]),
                                             ArmorType.Stone, 
                                             ushort.Parse(toks[col["Hp"]]),
                                             byte.Parse(toks[col["Atk"]]),

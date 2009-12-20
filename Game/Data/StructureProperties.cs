@@ -19,7 +19,7 @@ namespace Game.Data {
 
         public Structure Owner {
             get { return structure; }
-            set { value.CheckUpdateMode(); structure = value; }
+            set { structure = value; }
         }
 
         public bool contains(object key) {

@@ -80,7 +80,7 @@ namespace Game.Data {
         
         public StructureProperties Properties {
             get { return properties; }
-            set { properties = value; properties.Owner = this; }
+            set { CheckUpdateMode();  properties = value; }
         }
 
         public override uint ObjectID {
@@ -128,7 +128,10 @@ namespace Game.Data {
 
         public DbDependency[] DbDependencies {
             get {
-                return new DbDependency[] { new DbDependency("Properties", true, true) };
+                return new DbDependency[] { 
+                    new DbDependency("Properties", true, true),
+                    new DbDependency("Technologies", false, true) 
+                };
             }
         }
 

@@ -78,7 +78,7 @@ namespace Game.Battle {
             this.battleManager = owner;
             this.lvl = lvl;
             
-            stats = stub.TroopTemplate[type];
+            stats = stub.Template[type];
             hp = stats.MaxHp;
         }
 

@@ -32,7 +32,7 @@ namespace Game.Logic.Actions {
         public AttackAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
             : base(id, chainCallback, current, chainState, isVisible) {
             cityId = uint.Parse(properties["city_id"]);            
-            stubId = byte.Parse(properties["troop_stub_id"]);
+            stubId = byte.Parse(properties["stub_id"]);
             mode = (AttackMode)uint.Parse(properties["mode"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
             targetStructureId = uint.Parse(properties["target_object_id"]);

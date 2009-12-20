@@ -109,7 +109,7 @@ namespace Game {
 
         #region Constructors
         public City(Player owner, string name, Resource resource, Structure mainBuilding) :
-            this(owner, name, new LazyResource(null,resource.Crop,resource.Gold,resource.Iron,resource.Wood,resource.Labor), mainBuilding)
+            this(owner, name, new LazyResource(resource.Crop,resource.Gold,resource.Iron,resource.Wood,resource.Labor), mainBuilding)
         {
             
         }
@@ -143,14 +143,14 @@ namespace Game {
 
             this.resource = resource;
             resource.Labor.Add(10);
-
+            
             if (mainBuilding != null) {
                 mainBuilding.ObjectID = 1;
                 add(1, mainBuilding, false);
                 Formula.ResourceCap(this);
             }
 
-            resource.City = this;            
+            resource.ResourcesUpdate += new LazyValue.OnResourcesUpdate(resource_UpdateEvent);
         }
         #endregion
 
@@ -273,7 +273,7 @@ namespace Game {
                     return false;
                 }
 
-                Global.dbManager.Delete(obj, obj.Technologies);
+                Global.dbManager.Delete(obj);
 
                 obj.City = null;
                 obj_RemoveEvent(obj);
@@ -302,6 +302,9 @@ namespace Game {
 
             if (!updating)
                 throw new Exception("Changed state outside of begin/end update block");
+
+            if (!MultiObjectLock.IsLocked(this))
+                throw new Exception("Object not locked");
         }
 
         public void BeginUpdate() {
@@ -555,7 +558,10 @@ namespace Game {
 
         public DbDependency[] DbDependencies {
             get {
-                return new DbDependency[] { };
+                return new DbDependency[] { 
+                    new DbDependency("Technologies", false, true),
+                    new DbDependency("Template", false, true),
+                };
             }
         }
 

@@ -31,6 +31,9 @@ namespace Game.Logic.Actions {
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
+            quantity = ushort.Parse(properties["quantity"]);
+            price = ushort.Parse(properties["price"]);
+            resourceType = (ResourceType) Enum.Parse(typeof(ResourceType), properties["resource_type"]);
         }
 
         #region IAction Members
@@ -128,7 +131,10 @@ namespace Game.Logic.Actions {
             get {
                 return XMLSerializer.Serialize(new XMLKVPair[] {
                     new XMLKVPair("city_id", cityId),
-                    new XMLKVPair("structure_id", structureId)
+                    new XMLKVPair("structure_id", structureId),
+                    new XMLKVPair("resource_type", resourceType.ToString()),
+                    new XMLKVPair("price", price),
+                    new XMLKVPair("quantity", quantity)
                 });
             }
         }

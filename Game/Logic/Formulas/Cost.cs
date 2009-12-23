@@ -20,5 +20,18 @@ namespace Game.Logic {
                 return UnitFactory.getCost((int)type, (int)lvl) * 1.5;
             }
         }
+
+        internal static ushort RepairRate(Structure structure) {
+            //repairPower += (ushort)(structure.Stats.Base.Lvl * (50 + city.MainBuilding.Stats.Base.Lvl * 10));
+            return (ushort)(structure.Stats.Labor * 10);
+        }
+
+        internal static Resource RepairCost(City city, ushort repairPower) {
+            int lumber = repairPower;
+            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.RepairSaving,EffectInheritance.All)) {
+                lumber -= repairPower * (100 - (int)effect.value[0]) / 100;
+            }
+            return new Resource(0, 0, 0, lumber, 0);
+        }
     }
 }

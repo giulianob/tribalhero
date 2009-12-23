@@ -43,6 +43,7 @@ namespace Game.Data {
         WoodCutting = 8,
         HaveTechnology = 9,
         CountEffect =10,
+        RepairSaving = 11,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

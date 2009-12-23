@@ -78,7 +78,7 @@ namespace Game.Logic.Actions {
 
                     #region Repair
                     if (ObjectTypeFactory.IsStructureType("RepairBuilding", structure)) {
-                        repairPower += (ushort)(structure.Stats.Base.Lvl * (50 + city.MainBuilding.Stats.Base.Lvl * 10));
+                        repairPower += Formula.RepairRate(structure);
                     }
                     #endregion
 
@@ -130,12 +130,16 @@ namespace Game.Logic.Actions {
 /*********************************** Loop2 *******************************************/
                 foreach (Structure structure in city) {
                     #region Repair
-                    if (repairPower > 0) {
-                        if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp && 
+                    Resource repairCost = Formula.RepairCost(city, repairPower);
+                    if (repairPower > 0 && city.Resource.HasEnough(repairCost)) {
+                        if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp &&
                             !ObjectTypeFactory.IsStructureType("NonRepairable", structure) &&
                             structure.State.Type != ObjectState.BATTLE) {
-                            if ((structure.Stats.Hp += repairPower) > structure.Stats.Base.Battle.MaxHp) structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
+                            if ((structure.Stats.Hp += repairPower) > structure.Stats.Base.Battle.MaxHp) {
+                                structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
+                            }
                         }
+                        city.Resource.Subtract(repairCost);
                     }
                     #endregion
 

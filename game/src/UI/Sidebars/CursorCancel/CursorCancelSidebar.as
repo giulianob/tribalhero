@@ -49,6 +49,8 @@ package src.UI.Sidebars.CursorCancel {
 		{
 			super.showSelf(owner, onClose);
 			
+			frame.getTitleBar().setText("Cancel");
+			
 			frame.show();
 			return frame;
 		}			

@@ -135,15 +135,15 @@ namespace Game.Logic.Actions {
                         if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp &&
                             !ObjectTypeFactory.IsStructureType("NonRepairable", structure) &&
                             structure.State.Type != ObjectState.BATTLE) {
+                            structure.BeginUpdate();
                             if ((structure.Stats.Hp += repairPower) > structure.Stats.Base.Battle.MaxHp) {
                                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                             }
+                            structure.EndUpdate();
                         }
                         city.Resource.Subtract(repairCost);
                     }
                     #endregion
-
-                    Global.dbManager.Save(structure);
                 }
 /********************************* Post Loop2 ****************************************/
                 city.EndUpdate();

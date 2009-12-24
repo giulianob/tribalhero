@@ -13,7 +13,6 @@
 	import src.Util.*;
 	import flash.display.*;
 	import flash.utils.Timer;
-	import src.UI.PaintBox;
 	import src.Objects.IDisposable;
 	import src.Objects.Actions.*;	
 	import src.*;

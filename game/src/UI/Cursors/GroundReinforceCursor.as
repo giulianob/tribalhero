@@ -25,13 +25,8 @@
 	import src.Objects.StructureObject;
 	import src.Objects.Troop;
 	import src.UI.Components.GroundCircle;
-	import src.UI.PaintBox;
 	import src.Util.Util;
 	
-	/**
-	* ...
-	* @author Default
-	*/
 	public class GroundReinforceCursor extends MovieClip implements IDisposable
 	{
 		private var map: Map;

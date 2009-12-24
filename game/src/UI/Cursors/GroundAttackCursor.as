@@ -25,7 +25,6 @@
 	import src.Objects.StructureObject;
 	import src.Objects.Troop;
 	import src.UI.Components.GroundCircle;
-	import src.UI.PaintBox;
 	import src.UI.Tooltips.Tooltip;
 	import src.Util.Util;
 	

@@ -21,7 +21,6 @@ package src.UI.Cursors {
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleObject;
 	import src.UI.Components.GroundCircle;
-	import src.UI.PaintBox;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.UI.SmartMovieClip;
 	
@@ -39,9 +38,7 @@ package src.UI.Cursors {
 		private var parentObj: GameObject;
 		private var type: int;
 		private var level: int;
-		
-		private var errorMsg: PaintBox;
-		
+			
 		public function BuildStructureCursor() { }
 		
 		public function init(map: Map, type: int, level: int, parentObject: GameObject):void
@@ -83,9 +80,10 @@ package src.UI.Cursors {
 		
 		public function dispose():void
 		{			
+			map.gameContainer.message.hide();
+			
 			if (cursor != null)
 			{								
-				setErrorMsg(null);
 				if (cursor.stage != null) map.objContainer.removeObject(cursor);			
 				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
 			}
@@ -126,7 +124,7 @@ package src.UI.Cursors {
 			originPoint = new Point(event.stageX, event.stageY);
 		}
 		
-		public function onMouseMove(event: MouseEvent):void
+		public function onMouseMove(event: MouseEvent) : void
 		{						
 			if (event.buttonDown)
 				return;
@@ -153,21 +151,6 @@ package src.UI.Cursors {
 			}
 		}
 		
-		public function setErrorMsg(errorMsg: PaintBox):void
-		{
-			if (this.errorMsg != null)			
-				stage.removeChild(this.errorMsg);
-				
-			this.errorMsg = errorMsg;
-			
-			if (errorMsg != null)
-			{
-				errorMsg.x = int(Constants.screenW / 2) - int(errorMsg.width / 2);
-				errorMsg.y = int(Constants.screenH / 2) - int(errorMsg.height / 2);
-				stage.addChild(errorMsg);					
-			}
-		}
-		
 		public function validateBuilding():void
 		{				
 			var msg: XML;			
@@ -179,39 +162,18 @@ package src.UI.Cursors {
 			{
 					hideCursors();
 					
-					msg = 	
-						<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
-							<Row>
-								<Column>
-									<Text width="-1">Can not build on top of another structure or object</Text>
-								</Column>
-							</Row>
-						</PaintBox>;
-					
-					setErrorMsg(new PaintBox(msg));
-					
+					map.gameContainer.message.showMessage("Can not build on top of another structure");					
 					return;
 			}
 			else if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
-					hideCursors();
-					
-					msg = 	
-						<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
-							<Row>
-								<Column>
-									<Text width="-1">Structure must be built within the city walls</Text>
-								</Column>
-							</Row>
-						</PaintBox>;
-					
-					setErrorMsg(new PaintBox(msg));
-					
+					hideCursors();				
+					map.gameContainer.message.showMessage("This structure must be built within the city walls");
 					return;
 			}
 			else
 			{
 				showCursors();
-				setErrorMsg(null);
+				map.gameContainer.message.hide();
 			}
 			
 			if (structPrototype != null)
@@ -220,24 +182,13 @@ package src.UI.Cursors {
 				
 				if (structPrototype.validateLayout(map, map.cities.get(parentObj.cityId), objX, objY))
 				{				
-					filters.push(new GlowFilter(0x00FF00));				
-					
-					setErrorMsg(null);
+					filters.push(new GlowFilter(0x00FF00));									
 				}
 				else
 				{					
 					filters.push(new GlowFilter(0xFF0000));				
 					
-					msg = 	
-						<PaintBox width="-1" color="0xFFFFFF" size="18" bold="true">
-							<Row>
-								<Column>
-									<Text width="-1">Building requirements not met</Text>
-								</Column>
-							</Row>
-						</PaintBox>;
-					
-					setErrorMsg(new PaintBox(msg));				
+					map.gameContainer.message.showMessage("Some of the building requirements have not been met");
 				}
 				
 				showCursors();

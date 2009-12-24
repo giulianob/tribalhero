@@ -29,7 +29,6 @@
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.LoginDialog;
 	import src.UI.GameLookAndFeel;
-	import src.UI.PaintBox;
 	import src.Util.*;
 	import src.Comm.*;
 	import src.Objects.Factories.*;

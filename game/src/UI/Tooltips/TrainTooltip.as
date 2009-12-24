@@ -18,7 +18,6 @@ package src.UI.Tooltips {
 	import src.Objects.StructureObject;
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.GameLookAndFeel;
-	import src.UI.PaintBox;
 	import src.Util.Util;	
 		
 	import org.aswing.*;

@@ -33,7 +33,7 @@ namespace Game.Comm {
                     return;
                 }
 
-                TroopStub stub = new TroopStub(city.Troops);
+                TroopStub stub = new TroopStub();
                 Dictionary<ushort, uint> holder = new Dictionary<ushort, uint>();
 
                 if (formationCount != 2) {
@@ -220,7 +220,7 @@ namespace Game.Comm {
                     return;
                 }
 
-                TroopStub stub = new TroopStub(city.Troops);
+                TroopStub stub = new TroopStub();
 
                 for (int f = 0; f < formationCount; ++f) {
                     FormationType formationType;
@@ -302,7 +302,7 @@ namespace Game.Comm {
                 City city = cities[cityId];
                 City targetCity = cities[targetCityId];
 
-                TroopStub stub = new TroopStub(city.Troops);
+                TroopStub stub = new TroopStub();
 
                 for (int f = 0; f < formationCount; ++f) {
                     FormationType formationType;

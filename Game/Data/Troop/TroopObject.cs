@@ -65,10 +65,7 @@ namespace Game.Data {
                 return;
 
             if (objectID > 0)
-                Global.dbManager.Save(this);
-
-            if (troopStub != null)
-                troopStub.FireUpdated();            
+                Global.dbManager.Save(this);           
         }
         #endregion
 

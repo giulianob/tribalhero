@@ -37,19 +37,17 @@ namespace Game.Data {
 
         public Formation this[FormationType type] {
             get { return data[type]; }
-            set { data[type] = value; }
+            set { CheckUpdateMode();  data[type] = value; }
         }
 
         TroopState state = TroopState.IDLE;
         public TroopState State {
             get { return state; }
-            set { state = value; isDirty = true; }
+            set { CheckUpdateMode(); state = value; isDirty = true; }
         }
 
-        City city;
         public City City {
-            get { return city; }
-            set { city = value; }
+            get { return troopManager == null ? null : troopManager.City; }
         }
 
         byte stationedTroopId;
@@ -61,19 +59,19 @@ namespace Game.Data {
         City stationedCity;
         public City StationedCity {
             get { return stationedCity; }
-            set { stationedCity = value; }
+            set { CheckUpdateMode(); stationedCity = value; }
         }
 
         TroopObject troopObject;
         public TroopObject TroopObject {
             get { return troopObject; }
-            set { troopObject = value; }
+            set { CheckUpdateMode(); troopObject = value; }
         }
 
         byte troopId;
         public byte TroopId {   
             get { return troopId; }
-            set { troopId = value; }
+            set { CheckUpdateMode(); troopId = value; }
         }
 
         public byte FormationCount {
@@ -100,7 +98,7 @@ namespace Game.Data {
                 lock (objLock) {
                     foreach (Formation formation in this.data.Values) {
                         foreach (KeyValuePair<ushort, ushort> kvp in formation) {
-                            count += (kvp.Value * city.Template[kvp.Key].Battle.MaxHp);
+                            count += (kvp.Value * City.Template[kvp.Key].Battle.MaxHp);
                         }
                     }
                 }
@@ -115,7 +113,7 @@ namespace Game.Data {
                 lock (objLock) {
                     foreach (Formation formation in this.data.Values) {
                         foreach (KeyValuePair<ushort, ushort> kvp in formation) {
-                            count += (kvp.Value * city.Template[kvp.Key].Upkeep);
+                            count += (kvp.Value * City.Template[kvp.Key].Upkeep);
                         }
                     }
                 }
@@ -126,6 +124,8 @@ namespace Game.Data {
 
         public void Starve() {
             lock (objLock) {
+                CheckUpdateMode();
+
                 foreach (Formation formation in this.data.Values) {
                     foreach (KeyValuePair<ushort,ushort> kvp in new Dictionary<ushort,ushort>(formation)) {
                         if (kvp.Value == 1) {
@@ -187,37 +187,43 @@ namespace Game.Data {
         public event OnUnitUpdate UnitUpdate;
         #endregion
 
-        public TroopStub(TroopManager troopManager) {
-            this.troopManager = troopManager;
+        public TroopStub() {
             this.troopTemplate = new TroopTemplate(this);
         }
 
         public void FireUpdated() {
             if (!Global.FireEvents) return;
 
-            if (!isUpdating) {
-                if (UnitUpdate != null)
-                    UnitUpdate(this);
-                isDirty = false;
-            }
-            else {
-                isDirty = true;
-            }
+            CheckUpdateMode();
+
+            isDirty = true;
+        }
+
+        void CheckUpdateMode() {
+            if (!Global.FireEvents || City == null) return;
+
+            if (!isUpdating)
+                throw new Exception("Changed state outside of begin/end update block");
+
+            if (!MultiObjectLock.IsLocked(this))
+                throw new Exception("Object not locked");        
         }
 
         public void BeginUpdate() {
             isUpdating = true;
+            isDirty = false;
         }
 
         public void EndUpdate() {
             isUpdating = false;
 
             if (isDirty)
-                FireUpdated();
+                UnitUpdate(this);
         }
 
         public bool addFormation(FormationType type) {
             lock (objLock) {
+                CheckUpdateMode();
                 if (data.ContainsKey(type)) return false;
                 data.Add(type, new Formation(this));
             }
@@ -225,13 +231,10 @@ namespace Game.Data {
             return true;
         }
 
-        public bool add(TroopStub stub) {
-            bool alreadyUpdating = isUpdating;
-
-            if (!alreadyUpdating)
-                BeginUpdate();
-
+        public bool add(TroopStub stub) {           
             lock (objLock) {
+                CheckUpdateMode();
+
                 foreach (KeyValuePair<FormationType, Formation> kvp in (IEnumerable<KeyValuePair<FormationType, Formation>>)stub) {
                     Formation formation;
                     if (!data.TryGetValue(kvp.Key, out formation)) {
@@ -241,9 +244,6 @@ namespace Game.Data {
                     formation.Add(kvp.Value);
                 }
             }
-
-            if (!alreadyUpdating)
-                EndUpdate();
 
             return true;
         }
@@ -261,12 +261,9 @@ namespace Game.Data {
 
         public bool remove(TroopStub troop) {
             lock (objLock) {
+                CheckUpdateMode();
+
                 if (!hasEnough(troop)) return false;
-
-                bool alreadyUpdating = isUpdating;
-
-                if (!alreadyUpdating)
-                    BeginUpdate();
 
                 foreach (KeyValuePair<FormationType, Formation> kvp in (IEnumerable<KeyValuePair<FormationType, Formation>>)troop) {
                     Formation formation;
@@ -275,9 +272,6 @@ namespace Game.Data {
                         formation.remove(unit.Key, unit.Value);
                     }
                 }
-
-                if (!alreadyUpdating)
-                    EndUpdate();
             }
 
             return true;
@@ -285,6 +279,8 @@ namespace Game.Data {
 
         public ushort removeUnit(FormationType formation_type, ushort type, ushort count) {
             lock (objLock) {
+                CheckUpdateMode();
+
                 Formation formation;
                 if (data.TryGetValue(formation_type, out formation)) {
                     ushort removed = formation.remove(type, count);
@@ -294,6 +290,7 @@ namespace Game.Data {
                     }
 
                 }
+
                 return 0;
             }
         }
@@ -301,6 +298,8 @@ namespace Game.Data {
 
         public void removeAllUnits() {
             lock (objLock) {
+                CheckUpdateMode();
+
                 foreach (KeyValuePair<FormationType, Formation> kvp in data) {
                     kvp.Value.Clear();
                 }

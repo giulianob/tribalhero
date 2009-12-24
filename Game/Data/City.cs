@@ -123,11 +123,14 @@ namespace Game {
             effectManager = new TechnologyManager(EffectLocation.City, this, cityId);
 
             troopManager = new TroopManager(this);
-            TroopStub default_troop = new TroopStub(troopManager);
+
+            TroopStub default_troop = new TroopStub();
+            default_troop.BeginUpdate();
             default_troop.addFormation(FormationType.Normal);
             default_troop.addFormation(FormationType.Garrison);
             default_troop.addFormation(FormationType.InBattle);
             troopManager.Add(default_troop);
+            default_troop.EndUpdate();
 
             troopManager.TroopUpdated += new TroopManager.UpdateCallback(troop_manager_TroopUpdated);
             troopManager.TroopRemoved += new TroopManager.UpdateCallback(troop_manager_TroopRemoved);
@@ -168,16 +171,19 @@ namespace Game {
         }
 
         public bool add(uint id, TroopObject troop, bool save) {
-            lock (objLock) {
-                troop.City = this;
+            lock (objLock) {                               
+                troop.Stub.BeginUpdate();
                 troop.Stub.TroopObject = troop;
+                troop.Stub.EndUpdate();
+
                 try {
                     troopobjects.Add(id, troop);
                 }
                 catch (Exception) {
-                    troop.City = null;
                     return false;
                 }
+                
+                troop.City = this;
 
                 if (nextObjectId < id)
                     nextObjectId = id;
@@ -250,7 +256,9 @@ namespace Game {
                 Global.dbManager.Delete(obj);
 
                 obj.City = null;
+                obj.Stub.BeginUpdate();
                 obj.Stub.TroopObject = null;
+                obj.Stub.EndUpdate();
 
                 obj_RemoveEvent(obj);
             }

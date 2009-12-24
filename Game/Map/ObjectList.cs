@@ -88,7 +88,6 @@ namespace Game.Map {
 
             if (dict.TryGetValue(index, out list)) {
                 list.Add(obj);
-                dict[index] = list;
             }
             else {
                 list = new List<GameObject>();

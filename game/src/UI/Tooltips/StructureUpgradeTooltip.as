@@ -149,7 +149,7 @@ package src.UI.Tooltips {
 			pnlRequired.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));
 			
 			lblRequires = new JLabel();
-			lblRequires.setText("Requires");
+			lblRequires.setText("Requirements");
 			lblRequires.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblRequires, "header");
 			

@@ -81,10 +81,13 @@ public class LaborMoveDialog extends GameJPanel{
 			var laborDelta: int = sldCount.getValue() - structure.labor;
 			var newLabor: int = labor + laborDelta;
 			
-			lblRate.setText((labor == 0? "0" : "+" + LazyResources.getHourlyRate(int(3600000 / newLabor))) + " per hour");
+			lblRate.setText((newLabor == 0? "0" : "+" + LazyResources.getHourlyRate(int(3600000 / newLabor))) + " per hour");
 		}
 		
 		lblCount.setText(sldCount.getValue().toString() + " out of " + sldCount.getMaximum().toString());
+		
+		if (getFrame() != null)
+			getFrame().pack();
 	}
 	
 	public function getCount():int{

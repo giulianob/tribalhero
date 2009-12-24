@@ -23,7 +23,7 @@
 			this.resources = resources;
 			
 			setBorder(null);
-			setLayout(new FlowLayout(AsWingConstants.LEFT, 5, 5, false));
+			setLayout(new FlowLayout(AsWingConstants.LEFT, 8, 5, false));
 			
 			addEventListener(Event.ADDED_TO_STAGE, addedToStage);
 			

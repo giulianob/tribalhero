@@ -188,13 +188,13 @@ namespace Game.Database
                             if ((uint)reader["stationed_city_id"] != 0)
                                 Global.World.TryGetObjects((uint)reader["stationed_city_id"], out stationedCity);
 
-                            TroopStub stub = new TroopStub(city.Troops);
+                            TroopStub stub = new TroopStub();
 
                             if ((byte)reader["id"] == 1)
                                 stub = city.DefaultTroop;
 
+                            stub.TroopManager = city.Troops;
                             stub.TroopId = (byte)reader["id"];
-                            stub.City = city;
                             stub.State = (TroopStub.TroopState)Enum.Parse(typeof(TroopStub.TroopState), reader["state"].ToString());
                             stub.DbPersisted = true;
 

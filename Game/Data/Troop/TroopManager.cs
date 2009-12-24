@@ -54,9 +54,6 @@ namespace Game.Data {
         void FireAdded(TroopStub stub) {
             if (!Global.FireEvents) return;
 
-            if (stub.City.CityId > 0)
-                Global.dbManager.Save(stub);
-
             if (TroopAdded != null)
                 TroopAdded(stub);
         }
@@ -74,6 +71,9 @@ namespace Game.Data {
             if (dict.ContainsKey(id)) return false;
             idGen.set(id);
             dict[id] = stub;
+            stub.BeginUpdate();
+            stub.TroopManager = this;
+            stub.EndUpdate();
             stub.UnitUpdate += new TroopStub.OnUnitUpdate(stub_UpdateEvent);
             return true;
         }
@@ -84,7 +84,7 @@ namespace Game.Data {
             if (nextId == -1) return false;
             id = (byte) nextId;                             
             stub.TroopId = id;
-            stub.City = city;
+            stub.TroopManager = this;
             dict.Add(id, stub);
             stub.UnitUpdate += new TroopStub.OnUnitUpdate(stub_UpdateEvent);
             FireAdded(stub);
@@ -130,7 +130,6 @@ namespace Game.Data {
             if (!dict.TryGetValue(id, out stub)) return false;
             if (!dict.Remove(id)) return false;
             idGen.release(id);
-            stub.City = null;
             stub.UnitUpdate -= new TroopStub.OnUnitUpdate(stub_UpdateEvent);
             FireRemoved(stub);
             return true;

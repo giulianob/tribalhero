@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 19, 2009 at 08:56 PM
+-- Generation Time: Dec 23, 2009 at 09:11 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -605,7 +605,7 @@ CREATE TABLE `troop_templates_list` (
   `stealth` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,
   `reward` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`city_id`,`troop_stub_id`)
+  PRIMARY KEY (`city_id`,`troop_stub_id`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

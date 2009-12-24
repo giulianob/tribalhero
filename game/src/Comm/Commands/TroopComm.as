@@ -149,6 +149,8 @@
 		
 		public function onReceiveTroopInfo(packet: Packet, custom: * ):void
 		{
+			if (mapComm.tryShowError(packet)) return;
+			
 			var obj: TroopObject = custom as TroopObject;
 			obj.troop = new Troop();
 			
@@ -172,7 +174,7 @@
 				}
 				
 				obj.template.clear();			
-				var templateCnt: int = packet.readUShort();
+				var templateCnt: int = packet.readUShort();	
 				for (var i: int = 0; i < templateCnt; i++)
 				{
 					unitType = packet.readUShort();

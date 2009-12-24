@@ -184,8 +184,7 @@
 		
 		public function onReceiveStructureInfo(packet: Packet, custom: *):void
 		{
-			if (Constants.debug == 1)
-				trace("Receiving structure info");
+			if (mapComm.tryShowError(packet)) return;
 			
 			var obj:StructureObject = custom as StructureObject;
 			

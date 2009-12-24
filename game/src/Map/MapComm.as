@@ -36,6 +36,18 @@ package src.Map {
 			Market = new MarketComm(this);
 		}
 		
+		public function tryShowError(packet: Packet) : Boolean {
+			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
+			{
+				var err: int = packet.readUInt();
+				
+				GameError.showMessage(err);
+				return true;
+			}			
+			
+			return false;
+		}
+		
 		public function catchAllErrors(packet: Packet, custom: * ):void
 		{
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)

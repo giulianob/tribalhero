@@ -152,6 +152,8 @@ package src.UI.Sidebars.ObjectInfo {
 				var lastActionType: int = -1;
 				var pnlRow: JPanel = null;
 				for each(var groupButton: ActionButton in groupedButtons) {
+					if (groupButton.parentAction == null) continue;
+					
 					if (cnt == 3 || lastActionType == -1 || lastActionType != groupButton.parentAction.actionType) {						
 						pnlRow = new JPanel();
 						pnlRow.setLayout(new FlowLayout(AsWingConstants.LEFT, 8));

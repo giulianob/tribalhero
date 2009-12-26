@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 23, 2009 at 09:11 PM
+-- Generation Time: Dec 26, 2009 at 11:47 AM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -349,10 +349,12 @@ CREATE TABLE `players` (
   `email_address` varchar(256) NOT NULL,
   `login_key` varchar(64) DEFAULT NULL,
   `login_key_date` datetime DEFAULT NULL,
+  `session_id` varchar(128) NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
-  KEY `login_key` (`login_key`)
+  KEY `login_key` (`login_key`),
+  KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

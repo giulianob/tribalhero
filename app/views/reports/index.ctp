@@ -1,24 +1,18 @@
-<table>
-	<tr>
-		<th>Time</th>
-		<th>Battle Location</th>
-		<th>Troop Hometown</th>
-		<th>Side</th>
-	</tr>
-	<? foreach($battle_reports as $battle_report) : ?>
-	<tr>
-		<td><?=$html->link($battle_report['BattleReport']['created'], array('action' => 'report_view', $battle_report['BattleReport']['id']))?></td>
-		<td><?=$battle_report['City']['name']?></td>
-		<td><?=$battle_report['TroopCity']['name']?></td>
-		<td><?=$battle_report['BattleReportTroopEnter']['is_attacker']?'Attack':'Defense'?></td>
-	</tr>
-	<? endforeach; ?>
-</table>
+<?php
 
-<div class="pagination">	
-	<?php
-		echo $paginator->prev('« Previous ', null, null, array('class' => 'disabled'));
-		echo $paginator->counter();
-		echo $paginator->next(' Next »', null, null, array('class' => 'disabled'));
-	?> 	
-</div>
+$paging = $paginator->params('BattleReport');
+
+$results = array('pages' => $paging['pageCount'], 'page' => $paging['page'], 'snapshots' => array());
+
+foreach($battle_reports as $battle_report) 
+{
+	$results['snapshots'][] = array(
+		'id' => $battle_report['BattleReport']['id'],
+		'date' => $battle_report['BattleReport']['created'],
+		'location' => $battle_report['City']['name'],
+		'attacker' => $battle_report['TroopCity']['name'] . '(' . $battle_report['BattleReportTroopEnter']['troop_stub_id'] . ')',
+		'side' => $battle_report['BattleReportTroopEnter']['is_attacker']?'Attack':'Defense'
+	);
+}
+
+echo json_encode($results);

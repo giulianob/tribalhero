@@ -21,6 +21,24 @@ class AppController extends Controller
         }
 		*/
 		
+		if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
+			if (!array_key_exists('sessionId', $this->params['form']) || ! array_key_exists('playerId', $this->params['form'])) 
+			{
+				$this->Auth->deny($this->action);				
+			}
+			else 
+			{
+				$playerModel =& ClassRegistry::init('Player');
+			
+				$player = $playerModel->find('first', array('conditions' => array('session_id' => $this->params['form']['sessionId'], 'id' => $this->params['form']['playerId'])));
+			
+				if (!empty($player))
+					$this->Auth->allow($this->action);
+				else
+					$this->Auth->deny($this->action);
+			}
+		}
+		
 		$this->Auth->authError = "You have to login to do that!";
 		$this->Auth->userModel = 'Player';
 		$this->Auth->fields = array('username' => 'name', 'password' => 'password');								

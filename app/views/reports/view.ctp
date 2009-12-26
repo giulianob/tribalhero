@@ -1,44 +1,48 @@
-<?
-	//echo $javascript->link('jquery/jquery-1.3.2.min.js', true);
-	//echo $javascript->link('jquery/jquery-ui-1.7.1.full.min.js', true);
-	
-	//echo $html->css('jquery/jquery-ui-1.7.1.custom.css', null, array(), true);	
-?>
-
 <?php
-	$battleStartTime = strtotime($main_report['BattleReport']['created']);
-	foreach($battle_reports as $battle_report):
-?>
 
-	<div class="report-box">
-		<h2><?=$timeAdv->diff(strtotime($battle_report['BattleReport']['created']) - $battleStartTime);?></h2>		
-		<ul class="list">
-		<? 	foreach($battle_report['BattleReportTroop'] as $battle_troop):
-				if ($battle_troop['state'] == TROOP_STATE_STAYING) continue;										 
-		?>
-			<li><?=$battle_troop['City']['name']?>(<?=$battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']?>) has <?=$troop_states_pst[$battle_troop['state']]?></li>
-		<? 	endforeach; ?>
-		</ul>		
-		<div class="float-left col45">
-			<?=$this->element('battle_report_view', array('is_attack' => false, 'battle_report' => $battle_report))?>					
-		</div>
-		<div class="float-right col45">
-			<?=$this->element('battle_report_view', array('is_attack' => true, 'battle_report' => $battle_report))?>
-		</div>
-		<div class="clear"> </div>
-	</div>
-<? endforeach; ?>
+$paging = $paginator->params('BattleReport');
 
-<div class="pagination">
-	<?php
-		echo $paginator->prev('« Previous ', null, null, array('class' => 'disabled'));
-		echo $paginator->counter();
-		echo $paginator->next(' Next »', null, null, array('class' => 'disabled'));
-	?> 	
-</div>
+$results = array('pages' => $paging['pageCount'], 'page' => $paging['page'], 'snapshots' => array());
 
-<script type="text/javascript">
-	$(function() {		
-	    $("div.report-tabs").tabs();
-	});	 			
-</script>
+$battleStartTime = strtotime($main_report['BattleReport']['created']);
+
+foreach($battle_reports as $battle_report) {
+	$snapshot = array('time' => strtotime($battle_report['BattleReport']['created']) - $battleStartTime, 'events' => array(), 'attackers' => array(), 'defenders' => array());
+		
+	foreach($battle_report['BattleReportTroop'] as $battle_troop) {
+		//Save the events
+		if ($battle_troop['state'] != TROOP_STATE_STAYING) {
+			$snapshot['events'][] = $battle_troop['City']['name'].'('.($battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']).') has '.$troop_states_pst[$battle_troop['state']];
+		}
+				
+		//Save the main troop info
+		$troop = array('name' => $battle_troop['City']['name'].'('.($battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']).')', 'units' => array());
+		
+		//Only attackers have resources
+		if ($battle_troop['is_attacker'])
+			$troop['resources'] = array('gold' => $battle_troop['gold'], 'crop' => $battle_troop['crop'], 'iron' => $battle_troop['iron'], 'wood' => $battle_troop['wood']);
+		
+		//Gather all the unit info
+		foreach($battle_troop['BattleReportObject'] as $battle_object) {
+			$troop['units'][] = array(				
+				'type' => $battle_object['type'],
+				'level' => $battle_object['level'],
+				'count' => $battle_object['count'],
+				'hp' => $battle_object['hp'],
+				'dmgTaken' => $battle_object['damage_taken'],
+				'dmgDealt' => $battle_object['damage_dealt']
+			);			
+		}
+			
+		//Save to appropriate location
+		if ($battle_troop['is_attacker'])
+			$snapshot['attackers'][] = $troop;
+		else
+			$snapshot['defenders'][] = $troop;
+	}
+	
+	$results['snapshots'][] = $snapshot;
+}
+
+
+echo json_encode($results);

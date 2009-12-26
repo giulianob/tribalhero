@@ -5,6 +5,8 @@ class ReportsController extends AppController
 	var $uses = array();
 	var $helpers = array('TimeAdv');	
 	
+	var $allowedFromGame = array('index', 'view');
+	
 	//temp until i figure out how to put this in bootstrap
 	var	$troop_states_pst = array(
     	'joined the battle',
@@ -38,7 +40,7 @@ class ReportsController extends AppController
 		2304 => 'Cannonsmith',
 		2305 => 'Gunsmith',
 		2306 => 'Whitesmith',
-		2402 => 'Towwer',
+		2402 => 'Tower',
 		2403 => 'Cannon Tower',
 		2501 => 'Distribution Center',
 		2502 => 'Market',
@@ -62,6 +64,14 @@ class ReportsController extends AppController
 	
 	function beforeFilter()
 	{
+		if (!empty($this->params['named'])) {
+			$this->params['form'] = $this->params['named'];
+		}
+		else
+		{
+			Configure::write('debug', 0);
+		}
+			
 		$this->layout = 'ajax';
 		
 		parent::beforeFilter();
@@ -74,11 +84,11 @@ class ReportsController extends AppController
 		$this->City->recursive = -1;		
 		
 		$cities = $this->City->find('list', array('conditions' => array(
-			'player_id' => $this->Auth->user('id')
-		)));						
+			'player_id' => $this->params['form']['playerId']
+		)));
 		
 		$this->BattleReport =& ClassRegistry::init('BattleReport');
-		
+			
 		$this->paginate = array(
 	 		'joins' => array(
 	 			array(	 		
@@ -134,6 +144,7 @@ class ReportsController extends AppController
 	        	'BattleReport.turn',	      
 	        	'BattleReport.created',  	
 	        	'BattleReportTroopEnter.is_attacker',
+	        	'BattleReportTroopEnter.troop_stub_id',
 	        	'TroopCity.name'
 	        ),
 			'conditions' => array(			
@@ -147,7 +158,8 @@ class ReportsController extends AppController
 				)
 			),
 			'recursive' => '-1',
-			'limit' => '15'
+			'limit' => 15,			
+			'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1  
 		);
 		
 		$reports = $this->paginate('BattleReport');
@@ -155,17 +167,19 @@ class ReportsController extends AppController
 		$this->set('battle_reports', $reports);
 	}
 	
-	function view($id = null)
+	function view()
 	{
-		if (empty($id))
-			$this->redirect(array('action' => 'reports'));
+		if (empty($this->params['form']['id'])) {
+			$this->render(false);
+			return;
+		}
 			
 		$this->City =& ClassRegistry::init('City');
 		
 		$this->City->recursive = -1;		
 		
 		$cities = $this->City->find('list', array('conditions' => array(
-			'player_id' => $this->Auth->user('id')
+			'player_id' => $this->params['form']['playerId']
 		)));						
 		
 		//main report data to find the beginning/end of the battle reports we need
@@ -228,7 +242,7 @@ class ReportsController extends AppController
 	        	'TroopCity.name'
 	        ),
 			'conditions' => array(			
-				'BattleReport.id' => $id,
+				'BattleReport.id' => $this->params['form']['id'],
 				'BattleReport.ready' => '1'
 			),
 			'link' => array(
@@ -244,10 +258,10 @@ class ReportsController extends AppController
 		
 		if (empty($report))
 		{
-			$this->Session->setFlash('Invalid battle report specified.');
-			$this->redirect(array('action' => 'reports'));			
+			$this->render(false);
+			return;		
 		}				
-			
+		
 		$this->paginate = array(
 			'conditions' => array(
 				'BattleReport.battle_id' => $report['Battle']['id'],
@@ -267,10 +281,11 @@ class ReportsController extends AppController
 				'BattleReport.round ASC',
 				'BattleReport.turn ASC'
 			),
-			'limit' => 30
+			'limit' => 15,
+			'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1  			
 		);		
 		
-		$reports = $this->paginate($this->City->Battle->BattleReport);		
+		$reports = $this->paginate($this->City->Battle->BattleReport);
 		$this->set('formations', $this->formations);
 		$this->set('troop_states_pst', $this->troop_states_pst);
 		$this->set('main_report', $report);

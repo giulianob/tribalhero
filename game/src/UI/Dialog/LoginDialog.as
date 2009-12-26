@@ -100,7 +100,7 @@ public class LoginDialog extends GameJPanel {
 		txtAddress.setLocation(new IntPoint(74, 20));
 		txtAddress.setSize(new IntDimension(150, 21));
 		txtAddress.setPreferredSize(new IntDimension(150, 21));
-		txtAddress.setHtmlText("127.0.0.1");
+		txtAddress.setText(Constants.hostname);
 		
 		separator14 = new JSeparator();
 		separator14.setLocation(new IntPoint(10, 33));
@@ -121,7 +121,7 @@ public class LoginDialog extends GameJPanel {
 		txtUsername.setLocation(new IntPoint(79, 51));
 		txtUsername.setSize(new IntDimension(150, 21));
 		txtUsername.setPreferredSize(new IntDimension(150, 21));
-		txtUsername.setText("1234");
+		txtUsername.setText(Constants.username);
 		
 		formrow10 = new FormRow();
 		formrow10.setLocation(new IntPoint(10, 56));

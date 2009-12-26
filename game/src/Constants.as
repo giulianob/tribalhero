@@ -3,6 +3,12 @@ package src
 	import flash.net.Socket;
 	public class Constants
 	{		
+		/* SESSION VARIABLES */
+		public static var username: String = "1234";
+		public static var hostname: String = "local.tribalhero.com";
+		public static var sessionId: String;
+		public static var playerId: int;
+		
 		/* APP CONSTANTS */
 		public static const debug:int = 0;		
 		public static const defLang:String = "en";

@@ -30,8 +30,9 @@
 		
 		public function onLogin(packet: Packet):void
 		{
-			map.playerId = packet.readUInt();
-			map.usernames.players.add(new Username(map.playerId, packet.readString()));
+			Constants.playerId = packet.readUInt();
+			Constants.sessionId = packet.readString();
+			map.usernames.players.add(new Username(Constants.playerId, packet.readString()));
 			
 			var now: Date = new Date();			
 			var serverTime: int = packet.readUInt();

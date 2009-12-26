@@ -47,6 +47,7 @@
   <libraryPaths>
     <element path="..\..\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs\flash.swc" />
     <element path="lib\swc\Game\Game.swc" />
+    <element path="lib\swc\as3corelib\as3corelib.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

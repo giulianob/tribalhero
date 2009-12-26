@@ -46,10 +46,8 @@
 		private var mapComm: MapComm;
 		private var frameCounter:FPSCounter;		
 		public var packetCounter:GeneralCounter;
-		private var session:TcpSession;
-		private static var username: String = "123";
+		private var session:TcpSession;		
 		private var password: String;
-		private var hostname: String;
 		private var parms: Object;
 		
 		private var loginDialog: LoginDialog;
@@ -90,8 +88,9 @@
 			//Define login type and perform login action
 			if (parms.hostname)			
 			{
-				hostname = parms.hostname;
-				loadLanguages(hostname);
+				Constants.sessionId = parms.lsessid;
+				Constants.hostname = parms.hostname;
+				loadLanguages(Constants.hostname);
 			}
 			else
 			{
@@ -105,7 +104,7 @@
 			
 			if (Constants.webVersion)			
 			{				
-				Locale.addXMLPath(Constants.defLang, "http://"+hostname+":8085/Game_" + Constants.defLang + ".xml");			
+				Locale.addXMLPath(Constants.defLang, "http://"+Constants.hostname+":8085/Game_" + Constants.defLang + ".xml");			
 			}
 			else
 			{
@@ -124,7 +123,7 @@
 			{				
 				var loader: URLLoader = new URLLoader();
 				loader.addEventListener(Event.COMPLETE, onReceiveXML);
-				loader.load(new URLRequest("http://"+hostname+":8085/data.xml"));
+				loader.load(new URLRequest("http://"+Constants.hostname+":8085/data.xml"));
 			}
 			else
 				doConnect();
@@ -137,7 +136,7 @@
 			session.setDisconnect(onDisconnected);
 			session.setLogin(onLogin);
 			session.setSecurityErrorCallback(onSecurityError);
-			session.connect(hostname);						
+			session.connect(Constants.hostname);						
 		}
 		
 		public function showLoginDialog():void
@@ -148,11 +147,11 @@
 		
 		public function onConnect(sender: LoginDialog):void
 		{			
-			username = sender.getTxtUsername().getText();
+			Constants.username = sender.getTxtUsername().getText();
 			password = sender.getTxtPassword().getText();
-			hostname = sender.getTxtAddress().getText();
+			Constants.hostname = sender.getTxtAddress().getText();
 			
-			loadLanguages(hostname);
+			loadLanguages(Constants.hostname);
 		}
 		
 		public function onSecurityError(event: SecurityErrorEvent):void
@@ -168,7 +167,7 @@
 			
 			if (parms.hostname)
 			{
-				InfoDialog.showMessageDialog("Connection Lost", "Connection to Server Lost. Refresh the page to rejoin the battle.");
+				InfoDialog.showMessageDialog("Connection Lost", "Connection to Server Lost. Refresh the page to rejoin the battle.", null, null, true, false);
 			}
 			else
 			{
@@ -186,10 +185,10 @@
 			}
 			else
 			{
-				if (parms.lsessid)
-					session.login(parms.lsessid);
+				if (Constants.sessionId)
+					session.login(Constants.sessionId);
 				else
-					session.login(username, password);				
+					session.login(Constants.username, password);				
 			}
 			
 			password = '';

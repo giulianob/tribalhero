@@ -11,6 +11,7 @@ using Game.Logic;
 using Game.Database;
 using Game.Logic.Procedures;
 using System.Data.Common;
+using System.Security.Cryptography;
 
 namespace Game.Comm {
     public partial class Processor {
@@ -26,15 +27,17 @@ namespace Game.Comm {
             Packet reply = new Packet(packet);
 
             byte loginMode;
-            string sessionId = string.Empty;
+            string loginKey = string.Empty;            
             string playerName = string.Empty;
             string playerPassword = string.Empty;
             uint playerId;
 
+            string sessionId = string.Empty;
+
             try {
                 loginMode = packet.getByte();
                 if (loginMode == 0) {
-                    sessionId = packet.getString();
+                    loginKey = packet.getString();
                 } else {
                     playerName = packet.getString();
                     playerPassword = packet.getString();
@@ -48,7 +51,7 @@ namespace Game.Comm {
                 DbDataReader reader;
                 try {
                     if (loginMode == 0)
-                        reader = Global.dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE login_key IS NOT NULL AND login_key = '{1}' AND TIMEDIFF(NOW(), login_key_date) < '00:01:00.000000' LIMIT 1", Player.DB_TABLE, sessionId));
+                        reader = Global.dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE login_key IS NOT NULL AND login_key = '{1}' AND TIMEDIFF(NOW(), login_key_date) < '00:10:00.000000' LIMIT 1", Player.DB_TABLE, loginKey));
                     else
                         reader = Global.dbManager.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE name = '{1}' AND password = SHA1('{2}{3}') LIMIT 1", Player.DB_TABLE, playerName, Config.database_salt, playerPassword));
                 } catch (Exception e) {
@@ -69,8 +72,7 @@ namespace Game.Comm {
 
                 reader.Close();
 
-                if (loginMode == 0)
-                    Global.dbManager.Query(string.Format("UPDATE `{0}` SET login_key = null WHERE id = '{1}' LIMIT 1", Player.DB_TABLE, playerId));
+                Global.dbManager.Query(string.Format("UPDATE `{0}` SET login_key = null WHERE id = '{1}' LIMIT 1", Player.DB_TABLE, playerId, sessionId));
 
             } else {
                 if (!uint.TryParse(playerName, out playerId)) {
@@ -81,12 +83,19 @@ namespace Game.Comm {
                 playerName = "Player " + playerId;
             }
 
+            //Create the session id that will be used for the calls to the web server
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            sessionId = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.Now.Ticks))).Replace("-", String.Empty);
+
             bool newPlayer = !Global.Players.TryGetValue(playerId, out player);
 
             if (newPlayer) {
-                player = new Player(playerId, playerName);
+                player = new Player(playerId, playerName, sessionId);
 
                 Global.Players.Add(player.PlayerId, player);
+            }
+            else {
+                player.SessionId = sessionId;
             }
 
             using (new MultiObjectLock(player)) {
@@ -96,6 +105,7 @@ namespace Game.Comm {
                         player.Session = null;
                     }
                     player.Session = session;
+                    Global.dbManager.Save(player);
                 } else {
 
                     player.DbPersisted = Config.database_load_players;
@@ -132,6 +142,7 @@ namespace Game.Comm {
 
                 //Player Id
                 reply.addUInt32(player.PlayerId);
+                reply.addString(sessionId);
                 reply.addString(player.Name);
 
                 //Server time

@@ -20,18 +20,26 @@ namespace Game {
         string name;
         public string Name {
             get { return name; }
-            set { name = value; }
         }
 
         uint playerid;
         public uint PlayerId {
             get { return playerid; }
-            set { playerid = value; }
         }
 
-        public Player(uint playerid, string name) {
+        string sessionId;
+        public string SessionId {
+            get { return sessionId; }
+            set { sessionId = value; }
+        }
+
+        public Player(uint playerid, string name) : this(playerid, name, string.Empty){
+        }
+
+        public Player(uint playerid, string name, string sessionId) {
             this.playerid = playerid;
             this.name = name;
+            this.sessionId = sessionId;
         }
 
         public void add(City city) {
@@ -70,7 +78,8 @@ namespace Game {
         public DbColumn[] DbColumns {
             get {
                 return new DbColumn[] {                    
-                    new DbColumn("name", Name, System.Data.DbType.String, 32)
+                    new DbColumn("name", Name, System.Data.DbType.String, 32),
+                    new DbColumn("session_id", SessionId, System.Data.DbType.String, 128)
                 };
             }
         }

@@ -168,6 +168,12 @@ package src.Util {
 				
 			return nice;															
 		}		
+		
+		public static function firstToUpper(word: String) : String{
+			var firstLetter: String = word.substring(1, 0);
+			var restOfWord: String = word.substring(1);
+			return firstLetter.toUpperCase() + restOfWord;
+		}
 	}
 	
 }

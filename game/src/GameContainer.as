@@ -87,7 +87,7 @@
 			new SimpleTooltip(btnGoToCoords, "Go to...");
 			btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
 			
-			new SimpleTooltip(btnMessages, "View messages");
+			new SimpleTooltip(btnMessages, "View battle reports");
 			btnMessages.addEventListener(MouseEvent.CLICK, onViewMessages);
 			
 			new SimpleTooltip(btnCityInfo, "View city details");
@@ -149,11 +149,8 @@
 		
 		public function onViewMessages(e: MouseEvent):void
 		{			
-			try
-			{
-				ExternalInterface.call("showMessages");
-			}
-			catch (error: Error) {}
+			var battleReportDialog: BattleReportList = new BattleReportList();
+			battleReportDialog.show();
 		}	
 		
 		public function onGoToCoords(e: Event):void {

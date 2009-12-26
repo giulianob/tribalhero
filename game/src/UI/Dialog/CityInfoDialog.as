@@ -239,7 +239,7 @@ package src.UI.Dialog {
 				case Troop.STATIONED:
 					ui.txtState.text = "Stationed";
 					ui.btnLocateTroop.visible = true;
-					ui.btnRetreat.visible = (map.playerId == troop.playerId);
+					ui.btnRetreat.visible = (Constants.playerId == troop.playerId);
 					break;
 				default:
 					ui.txtState.text = "Idle";

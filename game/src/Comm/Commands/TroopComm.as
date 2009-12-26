@@ -1,6 +1,7 @@
 ﻿package src.Comm.Commands {
 	
 	import src.Comm.*;
+	import src.Constants;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Actions.*;
@@ -154,7 +155,7 @@
 			var obj: TroopObject = custom as TroopObject;
 			obj.troop = new Troop();
 			
-			if (obj.playerId == map.playerId) {
+			if (obj.playerId == Constants.playerId) {
 				obj.attackRadius = packet.readUByte();
 				obj.speed = packet.readUByte();
 					

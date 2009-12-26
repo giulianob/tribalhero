@@ -48,7 +48,6 @@
 		
 		public var mapComm: MapComm;
 		public var usernames: UsernameManager;
-		public var playerId: int;
 		
 		private var timeDelta: int = 0;
 		

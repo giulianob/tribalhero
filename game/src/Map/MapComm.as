@@ -21,6 +21,7 @@ package src.Map {
 		public var Region: RegionComm;
 		public var Troop: TroopComm;
 		public var Market: MarketComm;
+		public var BattleReport: BattleReportComm;
 		
 		public function MapComm(map: Map, session: Session) 
 		{
@@ -34,6 +35,7 @@ package src.Map {
 			Region = new RegionComm(this);
 			Troop = new TroopComm(this);
 			Market = new MarketComm(this);
+			BattleReport = new BattleReportComm(this);
 		}
 		
 		public function tryShowError(packet: Packet) : Boolean {

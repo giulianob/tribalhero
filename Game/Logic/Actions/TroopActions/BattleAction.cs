@@ -52,10 +52,19 @@ namespace Game.Logic.Actions {
                     Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                     city.DefaultTroop.EndUpdate();
 
-                    foreach (TroopStub stub in city.Troops) {
+                    //Copy troop stubs from city since the foreach loop below will modify it during the loop
+                    List<TroopStub> stubsCopy = new List<TroopStub>(city.Troops);
+
+                    foreach (TroopStub stub in stubsCopy) {
                         //only set back the state to the local troop or the ones stationed in this city
                         if (stub != city.DefaultTroop && stub.StationedCity != city)
                             continue;
+
+                        if (stub.StationedCity == city && stub.TotalCount == 0) {
+                            city.Troops.RemoveStationed(stub.StationedTroopId);
+                            stub.City.Troops.Remove(stub.TroopId);
+                            continue;
+                        }
 
                         stub.BeginUpdate();
                         if (stub.State == TroopStub.TroopState.BATTLE_STATIONED)
@@ -127,9 +136,6 @@ namespace Game.Logic.Actions {
                 List<TroopStub> list = new List<TroopStub>(1);
                 list.Add(cu.TroopStub);
                 city.Battle.removeFromDefense(list, ReportState.Dying);
-
-                city.Troops.RemoveStationed(cu.TroopStub.StationedTroopId);
-                cu.TroopStub.City.Troops.Remove(cu.TroopStub.TroopId);
             }
         }
 

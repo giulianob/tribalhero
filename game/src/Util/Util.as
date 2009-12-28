@@ -126,6 +126,8 @@ package src.Util {
 		
 		public static function formatTime(time: int): String
 		{
+			if (time < 0) return "--:--:--";
+			
 			var hours: int = int(time / (60 * 60));
 			time -= hours * 60 * 60;
 			var minutes: int = int(time / 60);

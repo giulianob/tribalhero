@@ -65,7 +65,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 				}
 				
-				var inputDialog: NumberInputDialog = new NumberInputDialog("How many units to train?", 1, maxValue, onAcceptDialog);
+				var inputDialog: NumberInputDialog = new NumberInputDialog("How many " + unitPrototype.getName() + " would you like to train?", 1, maxValue, onAcceptDialog, 1, unitPrototype.trainResources);
 				
 				inputDialog.show();
 			}

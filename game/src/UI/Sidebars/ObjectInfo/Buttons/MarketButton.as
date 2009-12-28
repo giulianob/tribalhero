@@ -15,7 +15,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.MarketBuyDialog;
 	import src.UI.Dialog.MarketSellDialog;
-	import src.UI.Dialog.NumberInputDialog;
 	import src.UI.GameJPanel;
 	import src.UI.Tooltips.TextTooltip;
 

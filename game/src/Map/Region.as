@@ -111,7 +111,7 @@
 					var tileid:int = tiles[bY-1+y][aX-1+x];
 					
 					var tilesetsrcX:int = int(tileid % Constants.tileSetTileW) * Constants.tileW;
-					var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * Constants.tileH * 4;
+					var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * Constants.tileH * 2;
 					
 					var xadd:int = 0;
 					var yadd:int = 0;
@@ -122,8 +122,8 @@
 					var xcoord:int = int((aX - 1) * Constants.tileW + xadd);
 					var ycoord:int = int((bY - 2) * (Constants.tileH / 2));
 					
-					var drawTo:Point = new Point(xcoord + int(Constants.tileW / 2), (ycoord + int(Constants.tileH / 2)) - (Constants.tileH * 3));
-					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 4);
+					var drawTo:Point = new Point(xcoord + int(Constants.tileW / 2), (ycoord + int(Constants.tileH / 2)) - (Constants.tileH));
+					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 2);
 					
 					//trace(aX + "," + bY + " Tile Id:" + tileid + " draw to " + drawTo.x + "," + drawTo.y + " src " + srcRect.x + "," + srcRect.y + " " + srcRect.width + "," + srcRect.height);
 					bg.bitmapData.copyPixels(tileset, srcRect, drawTo, null, null, true);

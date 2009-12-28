@@ -119,12 +119,16 @@ namespace Game.Comm {
                             if (len == 0) {
                                 //create disconnect packet to send to processor
                                 SocketSession dcSession = sessions[s];
-                                dcSession.Player.Session = null;
                                 sessions.Remove(s);
                                 sockList.Remove(s);
 
-                                packet = new Packet(Command.ON_DISCONNECT);
-                                ThreadPool.QueueUserWorkItem(new WaitCallback(dcSession.processEvent), packet);
+                                //If the player is null it means the player failed to authenticate or had some connection issue
+                                //in that case we don't want to create any events since he never really connected
+                                if (dcSession.Player != null) {
+                                    dcSession.Player.Session = null;
+                                    packet = new Packet(Command.ON_DISCONNECT);
+                                    ThreadPool.QueueUserWorkItem(new WaitCallback(dcSession.processEvent), packet);
+                                }
                             } else {
                                 Global.Logger.Info("[" + sessions[s].name + "]: " + data.Length);
                                 Global.Logger.Info(Convert.ToString(data));

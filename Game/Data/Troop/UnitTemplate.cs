@@ -46,6 +46,7 @@ namespace Game.Fighting {
         }
 
         public void BeginUpdate() {
+            if (isUpdating) throw new Exception("Nesting beginupdate");
             isUpdating = true;
         }
 

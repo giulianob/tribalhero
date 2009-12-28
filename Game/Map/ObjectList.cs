@@ -87,6 +87,7 @@ namespace Game.Map {
             List<GameObject> list;
 
             if (dict.TryGetValue(index, out list)) {
+                if (list.Contains(obj)) throw new Exception("WTF");
                 list.Add(obj);
             }
             else {

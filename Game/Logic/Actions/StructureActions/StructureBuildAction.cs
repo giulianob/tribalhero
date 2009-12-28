@@ -72,12 +72,11 @@ namespace Game.Logic.Actions {
             }
 
             // add structure to the map                    
-            Structure structure = StructureFactory.getStructure(type, 0);
-
-            structure.BeginUpdate();
+            Structure structure = StructureFactory.getStructure(type, 0);            
             structure.X = x;
             structure.Y = y;
 
+            structure.BeginUpdate();
             city.BeginUpdate();
             city.Resource.Subtract(cost);
             city.EndUpdate();

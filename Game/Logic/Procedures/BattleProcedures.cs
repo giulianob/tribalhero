@@ -11,10 +11,8 @@ namespace Game.Logic.Procedures {
     public partial class Procedure {
 
         public static void MoveUnitFormation(TroopStub stub, FormationType source, FormationType target) {
-            stub.BeginUpdate();
             stub[target].Add(stub[source]);
             stub[source].Clear();
-            stub.EndUpdate();
         }
 
         public static void AddLocalToBattle(BattleManager bm, City city, ReportState state) {

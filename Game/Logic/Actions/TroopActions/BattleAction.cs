@@ -47,8 +47,10 @@ namespace Game.Logic.Actions {
                     city.Battle.ActionAttacked -= new BattleBase.OnAttack(Battle_ActionAttacked);
                     Global.dbManager.Delete(city.Battle);
                     city.Battle = null;
-                    
+
+                    city.DefaultTroop.BeginUpdate();
                     Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
+                    city.DefaultTroop.EndUpdate();
 
                     foreach (TroopStub stub in city.Troops) {
                         //only set back the state to the local troop or the ones stationed in this city

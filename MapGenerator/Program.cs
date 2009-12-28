@@ -25,10 +25,9 @@ namespace MapGenerator {
         static int numberOfFarm = 2;
         static int numberOfWoodland = 2;
 
-        const int edgeMargin = 10;
-        const ushort FARM_TILE = 130;
-        const ushort WOODLAND_TILE = 131;
-        const ushort CITY_TILE = 131;
+        const ushort FARM_TILE = 208;
+        const ushort WOODLAND_TILE = 209;
+        const ushort CITY_TILE = 209;
         const byte radius = 3;
 
         static List<Region> regions = new List<Region>();

@@ -4,9 +4,12 @@ class AppController extends Controller
 {
 	var $components = array('Auth', 'Security');
 	var $helpers = array('Html', 'Javascript', 'Form');
-	
+		
 	var $recaptchaPrivateKey = '6LdYFgYAAAAAAMrRHyqHasNnktIyoTh1fwPKV0Jy';
 	var $recaptchaPublicKey = '6LdYFgYAAAAAAEJVxFq049CUy9ml57Ds9hSRlw41'; 
+	
+    var $fbApiKey = 'e0ccfdaba7a3e778380f19ad431bc1c8';
+    var $fbSecret = 'af3a84dd6ea5c2351209be0aeff31dec';
 	
 	function beforeFilter()
 	{	
@@ -44,6 +47,6 @@ class AppController extends Controller
 		$this->Auth->fields = array('username' => 'name', 'password' => 'password');								
 		$this->Auth->loginAction = array('admin' => false, 'controller' => 'players', 'action' => 'login');
 		$this->Auth->loginRedirect = '/';		
-		$this->Auth->autoRedirect = false;		
+		$this->Auth->autoRedirect = false;			
 	}
 }

@@ -1,10 +1,5 @@
 <?
-	$javascript->link('game-actions.js', false);
 	$javascript->link('swfobject/swfobject', false);
-	$javascript->link('jquery/jquery-1.3.2.min.js', false);
-	$javascript->link('thickbox/thickbox-compressed.js', false);
-		
-	$html->css('thickbox/thickbox.css', null, array(), false);
 ?>
 
 <? if (isset($lsessid)) : ?>

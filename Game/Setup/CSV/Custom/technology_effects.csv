@@ -133,3 +133,7 @@ TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
 23034,3,BattleStatsBlacksmithMod,City,FALSE,FireBall,15,,,
 23034,4,BattleStatsBlacksmithMod,City,FALSE,FireBall,20,,,
 23034,5,BattleStatsBlacksmithMod,City,FALSE,FireBall,25,,,
+,,,,,,,,,
+//Woodland,,,,,,,,,
+21072,1,RepairSaving,City,FALSE,5,,,,
+21072,2,RepairSaving,City,FALSE,10,,,,

@@ -29,7 +29,7 @@ namespace Game.Logic {
         internal static Resource RepairCost(City city, ushort repairPower) {
             int lumber = repairPower;
             foreach (Effect effect in city.Technologies.GetEffects(EffectCode.RepairSaving,EffectInheritance.All)) {
-                lumber -= repairPower * (100 - (int)effect.value[0]) / 100;
+                lumber -= repairPower * (int)effect.value[0] / 100;
             }
             return new Resource(0, 0, 0, lumber, 0);
         }

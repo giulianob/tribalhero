@@ -61,7 +61,9 @@ namespace Game.Data {
         void FireRemoved(TroopStub stub) {
             if (!Global.FireEvents) return;
 
-            Global.dbManager.Delete(stub);
+            //We don't want to delete a troopstub that doesn't belong to us.
+            if (stub.City == city)
+                Global.dbManager.Delete(stub);
 
             if (TroopRemoved != null)
                 TroopRemoved(stub);
@@ -116,9 +118,10 @@ namespace Game.Data {
             if (!dict.Remove(id)) return false;
             idGen.release(id);
 
-            stub.StationedTroopId = 0;
-            stub.State = Game.Data.TroopStub.TroopState.MOVING;
+            stub.BeginUpdate();
+            stub.StationedTroopId = 0;            
             stub.StationedCity = null;
+            stub.EndUpdate();
 
             stub.UnitUpdate -= new TroopStub.OnUnitUpdate(stub_UpdateEvent);
             FireRemoved(stub);

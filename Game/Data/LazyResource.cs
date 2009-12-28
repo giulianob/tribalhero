@@ -283,6 +283,7 @@ namespace Game.Data {
         }
 
         public void BeginUpdate() {
+            if (isUpdating) throw new Exception("Nesting beginupdate");
             isUpdating = true;
         }
 

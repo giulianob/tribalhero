@@ -103,6 +103,7 @@ namespace Game.Data {
         }
 
         public void BeginUpdate() {
+            if (updating) throw new Exception("Nesting beginupdate");
             updating = true;
             origX = x;
             origY = y;

@@ -44,6 +44,7 @@ namespace Game.Comm {
                 }
             } catch (Exception) {
                 reply_error(session, packet, Error.UNEXPECTED);
+                session.CloseSession();
                 return;
             }
 
@@ -57,11 +58,13 @@ namespace Game.Comm {
                 } catch (Exception e) {
                     Global.Logger.Error("Error loading player", e);
                     reply_error(session, packet, Error.UNEXPECTED);
+                    session.CloseSession();
                     return;
                 }
 
                 if (!reader.HasRows) {
                     reply_error(session, packet, Error.UNEXPECTED);
+                    session.CloseSession();
                     return;
                 }
 
@@ -77,6 +80,7 @@ namespace Game.Comm {
             } else {
                 if (!uint.TryParse(playerName, out playerId)) {
                     reply_error(session, packet, Error.PLAYER_NOT_FOUND);
+                    session.CloseSession();
                     return;
                 }
 
@@ -116,6 +120,7 @@ namespace Game.Comm {
                     if (!Randomizer.MainBuilding(out structure)) {
                         Global.Players.Remove(player.PlayerId);
                         Global.dbManager.Rollback();
+                        //If this happens and its not a bug, I'll be a very happy game developer
                         reply_error(session, packet, Error.MAP_FULL);
                         return;
                     }

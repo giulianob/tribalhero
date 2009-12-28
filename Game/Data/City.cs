@@ -316,6 +316,7 @@ namespace Game {
         }
 
         public void BeginUpdate() {
+            if (updating) throw new Exception("Nesting beginupdate");
             updating = true;
         }
 

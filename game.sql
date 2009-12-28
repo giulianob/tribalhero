@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 26, 2009 at 11:47 AM
+-- Generation Time: Dec 28, 2009 at 11:57 AM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -344,6 +344,7 @@ CREATE TABLE `passive_actions` (
 DROP TABLE IF EXISTS `players`;
 CREATE TABLE `players` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `facebook_id` int(11) DEFAULT NULL,
   `name` varchar(64) NOT NULL,
   `password` varchar(64) NOT NULL DEFAULT '8a9719ce5a3aa86d1ccb00047497291274f7feae',
   `email_address` varchar(256) NOT NULL,
@@ -354,7 +355,8 @@ CREATE TABLE `players` (
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
   KEY `login_key` (`login_key`),
-  KEY `session_id` (`session_id`)
+  KEY `session_id` (`session_id`),
+  KEY `facebook_id` (`facebook_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

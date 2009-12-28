@@ -13,7 +13,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.LaborMoveDialog;
-	import src.UI.Dialog.NumberInputDialog;
 	import src.UI.Tooltips.TextTooltip;
 	
 	public class LaborMoveButton extends ActionButton

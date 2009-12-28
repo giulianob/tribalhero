@@ -270,7 +270,6 @@
 				
 				if (obj as GameObject != null && obj == map.selectedObject)
 				{
-					map.selectObject(null);
 					map.selectObject(obj as GameObject);
 				}
 			}						

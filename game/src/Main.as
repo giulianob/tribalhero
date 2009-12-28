@@ -88,7 +88,7 @@
 			//Define login type and perform login action
 			if (parms.hostname)			
 			{
-				Constants.sessionId = parms.lsessid;
+				Constants.loginKey = parms.lsessid;
 				Constants.hostname = parms.hostname;
 				loadLanguages(Constants.hostname);
 			}
@@ -156,9 +156,9 @@
 		
 		public function onSecurityError(event: SecurityErrorEvent):void
 		{
-			if (pnlLoading) pnlLoading.getFrame().dispose();
+			//if (pnlLoading) pnlLoading.getFrame().dispose();
 			
-			InfoDialog.showMessageDialog("Security Error", event.toString());
+			//InfoDialog.showMessageDialog("Security Error", event.toString());
 		}
 		
 		public function onDisconnected(event: Event):void
@@ -185,8 +185,8 @@
 			}
 			else
 			{
-				if (Constants.sessionId)
-					session.login(Constants.sessionId);
+				if (Constants.loginKey)
+					session.login(Constants.loginKey);
 				else
 					session.login(Constants.username, password);				
 			}

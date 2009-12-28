@@ -330,25 +330,31 @@
 		{			
 			selectViewable = null;
 			
+			var reselecting: Boolean = false;
+			
+			//Check if we are reselecting the currently selected object
 			if (selectedObject != null && obj != null && selectedObject.cityId == obj.cityId && selectedObject.objectId == obj.objectId)
-			{
+			{				
+				//If we are, then deselect it if we have the deselectIfSelected option
 				if (deselectIfSelected)
-					obj = null;
-			}
+					obj = null;	
+				else
+					reselecting = true;
+			}		
 			
-			gameContainer.setSidebar(null);
-		
-			if (selectedObject != null)
-			{
-				selectedObject.setSelected(false);
-			}
+			//If the reselecting bit is on, then we dont want to refresh the whole UI. This just makes a better user experience.
+			if (!reselecting) {
+				gameContainer.setSidebar(null);
 			
-			selectedObject = obj;
+				if (selectedObject != null)			
+					selectedObject.setSelected(false);			
+				
+				selectedObject = obj;			
+			}
 			
 			if (obj != null)			
 			{			
-				if (query)
-				{
+				if (query) {
 					obj.setSelected(true);
 					
 					if (obj is StructureObject)
@@ -356,9 +362,9 @@
 					else if (obj is TroopObject)
 						mapComm.Troop.getTroopInfo(obj as TroopObject);
 				}
-				else
-				{
+				else {
 					doSelectedObject(obj);
+					return;					
 				}
 			}
 		}

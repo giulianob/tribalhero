@@ -72,7 +72,7 @@ public class NotificationGridCell extends JPanel implements GridListCell{
 		
 		var time: Number = Math.max(0, notification.endTime - Global.map.getServerTime());
 		
-		lblTime.setText(time > 0 ? Util.formatTime(time) : '--:--:--');
+		lblTime.setText(Util.formatTime(time));
 	}
 	
 	public function getCellValue():*{

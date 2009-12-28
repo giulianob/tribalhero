@@ -127,11 +127,20 @@ namespace Game.Logic.Actions {
                 #endregion
 
 /********************************** Pre Loop2 ****************************************/
+                #region Repair
+                Resource repairCost = null;
+                bool isRepaired = false, canRepair = false;
+                if (repairPower > 0) {
+                    repairCost = Formula.RepairCost(city, repairPower);
+                    if (city.Resource.HasEnough(repairCost)) {
+                        canRepair = true;
+                    }
+                }
+                #endregion
 /*********************************** Loop2 *******************************************/
                 foreach (Structure structure in city) {
                     #region Repair
-                    Resource repairCost = Formula.RepairCost(city, repairPower);
-                    if (repairPower > 0 && city.Resource.HasEnough(repairCost)) {
+                    if (canRepair) {
                         if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp &&
                             !ObjectTypeFactory.IsStructureType("NonRepairable", structure) &&
                             structure.State.Type != ObjectState.BATTLE) {
@@ -140,12 +149,18 @@ namespace Game.Logic.Actions {
                                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                             }
                             structure.EndUpdate();
+                            isRepaired = true;
                         }
-                        city.Resource.Subtract(repairCost);
                     }
                     #endregion
                 }
-/********************************* Post Loop2 ****************************************/
+                /********************************* Post Loop2 ****************************************/
+                #region Repair
+                if (isRepaired) {
+                    city.Resource.Subtract(repairCost);
+                }
+                #endregion
+
                 city.EndUpdate();
 
                 beginTime = DateTime.Now;

@@ -48,6 +48,7 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 21072,1,1,structure_Upgrade,10,,,,,,
 21072,2,1,structure_Change,2109,1,,,,,
 21072,3,1,labor_move,,,,,,,
+21072,4,1,technology_Upgrade,21072,2,,,,,
 ,,,,,,,,,,
 //Advanced farm,,,,,,,,,,
 2108,0,1,,,,,,,,

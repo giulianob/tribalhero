@@ -111,3 +111,8 @@ TechType,SpriteClass,Description,Lvl,Crop,Gold,Iron,Wood,Labor,Time
 23034,Research Fireball,Enhance Fireball(+15% Attack),3,400,100,0,400,0,0
 23034,Research Fireball,Enhance Fireball(+20% Attack),4,800,200,0,800,0,0
 23034,Research Fireball,Enhance Fireball(+25% Attack),5,1600,400,0,1600,0,0
+,,,,,,,,,
+//woodland,,,,,,,,,
+21072,Plywood Research,Build cost efficient lumber for structures,0,0,0,0,0,0,0
+21072,Research Fireball,Build cost efficient lumber for structures (-5% Repair Cost),1,0,0,0,500,0,1000
+21072,Research Fireball,Build cost efficient lumber for structures (-10% Repair Cost),2,0,0,0,500,0,2000

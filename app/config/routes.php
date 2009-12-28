@@ -33,7 +33,7 @@
  */
 	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
 	Router::connect('/play', array('controller' => 'pages', 'action' => 'play'));
-	Router::connect('/gamePopup', array('controller' => 'pages', 'action' => 'game_popup'));
+	Router::connect('/facebook', array('controller' => 'pages', 'action' => 'facebook'));	
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

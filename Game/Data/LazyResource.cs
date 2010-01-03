@@ -288,12 +288,11 @@ namespace Game.Data {
         }
 
         public void EndUpdate() {
-            if (isUpdating) {
-                isUpdating = false;
-
+            if (isUpdating) { 
                 if (isDirty)
                     Update();
 
+                isUpdating = false;
                 isDirty = false;
             }
         }

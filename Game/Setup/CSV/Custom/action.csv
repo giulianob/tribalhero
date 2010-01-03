@@ -88,11 +88,13 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 22022,1,1,structure_Upgrade,10,,,,,,
 22022,2,1,unit_train,201,,,,,,
 22022,3,1,unit_train,202,,,,,22013,UPWARD
+22022,4,1,technology_Upgrade,22022,1,,,,22022,UPWARD
 22023,0,1,,,,,,,,
 22023,1,1,structure_Upgrade,10,,,,,,
 22023,2,1,unit_train,201,,,,,,
 22023,3,1,unit_train,202,,,,,,
-22023,4,4,structure_Change,2203,1,,,,,
+22023,4,1,structure_Change,2203,1,,,,,
+22023,5,1,technology_Upgrade,22022,2,,,,22022,UPWARD
 ,,,,,,,,,,
 //Workshop,,,,,,,,,,
 2203,0,1,,,,,,,,

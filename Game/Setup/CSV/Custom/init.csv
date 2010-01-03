@@ -52,3 +52,6 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5
 ,,,,,,,,
 //woodland,,,,,,,,
 2107,3,ON_INIT,TechnologyCreateAction,techid=21072,techlvl=0,time=0,,
+,,,,,,,,
+//stable,,,,,,,,
+2202,3,ON_INIT,TechnologyCreateAction,techid=22022,techlvl=0,time=0,,

@@ -44,6 +44,7 @@ namespace Game.Data {
         HaveTechnology = 9,
         CountEffect =10,
         RepairSaving = 11,
+        TroopSpeedMod = 12,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

@@ -137,3 +137,7 @@ TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
 //Woodland,,,,,,,,,
 21072,1,RepairSaving,City,FALSE,5,,,,
 21072,2,RepairSaving,City,FALSE,10,,,,
+,,,,,,,,,
+// stable,,,,,,,,,
+22022,1,TroopSpeedMod,City,FALSE,5,,,,
+22022,2,TroopSpeedMod,City,FALSE,10,,,,

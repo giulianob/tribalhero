@@ -116,3 +116,8 @@ TechType,SpriteClass,Description,Lvl,Crop,Gold,Iron,Wood,Labor,Time
 21072,Plywood Research,Build cost efficient lumber for structures,0,0,0,0,0,0,0
 21072,Research Fireball,Build cost efficient lumber for structures (-5% Repair Cost),1,0,0,0,500,0,1000
 21072,Research Fireball,Build cost efficient lumber for structures (-10% Repair Cost),2,0,0,0,500,0,2000
+,,,,,,,,,
+//stable,,,,,,,,,
+22022,Double Time,Increase entire troop's moving speed(50% maximum accumulated),0,0,0,0,0,0,0
+22022,Double Time,Increase entire troop's moving speed by 5%(50% maximum accumulated),1,1000,500,500,1000,0,2000
+22022,Double Time,Increase entire troop's moving speed by 10%(50% maximum accumulated),2,3000,1500,1500,3000,0,6000

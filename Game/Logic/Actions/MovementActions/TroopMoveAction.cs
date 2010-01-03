@@ -53,8 +53,7 @@ namespace Game.Logic.Actions {
                 record_foreach.x = x;
                 record_foreach.y = y;
                 record_foreach.isShortestDistanceDiagonal = GameObject.isDiagonal(x, y, ox, oy);
-            }
-            else if (distance == record_foreach.shortest_distance && !record_foreach.isShortestDistanceDiagonal) {
+            } else if (distance == record_foreach.shortest_distance && !record_foreach.isShortestDistanceDiagonal) {
                 record_foreach.shortest_distance = distance;
                 record_foreach.x = x;
                 record_foreach.y = y;
@@ -74,7 +73,14 @@ namespace Game.Logic.Actions {
             RadiusLocator.foreach_object(obj.X, obj.Y, 1, false, work, record_foreach);
             nextX = record_foreach.x;
             nextY = record_foreach.y;
-            nextTime = DateTime.Now.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Setup.Config.seconds_per_unit));
+
+            int mod = 100;
+
+            foreach (Effect effect in obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All)) {
+                mod -= (int)effect.value[0];
+            }
+            if (mod < 50) mod = 50;
+            nextTime = DateTime.Now.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Setup.Config.seconds_per_unit * mod / 100));
             return true;
         }
 

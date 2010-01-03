@@ -19,3 +19,6 @@ Id,Method,P1,P2,P3,P4,P5,Description
 23028,CountLessThan,id=2302,count=8,,,,You can upgrade once per level.
 23029,CountLessThan,id=2302,count=9,,,,You can upgrade once per level.
 23030,CountLessThan,id=2302,count=10,,,,You can upgrade once per level.
+,,,,,,,
+//stable,,,,,,,
+22022,HaveStructure,id=2501,minlvl=3,maxlvl=10,,,Need to have a level 3 trading post.

@@ -1,6 +1,6 @@
 ﻿package src.Objects.Factories {
 	import src.Map.Map;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	import src.Objects.Prototypes.PropertyPrototype;
 	

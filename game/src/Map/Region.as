@@ -7,7 +7,7 @@
 	import flash.display.DisplayObject;
 	import src.GameContainer;
 	import src.Objects.Factories.ObjectFactory;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	import src.Constants;

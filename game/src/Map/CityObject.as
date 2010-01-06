@@ -4,7 +4,7 @@
 	import src.Objects.IObject;
 	import src.Objects.Prototypes.EffectPrototype;
 	import src.Objects.TechnologyManager;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	
 	/**
 	* ...

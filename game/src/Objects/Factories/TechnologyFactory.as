@@ -3,7 +3,7 @@
 	import src.Objects.Resources;
 	import src.Objects.Prototypes.TechnologyPrototype;
 	import src.Objects.Prototypes.EffectPrototype;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	/**

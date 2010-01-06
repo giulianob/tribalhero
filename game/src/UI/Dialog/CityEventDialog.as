@@ -68,7 +68,6 @@ public class CityEventDialog extends GameJPanel{
 	
 	private function dispose(): void {
 		gridLocalActions.dispose();
-		gridNotifications.dispose();
 	}
 	
 	private function simpleLabelMaker(tooltip: String, icon: Icon = null) : JLabel {

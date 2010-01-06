@@ -34,6 +34,11 @@
 			clear();
 			var pos: Point = MapUtil.getMapCoord(parent.getX(), parent.getY());					
 			MapUtil.foreach_object(pos.x, pos.y, radius, addWallCallback, false, radius);
+			
+			pushWall(ObjectFactory.getSimpleObject("WALL_N"), pos.x, pos.y - radius * 2);
+			pushWall(ObjectFactory.getSimpleObject("WALL_S"), pos.x, pos.y + radius * 2);
+			pushWall(ObjectFactory.getSimpleObject("WALL_W"), pos.x - radius, pos.y);
+			pushWall(ObjectFactory.getSimpleObject("WALL_E"), pos.x + radius, pos.y);
 		}
 		
 		public function addWallCallback(x: int, y: int, custom: *):void
@@ -42,37 +47,42 @@
 			
 			var dist: int = MapUtil.distance(parentPos.x, parentPos.y, x, y);
 			
-			if (dist != custom)
-				return;							
+			if (dist != custom) {
+				return;			
+			}
 
 			var wall: SimpleObject;
 			
 			if (parentPos.y % 2 == 0) 
 			{
 				if (x < parentPos.x && y < parentPos.y)
-					wall = ObjectFactory.getSimpleObject("WALL_SE");				
-				else if (x < parentPos.x && y > parentPos.y)
-					wall = ObjectFactory.getSimpleObject("WALL_NE");				
-				else if ((x > parentPos.x && y > parentPos.y) || (x== parentPos.x && y%2==1 && y > parentPos.y))
 					wall = ObjectFactory.getSimpleObject("WALL_NW");				
+				else if (x < parentPos.x && y > parentPos.y)
+					wall = ObjectFactory.getSimpleObject("WALL_SW");				
+				else if ((x > parentPos.x && y > parentPos.y) || (x== parentPos.x && y%2==1 && y > parentPos.y))
+					wall = ObjectFactory.getSimpleObject("WALL_SE");				
 				else if ((x > parentPos.x && y < parentPos.y) || (x == parentPos.x && y%2==1 && y < parentPos.y))
-					wall = ObjectFactory.getSimpleObject("WALL_SW");					
+					wall = ObjectFactory.getSimpleObject("WALL_NE");					
 			}
 			else
 			{
 				if ((x < parentPos.x && y < parentPos.y) || (x == parentPos.x && y%2==0 && y < parentPos.y))
-					wall = ObjectFactory.getSimpleObject("WALL_SE");				
+					wall = ObjectFactory.getSimpleObject("WALL_NW");				
 				else if (x < parentPos.x && y > parentPos.y || (x == parentPos.x && y%2==0 && y > parentPos.y))
-					wall = ObjectFactory.getSimpleObject("WALL_NE");				
+					wall = ObjectFactory.getSimpleObject("WALL_SW");				
 				else if (x > parentPos.x && y > parentPos.y)
-					wall = ObjectFactory.getSimpleObject("WALL_NW");
+					wall = ObjectFactory.getSimpleObject("WALL_SE");
 				else if (x > parentPos.x && y < parentPos.y || (parentPos.y%2 == 0 && x == parentPos.x && y < parentPos.y))
-					wall = ObjectFactory.getSimpleObject("WALL_SW");						
+					wall = ObjectFactory.getSimpleObject("WALL_NE");						
 			}
 			
 			if (!wall)
 				return;
 			
+			pushWall(wall, x, y);
+		}
+		
+		private function pushWall(wall: SimpleObject, x: int, y: int) : void {
 			var pos: Point = MapUtil.getScreenCoord(x, y);
 			x = pos.x;
 			y = pos.y;							
@@ -82,7 +92,7 @@
 			map.objContainer.addObject(wall);
 			wall.moveWithCamera(map.gameContainer.camera);
 			
-			objects.push(wall);
+			objects.push(wall);			
 		}
 	}
 	

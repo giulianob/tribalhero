@@ -34,6 +34,17 @@
 			obj.setUI(ui);				
 		}
 		
+		public static function getClassAttribute(className: String, attribute: String) : * {
+			var keyValueList: Array = UIManager.getDefaults().get("Class." + className);
+			
+			for(var i:Number = 0; i < keyValueList.length; i += 2) {
+				if (keyValueList[i] == attribute)
+					return keyValueList[i + 1];
+			}
+				
+			return null;
+		}
+		
 		override protected function initComponentDefaults(table:UIDefaults):void{
 			super.initComponentDefaults(table);
 			var comDefaults:Array = [	

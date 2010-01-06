@@ -8,6 +8,7 @@
 	import src.Constants;
 	import src.Objects.Actions.*;
 	import flash.events.Event;
+	import src.Objects.Troop.*;
 	
 	public class ObjectComm {
 		

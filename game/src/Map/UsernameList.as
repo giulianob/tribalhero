@@ -5,8 +5,8 @@
 	import flash.text.TextField;
 	import org.aswing.JLabel;
 	import src.Objects.SimpleGameObject;
-	import src.Objects.TroopObject;
-	import src.Util.BinaryList;
+	import src.Objects.Troop.*;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	
@@ -89,7 +89,7 @@
 				break;
 			}						
 			
-			dispatchEvent(new Event(BinaryList.CHANGED));
+			dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 		
 

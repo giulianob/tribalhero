@@ -71,7 +71,11 @@
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
-    <!-- example: <hidden path="..." /> -->
+    <hidden path="Game - Adobe Air" />
+    <hidden path="graphics" />
+    <hidden path="en" />
+    <hidden path="bin" />
+    <hidden path="map" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />

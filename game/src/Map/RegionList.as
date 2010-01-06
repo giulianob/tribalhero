@@ -5,7 +5,7 @@
 	import src.Constants;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	
 	/**
 	* ...

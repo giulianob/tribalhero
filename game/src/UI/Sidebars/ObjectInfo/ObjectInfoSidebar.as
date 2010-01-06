@@ -17,7 +17,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.Objects.Prototypes.*;
 	import src.UI.*;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	import org.aswing.*;
@@ -49,11 +49,11 @@ package src.UI.Sidebars.ObjectInfo {
 			if (city != null)
 			{			
 				city.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
-				city.currentActions.addEventListener(BinaryList.CHANGED, onObjectUpdate);
+				city.currentActions.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 			}
 			
 			gameObject.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
-			gameObject.actionReferences.addEventListener(BinaryList.CHANGED, onObjectUpdate);
+			gameObject.actionReferences.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 			
 			createUI();
 			update();
@@ -272,14 +272,14 @@ package src.UI.Sidebars.ObjectInfo {
 				if (city != null)
 				{
 					city.removeEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);				
-					city.currentActions.removeEventListener(BinaryList.CHANGED, onObjectUpdate);
+					city.currentActions.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 				}
 			
 				if (gameObject is StructureObject)
 					(gameObject as StructureObject).clearProperties();
 
 				gameObject.removeEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
-				gameObject.actionReferences.removeEventListener(BinaryList.CHANGED, onObjectUpdate);
+				gameObject.actionReferences.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 					
 				gameObject.actionReferences.clear();
 			}

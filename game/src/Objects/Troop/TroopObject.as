@@ -1,9 +1,10 @@
-﻿package src.Objects {
+﻿package src.Objects.Troop {
 	
 	import fl.controls.Label;
 	import flash.display.Sprite;
 	import src.Constants;
 	import src.Objects.Factories.TroopFactory;
+	import src.Objects.*;
 	/**
 	* ...
 	* @author Default
@@ -15,7 +16,7 @@
 		
 		public var troop: Troop;
 		
-		public var template: TemplateManager = new TemplateManager();
+		public var template: UnitTemplateManager = new UnitTemplateManager();
 				
 		public function TroopObject() {
 			

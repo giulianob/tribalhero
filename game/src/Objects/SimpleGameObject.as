@@ -22,7 +22,7 @@ package src.Objects {
 	import src.Objects.Prototypes.TechnologyPrototype;
 	import src.Objects.Actions.CurrentAction;	
 	import src.UI.Components.GroundCircle;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Global;
 	
 	public class SimpleGameObject extends SimpleObject implements IObject {

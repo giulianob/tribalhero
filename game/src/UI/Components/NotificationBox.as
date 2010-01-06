@@ -85,6 +85,9 @@
 
 		private function createUI() : void
 		{
+			mouseEnabled = false;
+			mouseChildren = false;
+			
 			setLayout(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 
 			pnlText = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));

@@ -371,10 +371,6 @@ namespace Game.Battle {
                     if (!isLocal)
                         id = (uint)idGen.getNext();
 
-                    obj.BeginUpdate();
-                    obj.Template.LoadStats();
-                    obj.EndUpdate();
-
                     foreach (KeyValuePair<FormationType, Formation> formation in obj as IEnumerable<KeyValuePair<FormationType, Formation>>) {
                         if (formation.Key == FormationType.Garrison || formation.Key == FormationType.InBattle) continue;
 
@@ -643,7 +639,7 @@ namespace Game.Battle {
                         Resource loot = BattleFormulas.getRewardResource(attacker, defender, actualDmg);
                         city.BeginUpdate();
                         city.Resource.Subtract(loot, out loot);
-                        attacker.ReceiveReward(defender.Stats.Reward * actualDmg, loot);
+                        attacker.ReceiveReward(defender.Stats.Base.Reward * actualDmg, loot);
                         city.EndUpdate();
                     }
 

@@ -171,19 +171,17 @@ namespace Game {
         }
 
         public bool add(uint id, TroopObject troop, bool save) {
-            lock (objLock) {                               
+            lock (objLock) {
+                if (troopobjects.ContainsKey(id))
+                    return false;
+
                 troop.Stub.BeginUpdate();
                 troop.Stub.TroopObject = troop;
                 troop.Stub.EndUpdate();
-
-                try {
-                    troopobjects.Add(id, troop);
-                }
-                catch (Exception) {
-                    return false;
-                }
                 
                 troop.City = this;
+
+                troopobjects.Add(id, troop);
 
                 if (nextObjectId < id)
                     nextObjectId = id;
@@ -207,15 +205,12 @@ namespace Game {
 
         public bool add(uint id, Structure structure, bool save) {
             lock (objLock) {
-                structure.City = this;
-                try {
-                    structures.Add(id, structure);
-                }
-                catch (Exception e) {
-                    Global.Logger.Error(e);
-                    structure.City = null;
+                if (structures.ContainsKey(id))
                     return false;
-                }
+
+                structure.City = this;
+
+                structures.Add(id, structure);
 
                 if (nextObjectId < id)
                     nextObjectId = id;
@@ -246,12 +241,10 @@ namespace Game {
 
         public bool remove(TroopObject obj) {
             lock (objLock) {
-                try {
-                    troopobjects.Remove(obj.ObjectID);
-                }
-                catch (Exception) {
+                if (!troopobjects.ContainsKey(obj.ObjectID))
                     return false;
-                }
+
+                troopobjects.Remove(obj.ObjectID);
 
                 Global.dbManager.Delete(obj);
 
@@ -268,18 +261,16 @@ namespace Game {
 
         public bool remove(Structure obj) {
             lock (objLock) {
-                try {
-                    worker.Remove(obj, ActionInterrupt.KILLED);
-                    obj.Technologies.clear();
-                    structures.Remove(obj.ObjectID);
-
-                    obj.Technologies.TechnologyAdded -= new TechnologyManager.TechnologyUpdatedCallback(Technologies_TechnologyAdded);
-                    obj.Technologies.TechnologyRemoved -= new TechnologyManager.TechnologyUpdatedCallback(Technologies_TechnologyRemoved);
-                    obj.Technologies.TechnologyUpgraded -= new TechnologyManager.TechnologyUpdatedCallback(Technologies_TechnologyUpgraded);
-                }
-                catch (Exception) {
+                if (!structures.ContainsKey(obj.ObjectID)) 
                     return false;
-                }
+
+                worker.Remove(obj, ActionInterrupt.KILLED);
+                obj.Technologies.clear();
+                structures.Remove(obj.ObjectID);
+
+                obj.Technologies.TechnologyAdded -= new TechnologyManager.TechnologyUpdatedCallback(Technologies_TechnologyAdded);
+                obj.Technologies.TechnologyRemoved -= new TechnologyManager.TechnologyUpdatedCallback(Technologies_TechnologyRemoved);
+                obj.Technologies.TechnologyUpgraded -= new TechnologyManager.TechnologyUpdatedCallback(Technologies_TechnologyUpgraded);
 
                 Global.dbManager.Delete(obj);
 

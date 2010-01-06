@@ -26,7 +26,10 @@ namespace Game {
             ILog logger = LogManager.GetLogger(typeof(Program));            
             Factory.initAll();
             CSVToXML.Program.Main(null);
-            Global.World.load(new FileStream(Config.maps_folder + "map.dat", FileMode.Open), Config.map_width, Config.map_height, Config.region_width, Config.region_height, Config.city_region_width, Config.city_region_height);
+
+            using (FileStream map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open)) {
+                Global.World.load(map, Config.map_width, Config.map_height, Config.region_width, Config.region_height, Config.city_region_width, Config.city_region_height);
+            }
             Player resourcePlayer = new Player(0, "Player 0");
             City resourceCity = new City(resourcePlayer, "Resource City", new Resource(), null);
 

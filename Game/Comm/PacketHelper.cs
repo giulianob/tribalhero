@@ -171,9 +171,25 @@ namespace Game.Comm {
             packet.addByte(stub.TroopId);
             packet.addByte((byte)stub.State);
 
+            //Only local troop gets upkeep
             if (stub.TroopId == 1)            
                 packet.addInt32(stub.Upkeep);
 
+            //Add troop template
+            packet.addByte(stub.Template.Count);
+            foreach (KeyValuePair<ushort, BattleStats> stats in stub.Template as IEnumerable<KeyValuePair<ushort, BattleStats>>) {
+                packet.addUInt16(stats.Key);
+                packet.addByte(stats.Value.Base.Lvl);
+
+                packet.addUInt16(stats.Value.MaxHp);
+                packet.addByte(stats.Value.Atk);
+                packet.addByte(stats.Value.Def);
+                packet.addByte(stats.Value.Rng);
+                packet.addByte(stats.Value.Spd);
+                packet.addByte(stats.Value.Stl);
+            }
+
+            //Add state specific variables
             switch (stub.State) {
                 case TroopStub.TroopState.MOVING:
                     packet.addUInt32(stub.TroopObject.ObjectID);
@@ -200,6 +216,7 @@ namespace Game.Comm {
                     break;              
             }
             
+            //Actual formation and unit counts
             packet.addByte(stub.FormationCount);
             foreach (KeyValuePair<FormationType, Formation> formation in stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
                 packet.addByte((byte)formation.Key);

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 28, 2009 at 11:57 AM
+-- Generation Time: Jan 05, 2010 at 08:03 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -217,7 +217,6 @@ CREATE TABLE `combat_structures` (
   `range` tinyint(3) unsigned NOT NULL,
   `stealth` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,
-  `reward` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -608,7 +607,6 @@ CREATE TABLE `troop_templates_list` (
   `range` tinyint(3) unsigned NOT NULL,
   `stealth` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,
-  `reward` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`city_id`,`troop_stub_id`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

@@ -221,8 +221,7 @@ namespace Game.Battle {
                     new DbColumn("defense", stats.Def, System.Data.DbType.Byte),
                     new DbColumn("range", stats.Rng, System.Data.DbType.Byte),
                     new DbColumn("stealth", stats.Stl, System.Data.DbType.Byte),
-                    new DbColumn("speed", stats.Spd, System.Data.DbType.Byte),
-                    new DbColumn("reward", stats.Reward, System.Data.DbType.UInt16)
+                    new DbColumn("speed", stats.Spd, System.Data.DbType.Byte)
                 };
             }
         }

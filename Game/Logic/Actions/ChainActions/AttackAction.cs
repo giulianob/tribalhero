@@ -49,6 +49,11 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
             }
 
+            //Load the units stats into the stub
+            stub.BeginUpdate();
+            stub.Template.LoadStats();
+            stub.EndUpdate();
+
             city.Worker.References.add(stub.TroopObject, this);
             city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
 
@@ -82,6 +87,9 @@ namespace Game.Logic.Actions {
                         return;
                     }
 
+                    //Remove notification to target city once battle is over
+                    city.Worker.Notifications.remove(this);
+
                     if (stub.TotalCount > 0) {
                         TroopMoveAction tma = new TroopMoveAction(stub.City.CityId, stub.TroopObject.ObjectID, city.MainBuilding.X, city.MainBuilding.Y);
                         ExecuteChainAndWait(tma, new ChainCallback(this.AfterTroopMovedHome));
@@ -92,8 +100,7 @@ namespace Game.Logic.Actions {
 
                         targetCity.Resource.Add(stub.TroopObject.Stats.Loot);
 
-                        city.Worker.References.remove(stub.TroopObject, this);
-                        city.Worker.Notifications.remove(this);
+                        city.Worker.References.remove(stub.TroopObject, this);                        
 
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
 
@@ -119,7 +126,6 @@ namespace Game.Logic.Actions {
 
                     if (city.Battle == null) {
                         city.Worker.References.remove(stub.TroopObject, this);
-                        city.Worker.Notifications.remove(this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
                         stateChange(ActionState.COMPLETED);
                     }
@@ -143,7 +149,6 @@ namespace Game.Logic.Actions {
                     }
 
                     city.Worker.References.remove(stub.TroopObject, this);
-                    city.Worker.Notifications.remove(this);
                     if (stub.TotalCount == 0) {
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
                     }

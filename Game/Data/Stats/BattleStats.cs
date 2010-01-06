@@ -44,12 +44,6 @@ namespace Game.Data.Stats {
             set { spd = value; }
         }
 
-        ushort reward;
-        public ushort Reward {
-            get { return reward; }
-            set { reward = value; }
-        }   
-
         BaseBattleStats baseStats;
         public BaseBattleStats Base {
             get { return baseStats; }

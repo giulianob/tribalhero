@@ -49,6 +49,7 @@ namespace Game.Logic.Actions {
                     city.Battle = null;
 
                     city.DefaultTroop.BeginUpdate();
+                    city.DefaultTroop.Template.ClearStats();
                     Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                     city.DefaultTroop.EndUpdate();
 

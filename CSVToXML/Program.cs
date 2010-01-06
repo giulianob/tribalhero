@@ -335,6 +335,8 @@ namespace CSVToXML
                         writer.WriteAttributeString("name", obj[0]);
                         writer.WriteAttributeString("type", obj[1]);
                         writer.WriteAttributeString("level", obj[2]);
+                        writer.WriteAttributeString("weapon", obj[3]);
+                        writer.WriteAttributeString("armor", obj[4]);
                         writer.WriteAttributeString("class", obj[5]);
                         writer.WriteAttributeString("spriteclass", obj[6]);
                         writer.WriteAttributeString("hp", obj[7]);
@@ -350,13 +352,15 @@ namespace CSVToXML
                         writer.WriteAttributeString("iron", obj[17]);
                         writer.WriteAttributeString("wood", obj[18]);
                         writer.WriteAttributeString("labor", obj[19]);
-                        writer.WriteAttributeString("time", obj[20]);
+                        writer.WriteAttributeString("time", obj[20]);                        
                         writer.WriteAttributeString("upgradecrop", obj[21]);
                         writer.WriteAttributeString("upgradegold", obj[22]);
                         writer.WriteAttributeString("upgradeiron", obj[23]);
                         writer.WriteAttributeString("upgradewood", obj[24]);
                         writer.WriteAttributeString("upgradelabor", obj[25]);
                         writer.WriteAttributeString("upgradetime", obj[26]);
+                        writer.WriteAttributeString("groupsize", obj[27]);
+                        writer.WriteAttributeString("upkeep", obj[28]);
 
                         writer.WriteEndElement();
                     }

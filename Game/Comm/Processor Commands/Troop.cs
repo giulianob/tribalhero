@@ -191,6 +191,11 @@ namespace Game.Comm {
                 return;
             }
 
+            if (cityId == targetCityId) {
+                reply_error(session, packet, Error.ATTACK_SELF);
+                return;
+            }
+
             using (new MultiObjectLock(session.Player)) {
                 if (session.Player.getCity(cityId) == null) {
                     reply_error(session, packet, Error.UNEXPECTED);
@@ -367,15 +372,13 @@ namespace Game.Comm {
             City city;
             City stationedCity;
 
-            //we need to find out the stationed city first then reacquire local + stationed city locks
-            using (new MultiObjectLock(session.Player)) {
-                city = session.Player.getCity(cityId);
-
+            //we need to find out the stationed city first then reacquire local + stationed city locks            
+            using (new MultiObjectLock(cityId, out city)) {                
                 if (city == null) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
-
+                
                 TroopStub stub;
 
                 if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null) {
@@ -390,6 +393,12 @@ namespace Game.Comm {
                 TroopStub stub;
 
                 if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null) {
+                    reply_error(session, packet, Error.UNEXPECTED);
+                    return;
+                }
+
+                //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
+                if (city.Owner != session.Player && stub.StationedCity.Owner != session.Player) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }

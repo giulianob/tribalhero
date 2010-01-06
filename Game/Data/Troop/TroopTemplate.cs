@@ -9,12 +9,22 @@ using Game.Battle;
 using Game.Data.Stats;
 
 namespace Game.Data.Troop {
-    public class TroopTemplate : IPersistableList {
+    public class TroopTemplate : IPersistableList, IEnumerable<KeyValuePair<ushort, BattleStats>> {
         TroopStub stub;
         Dictionary<ushort, BattleStats> stats = new Dictionary<ushort, BattleStats>();
 
         public TroopTemplate(TroopStub stub) {
             this.stub = stub;
+        }
+
+        public byte Count {
+            get { return (byte)stats.Count; }
+        }
+
+        public void ClearStats() {
+            stats = new Dictionary<ushort, BattleStats>();
+
+            stub.FireUpdated();
         }
 
         public void LoadStats() {
@@ -27,7 +37,9 @@ namespace Game.Data.Troop {
                     BattleStats stat = BattleFormulas.LoadStats(type, stub.City.Template[type].Lvl, stub.City);
                     stats.Add(type, stat);
                 }
-            }   
+            }
+
+            stub.FireUpdated();
         }
 
         public BattleStats this[ushort type] {
@@ -76,8 +88,7 @@ namespace Game.Data.Troop {
                     new DbColumn("defense", System.Data.DbType.Byte),
                     new DbColumn("range", System.Data.DbType.Byte),
                     new DbColumn("stealth", System.Data.DbType.Byte),
-                    new DbColumn("speed", System.Data.DbType.Byte),
-                    new DbColumn("reward", System.Data.DbType.UInt16)
+                    new DbColumn("speed", System.Data.DbType.Byte)
                 };
             }
         }
@@ -100,8 +111,7 @@ namespace Game.Data.Troop {
                     new DbColumn("defense", battleStats.Def, System.Data.DbType.Byte),
                     new DbColumn("range", battleStats.Rng, System.Data.DbType.Byte),
                     new DbColumn("stealth", battleStats.Stl, System.Data.DbType.Byte),
-                    new DbColumn("speed", battleStats.Spd, System.Data.DbType.Byte),
-                    new DbColumn("reward", battleStats.Reward, System.Data.DbType.UInt16)
+                    new DbColumn("speed", battleStats.Spd, System.Data.DbType.Byte)
                 };
             }
         }
@@ -114,6 +124,10 @@ namespace Game.Data.Troop {
             return stats.GetEnumerator();
         }
 
+
+        IEnumerator<KeyValuePair<ushort, BattleStats>> IEnumerable<KeyValuePair<ushort, BattleStats>>.GetEnumerator() {
+            return stats.GetEnumerator();
+        }
         #endregion
     }
 }

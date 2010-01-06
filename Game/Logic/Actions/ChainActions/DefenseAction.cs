@@ -39,6 +39,11 @@ namespace Game.Logic.Actions {
             
             if (city.Battle != null) return Error.CITY_IN_BATTLE;
 
+            //Load the units stats into the stub
+            stub.BeginUpdate();
+            stub.Template.LoadStats();
+            stub.EndUpdate();
+
             city.Worker.References.add(stub.TroopObject, this);
             city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
 

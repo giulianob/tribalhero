@@ -20,12 +20,13 @@ namespace Game.Logic.Procedures {
 
             list.Add(city.DefaultTroop);
 
-            bm.AddToLocal(list, state);
-
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopStub.TroopState.BATTLE;
+            city.DefaultTroop.Template.LoadStats();
             Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.Normal, FormationType.InBattle);
             city.DefaultTroop.EndUpdate();
+
+            bm.AddToLocal(list, state);
         }
 
     }

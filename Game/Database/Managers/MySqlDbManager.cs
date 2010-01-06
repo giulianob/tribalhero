@@ -119,57 +119,51 @@ namespace Game.Database {
             if (objects.Length == 0)
                 return true;
 
-            try {
-                foreach (IPersistable obj in objects) {
+            foreach (IPersistable obj in objects) {
 
-                    MySqlCommand command = null;
+                MySqlCommand command = null;
 
-                    if (obj is IPersistableObject) {
-                        IPersistableObject persistableObj = obj as IPersistableObject;
-                        if (persistableObj.DbPersisted)
-                            command = UpdateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
-                        else
-                            command = CreateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+                if (obj is IPersistableObject) {
+                    IPersistableObject persistableObj = obj as IPersistableObject;
+                    if (persistableObj.DbPersisted)
+                        command = UpdateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+                    else
+                        command = CreateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
 
-                        if (command != null)
-                            ExecuteNonQuery(command);
-                                                 
-                        persistableObj.DbPersisted = true;
-                    }
-                    
-                    if (obj is IPersistableList) {
-                        IPersistableList persistableObj = obj as IPersistableList;
+                    if (command != null)
+                        ExecuteNonQuery(command);
 
-                        command = DeleteList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+                    persistableObj.DbPersisted = true;
+                }
 
-                        if (command != null)
-                            ExecuteNonQuery(command);
+                if (obj is IPersistableList) {
+                    IPersistableList persistableObj = obj as IPersistableList;
 
-                        command = CreateList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+                    command = DeleteList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
 
-                        if (command != null)
-                            ExecuteNonQuery(command);
-                    }
-                    
-                    Type objType = obj.GetType();
-                    foreach (DbDependency dependency in obj.DbDependencies) {
-                        if (dependency.AutoSave) {
-                            PropertyInfo propInfo = objType.GetProperty(dependency.Property);
-                            IPersistable persistable = propInfo.GetValue(obj, null) as IPersistable;
-                            if (persistable != null) {
-                                if (!Save(persistable))
-                                    return false;
-                            }
-                            else
+                    if (command != null)
+                        ExecuteNonQuery(command);
+
+                    command = CreateList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+
+                    if (command != null)
+                        ExecuteNonQuery(command);
+                }
+
+                Type objType = obj.GetType();
+                foreach (DbDependency dependency in obj.DbDependencies) {
+                    if (dependency.AutoSave) {
+                        PropertyInfo propInfo = objType.GetProperty(dependency.Property);
+                        IPersistable persistable = propInfo.GetValue(obj, null) as IPersistable;
+                        if (persistable != null) {
+                            if (!Save(persistable))
                                 return false;
                         }
+                        else
+                            return false;
                     }
                 }
             }
-            catch (Exception e) {
-                Global.Logger.Error(e.Message + " " + e.StackTrace);
-                return false;
-            }         
 
             return true;
         }
@@ -365,49 +359,42 @@ namespace Game.Database {
 
             MySqlConnection connection = mySqlTransaction.Connection;
 
-            try {                
-                foreach (IPersistable obj in objects) {
-                    if (obj is IPersistableObject && !(obj as IPersistableObject).DbPersisted)
-                        continue;
+            foreach (IPersistable obj in objects) {
+                if (obj is IPersistableObject && !(obj as IPersistableObject).DbPersisted)
+                    continue;
 
-                    if (obj is IPersistableObject) {
-                        IPersistableObject persistableObj = obj as IPersistableObject;
+                if (obj is IPersistableObject) {
+                    IPersistableObject persistableObj = obj as IPersistableObject;
 
-                        MySqlCommand command = DeleteObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+                    MySqlCommand command = DeleteObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
 
-                        ExecuteNonQuery(command);
+                    ExecuteNonQuery(command);
 
-                        persistableObj.DbPersisted = false;
-                    }
-                    
-                    if (obj is IPersistableList) {
-                        IPersistableList persistableObj = obj as IPersistableList;
-
-                        MySqlCommand command = DeleteList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
-
-                        ExecuteNonQuery(command);
-                    }
-                    
-                    Type objType = obj.GetType();
-                    foreach (DbDependency dependency in obj.DbDependencies) {
-                        if (dependency.AutoDelete) {
-                            PropertyInfo propInfo = objType.GetProperty(dependency.Property);
-                            IPersistable persistable = propInfo.GetValue(obj, null) as IPersistable;
-                            if (persistable != null) {
-                                if (!Delete(persistable))
-                                    return false;
-                            }
-                            else
-                                return false;
-                        }
-                    }
+                    persistableObj.DbPersisted = false;
                 }
 
-            }
-            catch (Exception e) {
-                Global.Logger.Error(e.Message + " " + e.StackTrace);
-                return false;
-            }
+                if (obj is IPersistableList) {
+                    IPersistableList persistableObj = obj as IPersistableList;
+
+                    MySqlCommand command = DeleteList(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+
+                    ExecuteNonQuery(command);
+                }
+
+                Type objType = obj.GetType();
+                foreach (DbDependency dependency in obj.DbDependencies) {
+                    if (dependency.AutoDelete) {
+                        PropertyInfo propInfo = objType.GetProperty(dependency.Property);
+                        IPersistable persistable = propInfo.GetValue(obj, null) as IPersistable;
+                        if (persistable != null) {
+                            if (!Delete(persistable))
+                                return false;
+                        }
+                        else
+                            return false;
+                    }
+                }
+            }            
 
             return true;
         }

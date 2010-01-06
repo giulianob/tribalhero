@@ -237,7 +237,6 @@ namespace Game.Database
                                     battleStats.Rng = (byte)listReader["range"];
                                     battleStats.Stl = (byte)listReader["stealth"];
                                     battleStats.Spd = (byte)listReader["speed"];
-                                    battleStats.Reward = (ushort)listReader["reward"];
 
                                     stub.Template.dbLoaderAdd(battleStats);                                    
                                 }
@@ -306,7 +305,6 @@ namespace Game.Database
                                     battleStats.Rng = (byte)listReader["range"];
                                     battleStats.Stl = (byte)listReader["stealth"];
                                     battleStats.Spd = (byte)listReader["speed"];
-                                    battleStats.Reward = (ushort)listReader["reward"];
 
                                     CombatStructure combatStructure = new CombatStructure(bm, structure, battleStats, (uint)listReader["hp"], (ushort)listReader["type"], (byte)listReader["level"]);
                                     combatStructure.GroupId = (uint)listReader["group_id"];

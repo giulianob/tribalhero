@@ -1,15 +1,15 @@
-﻿package src.Util {
+﻿package src.Util.BinaryList {
+	import fl.events.ListEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import src.Util.Util;
 	
 	/**
 	* ...
 	* @author Default
 	*/
 	public class BinaryList extends EventDispatcher {
-		
-		public static var CHANGED: String = "CHANGED";
-		
+			
 		private var sortFunc: Function;
 		private var compareFunc: Function;				
 		
@@ -33,7 +33,7 @@
 		public function clear():void
 		{
 			list = new Array();
-			super.dispatchEvent(new Event(CHANGED));
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 		
 		public function add(obj: *, resort: Boolean = true):void
@@ -42,6 +42,22 @@
 			
 			if (resort)
 				sort();			
+			
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.ADDED, obj));
+		}
+		
+		public function update(obj: *, val: Array) : void		
+		{
+			//find the index and change it
+			var idx: int = Util.binarySearch(list, compareFunc, val);
+			
+			if (idx == -1)
+				return;
+			
+			list[idx] = obj;
+			
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));			
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.UPDATED, obj));
 		}
 		
 		public function remove(val: *): *
@@ -51,11 +67,7 @@
 			if (idx == -1)
 				return null;
 			
-			var obj: * = removeByIndex(idx);
-			
-			super.dispatchEvent(new Event(CHANGED));
-			
-			return obj;
+			return removeByIndex(idx);
 		}
 		
 		public function removeByIndex(index: int): *
@@ -64,7 +76,9 @@
 			
 			list.splice(index, 1);
 			
-			super.dispatchEvent(new Event(CHANGED));
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
+			
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.REMOVED, obj));
 			
 			return obj;
 		}
@@ -72,7 +86,7 @@
 		public function sort():void
 		{
 			list.sort(sortFunc);
-			super.dispatchEvent(new Event(CHANGED));
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 		
 		public function getByIndex(index: int): *

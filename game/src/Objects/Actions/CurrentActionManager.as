@@ -3,7 +3,7 @@
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import src.Objects.SimpleGameObject;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	
 	/**
 	* ...

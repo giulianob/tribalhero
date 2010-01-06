@@ -8,6 +8,7 @@
 	import src.Objects.Prototypes.*;
 	import src.Objects.Factories.*;
 	import src.Objects.Actions.*;
+	import src.Objects.Troop.*;
 	
 	public class LoginComm {
 		
@@ -111,48 +112,13 @@
 					city.objects.add(cityObj, false);
 				}
 				
-				var troopCnt: int = packet.readUByte();
-				
+				var troopCnt: int = packet.readUByte();				
 				for (var troopI: int = 0; troopI < troopCnt; troopI++)
 				{
-					var troop: Troop = new Troop();
-					troop.playerId = packet.readUInt();
-					troop.cityId = packet.readUInt();
-					troop.id = packet.readUByte();
-					troop.state = packet.readUByte();
-					
-					if (troop.id == 1)
-						troop.upkeep = packet.readInt();
-					
-					switch (troop.state)
-					{
-						case Troop.MOVING:
-						case Troop.BATTLE:
-						case Troop.BATTLE_STATIONED:
-						case Troop.STATIONED:
-							troop.objectId = packet.readUInt();
-							troop.x = packet.readUInt();
-							troop.y = packet.readUInt();
-							break;
-					}
-					
-					var formationCnt: int = packet.readUByte();
-					var unitType: int;
-					
-					for (var formationsI: int = 0; formationsI < formationCnt; formationsI++)
-					{
-						var formation: Formation = new Formation(packet.readUByte());
-										
-						troop.add(formation);							
-						
-						var unitCnt: int = packet.readUByte();						
-					
-						for (var unitI: int = 0; unitI < unitCnt; unitI++)								
-							formation.add(new Unit(packet.readUShort(), packet.readUShort()));				
-					}					
-					
-					city.troops.add(troop);
+					var troop: Troop = mapComm.Troop.readTroop(packet)
+					city.troops.add(troop, false);
 				}
+				city.troops.sort();
 				
 				city.objects.sort();
 				

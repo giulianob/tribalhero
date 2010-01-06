@@ -31,20 +31,23 @@
 			TILE_MINI;
 			
 			//Walls
-			WALL_E;
-			WALL_N;
 			WALL_NE;
 			WALL_NW;
-			WALL_S;
 			WALL_SE;
 			WALL_SW;
+			WALL_N;
+			WALL_S;
 			WALL_W;
+			WALL_E;
 			
 			//Troops
 			DEFAULT_TROOP;			
 			
 			//UNITS
 			DEFAULT_UNIT;
+			
+			//Dialog
+			MOVEMENT_DIALOG_BG;
 			
 			//Structures
 			ARMORY_STRUCTURE;

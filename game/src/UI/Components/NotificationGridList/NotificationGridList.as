@@ -13,7 +13,7 @@
 	import src.Map.CityObject;
 	import src.Objects.Actions.Notification;
 	import src.Objects.Actions.PassiveAction;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	
 	/**
 	 * ...
@@ -41,13 +41,15 @@
 			timer.addEventListener(TimerEvent.TIMER, function(e: TimerEvent):void { updateTimes(); } );
 			timer.start();
 			
-			city.notifications.addEventListener(BinaryList.CHANGED, onUpdateNotifications);
+			addEventListener(Event.ADDED_TO_STAGE, function(e: Event) : void {
+				city.notifications.addEventListener(BinaryListEvent.CHANGED, onUpdateNotifications);
+			});
+			
+			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
+				city.notifications.removeEventListener(BinaryListEvent.CHANGED, onUpdateNotifications);
+				timer.stop();
+			});
 		}
-		
-		public function dispose(): void {
-			city.currentActions.removeEventListener(BinaryList.CHANGED, onUpdateNotifications);
-			timer.stop();
-		}		
 		
 		private function updateTimes(): void {
 			for (var i: int = 0; i < cells.size(); i++) {
@@ -59,7 +61,7 @@
 		public function onUpdateNotifications(e: Event): void {
 			(getModel() as VectorListModel).clear();
 			
-			for each(var notification: Notification in city.notifications.each()) {																
+			for each(var notification: Notification in city.notifications.each()) {
 				(getModel() as VectorListModel).append( {'cityId': city.id, 'notification': notification, 'local': notification.cityId == city.id} );
 			}
 		}

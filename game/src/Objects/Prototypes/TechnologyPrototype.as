@@ -7,7 +7,7 @@
 package src.Objects.Prototypes {
 	import src.Objects.Resources;
 	import fl.lang.Locale;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 
 	public class TechnologyPrototype {
 		

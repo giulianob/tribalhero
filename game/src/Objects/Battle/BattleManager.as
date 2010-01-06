@@ -1,7 +1,7 @@
 ﻿package src.Objects.Battle {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	
 	/**
 	* ...

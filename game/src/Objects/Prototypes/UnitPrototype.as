@@ -28,6 +28,9 @@ package src.Objects.Prototypes {
 		public var trainTime: int;			
 		public var upgradeResources: Resources = new Resources(0, 0, 0, 0, 0);
 		public var upgradeTime: int;
+		public var weapon: String;
+		public var armor: String;
+		public var upkeep: int;
 		
 		public function UnitPrototype() {
 			

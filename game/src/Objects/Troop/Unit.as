@@ -4,7 +4,7 @@
 * @version 0.1
 */
 
-package src.Objects {
+package src.Objects.Troop {
 
 	public class Unit {
 		

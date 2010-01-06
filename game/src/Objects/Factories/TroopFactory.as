@@ -5,7 +5,7 @@
 	import flash.display.MovieClip;
 	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
-	import src.Objects.TroopObject;
+	import src.Objects.Troop.TroopObject;
 	import src.UI.SmartMovieClip;
 
 	/**

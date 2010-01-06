@@ -12,7 +12,8 @@ package src.Map {
 	import src.Objects.Battle.BattleManager;
 	import src.Objects.Prototypes.EffectPrototype;
 	import src.Objects.*;
-	import src.Util.BinaryList;
+	import src.Objects.Troop.*;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	public class City extends EventDispatcher
@@ -32,9 +33,9 @@ package src.Map {
 		public var currentActions: CurrentActionManager = new CurrentActionManager();
 		public var notifications: NotificationManager = new NotificationManager();
 		
-		public var troops: TroopManager = new TroopManager();		
+		public var troops: TroopManager;		
 		public var objects: BinaryList = new BinaryList(CityObject.sortOnId, CityObject.compareObjId);
-		public var template: TemplateManager = new TemplateManager();			
+		public var template: UnitTemplateManager = new UnitTemplateManager();			
 		
 		public function get MainBuilding() : CityObject {
 			return objects.get(1);
@@ -45,6 +46,8 @@ package src.Map {
 			this.resources = resources;
 			this.radius = radius;
 			this.name = name;
+			
+			troops = new TroopManager(this);
 			
 			dispatchEvent(new Event(RESOURCES_UPDATE));
 		}

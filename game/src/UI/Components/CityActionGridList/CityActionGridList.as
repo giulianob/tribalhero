@@ -15,7 +15,7 @@
 	import src.Objects.Actions.CurrentActionReference;
 	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.Prototypes.StructurePrototype;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	
 	/**
 	 * ...
@@ -43,11 +43,11 @@
 			timer.addEventListener(TimerEvent.TIMER, function(e: TimerEvent):void { updateTimes(); } );
 			timer.start();
 			
-			city.currentActions.addEventListener(BinaryList.CHANGED, onUpdateActions);
+			city.currentActions.addEventListener(BinaryListEvent.CHANGED, onUpdateActions);
 		}
 		
 		public function dispose(): void {
-			city.currentActions.removeEventListener(BinaryList.CHANGED, onUpdateActions);
+			city.currentActions.removeEventListener(BinaryListEvent.CHANGED, onUpdateActions);
 			timer.stop();
 		}		
 		

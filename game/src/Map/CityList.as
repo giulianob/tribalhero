@@ -9,8 +9,7 @@ package src.Map {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
-	import src.Objects.UnitTemplate;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	public class CityList extends BinaryList {

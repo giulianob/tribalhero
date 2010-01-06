@@ -4,8 +4,8 @@
 * @version 0.1
 */
 
-package src.Objects {
-	import src.Util.BinaryList;
+package src.Objects.Troop {
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	public class Formation extends BinaryList {

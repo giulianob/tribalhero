@@ -18,7 +18,7 @@ package src.Objects.Actions {
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Objects.SimpleGameObject;
-	import src.Objects.UnitTemplate;
+	import src.Objects.Troop.*;
 	import src.UI.Sidebars.ObjectInfo.Buttons.UnitUpgradeButton;
 	
 	public class UnitUpgradeAction extends Action implements IAction

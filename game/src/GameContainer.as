@@ -1,10 +1,7 @@
-﻿package src {	
-	import fl.controls.Button;
+﻿package src {
 	import flash.display.*;
-	import flash.events.*;	
-	import flash.external.ExternalInterface;
+	import flash.events.*;
 	import flash.geom.*;
-	import flash.text.TextFieldAutoSize;
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import org.aswing.event.PopupEvent;
@@ -17,169 +14,171 @@
 	import src.UI.*;
 	import fl.data.DataProvider;
 	import flash.ui.*;
-	import src.Util.Util;
-	
+
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
-	import org.aswing.ext.*;	
-	
+	import org.aswing.ext.*;
+
 	public class GameContainer extends GameContainer_base {
-		
+
 		//Currently selected sidebar
 		private var sidebar: GameJSidebar;
-		
+
 		//Container for sidebar
 		private var sidebarHolder: Sprite;
-		
+
 		public var map: Map;
 		public var miniMap: MiniMap;
-		
+
 		//Holds any overlay. Overlays are used for different cursor types.
 		private var mapOverlay: Sprite;
-		private var mapOverlayTarget: Sprite;		
-		
+		private var mapOverlayTarget: Sprite;
+
 		//HUD resources container
 		private var resourcesContainer: ResourcesContainer;
-		
+
 		//Container for messages that can be set by different sidebars
 		public var message: MessageContainer = new MessageContainer();
-		
+
 		//Minimap background image
 		private var miniMapMask: Sprite;
-		
+
 		//Holds all of the dialogs. This MIGHT be able to be removed once aswing is fully implemented.
 		private var dialogHolder: Sprite;
-		
+
 		//Black background image used when displaying dialogs. This should be removed once AsWing is used for all panels.
 		private var overlay: Sprite;
 		private var dialogs: Array = new Array();
-		
+
 		//Holds all currently open aswing frames
 		private var frames: Array = new Array();
-			
-		public var selectedCity: City;		
+
+		public var selectedCity: City;
 		public var camera: Camera = new Camera(0, 0);
-		
+
 		//Resources timer that fires every second
 		public var resourcesTimer: Timer = new Timer(1000);
-		
+
 		public function GameContainer()
-		{		
+		{
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-					
-					if (!stage.contains(dialogHolder))
-						stage.addChild(dialogHolder);
-				}
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+
+				if (!stage.contains(dialogHolder))
+				stage.addChild(dialogHolder);
+			}
 			);
-			
+
 			dialogHolder = new Sprite();
 			dialogHolder.name = "DialogHolder";
 			dialogHolder.x = 0;
 			dialogHolder.y = 0;
-			
+
 			visible = false;
-			
+
 			txtCoords.mouseEnabled = false;
-			
+
 			new SimpleTooltip(btnGoToCoords, "Go to...");
 			btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
-			
+
 			new SimpleTooltip(btnMessages, "View battle reports");
 			btnMessages.addEventListener(MouseEvent.CLICK, onViewMessages);
-			
+
 			new SimpleTooltip(btnCityInfo, "View city details");
 			btnCityInfo.addEventListener(MouseEvent.CLICK, onViewCityInfo);
-			
-			new SimpleTooltip(btnCityTroops, "View city troops");
-			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);			
-			
+
+			new SimpleTooltip(btnCityTroops, "View unit movement");
+			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
+
 			lstCities.addEventListener(Event.CHANGE, onChangeCitySelection);
-			
-			overlay = getScreenOverlay();						
-			
+
+			overlay = getScreenOverlay();
+
 			miniMapHolder.mouseEnabled = false;
-			miniMapHolder.mouseChildren = false;			
-			
+			miniMapHolder.mouseChildren = false;
+
 			miniMapMask = new Sprite();
 			miniMapMask.graphics.beginFill(0x336699);
 			miniMapMask.graphics.drawRect(miniMapHolder.x, miniMapHolder.y, miniMapHolder.width, miniMapHolder.height);
-			miniMapMask.graphics.endFill();  			
-			
+			miniMapMask.graphics.endFill();
+
 			sidebarHolder = new Sprite();
 			addChild(sidebarHolder);
-			
+
 			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);
 			resourcesTimer.start();
 		}
-		
+
 		public function getScreenOverlay(): Sprite
 		{
 			var overlay:Sprite = new Sprite();
 			overlay.mouseEnabled = true;
 			overlay.graphics.beginFill(0x0A0A0A, 0.30);
-            overlay.graphics.lineStyle(0);
+			overlay.graphics.lineStyle(0);
 			overlay.graphics.drawRect(0, 0, Constants.movieW, Constants.movieH);
-			overlay.graphics.endFill();										
-			
+			overlay.graphics.endFill();
+
 			return overlay;
 		}
 
 		public function onViewCityTroops(e: MouseEvent) :void
 		{
 			if (!selectedCity)
-				return;
-			
-			var cityInfoDialog: CityInfoDialog = new CityInfoDialog();
-			cityInfoDialog.init(map, selectedCity, function(sender: Dialog):void { closeDialog(sender); } );
-			
-			showDialog(cityInfoDialog);					
+			return;
+
+			var movementDialog: MovementDialog = new MovementDialog(selectedCity);
+			movementDialog.show();
 		}
-		
+
 		public function onViewCityInfo(e: MouseEvent) :void
 		{
 			if (!selectedCity)
-				return;
-			
+			return;
+
 			var currentEventDialog: CityEventDialog = new CityEventDialog(selectedCity);
-			currentEventDialog.show();			
+			currentEventDialog.show();
 		}
-		
+
 		public function onViewMessages(e: MouseEvent):void
-		{			
+		{
 			var battleReportDialog: BattleReportList = new BattleReportList();
 			battleReportDialog.show();
-		}	
-		
+		}
+
 		public function onGoToCoords(e: Event):void {
 			var goToDialog: GoToDialog = new GoToDialog();
 			goToDialog.show();
 		}
-		
+
 		public function eventKeyDown(e: KeyboardEvent):void
 		{
 			if (e.charCode == Keyboard.ESCAPE)
 			{
 				if (map != null)
-					map.selectObject(null);
+				map.selectObject(null);
+			}
+			else if (e.charCode == Keyboard.SPACE) {
+				var cityInfoDialog: CityInfoDialog = new CityInfoDialog();
+				cityInfoDialog.init(map, selectedCity, function(): void { closeDialog() } );
+				showDialog(cityInfoDialog);
 			}
 		}
-		
+
 		public function setMap(map: Map, miniMap: MiniMap):void
-		{						
+		{
 			this.map = map;
 			Global.map = map;
 			this.miniMap = miniMap;
-			RequirementFormula.map = map;			
+			RequirementFormula.map = map;
 			lstCities.dataProvider = new DataProvider();
-			
+
 			if (map != null)
-			{											
+			{
 				mapHolder.addChild(map);
-				map.setGameContainer(this);				
-				
+				map.setGameContainer(this);
+
 				this.mapOverlay = new MovieClip();
 				this.mapOverlay.graphics.beginFill(0xCCFF00);
 				this.mapOverlay.graphics.drawRect(0, 0, mapHolder.width, mapHolder.height);
@@ -187,85 +186,85 @@
 				this.mapOverlay.mouseEnabled = false;
 				this.mapOverlay.name = "Overlay";
 				this.mapOverlay.x = mapHolder.x;
-				this.mapOverlay.y = mapHolder.y;				
+				this.mapOverlay.y = mapHolder.y;
 				addChild(this.mapOverlay);
-				
+
 				for each (var city: City in map.cities.each()) {
 					lstCities.dataProvider.addItem( { label: city.name, id: city.id, city: city } );
 				}
-				
+
 				if (lstCities.dataProvider.length > 0) { //set a default city selection
 					selectedCity = lstCities.dataProvider.getItemAt(0).city;
-					lstCities.selectedIndex = 0;		
+					lstCities.selectedIndex = 0;
 					var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-					map.gameContainer.camera.ScrollToCenter(pt.x, pt.y);					
-				}												
-				
-				resourcesContainer = new ResourcesContainer();				
+					map.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+				}
+
+				resourcesContainer = new ResourcesContainer();
 				displayResources();
 			}
-			
+
 			if (miniMap != null)
 			{
-				miniMapHolder.addChild(miniMap);							
-			}						
+				miniMapHolder.addChild(miniMap);
+			}
 		}
-		
+
 		public function show() : void {
-			camera.reset();			
-			visible = true;			
+			camera.reset();
+			visible = true;
 		}
-		
-		public function dispose() : void {			
+
+		public function dispose() : void {
 			visible = false;
-			
+
 			closeAllDialogs();
-			
-			if (resourcesContainer && resourcesContainer.getFrame()) 
-				resourcesContainer.getFrame().dispose();
-								
-			resourcesContainer = null;			
+
+			if (resourcesContainer && resourcesContainer.getFrame())
+			resourcesContainer.getFrame().dispose();
+
+			resourcesContainer = null;
 			setSidebar(null);
-			
+
 			if (map != null)
-			{							
-				
+			{
+
 				map.dispose();
 				mapHolder.removeChild(map);
 				removeChild(mapOverlay);
 			}
-			
-			if (miniMap != null)			
-				miniMapHolder.removeChild(miniMap);				
-				
+
+			if (miniMap != null)
+			miniMapHolder.removeChild(miniMap);
+
 			map = null;
 			miniMap = null;
 		}
-		
+
 		public function setSidebar(sidebar: GameJSidebar):void
-		{									
+		{
 			if (this.sidebar != null)
-				this.sidebar.getFrame().dispose();			
-			
+			this.sidebar.getFrame().dispose();
+
 			this.sidebar = sidebar;
-			
-			if (sidebar != null)			
-				sidebar.show(sidebarHolder);
+
+			if (sidebar != null)
+			sidebar.show(sidebarHolder);
 		}
-		
+
 		public function closeAllDialogs() :void
 		{
 			var size: int = dialogs.length;
 			for (var i: int = 0; i < size; i++)
-				closeDialog();
+			closeDialog();
 		}
-		
+
 		public function closeDialog(dialog: Dialog = null):void
 		{
-			var idx: int = -1;			
-			
+			var idx: int = -1;
+
 			if (dialog)
-			{				
+			{
 				for (var i: int = 0; i < dialogs.length; i++)
 				{
 					if (dialogs[i] == dialog)
@@ -273,51 +272,51 @@
 						idx = i;
 						break;
 					}
-				}				
-			}	
+				}
+			}
 			else
-			{					
+			{
 				idx = dialogs.length - 1;
 				dialog = dialogs[idx];
 			}
-			
+
 			if (idx == -1)
-				return;			
-						
+			return;
+
 			var disposeTmp: IDisposable = dialog as IDisposable;
-			
+
 			dialogHolder.removeChild(dialog);
 			dialogHolder.removeChild(overlay);
-			
-			dialogs.splice(idx, 1);			
-			
+
+			dialogs.splice(idx, 1);
+
 			if (disposeTmp != null)
-				disposeTmp.dispose();
-				
+			disposeTmp.dispose();
+
 			if (dialogs.length == 0)
 			{
 				if (map != null)
-					map.enableMouse();					
-			} 
+				map.enableMouse();
+			}
 			else
 			{
 				dialogs[dialogs.length - 1].enableInput();
-				dialogHolder.addChildAt(overlay, dialogHolder.getChildIndex(dialogs[dialogs.length - 1]));				
-				overlay.visible = (dialogs[dialogs.length - 1] as Dialog).hasFadedBackground();				
+				dialogHolder.addChildAt(overlay, dialogHolder.getChildIndex(dialogs[dialogs.length - 1]));
+				overlay.visible = (dialogs[dialogs.length - 1] as Dialog).hasFadedBackground();
 			}
-			
-			repositionDialogs();		
-			
+
+			repositionDialogs();
+
 			stage.focus = null;
 		}
-		
+
 		public function showFrame(frame: JFrame):void {
 			if (map != null) map.disableMouse();
 			frames.push(frame);
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
 			frame.show();
 		}
-		
+
 		public function onFrameClosing(e: PopupEvent):void {
 			var frame: JFrame = e.target as JFrame;
 			if (frame == null) return;
@@ -325,94 +324,94 @@
 			var index: int = frames.indexOf(frame);
 			if (index == -1) trace("Closed a frame that did not call show through GameContainer");
 			frames.splice(index, 1);
-			if (frames.length == 0 && map != null) map.enableMouse();			
+			if (frames.length == 0 && map != null) map.enableMouse();
 		}
-		
+
 		public function showDialog(dialog: Dialog):void
-		{									
+		{
 			if (dialogs.length > 0)
-				dialogs[dialogs.length - 1].disableInput();									
-			
+			dialogs[dialogs.length - 1].disableInput();
+
 			dialogs.push(dialog);
-			
-			if (dialogHolder.contains(overlay))			
-				dialogHolder.removeChild(overlay);			
-			
+
+			if (dialogHolder.contains(overlay))
+			dialogHolder.removeChild(overlay);
+
 			dialogHolder.addChild(overlay);
 			overlay.visible = (dialogs[dialogs.length - 1] as Dialog).hasFadedBackground();
 			dialogHolder.addChild(dialog);
-			
+
 			if (map != null)
-				map.disableMouse();
-				
+			map.disableMouse();
+
 			repositionDialogs();
-			
+
 			stage.focus = null;
 		}
-		
+
 		private function repositionDialogs():void
 		{
 			for (var i: int = 0; i < dialogs.length; i++)
 			{
 				var depth: int = dialogs.length - 1 - i;
-			
+
 				var dialog: Dialog = dialogs[i];
-				
+
 				depth = 0;//disabled cascade
-				
+
 				dialog.x = int(Constants.movieW / 2 - dialog.getSmartWidth() / 2) - depth * 20;
 				dialog.y = int(Constants.movieH / 2 - dialog.getSmartHeight() / 2) - depth * 20 + 25;
 			}
 		}
-		
+
 		public function displayResources(e: Event = null):void {
 			if (!resourcesContainer) return;
-			
+
 			if (selectedCity == null)
 			{
 				if (resourcesContainer.getFrame())
-					resourcesContainer.getFrame().dispose();				
-				
-				return;									
+				resourcesContainer.getFrame().dispose();
+
+				return;
 			}
-			
+
 			Global.gameContainer.selectedCity.dispatchEvent(new Event(City.RESOURCES_UPDATE));
-			
+
 			resourcesContainer.displayResources();
 		}
-		
+
 		public function setOverlaySprite(object: Sprite):void
 		{
 			if (this.mapOverlayTarget != null)
 			{
 				this.mapOverlayTarget.hitArea = null;
-				
+
 				var disposeTmp: IDisposable = this.mapOverlayTarget as IDisposable;
-				
+
 				if (disposeTmp != null)
-					disposeTmp.dispose();
-				
-				mapHolder.removeChild(this.mapOverlayTarget);					
-				this.mapOverlayTarget = null;				
+				disposeTmp.dispose();
+
+				mapHolder.removeChild(this.mapOverlayTarget);
+				this.mapOverlayTarget = null;
 			}
-			
+
 			this.mapOverlayTarget = object;
-			
+
 			if (this.mapOverlayTarget != null)
 			{
 				mapHolder.addChild(this.mapOverlayTarget);
-				this.mapOverlayTarget.hitArea = this.mapOverlay;				
+				this.mapOverlayTarget.hitArea = this.mapOverlay;
 			}
-		}		
-		
-		public function onChangeCitySelection(e: Event):void {		
+		}
+
+		public function onChangeCitySelection(e: Event):void {
 			selectedCity = null;
 			if (lstCities.selectedIndex == -1) return;
-			
+
 			selectedCity = lstCities.selectedItem.city;
-			
+
 			displayResources();
 		}
 	}
-	
+
 }

@@ -20,7 +20,7 @@
 	import src.Objects.StructureObject;
 	import src.UI.Sidebars.ObjectInfo.Buttons.TechnologyButton;
 	import src.UI.SmartMovieClip;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	import src.Objects.Resources;
 	import src.Objects.Prototypes.Worker;

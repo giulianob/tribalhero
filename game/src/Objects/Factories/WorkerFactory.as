@@ -3,7 +3,7 @@
 	import src.Objects.Actions.*;
 	import src.Objects.Effects.EffectReqManager;
 	import src.Objects.Prototypes.EffectPrototype;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	import src.Objects.Prototypes.Worker;
 	

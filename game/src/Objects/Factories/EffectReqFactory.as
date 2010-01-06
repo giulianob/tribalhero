@@ -3,7 +3,7 @@
 	import src.Objects.Effects.EffectReqManager;
 	import src.Objects.Prototypes.EffectReqPrototype;
 	import src.Objects.Effects.RequirementFormula;
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	
 	/**

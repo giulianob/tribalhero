@@ -1,6 +1,6 @@
 ﻿package src.Map 
 {
-	import src.Util.BinaryList;
+	import src.Util.BinaryList.*;
 	
 	/**
 	* ...

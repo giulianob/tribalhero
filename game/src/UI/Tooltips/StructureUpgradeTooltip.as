@@ -55,7 +55,7 @@ package src.UI.Tooltips {
 		
 		public function draw(count: int, max: int):void
 		{							
-			lblTitle.setText(structPrototype.getName());			
+			lblTitle.setText("Upgrade " + structPrototype.getName());			
 			lblLevel.setText("Level " + structPrototype.level.toString());						
 			lblDescription.setText(structPrototype.getDescription());			
 			

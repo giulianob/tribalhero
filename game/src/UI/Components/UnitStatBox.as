@@ -1,36 +1,28 @@
 ﻿package src.UI.Components
 {
-	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
 	import org.aswing.JPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
-	import src.Global;
 	import src.Map.City;
-	import src.Objects.Actions.Notification;
-	import src.Objects.Actions.PassiveAction;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Objects.Troop.TroopTemplate;
+	import src.Objects.Troop.TroopTemplateManager;
 	import src.Objects.Troop.UnitTemplate;
 	import src.Objects.Troop.UnitTemplateManager;
 	import src.UI.GameLookAndFeel;
 	import src.Util.BinaryList.BinaryList;
-	import src.Util.Util;
 
 	public class UnitStatBox extends JPanel
-	{		
+	{
 		private var type: int;
 		//The template can be either a trooptemplate or unittemplate depending on who
 		//is using this box
 		private var template: BinaryList;
-		
+
 		private var lblArmor: JLabel;
 		private var lblWeapon: JLabel;
 		private var lblHp: JLabel;
@@ -40,7 +32,7 @@
 		private var lblRange: JLabel;
 		private var lblSpeed: JLabel;
 		private var lblUpkeep: JLabel;
-		
+
 		private var lblArmorTitle: JLabel;
 		private var lblWeaponTitle: JLabel;
 		private var lblHpTitle: JLabel;
@@ -49,53 +41,46 @@
 		private var lblStealthTitle: JLabel;
 		private var lblRangeTitle: JLabel;
 		private var lblSpeedTitle: JLabel;
-		private var lblUpkeepTitle: JLabel;		
+		private var lblUpkeepTitle: JLabel;
 
-		public function UnitStatBox(type: int, city: City, template: BinaryList)
-		{
-			createUI();
-			
-			var armor: String;
-			var weapon: String;
-			var hp: int;
-			var upkeep: int;
-			var attack: int;
-			var defense: int;
-			var stealth: int;
-			var range: int;
-			var speed: int;
-			
-			var unitPrototype: UnitPrototype;
-			if (template is UnitTemplateManager) {				
-				var unitTemplate: UnitTemplate = template.get(type);
-				unitPrototype = UnitFactory.getPrototype(unitTemplate.type, unitTemplate.level);
-				//TODO: we should get the city modifiers here when it's available
-				
-				attack = unitPrototype.attack;
-				defense = unitPrototype.defense;
-				speed = unitPrototype.speed;
-				range = unitPrototype.range;
-				hp = unitPrototype.hp;
-				stealth = unitPrototype.stealth;
-				upkeep = unitPrototype.upkeep;
-				armor = unitPrototype.armor;
-				weapon = unitPrototype.weapon;						
-			}
-			else {
+		public static function createFromCityTemplate(type: int, city: City) : UnitStatBox {
+			var unitTemplate: UnitTemplate = city.template.get(type);
+			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unitTemplate.type, unitTemplate.level);
+
+			return createFromCity(unitPrototype, city);
+		}
+		
+		public static function createFromPrototype(unitPrototype: UnitPrototype, city: City) : UnitStatBox {
+			return createFromCity(unitPrototype, city);
+		}
+		
+		private static function createFromCity(unitPrototype: UnitPrototype, city: City) : UnitStatBox {
+			//TODO: we should get the city modifiers here when it's available
+
+			var statBox: UnitStatBox = new UnitStatBox();
+
+			statBox.init(unitPrototype.armor, unitPrototype.weapon, unitPrototype.hp, unitPrototype.upkeep, unitPrototype.attack, unitPrototype.defense, unitPrototype.stealth, unitPrototype.range, unitPrototype.speed);
+
+			return statBox;			
+		}
+
+		public static function createFromTroopTemplate(type: int, template: TroopTemplateManager) : UnitStatBox {
 				var troopTemplate: TroopTemplate = template.get(type);
-				unitPrototype = UnitFactory.getPrototype(troopTemplate.type, troopTemplate.level);
-				
-				attack = troopTemplate.attack;
-				defense = troopTemplate.defense;
-				speed = troopTemplate.speed;
-				range = troopTemplate.range;
-				hp = troopTemplate.maxHp;
-				stealth = troopTemplate.stealth;
-				upkeep = unitPrototype.upkeep;
-				armor = unitPrototype.armor;
-				weapon = unitPrototype.weapon;				
-			}
-			
+				var unitPrototype: UnitPrototype = UnitFactory.getPrototype(troopTemplate.type, troopTemplate.level);
+
+			var statBox: UnitStatBox = new UnitStatBox();
+
+			statBox.init(unitPrototype.armor, unitPrototype.weapon, troopTemplate.maxHp, unitPrototype.upkeep, troopTemplate.attack, troopTemplate.defense, troopTemplate.stealth, troopTemplate.range, troopTemplate.speed);
+
+			return statBox;
+		}
+
+		public function UnitStatBox()
+		{			
+			createUI();
+		}
+
+		private function init(armor: String, weapon: String, hp: int, upkeep: int, attack: int, defense: int, stealth: int, range: int, speed: int) : void {
 			lblAttack.setText(attack.toString());
 			lblDefense.setText(defense.toString());
 			lblSpeed.setText(speed.toString());
@@ -109,8 +94,8 @@
 
 		private function createUI() : void
 		{
-			setLayout(new GridLayout(5, 4, 5, 0));			
-			
+			setLayout(new GridLayout(5, 4, 5, 0));
+
 			lblArmorTitle = titleLabelMaker("Armor");
 			lblWeaponTitle = titleLabelMaker("Weapon");
 			lblHpTitle = titleLabelMaker("HP");
@@ -120,7 +105,7 @@
 			lblRangeTitle = titleLabelMaker("Range");
 			lblSpeedTitle = titleLabelMaker("Speed");
 			lblUpkeepTitle = titleLabelMaker("Upkeep");
-			
+
 			lblArmor = valueLabelMaker();
 			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
@@ -130,22 +115,23 @@
 			lblRange = valueLabelMaker();
 			lblSpeed = valueLabelMaker();
 			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
-			
+
 			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());
 			appendAll(lblAttackTitle, lblAttack, lblDefenseTitle, lblDefense);
 			appendAll(lblWeaponTitle, lblWeapon, lblArmorTitle, lblArmor);
-			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);			
+			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
 			appendAll(lblSpeedTitle, lblSpeed, lblUpkeepTitle, lblUpkeep);
 		}
-		
+
 		private function titleLabelMaker(title: String) : JLabel {
 			var lbl: JLabel = new JLabel(title, null, AsWingConstants.LEFT);
+			lbl.mouseEnabled = false;
 			GameLookAndFeel.changeClass(lbl, "Tooltip.text");
 			return lbl;
 		}
-		
+
 		private function valueLabelMaker(icon: Icon = null) : JLabel {
-			var lbl: JLabel = new JLabel("", icon, AsWingConstants.LEFT);		
+			var lbl: JLabel = new JLabel("", icon, AsWingConstants.LEFT);
 			lbl.setIconTextGap(0);
 			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lbl, "Tooltip.text");

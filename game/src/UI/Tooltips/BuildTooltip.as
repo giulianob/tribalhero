@@ -126,7 +126,7 @@
 			pnlRequired.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));
 			
 			lblRequires = new JLabel();
-			lblRequires.setText("Requirementss");
+			lblRequires.setText("Requirements");
 			lblRequires.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblRequires, "header");
 			

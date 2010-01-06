@@ -80,7 +80,7 @@
 			lblInfo.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblInfo, "Tooltip.text");
 
-			statsBox = new UnitStatBox(unit.type, city, template);
+			statsBox = UnitStatBox.createFromCityTemplate(unit.type, city);
 
 			pnlHeader.append(lblName);
 			pnlHeader.append(lblUpkeep);			

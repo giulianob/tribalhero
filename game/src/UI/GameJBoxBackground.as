@@ -34,7 +34,7 @@ public class GameJBoxBackground implements GroundDecorator, UIResource{
 	protected var shape:Sprite;
 	
 	public function GameJBoxBackground(){
-		shape = new Sprite();
+		shape = new Sprite();		
 		shape.mouseChildren = false;
 		shape.mouseEnabled = false;
 	}
@@ -58,7 +58,7 @@ public class GameJBoxBackground implements GroundDecorator, UIResource{
 			
 			var g: Graphics2D = new Graphics2D(shape.graphics);
 			shape.alpha = 0.8;
-			g.fillRoundRect(new SolidBrush(ASColor.BLACK), b.x, b.y, b.width, b.height, 10);
+			g.fillRoundRect(new SolidBrush(ASColor.BLACK), b.x, b.y, b.width, b.height, 10);			
 		}
 		shape.visible = c.isOpaque();
 	}

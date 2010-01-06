@@ -47,7 +47,7 @@ package src.UI.Tooltips {
 			this.unitPrototype = unitPrototype;
 
 			var city: City = Global.map.cities.get(parentObj.cityId);
-			statsBox = new UnitStatBox(unitPrototype.type, city, city.template);
+			statsBox = UnitStatBox.createFromPrototype(unitPrototype, city);
 			
 			createUI();
 			

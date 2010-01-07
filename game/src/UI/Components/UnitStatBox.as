@@ -126,7 +126,7 @@
 		private function titleLabelMaker(title: String) : JLabel {
 			var lbl: JLabel = new JLabel(title, null, AsWingConstants.LEFT);
 			lbl.mouseEnabled = false;
-			GameLookAndFeel.changeClass(lbl, "Tooltip.text");
+			GameLookAndFeel.changeClass(lbl, "Tooltip.text Label.small");
 			return lbl;
 		}
 
@@ -134,7 +134,7 @@
 			var lbl: JLabel = new JLabel("", icon, AsWingConstants.LEFT);
 			lbl.setIconTextGap(0);
 			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lbl, "Tooltip.text");
+			GameLookAndFeel.changeClass(lbl, "Tooltip.text Label.small");
 			return lbl;
 		}
 	}

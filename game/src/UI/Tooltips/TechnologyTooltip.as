@@ -51,8 +51,14 @@ package src.UI.Tooltips {
 		public function draw(count: int, max: int):void
 		{			
 			lblTitle.setText(techPrototype.description);
-			lblLevel.setText("Level " + techPrototype.level.toString());
-			lblDescription.setText(techPrototype.description);
+			
+			if (techPrototype.level == 0) {
+				lblDescription.setText("You have not trained this technology yet");
+			}
+			else {
+				lblLevel.setText("Level " + techPrototype.level.toString());
+				lblDescription.setText(techPrototype.description);
+			}
 			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
@@ -159,8 +165,13 @@ package src.UI.Tooltips {
 			
 			//component layoution
 			ui.append(lblTitle);
-			ui.append(lblLevel);
-			ui.append(lblDescription);			
+			
+			if (techPrototype.level > 0) {				
+				ui.append(lblDescription);			
+			} else {
+				ui.append(lblLevel);
+				ui.append(lblDescription);			
+			}
 			
 			pnlNextLvl.append(pnlHeader);
 			pnlNextLvl.append(lblNextLvlDescription);

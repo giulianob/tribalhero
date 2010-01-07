@@ -24,14 +24,14 @@ namespace Game.Logic {
 
         internal static byte GetTroopRadius(TroopStub stub, TechnologyManager em) {
             int count = 0;
-            foreach (KeyValuePair<FormationType, Formation> formation in stub as IEnumerable<KeyValuePair<FormationType,Formation>>) {
+            foreach (KeyValuePair<FormationType, Formation> formation in stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
                 if (formation.Key == FormationType.Scout) continue;
                 foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
                     count += kvp.Value;
                 }
             }
 
-            return (byte)Math.Min((int)Math.Ceiling((decimal)count / 100), 5);            
+            return (byte)Math.Min((int)Math.Ceiling((decimal)count / 100), 5);
         }
 
         internal static byte GetTroopSpeed(TroopStub stub, object p) {
@@ -42,14 +42,14 @@ namespace Game.Logic {
                     count += kvp.Value;
                 }
             }
-            return (byte)Math.Min(15, (10-Math.Max(count / 100, 5))); //limiting it to max of 15 because Formula.MoveTime will return negative if greater than 20
+            return (byte)Math.Min(15, (10 - Math.Max(count / 100, 5))); //limiting it to max of 15 because Formula.MoveTime will return negative if greater than 20
         }
-        
+
 
         internal static Resource GetMillResource(byte mill_lvl, TechnologyManager em) {
             Resource res = new Resource(mill_lvl * 5, mill_lvl * 4, mill_lvl * 2, mill_lvl * 3, 0);
-            foreach( Effect effect in em.GetEffects(EffectCode.CountEffect, EffectInheritance.Self)) {
-                switch( (int)effect.value[0] ) {
+            foreach (Effect effect in em.GetEffects(EffectCode.CountEffect, EffectInheritance.Self)) {
+                switch ((int)effect.value[0]) {
                     case 21051:
                         res.Crop *= (int)effect.value[1];
                         break;
@@ -66,8 +66,6 @@ namespace Game.Logic {
             }
             return res;
         }
-
-
 
         internal static ushort GetIncreasedEfficiency(ushort cur_efficiency, byte cur, byte max) {
             ushort max_efficency = (ushort)(cur * 120);
@@ -125,7 +123,7 @@ namespace Game.Logic {
         }
 
         internal static double TradeTime(Structure structure) {
-            return 50 + 50/structure.Lvl;
+            return 50 + 50 / structure.Lvl;
         }
 
         internal static double MarketTax(Structure structure) {
@@ -145,7 +143,8 @@ namespace Game.Logic {
                     int limit = 500 + city.MainBuilding.Lvl * city.MainBuilding.Lvl * 100;
                     city.Resource.SetLimits(limit, 0, limit, limit, 0);
                 }
-            } else {
+            }
+            else {
                 city.Resource.SetLimits(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
             }
         }

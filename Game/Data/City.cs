@@ -529,6 +529,7 @@ namespace Game {
                 return new DbColumn[] {                    
                     new DbColumn("player_id", owner.PlayerId, System.Data.DbType.UInt32),
                     new DbColumn("name", Name, System.Data.DbType.String, 32),
+                    new DbColumn("radius", Radius, System.Data.DbType.Byte),
                     new DbColumn("gold", resource.Gold.RawValue, System.Data.DbType.Int32),
                     new DbColumn("gold_realize_time", resource.Gold.LastRealizeTime, System.Data.DbType.DateTime),
                     new DbColumn("gold_production_rate", resource.Gold.Rate, System.Data.DbType.Int32),

@@ -86,7 +86,7 @@ namespace Game.Logic {
         }
 
         internal static byte GetRadius(uint total_labor) {
-            return (byte)(total_labor / 100);
+            return (byte)Math.Min(6, (int)(total_labor / 100));
         }
 
         internal static int GetAttackModeTolerance(int totalCount, Game.Logic.Actions.AttackMode mode) {

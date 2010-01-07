@@ -84,6 +84,7 @@ namespace Game.Database
                                 (int)reader["wood"], (DateTime)reader["wood_realize_time"], (int)reader["wood_production_rate"],
                                 (int)reader["labor"], (DateTime)reader["labor_realize_time"], (int)reader["labor_production_rate"]);
                             City city = new City(Global.Players[(uint)reader["player_id"]], (string)reader["name"], resource, null);
+                            city.Radius = (byte)reader["radius"];
                             city.DbPersisted = true;
                             Global.World.dbLoaderAdd((uint)reader["id"], city);
                         }

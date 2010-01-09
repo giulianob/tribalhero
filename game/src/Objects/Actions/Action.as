@@ -15,7 +15,7 @@
 			{ name: "Units", actions: [ TrainButton] },
 			{ name: "Upgrades", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Technologies", actions: [ TechnologyButton ] },			
-			{ name: "Others", actions: [ LaborMoveButton, MarketButton, ViewBattleButton, DefaultActionButton, ViewUnitsButton ] },
+			{ name: "Others", actions: [ LaborMoveButton, MarketButton, ViewBattleButton, ViewUnitsButton ] },
 		];
 		
 		//the actions visible to the client need to be here

@@ -3,6 +3,7 @@
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Objects.Troop.TroopTemplate;
+	import src.Objects.Troop.TroopTemplateManager;
 	import src.Objects.Troop.Unit;
 	import src.Objects.Troop.UnitTemplate;
 	import src.Objects.Troop.UnitTemplateManager;
@@ -80,7 +81,10 @@
 			lblInfo.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblInfo, "Tooltip.text");
 
-			statsBox = UnitStatBox.createFromCityTemplate(unit.type, city);
+			if (template is TroopTemplateManager) 
+				statsBox = UnitStatBox.createFromTroopTemplate(unit.type, template as TroopTemplateManager);
+			else
+				statsBox = UnitStatBox.createFromCityTemplate(unit.type, city);
 
 			pnlHeader.append(lblName);
 			pnlHeader.append(lblUpkeep);			

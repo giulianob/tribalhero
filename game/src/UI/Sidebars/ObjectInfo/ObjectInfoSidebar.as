@@ -81,7 +81,8 @@ package src.UI.Sidebars.ObjectInfo {
 			addStatRow("Level", gameObject.level.toString());
 			addStatRow("HP", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
 			addStatRow("Attack", structPrototype.defense.toString());
-			addStatRow("Vision", structPrototype.vision.toString() + "/" + structPrototype.stealth.toString());			
+			addStatRow("Range", structPrototype.range.toString());			
+			addStatRow("Stealth", structPrototype.stealth.toString());			
 			if (structPrototype.maxlabor > 0)
 				addStatRow("Labor", gameObject.labor + "/" + structPrototype.maxlabor);
 			

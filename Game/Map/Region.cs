@@ -74,7 +74,8 @@ namespace Game {
         public void update(GameObject obj, uint origX, uint origY) {
             lock (objlist) {
                 if (obj.X != origX || obj.Y != origY) {
-                    objlist.remove(obj, origX, origY);
+                    if (!objlist.remove(obj, origX, origY))
+                        throw new Exception("WTF");
                     objlist.addGameObject(obj);
                 }
                 isDirty = true;

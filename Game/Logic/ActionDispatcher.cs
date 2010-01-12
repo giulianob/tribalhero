@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using Game.Data;
@@ -23,7 +23,7 @@ namespace Game.Logic {
             get { return action.Time; }
         }
 
-        public void callback(object custom) {
+        public void Callback(object custom) {
             Action action = this.action as Action;
             City city;
 
@@ -36,7 +36,7 @@ namespace Game.Logic {
                 return; //structure is dead
             }
 
-            city.Worker.fireCallback(this.action);
+            city.Worker.FireCallback(this.action);
         }
 
         #endregion

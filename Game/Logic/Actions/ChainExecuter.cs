@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 
@@ -20,7 +20,7 @@ namespace Game.Logic.Actions {
             get { return DateTime.Now; }
         }
 
-        public void callback(object custom) {
+        public void Callback(object custom) {
             chainCallback(state);
         }
 

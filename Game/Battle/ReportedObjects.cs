@@ -17,12 +17,7 @@ namespace Game.Battle {
 
         #region IPersistableObject Members
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
 
@@ -35,7 +30,7 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new DbColumn[] {new DbColumn("city_id", battle.City.CityId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("city_id", battle.City.CityId, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {
@@ -48,7 +43,7 @@ namespace Game.Battle {
 
         public DbColumn[] DbListColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("combat_troop_id", DbType.UInt32),
                                           new DbColumn("troop_stub_city_id", DbType.UInt32), new DbColumn("troop_stub_id", DbType.Byte)
                                       };
@@ -63,7 +58,7 @@ namespace Game.Battle {
             Enumerator itr = base.GetEnumerator();
             while (itr.MoveNext()) {
                 yield return
-                    new DbColumn[] {
+                    new[] {
                                        new DbColumn("combat_troop_id", itr.Current.Value, DbType.UInt32),
                                        new DbColumn("troop_stub_city_id", itr.Current.Key.City.CityId, DbType.UInt32),
                                        new DbColumn("troop_stub_id", itr.Current.Key.TroopId, DbType.Byte)
@@ -83,12 +78,7 @@ namespace Game.Battle {
 
         #region IPersistableObject Members
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
 
@@ -101,7 +91,7 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new DbColumn[] {new DbColumn("city_id", battle.City.CityId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("city_id", battle.City.CityId, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {
@@ -113,7 +103,7 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbListColumns {
-            get { return new DbColumn[] {new DbColumn("combat_object_id", DbType.UInt32)}; }
+            get { return new[] {new DbColumn("combat_object_id", DbType.UInt32)}; }
         }
 
         #endregion
@@ -123,7 +113,7 @@ namespace Game.Battle {
         public new IEnumerator<DbColumn[]> GetEnumerator() {
             Enumerator itr = base.GetEnumerator();
             while (itr.MoveNext())
-                yield return new DbColumn[] {new DbColumn("combat_object_id", itr.Current.Id, DbType.UInt32)};
+                yield return new[] {new DbColumn("combat_object_id", itr.Current.Id, DbType.UInt32)};
         }
 
         #endregion

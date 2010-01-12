@@ -366,10 +366,10 @@ namespace Game.Database {
                                     combatStructure.DmgDealt = (int) listReader["damage_dealt"];
                                     combatStructure.DmgRecv = (int) listReader["damage_received"];
                                     combatStructure.LastRound = (uint) listReader["last_round"];
-                                    combatStructure.RoundsParicipated = (int) listReader["rounds_participated"];
+                                    combatStructure.RoundsParticipated = (int) listReader["rounds_participated"];
                                     combatStructure.DbPersisted = true;
 
-                                    bm.dbLoaderAddToLocal(combatStructure, (uint) listReader["id"]);
+                                    bm.DbLoaderAddToLocal(combatStructure, (uint) listReader["id"]);
                                 }
                             }
 
@@ -391,24 +391,26 @@ namespace Game.Database {
                                                                           ((byte) listReader["formation_type"]),
                                                                           (ushort) listReader["type"],
                                                                           (byte) listReader["level"],
-                                                                          (ushort) listReader["count"]);
+                                                                          (ushort) listReader["count"],
+                                                                          (ushort) listReader["left_over_hp"]);
                                     } else {
                                         combatObj = new AttackCombatUnit(bm, troopStub,
                                                                          (FormationType)
                                                                          ((byte) listReader["formation_type"]),
                                                                          (ushort) listReader["type"],
                                                                          (byte) listReader["level"],
-                                                                         (ushort) listReader["count"]);
+                                                                         (ushort) listReader["count"],
+                                                                         (ushort) listReader["left_over_hp"]);
                                     }
 
                                     combatObj.GroupId = (uint) listReader["group_id"];
                                     combatObj.DmgDealt = (int) listReader["damage_dealt"];
                                     combatObj.DmgRecv = (int) listReader["damage_received"];
                                     combatObj.LastRound = (uint) listReader["last_round"];
-                                    combatObj.RoundsParicipated = (int) listReader["rounds_participated"];
+                                    combatObj.RoundsParticipated = (int) listReader["rounds_participated"];
                                     combatObj.DbPersisted = true;
 
-                                    bm.dbLoaderAddToCombatList(combatObj, (uint) listReader["id"],
+                                    bm.DbLoaderAddToCombatList(combatObj, (uint) listReader["id"],
                                                                (bool) listReader["is_local"]);
                                 }
                             }
@@ -431,7 +433,7 @@ namespace Game.Database {
                             bm.ReportedObjects.DbPersisted = true;
                             using (DbDataReader listReader = dbManager.SelectList(bm.ReportedObjects)) {
                                 while (listReader.Read()) {
-                                    CombatObject co = bm.getCombatObject((uint) listReader["combat_object_id"]);
+                                    CombatObject co = bm.GetCombatObject((uint) listReader["combat_object_id"]);
 
                                     if (co == null)
                                         continue;
@@ -440,7 +442,7 @@ namespace Game.Database {
                                 }
                             }
 
-                            bm.refreshBattleOrder();
+                            bm.RefreshBattleOrder();
                         }
                     }
 
@@ -498,7 +500,7 @@ namespace Game.Database {
                             else
                                 action.WorkerObject = city[(uint) reader["object_id"]];
 
-                            city.Worker.dbLoaderDoActive(action);
+                            city.Worker.DbLoaderDoActive(action);
 
                             Global.dbManager.Save(action);
                         }
@@ -572,7 +574,7 @@ namespace Game.Database {
                                 action.WorkerObject = city[workerId];
 
                             if ((bool) reader["is_chain"] == false)
-                                city.Worker.dbLoaderDoPassive(action);
+                                city.Worker.DbLoaderDoPassive(action);
                             else {
                                 List<PassiveAction> chainList;
                                 if (!chainActions.TryGetValue(city.CityId, out chainList)) {
@@ -635,7 +637,7 @@ namespace Game.Database {
                             else
                                 action.WorkerObject = city[(uint) reader["object_id"]];
 
-                            city.Worker.dbLoaderDoPassive(action);
+                            city.Worker.DbLoaderDoPassive(action);
 
                             Global.dbManager.Save(action);
                         }
@@ -718,7 +720,7 @@ namespace Game.Database {
 
             Global.Logger.Info("Database loading finished");
 
-            SystemTimeUpdater.resume();
+            SystemTimeUpdater.Resume();
             Global.Scheduler.resume();
             Global.resumeEvents();
             return true;

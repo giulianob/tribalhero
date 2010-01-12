@@ -11,21 +11,21 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class LaborMoveAction : ScheduledActiveAction {
-        private bool city2structure;
-        private uint cityId;
-        private uint structureId;
+        private readonly bool cityToStructure;
+        private readonly uint cityId;
+        private readonly uint structureId;
 
-        public LaborMoveAction(uint cityId, uint structureId, bool city2structure, ushort count) {
+        public LaborMoveAction(uint cityId, uint structureId, bool cityToStructure, ushort count) {
             this.cityId = cityId;
             this.structureId = structureId;
-            this.city2structure = city2structure;
-            this.ActionCount = count;
+            this.cityToStructure = cityToStructure;
+            ActionCount = count;
         }
 
         public LaborMoveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
-                               byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
+                               byte workerIndex, ushort actionCount, IDictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
-            city2structure = bool.Parse(properties["city2structure"]);
+            cityToStructure = bool.Parse(properties["city_to_tructure"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }
@@ -42,7 +42,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
 
-            if (city2structure) {
+            if (cityToStructure) {
                 structure.City.BeginUpdate();
                 structure.City.Resource.Labor.Subtract(ActionCount);
                 structure.City.EndUpdate();
@@ -72,7 +72,7 @@ namespace Game.Logic.Actions {
 
         #region ISchedule Members
 
-        public override void callback(object custom) {
+        public override void Callback(object custom) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
@@ -84,7 +84,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                if (city2structure) {
+                if (cityToStructure) {
                     structure.BeginUpdate();
                     structure.Stats.Labor += (byte) ActionCount;
                     structure.EndUpdate();
@@ -119,7 +119,7 @@ namespace Game.Logic.Actions {
                         StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        if (city2structure) {
+                        if (cityToStructure) {
                             structure.City.BeginUpdate();
                             structure.City.Resource.Labor.Add(ActionCount);
                             structure.City.EndUpdate();
@@ -130,7 +130,7 @@ namespace Game.Logic.Actions {
 
                             structure.City.BeginUpdate();
                             Procedure.OnLaborUpdate(structure, -1*ActionCount);
-                                // need to add production back to structures
+                            //Todo: need to add production back to structures. Does this still apply?
                             structure.City.EndUpdate();
                         }
                         StateChange(ActionState.INTERRUPTED);
@@ -145,10 +145,10 @@ namespace Game.Logic.Actions {
             get {
                 return
                     XMLSerializer.Serialize(new[] {
-                                                      new XMLKVPair("city2structure", city2structure),
+                                                      new XMLKVPair("city_to_structure", cityToStructure),
                                                       new XMLKVPair("city_id", cityId),
                                                       new XMLKVPair("structure_id", structureId)
-                                                  });
+                    });
             }
         }
 

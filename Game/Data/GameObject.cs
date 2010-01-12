@@ -107,8 +107,7 @@ namespace Game.Data {
             if (!updating)
                 throw new Exception("Changed state outside of begin/end update block");
 
-            if (!MultiObjectLock.IsLocked(city))
-                throw new Exception("Object not locked");
+            MultiObjectLock.ThrowExceptionIfNotLocked(city);
         }
 
         public void BeginUpdate() {

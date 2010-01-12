@@ -99,7 +99,7 @@ namespace Game.Logic {
             if (workerObject.City == null)
                 return false;
 
-            return workerObject.City.Worker.contains(this);
+            return workerObject.City.Worker.Contains(this);
         }
 
         #region IPersistable Members

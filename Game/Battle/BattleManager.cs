@@ -13,24 +13,24 @@ using Game.Util;
 
 namespace Game.Battle {
     public class BattleChannel {
-        private string channelName;
-        private BattleManager battle;
+        private readonly string channelName;
+        private readonly BattleManager battle;
 
         public BattleChannel(BattleManager battle, string channelName) {
             this.battle = battle;
             this.channelName = channelName;
-            battle.ActionAttacked += battle_ActionAttacked;
-            battle.ReinforceAttacker += battle_ReinforceAttacker;
-            battle.ReinforceDefender += battle_ReinforceDefender;
-            battle.ExitBattle += battle_ExitBattle;
+            battle.ActionAttacked += BattleActionAttacked;
+            battle.ReinforceAttacker += BattleReinforceAttacker;
+            battle.ReinforceDefender += BattleReinforceDefender;
+            battle.ExitBattle += BattleExitBattle;
         }
 
-        private void battle_ExitBattle(CombatList atk, CombatList def) {
+        private void BattleExitBattle(CombatList atk, CombatList def) {
             Packet packet = new Packet(Command.BATTLE_ENDED);
             Global.Channel.Post(channelName, packet);
         }
 
-        private void battle_ReinforceDefender(IEnumerable<CombatObject> list) {
+        private void BattleReinforceDefender(IEnumerable<CombatObject> list) {
             List<CombatObject> combatObjectList = new List<CombatObject>(list);
             Packet packet = new Packet(Command.BATTLE_REINFORCE_DEFENDER);
             packet.addUInt16(battle.Stamina);
@@ -38,7 +38,7 @@ namespace Game.Battle {
             Global.Channel.Post(channelName, packet);
         }
 
-        private void battle_ReinforceAttacker(IEnumerable<CombatObject> list) {
+        private void BattleReinforceAttacker(IEnumerable<CombatObject> list) {
             List<CombatObject> combatObjectList = new List<CombatObject>(list);
             Packet packet = new Packet(Command.BATTLE_REINFORCE_ATTACKER);
             packet.addUInt16(battle.Stamina);
@@ -46,7 +46,7 @@ namespace Game.Battle {
             Global.Channel.Post(channelName, packet);
         }
 
-        private void battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
+        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage) {
             Packet packet = new Packet(Command.BATTLE_ATTACK);
             packet.addUInt16(battle.Stamina);
             packet.addUInt32(source.Id);
@@ -164,32 +164,32 @@ namespace Game.Battle {
         private BattleOrder battleOrder = new BattleOrder(0);
         private BattleReport report;
 
-        private BattleChannel channel;
-
         #region Properties Members
 
         private uint battleId;
+
+        public BattleChannel Channel { get; private set; }
 
         public uint BattleId {
             get { return battleId; }
             set { battleId = value; }
         }
 
-        private bool battleStarted = false;
+        private bool battleStarted;
 
         public bool BattleStarted {
             get { return battleStarted; }
             set { battleStarted = value; }
         }
 
-        private uint round = 0;
+        private uint round;
 
         public uint Round {
             get { return round; }
             set { round = value; }
         }
 
-        private uint turn = 0;
+        private uint turn;
 
         public uint Turn {
             get { return turn; }
@@ -232,8 +232,7 @@ namespace Game.Battle {
 
         public City[] LockList {
             get {
-                Dictionary<uint, City> cities = new Dictionary<uint, City>();
-                cities.Add(city.CityId, city);
+                Dictionary<uint, City> cities = new Dictionary<uint, City> {{city.CityId, city}};
 
                 foreach (CombatObject co in attackers)
                     cities[co.City.CityId] = co.City;
@@ -253,19 +252,19 @@ namespace Game.Battle {
             city = owner;
             stamina = BattleFormulas.GetStamina(city);
             report = new BattleReport(this);
-            channel = new BattleChannel(this, "/BATTLE/" + city.CityId);
+            Channel = new BattleChannel(this, "/BATTLE/" + city.CityId);
             groupIdGen.set(1);
         }
 
-        public void subscribe(Session session) {
+        public void Subscribe(Session session) {
             Global.Channel.Subscribe(session, "/BATTLE/" + city.CityId);
         }
 
-        public void unsubscribe(Session session) {
+        public void Unsubscribe(Session session) {
             Global.Channel.Unsubscribe(session, "/BATTLE/" + city.CityId);
         }
 
-        public CombatObject getCombatObject(uint id) {
+        public CombatObject GetCombatObject(uint id) {
             foreach (CombatObject co in attackers) {
                 if (co.Id == id)
                     return co;
@@ -281,7 +280,7 @@ namespace Game.Battle {
 
         #region Database Loader 
 
-        public void dbLoaderAddToLocal(CombatStructure structure, uint id) {
+        public void DbLoaderAddToLocal(CombatStructure structure, uint id) {
             structure.Id = id;
 
             if (structure.IsDead)
@@ -292,7 +291,7 @@ namespace Game.Battle {
             idGen.set((int) structure.Id);
         }
 
-        public void dbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal) {
+        public void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal) {
             obj.Id = id;
 
             if (obj.IsDead)
@@ -312,13 +311,12 @@ namespace Game.Battle {
         #region Adding/Removing from Battle
 
         public void AddToLocal(TroopStub stub, ReportState state) {
-            List<TroopStub> list = new List<TroopStub>();
-            list.Add(stub);
+            List<TroopStub> list = new List<TroopStub> {stub};
             AddToLocal(list, state);
         }
 
         public void AddToLocal(List<TroopStub> objects, ReportState state) {
-            addToCombatList(objects, defenders, true, state);
+            AddToCombatList(objects, defenders, true, state);
         }
 
         public void AddToLocal(List<Structure> objects) {
@@ -340,43 +338,41 @@ namespace Game.Battle {
                     obj.State = GameObjectState.BattleState(obj.City.CityId);
                     obj.EndUpdate();
 
-                    CombatObject combatObject = null;
-
-                    combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj));
-                    combatObject.Id = (uint) idGen.getNext();
-                    combatObject.GroupId = 1;
+                    CombatObject combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj)) {
+                        Id = (uint)idGen.getNext(),
+                        GroupId = 1
+                    };
                     defenders.Add(combatObject);
                     list.Add(combatObject);
                 }
 
                 if (battleStarted && added) {
                     stamina = BattleFormulas.GetStaminaReinforced(city, stamina, round);
-                    report.WriteReportObjects(list, false, ReportState.Staying);
+                    report.WriteReportObjects(list, false, ReportState.STAYING);
                     EventReinforceDefender(list);
-                    refreshBattleOrder();
+                    RefreshBattleOrder();
                 }
             }
         }
 
-        public void addToAttack(TroopStub stub) {
-            List<TroopStub> list = new List<TroopStub>();
-            list.Add(stub);
-            addToAttack(list);
+        public void AddToAttack(TroopStub stub) {
+            List<TroopStub> list = new List<TroopStub> {stub};
+            AddToAttack(list);
         }
 
-        public void addToAttack(List<TroopStub> objects) {
-            addToCombatList(objects, attackers, false, ReportState.Entering);
+        public void AddToAttack(List<TroopStub> objects) {
+            AddToCombatList(objects, attackers, false, ReportState.ENTERING);
         }
 
-        public void addToDefense(List<TroopStub> objects) {
-            addToCombatList(objects, defenders, false, ReportState.Entering);
+        public void AddToDefense(List<TroopStub> objects) {
+            AddToCombatList(objects, defenders, false, ReportState.ENTERING);
         }
 
-        public void removeFromAttack(List<TroopStub> objects, ReportState state) {
-            removeFromCombatList(objects, attackers, state);
+        public void RemoveFromAttack(List<TroopStub> objects, ReportState state) {
+            RemoveFromCombatList(objects, attackers, state);
         }
 
-        public void removeFromLocal(List<Structure> objects) {
+        public void RemoveFromLocal(List<Structure> objects) {
             lock (this) {
                 List<CombatObject> list = new List<CombatObject>();
                 foreach (CombatObject obj in defenders) {
@@ -388,21 +384,21 @@ namespace Game.Battle {
                         list.Add(obj);
                 }
 
-                defenders.RemoveAll(delegate(CombatObject obj) { return list.Contains(obj); });
+                defenders.RemoveAll(list.Contains);
 
                 if (battleStarted) {
-                    report.WriteReportObjects(list, false, ReportState.Exiting);
+                    report.WriteReportObjects(list, false, ReportState.EXITING);
                     EventWithdrawDefender(list);
-                    refreshBattleOrder();
+                    RefreshBattleOrder();
                 }
             }
         }
 
-        public void removeFromDefense(List<TroopStub> objects, ReportState state) {
-            removeFromCombatList(objects, defenders, state);
+        public void RemoveFromDefense(List<TroopStub> objects, ReportState state) {
+            RemoveFromCombatList(objects, defenders, state);
         }
 
-        private void addToCombatList(List<TroopStub> objects, CombatList combatList, bool isLocal, ReportState state) {
+        private void AddToCombatList(IEnumerable<TroopStub> objects, CombatList combatList, bool isLocal, ReportState state) {
             lock (this) {
                 List<CombatObject> list = new List<CombatObject>();
 
@@ -459,12 +455,12 @@ namespace Game.Battle {
                         EventReinforceDefender(list);
                     }
 
-                    refreshBattleOrder();
+                    RefreshBattleOrder();
                 }
             }
         }
 
-        private void removeFromCombatList(List<TroopStub> objects, CombatList combatList, ReportState state) {
+        private void RemoveFromCombatList(List<TroopStub> objects, CombatList combatList, ReportState state) {
             lock (this) {
                 List<CombatObject> list = new List<CombatObject>();
                 foreach (CombatObject obj in combatList) {
@@ -476,19 +472,20 @@ namespace Game.Battle {
                         list.Add(obj);
                 }
 
-                combatList.RemoveAll(delegate(CombatObject obj) { return list.Contains(obj); });
+                combatList.RemoveAll(list.Contains);
 
-                if (battleStarted) {
-                    if (combatList == Attacker) {
-                        report.WriteReportObjects(list, true, state);
-                        EventWithdrawAttacker(list);
-                    } else if (combatList == Defender) {
-                        report.WriteReportObjects(list, false, state);
-                        EventWithdrawDefender(list);
-                    }
+                if (!battleStarted)
+                    return;
 
-                    refreshBattleOrder();
+                if (combatList == Attacker) {
+                    report.WriteReportObjects(list, true, state);
+                    EventWithdrawAttacker(list);
+                } else if (combatList == Defender) {
+                    report.WriteReportObjects(list, false, state);
+                    EventWithdrawDefender(list);
                 }
+
+                RefreshBattleOrder();
             }
         }
 
@@ -496,7 +493,7 @@ namespace Game.Battle {
 
         #region Battle 
 
-        public void refreshBattleOrder() {
+        public void RefreshBattleOrder() {
             battleOrder = new BattleOrder(round);
 
             IEnumerator<CombatObject> defIter = defenders.GetEnumerator();
@@ -534,7 +531,7 @@ namespace Game.Battle {
             }
         }
 
-        private bool battleIsValid() {
+        private bool BattleIsValid() {
             if (attackers.Count == 0 || defenders.Count == 0)
                 return false;
 
@@ -564,16 +561,16 @@ namespace Game.Battle {
                 CombatObject target;
                 CombatList.BestTargetResult result = defenders.GetBestTarget(combatObj, out target);
 
-                if (result == CombatList.BestTargetResult.Ok || result == CombatList.BestTargetResult.NoneVisible)
+                if (result == CombatList.BestTargetResult.OK || result == CombatList.BestTargetResult.NONE_VISIBLE)
                     return true;
             }
 
             return false;
         }
 
-        private void battleEnded() {
+        private void BattleEnded() {
             report.WriteBeginReport();
-            report.CompleteReport(ReportState.Exiting);
+            report.CompleteReport(ReportState.EXITING);
             foreach (CombatObject combatObj in defenders) {
                 if (!combatObj.IsDead)
                     combatObj.ExitBattle();
@@ -591,7 +588,7 @@ namespace Game.Battle {
             defenders.Clear();
         }
 
-        public bool groupIsDead(CombatObject co, CombatList combatList) {
+        public bool GroupIsDead(CombatObject co, CombatList combatList) {
             foreach (CombatObject combatObject in combatList) {
                 if (combatObject.GroupId == co.GroupId && !combatObject.IsDead)
                     return false;
@@ -600,19 +597,19 @@ namespace Game.Battle {
             return true;
         }
 
-        public bool executeTurn() {
+        public bool ExecuteTurn() {
             lock (this) {
-                report.WriteReport(ReportState.Staying);
+                report.WriteReport(ReportState.STAYING);
 
                 if (!battleStarted) {
-                    refreshBattleOrder();
+                    RefreshBattleOrder();
                     battleStarted = true;
                     report.CreateBattleReport();
                     EventEnterBattle(attackers, defenders);
                 }
 
                 while (true) {
-                    CombatObject attacker = null;
+                    CombatObject attacker;
 
                     if (!battleOrder.NextObject(out attacker)) {
                         ++round;
@@ -623,11 +620,11 @@ namespace Game.Battle {
                     }
 
                     if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
-                        battleEnded();
+                        BattleEnded();
                         return false;
                     }
 
-                    CombatObject defender = null;
+                    CombatObject defender;
 
                     if (attacker.CombatList == attackers)
                         defenders.GetBestTarget(attacker, out defender);
@@ -663,19 +660,19 @@ namespace Game.Battle {
                         battleOrder.Remove(defender);
 
                         if (attacker.CombatList == attackers) {
-                            if (defender.ClassType == BattleClass.Structure)
+                            if (defender.ClassType == BattleClass.STRUCTURE)
                                 stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
                             defenders.Remove(defender);
                             report.WriteReportObject(defender, false,
-                                                     groupIsDead(defender, defenders)
-                                                         ? ReportState.Dying
-                                                         : ReportState.Staying);
+                                                     GroupIsDead(defender, defenders)
+                                                         ? ReportState.DYING
+                                                         : ReportState.STAYING);
                         } else if (attacker.CombatList == defenders) {
                             attackers.Remove(defender);
                             report.WriteReportObject(defender, true,
-                                                     groupIsDead(defender, attackers)
-                                                         ? ReportState.Dying
-                                                         : ReportState.Staying);
+                                                     GroupIsDead(defender, attackers)
+                                                         ? ReportState.DYING
+                                                         : ReportState.STAYING);
                         }
 
                         defender.CleanUp();
@@ -695,8 +692,8 @@ namespace Game.Battle {
 
                     EventExitTurn(Attacker, Defender, (int) turn++);
 
-                    if (!battleIsValid()) {
-                        battleEnded();
+                    if (!BattleIsValid()) {
+                        BattleEnded();
                         return false;
                     }
 
@@ -709,8 +706,6 @@ namespace Game.Battle {
 
         #region IPersistable Members
 
-        private bool dbPersisted = false;
-
         public const string DB_TABLE = "battle_managers";
 
         public string DbTable {
@@ -718,19 +713,19 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new DbColumn[] {new DbColumn("city_id", city.CityId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("city_id", city.CityId, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {
             get {
-                return new DbDependency[]
+                return new[]
                        {new DbDependency("ReportedObjects", true, true), new DbDependency("ReportedTroops", true, true)};
             }
         }
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("battle_id", battleId, DbType.UInt32),
                                           new DbColumn("battle_started", battleStarted, DbType.Boolean),
                                           new DbColumn("stamina", stamina, DbType.UInt16), new DbColumn("round", round, DbType.UInt32),
@@ -742,10 +737,7 @@ namespace Game.Battle {
             }
         }
 
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
     }

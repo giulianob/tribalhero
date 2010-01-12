@@ -29,7 +29,7 @@ namespace Game.Comm {
                 reply.addUInt16(city.Battle.Stamina);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
-                city.Battle.subscribe(session);
+                city.Battle.Subscribe(session);
                 session.write(reply);
             }
         }
@@ -55,7 +55,7 @@ namespace Game.Comm {
                     return;
                 }
 
-                city.Battle.unsubscribe(session);
+                city.Battle.Unsubscribe(session);
             }
 
             reply_success(session, packet);

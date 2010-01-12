@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Game.Data;
 using Game.Database;
@@ -20,16 +21,17 @@ namespace Game.Util {
 
         private DbTransaction transaction;
 
-        public static bool IsLocked(ILockable obj) {
+        [Conditional("Debug")]
+        public static void ThrowExceptionIfNotLocked(ILockable obj) {
             if (currentLock == null)
-                return false;
+                throw new Exception("Object not locked");
 
             foreach (object lck in currentLock.lockedObjects) {
                 if (lck == obj.Lock)
-                    return true;
+                    return;
             }
 
-            return false;
+            throw new Exception("Object not locked");
         }
 
         private static int CompareObject(ILockable x, ILockable y) {

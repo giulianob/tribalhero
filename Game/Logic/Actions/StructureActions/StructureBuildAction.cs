@@ -111,7 +111,7 @@ namespace Game.Logic.Actions {
             get { return null; }
         }
 
-        public override void callback(object custom) {
+        public override void Callback(object custom) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())

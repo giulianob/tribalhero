@@ -27,11 +27,11 @@ namespace Game.Battle {
             if (co is AttackCombatUnit) {
                 AttackCombatUnit unit = co as AttackCombatUnit;
                 Append("List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
-                       UnitFactory.getName(unit.Type, 1) + "] HP[" + unit.HP + "]");
+                       UnitFactory.getName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
             } else if (co is CombatStructure) {
                 CombatStructure cs = co as CombatStructure;
                 Append("List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" +
-                       StructureFactory.getName(cs.Structure) + "] HP[" + cs.HP + "]");
+                       StructureFactory.getName(cs.Structure) + "] HP[" + cs.Hp + "]");
             }
         }
 

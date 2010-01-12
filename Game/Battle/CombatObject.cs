@@ -9,8 +9,8 @@ using Game.Database;
 
 namespace Game.Battle {
     public enum BattleClass : byte {
-        Structure = 0,
-        Unit = 1
+        STRUCTURE = 0,
+        UNIT = 1
     }
 
     public abstract class CombatObject : IComparable<object>, IPersistableObject {
@@ -52,12 +52,7 @@ namespace Game.Battle {
 
         public CombatList CombatList { get; set; }
 
-        private int roundsParticipated;
-
-        public int RoundsParicipated {
-            get { return roundsParticipated; }
-            set { roundsParticipated = value; }
-        }
+        public int RoundsParticipated { get; set; }
 
         private uint lastRound;
 
@@ -130,7 +125,7 @@ namespace Game.Battle {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
 
-        public virtual uint HP {
+        public virtual uint Hp {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
 
@@ -151,13 +146,12 @@ namespace Game.Battle {
         }
 
         public bool CanSee(CombatObject obj) {
-            int roundsDelta = Math.Min(roundsParticipated, obj.RoundsParicipated);
             return Visibility >= obj.Stats.Stl;
         }
 
         public void ParticipatedInRound() {
             lastRound++;
-            roundsParticipated++;
+            RoundsParticipated++;
             Global.dbManager.Save(this);
         }
 

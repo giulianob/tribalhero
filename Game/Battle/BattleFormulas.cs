@@ -125,9 +125,9 @@ namespace Game.Battle {
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, int actualDmg) {
             int point = actualDmg*defender.Stats.Base.Reward;
             switch (defender.ClassType) {
-                case BattleClass.Structure:
+                case BattleClass.STRUCTURE:
                     return new Resource(point/5, point/7, point/9, point/5, 0);
-                case BattleClass.Unit:
+                case BattleClass.UNIT:
                     return new Resource(point/11, point/15, point/19, point/11, 0);
             }
 

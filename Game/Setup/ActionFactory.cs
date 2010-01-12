@@ -61,14 +61,14 @@ namespace Game.Setup {
                             else
                                 action_req.parms[i - 4] = toks[i];
                         }
-                        if (!uint.TryParse(toks[col["EffectReq"]], out action_req.effect_req_id))
-                            action_req.effect_req_id = 0;
+                        if (!uint.TryParse(toks[col["EffectReq"]], out action_req.effectReqId))
+                            action_req.effectReqId = 0;
                         if (toks[col["EffectReqInherit"]].Length > 0) {
-                            action_req.effect_req_inherit =
+                            action_req.effectReqInherit =
                                 (EffectInheritance)
                                 Enum.Parse(typeof (EffectInheritance), toks[col["EffectReqInherit"]], true);
                         } else
-                            action_req.effect_req_inherit = EffectInheritance.All;
+                            action_req.effectReqInherit = EffectInheritance.All;
                         record.list.Add(action_req);
                     }
                 }

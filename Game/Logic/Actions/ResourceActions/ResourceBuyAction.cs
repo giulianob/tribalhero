@@ -83,7 +83,7 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void callback(object custom) {
+        public override void Callback(object custom) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {

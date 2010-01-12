@@ -242,13 +242,13 @@ namespace Game.Comm {
                 packet.addUInt32(obj.City.CityId);
                 packet.addUInt32(obj.Id);
                 packet.addByte((byte) obj.ClassType);
-                if (obj.ClassType == BattleClass.Unit)
+                if (obj.ClassType == BattleClass.UNIT)
                     packet.addByte((obj as ICombatUnit).TroopStub.TroopId);
                 else
                     packet.addByte(1);
                 packet.addUInt16(obj.Type);
                 packet.addByte(obj.Lvl);
-                packet.addUInt32(obj.HP);
+                packet.addUInt32(obj.Hp);
             }
         }
     }

@@ -10,9 +10,9 @@ using Game.Setup;
 namespace Game.Battle {
     public class CombatList : PersistableList<CombatObject> {
         public enum BestTargetResult {
-            NoneInRange,
-            NoneVisible,
-            Ok
+            NONE_IN_RANGE,
+            NONE_VISIBLE,
+            OK
         }
 
         public class NoneInRange : Exception {}
@@ -59,18 +59,16 @@ namespace Game.Battle {
             }
 
             if (bestTarget == null) {
-                if (!hasInRange)
-                    return BestTargetResult.NoneInRange;
-                else
-                    return BestTargetResult.NoneVisible;
-            } else {
-                if (BattleFormulas.IsAttackMissed(bestTarget.Stats.Stl)) {
-                    result = this[Config.Random.Next(Count)];
-                    return BestTargetResult.Ok;
-                }
-                result = bestTarget;
-                return BestTargetResult.Ok;
+                return !hasInRange ? BestTargetResult.NONE_IN_RANGE : BestTargetResult.NONE_VISIBLE;
             }
+
+            if (BattleFormulas.IsAttackMissed(bestTarget.Stats.Stl)) {
+                result = this[Config.Random.Next(Count)];
+                return BestTargetResult.OK;
+            }
+            
+            result = bestTarget;
+            return BestTargetResult.OK;
         }
 
         public new void Add(CombatObject item) {

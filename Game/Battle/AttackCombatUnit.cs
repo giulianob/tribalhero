@@ -11,26 +11,19 @@ using Game.Setup;
 #endregion
 
 namespace Game.Battle {
-    public class AttackCombatUnit : CombatObject, ICombatUnit, IComparable<object> {
-        private TroopStub stub;
-        private FormationType formation;
-        private BattleStats stats;
-        private byte lvl;
-        private ushort type;
+    public class AttackCombatUnit : CombatObject, ICombatUnit {
+        private readonly FormationType formation;
+        private readonly BattleStats stats;
+        private readonly byte lvl;
+        private readonly ushort type;
         private ushort count;
-        private ushort hp;
 
-        public ushort Hp {
-            get { return hp; }
-            set { hp = value; }
-        }
+        public ushort LeftOverHp { get; set; }
 
-        public TroopStub TroopStub {
-            get { return stub; }
-        }
+        public TroopStub TroopStub { get; private set; }
 
         public override BattleClass ClassType {
-            get { return BattleClass.Unit; }
+            get { return BattleClass.UNIT; }
         }
 
         public Resource Loot {
@@ -38,7 +31,7 @@ namespace Game.Battle {
         }
 
         public override bool IsDead {
-            get { return HP == 0; }
+            get { return Hp == 0; }
         }
 
         public override ushort Count {
@@ -63,7 +56,7 @@ namespace Game.Battle {
 
         public AttackCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl,
                                 ushort count) {
-            this.stub = stub;
+            TroopStub = stub;
             this.formation = formation;
             this.type = type;
             this.count = count;
@@ -71,64 +64,66 @@ namespace Game.Battle {
             this.lvl = lvl;
 
             stats = stub.Template[type];
-            Hp = stats.MaxHp;
+            LeftOverHp = stats.MaxHp;
+        }
+
+        public AttackCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl,
+                                ushort count, ushort leftOverHp) : this(owner, stub, formation, type, lvl, count) {
+            LeftOverHp = leftOverHp;
         }
 
         public override bool InRange(CombatObject obj) {
             if (obj is AttackCombatUnit || obj is DefenseCombatUnit) //all units can attack other units
                 return true;
 
-            int dist = obj.Distance(stub.TroopObject.X, stub.TroopObject.Y);
+            int dist = obj.Distance(TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
 
-            return dist <= stub.TroopObject.Stats.AttackRadius;
+            return dist <= TroopStub.TroopObject.Stats.AttackRadius;
         }
 
         public override int Distance(uint x, uint y) {
-            return GameObject.Distance(x, y, stub.TroopObject.X, stub.TroopObject.Y);
+            return GameObject.Distance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
         }
 
         public override uint Visibility {
-            get {
-                if (formation == FormationType.Scout)
-                    return (uint) (RoundsParicipated*1.5 + Stats.Rng);
-                else
-                    return (uint) (RoundsParicipated + Stats.Rng);
+            get {              
+                return (uint) (RoundsParticipated + Stats.Rng);
             }
         }
 
         public override uint PlayerId {
-            get { return stub.City.Owner.PlayerId; }
+            get { return TroopStub.City.Owner.PlayerId; }
         }
 
         public override City City {
-            get { return stub.City; }
+            get { return TroopStub.City; }
         }
 
         public override byte Lvl {
             get { return lvl; }
         }
 
-        public override uint HP {
-            get { return (uint) (Math.Max(0, stats.MaxHp*(count - 1) + Hp)); }
+        public override uint Hp {
+            get { return (uint) (Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp)); }
         }
 
         public override void CalculateDamage(ushort dmg, out int actualDmg) {
-            actualDmg = Math.Min((int) HP, dmg);
-/*            if (dmg >= stats.Hp) {
-                actualDmg += stats.Hp;
+            actualDmg = Math.Min((int) Hp, dmg);
+/*            if (dmg >= stats.LeftOverHp) {
+                actualDmg += stats.LeftOverHp;
             }*/
         }
 
         public override void TakeDamage(int dmg) {
             ushort dead = 0;
-            if (dmg >= Hp) {
-                dmg -= Hp;
-                Hp = (ushort) (stats.MaxHp);
+            if (dmg >= LeftOverHp) {
+                dmg -= LeftOverHp;
+                LeftOverHp = stats.MaxHp;
                 dead++;
             }
 
             dead += (ushort) (dmg/stats.MaxHp);
-            Hp -= (ushort) (dmg%stats.MaxHp);
+            LeftOverHp -= (ushort) (dmg%stats.MaxHp);
 
             if (dead > 0) {
                 if (dead >= count)
@@ -136,9 +131,9 @@ namespace Game.Battle {
                 else
                     count -= dead;
 
-                stub.BeginUpdate();
-                stub[formation].remove(type, dead);
-                stub.EndUpdate();
+                TroopStub.BeginUpdate();
+                TroopStub[formation].remove(type, dead);
+                TroopStub.EndUpdate();
             }
 
             Global.dbManager.Save(this);
@@ -151,22 +146,20 @@ namespace Game.Battle {
         public override void ExitBattle() {}
 
         public override void ReceiveReward(int reward, Resource resource) {
-            stub.TroopObject.BeginUpdate();
-            stub.TroopObject.Stats.RewardPoint += reward;
-            stub.TroopObject.Stats.Loot.add(resource);
-            stub.TroopObject.EndUpdate();
+            TroopStub.TroopObject.BeginUpdate();
+            TroopStub.TroopObject.Stats.RewardPoint += reward;
+            TroopStub.TroopObject.Stats.Loot.add(resource);
+            TroopStub.TroopObject.EndUpdate();
         }
 
         #region IComparable<GameObject> Members
 
         public override int CompareTo(object other) {
             if (other is TroopStub) {
-                if (other == stub)
-                    return 0;
-                else
-                    return 1;
-            } else
-                return -1;
+                return other == TroopStub ? 0 : 1;
+            }
+
+            return -1;
         }
 
         #endregion
@@ -181,7 +174,7 @@ namespace Game.Battle {
 
         public override DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("id", Id, DbType.UInt32),
                                           new DbColumn("city_id", battleManager.City.CityId, DbType.UInt32)
                                       };
@@ -194,17 +187,18 @@ namespace Game.Battle {
 
         public override DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("last_round", LastRound, DbType.UInt32),
-                                          new DbColumn("rounds_participated", RoundsParicipated, DbType.UInt32),
+                                          new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                                           new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
                                           new DbColumn("damage_received", DmgRecv, DbType.Int32),
                                           new DbColumn("group_id", GroupId, DbType.UInt32),
                                           new DbColumn("formation_type", (byte) formation, DbType.Byte),
                                           new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
                                           new DbColumn("type", type, DbType.UInt16), new DbColumn("is_local", false, DbType.Boolean),
-                                          new DbColumn("troop_stub_city_id", stub.City.CityId, DbType.UInt32),
-                                          new DbColumn("troop_stub_id", stub.TroopId, DbType.Byte),
+                                          new DbColumn("troop_stub_city_id", TroopStub.City.CityId, DbType.UInt32),
+                                          new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
+                                          new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16)
                                       };
             }
         }

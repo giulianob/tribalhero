@@ -73,7 +73,7 @@ namespace Game.Logic {
         }
 
         private void DispatchThread(object obj) {
-            (obj as ISchedule).callback(null);
+            (obj as ISchedule).Callback(null);
         }
 
         // method to set the time when the timer should wake up to invoke the next schedule

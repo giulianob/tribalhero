@@ -92,7 +92,7 @@ namespace Game.Module {
             get { return time.AddSeconds(UpdateIntervalInSecond); }
         }
 
-        public void callback(object custom) {
+        public void Callback(object custom) {
             lock (this) {
                 using (DbTransaction transaction = Global.dbManager.GetThreadTransaction()) {
                     int flow = outgoing - incoming;

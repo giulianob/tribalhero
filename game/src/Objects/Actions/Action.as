@@ -36,7 +36,7 @@
 		public var index: int;
 		public var maxCount: int;
 		
-		public function Action(actionType: int) 
+		public function Action(actionType: int = 0) 
 		{
 			this.actionType = actionType;
 		}

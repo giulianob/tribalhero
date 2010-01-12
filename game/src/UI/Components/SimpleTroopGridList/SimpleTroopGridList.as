@@ -115,10 +115,10 @@
 			return getCellByIndex(getModel().getSize() - 1) as SimpleTroopGridCell;
 		}
 
-		public static function getGridList(srcTroop: Troop, templateManager: UnitTemplateManager, formations: Array = null): Array
+		public static function getGridList(srcTroop: TroopStub, templateManager: UnitTemplateManager, formations: Array = null): Array
 		{
 			//make a copy of troop
-			var troop: Troop = new Troop(srcTroop.id);
+			var troop: TroopStub = new TroopStub(srcTroop.id);
 			for each(var formation: Formation in srcTroop.each())
 			{
 				var newFormation: Formation = new Formation(formation.type);

@@ -72,7 +72,7 @@
 			city.troops.addEventListener(BinaryListEvent.REMOVED, onTroopRemoved);
 			city.troops.addEventListener(BinaryListEvent.UPDATED, onTroopUpdated);
 
-			for each (var troop: Troop in city.troops.each()) {
+			for each (var troop: TroopStub in city.troops.each()) {
 				addTroop(troop);
 			}
 		}
@@ -94,7 +94,7 @@
 			dialog.getFrame().dispose();
 			getFrame().dispose();
 
-			var troop: Troop = dialog.getTroop();
+			var troop: TroopStub = dialog.getTroop();
 			if (troop.getIndividualUnitCount() == 0)
 			return;
 
@@ -111,7 +111,7 @@
 			dialog.getFrame().dispose();
 			getFrame().dispose();
 
-			var troop: Troop = dialog.getTroop();
+			var troop: TroopStub = dialog.getTroop();
 			if (troop.getIndividualUnitCount() == 0)
 			{
 				return;
@@ -140,7 +140,7 @@
 			addTroop(e.item);
 		}
 
-		private function addTroop(troop: Troop) : void {
+		private function addTroop(troop: TroopStub) : void {
 			if (troop.id == 1)
 			return;
 

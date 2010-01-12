@@ -88,7 +88,7 @@
 			return formation;
 		}
 
-		public static function getGridList(troop: Troop, tooltipMode: Boolean = false): Array
+		public static function getGridList(troop: TroopStub, tooltipMode: Boolean = false): Array
 		{
 			//If we ever have this do drag and drop or modify the troop in anyway, it needs to copy it first just like in the SimpleTroopGridlist
 

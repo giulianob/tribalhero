@@ -46,7 +46,7 @@
 				strctObj.maxlabor = structNode.@maxlabor;
 				strctObj.attack = structNode.@attack;
 				strctObj.defense = structNode.@defense;
-				strctObj.vision = structNode.@vision;
+				strctObj.radius = structNode.@radius;
 				strctObj.stealth = structNode.@stealth;
 				strctObj.range = structNode.@range;
 				strctObj.speed = structNode.@speed;

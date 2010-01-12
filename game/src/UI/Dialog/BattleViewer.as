@@ -12,13 +12,15 @@ import src.Map.Username;
 import src.UI.Components.CombatObjectGridList.CombatObjectGridList;
 import src.UI.GameJPanel;
 import src.Objects.Battle.*;
+import src.Util.Util;
 	
 public class BattleViewer extends GameJPanel {
 	
 	private var tabDefensive:JTabbedPane;
-	private var lstLog:JList;
+	private var txtLog: JTextArea;
 	private var tabOffensive:JTabbedPane;
 	private var lstLogScroll:JScrollPane;
+	private var lblStamina: JLabel;
 	
 	private var battle: BattleManager;
 	private var battleCityId: int;
@@ -39,6 +41,13 @@ public class BattleViewer extends GameJPanel {
 		battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);			
 		battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 		battle.addEventListener(BattleManager.END, onEnd);
+		
+		battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
+		battle.addEventListener(BattleManager.OBJECT_REMOVED_ATTACK, updateStamina);
+		battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, updateStamina);
+		battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, updateStamina);			
+		battle.addEventListener(BattleManager.OBJECT_ATTACKED, updateStamina);
+		battle.addEventListener(BattleManager.END, updateStamina);		
 	}
 	
 	public function onClosed(e: *):void
@@ -52,8 +61,20 @@ public class BattleViewer extends GameJPanel {
 			battle.removeEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 			battle.removeEventListener(BattleManager.END, onEnd);
 			
+			battle.removeEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
+			battle.removeEventListener(BattleManager.OBJECT_REMOVED_ATTACK, updateStamina);
+			battle.removeEventListener(BattleManager.OBJECT_ADDED_DEFENSE, updateStamina);
+			battle.removeEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, updateStamina);			
+			battle.removeEventListener(BattleManager.OBJECT_ATTACKED, updateStamina);
+			battle.removeEventListener(BattleManager.END, updateStamina);	
+		
 			Global.map.mapComm.Battle.battleUnsubscribe(battleCityId);
 		}
+	}
+	
+	private function updateStamina(e: BattleEvent = null) : void {
+		trace("Stamina update");
+		lblStamina.setText(Util.makePlural(battle.attackers.size(), "Attacker", "Attackers") + " will run out of stamina in " + battle.stamina + " " + Util.makePlural(battle.stamina, "turn", "turns") + ".");
 	}
 	
 	private function addTab(combatObj: CombatObject, defense: Boolean) : Object {
@@ -206,17 +227,16 @@ public class BattleViewer extends GameJPanel {
 			log(defenseObj.data.name + " has been defeated");
 		}
 		
-		listData.valueChanged(defenseObj);
-		
-		lstLogScroll.getVerticalScrollBar().setValue(lstLogScroll.getVerticalScrollBar().getMaximum());
+		listData.valueChanged(defenseObj);		
 	}
 	
 	private function log(str: String) : void {
-		(lstLog.getModel() as VectorListModel).append(str);
+		txtLog.appendText("\n" + str);		
 		
-		var size: int = (lstLog.getModel() as VectorListModel).size();
-		if (size > 200)
-			(lstLog.getModel() as VectorListModel).removeRange(0, size - 200);				
+		if (txtLog.getLength() > 1024)
+			txtLog.replaceText(0, txtLog.getLength() - 1024, "");		
+			
+		lstLogScroll.getVerticalScrollBar().setValue(lstLogScroll.getVerticalScrollBar().getMaximum(), true);
 	}
 	
 	public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame 
@@ -231,43 +251,49 @@ public class BattleViewer extends GameJPanel {
 	
 	private function createUI(): void { 
 		var layout0:SoftBoxLayout = new SoftBoxLayout();
-		layout0.setAxis(AsWingConstants.HORIZONTAL);
+		layout0.setAxis(AsWingConstants.VERTICAL);
+		layout0.setGap(5);
 		setLayout(layout0);
+		setPreferredSize(new IntDimension(960, 405));
 		
-		tabDefensive = new JTabbedPane();
-		tabDefensive.setLocation(new IntPoint(125, 15));
-		tabDefensive.setSize(new IntDimension(300, 350));
+		var pnlBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0));
+		pnlBody.setBorder(null);
+		
+		lblStamina = new JLabel("", null, AsWingConstants.RIGHT);
+		
+		tabDefensive = new JTabbedPane();				
 		tabDefensive.setPreferredSize(new IntDimension(280, 350));
+		
 		var border1:TitledBorder = new TitledBorder();
 		border1.setColor(new ASColor(0x0, 1));
-		border1.setTitle("Defensive");
+		border1.setTitle("Defender");
 		border1.setPosition(1);
 		border1.setAlign(AsWingConstants.LEFT);
 		border1.setBeveled(true);
 		border1.setRound(5);
 		tabDefensive.setBorder(border1);
 		
-		lstLog = new JList();
-		lstLog.setLocation(new IntPoint(250, 0));
-		lstLog.setSize(new IntDimension(450, 250));
+		txtLog = new JTextArea("You have started watching this battle");			
+		txtLog.setPreferredSize(new IntDimension(375, 350));			
+		txtLog.setWordWrap(true);
+		txtLog.setEditable(false);
+		txtLog.setMaxChars(2000);		
+		
 		var border2:TitledBorder = new TitledBorder();
 		border2.setColor(new ASColor(0x0, 1));
 		border2.setTitle("Battle Log");
 		border2.setPosition(1);
 		border2.setBeveled(true);
-		border2.setRound(5);		
-		lstLog.setModel(new VectorListModel());
-		lstLog.setPreferredSize(new IntDimension(375, 0));			
-		lstLogScroll = new JScrollPane(lstLog);
+		border2.setRound(5);				
+		lstLogScroll = new JScrollPane(txtLog);
 		lstLogScroll.setBorder(border2);
 		
-		tabOffensive = new JTabbedPane();
-		tabOffensive.setLocation(new IntPoint(500, 0));
-		tabOffensive.setSize(new IntDimension(280, 350));
+		tabOffensive = new JTabbedPane();				
 		tabOffensive.setPreferredSize(new IntDimension(280, 350));
+		
 		var border3:TitledBorder = new TitledBorder();
 		border3.setColor(new ASColor(0x0, 1));
-		border3.setTitle("Offensive");
+		border3.setTitle("Attacker");
 		border3.setPosition(1);
 		border3.setAlign(AsWingConstants.RIGHT);
 		border3.setBeveled(true);
@@ -275,9 +301,12 @@ public class BattleViewer extends GameJPanel {
 		tabOffensive.setBorder(border3);
 		
 		//component layoution
-		append(tabDefensive);
-		append(lstLogScroll);
-		append(tabOffensive);		
+		pnlBody.append(tabDefensive);
+		pnlBody.append(lstLogScroll);
+		pnlBody.append(tabOffensive);
+		
+		append(lblStamina);
+		append(pnlBody);		
 	}
 }
 	

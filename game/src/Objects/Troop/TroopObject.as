@@ -10,8 +10,9 @@
 
 		public var speed: int;
 		public var attackRadius: int;
+		public var stubId: int;
 
-		public var troop: Troop;
+		public var troop: TroopStub;
 
 		public var template: UnitTemplateManager = new UnitTemplateManager();
 
@@ -19,6 +20,14 @@
 
 		}
 
+		public function getNiceStubId(includeParenthesis: Boolean = false) : String {
+			if (stubId == 1) {
+				if (includeParenthesis) return "(Local Troop)";
+				else return "Local Troop";
+			}
+			else return (includeParenthesis?"(":"") + stubId.toString()  + (includeParenthesis?")":"");
+		}
+		
 		override public function setSelected(bool:Boolean = false):void
 		{
 			super.setSelected(bool);

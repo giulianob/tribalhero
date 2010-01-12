@@ -24,7 +24,7 @@
 			
 			var prototype: StructurePrototype = StructureFactory.getPrototype(type, level);
 			if (prototype != null) {
-				if (bool) showRadius(prototype.range);
+				if (bool) showRadius(prototype.radius);
 				else hideRadius();
 			}
 		}

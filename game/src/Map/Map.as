@@ -379,12 +379,12 @@
 
 			var sidebar: GameJSidebar;
 
-			if (obj is StructureObject) {
-				//(obj as StructureObject).showRange();
+			if (obj is StructureObject) {				
 				sidebar = new ObjectInfoSidebar(obj as StructureObject);
 			}
-			else if (obj is TroopObject)
-			sidebar = new TroopInfoSidebar(obj);
+			else if (obj is TroopObject) {
+				sidebar = new TroopInfoSidebar(obj);
+			}
 
 			gameContainer.setSidebar(sidebar);
 		}

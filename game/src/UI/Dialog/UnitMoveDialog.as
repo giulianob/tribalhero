@@ -34,12 +34,12 @@
 
 			tilelists = new Array();
 
-			var troop: Troop = city.troops.getDefaultTroop();
+			var troop: TroopStub = city.troops.getDefaultTroop();
 
 			drawTroop(troop, [Formation.Normal, Formation.Garrison]);
 		}
 
-		public function drawTroop(troop: Troop, formations: Array = null):void
+		public function drawTroop(troop: TroopStub, formations: Array = null):void
 		{
 			tilelists = SimpleTroopGridList.getGridList(troop, city.template, formations);
 
@@ -48,9 +48,9 @@
 			var tileListDragDropHandler: SimpleTroopGridDragHandler = new SimpleTroopGridDragHandler(tilelists);
 		}
 
-		public function getTroop(): Troop
+		public function getTroop(): TroopStub
 		{
-			var newTroop: Troop = new Troop();
+			var newTroop: TroopStub = new TroopStub();
 
 			for (var i: int = 0; i < tilelists.length; i++)
 			{

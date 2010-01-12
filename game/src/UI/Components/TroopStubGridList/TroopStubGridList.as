@@ -38,7 +38,7 @@
 		public function onItemClick(event: GridListItemEvent):void
 		{
 			var dp: TroopStubGridCell = event.getCell() as TroopStubGridCell;
-			var troop: Troop = dp.getCellValue().troop;
+			var troop: TroopStub = dp.getCellValue().troop;
 			
 			var troopStubDialog: TroopStubDialog = new TroopStubDialog(city, troop);
 			troopStubDialog.show();
@@ -48,7 +48,7 @@
 		{
 			var dp: TroopStubGridCell = event.getCell() as TroopStubGridCell;
 
-			var troop: Troop = dp.getCellValue().troop;
+			var troop: TroopStub = dp.getCellValue().troop;
 
 			var troopTooltip: TroopStubTooltip = new TroopStubTooltip(city, troop);
 			troopTooltip.show(dp);
@@ -64,19 +64,19 @@
 			tooltip = null;
 		}
 
-		public function removeStub(troop: Troop) : void {
+		public function removeStub(troop: TroopStub) : void {
 			var model: VectorListModel = getModel() as VectorListModel;
 
 			for (var i: int = 0; i < model.getSize(); i++) {
-				var iter_troop: Troop = model.get(i).troop;
-				if (Troop.compareCityIdAndTroopId(iter_troop, [troop.cityId, troop.id]) == 0) {
+				var iter_troop: TroopStub = model.get(i).troop;
+				if (TroopStub.compareCityIdAndTroopId(iter_troop, [troop.cityId, troop.id]) == 0) {
 					model.removeAt(i);
 					break;
 				}
 			}
 		}
 
-		public function addStub(troop: Troop) : TroopStubGridCell {
+		public function addStub(troop: TroopStub) : TroopStubGridCell {
 			var model: VectorListModel = getModel() as VectorListModel;
 
 			var icon: DisplayObject = TroopFactory.getSprite(false);

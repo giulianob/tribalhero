@@ -14,12 +14,12 @@
 		private var city: City;
 		
 		public function TroopManager(city: City) {			
-			super(Troop.sortOnCityIdAndTroopId, Troop.compareCityIdAndTroopId);
+			super(TroopStub.sortOnCityIdAndTroopId, TroopStub.compareCityIdAndTroopId);
 			
 			this.city = city;
 		}
 		
-		public function getDefaultTroop(): Troop
+		public function getDefaultTroop(): TroopStub
 		{
 			return get([city.id, 1]);
 		}			

@@ -21,7 +21,7 @@ package src.UI.Dialog {
 
 	public class TroopStubDialog extends GameJPanel {
 
-		private var troop: Troop;
+		private var troop: TroopStub;
 
 		private var pnlHeader: JPanel;
 		private var pnlHeaderWest: JPanel;
@@ -34,7 +34,7 @@ package src.UI.Dialog {
 
 		private var city: City;
 
-		public function TroopStubDialog(city: City, troop: Troop):void
+		public function TroopStubDialog(city: City, troop: TroopStub):void
 		{
 			title = "Troop Information";
 
@@ -47,7 +47,7 @@ package src.UI.Dialog {
 		}
 
 		private function onUpdateTroop(e: BinaryListEvent) : void {
-			var troop: Troop = city.troops.get([troop.cityId, troop.id]);
+			var troop: TroopStub = city.troops.get([troop.cityId, troop.id]);
 			if (!troop) {
 				if (getFrame()) getFrame().dispose();
 			}
@@ -72,16 +72,16 @@ package src.UI.Dialog {
 
 			switch (troop.state)
 			{
-				case Troop.BATTLE:
+				case TroopStub.BATTLE:
 					if (troop.id > 1) buttons.push(btnLocate);
 				break;
-				case Troop.BATTLE_STATIONED:
+				case TroopStub.BATTLE_STATIONED:
 					buttons.push(btnLocate);
 				break;
-				case Troop.MOVING:
+				case TroopStub.MOVING:
 					buttons.push(btnLocate);
 				break;
-				case Troop.STATIONED:
+				case TroopStub.STATIONED:
 					buttons.push(btnLocate);
 					buttons.push(btnRetreat);
 				break;
@@ -124,11 +124,12 @@ package src.UI.Dialog {
 		}
 
 		public function onClickLocate(event: AWEvent):void
-		{
-			Global.gameContainer.camera.ScrollTo(troop.x * Constants.tileW - Constants.screenW / 2, troop.y * Constants.tileH / 2 - Constants.screenH / 2);
-			//TODO: Call to close all dialogs
+		{			
+			Global.map.selectWhenViewable(troop.cityId, troop.objectId);
+			Global.gameContainer.camera.ScrollTo(troop.x * Constants.tileW - Constants.screenW / 2, troop.y * Constants.tileH / 2 - Constants.screenH / 2);			
+			Global.gameContainer.closeAllFrames();
 		}
-
+		
 		public function onClickRetreat(event: AWEvent):void
 		{
 			Global.map.mapComm.Troop.retreat(troop.cityId, troop.id);
@@ -144,7 +145,7 @@ package src.UI.Dialog {
 		{
 			dialog.getFrame().dispose();
 
-			var troop: Troop = dialog.getTroop();
+			var troop: TroopStub = dialog.getTroop();
 			if (troop.getIndividualUnitCount() == 0)
 			return;
 

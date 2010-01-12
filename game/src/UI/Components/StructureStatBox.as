@@ -24,6 +24,7 @@
 		private var lblMaxLabor: JLabel;
 		private var lblStealth: JLabel;
 		private var lblRange: JLabel;
+		private var lblRadius: JLabel;
 
 		private var lblArmorTitle: JLabel;
 		private var lblWeaponTitle: JLabel;
@@ -32,6 +33,7 @@
 		private var lblDefenseTitle: JLabel;
 		private var lblStealthTitle: JLabel;
 		private var lblRangeTitle: JLabel;
+		private var lblRadiusTitle: JLabel;
 
 		public function StructureStatBox(type: int, level: int)
 		{
@@ -49,6 +51,7 @@
 			lblStealth.setText(structurePrototype.stealth.toString());
 			lblHp.setText(structurePrototype.hp.toString());
 			lblWeapon.setText(structurePrototype.weapon);
+			lblRadius.setText(structurePrototype.radius.toString());
 		}
 
 		private function createUI() : void
@@ -62,6 +65,7 @@
 			lblDefenseTitle = titleLabelMaker("Defense");
 			lblStealthTitle = titleLabelMaker("Stealth");
 			lblRangeTitle = titleLabelMaker("Range");
+			lblRadiusTitle = titleLabelMaker("Radius");
 
 			lblArmor = valueLabelMaker();
 			lblWeapon = valueLabelMaker();
@@ -70,10 +74,15 @@
 			lblDefense = valueLabelMaker();
 			lblStealth = valueLabelMaker();
 			lblRange = valueLabelMaker();
+			lblRadius = valueLabelMaker();
 
 			appendAll(lblHpTitle, lblHp, lblDefenseTitle, lblDefense);
 			appendAll(lblWeaponTitle, lblWeapon, structurePrototype.maxlabor>0?lblMaxLaborTitle:new JLabel(), structurePrototype.maxlabor>0?lblMaxLabor:new JLabel());
 			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
+			if (structurePrototype.radius > 0) {
+				(getLayout() as GridLayout).setRows(4);
+				appendAll(lblRadiusTitle, lblRadius, new JLabel(), new JLabel());
+			}
 		}
 
 		private function titleLabelMaker(title: String) : JLabel {

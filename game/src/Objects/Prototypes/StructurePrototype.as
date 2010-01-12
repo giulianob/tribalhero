@@ -20,7 +20,7 @@ package src.Objects.Prototypes {
 		public var hp: int;
 		public var attack: int;
 		public var defense: int;
-		public var vision: int;
+		public var radius: int;
 		public var stealth: int;
 		public var range: int;
 		public var speed: int;

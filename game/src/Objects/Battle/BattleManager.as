@@ -19,6 +19,7 @@
 		public static const STRUCTURE: int = 0;
 		public static const UNIT: int = 1;
 		
+		public var stamina: int;
 		public var attackers: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
 		public var defenders: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
 		public var all: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);

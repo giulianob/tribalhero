@@ -26,7 +26,7 @@
 		private var attackTilelists: Array = new Array();
 		private var destFormations: Array;
 
-		public function ReinforceTroopDialog(city: City, srcTroop: Troop, destFormations: Array, onAccept: Function):void
+		public function ReinforceTroopDialog(city: City, srcTroop: TroopStub, destFormations: Array, onAccept: Function):void
 		{
 			createUI();
 
@@ -44,7 +44,7 @@
 			pnlLocal.append(SimpleTroopGridList.stackGridLists(localTilelists));
 
 			//create attack tile lists
-			var newTroop: Troop = new Troop();
+			var newTroop: TroopStub = new TroopStub();
 			for (var i: int = 0; i < destFormations.length; i ++)
 			newTroop.add(new Formation(destFormations[i]));
 
@@ -57,9 +57,9 @@
 			var tileListDragDropHandler: SimpleTroopGridDragHandler = new SimpleTroopGridDragHandler(tilelists);
 		}
 
-		public function getTroop(): Troop
+		public function getTroop(): TroopStub
 		{
-			var newTroop: Troop = new Troop();
+			var newTroop: TroopStub = new TroopStub();
 
 			for (var i: int = 0; i < attackTilelists.length; i++)
 			{

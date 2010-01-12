@@ -65,6 +65,8 @@
 			
 			var subscribeCityId: int = custom;
 			
+			battle.stamina = packet.readUShort();
+			
 			var playerId: int;
 			var cityId: int;
 			var combatObjId: int;
@@ -115,6 +117,8 @@
 		{
 			if (battle == null) return;
 			
+			battle.stamina = packet.readUShort();
+			
 			var playerId: int;
 			var cityId: int;
 			var combatObjId: int;
@@ -161,12 +165,15 @@
 		
 		public function onReceiveBattleAttack(packet: Packet):void
 		{
+			if (battle == null) return;
+			
+			battle.stamina = packet.readUShort();
+			
 			var attackerObjId: int = packet.readUInt();
 			var defenderObjId: int = packet.readUInt();
-			var dmg: int = packet.readUShort();
+			var dmg: int = packet.readUShort();			
 			
-			if (battle)
-				battle.attack(attackerObjId, defenderObjId, dmg);
+			battle.attack(attackerObjId, defenderObjId, dmg);
 		}		
 		
 	}

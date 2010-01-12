@@ -24,7 +24,7 @@ package src.Objects.Actions {
 		protected var ui: SimpleButton;		
 		protected var parentObj: GameObject;
 		
-		public var parentAction: Action;
+		public var parentAction: Action = new Action();
 		public var currentCount: int;
 		
 		public function ActionButton(button: SimpleButton, parentObj: GameObject)

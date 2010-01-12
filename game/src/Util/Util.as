@@ -124,6 +124,10 @@ package src.Util {
 			return ret;
 		}		
 		
+		public static function makePlural(value: int, singular: String, plural: String) : String {
+			return value > 1 ? plural : singular;
+		}
+		
 		public static function formatTime(time: int): String
 		{
 			if (time < 0) return "--:--:--";

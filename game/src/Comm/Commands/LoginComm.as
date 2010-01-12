@@ -115,7 +115,7 @@
 				var troopCnt: int = packet.readUByte();				
 				for (var troopI: int = 0; troopI < troopCnt; troopI++)
 				{
-					var troop: Troop = mapComm.Troop.readTroop(packet)
+					var troop: TroopStub = mapComm.Troop.readTroop(packet)
 					city.troops.add(troop, false);
 				}
 				city.troops.sort();

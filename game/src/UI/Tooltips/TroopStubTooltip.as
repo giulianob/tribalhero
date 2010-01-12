@@ -3,7 +3,7 @@
 	import src.Map.City;
 	import src.Map.Username;
 	import src.Objects.Actions.Notification;
-	import src.Objects.Troop.Troop;
+	import src.Objects.Troop.*;
 	import src.UI.Components.ComplexTroopGridList.ComplexTroopGridList;
 	import src.UI.Components.NotificationBox;
 	import src.UI.GameLookAndFeel;
@@ -19,10 +19,10 @@
 		private var pnlTop: JPanel;
 		private var lblName: JLabel;
 		private var lblStatus: JLabel;
-		private var troop: Troop;
+		private var troop: TroopStub;
 		private var city: City;
 
-		public function TroopStubTooltip(city: City, troop: Troop) {
+		public function TroopStubTooltip(city: City, troop: TroopStub) {
 			this.troop = troop;
 			this.city = city;
 

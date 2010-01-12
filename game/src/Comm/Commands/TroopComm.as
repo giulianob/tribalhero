@@ -21,9 +21,9 @@
 			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
 		}
 
-		public function readTroop(packet: Packet): Troop
+		public function readTroop(packet: Packet): TroopStub
 		{
-			var troop: Troop = new Troop();
+			var troop: TroopStub = new TroopStub();
 			troop.playerId = packet.readUInt();
 			troop.cityId = packet.readUInt();
 
@@ -41,10 +41,10 @@
 
 			switch (troop.state)
 			{
-				case Troop.MOVING:
-				case Troop.BATTLE:
-				case Troop.BATTLE_STATIONED:
-				case Troop.STATIONED:
+				case TroopStub.MOVING:
+				case TroopStub.BATTLE:
+				case TroopStub.BATTLE_STATIONED:
+				case TroopStub.STATIONED:
 					troop.objectId = packet.readUInt();
 					troop.x = packet.readUInt();
 					troop.y = packet.readUInt();
@@ -114,7 +114,7 @@
 			if (city == null)
 			return;
 
-			var troop: Troop = readTroop(packet);
+			var troop: TroopStub = readTroop(packet);
 
 			city.troops.update(troop, [troop.cityId, troop.id]);
 		}
@@ -127,7 +127,7 @@
 			if (city == null)
 			return;
 
-			var troop: Troop = readTroop(packet);
+			var troop: TroopStub = readTroop(packet);
 
 			city.troops.add(troop);
 		}
@@ -160,11 +160,12 @@
 			if (mapComm.tryShowError(packet)) return;
 
 			var obj: TroopObject = custom as TroopObject;
-			obj.troop = new Troop();
+			obj.troop = new TroopStub();
 
 			if (obj.playerId == Constants.playerId) {
 				obj.attackRadius = packet.readUByte();
 				obj.speed = packet.readUByte();
+				obj.stubId = packet.readUByte();
 
 				var formationCnt: int = packet.readUByte();
 				var unitType: int;
@@ -233,7 +234,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function troopAttack(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: Troop):void
+		public function troopAttack(cityId: int, targetCityId: int, targetObjectId: int, mode: int, troop: TroopStub):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_ATTACK;
@@ -258,7 +259,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function troopReinforce(cityId: int, targetCityId: int, troop: Troop):void
+		public function troopReinforce(cityId: int, targetCityId: int, troop: TroopStub):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_REINFORCE;
@@ -281,7 +282,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function moveUnit(cityId: int, troop: Troop):void
+		public function moveUnit(cityId: int, troop: TroopStub):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.LOCAL_TROOP_MOVE;

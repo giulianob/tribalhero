@@ -41,7 +41,7 @@
 			this.troopObj = troopObj as TroopObject;
 
 			troopObj.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
-
+			
 			createUI();
 			update();
 		}
@@ -58,10 +58,12 @@
 			clear();
 
 			var usernameLabel: JLabel = addStatRow("Owner", "-");
-			var cityLabel: JLabel = addStatRow("City", "-");
+			var cityLabel: JLabel = addStatRow("Troop", "-");
 
-			Global.map.usernames.players.setLabelUsername(troopObj.playerId, usernameLabel);
-			Global.map.usernames.cities.setLabelUsername(troopObj.cityId, cityLabel);
+			Global.map.usernames.players.setLabelUsername(troopObj.playerId, usernameLabel);			
+			Global.map.usernames.cities.getUsername(troopObj.cityId, function (username: Username, custom: *) : void {
+				custom.setText(username.name + troopObj.getNiceStubId(true));
+			}, cityLabel);
 
 			addStatRow("Radius", troopObj.attackRadius.toString());
 			addStatRow("Speed", troopObj.speed.toString());
@@ -72,7 +74,7 @@
 
 			if (city != null) {
 				//add view troop button here
-				buttons.push(new ViewUnitsButton(troopObj));
+				//buttons.push(new ViewUnitsButton(troopObj));
 			}
 
 			//Special Case Buttons

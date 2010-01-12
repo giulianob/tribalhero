@@ -2,7 +2,7 @@
 	import src.Util.BinaryList.*;
 	import fl.lang.Locale;
 
-	public class Troop extends BinaryList {
+	public class TroopStub extends BinaryList {
 
 		public static const IDLE: int = 0;
 		public static const BATTLE: int = 1;
@@ -25,7 +25,7 @@
 
 		public var template: TroopTemplateManager = new TroopTemplateManager();
 
-		public function Troop(id: int = 0)
+		public function TroopStub(id: int = 0)
 		{
 			super(Formation.sortOnType, Formation.compareType);
 			this.id = id;
@@ -98,7 +98,7 @@
 			trace("=========");
 		}
 
-		public static function compareCityIdAndTroopId(a: Troop, value: Array):int
+		public static function compareCityIdAndTroopId(a: TroopStub, value: Array):int
 		{
 			var cityDelta: int = a.cityId - value[0];
 			var idDelta: int = a.id - value[1];
@@ -112,7 +112,7 @@
 			return 0;
 		}
 
-		public static function sortOnCityIdAndTroopId(a:Troop, b:Troop):Number {
+		public static function sortOnCityIdAndTroopId(a:TroopStub, b:TroopStub):Number {
 			var aCityId:Number = a.cityId;
 			var bCityId:Number = b.cityId;
 

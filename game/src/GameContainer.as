@@ -1,4 +1,5 @@
 ﻿package src {
+	import fl.motion.ITween;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
@@ -222,6 +223,13 @@
 
 			if (sidebar != null)
 			sidebar.show(sidebarHolder);
+		}
+		
+		public function closeAllFrames() : void {
+			var framesCopy: Array = frames.concat();
+			
+			for (var i: int = framesCopy.length - 1; i >= 0; --i) 
+				(framesCopy[i] as JFrame).dispose();
 		}
 
 		public function showFrame(frame: JFrame):void {

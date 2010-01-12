@@ -29,7 +29,7 @@
 
 		private var tiles: Array = new Array();
 
-		private var troop: Troop;
+		private var troop: TroopStub;
 		private var city: City;
 
 		private var highlightedObj: GameObject;
@@ -38,7 +38,7 @@
 
 		}
 
-		public function init(troop: Troop, cityId: int):void
+		public function init(troop: TroopStub, cityId: int):void
 		{
 			doubleClickEnabled = true;
 

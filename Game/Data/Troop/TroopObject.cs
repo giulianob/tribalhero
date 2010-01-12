@@ -1,27 +1,34 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Data;
+using Game.Data.Stats;
 using Game.Database;
 using Game.Logic;
 using Game.Util;
-using Game.Data.Stats;
+
+#endregion
 
 namespace Game.Data {
-  
     public class TroopObject : GameObject, IPersistableObject {
-        TroopStub troopStub;
+        private TroopStub troopStub;
+
         public TroopStub Stub {
             get { return troopStub; }
         }
 
-        TroopStats stats;
+        private TroopStats stats;
+
         public TroopStats Stats {
             get { return stats; }
         }
 
-        public override uint ObjectID {
-            get { return objectID; }
-            set { CheckUpdateMode(); objectID = value; }
+        public override uint ObjectId {
+            get { return objectId; }
+            set {
+                CheckUpdateMode();
+                objectId = value;
+            }
         }
 
         public override ushort Type {
@@ -33,16 +40,19 @@ namespace Game.Data {
         }
 
         #region Constructors
+
         public TroopObject(TroopStub stub) {
             troopStub = stub;
-            
+
             stats = new TroopStats(Formula.GetTroopRadius(troopStub, null), Formula.GetTroopSpeed(troopStub, null));
-            stats.StatsUpdate +=new BaseStats.OnStatsUpdate(stats_StatsUpdate);
+            stats.StatsUpdate += stats_StatsUpdate;
         }
+
         #endregion
 
         #region Updates
-        void stats_StatsUpdate() {
+
+        private void stats_StatsUpdate() {
             CheckUpdateMode();
         }
 
@@ -55,21 +65,23 @@ namespace Game.Data {
             Update();
         }
 
-        protected new void Update() {            
+        protected new void Update() {
             base.Update();
 
-            if (!Global.FireEvents) 
+            if (!Global.FireEvents)
                 return;
 
             if (updating)
                 return;
 
-            if (objectID > 0)
-                Global.dbManager.Save(this);           
+            if (objectId > 0)
+                Global.dbManager.Save(this);
         }
+
         #endregion
 
         #region IPersistable Members
+
         public const string DB_TABLE = "troops";
 
         public string DbTable {
@@ -78,37 +90,30 @@ namespace Game.Data {
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {                    
-                    new DbColumn("x", X, System.Data.DbType.UInt32),
-                    new DbColumn("y", Y, System.Data.DbType.Int32),
-                    new DbColumn("state", (byte)State.Type, System.Data.DbType.Boolean),
-                    new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), System.Data.DbType.String)
-                };
+                return new[] {
+                                 new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
+                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),
+                                 new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()),
+                                              DbType.String)
+                             };
             }
         }
 
         public DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
-                    new DbColumn("id", ObjectID, System.Data.DbType.UInt32),
-                    new DbColumn("city_id", City.CityId, System.Data.DbType.UInt32),
-                    new DbColumn("troop_stub_id", Stub.TroopId, System.Data.DbType.Byte)
-                };
+                return new[] {
+                                 new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.CityId, DbType.UInt32)
+                                 , new DbColumn("troop_stub_id", Stub.TroopId, DbType.Byte)
+                             };
             }
         }
 
         public DbDependency[] DbDependencies {
-            get {
-                return new DbDependency[] { };
-            }
+            get { return new DbDependency[] {}; }
         }
 
-        bool dbPersisted = false;
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
+
         #endregion
-
     }
 }

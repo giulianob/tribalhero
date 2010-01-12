@@ -1,12 +1,13 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Collections;
+using System.Text;
+
+#endregion
 
 namespace Game.Util {
     public class ExpressionParser {
-
         private Hashtable ops, trees, htbl, spconst;
         private int maxoplength;
         private int sb_init;
@@ -87,81 +88,64 @@ namespace Game.Util {
             sb_init = 50;
         }
 
-
-
         /// <summary>Matches all paranthesis and returns true if they all match or false if they do not.</summary>
         /// <param name="exp">expression to check, infix notation</param>
         /// <returns>true if ok false otherwise</returns>
-        private bool
-        matchParant(String exp) {
+        private bool matchParant(String exp) {
             int count = 0;
             int i = 0;
 
             int l = exp.Length;
 
             for (i = 0; i < l; i++) {
-                if (exp[i] == '(') {
+                if (exp[i] == '(')
                     count++;
-                }
-                else if (exp[i] == ')') {
+                else if (exp[i] == ')')
                     count--;
-                }
             }
 
             return (count == 0);
         }
 
-
-
         /// <summary>Checks if the character is alphabetic.</summary>
         /// <param name="ch">Character to check</param>
         /// <returns>true or false</returns>
-        private bool
-        isAlpha(char ch) {
+        private bool isAlpha(char ch) {
             return ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
         }
-
-
 
         /// <summary>Checks if the string can be considered to be a valid variable name.</summary>
         /// <param name="str">The String to check</param>
         /// <returns>true or false</returns>
-        private bool
-        isVariable(String str) {
+        private bool isVariable(String str) {
             int i = 0;
             int len = str.Length;
 
-            if (isAllNumbers(str)) return false;
+            if (isAllNumbers(str))
+                return false;
 
             for (i = 0; i < len; i++) {
-                if (getOp(str, i) != null || isAllowedSym(str[i])) {
+                if (getOp(str, i) != null || isAllowedSym(str[i]))
                     return false;
-                }
             }
 
             return true;
         }
 
-
         /// <summary>Checks if the character is a digit</summary>
         /// <param name="ch">Character to check</param>
         /// <returns>true or false</returns>
-        private bool
-        isConstant(char ch) {
+        private bool isConstant(char ch) {
             return (Char.IsDigit(ch));
         }
-
-
 
         /// <summary>Checks to se if a string is numeric</summary>
         /// <param name="exp">String to check</param>
         /// <returns>true if the string was numeric, false otherwise</returns>
-        private bool
-        isConstant(String exp) {
+        private bool isConstant(String exp) {
             try {
-                if (Double.IsNaN(Double.Parse(exp))) {
+                if (Double.IsNaN(Double.Parse(exp)))
                     return false;
-                }
             }
             catch {
                 return false;
@@ -169,8 +153,6 @@ namespace Game.Util {
 
             return true;
         }
-
-
 
         /// <summary>
         /// Checks to see if this String consists of only digits and punctuation.
@@ -182,24 +164,23 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="str">The string to check</param>
         /// <returns>true if the string was numeric, false otherwise.</returns>
-        private bool
-        isAllNumbers(String str) {
+        private bool isAllNumbers(String str) {
             char ch;
             int i = 0, l = 0;
             bool dot = false;
 
             ch = str[0];
 
-            if (ch == '-' || ch == '+') i = 1;
+            if (ch == '-' || ch == '+')
+                i = 1;
 
             l = str.Length;
 
             while (i < l) {
                 ch = str[i];
 
-                if (!(Char.IsDigit(ch) || ((ch == '.' || ch == ',') && !dot))) {
+                if (!(Char.IsDigit(ch) || ((ch == '.' || ch == ',') && !dot)))
                     return false;
-                }
 
                 dot = (ch == '.' || ch == ',');
 
@@ -209,33 +190,28 @@ namespace Game.Util {
             return true;
         }
 
-
-
         /// <summary>
         /// Checks to see if the string is the name of a acceptable operator.
         /// </summary>
         /// <param name="str">The string to check</param>
         /// <returns>true if it is an acceptable operator, false otherwise.</returns>
-        private bool
-        isOperator(String str) {
+        private bool isOperator(String str) {
             return (ops.ContainsKey(str));
         }
-
-
 
         /// <summary>
         /// Checks to see if the operator name represented by str takes two arguments.
         /// </summary>
         /// <param name="str">The string to check</param>
         /// <returns>true if the operator takes two arguments, false otherwise.</returns>
-        private bool
-        isTwoArgOp(String str) {
-            if (str == null) return false;
+        private bool isTwoArgOp(String str) {
+            if (str == null)
+                return false;
             Object o = ops[str];
-            if (o == null) return false;
-            return (((Operator)o).arguments() == 2);
+            if (o == null)
+                return false;
+            return (((Operator) o).arguments() == 2);
         }
-
 
         /// <summary>
         /// Checks to see if the double value a can be considered to be a mathematical integer.</summary>
@@ -245,11 +221,9 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="a">the double value to check</param>
         /// <returns>true if the double value is an integer, false otherwise.</returns>
-        private bool
-        isInteger(double a) {
-            return ((a - (int)a) == 0.0);
+        private bool isInteger(double a) {
+            return ((a - (int) a) == 0.0);
         }
-
 
         /// <summary>
         /// Checks to see if the int value a can be considered to be even. </summary>
@@ -259,23 +233,19 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="a">the int value to check</param>
         /// <returns>true if the int value is even, false otherwise.</returns>
-        private bool
-        isEven(int a) {
-            return (isInteger(a / 2));
+        private bool isEven(int a) {
+            return (isInteger(a/2));
         }
-
 
         /// <summary>
         /// Checks to see if the character is a valid symbol for this parser.
         /// </summary>
         /// <param name="s">the character to check</param>
         /// <returns>true if the char is valid, false otherwise.</returns>
-        private bool
-        isAllowedSym(char s) {
-            return (s == ',' || s == '.' || s == ')' || s == '(' || s == '>' || s == '<' || s == '&' || s == '=' || s == '|');
+        private bool isAllowedSym(char s) {
+            return (s == ',' || s == '.' || s == ')' || s == '(' || s == '>' || s == '<' || s == '&' || s == '=' ||
+                    s == '|');
         }
-
-
 
         /// <summary>
         /// Checks the String expression to see if the syntax is valid.
@@ -286,35 +256,28 @@ namespace Game.Util {
         /// or a variable or operator name is invalid in the expression.
         /// </summary>
         /// <param name="exp">the string expression to check, infix notation.</param>
-        private void
-        Syntax(String exp) {
+        private void Syntax(String exp) {
             int i = 0, oplen = 0;
             String op = null;
             String nop = null;
 
-            if (!matchParant(exp)) {
-                throw new System.Exception("Non matching paranthesis");
-            }
+            if (!matchParant(exp))
+                throw new Exception("Non matching paranthesis");
 
             int l = exp.Length;
 
             while (i < l) {
                 try {
-
                     if ((op = getOp(exp, i)) != null) {
                         oplen = op.Length;
                         i += oplen;
                         nop = getOp(exp, i);
-                        if (nop != null && isTwoArgOp(nop) && !(nop.Equals("+") || nop.Equals("-"))) {
-                            throw new System.Exception("Syntax error near -> " + exp.Substring(i - oplen));
-                        }
-                    }
-                    else if (!isAlpha(exp[i]) && !isConstant(exp[i]) && !isAllowedSym(exp[i])) {
-                        throw new System.Exception("Syntax error near -> " + exp.Substring(i));
-                    }
-                    else {
+                        if (nop != null && isTwoArgOp(nop) && !(nop.Equals("+") || nop.Equals("-")))
+                            throw new Exception("Syntax error near -> " + exp.Substring(i - oplen));
+                    } else if (!isAlpha(exp[i]) && !isConstant(exp[i]) && !isAllowedSym(exp[i]))
+                        throw new Exception("Syntax error near -> " + exp.Substring(i));
+                    else
                         i++;
-                    }
                 }
                 catch (IndexOutOfRangeException) {
                     i++;
@@ -323,8 +286,6 @@ namespace Game.Util {
 
             return;
         }
-
-
 
         /// <summary>
         /// Inserts the multiplication operator where needed.
@@ -344,8 +305,7 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="exp">the infix string expression to process</param>
         /// <returns>the processed infix expression</returns>
-        private String
-        putMult(String exp) {
+        private String putMult(String exp) {
             int i = 0, p = 0;
             String tmp = null;
             StringBuilder str = new StringBuilder(exp);
@@ -354,60 +314,49 @@ namespace Game.Util {
 
             while (i < l) {
                 try {
-
                     if ((tmp = getOp(exp, i)) != null && !isTwoArgOp(tmp) && isAlpha(exp[i - 1])) {
                         // case: variable jp one-arg-op , xcos(x)
                         str.Insert(i + p, "*");
                         p++;
-                    }
-                    else if (isAlpha(exp[i]) && isConstant(exp[i - 1])
-                      && (tmp == null || !tmp.Equals("log"))) // tmp was set by previous test
-		      {
-
+                    } else if (isAlpha(exp[i]) && isConstant(exp[i - 1]) && (tmp == null || !tmp.Equals("log")))
+                        // tmp was set by previous test
+                    {
                         // case: const jp variable or one-arg-op, 2x, 2tan(x)
                         // note that "log" is treated specially
                         str.Insert(i + p, "*");
                         p++;
-                    }
-                    else if (exp[i] == '(' && isConstant(exp[i - 1])) {
+                    } else if (exp[i] == '(' && isConstant(exp[i - 1])) {
                         // case: "const jp ( expr )" , 2(3+x)
                         str.Insert(i + p, "*");
                         p++;
-                    }
-                    else if (isAlpha(exp[i]) && exp[i - 1] == ')'
-                  && (tmp == null || !tmp.Equals("log")))  // tmp was set by previous test
-		      {
+                    } else if (isAlpha(exp[i]) && exp[i - 1] == ')' && (tmp == null || !tmp.Equals("log")))
+                        // tmp was set by previous test
+                    {
                         // case: ( expr ) jp variable or one-arg-op , (2-x)x , (2-x)sin(x)
                         str.Insert(i + p, "*");
                         p++;
-                    }
-                    else if (exp[i] == '(' && exp[i - 1] == ')') {
+                    } else if (exp[i] == '(' && exp[i - 1] == ')') {
                         // case: ( expr ) jp  ( expr ) , (2-x)(x+1) , sin(x)(2-x) 
                         str.Insert(i + p, "*");
                         p++;
-                    }
-                    else if (exp[i] == '(' && isAlpha(exp[i - 1]) && backTrack(exp.Substring(0, i)) == null) {
+                    } else if (exp[i] == '(' && isAlpha(exp[i - 1]) && backTrack(exp.Substring(0, i)) == null) {
                         // case: var jp  ( expr ) , x(x+1) , x(1-sin(x))
                         str.Insert(i + p, "*");
                         p++;
                     }
                 }
-                catch { }
+                catch {}
 
-                if (tmp != null) {
+                if (tmp != null)
                     i += tmp.Length;
-                }
-                else {
+                else
                     i++;
-                }
 
                 tmp = null;
             }
 
             return str.ToString();
         }
-
-
 
         /// <summary>
         /// Adds support for "scientific notation" by replacing the E operator with *10^
@@ -418,9 +367,7 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="exp">the infix string expression to process</param>
         /// <returns>the processed infix expression</returns>
-        private String
-        parseE(String exp) {
-
+        private String parseE(String exp) {
             int i, p, len;
 
             StringBuilder newstr = new StringBuilder(exp);
@@ -431,7 +378,8 @@ namespace Game.Util {
             while (i < len) {
                 try {
                     if (exp[i] == 'e' && Char.IsDigit(exp[i - 1])) {
-                        if (Char.IsDigit(exp[i + 1]) || ((exp[i + 1] == '-' || exp[i + 1] == '+') && Char.IsDigit(exp[i + 2]))) {
+                        if (Char.IsDigit(exp[i + 1]) ||
+                            ((exp[i + 1] == '-' || exp[i + 1] == '+') && Char.IsDigit(exp[i + 2]))) {
                             // replace the 'e'
                             newstr[i + p] = '*';
                             // insert the rest
@@ -440,36 +388,31 @@ namespace Game.Util {
                         }
                     }
                 }
-                catch { }
+                catch {}
                 i++;
             }
 
             return newstr.ToString();
         }
 
-
         /// <summary>
         /// Parses out spaces from a string
         /// </summary>
         /// <param name="str">The string to process</param>
         /// <returns>A copy of the string stripped of all spaces</returns>
-        private String
-        skipSpaces(String str) {
+        private String skipSpaces(String str) {
             int i = 0;
             int len = str.Length;
             StringBuilder nstr = new StringBuilder(len);
 
             while (i < len) {
-                if (str[i] != ' ') {
+                if (str[i] != ' ')
                     nstr.Append(str[i]);
-                }
                 i++;
             }
 
             return nstr.ToString();
         }
-
-
 
         /// <summary>
         /// Matches an opening left paranthesis.
@@ -477,21 +420,19 @@ namespace Game.Util {
         /// <param name="exp">the string to search in</param>
         /// <param name="index">the index of the opening left paranthesis</param>
         /// <returns>the index of the matching closing right paranthesis</returns>
-        private int
-        match(String exp, int index) {
+        private int match(String exp, int index) {
             int len = exp.Length;
             int i = index;
             int count = 0;
 
             while (i < len) {
-                if (exp[i] == '(') {
+                if (exp[i] == '(')
                     count++;
-                }
-                else if (exp[i] == ')') {
+                else if (exp[i] == ')')
                     count--;
-                }
 
-                if (count == 0) return i;
+                if (count == 0)
+                    return i;
 
                 i++;
             }
@@ -499,16 +440,13 @@ namespace Game.Util {
             return index;
         }
 
-
-
         /// <summary>
         /// Parses out an operator from an infix string expression.
         /// </summary>
         /// <param name="exp">the infix string expression to look in</param>
         /// <param name="index">the index to start searching from</param>
         /// <returns>the operator if any or null.</returns>
-        private String
-        getOp(String exp, int index) {
+        private String getOp(String exp, int index) {
             String tmp;
             int i = 0;
             int len = exp.Length;
@@ -516,9 +454,8 @@ namespace Game.Util {
             for (i = 0; i < maxoplength; i++) {
                 if (index >= 0 && (index + maxoplength - i) <= len) {
                     tmp = exp.Substring(index, maxoplength - i);
-                    if (isOperator(tmp)) {
+                    if (isOperator(tmp))
                         return (tmp);
-                    }
                 }
             }
 
@@ -536,8 +473,7 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="exp">the infix string expression to process</param>
         /// <returns>A tree datastructure of Node objects representing the expression</returns>
-        private Node
-        parse(String exp) {
+        private Node parse(String exp) {
             int i, ma, len;
             String farg, sarg, fop;
             Node tree = null;
@@ -547,22 +483,19 @@ namespace Game.Util {
 
             len = exp.Length;
 
-            if (len == 0) {
-                throw new System.Exception("Wrong number of arguments to operator");
-            }
-            else if (exp[0] == '(' && ((ma = match(exp, 0)) == (len - 1))) {
+            if (len == 0)
+                throw new Exception("Wrong number of arguments to operator");
+            else if (exp[0] == '(' && ((ma = match(exp, 0)) == (len - 1)))
                 return (parse(exp.Substring(1, ma - 1)));
-            }
-            else if (isVariable(exp)) {
+            else if (isVariable(exp))
                 return (new Node(exp));
-            }
-            else if (isAllNumbers(exp))  // this is really the only place where isAllNumbers matters. 
-		  {
+            else if (isAllNumbers(exp)) // this is really the only place where isAllNumbers matters. 
+            {
                 try {
                     return (new Node(Double.Parse(exp)));
                 }
                 catch (FormatException) {
-                    throw new System.Exception("Syntax error-> " + exp + " (not using regional decimal separator?)");
+                    throw new Exception("Syntax error-> " + exp + " (not using regional decimal separator?)");
                 }
             }
 
@@ -571,53 +504,46 @@ namespace Game.Util {
                     farg = arg(null, exp, i);
                     fop = getOp(exp, i + farg.Length);
 
-                    if (fop == null) throw new Exception("Missing operator");
+                    if (fop == null)
+                        throw new Exception("Missing operator");
 
                     if (isTwoArgOp(fop)) {
                         sarg = arg(fop, exp, i + farg.Length + fop.Length);
-                        if (sarg.Equals("")) throw new Exception("Wrong number of arguments to operator " + fop);
+                        if (sarg.Equals(""))
+                            throw new Exception("Wrong number of arguments to operator " + fop);
                         tree = new Node(fop, parse(farg), parse(sarg));
                         i += farg.Length + fop.Length + sarg.Length;
-                    }
-                    else {
-                        if (farg.Equals("")) throw new Exception("Wrong number of arguments to operator " + fop);
+                    } else {
+                        if (farg.Equals(""))
+                            throw new Exception("Wrong number of arguments to operator " + fop);
                         tree = new Node(fop, parse(farg));
                         i += farg.Length + fop.Length;
                     }
-
-                }
-                else {
+                } else {
                     if (isTwoArgOp(fop)) {
                         farg = arg(fop, exp, i + fop.Length);
-                        if (farg.Equals("")) throw new Exception("Wrong number of arguments to operator " + fop);
+                        if (farg.Equals(""))
+                            throw new Exception("Wrong number of arguments to operator " + fop);
                         if (tree == null) {
-                            if (fop.Equals("+") || fop.Equals("-")) {
+                            if (fop.Equals("+") || fop.Equals("-"))
                                 tree = new Node(0D);
-                            }
-                            else {
+                            else
                                 throw new Exception("Wrong number of arguments to operator " + fop);
-                            }
                         }
                         tree = new Node(fop, tree, parse(farg));
                         i += farg.Length + fop.Length;
-
-
-                    }
-                    else {
+                    } else {
                         farg = arg(fop, exp, i + fop.Length);
-                        if (farg.Equals("")) throw new Exception("Wrong number of arguments to operator " + fop);
+                        if (farg.Equals(""))
+                            throw new Exception("Wrong number of arguments to operator " + fop);
                         tree = new Node(fop, parse(farg));
                         i += farg.Length + fop.Length;
-
-
                     }
                 }
-
             }
 
             return tree;
         }
-
 
         /// <summary>
         /// Parses the infix expression for arguments to the specified operator.
@@ -626,8 +552,7 @@ namespace Game.Util {
         /// <param name="exp">the infix string expression</param>
         /// <param name="index">the index to start the search from</param>
         /// <returns>the argument to the operator</returns>
-        private String
-        arg(String _operator, String exp, int index) {
+        private String arg(String _operator, String exp, int index) {
             int ma, i, prec = -1;
             int len = exp.Length;
             String op = null;
@@ -637,29 +562,24 @@ namespace Game.Util {
             i = index;
             ma = 0;
 
-            if (_operator == null) {
+            if (_operator == null)
                 prec = -1;
-            }
-            else {
-                prec = ((Operator)ops[_operator]).precedence();
-            }
+            else
+                prec = ((Operator) ops[_operator]).precedence();
 
             while (i < len) {
-
                 if (exp[i] == '(') {
                     ma = match(exp, i);
                     str.Append(exp.Substring(i, ma + 1 - i));
                     i = ma + 1;
-                }
-                else if ((op = getOp(exp, i)) != null) {
+                } else if ((op = getOp(exp, i)) != null) {
                     // (_operator != null && _operator.Equals("&&") && op.Equals("||") ) || 
-                    if (str.Length != 0 && !isTwoArgOp(backTrack(str.ToString())) && ((Operator)ops[op]).precedence() >= prec) {
+                    if (str.Length != 0 && !isTwoArgOp(backTrack(str.ToString())) &&
+                        ((Operator) ops[op]).precedence() >= prec)
                         return str.ToString();
-                    }
                     str.Append(op);
                     i += op.Length;
-                }
-                else {
+                } else {
                     str.Append(exp[i]);
                     i++;
                 }
@@ -667,8 +587,6 @@ namespace Game.Util {
 
             return str.ToString();
         }
-
-
 
         /// <summary>
         /// Returns an operator at the end of the String str if present.
@@ -679,25 +597,22 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="str">part of infix string expression to search</param>
         /// <returns>the operator if found or null otherwise</returns>
-        private String
-        backTrack(String str) {
+        private String backTrack(String str) {
             int i = 0;
             int len = str.Length;
             String op = null;
 
             try {
                 for (i = 0; i <= maxoplength; i++) {
-                    if ((op = getOp(str, (len - 1 - maxoplength + i))) != null
-                   && (len - maxoplength - 1 + i + op.Length) == len) {
+                    if ((op = getOp(str, (len - 1 - maxoplength + i))) != null &&
+                        (len - maxoplength - 1 + i + op.Length) == len)
                         return op;
-                    }
                 }
             }
-            catch { }
+            catch {}
 
             return null;
         }
-
 
         /// <summary>
         /// Calculates the faculty.
@@ -708,22 +623,16 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="val">the value to calcualte the faculty of</param>
         /// <returns>the faculty</returns>
-        private double
-        fac(double val) {
-
-            if (!isInteger(val)) {
+        private double fac(double val) {
+            if (!isInteger(val))
                 return Double.NaN;
-            }
-            else if (val < 0) {
+            else if (val < 0)
                 return Double.NaN;
-            }
-            else if (val <= 1) {
+            else if (val <= 1)
                 return 1;
-            }
 
-            return (val * fac(val - 1));
+            return (val*fac(val - 1));
         }
-
 
         /// <summary>
         /// Calculates the semi faculty.
@@ -734,40 +643,28 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="val">the value to calcualte the semi faculty of</param>
         /// <returns>the semi faculty</returns>
-        private double
-        sfac(double val) {
-
-            if (!isInteger(val)) {
+        private double sfac(double val) {
+            if (!isInteger(val))
                 return Double.NaN;
-            }
-            else if (val < 0) {
+            else if (val < 0)
                 return Double.NaN;
-            }
-            else if (val <= 1) {
+            else if (val <= 1)
                 return 1;
-            }
 
-            return (val * sfac(val - 2));
+            return (val*sfac(val - 2));
         }
-
-
 
         /// <summary>
         /// Returns the decimal part of the value
         /// </summary>
         /// <param name="val">the value to calculate the fpart for</param>
         /// <returns>the decimal part of the value</returns>
-        private double
-        fpart(double val) {
-            if (val >= 0) {
+        private double fpart(double val) {
+            if (val >= 0)
                 return (val - Math.Floor(val));
-            }
-            else {
+            else
                 return (val - Math.Ceiling(val));
-            }
         }
-
-
 
         /// <summary>
         /// Parses the datastructure created by the parse method.
@@ -779,28 +676,24 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="tree">A Node representing a tree datastructure</param>
         /// <returns>A double value</returns>
-        private double
-        toValue(Node tree) {
+        private double toValue(Node tree) {
             Node arg1, arg2;
             double val;
             String op, tmp;
 
-            if (tree.getType() == Node.TYPE_CONSTANT) {
+            if (tree.getType() == Node.TYPE_CONSTANT)
                 return (tree.getValue());
-            }
             else if (tree.getType() == Node.TYPE_VARIABLE) {
                 tmp = tree.getVariable();
 
                 // check if PI, Euler....etc
-                if (spconst.ContainsKey(tmp)) {
-                    return ((double)spconst[tmp]);
-                }
+                if (spconst.ContainsKey(tmp))
+                    return ((double) spconst[tmp]);
 
                 // normal variable, get value
                 tmp = get(tmp);
-                if (isConstant(tmp)) {
+                if (isConstant(tmp))
                     return (Double.Parse(tmp));
-                }
                 else {
                     Syntax(tmp);
                     return (toValue(parse(putMult(parseE(tmp)))));
@@ -818,15 +711,15 @@ namespace Game.Util {
                 else if (op.Equals("-"))
                     return (toValue(arg1) - toValue(arg2));
                 else if (op.Equals("*"))
-                    return (toValue(arg1) * toValue(arg2));
+                    return (toValue(arg1)*toValue(arg2));
                 else if (op.Equals("/"))
-                    return (toValue(arg1) / toValue(arg2));
+                    return (toValue(arg1)/toValue(arg2));
                 else if (op.Equals("^"))
                     return (Math.Pow(toValue(arg1), toValue(arg2)));
                 else if (op.Equals("log"))
-                    return (Math.Log(toValue(arg2)) / Math.Log(toValue(arg1)));
+                    return (Math.Log(toValue(arg2))/Math.Log(toValue(arg1)));
                 else if (op.Equals("%"))
-                    return (toValue(arg1) % toValue(arg2));
+                    return (toValue(arg1)%toValue(arg2));
                 else if (op.Equals("=="))
                     return (toValue(arg1) == toValue(arg2) ? 1.0 : 0.0);
                 else if (op.Equals("!="))
@@ -843,10 +736,7 @@ namespace Game.Util {
                     return (toValue(arg1) >= toValue(arg2) ? 1.0 : 0.0);
                 else if (op.Equals("<="))
                     return (toValue(arg1) <= toValue(arg2) ? 1.0 : 0.0);
-
-
-            }
-            else {
+            } else {
                 if (op.Equals("sqrt"))
                     return (Math.Sqrt(toValue(arg1)));
                 else if (op.Equals("sin"))
@@ -866,15 +756,15 @@ namespace Game.Util {
                 else if (op.Equals("exp"))
                     return (Math.Exp(toValue(arg1)));
                 else if (op.Equals("cotan"))
-                    return (1 / Math.Tan(toValue(arg1)));
+                    return (1/Math.Tan(toValue(arg1)));
                 else if (op.Equals("acotan"))
-                    return (Math.PI / 2 - Math.Atan(toValue(arg1)));
+                    return (Math.PI/2 - Math.Atan(toValue(arg1)));
                 else if (op.Equals("ceil"))
-                    return ((double)Math.Ceiling(toValue(arg1)));
+                    return ((double) Math.Ceiling(toValue(arg1)));
                 else if (op.Equals("round"))
-                    return ((double)Math.Round(toValue(arg1)));
+                    return ((double) Math.Round(toValue(arg1)));
                 else if (op.Equals("floor"))
-                    return ((double)Math.Floor(toValue(arg1)));
+                    return ((double) Math.Floor(toValue(arg1)));
                 else if (op.Equals("fac"))
                     return (fac(toValue(arg1)));
                 else if (op.Equals("abs"))
@@ -885,26 +775,19 @@ namespace Game.Util {
                     return (sfac(toValue(arg1)));
                 else if (op.Equals("sinh")) {
                     val = toValue(arg1);
-                    return ((Math.Exp(val) - (1 / Math.Exp(val))) / 2);
-                }
-                else if (op.Equals("cosh")) {
+                    return ((Math.Exp(val) - (1/Math.Exp(val)))/2);
+                } else if (op.Equals("cosh")) {
                     val = toValue(arg1);
-                    return ((Math.Exp(val) + (1 / Math.Exp(val))) / 2);
-                }
-                else if (op.Equals("tanh")) {
+                    return ((Math.Exp(val) + (1/Math.Exp(val)))/2);
+                } else if (op.Equals("tanh")) {
                     val = toValue(arg1);
-                    return (((Math.Exp(val) - (1 / Math.Exp(val))) / 2) / ((Math.Exp(val) + (1 / Math.Exp(val))) / 2));
-                }
-                else if (op.Equals("!")) {
+                    return (((Math.Exp(val) - (1/Math.Exp(val)))/2)/((Math.Exp(val) + (1/Math.Exp(val)))/2));
+                } else if (op.Equals("!"))
                     return ((!(toValue(arg1) == 1.0)) ? 1.0 : 0.0);
-                }
             }
 
-            throw new System.Exception("Unknown operator");
-
+            throw new Exception("Unknown operator");
         }
-
-
 
         /// <summary>
         /// Retrieves a value stored in the Hashtable containing all variable = value pairs.
@@ -916,24 +799,22 @@ namespace Game.Util {
         /// </remarks>
         /// <param name="key">the name of the variable we want the value for</param>
         /// <returns>the value stored in the Hashtable or null if none.</returns>
-        private String
-        get(String key) {
-            Object ob = this.htbl[key];
+        private String get(String key) {
+            Object ob = htbl[key];
             String val = null;
 
-            if (ob == null) throw new System.Exception("No value associated with " + key);
+            if (ob == null)
+                throw new Exception("No value associated with " + key);
 
             try {
-                val = (String)ob;
+                val = (String) ob;
             }
             catch {
-                throw new System.Exception("Wrong type value for " + key + " expected String");
+                throw new Exception("Wrong type value for " + key + " expected String");
             }
 
             return (val);
         }
-
-
 
         /// <summary>
         /// Evaluates the infix expression using the values in the Hashtable.
@@ -968,28 +849,23 @@ namespace Game.Util {
         /// <param name="exp">the infix string expression to parse and evaluate.</param>
         /// <param name="tbl">Hashtable with variable value pairs</param>
         /// <returns>a double value</returns>
-        public double
-        Parse(String exp, Hashtable tbl) {
+        public double Parse(String exp, Hashtable tbl) {
             double ans = 0D;
             String tmp;
             Node tree;
 
-            if (exp == null || exp.Equals("")) {
-                throw new System.Exception("First argument to method eval is null or empty string");
-            }
-            else if (tbl == null) {
+            if (exp == null || exp.Equals(""))
+                throw new Exception("First argument to method eval is null or empty string");
+            else if (tbl == null)
                 return Parse(exp, new Hashtable());
-            }
 
-            this.htbl = tbl;
+            htbl = tbl;
             tmp = skipSpaces(exp.ToLower());
-            this.sb_init = tmp.Length;
+            sb_init = tmp.Length;
 
             try {
-
-                if (trees.ContainsKey(tmp)) {
-                    ans = toValue((Node)trees[tmp]);
-                }
+                if (trees.ContainsKey(tmp))
+                    ans = toValue((Node) trees[tmp]);
                 else {
                     Syntax(tmp);
 
@@ -1001,23 +877,18 @@ namespace Game.Util {
                 }
 
                 return ans;
-
             }
             catch (Exception e) {
-                throw new System.Exception(e.Message);
+                throw new Exception(e.Message);
             }
         }
-
-
     } // End class ExpressionParse
-
 
     /// <summary>
     /// Class Node, represents a Node in a tree data structure representation
     /// of a mathematical expression.
     /// </summary>
     public class Node {
-
         /// <summary>Represents the type variable</summary>
         public static int TYPE_VARIABLE = 1;
 
@@ -1052,8 +923,8 @@ namespace Game.Util {
             this._arg1 = _arg1;
             this._arg2 = _arg2;
             this._operator = _operator;
-            this.args = 2;
-            this.type = TYPE_EXPRESSION;
+            args = 2;
+            type = TYPE_EXPRESSION;
         }
 
         /// <summary>
@@ -1065,8 +936,8 @@ namespace Game.Util {
         public Node(String _operator, Node _arg1) {
             this._arg1 = _arg1;
             this._operator = _operator;
-            this.args = 1;
-            this.type = TYPE_EXPRESSION;
+            args = 1;
+            type = TYPE_EXPRESSION;
         }
 
         /// <summary>
@@ -1076,7 +947,7 @@ namespace Game.Util {
         /// <param name="variable">the string representing a variable</param>
         public Node(String variable) {
             this.variable = variable;
-            this.type = TYPE_VARIABLE;
+            type = TYPE_VARIABLE;
         }
 
         /// <summary>
@@ -1086,35 +957,35 @@ namespace Game.Util {
         /// <param name="value">the value for this Node</param>
         public Node(double value) {
             this.value = value;
-            this.type = TYPE_CONSTANT;
+            type = TYPE_CONSTANT;
         }
 
         /// <summary>
         /// Returns the String operator of this Node 
         /// </summary>
         public String getOperator() {
-            return (this._operator);
+            return (_operator);
         }
 
         /// <summary>
         /// Returns the value of this Node 
         /// </summary>
         public double getValue() {
-            return (this.value);
+            return (value);
         }
 
         /// <summary>
         /// Returns the String variable of this Node 
         /// </summary>
         public String getVariable() {
-            return (this.variable);
+            return (variable);
         }
 
         /// <summary>
         /// Returns the number of arguments this Node has
         /// </summary>
         public int arguments() {
-            return (this.args);
+            return (args);
         }
 
         /// <summary>
@@ -1126,68 +997,62 @@ namespace Game.Util {
         ///	Node.TYPE_CONSTANT
         ///	Node.TYPE_EXPRESSION
         /// </remarks>
-
         public int getType() {
-            return (this.type);
+            return (type);
         }
 
         /// <summary>
         /// Returns the first argument of this Node
         /// </summary>
         public Node arg1() {
-            return (this._arg1);
+            return (_arg1);
         }
 
         /// <summary>
         /// Returns the second argument of this Node
         /// </summary>
         public Node arg2() {
-            return (this._arg2);
+            return (_arg2);
         }
-
     } // End class Node
-
 
     /// <summary>
     /// Class Operator, represents an Operator by holding information about it's symbol
     /// the number of arguments it takes and the operator precedence.
     /// </summary>
     public class Operator {
-
         private String op = ""; // the string operator 
         private int args = 0; // the number of arguments this operator takes
-        private int prec = System.Int32.MaxValue; // the precedence this operator has
+        private int prec = Int32.MaxValue; // the precedence this operator has
 
         /// <summary>
         /// Creates an Operator with the specified String name, arguments and precedence
         /// </summary>
         public Operator(String _operator, int arguments, int precedence) {
-            this.op = _operator;
-            this.args = arguments;
-            this.prec = precedence;
+            op = _operator;
+            args = arguments;
+            prec = precedence;
         }
 
         /// <summary>
         /// Returns the precedence for this Operator.
         /// </summary>
         public int precedence() {
-            return (this.prec);
+            return (prec);
         }
 
         /// <summary>
         /// Returns the String name of this Operator.
         /// </summary>
         public String getOperator() {
-            return (this.op);
+            return (op);
         }
 
         /// <summary>
         /// Returns the number of arguments this Operator can take.
         /// </summary>
         public int arguments() {
-            return (this.args);
+            return (args);
         }
-
     } // End class Operator
-
 }

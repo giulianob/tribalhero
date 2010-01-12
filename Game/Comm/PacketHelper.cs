@@ -1,29 +1,31 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Game.Data;
-using Game.Logic;
-using Game.Setup;
-using Game.Util;
-using Game.Fighting;
 using Game.Battle;
+using Game.Data;
 using Game.Data.Stats;
+using Game.Fighting;
+using Game.Logic;
+using Game.Util;
+
+#endregion
 
 namespace Game.Comm {
     public class PacketHelper {
         public static void AddToPacket(UnitTemplate template, Packet packet) {
-            packet.addUInt16((ushort)template.Size);
+            packet.addUInt16((ushort) template.Size);
             foreach (KeyValuePair<ushort, BaseUnitStats> kvp in template) {
                 packet.addUInt16(kvp.Key);
                 packet.addByte(kvp.Value.Lvl);
             }
         }
 
-        public static void AddToPacket(Game.Logic.NotificationManager.Notification notification, Packet packet) {
+        public static void AddToPacket(NotificationManager.Notification notification, Packet packet) {
             packet.addUInt32(notification.Action.WorkerObject.City.CityId);
-            packet.addUInt32(notification.GameObject.ObjectID);
+            packet.addUInt32(notification.GameObject.ObjectId);
             packet.addUInt16(notification.Action.ActionId);
-            packet.addUInt16((ushort)notification.Action.Type);
+            packet.addUInt16((ushort) notification.Action.Type);
 
             if (notification.Action is IActionTime) {
                 IActionTime actionTime = notification.Action as IActionTime;
@@ -36,11 +38,10 @@ namespace Game.Comm {
                     packet.addUInt32(0);
                 else
                     packet.addUInt32(UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
+            } else {
+                packet.addUInt32(0);
+                packet.addUInt32(0);
             }
-            else {
-                packet.addUInt32(0);
-                packet.addUInt32(0);
-            }   
         }
 
         //sendRegularObject defines whether to send the state and labor count. Basicaly the sendRegularObject should be true
@@ -52,41 +53,46 @@ namespace Game.Comm {
             packet.addByte(obj.Lvl);
             packet.addUInt16(obj.Type);
             if (obj.City == null) {
-                packet.addUInt32(0);//playerid
-                packet.addUInt32(0);//cityid
-            }
-            else {
+                packet.addUInt32(0); //playerid
+                packet.addUInt32(0); //cityid
+            } else {
                 packet.addUInt32(obj.City.Owner.PlayerId);
                 packet.addUInt32(obj.City.CityId);
             }
-            packet.addUInt32(obj.ObjectID);
-            packet.addUInt16((ushort)(obj.RelX));
-            packet.addUInt16((ushort)(obj.RelY));
+            packet.addUInt32(obj.ObjectId);
+            packet.addUInt16((ushort) (obj.RelX));
+            packet.addUInt16((ushort) (obj.RelY));
 
             if (sendRegularObject) {
-                packet.addByte((byte)obj.State.Type);
+                packet.addByte((byte) obj.State.Type);
                 foreach (object parameter in obj.State.Parameters) {
-                    if (parameter is byte) packet.addByte((byte)parameter);
-                    else if (parameter is short) packet.addInt16((short)parameter);
-                    else if (parameter is int) packet.addInt32((int)parameter);
-                    else if (parameter is ushort) packet.addUInt16((ushort)parameter);
-                    else if (parameter is uint) packet.addUInt32((uint)parameter);
-                    else if (parameter is string) packet.addString((string)parameter);
+                    if (parameter is byte)
+                        packet.addByte((byte) parameter);
+                    else if (parameter is short)
+                        packet.addInt16((short) parameter);
+                    else if (parameter is int)
+                        packet.addInt32((int) parameter);
+                    else if (parameter is ushort)
+                        packet.addUInt16((ushort) parameter);
+                    else if (parameter is uint)
+                        packet.addUInt32((uint) parameter);
+                    else if (parameter is string)
+                        packet.addString((string) parameter);
                 }
 
-                if (obj.ObjectID == 1) //main building, send radius
+                if (obj.ObjectId == 1) //main building, send radius
                     packet.addByte(obj.City.Radius);
-            }
-            else if (obj is Structure) { //if obj is a structure and we are sending it as CityObj we include the labor
+            } else if (obj is Structure) {
+                //if obj is a structure and we are sending it as CityObj we include the labor
                 packet.addByte((obj as Structure).Stats.Labor);
             }
         }
 
         public static void AddToPacket(Resource resource, Packet packet) {
-            packet.addUInt32((uint)resource.Crop);
-            packet.addUInt32((uint)resource.Gold);
-            packet.addUInt32((uint)resource.Iron);
-            packet.addUInt32((uint)resource.Wood);
+            packet.addUInt32((uint) resource.Crop);
+            packet.addUInt32((uint) resource.Gold);
+            packet.addUInt32((uint) resource.Iron);
+            packet.addUInt32((uint) resource.Wood);
         }
 
         public static void AddToPacket(LazyResource resource, Packet packet) {
@@ -117,29 +123,28 @@ namespace Game.Comm {
         }
 
         public static void AddToPacket(List<ReferenceStub> references, Packet packet) {
-            packet.addByte((byte)references.Count);
+            packet.addByte((byte) references.Count);
             foreach (ReferenceStub reference in references) {
                 packet.addUInt32(reference.Action.WorkerObject.WorkerId);
                 packet.addUInt16(reference.Action.ActionId);
             }
         }
 
-        public static void AddToPacket(List<Game.Logic.Action> actions, Packet packet, bool includeWorkerId) {
-            packet.addByte((byte)actions.Count);
-            foreach (Game.Logic.Action actionStub in actions)
-                AddToPacket(actionStub, packet, includeWorkerId);            
+        public static void AddToPacket(List<Action> actions, Packet packet, bool includeWorkerId) {
+            packet.addByte((byte) actions.Count);
+            foreach (Action actionStub in actions)
+                AddToPacket(actionStub, packet, includeWorkerId);
         }
 
-        internal static void AddToPacket(Game.Logic.Action actionStub, Packet packet, bool includeWorkerId) {
+        internal static void AddToPacket(Action actionStub, Packet packet, bool includeWorkerId) {
             if (includeWorkerId)
                 packet.addUInt32(actionStub.WorkerObject.WorkerId);
 
             if (actionStub is PassiveAction) {
                 packet.addByte(0);
                 packet.addUInt16(actionStub.ActionId);
-                packet.addUInt16((ushort)actionStub.Type);
-            }
-            else {
+                packet.addUInt16((ushort) actionStub.Type);
+            } else {
                 packet.addByte(1);
                 packet.addUInt16(actionStub.ActionId);
                 packet.addByte((actionStub as ActiveAction).WorkerIndex);
@@ -157,27 +162,28 @@ namespace Game.Comm {
                     packet.addUInt32(0);
                 else
                     packet.addUInt32(UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
+            } else {
+                packet.addUInt32(0);
+                packet.addUInt32(0);
             }
-            else {
-                packet.addUInt32(0);
-                packet.addUInt32(0);
-            }         
         }
 
         internal static void AddToPacket(TroopStub stub, Packet packet) {
             packet.addUInt32(stub.City.Owner.PlayerId);
-            packet.addUInt32(stub.City.CityId);            
+            packet.addUInt32(stub.City.CityId);
 
             packet.addByte(stub.TroopId);
-            packet.addByte((byte)stub.State);
+            packet.addByte((byte) stub.State);
 
             //Only local troop gets upkeep
-            if (stub.TroopId == 1)            
-                packet.addInt32(stub.Upkeep);
+            if (stub.TroopId == 1)
+                packet.addInt32(stub.Upkeep);            
 
             //Add troop template
             packet.addByte(stub.Template.Count);
-            foreach (KeyValuePair<ushort, BattleStats> stats in stub.Template as IEnumerable<KeyValuePair<ushort, BattleStats>>) {
+            foreach (
+                KeyValuePair<ushort, BattleStats> stats in
+                    stub.Template as IEnumerable<KeyValuePair<ushort, BattleStats>>) {
                 packet.addUInt16(stats.Key);
                 packet.addByte(stats.Value.Base.Lvl);
 
@@ -192,35 +198,36 @@ namespace Game.Comm {
             //Add state specific variables
             switch (stub.State) {
                 case TroopStub.TroopState.MOVING:
-                    packet.addUInt32(stub.TroopObject.ObjectID);
+                    packet.addUInt32(stub.TroopObject.ObjectId);
                     packet.addUInt32(stub.TroopObject.X);
                     packet.addUInt32(stub.TroopObject.Y);
                     break;
                 case TroopStub.TroopState.BATTLE:
                     if (stub.TroopObject != null) {
-                        packet.addUInt32(stub.TroopObject.ObjectID);
+                        packet.addUInt32(stub.TroopObject.ObjectId);
                         packet.addUInt32(stub.TroopObject.X);
                         packet.addUInt32(stub.TroopObject.Y);
-                    }
-                    else {
-                        packet.addUInt32(stub.City.MainBuilding.ObjectID);
+                    } else {
+                        packet.addUInt32(stub.City.MainBuilding.ObjectId);
                         packet.addUInt32(stub.City.MainBuilding.X);
                         packet.addUInt32(stub.City.MainBuilding.Y);
                     }
                     break;
                 case TroopStub.TroopState.STATIONED:
                 case TroopStub.TroopState.BATTLE_STATIONED:
-                    packet.addUInt32(stub.StationedCity.MainBuilding.ObjectID);
+                    packet.addUInt32(stub.StationedCity.MainBuilding.ObjectId);
                     packet.addUInt32(stub.StationedCity.MainBuilding.X);
                     packet.addUInt32(stub.StationedCity.MainBuilding.Y);
-                    break;              
+                    break;
             }
-            
+
             //Actual formation and unit counts
             packet.addByte(stub.FormationCount);
-            foreach (KeyValuePair<FormationType, Formation> formation in stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                packet.addByte((byte)formation.Key);
-                packet.addByte((byte)formation.Value.Count);
+            foreach (
+                KeyValuePair<FormationType, Formation> formation in
+                    stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
+                packet.addByte((byte) formation.Key);
+                packet.addByte((byte) formation.Value.Count);
                 foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
                     packet.addUInt16(kvp.Key);
                     packet.addUInt16(kvp.Value);
@@ -229,12 +236,12 @@ namespace Game.Comm {
         }
 
         internal static void AddToPacket(List<CombatObject> list, Packet packet) {
-            packet.addUInt16((ushort)list.Count);
-            foreach (CombatObject obj in list) {                
+            packet.addUInt16((ushort) list.Count);
+            foreach (CombatObject obj in list) {
                 packet.addUInt32(obj.PlayerId);
                 packet.addUInt32(obj.City.CityId);
                 packet.addUInt32(obj.Id);
-                packet.addByte((byte)obj.ClassType);
+                packet.addByte((byte) obj.ClassType);
                 if (obj.ClassType == BattleClass.Unit)
                     packet.addByte((obj as ICombatUnit).TroopStub.TroopId);
                 else

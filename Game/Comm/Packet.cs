@@ -1,16 +1,18 @@
+#region
+
 using System;
-using System.Text;
-using System.Collections;
-using Game.Util;
-using System.IO.Compression;
-using System.IO;
-using System.Threading;
-using System.Net.Sockets;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using Game.Util;
+
+#endregion
 
 namespace Game.Comm {
     public class Packet {
         #region Constants
+
         public enum Options : ushort {
             COMPRESSED = 1,
             FAILED = 2,
@@ -19,9 +21,11 @@ namespace Game.Comm {
 
         public const int HEADER_SIZE = 8;
         public const int LENGTH_OFFSET = 6;
+
         #endregion
 
         #region Packet Header
+
         private ushort seq = 0;
         private ushort option = 0;
         private Command cmd = Command.INVALID;
@@ -30,33 +34,32 @@ namespace Game.Comm {
         public ushort Length {
             get { return length; }
         }
+
         #endregion
 
         #region Members
-        ushort offset = 0;
-        byte[] bytes = null;
-        List<Parameter> parameters = new List<Parameter>();
+
+        private ushort offset = 0;
+        private byte[] bytes = null;
+        private List<Parameter> parameters = new List<Parameter>();
+
         #endregion
 
         #region Constructors
-        public Packet() {
-        }
+
+        public Packet() {}
 
         public Packet(Command cmd) {
             this.cmd = cmd;
         }
 
         public Packet(Packet request) {
-            this.cmd = request.cmd;
-            this.seq = request.seq;
-            this.option = (ushort)((ushort)request.option | (ushort)Options.REPLY);
+            cmd = request.cmd;
+            seq = request.seq;
+            option = (ushort) ((ushort) request.option | (ushort) Options.REPLY);
         }
 
-        public Packet(byte[] data)
-            :
-            this(data, 0, data.Length) {
-
-        }
+        public Packet(byte[] data) : this(data, 0, data.Length) {}
 
         public Packet(byte[] data, int index, int count) {
             int dataLength = count - index;
@@ -64,17 +67,17 @@ namespace Game.Comm {
             if (dataLength < HEADER_SIZE)
                 return;
 
-            this.seq = BitConverter.ToUInt16(data, 0);
-            this.option = BitConverter.ToUInt16(data, 2);
-            this.cmd = (Command)Enum.Parse(typeof(Command), BitConverter.ToUInt16(data, 4).ToString(), true);
-            this.length = BitConverter.ToUInt16(data, 6);
+            seq = BitConverter.ToUInt16(data, 0);
+            option = BitConverter.ToUInt16(data, 2);
+            cmd = (Command) Enum.Parse(typeof (Command), BitConverter.ToUInt16(data, 4).ToString(), true);
+            length = BitConverter.ToUInt16(data, 6);
 
             offset = HEADER_SIZE;
 
             if (dataLength != HEADER_SIZE + length)
                 return;
 
-            if ((option & (int)Options.COMPRESSED) == (int)Options.COMPRESSED) {
+            if ((option & (int) Options.COMPRESSED) == (int) Options.COMPRESSED) {
                 MemoryStream compressedMemory = new MemoryStream(data, index + HEADER_SIZE, count - HEADER_SIZE);
                 MemoryStream uncompressedMemory = new MemoryStream();
                 compressedMemory.Position = 0;
@@ -88,20 +91,21 @@ namespace Game.Comm {
 
                 gs.Close();
 
-                this.bytes = new byte[HEADER_SIZE + uncompressedMemory.Length];
-                this.length = (ushort)bytes.Length;
-                Array.Copy(data, index, this.bytes, 0, HEADER_SIZE); //copy header
+                bytes = new byte[HEADER_SIZE + uncompressedMemory.Length];
+                length = (ushort) bytes.Length;
+                Array.Copy(data, index, bytes, 0, HEADER_SIZE); //copy header
                 uncompressedMemory.Position = 0;
-                uncompressedMemory.Read(this.bytes, HEADER_SIZE, (int)uncompressedMemory.Length);
-            }
-            else {
-                this.bytes = new byte[count - index];
-                Array.Copy(data, index, this.bytes, 0, count);
+                uncompressedMemory.Read(bytes, HEADER_SIZE, (int) uncompressedMemory.Length);
+            } else {
+                bytes = new byte[count - index];
+                Array.Copy(data, index, bytes, 0, count);
             }
         }
+
         #endregion
 
         #region Properties
+
         public Command Cmd {
             get { return cmd; }
             set { cmd = value; }
@@ -124,58 +128,66 @@ namespace Game.Comm {
         #endregion
 
         #region Parameter Gets
+
         public void reset() {
             offset = HEADER_SIZE;
         }
 
         public byte getByte() {
             byte tmp = bytes[offset];
-            offset += sizeof(byte);
+            offset += sizeof (byte);
             return tmp;
         }
+
         public byte[] getBytes(ushort len) {
             byte[] data = new byte[len];
             Array.Copy(bytes, offset, data, 0, len);
             offset += len;
             return data;
         }
+
         public int getInt16() {
             int tmp = BitConverter.ToInt16(bytes, offset);
-            offset += sizeof(int);
+            offset += sizeof (int);
             return tmp;
         }
 
         public ushort getUInt16() {
             ushort tmp = BitConverter.ToUInt16(bytes, offset);
-            offset += sizeof(ushort);
+            offset += sizeof (ushort);
             return tmp;
         }
 
         public uint getUInt32() {
             uint tmp = BitConverter.ToUInt32(bytes, offset);
-            offset += sizeof(uint);
+            offset += sizeof (uint);
             return tmp;
         }
 
         public string getString() {
             ushort len = BitConverter.ToUInt16(bytes, offset);
-            offset += sizeof(ushort);
+            offset += sizeof (ushort);
             string str = Encoding.UTF8.GetString(bytes, offset, len);
             offset += len;
             return str;
         }
+
         #endregion
 
         #region Parameter Adds
+
         public void addParamater(Parameter parameter) {
             parameters.Add(parameter);
         }
+
         public void addByte(byte value) {
             parameters.Add(new Parameter(value));
         }
+
         public void addBytes(byte[] values) {
             parameters.Add(new Parameter(values));
         }
+
         public void addInt16(int value) {
             parameters.Add(new Parameter(value));
         }
@@ -187,18 +199,23 @@ namespace Game.Comm {
         public void addUInt32(uint value) {
             parameters.Add(new Parameter(value));
         }
+
         public void addInt32(int value) {
             parameters.Add(new Parameter(value));
         }
+
         public void addInt64(long value) {
             parameters.Add(new Parameter(value));
         }
+
         public void addString(string value) {
             parameters.Add(new Parameter(value));
         }
+
         #endregion
 
         #region Methods
+
         public byte[] getBytes() {
             byte[] ret = null;
 
@@ -210,10 +227,10 @@ namespace Game.Comm {
                 BinaryWriter binaryWriter = new BinaryWriter(memory);
                 binaryWriter.Write(seq);
                 binaryWriter.Write(option);
-                binaryWriter.Write((ushort)cmd);
+                binaryWriter.Write((ushort) cmd);
                 binaryWriter.Write(UInt16.MinValue); //place holder for length
 
-                if ((option & (int)Options.COMPRESSED) == (int)Options.COMPRESSED) {
+                if ((option & (int) Options.COMPRESSED) == (int) Options.COMPRESSED) {
                     MemoryStream compressedMemory = new MemoryStream();
                     //         ZOutputStream gs = new ZOutputStream(memory, zlibConst.Z_DEFAULT_COMPRESSION,true);
                     GZipStream gs = new GZipStream(memory, CompressionMode.Compress, true);
@@ -225,21 +242,20 @@ namespace Game.Comm {
 
                     gs.Close();
                     compressedMemory.WriteTo(memory);
-                }
-                else {
+                } else {
                     foreach (Parameter param in parameters) {
                         byte[] paramBytes = param.getBytes();
                         binaryWriter.Write(param.getBytes());
                     }
                 }
 
-                ushort len = (ushort)(memory.Length - HEADER_SIZE);
+                ushort len = (ushort) (memory.Length - HEADER_SIZE);
                 binaryWriter.Seek(LENGTH_OFFSET, SeekOrigin.Begin);
                 binaryWriter.Write(len);
 
                 ret = new byte[memory.Length];
                 memory.Position = 0;
-                memory.Read(ret, 0, (int)memory.Length);
+                memory.Read(ret, 0, (int) memory.Length);
             }
 
             return ret;
@@ -256,9 +272,5 @@ namespace Game.Comm {
         }
 
         #endregion
-
-
-
-
     }
 }

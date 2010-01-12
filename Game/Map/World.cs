@@ -1,40 +1,39 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using System.Runtime.InteropServices;
-using Game.Data;
-using Game.Comm;
-using Game.Util;
-using Game.Map;
-using Game.Setup;
 using System.Threading;
-using Game.Database;
+using Game.Comm;
+using Game.Data;
 using Game.Logic;
-namespace Game {
+using Game.Util;
 
+#endregion
+
+namespace Game.Map {
     public class World {
-
         #region Members
 
-        uint worldWidth;
+        private uint worldWidth;
         public uint WorldWidth {
             get { return worldWidth; }
         }
 
-        uint worldHeight;
+        private uint worldHeight;
         public uint WorldHeight {
             get { return worldHeight; }
         }
 
-        Region[] regions;
-        CityRegion[] cityRegions;
-        Dictionary<uint, City> cities = new Dictionary<uint, City>();
-        LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
+        private Region[] regions;
+        private CityRegion[] cityRegions;
+        private readonly Dictionary<uint, City> cities = new Dictionary<uint, City>();
+        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
 
         #endregion
 
         #region Object Getters
+
         public bool TryGetObjects(uint cityId, out City city) {
             return cities.TryGetValue(cityId, out city);
         }
@@ -42,9 +41,11 @@ namespace Game {
         public bool TryGetObjects(uint cityId, byte troopStubId, out City city, out TroopStub troopStub) {
             troopStub = null;
 
-            if (!cities.TryGetValue(cityId, out city)) return false;
+            if (!cities.TryGetValue(cityId, out city))
+                return false;
 
-            if (!city.Troops.TryGetStub(troopStubId, out troopStub)) return false;
+            if (!city.Troops.TryGetStub(troopStubId, out troopStub))
+                return false;
 
             return true;
         }
@@ -52,9 +53,11 @@ namespace Game {
         public bool TryGetObjects(uint cityId, uint structureId, out City city, out Structure structure) {
             structure = null;
 
-            if (!cities.TryGetValue(cityId, out city)) return false;
+            if (!cities.TryGetValue(cityId, out city))
+                return false;
 
-            if (!city.tryGetStructure(structureId, out structure)) return false;
+            if (!city.TryGetStructure(structureId, out structure))
+                return false;
 
             return true;
         }
@@ -62,74 +65,76 @@ namespace Game {
         public bool TryGetObjects(uint cityId, uint troopObjectId, out City city, out TroopObject troopObject) {
             troopObject = null;
 
-            if (!cities.TryGetValue(cityId, out city)) return false;
+            if (!cities.TryGetValue(cityId, out city))
+                return false;
 
-            if (!city.tryGetTroop(troopObjectId, out troopObject)) return false;
+            if (!city.TryGetTroop(troopObjectId, out troopObject))
+                return false;
 
             return true;
         }
+
         #endregion
 
         #region Properties
+
         public List<GameObject> this[uint x, uint y] {
-            get {
-                return getRegion(x, y).getObjects(x, y);
-            }
+            get { return GetRegion(x, y).getObjects(x, y); }
         }
 
         #endregion
 
         #region Constructors
-        public World() {
-        }
+
         #endregion
 
         #region Logical Methods
-        public bool load(Stream stream, uint worldWidth, uint worldHeight, uint regionWidth, uint regionHeight, uint cityRegionWidth, uint cityRegionHeight) {
-            if (stream == null) return false;
+
+        public bool Load(Stream stream, uint inWorldWidth, uint inWorldHeight, uint regionWidth, uint regionHeight,
+                         uint cityRegionWidth, uint cityRegionHeight) {
+            if (stream == null)
+                return false;
             //        if (stream.Length != world_width * world_height) return false;
-            if (worldWidth % regionWidth != 0 || worldHeight % regionHeight != 0) return false;
+            if (inWorldWidth%regionWidth != 0 || inWorldHeight%regionHeight != 0)
+                return false;
 
-
-            this.worldWidth = worldWidth;
-            this.worldHeight = worldHeight;
-            uint worldSize = worldWidth * worldHeight;
+            worldWidth = inWorldWidth;
+            worldHeight = inWorldHeight;
 
             // creating regions;
-            uint regionSize = regionWidth * regionHeight;
-            int column = (int)(worldWidth / regionWidth);
-            int row = (int)(worldHeight / regionHeight);
-            int regionsCount = column * row;
+            uint regionSize = regionWidth*regionHeight;
+            int column = (int) (inWorldWidth/regionWidth);
+            int row = (int) (inWorldHeight/regionHeight);
+            int regionsCount = column*row;
 
             regions = new Region[regionsCount];
-            for (int region_id = 0; region_id < regionsCount; ++region_id) {
-                Byte[] data = new Byte[regionSize * Region.TILE_SIZE]; // 1 tile is 2 bytes
-                if (stream.Read(data, 0, (int)(regionSize * Region.TILE_SIZE)) != regionSize * Region.TILE_SIZE) {
+            for (int regionId = 0; regionId < regionsCount; ++regionId) {
+                Byte[] data = new Byte[regionSize*Region.TILE_SIZE]; // 1 tile is 2 bytes
+                if (stream.Read(data, 0, (int) (regionSize*Region.TILE_SIZE)) != regionSize*Region.TILE_SIZE) {
                     Global.Logger.Error("Not enough map data");
                     return false;
                 }
-                regions[region_id] = new Region(data);
+                regions[regionId] = new Region(data);
             }
 
             Global.Logger.Info(string.Format("map file length[{0}] position[{1}]", stream.Length, stream.Position));
             Global.Logger.Info(regions.Length + " created.");
 
             // creating city regions;
-            regionSize = cityRegionWidth * cityRegionHeight;
-            column = (int)(worldWidth / cityRegionWidth);
-            row = (int)(worldHeight / cityRegionHeight);
-            regionsCount = column * row;
+            column = (int) (inWorldWidth/cityRegionWidth);
+            row = (int) (inWorldHeight/cityRegionHeight);
+            regionsCount = column*row;
 
             cityRegions = new CityRegion[regionsCount];
-            for (int region_id = 0; region_id < regionsCount; ++region_id)
-                cityRegions[region_id] = new CityRegion();
+            for (int regionId = 0; regionId < regionsCount; ++regionId)
+                cityRegions[regionId] = new CityRegion();
 
             return true;
         }
 
-        public bool add(City city) {
+        public bool Add(City city) {
             city.BeginUpdate();
-            city.CityId = (uint)cityIdGen.getNext();
+            city.CityId = (uint) cityIdGen.getNext();
             city.EndUpdate();
             cities[city.CityId] = city;
 
@@ -138,87 +143,93 @@ namespace Game {
             foreach (TroopStub stub in city.Troops)
                 Global.dbManager.Save(stub);
 
-            CityRegion region = getCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
-            if (region == null) return false;
+            CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
+            if (region == null)
+                return false;
             return region.add(city);
         }
 
-        public void dbLoaderAdd(uint id, City city) {
+        public void DbLoaderAdd(uint id, City city) {
             city.CityId = id;
             cities[city.CityId] = city;
-            cityIdGen.set((int)id);
+            cityIdGen.set((int) id);
         }
 
-        public void afterDbLoaded() {
+        public void AfterDbLoaded() {
             IEnumerator<City> iter = cities.Values.GetEnumerator();
             while (iter.MoveNext()) {
                 //Set resource cap
                 Formula.ResourceCap(iter.Current);
 
                 //Set up the city region (for minimap)
-                CityRegion region = getCityRegion(iter.Current.MainBuilding.X, iter.Current.MainBuilding.Y);
-                if (region == null) continue;
+                CityRegion region = GetCityRegion(iter.Current.MainBuilding.X, iter.Current.MainBuilding.Y);
+                if (region == null)
+                    continue;
                 region.add(iter.Current);
             }
         }
 
-        public void remove(City city) {
+        public void Remove(City city) {
             cities[city.CityId] = null;
-            cityIdGen.release((int)city.CityId);
-            CityRegion region = getCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
-            if (region == null) return;
+            cityIdGen.release((int) city.CityId);
+            CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
+            if (region == null)
+                return;
             region.add(city);
         }
 
-        public bool add(GameObject obj) {
-            Region region = getRegion(obj.X, obj.Y);
-            if (region == null) return false;
+        public bool Add(GameObject obj) {
+            Region region = GetRegion(obj.X, obj.Y);
+            if (region == null)
+                return false;
 
             if (region.add(obj)) {
-                ushort region_id = Region.getRegionIndex(obj);
+                ushort regionId = Region.getRegionIndex(obj);
                 Packet packet = new Packet(Command.OBJECT_ADD);
-                packet.addUInt16(region_id);
+                packet.addUInt16(regionId);
                 PacketHelper.AddToPacket(obj, packet, true);
 
                 if (Global.FireEvents)
-                    Global.Channel.Post("/WORLD/" + region_id, packet);
+                    Global.Channel.Post("/WORLD/" + regionId, packet);
                 return true;
             }
-            else {
-                return false;
-            }
+
+            return false;
         }
 
-        public void remove(GameObject obj) {
-            remove(obj, obj.X, obj.Y);
+        public void Remove(GameObject obj) {
+            Remove(obj, obj.X, obj.Y);
         }
 
-        private void remove(GameObject obj, uint origX, uint origY) {
-            Region region = getRegion(origX, origY);
+        private void Remove(GameObject obj, uint origX, uint origY) {
+            Region region = GetRegion(origX, origY);
 
             if (region == null)
                 return;
 
-            ushort region_id = Region.getRegionIndex(obj);
+            ushort regionId = Region.getRegionIndex(obj);
 
             Packet packet = new Packet(Command.OBJECT_REMOVE);
-            packet.addUInt16(region_id);
+            packet.addUInt16(regionId);
             packet.addUInt32(obj.City.CityId);
-            packet.addUInt32(obj.ObjectID);
+            packet.addUInt32(obj.ObjectId);
 
             region.remove(obj);
-            Global.Channel.Post("/WORLD/" + region_id, packet);
+            Global.Channel.Post("/WORLD/" + regionId, packet);
         }
 
-        public List<GameObject> getObjects(uint x, uint y) {
-            Region region = getRegion(x, y);
-            if (region == null) return null;
+        public List<GameObject> GetObjects(uint x, uint y) {
+            Region region = GetRegion(x, y);
+            if (region == null)
+                return null;
             return region.getObjects(x, y);
         }
+
         #endregion
 
         #region Events
-        public void obj_UpdateEvent(GameObject sender, uint origX, uint origY) {
+
+        public void ObjUpdateEvent(GameObject sender, uint origX, uint origY) {
             //Check if object has moved
             if (sender.X != origX || sender.Y != origY) {
                 //if object has moved then we need to do some logic to see if it has changed regions
@@ -232,8 +243,7 @@ namespace Game {
                     packet.addUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
-                }
-                else {
+                } else {
                     regions[oldRegionId].remove(sender, origX, origY);
                     regions[newRegionId].add(sender);
                     Packet packet = new Packet(Command.OBJECT_MOVE);
@@ -247,71 +257,73 @@ namespace Game {
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
                 }
-            }
-            else {
-                ushort region_id = Region.getRegionIndex(sender);
-                regions[region_id].update(sender, sender.X, sender.Y);
+            } else {
+                ushort regionId = Region.getRegionIndex(sender);
+                regions[regionId].update(sender, sender.X, sender.Y);
                 Packet packet = new Packet(Command.OBJECT_UPDATE);
-                packet.addUInt16(region_id);
+                packet.addUInt16(regionId);
                 PacketHelper.AddToPacket(sender, packet, true);
-                Global.Channel.Post("/WORLD/" + region_id, packet);
+                Global.Channel.Post("/WORLD/" + regionId, packet);
             }
         }
+
         #endregion
 
         #region Helpers
-        public Region getRegion(uint x, uint y) {
-            return getRegion((ushort)Region.getRegionIndex(x, y));
+
+        public Region GetRegion(uint x, uint y) {
+            return GetRegion(Region.getRegionIndex(x, y));
         }
 
-        public Region getRegion(ushort id) {
+        public Region GetRegion(ushort id) {
             return regions[id];
         }
 
-        public CityRegion getCityRegion(uint x, uint y) {
-            return getCityRegion((ushort)CityRegion.getRegionIndex(x, y));
+        public CityRegion GetCityRegion(uint x, uint y) {
+            return GetCityRegion(CityRegion.getRegionIndex(x, y));
         }
 
-        public CityRegion getCityRegion(ushort id) {
+        public CityRegion GetCityRegion(ushort id) {
             return cityRegions[id];
         }
+
         #endregion
 
         #region Channel Subscriptions
-        internal void subscribeRegion(Session session, ushort id) {
+
+        internal void SubscribeRegion(Session session, ushort id) {
             Global.Channel.Subscribe(session, "/WORLD/" + id);
         }
-        internal void unsubscribeRegion(Session session, ushort id) {
+
+        internal void UnsubscribeRegion(Session session, ushort id) {
             Global.Channel.Unsubscribe(session, "/WORLD/" + id);
         }
 
         #endregion
 
-        internal void lockRegion(uint x, uint y) {
-            Monitor.Enter(getRegion(x, y).Lock);
+        internal void LockRegion(uint x, uint y) {
+            Monitor.Enter(GetRegion(x, y).Lock);
         }
 
-        internal void unlockRegion(uint x, uint y) {
-            Monitor.Exit(getRegion(x, y).Lock);
+        internal void UnlockRegion(uint x, uint y) {
+            Monitor.Exit(GetRegion(x, y).Lock);
         }
 
-        bool getObjectsForeach(uint ox, uint oy, uint _x, uint _y, object custom) {
-
-            if (_x < WorldWidth && _y < WorldHeight)
-                ((List<GameObject>)custom).AddRange(this.getObjects(_x, _y));
+        private bool GetObjectsForeach(uint ox, uint oy, uint x, uint y, object custom) {
+            if (x < WorldWidth && y < WorldHeight)
+                ((List<GameObject>) custom).AddRange(GetObjects(x, y));
             return true;
         }
 
-        public List<GameObject> getObjectsWithin(uint x, uint y, byte radius) {
+        public List<GameObject> GetObjectsWithin(uint x, uint y, byte radius) {
             List<GameObject> list = new List<GameObject>();
-            RadiusLocator.foreach_object(x, y, radius, false, getObjectsForeach, list);
+            RadiusLocator.foreach_object(x, y, radius, false, GetObjectsForeach, list);
             return list;
         }
 
-        public ushort getTileType(uint x, uint y) {
-            Region region = getRegion(x, y);
+        public ushort GetTileType(uint x, uint y) {
+            Region region = GetRegion(x, y);
             return region.getTileType(x, y);
         }
-
     }
 }

@@ -1,20 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Game.Database {
     public class DbDependency {
-        string propertyName;
+        private string propertyName;
+
         public string Property {
             get { return propertyName; }
         }
 
-        bool autoSave = false;
+        private bool autoSave = false;
+
         public bool AutoSave {
             get { return autoSave; }
         }
 
-        bool autoDelete = false;
+        private bool autoDelete = false;
+
         public bool AutoDelete {
             get { return autoSave; }
         }

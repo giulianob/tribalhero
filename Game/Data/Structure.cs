@@ -1,25 +1,27 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections.Specialized;
-using Game.Logic;
+using System.Data;
+using Game.Data.Stats;
 using Game.Database;
 using Game.Util;
-using Game.Data.Stats;
+
+#endregion
 
 namespace Game.Data {
     public class Structure : GameObject, IPersistableObject {
-        StructureProperties properties;
-        TechnologyManager techmanager;
+        private StructureProperties properties;
+        private TechnologyManager techmanager;
 
-        StructureStats stats;
+        private StructureStats stats;
+
         public StructureStats Stats {
             get { return stats; }
             set {
                 if (stats != null)
                     stats.StatsUpdate -= new BaseStats.OnStatsUpdate(CheckUpdateMode);
-                
-                CheckUpdateMode(); 
+
+                CheckUpdateMode();
                 stats = value;
                 stats.StatsUpdate += new BaseStats.OnStatsUpdate(CheckUpdateMode);
             }
@@ -37,7 +39,7 @@ namespace Game.Data {
             if (!updating)
                 throw new Exception("Called endupdate without first calling begin update");
 
-            updating = false;            
+            updating = false;
             Update();
         }
 
@@ -57,14 +59,13 @@ namespace Game.Data {
             techmanager = new TechnologyManager(EffectLocation.Object, this, 0);
 
             this.stats = stats;
-            this.properties = new StructureProperties(this);
+            properties = new StructureProperties(this);
         }
 
         #region Indexers
+
         public object this[string name] {
-            get {
-                return properties.get(name);
-            }
+            get { return properties.get(name); }
             set {
                 CheckUpdateMode();
                 properties.add(name, value);
@@ -74,28 +75,32 @@ namespace Game.Data {
         #endregion
 
         #region Properties
+
         public TechnologyManager Technologies {
             get { return techmanager; }
         }
-        
+
         public StructureProperties Properties {
             get { return properties; }
-            set { CheckUpdateMode();  properties = value; }
+            set {
+                CheckUpdateMode();
+                properties = value;
+            }
         }
 
-        public override uint ObjectID {
-            get {
-                return base.ObjectID;
-            }
+        public override uint ObjectId {
+            get { return base.ObjectId; }
             set {
                 CheckUpdateMode();
                 techmanager.ID = value;
-                base.ObjectID = value;
+                base.ObjectId = value;
             }
         }
+
         #endregion
 
         #region IPersistable Members
+
         public const string DB_TABLE = "structures";
 
         public string DbTable {
@@ -104,42 +109,39 @@ namespace Game.Data {
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {                                        
-                    new DbColumn("x", X, System.Data.DbType.UInt32),
-                    new DbColumn("y", Y, System.Data.DbType.Int32),
-                    new DbColumn("hp", stats.Hp, System.Data.DbType.UInt16),
-                    new DbColumn("type", Type, System.Data.DbType.Int16),
-                    new DbColumn("level", Lvl, System.Data.DbType.Byte),
-                    new DbColumn("labor", stats.Labor, System.Data.DbType.Byte),
-                    new DbColumn("state", (byte)State.Type, System.Data.DbType.Boolean),
-                    new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), System.Data.DbType.String)
-                };
+                return new DbColumn[] {
+                                          new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
+                                          new DbColumn("hp", stats.Hp, DbType.UInt16), new DbColumn("type", Type, DbType.Int16),
+                                          new DbColumn("level", Lvl, DbType.Byte), new DbColumn("labor", stats.Labor, DbType.Byte),
+                                          new DbColumn("state", (byte) State.Type, DbType.Boolean),
+                                          new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()),
+                                                       DbType.String)
+                                      };
             }
         }
 
         public DbColumn[] DbPrimaryKey {
             get {
                 return new DbColumn[] {
-                    new DbColumn("id", ObjectID, System.Data.DbType.UInt32),
-                    new DbColumn("city_id", city.CityId, System.Data.DbType.UInt32)
-                };
+                                          new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", city.CityId, DbType.UInt32)
+                                      };
             }
         }
 
         public DbDependency[] DbDependencies {
             get {
-                return new DbDependency[] { 
-                    new DbDependency("Properties", true, true),
-                    new DbDependency("Technologies", false, true) 
-                };
+                return new DbDependency[]
+                       {new DbDependency("Properties", true, true), new DbDependency("Technologies", false, true)};
             }
         }
 
-        bool dbPersisted = false;
+        private bool dbPersisted = false;
+
         public bool DbPersisted {
             get { return dbPersisted; }
             set { dbPersisted = value; }
         }
+
         #endregion
     }
 }

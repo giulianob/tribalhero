@@ -1,25 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net.Sockets;
-namespace Game.Comm {
+#region
 
+using System;
+using System.Net.Sockets;
+
+#endregion
+
+namespace Game.Comm {
     public class SocketSession : Session {
         public Socket socket;
-        public SocketSession(string name, Socket socket, Processor processor)
-            : base(name, processor) {
+
+        public SocketSession(string name, Socket socket, Processor processor) : base(name, processor) {
             this.socket = socket;
         }
 
         protected override void close() {
-             socket.Disconnect(false);
+            socket.Disconnect(false);
         }
 
         public override bool write(Packet packet) {
             Console.Out.WriteLine("Sending: " + packet.ToString(256));
             byte[] packetBytes = packet.getBytes();
             int ret;
-            if (socket == null) return false;
+            if (socket == null)
+                return false;
 
             try {
                 ret = socket.Send(packetBytes, packetBytes.Length, SocketFlags.None);

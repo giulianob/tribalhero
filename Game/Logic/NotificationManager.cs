@@ -1,26 +1,30 @@
-﻿using System;
+﻿#region
+
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using Game.Logic;
+using System.Data;
 using Game.Comm;
 using Game.Data;
-using Game.Util;
 using Game.Database;
 
+#endregion
+
 namespace Game.Logic {
-    public class NotificationManager: IEnumerable<Game.Logic.NotificationManager.Notification> {
-        ActionWorker actionWorker;
+    public class NotificationManager : IEnumerable<NotificationManager.Notification> {
+        private ActionWorker actionWorker;
 
-        List<Notification> notifications = new List<Notification>();
+        private List<Notification> notifications = new List<Notification>();
 
-        object objLock = new object();
+        private object objLock = new object();
 
         public class Notification : IEquatable<PassiveAction>, IEquatable<Notification>, IPersistableList {
-            GameObject obj;
-            PassiveAction action;
-            List<City> subscriptions = new List<City>();
+            private GameObject obj;
+            private PassiveAction action;
+            private List<City> subscriptions = new List<City>();
 
             #region Properties
+
             public List<City> Subscriptions {
                 get { return subscriptions; }
             }
@@ -32,10 +36,12 @@ namespace Game.Logic {
             public GameObject GameObject {
                 get { return obj; }
             }
+
             #endregion
 
             public Notification(GameObject obj, PassiveAction action, params City[] subscriptions) {
-                if (obj.City != action.WorkerObject.City) throw new Exception("Object should be in the same city as the action worker");
+                if (obj.City != action.WorkerObject.City)
+                    throw new Exception("Object should be in the same city as the action worker");
                 this.obj = obj;
                 this.action = action;
                 this.subscriptions.AddRange(subscriptions);
@@ -51,14 +57,11 @@ namespace Game.Logic {
 
             #region IPersistableObject Members
 
-            bool dbPersisted = false;
+            private bool dbPersisted = false;
+
             public bool DbPersisted {
-                get {
-                    return dbPersisted;
-                }
-                set {
-                    dbPersisted = value;
-                }
+                get { return dbPersisted; }
+                set { dbPersisted = value; }
             }
 
             #endregion
@@ -66,6 +69,7 @@ namespace Game.Logic {
             #region IPersistable Members
 
             public static readonly string DB_TABLE = "notifications";
+
             public string DbTable {
                 get { return DB_TABLE; }
             }
@@ -73,59 +77,53 @@ namespace Game.Logic {
             public DbColumn[] DbPrimaryKey {
                 get {
                     return new DbColumn[] {
-                        new DbColumn("city_id", obj.City.CityId, System.Data.DbType.UInt32),                        
-                        new DbColumn("object_id", obj.ObjectID, System.Data.DbType.UInt32),
-                        new DbColumn("action_id", action.ActionId, System.Data.DbType.UInt16),                     
-                    };
+                                              new DbColumn("city_id", obj.City.CityId, DbType.UInt32),
+                                              new DbColumn("object_id", obj.ObjectId, DbType.UInt32),
+                                              new DbColumn("action_id", action.ActionId, DbType.UInt16),
+                                          };
                 }
             }
 
             public DbDependency[] DbDependencies {
-                get { return new DbDependency[] { }; }
+                get { return new DbDependency[] {}; }
             }
 
             public DbColumn[] DbColumns {
-                get { return new DbColumn[] { }; }
+                get { return new DbColumn[] {}; }
             }
 
             #endregion
 
             #region IPersistableList Members
-            
+
             public DbColumn[] DbListColumns {
-                get { return new DbColumn[] { 
-                        new DbColumn("subscription_city_id", System.Data.DbType.UInt32)
-                    }; 
-                }
+                get { return new DbColumn[] {new DbColumn("subscription_city_id", DbType.UInt32)}; }
             }
 
-            IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {                
-                foreach (City city in subscriptions) {
-                    yield return new DbColumn[] { 
-                        new DbColumn("subscription_city_id", city.CityId, System.Data.DbType.UInt32)
-                    };
-                }
+            IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
+                foreach (City city in subscriptions)
+                    yield return new DbColumn[] {new DbColumn("subscription_city_id", city.CityId, DbType.UInt32)};
             }
 
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+            IEnumerator IEnumerable.GetEnumerator() {
                 return subscriptions.GetEnumerator();
             }
-            
+
             #endregion
         }
-        
+
         public NotificationManager(ActionWorker worker) {
-            this.actionWorker = worker;
+            actionWorker = worker;
 
             worker.ActionRescheduled += new ActionWorker.UpdateCallback(worker_ActionRescheduled);
         }
 
         #region Properties
+
         public ushort Count {
-            get {
-                return (ushort)notifications.Count;
-            }
+            get { return (ushort) notifications.Count; }
         }
+
         #endregion
 
         public void add(GameObject obj, PassiveAction action, params City[] targetCities) {
@@ -133,11 +131,9 @@ namespace Game.Logic {
         }
 
         public void dbLoaderAdd(bool persist, Notification tmpNotification) {
-            lock (objLock) {               
-
-                Notification notification = notifications.Find(delegate(Notification other) {
-                    return other.Equals(tmpNotification);
-                });
+            lock (objLock) {
+                Notification notification =
+                    notifications.Find(delegate(Notification other) { return other.Equals(tmpNotification); });
 
                 if (notification == null) {
                     notification = tmpNotification;
@@ -152,9 +148,10 @@ namespace Game.Logic {
             }
         }
 
-        void addNotification(Notification notification) {
+        private void addNotification(Notification notification) {
             lock (objLock) {
-                if (notifications.Contains(notification)) return;
+                if (notifications.Contains(notification))
+                    return;
 
                 notifications.Add(notification);
 
@@ -167,11 +164,12 @@ namespace Game.Logic {
             }
         }
 
-        void removeNotification(PassiveAction action) {
+        private void removeNotification(PassiveAction action) {
             lock (objLock) {
                 for (int i = notifications.Count - 1; i >= 0; i--) {
                     Notification notification = notifications[i];
-                    if (!notification.Equals(action)) continue;
+                    if (!notification.Equals(action))
+                        continue;
                     notifications.RemoveAt(i);
 
                     //send removal
@@ -181,58 +179,54 @@ namespace Game.Logic {
                     packet.addUInt16(notification.Action.ActionId);
 
                     Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
-                }                
+                }
             }
         }
 
-        void updateNotification(Notification notification) {
+        private void updateNotification(Notification notification) {
             Packet packet = new Packet(Command.NOTIFICATION_UPDATE);
             packet.addUInt32(actionWorker.City.CityId);
             PacketHelper.AddToPacket(notification, packet);
             Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
         }
 
-        void worker_ActionRescheduled(Game.Logic.Action action) {
-            if (!(action is PassiveAction)) return;
+        private void worker_ActionRescheduled(Action action) {
+            if (!(action is PassiveAction))
+                return;
 
             lock (objLock) {
+                Notification notification =
+                    notifications.Find(delegate(Notification other) { return other.Equals(action as PassiveAction); });
 
-                Notification notification = notifications.Find(delegate(Notification other) {
-                    return other.Equals(action as PassiveAction);
-                });
-
-                if (notification == null) return;
+                if (notification == null)
+                    return;
 
                 updateNotification(notification);
 
-                foreach (City city in notification.Subscriptions) {
+                foreach (City city in notification.Subscriptions)
                     city.Worker.Notifications.updateNotification(notification);
-                }
             }
         }
 
         public void remove(PassiveAction action) {
             lock (objLock) {
-                Notification notification = notifications.Find(delegate(Notification other) {
-                    return other.Equals(action as PassiveAction);
-                });
+                Notification notification =
+                    notifications.Find(delegate(Notification other) { return other.Equals(action as PassiveAction); });
 
-                if (notification == null) return;
+                if (notification == null)
+                    return;
 
-                foreach (City city in notification.Subscriptions) {
+                foreach (City city in notification.Subscriptions)
                     city.Worker.Notifications.removeNotification(action as PassiveAction);
-                }
-                
+
                 removeNotification(action as PassiveAction);
                 Global.dbManager.Delete(notification);
             }
         }
 
-
-
         #region IEnumerable<Notification> Members
 
-        public IEnumerator<NotificationManager.Notification> GetEnumerator() {
+        public IEnumerator<Notification> GetEnumerator() {
             return notifications.GetEnumerator();
         }
 
@@ -240,7 +234,7 @@ namespace Game.Logic {
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator() {
             return notifications.GetEnumerator();
         }
 

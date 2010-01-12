@@ -1,8 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
 using Game.Data;
 using Game.Fighting;
+
+#endregion
 
 namespace Game.Battle {
     public interface ICombatUnit {
@@ -11,6 +12,5 @@ namespace Game.Battle {
         TroopStub TroopStub { get; }
 
         FormationType Formation { get; }
-        
     }
 }

@@ -1,9 +1,11 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Battle;
-using Game.Util;
+using Game.Data;
 using Game.Setup;
+using Game.Util;
+
+#endregion
 
 namespace Game.Comm {
     public partial class Processor {
@@ -24,15 +26,12 @@ namespace Game.Comm {
                     return;
                 }
                 Packet reply = new Packet(packet);
+                reply.addUInt16(city.Battle.Stamina);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.subscribe(session);
                 session.write(reply);
             }
-        }
-
-        void session_OnClose(Session session) {
-            
         }
 
         public void CmdBattleUnsubscribe(Session session, Packet packet) {

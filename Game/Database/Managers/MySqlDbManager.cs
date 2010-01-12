@@ -1,54 +1,58 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-using MySql.Data.MySqlClient;
 using System.Data;
-using Game.Setup;
 using System.Data.Common;
-using System.Threading;
 using System.IO;
-using log4net.Repository.Hierarchy;
-using System.Data.SqlClient;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using Game.Data;
+using Game.Setup;
+using MySql.Data.MySqlClient;
+
+#endregion
 
 namespace Game.Database {
-    public class MySqlDbManager: IDbManager {
-        
-        Dictionary<Type, String> saveCommands = new Dictionary<Type, String>();
-        Dictionary<Type, String> createCommands = new Dictionary<Type, String>();
-        Dictionary<Type, String> createListCommands = new Dictionary<Type, String>();
-        Dictionary<Type, String> deleteCommands = new Dictionary<Type, String>();
-        Dictionary<Type, String> deleteListCommands = new Dictionary<Type, String>();
+    public class MySqlDbManager : IDbManager {
+        private Dictionary<Type, String> saveCommands = new Dictionary<Type, String>();
+        private Dictionary<Type, String> createCommands = new Dictionary<Type, String>();
+        private Dictionary<Type, String> createListCommands = new Dictionary<Type, String>();
+        private Dictionary<Type, String> deleteCommands = new Dictionary<Type, String>();
+        private Dictionary<Type, String> deleteListCommands = new Dictionary<Type, String>();
 
-        string connectionString;
+        private string connectionString;
 
-        bool paused = false;
+        private bool paused;
 
         [ThreadStatic]
-        static MySqlDbTransaction persistantTransaction;
+        private static MySqlDbTransaction persistantTransaction;
 
         public MySqlDbManager(string hostname, string username, string password, string database) {
-            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};", database, hostname, username, password);
+            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};", database, hostname,
+                                             username, password);
         }
 
-        MySqlConnection GetConnection() {
+        private MySqlConnection GetConnection() {
             lock (this) {
                 MySqlConnection connection = new MySqlConnection(connectionString);
-                
+
                 try {
                     connection.Open();
-
                 }
                 catch (Exception ex) {
-                    Global.Logger.Error("An exception of type " + ex.GetType() + " was encountered while attempting to open the connection.", ex);
+                    Global.Logger.Error(
+                        "An exception of type " + ex.GetType() +
+                        " was encountered while attempting to open the connection.", ex);
                     Environment.Exit(-1);
                 }
                 return connection;
-            }                       
+            }
         }
 
         public void Close(DbConnection connection) {
-            lock (this) {                
+            lock (this) {
                 connection.Close();
             }
         }
@@ -61,18 +65,19 @@ namespace Game.Database {
             if (persistantTransaction != null) {
                 persistantTransaction.ReferenceCount++;
 
-                return (DbTransaction)persistantTransaction;
+                return persistantTransaction;
             }
 
             persistantTransaction = new MySqlDbTransaction(this, null);
 
             persistantTransaction.ReferenceCount = 1;
 
-            return (DbTransaction)persistantTransaction;
+            return persistantTransaction;
         }
 
-        void InitPersistantTransaction() {
-            if (persistantTransaction == null || persistantTransaction.transaction != null) return;
+        private void InitPersistantTransaction() {
+            if (persistantTransaction == null || persistantTransaction.transaction != null)
+                return;
 
             MySqlConnection connection = GetConnection();
 
@@ -84,11 +89,13 @@ namespace Game.Database {
 
             persistantTransaction.transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
 
-            MySqlCommand command = new MySqlCommand("SET AUTOCOMMIT = 0", (persistantTransaction.transaction as MySqlTransaction).Connection, (persistantTransaction.transaction as MySqlTransaction));
+            MySqlCommand command = new MySqlCommand("SET AUTOCOMMIT = 0",
+                                                    (persistantTransaction.transaction as MySqlTransaction).Connection,
+                                                    (persistantTransaction.transaction as MySqlTransaction));
             ExecuteNonQuery(command);
         }
 
-        MySqlDbTransaction CreateTransaction() {
+        private MySqlDbTransaction CreateTransaction() {
             MySqlConnection connection = GetConnection();
 
             if (connection == null)
@@ -96,10 +103,14 @@ namespace Game.Database {
 
             if (Config.database_verbose)
                 Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
-            
-            MySqlDbTransaction transaction = new MySqlDbTransaction(this, connection.BeginTransaction(IsolationLevel.RepeatableRead));
-            
-            MySqlCommand command = new MySqlCommand("SET AUTOCOMMIT = 0", (transaction.transaction as MySqlTransaction).Connection, (transaction.transaction as MySqlTransaction));
+
+            MySqlDbTransaction transaction = new MySqlDbTransaction(this,
+                                                                    connection.BeginTransaction(
+                                                                        IsolationLevel.RepeatableRead));
+
+            MySqlCommand command = new MySqlCommand("SET AUTOCOMMIT = 0",
+                                                    (transaction.transaction as MySqlTransaction).Connection,
+                                                    (transaction.transaction as MySqlTransaction));
 
             ExecuteNonQuery(command);
 
@@ -107,7 +118,8 @@ namespace Game.Database {
         }
 
         public bool Save(params IPersistable[] objects) {
-            if (paused) return true;
+            if (paused)
+                return true;
 
             InitPersistantTransaction();
 
@@ -120,7 +132,6 @@ namespace Game.Database {
                 return true;
 
             foreach (IPersistable obj in objects) {
-
                 MySqlCommand command = null;
 
                 if (obj is IPersistableObject) {
@@ -158,8 +169,7 @@ namespace Game.Database {
                         if (persistable != null) {
                             if (!Save(persistable))
                                 return false;
-                        }
-                        else
+                        } else
                             return false;
                     }
                 }
@@ -168,7 +178,8 @@ namespace Game.Database {
             return true;
         }
 
-        private MySqlCommand UpdateObject(MySqlConnection connection, MySqlTransaction transaction, IPersistableObject obj) {
+        private MySqlCommand UpdateObject(MySqlConnection connection, MySqlTransaction transaction,
+                                          IPersistableObject obj) {
             string commandText;
 
             DbColumn[] columns = obj.DbColumns;
@@ -199,7 +210,7 @@ namespace Game.Database {
                 }
 
                 commandText = string.Format("UPDATE `{0}` SET {1} WHERE {2} LIMIT 1", obj.DbTable, values, where);
-                
+
                 saveCommands[obj.GetType()] = commandText;
             }
 
@@ -214,11 +225,11 @@ namespace Game.Database {
 
             foreach (DbColumn column in obj.DbPrimaryKey)
                 addParameter(command, column);
-            
+
             return command;
         }
 
-        private MySqlCommand CreateList(MySqlConnection connection, MySqlTransaction transaction, IPersistableList obj) {         
+        private MySqlCommand CreateList(MySqlConnection connection, MySqlTransaction transaction, IPersistableList obj) {
             string commandText;
 
             if (!createListCommands.TryGetValue(obj.GetType(), out commandText)) {
@@ -227,19 +238,17 @@ namespace Game.Database {
                 bool startComma = false;
 
                 foreach (DbColumn column in obj.DbPrimaryKey) {
-                    if (startComma) {
+                    if (startComma)
                         columns += ",";
-                    }
                     startComma = true;
                     columns += string.Format("`{0}`", column.Column);
                 }
 
                 foreach (DbColumn column in obj.DbListColumns) {
-                    if (startComma) {
+                    if (startComma)
                         columns += ",";
-                    }
                     startComma = true;
-                    columns += string.Format("`{0}`", column.Column);                    
+                    columns += string.Format("`{0}`", column.Column);
                 }
 
                 commandText = string.Format("INSERT INTO `{0}_list` ({1}) VALUES ", obj.DbTable, columns);
@@ -251,7 +260,7 @@ namespace Game.Database {
 
             bool startColumnsComma = false;
             bool empty = true;
-            
+
             foreach (DbColumn[] columns in obj) {
                 empty = false;
 
@@ -261,7 +270,7 @@ namespace Game.Database {
                     builder.Append("(");
                     startColumnsComma = true;
                 }
-                
+
                 bool startComma = false;
 
                 foreach (DbColumn column in obj.DbPrimaryKey) {
@@ -270,7 +279,7 @@ namespace Game.Database {
                     else
                         startComma = true;
 
-                    builder.Append("'" + column.Value + "'");                    
+                    builder.Append("'" + column.Value + "'");
                 }
 
                 foreach (DbColumn column in columns) {
@@ -288,16 +297,17 @@ namespace Game.Database {
                 return null;
 
             MySqlCommand command = connection.CreateCommand();
-            
+
             if (transaction != null)
                 command.Transaction = transaction;
 
             command.CommandText = builder.ToString();
-            
+
             return command;
         }
 
-        private MySqlCommand CreateObject(MySqlConnection connection, MySqlTransaction transaction, IPersistableObject obj) {
+        private MySqlCommand CreateObject(MySqlConnection connection, MySqlTransaction transaction,
+                                          IPersistableObject obj) {
             string commandText;
 
             if (!createCommands.TryGetValue(obj.GetType(), out commandText)) {
@@ -346,7 +356,8 @@ namespace Game.Database {
         }
 
         public bool Delete(params IPersistable[] objects) {
-            if (paused) return true;
+            if (paused)
+                return true;
 
             InitPersistantTransaction();
 
@@ -389,12 +400,11 @@ namespace Game.Database {
                         if (persistable != null) {
                             if (!Delete(persistable))
                                 return false;
-                        }
-                        else
+                        } else
                             return false;
                     }
                 }
-            }            
+            }
 
             return true;
         }
@@ -403,7 +413,6 @@ namespace Game.Database {
             string commandText;
 
             if (!deleteListCommands.TryGetValue(obj.GetType(), out commandText)) {
-
                 bool startComma = false;
                 string where = "";
                 foreach (DbColumn column in obj.DbPrimaryKey) {
@@ -432,12 +441,11 @@ namespace Game.Database {
             return command;
         }
 
-        MySqlCommand DeleteObject(MySqlConnection connection, MySqlTransaction transaction, IPersistableObject obj) {
-
+        private MySqlCommand DeleteObject(MySqlConnection connection, MySqlTransaction transaction,
+                                          IPersistableObject obj) {
             string commandText;
 
             if (!deleteCommands.TryGetValue(obj.GetType(), out commandText)) {
-
                 bool startComma = false;
                 string where = "";
                 foreach (DbColumn column in obj.DbPrimaryKey) {
@@ -466,11 +474,11 @@ namespace Game.Database {
             return command;
         }
 
-        void addParameter(MySqlCommand command, DbColumn column) {
+        private void addParameter(MySqlCommand command, DbColumn column) {
             addParameter(command, column, DataRowVersion.Default);
         }
 
-        void addParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion) {
+        private void addParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion) {
             MySqlParameter parameter = command.CreateParameter();
             parameter.ParameterName = "@" + column.Column;
             parameter.DbType = column.Type;
@@ -550,7 +558,7 @@ namespace Game.Database {
             MySqlConnection connection = GetConnection();
 
             MySqlCommand command = connection.CreateCommand();
-            
+
             command.Connection = connection;
             command.CommandText = query;
 
@@ -558,21 +566,19 @@ namespace Game.Database {
         }
 
         public void Query(string query) {
-            if (paused) return;
+            if (paused)
+                return;
 
             MySqlCommand command;
             bool transactional = persistantTransaction != null;
             MySqlDbTransaction transaction;
 
-            if (!transactional)
-            {
+            if (!transactional) {
                 transaction = CreateTransaction();
                 MySqlConnection connection = GetConnection();
                 command = connection.CreateCommand();
-                command.Connection = connection;               
-            }
-            else
-            {
+                command.Connection = connection;
+            } else {
                 transaction = persistantTransaction;
                 InitPersistantTransaction();
             }
@@ -591,14 +597,14 @@ namespace Game.Database {
             }
         }
 
-        void ExecuteNonQuery(MySqlCommand command) {
+        private void ExecuteNonQuery(MySqlCommand command) {
             if (Config.database_verbose) {
                 StringWriter sqlwriter = new StringWriter();
-                foreach (MySqlParameter param in command.Parameters) {
-                    sqlwriter.Write(param.ToString() + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
-                }
+                foreach (MySqlParameter param in command.Parameters)
+                    sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
 
-                Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter.ToString() + "}");
+                Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" +
+                                     sqlwriter + "}");
             }
 
             try {
@@ -611,11 +617,10 @@ namespace Game.Database {
 
         public void HandleGeneralException(Exception e, MySqlCommand command) {
             StringWriter writer = new StringWriter();
-            foreach (MySqlParameter param in command.Parameters) {
-                writer.Write(param.ToString() + "=" + param.Value.ToString() + ",");
-            }
+            foreach (MySqlParameter param in command.Parameters)
+                writer.Write(param + "=" + param.Value + ",");
 
-            Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") " + writer.ToString(), e);
+            Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") " + writer, e);
             throw e;
         }
 
@@ -629,9 +634,9 @@ namespace Game.Database {
             persistantTransaction.Rollback();
         }
 
-        public uint LastInsertId()
-        {
-            if (paused) return 0;
+        public uint LastInsertId() {
+            if (paused)
+                return 0;
             MySqlCommand command;
             bool transactional = persistantTransaction != null;
             MySqlDbTransaction transaction;
@@ -641,8 +646,7 @@ namespace Game.Database {
                 MySqlConnection connection = GetConnection();
                 command = connection.CreateCommand();
                 command.Connection = connection;
-            }
-            else {
+            } else {
                 transaction = persistantTransaction;
                 InitPersistantTransaction();
             }
@@ -653,14 +657,14 @@ namespace Game.Database {
 
             command.CommandText = "SELECT LAST_INSERT_ID()";
 
-            long id = (long)command.ExecuteScalar();
+            long id = (long) command.ExecuteScalar();
 
             if (!transactional) {
                 (transaction.transaction as MySqlTransaction).Commit();
                 Close(command.Connection);
             }
 
-            return (uint)id;
+            return (uint) id;
         }
 
         public void Pause() {
@@ -672,46 +676,27 @@ namespace Game.Database {
         }
 
         public void EmptyDatabase() {
-            
             MySqlConnection connection = GetConnection();
 
             MySqlCommand command = connection.CreateCommand();
 
-            command.CommandText = 
-                "TRUNCATE TABLE `reference_stubs`;" +
-                "TRUNCATE TABLE `chain_actions`;" +
-                "TRUNCATE TABLE `active_actions`;" +
-                "TRUNCATE TABLE `passive_actions`;" +
-                "TRUNCATE TABLE `cities`;" +
-                "TRUNCATE TABLE `players`;" +
-                "TRUNCATE TABLE `structures`;" +
-                "TRUNCATE TABLE `structure_properties`;" +
-                "TRUNCATE TABLE `structure_properties_list`;" +
-                "TRUNCATE TABLE `technologies`;" +
-                "TRUNCATE TABLE `technologies_list`;" +
-                "TRUNCATE TABLE `troops`;" +
-                "TRUNCATE TABLE `troop_stubs`;" +
-                "TRUNCATE TABLE `troop_stubs_list`;" +
-                "TRUNCATE TABLE `unit_templates`;" +
-                "TRUNCATE TABLE `unit_templates_list`;" +
-                "TRUNCATE TABLE `battles`;" +
-                "TRUNCATE TABLE `battle_managers`;" +
-                "TRUNCATE TABLE `battle_reports`;" +
-                "TRUNCATE TABLE `battle_report_objects`;" +
-                "TRUNCATE TABLE `battle_report_troops`;" +
-                "TRUNCATE TABLE `reported_troops`;" +
-                "TRUNCATE TABLE `reported_troops_list`;" +
-                "TRUNCATE TABLE `reported_objects`;" +
-                "TRUNCATE TABLE `reported_objects_list`;" +
-                "TRUNCATE TABLE `combat_structures`;" +
-                "TRUNCATE TABLE `combat_units`;" +
-                "TRUNCATE TABLE `notifications`;" +
-                "TRUNCATE TABLE `notifications_list`;" +
-                "TRUNCATE TABLE `market`;" +
-                "TRUNCATE TABLE `system_variables`;" +
-                "TRUNCATE TABLE `troop_templates`;" +
-                "TRUNCATE TABLE `troop_templates_list`;"
-                ;
+            command.CommandText = "TRUNCATE TABLE `reference_stubs`;" + "TRUNCATE TABLE `chain_actions`;" +
+                                  "TRUNCATE TABLE `active_actions`;" + "TRUNCATE TABLE `passive_actions`;" +
+                                  "TRUNCATE TABLE `cities`;" + "TRUNCATE TABLE `players`;" +
+                                  "TRUNCATE TABLE `structures`;" + "TRUNCATE TABLE `structure_properties`;" +
+                                  "TRUNCATE TABLE `structure_properties_list`;" + "TRUNCATE TABLE `technologies`;" +
+                                  "TRUNCATE TABLE `technologies_list`;" + "TRUNCATE TABLE `troops`;" +
+                                  "TRUNCATE TABLE `troop_stubs`;" + "TRUNCATE TABLE `troop_stubs_list`;" +
+                                  "TRUNCATE TABLE `unit_templates`;" + "TRUNCATE TABLE `unit_templates_list`;" +
+                                  "TRUNCATE TABLE `battles`;" + "TRUNCATE TABLE `battle_managers`;" +
+                                  "TRUNCATE TABLE `battle_reports`;" + "TRUNCATE TABLE `battle_report_objects`;" +
+                                  "TRUNCATE TABLE `battle_report_troops`;" + "TRUNCATE TABLE `reported_troops`;" +
+                                  "TRUNCATE TABLE `reported_troops_list`;" + "TRUNCATE TABLE `reported_objects`;" +
+                                  "TRUNCATE TABLE `reported_objects_list`;" + "TRUNCATE TABLE `combat_structures`;" +
+                                  "TRUNCATE TABLE `combat_units`;" + "TRUNCATE TABLE `notifications`;" +
+                                  "TRUNCATE TABLE `notifications_list`;" + "TRUNCATE TABLE `market`;" +
+                                  "TRUNCATE TABLE `system_variables`;" + "TRUNCATE TABLE `troop_templates`;" +
+                                  "TRUNCATE TABLE `troop_templates_list`;";
 
             command.Connection = connection;
 

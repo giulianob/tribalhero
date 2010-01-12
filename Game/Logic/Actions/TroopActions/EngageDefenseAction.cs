@@ -1,17 +1,19 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Game.Data;
 using Game.Battle;
-using Game.Database;
-using Game.Util;
+using Game.Data;
 using Game.Setup;
+using Game.Util;
+
+#endregion
 
 namespace Game.Logic.Actions {
     class EngageDefenseAction : PassiveAction {
-        byte stubId;
-        uint cityId;
-        int originalHP, remainingHP;
+        private byte stubId;
+        private uint cityId;
+        private int originalHP, remainingHP;
 
         public EngageDefenseAction(uint cityId, byte stubId) {
             this.cityId = cityId;
@@ -38,7 +40,6 @@ namespace Game.Logic.Actions {
         }
 
         public override Error execute() {
-
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
@@ -67,12 +68,10 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
-            
+        private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
             if (target.City.CityId == cityId) {
                 AttackCombatUnit unit = target as AttackCombatUnit;
                 if (unit != null) {
-
                     City city;
                     TroopStub stub;
                     if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
@@ -98,8 +97,7 @@ namespace Game.Logic.Actions {
             }
         }
 
-        void Battle_ExitBattle(CombatList atk, CombatList def) {
-
+        private void Battle_ExitBattle(CombatList atk, CombatList def) {
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
@@ -130,13 +128,12 @@ namespace Game.Logic.Actions {
 
         public override string Properties {
             get {
-                return XMLSerializer.Serialize(new XMLKVPair[] {
-                        new XMLKVPair("troop_city_id", cityId),
-                        new XMLKVPair("troop_id", stubId),
-                        new XMLKVPair("original_hp", originalHP),
-                        new XMLKVPair("remaining_hp", remainingHP)
-                    }
-                );
+                return
+                    XMLSerializer.Serialize(new XMLKVPair[] {
+                                                                new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
+                                                                new XMLKVPair("original_hp", originalHP),
+                                                                new XMLKVPair("remaining_hp", remainingHP)
+                                                            });
             }
         }
 

@@ -1,19 +1,21 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Module;
-using Game.Setup;
 using Game.Data;
 using Game.Logic.Actions;
+using Game.Module;
+using Game.Setup;
 using Game.Util;
+
+#endregion
 
 namespace Game.Comm {
     public partial class Processor {
         public void CmdMarketGetPrices(Session session, Packet packet) {
             Packet reply = new Packet(packet);
-            reply.addUInt16((ushort)Market.Crop.Price);
-            reply.addUInt16((ushort)Market.Wood.Price);
-            reply.addUInt16((ushort)Market.Iron.Price);
+            reply.addUInt16((ushort) Market.Crop.Price);
+            reply.addUInt16((ushort) Market.Wood.Price);
+            reply.addUInt16((ushort) Market.Iron.Price);
             session.write(reply);
         }
 
@@ -26,7 +28,7 @@ namespace Game.Comm {
             try {
                 cityId = packet.getUInt32();
                 objectId = packet.getUInt32();
-                type = (ResourceType)packet.getByte();
+                type = (ResourceType) packet.getByte();
                 quantity = packet.getUInt16();
                 price = packet.getUInt16();
             }
@@ -49,7 +51,7 @@ namespace Game.Comm {
                 }
 
                 Structure obj;
-                if (!city.tryGetStructure(objectId, out obj)) {
+                if (!city.TryGetStructure(objectId, out obj)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
@@ -57,12 +59,13 @@ namespace Game.Comm {
                 if (obj != null) {
                     Error ret;
                     ResourceBuyAction rba = new ResourceBuyAction(cityId, objectId, price, quantity, type);
-                    if ((ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, rba, obj.Technologies)) == 0) {
+                    if (
+                        (ret =
+                         city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, rba, obj.Technologies)) ==
+                        0)
                         reply_success(session, packet);
-                    }
-                    else {
+                    else
                         reply_error(session, packet, ret);
-                    }
                     return;
                 }
                 reply_error(session, packet, Error.UNEXPECTED);
@@ -78,7 +81,7 @@ namespace Game.Comm {
             try {
                 cityId = packet.getUInt32();
                 objectId = packet.getUInt32();
-                type = (ResourceType)packet.getByte();
+                type = (ResourceType) packet.getByte();
                 quantity = packet.getUInt16();
                 price = packet.getUInt16();
             }
@@ -101,7 +104,7 @@ namespace Game.Comm {
                 }
 
                 Structure obj;
-                if (!city.tryGetStructure(objectId, out obj)) {
+                if (!city.TryGetStructure(objectId, out obj)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
@@ -109,17 +112,17 @@ namespace Game.Comm {
                 if (obj != null) {
                     Error ret;
                     ResourceSellAction rsa = new ResourceSellAction(cityId, objectId, price, quantity, type);
-                    if ((ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, rsa, obj.Technologies)) == 0) {
+                    if (
+                        (ret =
+                         city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, rsa, obj.Technologies)) ==
+                        0)
                         reply_success(session, packet);
-                    }
-                    else {
+                    else
                         reply_error(session, packet, ret);
-                    }
                     return;
                 }
                 reply_error(session, packet, Error.UNEXPECTED);
             }
         }
-
     }
 }

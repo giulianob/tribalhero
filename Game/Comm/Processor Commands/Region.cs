@@ -1,17 +1,18 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections;
 using Game.Data;
-using Game.Setup;
-using Game.Logic;
-using Game.Fighting;
-using Game.Util;
 using Game.Data.Stats;
+using Game.Fighting;
+using Game.Logic;
+using Game.Setup;
+using Game.Util;
+
+#endregion
 
 namespace Game.Comm {
     public partial class Processor {
-
         public void CmdNotificationLocate(Session session, Packet packet) {
             Packet reply = new Packet(packet);
 
@@ -47,7 +48,7 @@ namespace Game.Comm {
                 City srcCity = cities[srcCityId];
                 City city = cities[cityId];
 
-                Game.Logic.NotificationManager.Notification notification;
+                NotificationManager.Notification notification;
                 if (!srcCity.Worker.Notifications.tryGetValue(city, actionId, out notification)) {
                     reply_error(session, packet, Error.ACTION_NOT_FOUND);
                     return;
@@ -80,20 +81,20 @@ namespace Game.Comm {
                 try {
                     regionId = packet.getUInt16();
                 }
-                catch (Exception) {                    
+                catch (Exception) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
-                if (regionId >= Setup.Config.regions_count) {
+                if (regionId >= Config.regions_count) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 reply.addUInt16(regionId);
-                reply.addBytes(Global.World.getRegion(regionId).getBytes());
-                reply.addBytes(Global.World.getRegion(regionId).getObjectBytes());
-                Global.World.subscribeRegion(session, regionId);
+                reply.addBytes(Global.World.GetRegion(regionId).getBytes());
+                reply.addBytes(Global.World.GetRegion(regionId).getObjectBytes());
+                Global.World.SubscribeRegion(session, regionId);
             }
 
             byte regionUnsubscribeCount;
@@ -114,7 +115,7 @@ namespace Game.Comm {
                     return;
                 }
 
-                Global.World.unsubscribeRegion(session, regionId);
+                Global.World.UnsubscribeRegion(session, regionId);
             }
 
             session.write(reply);
@@ -145,14 +146,14 @@ namespace Game.Comm {
                     return;
                 }
 
-                if (regionId >= Setup.Config.regions_count) {
+                if (regionId >= Config.regions_count) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
-                 
+
                 reply.addUInt16(regionId);
-                reply.addBytes(Global.World.getCityRegion(regionId).getCityBytes());
-            }            
+                reply.addBytes(Global.World.GetCityRegion(regionId).getCityBytes());
+            }
 
             session.write(reply);
         }
@@ -182,15 +183,18 @@ namespace Game.Comm {
                 Packet reply = new Packet(packet);
 
                 if (city.Owner == session.Player) {
-                    reply.addByte((byte)troop.Stats.AttackRadius);
-                    reply.addByte((byte)troop.Stats.Speed);                   
+                    reply.addByte(troop.Stats.AttackRadius);
+                    reply.addByte(troop.Stats.Speed);
+                    reply.addByte(troop.Stub.TroopId);
 
                     UnitTemplate template = new UnitTemplate(city);
 
                     reply.addByte(troop.Stub.FormationCount);
-                    foreach (KeyValuePair<FormationType, Formation> formation in troop.Stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                        reply.addByte((byte)formation.Key);
-                        reply.addByte((byte)formation.Value.Count);
+                    foreach (
+                        KeyValuePair<FormationType, Formation> formation in
+                            troop.Stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
+                        reply.addByte((byte) formation.Key);
+                        reply.addByte((byte) formation.Value.Count);
                         foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
                             reply.addUInt16(kvp.Key);
                             reply.addUInt16(kvp.Value);
@@ -198,15 +202,16 @@ namespace Game.Comm {
                         }
                     }
 
-                    reply.addUInt16((ushort)template.Size);
+                    reply.addUInt16((ushort) template.Size);
                     IEnumerator<KeyValuePair<ushort, BaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext()) {
                         KeyValuePair<ushort, BaseUnitStats> kvp = templateIter.Current;
                         reply.addUInt16(kvp.Key);
                         reply.addByte(kvp.Value.Lvl);
                     }
-                    
-                    PacketHelper.AddToPacket(new List<ReferenceStub>(troop.City.Worker.References.getReferences(troop)), reply);
+
+                    PacketHelper.AddToPacket(
+                        new List<ReferenceStub>(troop.City.Worker.References.getReferences(troop)), reply);
                 }
 
                 session.write(reply);
@@ -262,28 +267,28 @@ namespace Game.Comm {
                     } else {
                         switch (prop.type) {
                             case DataType.Byte:
-                                reply.addByte((byte)prop.getValue(structure));
+                                reply.addByte((byte) prop.getValue(structure));
                                 break;
                             case DataType.UShort:
-                                reply.addUInt16((ushort)prop.getValue(structure));
+                                reply.addUInt16((ushort) prop.getValue(structure));
                                 break;
                             case DataType.UInt:
-                                reply.addUInt32((uint)prop.getValue(structure));
+                                reply.addUInt32((uint) prop.getValue(structure));
                                 break;
                             case DataType.String:
-                                reply.addString((string)prop.getValue(structure));
+                                reply.addString((string) prop.getValue(structure));
                                 break;
                             case DataType.Int:
-                                reply.addInt32((int)prop.getValue(structure));
+                                reply.addInt32((int) prop.getValue(structure));
                                 break;
                         }
                     }
                 }
-                
-                PacketHelper.AddToPacket(new List<ReferenceStub>(structure.City.Worker.References.getReferences(structure)), reply);
+
+                PacketHelper.AddToPacket(
+                    new List<ReferenceStub>(structure.City.Worker.References.getReferences(structure)), reply);
                 //        PacketHelper.AddToPacket(obj.Worker, packet);
                 session.write(reply);
-
             }
         }
     }

@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
 using Game.Data;
+
+#endregion
 
 namespace Game.Map {
     class ObjectLink {
-        GameObject value;
+        private GameObject value;
 
         public GameObject Value {
             get { return value; }

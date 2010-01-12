@@ -1,12 +1,12 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Logic;
+using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
-using Game.Data;
-using Game.Database;
 using Game.Util;
+
+#endregion
 
 namespace Game.Comm {
     public partial class Processor {
@@ -53,7 +53,7 @@ namespace Game.Comm {
             try {
                 cityId = packet.getUInt32();
                 objectId = packet.getUInt32();
-                count = packet.getByte();                
+                count = packet.getByte();
             }
             catch (Exception) {
                 reply_error(session, packet, Error.UNEXPECTED);
@@ -63,41 +63,40 @@ namespace Game.Comm {
             using (new MultiObjectLock(session.Player)) {
                 city = session.Player.getCity(cityId);
 
-                if (city == null || !city.tryGetStructure(objectId, out obj)) {
+                if (city == null || !city.TryGetStructure(objectId, out obj)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 LaborMoveAction lma = null;
-                if (obj.Stats.Labor < count) { //move from city to obj
-                    count = (byte)(count - obj.Stats.Labor);
+                if (obj.Stats.Labor < count) {
+                    //move from city to obj
+                    count = (byte) (count - obj.Stats.Labor);
 
-                    if (city.Resource.Labor.Value < count) { //not enough available in city
+                    if (city.Resource.Labor.Value < count) {
+                        //not enough available in city
                         reply_error(session, packet, Error.LABOR_NOT_ENOUGH);
                         return;
-                    }
-                    else if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor) { //adding too much to obj
+                    } else if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor) {
+                        //adding too much to obj
                         reply_error(session, packet, Error.LABOR_OVERFLOW);
                         return;
                     }
                     lma = new LaborMoveAction(cityId, objectId, true, count);
-                }
-                else if (obj.Stats.Labor > count) { //move from obj to city
-                    count = (byte)(obj.Stats.Labor - count);
+                } else if (obj.Stats.Labor > count) {
+                    //move from obj to city
+                    count = (byte) (obj.Stats.Labor - count);
                     lma = new LaborMoveAction(cityId, objectId, false, count);
-                }
-                else {
+                } else {
                     reply_success(session, packet);
                     return;
                 }
                 Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, lma, obj.Technologies);
 
-                if (ret != 0) {
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
             }
         }
 
@@ -121,19 +120,18 @@ namespace Game.Comm {
 
                 Structure obj;
 
-                if (city == null || !city.tryGetStructure(objectId, out obj)) {
+                if (city == null || !city.TryGetStructure(objectId, out obj)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 TechnologyUpgradeAction upgradeAction = new TechnologyUpgradeAction(cityId, objectId, techId);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
-                if (ret != 0) {
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, upgradeAction,
+                                                 obj.Technologies);
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
             }
         }
 
@@ -163,12 +161,10 @@ namespace Game.Comm {
                 Structure obj = city[objectId] as Structure;
                 if (obj != null) {
                     Error ret;
-                    if ((ret = city.Worker.Cancel(actionId)) != Error.OK) {
+                    if ((ret = city.Worker.Cancel(actionId)) != Error.OK)
                         reply_error(session, packet, ret);
-                    }
-                    else {
+                    else
                         reply_success(session, packet);
-                    }
                 }
 
                 reply_error(session, packet, Error.UNEXPECTED);
@@ -189,7 +185,6 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
@@ -198,13 +193,14 @@ namespace Game.Comm {
                 }
 
                 Structure obj;
-                if (!city.tryGetStructure(objectId, out obj)) {
+                if (!city.TryGetStructure(objectId, out obj)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 StructureUpgradeAction upgradeAction = new StructureUpgradeAction(cityId, objectId);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, upgradeAction,
+                                                 obj.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
                 else
@@ -242,19 +238,18 @@ namespace Game.Comm {
                 }
 
                 Structure obj;
-                if (!city.tryGetStructure(objectId, out obj)) {
+                if (!city.TryGetStructure(objectId, out obj)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 StructureBuildAction buildaction = new StructureBuildAction(cityId, type, x, y);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, buildaction, obj.Technologies);
-                if (ret != 0) {
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, buildaction,
+                                                 obj.Technologies);
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
                 return;
             }
         }
@@ -285,22 +280,21 @@ namespace Game.Comm {
                 }
 
                 Structure obj;
-                if (!city.tryGetStructure(objectId, out obj)) {
+                if (!city.TryGetStructure(objectId, out obj)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
-                StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl, false, false);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, changeAction, obj.Technologies);
-                if (ret != 0) {
+                StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType,
+                                                                               structureLvl, false, false);
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, changeAction,
+                                                 obj.Technologies);
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
                 return;
             }
         }
-
     }
 }

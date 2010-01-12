@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace Game.Logic.Actions {
     class ChainExecuter : ISchedule {
-
-        ChainAction.ChainCallback chainCallback;
-        ActionState state;
+        private ChainAction.ChainCallback chainCallback;
+        private ActionState state;
 
         public ChainExecuter(ChainAction.ChainCallback chainCallback, ActionState state) {
             this.chainCallback = chainCallback;

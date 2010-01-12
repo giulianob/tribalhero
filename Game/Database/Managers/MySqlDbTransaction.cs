@@ -1,17 +1,16 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using MySql.Data.MySqlClient;
-using Game.Setup;
 using System.Threading;
+using Game.Data;
+using Game.Setup;
+using MySql.Data.MySqlClient;
+
+#endregion
 
 namespace Game.Database {
     class MySqlDbTransaction : DbTransaction, IDisposable {
-
-        internal MySqlDbTransaction(MySqlDbManager manager, MySqlTransaction transaction) :
-        base(manager, transaction) {
-            
-        }
+        internal MySqlDbTransaction(MySqlDbManager manager, MySqlTransaction transaction) : base(manager, transaction) {}
 
         public override void Rollback() {
             base.Rollback();
@@ -51,7 +50,7 @@ namespace Game.Database {
                     manager.Close(transaction.Connection);
                     return false;
                 }
-                manager.Close(transaction.Connection);                         
+                manager.Close(transaction.Connection);
 
                 return false;
             }

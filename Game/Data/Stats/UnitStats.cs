@@ -1,55 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Game.Data.Stats {
+﻿namespace Game.Data.Stats {
     public class BaseUnitStats {
-        string name;
+        private string name;
+
         public string Name {
             get { return name; }
         }
 
-        Resource cost;
+        private Resource cost;
+
         public Resource Cost {
             get { return cost; }
         }
 
-        Resource upgradeCost;
+        private Resource upgradeCost;
+
         public Resource UpgradeCost {
             get { return upgradeCost; }
         }
 
-        BaseBattleStats battleStats;
+        private BaseBattleStats battleStats;
+
         public BaseBattleStats Battle {
             get { return battleStats; }
         }
 
-        ushort type;
+        private ushort type;
+
         public ushort Type {
             get { return type; }
         }
 
-        byte lvl;
+        private byte lvl;
+
         public byte Lvl {
             get { return lvl; }
         }
 
-        int buildTime;
+        private int buildTime;
+
         public int BuildTime {
             get { return buildTime; }
         }
 
-        int upgradeTime;
+        private int upgradeTime;
+
         public int UpgradeTime {
             get { return upgradeTime; }
         }
 
-        byte upkeep;
+        private byte upkeep;
+
         public byte Upkeep {
             get { return upkeep; }
         }
 
-        public BaseUnitStats(string name, ushort type, byte lvl, Resource cost, Resource upgradeCost, BaseBattleStats battleStats, int buildTime, int upgradeTime, byte upkeep) {
+        public BaseUnitStats(string name, ushort type, byte lvl, Resource cost, Resource upgradeCost,
+                             BaseBattleStats battleStats, int buildTime, int upgradeTime, byte upkeep) {
             this.name = name;
             this.type = type;
             this.lvl = lvl;

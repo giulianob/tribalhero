@@ -1,19 +1,23 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Setup;
 using Game.Data;
-using Game.Map;
 using Game.Database;
+using Game.Map;
+using Game.Setup;
+
+#endregion
 
 namespace Game.Logic {
     public class Randomizer {
         public static Random random = Config.Random;
+
         public static uint MapX {
-            get { return (uint)random.Next(Config.width_margin, /*Config.map_width*/50 - Config.width_margin); }
+            get { return (uint) random.Next(Config.width_margin, /*Config.map_width*/50 - Config.width_margin); }
         }
+
         public static uint MapY {
-            get { return (uint)random.Next(Config.height_margin, /*Config.map_height*/50 - Config.height_margin); }
+            get { return (uint) random.Next(Config.height_margin, /*Config.map_height*/50 - Config.height_margin); }
         }
 
         public static bool MainBuilding(out Structure structure) {
@@ -28,9 +32,10 @@ namespace Game.Logic {
             return true;
         }
 
-        class Random_foreach {
+        private class Random_foreach {
             public DbTransaction transaction;
             public City city;
+
             public Random_foreach(DbTransaction transaction, City city) {
                 this.transaction = transaction;
                 this.city = city;
@@ -38,33 +43,32 @@ namespace Game.Logic {
         }
 
         private static bool RandomizeNpcResourceWork(uint ox, uint oy, uint x, uint y, object custom) {
-            Random_foreach feObj = (Random_foreach)custom;
-            if (Config.Random.Next() % 4 == 0) {
+            Random_foreach feObj = (Random_foreach) custom;
+            if (Config.Random.Next()%4 == 0) {
                 Structure structure;
-                Global.World.lockRegion(x, y);
-                if (Config.Random.Next() % 2 == 0) {
+                Global.World.LockRegion(x, y);
+                if (Config.Random.Next()%2 == 0)
                     structure = StructureFactory.getStructure(2402, 1);
-                } else {
+                else
                     structure = StructureFactory.getStructure(2402, 1);
-                }
                 structure.X = x;
                 structure.Y = y;
-                feObj.city.add(structure);
-                if (!Global.World.add(structure)) {
-                    feObj.city.remove(structure);
-                }
+                feObj.city.Add(structure);
+                if (!Global.World.Add(structure))
+                    feObj.city.Remove(structure);
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 Global.dbManager.Save(structure);
-                Global.World.unlockRegion(x, y);
+                Global.World.UnlockRegion(x, y);
             }
             return true;
         }
 
-        public static void RandomizeNpcResource(City city, Game.Database.DbTransaction transaction) {
+        public static void RandomizeNpcResource(City city, DbTransaction transaction) {
             byte radius = city.Radius;
             Structure structure = city.MainBuilding;
             Random_foreach feObject = new Random_foreach(transaction, city);
-            RadiusLocator.foreach_object(structure.X, structure.Y, (byte)Math.Max(radius - 1, 0), false, RandomizeNpcResourceWork, feObject);
+            RadiusLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false,
+                                         RandomizeNpcResourceWork, feObject);
         }
     }
 }

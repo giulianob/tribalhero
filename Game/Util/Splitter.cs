@@ -1,6 +1,9 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
+
+#endregion
 
 namespace Game.Util {
     public class Splitter<T> {
@@ -10,13 +13,11 @@ namespace Game.Util {
         private IEnumerator<T> _inputEnumerator;
 
         public Splitter(IEnumerable<T> inputEnumerable, Predicate<T> predicate) {
-            if (inputEnumerable == null) {
+            if (inputEnumerable == null)
                 throw new ArgumentNullException("inputEnumerable");
-            }
 
-            if (predicate == null) {
+            if (predicate == null)
                 throw new ArgumentNullException("predicate");
-            }
             _inputEnumerator = inputEnumerable.GetEnumerator();
             _predicate = predicate;
         }
@@ -31,23 +32,18 @@ namespace Game.Util {
 
         private IEnumerable<T> GetNextElement(bool isMatching) {
             while (true) {
-                if (_queuingFirstIterator == isMatching && _unyieldedElements.Count > 0) {
+                if (_queuingFirstIterator == isMatching && _unyieldedElements.Count > 0)
                     yield return _unyieldedElements.Dequeue();
-                }
                 else if (_inputEnumerator.MoveNext()) {
-                    if (_predicate(_inputEnumerator.Current) == isMatching) {
+                    if (_predicate(_inputEnumerator.Current) == isMatching)
                         yield return _inputEnumerator.Current;
-                    }
                     else {
                         _unyieldedElements.Enqueue(_inputEnumerator.Current);
                         _queuingFirstIterator = !isMatching;
                     }
-                }
-                else {
+                } else
                     break;
-                }
             }
         }
-
     }
 }

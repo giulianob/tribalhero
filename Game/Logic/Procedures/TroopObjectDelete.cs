@@ -1,8 +1,10 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
 using Game.Data;
 using Game.Fighting;
+
+#endregion
 
 namespace Game.Logic.Procedures {
     public partial class Procedure {
@@ -20,18 +22,19 @@ namespace Game.Logic.Procedures {
             }
 
             troop.City.Troops.Remove(troop.Stub.TroopId);
-            Global.World.remove(troop);
-            troop.City.remove(troop);
+            Global.World.Remove(troop);
+            troop.City.Remove(troop);
 
             return true;
         }
 
         private static bool addToNormal(TroopStub source, TroopStub target) {
             target.BeginUpdate();
-            foreach (KeyValuePair<FormationType, Formation> kvp in (IEnumerable<KeyValuePair<FormationType, Formation>>)source) {
-                foreach (KeyValuePair<ushort, ushort> unit in kvp.Value) {
+            foreach (
+                KeyValuePair<FormationType, Formation> kvp in
+                    (IEnumerable<KeyValuePair<FormationType, Formation>>) source) {
+                foreach (KeyValuePair<ushort, ushort> unit in kvp.Value)
                     target.addUnit(FormationType.Normal, unit.Key, unit.Value);
-                }
             }
             target.EndUpdate();
 

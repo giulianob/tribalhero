@@ -1,36 +1,44 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using Game.Data;
+
+#endregion
 
 namespace Game.Setup {
     public class MapFactory {
-        static Dictionary<int, List<uint>> dict = new Dictionary<int, List<uint>>();
-        static int index = 0;
-        static int region_index = 0;
-        static uint region_width = Config.region_width*2;
-        static uint region_height = Config.region_height*3;
-        static int region_col = (int)(Config.map_width / region_width);
-        static int region_row = (int)(Config.map_height / region_height);
-        static int region_count = region_col * region_row;
+        private static Dictionary<int, List<uint>> dict = new Dictionary<int, List<uint>>();
+        private static int index;
+        private static int region_index;
+        private static uint region_width = Config.region_width*2;
+        private static uint region_height = Config.region_height*3;
+        private static int region_col = (int) (Config.map_width/region_width);
+        private static int region_row = (int) (Config.map_height/region_height);
+        private static int region_count = region_col*region_row;
 
-        static int GetRegion(uint x, uint y) {
-            return (int)(x / region_width + (y / region_height) * region_col);
+        private static int GetRegion(uint x, uint y) {
+            return (int) (x/region_width + (y/region_height)*region_col);
         }
+
         public static void init(string filename) {
-       //     if (Config.map_width % region_width != 0 || Config.map_height % region_height != 0) throw new Exception();
-            for (int i = 0; i < region_count; ++i) dict[i] = new List<uint>();
-            using (StreamReader reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))) {
+            //     if (Config.map_width % region_width != 0 || Config.map_height % region_height != 0) throw new Exception();
+            for (int i = 0; i < region_count; ++i)
+                dict[i] = new List<uint>();
+            using (
+                StreamReader reader =
+                    new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))) {
                 String line;
                 while ((line = reader.ReadLine()) != null) {
                     String[] strs = line.Split(',');
                     uint x = uint.Parse(strs[0]);
                     uint y = uint.Parse(strs[1]);
-                    uint hash = x + y * Config.map_width;
-                    int region = GetRegion(x,y);
+                    uint hash = x + y*Config.map_width;
+                    int region = GetRegion(x, y);
                     List<uint> list;
                     if (!dict.TryGetValue(region, out list)) {
-                        for (int i = region_count; i <= region; ++i ) {
+                        for (int i = region_count; i <= region; ++i) {
                             list = new List<uint>();
                             dict[i] = list;
                         }
@@ -55,11 +63,10 @@ namespace Game.Setup {
                         break;
                     }
                     uint hash = list[index++];
-                    x = hash % Config.map_width;
-                    y = hash / Config.map_width;
-                    if (Global.World.getObjects(x, y).Count == 0) {
+                    x = hash%Config.map_width;
+                    y = hash/Config.map_width;
+                    if (Global.World.GetObjects(x, y).Count == 0)
                         return true;
-                    }
                 } while (true);
             } while (true);
         }

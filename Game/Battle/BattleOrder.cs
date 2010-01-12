@@ -1,34 +1,28 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
-using Game.Data;
 
-namespace Game.Battle
-{
-    class BattleOrder : List<CombatObject>
-    {
-        uint round;
+#endregion
 
-        public BattleOrder(uint round)
-        {
+namespace Game.Battle {
+    class BattleOrder : List<CombatObject> {
+        private uint round;
+
+        public BattleOrder(uint round) {
             this.round = round;
         }
 
-        public void ParticipatedInRound()
-        {
+        public void ParticipatedInRound() {
             round++;
         }
 
-        public bool NextObject(out CombatObject outObj)
-        {
+        public bool NextObject(out CombatObject outObj) {
             outObj = null;
 
             bool hasMoreInCurrentRound = false;
 
-            foreach (CombatObject obj in this)
-            {
-                if (outObj == null && obj.LastRound == round)
-                {
+            foreach (CombatObject obj in this) {
+                if (outObj == null && obj.LastRound == round) {
                     outObj = obj;
                     continue;
                 }

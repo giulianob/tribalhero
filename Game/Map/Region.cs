@@ -1,26 +1,29 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Game.Map;
-using Game.Data;
 using System.IO;
-using System.Collections;
+using Game.Data;
+using Game.Map;
+using Game.Setup;
 
+#endregion
 
 namespace Game {
-
     public class Region {
-
         #region Constants
+
         public const int TILE_SIZE = 2;
+
         #endregion
 
         #region Members
-        ObjectList objlist = new ObjectList();
-        object objLock = new object();
-        byte[] map;
-        byte[] objects;
-        bool isDirty;
+
+        private ObjectList objlist = new ObjectList();
+        private object objLock = new object();
+        private byte[] map;
+        private byte[] objects;
+        private bool isDirty;
 
         public ushort Count {
             get {
@@ -37,17 +40,21 @@ namespace Game {
         public object Lock {
             get { return objLock; }
         }
+
         #endregion
 
         #region Constructors
-        public Region() {
+
+        public Region() {}
+
+        public Region(Byte[] bytes) {
+            map = (byte[]) bytes.Clone();
         }
-        public Region(Byte[] bytes) {            
-            map = (byte[])bytes.Clone();
-        }
+
         #endregion
 
         #region Methods
+
         public bool add(GameObject obj) {
             lock (objlist) {
                 objlist.addGameObject(obj);
@@ -97,21 +104,27 @@ namespace Game {
                             bw.Write(obj.Type);
                             bw.Write(obj.City.Owner.PlayerId);
                             bw.Write(obj.City.CityId);
-                            bw.Write(obj.ObjectID);
-                            bw.Write((ushort)(obj.RelX));
-                            bw.Write((ushort)(obj.RelY));
-                            bw.Write((byte)obj.State.Type);
+                            bw.Write(obj.ObjectId);
+                            bw.Write((ushort) (obj.RelX));
+                            bw.Write((ushort) (obj.RelY));
+                            bw.Write((byte) obj.State.Type);
                             foreach (object parameter in obj.State.Parameters) {
-                                if (parameter is byte) bw.Write((byte)parameter);
-                                else if (parameter is short) bw.Write((short)parameter);
-                                else if (parameter is int) bw.Write((int)parameter);
-                                else if (parameter is ushort) bw.Write((ushort)parameter);
-                                else if (parameter is uint) bw.Write((uint)parameter);
-                                else if (parameter is string) bw.Write((string)parameter);
+                                if (parameter is byte)
+                                    bw.Write((byte) parameter);
+                                else if (parameter is short)
+                                    bw.Write((short) parameter);
+                                else if (parameter is int)
+                                    bw.Write((int) parameter);
+                                else if (parameter is ushort)
+                                    bw.Write((ushort) parameter);
+                                else if (parameter is uint)
+                                    bw.Write((uint) parameter);
+                                else if (parameter is string)
+                                    bw.Write((string) parameter);
                             }
 
                             //if this is the main building then include radius
-                            if (obj.ObjectID == obj.City.MainBuilding.ObjectID)
+                            if (obj.ObjectId == obj.City.MainBuilding.ObjectId)
                                 bw.Write(obj.City.Radius);
                         }
 
@@ -129,18 +142,21 @@ namespace Game {
         public byte[] getBytes() {
             return map;
         }
+
         public ushort getTileType(uint x, uint y) {
-            return BitConverter.ToUInt16(map, getTileIndex(x, y) * 2);
+            return BitConverter.ToUInt16(map, getTileIndex(x, y)*2);
         }
+
         #endregion
 
         #region Static Util Methods
+
         public static ushort getRegionIndex(GameObject obj) {
             return getRegionIndex(obj.X, obj.Y);
         }
 
         public static ushort getRegionIndex(uint x, uint y) {
-            return (ushort)(x / Setup.Config.region_width + (y / Setup.Config.region_height) * Setup.Config.column);
+            return (ushort) (x/Config.region_width + (y/Config.region_height)*Config.column);
         }
 
         public static int getTileIndex(GameObject obj) {
@@ -148,8 +164,9 @@ namespace Game {
         }
 
         public static int getTileIndex(uint x, uint y) {
-            return (int)(x % Setup.Config.region_width + (y % Setup.Config.region_height) * Setup.Config.region_width);
+            return (int) (x%Config.region_width + (y%Config.region_height)*Config.region_width);
         }
+
         #endregion
     }
 }

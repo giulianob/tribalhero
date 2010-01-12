@@ -1,14 +1,15 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Game.Logic.Actions;
-using Game.Logic;
 using Game.Data;
-using Game.Setup;
 using Game.Fighting;
-using Game.Database;
-using Game.Util;
+using Game.Logic.Actions;
 using Game.Logic.Procedures;
+using Game.Setup;
+using Game.Util;
+
+#endregion
 
 namespace Game.Comm {
     public partial class Processor {
@@ -25,7 +26,6 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
@@ -45,9 +45,11 @@ namespace Game.Comm {
                     FormationType formationType;
                     byte unitCount;
                     try {
-                        formationType = (FormationType)packet.getByte();
+                        formationType = (FormationType) packet.getByte();
 
-                        if ((f == 0 && formationType != FormationType.Normal) || (f == 1 && formationType != FormationType.Garrison)) { // a bit dirty
+                        if ((f == 0 && formationType != FormationType.Normal) ||
+                            (f == 1 && formationType != FormationType.Garrison)) {
+                            // a bit dirty
                             reply_error(session, packet, Error.UNEXPECTED);
                             return;
                         }
@@ -116,18 +118,16 @@ namespace Game.Comm {
                 }
 
                 Structure barrack;
-                if (!city.tryGetStructure(objectId, out barrack)) {
+                if (!city.TryGetStructure(objectId, out barrack))
                     reply_error(session, packet, Error.UNEXPECTED);
-                }
 
                 UnitUpgradeAction upgrade_action = new UnitUpgradeAction(cityId, objectId, type);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, upgrade_action, barrack.Technologies);
-                if (ret != 0) {
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, upgrade_action,
+                                                 barrack.Technologies);
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
             }
         }
 
@@ -157,30 +157,28 @@ namespace Game.Comm {
                 }
 
                 Structure barrack;
-                if (!city.tryGetStructure(objectId, out barrack)) {
+                if (!city.TryGetStructure(objectId, out barrack))
                     reply_error(session, packet, Error.UNEXPECTED);
-                }
 
                 UnitTrainAction train_action = new UnitTrainAction(cityId, objectId, type, count);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, train_action, barrack.Technologies);
-                if (ret != 0) {
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, train_action,
+                                                 barrack.Technologies);
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
             }
         }
 
         public void CmdTroopAttack(Session session, Packet packet) {
             uint cityId;
             uint targetCityId;
-            uint targetObjectId;            
+            uint targetObjectId;
             byte formationCount;
             AttackMode mode;
 
             try {
-                mode = (AttackMode)packet.getByte();
+                mode = (AttackMode) packet.getByte();
                 cityId = packet.getUInt32();
                 targetCityId = packet.getUInt32();
                 targetObjectId = packet.getUInt32();
@@ -220,7 +218,7 @@ namespace Game.Comm {
                 City targetCity = cities[targetCityId];
                 Structure targetStructure;
 
-                if (!targetCity.tryGetStructure(targetObjectId, out targetStructure)) {
+                if (!targetCity.TryGetStructure(targetObjectId, out targetStructure)) {
                     reply_error(session, packet, Error.OBJECT_STRUCTURE_NOT_FOUND);
                     return;
                 }
@@ -231,7 +229,7 @@ namespace Game.Comm {
                     FormationType formationType;
                     byte unitCount;
                     try {
-                        formationType = (FormationType)packet.getByte();
+                        formationType = (FormationType) packet.getByte();
                         unitCount = packet.getByte();
                     }
                     catch (Exception) {
@@ -265,12 +263,10 @@ namespace Game.Comm {
 
                 AttackAction aa = new AttackAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.doPassive(city, aa, true);
-                if (ret != 0) {
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
             }
         }
 
@@ -303,7 +299,6 @@ namespace Game.Comm {
 
             Dictionary<uint, City> cities;
             using (new MultiObjectLock(out cities, cityId, targetCityId)) {
-
                 City city = cities[cityId];
                 City targetCity = cities[targetCityId];
 
@@ -313,7 +308,7 @@ namespace Game.Comm {
                     FormationType formationType;
                     byte unitCount;
                     try {
-                        formationType = (FormationType)packet.getByte();
+                        formationType = (FormationType) packet.getByte();
                         unitCount = packet.getByte();
                     }
                     catch (Exception) {
@@ -347,18 +342,16 @@ namespace Game.Comm {
 
                 DefenseAction da = new DefenseAction(cityId, stub.TroopId, targetCityId);
                 Error ret = city.Worker.doPassive(city, da, true);
-                if (ret != 0) {
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
             }
         }
 
         public void CmdTroopRetreat(Session session, Packet packet) {
             uint cityId;
-            byte troopId;            
+            byte troopId;
 
             try {
                 cityId = packet.getUInt32();
@@ -373,12 +366,12 @@ namespace Game.Comm {
             City stationedCity;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
-            using (new MultiObjectLock(cityId, out city)) {                
+            using (new MultiObjectLock(cityId, out city)) {
                 if (city == null) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
-                
+
                 TroopStub stub;
 
                 if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null) {
@@ -408,24 +401,21 @@ namespace Game.Comm {
                     return;
                 }
 
-                if (!Procedure.TroopObjectCreateFromStation(stub, stub.StationedCity.MainBuilding.X, stub.StationedCity.MainBuilding.Y)) {
+                if (
+                    !Procedure.TroopObjectCreateFromStation(stub, stub.StationedCity.MainBuilding.X,
+                                                            stub.StationedCity.MainBuilding.Y)) {
                     reply_error(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
-                RetreatAction ra = new RetreatAction(cityId, troopId);                
+                RetreatAction ra = new RetreatAction(cityId, troopId);
 
                 Error ret = city.Worker.doPassive(city, ra, true);
-                if (ret != 0) {
+                if (ret != 0)
                     reply_error(session, packet, ret);
-                }
-                else {
+                else
                     reply_success(session, packet);
-                }
             }
         }
-
-
     }
-
 }

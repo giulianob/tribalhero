@@ -1,19 +1,22 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections;
-using Game.Util;
-using Game.Database;
+using Game.Data;
 using Game.Setup;
+
+#endregion
 
 namespace Game.Comm {
     public partial class Processor {
         public delegate void do_work(Session session, Packet packet);
-        Dictionary<Command, ProcessorCommand> commands = new Dictionary<Command, ProcessorCommand>();
-        Dictionary<Command, ProcessorCommand> events = new Dictionary<Command, ProcessorCommand>();
 
-        class ProcessorCommand {
+        private Dictionary<Command, ProcessorCommand> commands = new Dictionary<Command, ProcessorCommand>();
+        private Dictionary<Command, ProcessorCommand> events = new Dictionary<Command, ProcessorCommand>();
+
+        private class ProcessorCommand {
             public do_work function;
+
             public ProcessorCommand(do_work function) {
                 this.function = function;
             }
@@ -34,8 +37,8 @@ namespace Game.Comm {
             registerCommand(Command.ACTION_CANCEL, CmdCancelAction);
             registerCommand(Command.TECH_UPGRADE, CmdTechnologyUpgrade);
             registerCommand(Command.TROOP_INFO, CmdGetTroopInfo);
-            registerCommand(Command.TROOP_ATTACK, CmdTroopAttack); 
-            registerCommand(Command.TROOP_DEFEND, CmdTroopDefend); 
+            registerCommand(Command.TROOP_ATTACK, CmdTroopAttack);
+            registerCommand(Command.TROOP_DEFEND, CmdTroopDefend);
             registerCommand(Command.TROOP_RETREAT, CmdTroopRetreat);
             registerCommand(Command.TROOP_LOCAL_SET, CmdLocalTroopSet);
             registerCommand(Command.PLAYER_USERNAME_GET, CmdGetUsername);
@@ -75,26 +78,26 @@ namespace Game.Comm {
 
         public void reply_success(Session session, Packet packet) {
             Packet reply = new Packet(packet);
-            reply.Option = (ushort)Packet.Options.REPLY;
+            reply.Option = (ushort) Packet.Options.REPLY;
             session.write(reply);
         }
 
         public void reply_error(Session session, Packet packet, Error error) {
             Packet reply = new Packet(packet);
-            reply.Option = (ushort)Packet.Options.FAILED | (ushort)Packet.Options.REPLY;
-            reply.addInt32((int)error);
+            reply.Option = (ushort) Packet.Options.FAILED | (ushort) Packet.Options.REPLY;
+            reply.addInt32((int) error);
             session.write(reply);
         }
 
         public virtual void execute(Session session, Packet packet) {
             Global.Logger.Info(packet.ToString(256));
             //try {
-                ProcessorCommand cmd = commands[packet.Cmd];
-                Player player = session.Player;
+            ProcessorCommand cmd = commands[packet.Cmd];
+            Player player = session.Player;
 
-                lock (session) {
-                    cmd.function(session, packet);
-                }
+            lock (session) {
+                cmd.function(session, packet);
+            }
             /*}
             catch (Exception e) {
                 Global.Logger.Error(string.Format("Session[{0}] Cmd[{1}] failed[{2}]", session.name, Enum.GetName(typeof(Command), packet.Cmd), e));
@@ -110,7 +113,8 @@ namespace Game.Comm {
                 }
             }
             catch (Exception e) {
-                Global.Logger.Error(string.Format("Session[{0}] Event[{1}] failed[{2}]", session.name, Enum.GetName(typeof(Command), packet.Cmd), e));
+                Global.Logger.Error(string.Format("Session[{0}] Event[{1}] failed[{2}]", session.name,
+                                                  Enum.GetName(typeof (Command), packet.Cmd), e));
                 return;
             }
         }

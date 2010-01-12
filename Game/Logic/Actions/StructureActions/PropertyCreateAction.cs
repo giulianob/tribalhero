@@ -1,15 +1,16 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Game.Data;
 using Game.Setup;
-using Game.Util;
+
+#endregion
 
 namespace Game.Logic.Actions {
     public class PropertyCreateAction : PassiveAction, IScriptable {
-        Structure structure;
-        string name;
-        object value;
+        private Structure structure;
+        private string name;
+        private object value;
 
         public override Error validate(string[] parms) {
             return Error.OK;
@@ -33,12 +34,11 @@ namespace Game.Logic.Actions {
 
         #region IScriptable Members
 
-        public void ScriptInit(Game.Data.GameObject obj, string[] parms) {
-            if ((structure = obj as Structure) == null) {
+        public void ScriptInit(GameObject obj, string[] parms) {
+            if ((structure = obj as Structure) == null)
                 throw new Exception();
-            }
             name = parms[0];
-            switch((DataType)Enum.Parse(typeof(DataType), parms[1], true)) {
+            switch ((DataType) Enum.Parse(typeof (DataType), parms[1], true)) {
                 case DataType.Byte:
                     value = byte.Parse(parms[2]);
                     break;

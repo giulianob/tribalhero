@@ -1,26 +1,30 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Reflection;
 using System.IO;
+using System.Xml;
+
+#endregion
 
 namespace Game.Util {
     public class XMLKVPair {
-        string key;        
+        private string key;
 
         public string Key {
             get { return key; }
             set { key = value; }
         }
 
-        string value;
+        private string value;
+
         public string Value {
             get { return value; }
             set { this.value = value; }
         }
 
         #region Constructors
+
         public XMLKVPair(string key, string value) {
             this.key = key;
             this.value = value;
@@ -40,7 +44,7 @@ namespace Game.Util {
             this.key = key;
             this.value = XmlConvert.ToString(value);
         }
-        
+
         public XMLKVPair(string key, DateTime value) {
             this.key = key;
             this.value = XmlConvert.ToString(value, XmlDateTimeSerializationMode.Utc);
@@ -105,6 +109,7 @@ namespace Game.Util {
             this.key = key;
             this.value = XmlConvert.ToString(value);
         }
+
         #endregion
     }
 
@@ -116,13 +121,18 @@ namespace Game.Util {
             writer.WriteStartElement("Properties");
 
             foreach (object variable in variables) {
-
-                if (variable is byte) writer.WriteStartElement("Byte");
-                else if (variable is short) writer.WriteStartElement("Short");
-                else if (variable is int) writer.WriteStartElement("Int");
-                else if (variable is ushort) writer.WriteStartElement("Ushort");
-                else if (variable is uint) writer.WriteStartElement("Uint");
-                else if (variable is string) writer.WriteStartElement("String");
+                if (variable is byte)
+                    writer.WriteStartElement("Byte");
+                else if (variable is short)
+                    writer.WriteStartElement("Short");
+                else if (variable is int)
+                    writer.WriteStartElement("Int");
+                else if (variable is ushort)
+                    writer.WriteStartElement("Ushort");
+                else if (variable is uint)
+                    writer.WriteStartElement("Uint");
+                else if (variable is string)
+                    writer.WriteStartElement("String");
                 else
                     throw new Exception("Unsupported variable type " + variable.GetType().Name);
 
@@ -163,8 +173,7 @@ namespace Game.Util {
 
             while (reader.Read()) {
                 if (reader.NodeType == XmlNodeType.Element) {
-                    switch (reader.Name)
-                    {
+                    switch (reader.Name) {
                         case "Properties":
                             continue;
                         case "String":
@@ -187,7 +196,7 @@ namespace Game.Util {
                             break;
                         default:
                             throw new Exception("Unsupported variable type");
-                    }                    
+                    }
                 }
             }
 
@@ -195,10 +204,9 @@ namespace Game.Util {
         }
 
         public static Dictionary<String, String> Deserialize(String xml) {
-
             Dictionary<String, String> ret = new Dictionary<string, string>();
-            
-            StringReader stringReader = new StringReader(xml);            
+
+            StringReader stringReader = new StringReader(xml);
             XmlReader reader = XmlReader.Create(stringReader);
 
             while (reader.Read()) {

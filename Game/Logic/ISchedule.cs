@@ -1,11 +1,12 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
+
+#endregion
 
 namespace Game.Logic {
-
     class ScheduleComparer : IComparer<ISchedule> {
-
         #region IComparer<ISchedule> Members
 
         public int Compare(ISchedule x, ISchedule y) {
@@ -16,9 +17,7 @@ namespace Game.Logic {
     }
 
     public interface ISchedule {
-        DateTime Time {
-            get;
-        }
+        DateTime Time { get; }
         void callback(object custom);
     }
 }

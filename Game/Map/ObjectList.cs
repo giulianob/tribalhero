@@ -1,25 +1,30 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Data;
 using System.Collections;
-using System.Threading;
+using System.Collections.Generic;
+using Game.Data;
+
+#endregion
 
 namespace Game.Map {
-
     class AllObjectEnum : IEnumerator {
         #region Members
-        bool isNew = true;
+
+        private bool isNew = true;
         private ObjectList _objectList;
         private Dictionary<int, List<GameObject>>.Enumerator itr;
         private List<GameObject>.Enumerator list_itr;
+
         #endregion
 
         #region Constructors
+
         public AllObjectEnum(ObjectList objectList) {
             _objectList = objectList;
             itr = _objectList.dict.GetEnumerator();
         }
+
         #endregion
 
         #region IEnumerator Members
@@ -29,36 +34,28 @@ namespace Game.Map {
         }
 
         public object Current {
-            get {
-                return list_itr.Current;
-            }
+            get { return list_itr.Current; }
         }
 
         public bool MoveNext() {
-            if (isNew == true) {
+            if (isNew) {
                 isNew = false;
                 if (itr.MoveNext()) {
                     list_itr = itr.Current.Value.GetEnumerator();
-                    
+
                     return list_itr.MoveNext();
-                }
-                else {
+                } else
                     return false;
-                }
-            }
-            else {
-                if (list_itr.MoveNext()) {
+            } else {
+                if (list_itr.MoveNext())
                     return true;
-                }
                 else {
                     if (itr.MoveNext()) {
                         list_itr = itr.Current.Value.GetEnumerator();
 
                         return list_itr.MoveNext();
-                    }
-                    else {
+                    } else
                         return false;
-                    }
                 }
             }
         }
@@ -68,29 +65,34 @@ namespace Game.Map {
 
     public class ObjectList : IEnumerable {
         #region Members
+
         internal Dictionary<int, List<GameObject>> dict = new Dictionary<int, List<GameObject>>();
-        ushort count;
+        private ushort count;
+
         #endregion
 
         #region Properties
+
         public ushort Count {
             get { return count; }
         }
+
         #endregion
 
         #region Methods
+
         internal void addGameObject(GameObject obj) {
             add(obj, Region.getTileIndex(obj.X, obj.Y));
         }
 
-        void add(GameObject obj, int index) {
+        private void add(GameObject obj, int index) {
             List<GameObject> list;
 
             if (dict.TryGetValue(index, out list)) {
-                if (list.Contains(obj)) throw new Exception("WTF");
+                if (list.Contains(obj))
+                    throw new Exception("WTF");
                 list.Add(obj);
-            }
-            else {
+            } else {
                 list = new List<GameObject>();
                 list.Add(obj);
                 dict[index] = list;
@@ -125,12 +127,12 @@ namespace Game.Map {
 
             int index = Region.getTileIndex(x, y);
 
-            if (dict.TryGetValue(index, out list)) {                
+            if (dict.TryGetValue(index, out list))
                 return new List<GameObject>(list);
-            }
             else
                 return new List<GameObject>();
         }
+
         #endregion
 
         #region IEnumerable Members

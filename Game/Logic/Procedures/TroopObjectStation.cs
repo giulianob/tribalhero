@@ -1,18 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Database;
-using Game.Util;
+#region
+
+using Game.Data;
+
+#endregion
 
 namespace Game.Logic.Procedures {
     public partial class Procedure {
-        internal static void TroopObjectStation(Game.Data.TroopObject troop, City target) {
+        internal static void TroopObjectStation(TroopObject troop, City target) {
             troop.Stub.BeginUpdate();
             target.Troops.AddStationed(troop.Stub);
             troop.Stub.EndUpdate();
 
-            Global.World.remove(troop);
-            troop.City.remove(troop);
+            Global.World.Remove(troop);
+            troop.City.Remove(troop);
         }
     }
 }

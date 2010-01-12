@@ -1,28 +1,29 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Game.Data;
 using Game.Setup;
-using Game.Util;
+
+#endregion
 
 namespace Game.Logic.Actions {
     class TechnologyCreateAction : PassiveAction, IScriptable {
-        Structure obj;
-        uint techId;
-        byte lvl;
-        TimeSpan ts;
+        private Structure obj;
+        private uint techId;
+        private byte lvl;
+        private TimeSpan ts;
 
         public override Error validate(string[] parms) {
             return Error.OK;
         }
 
         public override Error execute() {
-            if (obj == null) return Error.OBJECT_NOT_FOUND;
+            if (obj == null)
+                return Error.OBJECT_NOT_FOUND;
 
             TechnologyBase tech_base = TechnologyFactory.getTechnologyBase(techId, lvl);
-            if (tech_base == null) {
+            if (tech_base == null)
                 return Error.OBJECT_NOT_FOUND;
-            }
 
             Technology tech = new Technology(tech_base);
             obj.Technologies.add(tech);
@@ -44,14 +45,13 @@ namespace Game.Logic.Actions {
 
         #region ICanInit Members
 
-        public void ScriptInit(Game.Data.GameObject obj, string[] parms) {
-            if ((this.obj = obj as Structure) == null) {
+        public void ScriptInit(GameObject obj, string[] parms) {
+            if ((this.obj = obj as Structure) == null)
                 throw new Exception();
-            }
-            this.techId = uint.Parse(parms[0]);
-            this.lvl = byte.Parse(parms[1]);
-            this.ts = TimeSpan.FromSeconds(int.Parse(parms[2]));
-            this.execute();
+            techId = uint.Parse(parms[0]);
+            lvl = byte.Parse(parms[1]);
+            ts = TimeSpan.FromSeconds(int.Parse(parms[2]));
+            execute();
         }
 
         #endregion

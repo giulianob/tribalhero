@@ -1,12 +1,14 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Data;
 using Game.Database;
-using Game.Data;
 using Game.Setup;
 
+#endregion
+
 namespace Game.Logic {
-    public enum ActionType : int {
+    public enum ActionType {
         STRUCTURE_BUILD = 101,
         STRUCTURE_UPGRADE = 102,
         STRUCTURE_CHANGE = 103,
@@ -19,9 +21,9 @@ namespace Game.Logic {
         ATTACK = 250,
         DEFENSE = 251,
         RETREAT = 252,
-        
+
         RESOURCE_CONVERT = 301,
-     	FARM = 302,        
+        FARM = 302,
         RESOURCE = 303,
         REFINERY = 304,
         RESOURCE_MILL = 305,
@@ -39,13 +41,13 @@ namespace Game.Logic {
         ENGAGE_DEFENSE = 703
     }
 
-    public enum ActionInterrupt : int {
+    public enum ActionInterrupt {
         CANCEL = 0,
         Abort = 1,
         KILLED = 2
     }
 
-    public enum ActionState : int {        
+    public enum ActionState {
         COMPLETED = 0,
         STARTED = 1,
         FAILED = 2,
@@ -55,22 +57,26 @@ namespace Game.Logic {
     }
 
     public abstract class Action : IPersistableObject {
-        ICanDo workerObject;
+        private ICanDo workerObject;
+
         public ICanDo WorkerObject {
             get { return workerObject; }
             set { workerObject = value; }
         }
 
         public delegate void ActionNotify(Action action, ActionState state);
+
         public event ActionNotify OnNotify;
 
-        public bool isDone = false;
+        public bool isDone;
+
         public bool IsDone {
             get { return isDone; }
             set { isDone = value; }
         }
 
-        ushort actionId;
+        private ushort actionId;
+
         public ushort ActionId {
             get { return actionId; }
             set { actionId = value; }
@@ -78,15 +84,13 @@ namespace Game.Logic {
 
         public void stateChange(ActionState state) {
             if (OnNotify != null)
-                OnNotify(this, state);            
+                OnNotify(this, state);
         }
 
         public abstract Error validate(string[] parms);
         public abstract Error execute();
         public abstract void interrupt(ActionInterrupt state);
-        public abstract ActionType Type {
-            get;
-        }
+        public abstract ActionType Type { get; }
 
         protected bool isValid() {
             if (workerObject == null)
@@ -103,36 +107,27 @@ namespace Game.Logic {
         public abstract string DbTable { get; }
 
         public virtual DbDependency[] DbDependencies {
-            get {
-                return new DbDependency[] { };
-            }
+            get { return new DbDependency[] {}; }
         }
 
         public virtual DbColumn[] DbColumns {
-            get {
-                return new DbColumn[] { };
-            }
+            get { return new DbColumn[] {}; }
         }
 
         public virtual DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
-                    new DbColumn("id", actionId, System.Data.DbType.UInt16),
-                    new DbColumn("city_id", workerObject.City.CityId, System.Data.DbType.UInt32),
-                    new DbColumn("object_id", workerObject.WorkerId, System.Data.DbType.UInt32)
-                };
+                return new[] {
+                                 new DbColumn("id", actionId, DbType.UInt16),
+                                 new DbColumn("city_id", workerObject.City.CityId, DbType.UInt32),
+                                 new DbColumn("object_id", workerObject.WorkerId, DbType.UInt32)
+                             };
             }
         }
 
         public abstract String Properties { get; }
 
-        bool dbPersisted = false;
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
     }
-
 }

@@ -1,24 +1,32 @@
+#region
+
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections.Specialized;
+using System.Data;
+using Game.Data;
+using Game.Data.Stats;
 using Game.Database;
 using Game.Setup;
-using Game.Comm;
-using Game.Data.Stats;
+
+#endregion
 
 namespace Game.Fighting {
     public class UnitTemplate : IEnumerable<KeyValuePair<ushort, BaseUnitStats>>, IPersistableList {
         #region Event
+
         public delegate void UpdateCallback(UnitTemplate template);
+
         public event UpdateCallback UnitUpdated;
+
         #endregion
 
-        Dictionary<ushort, BaseUnitStats> dict = new Dictionary<ushort, BaseUnitStats>();
+        private Dictionary<ushort, BaseUnitStats> dict = new Dictionary<ushort, BaseUnitStats>();
 
-        bool isUpdating = false;
+        private bool isUpdating = false;
 
-        City city;
+        private City city;
+
         public City City {
             get { return city; }
         }
@@ -26,8 +34,9 @@ namespace Game.Fighting {
         public BaseUnitStats this[ushort type] {
             get {
                 BaseUnitStats ret;
-                if (dict.TryGetValue(type, out ret)) return ret;
-                return UnitFactory.getUnitStats(type,1);
+                if (dict.TryGetValue(type, out ret))
+                    return ret;
+                return UnitFactory.getUnitStats(type, 1);
             }
             set {
                 dict[type] = value;
@@ -38,7 +47,7 @@ namespace Game.Fighting {
         }
 
         public int Size {
-            get { return (byte)dict.Count; }
+            get { return (byte) dict.Count; }
         }
 
         public UnitTemplate(City city) {
@@ -46,21 +55,22 @@ namespace Game.Fighting {
         }
 
         public void BeginUpdate() {
-            if (isUpdating) throw new Exception("Nesting beginupdate");
+            if (isUpdating)
+                throw new Exception("Nesting beginupdate");
             isUpdating = true;
         }
 
         public void EndUpdate() {
             isUpdating = false;
 
-            updateClient();            
+            updateClient();
         }
 
         public void dbLoaderAdd(ushort type, BaseUnitStats stats) {
             dict[type] = stats;
         }
 
-        void updateClient() {
+        private void updateClient() {
             if (UnitUpdated != null)
                 UnitUpdated(this);
         }
@@ -75,13 +85,14 @@ namespace Game.Fighting {
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator() {
             return dict.GetEnumerator();
         }
 
         #endregion
 
         #region IPersistable Members
+
         public const string DB_TABLE = "unit_templates";
 
         public string DbTable {
@@ -89,35 +100,23 @@ namespace Game.Fighting {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get {
-                return new DbColumn[] {
-                    new DbColumn("city_id", City.CityId, System.Data.DbType.UInt32)
-                };
-            }
+            get { return new DbColumn[] {new DbColumn("city_id", City.CityId, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {
-            get {
-                return new DbDependency[] { };
-            }
+            get { return new DbDependency[] {}; }
         }
 
         public DbColumn[] DbColumns {
-            get {
-                return new DbColumn[] { };
-            }
+            get { return new DbColumn[] {}; }
         }
 
         public DbColumn[] DbListColumns {
-            get {
-                return new DbColumn[] {
-                    new DbColumn("type", System.Data.DbType.UInt16),
-                    new DbColumn("level", System.Data.DbType.Byte)
-                };
-            }
+            get { return new DbColumn[] {new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte)}; }
         }
 
-        bool dbPersisted = false;
+        private bool dbPersisted = false;
+
         public bool DbPersisted {
             get { return dbPersisted; }
             set { dbPersisted = value; }
@@ -126,10 +125,11 @@ namespace Game.Fighting {
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
             Dictionary<ushort, BaseUnitStats>.Enumerator itr = dict.GetEnumerator();
             while (itr.MoveNext()) {
-                yield return new DbColumn[] {
-                    new DbColumn("type", itr.Current.Key, System.Data.DbType.UInt16),
-                    new DbColumn("level", itr.Current.Value.Lvl, System.Data.DbType.Byte),
-                };
+                yield return
+                    new DbColumn[] {
+                                       new DbColumn("type", itr.Current.Key, DbType.UInt16),
+                                       new DbColumn("level", itr.Current.Value.Lvl, DbType.Byte),
+                                   };
             }
         }
 

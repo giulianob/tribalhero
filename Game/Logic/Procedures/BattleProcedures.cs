@@ -1,15 +1,14 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
+using Game.Battle;
 using Game.Data;
 using Game.Fighting;
-using Game.Database;
-using Game.Battle;
-using Game.Setup;
+
+#endregion
 
 namespace Game.Logic.Procedures {
     public partial class Procedure {
-
         public static void MoveUnitFormation(TroopStub stub, FormationType source, FormationType target) {
             stub[target].Add(stub[source]);
             stub[source].Clear();
@@ -23,11 +22,10 @@ namespace Game.Logic.Procedures {
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopStub.TroopState.BATTLE;
             city.DefaultTroop.Template.LoadStats();
-            Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.Normal, FormationType.InBattle);
+            MoveUnitFormation(city.DefaultTroop, FormationType.Normal, FormationType.InBattle);
             city.DefaultTroop.EndUpdate();
 
             bm.AddToLocal(list, state);
         }
-
     }
 }

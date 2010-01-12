@@ -1,17 +1,17 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+
+#endregion
 
 namespace Game.Util {
     public class CSVReader : IDisposable {
-        string[] columns;
-        StreamReader sr = null;
+        private string[] columns;
+        private StreamReader sr = null;
 
         public string[] Columns {
-            get {
-                return columns;
-            }
+            get { return columns; }
         }
 
         public CSVReader(StreamReader sr) {
@@ -37,18 +37,16 @@ namespace Game.Util {
             return TokenizeCSVLine(line);
         }
 
-        string[] TokenizeCSVLine(string line) {
+        private string[] TokenizeCSVLine(string line) {
             string[] cells = line.Split(',');
 
             string[] result = new string[cells.Length];
             for (int i = 0; i < cells.Length; i++) {
                 string cell = cells[i].Trim();
-                if (cell.StartsWith("\"")) {
+                if (cell.StartsWith("\""))
                     result[i] = cell.Replace("\"\"", "\"").Trim('"');
-                }
-                else {
+                else
                     result[i] = cell;
-                }
             }
 
             return result;

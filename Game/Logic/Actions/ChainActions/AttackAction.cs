@@ -16,11 +16,11 @@ namespace Game.Logic.Actions {
     }
 
     class AttackAction : ChainAction {
-        private uint cityId;
-        private byte stubId;
-        private uint targetCityId;
-        private uint targetStructureId;
-        private AttackMode mode;
+        private readonly uint cityId;
+        private readonly byte stubId;
+        private readonly uint targetCityId;
+        private readonly uint targetStructureId;
+        private readonly AttackMode mode;
 
         public AttackAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode) {
             this.cityId = cityId;
@@ -31,7 +31,7 @@ namespace Game.Logic.Actions {
         }
 
         public AttackAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
-                            bool isVisible, Dictionary<string, string> properties)
+                            bool isVisible, IDictionary<string, string> properties)
             : base(id, chainCallback, current, chainState, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
             stubId = byte.Parse(properties["stub_id"]);
@@ -40,7 +40,7 @@ namespace Game.Logic.Actions {
             targetStructureId = uint.Parse(properties["target_object_id"]);
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             TroopStub stub;
             City targetCity;
@@ -67,7 +67,7 @@ namespace Game.Logic.Actions {
         }
 
         private void AfterTroopMoved(ActionState state) {
-            if (state == ActionState.COMPLETED) {                
+            if (state == ActionState.COMPLETED) {                        
                 List<ILockable> toBeLocked = new List<ILockable>();
                 Dictionary<uint, City> cities;
                 //This is a 2 step process because we need to find all the cities that need to be locked first
@@ -112,7 +112,7 @@ namespace Game.Logic.Actions {
                     City targetCity = cities[targetCityId];
 
                     if (!city.Troops.TryGetStub(stubId, out stub)) {
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         return;
                     }
 
@@ -136,7 +136,7 @@ namespace Game.Logic.Actions {
                         targetCity.EndUpdate();
                         city.EndUpdate();
 
-                        stateChange(ActionState.COMPLETED);
+                        StateChange(ActionState.COMPLETED);
                     }
                 }
             }
@@ -149,14 +149,14 @@ namespace Game.Logic.Actions {
                     TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub)) {
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         return;
                     }
 
                     if (city.Battle == null) {
                         city.Worker.References.remove(stub.TroopObject, this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                        stateChange(ActionState.COMPLETED);
+                        StateChange(ActionState.COMPLETED);
                     } else {
                         EngageDefenseAction eda = new EngageDefenseAction(cityId, stubId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
@@ -172,7 +172,7 @@ namespace Game.Logic.Actions {
                     TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub)) {
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         return;
                     }
 
@@ -181,7 +181,7 @@ namespace Game.Logic.Actions {
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
                     else
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                    stateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.COMPLETED);
                 }
             }
         }
@@ -190,7 +190,7 @@ namespace Game.Logic.Actions {
             get { return ActionType.ATTACK; }
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
@@ -199,7 +199,7 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("city_id", cityId), new XMLKVPair("stub_id", stubId),
                                                                 new XMLKVPair("target_city_id", targetCityId),
                                                                 new XMLKVPair("target_object_id", targetStructureId),

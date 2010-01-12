@@ -13,11 +13,11 @@ namespace Game.Logic.Actions {
         private byte lvl;
         private TimeSpan ts;
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             if (obj == null)
                 return Error.OBJECT_NOT_FOUND;
 
@@ -30,12 +30,12 @@ namespace Game.Logic.Actions {
 
             Global.dbManager.Save(obj.Technologies);
 
-            stateChange(ActionState.COMPLETED);
+            StateChange(ActionState.COMPLETED);
 
             return Error.OK;
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             throw new Exception("The method or operation is not implemented.");
         }
 
@@ -51,7 +51,7 @@ namespace Game.Logic.Actions {
             techId = uint.Parse(parms[0]);
             lvl = byte.Parse(parms[1]);
             ts = TimeSpan.FromSeconds(int.Parse(parms[2]));
-            execute();
+            Execute();
         }
 
         #endregion

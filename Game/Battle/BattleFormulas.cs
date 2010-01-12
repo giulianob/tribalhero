@@ -9,98 +9,96 @@ using Game.Setup;
 
 namespace Game.Battle {
     public class BattleFormulas {
-        public static double getArmorTypeModifier(WeaponType weapon, ArmorType armor) {
-            double Weakest = 0.5;
-            double Weak = 0.75;
-            double Good = 1;
-            double Strong = 1.25;
-            double Strongest = 1.5;
+        public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor) {
+            const double weakest = 0.5;
+            const double weak = 0.75;
+            const double good = 1;
+            const double strong = 1.25;
+            const double strongest = 1.5;
 
             switch (weapon) {
                 case WeaponType.Sword:
                     switch (armor) {
                         case ArmorType.Leather:
-                            return Good;
+                            return good;
                         case ArmorType.Metal:
-                            return Weak;
+                            return weak;
                         case ArmorType.Mount:
-                            return Weakest;
+                            return weakest;
                         case ArmorType.Wooden:
-                            return Good;
+                            return good;
                         case ArmorType.Stone:
-                            return Strong;
+                            return strong;
                     }
                     break;
                 case WeaponType.Pike:
                     switch (armor) {
                         case ArmorType.Leather:
-                            return Weak;
+                            return weak;
                         case ArmorType.Metal:
-                            return Strong;
+                            return strong;
                         case ArmorType.Mount:
-                            return Good;
+                            return good;
                         case ArmorType.Wooden:
-                            return Weak;
+                            return weak;
                         case ArmorType.Stone:
-                            return Weak;
+                            return weak;
                     }
                     break;
                 case WeaponType.Bow:
                     switch (armor) {
                         case ArmorType.Leather:
-                            return Strongest;
+                            return strongest;
                         case ArmorType.Metal:
-                            return Weak;
+                            return weak;
                         case ArmorType.Mount:
-                            return Good;
+                            return good;
                         case ArmorType.Wooden:
-                            return Weak;
+                            return weak;
                         case ArmorType.Stone:
-                            return Weakest;
+                            return weakest;
                     }
                     break;
                 case WeaponType.FireBall:
                     switch (armor) {
                         case ArmorType.Leather:
-                            return Weak;
+                            return weak;
                         case ArmorType.Metal:
-                            return Good;
+                            return good;
                         case ArmorType.Mount:
-                            return Strong;
+                            return strong;
                         case ArmorType.Wooden:
-                            return Good;
+                            return good;
                         case ArmorType.Stone:
-                            return Weak;
+                            return weak;
                     }
                     break;
                 case WeaponType.StoneBall:
                     switch (armor) {
                         case ArmorType.Leather:
-                            return Weakest;
+                            return weakest;
                         case ArmorType.Metal:
-                            return Weakest;
+                            return weakest;
                         case ArmorType.Mount:
-                            return Weak;
+                            return weak;
                         case ArmorType.Wooden:
-                            return Strong;
+                            return strong;
                         case ArmorType.Stone:
-                            return Strongest;
+                            return strongest;
                     }
                     break;
             }
             return 1;
         }
 
-        public static ushort getDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk) {
-            if (true) {
-                int rawDmg = (useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk)*attacker.Count;
-                rawDmg /= 10;
-                double typeModifier = getArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
-                rawDmg = (int) (typeModifier*rawDmg);
-                return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort) rawDmg;
-            }
+        public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk) {
+            int rawDmg = (useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk)*attacker.Count;
+            rawDmg /= 10;
+            double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
+            rawDmg = (int) (typeModifier*rawDmg);
+            return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort) rawDmg;
 
-            /*else if (true) {
+            /*
                 int rawDmg = (int)(attacker.Stats.Atk * attacker.Count);
                 int drate = target.Stats.Def;
                 int arate = attacker.Stats.Atk;
@@ -111,18 +109,20 @@ namespace Game.Battle {
 
                 }
                 return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
-            } else {
+            */
+
+            /*
                 double atk_rate = (attacker.Stats.Atk * attacker.Count);
                 double def_rate = (target.Stats.Def * target.Count + 1);
                 double power_modifier = Math.Pow(atk_rate / def_rate, .1);
-                double type_modifier = getArmorTypeModifier(attacker.Stats.Weapon, target.Stats.Armor);
+                double type_modifier = GetArmorTypeModifier(attacker.Stats.Weapon, target.Stats.Armor);
                 double base_dmg = attacker.Stats.Atk * attacker.Count;
                 double ret = base_dmg * power_modifier * type_modifier;
                 return ret > ushort.MaxValue ? ushort.MaxValue : (ushort)ret;
-            }*/
+            */
         }
 
-        internal static Resource getRewardResource(CombatObject attacker, CombatObject defender, int actualDmg) {
+        internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, int actualDmg) {
             int point = actualDmg*defender.Stats.Base.Reward;
             switch (defender.ClassType) {
                 case BattleClass.Structure:
@@ -134,21 +134,21 @@ namespace Game.Battle {
             return new Resource();
         }
 
-        internal static ushort getStamina(City city) {
+        internal static ushort GetStamina(City city) {
             return (ushort) (city.MainBuilding.Lvl*5 + 10 + Config.stamina_initial);
         }
 
-        internal static ushort getStaminaReinforced(City city, ushort stamina, uint round) {
+        internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round) {
             if (round >= city.MainBuilding.Lvl*5)
                 return stamina;
             return (ushort) (stamina + city.MainBuilding.Lvl*5 - round);
         }
 
-        internal static ushort getStaminaRoundEnded(City city, ushort stamina, uint round) {
+        internal static ushort GetStaminaRoundEnded(City city, ushort stamina, uint round) {
             return --stamina;
         }
 
-        internal static ushort getStaminaStructureDestroyed(City city, ushort stamina, uint round) {
+        internal static ushort GetStaminaStructureDestroyed(City city, ushort stamina, uint round) {
             if (stamina <= 10)
                 return 0;
             return (ushort) (stamina - 10);

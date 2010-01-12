@@ -10,15 +10,13 @@ using Game.Util;
 #endregion
 
 namespace Game.Logic.Actions {
-    public abstract class ChainAction : PassiveAction, IPersistableObject, IActionTime {
+    public abstract class ChainAction : PassiveAction, IActionTime {
         private PassiveAction current;
-
         protected PassiveAction Current {
             get { return current; }
         }
 
         private ActionState chainState = ActionState.STARTED;
-
         public ActionState ChainState {
             get { return chainState; }
         }
@@ -27,11 +25,11 @@ namespace Game.Logic.Actions {
 
         public delegate void ChainCallback(ActionState state);
 
-        public ChainAction() {}
+        protected ChainAction() {}
 
         protected void ExecuteChainAndWait(PassiveAction chainable, ChainCallback routeCallback) {
             chainable.IsChain = true;
-            chainable.OnNotify += new ActionNotify(ChainNotify);
+            chainable.OnNotify += ChainNotify;
             chainCallback = routeCallback;
 
             current = chainable;
@@ -39,12 +37,12 @@ namespace Game.Logic.Actions {
             current.ActionId = (ushort) WorkerObject.City.Worker.getId();
 
             Global.dbManager.Save(this);
-            if (chainable.execute() == Error.OK)
-                chainable.stateChange(ActionState.STARTED);
+            if (chainable.Execute() == Error.OK)
+                chainable.StateChange(ActionState.STARTED);
             else
-                chainable.stateChange(ActionState.FAILED);
+                chainable.StateChange(ActionState.FAILED);
 
-            stateChange(ActionState.RESCHEDULED);
+            StateChange(ActionState.RESCHEDULED);
         }
 
         private void ChainNotify(Action action, ActionState state) {
@@ -70,7 +68,7 @@ namespace Game.Logic.Actions {
                     Global.dbManager.Delete(action);
                     break;
                 default:
-                    throw new Exception("Unexpected state " + state.ToString());
+                    throw new Exception("Unexpected state " + state);
             }
 
             //current action is completed by either success or failure
@@ -83,9 +81,9 @@ namespace Game.Logic.Actions {
             Global.Scheduler.put(new ChainExecuter(currentChain, state));
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             using (new MultiObjectLock(WorkerObject.City))
-                current.interrupt(state);
+                current.Interrupt(state);
         }
 
         #region IPersistable Members
@@ -96,7 +94,7 @@ namespace Game.Logic.Actions {
             get { return DB_TABLE; }
         }
 
-        public ChainAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
+        protected ChainAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
                            bool isVisible) {
             ActionId = id;
             this.chainState = chainState;
@@ -116,7 +114,7 @@ namespace Game.Logic.Actions {
                     break;
                 default:
                     current.IsChain = true;
-                    current.OnNotify += new ActionNotify(ChainNotify);
+                    current.OnNotify += ChainNotify;
 
                     if (current is ScheduledPassiveAction)
                         Global.Scheduler.put(new ActionDispatcher(current as ScheduledPassiveAction));
@@ -126,7 +124,7 @@ namespace Game.Logic.Actions {
 
         public override DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("type", Type, DbType.UInt32), new DbColumn("is_visible", IsVisible, DbType.Boolean)
                                           ,
                                           new DbColumn("current_action_id", current != null ? (object) current.ActionId : null,
@@ -146,8 +144,8 @@ namespace Game.Logic.Actions {
             get {
                 if (current == null || !(current is IActionTime))
                     return DateTime.MinValue;
-                else
-                    return (current as IActionTime).BeginTime;
+                
+                return (current as IActionTime).BeginTime;
             }
         }
 
@@ -155,8 +153,8 @@ namespace Game.Logic.Actions {
             get {
                 if (current == null || !(current is IActionTime))
                     return DateTime.MinValue;
-                else
-                    return (current as IActionTime).EndTime;
+                                
+                return (current as IActionTime).EndTime;
             }
         }
 
@@ -164,8 +162,8 @@ namespace Game.Logic.Actions {
             get {
                 if (current == null || !(current is IActionTime))
                     return DateTime.MinValue;
-                else
-                    return (current as IActionTime).NextTime;
+                
+                return (current as IActionTime).NextTime;
             }
         }
 

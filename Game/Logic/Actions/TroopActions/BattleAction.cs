@@ -23,18 +23,18 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
-            city.Battle.ActionAttacked += new BattleBase.OnAttack(Battle_ActionAttacked);
+            city.Battle.ActionAttacked += Battle_ActionAttacked;
         }
 
         public BattleAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
-                            Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible) {
+                            IDictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
-            city.Battle.ActionAttacked += new BattleBase.OnAttack(Battle_ActionAttacked);
+            city.Battle.ActionAttacked += Battle_ActionAttacked;
             viewer = new BattleViewer(city.Battle);
         }
 
@@ -57,7 +57,7 @@ namespace Game.Logic.Actions {
 
             using (new MultiObjectLock(toBeLocked.ToArray())) {
                 if (!city.Battle.executeTurn()) {
-                    city.Battle.ActionAttacked -= new BattleBase.OnAttack(Battle_ActionAttacked);
+                    city.Battle.ActionAttacked -= Battle_ActionAttacked;
                     Global.dbManager.Delete(city.Battle);
                     city.Battle = null;
 
@@ -81,30 +81,34 @@ namespace Game.Logic.Actions {
                         }
 
                         stub.BeginUpdate();
-                        if (stub.State == TroopStub.TroopState.BATTLE_STATIONED)
-                            stub.State = TroopStub.TroopState.STATIONED;
-                        else if (stub.State == TroopStub.TroopState.BATTLE)
-                            stub.State = TroopStub.TroopState.IDLE;
+                        switch (stub.State) {
+                            case TroopStub.TroopState.BATTLE_STATIONED:
+                                stub.State = TroopStub.TroopState.STATIONED;
+                                break;
+                            case TroopStub.TroopState.BATTLE:
+                                stub.State = TroopStub.TroopState.IDLE;
+                                break;
+                        }
                         stub.EndUpdate();
                     }
 
-                    stateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.COMPLETED);
                 }
                 else {
                     Global.dbManager.Save(city.Battle);
                     endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
-                    stateChange(ActionState.FIRED);
+                    StateChange(ActionState.FIRED);
                 }
             }
         }
 
         #endregion
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
@@ -149,13 +153,12 @@ namespace Game.Logic.Actions {
 
             if (cu.TroopStub.StationedCity == city && cu.TroopStub.TotalCount == 0) {
                 //takes care of killing out stationed troops
-                List<TroopStub> list = new List<TroopStub>(1);
-                list.Add(cu.TroopStub);
+                List<TroopStub> list = new List<TroopStub>(1) {cu.TroopStub};
                 city.Battle.removeFromDefense(list, ReportState.Dying);
             }
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             Global.Scheduler.del(this);
         }
 
@@ -166,7 +169,7 @@ namespace Game.Logic.Actions {
         #region IPersistable Members
 
         public override string Properties {
-            get { return XMLSerializer.Serialize(new XMLKVPair[] {new XMLKVPair("city_id", cityId)}); }
+            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId)}); }
         }
 
         #endregion

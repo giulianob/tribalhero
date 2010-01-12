@@ -35,7 +35,7 @@ namespace Game.Logic.Actions {
 
         #region IAction Members
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
@@ -66,7 +66,7 @@ namespace Game.Logic.Actions {
             if (Global.World[x, y].Exists(delegate(GameObject obj) { return obj is Structure; })) {
                 Global.dbManager.Rollback();
                 Global.World.UnlockRegion(x, y);
-                stateChange(ActionState.FAILED);
+                StateChange(ActionState.FAILED);
                 return Error.STRUCTURE_EXISTS;
             }
 
@@ -114,12 +114,12 @@ namespace Game.Logic.Actions {
         public override void callback(object custom) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 Structure structure;
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
@@ -131,7 +131,7 @@ namespace Game.Logic.Actions {
 
                 structure.EndUpdate();
 
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
             }
         }
 
@@ -147,7 +147,7 @@ namespace Game.Logic.Actions {
             get { return ActionType.STRUCTURE_BUILD; }
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             City city;
 
             if (!Global.World.TryGetObjects(cityId, out city))
@@ -177,7 +177,7 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 Structure structure;
@@ -192,7 +192,7 @@ namespace Game.Logic.Actions {
                         Global.dbManager.Delete(structure);
                         Global.World.Remove(structure);
                         Global.World.UnlockRegion(x, y);
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
@@ -209,7 +209,7 @@ namespace Game.Logic.Actions {
 
                         Global.World.Remove(structure);
                         Global.World.UnlockRegion(x, y);
-                        stateChange(ActionState.INTERRUPTED);
+                        StateChange(ActionState.INTERRUPTED);
                         break;
                 }
             }

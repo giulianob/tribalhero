@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
-using Game.Data.Stats;
-using Game.Fighting;
 using Game.Logic;
 using Game.Setup;
 using Game.Util;
@@ -125,7 +123,7 @@ namespace Game.Comm {
             Packet reply = new Packet(packet);
 
             ushort regionId;
-
+            
             byte regionSubscribeCount;
             try {
                 regionSubscribeCount = packet.getByte();
@@ -156,140 +154,6 @@ namespace Game.Comm {
             }
 
             session.write(reply);
-        }
-
-        public void CmdGetTroopInfo(Session session, Packet packet) {
-            City city;
-            TroopObject troop;
-
-            uint cityId;
-            uint objectId;
-
-            try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-            }
-            catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
-                return;
-            }
-
-            using (new MultiObjectLock(cityId, objectId, out city, out troop)) {
-                if (city == null || troop == null) {
-                    reply_error(session, packet, Error.OBJECT_NOT_FOUND);
-                    return;
-                }
-
-                Packet reply = new Packet(packet);
-
-                if (city.Owner == session.Player) {
-                    reply.addByte(troop.Stats.AttackRadius);
-                    reply.addByte(troop.Stats.Speed);
-                    reply.addByte(troop.Stub.TroopId);
-
-                    UnitTemplate template = new UnitTemplate(city);
-
-                    reply.addByte(troop.Stub.FormationCount);
-                    foreach (
-                        KeyValuePair<FormationType, Formation> formation in
-                            troop.Stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                        reply.addByte((byte) formation.Key);
-                        reply.addByte((byte) formation.Value.Count);
-                        foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
-                            reply.addUInt16(kvp.Key);
-                            reply.addUInt16(kvp.Value);
-                            template[kvp.Key] = city.Template[kvp.Key];
-                        }
-                    }
-
-                    reply.addUInt16((ushort) template.Size);
-                    IEnumerator<KeyValuePair<ushort, BaseUnitStats>> templateIter = template.GetEnumerator();
-                    while (templateIter.MoveNext()) {
-                        KeyValuePair<ushort, BaseUnitStats> kvp = templateIter.Current;
-                        reply.addUInt16(kvp.Key);
-                        reply.addByte(kvp.Value.Lvl);
-                    }
-
-                    PacketHelper.AddToPacket(
-                        new List<ReferenceStub>(troop.City.Worker.References.getReferences(troop)), reply);
-                }
-
-                session.write(reply);
-            }
-        }
-
-        public void CmdGetStructureInfo(Session session, Packet packet) {
-            City city;
-            Structure structure;
-
-            uint cityId;
-            uint objectId;
-
-            try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-            }
-            catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
-                return;
-            }
-
-            using (new MultiObjectLock(cityId, objectId, out city, out structure)) {
-                if (city == null || structure == null) {
-                    reply_error(session, packet, Error.OBJECT_NOT_FOUND);
-                    return;
-                }
-
-                Packet reply = new Packet(packet);
-                reply.addByte(structure.Stats.Base.Lvl);
-                reply.addByte(structure.Stats.Labor);
-                reply.addUInt16(structure.Stats.Hp);
-
-                foreach (Property prop in PropertyFactory.getProperties(structure.Type)) {
-                    if (!structure.Properties.contains(prop.name)) {
-                        switch (prop.type) {
-                            case DataType.Byte:
-                                reply.addByte(Byte.MaxValue);
-                                break;
-                            case DataType.UShort:
-                                reply.addUInt16(UInt16.MinValue);
-                                break;
-                            case DataType.UInt:
-                                reply.addUInt32(UInt32.MinValue);
-                                break;
-                            case DataType.String:
-                                reply.addString("N/A");
-                                break;
-                            case DataType.Int:
-                                reply.addInt32(Int16.MaxValue);
-                                break;
-                        }
-                    } else {
-                        switch (prop.type) {
-                            case DataType.Byte:
-                                reply.addByte((byte) prop.getValue(structure));
-                                break;
-                            case DataType.UShort:
-                                reply.addUInt16((ushort) prop.getValue(structure));
-                                break;
-                            case DataType.UInt:
-                                reply.addUInt32((uint) prop.getValue(structure));
-                                break;
-                            case DataType.String:
-                                reply.addString((string) prop.getValue(structure));
-                                break;
-                            case DataType.Int:
-                                reply.addInt32((int) prop.getValue(structure));
-                                break;
-                        }
-                    }
-                }
-
-                PacketHelper.AddToPacket(
-                    new List<ReferenceStub>(structure.City.Worker.References.getReferences(structure)), reply);
-                //        PacketHelper.AddToPacket(obj.Worker, packet);
-                session.write(reply);
-            }
-        }
+        }        
     }
 }

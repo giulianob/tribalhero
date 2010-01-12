@@ -5,11 +5,89 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
+using System.Collections.Generic;
+using Game.Logic;
 
 #endregion
 
 namespace Game.Comm {
     public partial class Processor {
+        public void CmdGetStructureInfo(Session session, Packet packet) {
+            City city;
+            Structure structure;
+
+            uint cityId;
+            uint objectId;
+
+            try {
+                cityId = packet.getUInt32();
+                objectId = packet.getUInt32();
+            }
+            catch (Exception) {
+                reply_error(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            using (new MultiObjectLock(cityId, objectId, out city, out structure)) {
+                if (city == null || structure == null) {
+                    reply_error(session, packet, Error.OBJECT_NOT_FOUND);
+                    return;
+                }
+
+                Packet reply = new Packet(packet);
+                reply.addByte(structure.Stats.Base.Lvl);
+                if (session.Player == structure.City.Owner) {
+                    reply.addByte(structure.Stats.Labor);
+                    reply.addUInt16(structure.Stats.Hp);
+
+                    foreach (Property prop in PropertyFactory.getProperties(structure.Type)) {
+                        if (!structure.Properties.contains(prop.name)) {
+                            switch (prop.type) {
+                                case DataType.Byte:
+                                    reply.addByte(Byte.MaxValue);
+                                    break;
+                                case DataType.UShort:
+                                    reply.addUInt16(UInt16.MinValue);
+                                    break;
+                                case DataType.UInt:
+                                    reply.addUInt32(UInt32.MinValue);
+                                    break;
+                                case DataType.String:
+                                    reply.addString("N/A");
+                                    break;
+                                case DataType.Int:
+                                    reply.addInt32(Int16.MaxValue);
+                                    break;
+                            }
+                        } else {
+                            switch (prop.type) {
+                                case DataType.Byte:
+                                    reply.addByte((byte) prop.getValue(structure));
+                                    break;
+                                case DataType.UShort:
+                                    reply.addUInt16((ushort) prop.getValue(structure));
+                                    break;
+                                case DataType.UInt:
+                                    reply.addUInt32((uint) prop.getValue(structure));
+                                    break;
+                                case DataType.String:
+                                    reply.addString((string) prop.getValue(structure));
+                                    break;
+                                case DataType.Int:
+                                    reply.addInt32((int) prop.getValue(structure));
+                                    break;
+                            }
+                        }
+                    }
+
+                    PacketHelper.AddToPacket(
+                        new List<ReferenceStub>(structure.City.Worker.References.getReferences(structure)), reply);
+                }
+
+                session.write(reply);
+            }
+        }
+
         public void CmdGetCityUsername(Session session, Packet packet) {
             Packet reply = new Packet(packet);
 
@@ -68,7 +146,7 @@ namespace Game.Comm {
                     return;
                 }
 
-                LaborMoveAction lma = null;
+                LaborMoveAction lma;
                 if (obj.Stats.Labor < count) {
                     //move from city to obj
                     count = (byte) (count - obj.Stats.Labor);
@@ -77,11 +155,14 @@ namespace Game.Comm {
                         //not enough available in city
                         reply_error(session, packet, Error.LABOR_NOT_ENOUGH);
                         return;
-                    } else if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor) {
+                    }
+ 
+                    if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor) {
                         //adding too much to obj
                         reply_error(session, packet, Error.LABOR_OVERFLOW);
                         return;
                     }
+                    
                     lma = new LaborMoveAction(cityId, objectId, true, count);
                 } else if (obj.Stats.Labor > count) {
                     //move from obj to city
@@ -91,6 +172,7 @@ namespace Game.Comm {
                     reply_success(session, packet);
                     return;
                 }
+
                 Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, lma, obj.Technologies);
 
                 if (ret != 0)

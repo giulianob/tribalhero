@@ -29,7 +29,7 @@ namespace Game.Logic.Actions {
             targetCityId = uint.Parse(properties["target_city_id"]);
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
@@ -86,7 +86,7 @@ namespace Game.Logic.Actions {
 
                         targetCity.Battle.addToDefense(list);
                     }
-                    stateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.COMPLETED);
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace Game.Logic.Actions {
             get { return ActionType.DEFENSE; }
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 

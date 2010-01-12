@@ -12,19 +12,19 @@ namespace Game.Logic.Actions {
         private string name;
         private object value;
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             structure[name] = value;
             Global.dbManager.Save(structure);
-            stateChange(ActionState.COMPLETED);
+            StateChange(ActionState.COMPLETED);
 
             return Error.OK;
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             throw new Exception("The method or operation is not implemented.");
         }
 
@@ -52,7 +52,7 @@ namespace Game.Logic.Actions {
                     value = parms[2];
                     break;
             }
-            this.execute();
+            this.Execute();
         }
 
         #endregion

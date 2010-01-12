@@ -7,25 +7,11 @@ using Game.Database;
 
 namespace Game.Logic {
     public abstract class ActiveAction : Action {
-        protected int workerType;
+        public int WorkerType { get; set; }
 
-        public int WorkerType {
-            get { return workerType; }
-            set { workerType = value; }
-        }
+        public byte WorkerIndex { get; set; }
 
-        protected byte workerIndex;
-
-        public byte WorkerIndex {
-            get { return workerIndex; }
-            set { workerIndex = value; }
-        }
-
-        protected ushort actionCount;
-
-        public ushort ActionCount {
-            get { return actionCount; }
-        }
+        public ushort ActionCount { get; protected set; }
 
         #region IPersistable Members
 
@@ -38,9 +24,9 @@ namespace Game.Logic {
         public override DbColumn[] DbColumns {
             get {
                 return new[] {
-                                 new DbColumn("type", Type, DbType.UInt16), new DbColumn("worker_type", workerType, DbType.Int32)
-                                 , new DbColumn("worker_index", workerIndex, DbType.Byte),
-                                 new DbColumn("count", actionCount, DbType.UInt16),
+                                 new DbColumn("type", Type, DbType.UInt16), new DbColumn("worker_type", WorkerType, DbType.Int32)
+                                 , new DbColumn("worker_index", WorkerIndex, DbType.Byte),
+                                 new DbColumn("count", ActionCount, DbType.UInt16),
                                  new DbColumn("properties", Properties, DbType.String)
                              };
             }

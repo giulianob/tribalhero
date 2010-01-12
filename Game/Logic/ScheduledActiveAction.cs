@@ -58,9 +58,9 @@ namespace Game.Logic {
             this.beginTime = beginTime;
             this.nextTime = nextTime;
             this.endTime = endTime;
-            this.workerType = workerType;
-            this.workerIndex = workerIndex;
-            this.actionCount = actionCount;
+            this.WorkerType = workerType;
+            this.WorkerIndex = workerIndex;
+            this.ActionCount = actionCount;
         }
 
         public override DbColumn[] DbColumns {
@@ -70,9 +70,9 @@ namespace Game.Logic {
                                           new DbColumn("begin_time", BeginTime, DbType.DateTime),
                                           new DbColumn("end_time", EndTime, DbType.DateTime),
                                           new DbColumn("next_time", nextTime, DbType.DateTime),
-                                          new DbColumn("worker_type", workerType, DbType.Int32),
-                                          new DbColumn("worker_index", workerIndex, DbType.Byte),
-                                          new DbColumn("count", actionCount, DbType.UInt16),
+                                          new DbColumn("worker_type", WorkerType, DbType.Int32),
+                                          new DbColumn("worker_index", WorkerIndex, DbType.Byte),
+                                          new DbColumn("count", ActionCount, DbType.UInt16),
                                           new DbColumn("properties", Properties, DbType.String)
                                       };
             }

@@ -7,14 +7,14 @@ using Game.Database;
 
 namespace Game.Logic {
     public abstract class PassiveAction : Action {
-        public PassiveAction() {}
+        protected PassiveAction() {}
 
-        public PassiveAction(ushort id, bool isVisible) {
+        protected PassiveAction(ushort id, bool isVisible) {
             ActionId = id;
             IsVisible = isVisible;
         }
 
-        private bool isVisible = false;
+        private bool isVisible;
 
         public bool IsVisible {
             get { return isVisible; }
@@ -27,7 +27,7 @@ namespace Game.Logic {
             get { return DB_TABLE; }
         }
 
-        private bool isChain = false;
+        private bool isChain;
 
         public bool IsChain {
             get { return isChain; }
@@ -36,7 +36,7 @@ namespace Game.Logic {
 
         public override DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("is_chain", isChain, DbType.Boolean),
                                           new DbColumn("is_scheduled", false, DbType.Boolean),
                                           new DbColumn("is_visible", isVisible, DbType.Boolean), new DbColumn("type", Type, DbType.UInt32)

@@ -43,7 +43,7 @@ namespace Game.Logic {
 
     public enum ActionInterrupt {
         CANCEL = 0,
-        Abort = 1,
+        ABORT = 1,
         KILLED = 2
     }
 
@@ -82,17 +82,17 @@ namespace Game.Logic {
             set { actionId = value; }
         }
 
-        public void stateChange(ActionState state) {
+        public void StateChange(ActionState state) {
             if (OnNotify != null)
                 OnNotify(this, state);
         }
 
-        public abstract Error validate(string[] parms);
-        public abstract Error execute();
-        public abstract void interrupt(ActionInterrupt state);
+        public abstract Error Validate(string[] parms);
+        public abstract Error Execute();
+        public abstract void Interrupt(ActionInterrupt state);
         public abstract ActionType Type { get; }
 
-        protected bool isValid() {
+        protected bool IsValid() {
             if (workerObject == null)
                 return false;
 

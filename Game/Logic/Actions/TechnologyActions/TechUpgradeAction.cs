@@ -33,7 +33,7 @@ namespace Game.Logic.Actions {
             techId = uint.Parse(properties["tech_id"]);
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -52,7 +52,7 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -85,35 +85,35 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 Global.Scheduler.del(this);
 
                 Technology tech;
                 if (!city.Technologies.TryGetTechnology(techId, out tech)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 TechnologyBase techBase = TechnologyFactory.getTechnologyBase(tech.Type, (byte) (tech.Level + 1));
 
                 if (techBase == null) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 switch (state) {
                     case ActionInterrupt.KILLED:
                         Global.Scheduler.del(this);
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
                         city.BeginUpdate();
                         city.Resource.Add(techBase.resources/2);
                         city.EndUpdate();
-                        stateChange(ActionState.INTERRUPTED);
+                        StateChange(ActionState.INTERRUPTED);
                         break;
                 }
             }
@@ -129,35 +129,35 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 Technology tech;
                 if (!structure.Technologies.TryGetTechnology(techId, out tech)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 TechnologyBase techBase = TechnologyFactory.getTechnologyBase(tech.Type, (byte) (tech.Level + 1));
 
                 if (techBase == null) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 if (!structure.Technologies.upgrade(new Technology(techBase))) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 Global.dbManager.Save(structure.Technologies);
 
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Game.Logic.Actions {
             structureId = obj.ObjectId;
             techId = uint.Parse(parms[0]);
             isSelfInit = true;
-            execute();
+            Execute();
         }
 
         #endregion

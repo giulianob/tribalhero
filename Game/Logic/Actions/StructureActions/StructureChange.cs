@@ -1,4 +1,4 @@
-#region
+#region Directives
 
 using System;
 using System.Collections.Generic;
@@ -10,25 +10,26 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class StructureChangeAction : ScheduledActiveAction {
-        private uint type;
-        private byte lvl;
-        private bool ignoreTime, ignoreCost;
-        private uint cityId;
-        private uint structureId;
+        private readonly uint type;
+        private readonly byte lvl;
+        private readonly bool ignoreTime;
+        private readonly bool ignoreCost;
+        private readonly uint cityId;
+        private readonly uint structureId;
         private Resource cost;
 
-        public StructureChangeAction(uint cityId, uint structureId, uint type, byte lvl, bool ignore_time,
-                                     bool ignore_cost) {
+        public StructureChangeAction(uint cityId, uint structureId, uint type, byte lvl, bool ignoreTime,
+                                     bool ignoreCost) {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
             this.lvl = lvl;
-            this.ignoreCost = ignore_cost;
-            this.ignoreTime = ignore_time;
+            this.ignoreCost = ignoreCost;
+            this.ignoreTime = ignoreTime;
         }
 
         public StructureChangeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
-                                     byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
+                                     byte workerIndex, ushort actionCount, IDictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -51,7 +52,7 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             if (!ignoreCost) {
-                cost = Formula.StructureCost(structure.City, (uint) type, (byte) lvl);
+                cost = Formula.StructureCost(structure.City, type, lvl);
                 if (cost == null)
                     return Error.OBJECT_NOT_FOUND;
 
@@ -64,10 +65,10 @@ namespace Game.Logic.Actions {
             }
 
             if (!ignoreTime) {
-                this.endTime =
+                endTime =
                     DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.getTime((ushort) type, lvl),
                                                               structure.Technologies));
-                this.beginTime = DateTime.Now;
+                beginTime = DateTime.Now;
             } else {
                 structure.BeginUpdate();
                 StructureFactory.getStructure(structure, (ushort) type, lvl, false);
@@ -75,7 +76,7 @@ namespace Game.Logic.Actions {
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
-                this.StateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
             }
 
             return Error.OK;
@@ -110,7 +111,7 @@ namespace Game.Logic.Actions {
 
         #region ISchedule Members
 
-        public override void callback(object custom) {
+        public override void Callback(object custom) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
@@ -129,7 +130,7 @@ namespace Game.Logic.Actions {
                 structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, this);
                 structure.EndUpdate();
 
-                this.StateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
             }
         }
 

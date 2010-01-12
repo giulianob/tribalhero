@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Procedures;
@@ -111,13 +112,11 @@ namespace Game.Logic.Actions {
                     TroopStub stub;
                     City targetCity = cities[targetCityId];
 
-                    if (!city.Troops.TryGetStub(stubId, out stub)) {
-                        StateChange(ActionState.FAILED);
-                        return;
-                    }
-
                     //Remove notification to target city once battle is over
                     city.Worker.Notifications.remove(this);
+
+                    if (!city.Troops.TryGetStub(stubId, out stub))
+                        throw new Exception("Stub should still exist");
 
                     if (stub.TotalCount > 0) {
                         TroopMoveAction tma = new TroopMoveAction(stub.City.CityId, stub.TroopObject.ObjectId,
@@ -148,10 +147,8 @@ namespace Game.Logic.Actions {
                 using (new MultiObjectLock(cityId, out city)) {
                     TroopStub stub;
 
-                    if (!city.Troops.TryGetStub(stubId, out stub)) {
-                        StateChange(ActionState.FAILED);
-                        return;
-                    }
+                    if (!city.Troops.TryGetStub(stubId, out stub))
+                        throw new Exception("Stub should still exist");                    
 
                     if (city.Battle == null) {
                         city.Worker.References.remove(stub.TroopObject, this);
@@ -171,16 +168,16 @@ namespace Game.Logic.Actions {
                 using (new MultiObjectLock(cityId, out city)) {
                     TroopStub stub;
 
-                    if (!city.Troops.TryGetStub(stubId, out stub)) {
-                        StateChange(ActionState.FAILED);
-                        return;
-                    }
+                    if (!city.Troops.TryGetStub(stubId, out stub))
+                        throw new Exception("Stub should still exist");
 
                     city.Worker.References.remove(stub.TroopObject, this);
+
                     if (stub.TotalCount == 0)
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
                     else
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
+
                     StateChange(ActionState.COMPLETED);
                 }
             }
@@ -200,11 +197,11 @@ namespace Game.Logic.Actions {
             get {
                 return
                     XMLSerializer.Serialize(new[] {
-                                                                new XMLKVPair("city_id", cityId), new XMLKVPair("stub_id", stubId),
-                                                                new XMLKVPair("target_city_id", targetCityId),
-                                                                new XMLKVPair("target_object_id", targetStructureId),
-                                                                new XMLKVPair("mode", (byte) mode)
-                                                            });
+                                                new XMLKVPair("city_id", cityId), new XMLKVPair("stub_id", stubId),
+                                                new XMLKVPair("target_city_id", targetCityId),
+                                                new XMLKVPair("target_object_id", targetStructureId),
+                                                new XMLKVPair("mode", (byte) mode)
+                    });
             }
         }
 

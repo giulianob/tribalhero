@@ -150,7 +150,7 @@ namespace Game.Comm {
                     InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type,
                                                structure.Stats.Base.Lvl);
 
-                    city.Worker.doPassive(city, new CityAction(city.CityId), false);
+                    city.Worker.DoPassive(city, new CityAction(city.CityId), false);
                 }
 
                 //User session
@@ -179,7 +179,7 @@ namespace Game.Comm {
                     reply.addByte(city.Radius);
 
                     //City Actions
-                    PacketHelper.AddToPacket(new List<Action>(city.Worker.getVisibleActions()), reply, true);
+                    PacketHelper.AddToPacket(new List<Action>(city.Worker.GetVisibleActions()), reply, true);
 
                     //Notifications
                     reply.addUInt16(city.Worker.Notifications.Count);

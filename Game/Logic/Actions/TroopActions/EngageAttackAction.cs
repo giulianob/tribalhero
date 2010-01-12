@@ -73,17 +73,17 @@ namespace Game.Logic.Actions {
             if (targetCity.Battle != null) {
                 targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
                 targetCity.Battle.ExitBattle += Battle_ExitBattle;
-                Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.Reinforced);
+                Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.REINFORCED);
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
-                targetCity.Battle.addToAttack(list);
+                targetCity.Battle.AddToAttack(list);
             } else {
                 targetCity.Battle = new BattleManager(targetCity);
                 targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
                 targetCity.Battle.ExitBattle += Battle_ExitBattle;
                 BattleAction ba = new BattleAction(targetCityId);
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
-                targetCity.Battle.addToAttack(list);
-                targetCity.Worker.doPassive(targetCity, ba, false);
+                targetCity.Battle.AddToAttack(list);
+                targetCity.Worker.DoPassive(targetCity, ba, false);
             }
 
             stub.TroopObject.BeginUpdate();
@@ -114,8 +114,8 @@ namespace Game.Logic.Actions {
                 remainingHp -= damage;
                 if (remainingHp <= Formula.GetAttackModeTolerance(originalHp, mode)) {
                     List<TroopStub> list = new List<TroopStub> {stub};
-                    targetCity.Battle.removeFromAttack(list,
-                                                       remainingHp == 0 ? ReportState.Dying : ReportState.Retreating);
+                    targetCity.Battle.RemoveFromAttack(list,
+                                                       remainingHp == 0 ? ReportState.DYING : ReportState.RETREATING);
                     targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
                     targetCity.Battle.ExitBattle -= Battle_ExitBattle;
 

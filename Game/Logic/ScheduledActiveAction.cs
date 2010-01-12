@@ -8,7 +8,7 @@ using Game.Database;
 
 namespace Game.Logic {
     public abstract class ScheduledActiveAction : ActiveAction, IActionTime, ISchedule {
-        public ScheduledActiveAction() {}
+        protected ScheduledActiveAction() {}
 
         #region IActionTime Members
 
@@ -30,10 +30,7 @@ namespace Game.Logic {
 
         public DateTime NextTime {
             get {
-                if (nextTime == DateTime.MinValue)
-                    return endTime;
-                else
-                    return nextTime;
+                return nextTime == DateTime.MinValue ? endTime : nextTime;
             }
             set { nextTime = value; }
         }
@@ -46,26 +43,26 @@ namespace Game.Logic {
             get { return NextTime; }
         }
 
-        public abstract void callback(object custom);
+        public abstract void Callback(object custom);
 
         #endregion
 
         #region IPersistable Members
 
-        public ScheduledActiveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        protected ScheduledActiveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                      byte workerIndex, ushort actionCount) {
             ActionId = id;
             this.beginTime = beginTime;
             this.nextTime = nextTime;
             this.endTime = endTime;
-            this.WorkerType = workerType;
-            this.WorkerIndex = workerIndex;
-            this.ActionCount = actionCount;
+            WorkerType = workerType;
+            WorkerIndex = workerIndex;
+            ActionCount = actionCount;
         }
 
         public override DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("type", Type, DbType.UInt32),
                                           new DbColumn("begin_time", BeginTime, DbType.DateTime),
                                           new DbColumn("end_time", EndTime, DbType.DateTime),
@@ -74,7 +71,7 @@ namespace Game.Logic {
                                           new DbColumn("worker_index", WorkerIndex, DbType.Byte),
                                           new DbColumn("count", ActionCount, DbType.UInt16),
                                           new DbColumn("properties", Properties, DbType.String)
-                                      };
+                };
             }
         }
 

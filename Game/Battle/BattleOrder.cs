@@ -27,20 +27,22 @@ namespace Game.Battle {
                     continue;
                 }
 
-                if (obj.LastRound == round) {
-                    if (outObj != null)
-                        return true;
-                    else
-                        hasMoreInCurrentRound = true;
-                }
+                if (obj.LastRound != round)
+                    continue;
+
+                if (outObj != null)
+                    return true;
+                    
+                hasMoreInCurrentRound = true;
             }
 
             if (outObj == null) {
                 foreach (CombatObject obj in this) {
-                    if (obj.LastRound == (round + 1)) {
-                        outObj = obj;
-                        break;
-                    }
+                    if (obj.LastRound != (round + 1))
+                        continue;
+                    
+                    outObj = obj;
+                    break;
                 }
             }
 

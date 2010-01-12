@@ -8,6 +8,11 @@ using Game.Setup;
 
 namespace Game.Logic.Procedures {
     public partial class Procedure {
+        /// <summary>
+        /// Must call BeginUpdate on structure and the city
+        /// </summary>
+        /// <param name="structure"></param>
+        /// <returns></returns>
         public static bool StructureDowngrade(Structure structure) {
             structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL);
             byte oldLabor = structure.Stats.Labor;

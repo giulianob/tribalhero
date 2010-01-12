@@ -51,7 +51,7 @@ namespace Game.Logic.Actions {
 
         #region ISchedule Members
 
-        public override void callback(object custom) {
+        public override void Callback(object custom) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())

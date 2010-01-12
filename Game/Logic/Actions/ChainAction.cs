@@ -34,7 +34,7 @@ namespace Game.Logic.Actions {
 
             current = chainable;
             current.WorkerObject = WorkerObject;
-            current.ActionId = (ushort) WorkerObject.City.Worker.getId();
+            current.ActionId = (ushort) WorkerObject.City.Worker.GetId();
 
             Global.dbManager.Save(this);
             if (chainable.Execute() == Error.OK)
@@ -64,7 +64,7 @@ namespace Game.Logic.Actions {
                 case ActionState.COMPLETED:
                 case ActionState.INTERRUPTED:
                 case ActionState.FAILED:
-                    WorkerObject.City.Worker.releaseId(action.ActionId);
+                    WorkerObject.City.Worker.ReleaseId(action.ActionId);
                     Global.dbManager.Delete(action);
                     break;
                 default:

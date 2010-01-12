@@ -84,7 +84,7 @@ namespace Game.Logic.Actions {
 
                         list.Add(stub);
 
-                        targetCity.Battle.addToDefense(list);
+                        targetCity.Battle.AddToDefense(list);
                     }
                     StateChange(ActionState.COMPLETED);
                 }

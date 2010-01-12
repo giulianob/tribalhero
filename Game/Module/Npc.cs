@@ -43,7 +43,7 @@ namespace Game.Module {
 
         private Random rand = new Random();
 
-        public void callback(object custom) {
+        public void Callback(object custom) {
             if (playerList.Count == 0) {
                 time = DateTime.Now.AddSeconds(5);
                 Global.Scheduler.put(this);
@@ -155,7 +155,7 @@ namespace Game.Module {
                                                 (city.Resource.FindMaxAffordable(costPerUnit)*intelligence.military));
 
                         UnitTrainAction action = new UnitTrainAction(city.CityId, structure.ObjectId, unitType, count);
-                        if (city.Worker.doActive(workerType, structure, action, structure.Technologies) == Error.OK) {
+                        if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.OK) {
                             Global.Logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})",
                                                              city.Name, count, unitType, structure.X, structure.Y));
                             return true;
@@ -190,7 +190,7 @@ namespace Game.Module {
                             continue;
 
                         StructureBuildAction action = new StructureBuildAction(city.CityId, buildingType, x, y);
-                        if (city.Worker.doActive(workerType, structure, action, structure.Technologies) == Error.OK) {
+                        if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.OK) {
                             Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType,
                                                              structure.Stats.Base.Lvl, x, y));
                             return true;
@@ -219,7 +219,7 @@ namespace Game.Module {
             StructureUpgradeAction action = new StructureUpgradeAction(city.CityId, structure.ObjectId);
 
             if (
-                city.Worker.doActive(StructureFactory.getActionWorkerType(structure), structure, action,
+                city.Worker.DoActive(StructureFactory.getActionWorkerType(structure), structure, action,
                                      structure.Technologies) == Error.OK) {
                 Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type,
                                                  structure.Stats.Base.Lvl, x, y));
@@ -272,7 +272,7 @@ namespace Game.Module {
                     InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type,
                                                structure.Stats.Base.Lvl);
 
-                    city.Worker.doPassive(city, new CityAction(city.CityId), false);
+                    city.Worker.DoPassive(city, new CityAction(city.CityId), false);
 
                     RadiusLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false,
                                                  BuildBasicStructures, city);

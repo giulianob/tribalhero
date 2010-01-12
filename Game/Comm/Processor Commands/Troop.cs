@@ -183,7 +183,7 @@ namespace Game.Comm {
                     reply_error(session, packet, Error.UNEXPECTED);
 
                 UnitUpgradeAction upgradeAction = new UnitUpgradeAction(cityId, objectId, type);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, upgradeAction,
+                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(barrack), barrack, upgradeAction,
                                                  barrack.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -222,7 +222,7 @@ namespace Game.Comm {
                     reply_error(session, packet, Error.UNEXPECTED);
 
                 UnitTrainAction trainAction = new UnitTrainAction(cityId, objectId, type, count);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, trainAction,
+                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(barrack), barrack, trainAction,
                                                  barrack.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -323,7 +323,7 @@ namespace Game.Comm {
                 }
 
                 AttackAction aa = new AttackAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
-                Error ret = city.Worker.doPassive(city, aa, true);
+                Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                     reply_error(session, packet, ret);
                 else
@@ -401,7 +401,7 @@ namespace Game.Comm {
                 }
 
                 DefenseAction da = new DefenseAction(cityId, stub.TroopId, targetCityId);
-                Error ret = city.Worker.doPassive(city, da, true);
+                Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                     reply_error(session, packet, ret);
                 else
@@ -470,7 +470,7 @@ namespace Game.Comm {
 
                 RetreatAction ra = new RetreatAction(cityId, troopId);
 
-                Error ret = city.Worker.doPassive(city, ra, true);
+                Error ret = city.Worker.DoPassive(city, ra, true);
                 if (ret != 0)
                     reply_error(session, packet, ret);
                 else

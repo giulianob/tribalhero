@@ -46,7 +46,7 @@ namespace Game.Logic {
             get { return NextTime; }
         }
 
-        public abstract void callback(object custom);
+        public abstract void Callback(object custom);
 
         #endregion
 

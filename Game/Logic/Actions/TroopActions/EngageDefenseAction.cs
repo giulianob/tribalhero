@@ -11,28 +11,29 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class EngageDefenseAction : PassiveAction {
-        private byte stubId;
-        private uint cityId;
-        private int originalHP, remainingHP;
+        private readonly byte stubId;
+        private readonly uint cityId;
+        private int originalHp;
+        private int remainingHp;
 
         public EngageDefenseAction(uint cityId, byte stubId) {
             this.cityId = cityId;
             this.stubId = stubId;
         }
 
-        public EngageDefenseAction(ushort id, bool isVisible, Dictionary<string, string> properties)
+        public EngageDefenseAction(ushort id, bool isVisible, IDictionary<string, string> properties)
             : base(id, isVisible) {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
-            originalHP = int.Parse(properties["original_hp"]);
-            remainingHP = int.Parse(properties["remaining_hp"]);
+            originalHp = int.Parse(properties["original_hp"]);
+            remainingHp = int.Parse(properties["remaining_hp"]);
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
-            city.Battle.ActionAttacked += new BattleBase.OnAttack(Battle_ActionAttacked);
-            city.Battle.ExitBattle += new BattleBase.OnBattle(Battle_ExitBattle);
+            city.Battle.ActionAttacked += Battle_ActionAttacked;
+            city.Battle.ExitBattle += Battle_ExitBattle;
         }
 
         public override Error Validate(string[] parms) {
@@ -50,13 +51,12 @@ namespace Game.Logic.Actions {
                 return Error.OK;
             }
 
-            List<TroopStub> list = new List<TroopStub>();
-            list.Add(stub);
-            originalHP = remainingHP = stub.TotalHP;
+            List<TroopStub> list = new List<TroopStub> {stub};
+            originalHp = remainingHp = stub.TotalHP;
 
-            city.Battle.ActionAttacked += new BattleBase.OnAttack(Battle_ActionAttacked);
-            city.Battle.ExitBattle += new BattleBase.OnBattle(Battle_ExitBattle);
-            city.Battle.addToDefense(list);
+            city.Battle.ActionAttacked += Battle_ActionAttacked;
+            city.Battle.ExitBattle += Battle_ExitBattle;
+            city.Battle.AddToDefense(list);
 
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.BattleState(cityId);
@@ -69,32 +69,35 @@ namespace Game.Logic.Actions {
         }
 
         private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
-            if (target.City.CityId == cityId) {
-                AttackCombatUnit unit = target as AttackCombatUnit;
-                if (unit != null) {
-                    City city;
-                    TroopStub stub;
-                    if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
-                        throw new Exception();
+            if (target.City.CityId != cityId)
+                return;
 
-                    if (unit.TroopStub == stub) {
-                        remainingHP -= damage;
-                        if (remainingHP <= 0) {
-                            List<TroopStub> list = new List<TroopStub>();
-                            list.Add(stub);
-                            city.Battle.removeFromAttack(list, ReportState.Dying);
-                            city.Battle.ActionAttacked -= new BattleBase.OnAttack(Battle_ActionAttacked);
-                            city.Battle.ExitBattle -= new BattleBase.OnBattle(Battle_ExitBattle);
+            AttackCombatUnit unit = target as AttackCombatUnit;
+            if (unit == null)
+                return;
 
-                            stub.TroopObject.BeginUpdate();
-                            stub.TroopObject.State = GameObjectState.NormalState();
-                            stub.TroopObject.Stub.State = TroopStub.TroopState.IDLE;
-                            stub.TroopObject.EndUpdate();
-                            StateChange(ActionState.COMPLETED);
-                        }
-                    }
-                }
-            }
+            City city;
+            TroopStub stub;
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+                throw new Exception();
+
+            if (unit.TroopStub != stub)
+                return;
+
+            remainingHp -= damage;
+            if (remainingHp > 0)
+                return;
+
+            List<TroopStub> list = new List<TroopStub> {stub};
+            city.Battle.RemoveFromAttack(list, ReportState.DYING);
+            city.Battle.ActionAttacked -= Battle_ActionAttacked;
+            city.Battle.ExitBattle -= Battle_ExitBattle;
+
+            stub.TroopObject.BeginUpdate();
+            stub.TroopObject.State = GameObjectState.NormalState();
+            stub.TroopObject.Stub.State = TroopStub.TroopState.IDLE;
+            stub.TroopObject.EndUpdate();
+            StateChange(ActionState.COMPLETED);
         }
 
         private void Battle_ExitBattle(CombatList atk, CombatList def) {
@@ -103,8 +106,8 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            city.Battle.ActionAttacked -= new BattleBase.OnAttack(Battle_ActionAttacked);
-            city.Battle.ExitBattle -= new BattleBase.OnBattle(Battle_ExitBattle);
+            city.Battle.ActionAttacked -= Battle_ActionAttacked;
+            city.Battle.ExitBattle -= Battle_ExitBattle;
 
             stub.TroopObject.BeginUpdate();
             stub.BeginUpdate();
@@ -129,11 +132,11 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
-                                                                new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
-                                                                new XMLKVPair("original_hp", originalHP),
-                                                                new XMLKVPair("remaining_hp", remainingHP)
-                                                            });
+                    XMLSerializer.Serialize(new[] {
+                                                new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
+                                                new XMLKVPair("original_hp", originalHp),
+                                                new XMLKVPair("remaining_hp", remainingHp)
+                    });
             }
         }
 

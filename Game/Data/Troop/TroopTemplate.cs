@@ -29,6 +29,9 @@ namespace Game.Data.Troop {
             stub.FireUpdated();
         }
 
+        /// <summary>
+        /// Must call begin/end update on the troop stub that owns this template
+        /// </summary>
         public void LoadStats() {
             stats = new Dictionary<ushort, BattleStats>();
 

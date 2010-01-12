@@ -10,19 +10,16 @@ using Game.Logic.Procedures;
 #endregion
 
 namespace Game.Battle {
-    public class CombatStructure : CombatObject, IComparable<object>, IPersistableObject {
-        private Structure structure;
-        private byte lvl;
-        private ushort type;
+    public class CombatStructure : CombatObject {
+        private readonly byte lvl;
+        private readonly ushort type;
         private uint hp; //need to keep a copy track of the hp for reporting
-        private BattleStats stats;
+        private readonly BattleStats stats;
 
-        public Structure Structure {
-            get { return structure; }
-        }
+        public Structure Structure { get; private set; }
 
         public override BaseBattleStats BaseStats {
-            get { return structure.Stats.Base.Battle; }
+            get { return Structure.Stats.Base.Battle; }
         }
 
         public override BattleStats Stats {
@@ -32,7 +29,7 @@ namespace Game.Battle {
         public CombatStructure(BattleManager owner, Structure structure, BattleStats stats) {
             battleManager = owner;
             this.stats = stats;
-            this.structure = structure;
+            this.Structure = structure;
             type = structure.Type;
             lvl = structure.Lvl;
             hp = structure.Stats.Hp;
@@ -41,7 +38,7 @@ namespace Game.Battle {
         public CombatStructure(BattleManager owner, Structure structure, BattleStats stats, uint hp, ushort type,
                                byte lvl) {
             battleManager = owner;
-            this.structure = structure;
+            this.Structure = structure;
             this.stats = stats;
             this.hp = hp;
             this.type = type;
@@ -53,35 +50,35 @@ namespace Game.Battle {
 
             if (obj is AttackCombatUnit) {
                 //building can attack anyone who can attack them
-                dist = obj.Distance(structure.X, structure.Y);
+                dist = obj.Distance(Structure.X, Structure.Y);
                 if (dist <= (obj as AttackCombatUnit).TroopStub.TroopObject.Stats.AttackRadius)
                     return true;
             } else if (obj is DefenseCombatUnit)
                 return true;
 
-            dist = obj.Distance(structure.X, structure.Y);
+            dist = obj.Distance(Structure.X, Structure.Y);
 
             return dist <= Stats.Rng;
         }
 
         public override int Distance(uint x, uint y) {
-            return GameObject.Distance(x, y, structure.X, structure.Y);
+            return GameObject.Distance(x, y, Structure.X, Structure.Y);
         }
 
         public override uint Visibility {
-            get { return (uint) (RoundsParicipated + Stats.Rng); }
+            get { return (uint) (RoundsParticipated + Stats.Rng); }
         }
 
         public override uint PlayerId {
-            get { return structure.City.Owner.PlayerId; }
+            get { return Structure.City.Owner.PlayerId; }
         }
 
         public override City City {
-            get { return structure.City; }
+            get { return Structure.City; }
         }
 
         public override BattleClass ClassType {
-            get { return BattleClass.Structure; }
+            get { return BattleClass.STRUCTURE; }
         }
 
         public override bool IsDead {
@@ -100,7 +97,7 @@ namespace Game.Battle {
             get { return type; }
         }
 
-        public override uint HP {
+        public override uint Hp {
             get { return hp; }
         }
 
@@ -108,44 +105,46 @@ namespace Game.Battle {
             actualDmg = (int) Math.Min(hp, dmg);
         }
 
-        public override void TakeDamage(int Dmg) {
-            structure.BeginUpdate();
-            structure.Stats.Hp -= (ushort) Dmg;
-            if (structure.Stats.Hp < 0)
-                structure.Stats.Hp = 0;
+        public override void TakeDamage(int dmg) {
+            Structure.BeginUpdate();
+            Structure.Stats.Hp -= (ushort) dmg;
+            if (Structure.Stats.Hp < 0)
+                Structure.Stats.Hp = 0;
 
-            hp -= (ushort) Dmg;
+            hp -= (ushort) dmg;
             if (hp < 0)
                 hp = 0;
-            structure.EndUpdate();
+            Structure.EndUpdate();
 
             Global.dbManager.Save(this);
         }
 
         public override void CleanUp() {
             if (hp <= 0) {
-                City city = structure.City;
+                City city = Structure.City;
 
-                Global.World.LockRegion(structure.X, structure.Y);
-                if (structure.Lvl > 1) {
-                    structure.BeginUpdate();
-                    Procedure.StructureDowngrade(structure);
-                    structure.State = GameObjectState.NormalState();
-                    structure.EndUpdate();
+                Global.World.LockRegion(Structure.X, Structure.Y);
+                if (Structure.Lvl > 1) {
+                    Structure.City.BeginUpdate();
+                    Structure.BeginUpdate();
+                    Procedure.StructureDowngrade(Structure);
+                    Structure.State = GameObjectState.NormalState();
+                    Structure.EndUpdate();
+                    Structure.City.EndUpdate();
                 } else {
-                    Global.World.Remove(structure);
-                    city.Remove(structure);
+                    Global.World.Remove(Structure);
+                    city.Remove(Structure);
                 }
-                Global.World.UnlockRegion(structure.X, structure.Y);
+                Global.World.UnlockRegion(Structure.X, Structure.Y);
             }
 
             Global.dbManager.Delete(this);
         }
 
         public override void ExitBattle() {
-            structure.BeginUpdate();
-            structure.State = GameObjectState.NormalState();
-            structure.EndUpdate();
+            Structure.BeginUpdate();
+            Structure.State = GameObjectState.NormalState();
+            Structure.EndUpdate();
         }
 
         public override void ReceiveReward(int reward, Resource resource) {
@@ -156,12 +155,10 @@ namespace Game.Battle {
 
         public override int CompareTo(object other) {
             if (other is Structure) {
-                if (other == structure)
-                    return 0;
-                else
-                    return 1;
-            } else
-                return -1;
+                return other == Structure ? 0 : 1;
+            }
+
+            return -1;
         }
 
         #endregion
@@ -176,7 +173,7 @@ namespace Game.Battle {
 
         public override DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("id", Id, DbType.UInt32),
                                           new DbColumn("city_id", battleManager.City.CityId, DbType.UInt32)
                                       };
@@ -189,14 +186,14 @@ namespace Game.Battle {
 
         public override DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("last_round", LastRound, DbType.UInt32),
-                                          new DbColumn("rounds_participated", RoundsParicipated, DbType.UInt32),
+                                          new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                                           new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
                                           new DbColumn("damage_received", DmgRecv, DbType.Int32),
                                           new DbColumn("group_id", GroupId, DbType.UInt32),
-                                          new DbColumn("structure_city_id", structure.City.CityId, DbType.UInt32),
-                                          new DbColumn("structure_id", structure.ObjectId, DbType.UInt32),
+                                          new DbColumn("structure_city_id", Structure.City.CityId, DbType.UInt32),
+                                          new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32),
                                           new DbColumn("hp", hp, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
                                           new DbColumn("level", lvl, DbType.Byte), //BattleStats
                                           new DbColumn("max_hp", stats.MaxHp, DbType.UInt16),

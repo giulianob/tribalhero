@@ -40,7 +40,7 @@ namespace Game.Logic.Actions {
 
         #region ISchedule Members
 
-        public override void callback(object custom) {
+        public override void Callback(object custom) {
             City city;
 
             List<ILockable> toBeLocked = new List<ILockable>();
@@ -56,7 +56,7 @@ namespace Game.Logic.Actions {
             }
 
             using (new MultiObjectLock(toBeLocked.ToArray())) {
-                if (!city.Battle.executeTurn()) {
+                if (!city.Battle.ExecuteTurn()) {
                     city.Battle.ActionAttacked -= Battle_ActionAttacked;
                     Global.dbManager.Delete(city.Battle);
                     city.Battle = null;
@@ -116,7 +116,7 @@ namespace Game.Logic.Actions {
             Global.dbManager.Save(city.Battle);
 
             //Add local troop
-            Procedure.AddLocalToBattle(city.Battle, city, ReportState.Entering);
+            Procedure.AddLocalToBattle(city.Battle, city, ReportState.ENTERING);
 
             List<TroopStub> list = new List<TroopStub>();
 
@@ -133,7 +133,7 @@ namespace Game.Logic.Actions {
                 list.Add(stub);
             }
 
-            city.Battle.addToDefense(list);
+            city.Battle.AddToDefense(list);
             viewer = new BattleViewer(city.Battle);
             beginTime = DateTime.Now;
             endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
@@ -154,7 +154,7 @@ namespace Game.Logic.Actions {
             if (cu.TroopStub.StationedCity == city && cu.TroopStub.TotalCount == 0) {
                 //takes care of killing out stationed troops
                 List<TroopStub> list = new List<TroopStub>(1) {cu.TroopStub};
-                city.Battle.removeFromDefense(list, ReportState.Dying);
+                city.Battle.RemoveFromDefense(list, ReportState.DYING);
             }
         }
 

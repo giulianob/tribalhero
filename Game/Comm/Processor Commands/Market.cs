@@ -61,7 +61,7 @@ namespace Game.Comm {
                     ResourceBuyAction rba = new ResourceBuyAction(cityId, objectId, price, quantity, type);
                     if (
                         (ret =
-                         city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, rba, obj.Technologies)) ==
+                         city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, rba, obj.Technologies)) ==
                         0)
                         reply_success(session, packet);
                     else
@@ -114,7 +114,7 @@ namespace Game.Comm {
                     ResourceSellAction rsa = new ResourceSellAction(cityId, objectId, price, quantity, type);
                     if (
                         (ret =
-                         city.Worker.doActive(StructureFactory.getActionWorkerType(obj), obj, rsa, obj.Technologies)) ==
+                         city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, rsa, obj.Technologies)) ==
                         0)
                         reply_success(session, packet);
                     else

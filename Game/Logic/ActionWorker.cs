@@ -225,7 +225,7 @@ namespace Game.Logic {
 
             foreach (ActionRequirement action_req in record.list) {
                 if (action_req.type == action.Type) {
-                    if ((error = action.validate(action_req.parms)) == Error.OK) {
+                    if ((error = action.Validate(action_req.parms)) == Error.OK) {
                         if (
                             stubs_remain.FindAll(
                                 delegate(ActiveAction stub) { return stub.WorkerIndex == action_req.index; }).Count >=
@@ -243,14 +243,14 @@ namespace Game.Logic {
                             action.WorkerObject = workerObject;
                             active.Add(action.ActionId, action);
 
-                            Error ret = action.execute();
+                            Error ret = action.Execute();
 
                             if (ret != Error.OK) {
-                                action.stateChange(ActionState.FAILED);
+                                action.StateChange(ActionState.FAILED);
                                 active.Remove(action.ActionId);
                                 releaseId(action.ActionId);
                             } else
-                                action.stateChange(ActionState.STARTED);
+                                action.StateChange(ActionState.STARTED);
 
                             return ret;
                         } else {
@@ -278,13 +278,13 @@ namespace Game.Logic {
 
             passive.Add(action.ActionId, action);
 
-            Error ret = action.execute();
+            Error ret = action.Execute();
             if (ret != Error.OK) {
-                action.stateChange(ActionState.FAILED);
+                action.StateChange(ActionState.FAILED);
                 active.Remove(action.ActionId);
                 releaseId(action.ActionId);
             } else
-                action.stateChange(ActionState.STARTED);
+                action.StateChange(ActionState.STARTED);
 
             return ret;
         }
@@ -303,7 +303,7 @@ namespace Game.Logic {
             passive.Add(action.ActionId, action);
 
             using (new MultiObjectLock(city))
-                action.execute();
+                action.Execute();
         }
 
         #endregion
@@ -378,7 +378,7 @@ namespace Game.Logic {
                 if (ignoreActionList.Contains(stub))
                     continue;
 
-                stub.interrupt(actionInterrupt);
+                stub.Interrupt(actionInterrupt);
                 active.Remove(stub.ActionId);
                 Global.dbManager.Delete(stub);
             }
@@ -390,14 +390,14 @@ namespace Game.Logic {
                 if (ignoreActionList.Contains(stub))
                     continue;
 
-                stub.interrupt(actionInterrupt);
+                stub.Interrupt(actionInterrupt);
                 passive.Remove(stub.ActionId);
                 Global.dbManager.Delete(stub);
             }
         }
 
         private void CancelCallback(object item) {
-            ((ActiveAction) item).interrupt(ActionInterrupt.CANCEL);
+            ((ActiveAction) item).Interrupt(ActionInterrupt.CANCEL);
         }
 
         public Error Cancel(ushort id) {

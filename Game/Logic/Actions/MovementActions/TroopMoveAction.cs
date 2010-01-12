@@ -36,7 +36,7 @@ namespace Game.Logic.Actions {
             distanceRemaining = int.Parse(properties["distance_remaining"]);
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
@@ -87,7 +87,7 @@ namespace Game.Logic.Actions {
             return true;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             TroopObject troopObj;
 
@@ -105,7 +105,7 @@ namespace Game.Logic.Actions {
 
             if (!calculateNext(troopObj)) {
                 troopObj.Stub.State = TroopStub.TroopState.IDLE;
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
                 troopObj.Stub.EndUpdate();
                 return 0;
             }
@@ -114,7 +114,7 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             TroopObject troopObj;
 
@@ -125,7 +125,7 @@ namespace Game.Logic.Actions {
                         y = city.MainBuilding.Y;
                         if (!calculateNext(troopObj)) {
                             Global.Scheduler.del(this);
-                            stateChange(ActionState.COMPLETED);
+                            StateChange(ActionState.COMPLETED);
                             return;
                         }
                         break;
@@ -154,11 +154,11 @@ namespace Game.Logic.Actions {
                     troopObj.Stub.BeginUpdate();
                     troopObj.Stub.State = TroopStub.TroopState.IDLE;
                     troopObj.Stub.EndUpdate();
-                    stateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.COMPLETED);
                     return;
                 }
 
-                stateChange(ActionState.FIRED);
+                StateChange(ActionState.FIRED);
             }
         }
 

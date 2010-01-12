@@ -19,7 +19,7 @@ namespace Game.Logic.Actions {
             this.cityId = cityId;
             this.structureId = structureId;
             this.city2structure = city2structure;
-            this.actionCount = count;
+            this.ActionCount = count;
         }
 
         public LaborMoveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
@@ -36,7 +36,7 @@ namespace Game.Logic.Actions {
             get { return ActionType.LABOR_MOVE; }
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -44,27 +44,27 @@ namespace Game.Logic.Actions {
 
             if (city2structure) {
                 structure.City.BeginUpdate();
-                structure.City.Resource.Labor.Subtract(actionCount);
+                structure.City.Resource.Labor.Subtract(ActionCount);
                 structure.City.EndUpdate();
             } else {
                 structure.BeginUpdate();
-                structure.Stats.Labor -= (byte) actionCount;
+                structure.Stats.Labor -= (byte) ActionCount;
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.OnLaborUpdate(structure, -1*actionCount); // labor got taken out immediately                
+                Procedure.OnLaborUpdate(structure, -1*ActionCount); // labor got taken out immediately                
                 structure.City.EndUpdate();
             }
 
             // add to queue for completion
             beginTime = DateTime.Now;
             endTime =
-                DateTime.Now.AddSeconds(Formula.LaborMoveTime(structure, (byte) actionCount, structure.Technologies));
+                DateTime.Now.AddSeconds(Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
 
             return Error.OK;
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
@@ -76,64 +76,64 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 if (city2structure) {
                     structure.BeginUpdate();
-                    structure.Stats.Labor += (byte) actionCount;
+                    structure.Stats.Labor += (byte) ActionCount;
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.OnLaborUpdate(structure, actionCount); // labor got put in here
+                    Procedure.OnLaborUpdate(structure, ActionCount); // labor got put in here
                     structure.City.EndUpdate();
                 } else {
                     structure.City.BeginUpdate();
-                    structure.City.Resource.Labor.Add(actionCount);
+                    structure.City.Resource.Labor.Add(ActionCount);
                     structure.City.EndUpdate();
                 }
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
                 return;
             }
         }
 
         #endregion
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 Global.Scheduler.del(this);
                 switch (state) {
                     case ActionInterrupt.KILLED:
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
                         if (city2structure) {
                             structure.City.BeginUpdate();
-                            structure.City.Resource.Labor.Add(actionCount);
+                            structure.City.Resource.Labor.Add(ActionCount);
                             structure.City.EndUpdate();
                         } else {
                             structure.BeginUpdate();
-                            structure.Stats.Labor += (byte) actionCount;
+                            structure.Stats.Labor += (byte) ActionCount;
                             structure.EndUpdate();
 
                             structure.City.BeginUpdate();
-                            Procedure.OnLaborUpdate(structure, -1*actionCount);
+                            Procedure.OnLaborUpdate(structure, -1*ActionCount);
                                 // need to add production back to structures
                             structure.City.EndUpdate();
                         }
-                        stateChange(ActionState.INTERRUPTED);
+                        StateChange(ActionState.INTERRUPTED);
                         break;
                 }
             }

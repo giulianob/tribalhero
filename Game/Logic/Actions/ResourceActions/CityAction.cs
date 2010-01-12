@@ -24,19 +24,19 @@ namespace Game.Logic.Actions {
             laborRoundBeforeIncrements = int.Parse(properties["labor_round_before_increments"]);
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             beginTime = DateTime.Now;
             endTime = DateTime.Now.AddSeconds(INTERVAL*Config.seconds_per_unit);
             return Error.OK;
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             switch (state) {
-                case ActionInterrupt.Abort:
+                case ActionInterrupt.ABORT:
                     Global.Scheduler.del(this);
                     break;
                 case ActionInterrupt.KILLED:
@@ -54,7 +54,7 @@ namespace Game.Logic.Actions {
         public override void callback(object custom) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 city.BeginUpdate();
@@ -181,7 +181,7 @@ namespace Game.Logic.Actions {
 
                 beginTime = DateTime.Now;
                 endTime = DateTime.Now.AddSeconds(INTERVAL*Config.seconds_per_unit);
-                stateChange(ActionState.FIRED);
+                StateChange(ActionState.FIRED);
             }
         }
 

@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Stats;
 using Game.Fighting;
+using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -13,6 +15,66 @@ using Game.Util;
 
 namespace Game.Comm {
     public partial class Processor {
+        public void CmdGetTroopInfo(Session session, Packet packet) {
+            City city;
+            TroopObject troop;
+
+            uint cityId;
+            uint objectId;
+
+            try {
+                cityId = packet.getUInt32();
+                objectId = packet.getUInt32();
+            }
+            catch (Exception) {
+                reply_error(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            using (new MultiObjectLock(cityId, objectId, out city, out troop)) {
+                if (city == null || troop == null) {
+                    reply_error(session, packet, Error.OBJECT_NOT_FOUND);
+                    return;
+                }
+
+                Packet reply = new Packet(packet);
+
+                if (city.Owner == session.Player) {
+                    reply.addByte(troop.Stats.AttackRadius);
+                    reply.addByte(troop.Stats.Speed);
+                    reply.addByte(troop.Stub.TroopId);
+
+                    UnitTemplate template = new UnitTemplate(city);
+
+                    reply.addByte(troop.Stub.FormationCount);
+                    foreach (
+                        KeyValuePair<FormationType, Formation> formation in
+                            troop.Stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
+                        reply.addByte((byte)formation.Key);
+                        reply.addByte((byte)formation.Value.Count);
+                        foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
+                            reply.addUInt16(kvp.Key);
+                            reply.addUInt16(kvp.Value);
+                            template[kvp.Key] = city.Template[kvp.Key];
+                        }
+                    }
+
+                    reply.addUInt16((ushort)template.Size);
+                    IEnumerator<KeyValuePair<ushort, BaseUnitStats>> templateIter = template.GetEnumerator();
+                    while (templateIter.MoveNext()) {
+                        KeyValuePair<ushort, BaseUnitStats> kvp = templateIter.Current;
+                        reply.addUInt16(kvp.Key);
+                        reply.addByte(kvp.Value.Lvl);
+                    }
+
+                    PacketHelper.AddToPacket(
+                        new List<ReferenceStub>(troop.City.Worker.References.getReferences(troop)), reply);
+                }
+
+                session.write(reply);
+            }
+        }
+
         public void CmdLocalTroopSet(Session session, Packet packet) {
             uint cityId;
             byte formationCount;
@@ -34,7 +96,6 @@ namespace Game.Comm {
                 }
 
                 TroopStub stub = new TroopStub();
-                Dictionary<ushort, uint> holder = new Dictionary<ushort, uint>();
 
                 if (formationCount != 2) {
                     reply_error(session, packet, Error.UNEXPECTED);
@@ -121,8 +182,8 @@ namespace Game.Comm {
                 if (!city.TryGetStructure(objectId, out barrack))
                     reply_error(session, packet, Error.UNEXPECTED);
 
-                UnitUpgradeAction upgrade_action = new UnitUpgradeAction(cityId, objectId, type);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, upgrade_action,
+                UnitUpgradeAction upgradeAction = new UnitUpgradeAction(cityId, objectId, type);
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, upgradeAction,
                                                  barrack.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -160,8 +221,8 @@ namespace Game.Comm {
                 if (!city.TryGetStructure(objectId, out barrack))
                     reply_error(session, packet, Error.UNEXPECTED);
 
-                UnitTrainAction train_action = new UnitTrainAction(cityId, objectId, type, count);
-                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, train_action,
+                UnitTrainAction trainAction = new UnitTrainAction(cityId, objectId, type, count);
+                Error ret = city.Worker.doActive(StructureFactory.getActionWorkerType(barrack), barrack, trainAction,
                                                  barrack.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -300,7 +361,6 @@ namespace Game.Comm {
             Dictionary<uint, City> cities;
             using (new MultiObjectLock(out cities, cityId, targetCityId)) {
                 City city = cities[cityId];
-                City targetCity = cities[targetCityId];
 
                 TroopStub stub = new TroopStub();
 

@@ -40,7 +40,7 @@ namespace Game.Battle {
                 int score = 0;
 
                 //have to compare armor and weapon type here to give some sort of score
-                score += ((int) BattleFormulas.getArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor)*10);
+                score += ((int) BattleFormulas.GetArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor)*10);
 
                 /*     if (obj.Stats.Armor == ArmorType.HEAVY && attacker.Stats.Weapon == WeaponType.HEAVY)
                     score += 10;

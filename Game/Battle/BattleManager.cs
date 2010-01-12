@@ -251,7 +251,7 @@ namespace Game.Battle {
 
         public BattleManager(City owner) {
             city = owner;
-            stamina = BattleFormulas.getStamina(city);
+            stamina = BattleFormulas.GetStamina(city);
             report = new BattleReport(this);
             channel = new BattleChannel(this, "/BATTLE/" + city.CityId);
             groupIdGen.set(1);
@@ -350,7 +350,7 @@ namespace Game.Battle {
                 }
 
                 if (battleStarted && added) {
-                    stamina = BattleFormulas.getStaminaReinforced(city, stamina, round);
+                    stamina = BattleFormulas.GetStaminaReinforced(city, stamina, round);
                     report.WriteReportObjects(list, false, ReportState.Staying);
                     EventReinforceDefender(list);
                     refreshBattleOrder();
@@ -450,7 +450,7 @@ namespace Game.Battle {
                 }
 
                 if (battleStarted && added) {
-                    stamina = BattleFormulas.getStaminaReinforced(city, stamina, round);
+                    stamina = BattleFormulas.GetStaminaReinforced(city, stamina, round);
                     if (combatList == Attacker) {
                         report.WriteReportObjects(list, true, state);
                         EventReinforceAttacker(list);
@@ -616,7 +616,7 @@ namespace Game.Battle {
 
                     if (!battleOrder.NextObject(out attacker)) {
                         ++round;
-                        stamina = BattleFormulas.getStaminaRoundEnded(city, stamina, turn);
+                        stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
                         battleOrder.ParticipatedInRound();
                         turn = 0;
                         EventEnterRound(Attacker, Defender, round, stamina);
@@ -641,7 +641,7 @@ namespace Game.Battle {
                         continue;
                     }
 
-                    ushort dmg = BattleFormulas.getDamage(attacker, defender, attacker.CombatList == defenders);
+                    ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
                     int actualDmg;
 
                     defender.CalculateDamage(dmg, out actualDmg);
@@ -664,7 +664,7 @@ namespace Game.Battle {
 
                         if (attacker.CombatList == attackers) {
                             if (defender.ClassType == BattleClass.Structure)
-                                stamina = BattleFormulas.getStaminaStructureDestroyed(city, stamina, round);
+                                stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
                             defenders.Remove(defender);
                             report.WriteReportObject(defender, false,
                                                      groupIsDead(defender, defenders)
@@ -682,7 +682,7 @@ namespace Game.Battle {
                     }
 
                     if (attacker.CombatList == Attacker) {
-                        Resource loot = BattleFormulas.getRewardResource(attacker, defender, actualDmg);
+                        Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
                         city.BeginUpdate();
                         city.Resource.Subtract(loot, out loot);
                         attacker.ReceiveReward(defender.Stats.Base.Reward*actualDmg, loot);

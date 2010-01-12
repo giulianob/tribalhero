@@ -20,7 +20,7 @@ namespace Game.Logic.Actions {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
-            actionCount = count;
+            ActionCount = count;
         }
 
         public UnitTrainAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
@@ -37,14 +37,14 @@ namespace Game.Logic.Actions {
             get { return ActionType.UNIT_TRAIN; }
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_STRUCTURE_NOT_FOUND;
 
             cost = Formula.UnitCost(structure.City, type, structure.City.Template[type].Lvl);
-            Resource totalCost = cost*actionCount;
+            Resource totalCost = cost*ActionCount;
             if (!structure.City.Resource.HasEnough(totalCost))
                 return Error.RESOURCE_NOT_ENOUGH;
 
@@ -58,12 +58,12 @@ namespace Game.Logic.Actions {
             // add to queue for completion
             nextTime = DateTime.Now.AddSeconds((double) buildtime);
             beginTime = DateTime.Now;
-            endTime = DateTime.Now.AddSeconds((double) buildtime*actionCount);
+            endTime = DateTime.Now.AddSeconds((double) buildtime*ActionCount);
 
             return Error.OK;
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             if (ushort.Parse(parms[0]) != type)
                 return Error.ACTION_INVALID;
             return Error.OK;
@@ -77,11 +77,11 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
@@ -89,42 +89,42 @@ namespace Game.Logic.Actions {
                 structure.City.DefaultTroop.addUnit(FormationType.Normal, type, 1);
                 structure.City.DefaultTroop.EndUpdate();
 
-                --actionCount;
-                if (actionCount == 0) {
-                    stateChange(ActionState.COMPLETED);
+                --ActionCount;
+                if (ActionCount == 0) {
+                    StateChange(ActionState.COMPLETED);
                     return;
                 }
 
                 int buildtime = Formula.TrainTime((int) UnitFactory.getTime(type, 1), (structure.Lvl - 1)*3,
                                                   structure.Technologies);
                 nextTime = nextTime.AddSeconds(buildtime);
-                stateChange(ActionState.RESCHEDULED);
+                StateChange(ActionState.RESCHEDULED);
             }
         }
 
         #endregion
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
                 Global.Scheduler.del(this);
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 switch (state) {
                     case ActionInterrupt.KILLED:
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        Resource totalCost = cost*actionCount;
+                        Resource totalCost = cost*ActionCount;
                         structure.City.BeginUpdate();
                         structure.City.Resource.Add(totalCost/2);
                         structure.City.EndUpdate();
-                        stateChange(ActionState.INTERRUPTED);
+                        StateChange(ActionState.INTERRUPTED);
                         break;
                 }
             }

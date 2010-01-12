@@ -12,11 +12,12 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class EngageAttackAction : PassiveAction {
-        private uint cityId;
-        private byte stubId;
-        private uint targetCityId;
-        private AttackMode mode;
-        private int originalHP, remainingHP;
+        private readonly uint cityId;
+        private readonly byte stubId;
+        private readonly uint targetCityId;
+        private readonly AttackMode mode;
+        private int originalHp;
+        private int remainingHp;
 
         public EngageAttackAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode) {
             this.cityId = cityId;
@@ -25,14 +26,14 @@ namespace Game.Logic.Actions {
             this.mode = mode;
         }
 
-        public EngageAttackAction(ushort id, bool isVisible, Dictionary<string, string> properties)
+        public EngageAttackAction(ushort id, bool isVisible, IDictionary<string, string> properties)
             : base(id, isVisible) {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
 
             mode = (AttackMode) (byte.Parse(properties["mode"]));
-            originalHP = int.Parse(properties["original_hp"]);
-            remainingHP = int.Parse(properties["remaining_hp"]);
+            originalHp = int.Parse(properties["original_hp"]);
+            remainingHp = int.Parse(properties["remaining_hp"]);
 
             targetCityId = uint.Parse(properties["target_city_id"]);
 
@@ -42,13 +43,13 @@ namespace Game.Logic.Actions {
             targetCity.Battle.ExitBattle += Battle_ExitBattle;
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        private static List<Structure> GetStructuresInRadius(City city, TroopObject obj) {
+        private static List<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject obj) {
             List<Structure> listStruct = new List<Structure>();
-            foreach (Structure structure in city) {
+            foreach (Structure structure in structures) {
                 if (structure.Distance(obj) <= obj.Stats.AttackRadius ||
                     structure.Distance(obj) <= structure.Stats.Base.Radius)
                     listStruct.Add(structure);
@@ -57,7 +58,7 @@ namespace Game.Logic.Actions {
             return listStruct;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             City targetCity;
             TroopStub stub;
@@ -66,20 +67,19 @@ namespace Game.Logic.Actions {
                 !Global.World.TryGetObjects(targetCityId, out targetCity))
                 return Error.OBJECT_NOT_FOUND;
 
-            List<TroopStub> list = new List<TroopStub>();
-            list.Add(stub);
-            originalHP = remainingHP = stub.TotalHP;
+            List<TroopStub> list = new List<TroopStub> {stub};
+            originalHp = remainingHp = stub.TotalHP;
 
             if (targetCity.Battle != null) {
-                targetCity.Battle.ActionAttacked += new BattleBase.OnAttack(Battle_ActionAttacked);
-                targetCity.Battle.ExitBattle += new BattleBase.OnBattle(Battle_ExitBattle);
+                targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
+                targetCity.Battle.ExitBattle += Battle_ExitBattle;
                 Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.Reinforced);
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
                 targetCity.Battle.addToAttack(list);
             } else {
                 targetCity.Battle = new BattleManager(targetCity);
-                targetCity.Battle.ActionAttacked += new BattleBase.OnAttack(Battle_ActionAttacked);
-                targetCity.Battle.ExitBattle += new BattleBase.OnBattle(Battle_ExitBattle);
+                targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
+                targetCity.Battle.ExitBattle += Battle_ExitBattle;
                 BattleAction ba = new BattleAction(targetCityId);
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
                 targetCity.Battle.addToAttack(list);
@@ -111,12 +111,11 @@ namespace Game.Logic.Actions {
                 throw new NotImplementedException();
 
             if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject) {
-                remainingHP -= damage;
-                if (remainingHP <= Formula.GetAttackModeTolerance(originalHP, mode)) {
-                    List<TroopStub> list = new List<TroopStub>();
-                    list.Add(stub);
+                remainingHp -= damage;
+                if (remainingHp <= Formula.GetAttackModeTolerance(originalHp, mode)) {
+                    List<TroopStub> list = new List<TroopStub> {stub};
                     targetCity.Battle.removeFromAttack(list,
-                                                       remainingHP == 0 ? ReportState.Dying : ReportState.Retreating);
+                                                       remainingHp == 0 ? ReportState.Dying : ReportState.Retreating);
                     targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
                     targetCity.Battle.ExitBattle -= Battle_ExitBattle;
 
@@ -124,7 +123,7 @@ namespace Game.Logic.Actions {
                     stub.TroopObject.State = GameObjectState.NormalState();
                     stub.TroopObject.EndUpdate();
 
-                    stateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.COMPLETED);
                 }
             }
         }
@@ -138,8 +137,8 @@ namespace Game.Logic.Actions {
                 !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new NotImplementedException();
 
-            targetCity.Battle.ActionAttacked -= new BattleBase.OnAttack(Battle_ActionAttacked);
-            targetCity.Battle.ExitBattle -= new BattleBase.OnBattle(Battle_ExitBattle);
+            targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
+            targetCity.Battle.ExitBattle -= Battle_ExitBattle;
 
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.Stub.BeginUpdate();
@@ -148,10 +147,10 @@ namespace Game.Logic.Actions {
             stub.TroopObject.Stub.EndUpdate();
             stub.TroopObject.EndUpdate();
 
-            stateChange(ActionState.COMPLETED);
+            StateChange(ActionState.COMPLETED);
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             return;
         }
 
@@ -164,12 +163,12 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("target_city_id", targetCityId),
                                                                 new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
                                                                 new XMLKVPair("mode", (byte) mode),
-                                                                new XMLKVPair("original_hp", originalHP),
-                                                                new XMLKVPair("remaining_hp", remainingHP)
+                                                                new XMLKVPair("original_hp", originalHp),
+                                                                new XMLKVPair("remaining_hp", remainingHp)
                                                             });
             }
         }

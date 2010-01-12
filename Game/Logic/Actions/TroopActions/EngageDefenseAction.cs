@@ -35,18 +35,18 @@ namespace Game.Logic.Actions {
             city.Battle.ExitBattle += new BattleBase.OnBattle(Battle_ExitBattle);
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.OBJECT_NOT_FOUND;
 
             if (city.Battle == null) {
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
                 return Error.OK;
             }
 
@@ -90,7 +90,7 @@ namespace Game.Logic.Actions {
                             stub.TroopObject.State = GameObjectState.NormalState();
                             stub.TroopObject.Stub.State = TroopStub.TroopState.IDLE;
                             stub.TroopObject.EndUpdate();
-                            stateChange(ActionState.COMPLETED);
+                            StateChange(ActionState.COMPLETED);
                         }
                     }
                 }
@@ -113,10 +113,10 @@ namespace Game.Logic.Actions {
             stub.EndUpdate();
             stub.TroopObject.EndUpdate();
 
-            stateChange(ActionState.COMPLETED);
+            StateChange(ActionState.COMPLETED);
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             return;
         }
 

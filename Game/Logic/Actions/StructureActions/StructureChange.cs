@@ -38,13 +38,13 @@ namespace Game.Logic.Actions {
             ignoreCost = bool.Parse(properties["ignore_cost"]);
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             if (type == uint.Parse(parms[0]) && lvl == uint.Parse(parms[1]))
                 return Error.OK;
             return Error.ACTION_INVALID;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -75,20 +75,20 @@ namespace Game.Logic.Actions {
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
-                this.stateChange(ActionState.COMPLETED);
+                this.StateChange(ActionState.COMPLETED);
             }
 
             return Error.OK;
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 switch (state) {
                     case ActionInterrupt.KILLED:
                         if (!ignoreTime)
                             Global.Scheduler.del(this);
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
                         if (!ignoreTime)
@@ -98,7 +98,7 @@ namespace Game.Logic.Actions {
                         city.Resource.Add(cost/2);
                         city.EndUpdate();
 
-                        stateChange(ActionState.INTERRUPTED);
+                        StateChange(ActionState.INTERRUPTED);
                         break;
                 }
             }
@@ -114,11 +114,11 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
@@ -129,7 +129,7 @@ namespace Game.Logic.Actions {
                 structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, this);
                 structure.EndUpdate();
 
-                this.stateChange(ActionState.COMPLETED);
+                this.StateChange(ActionState.COMPLETED);
             }
         }
 

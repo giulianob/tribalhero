@@ -26,11 +26,11 @@ namespace Game.Logic.Actions {
             stubId = byte.Parse(properties["troop_stub_id"]);
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
@@ -59,7 +59,7 @@ namespace Game.Logic.Actions {
                         stub.City.Worker.References.remove(stub.TroopObject, this);
                         stub.City.Worker.Notifications.remove(this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                        stateChange(ActionState.COMPLETED);
+                        StateChange(ActionState.COMPLETED);
                     } else {
                         EngageDefenseAction eda = new EngageDefenseAction(cityId, stubId);
                         ExecuteChainAndWait(eda, new ChainCallback(AfterEngageDefense));
@@ -83,7 +83,7 @@ namespace Game.Logic.Actions {
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
                     else
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                    stateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.COMPLETED);
                 }
             }
         }

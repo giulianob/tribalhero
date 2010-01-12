@@ -28,7 +28,7 @@ namespace Game.Logic.Actions {
 
         #region IAction Members
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
 
@@ -66,11 +66,11 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
@@ -81,7 +81,7 @@ namespace Game.Logic.Actions {
 
                 Procedure.OnStructureUpgrade(structure);
 
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
             }
         }
 
@@ -93,26 +93,26 @@ namespace Game.Logic.Actions {
             get { return ActionType.STRUCTURE_UPGRADE; }
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
         #endregion
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!city.TryGetStructure(structureId, out structure)) {
                     Global.Scheduler.del(this);
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 switch (state) {
                     case ActionInterrupt.KILLED:
                         Global.Scheduler.del(this);
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
@@ -122,7 +122,7 @@ namespace Game.Logic.Actions {
                         city.Resource.Add(cost/2);
                         city.EndUpdate();
 
-                        stateChange(ActionState.INTERRUPTED);
+                        StateChange(ActionState.INTERRUPTED);
                         break;
                 }
             }

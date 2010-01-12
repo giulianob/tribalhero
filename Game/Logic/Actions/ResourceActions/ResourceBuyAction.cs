@@ -39,7 +39,7 @@ namespace Game.Logic.Actions {
 
         #region IAction Members
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
 
@@ -87,11 +87,11 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
@@ -109,7 +109,7 @@ namespace Game.Logic.Actions {
                 }
                 structure.City.EndUpdate();
 
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
             }
         }
 
@@ -117,13 +117,13 @@ namespace Game.Logic.Actions {
             get { return ActionType.RESOURCE_BUY; }
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
         #endregion
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             Global.Scheduler.del(this);
             switch (state) {
                 case ActionInterrupt.CANCEL:

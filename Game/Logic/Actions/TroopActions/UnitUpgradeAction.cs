@@ -33,7 +33,7 @@ namespace Game.Logic.Actions {
             structureId = uint.Parse(properties["structure_id"]);
         }
 
-        public override Error validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -44,7 +44,7 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override Error execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -78,13 +78,13 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void interrupt(ActionInterrupt state) {
+        public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 Global.Scheduler.del(this);
                 switch (state) {
                     case ActionInterrupt.CANCEL:
-                        stateChange(ActionState.FAILED);
+                        StateChange(ActionState.FAILED);
                         break;
                 }
             }
@@ -100,18 +100,18 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid())
+                if (!IsValid())
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure)) {
-                    stateChange(ActionState.FAILED);
+                    StateChange(ActionState.FAILED);
                     return;
                 }
 
                 structure.City.Template[type] = UnitFactory.getUnitStats(type,
                                                                          (byte) (structure.City.Template[type].Lvl + 1));
 
-                stateChange(ActionState.COMPLETED);
+                StateChange(ActionState.COMPLETED);
             }
         }
 

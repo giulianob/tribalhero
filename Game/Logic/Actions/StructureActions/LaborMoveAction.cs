@@ -1,17 +1,19 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Game.Data;
-using Game.Setup;
-using Game.Module;
-using Game.Util;
 using Game.Logic.Procedures;
+using Game.Setup;
+using Game.Util;
+
+#endregion
 
 namespace Game.Logic.Actions {
     class LaborMoveAction : ScheduledActiveAction {
-        bool city2structure;
-        uint cityId;
-        uint structureId;
+        private bool city2structure;
+        private uint cityId;
+        private uint structureId;
 
         public LaborMoveAction(uint cityId, uint structureId, bool city2structure, ushort count) {
             this.cityId = cityId;
@@ -20,7 +22,8 @@ namespace Game.Logic.Actions {
             this.actionCount = count;
         }
 
-        public LaborMoveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType, byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
+        public LaborMoveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+                               byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             city2structure = bool.Parse(properties["city2structure"]);
             cityId = uint.Parse(properties["city_id"]);
@@ -34,7 +37,6 @@ namespace Game.Logic.Actions {
         }
 
         public override Error execute() {
-
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -44,20 +46,20 @@ namespace Game.Logic.Actions {
                 structure.City.BeginUpdate();
                 structure.City.Resource.Labor.Subtract(actionCount);
                 structure.City.EndUpdate();
-            }
-            else {
+            } else {
                 structure.BeginUpdate();
-                structure.Stats.Labor -= (byte)actionCount;
+                structure.Stats.Labor -= (byte) actionCount;
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.OnLaborUpdate(structure, -1 * actionCount);  // labor got taken out immediately                
+                Procedure.OnLaborUpdate(structure, -1*actionCount); // labor got taken out immediately                
                 structure.City.EndUpdate();
             }
 
             // add to queue for completion
             beginTime = DateTime.Now;
-            endTime = DateTime.Now.AddSeconds(Formula.LaborMoveTime(structure, (byte)actionCount, structure.Technologies));
+            endTime =
+                DateTime.Now.AddSeconds(Formula.LaborMoveTime(structure, (byte) actionCount, structure.Technologies));
 
             return Error.OK;
         }
@@ -69,24 +71,26 @@ namespace Game.Logic.Actions {
         #endregion
 
         #region ISchedule Members
+
         public override void callback(object custom) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid()) return;
+                if (!isValid())
+                    return;
 
-                if (!city.tryGetStructure(structureId, out structure)) {
+                if (!city.TryGetStructure(structureId, out structure)) {
                     stateChange(ActionState.FAILED);
                     return;
                 }
 
                 if (city2structure) {
                     structure.BeginUpdate();
-                    structure.Stats.Labor += (byte)actionCount;
+                    structure.Stats.Labor += (byte) actionCount;
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.OnLaborUpdate(structure, actionCount);  // labor got put in here
+                    Procedure.OnLaborUpdate(structure, actionCount); // labor got put in here
                     structure.City.EndUpdate();
                 } else {
                     structure.City.BeginUpdate();
@@ -97,13 +101,14 @@ namespace Game.Logic.Actions {
                 return;
             }
         }
+
         #endregion
 
         public override void interrupt(ActionInterrupt state) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!city.tryGetStructure(structureId, out structure)) {
+                if (!city.TryGetStructure(structureId, out structure)) {
                     stateChange(ActionState.FAILED);
                     return;
                 }
@@ -120,11 +125,12 @@ namespace Game.Logic.Actions {
                             structure.City.EndUpdate();
                         } else {
                             structure.BeginUpdate();
-                            structure.Stats.Labor += (byte)actionCount;
+                            structure.Stats.Labor += (byte) actionCount;
                             structure.EndUpdate();
 
                             structure.City.BeginUpdate();
-                            Procedure.OnLaborUpdate(structure, -1 * actionCount);  // need to add production back to structures
+                            Procedure.OnLaborUpdate(structure, -1*actionCount);
+                                // need to add production back to structures
                             structure.City.EndUpdate();
                         }
                         stateChange(ActionState.INTERRUPTED);
@@ -137,11 +143,12 @@ namespace Game.Logic.Actions {
 
         public override string Properties {
             get {
-                return XMLSerializer.Serialize(new XMLKVPair[] {
-                    new XMLKVPair("city2structure", city2structure),
-                    new XMLKVPair("city_id", cityId),
-                    new XMLKVPair("structure_id", structureId)
-                });
+                return
+                    XMLSerializer.Serialize(new[] {
+                                                      new XMLKVPair("city2structure", city2structure),
+                                                      new XMLKVPair("city_id", cityId),
+                                                      new XMLKVPair("structure_id", structureId)
+                                                  });
             }
         }
 

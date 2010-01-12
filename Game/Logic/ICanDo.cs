@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Game.Data;
 
 namespace Game.Logic {
     public interface ICanDo {

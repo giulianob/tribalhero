@@ -1,26 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
 using System.Data;
+
+#endregion
 
 namespace Game.Database {
     public class DbColumn {
-        string column;
+        private string column;
+
         public string Column {
             get { return column; }
         }
 
-        object value;
+        private object value;
+
         public object Value {
             get { return value; }
         }
 
-        DbType type;
+        private DbType type;
+
         public DbType Type {
             get { return type; }
         }
 
-        int size = 0;
+        private int size = 0;
+
         public int Size {
             get { return size; }
         }
@@ -36,10 +41,8 @@ namespace Game.Database {
             this.type = type;
         }
 
-        public DbColumn(string column, object value, DbType type, int size):
-          this(column, value, type) {
+        public DbColumn(string column, object value, DbType type, int size) : this(column, value, type) {
             this.size = size;
         }
-
     }
 }

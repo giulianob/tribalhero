@@ -1,6 +1,8 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
+
+#endregion
 
 namespace Game.Logic {
     public interface IActionTime {

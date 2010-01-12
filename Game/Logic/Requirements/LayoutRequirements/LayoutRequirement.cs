@@ -1,7 +1,9 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
 using Game.Data;
+
+#endregion
 
 namespace Game.Logic {
     enum LayoutComparison : byte {
@@ -9,9 +11,8 @@ namespace Game.Logic {
         CONTAINS = 1
     }
 
-
     abstract class LayoutRequirement {
-        abstract public bool validate(IEnumerable<Structure> objects, uint x, uint y);
-        abstract public void add(Reqirement req);
+        public abstract bool validate(IEnumerable<Structure> objects, uint x, uint y);
+        public abstract void add(Reqirement req);
     }
 }

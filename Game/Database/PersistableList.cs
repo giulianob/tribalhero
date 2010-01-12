@@ -1,18 +1,20 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Game.Data;
+
+#endregion
 
 namespace Game.Database {
     public class PersistableList<T> : List<T> where T : IPersistableObject {
-        public PersistableList() {            
-        }
+        public PersistableList() {}
 
         public new void Add(T item) {
             Add(item, true);
         }
 
-        public void Add(T item, bool save)
-        {
+        public void Add(T item, bool save) {
             base.Add(item);
             if (save)
                 Global.dbManager.Save(item);
@@ -27,8 +29,7 @@ namespace Game.Database {
                 if (save)
                     Global.dbManager.Delete(item);
                 return true;
-            }
-            else
+            } else
                 return false;
         }
 
@@ -39,8 +40,7 @@ namespace Game.Database {
 
         public new int RemoveAll(Predicate<T> match) {
             int count = 0;
-            for (int i = this.Count - 1; i >= 0; i--)
-            {
+            for (int i = Count - 1; i >= 0; i--) {
                 if (match(this[i])) {
                     RemoveAt(i);
                     count++;

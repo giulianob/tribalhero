@@ -1,20 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections.Specialized;
-using Game.Database;
+#region
+
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Data;
+using Game.Database;
 using Game.Util;
+
+#endregion
 
 namespace Game.Data {
     public class StructureProperties : IPersistableList {
-        
-        ListDictionary properties = new ListDictionary();
+        private ListDictionary properties = new ListDictionary();
 
-        Structure structure;
+        private Structure structure;
 
         public StructureProperties(Structure owner) {
-            this.structure = owner;
+            structure = owner;
         }
 
         public Structure Owner {
@@ -41,6 +43,7 @@ namespace Game.Data {
         }
 
         #region IPersistable Members
+
         public const string DB_TABLE = "structure_properties";
 
         public string DbTable {
@@ -50,35 +53,31 @@ namespace Game.Data {
         public DbColumn[] DbPrimaryKey {
             get {
                 return new DbColumn[] {
-                    new DbColumn("structure_id", structure.ObjectID, System.Data.DbType.UInt32),
-                    new DbColumn("city_id", structure.City.CityId, System.Data.DbType.UInt32)
-                };
+                                          new DbColumn("structure_id", structure.ObjectId, DbType.UInt32),
+                                          new DbColumn("city_id", structure.City.CityId, DbType.UInt32)
+                                      };
             }
         }
 
         public DbDependency[] DbDependencies {
-            get {
-                return new DbDependency[] { };
-            }
+            get { return new DbDependency[] {}; }
         }
 
         public DbColumn[] DbColumns {
-            get {
-                return new DbColumn[] { };
-            }
+            get { return new DbColumn[] {}; }
         }
 
         public DbColumn[] DbListColumns {
             get {
                 return new DbColumn[] {
-                    new DbColumn("name", System.Data.DbType.String),
-                    new DbColumn("value", System.Data.DbType.String),
-                    new DbColumn("datatype", System.Data.DbType.Byte)
-                };
+                                          new DbColumn("name", DbType.String), new DbColumn("value", DbType.String),
+                                          new DbColumn("datatype", DbType.Byte)
+                                      };
             }
         }
 
-        bool dbPersisted = false;
+        private bool dbPersisted = false;
+
         public bool DbPersisted {
             get { return dbPersisted; }
             set { dbPersisted = value; }
@@ -86,16 +85,16 @@ namespace Game.Data {
 
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
             IDictionaryEnumerator itr = properties.GetEnumerator();
-            
+
             while (itr.MoveNext()) {
                 byte datatype = DataTypeSerializer.Serialize(itr.Value);
 
-                yield return new DbColumn[] {
-                        new DbColumn("name", itr.Key, System.Data.DbType.String),
-                        new DbColumn("value", itr.Value, System.Data.DbType.String),
-                        new DbColumn("datatype", datatype, System.Data.DbType.Byte)
-                    };
-            }            
+                yield return
+                    new DbColumn[] {
+                                       new DbColumn("name", itr.Key, DbType.String), new DbColumn("value", itr.Value, DbType.String),
+                                       new DbColumn("datatype", datatype, DbType.Byte)
+                                   };
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

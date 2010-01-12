@@ -1,11 +1,12 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
+
+#endregion
 
 namespace Game.Util {
     class DataTypeSerializer {
         public static byte Serialize(object value) {
-
             if (value is uint)
                 return 1;
             else if (value is ushort)
@@ -25,7 +26,6 @@ namespace Game.Util {
         }
 
         public static object Deserialize(string value, byte datatype) {
-
             switch (datatype) {
                 case 1:
                     return uint.Parse(value);
@@ -43,7 +43,7 @@ namespace Game.Util {
                     return DateTime.Parse(value);
                 default:
                     throw new Exception("Unknown data type");
-            }            
+            }
         }
     }
 }

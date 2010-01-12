@@ -1,9 +1,11 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Game.Data;
-using Game.Setup;
 using Game.Data.Stats;
+using Game.Setup;
+
+#endregion
 
 namespace Game.Battle {
     public class BattleFormulas {
@@ -91,13 +93,13 @@ namespace Game.Battle {
 
         public static ushort getDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk) {
             if (true) {
-                int rawDmg = (useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk) * attacker.Count;
+                int rawDmg = (useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk)*attacker.Count;
                 rawDmg /= 10;
                 double typeModifier = getArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
-                rawDmg = (int)(typeModifier * rawDmg);
-                return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
-            } 
-            
+                rawDmg = (int) (typeModifier*rawDmg);
+                return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort) rawDmg;
+            }
+
             /*else if (true) {
                 int rawDmg = (int)(attacker.Stats.Atk * attacker.Count);
                 int drate = target.Stats.Def;
@@ -120,26 +122,26 @@ namespace Game.Battle {
             }*/
         }
 
-
         internal static Resource getRewardResource(CombatObject attacker, CombatObject defender, int actualDmg) {
-            int point = actualDmg * defender.Stats.Base.Reward;
+            int point = actualDmg*defender.Stats.Base.Reward;
             switch (defender.ClassType) {
                 case BattleClass.Structure:
-                    return new Resource(point / 5, point / 7, point / 9, point / 5, 0);
+                    return new Resource(point/5, point/7, point/9, point/5, 0);
                 case BattleClass.Unit:
-                    return new Resource(point / 11, point / 15, point / 19, point / 11, 0);
+                    return new Resource(point/11, point/15, point/19, point/11, 0);
             }
 
             return new Resource();
         }
 
         internal static ushort getStamina(City city) {
-            return (ushort)(city.MainBuilding.Lvl * 5 + 10 + Config.stamina_initial);
+            return (ushort) (city.MainBuilding.Lvl*5 + 10 + Config.stamina_initial);
         }
 
         internal static ushort getStaminaReinforced(City city, ushort stamina, uint round) {
-            if (round >= city.MainBuilding.Lvl*5 ) return stamina;
-            return (ushort)(stamina + city.MainBuilding.Lvl*5 - round);
+            if (round >= city.MainBuilding.Lvl*5)
+                return stamina;
+            return (ushort) (stamina + city.MainBuilding.Lvl*5 - round);
         }
 
         internal static ushort getStaminaRoundEnded(City city, ushort stamina, uint round) {
@@ -147,15 +149,16 @@ namespace Game.Battle {
         }
 
         internal static ushort getStaminaStructureDestroyed(City city, ushort stamina, uint round) {
-            if (stamina <= 10) return 0;
-            return (ushort)(stamina - 10);
+            if (stamina <= 10)
+                return 0;
+            return (ushort) (stamina - 10);
         }
 
         internal static bool IsAttackMissed(byte stealth) {
-            return 100-stealth > Setup.Config.Random.Next(0, 100);
+            return 100 - stealth > Config.Random.Next(0, 100);
         }
 
-        internal static BattleStats LoadStats(Structure structure) {          
+        internal static BattleStats LoadStats(Structure structure) {
             return new BattleStats(structure.Stats.Base.Battle);
         }
 
@@ -167,18 +170,18 @@ namespace Game.Battle {
             BattleStats modifiedStats = new BattleStats(stats);
 
             foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
-                if (effect.id == EffectCode.BattleStatsArmoryMod && stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)effect.value[0])) {
-                    hp = Math.Max((int)effect.value[1], hp);
-                }
+                if (effect.id == EffectCode.BattleStatsArmoryMod &&
+                    stats.Armor == (ArmorType) Enum.Parse(typeof (ArmorType), (string) effect.value[0]))
+                    hp = Math.Max((int) effect.value[1], hp);
 
-                if (effect.id == EffectCode.BattleStatsBlacksmithMod && stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), (string)effect.value[0])) {
-                    atk = Math.Max((int)effect.value[1], atk);
-                }
+                if (effect.id == EffectCode.BattleStatsBlacksmithMod &&
+                    stats.Weapon == (WeaponType) Enum.Parse(typeof (WeaponType), (string) effect.value[0]))
+                    atk = Math.Max((int) effect.value[1], atk);
             }
 
-            modifiedStats.MaxHp = (ushort)((100 + hp) * stats.MaxHp / 100);
-            modifiedStats.Atk = (byte)((100 + atk) * stats.Atk / 100);
-            modifiedStats.Def = (byte)((100 + atk) * stats.Def / 100);
+            modifiedStats.MaxHp = (ushort) ((100 + hp)*stats.MaxHp/100);
+            modifiedStats.Atk = (byte) ((100 + atk)*stats.Atk/100);
+            modifiedStats.Def = (byte) ((100 + atk)*stats.Def/100);
 
             return modifiedStats;
         }

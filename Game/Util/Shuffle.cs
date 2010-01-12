@@ -1,8 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
 using System.Collections;
+using System.Collections.Generic;
 using Game.Setup;
+
+#endregion
 
 namespace Game.Util {
     public class Shuffle<T> {

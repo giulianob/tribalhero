@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Setup;
-
 namespace Game.Data {
     public enum ArmorType {
         Leather = 0,
@@ -19,74 +14,88 @@ namespace Game.Data {
         FireBall = 3,
         StoneBall = 4
     }
-    
-    public class BaseBattleStats {
 
+    public class BaseBattleStats {
         #region Base Stats
-        ushort type;
+
+        private ushort type;
+
         public ushort Type {
             get { return type; }
         }
 
-        byte lvl;
+        private byte lvl;
+
         public byte Lvl {
             get { return lvl; }
         }
 
-        ushort groupSize;
+        private ushort groupSize;
+
         public ushort GroupSize {
-            get { return groupSize; }            
+            get { return groupSize; }
         }
 
-        WeaponType weapon;
+        private WeaponType weapon;
+
         public WeaponType Weapon {
             get { return weapon; }
         }
 
-        ArmorType armor;
+        private ArmorType armor;
+
         public ArmorType Armor {
             get { return armor; }
         }
 
-        ushort maxHp = 0;
+        private ushort maxHp = 0;
+
         public ushort MaxHp {
             get { return maxHp; }
         }
 
-        byte atk = 0;
+        private byte atk = 0;
+
         public byte Atk {
             get { return atk; }
         }
 
-        byte def = 0;
+        private byte def = 0;
+
         public byte Def {
             get { return def; }
         }
 
-        byte rng = 0;
+        private byte rng = 0;
+
         public byte Rng {
             get { return rng; }
         }
 
-        byte stl = 0;
+        private byte stl = 0;
+
         public byte Stl {
             get { return stl; }
         }
 
-        byte spd = 0;
+        private byte spd = 0;
+
         public byte Spd {
             get { return spd; }
         }
 
-        ushort reward;
+        private ushort reward;
+
         public ushort Reward {
             get { return reward; }
-        }   
+        }
 
         #endregion
 
         #region Constructors
-        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, byte atk, byte def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
+
+        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, byte atk,
+                               byte def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
             this.type = type;
             this.lvl = lvl;
             this.weapon = weapon;
@@ -94,9 +103,9 @@ namespace Game.Data {
             this.maxHp = maxHp;
             this.atk = atk;
             this.def = def;
-            this.rng = range;
-            this.stl = stealth;
-            this.spd = speed;
+            rng = range;
+            stl = stealth;
+            spd = speed;
             this.groupSize = groupSize;
             this.reward = reward;
         }

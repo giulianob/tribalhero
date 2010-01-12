@@ -1,13 +1,13 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
 using Game.Data;
+
+#endregion
 
 namespace Game.Logic {
     public interface IHasEffect {
-
         IEnumerable<Effect> GetAllEffects(EffectInheritance inherit);
         //   IEnumerable<Effect> GetEffects(EffectCode effect_code, EffectInheritance inherit);
-
     }
 }

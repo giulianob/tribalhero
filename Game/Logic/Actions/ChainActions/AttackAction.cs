@@ -1,11 +1,12 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
 using Game.Data;
-using Game.Setup;
 using Game.Logic.Procedures;
+using Game.Setup;
 using Game.Util;
-using Game.Database;
+
+#endregion
 
 namespace Game.Logic.Actions {
     enum AttackMode {
@@ -15,11 +16,11 @@ namespace Game.Logic.Actions {
     }
 
     class AttackAction : ChainAction {
-        uint cityId;
-        byte stubId;        
-        uint targetCityId;
-        uint targetStructureId;        
-        AttackMode mode;
+        private uint cityId;
+        private byte stubId;
+        private uint targetCityId;
+        private uint targetStructureId;
+        private AttackMode mode;
 
         public AttackAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode) {
             this.cityId = cityId;
@@ -29,11 +30,12 @@ namespace Game.Logic.Actions {
             this.mode = mode;
         }
 
-        public AttackAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+        public AttackAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
+                            bool isVisible, Dictionary<string, string> properties)
             : base(id, chainCallback, current, chainState, isVisible) {
-            cityId = uint.Parse(properties["city_id"]);            
+            cityId = uint.Parse(properties["city_id"]);
             stubId = byte.Parse(properties["stub_id"]);
-            mode = (AttackMode)uint.Parse(properties["mode"]);
+            mode = (AttackMode) uint.Parse(properties["mode"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
             targetStructureId = uint.Parse(properties["target_object_id"]);
         }
@@ -45,9 +47,8 @@ namespace Game.Logic.Actions {
             Structure targetStructure;
 
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
-                !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure)) {
+                !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.OBJECT_NOT_FOUND;
-            }
 
             //Load the units stats into the stub
             stub.BeginUpdate();
@@ -57,19 +58,47 @@ namespace Game.Logic.Actions {
             city.Worker.References.add(stub.TroopObject, this);
             city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
 
-            TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectID, targetStructure.X, targetStructure.Y);
+            TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X,
+                                                      targetStructure.Y);
 
-            ExecuteChainAndWait(tma, new ChainCallback(this.AfterTroopMoved));
+            ExecuteChainAndWait(tma, AfterTroopMoved);
 
             return Error.OK;
         }
 
         private void AfterTroopMoved(ActionState state) {
-            if (state == ActionState.COMPLETED) {
+            if (state == ActionState.COMPLETED) {                
+                List<ILockable> toBeLocked = new List<ILockable>();
                 Dictionary<uint, City> cities;
+                //This is a 2 step process because we need to find all the cities that need to be locked first
+
+                //1. Get all of the stationed city id's from the target city since they will be used by the engage attack action
                 using (new MultiObjectLock(out cities, cityId, targetCityId)) {
+                    City city = cities[cityId];
+                    City targetCity = cities[targetCityId];
+
+                    TroopStub stub = city.Troops[stubId];
+
+                    //If the target is missing, walk back
+                    if (targetCity == null) {
+                        TroopMoveAction tma = new TroopMoveAction(stub.City.CityId, stub.TroopObject.ObjectId,
+                                                                  city.MainBuilding.X, city.MainBuilding.Y);
+                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
+                        return;
+                    }
+
+                    foreach (TroopStub stationedStub in targetCity.Troops.StationedHere()) {
+                        toBeLocked.Add(stationedStub.City);
+                    }
+
+                    toBeLocked.Add(city);
+                    toBeLocked.Add(targetCity);
+                }
+
+                //2. Lock them all
+                using (new MultiObjectLock(toBeLocked.ToArray())) {
                     EngageAttackAction bea = new EngageAttackAction(cityId, stubId, targetCityId, mode);
-                    ExecuteChainAndWait(bea, new ChainCallback(this.AfterBattle));
+                    ExecuteChainAndWait(bea, AfterBattle);
                 }
             }
         }
@@ -91,16 +120,16 @@ namespace Game.Logic.Actions {
                     city.Worker.Notifications.remove(this);
 
                     if (stub.TotalCount > 0) {
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.CityId, stub.TroopObject.ObjectID, city.MainBuilding.X, city.MainBuilding.Y);
-                        ExecuteChainAndWait(tma, new ChainCallback(this.AfterTroopMovedHome));
-                    }
-                    else {
+                        TroopMoveAction tma = new TroopMoveAction(stub.City.CityId, stub.TroopObject.ObjectId,
+                                                                  city.MainBuilding.X, city.MainBuilding.Y);
+                        ExecuteChainAndWait(tma, AfterTroopMovedHome);
+                    } else {
                         targetCity.BeginUpdate();
                         city.BeginUpdate();
 
                         targetCity.Resource.Add(stub.TroopObject.Stats.Loot);
 
-                        city.Worker.References.remove(stub.TroopObject, this);                        
+                        city.Worker.References.remove(stub.TroopObject, this);
 
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
 
@@ -116,8 +145,8 @@ namespace Game.Logic.Actions {
         private void AfterTroopMovedHome(ActionState state) {
             if (state == ActionState.COMPLETED) {
                 City city;
-                using (new MultiObjectLock(cityId, out city)) {                    
-                    TroopStub stub;                    
+                using (new MultiObjectLock(cityId, out city)) {
+                    TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub)) {
                         stateChange(ActionState.FAILED);
@@ -128,10 +157,9 @@ namespace Game.Logic.Actions {
                         city.Worker.References.remove(stub.TroopObject, this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
                         stateChange(ActionState.COMPLETED);
-                    }
-                    else {
+                    } else {
                         EngageDefenseAction eda = new EngageDefenseAction(cityId, stubId);
-                        ExecuteChainAndWait(eda, new ChainCallback(this.AfterEngageDefense));
+                        ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }
             }
@@ -149,17 +177,15 @@ namespace Game.Logic.Actions {
                     }
 
                     city.Worker.References.remove(stub.TroopObject, this);
-                    if (stub.TotalCount == 0) {
+                    if (stub.TotalCount == 0)
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
-                    }
-                    else {
+                    else
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                    }
                     stateChange(ActionState.COMPLETED);
                 }
             }
         }
-        
+
         public override ActionType Type {
             get { return ActionType.ATTACK; }
         }
@@ -172,14 +198,13 @@ namespace Game.Logic.Actions {
 
         public override string Properties {
             get {
-                return XMLSerializer.Serialize(new XMLKVPair[] {
-                        new XMLKVPair("city_id", cityId),
-                        new XMLKVPair("stub_id", stubId),
-                        new XMLKVPair("target_city_id", targetCityId),
-                        new XMLKVPair("target_object_id", targetStructureId),
-                        new XMLKVPair("mode", (byte)mode)
-                    }
-                );
+                return
+                    XMLSerializer.Serialize(new XMLKVPair[] {
+                                                                new XMLKVPair("city_id", cityId), new XMLKVPair("stub_id", stubId),
+                                                                new XMLKVPair("target_city_id", targetCityId),
+                                                                new XMLKVPair("target_object_id", targetStructureId),
+                                                                new XMLKVPair("mode", (byte) mode)
+                                                            });
             }
         }
 

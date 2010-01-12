@@ -1,40 +1,45 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
-using System.Collections;
+using System.Data;
+using Game.Comm;
 using Game.Data;
 using Game.Database;
 using Game.Util;
-using Game.Comm;
+
+#endregion
 
 namespace Game {
-    public class Player: ILockable, IPersistableObject {
-        List<City> list = new List<City>();
-        
-        Session session = null;
+    public class Player : ILockable, IPersistableObject {
+        private List<City> list = new List<City>();
+
+        private Session session = null;
+
         public Session Session {
             get { return session; }
             set { session = value; }
         }
 
-        string name;
+        private string name;
+
         public string Name {
             get { return name; }
         }
 
-        uint playerid;
+        private uint playerid;
+
         public uint PlayerId {
             get { return playerid; }
         }
 
-        string sessionId;
+        private string sessionId;
+
         public string SessionId {
             get { return sessionId; }
             set { sessionId = value; }
         }
 
-        public Player(uint playerid, string name) : this(playerid, name, string.Empty){
-        }
+        public Player(uint playerid, string name) : this(playerid, name, string.Empty) {}
 
         public Player(uint playerid, string name, string sessionId) {
             this.playerid = playerid;
@@ -51,15 +56,13 @@ namespace Game {
         }
 
         internal City getCity(uint id) {
-            return list.Find(delegate(City city) {
-                return city.CityId == id;
-            });
+            return list.Find(delegate(City city) { return city.CityId == id; });
         }
 
         #region ILockable Members
 
         public int Hash {
-            get { return unchecked((int)playerid); }
+            get { return unchecked((int) playerid); }
         }
 
         public object Lock {
@@ -69,6 +72,7 @@ namespace Game {
         #endregion
 
         #region IPersistable Members
+
         public const string DB_TABLE = "players";
 
         public string DbTable {
@@ -77,32 +81,28 @@ namespace Game {
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {                    
-                    new DbColumn("name", Name, System.Data.DbType.String, 32),
-                    new DbColumn("session_id", SessionId, System.Data.DbType.String, 128)
-                };
+                return new DbColumn[] {
+                                          new DbColumn("name", Name, DbType.String, 32),
+                                          new DbColumn("session_id", SessionId, DbType.String, 128)
+                                      };
             }
         }
 
         public DbColumn[] DbPrimaryKey {
-            get {
-                return new DbColumn[] {
-                    new DbColumn("id", PlayerId, System.Data.DbType.UInt32)
-                };
-            }
+            get { return new DbColumn[] {new DbColumn("id", PlayerId, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {
-            get {
-                return new DbDependency[] { };
-            }
+            get { return new DbDependency[] {}; }
         }
 
-        bool dbPersisted = false;
+        private bool dbPersisted = false;
+
         public bool DbPersisted {
             get { return dbPersisted; }
             set { dbPersisted = value; }
         }
+
         #endregion
     }
 }

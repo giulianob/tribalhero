@@ -1,10 +1,11 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Game.Data;
-using Game.Fighting;
-using Game.Database;
 using Game.Data.Stats;
+using Game.Database;
+
+#endregion
 
 namespace Game.Battle {
     public enum BattleClass : byte {
@@ -13,98 +14,95 @@ namespace Game.Battle {
     }
 
     public abstract class CombatObject : IComparable<object>, IPersistableObject {
-        int maxDmgRecv;
+        private int maxDmgRecv;
+
         public int MaxDmgRecv {
             get { return maxDmgRecv; }
             set { maxDmgRecv = value; }
         }
 
-        int minDmgRecv = int.MaxValue;
+        private int minDmgRecv = int.MaxValue;
+
         public int MinDmgRecv {
             get { return minDmgRecv; }
             set { minDmgRecv = value; }
         }
 
-        int maxDmgDealt;
+        private int maxDmgDealt;
+
         public int MaxDmgDealt {
             get { return maxDmgDealt; }
             set { maxDmgDealt = value; }
         }
 
-        int minDmgDealt = int.MaxValue;
+        private int minDmgDealt = int.MaxValue;
+
         public int MinDmgDealt {
             get { return minDmgDealt; }
             set { minDmgDealt = value; }
         }
 
-        int hitRecv = 0;
-        public int HitRecv {
-            get { return hitRecv; }
-            set { hitRecv = value; }
-        }
+        public int HitRecv { get; set; }
 
-        int hitDealt = 0;
-        public int HitDealt {
-            get { return hitDealt; }
-            set { hitDealt = value; }
-        }
+        public int HitDealt { get; set; }
 
-        int dmgRecv = 0;
-        public int DmgRecv {
-            get { return dmgRecv; }
-            set { dmgRecv = value; }
-        }
+        public int DmgRecv { get; set; }
 
-        int dmgDealt = 0;
-        public int DmgDealt {
-            get { return dmgDealt; }
-            set { dmgDealt = value; }
-        }
+        public int DmgDealt { get; set; }
 
-        CombatList combatList;
-        public CombatList CombatList
-        {
-            get { return combatList; }
-            set { combatList = value; }
-        }
+        public CombatList CombatList { get; set; }
 
-        int roundsParticipated = 0;
+        private int roundsParticipated;
+
         public int RoundsParicipated {
             get { return roundsParticipated; }
             set { roundsParticipated = value; }
         }
 
-        uint lastRound = 0;
+        private uint lastRound;
+
         public uint LastRound {
             get { return lastRound; }
             set { lastRound = value; }
         }
 
-        uint id = 0;
-        public uint Id {
-            get { return id; }
-            set { id = value; }
-        }
+        public uint Id { get; set; }
 
-        uint groupId = 0; //Unique per 'group' of combat objects (ie: all units in the same troop will share the same id
-        public uint GroupId {
-            get { return groupId; }
-            set { groupId = value; }
-        }
+        public uint GroupId { get; set; }
 
-        protected BattleManager battleManager = null;
+        protected BattleManager battleManager;
+
         public BattleManager Battle {
             get { return battleManager; }
         }
 
-        public virtual void CleanUp() { throw new Exception("NOT IMPLEMENTED"); }
-        public virtual void ExitBattle() { throw new Exception("NOT IMPLEMENTED"); }
-        public virtual void TakeDamage(int dmg) { throw new Exception("NOT IMPLEMENTED"); }
-        public virtual void CalculateDamage(ushort dmg, out int actualDmg) { throw new Exception("NOT IMPLEMENTED"); }
-        public virtual bool InRange(CombatObject obj) { throw new Exception("NOT IMPLEMENTED"); }       
+        public virtual void CleanUp() {
+            throw new Exception("NOT IMPLEMENTED");
+        }
 
-        public virtual int Distance(uint x, uint y) { throw new Exception("NOT IMPLEMENTED"); }
-        public virtual void ReceiveReward(int reward, Resource resource) { throw new Exception("NOT IMPLEMENTED"); }
+        public virtual void ExitBattle() {
+            throw new Exception("NOT IMPLEMENTED");
+        }
+
+        public virtual void TakeDamage(int dmg) {
+            throw new Exception("NOT IMPLEMENTED");
+        }
+
+        public virtual void CalculateDamage(ushort dmg, out int actualDmg) {
+            throw new Exception("NOT IMPLEMENTED");
+        }
+
+        public virtual bool InRange(CombatObject obj) {
+            throw new Exception("NOT IMPLEMENTED");
+        }
+
+        public virtual int Distance(uint x, uint y) {
+            throw new Exception("NOT IMPLEMENTED");
+        }
+
+        public virtual void ReceiveReward(int reward, Resource resource) {
+            throw new Exception("NOT IMPLEMENTED");
+        }
 
         public virtual bool IsDead {
             get { throw new Exception("NOT IMPLEMENTED"); }
@@ -123,7 +121,7 @@ namespace Game.Battle {
         public virtual ushort Type {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
-        
+
         public virtual BattleClass ClassType {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
@@ -131,6 +129,7 @@ namespace Game.Battle {
         public virtual ushort Count {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
+
         public virtual uint HP {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
@@ -156,15 +155,16 @@ namespace Game.Battle {
             return Visibility >= obj.Stats.Stl;
         }
 
-        public void ParticipatedInRound()
-        {
+        public void ParticipatedInRound() {
             lastRound++;
             roundsParticipated++;
             Global.dbManager.Save(this);
         }
 
         public void Print() {
-            System.Console.WriteLine("recv[{0}] dealt[{1}] hitRecv[{2}] hitDealt[{3}] maxDealt[{4}] minDealt[{5}] maxRecv[{6}] minRecv[{7}]", DmgRecv, DmgDealt, HitRecv, HitDealt, maxDmgDealt, MinDmgDealt, maxDmgRecv, MaxDmgRecv);
+            Console.WriteLine(
+                "recv[{0}] dealt[{1}] hitRecv[{2}] hitDealt[{3}] maxDealt[{4}] minDealt[{5}] maxRecv[{6}] minRecv[{7}]",
+                DmgRecv, DmgDealt, HitRecv, HitDealt, maxDmgDealt, MinDmgDealt, maxDmgRecv, MaxDmgRecv);
         }
 
         #region IComparable<GameObject> Members
@@ -175,18 +175,9 @@ namespace Game.Battle {
 
         #endregion
 
-
-
         #region IPersistableObject Members
-        bool dbPersisted = false;
-        public bool DbPersisted {
-            get {
-                return dbPersisted;
-            }
-            set {
-                dbPersisted = value;
-            }
-        }
+
+        public bool DbPersisted { get; set; }
 
         #endregion
 

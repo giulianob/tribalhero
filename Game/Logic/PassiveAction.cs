@@ -1,19 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
+using System.Data;
 using Game.Database;
 
-namespace Game.Logic {
-    public abstract class PassiveAction: Action {
+#endregion
 
-        public PassiveAction() { }
+namespace Game.Logic {
+    public abstract class PassiveAction : Action {
+        public PassiveAction() {}
 
         public PassiveAction(ushort id, bool isVisible) {
-            this.ActionId = id;
-            this.IsVisible = isVisible;
+            ActionId = id;
+            IsVisible = isVisible;
         }
 
-        bool isVisible = false;
+        private bool isVisible = false;
+
         public bool IsVisible {
             get { return isVisible; }
             set { isVisible = value; }
@@ -25,7 +27,8 @@ namespace Game.Logic {
             get { return DB_TABLE; }
         }
 
-        bool isChain = false;
+        private bool isChain = false;
+
         public bool IsChain {
             get { return isChain; }
             set { isChain = value; }
@@ -34,12 +37,11 @@ namespace Game.Logic {
         public override DbColumn[] DbColumns {
             get {
                 return new DbColumn[] {
-                    new DbColumn("is_chain", isChain, System.Data.DbType.Boolean),
-                    new DbColumn("is_scheduled", false, System.Data.DbType.Boolean),
-                    new DbColumn("is_visible", isVisible, System.Data.DbType.Boolean),
-                    new DbColumn("type", Type, System.Data.DbType.UInt32),
-                    new DbColumn("properties", Properties, System.Data.DbType.String),                   
-                };
+                                          new DbColumn("is_chain", isChain, DbType.Boolean),
+                                          new DbColumn("is_scheduled", false, DbType.Boolean),
+                                          new DbColumn("is_visible", isVisible, DbType.Boolean), new DbColumn("type", Type, DbType.UInt32)
+                                          , new DbColumn("properties", Properties, DbType.String),
+                                      };
             }
         }
     }

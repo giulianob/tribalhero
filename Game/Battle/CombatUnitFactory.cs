@@ -1,17 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
 using Game.Data;
-using Game.Setup;
-using Game.Fighting;
 using Game.Data.Stats;
+using Game.Fighting;
+
+#endregion
 
 namespace Game.Battle {
     public class CombatUnitFactory {
-        public static AttackCombatUnit[] CreateAttackCombatUnit(BattleManager owner, TroopObject troop, FormationType formation, ushort type, ushort count) {
+        public static AttackCombatUnit[] CreateAttackCombatUnit(BattleManager owner, TroopObject troop,
+                                                                FormationType formation, ushort type, ushort count) {
             BaseUnitStats template = troop.City.Template[type];
             BattleStats stats = troop.Stub.Template[type];
-            AttackCombatUnit[] units = new AttackCombatUnit[(count - 1) / stats.Base.GroupSize + 1];
+            AttackCombatUnit[] units = new AttackCombatUnit[(count - 1)/stats.Base.GroupSize + 1];
             AttackCombatUnit newUnit;
             int i = 0;
             do {
@@ -23,10 +24,11 @@ namespace Game.Battle {
             return units;
         }
 
-        public static DefenseCombatUnit[] CreateDefenseCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, ushort count) {
+        public static DefenseCombatUnit[] CreateDefenseCombatUnit(BattleManager owner, TroopStub stub,
+                                                                  FormationType formation, ushort type, ushort count) {
             BaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];
-            DefenseCombatUnit[] units = new DefenseCombatUnit[(count - 1) / stats.Base.GroupSize + 1];
+            DefenseCombatUnit[] units = new DefenseCombatUnit[(count - 1)/stats.Base.GroupSize + 1];
             DefenseCombatUnit newUnit;
             int i = 0;
             do {
@@ -37,6 +39,5 @@ namespace Game.Battle {
             } while (count > 0);
             return units;
         }
-
     }
 }

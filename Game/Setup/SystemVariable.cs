@@ -1,24 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
+using System.Data;
 using Game.Database;
 using Game.Util;
 
+#endregion
+
 namespace Game.Setup {
     public class SystemVariable : IPersistableObject {
-
         public SystemVariable(string key, object value) {
             this.key = key;
             this.value = value;
         }
 
-        string key = string.Empty;
+        private string key = string.Empty;
+
         public string Key {
             get { return key; }
             set { key = value; }
         }
 
-        object value;
+        private object value;
+
         public object Value {
             get { return value; }
             set { this.value = value; }
@@ -26,19 +29,17 @@ namespace Game.Setup {
 
         #region IPersistableObject Members
 
-        bool dbPersisted = false;
+        private bool dbPersisted = false;
+
         public bool DbPersisted {
-            get {
-                return dbPersisted;
-            }
-            set {
-                dbPersisted = value;
-            }
+            get { return dbPersisted; }
+            set { dbPersisted = value; }
         }
 
         #endregion
 
         #region IPersistable Members
+
         public const string DB_TABLE = "system_variables";
 
         public string DbTable {
@@ -46,25 +47,19 @@ namespace Game.Setup {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get {
-                return new DbColumn[] { 
-                    new DbColumn("name", key, System.Data.DbType.String)
-                };
-            }
+            get { return new DbColumn[] {new DbColumn("name", key, DbType.String)}; }
         }
 
         public DbDependency[] DbDependencies {
-            get {
-                return new DbDependency[] { };
-            }
+            get { return new DbDependency[] {}; }
         }
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] { 
-                    new DbColumn("value", value, System.Data.DbType.String),
-                    new DbColumn("datatype", DataTypeSerializer.Serialize(value), System.Data.DbType.Byte)
-                };
+                return new DbColumn[] {
+                                          new DbColumn("value", value, DbType.String),
+                                          new DbColumn("datatype", DataTypeSerializer.Serialize(value), DbType.Byte)
+                                      };
             }
         }
 

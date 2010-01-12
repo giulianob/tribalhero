@@ -1,7 +1,8 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Setup;
+
+#endregion
 
 namespace Game.Data {
     public class Effect {
@@ -11,7 +12,7 @@ namespace Game.Data {
         public EffectLocation location;
 
         public void print() {
-            Global.Logger.Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", id.ToString(), isPrivate, location.ToString()));
+            Global.Logger.Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", id, isPrivate, location));
         }
     }
 
@@ -22,15 +23,15 @@ namespace Game.Data {
         Troop = 3
     }
 
-    [Flags()]
+    [Flags]
     public enum EffectInheritance {
         Invisible = 1,
         Self = 2,
         SelfAll = 3,
         Upward = 4,
         All = 7
-
     }
+
     public enum EffectCode {
         BuildTimeMultiplier = 0,
         ResourceRate = 1,
@@ -42,12 +43,11 @@ namespace Game.Data {
         OverDigging = 7,
         WoodCutting = 8,
         HaveTechnology = 9,
-        CountEffect =10,
+        CountEffect = 10,
         RepairSaving = 11,
         TroopSpeedMod = 12,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102
-
     }
 }

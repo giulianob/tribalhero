@@ -1,25 +1,28 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Game.Data;
-using Game.Setup;
 using Game.Logic.Procedures;
+using Game.Setup;
 using Game.Util;
-using Game.Database;
+
+#endregion
 
 namespace Game.Logic.Actions {
     class DefenseAction : ChainAction {
-        uint cityId;
-        uint targetCityId;
-        byte stubId;
-        
+        private uint cityId;
+        private uint targetCityId;
+        private byte stubId;
+
         public DefenseAction(uint cityId, byte stubId, uint targetCityId) {
             this.cityId = cityId;
             this.stubId = stubId;
             this.targetCityId = targetCityId;
         }
 
-        public DefenseAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+        public DefenseAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
+                             bool isVisible, Dictionary<string, string> properties)
             : base(id, chainCallback, current, chainState, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
             stubId = byte.Parse(properties["troop_stub_id"]);
@@ -27,7 +30,6 @@ namespace Game.Logic.Actions {
         }
 
         public override Error execute() {
-
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
@@ -36,8 +38,9 @@ namespace Game.Logic.Actions {
             City targetCity;
             if (!Global.World.TryGetObjects(targetCityId, out targetCity))
                 return Error.OBJECT_NOT_FOUND;
-            
-            if (city.Battle != null) return Error.CITY_IN_BATTLE;
+
+            if (city.Battle != null)
+                return Error.CITY_IN_BATTLE;
 
             //Load the units stats into the stub
             stub.BeginUpdate();
@@ -47,16 +50,16 @@ namespace Game.Logic.Actions {
             city.Worker.References.add(stub.TroopObject, this);
             city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
 
-            TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectID, targetCity.MainBuilding.X, targetCity.MainBuilding.Y);
+            TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetCity.MainBuilding.X,
+                                                      targetCity.MainBuilding.Y);
 
-            ExecuteChainAndWait(tma, new ChainCallback(this.AfterTroopMoved));
+            ExecuteChainAndWait(tma, new ChainCallback(AfterTroopMoved));
 
             return Error.OK;
         }
 
         private void AfterTroopMoved(ActionState state) {
             if (state == ActionState.COMPLETED) {
-                
                 Dictionary<uint, City> cities;
 
                 using (new MultiObjectLock(out cities, cityId, targetCityId)) {
@@ -65,7 +68,7 @@ namespace Game.Logic.Actions {
 
                     TroopStub stub;
                     if (!city.Troops.TryGetStub(stubId, out stub))
-                        throw new Exception();                    
+                        throw new Exception();
 
                     city.Worker.References.remove(stub.TroopObject, this);
                     city.Worker.Notifications.remove(this);
@@ -100,12 +103,12 @@ namespace Game.Logic.Actions {
 
         public override string Properties {
             get {
-                return XMLSerializer.Serialize(new XMLKVPair[] {
-                        new XMLKVPair("city_id", cityId),
-                        new XMLKVPair("target_city_id", targetCityId),
-                        new XMLKVPair("troop_stub_id", stubId)
-                    }
-                );
+                return
+                    XMLSerializer.Serialize(new XMLKVPair[] {
+                                                                new XMLKVPair("city_id", cityId),
+                                                                new XMLKVPair("target_city_id", targetCityId),
+                                                                new XMLKVPair("troop_stub_id", stubId)
+                                                            });
             }
         }
 

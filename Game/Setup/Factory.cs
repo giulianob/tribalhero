@@ -1,23 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Data;
-using Game.Logic;
+#region
+
 using System.IO;
+using Game.Data;
+
+#endregion
 
 namespace Game.Setup {
     public class Factory {
         internal static void BuildFiles(string output_file, string dir, string pattern) {
             Global.Logger.Info("Building CSV file " + output_file);
-            BuildFiles2(output_file,Directory.GetFiles(dir, pattern));
+            BuildFiles2(output_file, Directory.GetFiles(dir, pattern));
         }
 
-        static void BuildFiles2(string output_file, params string[] files) {
-            if (File.Exists(output_file)) File.Delete(output_file);
+        private static void BuildFiles2(string output_file, params string[] files) {
+            if (File.Exists(output_file))
+                File.Delete(output_file);
             StreamWriter sw = new StreamWriter(output_file);
             bool header_written = false;
             foreach (string filename in files) {
-                StreamReader sr = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+                StreamReader sr =
+                    new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
                 string header = sr.ReadLine();
                 if (!header_written) {
                     sw.WriteLine(header);
@@ -36,7 +38,8 @@ namespace Game.Setup {
             BuildFiles(Config.csv_compiled_folder + "action.csv", Config.csv_folder, "*action.csv");
             ActionFactory.init(Config.csv_compiled_folder + "action.csv");
 
-            BuildFiles(Config.csv_compiled_folder + "effect_requirement.csv", Config.csv_folder, "*effect_requirement.csv");
+            BuildFiles(Config.csv_compiled_folder + "effect_requirement.csv", Config.csv_folder,
+                       "*effect_requirement.csv");
             EffectRequirementFactory.init(Config.csv_compiled_folder + "effect_requirement.csv");
 
             BuildFiles(Config.csv_compiled_folder + "init.csv", Config.csv_folder, "*init.csv");
@@ -49,8 +52,10 @@ namespace Game.Setup {
             ReqirementFactory.init(Config.csv_compiled_folder + "layout.csv");
 
             BuildFiles(Config.csv_compiled_folder + "technology.csv", Config.csv_folder, "*technology.csv");
-            BuildFiles(Config.csv_compiled_folder + "technology_effects.csv", Config.csv_folder, "*technology_effects.csv");
-            TechnologyFactory.init(Config.csv_compiled_folder + "technology.csv", Config.csv_folder + "technology_effects.csv");
+            BuildFiles(Config.csv_compiled_folder + "technology_effects.csv", Config.csv_folder,
+                       "*technology_effects.csv");
+            TechnologyFactory.init(Config.csv_compiled_folder + "technology.csv",
+                                   Config.csv_folder + "technology_effects.csv");
 
             BuildFiles(Config.csv_compiled_folder + "unit.csv", Config.csv_folder, "*unit.csv");
             UnitFactory.init(Config.csv_compiled_folder + "unit.csv");

@@ -1,7 +1,10 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
+
+#endregion
 
 namespace Game.Util {
     struct HexByteArray {
@@ -10,14 +13,15 @@ namespace Game.Util {
 
         public HexByteArray(byte[] arr, int s) {
             this.arr = arr;
-            this.sz = s;
+            sz = s;
         }
 
-        override public string ToString() {
+        public override string ToString() {
             StringBuilder str = new StringBuilder();
             int count = 0;
             foreach (byte b in arr) {
-                if (count == sz / 2) str.Append("| ");
+                if (count == sz/2)
+                    str.Append("| ");
                 char lsb = map[(b & 0x0f)];
                 char msb = map[((b >> 4) & 0x0f)];
                 str.Append(msb);
@@ -27,6 +31,7 @@ namespace Game.Util {
             }
             return str.ToString();
         }
+
         private const string map = "0123456789ABCDEF";
     }
 
@@ -37,12 +42,12 @@ namespace Game.Util {
             this.arr = arr;
         }
 
-        override public string ToString() {
+        public override string ToString() {
             StringBuilder str = new StringBuilder();
             foreach (byte b in arr) {
                 char ch = '.';
-                if (!(Char.IsWhiteSpace((char)b) || Char.IsControl((char)b)))
-                    ch = (char)b;
+                if (!(Char.IsWhiteSpace((char) b) || Char.IsControl((char) b)))
+                    ch = (char) b;
                 str.Append(ch);
             }
 
@@ -50,9 +55,7 @@ namespace Game.Util {
         }
     }
 
-
     public class HexDump {
-
         public static string GetString(byte[] bytes, int offset) {
             return GetString(bytes, offset, 20);
         }
@@ -76,7 +79,7 @@ namespace Game.Util {
                 }
                 HexByteArray hex = new HexByteArray(tmp, sz);
                 PritableByteArray asc = new PritableByteArray(tmp);
-                ret.Append(hex.ToString().PadRight(3 * sz + 2, ' ') + " " + asc + System.Environment.NewLine);
+                ret.Append(hex.ToString().PadRight(3*sz + 2, ' ') + " " + asc + Environment.NewLine);
             }
 
             return ret.ToString();

@@ -1,7 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
 using Game.Data;
+
+#endregion
 
 namespace Game.Logic {
     interface IScriptable {

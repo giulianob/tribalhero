@@ -1,17 +1,20 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Game.Battle;
-using Game.Setup;
 using Game.Data;
-using Game.Logic.Procedures;
 using Game.Fighting;
+using Game.Logic.Procedures;
+using Game.Setup;
 using Game.Util;
+
+#endregion
 
 namespace Game.Logic.Actions {
     class BattleAction : ScheduledPassiveAction {
-        BattleViewer viewer;
-        uint cityId;
+        private BattleViewer viewer;
+        private uint cityId;
 
         public BattleAction(uint cityId) {
             this.cityId = cityId;
@@ -23,8 +26,8 @@ namespace Game.Logic.Actions {
             city.Battle.ActionAttacked += new BattleBase.OnAttack(Battle_ActionAttacked);
         }
 
-        public BattleAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, isVisible) {
+        public BattleAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
+                            Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
 
             City city;
@@ -36,13 +39,23 @@ namespace Game.Logic.Actions {
         }
 
         #region ISchedule Members
+
         public override void callback(object custom) {
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city)) {
-                throw new Exception();
+
+            List<ILockable> toBeLocked = new List<ILockable>();
+
+            using (new MultiObjectLock(cityId, out city)) {
+                if (city == null) throw new Exception();
+
+                toBeLocked.Add(city);
+                toBeLocked.AddRange(city.Battle.LockList);
+
+                foreach (TroopStub stub in city.Troops.StationedHere())
+                    toBeLocked.Add(stub.City);
             }
 
-            using (new MultiObjectLock(city.Battle.LockList)) {
+            using (new MultiObjectLock(toBeLocked.ToArray())) {
                 if (!city.Battle.executeTurn()) {
                     city.Battle.ActionAttacked -= new BattleBase.OnAttack(Battle_ActionAttacked);
                     Global.dbManager.Delete(city.Battle);
@@ -76,13 +89,12 @@ namespace Game.Logic.Actions {
                     }
 
                     stateChange(ActionState.COMPLETED);
-                    return;
                 }
-                else
-                    Global.dbManager.Save(city.Battle);              
-
-                endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
-                stateChange(ActionState.FIRED);
+                else {
+                    Global.dbManager.Save(city.Battle);
+                    endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
+                    stateChange(ActionState.FIRED);
+                }
             }
         }
 
@@ -106,13 +118,14 @@ namespace Game.Logic.Actions {
 
             //Add reinforcement
             foreach (TroopStub stub in city.Troops) {
-                if (stub == city.DefaultTroop || stub.State != TroopStub.TroopState.STATIONED || stub.StationedCity != city)
+                if (stub == city.DefaultTroop || stub.State != TroopStub.TroopState.STATIONED ||
+                    stub.StationedCity != city)
                     continue; //skip if troop is the default troop or isn't stationed here
-                
+
                 stub.BeginUpdate();
                 stub.State = TroopStub.TroopState.BATTLE_STATIONED;
                 stub.EndUpdate();
-                
+
                 list.Add(stub);
             }
 
@@ -124,16 +137,18 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
+        private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
             DefenseCombatUnit cu = target as DefenseCombatUnit;
-         
-            if (cu == null) return;
+
+            if (cu == null)
+                return;
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 return;
 
-            if (cu.TroopStub.StationedCity == city && cu.TroopStub.TotalCount == 0) { //takes care of killing out stationed troops
+            if (cu.TroopStub.StationedCity == city && cu.TroopStub.TotalCount == 0) {
+                //takes care of killing out stationed troops
                 List<TroopStub> list = new List<TroopStub>(1);
                 list.Add(cu.TroopStub);
                 city.Battle.removeFromDefense(list, ReportState.Dying);
@@ -151,12 +166,7 @@ namespace Game.Logic.Actions {
         #region IPersistable Members
 
         public override string Properties {
-            get {
-                return XMLSerializer.Serialize(new XMLKVPair[] {
-                        new XMLKVPair("city_id", cityId)
-                    }
-                );
-            }
+            get { return XMLSerializer.Serialize(new XMLKVPair[] {new XMLKVPair("city_id", cityId)}); }
         }
 
         #endregion

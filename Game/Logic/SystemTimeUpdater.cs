@@ -1,12 +1,15 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
+using Game.Data;
 using Game.Database;
+
+#endregion
 
 namespace Game.Logic {
     class SystemTimeUpdater {
-        static Timer timer = new Timer(new TimerCallback(callback), null, Timeout.Infinite, Timeout.Infinite);
+        private static Timer timer = new Timer(callback, null, Timeout.Infinite, Timeout.Infinite);
 
         public static void resume() {
             timer.Change(5000, 5000);

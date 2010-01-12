@@ -1,20 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Game.Battle;
+#region
 
-namespace Game.Data
-{
+using System.Collections.Generic;
+
+#endregion
+
+namespace Game.Data {
     public enum ObjectState {
         NORMAL = 0,
         BATTLE = 1
     }
-    
-    public class GameObjectState
-    {
-        List<object> parameters = new List<object>();
-        
-        ObjectState type;
+
+    public class GameObjectState {
+        private List<object> parameters = new List<object>();
+
+        private ObjectState type;
+
         public ObjectState Type {
             get { return type; }
             set { type = value; }
@@ -24,7 +24,7 @@ namespace Game.Data
             get { return parameters; }
         }
 
-        GameObjectState(ObjectState type, params object[] parms) {
+        private GameObjectState(ObjectState type, params object[] parms) {
             this.type = type;
             parameters.AddRange(parms);
         }

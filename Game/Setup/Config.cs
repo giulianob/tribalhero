@@ -1,12 +1,14 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Reflection;
+using Game.Data;
+
+#endregion
 
 namespace Game.Setup {
     public class Config {
-
         public static readonly int server_port = 48888;
         public static readonly string server_listen_address = "0.0.0.0";
 
@@ -23,19 +25,19 @@ namespace Game.Setup {
         public static readonly uint region_width = 34;
         public static readonly uint region_height = 62;
 
-        public static readonly int column = (int)(map_width / region_width);
-        public static readonly int row = (int)(map_height / region_height);
-        public static readonly int regions_count = column * row;
+        public static readonly int column = (int) (map_width/region_width);
+        public static readonly int row = (int) (map_height/region_height);
+        public static readonly int regions_count = column*row;
 
         public static readonly uint city_region_width = 56;
         public static readonly uint city_region_height = 56;
-        public static readonly int city_region_column = (int)(map_width / city_region_width);
-        public static readonly int city_region_row = (int)(map_height / city_region_height);
+        public static readonly int city_region_column = (int) (map_width/city_region_width);
+        public static readonly int city_region_row = (int) (map_height/city_region_height);
 
         public static readonly double seconds_per_unit = 0.01; //dont make it zero
         public static readonly int battle_turn_interval = 2;
-        public static readonly int stamina_initial = 0;
-        public static readonly bool resource_upkeep = false;
+        public static readonly int stamina_initial;
+        public static readonly bool resource_upkeep;
         public static readonly bool resource_cap = true;
         public static readonly bool resource_fast_income = true;
 
@@ -43,8 +45,8 @@ namespace Game.Setup {
         public static readonly int height_margin = 10;
         public static readonly int width_margin = 10;
 
-        public static readonly bool database_verbose = false;
-        public static readonly bool database_empty = false;
+        public static readonly bool database_verbose;
+        public static readonly bool database_empty;
         public static readonly bool database_load_players = true;
         public static readonly string database_host = "";
         public static readonly string database_username = "";
@@ -52,7 +54,7 @@ namespace Game.Setup {
         public static readonly string database_database = "";
         public static readonly string database_salt = "";
 
-        public static readonly bool ai_enabled = false;
+        public static readonly bool ai_enabled;
 
         public static Random Random = new Random();
 
@@ -62,11 +64,11 @@ namespace Game.Setup {
             try {
                 using (StreamReader file = new StreamReader(File.Open("settings.ini", FileMode.Open))) {
                     string line;
-                    while ((line = file.ReadLine()) != null)
-                    {
+                    while ((line = file.ReadLine()) != null) {
                         line = line.Trim();
 
-                        if (line == string.Empty) continue;
+                        if (line == string.Empty)
+                            continue;
 
                         key = line.Substring(0, line.IndexOf('=')).ToLower();
                         key = key.Substring(0, key.IndexOf('.')) + "_" + key.Substring(key.IndexOf('.') + 1);

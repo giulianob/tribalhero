@@ -1,24 +1,27 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Configuration;
 using System.Collections;
-using System.Threading;
+using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Threading;
+using Game.Data;
+
+#endregion
 
 namespace Game.Comm {
-    class TcpWorker {        
-        ArrayList sockList = new ArrayList();
-        object sockListLock = new object();
-        Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
-        bool isFull = false;
-        Thread workerThread = null;
-        EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
+    class TcpWorker {
+        private ArrayList sockList = new ArrayList();
+        private object sockListLock = new object();
+        private Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
+        private bool isFull = false;
+        private Thread workerThread;
+        private EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
 
         private static List<TcpWorker> workerList = new List<TcpWorker>();
 
         public static void add(object session_object) {
-            SocketSession session = (SocketSession)session_object;
+            SocketSession session = (SocketSession) session_object;
 
             bool needNewWorker = true;
             foreach (TcpWorker worker in workerList) {
@@ -37,20 +40,18 @@ namespace Game.Comm {
             }
 
             Packet packet = new Packet(Command.ON_CONNECT);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(session.processEvent), packet);
+            ThreadPool.QueueUserWorkItem(session.processEvent, packet);
         }
 
         public static void delAll() {
-            foreach (TcpWorker worker in workerList) {
+            foreach (TcpWorker worker in workerList)
                 worker.stop();
-            }
         }
 
         public static void del(SocketSession session) {
             foreach (TcpWorker worker in workerList) {
-                if (worker.sockList.Contains(session.socket)) {
+                if (worker.sockList.Contains(session.socket))
                     worker.sockList.Remove(session.socket);
-                }
             }
         }
 
@@ -65,7 +66,7 @@ namespace Game.Comm {
 
         public void start() {
             if (workerThread == null) {
-                workerThread = new Thread(new ThreadStart(socketHandler));
+                workerThread = new Thread(socketHandler);
                 workerThread.Name = "TcpWorker Thread";
             }
 
@@ -108,7 +109,7 @@ namespace Game.Comm {
                                 sockList.Remove(s);
 
                                 packet = new Packet(Command.ON_DISCONNECT);
-                                ThreadPool.QueueUserWorkItem(new WaitCallback(dcSession.processEvent), packet);
+                                ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
                                 continue;
                             }
 
@@ -127,15 +128,14 @@ namespace Game.Comm {
                                 if (dcSession.Player != null) {
                                     dcSession.Player.Session = null;
                                     packet = new Packet(Command.ON_DISCONNECT);
-                                    ThreadPool.QueueUserWorkItem(new WaitCallback(dcSession.processEvent), packet);
+                                    ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
                                 }
                             } else {
                                 Global.Logger.Info("[" + sessions[s].name + "]: " + data.Length);
                                 Global.Logger.Info(Convert.ToString(data));
                                 sessions[s].appendBytes(data);
-                                while ((packet = ((Session)sessions[s]).getNextPacket()) != null) {
-                                    ThreadPool.QueueUserWorkItem(new WaitCallback(sessions[s].process), packet);
-                                }
+                                while ((packet = (sessions[s]).getNextPacket()) != null)
+                                    ThreadPool.QueueUserWorkItem(sessions[s].process, packet);
                             }
                         }
                         catch (SocketException) {
@@ -147,7 +147,7 @@ namespace Game.Comm {
                                 sockList.Remove(s);
 
                                 packet = new Packet(Command.ON_DISCONNECT);
-                                ThreadPool.QueueUserWorkItem(new WaitCallback(dcSession.processEvent), packet);
+                                ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
                             }
                         }
                     }

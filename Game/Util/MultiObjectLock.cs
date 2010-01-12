@@ -1,9 +1,12 @@
-  using System;
+#region
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Game.Data;
 using Game.Database;
+
+#endregion
 
 namespace Game.Util {
     public interface ILockable {
@@ -12,14 +15,14 @@ namespace Game.Util {
     }
 
     public class MultiObjectLock : IDisposable {
-
         [ThreadStatic]
-        static MultiObjectLock currentLock = null;
+        private static MultiObjectLock currentLock;
 
-        DbTransaction transaction = null;
+        private DbTransaction transaction;
 
         public static bool IsLocked(ILockable obj) {
-            if (currentLock == null) return false;
+            if (currentLock == null)
+                return false;
 
             foreach (object lck in currentLock.lockedObjects) {
                 if (lck == obj.Lock)
@@ -33,18 +36,16 @@ namespace Game.Util {
             return x.Hash.CompareTo(y.Hash);
         }
 
-        void Lock(params ILockable[] list) {
+        private void Lock(params ILockable[] list) {
             lockedObjects = new object[list.Length];
 
-            if (currentLock != null) {
+            if (currentLock != null)
                 throw new Exception("Attempting to nest MultiObjectLock");
-            }
 
             currentLock = this;
 
-            Array.Sort<ILockable>(list, CompareObject);
-            for (int i = 0; i < list.Length; ++i)
-            {
+            Array.Sort(list, CompareObject);
+            for (int i = 0; i < list.Length; ++i) {
                 Monitor.Enter(list[i].Lock);
                 lockedObjects[i] = list[i].Lock;
             }
@@ -52,26 +53,26 @@ namespace Game.Util {
             transaction = Global.dbManager.GetThreadTransaction();
         }
 
-        void UnlockAll() {
+        private void UnlockAll() {
             transaction.Dispose();
 
             for (int i = lockedObjects.Length - 1; i >= 0; --i)
                 Monitor.Exit(lockedObjects[i]);
-            
-            lockedObjects = new object[] { };
+
+            lockedObjects = new object[] {};
 
             currentLock = null;
         }
 
-        object[] lockedObjects = new object[] { };
+        private object[] lockedObjects = new object[] {};
 
         public MultiObjectLock(params ILockable[] list) {
             Lock(list);
         }
 
         public MultiObjectLock(out Dictionary<uint, City> result, params uint[] cityIds) {
-            result = new Dictionary<uint,City>(cityIds.Length);
-            
+            result = new Dictionary<uint, City>(cityIds.Length);
+
             City[] cities = new City[cityIds.Length];
 
             int i = 0;
@@ -109,13 +110,12 @@ namespace Game.Util {
             TryGetCityTroop(cityId, objectId, out city, out obj);
         }
 
-        bool TryGetCity(uint cityId, out City city) {
+        private bool TryGetCity(uint cityId, out City city) {
             city = null;
 
-            if (!Global.World.TryGetObjects(cityId, out city)) {
+            if (!Global.World.TryGetObjects(cityId, out city))
                 return false;
-            }
-            
+
             try {
                 Lock(city);
             }
@@ -127,15 +127,14 @@ namespace Game.Util {
             return true;
         }
 
-        bool TryGetCityStructure(uint cityId, uint objectId, out City city, out Structure obj) {
+        private bool TryGetCityStructure(uint cityId, uint objectId, out City city, out Structure obj) {
             city = null;
             obj = null;
 
-            if (!TryGetCity(cityId, out city)) {
+            if (!TryGetCity(cityId, out city))
                 return false;
-            }
 
-            if (!city.tryGetStructure(objectId, out obj)) {
+            if (!city.TryGetStructure(objectId, out obj)) {
                 city = null;
                 obj = null;
                 UnlockAll();
@@ -145,15 +144,14 @@ namespace Game.Util {
             return true;
         }
 
-        bool TryGetCityTroop(uint cityId, uint objectId, out City city, out TroopObject obj) {
+        private bool TryGetCityTroop(uint cityId, uint objectId, out City city, out TroopObject obj) {
             city = null;
             obj = null;
 
-            if (!TryGetCity(cityId, out city)) {
+            if (!TryGetCity(cityId, out city))
                 return false;
-            }
 
-            if (!city.tryGetTroop(objectId, out obj)) {
+            if (!city.TryGetTroop(objectId, out obj)) {
                 city = null;
                 obj = null;
                 UnlockAll();
@@ -163,8 +161,8 @@ namespace Game.Util {
             return true;
         }
 
-        public void Dispose() {            
-            UnlockAll();            
+        public void Dispose() {
+            UnlockAll();
         }
     }
 }

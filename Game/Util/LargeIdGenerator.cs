@@ -1,14 +1,15 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections;
+
+#endregion
 
 namespace Game.Util {
     public class LargeIdGenerator {
-        long last = 0;
-        long max;
+        private long last = 0;
+        private long max;
 
-        object objLock = new object();
+        private object objLock = new object();
 
         public LargeIdGenerator(long max) {
             this.max = max;
@@ -17,11 +18,10 @@ namespace Game.Util {
         public int getNext() {
             lock (objLock) {
                 last++;
-                if (last > max) {
+                if (last > max)
                     throw new ArgumentOutOfRangeException();
-                }
 
-                return (int)last;
+                return (int) last;
             }
         }
 

@@ -1,24 +1,26 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Game.Logic;
 using Game.Data;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
-using Game.Database;
-using Game.Logic.Procedures;
+
+#endregion
 
 namespace Game.Logic.Actions {
     class StructureUpgradeAction : ScheduledActiveAction {
-        uint cityId;
-        uint structureId;
+        private uint cityId;
+        private uint structureId;
 
         public StructureUpgradeAction(uint cityId, uint structureId) {
             this.cityId = cityId;
             this.structureId = structureId;
         }
 
-        public StructureUpgradeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType, byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
+        public StructureUpgradeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+                                      byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -27,7 +29,6 @@ namespace Game.Logic.Actions {
         #region IAction Members
 
         public override Error execute() {
-
             City city;
             Structure structure;
 
@@ -35,10 +36,11 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             // layout requirement
-            if (!ReqirementFactory.getLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).validate(structure.City, structure.X, structure.Y)) {
+            if (
+                !ReqirementFactory.getLayoutRequirement(structure.Type, (byte) (structure.Lvl + 1)).validate(
+                     structure.City, structure.X, structure.Y))
                 return Error.LAYOUT_NOT_FULLFILLED;
-            }
-            
+
             Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
 
             if (cost == null)
@@ -51,7 +53,10 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.getTime(structure.Type, (byte)(structure.Lvl + 1)), structure.Technologies));
+            endTime =
+                DateTime.Now.AddSeconds(
+                    Formula.BuildTime(StructureFactory.getTime(structure.Type, (byte) (structure.Lvl + 1)),
+                                      structure.Technologies));
             beginTime = DateTime.Now;
 
             return Error.OK;
@@ -61,15 +66,16 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                if (!isValid()) return;
+                if (!isValid())
+                    return;
 
-                if (!city.tryGetStructure(structureId, out structure)) {
+                if (!city.TryGetStructure(structureId, out structure)) {
                     stateChange(ActionState.FAILED);
                     return;
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.getStructure(structure, structure.Type, (byte)(structure.Lvl + 1), true);
+                StructureFactory.getStructure(structure, structure.Type, (byte) (structure.Lvl + 1), true);
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
@@ -97,8 +103,7 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-
-                if (!city.tryGetStructure(structureId, out structure)) {
+                if (!city.TryGetStructure(structureId, out structure)) {
                     Global.Scheduler.del(this);
                     stateChange(ActionState.FAILED);
                     return;
@@ -112,9 +117,9 @@ namespace Game.Logic.Actions {
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
                         Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
-                        
+
                         city.BeginUpdate();
-                        city.Resource.Add(cost / 2);
+                        city.Resource.Add(cost/2);
                         city.EndUpdate();
 
                         stateChange(ActionState.INTERRUPTED);
@@ -127,10 +132,11 @@ namespace Game.Logic.Actions {
 
         public override string Properties {
             get {
-                return XMLSerializer.Serialize(new XMLKVPair[] {
-                    new XMLKVPair("city_id", cityId),
-                    new XMLKVPair("structure_id", structureId)
-                });
+                return
+                    XMLSerializer.Serialize(new[] {
+                                                      new XMLKVPair("city_id", cityId),
+                                                      new XMLKVPair("structure_id", structureId)
+                                                  });
             }
         }
 

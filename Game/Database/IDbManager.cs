@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
+#region
+
 using System.Data.Common;
+
+#endregion
 
 namespace Game.Database {
     public interface IDbManager {

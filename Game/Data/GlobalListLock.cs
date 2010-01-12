@@ -1,12 +1,13 @@
-using System;
+#region
+
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+
+#endregion
 
 namespace Game.Data {
     public class GlobalLockList<TKey, TValue> {
-        Dictionary<TKey, TValue> data = new Dictionary<TKey, TValue>();
-        
+        private Dictionary<TKey, TValue> data = new Dictionary<TKey, TValue>();
+
         /*
         public void Add(TKey key, TValue value) {
             if (Global.ListLock.IsReaderLockHeld) throw new Exception("Deadlock may occur");

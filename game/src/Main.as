@@ -123,6 +123,7 @@
 
 		public function showLoginDialog():void
 		{
+			gameContainer.closeAllFrames();
 			loginDialog = new LoginDialog(onConnect);
 			loginDialog.show();
 		}

@@ -254,7 +254,8 @@ public class BattleViewer extends GameJPanel {
 		layout0.setAxis(AsWingConstants.VERTICAL);
 		layout0.setGap(5);
 		setLayout(layout0);
-		setPreferredSize(new IntDimension(960, 405));
+		setBorder(null);
+		setPreferredSize(new IntDimension(965, 405));
 		
 		var pnlBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0));
 		pnlBody.setBorder(null);
@@ -275,6 +276,7 @@ public class BattleViewer extends GameJPanel {
 		
 		txtLog = new JTextArea("You have started watching this battle");			
 		txtLog.setPreferredSize(new IntDimension(375, 350));			
+		txtLog.setBorder(new EmptyBorder());
 		txtLog.setWordWrap(true);
 		txtLog.setEditable(false);
 		txtLog.setMaxChars(2000);		

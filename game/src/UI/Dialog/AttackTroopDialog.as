@@ -47,7 +47,7 @@
 			//create local tile lists
 			var localTilelists: Array = SimpleTroopGridList.getGridList(srcTroop, city.template, [Formation.Normal]);
 
-			pnlLocal.append(SimpleTroopGridList.stackGridLists(localTilelists));
+			pnlLocal.append(SimpleTroopGridList.stackGridLists(localTilelists, false));
 
 			//create attack tile lists
 			var newTroop: TroopStub = new TroopStub();
@@ -56,7 +56,7 @@
 
 			attackTilelists = SimpleTroopGridList.getGridList(newTroop, city.template);
 
-			pnlAttack.append(SimpleTroopGridList.stackGridLists(attackTilelists));
+			pnlAttack.append(SimpleTroopGridList.stackGridLists(attackTilelists, false));
 
 			//drag handler
 			tilelists = localTilelists.concat(attackTilelists);

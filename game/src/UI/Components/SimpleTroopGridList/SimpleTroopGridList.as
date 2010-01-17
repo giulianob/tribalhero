@@ -183,7 +183,7 @@
 			return panel;
 		}
 
-		public static function stackGridLists(tilelists: Array) : JPanel {
+		public static function stackGridLists(tilelists: Array, includeFormationName: Boolean = true) : JPanel {
 			var panel: JPanel = new JPanel();
 
 			var layout0: SoftBoxLayout = new SoftBoxLayout();
@@ -194,7 +194,11 @@
 
 			for each(var ts: SimpleTroopGridList in tilelists)
 			{
-				ts.setBorder(new TitledBorder(null, Formation.TypeStrings[ts.getFormation().type], AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));
+				if (includeFormationName)
+					ts.setBorder(new TitledBorder(null, Formation.TypeStrings[ts.getFormation().type], AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));
+				else
+					ts.setBorder(new EmptyBorder());
+					
 				ts.setPreferredSize(new IntDimension(300, 100));
 				panel.append(ts);
 			}

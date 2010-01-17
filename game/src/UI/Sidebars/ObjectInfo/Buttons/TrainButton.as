@@ -10,6 +10,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.Map;
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.NumberInputDialog;
@@ -65,7 +66,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 				}
 				
-				var inputDialog: NumberInputDialog = new NumberInputDialog("How many " + unitPrototype.getName() + " would you like to train?", 1, maxValue, onAcceptDialog, 1, unitPrototype.trainResources);
+				var inputDialog: NumberInputDialog = new NumberInputDialog("How many " + unitPrototype.getName() + " would you like to train?", 1, maxValue, onAcceptDialog, 1, unitPrototype.trainResources, Formula.trainTime(unitPrototype.trainTime, null));
 				
 				inputDialog.show();
 			}

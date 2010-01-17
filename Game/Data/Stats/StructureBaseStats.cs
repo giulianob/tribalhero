@@ -6,78 +6,38 @@ using Game.Setup;
 
 namespace Game.Data.Stats {
     public class StructureBaseStats {
-        private string name;
+        public string Name { get; private set; }
 
-        public string Name {
-            get { return name; }
-        }
+        public ushort Type { get; private set; }
 
-        private ushort type;
+        public byte Lvl { get; private set; }
 
-        public ushort Type {
-            get { return type; }
-        }
+        public Resource Cost { get; private set; }
 
-        private byte lvl;
+        public int BuildTime { get; private set; }
 
-        public byte Lvl {
-            get { return lvl; }
-        }
+        public ClassID BaseClass { get; private set; }
 
-        private Resource cost;
+        public int WorkerId { get; private set; }
 
-        public Resource Cost {
-            get { return cost; }
-        }
+        public byte MaxLabor { get; private set; }
 
-        private int buildTime;
+        public byte Radius { get; private set; }
 
-        public int BuildTime {
-            get { return buildTime; }
-        }
-
-        private ClassID baseClass;
-
-        public ClassID BaseClass {
-            get { return baseClass; }
-        }
-
-        private int workerId;
-
-        public int WorkerId {
-            get { return workerId; }
-        }
-
-        private byte maxLabor;
-
-        public byte MaxLabor {
-            get { return maxLabor; }
-        }
-
-        private byte radius;
-
-        public byte Radius {
-            get { return radius; }
-        }
-
-        private BaseBattleStats battleStats;
-
-        public BaseBattleStats Battle {
-            get { return battleStats; }
-        }
+        public BaseBattleStats Battle { get; private set; }
 
         public StructureBaseStats(string name, ushort type, byte lvl, byte radius, Resource cost, BaseBattleStats baseBattleStats,
                                   byte maxLabor, int buildTime, int workerId, ClassID baseClass) {
-            this.name = name;
-            this.radius = radius;
-            this.type = type;
-            this.lvl = lvl;
-            this.cost = cost;
-            battleStats = baseBattleStats;
-            this.maxLabor = maxLabor;
-            this.buildTime = buildTime;
-            this.baseClass = baseClass;
-            this.workerId = workerId;
+            Name = name;
+            Radius = radius;
+            Type = type;
+            Lvl = lvl;
+            Cost = cost;
+            Battle = baseBattleStats;
+            MaxLabor = maxLabor;
+            BuildTime = buildTime;
+            BaseClass = baseClass;
+            WorkerId = workerId;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Game.Data {
             get { return gold; }
             set {
                 gold = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
@@ -30,7 +30,7 @@ namespace Game.Data {
             get { return wood; }
             set {
                 wood = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
@@ -40,7 +40,7 @@ namespace Game.Data {
             get { return iron; }
             set {
                 iron = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
@@ -50,7 +50,7 @@ namespace Game.Data {
             get { return crop; }
             set {
                 crop = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
@@ -60,7 +60,7 @@ namespace Game.Data {
             get { return labor; }
             set {
                 labor = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
@@ -167,7 +167,7 @@ namespace Game.Data {
             iron -= (actual.iron = iron > cost.iron ? cost.iron : crop);
             wood -= (actual.wood = wood > cost.wood ? cost.wood : wood);
             labor -= (actual.labor = labor > cost.labor ? cost.labor : labor);
-            fireStatsUpdate();
+            FireStatsUpdate();
         }
 
         public void add(Resource cost) {
@@ -176,7 +176,7 @@ namespace Game.Data {
             iron += cost.iron;
             wood += cost.wood;
             labor += cost.labor;
-            fireStatsUpdate();
+            FireStatsUpdate();
         }
 
         internal void Clear() {
@@ -185,7 +185,7 @@ namespace Game.Data {
             iron = 0;
             wood = 0;
             labor = 0;
-            fireStatsUpdate();
+            FireStatsUpdate();
         }
     }
 }

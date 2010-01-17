@@ -5,7 +5,7 @@
 
         public event OnStatsUpdate StatsUpdate;
 
-        protected void fireStatsUpdate() {
+        protected void FireStatsUpdate() {
             if (StatsUpdate != null)
                 StatsUpdate();
         }

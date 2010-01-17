@@ -44,8 +44,8 @@ namespace Game.Setup {
                     BaseBattleStats stats = new BaseBattleStats(ushort.Parse(toks[col["Type"]]),
                                                                 byte.Parse(toks[col["Lvl"]]),
                                                                 (WeaponType)
-                                                                Enum.Parse(typeof (WeaponType), toks[col["Weapon"]]),
-                                                                ArmorType.Stone, ushort.Parse(toks[col["Hp"]]),
+                                                                Enum.Parse(typeof (WeaponType), toks[col["Weapon"]].ToUpper()),
+                                                                ArmorType.STONE, ushort.Parse(toks[col["Hp"]]),
                                                                 byte.Parse(toks[col["Atk"]]),
                                                                 byte.Parse(toks[col["Def"]]),
                                                                 byte.Parse(toks[col["Rng"]]),

@@ -2,23 +2,23 @@ namespace Game.Data.Stats {
     public class TroopStats : BaseStats {
         #region Base Stats
 
-        private byte attackRadius = 0;
+        private byte attackRadius;
 
         public byte AttackRadius {
             get { return attackRadius; }
             set {
                 attackRadius = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
-        private byte speed = 0;
+        private byte speed;
 
         public byte Speed {
             get { return speed; }
             set {
                 speed = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
@@ -28,42 +28,31 @@ namespace Game.Data.Stats {
             get { return rewardPoint; }
             set {
                 rewardPoint = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
-        private Resource loot = new Resource();
-
-        public Resource Loot {
-            get { return loot; }
-        }
+        public Resource Loot { get; private set; }
 
         #endregion
 
         #region Constructors
 
         public TroopStats(byte attackRadius, byte speed) {
+            Loot = new Resource();
             this.attackRadius = attackRadius;
             this.speed = speed;
 
             //We'll listen for loot updates and fire them on this update
-            loot.StatsUpdate += new OnStatsUpdate(loot_StatsUpdate);
+            Loot.StatsUpdate += LootStatsUpdate;
         }
 
         #endregion
 
         #region Events
 
-        private void loot_StatsUpdate() {
-            fireStatsUpdate();
-        }
-
-        #endregion
-
-        #region ICloneable Members
-
-        public object Clone() {
-            return MemberwiseClone();
+        private void LootStatsUpdate() {
+            FireStatsUpdate();
         }
 
         #endregion

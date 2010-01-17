@@ -11,24 +11,21 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class UnitUpgradeAction : ScheduledActiveAction {
-        private uint cityId;
-        private uint structureId;
-        private ushort type;
+        private readonly uint cityId;
+        private readonly uint structureId;
 
-        public ushort UnitType {
-            get { return type; }
-        }
+        public ushort UnitType { get; private set; }
 
         public UnitUpgradeAction(uint cityId, uint structureId, ushort type) {
             this.cityId = cityId;
             this.structureId = structureId;
-            this.type = type;
+            UnitType = type;
         }
 
         public UnitUpgradeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                  byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
-            type = ushort.Parse(properties["type"]);
+            UnitType = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }
@@ -39,8 +36,9 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ACTION_INVALID;
 
-            if (ushort.Parse(parms[0]) != type && byte.Parse(parms[1]) < structure.Lvl + 1)
+            if (ushort.Parse(parms[0]) != UnitType && byte.Parse(parms[1]) < structure.Lvl + 1)
                 return Error.ACTION_INVALID;
+
             return Error.OK;
         }
 
@@ -50,16 +48,12 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
 
-            if (
-                city.Worker.ActiveActions.Exists(
-                    delegate(ActiveAction action) {
-                        return (action.Type == Type) && (UnitType == (action as UnitUpgradeAction).UnitType) &&
-                               (action != this);
-                    }))
+            if (city.Worker.ActiveActions.Exists(action => (action.Type == Type) && (UnitType == ((UnitUpgradeAction) action).UnitType) && (action != this))) {
                 return Error.ACTION_ALREADY_IN_PROGRESS;
+            }
 
-            BaseUnitStats unitStats = city.Template[type];
-            Resource cost = UnitFactory.getUpgradeCost(type, unitStats.Lvl + 1);
+            BaseUnitStats unitStats = city.Template[UnitType];
+            Resource cost = UnitFactory.getUpgradeCost(UnitType, unitStats.Lvl + 1);
 
             if (cost == null)
                 return Error.OBJECT_NOT_FOUND;
@@ -70,9 +64,7 @@ namespace Game.Logic.Actions {
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            endTime =
-                DateTime.Now.AddSeconds(Formula.BuildTime(UnitFactory.getUpgradeTime(type, (byte) (unitStats.Lvl + 1)),
-                                                          structure.Technologies));
+            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(UnitFactory.getUpgradeTime(UnitType, (byte) (unitStats.Lvl + 1)), structure.Technologies));
             beginTime = DateTime.Now;
 
             return Error.OK;
@@ -108,8 +100,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                structure.City.Template[type] = UnitFactory.getUnitStats(type,
-                                                                         (byte) (structure.City.Template[type].Lvl + 1));
+                structure.City.Template[UnitType] = UnitFactory.getUnitStats(UnitType, (byte) (structure.City.Template[UnitType].Lvl + 1));
 
                 StateChange(ActionState.COMPLETED);
             }
@@ -120,13 +111,7 @@ namespace Game.Logic.Actions {
         #region IPersistable
 
         public override string Properties {
-            get {
-                return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
-                                                                new XMLKVPair("type", type), new XMLKVPair("city_id", cityId),
-                                                                new XMLKVPair("structure_id", structureId)
-                                                            });
-            }
+            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("type", UnitType), new XMLKVPair("city_id", cityId), new XMLKVPair("structure_id", structureId)}); }
         }
 
         #endregion

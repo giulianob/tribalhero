@@ -1,94 +1,46 @@
 namespace Game.Data {
     public enum ArmorType {
-        Leather = 0,
-        Metal = 1,
-        Mount = 2,
-        Wooden = 3,
-        Stone = 4
+        LEATHER = 0,
+        METAL = 1,
+        MOUNT = 2,
+        WOODEN = 3,
+        STONE = 4
     }
 
     public enum WeaponType {
-        Sword = 0,
-        Pike = 1,
-        Bow = 2,
-        FireBall = 3,
-        StoneBall = 4
+        SWORD = 0,
+        PIKE = 1,
+        BOW = 2,
+        FIRE_BALL = 3,
+        STONE_BALL = 4
     }
 
     public class BaseBattleStats {
         #region Base Stats
 
-        private ushort type;
+        public ushort Type { get; private set; }
 
-        public ushort Type {
-            get { return type; }
-        }
+        public byte Lvl { get; private set; }
 
-        private byte lvl;
+        public ushort GroupSize { get; private set; }
 
-        public byte Lvl {
-            get { return lvl; }
-        }
+        public WeaponType Weapon { get; private set; }
 
-        private ushort groupSize;
+        public ArmorType Armor { get; private set; }
 
-        public ushort GroupSize {
-            get { return groupSize; }
-        }
+        public ushort MaxHp { get; private set; }
 
-        private WeaponType weapon;
+        public byte Atk { get; private set; }
 
-        public WeaponType Weapon {
-            get { return weapon; }
-        }
+        public byte Def { get; private set; }
 
-        private ArmorType armor;
+        public byte Rng { get; private set; }
 
-        public ArmorType Armor {
-            get { return armor; }
-        }
+        public byte Stl { get; private set; }
 
-        private ushort maxHp = 0;
+        public byte Spd { get; private set; }
 
-        public ushort MaxHp {
-            get { return maxHp; }
-        }
-
-        private byte atk = 0;
-
-        public byte Atk {
-            get { return atk; }
-        }
-
-        private byte def = 0;
-
-        public byte Def {
-            get { return def; }
-        }
-
-        private byte rng = 0;
-
-        public byte Rng {
-            get { return rng; }
-        }
-
-        private byte stl = 0;
-
-        public byte Stl {
-            get { return stl; }
-        }
-
-        private byte spd = 0;
-
-        public byte Spd {
-            get { return spd; }
-        }
-
-        private ushort reward;
-
-        public ushort Reward {
-            get { return reward; }
-        }
+        public ushort Reward { get; private set; }
 
         #endregion
 
@@ -96,18 +48,18 @@ namespace Game.Data {
 
         public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, byte atk,
                                byte def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
-            this.type = type;
-            this.lvl = lvl;
-            this.weapon = weapon;
-            this.armor = armor;
-            this.maxHp = maxHp;
-            this.atk = atk;
-            this.def = def;
-            rng = range;
-            stl = stealth;
-            spd = speed;
-            this.groupSize = groupSize;
-            this.reward = reward;
+            Type = type;
+            Lvl = lvl;
+            Weapon = weapon;
+            Armor = armor;
+            MaxHp = maxHp;
+            Atk = atk;
+            Def = def;
+            Rng = range;
+            Stl = stealth;
+            Spd = speed;
+            GroupSize = groupSize;
+            Reward = reward;
         }
 
         #endregion

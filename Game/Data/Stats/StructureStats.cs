@@ -1,4 +1,4 @@
-﻿namespace Game.Data.Stats {
+namespace Game.Data.Stats {
     public class StructureStats : BaseStats {
         private ushort hp;
 
@@ -6,28 +6,24 @@
             get { return hp; }
             set {
                 hp = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
-        private byte labor = 0;
+        private byte labor;
 
         public byte Labor {
             get { return labor; }
             set {
                 labor = value;
-                fireStatsUpdate();
+                FireStatsUpdate();
             }
         }
 
-        private StructureBaseStats baseStats;
-
-        public StructureBaseStats Base {
-            get { return baseStats; }
-        }
+        public StructureBaseStats Base { get; private set; }
 
         public StructureStats(StructureBaseStats baseStats) {
-            this.baseStats = baseStats;
+            Base = baseStats;
 
             hp = baseStats.Battle.MaxHp;
         }

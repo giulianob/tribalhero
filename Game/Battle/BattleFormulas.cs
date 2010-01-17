@@ -17,73 +17,73 @@ namespace Game.Battle {
             const double strongest = 1.5;
 
             switch (weapon) {
-                case WeaponType.Sword:
+                case WeaponType.SWORD:
                     switch (armor) {
-                        case ArmorType.Leather:
+                        case ArmorType.LEATHER:
                             return good;
-                        case ArmorType.Metal:
+                        case ArmorType.METAL:
                             return weak;
-                        case ArmorType.Mount:
+                        case ArmorType.MOUNT:
                             return weakest;
-                        case ArmorType.Wooden:
+                        case ArmorType.WOODEN:
                             return good;
-                        case ArmorType.Stone:
+                        case ArmorType.STONE:
                             return strong;
                     }
                     break;
-                case WeaponType.Pike:
+                case WeaponType.PIKE:
                     switch (armor) {
-                        case ArmorType.Leather:
+                        case ArmorType.LEATHER:
                             return weak;
-                        case ArmorType.Metal:
+                        case ArmorType.METAL:
                             return strong;
-                        case ArmorType.Mount:
+                        case ArmorType.MOUNT:
                             return good;
-                        case ArmorType.Wooden:
+                        case ArmorType.WOODEN:
                             return weak;
-                        case ArmorType.Stone:
+                        case ArmorType.STONE:
                             return weak;
                     }
                     break;
-                case WeaponType.Bow:
+                case WeaponType.BOW:
                     switch (armor) {
-                        case ArmorType.Leather:
+                        case ArmorType.LEATHER:
                             return strongest;
-                        case ArmorType.Metal:
+                        case ArmorType.METAL:
                             return weak;
-                        case ArmorType.Mount:
+                        case ArmorType.MOUNT:
                             return good;
-                        case ArmorType.Wooden:
+                        case ArmorType.WOODEN:
                             return weak;
-                        case ArmorType.Stone:
+                        case ArmorType.STONE:
                             return weakest;
                     }
                     break;
-                case WeaponType.FireBall:
+                case WeaponType.FIRE_BALL:
                     switch (armor) {
-                        case ArmorType.Leather:
+                        case ArmorType.LEATHER:
                             return weak;
-                        case ArmorType.Metal:
+                        case ArmorType.METAL:
                             return good;
-                        case ArmorType.Mount:
+                        case ArmorType.MOUNT:
                             return strong;
-                        case ArmorType.Wooden:
+                        case ArmorType.WOODEN:
                             return good;
-                        case ArmorType.Stone:
+                        case ArmorType.STONE:
                             return weak;
                     }
                     break;
-                case WeaponType.StoneBall:
+                case WeaponType.STONE_BALL:
                     switch (armor) {
-                        case ArmorType.Leather:
+                        case ArmorType.LEATHER:
                             return weakest;
-                        case ArmorType.Metal:
+                        case ArmorType.METAL:
                             return weakest;
-                        case ArmorType.Mount:
+                        case ArmorType.MOUNT:
                             return weak;
-                        case ArmorType.Wooden:
+                        case ArmorType.WOODEN:
                             return strong;
-                        case ArmorType.Stone:
+                        case ArmorType.STONE:
                             return strongest;
                     }
                     break;

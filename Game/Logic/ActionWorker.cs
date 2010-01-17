@@ -228,40 +228,41 @@ namespace Game.Logic {
                 return Error.ACTION_WORKER_MAX_REACHED;
 
             foreach (ActionRequirement actionReq in record.list) {
-                if (actionReq.type == action.Type) {
-                    if ((error = action.Validate(actionReq.parms)) == Error.OK) {
-                        if (stubsRemain.FindAll(stub => stub.WorkerIndex == actionReq.index).Count >= actionReq.max) {
-                            return Error.ACTION_INDEX_MAX_REACHED;
-                        }
+                if (actionReq.type != action.Type)
+                    continue;
 
-                        if ((error = EffectRequirementFactory.getEffectRequirementContainer(actionReq.effectReqId).validate(workerObject, effects.GetAllEffects(actionReq.effectReqInherit))) ==
-                            Error.OK) {
-                            action.OnNotify += NotifyActive;
-                            action.ActionId = (ushort) actionId;
-                            action.WorkerIndex = actionReq.index;
-                            action.WorkerType = workerType;
-                            action.WorkerObject = workerObject;
-                            active.Add(action.ActionId, action);
-
-                            Error ret = action.Execute();
-
-                            if (ret != Error.OK) {
-                                action.StateChange(ActionState.FAILED);
-                                active.Remove(action.ActionId);
-                                ReleaseId(action.ActionId);
-                            } else
-                                action.StateChange(ActionState.STARTED);
-
-                            return ret;
-                        }
-
-                        Global.Logger.Debug("Effect Requirement failed for action[" + action.Type + "].");
-                        return error;
+                if ((error = action.Validate(actionReq.parms)) == Error.OK) {
+                    if (stubsRemain.FindAll(stub => stub.WorkerIndex == actionReq.index).Count >= actionReq.max) {
+                        return Error.ACTION_INDEX_MAX_REACHED;
                     }
 
-                    if (error != Error.ACTION_INVALID)
-                        return error;
+                    if ((error = EffectRequirementFactory.getEffectRequirementContainer(actionReq.effectReqId).validate(workerObject, effects.GetAllEffects(actionReq.effectReqInherit))) ==
+                        Error.OK) {
+                        action.OnNotify += NotifyActive;
+                        action.ActionId = (ushort) actionId;
+                        action.WorkerIndex = actionReq.index;
+                        action.WorkerType = workerType;
+                        action.WorkerObject = workerObject;
+                        active.Add(action.ActionId, action);
+
+                        Error ret = action.Execute();
+
+                        if (ret != Error.OK) {
+                            action.StateChange(ActionState.FAILED);
+                            active.Remove(action.ActionId);
+                            ReleaseId(action.ActionId);
+                        } else
+                            action.StateChange(ActionState.STARTED);
+
+                        return ret;
+                    }
+
+                    Global.Logger.Debug("Effect Requirement failed for action[" + action.Type + "].");
+                    return error;
                 }
+
+                if (error != Error.ACTION_INVALID)
+                    return error;
             }
 
             return Error.ACTION_INVALID;

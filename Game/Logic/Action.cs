@@ -96,10 +96,7 @@ namespace Game.Logic {
             if (workerObject == null)
                 return false;
 
-            if (workerObject.City == null)
-                return false;
-
-            return workerObject.City.Worker.Contains(this);
+            return workerObject.City != null && workerObject.City.Worker.Contains(this);
         }
 
         #region IPersistable Members

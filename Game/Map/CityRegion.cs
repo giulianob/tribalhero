@@ -68,7 +68,7 @@ namespace Game {
                             bw.Write(city.MainBuilding.Lvl);
                             bw.Write(city.MainBuilding.Type);
                             bw.Write(city.MainBuilding.City.Owner.PlayerId);
-                            bw.Write(city.MainBuilding.City.CityId);
+                            bw.Write(city.MainBuilding.City.Id);
                             bw.Write(city.MainBuilding.ObjectId);
                             bw.Write((ushort) (city.MainBuilding.CityRegionRelX));
                             bw.Write((ushort) (city.MainBuilding.CityRegionRelY));

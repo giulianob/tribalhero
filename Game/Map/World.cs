@@ -135,9 +135,9 @@ namespace Game.Map {
 
         public bool Add(City city) {
             city.BeginUpdate();
-            city.CityId = (uint) cityIdGen.getNext();
+            city.Id = (uint) cityIdGen.getNext();
             city.EndUpdate();
-            cities[city.CityId] = city;
+            cities[city.Id] = city;
 
             //Initial save of these objects
             Global.dbManager.Save(city.MainBuilding);
@@ -151,8 +151,8 @@ namespace Game.Map {
         }
 
         public void DbLoaderAdd(uint id, City city) {
-            city.CityId = id;
-            cities[city.CityId] = city;
+            city.Id = id;
+            cities[city.Id] = city;
             cityIdGen.set((int) id);
         }
 
@@ -171,8 +171,8 @@ namespace Game.Map {
         }
 
         public void Remove(City city) {
-            cities[city.CityId] = null;
-            cityIdGen.release((int) city.CityId);
+            cities[city.Id] = null;
+            cityIdGen.release((int) city.Id);
             CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
             if (region == null)
                 return;
@@ -212,7 +212,7 @@ namespace Game.Map {
 
             Packet packet = new Packet(Command.OBJECT_REMOVE);
             packet.addUInt16(regionId);
-            packet.addUInt32(obj.City.CityId);
+            packet.addUInt32(obj.City.Id);
             packet.addUInt32(obj.ObjectId);
 
             region.remove(obj);

@@ -56,7 +56,7 @@ namespace Game {
         }
 
         internal City getCity(uint id) {
-            return list.Find(delegate(City city) { return city.CityId == id; });
+            return list.Find(delegate(City city) { return city.Id == id; });
         }
 
         #region ILockable Members

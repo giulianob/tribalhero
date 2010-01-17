@@ -233,13 +233,13 @@ namespace Game.Battle {
 
         public City[] LockList {
             get {
-                Dictionary<uint, City> cities = new Dictionary<uint, City> {{city.CityId, city}};
+                Dictionary<uint, City> cities = new Dictionary<uint, City> {{city.Id, city}};
 
                 foreach (CombatObject co in attackers)
-                    cities[co.City.CityId] = co.City;
+                    cities[co.City.Id] = co.City;
 
                 foreach (CombatObject co in defenders)
-                    cities[co.City.CityId] = co.City;
+                    cities[co.City.Id] = co.City;
 
                 City[] citiesArr = new City[cities.Values.Count];
                 cities.Values.CopyTo(citiesArr, 0);
@@ -253,16 +253,16 @@ namespace Game.Battle {
             city = owner;
             stamina = BattleFormulas.GetStamina(city);
             report = new BattleReport(this);
-            Channel = new BattleChannel(this, "/BATTLE/" + city.CityId);
+            Channel = new BattleChannel(this, "/BATTLE/" + city.Id);
             groupIdGen.set(1);
         }
 
         public void Subscribe(Session session) {
-            Global.Channel.Subscribe(session, "/BATTLE/" + city.CityId);
+            Global.Channel.Subscribe(session, "/BATTLE/" + city.Id);
         }
 
         public void Unsubscribe(Session session) {
-            Global.Channel.Unsubscribe(session, "/BATTLE/" + city.CityId);
+            Global.Channel.Unsubscribe(session, "/BATTLE/" + city.Id);
         }
 
         public CombatObject GetCombatObject(uint id) {
@@ -336,7 +336,7 @@ namespace Game.Battle {
                     added = true;
 
                     obj.BeginUpdate();
-                    obj.State = GameObjectState.BattleState(obj.City.CityId);
+                    obj.State = GameObjectState.BattleState(obj.City.Id);
                     obj.EndUpdate();
 
                     CombatObject combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj)) {
@@ -711,7 +711,7 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("city_id", city.CityId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("city_id", city.Id, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {

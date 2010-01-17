@@ -5,7 +5,7 @@ namespace Game.Setup {
         public static void loadResource(int wood, int iron, int crop, Global global) {
             /*          Player resourcePlayer = new Player(0);
                       City resourceCity = new City(0,resourcePlayer);            
-                      Global.World.Cities.Add(resourceCity.CityId, resourceCity);
+                      Global.World.Cities.Add(resourceCity.Id, resourceCity);
 
                       for (int i = 0; i < wood; ++i) {
                           NaturalResource item = new NaturalResource(ResourceType.WOOD,0);

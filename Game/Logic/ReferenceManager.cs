@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -57,7 +57,7 @@ namespace Game.Logic {
             get {
                 return new DbColumn[] {
                                           new DbColumn("id", referenceId, DbType.UInt16),
-                                          new DbColumn("city_id", workerObject.City.CityId, DbType.UInt32)
+                                          new DbColumn("city_id", workerObject.City.Id, DbType.UInt32)
                                       };
             }
         }

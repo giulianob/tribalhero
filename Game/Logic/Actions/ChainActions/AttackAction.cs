@@ -83,7 +83,7 @@ namespace Game.Logic.Actions {
 
                     //If the target is missing, walk back
                     if (targetCity == null) {
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.CityId, stub.TroopObject.ObjectId,
+                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId,
                                                                   city.MainBuilding.X, city.MainBuilding.Y);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
@@ -120,7 +120,7 @@ namespace Game.Logic.Actions {
                         throw new Exception("Stub should still exist");
 
                     if (stub.TotalCount > 0) {
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.CityId, stub.TroopObject.ObjectId,
+                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId,
                                                                   city.MainBuilding.X, city.MainBuilding.Y);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                     } else {

@@ -396,7 +396,7 @@ namespace Game.Data.Troop {
             get {
                 return new[] {
                                           new DbColumn("id", troopId, DbType.UInt32),
-                                          new DbColumn("city_id", troopManager.City.CityId, DbType.UInt32)
+                                          new DbColumn("city_id", troopManager.City.Id, DbType.UInt32)
                                       };
             }
         }
@@ -408,7 +408,7 @@ namespace Game.Data.Troop {
         public DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("stationed_city_id", stationedCity != null ? stationedCity.CityId : 0,
+                                          new DbColumn("stationed_city_id", stationedCity != null ? stationedCity.Id : 0,
                                                        DbType.UInt32), new DbColumn("state", (byte) state, DbType.Byte),
                                           new DbColumn("formations", GetFormationBits(), DbType.UInt16)
                                       };

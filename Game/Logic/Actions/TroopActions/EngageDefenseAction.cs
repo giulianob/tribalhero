@@ -70,7 +70,7 @@ namespace Game.Logic.Actions {
         }
 
         private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
-            if (target.City.CityId != cityId)
+            if (target.City.Id != cityId)
                 return;
 
             AttackCombatUnit unit = target as AttackCombatUnit;

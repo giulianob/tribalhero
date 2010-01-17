@@ -30,7 +30,7 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("city_id", battle.City.CityId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {
@@ -60,7 +60,7 @@ namespace Game.Battle {
                 yield return
                     new[] {
                                        new DbColumn("combat_troop_id", itr.Current.Value, DbType.UInt32),
-                                       new DbColumn("troop_stub_city_id", itr.Current.Key.City.CityId, DbType.UInt32),
+                                       new DbColumn("troop_stub_city_id", itr.Current.Key.City.Id, DbType.UInt32),
                                        new DbColumn("troop_stub_id", itr.Current.Key.TroopId, DbType.Byte)
                                    };
             }
@@ -91,7 +91,7 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("city_id", battle.City.CityId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {

@@ -168,7 +168,7 @@ namespace Game.Logic.Actions {
         public void ScriptInit(GameObject obj, string[] parms) {
             if ((obj = obj as Structure) == null)
                 throw new Exception();
-            cityId = obj.City.CityId;
+            cityId = obj.City.Id;
             structureId = obj.ObjectId;
             techId = uint.Parse(parms[0]);
             isSelfInit = true;

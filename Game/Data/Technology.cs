@@ -350,8 +350,8 @@ namespace Game.Data {
                 return new DbColumn[] {
                                           new DbColumn("city_id",
                                                        owner is Structure
-                                                           ? (owner as Structure).City.CityId
-                                                           : (owner is City ? (owner as City).CityId : 0), DbType.UInt32),
+                                                           ? (owner as Structure).City.Id
+                                                           : (owner is City ? (owner as City).Id : 0), DbType.UInt32),
                                           new DbColumn("owner_id", ownerId, DbType.UInt32),
                                           new DbColumn("owner_location", (byte) ownerLocation, DbType.Byte)
                                       };

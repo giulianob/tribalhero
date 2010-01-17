@@ -23,7 +23,7 @@ namespace Game.Comm {
         }
 
         public static void AddToPacket(NotificationManager.Notification notification, Packet packet) {
-            packet.addUInt32(notification.Action.WorkerObject.City.CityId);
+            packet.addUInt32(notification.Action.WorkerObject.City.Id);
             packet.addUInt32(notification.GameObject.ObjectId);
             packet.addUInt16(notification.Action.ActionId);
             packet.addUInt16((ushort) notification.Action.Type);
@@ -58,7 +58,7 @@ namespace Game.Comm {
                 packet.addUInt32(0); //cityid
             } else {
                 packet.addUInt32(obj.City.Owner.PlayerId);
-                packet.addUInt32(obj.City.CityId);
+                packet.addUInt32(obj.City.Id);
             }
             packet.addUInt32(obj.ObjectId);
             packet.addUInt16((ushort) (obj.RelX));
@@ -171,7 +171,7 @@ namespace Game.Comm {
 
         internal static void AddToPacket(TroopStub stub, Packet packet) {
             packet.addUInt32(stub.City.Owner.PlayerId);
-            packet.addUInt32(stub.City.CityId);
+            packet.addUInt32(stub.City.Id);
 
             packet.addByte(stub.TroopId);
             packet.addByte((byte) stub.State);
@@ -238,7 +238,7 @@ namespace Game.Comm {
             packet.addUInt16((ushort) list.Count);
             foreach (CombatObject obj in list) {
                 packet.addUInt32(obj.PlayerId);
-                packet.addUInt32(obj.City.CityId);
+                packet.addUInt32(obj.City.Id);
                 packet.addUInt32(obj.Id);
                 packet.addByte((byte) obj.ClassType);
                 if (obj.ClassType == BattleClass.UNIT)

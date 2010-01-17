@@ -103,7 +103,7 @@ namespace Game {
                             bw.Write(obj.Lvl);
                             bw.Write(obj.Type);
                             bw.Write(obj.City.Owner.PlayerId);
-                            bw.Write(obj.City.CityId);
+                            bw.Write(obj.City.Id);
                             bw.Write(obj.ObjectId);
                             bw.Write((ushort) (obj.RelX));
                             bw.Write((ushort) (obj.RelY));

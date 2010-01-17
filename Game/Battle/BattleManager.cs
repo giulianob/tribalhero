@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
 using Game.Util;
@@ -410,27 +411,24 @@ namespace Game.Battle {
                     if (!isLocal)
                         id = (uint) idGen.getNext();
 
-                    foreach (
-                        KeyValuePair<FormationType, Formation> formation in
-                            obj as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                        if (formation.Key == FormationType.Garrison || formation.Key == FormationType.InBattle)
+                    foreach (Formation formation in obj) {
+                        if (formation.Type == FormationType.GARRISON || formation.Type == FormationType.IN_BATTLE)
                             continue;
 
-                        FormationType formationType = formation.Key;
                         //if it's our local troop then it should be in the battle formation since 
                         //it will be moved by the battle manager (who is calling this function) to the in battle formation
                         //There should be a better way to do this but I cant figure it out right now
-                        if (isLocal && formationType == FormationType.Normal)
-                            formationType = FormationType.InBattle;
+                        if (isLocal && formation.Type == FormationType.NORMAL)
+                            formation.Type = FormationType.IN_BATTLE;
 
-                        foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
+                        foreach (KeyValuePair<ushort, ushort> kvp in formation) {
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
-                                combatObjects = CombatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType,
+                                combatObjects = CombatUnitFactory.CreateDefenseCombatUnit(this, obj, formation.Type,
                                                                                           kvp.Key, kvp.Value);
                             else
                                 combatObjects = CombatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject,
-                                                                                         formationType, kvp.Key,
+                                                                                         formation.Type, kvp.Key,
                                                                                          kvp.Value);
 
                             foreach (CombatObject unit in combatObjects) {

@@ -244,12 +244,12 @@ namespace Game.Database {
                             FormationType[] formations = (FormationType[]) Enum.GetValues(typeof (FormationType));
                             foreach (FormationType type in formations) {
                                 if ((formationMask & (ushort) Math.Pow(2, (ushort) type)) != 0)
-                                    stub.addFormation(type);
+                                    stub.AddFormation(type);
                             }
 
                             using (DbDataReader listReader = dbManager.SelectList(stub)) {
                                 while (listReader.Read()) {
-                                    stub.addUnit((FormationType) ((byte) listReader["formation_type"]),
+                                    stub.AddUnit((FormationType) ((byte) listReader["formation_type"]),
                                                  (ushort) listReader["type"], (ushort) listReader["count"]);
                                 }
                             }
@@ -285,7 +285,7 @@ namespace Game.Database {
                                     battleStats.Stl = (byte) listReader["stealth"];
                                     battleStats.Spd = (byte) listReader["speed"];
 
-                                    stub.Template.dbLoaderAdd(battleStats);
+                                    stub.Template.DbLoaderAdd(battleStats);
                                 }
                             }
                         }

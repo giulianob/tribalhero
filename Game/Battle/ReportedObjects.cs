@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.Data;
-using Game.Data;
+using Game.Data.Troop;
 using Game.Database;
 
 #endregion

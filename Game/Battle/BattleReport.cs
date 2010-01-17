@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Fighting;
 
 #endregion
@@ -253,11 +254,11 @@ namespace Game.Battle {
             Global.dbManager.Query(
                 string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')",
                               BATTLE_REPORT_OBJECTS_DB, troopId, co.Type, co.Lvl, co.Hp, co.Count, co.DmgRecv,
-                              co.DmgDealt, (byte) (unit == null ? FormationType.Structure : unit.Formation)));
+                              co.DmgDealt, (byte) (unit == null ? FormationType.STRUCTURE : unit.Formation)));
 
             objectLog.WriteLine(
                 "troopId[{0}] groupid[{1}] formation[{2}] type[{3}] count[{4}] hp[{5}] dmg_dealt[{6}] dmg_recv[{7}]",
-                troopId, co.Id, unit == null ? FormationType.Structure : unit.Formation, co.Type, co.Count, co.Hp,
+                troopId, co.Id, unit == null ? FormationType.STRUCTURE : unit.Formation, co.Type, co.Count, co.Hp,
                 co.DmgDealt, co.DmgRecv);
         }
     }

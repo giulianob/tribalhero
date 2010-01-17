@@ -7,23 +7,23 @@ using Game.Data;
 
 namespace Game.Setup {
     public class Factory {
-        internal static void BuildFiles(string output_file, string dir, string pattern) {
-            Global.Logger.Info("Building CSV file " + output_file);
-            BuildFiles2(output_file, Directory.GetFiles(dir, pattern));
+        internal static void BuildFiles(string outputFile, string dir, string pattern) {
+            Global.Logger.Info("Building CSV file " + outputFile);
+            BuildFiles2(outputFile, Directory.GetFiles(dir, pattern));
         }
 
-        private static void BuildFiles2(string output_file, params string[] files) {
-            if (File.Exists(output_file))
-                File.Delete(output_file);
-            StreamWriter sw = new StreamWriter(output_file);
-            bool header_written = false;
+        private static void BuildFiles2(string outputFile, params string[] files) {
+            if (File.Exists(outputFile))
+                File.Delete(outputFile);
+            StreamWriter sw = new StreamWriter(outputFile);
+            bool headerWritten = false;
             foreach (string filename in files) {
                 StreamReader sr =
                     new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
                 string header = sr.ReadLine();
-                if (!header_written) {
+                if (!headerWritten) {
                     sw.WriteLine(header);
-                    header_written = true;
+                    headerWritten = true;
                 }
                 sw.Write(sr.ReadToEnd());
                 sr.Close();
@@ -31,7 +31,7 @@ namespace Game.Setup {
             sw.Close();
         }
 
-        public static void initAll() {
+        public static void InitAll() {
             BuildFiles(Config.csv_compiled_folder + "structure.csv", Config.csv_folder, "*structure.csv");
             StructureFactory.init(Config.csv_compiled_folder + "structure.csv");
 

@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Database;
 using Game.Setup;
 

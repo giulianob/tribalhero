@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Logic;
 using Game.Util;
 

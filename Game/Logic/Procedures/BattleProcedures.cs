@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Fighting;
 
 #endregion
@@ -22,7 +23,7 @@ namespace Game.Logic.Procedures {
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopStub.TroopState.BATTLE;
             city.DefaultTroop.Template.LoadStats();
-            MoveUnitFormation(city.DefaultTroop, FormationType.Normal, FormationType.InBattle);
+            MoveUnitFormation(city.DefaultTroop, FormationType.NORMAL, FormationType.IN_BATTLE);
             city.DefaultTroop.EndUpdate();
 
             bm.AddToLocal(list, state);

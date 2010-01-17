@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Fighting;
 using Game.Logic.Actions;
 using Game.Setup;
@@ -32,12 +33,10 @@ namespace Game.Logic {
 
         internal static byte GetTroopRadius(TroopStub stub, TechnologyManager em) {
             int count = 0;
-            foreach (
-                KeyValuePair<FormationType, Formation> formation in
-                    stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                if (formation.Key == FormationType.Scout)
+            foreach (Formation formation in stub) {
+                if (formation.Type == FormationType.SCOUT)
                     continue;
-                foreach (KeyValuePair<ushort, ushort> kvp in formation.Value)
+                foreach (KeyValuePair<ushort, ushort> kvp in formation)
                     count += kvp.Value;
             }
 
@@ -46,12 +45,10 @@ namespace Game.Logic {
 
         internal static byte GetTroopSpeed(TroopStub stub, object p) {
             int count = 0;
-            foreach (
-                KeyValuePair<FormationType, Formation> formation in
-                    stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                if (formation.Key == FormationType.Scout)
+            foreach (Formation formation in stub) {
+                if (formation.Type == FormationType.SCOUT)
                     continue;
-                foreach (KeyValuePair<ushort, ushort> kvp in formation.Value)
+                foreach (KeyValuePair<ushort, ushort> kvp in formation)
                     count += kvp.Value;
             }
             return (byte) Math.Min(15, (10 - Math.Max(count/100, 5)));

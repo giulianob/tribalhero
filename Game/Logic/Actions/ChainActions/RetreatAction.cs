@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;

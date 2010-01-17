@@ -3,7 +3,7 @@
     <GenerateResourceNeverLockTypeAssemblies>true</GenerateResourceNeverLockTypeAssemblies>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6EE346B4-BB8C-4CE8-B95C-1DCD693B296B}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -11,7 +11,7 @@
     <RootNamespace>Launcher</RootNamespace>
     <AssemblyName>Launcher</AssemblyName>
     <TargetZone>LocalIntranet</TargetZone>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>

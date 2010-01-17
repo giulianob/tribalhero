@@ -9,6 +9,7 @@
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Factories.*;
+	import src.UI.Components.NotificationGridList.NotificationGridList;
 	import src.UI.Components.TroopStubGridList.TroopStubGridList;
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.Cursors.GroundReinforceCursor;
@@ -31,6 +32,7 @@
 		private var localTroopIcon: AssetPane;
 		private var stationedHere: TroopStubGridList;
 		private var stationedAway: TroopStubGridList;
+		private var gridNotifications: NotificationGridList;
 		private var myStubs: TroopStubGridList;
 		private var btnAttack: JButton;
 		private var btnDefend: JButton;
@@ -210,6 +212,13 @@
 			stationedAway.setTracksWidth(true);
 			append(stationedAway);
 
+			gridNotifications = new NotificationGridList(this.city);
+			gridNotifications.setBorder(null);
+			gridNotifications.setLocation(new IntPoint(550, 300));
+			gridNotifications.setSize(new IntDimension(100, 210));
+			gridNotifications.setTracksWidth(true);
+			append(gridNotifications);
+			
 			btnAttack = new JButton("Send Attack");
 			btnAttack.setLocation(new IntPoint(10, 10));
 			btnAttack.setSize(new IntDimension(100, 25));

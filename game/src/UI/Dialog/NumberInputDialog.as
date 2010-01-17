@@ -17,6 +17,7 @@ import src.Global;
 import src.Objects.Resources;
 import src.UI.Components.SimpleResourcesPanel;
 import src.UI.GameJPanel;
+import src.Util.Util;
 
 import org.aswing.*;
 import org.aswing.border.*;
@@ -31,11 +32,15 @@ public class NumberInputDialog extends GameJPanel {
 	private var sldAmount:JAdjuster;
 	private var panel8:JPanel;
 	private var pnlResources: JPanel;
-	private var btnOk:JButton;	
+	private var lblTime: JLabel;
+	private var pnlTime: JPanel;
+	private var btnOk:JButton;		
 	private var costPerUnit: Resources;	
+	private var timePerUnit: int;	
 	
-	public function NumberInputDialog(prompt: String, minValue: int, maxValue: int, onAccept: Function, initialValue: int = 1, costPerUnit: Resources = null):void {
+	public function NumberInputDialog(prompt: String, minValue: int, maxValue: int, onAccept: Function, initialValue: int = 1, costPerUnit: Resources = null, timePerUnit: int = 0):void {
 		this.costPerUnit = costPerUnit;
+		this.timePerUnit = timePerUnit;
 		
 		createUI();			
 		
@@ -49,11 +54,19 @@ public class NumberInputDialog extends GameJPanel {
 		sldAmount.setValues(initialValue, 0, minValue, maxValue);
 		
 		sldAmount.addStateListener(updateResources);
+		sldAmount.addStateListener(updateTime);
 
 		var self: NumberInputDialog = this;
 		btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
 		
 		updateResources();
+		updateTime();
+	}
+	
+	private function updateTime(e: Event = null) : void {	
+		if (timePerUnit <= 0) return;
+		
+		lblTime.setText(Util.formatTime(timePerUnit * sldAmount.getValue()));
 	}
 	
 	private function updateResources(e: Event = null) : void {
@@ -99,8 +112,7 @@ public class NumberInputDialog extends GameJPanel {
 		layout2.setAlignment(AsWingConstants.CENTER);
 		panel8.setLayout(layout2);	
 		
-		btnOk = new JButton();
-		btnOk.setLocation(new IntPoint(99, 5));
+		btnOk = new JButton();		
 		btnOk.setSize(new IntDimension(22, 22));
 		btnOk.setText("Ok");
 		
@@ -109,6 +121,15 @@ public class NumberInputDialog extends GameJPanel {
 			pnlResources = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));		
 			pnlResources.setBorder(new SimpleTitledBorder(null, "Total Cost"));
 		}
+		
+		if (timePerUnit > 0)
+		{				
+			pnlTime = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));		
+			pnlTime.setBorder(new SimpleTitledBorder(null, "Total Time"));
+			
+			lblTime = new JLabel("", new AssetIcon(new ICON_CLOCK()), AsWingConstants.CENTER);
+			pnlTime.append(lblTime);
+		}		
 			
 		//component layoution
 		append(txtTitle);
@@ -116,6 +137,9 @@ public class NumberInputDialog extends GameJPanel {
 		
 		if (costPerUnit != null)
 			append(pnlResources);
+			
+		if (timePerUnit > 0)
+			append(pnlTime);
 			
 		append(panel8);
 		

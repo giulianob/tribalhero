@@ -15,7 +15,7 @@
 		public function ComplexTroopGridCell(){
 			super();
 
-			setPreferredSize(new IntDimension(32, 20));			
+			setPreferredSize(new IntDimension(40, 20));			
 			setHorizontalTextPosition(AsWingConstants.LEFT);
 			setIconTextGap(0);			
 		}
@@ -29,7 +29,9 @@
 			setText(unit.count.toString());
 			
 			if (value.tooltipMode) 
-				GameLookAndFeel.changeClass(this, "Tooltip.text Label.small");							
+				GameLookAndFeel.changeClass(this, "Tooltip.text Label.small");		
+				
+			pack();
 		}
 
 		public function getCellValue():*{

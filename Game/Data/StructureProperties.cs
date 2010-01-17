@@ -54,7 +54,7 @@ namespace Game.Data {
             get {
                 return new DbColumn[] {
                                           new DbColumn("structure_id", structure.ObjectId, DbType.UInt32),
-                                          new DbColumn("city_id", structure.City.CityId, DbType.UInt32)
+                                          new DbColumn("city_id", structure.City.Id, DbType.UInt32)
                                       };
             }
         }

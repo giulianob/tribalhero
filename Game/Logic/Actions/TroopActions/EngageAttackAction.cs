@@ -88,7 +88,7 @@ namespace Game.Logic.Actions {
             }
 
             stub.TroopObject.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.BattleState(targetCity.CityId);
+            stub.TroopObject.State = GameObjectState.BattleState(targetCity.Id);
             stub.TroopObject.EndUpdate();
 
             stub.TroopObject.Stub.BeginUpdate();

@@ -163,7 +163,7 @@ namespace Game.Module {
                                                 (ushort)
                                                 (city.Resource.FindMaxAffordable(costPerUnit)*intelligence.military));
 
-                        UnitTrainAction action = new UnitTrainAction(city.CityId, structure.ObjectId, unitType, count);
+                        UnitTrainAction action = new UnitTrainAction(city.Id, structure.ObjectId, unitType, count);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.OK) {
                             //Global.Logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})", city.Name, count, unitType, structure.X, structure.Y));
                             return true;
@@ -197,7 +197,7 @@ namespace Game.Module {
                         if (!ALLOWED_BUILDINGS.Contains(buildingType))
                             continue;
 
-                        StructureBuildAction action = new StructureBuildAction(city.CityId, buildingType, x, y);
+                        StructureBuildAction action = new StructureBuildAction(city.Id, buildingType, x, y);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.OK) {
                             //Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
                             return true;
@@ -223,7 +223,7 @@ namespace Game.Module {
             if (structure == null)
                 return false;
 
-            StructureUpgradeAction action = new StructureUpgradeAction(city.CityId, structure.ObjectId);
+            StructureUpgradeAction action = new StructureUpgradeAction(city.Id, structure.ObjectId);
 
             if (
                 city.Worker.DoActive(StructureFactory.getActionWorkerType(structure), structure, action,
@@ -282,7 +282,7 @@ namespace Game.Module {
                     InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type,
                                                structure.Stats.Base.Lvl);
 
-                    city.Worker.DoPassive(city, new CityAction(city.CityId), false);
+                    city.Worker.DoPassive(city, new CityAction(city.Id), false);
 
                     RadiusLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false,
                                                  BuildBasicStructures, city);

@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections;
@@ -77,7 +77,7 @@ namespace Game.Logic {
             public DbColumn[] DbPrimaryKey {
                 get {
                     return new DbColumn[] {
-                                              new DbColumn("city_id", obj.City.CityId, DbType.UInt32),
+                                              new DbColumn("city_id", obj.City.Id, DbType.UInt32),
                                               new DbColumn("object_id", obj.ObjectId, DbType.UInt32),
                                               new DbColumn("action_id", action.ActionId, DbType.UInt16),
                                           };
@@ -102,7 +102,7 @@ namespace Game.Logic {
 
             IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
                 foreach (City city in subscriptions)
-                    yield return new DbColumn[] {new DbColumn("subscription_city_id", city.CityId, DbType.UInt32)};
+                    yield return new DbColumn[] {new DbColumn("subscription_city_id", city.Id, DbType.UInt32)};
             }
 
             IEnumerator IEnumerable.GetEnumerator() {
@@ -157,10 +157,10 @@ namespace Game.Logic {
 
                 //send add
                 Packet packet = new Packet(Command.NOTIFICATION_ADD);
-                packet.addUInt32(actionWorker.City.CityId);
+                packet.addUInt32(actionWorker.City.Id);
                 PacketHelper.AddToPacket(notification, packet);
 
-                Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
+                Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
             }
         }
 
@@ -174,20 +174,20 @@ namespace Game.Logic {
 
                     //send removal
                     Packet packet = new Packet(Command.NOTIFICATION_REMOVE);
-                    packet.addUInt32(actionWorker.City.CityId);
-                    packet.addUInt32(notification.Action.WorkerObject.City.CityId);
+                    packet.addUInt32(actionWorker.City.Id);
+                    packet.addUInt32(notification.Action.WorkerObject.City.Id);
                     packet.addUInt16(notification.Action.ActionId);
 
-                    Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
+                    Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
                 }
             }
         }
 
         private void updateNotification(Notification notification) {
             Packet packet = new Packet(Command.NOTIFICATION_UPDATE);
-            packet.addUInt32(actionWorker.City.CityId);
+            packet.addUInt32(actionWorker.City.Id);
             PacketHelper.AddToPacket(notification, packet);
-            Global.Channel.Post("/CITY/" + actionWorker.City.CityId, packet);
+            Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
         }
 
         private void worker_ActionRescheduled(Action action) {

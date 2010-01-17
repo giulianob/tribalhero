@@ -177,7 +177,7 @@ namespace Game.Battle {
             get {
                 return new[] {
                                           new DbColumn("id", Id, DbType.UInt32),
-                                          new DbColumn("city_id", battleManager.City.CityId, DbType.UInt32)
+                                          new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)
                                       };
             }
         }
@@ -197,7 +197,7 @@ namespace Game.Battle {
                                           new DbColumn("formation_type", (byte) formation, DbType.Byte),
                                           new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
                                           new DbColumn("type", type, DbType.UInt16), new DbColumn("is_local", false, DbType.Boolean),
-                                          new DbColumn("troop_stub_city_id", TroopStub.City.CityId, DbType.UInt32),
+                                          new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
                                           new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
                                           new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16)
                                       };

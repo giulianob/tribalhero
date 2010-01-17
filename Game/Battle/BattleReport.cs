@@ -80,7 +80,7 @@ namespace Game.Battle {
 
         public void CreateBattleReport() {
             uint battleId;
-            SnapBattle(out battleId, battle.City.CityId);
+            SnapBattle(out battleId, battle.City.Id);
             battle.BattleId = battleId;
             WriteBeginReport();
             reportFlag = true;
@@ -94,7 +94,7 @@ namespace Game.Battle {
             if (co.ClassType == BattleClass.UNIT) {
                 ICombatUnit cu = co as ICombatUnit;
                 if (!reportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
-                    SnapTroop(reportId, state, cu.TroopStub.City.CityId, cu.TroopStub.TroopId, co.GroupId, isAttacker,
+                    SnapTroop(reportId, state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker,
                               out combatTroopId, cu.Loot);
                     reportedTroops[cu.TroopStub] = combatTroopId;
                 } else if (state != ReportState.STAYING)
@@ -107,7 +107,7 @@ namespace Game.Battle {
             } else {
                 TroopStub stub = ((CombatStructure) co).Structure.City.DefaultTroop;
                 if (!reportedTroops.TryGetValue(stub, out combatTroopId)) {
-                    SnapTroop(reportId, state, co.City.CityId, 1, co.GroupId, isAttacker, out combatTroopId,
+                    SnapTroop(reportId, state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId,
                               new Resource());
                     reportedTroops[stub] = combatTroopId;
                 } else if (state != ReportState.STAYING)
@@ -135,7 +135,7 @@ namespace Game.Battle {
                     ICombatUnit cu = co as ICombatUnit;
 
                     if (!reportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
-                        SnapTroop(reportId, state, cu.TroopStub.City.CityId, cu.TroopStub.TroopId, co.GroupId,
+                        SnapTroop(reportId, state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId,
                                   isAttacker, out combatTroopId, cu.Loot);
                         reportedTroops[cu.TroopStub] = combatTroopId;
                     } else if ((state == ReportState.REINFORCED || state == ReportState.EXITING) &&
@@ -147,7 +147,7 @@ namespace Game.Battle {
                 } else {
                     TroopStub stub = ((CombatStructure) co).Structure.City.DefaultTroop;
                     if (!reportedTroops.TryGetValue(stub, out combatTroopId)) {
-                        SnapTroop(reportId, state, co.City.CityId, 1, co.GroupId, isAttacker, out combatTroopId,
+                        SnapTroop(reportId, state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId,
                                   new Resource());
                         reportedTroops[stub] = combatTroopId;
                     } else if (state == ReportState.EXITING && !updatedObj.Contains(stub)) {

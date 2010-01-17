@@ -103,7 +103,7 @@ namespace Game.Data {
         public DbColumn[] DbPrimaryKey {
             get {
                 return new[] {
-                                 new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.CityId, DbType.UInt32)
+                                 new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)
                                  , new DbColumn("troop_stub_id", Stub.TroopId, DbType.Byte)
                              };
             }

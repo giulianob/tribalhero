@@ -53,7 +53,7 @@ namespace Game.Data {
             if (!Global.FireEvents)
                 return;
 
-            if (stub.City.CityId > 0)
+            if (stub.City.Id > 0)
                 Global.dbManager.Save(stub);
 
             if (TroopUpdated != null)

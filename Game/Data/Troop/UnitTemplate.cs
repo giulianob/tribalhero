@@ -100,7 +100,7 @@ namespace Game.Fighting {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new DbColumn[] {new DbColumn("city_id", City.CityId, DbType.UInt32)}; }
+            get { return new DbColumn[] {new DbColumn("city_id", City.Id, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {

@@ -16,7 +16,7 @@ using Game.Util;
 
 namespace Game.Data {
     public class City : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject {
-        private uint cityId;
+        private uint id;
         private string name = "Washington";
         private uint nextObjectId;
         private byte radius = 4;
@@ -81,11 +81,11 @@ namespace Game.Data {
             get { return resource; }
         }
 
-        public uint CityId {
-            get { return cityId; }
+        public uint Id {
+            get { return id; }
             set {
                 CheckUpdateMode();
-                cityId = value;
+                id = value;
             }
         }
 
@@ -131,7 +131,7 @@ namespace Game.Data {
 
             worker = new ActionWorker(this);
 
-            effectManager = new TechnologyManager(EffectLocation.City, this, cityId);
+            effectManager = new TechnologyManager(EffectLocation.City, this, id);
 
             troopManager = new TroopManager(this);
 
@@ -343,11 +343,11 @@ namespace Game.Data {
         #region Channel Events
 
         public void Subscribe(IChannel s) {
-            Global.Channel.Subscribe(s, "/CITY/" + cityId);
+            Global.Channel.Subscribe(s, "/CITY/" + id);
         }
 
         public void Unsubscribe(IChannel s) {
-            Global.Channel.Unsubscribe(s, "/CITY/" + cityId);
+            Global.Channel.Unsubscribe(s, "/CITY/" + id);
         }
 
         public void ResourceUpdateEvent() {
@@ -357,9 +357,9 @@ namespace Game.Data {
             CheckUpdateMode();
 
             Packet packet = new Packet(Command.CITY_RESOURCES_UPDATE);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             PacketHelper.AddToPacket(resource, packet);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         public void RadiusUpdateEvent() {
@@ -371,10 +371,10 @@ namespace Game.Data {
             Structure mainBuilding = MainBuilding;
             Global.World.ObjUpdateEvent(mainBuilding, mainBuilding.X, mainBuilding.Y);
 
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             packet.addByte(radius);
 
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         public void ObjAddEvent(GameObject obj) {
@@ -384,7 +384,7 @@ namespace Game.Data {
             Packet packet = new Packet(Command.CITY_OBJECT_ADD);
             packet.addUInt16(Region.getRegionIndex(obj));
             PacketHelper.AddToPacket(obj, packet, false);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         public void ObjRemoveEvent(GameObject obj) {
@@ -392,9 +392,9 @@ namespace Game.Data {
                 return;
 
             Packet packet = new Packet(Command.CITY_OBJECT_REMOVE);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             packet.addUInt32(obj.ObjectId);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         public void ObjUpdateEvent(GameObject sender, uint origX, uint origY) {
@@ -404,7 +404,7 @@ namespace Game.Data {
             Packet packet = new Packet(Command.CITY_OBJECT_UPDATE);
             packet.addUInt16(Region.getRegionIndex(sender));
             PacketHelper.AddToPacket(sender, packet, false);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void WorkerActionRescheduled(Action stub) {
@@ -412,9 +412,9 @@ namespace Game.Data {
                 return;
 
             Packet packet = new Packet(Command.ACTION_RESCHEDULED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void WorkerActionAdded(Action stub) {
@@ -422,9 +422,9 @@ namespace Game.Data {
                 return;
 
             Packet packet = new Packet(Command.ACTION_STARTED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void WorkerActionRemoved(Action stub) {
@@ -432,14 +432,14 @@ namespace Game.Data {
                 return;
 
             Packet packet = new Packet(Command.ACTION_COMPLETED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             PacketHelper.AddToPacket(stub, packet, true);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void Technologies_TechnologyUpgraded(Technology tech) {
             Packet packet = new Packet(Command.TECH_UPGRADED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             if (tech.ownerLocation == EffectLocation.City)
                 packet.addUInt32(0);
             else
@@ -447,12 +447,12 @@ namespace Game.Data {
             packet.addUInt32(tech.Type);
             packet.addByte(tech.Level);
 
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void Technologies_TechnologyRemoved(Technology tech) {
             Packet packet = new Packet(Command.TECH_REMOVED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             if (tech.ownerLocation == EffectLocation.City)
                 packet.addUInt32(0);
             else
@@ -460,12 +460,12 @@ namespace Game.Data {
             packet.addUInt32(tech.Type);
             packet.addByte(tech.Level);
 
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void Technologies_TechnologyAdded(Technology tech) {
             Packet packet = new Packet(Command.TECH_ADDED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             if (tech.ownerLocation == EffectLocation.City)
                 packet.addUInt32(0);
             else
@@ -473,36 +473,37 @@ namespace Game.Data {
             packet.addUInt32(tech.Type);
             packet.addByte(tech.Level);
 
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void TroopManagerTroopUpdated(TroopStub stub) {
             Packet packet = new Packet(Command.TROOP_UPDATED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             PacketHelper.AddToPacket(stub, packet);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void TroopManagerTroopAdded(TroopStub stub) {
             Packet packet = new Packet(Command.TROOP_ADDED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             PacketHelper.AddToPacket(stub, packet);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void TroopManagerTroopRemoved(TroopStub stub) {
             Packet packet = new Packet(Command.TROOP_REMOVED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
+            packet.addUInt32(stub.City.Id);
             packet.addByte(stub.TroopId);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         public void UnitTemplateUnitUpdated(UnitTemplate sender) {
             Global.dbManager.Save(sender);
             Packet packet = new Packet(Command.UNIT_TEMPLATE_UPGRADED);
-            packet.addUInt32(CityId);
+            packet.addUInt32(Id);
             PacketHelper.AddToPacket(sender, packet);
-            Global.Channel.Post("/CITY/" + cityId, packet);
+            Global.Channel.Post("/CITY/" + id, packet);
         }
 
         #endregion
@@ -565,7 +566,7 @@ namespace Game.Data {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("id", CityId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("id", Id, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {

@@ -340,7 +340,7 @@ namespace Game.Database {
 
                             using (
                                 DbDataReader listReader = dbManager.SelectList(CombatStructure.DB_TABLE,
-                                                                               new DbColumn("city_id", city.CityId,
+                                                                               new DbColumn("city_id", city.Id,
                                                                                             DbType.UInt32))) {
                                 while (listReader.Read()) {
                                     City structureCity;
@@ -376,7 +376,7 @@ namespace Game.Database {
                             //this will load both defense/attack units (they are saved to same table)
                             using (
                                 DbDataReader listReader = dbManager.SelectList(DefenseCombatUnit.DB_TABLE,
-                                                                               new DbColumn("city_id", city.CityId,
+                                                                               new DbColumn("city_id", city.Id,
                                                                                             DbType.UInt32))) {
                                 while (listReader.Read()) {
                                     City troopStubCity;
@@ -577,9 +577,9 @@ namespace Game.Database {
                                 city.Worker.DbLoaderDoPassive(action);
                             else {
                                 List<PassiveAction> chainList;
-                                if (!chainActions.TryGetValue(city.CityId, out chainList)) {
+                                if (!chainActions.TryGetValue(city.Id, out chainList)) {
                                     chainList = new List<PassiveAction>();
-                                    chainActions[city.CityId] = chainList;
+                                    chainActions[city.Id] = chainList;
                                 }
 
                                 action.IsChain = true;
@@ -615,7 +615,7 @@ namespace Game.Database {
                             List<PassiveAction> chainList = null;
                             PassiveAction currentAction = null;
                                 //current action might be null if it has already completed and we are in the call chain part of the cycle
-                            if (chainActions.TryGetValue(city.CityId, out chainList))
+                            if (chainActions.TryGetValue(city.Id, out chainList))
                                 currentAction =
                                     chainList.Find(
                                         delegate(PassiveAction lookupAction) { return lookupAction.ActionId == currentActionId; });

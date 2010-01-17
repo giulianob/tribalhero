@@ -2,12 +2,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Game.Data.Troop;
 using Game.Util;
 
 #endregion
 
-namespace Game.Data {
+namespace Game.Data.Troop {
     public class TroopManager : IEnumerable<TroopStub> {
         #region Event
 
@@ -21,9 +20,9 @@ namespace Game.Data {
 
         #region Properties
 
-        private SmallIdGenerator idGen = new SmallIdGenerator(byte.MaxValue, true);
+        private readonly SmallIdGenerator idGen = new SmallIdGenerator(byte.MaxValue, true);
 
-        private Dictionary<byte, TroopStub> dict = new Dictionary<byte, TroopStub>();
+        private readonly Dictionary<byte, TroopStub> dict = new Dictionary<byte, TroopStub>();
 
         public byte Size {
             get { return (byte) dict.Count; }

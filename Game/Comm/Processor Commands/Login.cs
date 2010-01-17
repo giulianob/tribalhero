@@ -7,6 +7,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Setup;
@@ -87,7 +88,7 @@ namespace Game.Comm {
                 reader.Close();
 
                 Global.dbManager.Query(string.Format("UPDATE `{0}` SET login_key = null WHERE id = '{1}' LIMIT 1",
-                                                     Player.DB_TABLE, playerId, sessionId));
+                                                     Player.DB_TABLE, playerId));
             } else {
                 if (!uint.TryParse(playerName, out playerId)) {
                     reply_error(session, packet, Error.PLAYER_NOT_FOUND);
@@ -136,11 +137,7 @@ namespace Game.Comm {
                         return;
                     }
 
-                    Resource res;
-                    if (player.PlayerId == 123)
-                        res = new Resource(10000, 10000, 10000, 10000, 0);
-                    else
-                        res = new Resource(500, 0, 0, 500, 0);
+                    Resource res = new Resource(500, 0, 0, 500, 0);
 
                     City city = new City(player, "City " + player.PlayerId, res, structure);
 

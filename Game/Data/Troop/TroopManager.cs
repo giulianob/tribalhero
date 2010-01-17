@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Game.Data.Troop;
 using Game.Util;
 
 #endregion
@@ -87,7 +88,7 @@ namespace Game.Data {
             stub.BeginUpdate();
             stub.TroopManager = this;
             stub.EndUpdate();
-            stub.UnitUpdate += new TroopStub.OnUnitUpdate(stub_UpdateEvent);
+            stub.UnitUpdate += StubUpdateEvent;
             return true;
         }
 
@@ -100,22 +101,21 @@ namespace Game.Data {
             stub.TroopId = id;
             stub.TroopManager = this;
             dict.Add(id, stub);
-            stub.UnitUpdate += new TroopStub.OnUnitUpdate(stub_UpdateEvent);
+            stub.UnitUpdate += StubUpdateEvent;
             FireAdded(stub);
             return true;
         }
 
         public bool AddStationed(TroopStub stub) {
-            byte id = 0;
             int nextId = idGen.getNext();
             if (nextId == -1)
                 return false;
-            id = (byte) nextId;
+            byte id = (byte) nextId;
             stub.StationedTroopId = id;
             stub.State = TroopStub.TroopState.STATIONED;
             stub.StationedCity = city;
             dict.Add(id, stub);
-            stub.UnitUpdate += new TroopStub.OnUnitUpdate(stub_UpdateEvent);
+            stub.UnitUpdate += StubUpdateEvent;
             FireAdded(stub);
             return true;
         }
@@ -138,7 +138,7 @@ namespace Game.Data {
             stub.StationedCity = null;
             stub.EndUpdate();
 
-            stub.UnitUpdate -= new TroopStub.OnUnitUpdate(stub_UpdateEvent);
+            stub.UnitUpdate -= StubUpdateEvent;
             FireRemoved(stub);
             return true;
         }
@@ -150,7 +150,7 @@ namespace Game.Data {
             if (!dict.Remove(id))
                 return false;
             idGen.release(id);
-            stub.UnitUpdate -= new TroopStub.OnUnitUpdate(stub_UpdateEvent);
+            stub.UnitUpdate -= StubUpdateEvent;
             FireRemoved(stub);
             return true;
         }
@@ -178,7 +178,7 @@ namespace Game.Data {
 
         #region Callbacks
 
-        public void stub_UpdateEvent(TroopStub stub) {
+        public void StubUpdateEvent(TroopStub stub) {
             FireUpdated(stub);
         }
 

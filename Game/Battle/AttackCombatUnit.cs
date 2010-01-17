@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
 using Game.Setup;
@@ -132,7 +133,7 @@ namespace Game.Battle {
                     count -= dead;
 
                 TroopStub.BeginUpdate();
-                TroopStub[formation].remove(type, dead);
+                TroopStub[formation].Remove(type, dead);
                 TroopStub.EndUpdate();
             }
 

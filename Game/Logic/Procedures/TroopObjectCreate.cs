@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Fighting;
 
 #endregion
@@ -25,12 +26,10 @@ namespace Game.Logic.Procedures {
         }
 
         private static bool remove_from_normal(TroopStub source, TroopStub target) {
-            foreach (
-                KeyValuePair<FormationType, Formation> kvp in
-                    (IEnumerable<KeyValuePair<FormationType, Formation>>) target) {
-                foreach (KeyValuePair<ushort, ushort> unit in kvp.Value) {
+            foreach (Formation formation in target) {
+                foreach (KeyValuePair<ushort, ushort> unit in formation) {
                     ushort count;
-                    if (!source[FormationType.Normal].TryGetValue(unit.Key, out count))
+                    if (!source[FormationType.NORMAL].TryGetValue(unit.Key, out count))
                         return false;
                     if (count < unit.Value)
                         return false;
@@ -38,11 +37,9 @@ namespace Game.Logic.Procedures {
             }
 
             source.BeginUpdate();
-            foreach (
-                KeyValuePair<FormationType, Formation> kvp in
-                    (IEnumerable<KeyValuePair<FormationType, Formation>>) target) {
-                foreach (KeyValuePair<ushort, ushort> unit in kvp.Value) {
-                    if (source[FormationType.Normal].remove(unit.Key, unit.Value) != unit.Value)
+            foreach (Formation formation in target) {
+                foreach (KeyValuePair<ushort, ushort> unit in formation) {
+                    if (source[FormationType.NORMAL].Remove(unit.Key, unit.Value) != unit.Value)
                         return false;
                 }
             }

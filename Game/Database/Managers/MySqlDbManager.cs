@@ -68,9 +68,7 @@ namespace Game.Database {
                 return persistantTransaction;
             }
 
-            persistantTransaction = new MySqlDbTransaction(this, null);
-
-            persistantTransaction.ReferenceCount = 1;
+            persistantTransaction = new MySqlDbTransaction(this, null) {ReferenceCount = 1};
 
             return persistantTransaction;
         }
@@ -109,7 +107,7 @@ namespace Game.Database {
                                                                         IsolationLevel.RepeatableRead));
 
             MySqlCommand command = new MySqlCommand("SET AUTOCOMMIT = 0",
-                                                    (transaction.transaction as MySqlTransaction).Connection,
+                                                    ((MySqlTransaction) transaction.transaction).Connection,
                                                     (transaction.transaction as MySqlTransaction));
 
             ExecuteNonQuery(command);
@@ -132,7 +130,7 @@ namespace Game.Database {
                 return true;
 
             foreach (IPersistable obj in objects) {
-                MySqlCommand command = null;
+                MySqlCommand command;
 
                 if (obj is IPersistableObject) {
                     IPersistableObject persistableObj = obj as IPersistableObject;
@@ -221,10 +219,10 @@ namespace Game.Database {
                 command.Transaction = transaction;
 
             foreach (DbColumn column in columns)
-                addParameter(command, column);
+                AddParameter(command, column);
 
             foreach (DbColumn column in obj.DbPrimaryKey)
-                addParameter(command, column);
+                AddParameter(command, column);
 
             return command;
         }
@@ -347,10 +345,10 @@ namespace Game.Database {
                 command.Transaction = transaction;
 
             foreach (DbColumn column in obj.DbColumns)
-                addParameter(command, column);
+                AddParameter(command, column);
 
             foreach (DbColumn column in obj.DbPrimaryKey)
-                addParameter(command, column);
+                AddParameter(command, column);
 
             return command;
         }
@@ -367,8 +365,6 @@ namespace Game.Database {
 
             if (objects.Length == 0)
                 return true;
-
-            MySqlConnection connection = mySqlTransaction.Connection;
 
             foreach (IPersistable obj in objects) {
                 if (obj is IPersistableObject && !(obj as IPersistableObject).DbPersisted)
@@ -436,7 +432,7 @@ namespace Game.Database {
                 command.Transaction = transaction;
 
             foreach (DbColumn column in obj.DbPrimaryKey)
-                addParameter(command, column, DataRowVersion.Original);
+                AddParameter(command, column, DataRowVersion.Original);
 
             return command;
         }
@@ -469,16 +465,16 @@ namespace Game.Database {
                 command.Transaction = transaction;
 
             foreach (DbColumn column in obj.DbPrimaryKey)
-                addParameter(command, column, DataRowVersion.Original);
+                AddParameter(command, column, DataRowVersion.Original);
 
             return command;
         }
 
-        private void addParameter(MySqlCommand command, DbColumn column) {
-            addParameter(command, column, DataRowVersion.Default);
+        private void AddParameter(MySqlCommand command, DbColumn column) {
+            AddParameter(command, column, DataRowVersion.Default);
         }
 
-        private void addParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion) {
+        private void AddParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion) {
             MySqlParameter parameter = command.CreateParameter();
             parameter.ParameterName = "@" + column.Column;
             parameter.DbType = column.Type;
@@ -523,7 +519,7 @@ namespace Game.Database {
             command.CommandText = string.Format("SELECT * FROM `{0}_list` WHERE {1}", obj.DbTable, where);
 
             foreach (DbColumn column in obj.DbPrimaryKey)
-                addParameter(command, column, DataRowVersion.Original);
+                AddParameter(command, column, DataRowVersion.Original);
 
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
@@ -549,7 +545,7 @@ namespace Game.Database {
             command.CommandText = string.Format("SELECT * FROM `{0}` WHERE {1}", table, where);
 
             foreach (DbColumn column in primaryKeyValues)
-                addParameter(command, column, DataRowVersion.Original);
+                AddParameter(command, column, DataRowVersion.Original);
 
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
@@ -583,8 +579,8 @@ namespace Game.Database {
                 InitPersistantTransaction();
             }
 
-            command = (transaction.transaction as MySqlTransaction).Connection.CreateCommand();
-            command.Connection = (transaction.transaction as MySqlTransaction).Connection;
+            command = ((MySqlTransaction) transaction.transaction).Connection.CreateCommand();
+            command.Connection = ((MySqlTransaction) transaction.transaction).Connection;
             command.Transaction = (transaction.transaction as MySqlTransaction);
 
             command.CommandText = query;
@@ -592,7 +588,7 @@ namespace Game.Database {
             ExecuteNonQuery(command);
 
             if (!transactional) {
-                (transaction.transaction as MySqlTransaction).Commit();
+                ((MySqlTransaction) transaction.transaction).Commit();
                 Close(command.Connection);
             }
         }
@@ -651,8 +647,8 @@ namespace Game.Database {
                 InitPersistantTransaction();
             }
 
-            command = (transaction.transaction as MySqlTransaction).Connection.CreateCommand();
-            command.Connection = (transaction.transaction as MySqlTransaction).Connection;
+            command = ((MySqlTransaction) transaction.transaction).Connection.CreateCommand();
+            command.Connection = ((MySqlTransaction) transaction.transaction).Connection;
             command.Transaction = (transaction.transaction as MySqlTransaction);
 
             command.CommandText = "SELECT LAST_INSERT_ID()";
@@ -660,7 +656,7 @@ namespace Game.Database {
             long id = (long) command.ExecuteScalar();
 
             if (!transactional) {
-                (transaction.transaction as MySqlTransaction).Commit();
+                ((MySqlTransaction) transaction.transaction).Commit();
                 Close(command.Connection);
             }
 

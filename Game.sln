@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launch
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE2FE5FA-D81A-4387-BFEF-5387EEA6F84A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{6BF25754-682A-4AF6-BCD0-AE6EC17FE119}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapGenerator", "MapGenerator\MapGenerator.csproj", "{DD17A617-76C6-4E55-8C4C-E04C4FEE58B8}"
 EndProject
 Global
@@ -49,10 +47,6 @@ Global
 		{6EE346B4-BB8C-4CE8-B95C-1DCD693B296B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE346B4-BB8C-4CE8-B95C-1DCD693B296B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE346B4-BB8C-4CE8-B95C-1DCD693B296B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BF25754-682A-4AF6-BCD0-AE6EC17FE119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BF25754-682A-4AF6-BCD0-AE6EC17FE119}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BF25754-682A-4AF6-BCD0-AE6EC17FE119}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BF25754-682A-4AF6-BCD0-AE6EC17FE119}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD17A617-76C6-4E55-8C4C-E04C4FEE58B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD17A617-76C6-4E55-8C4C-E04C4FEE58B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD17A617-76C6-4E55-8C4C-E04C4FEE58B8}.Release|Any CPU.ActiveCfg = Release|Any CPU

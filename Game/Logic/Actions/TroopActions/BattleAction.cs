@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Fighting;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -63,7 +64,7 @@ namespace Game.Logic.Actions {
 
                     city.DefaultTroop.BeginUpdate();
                     city.DefaultTroop.Template.ClearStats();
-                    Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
+                    Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.IN_BATTLE, FormationType.NORMAL);
                     city.DefaultTroop.EndUpdate();
 
                     //Copy troop stubs from city since the foreach loop below will modify it during the loop

@@ -13,7 +13,7 @@ using Game.Util;
 
 namespace Game.Module {
     public class AI : ISchedule {
-        private static readonly List<ushort> ALLOWED_BUILDINGS =
+        private static List<ushort> ALLOWED_BUILDINGS =
             new List<ushort>(new ushort[] {2110, 2202, 2301, 2302, 2501, 2502, 2402});
 
         private DateTime time;
@@ -33,8 +33,6 @@ namespace Game.Module {
             }
         }
 
-        public AI() {}
-
         #region ISchedule Members
 
         public DateTime Time {
@@ -50,11 +48,15 @@ namespace Game.Module {
                 return;
             }
 
-            int cnt = (int) (playerList.Count*0.10);
+            //we want there to be relatively 
+            int cnt = (int) (playerList.Count*0.25);
+
+            DateTime now = DateTime.Now;
+            int successCount = 0;
 
             for (int z = 0; z < cnt; ++z) {
                 Intelligence intelligence = playerList[rand.Next(0, playerList.Count - 1)];
-
+                
                 using (new MultiObjectLock(intelligence.player)) {
                     if (intelligence.savingUp > 0) {
                         intelligence.savingUp--;
@@ -101,14 +103,21 @@ namespace Game.Module {
                                     break;
                             }
 
+                            if (ret) successCount++;
+
+                            break;
+
                             if (count > 20)
                                 Global.Logger.Warn("NPC loop count at " + count);
                         } while (!ret);
                     }
-                }
+                }                
             }
 
-            time = DateTime.Now.AddSeconds(8);
+            int timeTaken = (int)DateTime.Now.Subtract(now).TotalMilliseconds;
+            Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms", timeTaken, successCount, (double)timeTaken / successCount));
+
+            time = DateTime.Now.AddSeconds(30 * Config.seconds_per_unit);
             Global.Scheduler.put(this);
         }
 
@@ -156,8 +165,7 @@ namespace Game.Module {
 
                         UnitTrainAction action = new UnitTrainAction(city.CityId, structure.ObjectId, unitType, count);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.OK) {
-                            Global.Logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})",
-                                                             city.Name, count, unitType, structure.X, structure.Y));
+                            //Global.Logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})", city.Name, count, unitType, structure.X, structure.Y));
                             return true;
                         }
                     }
@@ -191,8 +199,7 @@ namespace Game.Module {
 
                         StructureBuildAction action = new StructureBuildAction(city.CityId, buildingType, x, y);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.OK) {
-                            Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType,
-                                                             structure.Stats.Base.Lvl, x, y));
+                            //Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
                             return true;
                         }
                     }
@@ -221,8 +228,7 @@ namespace Game.Module {
             if (
                 city.Worker.DoActive(StructureFactory.getActionWorkerType(structure), structure, action,
                                      structure.Technologies) == Error.OK) {
-                Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type,
-                                                 structure.Stats.Base.Lvl, x, y));
+                //Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Stats.Base.Lvl, x, y));
                 return true;
             } else
                 return false;
@@ -237,8 +243,12 @@ namespace Game.Module {
 
             Global.Logger.Info("Loading AI...");
 
-            for (uint i = 1; i <= 200; ++i) {
-                uint idx = 500 + i;
+            for (uint i = 1; i <= Config.ai_count; ++i) {
+                
+                if (i%100 == 0)
+                    Global.Logger.Info(String.Format("Creating NPC {0}/{1}...", i, Config.ai_count));
+
+                uint idx = 500000 + i;
 
                 Player npc = new Player(idx, "NPC " + i);
                 Intelligence intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()),

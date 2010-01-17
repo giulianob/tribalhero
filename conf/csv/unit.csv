@@ -1,16 +1,16 @@
 Name,Type,Lvl,Weapon,Armor,Class,SpriteClass,Hp,Atk,Matk,Def,Vsn,Stl,Rng,Spd,Crop,Gold,Iron,Wood,Labor,Time,UpgrdCrop,UpgrdGold,UpgrdIron,UpgrdWood,UpgrdLabor,UpgrdTime,GrpSize,Upkeep,EPU
 // Short range ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Swordsman A(normal),101,1,Sword,Leather,UNIT,INFANTRY_UNIT,50,50,0,40,0,5,2,6,1,0,0,1,0,1900,1,1,0,1,0,400,10,1,140
-Swordsman B(Tank),104,1,Sword,Metal,UNIT,INFANTRY_UNIT,90,20,0,35,0,3,2,5,1,0,0,1,0,2350,1,1,0,1,0,400,10,1,145
-Hoplite,102,1,Pike,Leather,UNIT,BAZOOKA_UNIT,75,85,0,25,0,5,5,7,1,0,0,1,0,2600,1,1,0,1,0,400,10,1,185
+Swordsman,101,1,Sword,Leather,UNIT,INFANTRY_UNIT,50,50,0,40,0,5,2,6,1,0,0,1,0,1900,1,1,0,1,0,400,10,1,140
+Heavy Swordsman,104,1,Sword,Metal,UNIT,INFANTRY_UNIT,90,20,0,35,0,3,2,5,1,0,0,1,0,2350,1,1,0,1,0,400,10,1,145
+Pikeman,102,1,Pike,Leather,UNIT,BAZOOKA_UNIT,75,85,0,25,0,5,5,7,1,0,0,1,0,2600,1,1,0,1,0,400,10,1,185
 Archer,103,1,Bow,Leather,UNIT,NINJA_UNIT,40,40,0,65,0,8,15,5,1,1,0,1,0,2100,1,1,0,1,0,1200,10,1,145
 Cavalry,201,1,Pike,Leather,UNIT,HUMMER_UNIT,180,140,0,20,0,2,5,18,1,0,0,1,0,6800,1,1,0,1,0,4000,4,2,170
 Heavy Cavalry,202,1,Sword,Metal,UNIT,TANK_UNIT,450,100,0,105,0,0,2,10,1,1,0,1,0,14850,1,1,0,1,0,6000,2,3,218.3333333
 Helepolis,302,1,FireBall,Wooden,UNIT,ARTILLERY_UNIT,800,250,0,50,0,10,10,2,1,1,0,1,0,45000,1,1,0,1,0,12000,4,5,220
 Catapult,301,1,Bow,Wooden,UNIT,ARTILLERY_UNIT,600,120,0,120,0,5,12,2,1,1,0,1,0,45000,1,1,0,1,0,12000,5,4,210
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Swordsman A(normal),101,2,Sword,Leather,UNIT,INFANTRY_UNIT,50,50,0,40,0,5,2,6,1,0,0,1,0,1900,1,1,0,1,0,400,10,1,140
-Swordsman B(Tank),104,2,Sword,Metal,UNIT,INFANTRY_UNIT,90,20,0,35,0,3,2,5,1,0,0,1,0,2350,1,1,0,1,0,400,10,1,145
+Swordsman,101,2,Sword,Leather,UNIT,INFANTRY_UNIT,50,50,0,40,0,5,2,6,1,0,0,1,0,1900,1,1,0,1,0,400,10,1,140
+Heavy Swordsman,104,2,Sword,Metal,UNIT,INFANTRY_UNIT,90,20,0,35,0,3,2,5,1,0,0,1,0,2350,1,1,0,1,0,400,10,1,145
 Hoplite,102,2,Pike,Leather,UNIT,BAZOOKA_UNIT,75,85,0,25,0,5,5,7,1,0,0,1,0,2600,1,1,0,1,0,400,10,1,185
 Archer,103,2,Bow,Leather,UNIT,NINJA_UNIT,40,40,0,65,0,8,15,5,1,1,0,1,0,2100,1,1,0,1,0,1200,10,1,145
 Cavalry,201,2,Pike,Leather,UNIT,HUMMER_UNIT,180,140,0,20,0,2,5,18,1,0,0,1,0,6800,1,1,0,1,0,4000,4,2,170

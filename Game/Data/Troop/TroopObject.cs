@@ -3,6 +3,7 @@
 using System;
 using System.Data;
 using Game.Data.Stats;
+using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
 using Game.Util;

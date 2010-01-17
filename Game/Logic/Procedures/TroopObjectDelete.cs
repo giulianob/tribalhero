@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Fighting;
 
 #endregion
@@ -14,7 +15,7 @@ namespace Game.Logic.Procedures {
 
         public static bool TroopObjectDelete(TroopObject troop, bool addBackToNormal) {
             if (addBackToNormal) {
-                addToNormal(troop.Stub, troop.City.DefaultTroop);
+                AddToNormal(troop.Stub, troop.City.DefaultTroop);
 
                 troop.City.BeginUpdate();
                 troop.City.Resource.Add(troop.Stats.Loot);
@@ -28,17 +29,13 @@ namespace Game.Logic.Procedures {
             return true;
         }
 
-        private static bool addToNormal(TroopStub source, TroopStub target) {
+        private static void AddToNormal(TroopStub source, TroopStub target) {
             target.BeginUpdate();
-            foreach (
-                KeyValuePair<FormationType, Formation> kvp in
-                    (IEnumerable<KeyValuePair<FormationType, Formation>>) source) {
-                foreach (KeyValuePair<ushort, ushort> unit in kvp.Value)
-                    target.addUnit(FormationType.Normal, unit.Key, unit.Value);
+            foreach (Formation formation in source) {
+                foreach (KeyValuePair<ushort, ushort> unit in formation)
+                    target.AddUnit(FormationType.NORMAL, unit.Key, unit.Value);
             }
             target.EndUpdate();
-
-            return true;
         }
     }
 }

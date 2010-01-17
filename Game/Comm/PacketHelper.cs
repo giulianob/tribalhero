@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Troop;
 using Game.Fighting;
 using Game.Logic;
 using Game.Util;
@@ -223,12 +224,10 @@ namespace Game.Comm {
 
             //Actual formation and unit counts
             packet.addByte(stub.FormationCount);
-            foreach (
-                KeyValuePair<FormationType, Formation> formation in
-                    stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                packet.addByte((byte) formation.Key);
-                packet.addByte((byte) formation.Value.Count);
-                foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
+            foreach (Formation formation in stub) {
+                packet.addByte((byte) formation.Type);
+                packet.addByte((byte) formation.Count);
+                foreach (KeyValuePair<ushort, ushort> kvp in formation) {
                     packet.addUInt16(kvp.Key);
                     packet.addUInt16(kvp.Value);
                 }
@@ -243,7 +242,7 @@ namespace Game.Comm {
                 packet.addUInt32(obj.Id);
                 packet.addByte((byte) obj.ClassType);
                 if (obj.ClassType == BattleClass.UNIT)
-                    packet.addByte((obj as ICombatUnit).TroopStub.TroopId);
+                    packet.addByte(((ICombatUnit) obj).TroopStub.TroopId);
                 else
                     packet.addByte(1);
                 packet.addUInt16(obj.Type);

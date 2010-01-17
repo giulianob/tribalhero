@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Battle;
 using Game.Comm;
+using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
 using Game.Logic;
@@ -136,9 +137,9 @@ namespace Game.Data {
 
             TroopStub defaultTroop = new TroopStub();
             defaultTroop.BeginUpdate();
-            defaultTroop.addFormation(FormationType.Normal);
-            defaultTroop.addFormation(FormationType.Garrison);
-            defaultTroop.addFormation(FormationType.InBattle);
+            defaultTroop.AddFormation(FormationType.NORMAL);
+            defaultTroop.AddFormation(FormationType.GARRISON);
+            defaultTroop.AddFormation(FormationType.IN_BATTLE);
             troopManager.Add(defaultTroop);
             defaultTroop.EndUpdate();
 

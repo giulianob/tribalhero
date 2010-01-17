@@ -52,7 +52,7 @@ namespace Game.Data.Troop {
             get { return stats[type]; }
         }
 
-        public void dbLoaderAdd(BattleStats battleStats) {
+        public void DbLoaderAdd(BattleStats battleStats) {
             stats.Add(battleStats.Base.Type, battleStats);
         }
 
@@ -66,7 +66,7 @@ namespace Game.Data.Troop {
 
         public DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("city_id", stub.TroopManager.City.CityId, DbType.UInt32),
                                           new DbColumn("troop_stub_id", stub.TroopId, DbType.UInt32),
                                       };
@@ -83,7 +83,7 @@ namespace Game.Data.Troop {
 
         public DbColumn[] DbListColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte),
                                           new DbColumn("max_hp", DbType.UInt16), new DbColumn("attack", DbType.Byte),
                                           new DbColumn("defense", DbType.Byte), new DbColumn("range", DbType.Byte),
@@ -92,19 +92,14 @@ namespace Game.Data.Troop {
             }
         }
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
             Dictionary<ushort, BattleStats>.Enumerator itr = stats.GetEnumerator();
             while (itr.MoveNext()) {
                 BattleStats battleStats = itr.Current.Value;
                 yield return
-                    new DbColumn[] {
+                    new[] {
                                        new DbColumn("type", battleStats.Base.Type, DbType.UInt16),
                                        new DbColumn("level", battleStats.Base.Lvl, DbType.Byte),
                                        new DbColumn("max_hp", battleStats.MaxHp, DbType.UInt16),

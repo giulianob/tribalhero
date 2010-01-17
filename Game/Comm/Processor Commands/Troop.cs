@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Troop;
 using Game.Fighting;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -47,12 +48,10 @@ namespace Game.Comm {
                     UnitTemplate template = new UnitTemplate(city);
 
                     reply.addByte(troop.Stub.FormationCount);
-                    foreach (
-                        KeyValuePair<FormationType, Formation> formation in
-                            troop.Stub as IEnumerable<KeyValuePair<FormationType, Formation>>) {
-                        reply.addByte((byte)formation.Key);
-                        reply.addByte((byte)formation.Value.Count);
-                        foreach (KeyValuePair<ushort, ushort> kvp in formation.Value) {
+                    foreach (Formation formation in troop.Stub) {
+                        reply.addByte((byte)formation.Type);
+                        reply.addByte((byte)formation.Count);
+                        foreach (KeyValuePair<ushort, ushort> kvp in formation) {
                             reply.addUInt16(kvp.Key);
                             reply.addUInt16(kvp.Value);
                             template[kvp.Key] = city.Template[kvp.Key];
@@ -108,8 +107,8 @@ namespace Game.Comm {
                     try {
                         formationType = (FormationType) packet.getByte();
 
-                        if ((f == 0 && formationType != FormationType.Normal) ||
-                            (f == 1 && formationType != FormationType.Garrison)) {
+                        if ((f == 0 && formationType != FormationType.NORMAL) ||
+                            (f == 1 && formationType != FormationType.GARRISON)) {
                             // a bit dirty
                             reply_error(session, packet, Error.UNEXPECTED);
                             return;
@@ -122,7 +121,7 @@ namespace Game.Comm {
                         return;
                     }
 
-                    stub.addFormation(formationType);
+                    stub.AddFormation(formationType);
 
                     for (int u = 0; u < unitCount; ++u) {
                         ushort type;
@@ -137,7 +136,7 @@ namespace Game.Comm {
                             return;
                         }
 
-                        stub.addUnit(formationType, type, count);
+                        stub.AddUnit(formationType, type, count);
                     }
                 }
                 stub.TroopId = 1;
@@ -147,8 +146,8 @@ namespace Game.Comm {
                 }
 
                 city.DefaultTroop.BeginUpdate();
-                city.DefaultTroop.removeAllUnits();
-                city.DefaultTroop.add(stub);
+                city.DefaultTroop.RemoveAllUnits();
+                city.DefaultTroop.Add(stub);
                 city.DefaultTroop.EndUpdate();
 
                 reply_success(session, packet);
@@ -298,7 +297,7 @@ namespace Game.Comm {
                         return;
                     }
 
-                    stub.addFormation(formationType);
+                    stub.AddFormation(formationType);
 
                     for (int u = 0; u < unitCount; ++u) {
                         ushort type;
@@ -313,7 +312,7 @@ namespace Game.Comm {
                             return;
                         }
 
-                        stub.addUnit(formationType, type, count);
+                        stub.AddUnit(formationType, type, count);
                     }
                 }
 
@@ -376,7 +375,7 @@ namespace Game.Comm {
                         return;
                     }
 
-                    stub.addFormation(formationType);
+                    stub.AddFormation(formationType);
 
                     for (int u = 0; u < unitCount; ++u) {
                         ushort type;
@@ -391,7 +390,7 @@ namespace Game.Comm {
                             return;
                         }
 
-                        stub.addUnit(formationType, type, count);
+                        stub.AddUnit(formationType, type, count);
                     }
                 }
 

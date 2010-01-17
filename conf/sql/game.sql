@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 05, 2010 at 08:03 PM
+-- Generation Time: Jan 17, 2010 at 02:04 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -54,7 +54,7 @@ CREATE TABLE `battles` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `city_id` (`city_id`,`created`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -114,7 +114,7 @@ CREATE TABLE `battle_report_objects` (
   `formation_type` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -139,7 +139,7 @@ CREATE TABLE `battle_report_troops` (
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`),
   KEY `state` (`state`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -172,6 +172,7 @@ CREATE TABLE `cities` (
   `id` int(10) unsigned NOT NULL,
   `player_id` int(10) unsigned NOT NULL,
   `name` varchar(32) NOT NULL,
+  `radius` tinyint(3) unsigned NOT NULL,
   `gold` int(11) NOT NULL,
   `wood` int(11) NOT NULL,
   `iron` int(11) NOT NULL,
@@ -239,6 +240,7 @@ CREATE TABLE `combat_units` (
   `level` tinyint(3) unsigned NOT NULL,
   `type` smallint(5) unsigned NOT NULL,
   `count` smallint(5) unsigned NOT NULL,
+  `left_over_hp` smallint(5) unsigned NOT NULL,
   `troop_stub_city_id` int(10) unsigned NOT NULL,
   `troop_stub_id` tinyint(3) unsigned NOT NULL,
   `is_local` tinyint(1) NOT NULL,
@@ -356,7 +358,7 @@ CREATE TABLE `players` (
   KEY `login_key` (`login_key`),
   KEY `session_id` (`session_id`),
   KEY `facebook_id` (`facebook_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

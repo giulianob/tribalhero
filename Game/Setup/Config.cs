@@ -14,11 +14,11 @@ namespace Game.Setup {
 
         public static readonly string flash_domain = "*";
 
-        public static readonly string csv_folder = "Game/Setup/CSV/Custom/";
-        public static readonly string csv_compiled_folder = "Game/Setup/CSV/";
-        public static readonly string settings_folder = "";
-        public static readonly string maps_folder = "";
-        public static readonly string data_folder = "Game/Setup/CSV/";
+        public static readonly string csv_folder = "conf/csv/";
+        public static readonly string csv_compiled_folder = "conf/csv/compiled";
+        public static readonly string settings_folder = "conf/";
+        public static readonly string maps_folder = "conf/maps/";
+        public static readonly string data_folder = "conf/data/";
 
         public static readonly uint map_width = 3808;
         public static readonly uint map_height = 6944;
@@ -55,14 +55,30 @@ namespace Game.Setup {
         public static readonly string database_salt = "";
 
         public static readonly bool ai_enabled;
+        public static readonly int ai_count = 100;
 
         public static Random Random = new Random();
 
         static Config() {
             string key = string.Empty;
-
+            
             try {
-                using (StreamReader file = new StreamReader(File.Open("settings.ini", FileMode.Open))) {
+                string settingsFile = "settings.ini";
+
+                // Set the settings INI file location if specified
+                string[] args = Environment.GetCommandLineArgs();
+                foreach (string arg in args) {
+                    string[] parts = arg.Split('=');
+                    if (parts.Length != 2) continue;
+
+                    switch (parts[0]) {
+                        case "-settings":
+                            settingsFile = parts[1];
+                            break;
+                    }
+                }
+
+                using (StreamReader file = new StreamReader(File.Open(settingsFile, FileMode.Open))) {
                     string line;
                     while ((line = file.ReadLine()) != null) {
                         line = line.Trim();

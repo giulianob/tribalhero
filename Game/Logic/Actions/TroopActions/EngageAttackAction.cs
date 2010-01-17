@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
@@ -68,7 +69,7 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             List<TroopStub> list = new List<TroopStub> {stub};
-            originalHp = remainingHp = stub.TotalHP;
+            originalHp = remainingHp = stub.TotalHp;
 
             if (targetCity.Battle != null) {
                 targetCity.Battle.ActionAttacked += Battle_ActionAttacked;

@@ -42,7 +42,12 @@ package src.UI.Dialog {
 			this.troop = troop;
 
 			city.troops.addEventListener(BinaryListEvent.CHANGED, onUpdateTroop);
+			city.notifications.addEventListener(BinaryListEvent.CHANGED, onNotificationsChanged);
 
+			draw();
+		}
+		
+		private function onNotificationsChanged(e: BinaryListEvent) : void {
 			draw();
 		}
 
@@ -117,6 +122,7 @@ package src.UI.Dialog {
 
 		private function dispose() : void {
 			city.troops.removeEventListener(BinaryListEvent.CHANGED, onUpdateTroop);
+			city.notifications.removeEventListener(BinaryListEvent.CHANGED, onNotificationsChanged);
 		}
 
 		private function onReceiveCityUsername(username: Username, custom: *) : void {

@@ -135,13 +135,15 @@
 		public function onCityRemoveTroop(packet: Packet):void
 		{
 			var cityId: int = packet.readUInt();
+			
+			var troopCityId: int = packet.readUInt();
 			var troopId: int = packet.readUByte();
 
 			var city: City = map.cities.get(cityId);
 			if (city == null)
 			return;
 
-			city.troops.remove([cityId, troopId]);
+			city.troops.remove([troopCityId, troopId]);
 		}
 
 		public function getTroopInfo(obj: TroopObject):void

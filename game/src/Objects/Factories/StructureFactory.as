@@ -37,7 +37,7 @@
 			for each (var structNode: XML in data.Structures.*)
 			{
 				var strctObj: StructurePrototype = new StructurePrototype();
-				strctObj.nlsname = structNode.@name.toUpperCase();
+				strctObj.name = structNode.@name.toUpperCase();
 				strctObj.type = structNode.@type;
 				strctObj.level = structNode.@level;
 				strctObj.baseClass = structNode.@baseclass;

@@ -12,7 +12,7 @@ package src.Objects.Prototypes {
 
 	public class StructurePrototype {
 
-		public var nlsname: String;
+		public var name: String;
 		public var type: int;
 		public var level: int;
 		public var baseClass: String;
@@ -57,24 +57,29 @@ package src.Objects.Prototypes {
 
 		public function getName(): String
 		{
-			var str: String = Locale.loadString(spriteClass);
+			var str: String = Locale.loadString(name + "_STRUCTURE_NAME");
 			if (str && str != "")
 			return str;
 
-			return "[" + nlsname + "]";
+			return "[" + name + "]";
 		}
 
+		public function getGeneralDescription(): String 
+		{
+			var str: String = Locale.loadString(name + "_STRUCTURE_DESCRIPTION");
+			if (str && str != "")
+				return str;
+			else
+				return "";
+		}
+		
 		public function getDescription(): String
 		{
-			var str: String = Locale.loadString(spriteClass + "_LVL_" + level);
+			var str: String = Locale.loadString(name + "_STRUCTURE_LVL_" + level);
 			if (str && str != "")
-			return str;
-
-			str = Locale.loadString(spriteClass + "_LVL_1");
-			if (str && str != "")
-			return str;
-
-			return "";
+				return str;
+			else
+				return "";
 		}
 
 		public static function sortOnTypeAndLevel(a:StructurePrototype, b:StructurePrototype):Number {

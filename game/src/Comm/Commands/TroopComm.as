@@ -135,7 +135,7 @@
 		public function onCityRemoveTroop(packet: Packet):void
 		{
 			var cityId: int = packet.readUInt();
-			
+
 			var troopCityId: int = packet.readUInt();
 			var troopId: int = packet.readUByte();
 

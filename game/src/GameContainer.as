@@ -1,5 +1,4 @@
 ﻿package src {
-	import fl.motion.ITween;
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
@@ -64,7 +63,7 @@
 			lstCities.setModel(new VectorListModel());
 			lstCities.addActionListener(onChangeCitySelection);
 			lstCities.setSize(new IntDimension(128, 22));
-			lstCities.setLocation(new IntPoint(6, 10));
+			lstCities.setLocation(new IntPoint(25, 10));
 			addChild(lstCities);
 
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
@@ -78,6 +77,9 @@
 
 			new SimpleTooltip(btnGoToCoords, "Go to...");
 			btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
+
+			new SimpleTooltip(btnGoToCity, "Go to city");
+			btnGoToCity.addEventListener(MouseEvent.CLICK, onGoToCity);
 
 			new SimpleTooltip(btnMessages, "View battle reports");
 			btnMessages.addEventListener(MouseEvent.CLICK, onViewMessages);
@@ -125,6 +127,13 @@
 		{
 			var battleReportDialog: BattleReportList = new BattleReportList();
 			battleReportDialog.show();
+		}
+
+		public function onGoToCity(e: Event) : void {
+			if (selectedCity == null) return;
+
+			var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
+			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
 
 		public function onGoToCoords(e: Event):void {
@@ -224,12 +233,12 @@
 			if (sidebar != null)
 			sidebar.show(sidebarHolder);
 		}
-		
+
 		public function closeAllFrames() : void {
 			var framesCopy: Array = frames.concat();
-			
-			for (var i: int = framesCopy.length - 1; i >= 0; --i) 
-				(framesCopy[i] as JFrame).dispose();
+
+			for (var i: int = framesCopy.length - 1; i >= 0; --i)
+			(framesCopy[i] as JFrame).dispose();
 		}
 
 		public function showFrame(frame: JFrame):void {

@@ -34,6 +34,7 @@ package src.UI.Tooltips {
 		private var lblTitle:JLabel;
 		private var lblTime:JLabel;
 		private var lblDescription:JLabel;
+		private var lblLvlDescription:JLabel;
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
 		private var pnlFooter:JPanel;
@@ -68,7 +69,9 @@ package src.UI.Tooltips {
 			
 			lblTime.setText(Util.formatTime(Formula.buildTime(nextStructPrototype.buildTime, null)));			
 			
-			lblDescription.setText(nextStructPrototype.getDescription());						
+			lblDescription.setText(nextStructPrototype.getGeneralDescription());						
+			
+			lblLvlDescription.setText(nextStructPrototype.getDescription());		
 			
 			lblActionCount.setText(count + "/" + max);			
 					
@@ -124,6 +127,10 @@ package src.UI.Tooltips {
 			lblDescription.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 			
+			lblLvlDescription = new JLabel();
+			lblLvlDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");
+			
 			pnlRequired = new JPanel();
 			pnlRequired.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));
 			
@@ -150,6 +157,7 @@ package src.UI.Tooltips {
 			//component layoution
 			ui.append(pnlHeader);
 			ui.append(lblDescription);
+			ui.append(lblLvlDescription);
 			ui.append(pnlRequired);
 			ui.append(pnlFooter);
 			

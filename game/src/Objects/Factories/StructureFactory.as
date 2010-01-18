@@ -141,10 +141,10 @@
 
 		public static function getInstance(type: int, level: int): Object
 		{
-			var obj: Object = getSprite(type, level);
+			var img: DisplayObject = getSprite(type, level);
 
 			var structureObj: StructureObject = new StructureObject();
-			structureObj.addChild(obj as DisplayObject);
+			structureObj.addChild(img);
 
 			return structureObj;
 		}

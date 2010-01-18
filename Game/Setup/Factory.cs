@@ -58,7 +58,7 @@ namespace Game.Setup {
                                    Config.csv_folder + "technology_effects.csv");
 
             BuildFiles(Config.csv_compiled_folder + "unit.csv", Config.csv_folder, "*unit.csv");
-            UnitFactory.init(Config.csv_compiled_folder + "unit.csv");
+            UnitFactory.Init(Config.csv_compiled_folder + "unit.csv");
 
             File.Copy(Config.csv_folder + "object_type.csv", Config.csv_compiled_folder + "object_type.csv", true);
             ObjectTypeFactory.init(Config.csv_compiled_folder + "object_type.csv");

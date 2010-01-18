@@ -36,7 +36,7 @@ namespace Game.Fighting {
                 BaseUnitStats ret;
                 if (dict.TryGetValue(type, out ret))
                     return ret;
-                return UnitFactory.getUnitStats(type, 1);
+                return UnitFactory.GetUnitStats(type, 1);
             }
             set {
                 dict[type] = value;

@@ -16,9 +16,9 @@ namespace Game.Logic {
 
         internal static Resource UnitCost(City city, ushort type, byte lvl) {
             if (city.Battle == null)
-                return UnitFactory.getCost(type, lvl);
+                return UnitFactory.GetCost(type, lvl);
             else
-                return UnitFactory.getCost(type, lvl)*1.5;
+                return UnitFactory.GetCost(type, lvl)*1.5;
         }
 
         internal static ushort RepairRate(Structure structure) {

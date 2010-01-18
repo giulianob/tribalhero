@@ -53,7 +53,7 @@ namespace Game.Logic.Actions {
             }
 
             BaseUnitStats unitStats = city.Template[UnitType];
-            Resource cost = UnitFactory.getUpgradeCost(UnitType, unitStats.Lvl + 1);
+            Resource cost = UnitFactory.GetUpgradeCost(UnitType, unitStats.Lvl + 1);
 
             if (cost == null)
                 return Error.OBJECT_NOT_FOUND;
@@ -64,7 +64,7 @@ namespace Game.Logic.Actions {
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(UnitFactory.getUpgradeTime(UnitType, (byte) (unitStats.Lvl + 1)), structure.Technologies));
+            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(UnitFactory.GetUpgradeTime(UnitType, (byte) (unitStats.Lvl + 1)), structure.Technologies));
             beginTime = DateTime.Now;
 
             return Error.OK;
@@ -100,7 +100,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                structure.City.Template[UnitType] = UnitFactory.getUnitStats(UnitType, (byte) (structure.City.Template[UnitType].Lvl + 1));
+                structure.City.Template[UnitType] = UnitFactory.GetUnitStats(UnitType, (byte) (structure.City.Template[UnitType].Lvl + 1));
 
                 StateChange(ActionState.COMPLETED);
             }

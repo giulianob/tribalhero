@@ -124,7 +124,7 @@ namespace Game.Database {
                             using (DbDataReader listReader = dbManager.SelectList(city.Template)) {
                                 while (listReader.Read()) {
                                     city.Template.dbLoaderAdd((ushort) listReader["type"],
-                                                              UnitFactory.getUnitStats((ushort) listReader["type"],
+                                                              UnitFactory.GetUnitStats((ushort) listReader["type"],
                                                                                        (byte) listReader["level"]));
                                 }
                             }
@@ -276,7 +276,7 @@ namespace Game.Database {
                                     //First we load the BaseBattleStats and pass it into the BattleStats
                                     //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
                                     BattleStats battleStats =
-                                        new BattleStats(UnitFactory.getBattleStats((ushort) listReader["type"],
+                                        new BattleStats(UnitFactory.GetBattleStats((ushort) listReader["type"],
                                                                                    (byte) listReader["level"]));
                                     battleStats.MaxHp = (ushort) listReader["max_hp"];
                                     battleStats.Atk = (byte) listReader["attack"];

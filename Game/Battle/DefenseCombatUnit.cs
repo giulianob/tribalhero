@@ -41,7 +41,7 @@ namespace Game.Battle {
         }
 
         public override BaseBattleStats BaseStats {
-            get { return UnitFactory.getBattleStats(type, lvl); }
+            get { return UnitFactory.GetBattleStats(type, lvl); }
         }
 
         public override BattleStats Stats {

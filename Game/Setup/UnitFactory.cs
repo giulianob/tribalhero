@@ -14,7 +14,7 @@ namespace Game.Setup {
     public class UnitFactory {
         public static Dictionary<int, BaseUnitStats> dict;
 
-        public static void init(string filename) {
+        public static void Init(string filename) {
             if (dict != null)
                 return;
             dict = new Dictionary<int, BaseUnitStats>();
@@ -37,7 +37,7 @@ namespace Game.Setup {
                                                      int.Parse(toks[col["Iron"]]), int.Parse(toks[col["Wood"]]),
                                                      int.Parse(toks[col["Labor"]]));
 
-                    Resource upgrade_resource = new Resource(int.Parse(toks[col["UpgrdCrop"]]),
+                    Resource upgradeResource = new Resource(int.Parse(toks[col["UpgrdCrop"]]),
                                                              int.Parse(toks[col["UpgrdGold"]]),
                                                              int.Parse(toks[col["UpgrdIron"]]),
                                                              int.Parse(toks[col["UpgrdWood"]]),
@@ -60,7 +60,7 @@ namespace Game.Setup {
                                                                                        ushort.Parse(toks[col["Hp"]])));
 
                     BaseUnitStats basestats = new BaseUnitStats(toks[col["Name"]], ushort.Parse(toks[col["Type"]]),
-                                                                byte.Parse(toks[col["Lvl"]]), resource, upgrade_resource,
+                                                                byte.Parse(toks[col["Lvl"]]), resource, upgradeResource,
                                                                 stats, int.Parse(toks[col["Time"]]),
                                                                 int.Parse(toks[col["UpgrdTime"]]),
                                                                 byte.Parse(toks[col["Upkeep"]]));
@@ -70,7 +70,7 @@ namespace Game.Setup {
             }
         }
 
-        public static Resource getCost(int type, int lvl) {
+        public static Resource GetCost(int type, int lvl) {
             if (dict == null)
                 return null;
             BaseUnitStats tmp;
@@ -79,7 +79,7 @@ namespace Game.Setup {
             return null;
         }
 
-        public static Resource getUpgradeCost(int type, int lvl) {
+        public static Resource GetUpgradeCost(int type, int lvl) {
             if (dict == null)
                 return null;
             BaseUnitStats tmp;
@@ -88,7 +88,7 @@ namespace Game.Setup {
             return null;
         }
 
-        public static BaseUnitStats getUnitStats(ushort type, byte lvl) {
+        public static BaseUnitStats GetUnitStats(ushort type, byte lvl) {
             if (dict == null)
                 return null;
             BaseUnitStats tmp;
@@ -97,7 +97,7 @@ namespace Game.Setup {
             return null;
         }
 
-        internal static BaseBattleStats getBattleStats(ushort type, byte lvl) {
+        internal static BaseBattleStats GetBattleStats(ushort type, byte lvl) {
             if (dict == null)
                 return null;
             BaseUnitStats tmp;
@@ -106,7 +106,7 @@ namespace Game.Setup {
             return null;
         }
 
-        internal static int getTime(ushort type, byte lvl) {
+        internal static int GetTime(ushort type, byte lvl) {
             if (dict == null)
                 return -1;
             BaseUnitStats tmp;
@@ -115,7 +115,7 @@ namespace Game.Setup {
             return -1;
         }
 
-        internal static int getUpgradeTime(ushort type, byte lvl) {
+        internal static int GetUpgradeTime(ushort type, byte lvl) {
             if (dict == null)
                 return -1;
             BaseUnitStats tmp;
@@ -124,16 +124,14 @@ namespace Game.Setup {
             return -1;
         }
 
-        public static string getName(ushort type, byte lvl) {
+        public static string GetName(ushort type, byte lvl) {
             if (dict == null)
                 return null;
             BaseUnitStats tmp;
-            if (dict.TryGetValue(type*100 + lvl, out tmp))
-                return tmp.Name;
-            return null;
+            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.Name : null;
         }
 
-        public static Dictionary<int, BaseUnitStats> getList() {
+        public static Dictionary<int, BaseUnitStats> GetList() {
             return new Dictionary<int, BaseUnitStats>(dict);
         }
     }

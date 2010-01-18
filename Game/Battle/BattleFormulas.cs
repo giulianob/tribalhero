@@ -166,7 +166,7 @@ namespace Game.Battle {
             int hp = 0;
             int atk = 0;
 
-            BaseBattleStats stats = UnitFactory.getUnitStats(type, lvl).Battle;
+            BaseBattleStats stats = UnitFactory.GetUnitStats(type, lvl).Battle;
             BattleStats modifiedStats = new BattleStats(stats);
 
             foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {

@@ -529,8 +529,8 @@ namespace CSVToXML {
                         writer.WriteStartElement("Tech");
 
                         writer.WriteAttributeString("techtype", obj[0]);
-                        writer.WriteAttributeString("spriteclass", obj[1]);
-                        writer.WriteAttributeString("description", obj[2]);
+                        writer.WriteAttributeString("name", obj[1]);
+                        writer.WriteAttributeString("spriteclass", obj[2]);
                         writer.WriteAttributeString("level", obj[3]);
                         writer.WriteAttributeString("crop", obj[4]);
                         writer.WriteAttributeString("gold", obj[5]);

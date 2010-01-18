@@ -31,6 +31,7 @@ package src.UI.Tooltips {
 		private var lblTitle:JLabel;
 		private var lblLevel:JLabel;
 		private var lblDescription:JLabel;
+		private var lblLvlDescription:JLabel;
 		private var pnlHeader:JPanel;
 		private var statsBox:StructureStatBox;
 
@@ -54,7 +55,8 @@ package src.UI.Tooltips {
 			
 			lblTitle.setText("Upgrade " + structPrototype.getName());
 			lblLevel.setText("Level " + structPrototype.level.toString());
-			lblDescription.setText(structPrototype.getDescription());			
+			lblDescription.setText(structPrototype.getGeneralDescription());		
+			lblLvlDescription.setText(structPrototype.getDescription());
 		}
 
 		public function draw(count: int, max: int):void
@@ -131,6 +133,10 @@ package src.UI.Tooltips {
 			lblDescription = new JLabel();
 			lblDescription.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
+			
+			lblLvlDescription = new JLabel();
+			lblLvlDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");			
 
 			pnlNextLvl = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL));
 
@@ -174,6 +180,7 @@ package src.UI.Tooltips {
 			ui.append(lblTitle);
 			ui.append(lblLevel);
 			ui.append(lblDescription);
+			ui.append(lblLvlDescription);
 			ui.append(statsBox);
 
 			if (nextStructPrototype != null) {

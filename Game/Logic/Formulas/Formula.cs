@@ -55,8 +55,8 @@ namespace Game.Logic {
                 //limiting it to max of 15 because Formula.MoveTime will return negative if greater than 20
         }
 
-        internal static Resource GetMillResource(byte mill_lvl, TechnologyManager em) {
-            Resource res = new Resource(mill_lvl*5, mill_lvl*4, mill_lvl*2, mill_lvl*3, 0);
+        internal static Resource GetMillResource(byte millLvl, TechnologyManager em) {
+            Resource res = new Resource(millLvl*5, millLvl*4, millLvl*2, millLvl*3, 0);
             foreach (Effect effect in em.GetEffects(EffectCode.CountEffect, EffectInheritance.Self)) {
                 switch ((int) effect.value[0]) {
                     case 21051:
@@ -76,8 +76,8 @@ namespace Game.Logic {
             return res;
         }
 
-        internal static byte GetRadius(uint total_labor) {
-            return (byte) Math.Min(6, (int) (total_labor/100));
+        internal static byte GetRadius(uint totalLabor) {
+            return (byte) Math.Min(6, (int) (totalLabor/100));
         }
 
         internal static int GetAttackModeTolerance(int totalCount, AttackMode mode) {
@@ -109,14 +109,16 @@ namespace Game.Logic {
         }
 
         internal static double MarketTax(Structure structure) {
-            if (structure.Lvl == 1)
-                return 0.30;
-            else if (structure.Lvl == 2)
-                return 0.20;
-            else if (structure.Lvl == 3)
-                return 0.10;
-            else
-                return 0.05;
+            switch (structure.Lvl) {
+                case 1:
+                    return 0.30;
+                case 2:
+                    return 0.20;
+                case 3:
+                    return 0.10;
+                default:
+                    return 0.05;
+            }
         }
 
         internal static void ResourceCap(City city) {

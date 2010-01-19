@@ -30,7 +30,7 @@ namespace Game.Battle {
         public static StreamWriter troopLog;
         public static StreamWriter objectLog;
 
-        private BattleManager battle;
+        private readonly BattleManager battle;
 
         private bool reportStarted;
 
@@ -53,29 +53,22 @@ namespace Game.Battle {
             set { reportId = value; }
         }
 
-        private ReportedObjects reportedObjects;
+        public ReportedObjects ReportedObjects { get; private set; }
 
-        public ReportedObjects ReportedObjects {
-            get { return reportedObjects; }
-        }
-
-        private ReportedTroops reportedTroops;
-
-        public ReportedTroops ReportedTroops {
-            get { return reportedTroops; }
-        }
+        public ReportedTroops ReportedTroops { get; private set; }
 
         public BattleReport(BattleManager bm) {
-            reportedObjects = new ReportedObjects(bm);
-            reportedTroops = new ReportedTroops(bm);
+            ReportedObjects = new ReportedObjects(bm);
+            ReportedTroops = new ReportedTroops(bm);
             battle = bm;
         }
 
         public void WriteBeginReport() {
-            if (!reportStarted) {
-                SnapReport(out reportId, battle.BattleId);
-                reportStarted = true;
-            }
+            if (reportStarted)
+                return;
+
+            SnapReport(out reportId, battle.BattleId);
+            reportStarted = true;
         }
 
         public void CreateBattleReport() {
@@ -93,35 +86,34 @@ namespace Game.Battle {
             WriteBeginReport();
             if (co.ClassType == BattleClass.UNIT) {
                 ICombatUnit cu = co as ICombatUnit;
-                if (!reportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
+                if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
                     SnapTroop(reportId, state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker,
                               out combatTroopId, cu.Loot);
-                    reportedTroops[cu.TroopStub] = combatTroopId;
+                    ReportedTroops[cu.TroopStub] = combatTroopId;
                 } else if (state != ReportState.STAYING)
                     SnapTroopState(cu.TroopStub, state);
 
-                if (!reportedObjects.Contains(co)) {
+                if (!ReportedObjects.Contains(co)) {
                     SnapCombatObject(combatTroopId, co);
-                    reportedObjects.Add(co);
+                    ReportedObjects.Add(co);
                 }
             } else {
                 TroopStub stub = ((CombatStructure) co).Structure.City.DefaultTroop;
-                if (!reportedTroops.TryGetValue(stub, out combatTroopId)) {
+                if (!ReportedTroops.TryGetValue(stub, out combatTroopId)) {
                     SnapTroop(reportId, state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId,
                               new Resource());
-                    reportedTroops[stub] = combatTroopId;
+                    ReportedTroops[stub] = combatTroopId;
                 } else if (state != ReportState.STAYING)
                     SnapTroopState(stub, state);
 
-                if (!reportedObjects.Contains(co)) {
+                if (!ReportedObjects.Contains(co)) {
                     SnapCombatObject(combatTroopId, co);
-                    reportedObjects.Add(co);
+                    ReportedObjects.Add(co);
                 }
             }
         }
 
         public void WriteReportObjects(List<CombatObject> list, bool isAttacker, ReportState state) {
-            uint combatTroopId;
             List<TroopStub> updatedObj = new List<TroopStub>();
 
             WriteBeginReport();
@@ -129,57 +121,58 @@ namespace Game.Battle {
             reportFlag = true;
 
             foreach (CombatObject co in list) {
-                bool snapObj = reportedObjects.Contains(co);
+                bool snapObj = ReportedObjects.Contains(co);
 
+                uint combatTroopId;
                 if (co.ClassType == BattleClass.UNIT) {
                     ICombatUnit cu = co as ICombatUnit;
 
-                    if (!reportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
-                        SnapTroop(reportId, state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId,
-                                  isAttacker, out combatTroopId, cu.Loot);
-                        reportedTroops[cu.TroopStub] = combatTroopId;
-                    } else if ((state == ReportState.REINFORCED || state == ReportState.EXITING) &&
-                               !updatedObj.Contains(cu.TroopStub)) {
+                    if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
+                        SnapTroop(reportId, state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.Loot);
+                        ReportedTroops[cu.TroopStub] = combatTroopId;
+                    } else if ((state == ReportState.REINFORCED || state == ReportState.EXITING) && !updatedObj.Contains(cu.TroopStub)) {
                         //Exiting state should override anything else
                         SnapTroopState(cu.TroopStub, state);
                         updatedObj.Add(cu.TroopStub);
                     }
                 } else {
                     TroopStub stub = ((CombatStructure) co).Structure.City.DefaultTroop;
-                    if (!reportedTroops.TryGetValue(stub, out combatTroopId)) {
-                        SnapTroop(reportId, state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId,
-                                  new Resource());
-                        reportedTroops[stub] = combatTroopId;
+                    if (!ReportedTroops.TryGetValue(stub, out combatTroopId)) {
+                        SnapTroop(reportId, state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId, new Resource());
+                        ReportedTroops[stub] = combatTroopId;
                     } else if (state == ReportState.EXITING && !updatedObj.Contains(stub)) {
                         SnapTroopState(stub, state);
                         updatedObj.Add(stub);
                     }
                 }
 
-                if (!snapObj) {
-                    SnapCombatObject(combatTroopId, co);
-                    reportedObjects.Add(co);
-                }
+                if (snapObj)
+                    continue;
+
+                SnapCombatObject(combatTroopId, co);
+                ReportedObjects.Add(co);
             }
         }
 
         public void CompleteReport(ReportState state) {
-            if (reportStarted) {
-                reportFlag = true;
-                WriteReport(state);
-            }
+            if (!reportStarted)
+                return;
+            
+            reportFlag = true;
+            WriteReport(state);
         }
 
         public void WriteReport(ReportState state) {
-            if (reportStarted && reportFlag) {
-                WriteReportObjects(battle.Attacker, true, state);
-                WriteReportObjects(battle.Defender, false, state);
-                SnapEndReport(reportId, battle.BattleId, battle.Round, battle.Turn);
-                reportedObjects.Clear();
-                reportedTroops.Clear();
-                reportStarted = false;
-                reportFlag = false;
-            }
+            if (!reportStarted || !reportFlag)
+                return;
+
+            WriteReportObjects(battle.Attacker, true, state);
+            WriteReportObjects(battle.Defender, false, state);
+            SnapEndReport(reportId, battle.BattleId, battle.Round, battle.Turn);
+            ReportedObjects.Clear();
+            ReportedTroops.Clear();
+            reportStarted = false;
+            reportFlag = false;
         }
 
         public static void WriterInit() {
@@ -226,7 +219,7 @@ namespace Game.Battle {
         }
 
         internal void SnapTroopState(TroopStub stub, ReportState state) {
-            uint id = reportedTroops[stub];
+            uint id = ReportedTroops[stub];
             Global.dbManager.Query(string.Format("UPDATE {0} SET state = '{1}' WHERE id = '{2}' LIMIT 1",
                                                  BATTLE_REPORT_TROOPS_DB, (byte) state, id));
 

@@ -9,7 +9,7 @@ using Game.Database;
 
 namespace Game.Battle {
     public class ReportedTroops : Dictionary<TroopStub, uint>, IPersistableList {
-        private BattleManager battle;
+        private readonly BattleManager battle;
 
         public ReportedTroops(BattleManager battle) {
             this.battle = battle;
@@ -70,7 +70,7 @@ namespace Game.Battle {
     }
 
     public class ReportedObjects : List<CombatObject>, IPersistableList {
-        private BattleManager battle;
+        private readonly BattleManager battle;
 
         public ReportedObjects(BattleManager battle) {
             this.battle = battle;

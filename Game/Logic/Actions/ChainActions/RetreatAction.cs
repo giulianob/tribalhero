@@ -37,7 +37,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            stub.City.Worker.References.add(stub.TroopObject, this);
+            stub.City.Worker.References.Add(stub.TroopObject, this);
             stub.City.Worker.Notifications.add(stub.TroopObject, this);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X,
@@ -57,7 +57,7 @@ namespace Game.Logic.Actions {
                         throw new Exception();
 
                     if (stub.City.Battle == null) {
-                        stub.City.Worker.References.remove(stub.TroopObject, this);
+                        stub.City.Worker.References.Remove(stub.TroopObject, this);
                         stub.City.Worker.Notifications.remove(this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
                         StateChange(ActionState.COMPLETED);
@@ -78,7 +78,7 @@ namespace Game.Logic.Actions {
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();
 
-                    stub.City.Worker.References.remove(stub.TroopObject, this);
+                    stub.City.Worker.References.Remove(stub.TroopObject, this);
                     stub.City.Worker.Notifications.remove(this);
                     if (stub.TotalCount == 0)
                         Procedure.TroopObjectDelete(stub.TroopObject, false);

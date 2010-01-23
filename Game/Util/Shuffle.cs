@@ -21,7 +21,7 @@ namespace Game.Util {
             for (int k = listToShuffle.Count - 1; k > 1; --k) {
                 int randIndx = Config.Random.Next(k); //
                 T temp = listToShuffle[k];
-                listToShuffle[k] = listToShuffle[randIndx]; // move random num to end of list.
+                listToShuffle[k] = listToShuffle[randIndx]; // move Random num to end of list.
                 listToShuffle[randIndx] = temp;
             }
             return listToShuffle;

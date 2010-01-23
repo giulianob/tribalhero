@@ -20,12 +20,14 @@ namespace Game.Logic {
         public static Error HaveTechnology(GameObject obj, IEnumerable<Effect> effects, string[] parms) {
             int count = 0;
             foreach (Effect effect in effects) {
+                if (effect.id != EffectCode.HaveTechnology)
+                    continue;
+
                 if ((int) effect.value[0] == int.Parse(parms[0]) && (int) effect.value[1] >= int.Parse(parms[1]))
                     ++count;
             }
-            if (count >= int.Parse(parms[2]))
-                return Error.OK;
-            return Error.EFFECT_REQUIREMENT_NOT_MET;
+
+            return count >= int.Parse(parms[2]) ? Error.OK : Error.EFFECT_REQUIREMENT_NOT_MET;
         }
 
         public static Error HaveStructure(GameObject obj, IEnumerable<Effect> effects, string[] parms) {

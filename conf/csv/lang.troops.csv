@@ -1,0 +1,6 @@
+"Key","EN"
+"TROOP_STATE_IDLE","Idle"
+"TROOP_STATE_BATTLE","In battle"
+"TROOP_STATE_STATIONED","Stationed"
+"TROOP_STATE_BATTLE_STATIONED","In battle"
+"TROOP_STATE_MOVING","On the move"

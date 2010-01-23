@@ -11,28 +11,16 @@ using Game.Util;
 
 namespace Game.Logic {
     public class ReferenceStub : IPersistableObject {
-        private ushort referenceId;
+        public ushort ReferenceId { get; private set; }
 
-        public ushort ReferenceId {
-            get { return referenceId; }
-        }
+        public ICanDo WorkerObject { get; private set; }
 
-        private ICanDo workerObject;
-
-        public ICanDo WorkerObject {
-            get { return workerObject; }
-        }
-
-        private Action action;
-
-        public Action Action {
-            get { return action; }
-        }
+        public Action Action { get; private set; }
 
         public ReferenceStub(ushort id, ICanDo obj, Action action) {
-            referenceId = id;
-            workerObject = obj;
-            this.action = action;
+            ReferenceId = id;
+            WorkerObject = obj;
+            Action = action;
         }
 
         #region IPersistable Members
@@ -45,19 +33,19 @@ namespace Game.Logic {
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
-                                          new DbColumn("object_id", workerObject.WorkerId, DbType.UInt32),
-                                          new DbColumn("action_id", action.ActionId, DbType.UInt16),
-                                          new DbColumn("is_active", action is ActiveAction ? true : false, DbType.Boolean)
+                return new[] {
+                                          new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                                          new DbColumn("action_id", Action.ActionId, DbType.UInt16),
+                                          new DbColumn("is_active", Action is ActiveAction ? true : false, DbType.Boolean)
                                       };
             }
         }
 
         public DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
-                                          new DbColumn("id", referenceId, DbType.UInt16),
-                                          new DbColumn("city_id", workerObject.City.Id, DbType.UInt32)
+                return new[] {
+                                          new DbColumn("id", ReferenceId, DbType.UInt16),
+                                          new DbColumn("city_id", WorkerObject.City.Id, DbType.UInt32)
                                       };
             }
         }
@@ -66,12 +54,7 @@ namespace Game.Logic {
             get { return new DbDependency[] {}; }
         }
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
     }
@@ -86,32 +69,33 @@ namespace Game.Logic {
             this.actionWorker = actionWorker;
         }
 
-        public void dbLoaderAdd(ReferenceStub referenceObject) {
+        public void DbLoaderAdd(ReferenceStub referenceObject) {
             referenceIdGen.set(referenceObject.ReferenceId);
             reference.Add(referenceObject);
         }
 
-        public void add(GameObject referenceObject, PassiveAction action) {
-            PassiveAction working_stub = actionWorker.PassiveActions[action.ActionId];
-            if (working_stub == null)
+        public void Add(GameObject referenceObject, PassiveAction action) {
+            PassiveAction workingStub = actionWorker.PassiveActions[action.ActionId];
+            if (workingStub == null) {
+                throw new Exception("Action not found");
+            }
+
+            ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, workingStub);
+            reference.Add(newReference);
+            Global.dbManager.Save(newReference);
+        }    
+
+        public void Add(GameObject referenceObject, ActiveAction action) {
+            ActiveAction workingStub = actionWorker.ActiveActions[action.ActionId];
+            if (workingStub == null)
                 throw new Exception("Action not found");
 
-            ReferenceStub reference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, working_stub);
-            this.reference.Add(reference);
-            Global.dbManager.Save(reference);
+            ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, workingStub);
+            reference.Add(newReference);
+            Global.dbManager.Save(newReference);
         }
 
-        public void add(GameObject referenceObject, ActiveAction action) {
-            ActiveAction working_stub = actionWorker.ActiveActions[action.ActionId];
-            if (working_stub == null)
-                throw new Exception("Action not found");
-
-            ReferenceStub reference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, working_stub);
-            this.reference.Add(reference);
-            Global.dbManager.Save(reference);
-        }
-
-        public void remove(GameObject referenceObject, Action action) {
+        public void Remove(GameObject referenceObject, Action action) {
             reference.RemoveAll(delegate(ReferenceStub referenceStub) {
                                     bool ret = (referenceObject == referenceStub.WorkerObject &&
                                                 referenceStub.Action == action);
@@ -123,9 +107,9 @@ namespace Game.Logic {
                                 });
         }
 
-        public IEnumerable<ReferenceStub> getReferences(ICanDo worker) {
+        public IEnumerable<ReferenceStub> GetReferences(ICanDo worker) {
             return
-                reference.FindAll(delegate(ReferenceStub stub) { return stub.WorkerObject.WorkerId == worker.WorkerId; });
+                reference.FindAll(stub => stub.WorkerObject.WorkerId == worker.WorkerId);
         }
     }
 }

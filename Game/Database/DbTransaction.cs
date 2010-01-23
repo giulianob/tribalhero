@@ -1,7 +1,6 @@
 #region
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -16,12 +15,9 @@ namespace Game.Database {
         internal object transaction;
         protected IDbManager manager;
 
-        protected List<KeyValuePair<IPersistableObject, bool>> persistance =
-            new List<KeyValuePair<IPersistableObject, bool>>();
-
         private DbTransactionState state = DbTransactionState.IN_PROGRESS;
 
-        private int referenceCount = 0;
+        private int referenceCount;
 
         public int ReferenceCount {
             get { return referenceCount; }
@@ -30,10 +26,6 @@ namespace Game.Database {
                 if (value > 1)
                     throw new Exception("Only 1 transaction reference is allowed");
             }
-        }
-
-        internal void addToPersistance(IPersistableObject obj, bool state) {
-            persistance.Add(new KeyValuePair<IPersistableObject, bool>(obj, state));
         }
 
         internal DbTransaction(IDbManager manager, object transaction) {
@@ -56,21 +48,22 @@ namespace Game.Database {
         public void Dispose() {
             referenceCount--;
 
-            if (referenceCount == 0) {
-                switch (state) {
-                    case DbTransactionState.ROLLEDBACK:
-                        Rollback();
-                        break;
-                    case DbTransactionState.COMMITTED:
-                        manager.ClearThreadTransaction();
-                        throw new Exception("Transaction was already committed");
-                    default:
-                        Commit();
-                        break;
-                }
+            if (referenceCount != 0)
+                return;
 
-                manager.ClearThreadTransaction();
+            switch (state) {
+                case DbTransactionState.ROLLEDBACK:
+                    Rollback();
+                    break;
+                case DbTransactionState.COMMITTED:
+                    manager.ClearThreadTransaction();
+                    throw new Exception("Transaction was already committed");
+                default:
+                    Commit();
+                    break;
             }
+
+            manager.ClearThreadTransaction();
         }
 
         #endregion

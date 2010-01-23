@@ -81,7 +81,7 @@ namespace Game.Comm {
                     }
 
                     PacketHelper.AddToPacket(
-                        new List<ReferenceStub>(structure.City.Worker.References.getReferences(structure)), reply);
+                        new List<ReferenceStub>(structure.City.Worker.References.GetReferences(structure)), reply);
                 }
 
                 session.write(reply);
@@ -367,10 +367,8 @@ namespace Game.Comm {
                     return;
                 }
 
-                StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType,
-                                                                               structureLvl, false, false);
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, changeAction,
-                                                 obj.Technologies);
+                StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl);
+                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, changeAction, obj.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
                 else

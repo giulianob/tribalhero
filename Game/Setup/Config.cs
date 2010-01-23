@@ -57,9 +57,13 @@ namespace Game.Setup {
         public static readonly bool ai_enabled;
         public static readonly int ai_count = 100;
 
-        public static Random Random = new Random();
+        public static readonly bool actions_instant_time;
+
+        public static Random Random { get; private set; }
 
         static Config() {
+            Random = new Random();
+
             string key = string.Empty;
             
             try {

@@ -61,7 +61,7 @@ package src.Objects.Prototypes {
 			if (str && str != "")
 			return str;
 
-			return "[" + name + "]";
+			return "[" + name + "_STRUCTURE_NAME]";
 		}
 
 		public function getGeneralDescription(): String 
@@ -69,8 +69,8 @@ package src.Objects.Prototypes {
 			var str: String = Locale.loadString(name + "_STRUCTURE_DESCRIPTION");
 			if (str && str != "")
 				return str;
-			else
-				return "";
+			
+			return "[" + name + "_STRUCTURE_DESCRIPTION]";
 		}
 		
 		public function getDescription(): String
@@ -78,8 +78,8 @@ package src.Objects.Prototypes {
 			var str: String = Locale.loadString(name + "_STRUCTURE_LVL_" + level);
 			if (str && str != "")
 				return str;
-			else
-				return "";
+
+			return "[" + name + "_STRUCTURE_LVL_" + level + "]";
 		}
 
 		public static function sortOnTypeAndLevel(a:StructurePrototype, b:StructurePrototype):Number {

@@ -57,6 +57,10 @@ public class LaborMoveDialog extends GameJPanel{
 		
 		sldCount.setMaximum(structPrototype.maxlabor);
 		
+		if (structPrototype.maxlabor > 20) {
+			sldCount.setPaintTicks(false);
+		}
+		
 		sldCount.setValue(structure.labor);
 		
 		if (city.resources.labor.getValue() + structure.labor < structPrototype.maxlabor)
@@ -138,8 +142,8 @@ public class LaborMoveDialog extends GameJPanel{
 		
 		sldCount = new JSlider();
 		sldCount.setConstraints("South");
-		sldCount.setMinimum(0);
-		sldCount.setMajorTickSpacing(1);
+		sldCount.setMinimum(0);				
+		sldCount.setMajorTickSpacing(1);		
 		sldCount.setPaintTicks(true);
 		sldCount.setSnapToTicks(true);
 		

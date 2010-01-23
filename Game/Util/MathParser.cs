@@ -23,7 +23,7 @@ namespace Game.Util {
             // Add all valid operators.
             // new Operator( operator, arguments, precedence )
             // 
-            // To add a new operator to the parser three things need to be added:
+            // To Add a new operator to the parser three things need to be added:
             //
             // 1. A new line below specifying the operator symbol, the number of
             // arguments (in this parser max two arguments!) and the operator precedence.

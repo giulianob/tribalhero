@@ -57,7 +57,7 @@ namespace Game.Logic.Actions {
             stub.Template.LoadStats();
             stub.EndUpdate();
 
-            city.Worker.References.add(stub.TroopObject, this);
+            city.Worker.References.Add(stub.TroopObject, this);
             city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X,
@@ -129,7 +129,7 @@ namespace Game.Logic.Actions {
 
                         targetCity.Resource.Add(stub.TroopObject.Stats.Loot);
 
-                        city.Worker.References.remove(stub.TroopObject, this);
+                        city.Worker.References.Remove(stub.TroopObject, this);
 
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
 
@@ -152,7 +152,7 @@ namespace Game.Logic.Actions {
                         throw new Exception("Stub should still exist");                    
 
                     if (city.Battle == null) {
-                        city.Worker.References.remove(stub.TroopObject, this);
+                        city.Worker.References.Remove(stub.TroopObject, this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
                         StateChange(ActionState.COMPLETED);
                     } else {
@@ -172,7 +172,7 @@ namespace Game.Logic.Actions {
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");
 
-                    city.Worker.References.remove(stub.TroopObject, this);
+                    city.Worker.References.Remove(stub.TroopObject, this);
 
                     if (stub.TotalCount == 0)
                         Procedure.TroopObjectDelete(stub.TroopObject, false);

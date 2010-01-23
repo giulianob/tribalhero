@@ -12,20 +12,15 @@ namespace Game.Logic.Actions {
     class StructureChangeAction : ScheduledActiveAction {
         private readonly uint type;
         private readonly byte lvl;
-        private readonly bool ignoreTime;
-        private readonly bool ignoreCost;
         private readonly uint cityId;
         private readonly uint structureId;
         private Resource cost;
 
-        public StructureChangeAction(uint cityId, uint structureId, uint type, byte lvl, bool ignoreTime,
-                                     bool ignoreCost) {
+        public StructureChangeAction(uint cityId, uint structureId, uint type, byte lvl) {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
             this.lvl = lvl;
-            this.ignoreCost = ignoreCost;
-            this.ignoreTime = ignoreTime;
         }
 
         public StructureChangeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
@@ -35,8 +30,6 @@ namespace Game.Logic.Actions {
             structureId = uint.Parse(properties["structure_id"]);
             lvl = byte.Parse(properties["lvl"]);
             type = uint.Parse(properties["type"]);
-            ignoreTime = bool.Parse(properties["ignore_time"]);
-            ignoreCost = bool.Parse(properties["ignore_cost"]);
         }
 
         public override Error Validate(string[] parms) {
@@ -51,33 +44,19 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
 
-            if (!ignoreCost) {
-                cost = Formula.StructureCost(structure.City, type, lvl);
-                if (cost == null)
-                    return Error.OBJECT_NOT_FOUND;
+            cost = Formula.StructureCost(structure.City, type, lvl);
+            if (cost == null)
+                return Error.OBJECT_NOT_FOUND;
 
-                if (!structure.City.Resource.HasEnough(cost))
-                    return Error.RESOURCE_NOT_ENOUGH;
+            if (!structure.City.Resource.HasEnough(cost))
+                return Error.RESOURCE_NOT_ENOUGH;
 
-                structure.City.BeginUpdate();
-                structure.City.Resource.Subtract(cost);
-                structure.City.EndUpdate();
-            }
+            structure.City.BeginUpdate();
+            structure.City.Resource.Subtract(cost);
+            structure.City.EndUpdate();
 
-            if (!ignoreTime) {
-                endTime =
-                    DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.getTime((ushort) type, lvl),
-                                                              structure.Technologies));
-                beginTime = DateTime.Now;
-            } else {
-                structure.BeginUpdate();
-                StructureFactory.getStructure(structure, (ushort) type, lvl, false);
-                structure.Technologies.Parent = structure.City.Technologies;
-                InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
-                structure.EndUpdate();
-
-                StateChange(ActionState.COMPLETED);
-            }
+            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.getTime((ushort) type, lvl), structure.Technologies));
+            beginTime = DateTime.Now;
 
             return Error.OK;
         }
@@ -87,13 +66,11 @@ namespace Game.Logic.Actions {
             using (new MultiObjectLock(cityId, out city)) {
                 switch (state) {
                     case ActionInterrupt.KILLED:
-                        if (!ignoreTime)
-                            Global.Scheduler.del(this);
+                        Global.Scheduler.del(this);
                         StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        if (!ignoreTime)
-                            Global.Scheduler.del(this);
+                        Global.Scheduler.del(this);
 
                         city.BeginUpdate();
                         city.Resource.Add(cost/2);
@@ -143,10 +120,9 @@ namespace Game.Logic.Actions {
                 return
                     XMLSerializer.Serialize(new[] {
                                                       new XMLKVPair("type", type), new XMLKVPair("lvl", lvl),
-                                                      new XMLKVPair("ignore_time", ignoreTime),
-                                                      new XMLKVPair("ignore_cost", ignoreCost), new XMLKVPair("city_id", cityId),
+                                                      new XMLKVPair("city_id", cityId),
                                                       new XMLKVPair("structure_id", structureId)
-                                                  });
+                    });
             }
         }
 

@@ -183,13 +183,13 @@ namespace Game.Data {
             labor.ResourcesUpdate += Update;
         }
 
-        public void SetLimits(int crop, int gold, int iron, int wood, int labor) {
+        public void SetLimits(int cropLimit, int goldLimit, int ironLimit, int woodLimit, int laborLimit) {
             BeginUpdate();
-            this.crop.Limit = crop;
-            this.gold.Limit = gold;
-            this.iron.Limit = iron;
-            this.wood.Limit = wood;
-            this.labor.Limit = labor;
+            crop.Limit = cropLimit;
+            gold.Limit = goldLimit;
+            iron.Limit = ironLimit;
+            wood.Limit = woodLimit;
+            labor.Limit = laborLimit;
             EndUpdate();
         }
 

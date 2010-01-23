@@ -67,7 +67,7 @@ namespace Game.Comm {
                     }
 
                     PacketHelper.AddToPacket(
-                        new List<ReferenceStub>(troop.City.Worker.References.getReferences(troop)), reply);
+                        new List<ReferenceStub>(troop.City.Worker.References.GetReferences(troop)), reply);
                 }
 
                 session.write(reply);

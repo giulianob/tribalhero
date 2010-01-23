@@ -1097,10 +1097,10 @@
       <Effect effect="102" location="1" private="FALSE" param1="FireBall" param2="25" param3="" param4="" param5="" />
     </Tech>
     <Tech techtype="21072" name="HARDWOOD_RESEARCH" spriteclass="HARDWOOD_TECHNOLOGY" level="0" crop="0" gold="0" iron="0" wood="0" labor="0" time="0" />
-    <Tech techtype="21072" name="FIREBALL_RESEARCH" spriteclass="FIREBALL_RESEARCH_TECHNOLOGY" level="1" crop="0" gold="0" iron="0" wood="500" labor="0" time="1000">
+    <Tech techtype="21072" name="HARDWOOD_RESEARCH" spriteclass="HARDWOOD_TECHNOLOGY" level="1" crop="0" gold="0" iron="0" wood="500" labor="0" time="1000">
       <Effect effect="11" location="1" private="FALSE" param1="5" param2="" param3="" param4="" param5="" />
     </Tech>
-    <Tech techtype="21072" name="FIREBALL_RESEARCH" spriteclass="FIREBALL_RESEARCH_TECHNOLOGY" level="2" crop="0" gold="0" iron="0" wood="500" labor="0" time="2000">
+    <Tech techtype="21072" name="HARDWOOD_RESEARCH" spriteclass="HARDWOOD_TECHNOLOGY" level="2" crop="0" gold="0" iron="0" wood="500" labor="0" time="2000">
       <Effect effect="11" location="1" private="FALSE" param1="10" param2="" param3="" param4="" param5="" />
     </Tech>
     <Tech techtype="22022" name="DOUBLE_TIME" spriteclass="DOUBLE_TIME_TECHNOLOGY" level="0" crop="0" gold="0" iron="0" wood="0" labor="0" time="0" />

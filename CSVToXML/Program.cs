@@ -11,24 +11,23 @@ using Game.Setup;
 
 namespace CSVToXML {
     public class Program {
-        private static string directory = Config.csv_compiled_folder;
-        private static string data_output_folder = Config.data_folder;
+        private static readonly string DataOutputFolder = Config.data_folder;
 
         #region WriteToConstant
 
-        private static void write_to_constant(string constant_as) {
-            FileStream xmlfile = new FileStream(directory + "data.xml", FileMode.Open, FileAccess.Read);
-            StreamReader xml_stream = new StreamReader(xmlfile);
-            string new_xml = xml_stream.ReadToEnd();
-            xml_stream.Close();
+        private static void WriteToConstant(string constantAs) {
+            FileStream xmlfile = new FileStream(Config.csv_compiled_folder + "data.xml", FileMode.Open, FileAccess.Read);
+            StreamReader xmlStream = new StreamReader(xmlfile);
+            string newXml = xmlStream.ReadToEnd();
+            xmlStream.Close();
             xmlfile.Close();
 
             try {
-                File.Copy(constant_as, constant_as + ".bak", true);
+                File.Copy(constantAs, constantAs + ".bak", true);
             }
-            catch (Exception) {}
+            catch {}
 
-            FileStream file = new FileStream(constant_as, FileMode.Open, FileAccess.ReadWrite);
+            FileStream file = new FileStream(constantAs, FileMode.Open, FileAccess.ReadWrite);
             StreamReader sr = new StreamReader(file);
             string s = sr.ReadToEnd();
             sr.Close();
@@ -39,14 +38,14 @@ namespace CSVToXML {
             string trimmed = s.Remove(begin, end - begin);
 
             Console.Out.WriteLine(s.Length);
-            string final = trimmed.Insert(begin, new_xml);
+            string final = trimmed.Insert(begin, newXml);
             Console.Out.WriteLine(s.Length);
 
-            FileStream new_file = new FileStream(constant_as, FileMode.Truncate, FileAccess.Write);
-            StreamWriter sw = new StreamWriter(new_file);
+            FileStream newFile = new FileStream(constantAs, FileMode.Truncate, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(newFile);
             sw.Write(final);
             sw.Close();
-            new_file.Close();
+            newFile.Close();
         }
 
         #endregion
@@ -57,16 +56,6 @@ namespace CSVToXML {
             public string type;
             public string name;
             public string datatype;
-        }
-
-        private static List<Property> findAllProperty(List<Property> properties, int type) {
-            List<Property> ret = new List<Property>();
-            foreach (Property prop in properties) {
-                if (Int32.Parse(prop.type) == type)
-                    ret.Add(prop);
-            }
-
-            return ret;
         }
 
         #endregion
@@ -85,7 +74,7 @@ namespace CSVToXML {
             public string compare;
         }
 
-        private static List<Layout> findAllLayout(List<Layout> layouts, int type, int level) {
+        private static List<Layout> FindAllLayout(List<Layout> layouts, int type, int level) {
             List<Layout> ret = new List<Layout>();
             foreach (Layout layout in layouts) {
                 if (Int32.Parse(layout.type) == type && Int32.Parse(layout.level) == level)
@@ -118,8 +107,9 @@ namespace CSVToXML {
 
                     int indexDelta = Int32.Parse(index) - Int32.Parse(obj2.index);
                     return indexDelta;
-                } else
-                    return 1;
+                }
+
+                return 1;
             }
         }
 
@@ -136,7 +126,7 @@ namespace CSVToXML {
             public string param1, param2, param3, param4, param5;
         }
 
-        private static List<TechnologyEffects> findAllTechEffects(List<TechnologyEffects> techEffects, int techid,
+        private static List<TechnologyEffects> FindAllTechEffects(List<TechnologyEffects> techEffects, int techid,
                                                                   int lvl) {
             List<TechnologyEffects> ret = new List<TechnologyEffects>();
             foreach (TechnologyEffects prop in techEffects) {
@@ -149,7 +139,7 @@ namespace CSVToXML {
 
         #endregion
 
-        public static string CleanCSVParam(string param) {
+        public static string CleanCsvParam(string param) {
             char[] args = new[] {'='};
             string[] split = param.Split(args);
 
@@ -157,39 +147,29 @@ namespace CSVToXML {
         }
 
         public static void Main(string[] args) {
-            XmlTextWriter writer =
-                new XmlTextWriter(new StreamWriter(File.Open(data_output_folder + "data.xml", FileMode.Create)));
-            writer.Formatting = Formatting.Indented;
+            XmlTextWriter writer = new XmlTextWriter(new StreamWriter(File.Open(DataOutputFolder + "data.xml", FileMode.Create))) {Formatting = Formatting.Indented};
 
             List<Property> properties = new List<Property>();
-            using (
-                CSVReader propReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "property.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader propReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "property.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = propReader.ReadRow();
-                    if (obj != null) {
-                        if (obj[0].Length <= 0)
-                            continue;
-                        Property prop = new Property();
-                        prop.type = obj[0];
-                        prop.name = obj[1];
-                        prop.datatype = obj[2];
-
-                        properties.Add(prop);
-                    } else
+                    if (obj == null)
                         break;
+
+                    if (obj[0].Length <= 0)
+                        continue;
+                    Property prop = new Property();
+                    prop.type = obj[0];
+                    prop.name = obj[1];
+                    prop.datatype = obj[2];
+
+                    properties.Add(prop);
                 }
             }
 
             List<TechnologyEffects> techEffects = new List<TechnologyEffects>();
 
-            using (
-                CSVReader techEffectsReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "technology_effects.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader techEffectsReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "technology_effects.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = techEffectsReader.ReadRow();
                     if (obj != null) {
@@ -199,10 +179,8 @@ namespace CSVToXML {
                         TechnologyEffects techEffect = new TechnologyEffects();
                         techEffect.techid = obj[0];
                         techEffect.lvl = obj[1];
-                        techEffect.effect =
-                            ((int) ((EffectCode) Enum.Parse(typeof (EffectCode), obj[2], true))).ToString();
-                        techEffect.location =
-                            ((int) ((EffectLocation) Enum.Parse(typeof (EffectLocation), obj[3], true))).ToString();
+                        techEffect.effect = ((int) ((EffectCode) Enum.Parse(typeof (EffectCode), obj[2], true))).ToString();
+                        techEffect.location = ((int) ((EffectLocation) Enum.Parse(typeof (EffectLocation), obj[3], true))).ToString();
                         techEffect.isprivate = obj[4];
                         techEffect.param1 = obj[5];
                         techEffect.param2 = obj[6];
@@ -218,11 +196,7 @@ namespace CSVToXML {
 
             List<Layout> layouts = new List<Layout>();
 
-            using (
-                CSVReader layoutReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "layout.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader layoutReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "layout.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = layoutReader.ReadRow();
                     if (obj != null) {
@@ -248,11 +222,7 @@ namespace CSVToXML {
             writer.WriteStartElement("Data");
 
             writer.WriteStartElement("Structures");
-            using (
-                CSVReader statsReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "structure.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader statsReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "structure.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = statsReader.ReadRow();
                     if (obj != null) {
@@ -286,7 +256,7 @@ namespace CSVToXML {
 
                         writer.WriteStartElement("Layout");
 
-                        List<Layout> objLayouts = findAllLayout(layouts, Int32.Parse(obj[1]), Int32.Parse(obj[2]));
+                        List<Layout> objLayouts = FindAllLayout(layouts, Int32.Parse(obj[1]), Int32.Parse(obj[2]));
                         foreach (Layout layout in objLayouts) {
                             writer.WriteStartElement(layout.layout);
                             //Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
@@ -309,11 +279,7 @@ namespace CSVToXML {
             writer.WriteEndElement();
 
             writer.WriteStartElement("Units");
-            using (
-                CSVReader statsReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "unit.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader statsReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "unit.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = statsReader.ReadRow();
                     if (obj != null) {
@@ -360,29 +326,25 @@ namespace CSVToXML {
             writer.WriteEndElement();
 
             writer.WriteStartElement("ObjectTypes");
-            using (
-                CSVReader statsReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "object_type.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader statsReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "object_type.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = statsReader.ReadRow();
-                    if (obj != null) {
-                        if (obj[0] == string.Empty)
+                    if (obj == null)
+                        break;
+                    
+                    if (obj[0] == string.Empty)
+                        continue;
+
+                    string name = obj[0];
+                    for (int i = 1; i < obj.Length; i++) {
+                        if (obj[i] == string.Empty)
                             continue;
 
-                        string name = obj[0];
-                        for (int i = 1; i < obj.Length; i++) {
-                            if (obj[i] == string.Empty)
-                                continue;
-
-                            writer.WriteStartElement("ObjectType");
-                            writer.WriteAttributeString("name", name);
-                            writer.WriteAttributeString("type", obj[i]);
-                            writer.WriteEndElement();
-                        }
-                    } else
-                        break;
+                        writer.WriteStartElement("ObjectType");
+                        writer.WriteAttributeString("name", name);
+                        writer.WriteAttributeString("type", obj[i]);
+                        writer.WriteEndElement();
+                    }
                 }
             }
             writer.WriteEndElement();
@@ -391,11 +353,7 @@ namespace CSVToXML {
 
             List<WorkerActions> workerActions = new List<WorkerActions>();
 
-            using (
-                CSVReader actionReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "action.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader actionReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "action.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = actionReader.ReadRow();
                     if (obj != null) {
@@ -407,13 +365,13 @@ namespace CSVToXML {
                         workerAction.index = obj[1];
                         workerAction.max = obj[2];
                         workerAction.action = obj[3];
-                        workerAction.param1 = CleanCSVParam(obj[4]);
-                        workerAction.param2 = CleanCSVParam(obj[5]);
-                        workerAction.param3 = CleanCSVParam(obj[6]);
-                        workerAction.param4 = CleanCSVParam(obj[7]);
-                        workerAction.param5 = CleanCSVParam(obj[8]);
-                        workerAction.effectReq = CleanCSVParam(obj[9]);
-                        workerAction.effectReqInherit = CleanCSVParam(obj[10]).ToUpper();
+                        workerAction.param1 = CleanCsvParam(obj[4]);
+                        workerAction.param2 = CleanCsvParam(obj[5]);
+                        workerAction.param3 = CleanCsvParam(obj[6]);
+                        workerAction.param4 = CleanCsvParam(obj[7]);
+                        workerAction.param5 = CleanCsvParam(obj[8]);
+                        workerAction.effectReq = CleanCsvParam(obj[9]);
+                        workerAction.effectReqInherit = CleanCsvParam(obj[10]).ToUpper();
 
                         workerActions.Add(workerAction);
                     } else
@@ -440,8 +398,7 @@ namespace CSVToXML {
                     writer.WriteAttributeString("max", workerAction.max);
 
                     if (Int32.Parse(workerAction.index) != 0)
-                        throw new Exception("Error in actions.csv. Worker index 0 is not the first item in worker: " +
-                                            workerAction.type);
+                        throw new Exception("Error in actions.csv. Worker index 0 is not the first item in worker: " + workerAction.type);
 
                     lastId = Int32.Parse(workerAction.type);
                     continue;
@@ -515,49 +472,44 @@ namespace CSVToXML {
 
             writer.WriteStartElement("Technologies");
 
-            using (
-                CSVReader techReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "technology.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader techReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "technology.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = techReader.ReadRow();
-                    if (obj != null) {
-                        if (obj[0] == string.Empty)
-                            continue;
-
-                        writer.WriteStartElement("Tech");
-
-                        writer.WriteAttributeString("techtype", obj[0]);
-                        writer.WriteAttributeString("name", obj[1]);
-                        writer.WriteAttributeString("spriteclass", obj[2]);
-                        writer.WriteAttributeString("level", obj[3]);
-                        writer.WriteAttributeString("crop", obj[4]);
-                        writer.WriteAttributeString("gold", obj[5]);
-                        writer.WriteAttributeString("iron", obj[6]);
-                        writer.WriteAttributeString("wood", obj[7]);
-                        writer.WriteAttributeString("labor", obj[8]);
-                        writer.WriteAttributeString("time", obj[9]);
-
-                        List<TechnologyEffects> effects = findAllTechEffects(techEffects, Int32.Parse(obj[0]),
-                                                                             Int32.Parse(obj[3]));
-                        foreach (TechnologyEffects effect in effects) {
-                            //TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
-                            writer.WriteStartElement("Effect");
-                            writer.WriteAttributeString("effect", effect.effect);
-                            writer.WriteAttributeString("location", effect.location);
-                            writer.WriteAttributeString("private", effect.isprivate);
-                            writer.WriteAttributeString("param1", effect.param1);
-                            writer.WriteAttributeString("param2", effect.param2);
-                            writer.WriteAttributeString("param3", effect.param3);
-                            writer.WriteAttributeString("param4", effect.param4);
-                            writer.WriteAttributeString("param5", effect.param5);
-                            writer.WriteEndElement();
-                        }
-
-                        writer.WriteEndElement();
-                    } else
+                    if (obj == null)
                         break;
+
+                    if (obj[0] == string.Empty)
+                        continue;
+
+                    writer.WriteStartElement("Tech");
+
+                    writer.WriteAttributeString("techtype", obj[0]);
+                    writer.WriteAttributeString("name", obj[1]);
+                    writer.WriteAttributeString("spriteclass", obj[2]);
+                    writer.WriteAttributeString("level", obj[3]);
+                    writer.WriteAttributeString("crop", obj[4]);
+                    writer.WriteAttributeString("gold", obj[5]);
+                    writer.WriteAttributeString("iron", obj[6]);
+                    writer.WriteAttributeString("wood", obj[7]);
+                    writer.WriteAttributeString("labor", obj[8]);
+                    writer.WriteAttributeString("time", obj[9]);
+
+                    List<TechnologyEffects> effects = FindAllTechEffects(techEffects, Int32.Parse(obj[0]), Int32.Parse(obj[3]));
+                    foreach (TechnologyEffects effect in effects) {
+                        //TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
+                        writer.WriteStartElement("Effect");
+                        writer.WriteAttributeString("effect", effect.effect);
+                        writer.WriteAttributeString("location", effect.location);
+                        writer.WriteAttributeString("private", effect.isprivate);
+                        writer.WriteAttributeString("param1", effect.param1);
+                        writer.WriteAttributeString("param2", effect.param2);
+                        writer.WriteAttributeString("param3", effect.param3);
+                        writer.WriteAttributeString("param4", effect.param4);
+                        writer.WriteAttributeString("param5", effect.param5);
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
                 }
             }
 
@@ -585,30 +537,26 @@ namespace CSVToXML {
 
             writer.WriteStartElement("EffectRequirements");
 
-            using (
-                CSVReader effectReqReader =
-                    new CSVReader(
-                        new StreamReader(File.Open(directory + "effect_requirement.csv", FileMode.Open, FileAccess.Read,
-                                                   FileShare.ReadWrite)))) {
+            using (CSVReader effectReqReader = new CSVReader(new StreamReader(File.Open(Config.csv_compiled_folder + "effect_requirement.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = effectReqReader.ReadRow();
-                    if (obj != null) {
-                        if (obj[0] == string.Empty)
-                            continue;
-
-                        writer.WriteStartElement("EffectRequirement");
-
-                        writer.WriteAttributeString("id", CleanCSVParam(obj[0]));
-                        writer.WriteAttributeString("method", CleanCSVParam(obj[1]));
-                        writer.WriteAttributeString("param1", CleanCSVParam(obj[2]));
-                        writer.WriteAttributeString("param2", CleanCSVParam(obj[3]));
-                        writer.WriteAttributeString("param3", CleanCSVParam(obj[4]));
-                        writer.WriteAttributeString("param4", CleanCSVParam(obj[5]));
-                        writer.WriteAttributeString("param5", CleanCSVParam(obj[6]));
-
-                        writer.WriteEndElement();
-                    } else
+                    if (obj == null)
                         break;
+                    
+                    if (obj[0] == string.Empty)
+                        continue;
+
+                    writer.WriteStartElement("EffectRequirement");
+
+                    writer.WriteAttributeString("id", CleanCsvParam(obj[0]));
+                    writer.WriteAttributeString("method", CleanCsvParam(obj[1]));
+                    writer.WriteAttributeString("param1", CleanCsvParam(obj[2]));
+                    writer.WriteAttributeString("param2", CleanCsvParam(obj[3]));
+                    writer.WriteAttributeString("param3", CleanCsvParam(obj[4]));
+                    writer.WriteAttributeString("param4", CleanCsvParam(obj[5]));
+                    writer.WriteAttributeString("param5", CleanCsvParam(obj[6]));
+
+                    writer.WriteEndElement();
                 }
             }
 
@@ -620,7 +568,55 @@ namespace CSVToXML {
 
             writer.Close();
 
-            //write_to_constant();
+            #region Languages
+            // TODO Hardcoded to just do English for now but later we can do all the languages
+            writer = new XmlTextWriter(new StreamWriter(File.Open(DataOutputFolder + "Game_en.xml", FileMode.Create))) { Formatting = Formatting.Indented };
+
+            writer.WriteStartElement("xliff");
+            writer.WriteAttributeString("version", "1.0");
+            writer.WriteAttributeString("xml:lang", "en");
+
+            writer.WriteStartElement("file");
+
+            writer.WriteAttributeString("datatype", "plaintext");
+            writer.WriteAttributeString("source-language", "EN");
+
+            writer.WriteStartElement("header");
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("body");
+
+            string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
+            foreach (string file in files) {
+                using (CSVReader langReader = new CSVReader(new StreamReader(File.Open(file, FileMode.Open)))) {
+                    while (true) {
+                        string[] obj = langReader.ReadRow();
+                        if (obj == null)
+                            break;
+
+                        if (obj[0] == string.Empty)
+                            continue;
+
+                        writer.WriteStartElement("trans-unit");
+                        writer.WriteAttributeString("resname", obj[0]);
+                        writer.WriteStartElement("source");
+                        writer.WriteString(obj[1]);
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                    }
+                }
+            }
+
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+
+            writer.Close();
+            #endregion            
+
+            //WriteToConstant();
         }
     }
 }

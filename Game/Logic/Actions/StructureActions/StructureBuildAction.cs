@@ -97,10 +97,10 @@ namespace Game.Logic.Actions {
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.getTime(type, 1), city.Technologies));
+            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.getTime(type, 1), city.Technologies));
             beginTime = DateTime.Now;
 
-            city.Worker.References.add(structure, this);
+            city.Worker.References.Add(structure, this);
 
             Global.World.UnlockRegion(x, y);
 
@@ -123,7 +123,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                city.Worker.References.remove(structure, this);
+                city.Worker.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
                 StructureFactory.getStructure(structure, structure.Type, 1, false);
@@ -133,14 +133,6 @@ namespace Game.Logic.Actions {
 
                 StateChange(ActionState.COMPLETED);
             }
-        }
-
-        public int interrupt(int code) {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        public ActionState State {
-            get { throw new Exception("The method or operation is not implemented."); }
         }
 
         public override ActionType Type {
@@ -187,7 +179,7 @@ namespace Game.Logic.Actions {
                 switch (state) {
                     case ActionInterrupt.KILLED:
                         Global.Scheduler.del(this);
-                        city.Worker.References.remove(structure, this);
+                        city.Worker.References.Remove(structure, this);
                         Global.World.LockRegion(x, y);
                         Global.dbManager.Delete(structure);
                         Global.World.Remove(structure);
@@ -197,7 +189,7 @@ namespace Game.Logic.Actions {
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
 
-                        city.Worker.References.remove(structure, this);
+                        city.Worker.References.Remove(structure, this);
 
                         Global.World.LockRegion(x, y);
 

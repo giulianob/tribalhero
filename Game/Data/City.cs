@@ -183,9 +183,9 @@ namespace Game.Data {
             return troopobjects.TryGetValue(objectId, out troop);
         }
 
-        public bool Add(uint id, TroopObject troop, bool save) {
+        public bool Add(uint objId, TroopObject troop, bool save) {
             lock (objLock) {
-                if (troopobjects.ContainsKey(id))
+                if (troopobjects.ContainsKey(objId))
                     return false;
 
                 troop.Stub.BeginUpdate();
@@ -194,10 +194,10 @@ namespace Game.Data {
 
                 troop.City = this;
 
-                troopobjects.Add(id, troop);
+                troopobjects.Add(objId, troop);
 
-                if (nextObjectId < id)
-                    nextObjectId = id;
+                if (nextObjectId < objId)
+                    nextObjectId = objId;
 
                 if (save)
                     Global.dbManager.Save(troop);
@@ -216,17 +216,17 @@ namespace Game.Data {
             }
         }
 
-        public bool Add(uint id, Structure structure, bool save) {
+        public bool Add(uint objId, Structure structure, bool save) {
             lock (objLock) {
-                if (structures.ContainsKey(id))
+                if (structures.ContainsKey(objId))
                     return false;
 
                 structure.City = this;
 
-                structures.Add(id, structure);
+                structures.Add(objId, structure);
 
-                if (nextObjectId < id)
-                    nextObjectId = id;
+                if (nextObjectId < objId)
+                    nextObjectId = objId;
 
                 if (save)
                     Global.dbManager.Save(structure);
@@ -240,8 +240,8 @@ namespace Game.Data {
             return true;
         }
 
-        public bool Add(uint id, Structure structure) {
-            return Add(id, structure, true);
+        public bool Add(uint objId, Structure structure) {
+            return Add(objId, structure, true);
         }
 
         public bool Add(Structure structure) {

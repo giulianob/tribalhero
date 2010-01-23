@@ -114,7 +114,7 @@ namespace Game.Setup {
                 }
 
                 if (append == false) {
-                    //Calculate the different in MAXHP between the new and old structures and add it to the current hp if the new one is greater.
+                    //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
                     ushort newHp = oldStructure.Stats.Hp;
                     if (baseStats.Battle.MaxHp > oldStructure.Stats.Base.Battle.MaxHp)
                         newHp =
@@ -126,7 +126,7 @@ namespace Game.Setup {
                     oldStructure.Properties.clear();
                     return null;
                 } else if (append) {
-                    //Calculate the different in MAXHP between the new and old structures and add it to the current hp if the new one is greater.
+                    //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
                     ushort newHp = oldStructure.Stats.Hp;
                     if (baseStats.Battle.MaxHp > oldStructure.Stats.Base.Battle.MaxHp)
                         newHp =

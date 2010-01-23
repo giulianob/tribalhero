@@ -669,7 +669,7 @@ namespace Game.Database {
 
                             referenceStub.DbPersisted = true;
 
-                            city.Worker.References.dbLoaderAdd(referenceStub);
+                            city.Worker.References.DbLoaderAdd(referenceStub);
                         }
                     }
 

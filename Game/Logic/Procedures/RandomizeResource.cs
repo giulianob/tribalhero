@@ -10,17 +10,15 @@ using Game.Util;
 
 namespace Game.Logic.Procedures {
     public partial class Procedure {
-        private static bool work(uint ox, uint oy, uint x, uint y, object custom) {
+
+        private static bool Work(uint ox, uint oy, uint x, uint y, object custom) {
             City city = (City) custom;
             if (Config.Random.Next()%4 == 0) {
-                Structure structure;
                 Global.World.LockRegion(x, y);
-                if (Config.Random.Next()%2 == 0)
-                    structure = StructureFactory.getStructure(2106, 1);
-                else
-                    structure = StructureFactory.getStructure(2107, 1);
+                Structure structure = Config.Random.Next()%2 == 0 ? StructureFactory.getStructure(2106, 1) : StructureFactory.getStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
+
                 city.Add(structure);
                 if (!Global.World.Add(structure)) {
                     city.Remove(structure);
@@ -37,7 +35,7 @@ namespace Game.Logic.Procedures {
             using (new MultiObjectLock(city)) {
                 byte radius = city.Radius;
                 Structure structure = city.MainBuilding;
-                RadiusLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false, work, city);
+                RadiusLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false, Work, city);
             }
 
             return true;

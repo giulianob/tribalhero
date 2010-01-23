@@ -11,8 +11,8 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class StructureUpgradeAction : ScheduledActiveAction {
-        private uint cityId;
-        private uint structureId;
+        private readonly uint cityId;
+        private readonly uint structureId;
 
         public StructureUpgradeAction(uint cityId, uint structureId) {
             this.cityId = cityId;
@@ -36,9 +36,7 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             // layout requirement
-            if (
-                !ReqirementFactory.getLayoutRequirement(structure.Type, (byte) (structure.Lvl + 1)).validate(
-                     structure.City, structure.X, structure.Y))
+            if (!ReqirementFactory.getLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).validate(structure.City, structure.X, structure.Y))
                 return Error.LAYOUT_NOT_FULLFILLED;
 
             Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
@@ -53,10 +51,7 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime =
-                DateTime.Now.AddSeconds(
-                    Formula.BuildTime(StructureFactory.getTime(structure.Type, (byte) (structure.Lvl + 1)),
-                                      structure.Technologies));
+            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.getTime(structure.Type, (byte)(structure.Lvl + 1)), structure.Technologies));
             beginTime = DateTime.Now;
 
             return Error.OK;
@@ -75,7 +70,7 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.getStructure(structure, structure.Type, (byte) (structure.Lvl + 1), true);
+                StructureFactory.getStructure(structure, structure.Type, (byte)(structure.Lvl + 1), true);
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
@@ -83,10 +78,6 @@ namespace Game.Logic.Actions {
 
                 StateChange(ActionState.COMPLETED);
             }
-        }
-
-        public ActionState State {
-            get { throw new Exception("The method or operation is not implemented."); }
         }
 
         public override ActionType Type {
@@ -119,7 +110,7 @@ namespace Game.Logic.Actions {
                         Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
 
                         city.BeginUpdate();
-                        city.Resource.Add(cost/2);
+                        city.Resource.Add(cost / 2);
                         city.EndUpdate();
 
                         StateChange(ActionState.INTERRUPTED);

@@ -121,7 +121,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 			
-			if (Global.map.cities.get(parentObj.cityId).resources.GreaterThanOrEqual(nextTechPrototype.resources))
+ 			if (Global.map.cities.get(parentObj.cityId).resources.GreaterThanOrEqual(nextTechPrototype.resources))
 			{	
 				enable();
 				return true;

@@ -50,14 +50,14 @@ package src.UI.Tooltips {
 		
 		public function draw(count: int, max: int):void
 		{			
-			lblTitle.setText(techPrototype.description);
+			lblTitle.setText(techPrototype.getName());
 			
 			if (techPrototype.level == 0) {
 				lblDescription.setText("You have not trained this technology yet");
 			}
 			else {
 				lblLevel.setText("Level " + techPrototype.level.toString());
-				lblDescription.setText(techPrototype.description);
+				lblDescription.setText(techPrototype.getDescription());
 			}
 			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
@@ -66,7 +66,7 @@ package src.UI.Tooltips {
 				label.setHorizontalAlignment(AsWingConstants.LEFT);
 				return label;
 			};	
-			
+			 
 			var errorLabelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
 				GameLookAndFeel.changeClass(label, "Label.error");
@@ -78,7 +78,7 @@ package src.UI.Tooltips {
 			{
 				ui.append(pnlNextLvl);
 				
-				lblNextLvlDescription.setText(nextTechPrototype.description);
+				lblNextLvlDescription.setText(nextTechPrototype.getDescription());
 				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(nextTechPrototype.time, null)));		
 				
 				if (missingRequirements != null && missingRequirements.length > 0)
@@ -166,7 +166,7 @@ package src.UI.Tooltips {
 			//component layoution
 			ui.append(lblTitle);
 			
-			if (techPrototype.level > 0) {				
+			if (techPrototype.level == 0) {				
 				ui.append(lblDescription);			
 			} else {
 				ui.append(lblLevel);

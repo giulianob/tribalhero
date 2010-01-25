@@ -2,26 +2,24 @@
 
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 #endregion
 
 namespace CSVToXML {
-    public class CSVReader : IDisposable {
-        private string[] columns;
-        private StreamReader sr = null;
+    public class CsvReader : IDisposable {
+        private readonly StreamReader sr;
 
-        public string[] Columns {
-            get { return columns; }
-        }
+        public string[] Columns { get; private set; }
 
-        public CSVReader(StreamReader sr) {
+        public CsvReader(StreamReader sr) {
             this.sr = sr;
 
-            columns = TokenizeCSVLine(sr.ReadLine());
+            Columns = TokenizeCsvLine(sr.ReadLine());
         }
 
         public string[] ReadRow() {
-            string line = string.Empty;
+            string line;
             while (true) {
                 line = sr.ReadLine();
 
@@ -34,10 +32,24 @@ namespace CSVToXML {
                     break;
             }
 
-            return TokenizeCSVLine(line);
+            return RegexTokenizeCsvLine(line);
         }
 
-        private string[] TokenizeCSVLine(string line) {
+        private static string[] RegexTokenizeCsvLine(string line) {
+            const RegexOptions options = ((RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline) | RegexOptions.IgnoreCase);
+            Regex reg = new Regex("(?:^|,)(\\\"(?:[^\\\"]+|\\\"\\\")*\\\"|[^,]*)", options);
+            MatchCollection coll = reg.Matches(line);
+            string[] items = new string[coll.Count];
+            int i = 0;
+            foreach (Match m in coll) {
+                items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Trim();
+            }
+
+            return items;
+        }
+
+        private static string[] TokenizeCsvLine(string line) {
+
             string[] cells = line.Split(',');
 
             string[] result = new string[cells.Length];

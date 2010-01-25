@@ -114,7 +114,7 @@ namespace Game.Logic.Actions {
                 } else
                     Upkeep.Clear();
                 if (Config.resource_fast_income)
-                    resource += new Resource(500, 500, 500, 500, 0);
+                    resource += new Resource(15000, 250, 15000, 15000, 0);
                 city.Resource.Add(resource - Upkeep);
 
                 #endregion

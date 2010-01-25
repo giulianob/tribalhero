@@ -18,7 +18,7 @@
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class BuildTooltip extends Tooltip {
+	public class StructureBuildTooltip extends Tooltip {
 
 		private var structPrototype: StructurePrototype;
 		private var parentObj: StructureObject;
@@ -28,8 +28,8 @@
 		private var pnlHeader:JPanel;
 		private var lblTitle:JLabel;
 		private var lblTime:JLabel;
-		private var lblDescription:JLabel;
-		private var lblLvlDescription:JLabel;
+		private var lblDescription:MultilineLabel;
+		private var lblLvlDescription:MultilineLabel;
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
 		private var pnlFooter:JPanel;
@@ -37,12 +37,16 @@
 		private var pnlResources:JPanel;
 		private var statsBox: StructureStatBox;
 
-		public function BuildTooltip(parentObj: StructureObject, structPrototype: StructurePrototype)
+		public function StructureBuildTooltip(parentObj: StructureObject, structPrototype: StructurePrototype)
 		{
 			this.parentObj = parentObj;
 			this.structPrototype = structPrototype;
 
 			createUI();
+
+			lblTitle.setText("Build " + structPrototype.getName());
+			lblDescription.setText(structPrototype.getGeneralDescription());
+			lblLvlDescription.setText(structPrototype.getDescription());
 		}
 
 		public function draw(count: int, max: int) :void
@@ -61,13 +65,7 @@
 				return label;
 			};
 
-			lblTitle.setText("Build " + structPrototype.getName());
-
 			lblTime.setText(Util.formatTime(Formula.buildTime(structPrototype.buildTime, null)));
-
-			lblDescription.setText(structPrototype.getGeneralDescription());
-			
-			lblLvlDescription.setText(structPrototype.getDescription());
 
 			lblActionCount.setText(count + "/" + max);
 
@@ -119,12 +117,10 @@
 			lblTime.setConstraints("East");
 			GameLookAndFeel.changeClass(lblTime, "Tooltip.text");
 
-			lblDescription = new JLabel();
-			lblDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblDescription = new MultilineLabel();
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 
-			lblLvlDescription = new JLabel();
-			lblLvlDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblLvlDescription = new MultilineLabel();
 			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");
 
 			pnlRequired = new JPanel();

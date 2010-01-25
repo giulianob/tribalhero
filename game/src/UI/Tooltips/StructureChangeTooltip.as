@@ -33,8 +33,8 @@ package src.UI.Tooltips {
 		private var pnlHeader:JPanel;
 		private var lblTitle:JLabel;
 		private var lblTime:JLabel;
-		private var lblDescription:JLabel;
-		private var lblLvlDescription:JLabel;
+		private var lblDescription:MultilineLabel;
+		private var lblLvlDescription:MultilineLabel;
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
 		private var pnlFooter:JPanel;
@@ -123,12 +123,10 @@ package src.UI.Tooltips {
 			lblTime.setConstraints("East");			
 			GameLookAndFeel.changeClass(lblTime, "Tooltip.text");
 			
-			lblDescription = new JLabel();
-			lblDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblDescription = new MultilineLabel();
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 			
-			lblLvlDescription = new JLabel();
-			lblLvlDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblLvlDescription = new MultilineLabel();
 			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");
 			
 			pnlRequired = new JPanel();

@@ -30,7 +30,6 @@ package src.UI.Tooltips {
 
 		private var lblTitle:JLabel;
 		private var lblLevel:JLabel;
-		private var lblDescription:MultilineLabel;
 		private var lblLvlDescription:MultilineLabel;
 		private var pnlHeader:JPanel;
 		private var statsBox:StructureStatBox;
@@ -55,7 +54,6 @@ package src.UI.Tooltips {
 			
 			lblTitle.setText("Upgrade " + structPrototype.getName());
 			lblLevel.setText("Level " + structPrototype.level.toString());
-			lblDescription.setText(structPrototype.getGeneralDescription());		
 			lblLvlDescription.setText(structPrototype.getDescription());
 		}
 
@@ -129,9 +127,6 @@ package src.UI.Tooltips {
 			lblNextLvlTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 			lblNextLvlTime.setConstraints("East");
 			GameLookAndFeel.changeClass(lblNextLvlTime, "Tooltip.text");
-
-			lblDescription = new MultilineLabel();
-			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 			
 			lblLvlDescription = new MultilineLabel();
 			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");			
@@ -176,7 +171,6 @@ package src.UI.Tooltips {
 			//component layoution
 			ui.append(lblTitle);
 			ui.append(lblLevel);
-			ui.append(lblDescription);
 			ui.append(lblLvlDescription);
 			ui.append(statsBox);
 

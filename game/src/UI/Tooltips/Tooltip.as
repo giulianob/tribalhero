@@ -30,14 +30,14 @@ package src.UI.Tooltips {
 				this.viewObj = obj;
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
 
-				ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));				
-				ui.show(null);				
+				ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));
+				ui.show(null);
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().pack();
 			}
 			else
-				ui.getFrame().pack();
+			ui.getFrame().pack();
 
 			adjustPosition();
 		}
@@ -55,24 +55,32 @@ package src.UI.Tooltips {
 
 			var mouseX: Number = ui.getFrame().stage.mouseX;
 			var mouseY: Number = ui.getFrame().stage.mouseY;
-			
+
 			var boxX: Number = mouseX;
 			var boxY: Number = mouseY;
-			
+
 			var boxWidth: Number = ui.getFrame().getWidth();
 			var boxHeight: Number = ui.getFrame().getHeight();
-			
+
 			var stageWidth: Number = ui.getFrame().stage.stageWidth;
 			var stageHeight: Number = ui.getFrame().stage.stageHeight;
-			
-			if (boxX + boxWidth > stageWidth) {				
+
+			if (boxX + boxWidth > stageWidth) {
 				boxX = mouseX - boxWidth + 5;
-			}			
-			
-			if (boxY + boxHeight > stageHeight) {
-				boxY = mouseY - boxHeight + 5;				
 			}
-			
+
+			if (boxY + boxHeight > stageHeight) {
+				boxY = mouseY - boxHeight + 5;
+			}
+
+			if (boxY < 0) {
+				boxY = 0;
+			}
+
+			if (boxX < 0) {
+				boxX = 0;
+			}
+
 			ui.getFrame().setLocationXY(boxX, boxY);
 		}
 

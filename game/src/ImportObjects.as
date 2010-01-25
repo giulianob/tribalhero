@@ -31,14 +31,22 @@
 			TILE_MINI;
 			
 			//Walls
-			WALL_NE;
-			WALL_NW;
-			WALL_SE;
-			WALL_SW;
-			WALL_N;
-			WALL_S;
-			WALL_W;
-			WALL_E;
+			WALL_NE_0;
+			WALL_NW_0;
+			WALL_SE_0;
+			WALL_SW_0;
+			WALL_N_0;
+			WALL_S_0;
+			WALL_W_0;
+			WALL_E_0;
+			WALL_NE_1;
+			WALL_NW_1;
+			WALL_SE_1;
+			WALL_SW_1;
+			WALL_N_1;
+			WALL_S_1;
+			WALL_W_1;
+			WALL_E_1;			
 			
 			//Troops
 			DEFAULT_TROOP;			

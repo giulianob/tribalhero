@@ -236,7 +236,7 @@ package src.UI.Sidebars.ObjectInfo {
 				panel.setConstraints("North");
 				panel.setLayout(new BorderLayout());
 
-				var lblDescription: JLabel = new JLabel(actionDescription);
+				var lblDescription: JLabel = new JLabel(actionDescription);				
 				lblDescription.setConstraints("West");
 				lblDescription.setHorizontalAlignment(AsWingConstants.LEFT);
 

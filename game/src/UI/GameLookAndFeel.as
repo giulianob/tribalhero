@@ -61,7 +61,7 @@
 				"FrameTitleBar.colorAdjust", new UIStyleTune(0.0, 0.0, 0.0, 0.0, 0, new UIStyleTune(0.2, -0.3, 0.08, 0.1, 1)), 
 				
 				"Label.font", new ASFontUIResource("Arial", 11),
-				
+				"TextArea.font", new ASFontUIResource("Arial", 11),					
 				
 				/* CLASSES */				
 				"Class.header", [
@@ -76,11 +76,14 @@
 				
 				"Class.Tooltip.text", [
 					"Label.font", new ASFontUIResource("Arial", 13, false),
-					"Label.foreground", new ASColorUIResource(0xFFFFFF)
+					"Label.foreground", new ASColorUIResource(0xFFFFFF),
+					"TextArea.font", new ASFontUIResource("Arial", 13, false),
+					"TextArea.foreground", new ASColorUIResource(0xFFFFFF)
 				],
 				
 				"Class.Label.small", [
 					"Label.font", new ASFontUIResource("Arial", 11, false),					
+					"TextArea.font", new ASFontUIResource("Arial", 11, false),					
 				],								
 				"Class.Label.error", [
 					"Label.font", new ASFontUIResource("Arial", 13, false),

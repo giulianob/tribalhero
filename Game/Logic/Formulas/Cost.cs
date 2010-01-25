@@ -9,9 +9,9 @@ namespace Game.Logic {
     public partial class Formula {
         internal static Resource StructureCost(City city, uint type, byte lvl) {
             if (city.Battle == null)
-                return StructureFactory.getCost((int) type, lvl);
+                return StructureFactory.GetCost((int) type, lvl);
             else
-                return StructureFactory.getCost((int) type, lvl)*1.5;
+                return StructureFactory.GetCost((int) type, lvl)*1.5;
         }
 
         internal static Resource UnitCost(City city, ushort type, byte lvl) {

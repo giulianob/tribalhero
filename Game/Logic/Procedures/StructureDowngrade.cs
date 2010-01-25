@@ -16,7 +16,7 @@ namespace Game.Logic.Procedures {
         public static bool StructureDowngrade(Structure structure) {
             structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL);
             byte oldLabor = structure.Stats.Labor;
-            StructureFactory.getStructure(structure, structure.Type, (byte) (structure.Lvl - 1), true);
+            StructureFactory.GetStructure(structure, structure.Type, (byte) (structure.Lvl - 1), true);
             structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
             structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
             InitFactory.initGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);

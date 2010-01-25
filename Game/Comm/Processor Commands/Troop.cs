@@ -182,7 +182,7 @@ namespace Game.Comm {
                     reply_error(session, packet, Error.UNEXPECTED);
 
                 UnitUpgradeAction upgradeAction = new UnitUpgradeAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(barrack), barrack, upgradeAction,
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, upgradeAction,
                                                  barrack.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -221,7 +221,7 @@ namespace Game.Comm {
                     reply_error(session, packet, Error.UNEXPECTED);
 
                 UnitTrainAction trainAction = new UnitTrainAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(barrack), barrack, trainAction,
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, trainAction,
                                                  barrack.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);

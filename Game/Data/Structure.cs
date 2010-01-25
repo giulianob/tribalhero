@@ -11,7 +11,7 @@ using Game.Util;
 namespace Game.Data {
     public class Structure : GameObject, IPersistableObject {
         private StructureProperties properties;
-        private TechnologyManager techmanager;
+        private readonly TechnologyManager techmanager;
 
         private StructureStats stats;
 
@@ -19,11 +19,11 @@ namespace Game.Data {
             get { return stats; }
             set {
                 if (stats != null)
-                    stats.StatsUpdate -= new BaseStats.OnStatsUpdate(CheckUpdateMode);
+                    stats.StatsUpdate -= CheckUpdateMode;
 
                 CheckUpdateMode();
                 stats = value;
-                stats.StatsUpdate += new BaseStats.OnStatsUpdate(CheckUpdateMode);
+                stats.StatsUpdate += CheckUpdateMode;
             }
         }
 
@@ -109,7 +109,7 @@ namespace Game.Data {
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
                                           new DbColumn("hp", stats.Hp, DbType.UInt16), new DbColumn("type", Type, DbType.Int16),
                                           new DbColumn("level", Lvl, DbType.Byte), new DbColumn("labor", stats.Labor, DbType.Byte),
@@ -122,7 +122,7 @@ namespace Game.Data {
 
         public DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", city.Id, DbType.UInt32)
                                       };
             }
@@ -130,17 +130,12 @@ namespace Game.Data {
 
         public DbDependency[] DbDependencies {
             get {
-                return new DbDependency[]
+                return new[]
                        {new DbDependency("Properties", true, true), new DbDependency("Technologies", false, true)};
             }
         }
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
     }

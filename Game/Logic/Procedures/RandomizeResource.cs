@@ -15,7 +15,7 @@ namespace Game.Logic.Procedures {
             City city = (City) custom;
             if (Config.Random.Next()%4 == 0) {
                 Global.World.LockRegion(x, y);
-                Structure structure = Config.Random.Next()%2 == 0 ? StructureFactory.getStructure(2106, 1) : StructureFactory.getStructure(2107, 1);
+                Structure structure = Config.Random.Next()%2 == 0 ? StructureFactory.GetStructure(2106, 1) : StructureFactory.GetStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
 

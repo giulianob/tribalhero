@@ -55,7 +55,7 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.getTime((ushort) type, lvl), structure.Technologies));
+            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.GetTime((ushort) type, lvl), structure.Technologies));
             beginTime = DateTime.Now;
 
             return Error.OK;
@@ -101,7 +101,7 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.getStructure(structure, (ushort) type, lvl, false);
+                StructureFactory.GetStructure(structure, (ushort) type, lvl, false);
                 structure.Technologies.Parent = structure.City.Technologies;
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, this);

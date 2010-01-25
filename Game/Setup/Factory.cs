@@ -33,7 +33,7 @@ namespace Game.Setup {
 
         public static void InitAll() {
             BuildFiles(Config.csv_compiled_folder + "structure.csv", Config.csv_folder, "*structure.csv");
-            StructureFactory.init(Config.csv_compiled_folder + "structure.csv");
+            StructureFactory.Init(Config.csv_compiled_folder + "structure.csv");
 
             BuildFiles(Config.csv_compiled_folder + "action.csv", Config.csv_folder, "*action.csv");
             ActionFactory.init(Config.csv_compiled_folder + "action.csv");

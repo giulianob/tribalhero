@@ -71,7 +71,7 @@ namespace Game.Logic.Actions {
             }
 
             // add structure to the map                    
-            Structure structure = StructureFactory.getStructure(type, 0);
+            Structure structure = StructureFactory.GetStructure(type, 0);
             structure.X = x;
             structure.Y = y;
 
@@ -97,7 +97,7 @@ namespace Game.Logic.Actions {
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.getTime(type, 1), city.Technologies));
+            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(type, 1), city.Technologies));
             beginTime = DateTime.Now;
 
             city.Worker.References.Add(structure, this);
@@ -126,7 +126,7 @@ namespace Game.Logic.Actions {
                 city.Worker.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                StructureFactory.getStructure(structure, structure.Type, 1, false);
+                StructureFactory.GetStructure(structure, structure.Type, 1, false);
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();

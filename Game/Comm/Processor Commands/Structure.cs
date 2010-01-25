@@ -173,7 +173,7 @@ namespace Game.Comm {
                     return;
                 }
 
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, lma, obj.Technologies);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, lma, obj.Technologies);
 
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -208,7 +208,7 @@ namespace Game.Comm {
                 }
 
                 TechnologyUpgradeAction upgradeAction = new TechnologyUpgradeAction(cityId, objectId, techId);
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, upgradeAction,
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction,
                                                  obj.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -281,7 +281,7 @@ namespace Game.Comm {
                 }
 
                 StructureUpgradeAction upgradeAction = new StructureUpgradeAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, upgradeAction,
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction,
                                                  obj.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -326,7 +326,7 @@ namespace Game.Comm {
                 }
 
                 StructureBuildAction buildaction = new StructureBuildAction(cityId, type, x, y);
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, buildaction,
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, buildaction,
                                                  obj.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
@@ -368,7 +368,7 @@ namespace Game.Comm {
                 }
 
                 StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl);
-                Error ret = city.Worker.DoActive(StructureFactory.getActionWorkerType(obj), obj, changeAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, changeAction, obj.Technologies);
                 if (ret != 0)
                     reply_error(session, packet, ret);
                 else

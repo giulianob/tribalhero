@@ -31,7 +31,7 @@ namespace Game.Battle {
             } else if (co is CombatStructure) {
                 CombatStructure cs = co as CombatStructure;
                 Append("List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" +
-                       StructureFactory.getName(cs.Structure) + "] HP[" + cs.Hp + "]");
+                       StructureFactory.GetName(cs.Structure) + "] HP[" + cs.Hp + "]");
             }
         }
 

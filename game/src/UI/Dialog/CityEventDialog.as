@@ -14,6 +14,7 @@
 	import src.UI.Components.CityActionGridList.CityActionGridList;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
+	import src.Util.Util;
 
 	/**
 	 * CityEventDialog
@@ -104,7 +105,7 @@
 			lblWood.setText(resourceLabelText(city.resources.wood));
 			lblCrop.setText(resourceLabelText(city.resources.crop));
 			lblIron.setText(resourceLabelText(city.resources.iron));
-			lblLabor.setText(simpleLabelText(city.resources.labor.getValue().toString() + " are idle and " + city.getBusyLaborCount().toString() + " are working", false, false));
+			lblLabor.setText(simpleLabelText(city.resources.labor.getValue().toString() + " " + Util.makePlural(city.resources.labor.getValue(), "is", "are", "are") + " idle and " + city.getBusyLaborCount().toString() + " " + Util.makePlural(city.getBusyLaborCount(), "is", "are", "are") + " working", false, false));
 			lblUpkeep.setText(simpleLabelText(city.troops.getDefaultTroop().upkeep.toString(), true, true));
 		}
 

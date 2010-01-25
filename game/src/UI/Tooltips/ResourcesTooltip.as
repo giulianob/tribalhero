@@ -10,6 +10,7 @@
 	import src.Map.City;
 	import src.Objects.LazyValue;
 	import src.UI.GameLookAndFeel;
+	import src.Util.Util;
 
 
 	public class ResourcesTooltip extends Tooltip
@@ -47,7 +48,7 @@
 			ui.append(resourceLabelMaker(city.resources.wood, new AssetIcon(new ICON_WOOD())));
 			ui.append(resourceLabelMaker(city.resources.crop, new AssetIcon(new ICON_CROP())));
 			ui.append(resourceLabelMaker(city.resources.iron, new AssetIcon(new ICON_IRON())));
-			ui.append(simpleLabelMaker(city.resources.labor.getValue().toString() + " are idle and " + city.getBusyLaborCount().toString() + " are working", false, false, new AssetIcon(new ICON_LABOR())));
+			ui.append(simpleLabelMaker(city.resources.labor.getValue().toString() + " " + Util.makePlural(city.resources.labor.getValue(), "is", "are", "are") + " idle and " + city.getBusyLaborCount().toString() + " " + Util.makePlural(city.getBusyLaborCount(), "is", "are", "are") + " working", false, false, new AssetIcon(new ICON_LABOR())));
 			ui.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep.toString(), true, true, new AssetIcon(new ICON_CROP())));
 		}
 		

@@ -30,13 +30,14 @@ package src.UI.Tooltips {
 				this.viewObj = obj;
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
 
-				ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));
-				ui.show();
+				ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));				
+				ui.show(null);				
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
+				ui.getFrame().pack();
 			}
 			else
-			ui.getFrame().pack();
+				ui.getFrame().pack();
 
 			adjustPosition();
 		}

@@ -39,7 +39,7 @@ namespace Game.Logic.Actions {
             if (!ReqirementFactory.getLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).validate(structure.City, structure.X, structure.Y))
                 return Error.LAYOUT_NOT_FULLFILLED;
 
-            Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
+            Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
 
             if (cost == null)
                 return Error.OBJECT_STRUCTURE_NOT_FOUND;
@@ -51,7 +51,7 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.getTime(structure.Type, (byte)(structure.Lvl + 1)), structure.Technologies));
+            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), structure.Technologies));
             beginTime = DateTime.Now;
 
             return Error.OK;
@@ -70,7 +70,7 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.getStructure(structure, structure.Type, (byte)(structure.Lvl + 1), true);
+                StructureFactory.GetStructure(structure, structure.Type, (byte)(structure.Lvl + 1), true);
                 InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
@@ -107,7 +107,7 @@ namespace Game.Logic.Actions {
                         break;
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.del(this);
-                        Resource cost = StructureFactory.getCost(structure.Type, structure.Lvl + 1);
+                        Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
 
                         city.BeginUpdate();
                         city.Resource.Add(cost / 2);

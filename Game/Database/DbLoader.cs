@@ -139,7 +139,7 @@ namespace Game.Database {
                         while (reader.Read()) {
                             City city;
                             Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                            Structure structure = StructureFactory.getStructure(null, (ushort) reader["type"],
+                            Structure structure = StructureFactory.GetStructure(null, (ushort) reader["type"],
                                                                                 (byte) reader["level"], false, false);
                             structure.Technologies.Parent = city.Technologies;
                             structure.X = (uint) reader["x"];

@@ -1,137 +1,137 @@
-"Key","EN"
-"TOWNCENTER_STRUCTURE_NAME","Town Center"
-"TOWNCENTER_STRUCTURE_DESCRIPTION","Town Center general description"
-"TOWNCENTER_STRUCTURE_LVL_1","Level 1 description"
-"TOWNCENTER_STRUCTURE_LVL_2","Level 2 description"
-"TOWNCENTER_STRUCTURE_LVL_3","Level 3 description"
-"TOWNCENTER_STRUCTURE_LVL_4","Level 4 description"
-"TOWNCENTER_STRUCTURE_LVL_5","Level 5 description"
-"TOWNCENTER_STRUCTURE_LVL_6","Level 6 description"
-"TOWNCENTER_STRUCTURE_LVL_7","Level 7 description"
-"TOWNCENTER_STRUCTURE_LVL_8","Level 8 description"
-"TOWNCENTER_STRUCTURE_LVL_9","Level 9 description"
-"TOWNCENTER_STRUCTURE_LVL_10","Level 10 description"
-"BARRACK_STRUCTURE_NAME","Barrack"
-"BARRACK_STRUCTURE_DESCRIPTION","Barrack general description"
-"BARRACK_STRUCTURE_LVL_1","Level 1 description"
-"BARRACK_STRUCTURE_LVL_2","Level 2 description"
-"BARRACK_STRUCTURE_LVL_3","Level 3 description"
-"BARRACK_STRUCTURE_LVL_4","Level 4 description"
-"BARRACK_STRUCTURE_LVL_5","Level 5 description"
-"BARRACK_STRUCTURE_LVL_6","Level 6 description"
-"BARRACK_STRUCTURE_LVL_7","Level 7 description"
-"BARRACK_STRUCTURE_LVL_8","Level 8 description"
-"BARRACK_STRUCTURE_LVL_9","Level 9 description"
-"BARRACK_STRUCTURE_LVL_10","Level 10 description"
-"FARM_STRUCTURE_NAME","Farm"
-"FARM_STRUCTURE_DESCRIPTION","Farm general description"
-"FARM_STRUCTURE_LVL_1","Level 1 description"
-"FARM_STRUCTURE_LVL_2","Level 2 description"
-"FARM_STRUCTURE_LVL_3","Level 3 description"
-"FARM_STRUCTURE_LVL_4","Level 4 description"
-"FARM_STRUCTURE_LVL_5","Level 5 description"
-"FARM_STRUCTURE_LVL_6","Level 6 description"
-"FARM_STRUCTURE_LVL_7","Level 7 description"
-"FARM_STRUCTURE_LVL_8","Level 8 description"
-"FARM_STRUCTURE_LVL_9","Level 9 description"
-"FARM_STRUCTURE_LVL_10","Level 10 description"
-"LUMBERMILL_STRUCTURE_NAME","Lumbermill"
-"LUMBERMILL_STRUCTURE_DESCRIPTION","Lumbermill general description"
-"LUMBERMILL_STRUCTURE_LVL_1","Level 1 description"
-"LUMBERMILL_STRUCTURE_LVL_2","Level 2 description"
-"LUMBERMILL_STRUCTURE_LVL_3","Level 3 description"
-"LUMBERMILL_STRUCTURE_LVL_4","Level 4 description"
-"LUMBERMILL_STRUCTURE_LVL_5","Level 5 description"
-"LUMBERMILL_STRUCTURE_LVL_6","Level 6 description"
-"LUMBERMILL_STRUCTURE_LVL_7","Level 7 description"
-"LUMBERMILL_STRUCTURE_LVL_8","Level 8 description"
-"LUMBERMILL_STRUCTURE_LVL_9","Level 9 description"
-"LUMBERMILL_STRUCTURE_LVL_10","Level 10 description"
-"FOUNDRY_STRUCTURE_NAME","Foundry"
-"FOUNDRY_STRUCTURE_DESCRIPTION","Foundry general description"
-"FOUNDRY_STRUCTURE_LVL_1","Level 1 description"
-"FOUNDRY_STRUCTURE_LVL_2","Level 2 description"
-"FOUNDRY_STRUCTURE_LVL_3","Level 3 description"
-"FOUNDRY_STRUCTURE_LVL_4","Level 4 description"
-"FOUNDRY_STRUCTURE_LVL_5","Level 5 description"
-"STABLE_STRUCTURE_NAME","Stable"
-"STABLE_STRUCTURE_DESCRIPTION","Stable general description"
-"STABLE_STRUCTURE_LVL_1","Level 1 description"
-"STABLE_STRUCTURE_LVL_2","Level 2 description"
-"STABLE_STRUCTURE_LVL_3","Level 3 description"
-"STABLE_STRUCTURE_LVL_4","Level 4 description"
-"STABLE_STRUCTURE_LVL_5","Level 5 description"
-"STABLE_STRUCTURE_LVL_6","Level 6 description"
-"STABLE_STRUCTURE_LVL_7","Level 7 description"
-"STABLE_STRUCTURE_LVL_8","Level 8 description"
-"STABLE_STRUCTURE_LVL_9","Level 9 description"
-"STABLE_STRUCTURE_LVL_10","Level 10 description"
-"WORKSHOP_STRUCTURE_NAME","Workshop"
-"WORKSHOP_STRUCTURE_DESCRIPTION","Workshop general description"
-"WORKSHOP_STRUCTURE_LVL_1","Level 1 description"
-"WORKSHOP_STRUCTURE_LVL_2","Level 2 description"
-"WORKSHOP_STRUCTURE_LVL_3","Level 3 description"
-"WORKSHOP_STRUCTURE_LVL_4","Level 4 description"
-"WORKSHOP_STRUCTURE_LVL_5","Level 5 description"
-"WORKSHOP_STRUCTURE_LVL_6","Level 6 description"
-"WORKSHOP_STRUCTURE_LVL_7","Level 7 description"
-"WORKSHOP_STRUCTURE_LVL_8","Level 8 description"
-"WORKSHOP_STRUCTURE_LVL_9","Level 9 description"
-"WORKSHOP_STRUCTURE_LVL_10","Level 10 description"
-"UNIVERSITY_STRUCTURE_NAME","University"
-"UNIVERSITY_STRUCTURE_DESCRIPTION","University general description"
-"UNIVERSITY_STRUCTURE_LVL_1","Level 1 description"
-"UNIVERSITY_STRUCTURE_LVL_2","Level 2 description"
-"UNIVERSITY_STRUCTURE_LVL_3","Level 3 description"
-"UNIVERSITY_STRUCTURE_LVL_4","Level 4 description"
-"UNIVERSITY_STRUCTURE_LVL_5","Level 5 description"
-"UNIVERSITY_STRUCTURE_LVL_6","Level 6 description"
-"UNIVERSITY_STRUCTURE_LVL_7","Level 7 description"
-"UNIVERSITY_STRUCTURE_LVL_8","Level 8 description"
-"UNIVERSITY_STRUCTURE_LVL_9","Level 9 description"
-"UNIVERSITY_STRUCTURE_LVL_10","Level 10 description"
-"ARMORY_STRUCTURE_NAME","Armory"
-"ARMORY_STRUCTURE_DESCRIPTION","Armory general description"
-"ARMORY_STRUCTURE_LVL_1","Level 1 description"
-"ARMORY_STRUCTURE_LVL_2","Level 2 description"
-"ARMORY_STRUCTURE_LVL_3","Level 3 description"
-"ARMORY_STRUCTURE_LVL_4","Level 4 description"
-"ARMORY_STRUCTURE_LVL_5","Level 5 description"
-"ARMORY_STRUCTURE_LVL_6","Level 6 description"
-"ARMORY_STRUCTURE_LVL_7","Level 7 description"
-"ARMORY_STRUCTURE_LVL_8","Level 8 description"
-"ARMORY_STRUCTURE_LVL_9","Level 9 description"
-"ARMORY_STRUCTURE_LVL_10","Level 10 description"
-"TOWER_STRUCTURE_NAME","Tower"
-"TOWER_STRUCTURE_DESCRIPTION","Tower general description"
-"TOWER_STRUCTURE_LVL_1","Level 1 description"
-"TOWER_STRUCTURE_LVL_2","Level 2 description"
-"TOWER_STRUCTURE_LVL_3","Level 3 description"
-"TOWER_STRUCTURE_LVL_4","Level 4 description"
-"TOWER_STRUCTURE_LVL_5","Level 5 description"
-"CANNON_TOWER_STRUCTURE_NAME","Cannon tower"
-"CANNON_TOWER_STRUCTURE_DESCRIPTION","Cannon tower general description"
-"CANNON_TOWER_STRUCTURE_LVL_1","Level 1 description"
-"CANNON_TOWER_STRUCTURE_LVL_2","Level 2 description"
-"CANNON_TOWER_STRUCTURE_LVL_3","Level 3 description"
-"CANNON_TOWER_STRUCTURE_LVL_4","Level 4 description"
-"CANNON_TOWER_STRUCTURE_LVL_5","Level 5 description"
-"DISTRIBUTION_CENTER_STRUCTURE_NAME","Distribution center"
-"DISTRIBUTION_CENTER_STRUCTURE_DESCRIPTION","Distribution center general description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_1","Level 1 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_2","Level 2 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_3","Level 3 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_4","Level 4 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_5","Level 5 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_6","Level 6 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_7","Level 7 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_8","Level 8 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_9","Level 9 description"
-"DISTRIBUTION_CENTER_STRUCTURE_LVL_10","Level 10 description"
-"MARKET_STRUCTURE_NAME","Market"
-"MARKET_STRUCTURE_DESCRIPTION","Market general description"
-"MARKET_STRUCTURE_LVL_1","Level 1 description"
-"MARKET_STRUCTURE_LVL_2","Level 2 description"
-"MARKET_STRUCTURE_LVL_3","Level 3 description"
-"MARKET_STRUCTURE_LVL_4","Level 4 description"
-"MARKET_STRUCTURE_LVL_5","Level 5 description"
+Key,EN
+TOWNCENTER_STRUCTURE_NAME,Town Center
+TOWNCENTER_STRUCTURE_DESCRIPTION,The Town Center provides the foundations necessary to grow your city.
+TOWNCENTER_STRUCTURE_LVL_1,"Allows building farms and lumbermills. Also the town center is able to hold a maximum of 600 crop, 600 wood, and 600 iron."
+TOWNCENTER_STRUCTURE_LVL_2,Increases the maximum resources to 900 and enables you to build barracks and a university.
+TOWNCENTER_STRUCTURE_LVL_3,Level 3 description
+TOWNCENTER_STRUCTURE_LVL_4,Level 4 description
+TOWNCENTER_STRUCTURE_LVL_5,Level 5 description
+TOWNCENTER_STRUCTURE_LVL_6,Level 6 description
+TOWNCENTER_STRUCTURE_LVL_7,Level 7 description
+TOWNCENTER_STRUCTURE_LVL_8,Level 8 description
+TOWNCENTER_STRUCTURE_LVL_9,Level 9 description
+TOWNCENTER_STRUCTURE_LVL_10,Level 10 description
+BARRACK_STRUCTURE_NAME,Barrack
+BARRACK_STRUCTURE_DESCRIPTION,Barrack general description
+BARRACK_STRUCTURE_LVL_1,Level 1 description
+BARRACK_STRUCTURE_LVL_2,Level 2 description
+BARRACK_STRUCTURE_LVL_3,Level 3 description
+BARRACK_STRUCTURE_LVL_4,Level 4 description
+BARRACK_STRUCTURE_LVL_5,Level 5 description
+BARRACK_STRUCTURE_LVL_6,Level 6 description
+BARRACK_STRUCTURE_LVL_7,Level 7 description
+BARRACK_STRUCTURE_LVL_8,Level 8 description
+BARRACK_STRUCTURE_LVL_9,Level 9 description
+BARRACK_STRUCTURE_LVL_10,Level 10 description
+FARM_STRUCTURE_NAME,Farm
+FARM_STRUCTURE_DESCRIPTION,Farm general description
+FARM_STRUCTURE_LVL_1,Level 1 description
+FARM_STRUCTURE_LVL_2,Level 2 description
+FARM_STRUCTURE_LVL_3,Level 3 description
+FARM_STRUCTURE_LVL_4,Level 4 description
+FARM_STRUCTURE_LVL_5,Level 5 description
+FARM_STRUCTURE_LVL_6,Level 6 description
+FARM_STRUCTURE_LVL_7,Level 7 description
+FARM_STRUCTURE_LVL_8,Level 8 description
+FARM_STRUCTURE_LVL_9,Level 9 description
+FARM_STRUCTURE_LVL_10,Level 10 description
+LUMBERMILL_STRUCTURE_NAME,Lumbermill
+LUMBERMILL_STRUCTURE_DESCRIPTION,Lumbermill general description
+LUMBERMILL_STRUCTURE_LVL_1,Level 1 description
+LUMBERMILL_STRUCTURE_LVL_2,Level 2 description
+LUMBERMILL_STRUCTURE_LVL_3,Level 3 description
+LUMBERMILL_STRUCTURE_LVL_4,Level 4 description
+LUMBERMILL_STRUCTURE_LVL_5,Level 5 description
+LUMBERMILL_STRUCTURE_LVL_6,Level 6 description
+LUMBERMILL_STRUCTURE_LVL_7,Level 7 description
+LUMBERMILL_STRUCTURE_LVL_8,Level 8 description
+LUMBERMILL_STRUCTURE_LVL_9,Level 9 description
+LUMBERMILL_STRUCTURE_LVL_10,Level 10 description
+FOUNDRY_STRUCTURE_NAME,Foundry
+FOUNDRY_STRUCTURE_DESCRIPTION,Foundry general description
+FOUNDRY_STRUCTURE_LVL_1,Level 1 description
+FOUNDRY_STRUCTURE_LVL_2,Level 2 description
+FOUNDRY_STRUCTURE_LVL_3,Level 3 description
+FOUNDRY_STRUCTURE_LVL_4,Level 4 description
+FOUNDRY_STRUCTURE_LVL_5,Level 5 description
+STABLE_STRUCTURE_NAME,Stable
+STABLE_STRUCTURE_DESCRIPTION,Stable general description
+STABLE_STRUCTURE_LVL_1,Level 1 description
+STABLE_STRUCTURE_LVL_2,Level 2 description
+STABLE_STRUCTURE_LVL_3,Level 3 description
+STABLE_STRUCTURE_LVL_4,Level 4 description
+STABLE_STRUCTURE_LVL_5,Level 5 description
+STABLE_STRUCTURE_LVL_6,Level 6 description
+STABLE_STRUCTURE_LVL_7,Level 7 description
+STABLE_STRUCTURE_LVL_8,Level 8 description
+STABLE_STRUCTURE_LVL_9,Level 9 description
+STABLE_STRUCTURE_LVL_10,Level 10 description
+WORKSHOP_STRUCTURE_NAME,Workshop
+WORKSHOP_STRUCTURE_DESCRIPTION,Workshop general description
+WORKSHOP_STRUCTURE_LVL_1,Level 1 description
+WORKSHOP_STRUCTURE_LVL_2,Level 2 description
+WORKSHOP_STRUCTURE_LVL_3,Level 3 description
+WORKSHOP_STRUCTURE_LVL_4,Level 4 description
+WORKSHOP_STRUCTURE_LVL_5,Level 5 description
+WORKSHOP_STRUCTURE_LVL_6,Level 6 description
+WORKSHOP_STRUCTURE_LVL_7,Level 7 description
+WORKSHOP_STRUCTURE_LVL_8,Level 8 description
+WORKSHOP_STRUCTURE_LVL_9,Level 9 description
+WORKSHOP_STRUCTURE_LVL_10,Level 10 description
+UNIVERSITY_STRUCTURE_NAME,University
+UNIVERSITY_STRUCTURE_DESCRIPTION,University general description
+UNIVERSITY_STRUCTURE_LVL_1,Level 1 description
+UNIVERSITY_STRUCTURE_LVL_2,Level 2 description
+UNIVERSITY_STRUCTURE_LVL_3,Level 3 description
+UNIVERSITY_STRUCTURE_LVL_4,Level 4 description
+UNIVERSITY_STRUCTURE_LVL_5,Level 5 description
+UNIVERSITY_STRUCTURE_LVL_6,Level 6 description
+UNIVERSITY_STRUCTURE_LVL_7,Level 7 description
+UNIVERSITY_STRUCTURE_LVL_8,Level 8 description
+UNIVERSITY_STRUCTURE_LVL_9,Level 9 description
+UNIVERSITY_STRUCTURE_LVL_10,Level 10 description
+ARMORY_STRUCTURE_NAME,Armory
+ARMORY_STRUCTURE_DESCRIPTION,Armory general description
+ARMORY_STRUCTURE_LVL_1,Level 1 description
+ARMORY_STRUCTURE_LVL_2,Level 2 description
+ARMORY_STRUCTURE_LVL_3,Level 3 description
+ARMORY_STRUCTURE_LVL_4,Level 4 description
+ARMORY_STRUCTURE_LVL_5,Level 5 description
+ARMORY_STRUCTURE_LVL_6,Level 6 description
+ARMORY_STRUCTURE_LVL_7,Level 7 description
+ARMORY_STRUCTURE_LVL_8,Level 8 description
+ARMORY_STRUCTURE_LVL_9,Level 9 description
+ARMORY_STRUCTURE_LVL_10,Level 10 description
+TOWER_STRUCTURE_NAME,Tower
+TOWER_STRUCTURE_DESCRIPTION,Tower general description
+TOWER_STRUCTURE_LVL_1,Level 1 description
+TOWER_STRUCTURE_LVL_2,Level 2 description
+TOWER_STRUCTURE_LVL_3,Level 3 description
+TOWER_STRUCTURE_LVL_4,Level 4 description
+TOWER_STRUCTURE_LVL_5,Level 5 description
+CANNON_TOWER_STRUCTURE_NAME,Cannon tower
+CANNON_TOWER_STRUCTURE_DESCRIPTION,Cannon tower general description
+CANNON_TOWER_STRUCTURE_LVL_1,Level 1 description
+CANNON_TOWER_STRUCTURE_LVL_2,Level 2 description
+CANNON_TOWER_STRUCTURE_LVL_3,Level 3 description
+CANNON_TOWER_STRUCTURE_LVL_4,Level 4 description
+CANNON_TOWER_STRUCTURE_LVL_5,Level 5 description
+DISTRIBUTION_CENTER_STRUCTURE_NAME,Distribution center
+DISTRIBUTION_CENTER_STRUCTURE_DESCRIPTION,Distribution center general description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_1,Level 1 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_2,Level 2 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_3,Level 3 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_4,Level 4 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_5,Level 5 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_6,Level 6 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_7,Level 7 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_8,Level 8 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_9,Level 9 description
+DISTRIBUTION_CENTER_STRUCTURE_LVL_10,Level 10 description
+MARKET_STRUCTURE_NAME,Market
+MARKET_STRUCTURE_DESCRIPTION,Market general description
+MARKET_STRUCTURE_LVL_1,Level 1 description
+MARKET_STRUCTURE_LVL_2,Level 2 description
+MARKET_STRUCTURE_LVL_3,Level 3 description
+MARKET_STRUCTURE_LVL_4,Level 4 description
+MARKET_STRUCTURE_LVL_5,Level 5 description

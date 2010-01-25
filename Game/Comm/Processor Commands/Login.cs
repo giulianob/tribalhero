@@ -17,6 +17,8 @@ using Game.Util;
 
 namespace Game.Comm {
     public partial class Processor {
+        readonly object loginLock = new object();
+
         public void CmdQueryXml(Session session, Packet packet) {
             Packet reply = new Packet(packet);
             reply.addString(File.ReadAllText("C:\\source\\GameServer\\Game\\Setup\\CSV\\data.xml"));
@@ -106,15 +108,21 @@ namespace Game.Comm {
                     sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.Now.Ticks))).
                     Replace("-", String.Empty);
 
-            bool newPlayer = !Global.Players.TryGetValue(playerId, out player);
+            bool newPlayer;
+            lock (loginLock) {
+                newPlayer = !Global.Players.TryGetValue(playerId, out player);
 
-            if (newPlayer) {
-                player = new Player(playerId, playerName, sessionId);
-
-                Global.Players.Add(player.PlayerId, player);
-            } else
-                player.SessionId = sessionId;
-
+                if (newPlayer) {
+                    Global.Logger.Info(String.Format("Creating new player {0}({1})", playerName, playerId));
+                    player = new Player(playerId, playerName, sessionId);
+                    Global.Players.Add(player.PlayerId, player);
+                }
+                else {
+                    Global.Logger.Info(String.Format("Player login in {0}({1})", player.Name, player.PlayerId));
+                    player.SessionId = sessionId;
+                }
+            }
+            
             using (new MultiObjectLock(player)) {
                 if (!newPlayer) {
                     if (player.Session != null) {
@@ -123,7 +131,7 @@ namespace Game.Comm {
                     }
                     player.Session = session;
                     Global.dbManager.Save(player);
-                } else {
+                } else {                    
                     player.DbPersisted = Config.database_load_players;
 
                     Global.dbManager.Save(player);
@@ -144,8 +152,7 @@ namespace Game.Comm {
                     Global.World.Add(city);
                     Global.World.Add(structure);
 
-                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type,
-                                               structure.Stats.Base.Lvl);
+                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
 
                     city.Worker.DoPassive(city, new CityAction(city.Id), false);
                 }

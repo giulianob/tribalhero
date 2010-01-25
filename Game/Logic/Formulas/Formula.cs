@@ -123,10 +123,8 @@ namespace Game.Logic {
 
         internal static void ResourceCap(City city) {
             if (Config.resource_cap) {
-                if (city.Owner.PlayerId != 123) {
-                    int limit = 500 + city.MainBuilding.Lvl*city.MainBuilding.Lvl*100;
-                    city.Resource.SetLimits(limit, 0, limit, limit, 0);
-                }
+                int limit = 500 + city.MainBuilding.Lvl*city.MainBuilding.Lvl*100;
+                city.Resource.SetLimits(limit, 0, limit, limit, 0);
             } else
                 city.Resource.SetLimits(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
         }

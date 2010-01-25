@@ -147,7 +147,7 @@ namespace Game.Module {
             while (enumerator.MoveNext()) {
                 Structure structure = enumerator.Current.Value;
 
-                int workerType = StructureFactory.getActionWorkerType(structure);
+                int workerType = StructureFactory.GetActionWorkerType(structure);
                 ActionRecord record = ActionFactory.getActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
@@ -183,7 +183,7 @@ namespace Game.Module {
             Dictionary<uint, Structure>.Enumerator enumerator = city.Structures;
             while (enumerator.MoveNext()) {
                 Structure structure = enumerator.Current.Value;
-                int workerType = StructureFactory.getActionWorkerType(structure);
+                int workerType = StructureFactory.GetActionWorkerType(structure);
                 ActionRecord record = ActionFactory.getActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
@@ -226,7 +226,7 @@ namespace Game.Module {
             StructureUpgradeAction action = new StructureUpgradeAction(city.Id, structure.ObjectId);
 
             if (
-                city.Worker.DoActive(StructureFactory.getActionWorkerType(structure), structure, action,
+                city.Worker.DoActive(StructureFactory.GetActionWorkerType(structure), structure, action,
                                      structure.Technologies) == Error.OK) {
                 //Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Stats.Base.Lvl, x, y));
                 return true;
@@ -303,7 +303,7 @@ namespace Game.Module {
             ushort tileType = Global.World.GetTileType(x, y);
             if (ObjectTypeFactory.IsTileType("TileTree", tileType)) {
                 // Lumber mill
-                Structure structure = StructureFactory.getStructure(2107, 1);
+                Structure structure = StructureFactory.GetStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
@@ -312,7 +312,7 @@ namespace Game.Module {
                 Global.World.Add(structure);
             } else if (ObjectTypeFactory.IsTileType("TileCrop", tileType)) {
                 // Farm
-                Structure structure = StructureFactory.getStructure(2106, 1);
+                Structure structure = StructureFactory.GetStructure(2106, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
@@ -321,7 +321,7 @@ namespace Game.Module {
                 Global.World.Add(structure);
             } else if (x == origX - 1 && y == origY - 1) {
                 // Barrack
-                Structure structure = StructureFactory.getStructure(2201, 1);
+                Structure structure = StructureFactory.GetStructure(2201, 1);
                 structure.X = x;
                 structure.Y = y;
 

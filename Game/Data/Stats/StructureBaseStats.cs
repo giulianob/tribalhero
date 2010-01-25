@@ -16,7 +16,7 @@ namespace Game.Data.Stats {
 
         public int BuildTime { get; private set; }
 
-        public ClassID BaseClass { get; private set; }
+        public ClassId BaseClass { get; private set; }
 
         public int WorkerId { get; private set; }
 
@@ -27,7 +27,7 @@ namespace Game.Data.Stats {
         public BaseBattleStats Battle { get; private set; }
 
         public StructureBaseStats(string name, ushort type, byte lvl, byte radius, Resource cost, BaseBattleStats baseBattleStats,
-                                  byte maxLabor, int buildTime, int workerId, ClassID baseClass) {
+                                  byte maxLabor, int buildTime, int workerId, ClassId baseClass) {
             Name = name;
             Radius = radius;
             Type = type;

@@ -21,7 +21,7 @@ namespace Game.Logic {
         }
 
         public static bool MainBuilding(out Structure structure) {
-            structure = StructureFactory.getStructure(2000, 1);
+            structure = StructureFactory.GetStructure(2000, 1);
             uint x, y;
             if (!MapFactory.NextLocation(out x, out y)) {
                 structure = null;
@@ -48,9 +48,9 @@ namespace Game.Logic {
                 Structure structure;
                 Global.World.LockRegion(x, y);
                 if (Config.Random.Next()%2 == 0)
-                    structure = StructureFactory.getStructure(2402, 1);
+                    structure = StructureFactory.GetStructure(2402, 1);
                 else
-                    structure = StructureFactory.getStructure(2402, 1);
+                    structure = StructureFactory.GetStructure(2402, 1);
                 structure.X = x;
                 structure.Y = y;
                 feObj.city.Add(structure);

@@ -1,74 +1,74 @@
 Key,EN
 TOWNCENTER_STRUCTURE_NAME,Town Center
-TOWNCENTER_STRUCTURE_DESCRIPTION,The Town Center provides the foundations necessary to grow your city.
-TOWNCENTER_STRUCTURE_LVL_1,"Allows building farms and lumbermills. Also the town center is able to hold a maximum of 600 crop, 600 wood, and 600 iron."
-TOWNCENTER_STRUCTURE_LVL_2,Increases the maximum resources to 900 and enables you to build barracks and a university.
-TOWNCENTER_STRUCTURE_LVL_3,Level 3 description
-TOWNCENTER_STRUCTURE_LVL_4,Level 4 description
-TOWNCENTER_STRUCTURE_LVL_5,Level 5 description
-TOWNCENTER_STRUCTURE_LVL_6,Level 6 description
-TOWNCENTER_STRUCTURE_LVL_7,Level 7 description
-TOWNCENTER_STRUCTURE_LVL_8,Level 8 description
-TOWNCENTER_STRUCTURE_LVL_9,Level 9 description
-TOWNCENTER_STRUCTURE_LVL_10,Level 10 description
+TOWNCENTER_STRUCTURE_DESCRIPTION,The Town Center provides the foundation necessary to grow your city.
+TOWNCENTER_STRUCTURE_LVL_1,"Allows building farms and lumbermills. Town center can hold a maximum of ### crop, ### wood, and ### iron."
+TOWNCENTER_STRUCTURE_LVL_2,"Enables building barracks and a university. Increases the maximum resources to ### crop, ### wood, and ### iron."
+TOWNCENTER_STRUCTURE_LVL_3,Increases the maximum resources to ### each.
+TOWNCENTER_STRUCTURE_LVL_4,"Allows building foundries, stables, and trading posts. Increases the maximum resources to ### each."
+TOWNCENTER_STRUCTURE_LVL_5,Increases the maximum resources to ### each.
+TOWNCENTER_STRUCTURE_LVL_6,Increases the maximum resources to ### each.
+TOWNCENTER_STRUCTURE_LVL_7,Increases the maximum resources to ### each.
+TOWNCENTER_STRUCTURE_LVL_8,Increases the maximum resources to ### each.
+TOWNCENTER_STRUCTURE_LVL_9,Increases the maximum resources to ### each.
+TOWNCENTER_STRUCTURE_LVL_10,Ability to build multiple stables. Increases the maximum resources to ### each.
 BARRACK_STRUCTURE_NAME,Barrack
-BARRACK_STRUCTURE_DESCRIPTION,Barrack general description
-BARRACK_STRUCTURE_LVL_1,Level 1 description
-BARRACK_STRUCTURE_LVL_2,Level 2 description
-BARRACK_STRUCTURE_LVL_3,Level 3 description
-BARRACK_STRUCTURE_LVL_4,Level 4 description
-BARRACK_STRUCTURE_LVL_5,Level 5 description
-BARRACK_STRUCTURE_LVL_6,Level 6 description
-BARRACK_STRUCTURE_LVL_7,Level 7 description
-BARRACK_STRUCTURE_LVL_8,Level 8 description
-BARRACK_STRUCTURE_LVL_9,Level 9 description
-BARRACK_STRUCTURE_LVL_10,Level 10 description
+BARRACK_STRUCTURE_DESCRIPTION,Enables the ability to train basic military units. Also provides some defensive structures such as towers.
+BARRACK_STRUCTURE_LVL_1,"Allows training swordsman, pikeman, and archers."
+BARRACK_STRUCTURE_LVL_2,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_LVL_3,"Enables upgrading swordsman, pikeman, and archers to the next level. Decreases unit training time by ###%."
+BARRACK_STRUCTURE_LVL_4,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_LVL_5,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_LVL_6,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_LVL_7,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_LVL_8,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_LVL_9,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_LVL_10,Decreases unit training time by ###%.
 FARM_STRUCTURE_NAME,Farm
-FARM_STRUCTURE_DESCRIPTION,Farm general description
-FARM_STRUCTURE_LVL_1,Level 1 description
-FARM_STRUCTURE_LVL_2,Level 2 description
-FARM_STRUCTURE_LVL_3,Level 3 description
-FARM_STRUCTURE_LVL_4,Level 4 description
-FARM_STRUCTURE_LVL_5,Level 5 description
-FARM_STRUCTURE_LVL_6,Level 6 description
-FARM_STRUCTURE_LVL_7,Level 7 description
-FARM_STRUCTURE_LVL_8,Level 8 description
-FARM_STRUCTURE_LVL_9,Level 9 description
-FARM_STRUCTURE_LVL_10,Level 10 description
+FARM_STRUCTURE_DESCRIPTION,Uses the city's laborers to grow and produce crops.
+FARM_STRUCTURE_LVL_1,Allows a maximum of ### laborers to work in the farm.
+FARM_STRUCTURE_LVL_2,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_3,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_4,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_5,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_6,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_7,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_8,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_9,Increases the farm to support a maximum of ### laborers.
+FARM_STRUCTURE_LVL_10,Increases the farm to support a maximum of ### laborers.
 LUMBERMILL_STRUCTURE_NAME,Lumbermill
-LUMBERMILL_STRUCTURE_DESCRIPTION,Lumbermill general description
-LUMBERMILL_STRUCTURE_LVL_1,Level 1 description
-LUMBERMILL_STRUCTURE_LVL_2,Level 2 description
-LUMBERMILL_STRUCTURE_LVL_3,Level 3 description
-LUMBERMILL_STRUCTURE_LVL_4,Level 4 description
-LUMBERMILL_STRUCTURE_LVL_5,Level 5 description
-LUMBERMILL_STRUCTURE_LVL_6,Level 6 description
-LUMBERMILL_STRUCTURE_LVL_7,Level 7 description
-LUMBERMILL_STRUCTURE_LVL_8,Level 8 description
-LUMBERMILL_STRUCTURE_LVL_9,Level 9 description
-LUMBERMILL_STRUCTURE_LVL_10,Level 10 description
+LUMBERMILL_STRUCTURE_DESCRIPTION,Use the city's laborers to produce wood.
+LUMBERMILL_STRUCTURE_LVL_1,Allows a maximum of ### laborers to work in the lumbermill.
+LUMBERMILL_STRUCTURE_LVL_2,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_3,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_4,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_5,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_6,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_7,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_8,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_9,Increases the lumbermill to support a maximum of ### laborers.
+LUMBERMILL_STRUCTURE_LVL_10,Increases the lumbermill to support a maximum of ### laborers.
 FOUNDRY_STRUCTURE_NAME,Foundry
-FOUNDRY_STRUCTURE_DESCRIPTION,Foundry general description
-FOUNDRY_STRUCTURE_LVL_1,Level 1 description
-FOUNDRY_STRUCTURE_LVL_2,Level 2 description
-FOUNDRY_STRUCTURE_LVL_3,Level 3 description
-FOUNDRY_STRUCTURE_LVL_4,Level 4 description
-FOUNDRY_STRUCTURE_LVL_5,Level 5 description
+FOUNDRY_STRUCTURE_DESCRIPTION,Allow the city's laborer to repair buildings after they have been damaged in combat.
+FOUNDRY_STRUCTURE_LVL_1,Allows a maximum of ### laborers to work in the lumbermill.
+FOUNDRY_STRUCTURE_LVL_2,Allows a maximum of ### laborers to work in the lumbermill.
+FOUNDRY_STRUCTURE_LVL_3,Allows a maximum of ### laborers to work in the lumbermill.
+FOUNDRY_STRUCTURE_LVL_4,Allows a maximum of ### laborers to work in the lumbermill.
+FOUNDRY_STRUCTURE_LVL_5,Allows a maximum of ### laborers to work in the lumbermill.
 STABLE_STRUCTURE_NAME,Stable
-STABLE_STRUCTURE_DESCRIPTION,Stable general description
-STABLE_STRUCTURE_LVL_1,Level 1 description
-STABLE_STRUCTURE_LVL_2,Level 2 description
-STABLE_STRUCTURE_LVL_3,Level 3 description
-STABLE_STRUCTURE_LVL_4,Level 4 description
-STABLE_STRUCTURE_LVL_5,Level 5 description
-STABLE_STRUCTURE_LVL_6,Level 6 description
-STABLE_STRUCTURE_LVL_7,Level 7 description
-STABLE_STRUCTURE_LVL_8,Level 8 description
-STABLE_STRUCTURE_LVL_9,Level 9 description
-STABLE_STRUCTURE_LVL_10,Level 10 description
+STABLE_STRUCTURE_DESCRIPTION,Trains mounted units.
+STABLE_STRUCTURE_LVL_1,Allows training calvary.
+STABLE_STRUCTURE_LVL_2,Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_3,Allows training heavy calvary. Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_4,Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_5,Enables converting the stable into a workshop that can build units that are strong against structures. Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_6,Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_7,Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_8,Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_9,Decreases unit training time by ###%.
+STABLE_STRUCTURE_LVL_10,Decreases unit training time by ###%.
 WORKSHOP_STRUCTURE_NAME,Workshop
-WORKSHOP_STRUCTURE_DESCRIPTION,Workshop general description
-WORKSHOP_STRUCTURE_LVL_1,Level 1 description
+WORKSHOP_STRUCTURE_DESCRIPTION,Ability to train units that are strong against structures.
+WORKSHOP_STRUCTURE_LVL_1,Enables training catapults.
 WORKSHOP_STRUCTURE_LVL_2,Level 2 description
 WORKSHOP_STRUCTURE_LVL_3,Level 3 description
 WORKSHOP_STRUCTURE_LVL_4,Level 4 description
@@ -79,7 +79,7 @@ WORKSHOP_STRUCTURE_LVL_8,Level 8 description
 WORKSHOP_STRUCTURE_LVL_9,Level 9 description
 WORKSHOP_STRUCTURE_LVL_10,Level 10 description
 UNIVERSITY_STRUCTURE_NAME,University
-UNIVERSITY_STRUCTURE_DESCRIPTION,University general description
+UNIVERSITY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city in various different ways.
 UNIVERSITY_STRUCTURE_LVL_1,Level 1 description
 UNIVERSITY_STRUCTURE_LVL_2,Level 2 description
 UNIVERSITY_STRUCTURE_LVL_3,Level 3 description
@@ -91,7 +91,7 @@ UNIVERSITY_STRUCTURE_LVL_8,Level 8 description
 UNIVERSITY_STRUCTURE_LVL_9,Level 9 description
 UNIVERSITY_STRUCTURE_LVL_10,Level 10 description
 ARMORY_STRUCTURE_NAME,Armory
-ARMORY_STRUCTURE_DESCRIPTION,Armory general description
+ARMORY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city's military.
 ARMORY_STRUCTURE_LVL_1,Level 1 description
 ARMORY_STRUCTURE_LVL_2,Level 2 description
 ARMORY_STRUCTURE_LVL_3,Level 3 description
@@ -103,35 +103,35 @@ ARMORY_STRUCTURE_LVL_8,Level 8 description
 ARMORY_STRUCTURE_LVL_9,Level 9 description
 ARMORY_STRUCTURE_LVL_10,Level 10 description
 TOWER_STRUCTURE_NAME,Tower
-TOWER_STRUCTURE_DESCRIPTION,Tower general description
-TOWER_STRUCTURE_LVL_1,Level 1 description
-TOWER_STRUCTURE_LVL_2,Level 2 description
-TOWER_STRUCTURE_LVL_3,Level 3 description
-TOWER_STRUCTURE_LVL_4,Level 4 description
-TOWER_STRUCTURE_LVL_5,Level 5 description
+TOWER_STRUCTURE_DESCRIPTION,Provides defense against nearby buildings during an attack.
+TOWER_STRUCTURE_LVL_1,Protects buildings within a 1 tile radius.
+TOWER_STRUCTURE_LVL_2,Increases defenses.
+TOWER_STRUCTURE_LVL_3,Increases radius to 2 tiles.
+TOWER_STRUCTURE_LVL_4,Increases defenses.
+TOWER_STRUCTURE_LVL_5,Allows converting the tower to a cannon tower that is stronger against units with wooden armor.
 CANNON_TOWER_STRUCTURE_NAME,Cannon tower
-CANNON_TOWER_STRUCTURE_DESCRIPTION,Cannon tower general description
-CANNON_TOWER_STRUCTURE_LVL_1,Level 1 description
-CANNON_TOWER_STRUCTURE_LVL_2,Level 2 description
-CANNON_TOWER_STRUCTURE_LVL_3,Level 3 description
-CANNON_TOWER_STRUCTURE_LVL_4,Level 4 description
-CANNON_TOWER_STRUCTURE_LVL_5,Level 5 description
-DISTRIBUTION_CENTER_STRUCTURE_NAME,Distribution center
-DISTRIBUTION_CENTER_STRUCTURE_DESCRIPTION,Distribution center general description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_1,Level 1 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_2,Level 2 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_3,Level 3 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_4,Level 4 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_5,Level 5 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_6,Level 6 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_7,Level 7 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_8,Level 8 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_9,Level 9 description
-DISTRIBUTION_CENTER_STRUCTURE_LVL_10,Level 10 description
+CANNON_TOWER_STRUCTURE_DESCRIPTION,Provides defense against nearby buildings during an attack.
+CANNON_TOWER_STRUCTURE_LVL_1,Increases defenses.
+CANNON_TOWER_STRUCTURE_LVL_2,Increases defenses.
+CANNON_TOWER_STRUCTURE_LVL_3,Increases defenses.
+CANNON_TOWER_STRUCTURE_LVL_4,Increases defenses.
+CANNON_TOWER_STRUCTURE_LVL_5,Increases defenses.
+DISTRIBUTION_CENTER_STRUCTURE_NAME,Trading post
+DISTRIBUTION_CENTER_STRUCTURE_DESCRIPTION,Allows sending caravans with resources to other players. Gives the ability to build a market.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_1,Ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_2,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_3,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_4,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_5,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_6,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_7,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_8,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_9,Increase ability to send a maximum of ### resources.
+DISTRIBUTION_CENTER_STRUCTURE_LVL_10,Increase ability to send a maximum of ### resources.
 MARKET_STRUCTURE_NAME,Market
-MARKET_STRUCTURE_DESCRIPTION,Market general description
-MARKET_STRUCTURE_LVL_1,Level 1 description
-MARKET_STRUCTURE_LVL_2,Level 2 description
-MARKET_STRUCTURE_LVL_3,Level 3 description
-MARKET_STRUCTURE_LVL_4,Level 4 description
-MARKET_STRUCTURE_LVL_5,Level 5 description
+MARKET_STRUCTURE_DESCRIPTION,Allows selling and buying resources from the world market.
+MARKET_STRUCTURE_LVL_1,Ability to sell and buy resources at a ###% tax rate.
+MARKET_STRUCTURE_LVL_2,Decreases the tax rate to ###%.
+MARKET_STRUCTURE_LVL_3,Decreases the tax rate to ###%.
+MARKET_STRUCTURE_LVL_4,Decreases the tax rate to ###%.
+MARKET_STRUCTURE_LVL_5,Decreases the tax rate to ###%.

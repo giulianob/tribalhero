@@ -40,6 +40,25 @@ package src.Util {
 			}
 			return str.slice(0, 1);
 		}
+		
+		public static function makePlural(value: int, singular: String, plural: String, zero: String = "") : String {
+			if (zero != "" && value == 0)
+			return zero;
+
+			return value > 1 ? plural : singular;
+		}
+
+		public static function firstToUpper(word: String) : String{
+			var firstLetter: String = word.substring(1, 0);
+			var restOfWord: String = word.substring(1);
+			return firstLetter.toUpperCase() + restOfWord;
+		}		
+		
+		public static function wordsToUpper(s:String):String {
+			return s.replace(/ [a-z]/g, function (m:String, ... rest):String {
+				return m.toUpperCase();
+			});
+		}
 	}
 	
 }

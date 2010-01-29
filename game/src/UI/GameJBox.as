@@ -27,7 +27,7 @@
 			frame.setTitleBar(null);
 			frame.setDragable(false);
 			frame.setClosable(false);
-			frame.setResizable(false);			
+			frame.setResizable(false);
 			frame.show();
 
 			return frame;
@@ -35,3 +35,4 @@
 	}
 
 }
+

@@ -51,7 +51,7 @@ package src.UI.Tooltips {
 			this.nextStructPrototype = nextStructPrototype;
 
 			createUI();
-			
+
 			lblTitle.setText("Upgrade " + structPrototype.getName());
 			lblLevel.setText("Level " + structPrototype.level.toString());
 			lblLvlDescription.setText(structPrototype.getDescription());
@@ -75,8 +75,6 @@ package src.UI.Tooltips {
 
 			if (nextStructPrototype != null)
 			{
-				ui.append(pnlNextLvl);
-
 				lblNextLvlDescription.setText(nextStructPrototype.getDescription());
 				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(nextStructPrototype.buildTime, null)));
 
@@ -102,10 +100,6 @@ package src.UI.Tooltips {
 				pnlResources.removeAll();
 				pnlResources.append(new ResourcesPanel(nextStructPrototype.buildResources, Global.map.cities.get(parentObj.cityId)));
 			}
-			else
-				ui.remove(pnlNextLvl);
-
-			adjustPosition();
 		}
 
 		private function createUI(): void {
@@ -127,9 +121,9 @@ package src.UI.Tooltips {
 			lblNextLvlTime.setHorizontalAlignment(AsWingConstants.RIGHT);
 			lblNextLvlTime.setConstraints("East");
 			GameLookAndFeel.changeClass(lblNextLvlTime, "Tooltip.text");
-			
+
 			lblLvlDescription = new MultilineLabel();
-			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");			
+			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");
 
 			pnlNextLvl = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL));
 
@@ -167,7 +161,7 @@ package src.UI.Tooltips {
 			pnlResources.setLayout(layout4);
 
 			statsBox = new StructureStatBox(structPrototype.type, structPrototype.level);
-			
+
 			//component layoution
 			ui.append(lblTitle);
 			ui.append(lblLevel);
@@ -176,16 +170,18 @@ package src.UI.Tooltips {
 
 			if (nextStructPrototype != null) {
 				nextStatsBox = new StructureStatBox(nextStructPrototype.type, nextStructPrototype.level);
-				
+
 				pnlNextLvl.setBorder(new EmptyBorder(null, new Insets(10, 0, 0, 0)));
 				pnlNextLvl.append(pnlHeader);
 				pnlNextLvl.append(lblNextLvlDescription);
 				pnlNextLvl.append(nextStatsBox);
 				pnlNextLvl.append(pnlRequired);
 				pnlNextLvl.append(pnlFooter);
-				
+
 				pnlHeader.append(lblNextLvl);
 				pnlHeader.append(lblNextLvlTime);
+
+				ui.append(pnlNextLvl);
 			}
 
 			pnlFooter.append(lblActionCount);

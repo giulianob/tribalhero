@@ -106,8 +106,6 @@ package src.UI.Tooltips {
 			}
 			else
 			ui.remove(pnlNextLvl);
-
-			adjustPosition();
 		}
 
 		private function createUI(): void {
@@ -173,11 +171,11 @@ package src.UI.Tooltips {
 
 			//component layoution
 			pnlTitleLvl.appendAll(lblTitle, lblLevel);
-			
+
 			ui.append(pnlTitleLvl);
 			ui.append(lblDescription);
-			ui.append(statsBox);			
-			
+			ui.append(statsBox);
+
 			if (nextUnitPrototype != null) {
 				ui.append(new JPanel());
 				pnlNextLvl.append(pnlHeader);
@@ -186,12 +184,12 @@ package src.UI.Tooltips {
 				pnlNextLvl.append(pnlRequired);
 				pnlNextLvl.append(new JPanel());
 				pnlNextLvl.append(pnlFooter);
-				
+
 				pnlHeader.append(lblNextLvl);
 				pnlHeader.append(lblNextLvlTime);
 
 				pnlFooter.append(lblActionCount);
-				pnlFooter.append(pnlResources);				
+				pnlFooter.append(pnlResources);
 			}
 		}
 

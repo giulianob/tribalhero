@@ -62,7 +62,7 @@ public class FrameBackground implements GroundDecorator, UIResource{
 			g = new Graphics2D(bar.graphics);
 			var barHeight:int = 24;
 			if(c is JFrame){
-				barHeight = (c as JFrame).getTitleBar().getSelf().getHeight();
+				barHeight = (c as JFrame).getTitleBar() ? (c as JFrame).getTitleBar().getSelf().getHeight() : 0; 
 			}
 			style = new StyleResult(cl, adjuster);
 			BasicGraphicsUtils.fillGradientRoundRectBottomRightAngle(g, 

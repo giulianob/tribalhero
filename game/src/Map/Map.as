@@ -112,6 +112,7 @@
 				stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 				stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+				stage.removeEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
 
 				//for shits and giggles
 				//stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventMouseWheel);
@@ -128,6 +129,7 @@
 				stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 				stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+				stage.addEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
 
 				//for shits and giggles
 				//stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventMouseWheel);
@@ -481,6 +483,14 @@
 			if (Constants.debug >= 4)
 			trace("MOUSE UP");
 		}
+		
+		public function eventMouseLeave(event: Event):void
+		{
+			mouseDown = false;
+
+			if (Constants.debug >= 4)
+			trace("MOUSE LEAVE");
+		}		
 
 		public function eventMouseMove(event: MouseEvent):void
 		{
@@ -494,7 +504,7 @@
 			var dx: Number = mouseLoc.x - event.stageX;
 			var dy: Number = mouseLoc.y - event.stageY;
 
-			if (Math.abs(dx) < 2 && Math.abs(dy) < 2) return;
+			if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
 
 			mouseLoc = new Point(event.stageX, event.stageY);
 

@@ -236,9 +236,8 @@ package src.UI.Sidebars.ObjectInfo {
 				panel.setConstraints("North");
 				panel.setLayout(new BorderLayout());
 
-				var lblDescription: JLabel = new JLabel(actionDescription);				
-				lblDescription.setConstraints("West");
-				lblDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+				var lblDescription: MultilineLabel = new MultilineLabel(actionDescription);				
+				lblDescription.setConstraints("West");				
 
 				var astCancel: AssetPane = new AssetPane(cancelButton);
 				astCancel.setConstraints("East");
@@ -308,8 +307,9 @@ package src.UI.Sidebars.ObjectInfo {
 			{
 				button.validateButton();
 
-				if (!button.countCurrentActions() && (city != null && workerPrototype != null && city.currentActions.getObjectActions(gameObject.objectId).length >= workerPrototype.maxCount))
-				button.disable();
+				if (!button.countCurrentActions() || (city != null && workerPrototype != null && city.currentActions.getObjectActions(gameObject.objectId).length >= workerPrototype.maxCount)) {
+					button.disable();
+				}
 			}
 		}
 

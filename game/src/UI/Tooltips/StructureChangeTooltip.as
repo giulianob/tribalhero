@@ -95,8 +95,6 @@ package src.UI.Tooltips {
 			
 			pnlResources.removeAll();
 			pnlResources.append(new ResourcesPanel(nextStructPrototype.buildResources, Global.map.cities.get(parentObj.cityId)));
-			
-			adjustPosition();
 		}
 		
 		private function createUI(): void {

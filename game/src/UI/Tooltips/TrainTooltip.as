@@ -48,13 +48,13 @@ package src.UI.Tooltips {
 
 			var city: City = Global.map.cities.get(parentObj.cityId);
 			statsBox = UnitStatBox.createFromPrototype(unitPrototype, city);
-			
+
 			createUI();
-			
+
 			lblTitle.setText("Train " + unitPrototype.getName());
 			lblLevel.setText("Level " + unitPrototype.level);
 			lblTime.setText(Util.formatTime(Formula.buildTime(unitPrototype.trainTime, null)));
-			lblDescription.setText(unitPrototype.getDescription());			
+			lblDescription.setText(unitPrototype.getDescription());
 		}
 
 		public function draw(count: int, max: int) :void
@@ -93,8 +93,6 @@ package src.UI.Tooltips {
 
 			pnlResources.removeAll();
 			pnlResources.append(new ResourcesPanel(unitPrototype.trainResources, Global.map.cities.get(parentObj.cityId)));
-
-			adjustPosition();
 		}
 
 		private function createUI(): void {

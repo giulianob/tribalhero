@@ -3,6 +3,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.display.SimpleButton;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
@@ -36,7 +38,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
 			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);	
 		}
 
 		public function onMouseOver(event: MouseEvent):void

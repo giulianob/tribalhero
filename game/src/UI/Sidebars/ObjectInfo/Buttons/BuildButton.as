@@ -33,7 +33,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		}
 
 		public function onMouseOver(event: MouseEvent):void
-		{
+		{			
 			buildToolTip.show(this);
 		}
 

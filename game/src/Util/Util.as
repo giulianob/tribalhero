@@ -121,14 +121,7 @@ package src.Util {
 
 			return ret;
 		}
-
-		public static function makePlural(value: int, singular: String, plural: String, zero: String = "") : String {
-			if (zero != "" && value == 0)
-			return zero;
-
-			return value > 1 ? plural : singular;
-		}
-
+		
 		public static function formatTime(time: int): String
 		{
 			if (time < 0) return "--:--:--";
@@ -176,11 +169,6 @@ package src.Util {
 			return nice;
 		}
 
-		public static function firstToUpper(word: String) : String{
-			var firstLetter: String = word.substring(1, 0);
-			var restOfWord: String = word.substring(1);
-			return firstLetter.toUpperCase() + restOfWord;
-		}
 	}
 
 }

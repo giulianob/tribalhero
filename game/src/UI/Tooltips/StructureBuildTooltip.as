@@ -9,6 +9,7 @@
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.Components.StructureStatBox;
 	import src.UI.GameLookAndFeel;
+	import src.Util.StringHelper;
 	import src.Util.Util;
 	import src.Objects.Effects.Formula;
 
@@ -29,6 +30,7 @@
 		private var lblTitle:JLabel;
 		private var lblTime:JLabel;
 		private var lblDescription:MultilineLabel;
+		private var lblLvl:JLabel;
 		private var lblLvlDescription:MultilineLabel;
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
@@ -44,7 +46,7 @@
 
 			createUI();
 
-			lblTitle.setText("Build " + structPrototype.getName());
+			lblTitle.setText("Build " + StringHelper.wordsToUpper(structPrototype.getName()));
 			lblDescription.setText(structPrototype.getGeneralDescription());
 			lblLvlDescription.setText(structPrototype.getDescription());
 		}
@@ -89,8 +91,6 @@
 
 			pnlResources.removeAll();
 			pnlResources.append(new ResourcesPanel(structPrototype.buildResources, Global.map.cities.get(parentObj.cityId)));
-
-			adjustPosition();
 		}
 
 		private function createUI(): void {
@@ -118,8 +118,13 @@
 			GameLookAndFeel.changeClass(lblTime, "Tooltip.text");
 
 			lblDescription = new MultilineLabel();
-			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
+			lblDescription.setConstraints("South");
+			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");			
 
+			lblLvl = new JLabel("Level 1");
+			lblLvl.setHorizontalAlignment(AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblLvl, "header");
+			
 			lblLvlDescription = new MultilineLabel();
 			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");
 
@@ -150,7 +155,7 @@
 
 			//component layoution
 			ui.append(pnlHeader);
-			ui.append(lblDescription);
+			ui.append(lblLvl);
 			ui.append(lblLvlDescription);
 			ui.append(statsBox);
 			ui.append(pnlRequired);
@@ -158,6 +163,7 @@
 
 			pnlHeader.append(lblTitle);
 			pnlHeader.append(lblTime);
+			pnlHeader.append(lblDescription);
 
 			pnlFooter.append(lblActionCount);
 			pnlFooter.append(pnlResources);

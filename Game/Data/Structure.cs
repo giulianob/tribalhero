@@ -56,7 +56,7 @@ namespace Game.Data {
         }
 
         public Structure(StructureStats stats) {
-            techmanager = new TechnologyManager(EffectLocation.Object, this, 0);
+            techmanager = new TechnologyManager(EffectLocation.OBJECT, this, 0);
 
             this.stats = stats;
             properties = new StructureProperties(this);
@@ -92,7 +92,7 @@ namespace Game.Data {
             get { return base.ObjectId; }
             set {
                 CheckUpdateMode();
-                techmanager.ID = value;
+                techmanager.Id = value;
                 base.ObjectId = value;
             }
         }

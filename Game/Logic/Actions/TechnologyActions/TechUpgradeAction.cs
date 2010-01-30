@@ -62,7 +62,7 @@ namespace Game.Logic.Actions {
             if (!structure.Technologies.TryGetTechnology(techId, out tech))
                 return Error.OBJECT_NOT_FOUND;
 
-            TechnologyBase techBase = TechnologyFactory.getTechnologyBase(tech.Type, (byte) (tech.Level + 1));
+            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
 
             if (techBase == null)
                 return Error.OBJECT_NOT_FOUND;
@@ -96,7 +96,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                TechnologyBase techBase = TechnologyFactory.getTechnologyBase(tech.Type, (byte) (tech.Level + 1));
+                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
 
                 if (techBase == null) {
                     StateChange(ActionState.FAILED);
@@ -143,19 +143,21 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                TechnologyBase techBase = TechnologyFactory.getTechnologyBase(tech.Type, (byte) (tech.Level + 1));
+                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
 
                 if (techBase == null) {
                     StateChange(ActionState.FAILED);
                     return;
                 }
 
-                if (!structure.Technologies.upgrade(new Technology(techBase))) {
+                structure.Technologies.BeginUpdate();
+                if (!structure.Technologies.Upgrade(new Technology(techBase))) {
+                    structure.EndUpdate();
                     StateChange(ActionState.FAILED);
                     return;
                 }
 
-                Global.dbManager.Save(structure.Technologies);
+                structure.Technologies.EndUpdate();
 
                 StateChange(ActionState.COMPLETED);
             }

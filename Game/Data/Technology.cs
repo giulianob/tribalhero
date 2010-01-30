@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Database;
 using Game.Logic;
+using Game.Util;
 
 #endregion
 
@@ -19,7 +20,7 @@ namespace Game.Data {
     }
 
     public class Technology {
-        private TechnologyBase techBase;
+        private readonly TechnologyBase techBase;
         public EffectLocation ownerLocation;
         public uint ownerId;
 
@@ -41,68 +42,74 @@ namespace Game.Data {
             get { return techBase.effects; }
         }
 
-        public static bool checkLocation(EffectLocation technology_location, EffectLocation effect_path,
-                                         EffectLocation target_location) {
-            return effect_path == target_location;
+        public static bool CheckLocation(EffectLocation technologyLocation, EffectLocation effectPath,
+                                         EffectLocation targetLocation) {
+            return effectPath == targetLocation;
         }
 
-        internal List<Effect> getEffects(EffectCode effect_code, EffectInheritance inherit,
-                                         EffectLocation target_location) {
+        internal List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit,
+                                         EffectLocation targetLocation) {
             List<Effect> list = new List<Effect>();
-            bool isSelf = (inherit & EffectInheritance.Self) == EffectInheritance.Self;
-            bool isInvisible = (inherit & EffectInheritance.Invisible) == EffectInheritance.Invisible;
+            bool isSelf = (inherit & EffectInheritance.SELF) == EffectInheritance.SELF;
+            bool isInvisible = (inherit & EffectInheritance.INVISIBLE) == EffectInheritance.INVISIBLE;
 
             foreach (Effect effect in techBase.effects) {
-                if (effect.id != effect_code)
+                if (effect.id != effectCode)
                     continue;
-                if (checkLocation(ownerLocation, effect.location, target_location)) {
-                    if (isSelf) {
-                        if (!effect.isPrivate)
-                            list.Add(effect);
-                    }
-                    if (isInvisible) {
-                        if (effect.isPrivate)
-                            list.Add(effect);
-                    }
+                if (!CheckLocation(ownerLocation, effect.location, targetLocation))
+                    continue;
+
+                if (isSelf) {
+                    if (!effect.isPrivate)
+                        list.Add(effect);
                 }
+
+                if (!isInvisible)
+                    continue;
+
+                if (effect.isPrivate)
+                    list.Add(effect);
             }
+
             return list;
         }
 
-        public List<Effect> getAllEffects(EffectInheritance inherit, EffectLocation target_location) {
+        public List<Effect> GetAllEffects(EffectInheritance inherit, EffectLocation targetLocation) {
             List<Effect> list = new List<Effect>();
-            bool isSelf = (inherit & EffectInheritance.Self) == EffectInheritance.Self;
-            bool isInvisible = (inherit & EffectInheritance.Invisible) == EffectInheritance.Invisible;
+            bool isSelf = (inherit & EffectInheritance.SELF) == EffectInheritance.SELF;
+            bool isInvisible = (inherit & EffectInheritance.INVISIBLE) == EffectInheritance.INVISIBLE;
 
             foreach (Effect effect in techBase.effects) {
-                if (checkLocation(ownerLocation, effect.location, target_location)) {
-                    if (isSelf) {
-                        if (!effect.isPrivate)
-                            list.Add(effect);
-                    }
-                    if (isInvisible) {
-                        if (effect.isPrivate)
-                            list.Add(effect);
-                    }
+                if (!CheckLocation(ownerLocation, effect.location, targetLocation))
+                    continue;
+
+                if (isSelf) {
+                    if (!effect.isPrivate)
+                        list.Add(effect);
                 }
+
+                if (!isInvisible)
+                    continue;
+
+                if (effect.isPrivate)
+                    list.Add(effect);
             }
             return list;
         }
 
-        public void print() {
+        public void Print() {
             Global.Logger.Info(string.Format("Technology type[{0}] lvl[{1}] Location[{2}]", techBase.techtype,
                                              techBase.level, ownerLocation));
             foreach (Effect effect in techBase.effects)
-                effect.print();
+                effect.Print();
         }
     }
 
     public class TechnologyManager : IHasEffect, IEnumerable<Technology>, IPersistableList {
-        private List<Technology> technologies = new List<Technology>();
-        private TechnologyManager parent;
-        private EffectLocation ownerLocation;
+        private readonly List<Technology> technologies = new List<Technology>();
+        private readonly EffectLocation ownerLocation;
         private uint ownerId;
-        private object owner;
+        private readonly object owner;
 
         #region Events
 
@@ -136,172 +143,203 @@ namespace Game.Data {
             }
         }
 
-        public TechnologyManager Parent {
-            get { return parent; }
-            set {
-                if (parent != null) {}
-                parent = value;
-            }
-        }
+        public TechnologyManager Parent { get; set; }
 
-        public uint ID {
+        public uint Id {
             get { return ownerId; }
             set { ownerId = value; }
         }
 
         #region Add/Remove
 
-        private void addChildCopy(Technology tech, bool notify) {
+        private void AddChildCopy(Technology tech) {
             //only add tech if it applies to this tech manager
-            if (tech.Effects.Exists(delegate(Effect effect) { return effect.location == ownerLocation; })) {
-                technologies.Add(tech);
-                if (parent != null)
-                    parent.addChildCopy(tech, notify);
-            }
+            if (!tech.Effects.Exists(effect => effect.location == ownerLocation))
+                return;
+
+            technologies.Add(tech);
+
+            if (Parent != null)
+                Parent.AddChildCopy(tech);
         }
 
-        public bool add(Technology tech) {
-            return add(tech, true);
+        public bool Add(Technology tech) {
+            return Add(tech, true);
         }
 
-        public bool add(Technology tech, bool notify) {
-            if (
-                technologies.Exists(
-                    delegate(Technology technology) {
-                        return technology.Type == tech.Type && technology.ownerLocation == ownerLocation &&
-                               technology.ownerId == ownerId;
-                    }))
+        public bool Add(Technology tech, bool notify) {
+            CheckUpdateMode();
+            
+            if (technologies.Exists(technology => technology.Type == tech.Type && technology.ownerLocation == ownerLocation && technology.ownerId == ownerId))
                 return false;
+
             tech.ownerId = ownerId;
             tech.ownerLocation = ownerLocation;
             technologies.Add(tech);
-            if (parent != null)
-                parent.addChildCopy(tech, notify);
+
+            if (Parent != null)
+                Parent.AddChildCopy(tech);
+
             if (TechnologyAdded != null && notify)
                 TechnologyAdded(tech);
+
             return true;
         }
 
-        public bool upgrade(Technology tech) {
-            if (!remove(tech.Type, false))
+        public bool Upgrade(Technology tech) {
+            CheckUpdateMode();
+
+            if (!Remove(tech.Type, false))
                 return false;
-            if (!add(tech, false))
+
+            if (!Add(tech, false))
                 return false;
 
             if (TechnologyUpgraded != null)
                 TechnologyUpgraded(tech);
-            //  if (parent != null) parent.notifyUpgrade(tech);
 
             return true;
         }
 
-        private void notifyUpgrade(Technology tech) {
-            if (TechnologyUpgraded != null &&
-                tech.Effects.Exists(delegate(Effect effect) { return effect.location == ownerLocation; }))
-                TechnologyUpgraded(tech);
-
-            if (parent != null)
-                parent.notifyUpgrade(tech);
-        }
-
-        public void clear() {
+        public void Clear() {
             for (int i = technologies.Count - 1; i >= 0; i--) {
                 Technology tech = technologies[i];
                 if (tech.ownerId != ownerId || tech.ownerLocation != ownerLocation)
                     continue;
 
                 technologies.RemoveAt(i);
-                if (parent != null)
-                    parent.removeChildCopy(tech, false);
+                if (Parent != null)
+                    Parent.RemoveChildCopy(tech, false);
             }
         }
 
-        private bool remove(uint techType, bool notify) {
-            Technology tech =
-                technologies.Find(
-                    delegate(Technology technology) {
-                        return technology.Type == techType && technology.ownerId == ownerId &&
-                               technology.ownerLocation == ownerLocation;
-                    });
+        private bool Remove(uint techType, bool notify) {
+            Technology tech = technologies.Find(technology => technology.Type == techType && technology.ownerId == ownerId && technology.ownerLocation == ownerLocation);
+
             if (tech == null)
                 return false;
+            
             if (!technologies.Remove(tech))
                 return false;
-            if (parent != null)
-                parent.removeChildCopy(tech, notify);
+            
+            if (Parent != null)
+                Parent.RemoveChildCopy(tech, notify);
+
             if (TechnologyRemoved != null && notify)
                 TechnologyRemoved(tech);
+
             return true;
         }
 
-        private void removeChildCopy(Technology tech, bool notify) {
-            if (technologies.Remove(tech)) {
-                if (TechnologyRemoved != null && notify)
-                    TechnologyRemoved(tech);
-            }
+        private void RemoveChildCopy(Technology tech, bool notify) {
+            if (!technologies.Remove(tech))
+                return;
+
+            if (TechnologyRemoved != null && notify)
+                TechnologyRemoved(tech);
         }
 
         #endregion
 
         #region Utilities
 
-        public List<Effect> GetEffects(EffectCode effect_code, EffectInheritance inherit) {
+        public List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit) {
             List<Effect> list = new List<Effect>();
             foreach (Technology tech in technologies)
-                list.AddRange(tech.getEffects(effect_code, inherit, ownerLocation));
-            if ((inherit & EffectInheritance.Upward) == EffectInheritance.Upward) {
-                if (parent != null)
-                    list.AddRange(parent.GetEffects(effect_code, EffectInheritance.Upward | EffectInheritance.Self));
+                list.AddRange(tech.GetEffects(effectCode, inherit, ownerLocation));
+            if ((inherit & EffectInheritance.UPWARD) == EffectInheritance.UPWARD) {
+                if (Parent != null)
+                    list.AddRange(Parent.GetEffects(effectCode, EffectInheritance.UPWARD | EffectInheritance.SELF));
             }
             return list;
         }
 
-        public int Sum(EffectCode effect_code, EffectInheritance inherit) {
+        public int Sum(EffectCode effectCode, EffectInheritance inherit) {
             int ret = 0;
-            foreach (Effect e in GetEffects(effect_code, inherit)) {
+            foreach (Effect e in GetEffects(effectCode, inherit)) {
                 //     ret += e.effect_base.value;
             }
             return ret;
         }
 
-        public int Count(int effect_id) {
+        public int Count(int effectId) {
             return 0;
         }
 
-        public int Max(EffectCode effect_code, EffectInheritance inherit, byte param_order) {
+        public int Max(EffectCode effectCode, EffectInheritance inherit, byte paramOrder) {
             int max = Int32.MinValue;
-            foreach (Effect e in GetEffects(effect_code, inherit)) {
-                if ((int) e.value[param_order] > max)
-                    max = (int) e.value[param_order];
+            foreach (Effect e in GetEffects(effectCode, inherit)) {
+                if ((int) e.value[paramOrder] > max)
+                    max = (int) e.value[paramOrder];
             }
             return max;
         }
 
-        public int Min(EffectCode effect_code, EffectInheritance inherit, byte param_order) {
+        public int Min(EffectCode effectCode, EffectInheritance inherit, byte paramOrder) {
             int min = Int32.MaxValue;
-            foreach (Effect e in GetEffects(effect_code, inherit)) {
-                if ((int) e.value[param_order] < min)
-                    min = (int) e.value[param_order];
+            foreach (Effect e in GetEffects(effectCode, inherit)) {
+                if ((int) e.value[paramOrder] < min)
+                    min = (int) e.value[paramOrder];
             }
             return min;
         }
 
-        public int Avg(int effect_id) {
+        public int Avg(int effectId) {
             return 0;
         }
 
         #endregion
 
-        public void print() {
-            Global.Logger.Info("Printing TechnologyManager Location:" + ownerLocation.ToString());
+
+        #region Updates
+
+        private bool updating;
+
+        private void CheckUpdateMode() {
+            if (!Global.FireEvents)
+                return;
+
+            if (!updating)
+                throw new Exception("Changed state outside of begin/end update block");
+
+            switch (ownerLocation) {
+                case EffectLocation.CITY:
+                    MultiObjectLock.ThrowExceptionIfNotLocked(owner as City);
+                    break;
+                case EffectLocation.OBJECT:
+                    MultiObjectLock.ThrowExceptionIfNotLocked((owner as Structure).City);
+                    break;
+                case EffectLocation.PLAYER:
+                    MultiObjectLock.ThrowExceptionIfNotLocked(owner as Player);
+                    break;
+            }
+        }
+
+        public void BeginUpdate() {
+            if (updating)
+                throw new Exception("Nesting beginupdate");
+
+            updating = true;
+        }
+
+        public void EndUpdate() {
+            if (!updating)
+                throw new Exception("Called EndUpdate without first calling BeginUpdate");
+
+            Global.dbManager.Save(this);
+            updating = false;
+        }
+
+        #endregion
+
+        public void Print() {
+            Global.Logger.Info("Printing TechnologyManager Location:" + ownerLocation);
             foreach (Technology tech in technologies)
-                tech.print();
+                tech.Print();
         }
 
         public bool TryGetTechnology(uint techId, out Technology technology) {
-            technology =
-                technologies.Find(
-                    delegate(Technology tech) { return tech.Type == techId && tech.ownerId == ownerId && tech.ownerLocation == ownerLocation; });
+            technology = technologies.Find(tech => tech.Type == techId && tech.ownerId == ownerId && tech.ownerLocation == ownerLocation);
 
             return technology != null;
         }
@@ -327,10 +365,10 @@ namespace Game.Data {
         public IEnumerable<Effect> GetAllEffects(EffectInheritance inherit) {
             List<Effect> list = new List<Effect>();
             foreach (Technology tech in technologies)
-                list.AddRange(tech.getAllEffects(inherit, ownerLocation));
-            if ((inherit & EffectInheritance.Upward) == EffectInheritance.Upward) {
-                if (parent != null)
-                    list.AddRange(parent.GetAllEffects(EffectInheritance.Upward | EffectInheritance.Self));
+                list.AddRange(tech.GetAllEffects(inherit, ownerLocation));
+            if ((inherit & EffectInheritance.UPWARD) == EffectInheritance.UPWARD) {
+                if (Parent != null)
+                    list.AddRange(Parent.GetAllEffects(EffectInheritance.UPWARD | EffectInheritance.SELF));
             }
             return list;
         }
@@ -347,14 +385,11 @@ namespace Game.Data {
 
         public DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
-                                          new DbColumn("city_id",
-                                                       owner is Structure
-                                                           ? (owner as Structure).City.Id
-                                                           : (owner is City ? (owner as City).Id : 0), DbType.UInt32),
-                                          new DbColumn("owner_id", ownerId, DbType.UInt32),
-                                          new DbColumn("owner_location", (byte) ownerLocation, DbType.Byte)
-                                      };
+                return new[] {
+                                 new DbColumn("city_id", owner is Structure ? (owner as Structure).City.Id : (owner is City ? (owner as City).Id : 0), DbType.UInt32),
+                                 new DbColumn("owner_id", ownerId, DbType.UInt32), 
+                                 new DbColumn("owner_location", (byte) ownerLocation, DbType.Byte)
+                             };
             }
         }
 
@@ -367,15 +402,10 @@ namespace Game.Data {
         }
 
         public DbColumn[] DbListColumns {
-            get { return new DbColumn[] {new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte)}; }
+            get { return new[] {new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte)}; }
         }
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
 
@@ -386,9 +416,7 @@ namespace Game.Data {
                 if (tech.ownerLocation != ownerLocation)
                     continue;
 
-                yield return
-                    new DbColumn[]
-                    {new DbColumn("type", tech.Type, DbType.UInt16), new DbColumn("level", tech.Level, DbType.Byte)};
+                yield return new[] {new DbColumn("type", tech.Type, DbType.UInt16), new DbColumn("level", tech.Level, DbType.Byte)};
             }
         }
 

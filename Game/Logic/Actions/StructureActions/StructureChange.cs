@@ -103,7 +103,7 @@ namespace Game.Logic.Actions {
                 structure.BeginUpdate();
                 StructureFactory.GetStructure(structure, (ushort) type, lvl, false);
                 structure.Technologies.Parent = structure.City.Technologies;
-                InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, this);
                 structure.EndUpdate();
 

@@ -24,15 +24,13 @@ namespace Game.Setup {
     class InitFactory {
         private static Dictionary<int, List<InitRecord>> dict;
 
-        public static void init(string filename) {
+        public static void Init(string filename) {
             if (dict != null)
                 return;
+            
             dict = new Dictionary<int, List<InitRecord>>();
-            using (
-                CSVReader reader =
-                    new CSVReader(
-                        new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                ) {
+
+            using (CSVReader reader = new CSVReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 String[] toks;
                 Dictionary<string, int> col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
@@ -49,14 +47,9 @@ namespace Game.Setup {
                     record.condition = (InitCondition) Enum.Parse(typeof (InitCondition), toks[col["Condition"]], true);
                     record.parms = new string[toks.Length - 4];
                     for (int i = 4; i < toks.Length; ++i) {
-                        if (toks[i].Contains("="))
-                            record.parms[i - 4] = toks[i].Split('=')[1];
-                        else
-                            record.parms[i - 4] = toks[i];
+                        record.parms[i - 4] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
                     }
-                    Global.Logger.Info(string.Format("{0}:{1}",
-                                                     int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]),
-                                                     record.type));
+                    Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]), record.type));
 
                     int index = int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]);
                     List<InitRecord> tmp;
@@ -69,16 +62,17 @@ namespace Game.Setup {
             }
         }
 
-        public static void initGameObject(InitCondition condition, GameObject obj, int type, int lvl) {
+        public static void InitGameObject(InitCondition condition, GameObject obj, int type, int lvl) {
             if (dict == null)
                 return;
             List<InitRecord> tmp;
             if (dict.TryGetValue(type*100 + lvl, out tmp)) {
                 foreach (InitRecord each in tmp) {
-                    if (each.condition == condition) {
-                        IScriptable action = (IScriptable) Activator.CreateInstance(each.type, new object[] {});
-                        action.ScriptInit(obj, each.parms);
-                    }
+                    if (each.condition != condition)
+                        continue;
+
+                    IScriptable action = (IScriptable) Activator.CreateInstance(each.type, new object[] {});
+                    action.ScriptInit(obj, each.parms);
                 }
             }
             return;

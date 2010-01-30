@@ -192,25 +192,29 @@ namespace Game.Database {
 
                             TechnologyManager manager;
 
-                            if (ownerLocation == EffectLocation.Object) {
-                                City city;
-                                Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                                Structure structure = (Structure) city[(uint) reader["owner_id"]];
-                                manager = structure.Technologies;
-                            } else if (ownerLocation == EffectLocation.City) {
-                                City city;
-                                Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                                manager = city.Technologies;
-                            } else
-                                throw new Exception("Unknown effect location?");
+                            switch (ownerLocation) {
+                                case EffectLocation.OBJECT: {
+                                    City city;
+                                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                                    Structure structure = (Structure) city[(uint) reader["owner_id"]];
+                                    manager = structure.Technologies;
+                                }
+                                    break;
+                                case EffectLocation.CITY: {
+                                    City city;
+                                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                                    manager = city.Technologies;
+                                }
+                                    break;
+                                default:
+                                    throw new Exception("Unknown effect location?");
+                            }
 
                             manager.DbPersisted = true;
 
                             using (DbDataReader listReader = dbManager.SelectList(manager)) {
                                 while (listReader.Read())
-                                    manager.add(
-                                        TechnologyFactory.getTechnology((uint) listReader["type"],
-                                                                        (byte) listReader["level"]), false);
+                                    manager.Add(TechnologyFactory.GetTechnology((uint) listReader["type"], (byte) listReader["level"]), false);
                             }
                         }
                     }

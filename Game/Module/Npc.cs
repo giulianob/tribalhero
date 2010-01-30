@@ -279,7 +279,7 @@ namespace Game.Module {
                     Global.World.Add(city);
                     Global.World.Add(structure);
 
-                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type,
+                    InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type,
                                                structure.Stats.Base.Lvl);
 
                     city.Worker.DoPassive(city, new CityAction(city.Id), false);

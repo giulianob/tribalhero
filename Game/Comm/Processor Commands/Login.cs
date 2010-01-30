@@ -152,7 +152,7 @@ namespace Game.Comm {
                     Global.World.Add(city);
                     Global.World.Add(structure);
 
-                    InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
+                    InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
 
                     city.Worker.DoPassive(city, new CityAction(city.Id), false);
                 }
@@ -199,7 +199,7 @@ namespace Game.Comm {
 
                         reply.addUInt16((ushort) structure.Technologies.OwnedTechnologyCount);
                         foreach (Technology tech in structure.Technologies) {
-                            if (tech.ownerLocation != EffectLocation.Object)
+                            if (tech.ownerLocation != EffectLocation.OBJECT)
                                 continue;
                             reply.addUInt32(tech.Type);
                             reply.addByte(tech.Level);

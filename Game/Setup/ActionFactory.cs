@@ -68,7 +68,7 @@ namespace Game.Setup {
                                 (EffectInheritance)
                                 Enum.Parse(typeof (EffectInheritance), toks[col["EffectReqInherit"]], true);
                         } else
-                            action_req.effectReqInherit = EffectInheritance.All;
+                            action_req.effectReqInherit = EffectInheritance.ALL;
                         record.list.Add(action_req);
                     }
                 }

@@ -127,7 +127,7 @@ namespace Game.Logic.Actions {
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
                 StructureFactory.GetStructure(structure, structure.Type, 1, false);
-                InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();
 

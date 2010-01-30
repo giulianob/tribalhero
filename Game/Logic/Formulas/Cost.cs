@@ -28,7 +28,7 @@ namespace Game.Logic {
 
         internal static Resource RepairCost(City city, ushort repairPower) {
             int lumber = repairPower;
-            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.RepairSaving, EffectInheritance.All))
+            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.RepairSaving, EffectInheritance.ALL))
                 lumber -= repairPower*(int) effect.value[0]/100;
             return new Resource(0, 0, 0, lumber, 0);
         }

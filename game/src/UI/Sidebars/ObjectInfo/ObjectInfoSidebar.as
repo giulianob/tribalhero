@@ -61,7 +61,7 @@ package src.UI.Sidebars.ObjectInfo {
 			t.reset();
 
 			clear();
-			
+
 			buttons = new Array();
 
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
@@ -171,7 +171,7 @@ package src.UI.Sidebars.ObjectInfo {
 			}
 
 			if (city == null) return;
-			
+
 			validateButtons();
 			displayCurrentActions();
 
@@ -222,8 +222,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 				var actionDescription: String = currentAction.toString(gameObject);
 
-				if (currentAction is CurrentActionReference)
-				currentAction = currentAction.getAction(gameObject);
+				if (currentAction is CurrentActionReference) {
+					currentAction = currentAction.getAction(gameObject);
+				}
 
 				var cancelButton: CancelActionButton = new CancelActionButton(gameObject, currentAction.id);
 
@@ -231,13 +232,15 @@ package src.UI.Sidebars.ObjectInfo {
 
 				//component creation
 				var pnlActionRow: JPanel = new JPanel(new BorderLayout());
+				pnlActionRow.mouseEnabled = false;
+				pnlActionRow.mouseChildren = false;
 
 				var panel: JPanel = new JPanel();
 				panel.setConstraints("North");
 				panel.setLayout(new BorderLayout());
 
-				var lblDescription: MultilineLabel = new MultilineLabel(actionDescription);				
-				lblDescription.setConstraints("West");				
+				var lblDescription: MultilineLabel = new MultilineLabel(actionDescription);
+				lblDescription.setConstraints("West");
 
 				var astCancel: AssetPane = new AssetPane(cancelButton);
 				astCancel.setConstraints("East");

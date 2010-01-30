@@ -131,7 +131,7 @@ namespace Game.Data {
 
             worker = new ActionWorker(this);
 
-            effectManager = new TechnologyManager(EffectLocation.City, this, id);
+            effectManager = new TechnologyManager(EffectLocation.CITY, this, id);
 
             troopManager = new TroopManager(this);
 
@@ -281,7 +281,7 @@ namespace Game.Data {
                     return false;
 
                 worker.Remove(obj, ActionInterrupt.KILLED);
-                obj.Technologies.clear();
+                obj.Technologies.Clear();
                 structures.Remove(obj.ObjectId);
 
                 obj.Technologies.TechnologyAdded -= Technologies_TechnologyAdded;
@@ -440,7 +440,7 @@ namespace Game.Data {
         private void Technologies_TechnologyUpgraded(Technology tech) {
             Packet packet = new Packet(Command.TECH_UPGRADED);
             packet.addUInt32(Id);
-            if (tech.ownerLocation == EffectLocation.City)
+            if (tech.ownerLocation == EffectLocation.CITY)
                 packet.addUInt32(0);
             else
                 packet.addUInt32(tech.ownerId);
@@ -453,7 +453,7 @@ namespace Game.Data {
         private void Technologies_TechnologyRemoved(Technology tech) {
             Packet packet = new Packet(Command.TECH_REMOVED);
             packet.addUInt32(Id);
-            if (tech.ownerLocation == EffectLocation.City)
+            if (tech.ownerLocation == EffectLocation.CITY)
                 packet.addUInt32(0);
             else
                 packet.addUInt32(tech.ownerId);
@@ -466,7 +466,7 @@ namespace Game.Data {
         private void Technologies_TechnologyAdded(Technology tech) {
             Packet packet = new Packet(Command.TECH_ADDED);
             packet.addUInt32(Id);
-            if (tech.ownerLocation == EffectLocation.City)
+            if (tech.ownerLocation == EffectLocation.CITY)
                 packet.addUInt32(0);
             else
                 packet.addUInt32(tech.ownerId);

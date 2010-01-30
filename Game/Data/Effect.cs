@@ -11,25 +11,24 @@ namespace Game.Data {
         public object[] value = new object[5];
         public EffectLocation location;
 
-        public void print() {
+        public void Print() {
             Global.Logger.Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", id, isPrivate, location));
         }
     }
 
     public enum EffectLocation {
-        Object = 0,
-        City = 1,
-        Player = 2,
-        Troop = 3
+        OBJECT = 0,
+        CITY = 1,
+        PLAYER = 2
     }
 
     [Flags]
     public enum EffectInheritance {
-        Invisible = 1,
-        Self = 2,
-        SelfAll = 3,
-        Upward = 4,
-        All = 7
+        INVISIBLE = 1,
+        SELF = 2,
+        SELF_ALL = 3,
+        UPWARD = 4,
+        ALL = 7
     }
 
     public enum EffectCode {

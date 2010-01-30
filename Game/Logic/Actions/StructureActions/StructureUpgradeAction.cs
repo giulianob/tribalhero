@@ -71,7 +71,7 @@ namespace Game.Logic.Actions {
 
                 structure.BeginUpdate();
                 StructureFactory.GetStructure(structure, structure.Type, (byte)(structure.Lvl + 1), true);
-                InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 Procedure.OnStructureUpgrade(structure);

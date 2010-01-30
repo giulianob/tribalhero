@@ -18,17 +18,17 @@ namespace Game.Logic {
         }
 
         public static bool HarvestSurprise(TechnologyManager em) {
-            int min = em.Min(EffectCode.HarvestSurprise, EffectInheritance.SelfAll, 0);
+            int min = em.Min(EffectCode.HarvestSurprise, EffectInheritance.SELF_ALL, 0);
             if (min == int.MaxValue)
                 return false;
-            return Config.Random.Next(0, 100) < em.Min(EffectCode.HarvestSurprise, EffectInheritance.SelfAll, 0);
+            return Config.Random.Next(0, 100) < em.Min(EffectCode.HarvestSurprise, EffectInheritance.SELF_ALL, 0);
         }
 
         public static bool OverDigging(TechnologyManager em) {
-            int max = em.Max(EffectCode.OverDigging, EffectInheritance.SelfAll, 0);
+            int max = em.Max(EffectCode.OverDigging, EffectInheritance.SELF_ALL, 0);
             if (max == int.MinValue)
                 return false;
-            return Config.Random.Next(0, 1000) < em.Min(EffectCode.OverDigging, EffectInheritance.SelfAll, 0);
+            return Config.Random.Next(0, 1000) < em.Min(EffectCode.OverDigging, EffectInheritance.SELF_ALL, 0);
         }
 
         internal static byte GetTroopRadius(TroopStub stub, TechnologyManager em) {
@@ -57,7 +57,7 @@ namespace Game.Logic {
 
         internal static Resource GetMillResource(byte millLvl, TechnologyManager em) {
             Resource res = new Resource(millLvl*5, millLvl*4, millLvl*2, millLvl*3, 0);
-            foreach (Effect effect in em.GetEffects(EffectCode.CountEffect, EffectInheritance.Self)) {
+            foreach (Effect effect in em.GetEffects(EffectCode.CountEffect, EffectInheritance.SELF)) {
                 switch ((int) effect.value[0]) {
                     case 21051:
                         res.Crop *= (int) effect.value[1];

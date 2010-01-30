@@ -169,7 +169,7 @@ namespace Game.Battle {
             BaseBattleStats stats = UnitFactory.GetUnitStats(type, lvl).Battle;
             BattleStats modifiedStats = new BattleStats(stats);
 
-            foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
+            foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL)) {
                 if (effect.id == EffectCode.BattleStatsArmoryMod &&
                     stats.Armor == (ArmorType) Enum.Parse(typeof (ArmorType), (string) effect.value[0]))
                     hp = Math.Max((int) effect.value[1], hp);

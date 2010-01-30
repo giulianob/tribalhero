@@ -79,7 +79,7 @@ namespace Game.Logic.Actions {
 
             int mod = 100;
 
-            foreach (Effect effect in obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All))
+            foreach (Effect effect in obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL))
                 mod -= (int) effect.value[0];
             if (mod < 50)
                 mod = 50;

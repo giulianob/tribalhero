@@ -25,7 +25,7 @@ namespace Game.Logic.Procedures {
                     Global.World.UnlockRegion(x, y);
                     return false;
                 }
-                InitFactory.initGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 Global.World.UnlockRegion(x, y);
             }
             return true;

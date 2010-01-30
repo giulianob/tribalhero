@@ -43,7 +43,7 @@ namespace Game.Setup {
             EffectRequirementFactory.init(Config.csv_compiled_folder + "effect_requirement.csv");
 
             BuildFiles(Config.csv_compiled_folder + "init.csv", Config.csv_folder, "*init.csv");
-            InitFactory.init(Config.csv_compiled_folder + "init.csv");
+            InitFactory.Init(Config.csv_compiled_folder + "init.csv");
 
             BuildFiles(Config.csv_compiled_folder + "property.csv", Config.csv_folder, "*property.csv");
             PropertyFactory.init(Config.csv_compiled_folder + "property.csv");
@@ -54,7 +54,7 @@ namespace Game.Setup {
             BuildFiles(Config.csv_compiled_folder + "technology.csv", Config.csv_folder, "*technology.csv");
             BuildFiles(Config.csv_compiled_folder + "technology_effects.csv", Config.csv_folder,
                        "*technology_effects.csv");
-            TechnologyFactory.init(Config.csv_compiled_folder + "technology.csv",
+            TechnologyFactory.Init(Config.csv_compiled_folder + "technology.csv",
                                    Config.csv_folder + "technology_effects.csv");
 
             BuildFiles(Config.csv_compiled_folder + "unit.csv", Config.csv_folder, "*unit.csv");

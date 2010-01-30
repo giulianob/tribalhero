@@ -21,14 +21,14 @@ namespace Game.Logic.Actions {
             if (obj == null)
                 return Error.OBJECT_NOT_FOUND;
 
-            TechnologyBase tech_base = TechnologyFactory.getTechnologyBase(techId, lvl);
-            if (tech_base == null)
+            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, lvl);
+            if (techBase == null)
                 return Error.OBJECT_NOT_FOUND;
 
-            Technology tech = new Technology(tech_base);
-            obj.Technologies.add(tech);
-
-            Global.dbManager.Save(obj.Technologies);
+            Technology tech = new Technology(techBase);
+            obj.Technologies.BeginUpdate();
+            obj.Technologies.Add(tech);
+            obj.Technologies.EndUpdate();
 
             StateChange(ActionState.COMPLETED);
 

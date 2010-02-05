@@ -30,9 +30,6 @@
 			troop.id = packet.readUByte();
 			troop.state = packet.readUByte();
 
-			if (troop.id == 1)
-			troop.upkeep = packet.readInt();
-
 			var templateCnt: int = packet.readUByte();
 			for (var templateI: int = 0; templateI < templateCnt; templateI++) {
 				troop.template.add(new TroopTemplate(packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUByte(), packet.readUByte(), packet.readUByte(), packet.readUByte(), packet.readUByte()), false);

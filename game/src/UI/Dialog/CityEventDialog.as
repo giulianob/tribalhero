@@ -107,7 +107,7 @@
 			lblCrop.setText(resourceLabelText(city.resources.crop));
 			lblIron.setText(resourceLabelText(city.resources.iron));
 			lblLabor.setText(simpleLabelText(city.resources.labor.getValue().toString() + " " + StringHelper.makePlural(city.resources.labor.getValue(), "is", "are", "are") + " idle and " + city.getBusyLaborCount().toString() + " " + StringHelper.makePlural(city.getBusyLaborCount(), "is", "are", "are") + " working", false, false));
-			lblUpkeep.setText(simpleLabelText(city.troops.getDefaultTroop().upkeep.toString(), true, true));
+			lblUpkeep.setText(simpleLabelText(city.resources.crop.getUpkeep().toString(), true, true));
 		}
 
 		private function createUI(): void {

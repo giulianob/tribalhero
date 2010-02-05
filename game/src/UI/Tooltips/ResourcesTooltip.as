@@ -49,7 +49,7 @@
 			ui.append(resourceLabelMaker(city.resources.crop, new AssetIcon(new ICON_CROP())));
 			ui.append(resourceLabelMaker(city.resources.iron, new AssetIcon(new ICON_IRON())));
 			ui.append(simpleLabelMaker(city.resources.labor.getValue().toString() + " " + StringHelper.makePlural(city.resources.labor.getValue(), "is", "are", "are") + " idle and " + city.getBusyLaborCount().toString() + " " + StringHelper.makePlural(city.getBusyLaborCount(), "is", "are", "are") + " working", false, false, new AssetIcon(new ICON_LABOR())));
-			ui.append(simpleLabelMaker(city.troops.getDefaultTroop().upkeep.toString(), true, true, new AssetIcon(new ICON_CROP())));
+			ui.append(simpleLabelMaker(city.resources.crop.getUpkeep().toString(), true, true, new AssetIcon(new ICON_CROP())));
 		}
 
 		private function simpleLabelMaker(value: String, hourly: Boolean = false, negative: Boolean = false, icon: Icon = null) : JLabel {

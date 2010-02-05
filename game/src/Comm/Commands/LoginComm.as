@@ -50,11 +50,11 @@
 				var id: int = packet.readUInt();				
 				var name: String = packet.readString();				
 				var resources: LazyResources = new LazyResources(
-					new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
-					new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
-					new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
-					new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
-					new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt())
+					new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
+					new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
+					new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
+					new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
+					new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt())
 				);				
 				
 				var radius: int = packet.readUByte();

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 17, 2010 at 02:04 PM
+-- Generation Time: Feb 04, 2010 at 07:46 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -178,6 +178,7 @@ CREATE TABLE `cities` (
   `iron` int(11) NOT NULL,
   `crop` int(11) NOT NULL,
   `labor` int(11) NOT NULL,
+  `crop_upkeep` int(11) NOT NULL,
   `gold_realize_time` datetime NOT NULL,
   `wood_realize_time` datetime NOT NULL,
   `iron_realize_time` datetime NOT NULL,
@@ -358,7 +359,7 @@ CREATE TABLE `players` (
   KEY `login_key` (`login_key`),
   KEY `session_id` (`session_id`),
   KEY `facebook_id` (`facebook_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

@@ -2,6 +2,7 @@
 
 using System;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -11,11 +12,7 @@ namespace Game.Data {
 
         public event OnResourcesUpdate ResourcesUpdate;
 
-        private DateTime last;
-
-        public DateTime LastRealizeTime {
-            get { return last; }
-        }
+        public DateTime LastRealizeTime { get; private set; }
 
         private int limit;
 
@@ -33,10 +30,12 @@ namespace Game.Data {
         public int Value {
             get {
                 int delta = 0;
+                int calculatedRate = GetCalculatedRate();
 
-                if ((int) (rate*Config.seconds_per_unit) > 0) {
-                    int elapsed = (int) DateTime.Now.Subtract(last).TotalMilliseconds;
-                    delta = (int) (elapsed/(int) (rate*Config.seconds_per_unit));
+                if (calculatedRate > 0) {
+                    int elapsed = (int)SystemClock.Now.Subtract(LastRealizeTime).TotalMilliseconds;
+                    delta = elapsed / calculatedRate;
+
                     if (delta < 0)
                         throw new Exception("Delta is negative?");
                 }
@@ -65,14 +64,30 @@ namespace Game.Data {
             }
         }
 
-        public LazyValue(int val) {
-            value = val;
+        private int upkeep;
+
+        public int Upkeep {
+            get { return upkeep; }
+            set {
+                Realize();
+                if (value < 0)
+                    throw new Exception("Upkeep can not be negative");
+                
+                upkeep = value;
+                Update();
+            }
         }
 
-        public LazyValue(int val, DateTime lastRealizeTime, int rate) {
+        public LazyValue(int val) {
             value = val;
-            last = lastRealizeTime;
+            LastRealizeTime = SystemClock.Now;
+        }
+
+        public LazyValue(int val, DateTime lastRealizeTime, int rate, int upkeep) {
+            value = val;
+            LastRealizeTime = lastRealizeTime;
             this.rate = rate;
+            this.upkeep = upkeep;
         }
 
         private void Update() {
@@ -99,23 +114,37 @@ namespace Game.Data {
         }
 
         private void Realize() {
-            if (rate > 0) {
-                int elapsed = (int) DateTime.Now.Subtract(last).TotalMilliseconds;
-                int delta = (int) (elapsed/(int) (rate*Config.seconds_per_unit));
+            int calculatedRate = GetCalculatedRate();
+
+            if (calculatedRate > 0) {
+                DateTime now = SystemClock.Now;
+                int elapsed = (int)now.Subtract(LastRealizeTime).TotalMilliseconds;
+                int delta = elapsed / calculatedRate;
                 value += delta;
-                int leftOver = elapsed%(int) (rate*Config.seconds_per_unit);
-                DateTime now = DateTime.Now;
-                last = now.Subtract(new TimeSpan(0, 0, 0, 0, leftOver));
+
+                int leftOver = elapsed % calculatedRate;
+
+                LastRealizeTime = now.Subtract(new TimeSpan(0, 0, 0, 0, leftOver));
+
                 CheckLimit();
-            } else
-                last = DateTime.Now;
+            }
+            else {
+                LastRealizeTime = SystemClock.Now;
+            }
         }
 
         private void CheckLimit() {
-            if (limit > 0 && value > limit)
+            if (limit > 0 && value > limit) {
                 value = limit;
-            if (value < 0)
+            }
+
+            if (value < 0) {
                 value = 0;
+            }
+        }
+
+        private int GetCalculatedRate() {
+            return Math.Max(0, (int)((3600000f / (rate - upkeep)) * Config.seconds_per_unit));
         }
     }
 
@@ -125,71 +154,49 @@ namespace Game.Data {
         private bool isUpdating;
         private bool isDirty;
 
-        private LazyValue crop;
+        public LazyValue Crop { get; private set; }
+        public LazyValue Wood { get; private set; }
+        public LazyValue Iron { get; private set; }
+        public LazyValue Gold { get; private set; }
+        public LazyValue Labor { get; private set; }
 
-        public LazyValue Crop {
-            get { return crop; }
-        }
-
-        private LazyValue wood;
-
-        public LazyValue Wood {
-            get { return wood; }
-        }
-
-        private LazyValue iron;
-
-        public LazyValue Iron {
-            get { return iron; }
-        }
-
-        private LazyValue gold;
-
-        public LazyValue Gold {
-            get { return gold; }
-        }
-
-        private LazyValue labor;
-
-        public LazyValue Labor {
-            get { return labor; }
-        }
-
-        public LazyResource(int crop, DateTime cropRealizeTime, int cropRate, int gold, DateTime goldRealizeTime,
-                            int goldRate, int iron, DateTime ironRealizeTime, int ironRate, int wood,
-                            DateTime woodRealizeTime, int woodRate, int labor, DateTime laborRealizeTime, int laborRate) {
-            this.crop = new LazyValue(crop, cropRealizeTime, cropRate);
-            this.gold = new LazyValue(gold, goldRealizeTime, goldRate);
-            this.iron = new LazyValue(iron, ironRealizeTime, ironRate);
-            this.wood = new LazyValue(wood, woodRealizeTime, woodRate);
-            this.labor = new LazyValue(labor, laborRealizeTime, laborRate);
+        public LazyResource(int crop, DateTime cropRealizeTime, int cropRate, int cropUpkeep,
+                            int gold, DateTime goldRealizeTime, int goldRate,
+                            int iron, DateTime ironRealizeTime, int ironRate,
+                            int wood, DateTime woodRealizeTime, int woodRate,
+                            int labor, DateTime laborRealizeTime, int laborRate) {
+            Crop = new LazyValue(crop, cropRealizeTime, cropRate, cropUpkeep);
+            Gold = new LazyValue(gold, goldRealizeTime, goldRate, 0);
+            Iron = new LazyValue(iron, ironRealizeTime, ironRate, 0);
+            Wood = new LazyValue(wood, woodRealizeTime, woodRate, 0);
+            Labor = new LazyValue(labor, laborRealizeTime, laborRate, 0);
             SetEvents();
         }
 
         public LazyResource(int crop, int gold, int iron, int wood, int labor) {
-            this.crop = new LazyValue(crop);
-            this.gold = new LazyValue(gold);
-            this.iron = new LazyValue(iron);
-            this.wood = new LazyValue(wood);
-            this.labor = new LazyValue(labor);
+            Crop = new LazyValue(crop);
+            Gold = new LazyValue(gold);
+            Iron = new LazyValue(iron);
+            Wood = new LazyValue(wood);
+            Labor = new LazyValue(labor);
             SetEvents();
         }
 
         private void SetEvents() {
-            crop.ResourcesUpdate += Update;
-            gold.ResourcesUpdate += Update;
-            wood.ResourcesUpdate += Update;
-            iron.ResourcesUpdate += Update;
-            labor.ResourcesUpdate += Update;
+            Crop.ResourcesUpdate += Update;
+            Gold.ResourcesUpdate += Update;
+            Wood.ResourcesUpdate += Update;
+            Iron.ResourcesUpdate += Update;
+            Labor.ResourcesUpdate += Update;
         }
 
         public void SetLimits(int cropLimit, int goldLimit, int ironLimit, int woodLimit, int laborLimit) {
             BeginUpdate();
-            crop.Limit = cropLimit;
-            gold.Limit = goldLimit;
-            iron.Limit = ironLimit;
-            wood.Limit = woodLimit;
-            labor.Limit = laborLimit;
+            Crop.Limit = cropLimit;
+            Gold.Limit = goldLimit;
+            Iron.Limit = ironLimit;
+            Wood.Limit = woodLimit;
+            Labor.Limit = laborLimit;
             EndUpdate();
         }
 
@@ -198,60 +205,56 @@ namespace Game.Data {
             if (costPerUnit.Crop == 0)
                 cropDelta = int.MaxValue;
             else
-                cropDelta = crop.Value/costPerUnit.Crop;
+                cropDelta = Crop.Value / costPerUnit.Crop;
 
             int goldDelta;
             if (costPerUnit.Gold == 0)
                 goldDelta = int.MaxValue;
             else
-                goldDelta = gold.Value/costPerUnit.Gold;
+                goldDelta = Gold.Value / costPerUnit.Gold;
 
             int ironDelta;
             if (costPerUnit.Iron == 0)
                 ironDelta = int.MaxValue;
             else
-                ironDelta = iron.Value/costPerUnit.Iron;
+                ironDelta = Iron.Value / costPerUnit.Iron;
 
             int woodDelta;
             if (costPerUnit.Wood == 0)
                 woodDelta = int.MaxValue;
             else
-                woodDelta = wood.Value/costPerUnit.Wood;
+                woodDelta = Wood.Value / costPerUnit.Wood;
 
-            return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(woodDelta, ironDelta)));
+            int laborDelta;
+            if (costPerUnit.Labor == 0)
+                laborDelta = int.MaxValue;
+            else
+                laborDelta = Labor.Value / costPerUnit.Labor;
+
+            return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(laborDelta, Math.Min(woodDelta, ironDelta))));
         }
 
         public bool HasEnough(Resource cost) {
-            if (crop.Value < cost.Crop)
-                return false;
-            if (gold.Value < cost.Gold)
-                return false;
-            if (wood.Value < cost.Wood)
-                return false;
-            if (iron.Value < cost.Iron)
-                return false;
-            if (labor.Value < cost.Labor)
-                return false;
-            return true;
+            return Crop.Value >= cost.Crop && Gold.Value >= cost.Gold && Wood.Value >= cost.Wood && Iron.Value >= cost.Iron && Labor.Value >= cost.Labor;
         }
 
         public void Subtract(Resource resource) {
             BeginUpdate();
 
             if (resource.Crop > 0)
-                crop.Subtract(resource.Crop);
+                Crop.Subtract(resource.Crop);
 
             if (resource.Gold > 0)
-                gold.Subtract(resource.Gold);
+                Gold.Subtract(resource.Gold);
 
             if (resource.Wood > 0)
-                wood.Subtract(resource.Wood);
+                Wood.Subtract(resource.Wood);
 
             if (resource.Iron > 0)
-                iron.Subtract(resource.Iron);
+                Iron.Subtract(resource.Iron);
 
             if (resource.Labor > 0)
-                labor.Subtract(resource.Labor);
+                Labor.Subtract(resource.Labor);
 
             EndUpdate();
         }
@@ -259,11 +262,11 @@ namespace Game.Data {
         public void Subtract(Resource cost, out Resource actual) {
             BeginUpdate();
             actual = new Resource();
-            crop.Subtract((actual.Crop = crop.Value > cost.Crop ? cost.Crop : crop.Value));
-            gold.Subtract((actual.Gold = gold.Value > cost.Gold ? cost.Gold : gold.Value));
-            iron.Subtract((actual.Iron = iron.Value > cost.Iron ? cost.Iron : crop.Value));
-            wood.Subtract((actual.Wood = wood.Value > cost.Wood ? cost.Wood : wood.Value));
-            labor.Subtract((actual.Labor = labor.Value > cost.Labor ? cost.Labor : labor.Value));
+            Crop.Subtract((actual.Crop = Crop.Value > cost.Crop ? cost.Crop : Crop.Value));
+            Gold.Subtract((actual.Gold = Gold.Value > cost.Gold ? cost.Gold : Gold.Value));
+            Iron.Subtract((actual.Iron = Iron.Value > cost.Iron ? cost.Iron : Crop.Value));
+            Wood.Subtract((actual.Wood = Wood.Value > cost.Wood ? cost.Wood : Wood.Value));
+            Labor.Subtract((actual.Labor = Labor.Value > cost.Labor ? cost.Labor : Labor.Value));
             EndUpdate();
         }
 
@@ -274,50 +277,53 @@ namespace Game.Data {
 
         public void Add(int crop, int gold, int iron, int wood, int labor) {
             BeginUpdate();
-            this.crop.Add(crop);
-            this.gold.Add(gold);
-            this.wood.Add(wood);
-            this.iron.Add(iron);
-            this.labor.Add(labor);
+            Crop.Add(crop);
+            Gold.Add(gold);
+            Wood.Add(wood);
+            Iron.Add(iron);
+            Labor.Add(labor);
             EndUpdate();
         }
 
         public Resource GetResource() {
-            return new Resource(crop.Value, gold.Value, iron.Value, wood.Value, labor.Value);
+            return new Resource(Crop.Value, Gold.Value, Iron.Value, Wood.Value, Labor.Value);
         }
 
         public void BeginUpdate() {
             if (isUpdating)
                 throw new Exception("Nesting beginupdate");
+
             isUpdating = true;
         }
 
         public void EndUpdate() {
-            if (isUpdating) {
-                isUpdating = false;
-                
-                if (isDirty)
-                    Update();
+            if (!isUpdating)
+                return;
 
-                isDirty = false;
-            }
+            isUpdating = false;
+
+            if (isDirty)
+                Update();
+
+            isDirty = false;
         }
 
         private void Update() {
             if (!isUpdating) {
                 if (ResourcesUpdate != null)
                     ResourcesUpdate();
-            } else
+            }
+            else
                 isDirty = true;
         }
 
         public override string ToString() {
-            return "Gold " + gold.Value + "/" + gold.RawValue + "/" + gold.Rate + gold.LastRealizeTime +
-                   Environment.NewLine + " Wood " + wood.Value + "/" + wood.RawValue + "/" + wood.Rate +
-                   wood.LastRealizeTime + Environment.NewLine + " Iron " + iron.Value + "/" + iron.RawValue + "/" +
-                   iron.Rate + iron.LastRealizeTime + Environment.NewLine + " Crop " + crop.Value + "/" + crop.RawValue +
-                   "/" + crop.Rate + crop.LastRealizeTime + Environment.NewLine + " Labor " + labor.Value + "/" +
-                   labor.RawValue + "/" + labor.Rate + labor.LastRealizeTime + Environment.NewLine;
+            return "Gold " + Gold.Value + "/" + Gold.RawValue + "/" + Gold.Rate + Gold.LastRealizeTime +
+                   Environment.NewLine + " Wood " + Wood.Value + "/" + Wood.RawValue + "/" + Wood.Rate +
+                   Wood.LastRealizeTime + Environment.NewLine + " Iron " + Iron.Value + "/" + Iron.RawValue + "/" +
+                   Iron.Rate + Iron.LastRealizeTime + Environment.NewLine + " Crop " + Crop.Value + "/" + Crop.RawValue +
+                   "/" + Crop.Rate + Crop.LastRealizeTime + Environment.NewLine + " Labor " + Labor.Value + "/" +
+                   Labor.RawValue + "/" + Labor.Rate + Labor.LastRealizeTime + Environment.NewLine;
         }
     }
 }

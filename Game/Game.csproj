@@ -216,6 +216,7 @@
     <Compile Include="Util\LargeIdGenerator.cs" />
     <Compile Include="Util\ListDictionary.cs" />
     <Compile Include="Util\SmallIdGenerator.cs" />
+    <Compile Include="Util\SystemClock.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="log4net.dll" />

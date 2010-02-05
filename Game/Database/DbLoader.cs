@@ -91,6 +91,7 @@ namespace Game.Database {
                             LazyResource resource = new LazyResource((int) reader["crop"],
                                                                      (DateTime) reader["crop_realize_time"],
                                                                      (int) reader["crop_production_rate"],
+                                                                     (int) reader["crop_upkeep"],
                                                                      (int) reader["gold"],
                                                                      (DateTime) reader["gold_realize_time"],
                                                                      (int) reader["gold_production_rate"],
@@ -616,7 +617,7 @@ namespace Game.Database {
 
                             ushort currentActionId = (ushort) reader["current_action_id"];
 
-                            List<PassiveAction> chainList = null;
+                            List<PassiveAction> chainList;
                             PassiveAction currentAction = null;
                                 //current action might be null if it has already completed and we are in the call chain part of the cycle
                             if (chainActions.TryGetValue(city.Id, out chainList))
@@ -626,11 +627,11 @@ namespace Game.Database {
 
                             Dictionary<string, string> properties =
                                 XMLSerializer.Deserialize((string) reader["properties"]);
-                            object[] parms = new object[] {
+                            object[] parms = new[] {
                                                               (ushort) reader["id"], reader["chain_callback"], currentAction,
                                                               (ActionState) ((byte) reader["chain_state"]), (bool) reader["is_visible"],
                                                               properties
-                                                          };
+                            };
 
                             ChainAction action = (ChainAction) cInfo.Invoke(parms);
                             action.DbPersisted = true;
@@ -656,7 +657,7 @@ namespace Game.Database {
                             City city;
                             Global.World.TryGetObjects((uint) reader["city_id"], out city);
 
-                            Action action = null;
+                            Action action;
                             if ((bool) reader["is_active"])
                                 action = city.Worker.ActiveActions[(ushort) reader["action_id"]];
                             else

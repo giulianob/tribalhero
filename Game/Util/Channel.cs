@@ -10,7 +10,7 @@ namespace Game.Util {
         #region Structs
 
         private struct Subscriber {
-            public IChannel session;
+            public readonly IChannel session;
             public List<string> channels;
 
             public Subscriber(IChannel session) {
@@ -23,9 +23,9 @@ namespace Game.Util {
 
         #region Members
 
-        private Dictionary<IChannel, Subscriber> subscribers_by_session = new Dictionary<IChannel, Subscriber>();
-        private Dictionary<string, List<Subscriber>> subscribers_by_channel = new Dictionary<string, List<Subscriber>>();
-        private object channelLock = new Object();
+        private readonly Dictionary<IChannel, Subscriber> subscribersBySession = new Dictionary<IChannel, Subscriber>();
+        private readonly Dictionary<string, List<Subscriber>> subscribersByChannel = new Dictionary<string, List<Subscriber>>();
+        private readonly object channelLock = new Object();
 
         #endregion
 
@@ -37,49 +37,49 @@ namespace Game.Util {
 
         #region Methods
 
-        public void Post(string channel_id, object message) {
+        public void Post(string channelId, object message) {
             lock (channelLock) {
-                if (!subscribers_by_channel.ContainsKey(channel_id))
+                if (!subscribersByChannel.ContainsKey(channelId))
                     return;
-                foreach (Subscriber sub in subscribers_by_channel[channel_id])
+                foreach (Subscriber sub in subscribersByChannel[channelId])
                     sub.session.OnPost(message);
             }
         }
 
-        public void Subscribe(IChannel session, string channel_id) {
+        public void Subscribe(IChannel session, string channelId) {
             lock (channelLock) {
                 Subscriber sub;
                 List<Subscriber> sublist;
-                if (!subscribers_by_channel.TryGetValue(channel_id, out sublist)) {
+                if (!subscribersByChannel.TryGetValue(channelId, out sublist)) {
                     sublist = new List<Subscriber>();
-                    subscribers_by_channel.Add(channel_id, sublist);
+                    subscribersByChannel.Add(channelId, sublist);
                 }
-                if (subscribers_by_session.TryGetValue(session, out sub))
-                    sub.channels.Add(channel_id);
+                if (subscribersBySession.TryGetValue(session, out sub))
+                    sub.channels.Add(channelId);
                 else {
                     sub = new Subscriber(session);
-                    sub.channels.Add(channel_id);
-                    subscribers_by_session.Add(session, sub);
+                    sub.channels.Add(channelId);
+                    subscribersBySession.Add(session, sub);
                 }
                 sublist.Add(sub);
             }
             return;
         }
 
-        public bool Unsubscribe(IChannel session, string channel_id) {
+        public bool Unsubscribe(IChannel session, string channelId) {
             lock (channelLock) {
                 Subscriber sub;
-                if (subscribers_by_session.TryGetValue(session, out sub)) {
-                    sub.channels.Remove(channel_id);
+                if (subscribersBySession.TryGetValue(session, out sub)) {
+                    sub.channels.Remove(channelId);
                     if (sub.channels.Count == 0)
-                        subscribers_by_session.Remove(session);
+                        subscribersBySession.Remove(session);
 
                     List<Subscriber> sublist;
-                    if (subscribers_by_channel.TryGetValue(channel_id, out sublist)) {
+                    if (subscribersByChannel.TryGetValue(channelId, out sublist)) {
                         sublist.Remove(sub);
 
                         if (sublist.Count == 0)
-                            subscribers_by_channel.Remove(channel_id);
+                            subscribersByChannel.Remove(channelId);
                     }
 
                     return true;
@@ -91,19 +91,21 @@ namespace Game.Util {
         public bool Unsubscribe(IChannel session) {
             lock (channelLock) {
                 Subscriber sub;
-                if (subscribers_by_session.TryGetValue(session, out sub)) {
+                if (subscribersBySession.TryGetValue(session, out sub)) {
                     foreach (string id in sub.channels) {
                         List<Subscriber> sublist;
-                        if (subscribers_by_channel.TryGetValue(id, out sublist)) {
-                            sublist.Remove(sub);
 
-                            if (sublist.Count == 0)
-                                subscribers_by_channel.Remove(id);
-                        }
+                        if (!subscribersByChannel.TryGetValue(id, out sublist))
+                            continue;
+
+                        sublist.Remove(sub);
+
+                        if (sublist.Count == 0)
+                            subscribersByChannel.Remove(id);
                     }
 
                     sub.channels = new List<string>();
-                    subscribers_by_session.Remove(session);
+                    subscribersBySession.Remove(session);
                     return true;
                 }
             }

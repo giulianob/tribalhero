@@ -99,8 +99,9 @@ namespace Game.Comm {
         public static void AddToPacket(LazyResource resource, Packet packet) {
             packet.addInt32(resource.Crop.RawValue);
             packet.addInt32(resource.Crop.Rate);
+            packet.addInt32(resource.Crop.Upkeep);
             packet.addInt32(resource.Crop.Limit);
-            packet.addUInt32(UnixDateTime.DateTimeToUnix(resource.Crop.LastRealizeTime.ToUniversalTime()));
+            packet.addUInt32(UnixDateTime.DateTimeToUnix(resource.Crop.LastRealizeTime.ToUniversalTime()));            
 
             packet.addInt32(resource.Iron.RawValue);
             packet.addInt32(resource.Iron.Rate);
@@ -174,11 +175,7 @@ namespace Game.Comm {
             packet.addUInt32(stub.City.Id);
 
             packet.addByte(stub.TroopId);
-            packet.addByte((byte) stub.State);
-
-            //Only local troop gets upkeep
-            if (stub.TroopId == 1)
-                packet.addInt32(stub.Upkeep);            
+            packet.addByte((byte)stub.State);
 
             //Add troop template
             packet.addByte(stub.Template.Count);

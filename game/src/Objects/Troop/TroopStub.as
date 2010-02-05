@@ -14,7 +14,6 @@
 
 		public var id: int;
 		public var state: int = 0;
-		public var upkeep: int = 0;
 
 		public var x: int;
 		public var y: int;

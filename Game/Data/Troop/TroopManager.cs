@@ -33,27 +33,27 @@ namespace Game.Data.Troop {
             set { dict[index] = value; }
         }
 
-        private City city;
-
-        public City City {
-            get { return city; }
-            set { city = value; }
-        }
+        public City City { get; set; }
 
         #endregion
 
         #region Methods
 
         public TroopManager(City city) {
-            this.city = city;
+            City = city;
+        }
+        
+        private void CheckUpdateMode() {
+            MultiObjectLock.ThrowExceptionIfNotLocked(City);
         }
 
         private void FireUpdated(TroopStub stub) {
             if (!Global.FireEvents)
                 return;
 
-            if (stub.City.Id > 0)
-                Global.dbManager.Save(stub);
+            CheckUpdateMode();
+
+            Global.dbManager.Save(stub);
 
             if (TroopUpdated != null)
                 TroopUpdated(stub);
@@ -63,6 +63,8 @@ namespace Game.Data.Troop {
             if (!Global.FireEvents)
                 return;
 
+            CheckUpdateMode();
+
             if (TroopAdded != null)
                 TroopAdded(stub);
         }
@@ -71,8 +73,10 @@ namespace Game.Data.Troop {
             if (!Global.FireEvents)
                 return;
 
+            CheckUpdateMode();
+
             //We don't want to delete a troopstub that doesn't belong to us.
-            if (stub.City == city)
+            if (stub.City == City)
                 Global.dbManager.Delete(stub);
 
             if (TroopRemoved != null)
@@ -91,16 +95,23 @@ namespace Game.Data.Troop {
             return true;
         }
 
-        public bool Add(TroopStub stub, out byte id) {
-            id = 0;
+        public bool Add(TroopStub stub, out byte id) {            
             int nextId = idGen.getNext();
-            if (nextId == -1)
+
+            if (nextId == -1) {
+                id = 0;
                 return false;
+            }
+
             id = (byte) nextId;
+            
             stub.TroopId = id;
             stub.TroopManager = this;
+            
             dict.Add(id, stub);
+            
             stub.UnitUpdate += StubUpdateEvent;
+
             FireAdded(stub);
             return true;
         }
@@ -112,7 +123,7 @@ namespace Game.Data.Troop {
             byte id = (byte) nextId;
             stub.StationedTroopId = id;
             stub.State = TroopStub.TroopState.STATIONED;
-            stub.StationedCity = city;
+            stub.StationedCity = City;
             dict.Add(id, stub);
             stub.UnitUpdate += StubUpdateEvent;
             FireAdded(stub);
@@ -138,18 +149,23 @@ namespace Game.Data.Troop {
             stub.EndUpdate();
 
             stub.UnitUpdate -= StubUpdateEvent;
+
             FireRemoved(stub);
             return true;
         }
 
         public bool Remove(byte id) {
             TroopStub stub;
+            
             if (!dict.TryGetValue(id, out stub))
                 return false;
+            
             if (!dict.Remove(id))
                 return false;
+            
             idGen.release(id);
             stub.UnitUpdate -= StubUpdateEvent;
+           
             FireRemoved(stub);
             return true;
         }
@@ -158,15 +174,25 @@ namespace Game.Data.Troop {
             return dict.TryGetValue(id, out stub);
         }
 
-        public Resource Upkeep() {
-            int crop = 0;
-            foreach (TroopStub stub in dict.Values)
-                crop += stub.Upkeep;
-            return new Resource(crop, 0, 0, 0, 0);
+        public int Upkeep {
+            get {
+                int upkeep = 0;
+                foreach (TroopStub stub in dict.Values) {
+                    //Only want to factor in troops that belong to this city
+                    //not stationed
+                    if (stub.City == City)
+                        upkeep += stub.Upkeep;
+                }
+
+                return upkeep;
+            }
         }
 
-        public void Starve() {
+        public void Starve() {            
             foreach (TroopStub stub in dict.Values) {
+                if (stub.City != City || stub.State != TroopStub.TroopState.IDLE || stub.StationedCity != null)
+                    continue;
+
                 stub.BeginUpdate();
                 stub.Starve();
                 stub.EndUpdate();
@@ -201,7 +227,7 @@ namespace Game.Data.Troop {
 
         internal IEnumerable<TroopStub> StationedHere() {
             foreach (TroopStub stub in this) {
-                if (stub.StationedCity == city)
+                if (stub.StationedCity == City)
                     yield return stub;
             }
         }

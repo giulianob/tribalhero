@@ -10,8 +10,8 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class CityAction : ScheduledPassiveAction {
-        private int INTERVAL = 1800;
-        private uint cityId;
+        private const int INTERVAL = 1800;
+        private readonly uint cityId;
         private int laborRoundBeforeIncrements;
 
         public CityAction(uint cityId) {
@@ -19,7 +19,8 @@ namespace Game.Logic.Actions {
         }
 
         public CityAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
-                          Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible) {
+                          Dictionary<string, string> properties)
+            : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
             laborRoundBeforeIncrements = int.Parse(properties["labor_round_before_increments"]);
         }
@@ -60,14 +61,6 @@ namespace Game.Logic.Actions {
                 city.BeginUpdate();
 /********************************** Pre Loop1 ****************************************/
 
-                #region ResourceGet
-
-                //Resource resource = new Resource(5*city.MainBuilding.Lvl,0,0,5*city.MainBuilding.Lvl);
-                //Resource resource = new Resource(200, 200, 200, 200);
-                Resource resource = new Resource();
-
-                #endregion
-
                 #region Repair
 
                 ushort repairPower = 0;
@@ -103,19 +96,28 @@ namespace Game.Logic.Actions {
 
 /********************************* Post Loop1 ****************************************/
 
-                #region ResourceGet
+                #region Upkeep
+                
+                if (Config.resource_upkeep) {                    
+                    if (city.Resource.Crop.Upkeep > city.Resource.Crop.Rate) {
+                        int upkeepCost = (INTERVAL / 3600) * (city.Resource.Crop.Upkeep - city.Resource.Crop.Rate);
 
-                Resource Upkeep = city.Troops.Upkeep();
-                if (Config.resource_upkeep) {
-                    if (city.Resource.Crop.Value + resource.Crop < Upkeep.Crop) {
-                        Upkeep.Crop = city.Resource.Crop.Value + resource.Crop;
-                        city.Troops.Starve();
+                        if (city.Resource.Crop.Value < upkeepCost) {
+                            city.Troops.Starve();
+                        }
+
+                        city.Resource.Crop.Subtract(upkeepCost);
                     }
-                } else
-                    Upkeep.Clear();
-                if (Config.resource_fast_income)
-                    resource += new Resource(15000, 250, 15000, 15000, 0);
-                city.Resource.Add(resource - Upkeep);
+                }
+
+                #endregion
+
+                #region Resource: Fast Income
+                
+                if (Config.resource_fast_income) {
+                    Resource resource = new Resource(15000, 250, 15000, 15000, 0);
+                    city.Resource.Add(resource);
+                }
 
                 #endregion
 
@@ -131,8 +133,7 @@ namespace Game.Logic.Actions {
                     byte radius = Formula.GetRadius((uint) (laborTotal + city.Resource.Labor.Value));
                     if (radius > city.Radius)
                         city.Radius = radius;
-                } else
-                    laborTotal += city.Resource.Labor.Value;
+                }
 
                 #endregion
 
@@ -192,7 +193,7 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("city_id", cityId),
                                                                 new XMLKVPair("labor_round_before_increments", laborRoundBeforeIncrements)
                                                             });

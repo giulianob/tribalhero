@@ -149,10 +149,12 @@ namespace Game.Data.Troop {
 
                 foreach (Formation formation in data.Values) {
                     foreach (KeyValuePair<ushort, ushort> kvp in new Dictionary<ushort, ushort>(formation)) {
-                        if (kvp.Value == 1)
+                        ushort newCount = (ushort)(kvp.Value * 95 / 100);
+
+                        if (newCount == 0)
                             formation.Remove(kvp.Key);
                         else
-                            formation[kvp.Key] = (ushort)(kvp.Value * 95 / 100);
+                            formation[kvp.Key] = newCount;
                     }
                 }
             }

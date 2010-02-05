@@ -34,7 +34,7 @@ namespace Game.Setup {
         public static readonly int city_region_column = (int) (map_width/city_region_width);
         public static readonly int city_region_row = (int) (map_height/city_region_height);
 
-        public static readonly double seconds_per_unit = 0.01; //dont make it zero
+        public static readonly double seconds_per_unit = 1.0; //dont make it zero
         public static readonly int battle_turn_interval = 2;
         public static readonly int stamina_initial;
         public static readonly bool resource_upkeep;
@@ -80,6 +80,10 @@ namespace Game.Setup {
                             settingsFile = parts[1];
                             break;
                     }
+                }
+
+                if (!File.Exists(settingsFile)) {
+                    return;
                 }
 
                 using (StreamReader file = new StreamReader(File.Open(settingsFile, FileMode.Open))) {

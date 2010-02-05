@@ -16,9 +16,7 @@ namespace Game.Logic.Procedures {
         }
 
         public static void AddLocalToBattle(BattleManager bm, City city, ReportState state) {
-            List<TroopStub> list = new List<TroopStub>(1);
-
-            list.Add(city.DefaultTroop);
+            List<TroopStub> list = new List<TroopStub>(1) {city.DefaultTroop};
 
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopStub.TroopState.BATTLE;

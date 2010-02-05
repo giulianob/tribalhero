@@ -19,6 +19,7 @@ namespace Game.Logic.Procedures {
             StructureFactory.GetStructure(structure, structure.Type, (byte) (structure.Lvl - 1), true);
             structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
             structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
+            AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
             InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);
             Formula.ResourceCap(structure.City);
             return true;

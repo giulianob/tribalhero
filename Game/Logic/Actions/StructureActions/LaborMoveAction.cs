@@ -52,14 +52,13 @@ namespace Game.Logic.Actions {
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.OnLaborUpdate(structure, -1*ActionCount); // labor got taken out immediately                
+                Procedure.AdjustCityResourceRates(structure, -1 * ActionCount); // labor got taken out immediately                
                 structure.City.EndUpdate();
             }
 
             // add to queue for completion
             beginTime = DateTime.Now;
-            endTime =
-                DateTime.Now.AddSeconds(Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
+            endTime = DateTime.Now.AddSeconds(Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
 
             return Error.OK;
         }
@@ -90,7 +89,7 @@ namespace Game.Logic.Actions {
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.OnLaborUpdate(structure, ActionCount); // labor got put in here
+                    Procedure.AdjustCityResourceRates(structure, ActionCount); // labor got put in here
                     structure.City.EndUpdate();
                 } else {
                     structure.City.BeginUpdate();
@@ -127,10 +126,9 @@ namespace Game.Logic.Actions {
                             structure.BeginUpdate();
                             structure.Stats.Labor += (byte) ActionCount;
                             structure.EndUpdate();
-
+                            
                             structure.City.BeginUpdate();
-                            Procedure.OnLaborUpdate(structure, -1*ActionCount);
-                            //Todo: need to add production back to structures. Does this still apply?
+                            Procedure.AdjustCityResourceRates(structure, -1 * ActionCount);
                             structure.City.EndUpdate();
                         }
                         StateChange(ActionState.INTERRUPTED);

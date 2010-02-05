@@ -10,12 +10,13 @@ using Game.Fighting;
 namespace Game.Logic.Procedures {
     public partial class Procedure {
         public static bool TroopObjectCreate(City city, TroopStub stub, uint x, uint y) {
-            if (!remove_from_normal(city.DefaultTroop, stub))
+            if (!RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
 
-            TroopObject troop = new TroopObject(stub);
-            troop.X = x;
-            troop.Y = y + 1;
+            TroopObject troop = new TroopObject(stub) {
+                                                          X = x,
+                                                          Y = y + 1
+                                                      };
 
             city.Troops.Add(stub);
             city.Add(troop);
@@ -25,7 +26,7 @@ namespace Game.Logic.Procedures {
             return true;
         }
 
-        private static bool remove_from_normal(TroopStub source, TroopStub target) {
+        private static bool RemoveFromNormal(TroopStub source, TroopStub target) {
             foreach (Formation formation in target) {
                 foreach (KeyValuePair<ushort, ushort> unit in formation) {
                     ushort count;

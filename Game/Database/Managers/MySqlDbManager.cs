@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -16,13 +17,15 @@ using MySql.Data.MySqlClient;
 
 namespace Game.Database {
     public class MySqlDbManager : IDbManager {
-        private Dictionary<Type, String> saveCommands = new Dictionary<Type, String>();
-        private Dictionary<Type, String> createCommands = new Dictionary<Type, String>();
-        private Dictionary<Type, String> createListCommands = new Dictionary<Type, String>();
-        private Dictionary<Type, String> deleteCommands = new Dictionary<Type, String>();
-        private Dictionary<Type, String> deleteListCommands = new Dictionary<Type, String>();
+        private readonly Dictionary<Type, String> saveCommands = new Dictionary<Type, String>();
+        private readonly Dictionary<Type, String> createCommands = new Dictionary<Type, String>();
+        private readonly Dictionary<Type, String> createListCommands = new Dictionary<Type, String>();
+        private readonly Dictionary<Type, String> deleteCommands = new Dictionary<Type, String>();
+        private readonly Dictionary<Type, String> deleteListCommands = new Dictionary<Type, String>();
 
-        private string connectionString;
+        private readonly string connectionString;
+        private readonly string backupCommand;
+
 
         private bool paused;
 
@@ -30,8 +33,8 @@ namespace Game.Database {
         private static MySqlDbTransaction persistantTransaction;
 
         public MySqlDbManager(string hostname, string username, string password, string database) {
-            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};", database, hostname,
-                                             username, password);
+            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};", database, hostname, username, password);
+            backupCommand = string.Format("mysqldump ---user={0} ---password={1} {2} > ", username, password, database);
         }
 
         private MySqlConnection GetConnection() {
@@ -617,6 +620,26 @@ namespace Game.Database {
                 writer.Write(param + "=" + param.Value + ",");
 
             Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") " + writer, e);
+
+            //Backup database
+            if (Config.database_dump) {
+                try {
+                    string fileDestination = Config.data_folder + String.Format("{0:d.M.yy.HH.mm.ss}", DateTime.Now);
+                    using (Process process = Process.Start(backupCommand + fileDestination)) {
+                        if (process != null)
+                            process.WaitForExit();
+                    }
+
+                    using (StreamWriter backupWriter = new StreamWriter(File.Open(fileDestination, FileMode.Open))) {
+                        backupWriter.WriteLine("-- " + e.Message);
+                        backupWriter.WriteLine("-- " + e.StackTrace.Replace("\r\n", "\r\n --"));
+                    }
+                }
+                catch (Exception fe) {
+                    Global.DbLogger.Error("Unable to create backup", fe);
+                }
+            }
+
             throw e;
         }
 

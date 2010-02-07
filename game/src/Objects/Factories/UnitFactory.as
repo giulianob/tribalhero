@@ -33,9 +33,9 @@
 				unitObj.stealth = unitNode.@stealth;
 				unitObj.range = unitNode.@range;
 				unitObj.speed = unitNode.@speed;
-				unitObj.trainResources = new Resources(unitNode.@crop, unitNode.@gold, unitNode.@iron, unitNode.@wood, 0);
+				unitObj.trainResources = new Resources(unitNode.@crop, unitNode.@gold, unitNode.@iron, unitNode.@wood, unitNode.@labor);
 				unitObj.trainTime = unitNode.@time;
-				unitObj.upgradeResources = new Resources(unitNode.@crop, unitNode.@gold, unitNode.@iron, unitNode.@wood, 0);
+				unitObj.upgradeResources = new Resources(unitNode.@upgradecrop, unitNode.@upgradegold, unitNode.@upgradeiron, unitNode.@upgradewood, unitNode.@upgradelabor);
 				unitObj.upgradeTime = unitNode.@time;
 				unitObj.weapon = unitNode.@weapon;
 				unitObj.armor = unitNode.@armor;

@@ -116,18 +116,18 @@ CANNON_TOWER_STRUCTURE_LVL_2,Increases defenses.
 CANNON_TOWER_STRUCTURE_LVL_3,Increases defenses.
 CANNON_TOWER_STRUCTURE_LVL_4,Increases defenses.
 CANNON_TOWER_STRUCTURE_LVL_5,Increases defenses.
-DISTRIBUTION_CENTER_STRUCTURE_NAME,Trading post
-DISTRIBUTION_CENTER_STRUCTURE_DESCRIPTION,Allows sending caravans with resources to other players. Gives the ability to build a market.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_1,Ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_2,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_3,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_4,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_5,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_6,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_7,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_8,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_9,Increase ability to send a maximum of ### resources.
-DISTRIBUTION_CENTER_STRUCTURE_LVL_10,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_NAME,Trading post
+TRADING_POST_STRUCTURE_DESCRIPTION,Allows sending caravans with resources to other players. Gives the ability to build a market.
+TRADING_POST_STRUCTURE_LVL_1,Ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_2,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_3,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_4,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_5,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_6,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_7,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_8,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_9,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_10,Increase ability to send a maximum of ### resources.
 MARKET_STRUCTURE_NAME,Market
 MARKET_STRUCTURE_DESCRIPTION,Allows selling and buying resources from the world market.
 MARKET_STRUCTURE_LVL_1,Ability to sell and buy resources at a ###% tax rate.

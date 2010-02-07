@@ -53,11 +53,12 @@ namespace Game.Setup {
         public static readonly string database_password = "";
         public static readonly string database_database = "";
         public static readonly string database_salt = "";
+        public static bool database_dump;
 
         public static readonly bool ai_enabled;
         public static readonly int ai_count = 100;
 
-        public static readonly bool actions_instant_time;
+        public static readonly bool actions_instant_time;        
 
         public static Random Random { get; private set; }
 

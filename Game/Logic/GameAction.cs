@@ -56,7 +56,7 @@ namespace Game.Logic {
         INTERRUPTED = 5,
     }
 
-    public abstract class Action : IPersistableObject {
+    public abstract class GameAction : IPersistableObject {
         private ICanDo workerObject;
 
         public ICanDo WorkerObject {
@@ -64,7 +64,7 @@ namespace Game.Logic {
             set { workerObject = value; }
         }
 
-        public delegate void ActionNotify(Action action, ActionState state);
+        public delegate void ActionNotify(GameAction action, ActionState state);
 
         public event ActionNotify OnNotify;
 

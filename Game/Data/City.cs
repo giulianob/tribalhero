@@ -392,7 +392,7 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void WorkerActionRescheduled(Action stub) {
+        private void WorkerActionRescheduled(GameAction stub) {
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
@@ -402,7 +402,7 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void WorkerActionAdded(Action stub) {
+        private void WorkerActionAdded(GameAction stub) {
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
@@ -412,7 +412,7 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void WorkerActionRemoved(Action stub) {
+        private void WorkerActionRemoved(GameAction stub) {
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 

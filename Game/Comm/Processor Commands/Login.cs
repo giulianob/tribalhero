@@ -35,8 +35,6 @@ namespace Game.Comm {
             string playerPassword = string.Empty;
             uint playerId;
 
-            string sessionId = string.Empty;
-
             try {
                 loginMode = packet.getByte();
                 if (loginMode == 0)
@@ -103,10 +101,9 @@ namespace Game.Comm {
 
             //Create the session id that will be used for the calls to the web server
             SHA1 sha = new SHA1CryptoServiceProvider();
-            sessionId =
-                BitConverter.ToString(
-                    sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.Now.Ticks))).
-                    Replace("-", String.Empty);
+            string sessionId = BitConverter.ToString(
+                sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.Now.Ticks))).
+                Replace("-", String.Empty);
 
             bool newPlayer;
             lock (loginLock) {
@@ -122,7 +119,7 @@ namespace Game.Comm {
                     player.SessionId = sessionId;
                 }
             }
-            
+
             using (new MultiObjectLock(player)) {
                 if (!newPlayer) {
                     if (player.Session != null) {
@@ -131,7 +128,7 @@ namespace Game.Comm {
                     }
                     player.Session = session;
                     Global.dbManager.Save(player);
-                } else {                    
+                } else {
                     player.DbPersisted = Config.database_load_players;
 
                     Global.dbManager.Save(player);
@@ -183,7 +180,7 @@ namespace Game.Comm {
                     reply.addByte(city.Radius);
 
                     //City Actions
-                    PacketHelper.AddToPacket(new List<Action>(city.Worker.GetVisibleActions()), reply, true);
+                    PacketHelper.AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), reply, true);
 
                     //Notifications
                     reply.addUInt16(city.Worker.Notifications.Count);

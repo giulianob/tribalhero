@@ -16,6 +16,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,6 +43,9 @@
       <HintPath>.\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -107,7 +111,7 @@
     <Compile Include="Logic\Actions\TroopActions\UnitUpgradeAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureUpgradeAction.cs" />
     <Compile Include="Logic\ActionWorker.cs" />
-    <Compile Include="Logic\Action.cs">
+    <Compile Include="Logic\GameAction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Logic\ActiveAction.cs" />

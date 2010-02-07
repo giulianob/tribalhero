@@ -15,9 +15,9 @@ namespace Game.Logic {
 
         public ICanDo WorkerObject { get; private set; }
 
-        public Action Action { get; private set; }
+        public GameAction Action { get; private set; }
 
-        public ReferenceStub(ushort id, ICanDo obj, Action action) {
+        public ReferenceStub(ushort id, ICanDo obj, GameAction action) {
             ReferenceId = id;
             WorkerObject = obj;
             Action = action;
@@ -34,19 +34,19 @@ namespace Game.Logic {
         public DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
-                                          new DbColumn("action_id", Action.ActionId, DbType.UInt16),
-                                          new DbColumn("is_active", Action is ActiveAction ? true : false, DbType.Boolean)
-                                      };
+                                  new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                                  new DbColumn("action_id", Action.ActionId, DbType.UInt16),
+                                  new DbColumn("is_active", Action is ActiveAction ? true : false, DbType.Boolean)
+                              };
             }
         }
 
         public DbColumn[] DbPrimaryKey {
             get {
                 return new[] {
-                                          new DbColumn("id", ReferenceId, DbType.UInt16),
-                                          new DbColumn("city_id", WorkerObject.City.Id, DbType.UInt32)
-                                      };
+                                  new DbColumn("id", ReferenceId, DbType.UInt16),
+                                  new DbColumn("city_id", WorkerObject.City.Id, DbType.UInt32)
+                              };
             }
         }
 
@@ -60,10 +60,10 @@ namespace Game.Logic {
     }
 
     public class ReferenceManager {
-        private List<ReferenceStub> reference = new List<ReferenceStub>();
-        private LargeIdGenerator referenceIdGen = new LargeIdGenerator(ushort.MaxValue);
+        private readonly List<ReferenceStub> reference = new List<ReferenceStub>();
+        private readonly LargeIdGenerator referenceIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        private ActionWorker actionWorker;
+        private readonly ActionWorker actionWorker;
 
         public ReferenceManager(ActionWorker actionWorker) {
             this.actionWorker = actionWorker;
@@ -95,21 +95,19 @@ namespace Game.Logic {
             Global.dbManager.Save(newReference);
         }
 
-        public void Remove(GameObject referenceObject, Action action) {
-            reference.RemoveAll(delegate(ReferenceStub referenceStub) {
-                                    bool ret = (referenceObject == referenceStub.WorkerObject &&
-                                                referenceStub.Action == action);
+        public void Remove(GameObject referenceObject, GameAction action) {
+            reference.RemoveAll(referenceStub => {
+                bool ret = (referenceObject == referenceStub.WorkerObject && referenceStub.Action == action);
 
-                                    if (ret)
-                                        Global.dbManager.Delete(referenceStub);
+                if (ret)
+                    Global.dbManager.Delete(referenceStub);
 
-                                    return ret;
-                                });
+                return ret;
+            });
         }
 
         public IEnumerable<ReferenceStub> GetReferences(ICanDo worker) {
-            return
-                reference.FindAll(stub => stub.WorkerObject.WorkerId == worker.WorkerId);
+            return reference.FindAll(stub => stub.WorkerObject.WorkerId == worker.WorkerId);
         }
     }
 }

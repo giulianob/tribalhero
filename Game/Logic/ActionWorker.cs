@@ -67,7 +67,7 @@ namespace Game.Logic {
 
         #region Private Members
 
-        private void NotifyPassive(Action action, ActionState state) {
+        private void NotifyPassive(GameAction action, ActionState state) {
             MultiObjectLock.ThrowExceptionIfNotLocked(city);
 
             PassiveAction actionStub;
@@ -126,7 +126,7 @@ namespace Game.Logic {
             }
         }
 
-        private void NotifyActive(Action action, ActionState state) {
+        private void NotifyActive(GameAction action, ActionState state) {
             MultiObjectLock.ThrowExceptionIfNotLocked(city);
 
             ActiveAction actionStub;
@@ -313,7 +313,7 @@ namespace Game.Logic {
 
         #region Methods
 
-        public bool Contains(Action action) {
+        public bool Contains(GameAction action) {
             if (action is ActiveAction)
                 return ActiveActions.ContainsKey(action.ActionId);
             
@@ -324,11 +324,11 @@ namespace Game.Logic {
         }
 
         public void FireCallback(ISchedule action) {
-            if (!((Action) action).IsDone)
+            if (!((GameAction) action).IsDone)
                 action.Callback(null);
         }
 
-        internal IEnumerable<Action> GetVisibleActions() {
+        internal IEnumerable<GameAction> GetVisibleActions() {
             foreach (KeyValuePair<ushort, ActiveAction> kvp in active)
                 yield return kvp.Value;
 
@@ -364,7 +364,7 @@ namespace Game.Logic {
 
         #region Event
 
-        public delegate void UpdateCallback(Action stub);
+        public delegate void UpdateCallback(GameAction stub);
 
         public event UpdateCallback ActionStarted;
         public event UpdateCallback ActionRescheduled;
@@ -372,10 +372,10 @@ namespace Game.Logic {
 
         #endregion
 
-        public void Remove(GameObject workerObject, ActionInterrupt actionInterrupt, params Action[] ignoreActions) {
+        public void Remove(GameObject workerObject, ActionInterrupt actionInterrupt, params GameAction[] ignoreActions) {
             MultiObjectLock.ThrowExceptionIfNotLocked(city);
 
-            List<Action> ignoreActionList = new List<Action>(ignoreActions);
+            List<GameAction> ignoreActionList = new List<GameAction>(ignoreActions);
 
             List<ActiveAction> list =
                 active.FindAll(actionStub => actionStub.WorkerObject == workerObject);

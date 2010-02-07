@@ -6,7 +6,7 @@ using Game.Database;
 #endregion
 
 namespace Game.Logic {
-    public abstract class ActiveAction : Action {
+    public abstract class ActiveAction : GameAction {
         public int WorkerType { get; set; }
 
         public byte WorkerIndex { get; set; }

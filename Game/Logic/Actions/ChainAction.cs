@@ -45,7 +45,7 @@ namespace Game.Logic.Actions {
             StateChange(ActionState.RESCHEDULED);
         }
 
-        private void ChainNotify(Action action, ActionState state) {
+        private void ChainNotify(GameAction action, ActionState state) {
             chainState = state;
 
             switch (state) {

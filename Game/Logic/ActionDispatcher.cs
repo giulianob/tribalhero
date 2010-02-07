@@ -9,13 +9,13 @@ namespace Game.Logic {
     class ActionDispatcher : ISchedule {
         private ISchedule action;
 
-        private ActionDispatcher(Action action) {
+        private ActionDispatcher(GameAction action) {
             this.action = action as ISchedule;
         }
 
-        public ActionDispatcher(ScheduledActiveAction action) : this(action as Action) {}
+        public ActionDispatcher(ScheduledActiveAction action) : this(action as GameAction) {}
 
-        public ActionDispatcher(ScheduledPassiveAction action) : this(action as Action) {}
+        public ActionDispatcher(ScheduledPassiveAction action) : this(action as GameAction) {}
 
         #region ISchedule Members
 
@@ -24,7 +24,7 @@ namespace Game.Logic {
         }
 
         public void Callback(object custom) {
-            Action action = this.action as Action;
+            GameAction action = this.action as GameAction;
             City city;
 
             try {

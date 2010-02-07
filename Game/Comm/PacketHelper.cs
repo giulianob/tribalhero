@@ -132,13 +132,13 @@ namespace Game.Comm {
             }
         }
 
-        public static void AddToPacket(List<Action> actions, Packet packet, bool includeWorkerId) {
+        public static void AddToPacket(List<GameAction> actions, Packet packet, bool includeWorkerId) {
             packet.addByte((byte) actions.Count);
-            foreach (Action actionStub in actions)
+            foreach (GameAction actionStub in actions)
                 AddToPacket(actionStub, packet, includeWorkerId);
         }
 
-        internal static void AddToPacket(Action actionStub, Packet packet, bool includeWorkerId) {
+        internal static void AddToPacket(GameAction actionStub, Packet packet, bool includeWorkerId) {
             if (includeWorkerId)
                 packet.addUInt32(actionStub.WorkerObject.WorkerId);
 
@@ -149,8 +149,8 @@ namespace Game.Comm {
             } else {
                 packet.addByte(1);
                 packet.addUInt16(actionStub.ActionId);
-                packet.addByte((actionStub as ActiveAction).WorkerIndex);
-                packet.addUInt16((actionStub as ActiveAction).ActionCount);
+                packet.addByte(((ActiveAction) actionStub).WorkerIndex);
+                packet.addUInt16(((ActiveAction) actionStub).ActionCount);
             }
 
             if (actionStub is IActionTime) {

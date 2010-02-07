@@ -6,7 +6,7 @@ using Game.Database;
 #endregion
 
 namespace Game.Logic {
-    public abstract class PassiveAction : Action {
+    public abstract class PassiveAction : GameAction {
         protected PassiveAction() {}
 
         protected PassiveAction(ushort id, bool isVisible) {

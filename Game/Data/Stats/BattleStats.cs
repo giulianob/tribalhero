@@ -4,9 +4,9 @@ namespace Game.Data.Stats {
 
         public ushort MaxHp { get; set; }
 
-        public byte Atk { get; set; }
+        public ushort Atk { get; set; }
 
-        public byte Def { get; set; }
+        public ushort Def { get; set; }
 
         public byte Rng { get; set; }
 

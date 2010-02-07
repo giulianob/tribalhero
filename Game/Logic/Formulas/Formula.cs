@@ -77,7 +77,7 @@ namespace Game.Logic {
         }
 
         internal static byte GetRadius(uint totalLabor) {
-            return (byte) Math.Min(6, (int) (totalLabor/100));
+            return (byte) Math.Min(4, (int) (totalLabor/400)+2);
         }
 
         internal static int GetAttackModeTolerance(int totalCount, AttackMode mode) {
@@ -111,20 +111,35 @@ namespace Game.Logic {
         internal static double MarketTax(Structure structure) {
             switch (structure.Lvl) {
                 case 1:
-                    return 0.30;
+                    return .25;
                 case 2:
-                    return 0.20;
+                    return .20;
                 case 3:
-                    return 0.10;
-                default:
-                    return 0.05;
+                    return .15;
+                case 4:
+                    return .10;
+                case 5:
+                    return .05; 
             }
+            throw new Exception("WTF");
         }
+        internal static int ResourceCropCap(byte lvl) {
+            int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
+            return cap[lvl];
+        }
+        internal static int ResourceWoodCap(byte lvl) {
+            int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
+            return cap[lvl];
+        }
+        internal static int ResourceIronCap(byte lvl) {
+            int[] cap = { 200, 200, 300, 500, 800, 1200, 1800, 2800, 4400, 6800, 10000 };
+            return cap[lvl];
+        }
+
 
         internal static void ResourceCap(City city) {
             if (Config.resource_cap) {
-                int limit = 500 + city.MainBuilding.Lvl*city.MainBuilding.Lvl*100;
-                city.Resource.SetLimits(limit, 0, limit, limit, 0);
+                city.Resource.SetLimits(ResourceCropCap(city.MainBuilding.Lvl), 0, ResourceIronCap(city.MainBuilding.Lvl), ResourceWoodCap(city.MainBuilding.Lvl), 0);
             } else
                 city.Resource.SetLimits(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
         }

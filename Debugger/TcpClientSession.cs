@@ -102,9 +102,7 @@ namespace Debugger {
             }
         }
 
-
-        public override void close() {
-            throw new Exception("The method or operation is not implemented.");
+        protected override void close() {
         }
-    }
+   }
 }

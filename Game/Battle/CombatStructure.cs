@@ -197,7 +197,7 @@ namespace Game.Battle {
                                           new DbColumn("hp", hp, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
                                           new DbColumn("level", lvl, DbType.Byte), //BattleStats
                                           new DbColumn("max_hp", stats.MaxHp, DbType.UInt16),
-                                          new DbColumn("attack", stats.Atk, DbType.Byte), new DbColumn("defense", stats.Def, DbType.Byte),
+                                          new DbColumn("attack", stats.Atk, DbType.UInt16), new DbColumn("defense", stats.Def, DbType.UInt16),
                                           new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte),
                                           new DbColumn("speed", stats.Spd, DbType.Byte)
                                       };

@@ -214,7 +214,8 @@
 					if (Constants.debug >= 2)
 						trace("Received: " + incomingPacket.toString());
 					
-					Global.main.packetCounter.updateCounter();
+					if (Constants.debug > 0) 
+						Global.main.packetCounter.updateCounter();
 					
 					if ( (incomingPacket.option & Options.REPLY) != Options.REPLY)
 					{

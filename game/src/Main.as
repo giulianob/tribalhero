@@ -63,9 +63,11 @@
 			addChild(gameContainer);
 
 			//Packet Counter
-			packetCounter = new GeneralCounter("pkts");
-			packetCounter.y = Constants.screenH - 64;
-			addChild(packetCounter);
+			if (Constants.debug > 0) {
+				packetCounter = new GeneralCounter("pkts");
+				packetCounter.y = Constants.screenH - 64;
+				addChild(packetCounter);
+			}
 
 			//Define login type and perform login action
 			if (parms.hostname)
@@ -222,12 +224,14 @@
 			gameContainer.setMap(map, miniMap);
 			map.parseRegions();
 
-			if (frameCounter)
-			removeChild(frameCounter);
-
-			frameCounter = new FPSCounter();
-			frameCounter.y = Constants.screenH - 32;
-			addChild(frameCounter);
+			if (Constants.debug > 0) {
+				if (frameCounter)
+				removeChild(frameCounter);
+				
+				frameCounter = new FPSCounter();
+				frameCounter.y = Constants.screenH - 32;
+				addChild(frameCounter);
+			}
 		}
 
 		public function onReceive(packet: Packet):void

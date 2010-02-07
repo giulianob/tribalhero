@@ -2,7 +2,11 @@
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.SimpleButton;
+	import flash.filters.BlurFilter;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import src.Constants;
 	import src.Map.City;
 	import src.Map.CityObject;
 	import src.Map.Map;
@@ -140,10 +144,18 @@
 		}
 
 		public static function getInstance(type: int, level: int): Object
-		{
+		{	
+			var structureObj: StructureObject = new StructureObject();			
+			
+			var shadow: DisplayObjectContainer = StructureFactory.getSprite(type, level);
+			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
+			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
+			shadow.alpha = 0.4;
+			shadow.filters = [new BlurFilter(5, 5)];	
+			shadow.mouseEnabled = false;
+			structureObj.addChild(shadow);
+			
 			var img: DisplayObject = getSprite(type, level);
-
-			var structureObj: StructureObject = new StructureObject();
 			structureObj.addChild(img);
 
 			return structureObj;

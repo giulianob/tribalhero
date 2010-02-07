@@ -631,7 +631,7 @@ namespace Game.Battle {
                     else
                         throw new Exception("How can this happen");
 
-                    if (defender == null || attacker.Stats.Atk == 0) {
+                    if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && defender.Stats.Def == 0)) {
                         attacker.ParticipatedInRound();
                         continue;
                     }

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.0.1
+-- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 04, 2010 at 07:46 PM
--- Server version: 5.1.37
--- PHP Version: 5.3.0
+-- Generation Time: Feb 07, 2010 at 03:40 PM
+-- Server version: 5.1.33
+-- PHP Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -214,8 +214,8 @@ CREATE TABLE `combat_structures` (
   `type` smallint(5) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
   `max_hp` smallint(5) unsigned NOT NULL,
-  `attack` tinyint(3) unsigned NOT NULL,
-  `defense` tinyint(3) unsigned NOT NULL,
+  `attack` smallint(5) unsigned NOT NULL,
+  `defense` smallint(5) unsigned NOT NULL,
   `range` tinyint(3) unsigned NOT NULL,
   `stealth` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,
@@ -605,8 +605,8 @@ CREATE TABLE `troop_templates_list` (
   `type` smallint(5) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
   `max_hp` smallint(5) unsigned NOT NULL,
-  `attack` tinyint(3) unsigned NOT NULL,
-  `defense` tinyint(3) unsigned NOT NULL,
+  `attack` smallint(5) unsigned NOT NULL,
+  `defense` smallint(5) unsigned NOT NULL,
   `range` tinyint(3) unsigned NOT NULL,
   `stealth` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,
@@ -638,7 +638,3 @@ CREATE TABLE `unit_templates_list` (
   `level` tinyint(4) unsigned NOT NULL,
   PRIMARY KEY (`city_id`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

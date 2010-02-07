@@ -30,9 +30,9 @@ namespace Game.Data {
 
         public ushort MaxHp { get; private set; }
 
-        public byte Atk { get; private set; }
+        public ushort Atk { get; private set; }
 
-        public byte Def { get; private set; }
+        public ushort Def { get; private set; }
 
         public byte Rng { get; private set; }
 
@@ -46,8 +46,8 @@ namespace Game.Data {
 
         #region Constructors
 
-        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, byte atk,
-                               byte def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
+        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, ushort atk,
+                               ushort def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
             Type = type;
             Lvl = lvl;
             Weapon = weapon;

@@ -4,6 +4,7 @@ using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Game.Data;
+using Game.Data.Stats;
 
 namespace Game.Fighting {
  /*   [Serializable()]

@@ -186,8 +186,8 @@ namespace Game.Comm {
                 packet.addByte(stats.Value.Base.Lvl);
 
                 packet.addUInt16(stats.Value.MaxHp);
-                packet.addByte(stats.Value.Atk);
-                packet.addByte(stats.Value.Def);
+                packet.addUInt16(stats.Value.Atk);
+                packet.addUInt16(stats.Value.Def);
                 packet.addByte(stats.Value.Rng);
                 packet.addByte(stats.Value.Spd);
                 packet.addByte(stats.Value.Stl);

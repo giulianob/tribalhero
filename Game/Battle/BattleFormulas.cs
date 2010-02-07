@@ -180,8 +180,8 @@ namespace Game.Battle {
             }
 
             modifiedStats.MaxHp = (ushort) ((100 + hp)*stats.MaxHp/100);
-            modifiedStats.Atk = (byte) ((100 + atk)*stats.Atk/100);
-            modifiedStats.Def = (byte) ((100 + atk)*stats.Def/100);
+            modifiedStats.Atk = (ushort) ((100 + atk)*stats.Atk/100);
+            modifiedStats.Def = (ushort) ((100 + atk)*stats.Def/100);
 
             return modifiedStats;
         }

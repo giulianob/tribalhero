@@ -260,18 +260,15 @@ namespace Game.Database {
                                 while (listReader.Read()) {
                                     //First we load the BaseBattleStats and pass it into the BattleStats
                                     //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
-                                    BattleStats battleStats = new BattleStats(UnitFactory.GetBattleStats((ushort) listReader["type"], (byte) listReader["level"]))
-                                                                  {
-                                                                      MaxHp =
-                                                                          (ushort) listReader["max_hp"],
-                                                                      Atk = (byte) listReader["attack"],
-                                                                      Def =
-                                                                          (byte) listReader["defense"],
-                                                                      Rng = (byte) listReader["range"],
-                                                                      Stl =
-                                                                          (byte) listReader["stealth"],
-                                                                      Spd = (byte) listReader["speed"]
-                                                                  };
+                                    BattleStats battleStats =
+                                        new BattleStats(UnitFactory.GetBattleStats((ushort) listReader["type"],
+                                                                                   (byte) listReader["level"]));
+                                    battleStats.MaxHp = (ushort) listReader["max_hp"];
+                                    battleStats.Atk = (ushort) listReader["attack"];
+                                    battleStats.Def = (ushort) listReader["defense"];
+                                    battleStats.Rng = (byte) listReader["range"];
+                                    battleStats.Stl = (byte) listReader["stealth"];
+                                    battleStats.Spd = (byte) listReader["speed"];
 
                                     stub.Template.DbLoaderAdd(battleStats);
                                 }
@@ -339,15 +336,13 @@ namespace Game.Database {
 
                                     //First we load the BaseBattleStats and pass it into the BattleStats
                                     //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
-                                    BattleStats battleStats = new BattleStats(structure.Stats.Base.Battle)
-                                                                  {
-                                                                      MaxHp = (ushort) listReader["max_hp"],
-                                                                      Atk = (byte) listReader["attack"],
-                                                                      Def = (byte) listReader["defense"],
-                                                                      Rng = (byte) listReader["range"],
-                                                                      Stl = (byte) listReader["stealth"],
-                                                                      Spd = (byte) listReader["speed"]
-                                                                  };
+                                    BattleStats battleStats = new BattleStats(structure.Stats.Base.Battle);
+                                    battleStats.MaxHp = (ushort) listReader["max_hp"];
+                                    battleStats.Atk = (ushort) listReader["attack"];
+                                    battleStats.Def = (ushort) listReader["defense"];
+                                    battleStats.Rng = (byte) listReader["range"];
+                                    battleStats.Stl = (byte) listReader["stealth"];
+                                    battleStats.Spd = (byte) listReader["speed"];
 
                                     CombatStructure combatStructure = new CombatStructure(bm, structure, battleStats, (uint) listReader["hp"], (ushort) listReader["type"], (byte) listReader["level"])
                                                                           {

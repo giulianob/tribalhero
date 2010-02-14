@@ -14,26 +14,26 @@ namespace Game.Comm {
             byte count;
             uint[] playerIds;
             try {
-                count = packet.getByte();
+                count = packet.GetByte();
                 playerIds = new uint[count];
                 for (int i = 0; i < count; i++)
-                    playerIds[i] = packet.getUInt32();
+                    playerIds[i] = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
-            reply.addByte(count);
+            reply.AddByte(count);
             foreach (uint playerId in playerIds) {
                 Player player;
                 if (!Global.Players.TryGetValue(playerId, out player)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
-                reply.addUInt32(player.PlayerId);
-                reply.addString(player.Name);
+                reply.AddUInt32(player.PlayerId);
+                reply.AddString(player.Name);
             }
 
             session.write(reply);

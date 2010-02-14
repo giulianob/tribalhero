@@ -157,7 +157,7 @@ namespace Game.Logic {
 
                 //send add
                 Packet packet = new Packet(Command.NOTIFICATION_ADD);
-                packet.addUInt32(actionWorker.City.Id);
+                packet.AddUInt32(actionWorker.City.Id);
                 PacketHelper.AddToPacket(notification, packet);
 
                 Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
@@ -174,9 +174,9 @@ namespace Game.Logic {
 
                     //send removal
                     Packet packet = new Packet(Command.NOTIFICATION_REMOVE);
-                    packet.addUInt32(actionWorker.City.Id);
-                    packet.addUInt32(notification.Action.WorkerObject.City.Id);
-                    packet.addUInt16(notification.Action.ActionId);
+                    packet.AddUInt32(actionWorker.City.Id);
+                    packet.AddUInt32(notification.Action.WorkerObject.City.Id);
+                    packet.AddUInt16(notification.Action.ActionId);
 
                     Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
                 }
@@ -185,7 +185,7 @@ namespace Game.Logic {
 
         private void updateNotification(Notification notification) {
             Packet packet = new Packet(Command.NOTIFICATION_UPDATE);
-            packet.addUInt32(actionWorker.City.Id);
+            packet.AddUInt32(actionWorker.City.Id);
             PacketHelper.AddToPacket(notification, packet);
             Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
         }

@@ -21,7 +21,7 @@ namespace Game.Comm {
 
         public void CmdQueryXml(Session session, Packet packet) {
             Packet reply = new Packet(packet);
-            reply.addString(File.ReadAllText("C:\\source\\GameServer\\Game\\Setup\\CSV\\data.xml"));
+            reply.AddString(File.ReadAllText("C:\\source\\GameServer\\Game\\Setup\\CSV\\data.xml"));
             session.write(reply);
         }
 
@@ -36,16 +36,16 @@ namespace Game.Comm {
             uint playerId;
 
             try {
-                loginMode = packet.getByte();
+                loginMode = packet.GetByte();
                 if (loginMode == 0)
-                    loginKey = packet.getString();
+                    loginKey = packet.GetString();
                 else {
-                    playerName = packet.getString();
-                    playerPassword = packet.getString();
+                    playerName = packet.GetString();
+                    playerPassword = packet.GetString();
                 }
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 session.CloseSession();
                 return;
             }
@@ -69,13 +69,13 @@ namespace Game.Comm {
                 }
                 catch (Exception e) {
                     Global.Logger.Error("Error loading player", e);
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     session.CloseSession();
                     return;
                 }
 
                 if (!reader.HasRows) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     session.CloseSession();
                     return;
                 }
@@ -91,7 +91,7 @@ namespace Game.Comm {
                                                      Player.DB_TABLE, playerId));
             } else {
                 if (!uint.TryParse(playerName, out playerId)) {
-                    reply_error(session, packet, Error.PLAYER_NOT_FOUND);
+                    ReplyError(session, packet, Error.PLAYER_NOT_FOUND);
                     session.CloseSession();
                     return;
                 }
@@ -138,7 +138,7 @@ namespace Game.Comm {
                         Global.Players.Remove(player.PlayerId);
                         Global.dbManager.Rollback();
                         //If this happens and its not a bug, I'll be a very happy game developer
-                        reply_error(session, packet, Error.MAP_FULL);
+                        ReplyError(session, packet, Error.MAP_FULL);
                         return;
                     }
 
@@ -159,52 +159,52 @@ namespace Game.Comm {
                 player.Session = session;
 
                 //Player Id
-                reply.addUInt32(player.PlayerId);
-                reply.addString(sessionId);
-                reply.addString(player.Name);
+                reply.AddUInt32(player.PlayerId);
+                reply.AddString(sessionId);
+                reply.AddString(player.Name);
 
                 //Server time
-                reply.addUInt32(UnixDateTime.DateTimeToUnix(DateTime.Now.ToUniversalTime()));
+                reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.Now.ToUniversalTime()));
 
                 //Server rate
-                reply.addString(Config.seconds_per_unit.ToString());
+                reply.AddString(Config.seconds_per_unit.ToString());
 
                 //Cities
                 List<City> list = player.getCityList();
-                reply.addByte((byte) list.Count);
+                reply.AddByte((byte) list.Count);
                 foreach (City city in list) {
                     city.Subscribe(session);
-                    reply.addUInt32(city.Id);
-                    reply.addString(city.Name);
+                    reply.AddUInt32(city.Id);
+                    reply.AddString(city.Name);
                     PacketHelper.AddToPacket(city.Resource, reply);
-                    reply.addByte(city.Radius);
+                    reply.AddByte(city.Radius);
 
                     //City Actions
                     PacketHelper.AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), reply, true);
 
                     //Notifications
-                    reply.addUInt16(city.Worker.Notifications.Count);
+                    reply.AddUInt16(city.Worker.Notifications.Count);
                     foreach (NotificationManager.Notification notification in city.Worker.Notifications)
                         PacketHelper.AddToPacket(notification, reply);
 
                     //Structures
                     List<Structure> structs = new List<Structure>(city);
-                    reply.addUInt16((ushort) structs.Count);
+                    reply.AddUInt16((ushort) structs.Count);
                     foreach (Structure structure in structs) {
-                        reply.addUInt16(Region.getRegionIndex(structure));
+                        reply.AddUInt16(Region.getRegionIndex(structure));
                         PacketHelper.AddToPacket(structure, reply, false);
 
-                        reply.addUInt16((ushort) structure.Technologies.OwnedTechnologyCount);
+                        reply.AddUInt16((ushort) structure.Technologies.OwnedTechnologyCount);
                         foreach (Technology tech in structure.Technologies) {
                             if (tech.ownerLocation != EffectLocation.OBJECT)
                                 continue;
-                            reply.addUInt32(tech.Type);
-                            reply.addByte(tech.Level);
+                            reply.AddUInt32(tech.Type);
+                            reply.AddByte(tech.Level);
                         }
                     }
 
                     //City Troops
-                    reply.addByte(city.Troops.Size);
+                    reply.AddByte(city.Troops.Size);
                     foreach (TroopStub stub in city.Troops)
                         PacketHelper.AddToPacket(stub, reply);
 

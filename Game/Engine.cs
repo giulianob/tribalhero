@@ -28,7 +28,7 @@ namespace Game {
             // load users with all the belonging
 
             // start server
-            server.start();
+            server.Start();
             state = STATE_STOPPED;
             return true;
         }
@@ -37,7 +37,7 @@ namespace Game {
             if (state != STATE_STARTED)
                 return false;
             state = STATE_STOPPING;
-            server.stop();
+            server.Stop();
             state = STATE_STOPPED;
             return true;
         }

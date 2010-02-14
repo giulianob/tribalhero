@@ -13,9 +13,9 @@ namespace Game.Comm {
     public partial class Processor {
         public void CmdMarketGetPrices(Session session, Packet packet) {
             Packet reply = new Packet(packet);
-            reply.addUInt16((ushort) Market.Crop.Price);
-            reply.addUInt16((ushort) Market.Wood.Price);
-            reply.addUInt16((ushort) Market.Iron.Price);
+            reply.AddUInt16((ushort) Market.Crop.Price);
+            reply.AddUInt16((ushort) Market.Wood.Price);
+            reply.AddUInt16((ushort) Market.Iron.Price);
             session.write(reply);
         }
 
@@ -26,19 +26,19 @@ namespace Game.Comm {
             ushort quantity;
             ushort price;
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                type = (ResourceType) packet.getByte();
-                quantity = packet.getUInt16();
-                price = packet.getUInt16();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                type = (ResourceType) packet.GetByte();
+                quantity = packet.GetUInt16();
+                price = packet.GetUInt16();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             if (type == ResourceType.Gold) {
-                reply_error(session, packet, Error.RESOURCE_NOT_TRADABLE);
+                ReplyError(session, packet, Error.RESOURCE_NOT_TRADABLE);
                 return;
             }
 
@@ -46,13 +46,13 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 Structure obj;
                 if (!city.TryGetStructure(objectId, out obj)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -63,12 +63,12 @@ namespace Game.Comm {
                         (ret =
                          city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rba, obj.Technologies)) ==
                         0)
-                        reply_success(session, packet);
+                        ReplySuccess(session, packet);
                     else
-                        reply_error(session, packet, ret);
+                        ReplyError(session, packet, ret);
                     return;
                 }
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
             }
         }
 
@@ -79,19 +79,19 @@ namespace Game.Comm {
             ushort quantity;
             ushort price;
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                type = (ResourceType) packet.getByte();
-                quantity = packet.getUInt16();
-                price = packet.getUInt16();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                type = (ResourceType) packet.GetByte();
+                quantity = packet.GetUInt16();
+                price = packet.GetUInt16();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             if (type == ResourceType.Gold) {
-                reply_error(session, packet, Error.RESOURCE_NOT_TRADABLE);
+                ReplyError(session, packet, Error.RESOURCE_NOT_TRADABLE);
                 return;
             }
 
@@ -99,13 +99,13 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 Structure obj;
                 if (!city.TryGetStructure(objectId, out obj)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -116,12 +116,12 @@ namespace Game.Comm {
                         (ret =
                          city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rsa, obj.Technologies)) ==
                         0)
-                        reply_success(session, packet);
+                        ReplySuccess(session, packet);
                     else
-                        reply_error(session, packet, ret);
+                        ReplyError(session, packet, ret);
                     return;
                 }
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
             }
         }
     }

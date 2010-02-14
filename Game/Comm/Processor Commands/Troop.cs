@@ -24,46 +24,46 @@ namespace Game.Comm {
             uint objectId;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             using (new MultiObjectLock(cityId, objectId, out city, out troop)) {
                 if (city == null || troop == null) {
-                    reply_error(session, packet, Error.OBJECT_NOT_FOUND);
+                    ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
                     return;
                 }
 
                 Packet reply = new Packet(packet);
 
                 if (city.Owner == session.Player) {
-                    reply.addByte(troop.Stats.AttackRadius);
-                    reply.addByte(troop.Stats.Speed);
-                    reply.addByte(troop.Stub.TroopId);
+                    reply.AddByte(troop.Stats.AttackRadius);
+                    reply.AddByte(troop.Stats.Speed);
+                    reply.AddByte(troop.Stub.TroopId);
 
                     UnitTemplate template = new UnitTemplate(city);
 
-                    reply.addByte(troop.Stub.FormationCount);
+                    reply.AddByte(troop.Stub.FormationCount);
                     foreach (Formation formation in troop.Stub) {
-                        reply.addByte((byte)formation.Type);
-                        reply.addByte((byte)formation.Count);
+                        reply.AddByte((byte)formation.Type);
+                        reply.AddByte((byte)formation.Count);
                         foreach (KeyValuePair<ushort, ushort> kvp in formation) {
-                            reply.addUInt16(kvp.Key);
-                            reply.addUInt16(kvp.Value);
+                            reply.AddUInt16(kvp.Key);
+                            reply.AddUInt16(kvp.Value);
                             template[kvp.Key] = city.Template[kvp.Key];
                         }
                     }
 
-                    reply.addUInt16((ushort)template.Size);
+                    reply.AddUInt16((ushort)template.Size);
                     IEnumerator<KeyValuePair<ushort, BaseUnitStats>> templateIter = template.GetEnumerator();
                     while (templateIter.MoveNext()) {
                         KeyValuePair<ushort, BaseUnitStats> kvp = templateIter.Current;
-                        reply.addUInt16(kvp.Key);
-                        reply.addByte(kvp.Value.Lvl);
+                        reply.AddUInt16(kvp.Key);
+                        reply.AddByte(kvp.Value.Lvl);
                     }
 
                     PacketHelper.AddToPacket(
@@ -78,11 +78,11 @@ namespace Game.Comm {
             uint cityId;
             byte formationCount;
             try {
-                cityId = packet.getUInt32();
-                formationCount = packet.getByte();
+                cityId = packet.GetUInt32();
+                formationCount = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -90,14 +90,14 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 TroopStub stub = new TroopStub();
 
                 if (formationCount != 2) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -105,19 +105,19 @@ namespace Game.Comm {
                     FormationType formationType;
                     byte unitCount;
                     try {
-                        formationType = (FormationType) packet.getByte();
+                        formationType = (FormationType) packet.GetByte();
 
                         if ((f == 0 && formationType != FormationType.NORMAL) ||
                             (f == 1 && formationType != FormationType.GARRISON)) {
                             // a bit dirty
-                            reply_error(session, packet, Error.UNEXPECTED);
+                            ReplyError(session, packet, Error.UNEXPECTED);
                             return;
                         }
 
-                        unitCount = packet.getByte();
+                        unitCount = packet.GetByte();
                     }
                     catch (Exception) {
-                        reply_error(session, packet, Error.UNEXPECTED);
+                        ReplyError(session, packet, Error.UNEXPECTED);
                         return;
                     }
 
@@ -128,11 +128,11 @@ namespace Game.Comm {
                         ushort count;
 
                         try {
-                            type = packet.getUInt16();
-                            count = packet.getUInt16();
+                            type = packet.GetUInt16();
+                            count = packet.GetUInt16();
                         }
                         catch (Exception) {
-                            reply_error(session, packet, Error.UNEXPECTED);
+                            ReplyError(session, packet, Error.UNEXPECTED);
                             return;
                         }
 
@@ -141,7 +141,7 @@ namespace Game.Comm {
                 }
                 stub.TroopId = 1;
                 if (!stub.Equal(city.DefaultTroop)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -150,7 +150,7 @@ namespace Game.Comm {
                 city.DefaultTroop.Add(stub);
                 city.DefaultTroop.EndUpdate();
 
-                reply_success(session, packet);
+                ReplySuccess(session, packet);
             }
         }
 
@@ -160,12 +160,12 @@ namespace Game.Comm {
             ushort type;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                type = packet.getUInt16();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                type = packet.GetUInt16();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -173,21 +173,21 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 Structure barrack;
                 if (!city.TryGetStructure(objectId, out barrack))
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
 
                 UnitUpgradeAction upgradeAction = new UnitUpgradeAction(cityId, objectId, type);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, upgradeAction,
                                                  barrack.Technologies);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
             }
         }
 
@@ -198,13 +198,13 @@ namespace Game.Comm {
             ushort count;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                type = packet.getUInt16();
-                count = packet.getUInt16();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                type = packet.GetUInt16();
+                count = packet.GetUInt16();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -212,21 +212,21 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 Structure barrack;
                 if (!city.TryGetStructure(objectId, out barrack))
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
 
                 UnitTrainAction trainAction = new UnitTrainAction(cityId, objectId, type, count);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, trainAction,
                                                  barrack.Technologies);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
             }
         }
 
@@ -238,25 +238,25 @@ namespace Game.Comm {
             AttackMode mode;
 
             try {
-                mode = (AttackMode) packet.getByte();
-                cityId = packet.getUInt32();
-                targetCityId = packet.getUInt32();
-                targetObjectId = packet.getUInt32();
-                formationCount = packet.getByte();
+                mode = (AttackMode) packet.GetByte();
+                cityId = packet.GetUInt32();
+                targetCityId = packet.GetUInt32();
+                targetObjectId = packet.GetUInt32();
+                formationCount = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             if (cityId == targetCityId) {
-                reply_error(session, packet, Error.ATTACK_SELF);
+                ReplyError(session, packet, Error.ATTACK_SELF);
                 return;
             }
 
             using (new MultiObjectLock(session.Player)) {
                 if (session.Player.getCity(cityId) == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
             }
@@ -264,14 +264,14 @@ namespace Game.Comm {
             Dictionary<uint, City> cities;
             using (new MultiObjectLock(out cities, cityId, targetCityId)) {
                 if (cities == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 City city = cities[cityId];
 
                 if (city.Battle != null) {
-                    reply_error(session, packet, Error.CITY_IN_BATTLE);
+                    ReplyError(session, packet, Error.CITY_IN_BATTLE);
                     return;
                 }
 
@@ -279,7 +279,7 @@ namespace Game.Comm {
                 Structure targetStructure;
 
                 if (!targetCity.TryGetStructure(targetObjectId, out targetStructure)) {
-                    reply_error(session, packet, Error.OBJECT_STRUCTURE_NOT_FOUND);
+                    ReplyError(session, packet, Error.OBJECT_STRUCTURE_NOT_FOUND);
                     return;
                 }
 
@@ -289,11 +289,11 @@ namespace Game.Comm {
                     FormationType formationType;
                     byte unitCount;
                     try {
-                        formationType = (FormationType) packet.getByte();
-                        unitCount = packet.getByte();
+                        formationType = (FormationType) packet.GetByte();
+                        unitCount = packet.GetByte();
                     }
                     catch (Exception) {
-                        reply_error(session, packet, Error.UNEXPECTED);
+                        ReplyError(session, packet, Error.UNEXPECTED);
                         return;
                     }
 
@@ -304,11 +304,11 @@ namespace Game.Comm {
                         ushort count;
 
                         try {
-                            type = packet.getUInt16();
-                            count = packet.getUInt16();
+                            type = packet.GetUInt16();
+                            count = packet.GetUInt16();
                         }
                         catch (Exception) {
-                            reply_error(session, packet, Error.UNEXPECTED);
+                            ReplyError(session, packet, Error.UNEXPECTED);
                             return;
                         }
 
@@ -317,16 +317,16 @@ namespace Game.Comm {
                 }
 
                 if (!Procedure.TroopObjectCreate(city, stub, city.MainBuilding.X, city.MainBuilding.Y)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 AttackAction aa = new AttackAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
             }
         }
 
@@ -336,23 +336,23 @@ namespace Game.Comm {
             byte formationCount;
 
             try {
-                cityId = packet.getUInt32();
-                targetCityId = packet.getUInt32();
-                formationCount = packet.getByte();
+                cityId = packet.GetUInt32();
+                targetCityId = packet.GetUInt32();
+                formationCount = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             if (cityId == targetCityId) {
-                reply_error(session, packet, Error.DEFEND_SELF);
+                ReplyError(session, packet, Error.DEFEND_SELF);
                 return;
             }
 
             using (new MultiObjectLock(session.Player)) {
                 if (session.Player.getCity(cityId) == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
             }
@@ -367,11 +367,11 @@ namespace Game.Comm {
                     FormationType formationType;
                     byte unitCount;
                     try {
-                        formationType = (FormationType) packet.getByte();
-                        unitCount = packet.getByte();
+                        formationType = (FormationType) packet.GetByte();
+                        unitCount = packet.GetByte();
                     }
                     catch (Exception) {
-                        reply_error(session, packet, Error.UNEXPECTED);
+                        ReplyError(session, packet, Error.UNEXPECTED);
                         return;
                     }
 
@@ -382,11 +382,11 @@ namespace Game.Comm {
                         ushort count;
 
                         try {
-                            type = packet.getUInt16();
-                            count = packet.getUInt16();
+                            type = packet.GetUInt16();
+                            count = packet.GetUInt16();
                         }
                         catch (Exception) {
-                            reply_error(session, packet, Error.UNEXPECTED);
+                            ReplyError(session, packet, Error.UNEXPECTED);
                             return;
                         }
 
@@ -395,16 +395,16 @@ namespace Game.Comm {
                 }
 
                 if (!Procedure.TroopObjectCreate(city, stub, city.MainBuilding.X, city.MainBuilding.Y)) {
-                    reply_error(session, packet, Error.OBJECT_NOT_FOUND);
+                    ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
                     return;
                 }
 
                 DefenseAction da = new DefenseAction(cityId, stub.TroopId, targetCityId);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
             }
         }
 
@@ -413,11 +413,11 @@ namespace Game.Comm {
             byte troopId;
 
             try {
-                cityId = packet.getUInt32();
-                troopId = packet.getByte();
+                cityId = packet.GetUInt32();
+                troopId = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -427,14 +427,14 @@ namespace Game.Comm {
             //we need to find out the stationed city first then reacquire local + stationed city locks            
             using (new MultiObjectLock(cityId, out city)) {
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 TroopStub stub;
 
                 if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -445,25 +445,25 @@ namespace Game.Comm {
                 TroopStub stub;
 
                 if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
                 if (city.Owner != session.Player && stub.StationedCity.Owner != session.Player) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 if (stub.StationedCity.Battle != null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 if (
                     !Procedure.TroopObjectCreateFromStation(stub, stub.StationedCity.MainBuilding.X,
                                                             stub.StationedCity.MainBuilding.Y)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -471,9 +471,9 @@ namespace Game.Comm {
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
             }
         }
     }

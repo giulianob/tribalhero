@@ -53,7 +53,7 @@ namespace Launcher {
 
             // Start accepting connections
             TcpServer server = new TcpServer(processor);
-            server.start();
+            server.Start();
 
             while (true)
                 Thread.Sleep(2000);

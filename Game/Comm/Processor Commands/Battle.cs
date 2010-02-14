@@ -13,20 +13,20 @@ namespace Game.Comm {
             uint cityId;
             City city;
             try {
-                cityId = packet.getUInt32();
+                cityId = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             using (new MultiObjectLock(cityId, out city)) {
                 if (city == null || city.Battle == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
                 Packet reply = new Packet(packet);
-                reply.addUInt16(city.Battle.Stamina);
+                reply.AddUInt16(city.Battle.Stamina);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.Subscribe(session);
@@ -38,27 +38,27 @@ namespace Game.Comm {
             uint cityId;
             City city;
             try {
-                cityId = packet.getUInt32();
+                cityId = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             using (new MultiObjectLock(cityId, out city)) {
                 if (city == null || city.Battle == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
                 if (city.Battle == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 city.Battle.Unsubscribe(session);
             }
 
-            reply_success(session, packet);
+            ReplySuccess(session, packet);
         }
     }
 }

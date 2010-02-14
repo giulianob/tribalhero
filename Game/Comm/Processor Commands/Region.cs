@@ -19,19 +19,19 @@ namespace Game.Comm {
             ushort actionId;
 
             try {
-                srcCityId = packet.getUInt32();
-                cityId = packet.getUInt32();
-                actionId = packet.getUInt16();
+                srcCityId = packet.GetUInt32();
+                cityId = packet.GetUInt32();
+                actionId = packet.GetUInt16();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             //check to make sure that the city belongs to us
             using (new MultiObjectLock(session.Player)) {
                 if (session.Player.getCity(cityId) == null && session.Player.getCity(srcCityId) == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
             }
@@ -39,7 +39,7 @@ namespace Game.Comm {
             Dictionary<uint, City> cities;
             using (new MultiObjectLock(out cities, srcCityId, cityId)) {
                 if (cities == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -48,12 +48,12 @@ namespace Game.Comm {
 
                 NotificationManager.Notification notification;
                 if (!srcCity.Worker.Notifications.tryGetValue(city, actionId, out notification)) {
-                    reply_error(session, packet, Error.ACTION_NOT_FOUND);
+                    ReplyError(session, packet, Error.ACTION_NOT_FOUND);
                     return;
                 }
 
-                reply.addUInt32(notification.GameObject.X);
-                reply.addUInt32(notification.GameObject.Y);
+                reply.AddUInt32(notification.GameObject.X);
+                reply.AddUInt32(notification.GameObject.Y);
 
                 session.write(reply);
             }
@@ -66,50 +66,50 @@ namespace Game.Comm {
 
             byte regionSubscribeCount;
             try {
-                regionSubscribeCount = packet.getByte();
+                regionSubscribeCount = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
-            reply.addByte(regionSubscribeCount);
+            reply.AddByte(regionSubscribeCount);
 
             for (uint i = 0; i < regionSubscribeCount; ++i) {
                 try {
-                    regionId = packet.getUInt16();
+                    regionId = packet.GetUInt16();
                 }
                 catch (Exception) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 if (regionId >= Config.regions_count) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
-                reply.addUInt16(regionId);
-                reply.addBytes(Global.World.GetRegion(regionId).getBytes());
-                reply.addBytes(Global.World.GetRegion(regionId).getObjectBytes());
+                reply.AddUInt16(regionId);
+                reply.AddBytes(Global.World.GetRegion(regionId).getBytes());
+                reply.AddBytes(Global.World.GetRegion(regionId).getObjectBytes());
                 Global.World.SubscribeRegion(session, regionId);
             }
 
             byte regionUnsubscribeCount;
             try {
-                regionUnsubscribeCount = packet.getByte();
+                regionUnsubscribeCount = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             for (uint i = 0; i < regionUnsubscribeCount; ++i) {
                 try {
-                    regionId = packet.getUInt16();
+                    regionId = packet.GetUInt16();
                 }
                 catch (Exception) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -126,31 +126,31 @@ namespace Game.Comm {
             
             byte regionSubscribeCount;
             try {
-                regionSubscribeCount = packet.getByte();
+                regionSubscribeCount = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
-            reply.addByte(regionSubscribeCount);
+            reply.AddByte(regionSubscribeCount);
 
             for (uint i = 0; i < regionSubscribeCount; ++i) {
                 try {
-                    regionId = packet.getUInt16();
+                    regionId = packet.GetUInt16();
                 }
                 catch (Exception) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 if (regionId >= Config.regions_count) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
-                reply.addUInt16(regionId);
-                reply.addBytes(Global.World.GetCityRegion(regionId).getCityBytes());
+                reply.AddUInt16(regionId);
+                reply.AddBytes(Global.World.GetCityRegion(regionId).GetCityBytes());
             }
 
             session.write(reply);

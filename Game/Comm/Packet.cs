@@ -26,22 +26,19 @@ namespace Game.Comm {
 
         #region Packet Header
 
-        private ushort seq = 0;
-        private ushort option = 0;
+        private ushort seq;
+        private ushort option;
         private Command cmd = Command.INVALID;
-        private ushort length = 0;
 
-        public ushort Length {
-            get { return length; }
-        }
+        public ushort Length { get; private set; }
 
         #endregion
 
         #region Members
 
-        private ushort offset = 0;
-        private byte[] bytes = null;
-        private List<Parameter> parameters = new List<Parameter>();
+        private ushort offset;
+        private readonly byte[] bytes;
+        private readonly List<Parameter> parameters = new List<Parameter>();
 
         #endregion
 
@@ -56,7 +53,7 @@ namespace Game.Comm {
         public Packet(Packet request) {
             cmd = request.cmd;
             seq = request.seq;
-            option = (ushort) ((ushort) request.option | (ushort) Options.REPLY);
+            option = (ushort) (request.option | (ushort) Options.REPLY);
         }
 
         public Packet(byte[] data) : this(data, 0, data.Length) {}
@@ -70,11 +67,11 @@ namespace Game.Comm {
             seq = BitConverter.ToUInt16(data, 0);
             option = BitConverter.ToUInt16(data, 2);
             cmd = (Command) Enum.Parse(typeof (Command), BitConverter.ToUInt16(data, 4).ToString(), true);
-            length = BitConverter.ToUInt16(data, 6);
+            Length = BitConverter.ToUInt16(data, 6);
 
             offset = HEADER_SIZE;
 
-            if (dataLength != HEADER_SIZE + length)
+            if (dataLength != HEADER_SIZE + Length)
                 return;
 
             if ((option & (int) Options.COMPRESSED) == (int) Options.COMPRESSED) {
@@ -84,7 +81,7 @@ namespace Game.Comm {
                 GZipStream gs = new GZipStream(compressedMemory, CompressionMode.Decompress, false);
                 //      ZInputStream gs = new ZInputStream(compressedMemory);
 
-                int len = 0;
+                int len;
                 byte[] buff = new byte[4096];
                 while ((len = gs.Read(buff, 0, 4096)) > 0)
                     uncompressedMemory.Write(buff, 0, len);
@@ -92,7 +89,7 @@ namespace Game.Comm {
                 gs.Close();
 
                 bytes = new byte[HEADER_SIZE + uncompressedMemory.Length];
-                length = (ushort) bytes.Length;
+                Length = (ushort) bytes.Length;
                 Array.Copy(data, index, bytes, 0, HEADER_SIZE); //copy header
                 uncompressedMemory.Position = 0;
                 uncompressedMemory.Read(bytes, HEADER_SIZE, (int) uncompressedMemory.Length);
@@ -129,42 +126,42 @@ namespace Game.Comm {
 
         #region Parameter Gets
 
-        public void reset() {
+        public void Reset() {
             offset = HEADER_SIZE;
         }
 
-        public byte getByte() {
+        public byte GetByte() {
             byte tmp = bytes[offset];
             offset += sizeof (byte);
             return tmp;
         }
 
-        public byte[] getBytes(ushort len) {
+        public byte[] GetBytes(ushort len) {
             byte[] data = new byte[len];
             Array.Copy(bytes, offset, data, 0, len);
             offset += len;
             return data;
         }
 
-        public int getInt16() {
+        public int GetInt16() {
             int tmp = BitConverter.ToInt16(bytes, offset);
             offset += sizeof (int);
             return tmp;
         }
 
-        public ushort getUInt16() {
+        public ushort GetUInt16() {
             ushort tmp = BitConverter.ToUInt16(bytes, offset);
             offset += sizeof (ushort);
             return tmp;
         }
 
-        public uint getUInt32() {
+        public uint GetUInt32() {
             uint tmp = BitConverter.ToUInt32(bytes, offset);
             offset += sizeof (uint);
             return tmp;
         }
 
-        public string getString() {
+        public string GetString() {
             ushort len = BitConverter.ToUInt16(bytes, offset);
             offset += sizeof (ushort);
             string str = Encoding.UTF8.GetString(bytes, offset, len);
@@ -176,39 +173,39 @@ namespace Game.Comm {
 
         #region Parameter Adds
 
-        public void addParamater(Parameter parameter) {
+        public void AddParamater(Parameter parameter) {
             parameters.Add(parameter);
         }
 
-        public void addByte(byte value) {
+        public void AddByte(byte value) {
             parameters.Add(new Parameter(value));
         }
 
-        public void addBytes(byte[] values) {
+        public void AddBytes(byte[] values) {
             parameters.Add(new Parameter(values));
         }
 
-        public void addInt16(int value) {
+        public void AddInt16(int value) {
             parameters.Add(new Parameter(value));
         }
 
-        public void addUInt16(ushort value) {
+        public void AddUInt16(ushort value) {
             parameters.Add(new Parameter(value));
         }
 
-        public void addUInt32(uint value) {
+        public void AddUInt32(uint value) {
             parameters.Add(new Parameter(value));
         }
 
-        public void addInt32(int value) {
+        public void AddInt32(int value) {
             parameters.Add(new Parameter(value));
         }
 
-        public void addInt64(long value) {
+        public void AddInt64(long value) {
             parameters.Add(new Parameter(value));
         }
 
-        public void addString(string value) {
+        public void AddString(string value) {
             parameters.Add(new Parameter(value));
         }
 
@@ -216,8 +213,8 @@ namespace Game.Comm {
 
         #region Methods
 
-        public byte[] getBytes() {
-            byte[] ret = null;
+        public byte[] GetBytes() {
+            byte[] ret;
 
             if (bytes != null)
                 return bytes;
@@ -245,7 +242,7 @@ namespace Game.Comm {
                 } else {
                     foreach (Parameter param in parameters) {
                         byte[] paramBytes = param.getBytes();
-                        binaryWriter.Write(param.getBytes());
+                        binaryWriter.Write(paramBytes);
                     }
                 }
 
@@ -263,7 +260,7 @@ namespace Game.Comm {
 
         public string ToString(int maxLength) {
             string str = "<Too Large To Display>";
-            byte[] dump = getBytes();
+            byte[] dump = GetBytes();
 
             if (dump.Length <= maxLength)
                 str = HexDump.GetString(dump, 8, 16);

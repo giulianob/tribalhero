@@ -147,7 +147,8 @@ namespace Game.Map {
             CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
             if (region == null)
                 return false;
-            return region.add(city);
+
+            return region.Add(city);
         }
 
         public void DbLoaderAdd(uint id, City city) {
@@ -166,7 +167,7 @@ namespace Game.Map {
                 CityRegion region = GetCityRegion(iter.Current.MainBuilding.X, iter.Current.MainBuilding.Y);
                 if (region == null)
                     continue;
-                region.add(iter.Current);
+                region.Add(iter.Current);
             }
         }
 
@@ -176,7 +177,7 @@ namespace Game.Map {
             CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
             if (region == null)
                 return;
-            region.add(city);
+            region.Remove(city);
         }
 
         public bool Add(GameObject obj) {
@@ -187,7 +188,7 @@ namespace Game.Map {
             if (region.add(obj)) {
                 ushort regionId = Region.getRegionIndex(obj);
                 Packet packet = new Packet(Command.OBJECT_ADD);
-                packet.addUInt16(regionId);
+                packet.AddUInt16(regionId);
                 PacketHelper.AddToPacket(obj, packet, true);
 
                 if (Global.FireEvents)
@@ -211,9 +212,9 @@ namespace Game.Map {
             ushort regionId = Region.getRegionIndex(obj);
 
             Packet packet = new Packet(Command.OBJECT_REMOVE);
-            packet.addUInt16(regionId);
-            packet.addUInt32(obj.City.Id);
-            packet.addUInt32(obj.ObjectId);
+            packet.AddUInt16(regionId);
+            packet.AddUInt32(obj.City.Id);
+            packet.AddUInt32(obj.ObjectId);
 
             region.remove(obj);
             Global.Channel.Post("/WORLD/" + regionId, packet);
@@ -230,7 +231,7 @@ namespace Game.Map {
 
         #region Events
 
-        public void ObjUpdateEvent(GameObject sender, uint origX, uint origY) {
+        public void ObjectUpdateEvent(GameObject sender, uint origX, uint origY) {
             //Check if object has moved
             if (sender.X != origX || sender.Y != origY) {
                 //if object has moved then we need to do some logic to see if it has changed regions
@@ -241,20 +242,20 @@ namespace Game.Map {
                 if (oldRegionId == newRegionId) {
                     regions[newRegionId].update(sender, origX, origY);
                     Packet packet = new Packet(Command.OBJECT_UPDATE);
-                    packet.addUInt16(newRegionId);
+                    packet.AddUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
                 } else {
                     regions[oldRegionId].remove(sender, origX, origY);
                     regions[newRegionId].add(sender);
                     Packet packet = new Packet(Command.OBJECT_MOVE);
-                    packet.addUInt16(oldRegionId);
-                    packet.addUInt16(newRegionId);
+                    packet.AddUInt16(oldRegionId);
+                    packet.AddUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + oldRegionId, packet);
 
                     packet = new Packet(Command.OBJECT_ADD);
-                    packet.addUInt16(newRegionId);
+                    packet.AddUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
                 }
@@ -262,9 +263,22 @@ namespace Game.Map {
                 ushort regionId = Region.getRegionIndex(sender);
                 regions[regionId].update(sender, sender.X, sender.Y);
                 Packet packet = new Packet(Command.OBJECT_UPDATE);
-                packet.addUInt16(regionId);
+                packet.AddUInt16(regionId);
                 PacketHelper.AddToPacket(sender, packet, true);
                 Global.Channel.Post("/WORLD/" + regionId, packet);
+            }
+
+            //Handles updating city region information
+            Structure structObject = sender as Structure;
+            if (structObject != null && structObject.City.MainBuilding == structObject) {
+                //If object is the main building then we need to update the city region
+                CityRegion region = GetCityRegion(origX, origY);
+                if (region != null)                    
+                    region.Remove(structObject.City);
+
+                region = GetCityRegion(structObject.X, structObject.Y);
+                if (region != null)
+                    region.Add(structObject.City);
             }
         }
 
@@ -281,7 +295,7 @@ namespace Game.Map {
         }
 
         public CityRegion GetCityRegion(uint x, uint y) {
-            return GetCityRegion(CityRegion.getRegionIndex(x, y));
+            return GetCityRegion(CityRegion.GetRegionIndex(x, y));
         }
 
         public CityRegion GetCityRegion(ushort id) {

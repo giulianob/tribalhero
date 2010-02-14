@@ -12,35 +12,41 @@ using Game.Setup;
 
 namespace Game.Comm {
     public class TcpServer {
-        private Thread listening_thread;
+        private readonly Thread listeningThread;
 
-        private TcpListener listener;
+        private readonly TcpListener listener;
         private readonly int port = Config.server_port;
         private bool isStopped = true;
-        private Processor processor;
+        private readonly Processor processor;
 
         public TcpServer() {
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
+            if (localAddr == null)
+                throw new Exception("Could not bind to listen address");
+
             listener = new TcpListener(localAddr, port);
-            listening_thread = new Thread(new ThreadStart(listener_handler));
+            listeningThread = new Thread(ListenerHandler);
         }
 
         public TcpServer(Processor processor) {
             this.processor = processor;
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
+            if (localAddr == null)
+                throw new Exception("Could not bind to listen address");
+
             listener = new TcpListener(localAddr, port);
-            listening_thread = new Thread(new ThreadStart(listener_handler));
+            listeningThread = new Thread(ListenerHandler);
         }
 
-        public bool start() {
+        public bool Start() {
             if (!isStopped)
                 return false;
             isStopped = false;
-            listening_thread.Start();
+            listeningThread.Start();
             return true;
         }
 
-        public void listener_handler() {
+        public void ListenerHandler() {
             listener.Start();
 
             string policy = "<?xml version=\"1.0\"?>" +
@@ -54,7 +60,6 @@ namespace Game.Comm {
             Socket s;
             while (!isStopped) {
                 try {
-                    s = null;
                     s = listener.AcceptSocket();
                 }
                 catch (Exception e) {
@@ -63,7 +68,7 @@ namespace Game.Comm {
                 }
                 byte[] buffer = new byte[128];
 
-                int len = 0;
+                int len;
 
                 try {
                     len = s.Receive(buffer, SocketFlags.Peek);
@@ -86,19 +91,24 @@ namespace Game.Comm {
                     continue;
                 }
 
+                if (s.LocalEndPoint == null)
+                    continue;
+
                 SocketSession session = new SocketSession(s.LocalEndPoint.ToString(), s, processor);
 
-                ThreadPool.QueueUserWorkItem(new WaitCallback(TcpWorker.add), session);
+                ThreadPool.QueueUserWorkItem(TcpWorker.Add, session);
             }
+
             listener.Stop();
         }
 
-        public bool stop() {
+        public bool Stop() {
             if (isStopped)
                 return false;
-            TcpWorker.delAll();
+
+            TcpWorker.DeleteAll();
             listener.Stop();
-            listening_thread.Abort();
+            listeningThread.Abort();
             isStopped = true;
             return true;
         }

@@ -95,15 +95,6 @@
 
 		//*********************
 		// Helper Functions
-		
-		public function setObjectUsername(id: int, obj: SimpleGameObject):void {
-			getUsername(id, onGetObjectUsername, obj);
-		}
-		
-		public function onGetObjectUsername(username: Username, custom: *):void
-		{
-			(custom as SimpleGameObject).showUsername(username.name);
-		}
 
 		public function setTextfieldUsername(id: int, obj: TextField):void {
 			getUsername(id, onGetTextfieldUsername, obj);

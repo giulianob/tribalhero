@@ -88,7 +88,6 @@
 						if (obj) 
 						{
 							obj.wall.draw(radius);
-							map.usernames.cities.setObjectUsername(obj.cityId, obj);
 						}
 					}
 				}

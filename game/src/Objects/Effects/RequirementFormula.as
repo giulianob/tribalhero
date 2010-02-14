@@ -1,7 +1,7 @@
 ﻿package src.Objects.Effects {
+	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
-	import src.Map.Map;
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Prototypes.*
@@ -22,7 +22,6 @@
 		);
 
 		private static var methodsSorted: Boolean = false;
-		public static var map: Map;
 
 		public static function methodCompare(data: Object, value: String): int
 		{
@@ -178,7 +177,7 @@
 		/*HAVE STRUCTURE*/
 		private static function haveStructure(parentObj: GameObject,effects: Array, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): Boolean
 		{
-			var city: City = map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.cityId);
 
 			for each (var obj: CityObject in city.objects.each())
 			{
@@ -199,7 +198,7 @@
 		/*HAVE NO STRUCTURE*/
 		private static function haveNoStructure(parentObj: GameObject,effects: Array, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): Boolean
 		{
-			var city: City = map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.cityId);
 
 			for each (var obj: CityObject in city.objects.each())
 			{
@@ -219,3 +218,4 @@
 	}
 
 }
+

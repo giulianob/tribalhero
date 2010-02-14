@@ -6,8 +6,8 @@ package src.Objects {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import src.Global;
 	import src.Map.Camera;
-	import src.Map.Map;
 	import src.Map.MapUtil;
 	import src.UI.Dialog.ObjectSelectDialog;
 	import src.UI.Tooltips.TextTooltip;
@@ -25,7 +25,6 @@ package src.Objects {
 		private var bottomSpace: Sprite;
 		private var topSpace: Sprite;
 
-		private var map: Map;
 		public var objects: Array = new Array();
 
 		private var dimmedObjects: Array = new Array();
@@ -35,8 +34,10 @@ package src.Objects {
 		private var ignoreClick: Boolean = false;
 
 		private var multipleObjTooltip: TextTooltip = null;
+		
+		private var mouseDisabled: Boolean;
 
-		public function ObjectContainer(map: Map, mouseEnabled: Boolean = true)
+		public function ObjectContainer(mouseEnabled: Boolean = true)
 		{
 			bottomSpace = new Sprite();
 			addChild(bottomSpace);
@@ -47,8 +48,7 @@ package src.Objects {
 			topSpace = new Sprite();
 			addChild(topSpace);
 
-			this.mouseEnabled = mouseEnabled;
-			this.mouseChildren = mouseEnabled;
+			this.mouseEnabled = mouseEnabled;			
 
 			if (mouseEnabled)
 			{
@@ -59,8 +59,6 @@ package src.Objects {
 			bottomSpace.name = "Object Bottom Space";
 			objSpace.name = "Object Space";
 			topSpace.name = "Object Top Space";
-
-			this.map = map;
 		}
 
 		public function addToStage(e: Event) : void {
@@ -70,15 +68,21 @@ package src.Objects {
 			objSpace.addEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);
 		}
 
-		public function removeFromStage(e: Event) : void {
+		public function removeFromStage(e: Event) : void {			
 			objSpace.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 			objSpace.removeEventListener(MouseEvent.CLICK, eventMouseClick);
 			objSpace.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 			objSpace.removeEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);
 		}
+		
+		public function disableMouse(disabled: Boolean) : void {
+			mouseDisabled = disabled;
+		}
 
 		public function eventMouseClick(e: MouseEvent):void
 		{
+			if (mouseDisabled) return;
+			
 			if (highlightedObject && !ignoreClick)
 			{
 				var idxs: Array = Util.binarySearchRange(objects, SimpleObject.compareXAndY, [highlightedObject.getX(), highlightedObject.getY()]);
@@ -90,7 +94,7 @@ package src.Objects {
 
 					var objectSelection: ObjectSelectDialog = new ObjectSelectDialog(multiObjects,
 					function(sender: ObjectSelectDialog):void {
-						map.selectObject((sender as ObjectSelectDialog).selectedObject);
+						Global.map.selectObject((sender as ObjectSelectDialog).selectedObject);
 						sender.getFrame().dispose();
 					}
 					);
@@ -99,7 +103,7 @@ package src.Objects {
 				}
 				else
 				{
-					map.selectObject(highlightedObject);
+					Global.map.selectObject(highlightedObject);
 				}
 				resetHighlightedObject();
 				e.stopImmediatePropagation();
@@ -110,11 +114,15 @@ package src.Objects {
 
 		public function eventMouseDown(e: MouseEvent):void
 		{
+			if (mouseDisabled) return;
+			
 			originClick = new Point(e.stageX, e.stageY);
 		}
 
 		public function eventMouseOut(e: MouseEvent):void
 		{
+			if (mouseDisabled) return;
+			
 			resetHighlightedObject();
 			resetDimmedObjects();
 			ignoreClick = false;
@@ -122,13 +130,15 @@ package src.Objects {
 
 		public function eventMouseMove(e: MouseEvent):void
 		{
+			if (mouseDisabled) return;
+			
 			if (e.buttonDown)
 			{
 				if (Point.distance(new Point(e.stageX, e.stageY), originClick) > 4)
 				ignoreClick = true;
 			}
 
-			var tilePos: Point = MapUtil.getActualCoord(e.stageX + map.gameContainer.camera.x, e.stageY + map.gameContainer.camera.y);
+			var tilePos: Point = MapUtil.getActualCoord(e.stageX + Global.map.gameContainer.camera.x, e.stageY + Global.map.gameContainer.camera.y);
 
 			if (tilePos.x < 0 || tilePos.y < 0)
 			return;

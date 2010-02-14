@@ -300,9 +300,6 @@
 				if (obj) obj.wall.draw(radius);
 			}
 
-			if (obj is TroopObject)
-			map.usernames.players.setObjectUsername(obj.playerId, obj);
-
 			if (obj) {
 				obj.State = objState;
 				obj.fadeIn();

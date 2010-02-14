@@ -2,6 +2,7 @@
 {
 	import flash.display.Sprite;
 	import flash.events.*;
+	import flash.filters.BlurFilter;
 	import flash.geom.Point;
 	import flash.utils.*;
 	import flash.ui.Keyboard;
@@ -24,6 +25,8 @@
 		private var mouseLoc: Point;
 		private var originPoint: Point = new Point();
 
+		private var disabledMapQueries: Boolean;
+
 		public var camera: Camera;
 		private var lastQueryTime: int = 0;
 		private var pendingRegions: Array;
@@ -45,6 +48,8 @@
 
 		private var timeDelta: int = 0;
 
+		public var scrollRate: Number = 1;
+
 		public function Map(camera: Camera)
 		{
 			this.camera = camera;
@@ -54,7 +59,7 @@
 
 			regionSpace = new Sprite();
 			overlayerSpace = new Sprite();
-			objContainer = new ObjectContainer(this);
+			objContainer = new ObjectContainer();
 
 			addChild(regionSpace);
 			addChild(objContainer);
@@ -104,37 +109,39 @@
 			this.gameContainer = gameContainer;
 		}
 
-		public function disableMouse():void
+		public function disableMouse(disable: Boolean):void
 		{
-			if (listenersDefined)
-			{
-				stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-				stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-				stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-				stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-				stage.removeEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
+			if (disable) {
+				if (listenersDefined)
+				{
+					stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+					stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
+					stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
+					stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+					stage.removeEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
 
-				//for shits and giggles
-				//stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventMouseWheel);
-
-				listenersDefined = false;
+					listenersDefined = false;
+				}
 			}
-		}
-
-		public function enableMouse():void
-		{
-			if (!listenersDefined)
-			{
+			else {
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
 				stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 				stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
 				stage.addEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
 
-				//for shits and giggles
-				//stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventMouseWheel);
-
 				listenersDefined = true;
+			}
+		}
+
+		public function disableMapQueries(disabled: Boolean) : void {
+			objContainer.disableMouse(disabled);
+			disabledMapQueries = disabled;
+
+			if (!disabled) {
+				filters = [];
+			} else {
+				filters = [new BlurFilter(10, 10)];
 			}
 		}
 
@@ -381,7 +388,7 @@
 
 			var sidebar: GameJSidebar;
 
-			if (obj is StructureObject) {				
+			if (obj is StructureObject) {
 				sidebar = new ObjectInfoSidebar(obj as StructureObject);
 			}
 			else if (obj is TroopObject) {
@@ -432,38 +439,12 @@
 			{
 				camera.MoveDown(500);
 			}
-			else if (event.keyCode == 187)
-			{
-				scaleX += 0.1; scaleY += 0.1;
-			}
-			else if (event.keyCode == 189)
-			{
-				scaleX -= 0.1; scaleY -= 0.1;
-			}
 		}
 
 		public function eventMouseClick(event: MouseEvent):void
 		{
 			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4)
 			doSelectedObject(null);
-		}
-
-		public function eventMouseWheel(event: MouseEvent):void
-		{
-			var delta: int = 0;
-
-			if (event.delta < 0)
-			delta = -1;
-			else if (event.delta > 0)
-			delta = 1;
-
-			scaleX += delta * 0.1; scaleY += delta * 0.1;
-
-			if (scaleX < 0.5) scaleX = 0.5;
-			if (scaleY < 0.5) scaleY = 0.5;
-
-			if (scaleX > 2.0) scaleX = 2.0;
-			if (scaleY > 2.0) scaleY = 2.0;
 		}
 
 		public function eventMouseDown(event: MouseEvent):void
@@ -483,26 +464,23 @@
 			if (Constants.debug >= 4)
 			trace("MOUSE UP");
 		}
-		
+
 		public function eventMouseLeave(event: Event):void
 		{
 			mouseDown = false;
 
 			if (Constants.debug >= 4)
 			trace("MOUSE LEAVE");
-		}		
+		}
 
 		public function eventMouseMove(event: MouseEvent):void
 		{
-			//debug
-			//var pos: Point = MapUtil.getMapCoord(gameContainer.camera.x + Math.max(event.stageX, 0), gameContainer.camera.y + Math.max(event.stageY, 0));
-			//Global.gameContainer.txtCoords.text = pos.x + "," + pos.y;
+			if (!mouseDown) {
+				return;
+			}
 
-			if (!mouseDown)
-			return;
-
-			var dx: Number = mouseLoc.x - event.stageX;
-			var dy: Number = mouseLoc.y - event.stageY;
+			var dx: Number = (mouseLoc.x - event.stageX) * scrollRate;
+			var dy: Number = (mouseLoc.y - event.stageY) * scrollRate;
 
 			if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
 
@@ -514,23 +492,26 @@
 		public function eventAddedToStage(event: Event):void
 		{
 			addEventListener(MouseEvent.CLICK, eventMouseClick);
-			enableMouse();
+			disableMouse(false);
 		}
 
 		public function eventRemovedFromStage(event: Event):void
 		{
 			removeEventListener(MouseEvent.CLICK, eventMouseClick);
-			disableMouse();
+			disableMouse(false);
 		}
 
-		public function onMove(event: Event):void
+		public function onMove(event: Event = null):void
 		{
 			var pt: Point = MapUtil.getMapCoord(camera.x, camera.y);
-			gameContainer.txtCoords.text = "(" + pt.x + "," + pt.y + ")";
+			gameContainer.minimapTools.txtCoords.text = "(" + pt.x + "," + pt.y + ")";
 
-			parseRegions();
+			if (!disabledMapQueries) {
+				parseRegions();
+				objContainer.moveWithCamera(camera.x, camera.y);
+			}
+
 			gameContainer.miniMap.parseRegions();
-			objContainer.moveWithCamera(camera.x, camera.y);
 			gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
 		}
 	}

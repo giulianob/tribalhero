@@ -11,11 +11,24 @@
 		public var x:int;
 		public var y:int;		
 		
+		//Allows us to cue a position and return to it later
+		private var cueX: int;
+		private var cueY: int;
 		
 		public function reset(): void
 		{
 			x = 0;
 			y = 0;
+		}
+		
+		public function cue(): void {
+			cueX = x;
+			cueY = y;
+		}
+		
+		public function goToCue(): void {
+			x = cueX;
+			y = cueY;
 		}
 		
 		public function get miniMapX(): int
@@ -25,7 +38,7 @@
 		
 		public function get miniMapY(): int
 		{
-			return (y / Constants.tileH) * 2 *  (Constants.miniMapTileH / 2.0);
+			return (y / Constants.tileH) * Constants.miniMapTileH;
 		}
 		
 		public function Camera(x: int, y: int)

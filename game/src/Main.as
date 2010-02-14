@@ -196,7 +196,7 @@
 			mapComm = new MapComm(map, session);
 			map.init(mapComm);
 
-			miniMap = new MiniMap(map);
+			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
 
 			completeLogin(packet);
 		}
@@ -227,7 +227,7 @@
 			if (Constants.debug > 0) {
 				if (frameCounter)
 				removeChild(frameCounter);
-				
+
 				frameCounter = new FPSCounter();
 				frameCounter.y = Constants.screenH - 32;
 				addChild(frameCounter);
@@ -244,3 +244,4 @@
 		}
 	}
 }
+

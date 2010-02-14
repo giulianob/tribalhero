@@ -20,61 +20,61 @@ namespace Game.Comm {
             uint objectId;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
             using (new MultiObjectLock(cityId, objectId, out city, out structure)) {
                 if (city == null || structure == null) {
-                    reply_error(session, packet, Error.OBJECT_NOT_FOUND);
+                    ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
                     return;
                 }
 
                 Packet reply = new Packet(packet);
-                reply.addByte(structure.Stats.Base.Lvl);
+                reply.AddByte(structure.Stats.Base.Lvl);
                 if (session.Player == structure.City.Owner) {
-                    reply.addByte(structure.Stats.Labor);
-                    reply.addUInt16(structure.Stats.Hp);
+                    reply.AddByte(structure.Stats.Labor);
+                    reply.AddUInt16(structure.Stats.Hp);
 
                     foreach (Property prop in PropertyFactory.getProperties(structure.Type)) {
                         if (!structure.Properties.contains(prop.name)) {
                             switch (prop.type) {
                                 case DataType.Byte:
-                                    reply.addByte(Byte.MaxValue);
+                                    reply.AddByte(Byte.MaxValue);
                                     break;
                                 case DataType.UShort:
-                                    reply.addUInt16(UInt16.MinValue);
+                                    reply.AddUInt16(UInt16.MinValue);
                                     break;
                                 case DataType.UInt:
-                                    reply.addUInt32(UInt32.MinValue);
+                                    reply.AddUInt32(UInt32.MinValue);
                                     break;
                                 case DataType.String:
-                                    reply.addString("N/A");
+                                    reply.AddString("N/A");
                                     break;
                                 case DataType.Int:
-                                    reply.addInt32(Int16.MaxValue);
+                                    reply.AddInt32(Int16.MaxValue);
                                     break;
                             }
                         } else {
                             switch (prop.type) {
                                 case DataType.Byte:
-                                    reply.addByte((byte) prop.getValue(structure));
+                                    reply.AddByte((byte) prop.getValue(structure));
                                     break;
                                 case DataType.UShort:
-                                    reply.addUInt16((ushort) prop.getValue(structure));
+                                    reply.AddUInt16((ushort) prop.getValue(structure));
                                     break;
                                 case DataType.UInt:
-                                    reply.addUInt32((uint) prop.getValue(structure));
+                                    reply.AddUInt32((uint) prop.getValue(structure));
                                     break;
                                 case DataType.String:
-                                    reply.addString((string) prop.getValue(structure));
+                                    reply.AddString((string) prop.getValue(structure));
                                     break;
                                 case DataType.Int:
-                                    reply.addInt32((int) prop.getValue(structure));
+                                    reply.AddInt32((int) prop.getValue(structure));
                                     break;
                             }
                         }
@@ -94,28 +94,28 @@ namespace Game.Comm {
             byte count;
             uint[] cityIds;
             try {
-                count = packet.getByte();
+                count = packet.GetByte();
                 cityIds = new uint[count];
                 for (int i = 0; i < count; i++)
-                    cityIds[i] = packet.getUInt32();
+                    cityIds[i] = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
-            reply.addByte(count);
+            reply.AddByte(count);
             for (int i = 0; i < count; i++) {
                 uint cityId = cityIds[i];
                 City city;
 
                 if (!Global.World.TryGetObjects(cityId, out city)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
-                reply.addUInt32(cityId);
-                reply.addString(city.Name);
+                reply.AddUInt32(cityId);
+                reply.AddString(city.Name);
             }
 
             session.write(reply);
@@ -129,12 +129,12 @@ namespace Game.Comm {
             City city;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                count = packet.getByte();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                count = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -142,7 +142,7 @@ namespace Game.Comm {
                 city = session.Player.getCity(cityId);
 
                 if (city == null || !city.TryGetStructure(objectId, out obj)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -153,13 +153,13 @@ namespace Game.Comm {
 
                     if (city.Resource.Labor.Value < count) {
                         //not enough available in city
-                        reply_error(session, packet, Error.LABOR_NOT_ENOUGH);
+                        ReplyError(session, packet, Error.LABOR_NOT_ENOUGH);
                         return;
                     }
  
                     if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor) {
                         //adding too much to obj
-                        reply_error(session, packet, Error.LABOR_OVERFLOW);
+                        ReplyError(session, packet, Error.LABOR_OVERFLOW);
                         return;
                     }
                     
@@ -169,16 +169,16 @@ namespace Game.Comm {
                     count = (byte) (obj.Stats.Labor - count);
                     lma = new LaborMoveAction(cityId, objectId, false, count);
                 } else {
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
                     return;
                 }
 
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, lma, obj.Technologies);
 
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
             }
         }
 
@@ -188,12 +188,12 @@ namespace Game.Comm {
             uint techId;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                techId = packet.getUInt32();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                techId = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -203,7 +203,7 @@ namespace Game.Comm {
                 Structure obj;
 
                 if (city == null || !city.TryGetStructure(objectId, out obj)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -211,9 +211,9 @@ namespace Game.Comm {
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction,
                                                  obj.Technologies);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
             }
         }
 
@@ -223,12 +223,12 @@ namespace Game.Comm {
             ushort actionId;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                actionId = packet.getUInt16();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                actionId = packet.GetUInt16();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -236,7 +236,7 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -244,12 +244,12 @@ namespace Game.Comm {
                 if (obj != null) {
                     Error ret;
                     if ((ret = city.Worker.Cancel(actionId)) != Error.OK)
-                        reply_error(session, packet, ret);
+                        ReplyError(session, packet, ret);
                     else
-                        reply_success(session, packet);
+                        ReplySuccess(session, packet);
                 }
 
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
             }
         }
 
@@ -258,11 +258,11 @@ namespace Game.Comm {
             uint objectId;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -270,13 +270,13 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 Structure obj;
                 if (!city.TryGetStructure(objectId, out obj)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -284,9 +284,9 @@ namespace Game.Comm {
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction,
                                                  obj.Technologies);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
 
                 return;
             }
@@ -300,14 +300,14 @@ namespace Game.Comm {
             ushort type;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                x = packet.getUInt32();
-                y = packet.getUInt32();
-                type = packet.getUInt16();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                x = packet.GetUInt32();
+                y = packet.GetUInt32();
+                type = packet.GetUInt16();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -315,13 +315,13 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 Structure obj;
                 if (!city.TryGetStructure(objectId, out obj)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
@@ -329,9 +329,9 @@ namespace Game.Comm {
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, buildaction,
                                                  obj.Technologies);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
                 return;
             }
         }
@@ -343,13 +343,13 @@ namespace Game.Comm {
             byte structureLvl;
 
             try {
-                cityId = packet.getUInt32();
-                objectId = packet.getUInt32();
-                structureType = packet.getUInt16();
-                structureLvl = packet.getByte();
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                structureType = packet.GetUInt16();
+                structureLvl = packet.GetByte();
             }
             catch (Exception) {
-                reply_error(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
 
@@ -357,22 +357,22 @@ namespace Game.Comm {
                 City city = session.Player.getCity(cityId);
 
                 if (city == null) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 Structure obj;
                 if (!city.TryGetStructure(objectId, out obj)) {
-                    reply_error(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, changeAction, obj.Technologies);
                 if (ret != 0)
-                    reply_error(session, packet, ret);
+                    ReplyError(session, packet, ret);
                 else
-                    reply_success(session, packet);
+                    ReplySuccess(session, packet);
                 return;
             }
         }

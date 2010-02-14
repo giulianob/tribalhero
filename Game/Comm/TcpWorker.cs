@@ -11,148 +11,157 @@ using Game.Data;
 
 namespace Game.Comm {
     class TcpWorker {
-        private ArrayList sockList = new ArrayList();
-        private object sockListLock = new object();
-        private Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
+        private readonly ArrayList sockList = new ArrayList();
+        private readonly object sockListLock = new object();
+        private readonly Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
         private bool isFull = false;
         private Thread workerThread;
-        private EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
+        private readonly EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
 
-        private static List<TcpWorker> workerList = new List<TcpWorker>();
+        private static readonly List<TcpWorker> WorkerList = new List<TcpWorker>();
 
-        public static void add(object session_object) {
-            SocketSession session = (SocketSession) session_object;
+        public static void Add(object sessionObject) {
+            SocketSession session = (SocketSession) sessionObject;
 
             bool needNewWorker = true;
-            foreach (TcpWorker worker in workerList) {
-                if (!worker.isFull) {
-                    worker.put(session);
-                    needNewWorker = false;
-                    break;
+            foreach (TcpWorker worker in WorkerList) {
+                lock (worker.sockListLock) {
+                    if (worker.isFull)
+                        continue;
+
+                    worker.Put(session);
                 }
+                
+                needNewWorker = false;
+                break;
             }
 
             if (needNewWorker) {
                 TcpWorker newWorker = new TcpWorker();
-                workerList.Add(newWorker);
-                newWorker.put(session);
-                newWorker.start();
+                WorkerList.Add(newWorker);
+                newWorker.Put(session);
+                newWorker.Start();
             }
 
             Packet packet = new Packet(Command.ON_CONNECT);
             ThreadPool.QueueUserWorkItem(session.processEvent, packet);
         }
 
-        public static void delAll() {
-            foreach (TcpWorker worker in workerList)
-                worker.stop();
+        public static void DeleteAll() {
+            foreach (TcpWorker worker in WorkerList)
+                worker.Stop();
         }
 
-        public static void del(SocketSession session) {
-            foreach (TcpWorker worker in workerList) {
+        public static void Delete(SocketSession session) {
+            foreach (TcpWorker worker in WorkerList) {
                 if (worker.sockList.Contains(session.socket))
                     worker.sockList.Remove(session.socket);
             }
         }
 
-        public void put(SocketSession session) {
-            sessions.Add(session.socket, session);
+        public void Put(SocketSession session) {
             lock (sockListLock) {
-                sockList.Add(session.socket);
-            }
+                sessions.Add(session.socket, session);
 
-            socketAvailable.Set();
+                sockList.Add(session.socket);
+
+                socketAvailable.Set();
+            }
         }
 
-        public void start() {
+        public void Start() {
             if (workerThread == null) {
-                workerThread = new Thread(socketHandler);
-                workerThread.Name = "TcpWorker Thread";
+                workerThread = new Thread(SocketHandler) {
+                                                             Name = "TcpWorker Thread"
+                                                         };
             }
 
             if (workerThread.ThreadState != ThreadState.Running)
                 workerThread.Start();
         }
 
-        public void stop() {
+        public void Stop() {
             workerThread.Abort();
         }
 
-        private void socketHandler() {
-            Packet packet;
-            while (true) {
-                ArrayList copyList = null;
+        private void SocketHandler() {
+            try {
+                while (true) {
+                    ArrayList copyList;
 
-                try {
-                    lock (sockListLock) {
-                        copyList = new ArrayList(sockList);
+                    try {
+                        lock (sockListLock) {
+                            copyList = new ArrayList(sockList);
+                        }
+
+                        if (copyList.Count > 0)
+                            Socket.Select(copyList, null, null, 20);
+                        else
+                            socketAvailable.WaitOne(-1, false);
+                    }
+                    catch (Exception e) {
+                        Console.Out.Write("Socket exception: " + e.Message);
+                        continue;
                     }
 
-                    if (copyList.Count > 0)
-                        Socket.Select(copyList, null, null, 20);
-                    else
-                        socketAvailable.WaitOne(-1, false);
-                }
-                catch (Exception e) {
-                    Console.Out.Write("Socket exception: " + e.Message);
-                    continue;
-                }
+                    foreach (Socket s in copyList) {
+                        lock (s) {
+                            Packet packet;
+                            try {
+                                if (!s.Connected) {
+                                    //create disconnect packet to send to processor
+                                    SocketSession dcSession = sessions[s];
 
-                foreach (Socket s in copyList) {
-                    lock (s) {
-                        try {
-                            if (!s.Connected) {
-                                //create disconnect packet to send to processor
-                                SocketSession dcSession = sessions[s];
+                                    sessions.Remove(s);
+                                    sockList.Remove(s);
 
-                                sessions.Remove(s);
-                                sockList.Remove(s);
+                                    packet = new Packet(Command.ON_DISCONNECT);
+                                    ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
+                                    continue;
+                                }
 
-                                packet = new Packet(Command.ON_DISCONNECT);
-                                ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
-                                continue;
+                                byte[] data = new byte[s.Available];
+
+                                int len = s.Receive(data);
+
+                                if (len == 0) {
+                                    //create disconnect packet to send to processor
+                                    SocketSession dcSession = sessions[s];
+                                    sessions.Remove(s);
+                                    sockList.Remove(s);
+
+                                    //If the player is null it means the player failed to authenticate or had some connection issue
+                                    //in that case we don't want to create any events since he never really connected
+                                    if (dcSession.Player != null) {
+                                        dcSession.Player.Session = null;
+                                        packet = new Packet(Command.ON_DISCONNECT);
+                                        ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
+                                    }
+                                } else {
+                                    Global.Logger.Info("[" + sessions[s].name + "]: " + data.Length);
+                                    //Global.Logger.Info(Convert.ToString(data));
+                                    sessions[s].appendBytes(data);
+                                    while ((packet = (sessions[s]).getNextPacket()) != null)
+                                        ThreadPool.QueueUserWorkItem(sessions[s].process, packet);
+                                }
                             }
+                            catch (SocketException) {
+                                lock (sockListLock) {
+                                    //create disconnect packet to send to processor
+                                    SocketSession dcSession = sessions[s];
 
-                            byte[] data = new byte[s.Available];
+                                    sessions.Remove(s);
+                                    sockList.Remove(s);
 
-                            int len = s.Receive(data);
-
-                            if (len == 0) {
-                                //create disconnect packet to send to processor
-                                SocketSession dcSession = sessions[s];
-                                sessions.Remove(s);
-                                sockList.Remove(s);
-
-                                //If the player is null it means the player failed to authenticate or had some connection issue
-                                //in that case we don't want to create any events since he never really connected
-                                if (dcSession.Player != null) {
-                                    dcSession.Player.Session = null;
                                     packet = new Packet(Command.ON_DISCONNECT);
                                     ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
                                 }
-                            } else {
-                                Global.Logger.Info("[" + sessions[s].name + "]: " + data.Length);
-                                Global.Logger.Info(Convert.ToString(data));
-                                sessions[s].appendBytes(data);
-                                while ((packet = (sessions[s]).getNextPacket()) != null)
-                                    ThreadPool.QueueUserWorkItem(sessions[s].process, packet);
-                            }
-                        }
-                        catch (SocketException) {
-                            lock (sockListLock) {
-                                //create disconnect packet to send to processor
-                                SocketSession dcSession = sessions[s];
-
-                                sessions.Remove(s);
-                                sockList.Remove(s);
-
-                                packet = new Packet(Command.ON_DISCONNECT);
-                                ThreadPool.QueueUserWorkItem(dcSession.processEvent, packet);
                             }
                         }
                     }
                 }
             }
+            catch (ThreadAbortException) {}
         }
     }
 }

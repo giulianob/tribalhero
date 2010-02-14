@@ -82,12 +82,12 @@ namespace Game.Comm {
                 return;
 
             if (processor != null)
-                processor.execute(this, p);
+                processor.Execute(this, p);
         }
 
         public void processEvent(object obj) {
             if (processor != null)
-                processor.executeEvent(this, (Packet) obj);
+                processor.ExecuteEvent(this, (Packet) obj);
         }
 
         #region IChannel Members

@@ -7,7 +7,7 @@ using Game.Setup;
 
 #endregion
 
-namespace Game {
+namespace Game.Map {
     public class CityRegion {
         #region Constants
 
@@ -17,8 +17,8 @@ namespace Game {
 
         #region Members
 
-        private object objLock = new object();
-        private List<City> data = new List<City>();
+        private readonly object objLock = new object();
+        private readonly List<City> data = new List<City>();
         private byte[] objects;
         private bool isDirty = true;
 
@@ -42,7 +42,7 @@ namespace Game {
 
         #region Methods
 
-        public bool add(City obj) {
+        public bool Add(City obj) {
             lock (objLock) {
                 data.Add(obj);
                 isDirty = true;
@@ -51,14 +51,14 @@ namespace Game {
             return true;
         }
 
-        public void remove(City obj) {
+        public void Remove(City obj) {
             lock (objLock) {
                 data.Remove(obj);
                 isDirty = true;
             }
         }
 
-        public byte[] getCityBytes() {
+        public byte[] GetCityBytes() {
             if (isDirty || objects == null) {
                 lock (data) {
                     using (MemoryStream ms = new MemoryStream()) {
@@ -89,19 +89,19 @@ namespace Game {
 
         #region Static Util Methods
 
-        public static ushort getRegionIndex(City city) {
-            return getRegionIndex(city.MainBuilding.X, city.MainBuilding.Y);
+        public static ushort GetRegionIndex(City city) {
+            return GetRegionIndex(city.MainBuilding.X, city.MainBuilding.Y);
         }
 
-        public static ushort getRegionIndex(uint x, uint y) {
+        public static ushort GetRegionIndex(uint x, uint y) {
             return (ushort) (x/Config.city_region_width + (y/Config.city_region_height)*Config.city_region_column);
         }
 
-        public static int getTileIndex(City city) {
-            return getTileIndex(city.MainBuilding.X, city.MainBuilding.Y);
+        public static int GetTileIndex(City city) {
+            return GetTileIndex(city.MainBuilding.X, city.MainBuilding.Y);
         }
 
-        public static int getTileIndex(uint x, uint y) {
+        public static int GetTileIndex(uint x, uint y) {
             return (int) (x%Config.city_region_width + (y%Config.city_region_height)*Config.city_region_width);
         }
 

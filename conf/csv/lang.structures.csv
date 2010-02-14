@@ -12,17 +12,29 @@ TOWNCENTER_STRUCTURE_LVL_8,Increases the maximum resources to ### each.
 TOWNCENTER_STRUCTURE_LVL_9,Increases the maximum resources to ### each.
 TOWNCENTER_STRUCTURE_LVL_10,Ability to build multiple stables. Increases the maximum resources to ### each.
 BARRACK_STRUCTURE_NAME,Barrack
-BARRACK_STRUCTURE_DESCRIPTION,Enables the ability to train basic military units. Also provides some defensive structures such as towers.
-BARRACK_STRUCTURE_LVL_1,"Allows training swordsman, pikeman, and archers."
-BARRACK_STRUCTURE_LVL_2,Decreases unit training time by ###%.
-BARRACK_STRUCTURE_LVL_3,"Enables upgrading swordsman, pikeman, and archers to the next level. Decreases unit training time by ###%."
-BARRACK_STRUCTURE_LVL_4,Decreases unit training time by ###%.
+BARRACK_STRUCTURE_DESCRIPTION,Enables the ability to train advanced military units without requiring laborers.
+BARRACK_STRUCTURE_LVL_1,Allows training XXX.
+BARRACK_STRUCTURE_LVL_2,N/A
+BARRACK_STRUCTURE_LVL_3,N/A
+BARRACK_STRUCTURE_LVL_4,N/A
 BARRACK_STRUCTURE_LVL_5,Decreases unit training time by ###%.
 BARRACK_STRUCTURE_LVL_6,Decreases unit training time by ###%.
 BARRACK_STRUCTURE_LVL_7,Decreases unit training time by ###%.
 BARRACK_STRUCTURE_LVL_8,Decreases unit training time by ###%.
 BARRACK_STRUCTURE_LVL_9,Decreases unit training time by ###%.
 BARRACK_STRUCTURE_LVL_10,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_NAME,Training Ground
+TRAINING_GROUND_STRUCTURE_DESCRIPTION,Enables the ability to train basic  military units. Also provides some defensive structures.
+TRAINING_GROUND_STRUCTURE_LVL_1,"Allows training swordsman, pikeman, and archers."
+TRAINING_GROUND_STRUCTURE_LVL_2,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_LVL_3,"Enables upgrading swordsman, pikeman, and archers to the next level. Decreases unit training time by ###%."
+TRAINING_GROUND_STRUCTURE_LVL_4,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_LVL_5,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_LVL_6,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_LVL_7,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_LVL_8,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_LVL_9,Decreases unit training time by ###%.
+TRAINING_GROUND_STRUCTURE_LVL_10,Decreases unit training time by ###%.
 FARM_STRUCTURE_NAME,Farm
 FARM_STRUCTURE_DESCRIPTION,Uses the city's laborers to grow and produce crops.
 FARM_STRUCTURE_LVL_1,Allows a maximum of ### laborers to work in the farm.

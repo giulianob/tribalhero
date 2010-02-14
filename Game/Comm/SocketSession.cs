@@ -18,8 +18,8 @@ namespace Game.Comm {
         }
 
         public override bool write(Packet packet) {
-            Console.Out.WriteLine("Sending: " + packet.ToString(256));
-            byte[] packetBytes = packet.getBytes();
+            Console.Out.WriteLine("Sending: " + packet.ToString(32));
+            byte[] packetBytes = packet.GetBytes();
             int ret;
             if (socket == null)
                 return false;

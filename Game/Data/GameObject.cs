@@ -127,10 +127,11 @@ namespace Game.Data {
             if (updating)
                 return;
 
-            if (city != null) {
-                city.ObjUpdateEvent(this, origX, origY);
-                Global.World.ObjUpdateEvent(this, origX, origY);
-            }
+            if (city == null)
+                return;
+
+            city.ObjUpdateEvent(this, origX, origY);
+            Global.World.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion

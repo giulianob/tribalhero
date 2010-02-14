@@ -16,12 +16,17 @@
 		private var ui: DisplayObject;
 		private var tooltip: TextTooltip;
 		
-		public function SimpleTooltip(ui: DisplayObject, tooltip: String)
+		public function SimpleTooltip(ui: DisplayObject, tooltip: String = "")
 		{		
 			this.ui = ui;
 			this.tooltip = new TextTooltip(tooltip);
 			ui.addEventListener(MouseEvent.MOUSE_MOVE, onRollOver);
 			ui.addEventListener(MouseEvent.ROLL_OUT, onRollOut);
+		}
+		
+		public function setText(tooltip: String) : void {
+			this.tooltip.hide();
+			this.tooltip = new TextTooltip(tooltip);
 		}
 		
 		private function onRollOver(e: Event):void {

@@ -106,6 +106,12 @@
 
 			return list[idx];
 		}
+		
+
+		public function getIdx(val: *): int
+		{
+			return Util.binarySearch(list, compareFunc, val);
+		}		
 
 		public function getRange(val: * ): *
 		{

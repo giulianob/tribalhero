@@ -8,13 +8,10 @@
 
 	*/
 	public class CityRegionList extends BinaryList
-	{
-		private var map: Map;
-		
-		public function CityRegionList(map: Map) 
+	{			
+		public function CityRegionList() 
 		{
-			super(CityRegion.sortOnId, CityRegion.compare);
-			this.map = map;
+			super(CityRegion.sortOnId, CityRegion.compare);			
 		}	
 		
 	}

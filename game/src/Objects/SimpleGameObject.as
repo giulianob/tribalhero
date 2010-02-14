@@ -204,26 +204,6 @@ package src.Objects {
 				return 0;
 		}
 		
-		public function showUsername(username: String):void
-		{
-			if (usernameLabel)
-			{	
-				removeChild(usernameLabel);
-				usernameLabel = null;
-			}			
-			
-			usernameLabel = new TextField();
-			usernameLabel.autoSize = TextFieldAutoSize.LEFT;
-			usernameLabel.type = TextFieldType.DYNAMIC;			
-			usernameLabel.text = username;
-			usernameLabel.mouseEnabled = false;
-			usernameLabel.tabEnabled = false;
-			usernameLabel.selectable = false;
-			usernameLabel.x = Math.round(Constants.tileW/2.0) - Math.round(usernameLabel.width/2.0);
-			usernameLabel.y = -25 - usernameLabel.height;
-			addChild(usernameLabel);
-		}		
-		
 		public function copy(obj: SimpleGameObject):void
 		{
 			obj.actionReferences = actionReferences;

@@ -45,9 +45,6 @@
 		//Container for messages that can be set by different sidebars
 		public var message: MessageContainer = new MessageContainer();
 
-		//Minimap background image
-		private var miniMapMask: Sprite;
-
 		//Holds all currently open aswing frames
 		private var frames: Array = new Array();
 
@@ -56,6 +53,11 @@
 
 		//Resources timer that fires every second
 		public var resourcesTimer: Timer = new Timer(1000);
+
+		//Holds the tools above the minimap
+		public var minimapTools: MinimapToolsContainer = new MinimapToolsContainer();
+		private var minimapZoomed: Boolean = false;
+		private var minimapZoomTooltip: SimpleTooltip;
 
 		public function GameContainer()
 		{
@@ -73,10 +75,13 @@
 
 			visible = false;
 
-			txtCoords.mouseEnabled = false;
+			minimapTools.txtCoords.mouseEnabled = false;
 
-			new SimpleTooltip(btnGoToCoords, "Go to...");
-			btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
+			minimapZoomTooltip = new SimpleTooltip(minimapTools.btnMinimapZoom);
+			minimapTools.btnMinimapZoom.addEventListener(MouseEvent.CLICK, onZoomIntoMinimap);
+
+			new SimpleTooltip(minimapTools.btnGoToCoords, "Go to...");
+			minimapTools.btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
 
 			new SimpleTooltip(btnGoToCity, "Go to city");
 			btnGoToCity.addEventListener(MouseEvent.CLICK, onGoToCity);
@@ -89,14 +94,6 @@
 
 			new SimpleTooltip(btnCityTroops, "View unit movement");
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
-
-			miniMapHolder.mouseEnabled = false;
-			miniMapHolder.mouseChildren = false;
-
-			miniMapMask = new Sprite();
-			miniMapMask.graphics.beginFill(0x336699);
-			miniMapMask.graphics.drawRect(miniMapHolder.x, miniMapHolder.y, miniMapHolder.width, miniMapHolder.height);
-			miniMapMask.graphics.endFill();
 
 			sidebarHolder = new Sprite();
 			addChild(sidebarHolder);
@@ -136,17 +133,60 @@
 			Global.gameContainer.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
 
-		public function onGoToCoords(e: Event):void {
+		public function onGoToCoords(e: Event) : void {
 			var goToDialog: GoToDialog = new GoToDialog();
 			goToDialog.show();
+		}
+
+		public function onZoomIntoMinimap(e: Event):void {
+			if (minimapZoomed == false) {
+				Global.map.camera.cue();
+			}
+			else {
+				Global.map.camera.goToCue();
+			}
+
+			zoomIntoMinimap(!minimapZoomed);
+		}
+
+		public function zoomIntoMinimap(zoom: Boolean) : void {
+			if (zoom) {
+				miniMap.resize(Constants.miniMapLargeScreenW, Constants.miniMapLargeScreenH);
+				miniMap.x = Constants.miniMapLargeScreenX;
+				miniMap.y = Constants.miniMapLargeScreenY;
+				minimapZoomTooltip.setText("Map view");
+				miniMap.setScreenRectHidden(true);
+				setSidebar(null);
+				map.disableMapQueries(true);
+				map.scrollRate = 4;
+			}
+			else {
+				miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
+				miniMap.x = Constants.miniMapScreenX;
+				miniMap.y = Constants.miniMapScreenY;
+				minimapZoomTooltip.setText("World view");
+				miniMap.setScreenRectHidden(false);
+				map.disableMapQueries(false);
+				map.scrollRate = 1;
+			}
+
+			minimapZoomed = zoom;
+			map.onMove();
+
+			alignMinimapTools();
 		}
 
 		public function eventKeyDown(e: KeyboardEvent):void
 		{
 			if (e.charCode == Keyboard.ESCAPE)
 			{
-				if (map != null)
-				map.selectObject(null);
+				if (map != null) {
+					map.selectObject(null);
+				}
+
+				if (miniMap != null) {
+					zoomIntoMinimap(false);
+				}
 			}
 		}
 
@@ -155,43 +195,43 @@
 			this.map = map;
 			Global.map = map;
 			this.miniMap = miniMap;
-			RequirementFormula.map = map;
 			(lstCities.getModel() as VectorListModel).clear();
 
-			if (map != null)
-			{
-				mapHolder.addChild(map);
-				map.setGameContainer(this);
+			mapHolder.addChild(map);
+			map.setGameContainer(this);
 
-				this.mapOverlay = new MovieClip();
-				this.mapOverlay.graphics.beginFill(0xCCFF00);
-				this.mapOverlay.graphics.drawRect(0, 0, mapHolder.width, mapHolder.height);
-				this.mapOverlay.visible = false;
-				this.mapOverlay.mouseEnabled = false;
-				this.mapOverlay.name = "Overlay";
-				this.mapOverlay.x = mapHolder.x;
-				this.mapOverlay.y = mapHolder.y;
-				addChild(this.mapOverlay);
+			this.mapOverlay = new MovieClip();
+			this.mapOverlay.graphics.beginFill(0xCCFF00);
+			this.mapOverlay.graphics.drawRect(0, 0, mapHolder.width, mapHolder.height);
+			this.mapOverlay.visible = false;
+			this.mapOverlay.mouseEnabled = false;
+			this.mapOverlay.name = "Overlay";
+			this.mapOverlay.x = mapHolder.x;
+			this.mapOverlay.y = mapHolder.y;
+			addChild(this.mapOverlay);
 
-				for each (var city: City in map.cities.each()) {
-					(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return city.name; } } );
-				}
-
-				if (lstCities.getItemCount() > 0) { //set a default city selection
-					lstCities.setSelectedIndex(0);
-					selectedCity = lstCities.getSelectedItem().city;
-					var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-					map.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
-				}
-
-				resourcesContainer = new ResourcesContainer();
-				displayResources();
+			for each (var city: City in map.cities.each()) {
+				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return city.name; } } );
 			}
 
-			if (miniMap != null)
-			{
-				miniMapHolder.addChild(miniMap);
+			if (lstCities.getItemCount() > 0) { //set a default city selection
+				lstCities.setSelectedIndex(0);
+				selectedCity = lstCities.getSelectedItem().city;
+				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
+				map.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
 			}
+
+			//Show resources box
+			resourcesContainer = new ResourcesContainer();
+			displayResources();
+
+			//Add minimap tools
+			addChild(minimapTools);
+
+			//Set minimap position and initial state
+			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+			addChild(miniMap);
+			zoomIntoMinimap(false);
 		}
 
 		public function show() : void {
@@ -202,25 +242,28 @@
 		public function dispose() : void {
 			visible = false;
 
-			if (resourcesContainer && resourcesContainer.getFrame())
-			resourcesContainer.getFrame().dispose();
+			if (resourcesContainer && resourcesContainer.getFrame()) {
+				resourcesContainer.getFrame().dispose();
+			}
 
 			resourcesContainer = null;
 			setSidebar(null);
 
-			if (map != null)
-			{
+			map.dispose();
+			mapHolder.removeChild(map);
+			removeChild(mapOverlay);
+			removeChild(miniMap);
+			removeChild(minimapTools);
 
-				map.dispose();
-				mapHolder.removeChild(map);
-				removeChild(mapOverlay);
-			}
-
-			if (miniMap != null)
-			miniMapHolder.removeChild(miniMap);
+			miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
 			map = null;
 			miniMap = null;
+		}
+
+		private function alignMinimapTools() : void {
+			minimapTools.x = miniMap.x;
+			minimapTools.y = miniMap.y - 3;
 		}
 
 		public function setSidebar(sidebar: GameJSidebar):void
@@ -242,7 +285,7 @@
 		}
 
 		public function showFrame(frame: JFrame):void {
-			if (map != null) map.disableMouse();
+			if (map != null) map.disableMouse(false);
 			frames.push(frame);
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
 			frame.show();
@@ -255,7 +298,7 @@
 			var index: int = frames.indexOf(frame);
 			if (index == -1) trace("Closed a frame that did not call show through GameContainer");
 			frames.splice(index, 1);
-			if (frames.length == 0 && map != null) map.enableMouse();
+			if (frames.length == 0 && map != null) map.disableMouse(false);
 		}
 
 		public function displayResources(e: Event = null):void {
@@ -305,6 +348,14 @@
 			selectedCity = lstCities.getSelectedItem().city;
 
 			displayResources();
+		}
+
+		private function onMinimapNavigateToPoint(e: MouseEvent) : void {
+			if (minimapZoomed) {
+				zoomIntoMinimap(false);
+			}
+
+			Global.map.camera.ScrollToCenter(e.localX, e.localY);
 		}
 	}
 

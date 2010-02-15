@@ -124,13 +124,15 @@
 				}
 			}
 			else {
-				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-				stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
-				stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
-				stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-				stage.addEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
+				if (!listenersDefined) {
+					stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
+					stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
+					stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
+					stage.addEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
 
-				listenersDefined = true;
+					listenersDefined = true;
+				}
 			}
 		}
 
@@ -498,7 +500,7 @@
 		public function eventRemovedFromStage(event: Event):void
 		{
 			removeEventListener(MouseEvent.CLICK, eventMouseClick);
-			disableMouse(false);
+			disableMouse(true);
 		}
 
 		public function onMove(event: Event = null):void

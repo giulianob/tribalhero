@@ -641,7 +641,7 @@ namespace Game.Database {
                 }
             }
 
-            throw e;
+            Environment.Exit(-999);
         }
 
         public void Rollback() {

@@ -285,7 +285,7 @@
 		}
 
 		public function showFrame(frame: JFrame):void {
-			if (map != null) map.disableMouse(false);
+			if (map != null) map.disableMouse(true);
 			frames.push(frame);
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
 			frame.show();

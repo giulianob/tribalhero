@@ -231,9 +231,7 @@ package src.UI.Sidebars.ObjectInfo {
 				var timeLeft: int = Math.max(0, currentAction.endTime - Global.map.getServerTime());
 
 				//component creation
-				var pnlActionRow: JPanel = new JPanel(new BorderLayout());
-				pnlActionRow.mouseEnabled = false;
-				pnlActionRow.mouseChildren = false;
+				var pnlActionRow: JPanel = new JPanel(new BorderLayout());							
 
 				var panel: JPanel = new JPanel();
 				panel.setConstraints("North");
@@ -241,6 +239,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 				var lblDescription: MultilineLabel = new MultilineLabel(actionDescription);
 				lblDescription.setConstraints("West");
+				lblDescription.mouseEnabled = false;
 
 				var astCancel: AssetPane = new AssetPane(cancelButton);
 				astCancel.setConstraints("East");

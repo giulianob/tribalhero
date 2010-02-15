@@ -19,7 +19,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function CancelActionButton(parentObj: SimpleGameObject, id: int)
 		{
-			addChild(ui);
+			addChild(ui);			
 
 			new SimpleTooltip(ui, "Cancel");
 

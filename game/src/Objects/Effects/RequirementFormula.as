@@ -16,9 +16,9 @@
 		private static var methodLookup: Array = new Array(
 		{name: "CanBuild", method: canBuild, message: canBuildMsg},
 		{name: "HaveTechnology", method: haveTechnology, message: haveTechnologyMsg },
-		{name: "CanTrain", method: canTrain, message: canTrainMsg },
 		{name: "HaveStructure", method: haveStructure, message: haveStructureMsg },
-		{name: "HaveNoStructure", method: haveNoStructure, message: haveNoStructureMsg }
+		{name: "HaveNoStructure", method: haveNoStructure, message: haveNoStructureMsg },
+		{name: "CountLessThan", method: countLessThan, message: countLessThanMsg }
 		);
 
 		private static var methodsSorted: Boolean = false;
@@ -62,7 +62,7 @@
 
 			if (idx == -1)
 			return effectReq.method;
-
+			
 			if (methodLookup[idx].message)
 			{
 				return methodLookup[idx].message(parentObj, effectReq.param1, effectReq.param2, effectReq.param3, effectReq.param4, effectReq.param5);
@@ -108,35 +108,6 @@
 			}
 
 			return structPrototype.getName();
-		}
-
-		/*CAN TRAIN*/
-		private static function canTrain(parentObj: GameObject,effects: Array, unitId: int, level: int, param3: int, param4: int, param5: int): Boolean
-		{
-			for each(var effect: EffectPrototype in effects)
-			{
-				if (effect.effectCode != EffectPrototype.EFFECT_CAN_TRAIN || effect.param1 != unitId)
-				continue;
-
-				//how can we access the template here?
-
-				return true;
-			}
-
-			return false;
-		}
-
-		private static function canTrainMsg(parentObj: GameObject,unitId: int, param2: int, param3: int, param4: int, param5: int): String
-		{
-			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unitId, 1);
-
-			if (unitPrototype == null)
-			{
-				trace("CanTrain requirement formula referencing missing unit id: " + unitId);
-				return "[Missing Unit]";
-			}
-
-			return unitPrototype.getName();
 		}
 
 		/*HAVE TECHNOLOGY*/
@@ -214,6 +185,23 @@
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
 
 			return "Has not built " + structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
+		}
+
+		/*COUNT LESS THAN*/
+		private static function countLessThan(parentObj: GameObject, effects: Array, effectCode: int, maxCount: int, param3: int, param4: int, param5:int): Boolean
+		{
+			var count: int = 0;
+			for each (var effect: EffectPrototype in effects) {
+				if (effect.effectCode == EffectPrototype.EFFECT_COUNT_LESS_THAN && effect.param1 == effectCode)
+				count += effect.param2;
+			}
+
+			return count < maxCount;
+		}
+
+		private static function countLessThanMsg(parentObj: GameObject, effectCode: int, maxCount: int, param3: int, param4: int, param5:int): String
+		{
+			return "Count Less Than Msg";
 		}
 	}
 

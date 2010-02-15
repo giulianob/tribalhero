@@ -16,7 +16,7 @@
 		public static const EFFECT_OVER_DIGGING: int = 7;
 		public static const EFFECT_WOOD_CUTTING: int = 8;
 		public static const EFFECT_HAVE_TECHNOLOGY: int = 9;
-		public static const EFFECT_CAN_TRAIN: int = 10;
+		public static const EFFECT_COUNT_LESS_THAN: int = 10;
 		
 		public static const LOCATION_OBJECT: int = 0;
 		public static const LOCATION_CITY: int = 1;

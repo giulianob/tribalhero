@@ -86,25 +86,12 @@
 			pnlLocal = new JPanel();
 			pnlLocal.setLocation(new IntPoint(278, 13));
 			pnlLocal.setSize(new IntDimension(389, 35));
-			var border1:TitledBorder = new TitledBorder();
-			border1.setColor(new ASColor(0x0, 1));
-			border1.setTitle("Local Troop");
-			border1.setPosition(1);
-			border1.setBeveled(true);
-			border1.setEdge(0);
-			border1.setRound(5);
-			pnlLocal.setBorder(border1);
+			pnlLocal.setBorder(new TitledBorder(null, "Local Troop", AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));
 
 			pnlAttack = new JPanel();
 			pnlAttack.setLocation(new IntPoint(0, 82));
 			pnlAttack.setSize(new IntDimension(389, 35));
-			var border2:TitledBorder = new TitledBorder();
-			border2.setColor(new ASColor(0x0, 1));
-			border2.setTitle("Reinforcement Troop");
-			border2.setPosition(1);
-			border2.setBeveled(true);
-			border2.setRound(5);
-			pnlAttack.setBorder(border2);
+			pnlAttack.setBorder(new TitledBorder(null, "Reinforcement Troop", AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));			
 
 			panel9 = new JPanel();
 			panel9.setLocation(new IntPoint(0, 127));

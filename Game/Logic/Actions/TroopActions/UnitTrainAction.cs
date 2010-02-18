@@ -107,7 +107,7 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
-                Global.Scheduler.del(this);
+                Global.Scheduler.Del(this);
 
                 if (!city.TryGetStructure(structureId, out structure)) {
                     StateChange(ActionState.FAILED);

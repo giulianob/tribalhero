@@ -66,11 +66,11 @@ namespace Game.Logic.Actions {
             using (new MultiObjectLock(cityId, out city)) {
                 switch (state) {
                     case ActionInterrupt.KILLED:
-                        Global.Scheduler.del(this);
+                        Global.Scheduler.Del(this);
                         StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        Global.Scheduler.del(this);
+                        Global.Scheduler.Del(this);
 
                         city.BeginUpdate();
                         city.Resource.Add(cost/2);

@@ -352,12 +352,12 @@ namespace Game.Logic {
 
         private static void Schedule(ScheduledActiveAction action) {
             ActionDispatcher dispatcher = new ActionDispatcher(action);
-            Global.Scheduler.put(dispatcher);
+            Global.Scheduler.Put(dispatcher);
         }
 
         private static void Schedule(ScheduledPassiveAction action) {
             ActionDispatcher dispatcher = new ActionDispatcher(action);
-            Global.Scheduler.put(dispatcher);
+            Global.Scheduler.Put(dispatcher);
         }
 
         #endregion

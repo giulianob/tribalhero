@@ -125,7 +125,7 @@ namespace Game.Logic.Actions {
                         x = city.MainBuilding.X;
                         y = city.MainBuilding.Y;
                         if (!calculateNext(troopObj)) {
-                            Global.Scheduler.del(this);
+                            Global.Scheduler.Del(this);
                             StateChange(ActionState.COMPLETED);
                             return;
                         }

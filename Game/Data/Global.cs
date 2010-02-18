@@ -13,8 +13,6 @@ using log4net;
 
 namespace Game.Data {
     public class Global {
-        private static readonly Global instance = new Global();
-
         public static ILog Logger = LogManager.GetLogger(typeof (Global));
         public static ILog DbLogger = LogManager.GetLogger(typeof (IDbManager));
 
@@ -51,11 +49,11 @@ namespace Game.Data {
             get { return systemVariables; }
         }
 
-        public static void pauseEvents() {
+        public static void PauseEvents() {
             fireEvents = false;
         }
 
-        public static void resumeEvents() {
+        public static void ResumeEvents() {
             fireEvents = true;
         }
     }

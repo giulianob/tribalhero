@@ -7,44 +7,59 @@ using System.Threading;
 #endregion
 
 namespace Game.Logic {
-    public class Scheduler {
-        private object schedulesLock = new object();
-        private ScheduleComparer comparer = new ScheduleComparer();
-        private List<ISchedule> schedules = new List<ISchedule>();
-        private Timer timer;
-        private bool paused;
+    
+    class ScheduledJob {
+        public ManualResetEvent ResetEvent { get; set; }
+        public ISchedule Schedule { get; set; }
+        public int Id { get; set; }
+    }
 
-        public bool Paused {
-            get { return paused; }
-        }
+    public class Scheduler {
+        private int nextId;
+        private readonly object schedulesLock = new object();
+        private readonly ScheduleComparer comparer = new ScheduleComparer();
+        private readonly List<ISchedule> schedules = new List<ISchedule>();
+        private readonly Timer timer;
+        private readonly Dictionary<int, ManualResetEvent> doneEvents = new Dictionary<int, ManualResetEvent>();
+
+        public bool Paused { get; private set; }
 
         public Scheduler() {
             timer = new Timer(DispatchAction, // main timer
                               null, Timeout.Infinite, Timeout.Infinite);
         }
 
-        public void pause() {
+        public void Pause() {
+            ManualResetEvent[] events;
+
             lock (schedulesLock) {
-                paused = true;
+                Paused = true;
                 timer.Change(Timeout.Infinite, Timeout.Infinite);
+                events = new ManualResetEvent[doneEvents.Count];
+                doneEvents.Values.CopyTo(events, 0);
+            }
+
+            foreach (ManualResetEvent evt in events) {
+                evt.WaitOne();
             }
         }
 
-        public void resume() {
+        public void Resume() {
             lock (schedulesLock) {
-                paused = false;
+                Paused = false;
                 SetNextActionTime();
             }
         }
 
-        public void put(ISchedule schedule) {
+        public void Put(ISchedule schedule) {
             lock (schedulesLock) {
                 int index = schedules.BinarySearch(schedule, comparer);
 
                 if (index < 0) {
                     index = ~index;
                     schedules.Insert(index, schedule);
-                } else
+                }
+                else
                     schedules.Insert(index, schedule);
 
                 if (index == 0)
@@ -52,7 +67,7 @@ namespace Game.Logic {
             }
         }
 
-        public void del(ISchedule schedule) {
+        public void Del(ISchedule schedule) {
             lock (schedulesLock) {
                 if (schedules.Remove(schedule))
                     SetNextActionTime();
@@ -61,24 +76,51 @@ namespace Game.Logic {
 
         // call back for the timer function
         private void DispatchAction(object obj) // obj ignored
-        {
+        {            
             lock (schedulesLock) {
-                if (schedules.Count == 0)
+                if (schedules.Count == 0 || Paused)
                     return;
+
+                // Get the schedule that is supposed to fire
                 ISchedule next = schedules[0];
                 schedules.RemoveAt(0);
-                ThreadPool.QueueUserWorkItem(DispatchThread, next);
+
+                // Convert it into a job that has a semaphore we can wait on
+                // if we need to wait for it to finish
+                ScheduledJob job = new ScheduledJob {
+                    Id = nextId,
+                    ResetEvent = new ManualResetEvent(false),
+                    Schedule = next
+                };
+
+                // Wrap around if the id is getting large
+                if (nextId == int.MaxValue - 1)
+                    nextId = 0;
+                else
+                    ++nextId;
+
+                doneEvents.Add(job.Id, job.ResetEvent);
+                ThreadPool.QueueUserWorkItem(DispatchThread, job);
+
                 SetNextActionTime();
             }
         }
 
         private void DispatchThread(object obj) {
-            (obj as ISchedule).Callback(null);
+
+            ScheduledJob job = (ScheduledJob)obj;
+
+            job.Schedule.Callback(null);
+            
+            lock (schedulesLock) {
+                doneEvents.Remove(job.Id);
+                job.ResetEvent.Set();
+            }
         }
 
         // method to set the time when the timer should wake up to invoke the next schedule
         private void SetNextActionTime() {
-            if (paused)
+            if (Paused)
                 return;
 
             if (schedules.Count == 0) {
@@ -89,7 +131,7 @@ namespace Game.Logic {
             TimeSpan ts = schedules[0].Time.Subtract(DateTime.Now);
             if (ts < TimeSpan.Zero)
                 ts = TimeSpan.Zero; // cannot be negative !
-            timer.Change((int) ts.TotalMilliseconds, Timeout.Infinite); // invoke after the timespan
+            timer.Change((int)ts.TotalMilliseconds, Timeout.Infinite); // invoke after the timespan
             //Global.Logger.Info("Next schedule in " + ts.TotalSeconds + " seconds.");
         }
     }

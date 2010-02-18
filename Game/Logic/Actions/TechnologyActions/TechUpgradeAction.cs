@@ -88,7 +88,7 @@ namespace Game.Logic.Actions {
         public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
-                Global.Scheduler.del(this);
+                Global.Scheduler.Del(this);
 
                 Technology tech;
                 if (!city.Technologies.TryGetTechnology(techId, out tech)) {
@@ -105,11 +105,11 @@ namespace Game.Logic.Actions {
 
                 switch (state) {
                     case ActionInterrupt.KILLED:
-                        Global.Scheduler.del(this);
+                        Global.Scheduler.Del(this);
                         StateChange(ActionState.FAILED);
                         break;
                     case ActionInterrupt.CANCEL:
-                        Global.Scheduler.del(this);
+                        Global.Scheduler.Del(this);
                         city.BeginUpdate();
                         city.Resource.Add(techBase.resources/2);
                         city.EndUpdate();

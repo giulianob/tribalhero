@@ -73,7 +73,7 @@ namespace Game.Logic.Actions {
         public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
-                Global.Scheduler.del(this);
+                Global.Scheduler.Del(this);
                 switch (state) {
                     case ActionInterrupt.CANCEL:
                         StateChange(ActionState.FAILED);

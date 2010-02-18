@@ -160,7 +160,7 @@ namespace Game.Logic.Actions {
         }
 
         public override void Interrupt(ActionInterrupt state) {
-            Global.Scheduler.del(this);
+            Global.Scheduler.Del(this);
         }
 
         public override ActionType Type {

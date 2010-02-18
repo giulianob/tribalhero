@@ -43,6 +43,7 @@
 				effectReq.param3 = effectReqNode.@param3;
 				effectReq.param4 = effectReqNode.@param4;
 				effectReq.param5 = effectReqNode.@param5;
+				effectReq.description = effectReqNode.@description;
 				
 				effectManager.effectReqs.push(effectReq);
 			}

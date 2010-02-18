@@ -12,6 +12,7 @@
 		public var param3: int;
 		public var param4: int;
 		public var param5: int;
+		public var description: String;
 		
 		public function EffectReqPrototype() {
 			

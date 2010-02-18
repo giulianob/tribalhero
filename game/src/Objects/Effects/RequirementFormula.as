@@ -58,11 +58,16 @@
 
 		public static function getMessage(parentObj: GameObject, effectReq: EffectReqPrototype): String
 		{
+			if (effectReq.description != "") {
+				return effectReq.description;
+			}
+
 			var idx: int = getMethodIndex(effectReq);
 
-			if (idx == -1)
-			return effectReq.method;
-			
+			if (idx == -1) {
+				return effectReq.method;
+			}
+
 			if (methodLookup[idx].message)
 			{
 				return methodLookup[idx].message(parentObj, effectReq.param1, effectReq.param2, effectReq.param3, effectReq.param4, effectReq.param5);

@@ -56,15 +56,14 @@ namespace Game.Comm {
                             "\" />" + "</cross-domain-policy>";
 
             Global.Logger.Info("Ready to serve policy file: " + policy);
-
-            Socket s;
+            
+            Socket s;            
             while (!isStopped) {
                 try {
                     s = listener.AcceptSocket();
                 }
-                catch (Exception e) {
-                    Global.Logger.Error("Listener error", e);
-                    return;
+                catch (Exception) {                    
+                    continue;
                 }
                 byte[] buffer = new byte[128];
 
@@ -84,7 +83,7 @@ namespace Game.Comm {
                     byte[] xml = Encoding.UTF8.GetBytes(policy);
                     s.Send(xml);
 
-                    Global.Logger.Info("Served policy file to " + s.RemoteEndPoint.ToString());
+                    Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
 
                     s.Close();
 
@@ -105,11 +104,11 @@ namespace Game.Comm {
         public bool Stop() {
             if (isStopped)
                 return false;
-
-            TcpWorker.DeleteAll();
-            listener.Stop();
-            listeningThread.Abort();
+            
             isStopped = true;
+            listener.Stop();
+            listeningThread.Join();
+            TcpWorker.DeleteAll();                  
             return true;
         }
     }

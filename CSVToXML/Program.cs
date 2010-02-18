@@ -15,7 +15,9 @@ namespace CSVToXML {
 
         #region WriteToConstant
 
+// ReSharper disable UnusedMember.Local
         private static void WriteToConstant(string constantAs) {
+// ReSharper restore UnusedMember.Local
             FileStream xmlfile = new FileStream(Config.csv_compiled_folder + "data.xml", FileMode.Open, FileAccess.Read);
             StreamReader xmlStream = new StreamReader(xmlfile);
             string newXml = xmlStream.ReadToEnd();
@@ -25,8 +27,10 @@ namespace CSVToXML {
             try {
                 File.Copy(constantAs, constantAs + ".bak", true);
             }
-            catch {}
-
+            catch {
+                Console.Out.WriteLine("Unable to backup constants file");
+            }
+            
             FileStream file = new FileStream(constantAs, FileMode.Open, FileAccess.ReadWrite);
             StreamReader sr = new StreamReader(file);
             string s = sr.ReadToEnd();
@@ -158,10 +162,11 @@ namespace CSVToXML {
 
                     if (obj[0].Length <= 0)
                         continue;
-                    Property prop = new Property();
-                    prop.type = obj[0];
-                    prop.name = obj[1];
-                    prop.datatype = obj[2];
+                    Property prop = new Property {
+                                                     type = obj[0],
+                                                     name = obj[1],
+                                                     datatype = obj[2]
+                                                 };
 
                     properties.Add(prop);
                 }
@@ -172,25 +177,26 @@ namespace CSVToXML {
             using (CsvReader techEffectsReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "technology_effects.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = techEffectsReader.ReadRow();
-                    if (obj != null) {
-                        if (obj[0].Length <= 0)
-                            continue;
-
-                        TechnologyEffects techEffect = new TechnologyEffects();
-                        techEffect.techid = obj[0];
-                        techEffect.lvl = obj[1];
-                        techEffect.effect = ((int) ((EffectCode) Enum.Parse(typeof (EffectCode), obj[2], true))).ToString();
-                        techEffect.location = ((int) ((EffectLocation) Enum.Parse(typeof (EffectLocation), obj[3], true))).ToString();
-                        techEffect.isprivate = obj[4];
-                        techEffect.param1 = obj[5];
-                        techEffect.param2 = obj[6];
-                        techEffect.param3 = obj[7];
-                        techEffect.param4 = obj[8];
-                        techEffect.param5 = obj[9];
-
-                        techEffects.Add(techEffect);
-                    } else
+                    if (obj == null)
                         break;
+
+                    if (obj[0].Length <= 0)
+                        continue;
+
+                    TechnologyEffects techEffect = new TechnologyEffects {
+                                                                             techid = obj[0],
+                                                                             lvl = obj[1],
+                                                                             effect = ((int) ((EffectCode) Enum.Parse(typeof (EffectCode), obj[2], true))).ToString(),
+                                                                             location = ((int) ((EffectLocation) Enum.Parse(typeof (EffectLocation), obj[3], true))).ToString(),
+                                                                             isprivate = obj[4],
+                                                                             param1 = obj[5],
+                                                                             param2 = obj[6],
+                                                                             param3 = obj[7],
+                                                                             param4 = obj[8],
+                                                                             param5 = obj[9]
+                                                                         };
+
+                    techEffects.Add(techEffect);
                 }
             }
 
@@ -199,23 +205,24 @@ namespace CSVToXML {
             using (CsvReader layoutReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "layout.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = layoutReader.ReadRow();
-                    if (obj != null) {
-                        if (obj[0].Length <= 0)
-                            continue;
-                        Layout layout = new Layout();
-                        layout.type = obj[0];
-                        layout.level = obj[1];
-                        layout.layout = obj[2];
-                        layout.reqtype = obj[3];
-                        layout.minlevel = obj[4];
-                        layout.maxlevel = obj[5];
-                        layout.mindist = obj[6];
-                        layout.maxdist = obj[7];
-                        layout.compare = obj[8];
-
-                        layouts.Add(layout);
-                    } else
+                    if (obj == null)
                         break;
+
+                    if (obj[0].Length <= 0)
+                        continue;
+                    Layout layout = new Layout {
+                                                   type = obj[0],
+                                                   level = obj[1],
+                                                   layout = obj[2],
+                                                   reqtype = obj[3],
+                                                   minlevel = obj[4],
+                                                   maxlevel = obj[5],
+                                                   mindist = obj[6],
+                                                   maxdist = obj[7],
+                                                   compare = obj[8]
+                                               };
+
+                    layouts.Add(layout);
                 }
             }
 
@@ -360,18 +367,19 @@ namespace CSVToXML {
                         if (obj[0] == "")
                             continue;
 
-                        WorkerActions workerAction = new WorkerActions();
-                        workerAction.type = obj[0];
-                        workerAction.index = obj[1];
-                        workerAction.max = obj[2];
-                        workerAction.action = obj[3];
-                        workerAction.param1 = CleanCsvParam(obj[4]);
-                        workerAction.param2 = CleanCsvParam(obj[5]);
-                        workerAction.param3 = CleanCsvParam(obj[6]);
-                        workerAction.param4 = CleanCsvParam(obj[7]);
-                        workerAction.param5 = CleanCsvParam(obj[8]);
-                        workerAction.effectReq = CleanCsvParam(obj[9]);
-                        workerAction.effectReqInherit = CleanCsvParam(obj[10]).ToUpper();
+                        WorkerActions workerAction = new WorkerActions {
+                                                                           type = obj[0],
+                                                                           index = obj[1],
+                                                                           max = obj[2],
+                                                                           action = obj[3],
+                                                                           param1 = CleanCsvParam(obj[4]),
+                                                                           param2 = CleanCsvParam(obj[5]),
+                                                                           param3 = CleanCsvParam(obj[6]),
+                                                                           param4 = CleanCsvParam(obj[7]),
+                                                                           param5 = CleanCsvParam(obj[8]),
+                                                                           effectReq = CleanCsvParam(obj[9]),
+                                                                           effectReqInherit = CleanCsvParam(obj[10]).ToUpper()
+                                                                       };
 
                         workerActions.Add(workerAction);
                     } else
@@ -555,6 +563,7 @@ namespace CSVToXML {
                     writer.WriteAttributeString("param3", CleanCsvParam(obj[4]));
                     writer.WriteAttributeString("param4", CleanCsvParam(obj[5]));
                     writer.WriteAttributeString("param5", CleanCsvParam(obj[6]));
+                    writer.WriteAttributeString("description", CleanCsvParam(obj[7].Trim()));
 
                     writer.WriteEndElement();
                 }

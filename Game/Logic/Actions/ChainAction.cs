@@ -54,9 +54,9 @@ namespace Game.Logic.Actions {
                 case ActionState.RESCHEDULED:
                     Global.dbManager.Save(action);
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.put(new ActionDispatcher(action as ScheduledPassiveAction));
+                        Global.Scheduler.Put(new ActionDispatcher(action as ScheduledPassiveAction));
                     else if (action is ScheduledActiveAction)
-                        Global.Scheduler.put(new ActionDispatcher(action as ScheduledActiveAction));
+                        Global.Scheduler.Put(new ActionDispatcher(action as ScheduledActiveAction));
 
                     Global.dbManager.Save(this);
 
@@ -78,7 +78,7 @@ namespace Game.Logic.Actions {
             ChainCallback currentChain = chainCallback;
             Global.dbManager.Save(this);
 
-            Global.Scheduler.put(new ChainExecuter(currentChain, state));
+            Global.Scheduler.Put(new ChainExecuter(currentChain, state));
         }
 
         public override void Interrupt(ActionInterrupt state) {
@@ -110,14 +110,14 @@ namespace Game.Logic.Actions {
                 case ActionState.COMPLETED:
                 case ActionState.FAILED:
                 case ActionState.INTERRUPTED:
-                    Global.Scheduler.put(new ChainExecuter(this.chainCallback, chainState));
+                    Global.Scheduler.Put(new ChainExecuter(this.chainCallback, chainState));
                     break;
                 default:
                     current.IsChain = true;
                     current.OnNotify += ChainNotify;
 
                     if (current is ScheduledPassiveAction)
-                        Global.Scheduler.put(new ActionDispatcher(current as ScheduledPassiveAction));
+                        Global.Scheduler.Put(new ActionDispatcher(current as ScheduledPassiveAction));
                     break;
             }
         }

@@ -14,6 +14,7 @@ namespace Game.Comm {
         private readonly ArrayList sockList = new ArrayList();
         private readonly object sockListLock = new object();
         private readonly Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
+        private bool isStopped = false;
         private bool isFull = false;
         private Thread workerThread;
         private readonly EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
@@ -81,12 +82,14 @@ namespace Game.Comm {
         }
 
         public void Stop() {
-            workerThread.Abort();
+            isStopped = true;
+            socketAvailable.Set();
+            workerThread.Join();
         }
 
         private void SocketHandler() {
             try {
-                while (true) {
+                while (!isStopped) {
                     ArrayList copyList;
 
                     try {
@@ -95,7 +98,7 @@ namespace Game.Comm {
                         }
 
                         if (copyList.Count > 0)
-                            Socket.Select(copyList, null, null, 20);
+                            Socket.Select(copyList, null, null, 3000);
                         else
                             socketAvailable.WaitOne(-1, false);
                     }

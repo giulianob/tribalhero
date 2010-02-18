@@ -1,11 +1,13 @@
 #region
 
+using System;
 using System.IO;
 using System.Threading;
 using Game.Battle;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
+using Game.Logic;
 using Game.Module;
 using Game.Setup;
 using log4net.Config;
@@ -13,9 +15,10 @@ using log4net.Config;
 #endregion
 
 namespace Launcher {
-    class Program {
-        private static void Main(string[] args) {
-            ThreadPool.SetMaxThreads(20, 20);            
+    public class GameLauncher {
+        static TcpServer server;
+
+        public static bool Start() {
             XmlConfigurator.Configure();
 
             // Initialize all of the factories
@@ -31,12 +34,15 @@ namespace Launcher {
             }
 
             // Empty database if specified
-            if (Config.database_empty)
+#if DEBUG
+            if (Config.database_empty) {
                 Global.dbManager.EmptyDatabase();
+            }
+#endif
 
             // Load database
             if (!DbLoader.LoadFromDatabase(Global.dbManager))
-                return;
+                return false;
 
             // Initialize battle report loggers
             BattleReport.WriterInit();
@@ -52,11 +58,35 @@ namespace Launcher {
             Processor processor = new Processor();
 
             // Start accepting connections
-            TcpServer server = new TcpServer(processor);
+            server = new TcpServer(processor);
             server.Start();
 
-            while (true)
-                Thread.Sleep(2000);
+            return true;
+        }
+
+        public static void Stop() {
+            SystemTimeUpdater.Pause();
+            Global.Logger.Info("Stopping TCP Server...");
+            server.Stop();
+            Global.Logger.Info("Waiting for scheduler to end...");
+            Global.Scheduler.Pause();
+            Global.Logger.Info("Goodbye!");
+        }
+    }
+
+    public class Program {
+        public static void Main(string[] args) {
+            GameLauncher.Start();
+
+            while (true) {
+                ConsoleKeyInfo key = Console.ReadKey();
+
+                if (key.Key != ConsoleKey.Q || key.Modifiers != ConsoleModifiers.Alt)
+                    continue;
+
+                GameLauncher.Stop();
+                Environment.Exit(0);
+            }
         }
     }
 }

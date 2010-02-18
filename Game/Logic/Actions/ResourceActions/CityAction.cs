@@ -38,10 +38,10 @@ namespace Game.Logic.Actions {
         public override void Interrupt(ActionInterrupt state) {
             switch (state) {
                 case ActionInterrupt.ABORT:
-                    Global.Scheduler.del(this);
+                    Global.Scheduler.Del(this);
                     break;
                 case ActionInterrupt.KILLED:
-                    Global.Scheduler.del(this);
+                    Global.Scheduler.Del(this);
                     break;
             }
         }
@@ -75,9 +75,6 @@ namespace Game.Logic.Actions {
 
                 /*********************************** Loop1 *******************************************/
                 foreach (Structure structure in city) {
-                    #region ResourceGet
-
-                    #endregion
 
                     #region Repair
 

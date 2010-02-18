@@ -21,8 +21,8 @@ using Game.Util;
 namespace Game.Database {
     public class DbLoader {
         public static bool LoadFromDatabase(IDbManager dbManager) {
-            Global.Scheduler.pause();
-            Global.pauseEvents();
+            Global.Scheduler.Pause();
+            Global.PauseEvents();
 
             Global.Logger.Info("Loading database...");
 
@@ -659,8 +659,8 @@ namespace Game.Database {
             Global.Logger.Info("Database loading finished");
 
             SystemTimeUpdater.Resume();
-            Global.Scheduler.resume();
-            Global.resumeEvents();
+            Global.Scheduler.Resume();
+            Global.ResumeEvents();
             return true;
         }
     }

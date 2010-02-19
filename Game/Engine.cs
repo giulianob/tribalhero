@@ -1,45 +1,94 @@
 #region
 
+using System;
+using System.IO;
+using Game.Battle;
 using Game.Comm;
+using Game.Data;
+using Game.Database;
+using Game.Logic;
+using Game.Module;
+using Game.Setup;
+using log4net.Config;
 
 #endregion
 
-namespace Game {
-    class Engine {
-        private int state;
-        private TcpServer server;
-
-        public const int STATE_STARTED = 0;
-        public const int STATE_STARTING = 1;
-        public const int STATE_STOPPED = 2;
-        public const int STATE_STOPPING = 3;
-
-        public Engine() {
-            state = STATE_STOPPED;
-            server = new TcpServer();
+namespace Game {            
+    public enum EngineState {
+            STOPPED,
+            STOPPING,
+            STARTED, 
+            STARTING
         }
 
-        public bool start() {
-            if (state != STATE_STOPPED)
+    public class Engine {
+        static TcpServer server;
+        public static EngineState State { get; private set; }
+
+        public static bool Start() {
+            if (State != EngineState.STOPPED)
+                throw new Exception("Server is not stopped");
+
+            State = EngineState.STARTING;
+
+            XmlConfigurator.Configure();
+
+            // Initialize all of the factories
+            Factory.InitAll();
+
+            // Load map
+            using (FileStream map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open)) {
+                Global.World.Load(map, Config.map_width, Config.map_height, Config.region_width, Config.region_height,
+                                  Config.city_region_width, Config.city_region_height);
+            }
+
+            // Empty database if specified
+#if DEBUG
+            if (Config.database_empty) {
+                Global.DbManager.EmptyDatabase();
+            }
+#endif
+
+            // Load database
+            if (!DbLoader.LoadFromDatabase(Global.DbManager))
                 return false;
-            state = STATE_STOPPING;
-            // load map
 
-            // load users with all the belonging
+            // Initialize battle report loggers
+            BattleReport.WriterInit();
 
-            // start server
+            // Initialize game market
+            Market.Init();
+
+            // Create NPC if specified
+            if (Config.ai_enabled)
+                AI.Init();
+
+            // Initialize command processor
+            Processor processor = new Processor();
+
+            // Start accepting connections
+            server = new TcpServer(processor);
             server.Start();
-            state = STATE_STOPPED;
+
+            State = EngineState.STARTED;
+
             return true;
         }
 
-        public bool stop() {
-            if (state != STATE_STARTED)
-                return false;
-            state = STATE_STOPPING;
+        public static void Stop() {
+            if (State != EngineState.STARTED)
+                throw new Exception("Server is not started");
+
+            State = EngineState.STOPPING;
+
+            SystemTimeUpdater.Pause();
+            Global.Logger.Info("Stopping TCP Server...");
             server.Stop();
-            state = STATE_STOPPED;
-            return true;
+            Global.Logger.Info("Waiting for scheduler to end...");
+            Global.Scheduler.Pause();
+            Global.Logger.Info("Goodbye!");
+
+            State = EngineState.STOPPED;
         }
     }
 }

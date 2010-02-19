@@ -52,7 +52,7 @@ namespace Game.Data {
             if (updating)
                 return;
 
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
         }
 
         public Structure(StructureStats stats) {

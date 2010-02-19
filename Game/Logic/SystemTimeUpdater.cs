@@ -20,9 +20,9 @@ namespace Game.Logic {
         }
 
         public static void Callback(object obj) {
-            using (DbTransaction transaction = Global.dbManager.GetThreadTransaction()) {
+            using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                 Global.SystemVariables["System.time"].Value = DateTime.Now;
-                Global.dbManager.Save(Global.SystemVariables["System.time"]);
+                Global.DbManager.Save(Global.SystemVariables["System.time"]);
             }
         }
     }

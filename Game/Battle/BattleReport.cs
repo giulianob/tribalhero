@@ -195,22 +195,22 @@ namespace Game.Battle {
         }
 
         internal static void SnapBattle(out uint battleId, uint cityId) {
-            Global.dbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', NOW())", BATTLE_DB, cityId));
-            battleId = Global.dbManager.LastInsertId();
+            Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', NOW())", BATTLE_DB, cityId));
+            battleId = Global.DbManager.LastInsertId();
 
             battleLog.WriteLine("battle_id[{0}] city_id[{1}] time[{2}]", battleId, cityId, DateTime.Now);
         }
 
         internal static void SnapReport(out uint reportId, uint battleId) {
-            Global.dbManager.Query(string.Format("INSERT INTO {0} VALUES ('', NOW(), '{1}', '0', '0', '0')",
+            Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', NOW(), '{1}', '0', '0', '0')",
                                                  BATTLE_REPORTS_DB, battleId));
-            reportId = Global.dbManager.LastInsertId();
+            reportId = Global.DbManager.LastInsertId();
 
             reportLog.WriteLine("battle_id[{0}] report_id[{1}]", battleId, reportId);
         }
 
         internal static void SnapEndReport(uint reportId, uint battleId, uint round, uint turn) {
-            Global.dbManager.Query(
+            Global.DbManager.Query(
                 string.Format("UPDATE {0} SET ready = 1, round = '{2}', turn = '{3}' WHERE id = '{1}' LIMIT 1",
                               BATTLE_REPORTS_DB, reportId, round, turn));
 
@@ -220,7 +220,7 @@ namespace Game.Battle {
 
         internal void SnapTroopState(TroopStub stub, ReportState state) {
             uint id = ReportedTroops[stub];
-            Global.dbManager.Query(string.Format("UPDATE {0} SET state = '{1}' WHERE id = '{2}' LIMIT 1",
+            Global.DbManager.Query(string.Format("UPDATE {0} SET state = '{1}' WHERE id = '{2}' LIMIT 1",
                                                  BATTLE_REPORT_TROOPS_DB, (byte) state, id));
 
             troopLog.WriteLine("id[{0}] state[{1}] update troop state", id, state);
@@ -228,13 +228,13 @@ namespace Game.Battle {
 
         internal static void SnapTroop(uint reportId, ReportState state, uint cityId, byte troopId, uint objectId,
                                        bool isAttacker, out uint battleTroopId, Resource loot) {
-            Global.dbManager.Query(
+            Global.DbManager.Query(
                 string.Format(
                     "INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}')",
                     BATTLE_REPORT_TROOPS_DB, reportId, cityId, objectId, troopId, (byte) state, isAttacker ? 1 : 0,
                     loot.Gold, loot.Crop, loot.Iron, loot.Wood));
 
-            battleTroopId = Global.dbManager.LastInsertId();
+            battleTroopId = Global.DbManager.LastInsertId();
 
             troopLog.WriteLine(
                 "id[{0}] reportId[{1}] state[{2}] cityId[{3}] troop_id[{4}] isAttacker[{5}] crop[{6}] gold[{7}] iron[{8}] wood[{9}]",
@@ -244,7 +244,7 @@ namespace Game.Battle {
         internal static void SnapCombatObject(uint troopId, CombatObject co) {
             ICombatUnit unit = co as ICombatUnit;
 
-            Global.dbManager.Query(
+            Global.DbManager.Query(
                 string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')",
                               BATTLE_REPORT_OBJECTS_DB, troopId, co.Type, co.Lvl, co.Hp, co.Count, co.DmgRecv,
                               co.DmgDealt, (byte) (unit == null ? FormationType.STRUCTURE : unit.Formation)));

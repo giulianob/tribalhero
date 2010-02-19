@@ -82,7 +82,7 @@ namespace Game.Logic {
 
             ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Global.dbManager.Save(newReference);
+            Global.DbManager.Save(newReference);
         }    
 
         public void Add(GameObject referenceObject, ActiveAction action) {
@@ -92,7 +92,7 @@ namespace Game.Logic {
 
             ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Global.dbManager.Save(newReference);
+            Global.DbManager.Save(newReference);
         }
 
         public void Remove(GameObject referenceObject, GameAction action) {
@@ -100,7 +100,7 @@ namespace Game.Logic {
                 bool ret = (referenceObject == referenceStub.WorkerObject && referenceStub.Action == action);
 
                 if (ret)
-                    Global.dbManager.Delete(referenceStub);
+                    Global.DbManager.Delete(referenceStub);
 
                 return ret;
             });

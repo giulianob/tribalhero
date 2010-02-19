@@ -66,7 +66,9 @@ namespace CSVToXML {
 
         #region IDisposable Members
 
-        public void Dispose() {}
+        public void Dispose() {
+            sr.Close();
+        }
 
         #endregion
     }

@@ -17,7 +17,7 @@ namespace Game.Database {
         public void Add(T item, bool save) {
             base.Add(item);
             if (save)
-                Global.dbManager.Save(item);
+                Global.DbManager.Save(item);
         }
 
         public new bool Remove(T item) {
@@ -27,14 +27,14 @@ namespace Game.Database {
         public bool Remove(T item, bool save) {
             if (base.Remove(item)) {
                 if (save)
-                    Global.dbManager.Delete(item);
+                    Global.DbManager.Delete(item);
                 return true;
             } else
                 return false;
         }
 
         public new void RemoveAt(int index) {
-            Global.dbManager.Delete(this[index]);
+            Global.DbManager.Delete(this[index]);
             base.RemoveAt(index);
         }
 
@@ -52,7 +52,7 @@ namespace Game.Database {
 
         public new void Clear() {
             foreach (IPersistableObject item in this)
-                Global.dbManager.Delete(item);
+                Global.DbManager.Delete(item);
 
             base.Clear();
         }

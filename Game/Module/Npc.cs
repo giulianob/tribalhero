@@ -257,11 +257,11 @@ namespace Game.Module {
                 using (new MultiObjectLock(npc)) {
                     if (!Global.Players.ContainsKey(idx)) {
                         Global.Players.Add(idx, npc);
-                        Global.dbManager.Save(npc);
-                        Global.AI.playerList.Add(intelligence);
+                        Global.DbManager.Save(npc);
+                        Global.Ai.playerList.Add(intelligence);
                     } else {
                         intelligence.player = Global.Players[idx];
-                        Global.AI.playerList.Add(intelligence);
+                        Global.Ai.playerList.Add(intelligence);
                         continue;
                     }
 
@@ -289,8 +289,8 @@ namespace Game.Module {
                 }
             }
 
-            Global.AI.time = DateTime.Now.AddSeconds(10);
-            Global.Scheduler.Put(Global.AI);
+            Global.Ai.time = DateTime.Now.AddSeconds(10);
+            Global.Scheduler.Put(Global.Ai);
 
             Global.Logger.Info("Loading AI finished.");
 

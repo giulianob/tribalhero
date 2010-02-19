@@ -140,9 +140,9 @@ namespace Game.Map {
             cities[city.Id] = city;
 
             //Initial save of these objects
-            Global.dbManager.Save(city.MainBuilding);
+            Global.DbManager.Save(city.MainBuilding);
             foreach (TroopStub stub in city.Troops)
-                Global.dbManager.Save(stub);
+                Global.DbManager.Save(stub);
 
             CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
             if (region == null)

@@ -57,7 +57,7 @@ namespace Game.Logic {
                 if (!Global.World.Add(structure))
                     feObj.city.Remove(structure);
                 InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
-                Global.dbManager.Save(structure);
+                Global.DbManager.Save(structure);
                 Global.World.UnlockRegion(x, y);
             }
             return true;

@@ -1,4 +1,6 @@
-﻿using System.ServiceProcess;
+﻿using System;
+using System.ServiceProcess;
+using Game.Setup;
 
 namespace LauncherService {
     public partial class Service1 : ServiceBase {
@@ -7,11 +9,15 @@ namespace LauncherService {
         }
         
         protected override void OnStart(string[] args) {
-            Launcher.GameLauncher.Start();
+            CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+
+            if (!Game.Engine.Start()) {
+                throw new Exception("Failed to load server");
+            }
         }
 
-        protected override void OnStop() {
-            Launcher.GameLauncher.Stop();
+        protected override void OnStop() {            
+            Game.Engine.Stop();
         } 
 
 

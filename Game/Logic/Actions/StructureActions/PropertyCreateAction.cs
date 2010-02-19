@@ -18,7 +18,7 @@ namespace Game.Logic.Actions {
 
         public override Error Execute() {
             structure[name] = value;
-            Global.dbManager.Save(structure);
+            Global.DbManager.Save(structure);
             StateChange(ActionState.COMPLETED);
 
             return Error.OK;

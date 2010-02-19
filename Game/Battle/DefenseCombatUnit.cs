@@ -131,11 +131,11 @@ namespace Game.Battle {
                 TroopStub.EndUpdate();
             }
 
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
         }
 
         public override void CleanUp() {
-            Global.dbManager.Delete(this);
+            Global.DbManager.Delete(this);
         }
 
         public override void ExitBattle() {}

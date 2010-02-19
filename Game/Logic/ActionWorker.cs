@@ -80,7 +80,7 @@ namespace Game.Logic {
                         ActionRescheduled(actionStub);
 
                     if (action is PassiveAction || action is ChainAction)
-                        Global.dbManager.Save(actionStub);
+                        Global.DbManager.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -90,7 +90,7 @@ namespace Game.Logic {
                         ActionStarted(actionStub);
 
                     if (action is PassiveAction || action is ChainAction)
-                        Global.dbManager.Save(actionStub);
+                        Global.DbManager.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -103,11 +103,11 @@ namespace Game.Logic {
                         ActionRemoved(actionStub);
 
                     if (action is PassiveAction || action is ChainAction)
-                        Global.dbManager.Delete(actionStub);
+                        Global.DbManager.Delete(actionStub);
                     break;
                 case ActionState.FIRED:
                     if (action is PassiveAction || action is ChainAction)
-                        Global.dbManager.Save(actionStub);
+                        Global.DbManager.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -121,7 +121,7 @@ namespace Game.Logic {
                         ActionRemoved(actionStub);
 
                     if (action is PassiveAction || action is ChainAction)
-                        Global.dbManager.Delete(actionStub);
+                        Global.DbManager.Delete(actionStub);
                     break;
             }
         }
@@ -139,7 +139,7 @@ namespace Game.Logic {
                         ActionRescheduled(actionStub);
 
                     if (actionStub is ScheduledActiveAction) {
-                        Global.dbManager.Save(actionStub);
+                        Global.DbManager.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -148,7 +148,7 @@ namespace Game.Logic {
                         ActionStarted(actionStub);
 
                     if (action is ScheduledActiveAction) {
-                        Global.dbManager.Save(actionStub);
+                        Global.DbManager.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -160,11 +160,11 @@ namespace Game.Logic {
                         ActionRemoved(actionStub);
 
                     if (action is ScheduledActiveAction)
-                        Global.dbManager.Delete(actionStub);
+                        Global.DbManager.Delete(actionStub);
                     break;
                 case ActionState.FIRED:
                     if (action is ScheduledActiveAction) {
-                        Global.dbManager.Save(actionStub);
+                        Global.DbManager.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -177,7 +177,7 @@ namespace Game.Logic {
                         ActionRemoved(actionStub);
 
                     if (action is ScheduledActiveAction)
-                        Global.dbManager.Delete(actionStub);
+                        Global.DbManager.Delete(actionStub);
                     break;
             }
         }
@@ -386,7 +386,7 @@ namespace Game.Logic {
 
                 stub.Interrupt(actionInterrupt);
                 active.Remove(stub.ActionId);
-                Global.dbManager.Delete(stub);
+                Global.DbManager.Delete(stub);
             }
 
             List<PassiveAction> fullList =
@@ -398,7 +398,7 @@ namespace Game.Logic {
 
                 stub.Interrupt(actionInterrupt);
                 passive.Remove(stub.ActionId);
-                Global.dbManager.Delete(stub);
+                Global.DbManager.Delete(stub);
             }
         }
 

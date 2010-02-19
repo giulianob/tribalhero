@@ -76,7 +76,7 @@ namespace Game.Data {
                 return;
 
             if (objectId > 0)
-                Global.dbManager.Save(this);
+                Global.DbManager.Save(this);
         }
 
         #endregion

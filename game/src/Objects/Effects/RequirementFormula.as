@@ -206,7 +206,7 @@
 
 		private static function countLessThanMsg(parentObj: GameObject, effectCode: int, maxCount: int, param3: int, param4: int, param5:int): String
 		{
-			return "Count Less Than Msg";
+			return "Count less than";
 		}
 	}
 

@@ -55,13 +55,13 @@ namespace Game.Comm {
                 try {
                     if (loginMode == 0) {
                         reader =
-                            Global.dbManager.ReaderQuery(
+                            Global.DbManager.ReaderQuery(
                                 string.Format(
                                     "SELECT * FROM `{0}` WHERE login_key IS NOT NULL AND login_key = '{1}' AND TIMEDIFF(NOW(), login_key_date) < '00:10:00.000000' LIMIT 1",
                                     Player.DB_TABLE, loginKey));
                     } else {
                         reader =
-                            Global.dbManager.ReaderQuery(
+                            Global.DbManager.ReaderQuery(
                                 string.Format(
                                     "SELECT * FROM `{0}` WHERE name = '{1}' AND password = SHA1('{2}{3}') LIMIT 1",
                                     Player.DB_TABLE, playerName, Config.database_salt, playerPassword));
@@ -87,7 +87,7 @@ namespace Game.Comm {
 
                 reader.Close();
 
-                Global.dbManager.Query(string.Format("UPDATE `{0}` SET login_key = null WHERE id = '{1}' LIMIT 1",
+                Global.DbManager.Query(string.Format("UPDATE `{0}` SET login_key = null WHERE id = '{1}' LIMIT 1",
                                                      Player.DB_TABLE, playerId));
             } else {
                 if (!uint.TryParse(playerName, out playerId)) {
@@ -127,16 +127,16 @@ namespace Game.Comm {
                         player.Session = null;
                     }
                     player.Session = session;
-                    Global.dbManager.Save(player);
+                    Global.DbManager.Save(player);
                 } else {
                     player.DbPersisted = Config.database_load_players;
 
-                    Global.dbManager.Save(player);
+                    Global.DbManager.Save(player);
 
                     Structure structure;
                     if (!Randomizer.MainBuilding(out structure)) {
                         Global.Players.Remove(player.PlayerId);
-                        Global.dbManager.Rollback();
+                        Global.DbManager.Rollback();
                         //If this happens and its not a bug, I'll be a very happy game developer
                         ReplyError(session, packet, Error.MAP_FULL);
                         return;

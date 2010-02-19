@@ -185,7 +185,7 @@ namespace Game.Data {
                     nextObjectId = objId;
 
                 if (save)
-                    Global.dbManager.Save(troop);
+                    Global.DbManager.Save(troop);
 
                 ObjAddEvent(troop);
             }
@@ -214,7 +214,7 @@ namespace Game.Data {
                     nextObjectId = objId;
 
                 if (save)
-                    Global.dbManager.Save(structure);
+                    Global.DbManager.Save(structure);
 
                 structure.Technologies.TechnologyAdded += Technologies_TechnologyAdded;
                 structure.Technologies.TechnologyRemoved += Technologies_TechnologyRemoved;
@@ -244,7 +244,7 @@ namespace Game.Data {
 
                 troopobjects.Remove(obj.ObjectId);
 
-                Global.dbManager.Delete(obj);
+                Global.DbManager.Delete(obj);
 
                 obj.City = null;
                 obj.Stub.BeginUpdate();
@@ -273,7 +273,7 @@ namespace Game.Data {
                 obj.Technologies.TechnologyRemoved -= Technologies_TechnologyRemoved;
                 obj.Technologies.TechnologyUpgraded -= Technologies_TechnologyUpgraded;
 
-                Global.dbManager.Delete(obj);
+                Global.DbManager.Delete(obj);
 
                 obj.City = null;
                 ObjRemoveEvent(obj);
@@ -319,7 +319,7 @@ namespace Game.Data {
             if (!updating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
             updating = false;
         }
 
@@ -495,7 +495,7 @@ namespace Game.Data {
         }
 
         public void UnitTemplateUnitUpdated(UnitTemplate sender) {
-            Global.dbManager.Save(sender);
+            Global.DbManager.Save(sender);
             Packet packet = new Packet(Command.UNIT_TEMPLATE_UPGRADED);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(sender, packet);

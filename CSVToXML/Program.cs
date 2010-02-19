@@ -5,19 +5,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using Game.Data;
-using Game.Setup;
 
 #endregion
 
 namespace CSVToXML {
-    public class Program {
-        private static readonly string DataOutputFolder = Config.data_folder;
+    public class Converter {        
 
         #region WriteToConstant
 
-// ReSharper disable UnusedMember.Local
+        /*
         private static void WriteToConstant(string constantAs) {
-// ReSharper restore UnusedMember.Local
             FileStream xmlfile = new FileStream(Config.csv_compiled_folder + "data.xml", FileMode.Open, FileAccess.Read);
             StreamReader xmlStream = new StreamReader(xmlfile);
             string newXml = xmlStream.ReadToEnd();
@@ -51,7 +48,7 @@ namespace CSVToXML {
             sw.Close();
             newFile.Close();
         }
-
+        */
         #endregion
 
         #region Property
@@ -150,11 +147,11 @@ namespace CSVToXML {
             return split[split.Length - 1].Trim();
         }
 
-        public static void Main(string[] args) {
-            XmlTextWriter writer = new XmlTextWriter(new StreamWriter(File.Open(DataOutputFolder + "data.xml", FileMode.Create))) {Formatting = Formatting.Indented};
+        public static void Go(string dataOutputFolder, string csvDataFolder, string langDataFolder) {
+            XmlTextWriter writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "data.xml", FileMode.Create))) {Formatting = Formatting.Indented};
 
             List<Property> properties = new List<Property>();
-            using (CsvReader propReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "property.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader propReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "property.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = propReader.ReadRow();
                     if (obj == null)
@@ -174,7 +171,7 @@ namespace CSVToXML {
 
             List<TechnologyEffects> techEffects = new List<TechnologyEffects>();
 
-            using (CsvReader techEffectsReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "technology_effects.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader techEffectsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "technology_effects.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = techEffectsReader.ReadRow();
                     if (obj == null)
@@ -202,7 +199,7 @@ namespace CSVToXML {
 
             List<Layout> layouts = new List<Layout>();
 
-            using (CsvReader layoutReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "layout.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader layoutReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "layout.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = layoutReader.ReadRow();
                     if (obj == null)
@@ -229,7 +226,7 @@ namespace CSVToXML {
             writer.WriteStartElement("Data");
 
             writer.WriteStartElement("Structures");
-            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "structure.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "structure.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = statsReader.ReadRow();
                     if (obj != null) {
@@ -286,7 +283,7 @@ namespace CSVToXML {
             writer.WriteEndElement();
 
             writer.WriteStartElement("Units");
-            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "unit.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "unit.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = statsReader.ReadRow();
                     if (obj != null) {
@@ -333,7 +330,7 @@ namespace CSVToXML {
             writer.WriteEndElement();
 
             writer.WriteStartElement("ObjectTypes");
-            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "object_type.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "object_type.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = statsReader.ReadRow();
                     if (obj == null)
@@ -360,7 +357,7 @@ namespace CSVToXML {
 
             List<WorkerActions> workerActions = new List<WorkerActions>();
 
-            using (CsvReader actionReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "action.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader actionReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "action.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = actionReader.ReadRow();
                     if (obj != null) {
@@ -480,7 +477,7 @@ namespace CSVToXML {
 
             writer.WriteStartElement("Technologies");
 
-            using (CsvReader techReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "technology.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader techReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "technology.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = techReader.ReadRow();
                     if (obj == null)
@@ -545,7 +542,7 @@ namespace CSVToXML {
 
             writer.WriteStartElement("EffectRequirements");
 
-            using (CsvReader effectReqReader = new CsvReader(new StreamReader(File.Open(Config.csv_compiled_folder + "effect_requirement.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+            using (CsvReader effectReqReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "effect_requirement.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = effectReqReader.ReadRow();
                     if (obj == null)
@@ -579,7 +576,7 @@ namespace CSVToXML {
 
             #region Languages
             // TODO Hardcoded to just do English for now but later we can do all the languages
-            writer = new XmlTextWriter(new StreamWriter(File.Open(DataOutputFolder + "Game_en.xml", FileMode.Create))) { Formatting = Formatting.Indented };
+            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "Game_en.xml", FileMode.Create))) { Formatting = Formatting.Indented };
 
             writer.WriteStartElement("xliff");
             writer.WriteAttributeString("version", "1.0");
@@ -595,7 +592,7 @@ namespace CSVToXML {
 
             writer.WriteStartElement("body");
 
-            string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
+            string[] files = Directory.GetFiles(langDataFolder, "lang.*", SearchOption.TopDirectoryOnly);
             foreach (string file in files) {
                 using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open)))) {
                     while (true) {

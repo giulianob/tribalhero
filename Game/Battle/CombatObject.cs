@@ -152,7 +152,7 @@ namespace Game.Battle {
         public void ParticipatedInRound() {
             lastRound++;
             RoundsParticipated++;
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
         }
 
         public void Print() {

@@ -94,12 +94,12 @@ namespace Game.Module {
 
         public void Callback(object custom) {
             lock (this) {
-                using (DbTransaction transaction = Global.dbManager.GetThreadTransaction()) {
+                using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                     int flow = outgoing - incoming;
                     price += (flow/quantityPerChange);
                     outgoing = incoming = 0;
                     time = DateTime.Now.AddSeconds(UpdateIntervalInSecond);
-                    Global.dbManager.Save(this);
+                    Global.DbManager.Save(this);
                     Global.Scheduler.Put(this);
                 }
             }

@@ -64,7 +64,7 @@ namespace Game.Logic.Actions {
 
             // check if tile is occupied
             if (Global.World[x, y].Exists(delegate(GameObject obj) { return obj is Structure; })) {
-                Global.dbManager.Rollback();
+                Global.DbManager.Rollback();
                 Global.World.UnlockRegion(x, y);
                 StateChange(ActionState.FAILED);
                 return Error.STRUCTURE_EXISTS;
@@ -181,7 +181,7 @@ namespace Game.Logic.Actions {
                         Global.Scheduler.Del(this);
                         city.Worker.References.Remove(structure, this);
                         Global.World.LockRegion(x, y);
-                        Global.dbManager.Delete(structure);
+                        Global.DbManager.Delete(structure);
                         Global.World.Remove(structure);
                         Global.World.UnlockRegion(x, y);
                         StateChange(ActionState.FAILED);
@@ -197,7 +197,7 @@ namespace Game.Logic.Actions {
                         city.Resource.Subtract(cost/2);
                         city.EndUpdate();
 
-                        Global.dbManager.Delete(structure);
+                        Global.DbManager.Delete(structure);
 
                         Global.World.Remove(structure);
                         Global.World.UnlockRegion(x, y);

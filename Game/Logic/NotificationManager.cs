@@ -144,7 +144,7 @@ namespace Game.Logic {
                     targetCity.Worker.Notifications.addNotification(notification);
 
                 if (persist)
-                    Global.dbManager.Save(notification);
+                    Global.DbManager.Save(notification);
             }
         }
 
@@ -220,7 +220,7 @@ namespace Game.Logic {
                     city.Worker.Notifications.removeNotification(action as PassiveAction);
 
                 removeNotification(action as PassiveAction);
-                Global.dbManager.Delete(notification);
+                Global.DbManager.Delete(notification);
             }
         }
 

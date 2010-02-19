@@ -29,10 +29,10 @@ namespace Game.Database {
             DateTime now = DateTime.Now;
 
             DbDataReader reader;
-            using (DbTransaction transaction = Global.dbManager.GetThreadTransaction()) {
+            using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                 try {
                     #region System variables
-
+                    Global.Logger.Info("Loading system variables...");
                     using (reader = dbManager.Select(SystemVariable.DB_TABLE)) {
                         while (reader.Read()) {
                             SystemVariable systemVariable = new SystemVariable((string) reader["name"], DataTypeSerializer.Deserialize((string) reader["value"], (byte) reader["datatype"]))
@@ -47,8 +47,17 @@ namespace Game.Database {
 
                     #endregion
 
-                    #region Market
+                    #region Load action setup
 
+                    //Setup for loading actions
+                    if (!Global.SystemVariables.ContainsKey("System.time"))
+                        Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.Now));
+                    TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
+
+                    #endregion
+
+                    #region Market
+                    Global.Logger.Info("Loading market...");
                     using (reader = dbManager.Select(Market.DB_TABLE)) {
                         while (reader.Read()) {
                             ResourceType type = (ResourceType) ((byte) reader["resource_type"]);
@@ -74,7 +83,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Players
-
+                    Global.Logger.Info("Loading players...");
                     using (reader = dbManager.Select(Player.DB_TABLE)) {
                         while (reader.Read()) {
                             Player player = new Player((uint) reader["id"], (string) reader["name"])
@@ -88,7 +97,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Cities
-
+                    Global.Logger.Info("Loading cities...");
                     using (reader = dbManager.Select(City.DB_TABLE)) {
                         while (reader.Read()) {
                             LazyResource resource = new LazyResource((int) reader["crop"], (DateTime) reader["crop_realize_time"], (int) reader["crop_production_rate"], (int) reader["crop_upkeep"],
@@ -108,8 +117,8 @@ namespace Game.Database {
                     #endregion
 
                     #region Unit Template
-
-                    using (reader = dbManager.Select(UnitTemplate.DB_TABLE)) {
+                    Global.Logger.Info("Loading unit template...");
+                    using (reader = dbManager.Select(UnitTemplate.DB_TABLE)) {                        
                         while (reader.Read()) {
                             City city;
                             Global.World.TryGetObjects((uint) reader["city_id"], out city);
@@ -125,7 +134,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Structures
-
+                    Global.Logger.Info("Loading structures...");
                     using (reader = dbManager.Select(Structure.DB_TABLE)) {
                         while (reader.Read()) {
                             City city;
@@ -151,11 +160,16 @@ namespace Game.Database {
                     #endregion
 
                     #region Structure Properties
-
+                    Global.Logger.Info("Loading structure properties...");
                     using (reader = dbManager.Select(StructureProperties.DB_TABLE)) {
+                        City city = null;
                         while (reader.Read()) {
-                            City city;
-                            Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                            
+                            // Simple optimization                        
+                            if (city == null || city.Id != (uint)reader["city_id"]) {
+                                Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                            }
+
                             Structure structure = (Structure) city[(uint) reader["structure_id"]];
 
                             structure.Properties.DbPersisted = true;
@@ -170,7 +184,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Technologies
-
+                    Global.Logger.Info("Loading technologies...");
                     using (reader = dbManager.Select(TechnologyManager.DB_TABLE)) {
                         while (reader.Read()) {
                             EffectLocation ownerLocation = (EffectLocation) ((byte) reader["owner_location"]);
@@ -207,7 +221,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Troop Stubs
-
+                    Global.Logger.Info("Loading troop stubs...");
                     using (reader = dbManager.Select(TroopStub.DB_TABLE)) {
                         while (reader.Read()) {
                             City city;
@@ -248,7 +262,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Troop Stub's Templates
-
+                    Global.Logger.Info("Loading troop stub templates...");
                     using (reader = dbManager.Select(TroopTemplate.DB_TABLE)) {
                         while (reader.Read()) {
                             City city;
@@ -279,7 +293,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Troops
-
+                    Global.Logger.Info("Loading troops...");
                     using (reader = dbManager.Select(TroopObject.DB_TABLE)) {
                         while (reader.Read()) {
                             City city;
@@ -308,7 +322,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Battle Managers
-
+                    Global.Logger.Info("Loading battles...");
                     using (reader = dbManager.Select(BattleManager.DB_TABLE)) {
                         while (reader.Read()) {
                             City city;
@@ -417,17 +431,8 @@ namespace Game.Database {
 
                     #endregion
 
-                    #region Load action setup
-
-                    //Setup for loading actions
-                    if (!Global.SystemVariables.ContainsKey("System.time"))
-                        Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.Now));
-                    TimeSpan downTime = now.Subtract((DateTime) Global.SystemVariables["System.time"].Value);
-
-                    #endregion
-
                     #region Active Actions
-
+                    Global.Logger.Info("Loading active actions...");
                     Type[] types = new[] {typeof (ushort), typeof (DateTime), typeof (DateTime), typeof (DateTime), typeof (int), typeof (byte), typeof (ushort), typeof (Dictionary<string, string>)};
 
                     using (reader = dbManager.Select(ActiveAction.DB_TABLE)) {
@@ -462,14 +467,14 @@ namespace Game.Database {
 
                             city.Worker.DbLoaderDoActive(action);
 
-                            Global.dbManager.Save(action);
+                            Global.DbManager.Save(action);
                         }
                     }
 
                     #endregion
 
                     #region Passive Actions
-
+                    Global.Logger.Info("Loading passive actions...");
                     Dictionary<uint, List<PassiveAction>> chainActions = new Dictionary<uint, List<PassiveAction>>();
                     //this will hold chain actions that we encounter for the next phase
 
@@ -536,14 +541,14 @@ namespace Game.Database {
                                 chainList.Add(action);
                             }
 
-                            Global.dbManager.Save(action);
+                            Global.DbManager.Save(action);
                         }
                     }
 
                     #endregion
 
                     #region Chain Actions
-
+                    Global.Logger.Info("Loading chain actions...");
                     types = new[] {typeof (ushort), typeof (string), typeof (PassiveAction), typeof (ActionState), typeof (bool), typeof (Dictionary<string, string>)};
 
                     using (reader = dbManager.Select(ChainAction.DB_TABLE)) {
@@ -578,14 +583,14 @@ namespace Game.Database {
 
                             city.Worker.DbLoaderDoPassive(action);
 
-                            Global.dbManager.Save(action);
+                            Global.DbManager.Save(action);
                         }
                     }
 
                     #endregion
 
                     #region Action References
-
+                    Global.Logger.Info("Loading action references...");
                     using (reader = dbManager.Select(ReferenceStub.DB_TABLE)) {
                         while (reader.Read()) {
                             City city;
@@ -616,7 +621,7 @@ namespace Game.Database {
                     #endregion
 
                     #region Action Notifications
-
+                    Global.Logger.Info("Loading action notifications...");
                     using (reader = dbManager.Select(NotificationManager.Notification.DB_TABLE)) {
                         while (reader.Read()) {
                             City city;
@@ -647,7 +652,7 @@ namespace Game.Database {
 
                     //Ok data all loaded. We can get the system going now.
                     Global.SystemVariables["System.time"].Value = now;
-                    Global.dbManager.Save(Global.SystemVariables["System.time"]);
+                    Global.DbManager.Save(Global.SystemVariables["System.time"]);
                 }
                 catch (Exception e) {
                     Global.Logger.Error("Database loader error", e);
@@ -659,8 +664,8 @@ namespace Game.Database {
             Global.Logger.Info("Database loading finished");
 
             SystemTimeUpdater.Resume();
-            Global.Scheduler.Resume();
             Global.ResumeEvents();
+            Global.Scheduler.Resume();            
             return true;
         }
     }

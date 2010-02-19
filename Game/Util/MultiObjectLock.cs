@@ -52,7 +52,7 @@ namespace Game.Util {
                 lockedObjects[i] = list[i].Lock;
             }
 
-            transaction = Global.dbManager.GetThreadTransaction();
+            transaction = Global.DbManager.GetThreadTransaction();
         }
 
         private void UnlockAll() {

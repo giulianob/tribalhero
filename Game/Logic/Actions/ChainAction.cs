@@ -36,7 +36,7 @@ namespace Game.Logic.Actions {
             current.WorkerObject = WorkerObject;
             current.ActionId = (ushort) WorkerObject.City.Worker.GetId();
 
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
             if (chainable.Execute() == Error.OK)
                 chainable.StateChange(ActionState.STARTED);
             else
@@ -52,20 +52,20 @@ namespace Game.Logic.Actions {
                 case ActionState.FIRED:
                 case ActionState.STARTED:
                 case ActionState.RESCHEDULED:
-                    Global.dbManager.Save(action);
+                    Global.DbManager.Save(action);
                     if (action is ScheduledPassiveAction)
                         Global.Scheduler.Put(new ActionDispatcher(action as ScheduledPassiveAction));
                     else if (action is ScheduledActiveAction)
                         Global.Scheduler.Put(new ActionDispatcher(action as ScheduledActiveAction));
 
-                    Global.dbManager.Save(this);
+                    Global.DbManager.Save(this);
 
                     return;
                 case ActionState.COMPLETED:
                 case ActionState.INTERRUPTED:
                 case ActionState.FAILED:
                     WorkerObject.City.Worker.ReleaseId(action.ActionId);
-                    Global.dbManager.Delete(action);
+                    Global.DbManager.Delete(action);
                     break;
                 default:
                     throw new Exception("Unexpected state " + state);
@@ -76,7 +76,7 @@ namespace Game.Logic.Actions {
             action.OnNotify -= ChainNotify;
 
             ChainCallback currentChain = chainCallback;
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
 
             Global.Scheduler.Put(new ChainExecuter(currentChain, state));
         }

@@ -326,7 +326,7 @@ namespace Game.Data {
             if (!updating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
             updating = false;
         }
 

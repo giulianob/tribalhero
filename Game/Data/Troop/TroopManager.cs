@@ -53,7 +53,7 @@ namespace Game.Data.Troop {
 
             CheckUpdateMode();
 
-            Global.dbManager.Save(stub);
+            Global.DbManager.Save(stub);
 
             if (TroopUpdated != null)
                 TroopUpdated(stub);
@@ -77,7 +77,7 @@ namespace Game.Data.Troop {
 
             //We don't want to delete a troopstub that doesn't belong to us.
             if (stub.City == City)
-                Global.dbManager.Delete(stub);
+                Global.DbManager.Delete(stub);
 
             if (TroopRemoved != null)
                 TroopRemoved(stub);

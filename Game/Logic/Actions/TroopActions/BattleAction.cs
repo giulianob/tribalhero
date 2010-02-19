@@ -59,7 +59,7 @@ namespace Game.Logic.Actions {
             using (new MultiObjectLock(toBeLocked.ToArray())) {
                 if (!city.Battle.ExecuteTurn()) {
                     city.Battle.ActionAttacked -= Battle_ActionAttacked;
-                    Global.dbManager.Delete(city.Battle);
+                    Global.DbManager.Delete(city.Battle);
                     city.Battle = null;
 
                     city.DefaultTroop.BeginUpdate();
@@ -96,7 +96,7 @@ namespace Game.Logic.Actions {
                     StateChange(ActionState.COMPLETED);
                 }
                 else {
-                    Global.dbManager.Save(city.Battle);
+                    Global.DbManager.Save(city.Battle);
                     endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
                     StateChange(ActionState.FIRED);
                 }
@@ -114,7 +114,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
 
-            Global.dbManager.Save(city.Battle);
+            Global.DbManager.Save(city.Battle);
 
             //Add local troop
             Procedure.AddLocalToBattle(city.Battle, city, ReportState.ENTERING);

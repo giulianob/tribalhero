@@ -116,7 +116,7 @@ namespace Game.Battle {
                 hp = 0;
             Structure.EndUpdate();
 
-            Global.dbManager.Save(this);
+            Global.DbManager.Save(this);
         }
 
         public override void CleanUp() {
@@ -138,7 +138,7 @@ namespace Game.Battle {
                 Global.World.UnlockRegion(Structure.X, Structure.Y);
             }
 
-            Global.dbManager.Delete(this);
+            Global.DbManager.Delete(this);
         }
 
         public override void ExitBattle() {

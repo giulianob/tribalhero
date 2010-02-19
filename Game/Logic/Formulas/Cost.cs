@@ -1,5 +1,6 @@
 #region
 
+using System;
 using Game.Data;
 using Game.Setup;
 
@@ -31,6 +32,11 @@ namespace Game.Logic {
             foreach (Effect effect in city.Technologies.GetEffects(EffectCode.RepairSaving, EffectInheritance.ALL))
                 lumber -= repairPower*(int) effect.value[0]/100;
             return new Resource(0, 0, 0, lumber, 0);
+        }
+
+        internal static int GetLaborRate(int laborTotal) {
+            if (laborTotal < 140) laborTotal = 140;
+            return (int)(86400 / (-6.845 * Math.Log(laborTotal) + 55));
         }
     }
 }

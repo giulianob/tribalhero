@@ -52,7 +52,7 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            int buildtime = Formula.TrainTime((int) UnitFactory.GetTime(type, 1), (structure.Lvl - 1)*3, structure.Technologies);
+            int buildtime = Formula.TrainTime((int) UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
 
             // add to queue for completion
             nextTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
@@ -95,7 +95,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), (structure.Lvl - 1)*3, structure.Technologies);
+                int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
                 nextTime = nextTime.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
                 StateChange(ActionState.RESCHEDULED);
             }

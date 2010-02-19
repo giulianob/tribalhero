@@ -70,7 +70,7 @@ namespace Game.Logic.Actions {
 
                 #region Labor
 
-                int laborTotal = 0;
+                int laborTotal = city.Resource.Labor.Value;
 
                 #endregion
 
@@ -121,11 +121,8 @@ namespace Game.Logic.Actions {
 
                 #region Labor
                 laborTimeRemains += INTERVAL;
-                for(int i =0; i<1500; i+=100 ) {
-                    System.Console.Out.WriteLine("i=" + i + " rate=" + 86400/Formula.GetLaborRate(i));
-                }
                 int laborRate = Formula.GetLaborRate(laborTotal);
-                int laborProduction = laborTimeRemains/Formula.GetLaborRate(laborTotal);
+                int laborProduction = laborTimeRemains / laborRate;
                 if (laborProduction > 0) {
                     laborTimeRemains -= laborProduction * laborRate;
                     city.Resource.Labor.Add(laborProduction);

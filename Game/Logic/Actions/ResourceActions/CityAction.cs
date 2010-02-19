@@ -13,6 +13,7 @@ namespace Game.Logic.Actions {
         private const int INTERVAL = 1800;
         private readonly uint cityId;
         private int laborRoundBeforeIncrements;
+        private int laborTimeRemains;
 
         public CityAction(uint cityId) {
             this.cityId = cityId;
@@ -119,17 +120,15 @@ namespace Game.Logic.Actions {
                 #endregion
 
                 #region Labor
-
-                if (--laborRoundBeforeIncrements <= 0) {
-                    city.Resource.Labor.Add(1);
-                    laborTotal += city.Resource.Labor.Value;
-                    if (laborTotal < 200)
-                        laborRoundBeforeIncrements = 1;
-                    else
-                        laborRoundBeforeIncrements = (int) (Math.Pow((laborTotal - 200/5), 2)/500 + 1);
-                    byte radius = Formula.GetRadius((uint) (laborTotal + city.Resource.Labor.Value));
-                    if (radius > city.Radius)
-                        city.Radius = radius;
+                laborTimeRemains += INTERVAL;
+                for(int i =0; i<1500; i+=100 ) {
+                    System.Console.Out.WriteLine("i=" + i + " rate=" + 86400/Formula.GetLaborRate(i));
+                }
+                int laborRate = Formula.GetLaborRate(laborTotal);
+                int laborProduction = laborTimeRemains/Formula.GetLaborRate(laborTotal);
+                if (laborProduction > 0) {
+                    laborTimeRemains -= laborProduction * laborRate;
+                    city.Resource.Labor.Add(laborProduction);
                 }
 
                 #endregion

@@ -4,11 +4,19 @@ class PagesController extends AppController
 {
 	var $uses = array();
 	
+	var $cacheAction = array(
+		'index/' => '1 month'
+	);
+	
 	function beforeFilter()
 	{
 		parent::beforeFilter();		
 		$this->Auth->allow(array('display', 'facebook'));
 	}		
+	
+	function index() {
+		$this->pageTitle = 'Tribal Hero - a free browser game';
+	}
 	
 	function display() {
 		$path = func_get_args();

@@ -5,13 +5,14 @@
 <? if (isset($lsessid)) : ?>
 <script type="text/javascript">
 	var flashvars = {};
-	flashvars.hostname = "localhost";
-	flashvars.lsessid = "<?=$lsessid?>";
-	flashvars.sessid = "<?=session_id()?>";
-	var params = {};
-	params.wmode = "opaque";
-	var attributes = {};
-	swfobject.embedSWF("files/Game.swf", "flash-content", "976", "640", "10.0.0", false, flashvars, params, attributes);
+	flashvars.hostname = "<?php echo FLASH_DOMAIN?>";
+	flashvars.lsessid = "<?php echo $lsessid?>";
+	flashvars.sessid = "<?php echo session_id()?>";	
+	var params = {};	
+	var attributes = {
+            id: "Game"
+        };
+	swfobject.embedSWF("files/Game.swf", "flash-content", "976", "640", "10.0.0", "files/expressInstall.swf", flashvars, params, attributes);
 </script>
 		
 <div id="game-box">

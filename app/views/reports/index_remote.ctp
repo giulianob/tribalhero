@@ -10,7 +10,7 @@ foreach($battle_reports as $battle_report)
 		'id' => $battle_report['BattleReport']['id'],
 		'date' => $battle_report['BattleReport']['created'],
 		'location' => $battle_report['City']['name'],
-		'attacker' => $battle_report['TroopCity']['name'] . '(' . $battle_report['BattleReportTroopEnter']['troop_stub_id'] . ')',
+		'troop' => $battle_report['TroopCity']['name'] . '(' . $battle_report['BattleReportTroopEnter']['troop_stub_id'] . ')',
 		'side' => $battle_report['BattleReportTroopEnter']['is_attacker']?'Attack':'Defense'
 	);
 }

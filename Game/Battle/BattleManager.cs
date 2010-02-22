@@ -569,6 +569,8 @@ namespace Game.Battle {
         private void BattleEnded() {
             report.WriteBeginReport();
             report.CompleteReport(ReportState.EXITING);
+            report.CompleteBattle();
+
             foreach (CombatObject combatObj in defenders) {
                 if (!combatObj.IsDead)
                     combatObj.ExitBattle();
@@ -577,7 +579,7 @@ namespace Game.Battle {
             foreach (CombatObject combatObj in attackers) {
                 if (!combatObj.IsDead)
                     combatObj.ExitBattle();
-            }
+            }            
 
             EventExitBattle(attackers, defenders);
 

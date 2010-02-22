@@ -53,9 +53,6 @@ namespace Game {
             if (!DbLoader.LoadFromDatabase(Global.DbManager))
                 return false;
 
-            // Initialize battle report loggers
-            BattleReport.WriterInit();
-
             // Initialize game market
             Market.Init();
 

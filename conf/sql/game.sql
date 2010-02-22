@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.1.3.1
+-- version 3.2.0.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 07, 2010 at 03:40 PM
--- Server version: 5.1.33
--- PHP Version: 5.2.9
+-- Generation Time: Feb 21, 2010 at 08:07 PM
+-- Server version: 5.1.37
+-- PHP Version: 5.3.0
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -52,9 +52,12 @@ CREATE TABLE `battles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `city_id` int(10) unsigned NOT NULL,
   `created` datetime NOT NULL,
+  `ended` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `city_id` (`city_id`,`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `ended` (`ended`),
+  KEY `created` (`created`),
+  KEY `city_id` (`city_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -93,7 +96,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -114,7 +117,7 @@ CREATE TABLE `battle_report_objects` (
   `formation_type` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -139,7 +142,7 @@ CREATE TABLE `battle_report_troops` (
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`),
   KEY `state` (`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -638,3 +641,7 @@ CREATE TABLE `unit_templates_list` (
   `level` tinyint(4) unsigned NOT NULL,
   PRIMARY KEY (`city_id`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

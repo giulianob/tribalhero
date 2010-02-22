@@ -483,9 +483,10 @@ namespace Game.Data {
         }
 
         private void TroopManagerTroopRemoved(TroopStub stub) {
-            BeginUpdate();
+            bool doUpdate = updating;
+            if (!doUpdate) BeginUpdate();            
             Resource.Crop.Upkeep = Troops.Upkeep;
-            EndUpdate();
+            if (!doUpdate) EndUpdate();
 
             Packet packet = new Packet(Command.TROOP_REMOVED);
             packet.AddUInt32(Id);

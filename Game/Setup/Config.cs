@@ -35,7 +35,7 @@ namespace Game.Setup {
         public static readonly int city_region_row = (int) (map_height/city_region_height);
 
         public static readonly double seconds_per_unit = 1.0; //dont make it zero
-        public static readonly int battle_turn_interval = 2;
+        public static readonly int battle_turn_interval = 60;
         public static readonly int stamina_initial;
         public static readonly bool resource_upkeep;
         public static readonly bool resource_cap = true;

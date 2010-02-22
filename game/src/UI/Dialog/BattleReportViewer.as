@@ -22,11 +22,13 @@
 		
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var id: int;
+		private var isLocal: Boolean;
 		private var page: int;
 		
-		public function BattleReportViewer(id: int) 
+		public function BattleReportViewer(id: int, isLocal: Boolean) 
 		{
 			this.id = id;
+			this.isLocal = isLocal;
 			
 			createUI();
 			
@@ -47,7 +49,10 @@
 			btnNext.setVisible(false);
 			lblPages.setText("Loading...");
 			
-			Global.map.mapComm.BattleReport.view(loader, id, page);
+			if (isLocal)
+				Global.map.mapComm.BattleReport.viewLocal(loader, id, page);
+			else
+				Global.map.mapComm.BattleReport.viewRemote(loader, id, page);	
 		}
 		
 		private function onLoaded(e: Event) : void {

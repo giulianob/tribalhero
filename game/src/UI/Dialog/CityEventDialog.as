@@ -138,11 +138,11 @@
 			pnlLocalEvents.append(new JScrollPane(gridLocalActions));
 
 			lblGold = resourceLabelMaker("Gold", new AssetIcon(new ICON_GOLD()));
-			lblWood = resourceLabelMaker("Wood", new AssetIcon(new ICON_WOOD()))
+			lblWood = resourceLabelMaker("Wood", new AssetIcon(new ICON_WOOD()));
 			lblCrop = resourceLabelMaker("Crop", new AssetIcon(new ICON_CROP()));
 			lblIron = resourceLabelMaker("Iron", new AssetIcon(new ICON_IRON()));
 			lblLabor = simpleLabelMaker("Labor", new AssetIcon(new ICON_LABOR()));
-			lblUpkeep = simpleLabelMaker("Troop Upkeep", new AssetIcon(new ICON_CROP()))
+			lblUpkeep = simpleLabelMaker("Troop Upkeep", new AssetIcon(new ICON_CROP()));
 
 			pnlResources.append(lblGold);
 			pnlResources.append(lblWood);

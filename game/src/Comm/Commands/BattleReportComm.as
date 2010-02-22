@@ -16,13 +16,21 @@
 			this.session = mapComm.session;
 		}
 		
-		public function list(loader: GameURLLoader, page: int) : void {
-			loader.load("/reports/index", [ { key: "page", value: page } ]);
+		public function listLocal(loader: GameURLLoader, page: int) : void {
+			loader.load("/reports/index_local", [ { key: "page", value: page } ]);
 		}
 		
-		public function view(loader: GameURLLoader, id: int, page: int) : void {
-			loader.load("/reports/view", [ { key: "id", value: id }, { key: "page", value: page } ]);
+		public function viewLocal(loader: GameURLLoader, id: int, page: int) : void {
+			loader.load("/reports/view_local", [ { key: "id", value: id }, { key: "page", value: page } ]);
 		}
+		
+		public function listRemote(loader: GameURLLoader, page: int) : void {
+			loader.load("/reports/index_remote", [ { key: "page", value: page } ]);
+		}
+		
+		public function viewRemote(loader: GameURLLoader, id: int, page: int) : void {
+			loader.load("/reports/view_remote", [ { key: "id", value: id }, { key: "page", value: page } ]);
+		}		
 	}
 
 }

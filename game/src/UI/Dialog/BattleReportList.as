@@ -1,12 +1,8 @@
-﻿package src.UI.Dialog 
+﻿package src.UI.Dialog
 {
-	import flash.events.Event;
-	import org.aswing.event.SelectionEvent;
-	import org.aswing.event.TableCellEditEvent;
-	import org.aswing.table.PropertyTableModel;
-	import src.Comm.GameURLLoader;
-	import src.Constants;
 	import src.Global;
+	import src.UI.Components.BattleReport.LocalReportList;
+	import src.UI.Components.BattleReport.RemoteReportList;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -16,128 +12,61 @@
 	import flash.net.*;
 
 	public class BattleReportList extends GameJPanel
-	{		
-		private var tblReports:JTable;
-		private var pnlPaging:JPanel;
-		private var btnPrevious:JButton;
-		private var lblPages:JLabel;
-		private var btnNext:JButton;
-		private var reportList: VectorListModel;
-		private var tableModel: PropertyTableModel;
-		
-		private var loader: GameURLLoader = new GameURLLoader();
-		private var page: int = 0;
-		
-		public function BattleReportList() 
-		{
+	{
+		private var pnlLocal: JPanel;
+		private var pnlRemote: JPanel;
+
+		private var localReports: LocalReportList;
+		private var remoteReports: RemoteReportList;
+
+		public function BattleReportList() {
 			createUI();
-			loader.addEventListener(Event.COMPLETE, onLoaded);
-			
-			tblReports.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tblReports.getCellEditor().stopCellEditing();
-			});
-			
-			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {
-				if (tblReports.getSelectedRow() == -1) return;
-				
-				var id: int = reportList.get(tblReports.getSelectedRow()).id;
-				
-				tblReports.clearSelection(true);
-				
-				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id);
-				battleReportDialog.show();
-			});
-			
-			btnNext.addActionListener(function() : void {
-				loadPage(page + 1);
-			});
-			
-			btnPrevious.addActionListener(function() : void{
-				loadPage(page - 1);
-			});					
-			
-			loadPage(0);
 		}
-		
-		private function loadPage(page: int) : void {	
-			btnPrevious.setVisible(false);
-			btnNext.setVisible(false);
-			lblPages.setText("Loading...");
-			
-			Global.map.mapComm.BattleReport.list(loader, page);
-		}
-		
-		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
+
+		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame
 		{
 			super.showSelf(owner, modal, onClose);
 			Global.gameContainer.showFrame(frame);
 			frame.setTitle("Battle Reports");
 			return frame;
-		}				
-		
-		private function onLoaded(e: Event) : void {
-			var data: Object;			
-			try
-			{
-				data = loader.getDataAsObject();
-			}
-			catch (e: Error) {				
-				InfoDialog.showMessageDialog("Error", "Unable to query report. Refresh the page if this problem persists");				
-				return;
-			}						
-			
-			//Paging info
-			this.page = data.page;
-			btnPrevious.setVisible(page > 1);
-			btnNext.setVisible(page < data.pages);
-			lblPages.setText(data.page + " of " + data.pages);
-			
-			tblReports.clearSelection(true);
-			reportList.clear();
-			
-			//Snapshots
-			for each (var snapshot: Object in data.snapshots)
-				reportList.append(snapshot);		
 		}
-		
-		private function createUI() : void {
-			setPreferredSize(new IntDimension(600, 350));
-			var layout0:BorderLayout = new BorderLayout();
+
+		public function createUI() : void {
+			setPreferredSize(new IntDimension(600, 500));
+
+			var layout0:SoftBoxLayout = new SoftBoxLayout();
+			layout0.setAxis(AsWingConstants.VERTICAL);
+			layout0.setGap(10);
 			setLayout(layout0);
-						
-			reportList = new VectorListModel();
-			
-			tableModel = new PropertyTableModel(reportList,
-				["Date", "Battle Location", "Attacker", "Side"],
-				["date", "location", "attacker", "side"],
-				[null, null, null, null]
-			);	
-						
-			tblReports = new JTable(tableModel);
-			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);		
-			
-			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
-			pnlReportsScroll.setConstraints("Center");
-			
-			pnlPaging = new JPanel();
-			pnlPaging.setConstraints("South");			
-			
-			btnPrevious = new JButton();
-			btnPrevious.setText("« Previous");
-			
-			lblPages = new JLabel();
-			
-			btnNext = new JButton();
-			btnNext.setText("Next »");		
-			
-			//component layoution
-			append(pnlReportsScroll);
-			append(pnlPaging);
-			
-			pnlPaging.append(btnPrevious);
-			pnlPaging.append(lblPages);
-			pnlPaging.append(btnNext);			
+
+			pnlLocal = new JPanel();
+			pnlLocal.setPreferredSize(new IntDimension(600, 230));
+			var border1:TitledBorder = new TitledBorder(null, "Invasion Reports", 1, AsWingConstants.LEFT, 0, 10);
+			border1.setColor(new ASColor(0x0, 1));			
+			border1.setBeveled(true);			
+			pnlLocal.setBorder(border1);
+			pnlLocal.setLayout(new BorderLayout());
+
+			localReports = new LocalReportList();
+			localReports.setConstraints("Center");
+			pnlLocal.append(localReports);
+
+			pnlRemote = new JPanel();
+			pnlRemote.setPreferredSize(new IntDimension(600, 230));
+			var border2:TitledBorder = new TitledBorder(null, "Foreign Reports", 1, AsWingConstants.LEFT, 0, 10);
+			border2.setColor(new ASColor(0x0, 1));			
+			border2.setBeveled(true);
+			pnlRemote.setBorder(border2);
+			pnlRemote.setLayout(new BorderLayout());
+
+			remoteReports = new RemoteReportList();
+			remoteReports.setConstraints("Center");
+			pnlRemote.append(remoteReports);
+
+			append(pnlLocal);
+			append(pnlRemote);
 		}
 	}
 
 }
+

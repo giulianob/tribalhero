@@ -4,7 +4,10 @@ $paging = $paginator->params('BattleReport');
 
 $results = array('pages' => $paging['pageCount'], 'page' => $paging['page'], 'snapshots' => array());
 
-$battleStartTime = strtotime($main_report['BattleReport']['created']);
+if (!array_key_exists('BattleReport', $main_report))
+    $battleStartTime = strtotime($main_report['Battle']['created']);
+else
+    $battleStartTime = strtotime($main_report['BattleReport']['created']);
 
 foreach($battle_reports as $battle_report) {
 	$snapshot = array('time' => strtotime($battle_report['BattleReport']['created']) - $battleStartTime, 'events' => array(), 'attackers' => array(), 'defenders' => array());

@@ -23,9 +23,9 @@
 		<h2>Why join our world?</h2>
 		<p>Tribal Hero features an immense persistent world where you can<p>
 		<ul>
-			<li>Grow your tribe from a few buildings to a large city</li>
+			<li>Grow your tribe from a few structures to a large city</li>
 			<li>Trade with your neighbors and friends</li>
-			<li>Wage wars against others or help protect them against other threats</li>
+			<li>Wage wars against your foes or protect your friends from their enemies.</li>
 		</ul>
 		<p>Best of all, it's completely free to play and there are no downloads required!</p>
 		<h2>Still not convinced?</h2>

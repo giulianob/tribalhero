@@ -31,10 +31,10 @@
 		<h2>Features</h2>
 		<ul>
 			<li>Innovative map that allows you to seamlessly navigate the entire world.</li>
-			<li>Strategically build your city, make friends, wage wars.</li>
-			<li>Unique battle system that shows every step of battles</li>
-			<li>Play directly from your browser through Flash.</li>
-			<li>Persistant world with thousands of players.</li>		
+			<li>Strategically build your city, make friends, and wage wars.</li>
+			<li>Watch every step of a battle as it happens. </li>
+			<li>Play directly from your browser without any downloads.</li>
+			<li>Best of all, it's completely free.</li>		
 		<ul>
 	</div>
 	

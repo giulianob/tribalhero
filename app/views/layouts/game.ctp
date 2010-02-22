@@ -37,7 +37,7 @@
 		</div>
 
 		<div id="footer" class="container prepend-top">
-			Copyright &copy; Tribal Hero 2009. All Rights Reserved.
+			Copyright &copy; Tribal Hero <?php echo date("Y");?>. All Rights Reserved.
 		</div>
 	</div>
 	<?php echo $cakeDebug; ?>

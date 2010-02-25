@@ -32,7 +32,7 @@ namespace Game.Logic.Actions {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
 
-            mode = (AttackMode) (byte.Parse(properties["mode"]));
+            mode = (AttackMode)(byte.Parse(properties["mode"]));
             originalHp = int.Parse(properties["original_hp"]);
             remainingHp = int.Parse(properties["remaining_hp"]);
 
@@ -68,7 +68,7 @@ namespace Game.Logic.Actions {
                 !Global.World.TryGetObjects(targetCityId, out targetCity))
                 return Error.OBJECT_NOT_FOUND;
 
-            List<TroopStub> list = new List<TroopStub> {stub};
+            List<TroopStub> list = new List<TroopStub> { stub };
             originalHp = remainingHp = stub.TotalHp;
 
             if (targetCity.Battle != null) {
@@ -77,7 +77,8 @@ namespace Game.Logic.Actions {
                 Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.REINFORCED);
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
                 targetCity.Battle.AddToAttack(list);
-            } else {
+            }
+            else {
                 targetCity.Battle = new BattleManager(targetCity);
                 targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
                 targetCity.Battle.ExitBattle += Battle_ExitBattle;
@@ -107,26 +108,28 @@ namespace Game.Logic.Actions {
             City targetCity;
             TroopStub stub;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
-                !Global.World.TryGetObjects(targetCityId, out targetCity))
-                throw new NotImplementedException();
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+                throw new ArgumentException();
 
-            if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject) {
-                remainingHp -= damage;
-                if (remainingHp <= Formula.GetAttackModeTolerance(originalHp, mode)) {
-                    List<TroopStub> list = new List<TroopStub> {stub};
-                    targetCity.Battle.RemoveFromAttack(list,
-                                                       remainingHp == 0 ? ReportState.DYING : ReportState.RETREATING);
-                    targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
-                    targetCity.Battle.ExitBattle -= Battle_ExitBattle;
+            if (unit.TroopStub != stub || unit.TroopStub.TroopObject != stub.TroopObject)
+                return;
 
-                    stub.TroopObject.BeginUpdate();
-                    stub.TroopObject.State = GameObjectState.NormalState();
-                    stub.TroopObject.EndUpdate();
+            remainingHp -= damage;
+            if (unit.RoundsParticipated < Config.battle_min_rounds || remainingHp > Formula.GetAttackModeTolerance(originalHp, mode))
+                return;
 
-                    StateChange(ActionState.COMPLETED);
-                }
-            }
+            List<TroopStub> list = new List<TroopStub> {
+                                                           stub
+                                                       };
+            targetCity.Battle.RemoveFromAttack(list, remainingHp == 0 ? ReportState.DYING : ReportState.RETREATING);
+            targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
+            targetCity.Battle.ExitBattle -= Battle_ExitBattle;
+
+            stub.TroopObject.BeginUpdate();
+            stub.TroopObject.State = GameObjectState.NormalState();
+            stub.TroopObject.EndUpdate();
+
+            StateChange(ActionState.COMPLETED);
         }
 
         private void Battle_ExitBattle(CombatList atk, CombatList def) {
@@ -136,7 +139,7 @@ namespace Game.Logic.Actions {
 
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
                 !Global.World.TryGetObjects(targetCityId, out targetCity))
-                throw new NotImplementedException();
+                throw new ArgumentException();
 
             targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
             targetCity.Battle.ExitBattle -= Battle_ExitBattle;

@@ -311,7 +311,7 @@ namespace Game.Database {
         private MySqlCommand CreateObject(MySqlConnection connection, MySqlTransaction transaction,
                                           IPersistableObject obj) {
             string commandText;
-
+            
             if (!createCommands.TryGetValue(obj.GetType(), out commandText)) {
                 string columns = "";
                 string values = "";

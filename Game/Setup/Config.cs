@@ -36,6 +36,7 @@ namespace Game.Setup {
 
         public static readonly double seconds_per_unit = 1.0; //dont make it zero
         public static readonly int battle_turn_interval = 60;
+        public static readonly int battle_min_rounds = 3;
         public static readonly int stamina_initial;
         public static readonly bool resource_upkeep;
         public static readonly bool resource_cap = true;
@@ -48,11 +49,12 @@ namespace Game.Setup {
         public static readonly bool database_verbose;
         public static readonly bool database_empty;
         public static readonly bool database_load_players = true;
-        public static readonly string database_host = "";
-        public static readonly string database_username = "";
+        public static readonly string database_host = "127.0.0.1";
+        public static readonly string database_username = "root";
         public static readonly string database_password = "";
-        public static readonly string database_database = "";
-        public static readonly string database_salt = "";
+        public static readonly string database_database = "game";
+        public static readonly string database_test = "game_test";
+        public static readonly string database_salt = "DFjkxcVsDfwgf4kuj2sDmM334";
         public static bool database_dump;
 
         public static readonly bool ai_enabled;

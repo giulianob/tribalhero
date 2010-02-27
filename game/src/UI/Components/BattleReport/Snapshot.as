@@ -32,6 +32,8 @@
 				border.setTitle(StringHelper.firstToUpper(Util.niceTime(snapshot.time)) + " into the battle");
 			}
 
+			pnlEvents.append(new JLabel("Round " + (int(snapshot.round) + 1) + " Turn " + (int(snapshot.turn) + 1), null, AsWingConstants.LEFT));
+			
 			//Battle events
 			for each (var event: Object in snapshot.events) {
 				pnlEvents.append(new JLabel(event.toString(), null, AsWingConstants.LEFT));

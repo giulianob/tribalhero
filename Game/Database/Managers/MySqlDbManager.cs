@@ -565,9 +565,9 @@ namespace Game.Database {
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public void Query(string query) {
+        public int Query(string query) {
             if (paused)
-                return;
+                return 0;
 
             MySqlCommand command;
             bool transactional = persistantTransaction != null;
@@ -589,15 +589,17 @@ namespace Game.Database {
 
             command.CommandText = query;
 
-            ExecuteNonQuery(command);
+            int affected = ExecuteNonQuery(command);
 
             if (!transactional) {
                 ((MySqlTransaction) transaction.transaction).Commit();
                 Close(command.Connection);
             }
+
+            return affected;
         }
 
-        private void ExecuteNonQuery(MySqlCommand command) {
+        private int ExecuteNonQuery(MySqlCommand command) {
             if (Config.database_verbose) {
                 StringWriter sqlwriter = new StringWriter();
                 foreach (MySqlParameter param in command.Parameters)
@@ -608,11 +610,13 @@ namespace Game.Database {
             }
 
             try {
-                command.ExecuteNonQuery();
+                return command.ExecuteNonQuery();
             }
             catch (Exception e) {
                 HandleGeneralException(e, command);
             }
+
+            return 0;
         }
 
         public void HandleGeneralException(Exception e, MySqlCommand command) {
@@ -710,7 +714,8 @@ namespace Game.Database {
                                   "TRUNCATE TABLE `unit_templates`;" + "TRUNCATE TABLE `unit_templates_list`;" +
                                   "TRUNCATE TABLE `battles`;" + "TRUNCATE TABLE `battle_managers`;" +
                                   "TRUNCATE TABLE `battle_reports`;" + "TRUNCATE TABLE `battle_report_objects`;" +
-                                  "TRUNCATE TABLE `battle_report_troops`;" + "TRUNCATE TABLE `reported_troops`;" +
+                                  "TRUNCATE TABLE `battle_report_troops`;" + "TRUNCATE TABLE `battle_report_views`;" +
+                                  "TRUNCATE TABLE `reported_troops`;" +
                                   "TRUNCATE TABLE `reported_troops_list`;" + "TRUNCATE TABLE `reported_objects`;" +
                                   "TRUNCATE TABLE `reported_objects_list`;" + "TRUNCATE TABLE `combat_structures`;" +
                                   "TRUNCATE TABLE `combat_units`;" + "TRUNCATE TABLE `notifications`;" +

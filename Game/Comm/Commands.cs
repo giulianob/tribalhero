@@ -119,7 +119,8 @@ namespace Game.Comm {
         BATTLE_ATTACK = 702,
         BATTLE_REINFORCE_ATTACKER = 703,
         BATTLE_REINFORCE_DEFENDER = 704,
-        BATTLE_ENDED = 705
+        BATTLE_ENDED = 705,
+        BATTLE_SKIPPED = 706,
 
         #endregion
     }

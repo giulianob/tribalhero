@@ -21,6 +21,7 @@ namespace Game.Battle {
             this.battle = battle;
             this.channelName = channelName;
             battle.ActionAttacked += BattleActionAttacked;
+            battle.SkippedAttacker += BattleSkippedAttacker;
             battle.ReinforceAttacker += BattleReinforceAttacker;
             battle.ReinforceDefender += BattleReinforceDefender;
             battle.ExitBattle += BattleExitBattle;
@@ -47,6 +48,12 @@ namespace Game.Battle {
             Global.Channel.Post(channelName, packet);
         }
 
+        private void BattleSkippedAttacker(CombatObject source) {
+            Packet packet = new Packet(Command.BATTLE_SKIPPED);
+            packet.AddUInt32(source.Id);
+            Global.Channel.Post(channelName, packet);            
+        }
+        
         private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage) {
             Packet packet = new Packet(Command.BATTLE_ATTACK);
             packet.AddUInt16(battle.Stamina);
@@ -84,6 +91,8 @@ namespace Game.Battle {
         public event OnUnitUpdate UnitAdded;
         public event OnUnitUpdate UnitRemoved;
         public event OnUnitUpdate UnitUpdated;
+
+        public event OnUnitUpdate SkippedAttacker;
 
         public delegate void OnAttack(CombatObject source, CombatObject target, ushort damage);
 
@@ -152,6 +161,11 @@ namespace Game.Battle {
         public void EventActionAttacked(CombatObject source, CombatObject target, ushort dmg) {
             if (ActionAttacked != null)
                 ActionAttacked(source, target, dmg);
+        }
+        
+        public void EventSkippedAttacker(CombatObject source) {
+            if (SkippedAttacker != null)
+                SkippedAttacker(source);
         }
     }
 
@@ -608,97 +622,90 @@ namespace Game.Battle {
                     EventEnterBattle(attackers, defenders);
                 }
 
-                while (true) {
-                    CombatObject attacker;
+                CombatObject attacker;
 
-                    if (!battleOrder.NextObject(out attacker)) {
-                        ++round;
-                        stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
-                        battleOrder.ParticipatedInRound();
-                        turn = 0;
-                        EventEnterRound(Attacker, Defender, round, stamina);
-                    }
+                if (!battleOrder.NextObject(out attacker)) {
+                    ++round;
+                    stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
+                    battleOrder.ParticipatedInRound();
+                    turn = 0;
+                    EventEnterRound(Attacker, Defender, round, stamina);
+                }
 
-                    if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
-                        BattleEnded();
-                        return false;
-                    }
+                if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
+                    BattleEnded();
+                    return false;
+                }
 
-                    CombatObject defender;
+                CombatObject defender;
 
-                    if (attacker.CombatList == attackers)
-                        defenders.GetBestTarget(attacker, out defender);
-                    else if (attacker.CombatList == defenders)
-                        attackers.GetBestTarget(attacker, out defender);
-                    else
-                        throw new Exception("How can this happen");
+                if (attacker.CombatList == attackers)
+                    defenders.GetBestTarget(attacker, out defender);
+                else if (attacker.CombatList == defenders)
+                    attackers.GetBestTarget(attacker, out defender);
+                else
+                    throw new Exception("How can this happen");
 
-                    if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && defender.Stats.Def == 0)) {
-                        attacker.ParticipatedInRound();
-                        continue;
-                    }
-
-                    ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
-                    int actualDmg;
-
-                    defender.CalculateDamage(dmg, out actualDmg);
-
-                    attacker.DmgDealt += actualDmg;
-                    attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
-                    attacker.MinDmgDealt = Math.Min(attacker.MinDmgDealt, actualDmg);
-                    ++attacker.HitDealt;
-
-                    defender.DmgRecv += actualDmg;
-                    defender.MaxDmgRecv = Math.Max(defender.MaxDmgRecv, actualDmg);
-                    defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
-                    ++defender.HitRecv;
-
-                    defender.TakeDamage(actualDmg);
-
-                    if (defender.IsDead) {
-                        EventUnitRemoved(defender);
-                        battleOrder.Remove(defender);
-
-                        if (attacker.CombatList == attackers) {
-                            if (defender.ClassType == BattleClass.STRUCTURE)
-                                stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
-                            defenders.Remove(defender);
-                            report.WriteReportObject(defender, false,
-                                                     GroupIsDead(defender, defenders)
-                                                         ? ReportState.DYING
-                                                         : ReportState.STAYING);
-                        } else if (attacker.CombatList == defenders) {
-                            attackers.Remove(defender);
-                            report.WriteReportObject(defender, true,
-                                                     GroupIsDead(defender, attackers)
-                                                         ? ReportState.DYING
-                                                         : ReportState.STAYING);
-                        }
-
-                        defender.CleanUp();
-                    }
-
-                    if (attacker.CombatList == Attacker) {
-                        Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
-                        city.BeginUpdate();
-                        city.Resource.Subtract(loot, out loot);
-                        attacker.ReceiveReward(defender.Stats.Base.Reward*actualDmg, loot);
-                        city.EndUpdate();
-                    }
-
-                    EventActionAttacked(attacker, defender, (ushort) actualDmg);
-
+                if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && defender.Stats.Def == 0)) {
                     attacker.ParticipatedInRound();
-
-                    EventExitTurn(Attacker, Defender, (int) turn++);
-
-                    if (!BattleIsValid()) {
-                        BattleEnded();
-                        return false;
-                    }
-
+                    EventSkippedAttacker(attacker);
                     return true;
                 }
+
+                ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
+                int actualDmg;
+
+                defender.CalculateDamage(dmg, out actualDmg);
+
+                attacker.DmgDealt += actualDmg;
+                attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
+                attacker.MinDmgDealt = Math.Min(attacker.MinDmgDealt, actualDmg);
+                ++attacker.HitDealt;
+
+                defender.DmgRecv += actualDmg;
+                defender.MaxDmgRecv = Math.Max(defender.MaxDmgRecv, actualDmg);
+                defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
+                ++defender.HitRecv;
+
+                defender.TakeDamage(actualDmg);
+
+                if (defender.IsDead) {
+                    EventUnitRemoved(defender);
+                    battleOrder.Remove(defender);
+
+                    if (attacker.CombatList == attackers) {
+                        if (defender.ClassType == BattleClass.STRUCTURE)
+                            stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
+                        defenders.Remove(defender);
+                        report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);
+                    } else if (attacker.CombatList == defenders) {
+                        attackers.Remove(defender);
+                        report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.DYING : ReportState.STAYING);
+                    }
+
+                    defender.CleanUp();
+                }
+
+                if (attacker.CombatList == Attacker) {
+                    Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                    city.BeginUpdate();
+                    city.Resource.Subtract(loot, out loot);
+                    attacker.ReceiveReward(defender.Stats.Base.Reward*actualDmg, loot);
+                    city.EndUpdate();
+                }
+
+                EventActionAttacked(attacker, defender, (ushort) actualDmg);
+
+                attacker.ParticipatedInRound();
+
+                EventExitTurn(Attacker, Defender, (int) turn++);
+
+                if (!BattleIsValid()) {
+                    BattleEnded();
+                    return false;
+                }
+
+                return true;
             }
         }
 

@@ -210,7 +210,7 @@
 			this.mapOverlay.y = mapHolder.y;
 			addChild(this.mapOverlay);
 
-			for each (var city: City in map.cities.each()) {
+			for each (var city: City in map.cities.each()) {				
 				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return city.name; } } );
 			}
 

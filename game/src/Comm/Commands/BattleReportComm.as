@@ -20,16 +20,16 @@
 			loader.load("/reports/index_local", [ { key: "page", value: page } ]);
 		}
 		
-		public function viewLocal(loader: GameURLLoader, id: int, page: int) : void {
-			loader.load("/reports/view_local", [ { key: "id", value: id }, { key: "page", value: page } ]);
+		public function viewLocal(loader: GameURLLoader, id: int) : void {
+			loader.load("/reports/view_local", [ { key: "id", value: id }]);
 		}
 		
 		public function listRemote(loader: GameURLLoader, page: int) : void {
 			loader.load("/reports/index_remote", [ { key: "page", value: page } ]);
 		}
 		
-		public function viewRemote(loader: GameURLLoader, id: int, page: int) : void {
-			loader.load("/reports/view_remote", [ { key: "id", value: id }, { key: "page", value: page } ]);
+		public function viewRemote(loader: GameURLLoader, id: int) : void {
+			loader.load("/reports/view_remote", [ { key: "id", value: id }]);
 		}		
 	}
 

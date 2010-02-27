@@ -72,8 +72,7 @@
 		}
 
 		private function updateStamina(e: BattleEvent = null) : void {
-			trace("Stamina update");
-			lblStamina.setText(StringHelper.makePlural(battle.attackers.size(), "Attacker", "Attackers") + " will run out of stamina in " + battle.stamina + " " + StringHelper.makePlural(battle.stamina, "turn", "turns") + ".");
+			lblStamina.setText(StringHelper.makePlural(battle.attackers.size(), "Attacker", "Attackers") + " will run out of stamina in " + battle.stamina + " " + StringHelper.makePlural(battle.stamina, "round", "rounds") + ".");
 		}
 
 		private function addTab(combatObj: CombatObject, defense: Boolean) : Object {

@@ -22,6 +22,7 @@ namespace Game.Battle {
         private const string BATTLE_REPORTS_DB = "battle_reports";
         private const string BATTLE_REPORT_TROOPS_DB = "battle_report_troops";
         private const string BATTLE_REPORT_OBJECTS_DB = "battle_report_objects";
+        private const string BATTLE_REPORT_VIEWS_DB = "battle_report_views";
 
         private readonly BattleManager battle;
 
@@ -84,7 +85,7 @@ namespace Game.Battle {
             if (co.ClassType == BattleClass.UNIT) {
                 ICombatUnit cu = co as ICombatUnit;
                 if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
-                    SnapTroop(reportId, state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.Loot);
+                    SnapTroop(state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.Loot);
                     ReportedTroops[cu.TroopStub] = combatTroopId;
                 } else if (state != ReportState.STAYING)
                     SnapTroopState(cu.TroopStub, state);
@@ -96,7 +97,7 @@ namespace Game.Battle {
             } else {
                 TroopStub stub = ((CombatStructure) co).Structure.City.DefaultTroop;
                 if (!ReportedTroops.TryGetValue(stub, out combatTroopId)) {
-                    SnapTroop(reportId, state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId, new Resource());
+                    SnapTroop(state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId, new Resource());
                     ReportedTroops[stub] = combatTroopId;
                 } else if (state != ReportState.STAYING)
                     SnapTroopState(stub, state);
@@ -123,7 +124,7 @@ namespace Game.Battle {
                     ICombatUnit cu = co as ICombatUnit;
 
                     if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
-                        SnapTroop(reportId, state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.Loot);
+                        SnapTroop(state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.Loot);
                         ReportedTroops[cu.TroopStub] = combatTroopId;
                     } else if ((state == ReportState.REINFORCED || state == ReportState.EXITING) && !updatedObj.Contains(cu.TroopStub)) {
                         //Exiting state should override anything else
@@ -133,7 +134,7 @@ namespace Game.Battle {
                 } else {
                     TroopStub stub = ((CombatStructure) co).Structure.City.DefaultTroop;
                     if (!ReportedTroops.TryGetValue(stub, out combatTroopId)) {
-                        SnapTroop(reportId, state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId, new Resource());
+                        SnapTroop(state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId, new Resource());
                         ReportedTroops[stub] = combatTroopId;
                     } else if (state == ReportState.EXITING && !updatedObj.Contains(stub)) {
                         SnapTroopState(stub, state);
@@ -193,14 +194,21 @@ namespace Game.Battle {
             Global.DbManager.Query(string.Format("UPDATE {0} SET `state` = '{1}' WHERE `id` = '{2}' LIMIT 1", BATTLE_REPORT_TROOPS_DB, (byte) state, id));
         }
 
-        internal static void SnapTroop(uint reportId, ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, out uint battleTroopId, Resource loot) {
+        internal void SnapTroop(ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, out uint battleTroopId, Resource loot) {
             Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}')", BATTLE_REPORT_TROOPS_DB, reportId, cityId,
                                                  objectId, troopId, (byte) state, isAttacker ? 1 : 0, loot.Gold, loot.Crop, loot.Iron, loot.Wood));
 
             battleTroopId = Global.DbManager.LastInsertId();
+
+            // Log any troops that are entering the battle to the view table so they are able to see this report
+            // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
+            if (battle.City.Id != cityId && (state == ReportState.ENTERING || state == ReportState.REINFORCED)) {
+                Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', 0, NOW())", BATTLE_REPORT_VIEWS_DB, cityId, troopId, battle.BattleId, battleTroopId,
+                                                     isAttacker ? 1 : 0));
+            }
         }
 
-        internal static void SnapCombatObject(uint troopId, CombatObject co) {
+        internal void SnapCombatObject(uint troopId, CombatObject co) {
             ICombatUnit unit = co as ICombatUnit;
 
             Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')", BATTLE_REPORT_OBJECTS_DB, troopId, co.Type, co.Lvl, co.Hp,

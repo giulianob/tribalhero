@@ -23,7 +23,7 @@ namespace Game.Database {
         DbDataReader SelectList(IPersistableList obj);
         DbDataReader SelectList(string table, params DbColumn[] primaryKeyValues);
 
-        void Query(string query);
+        int Query(string query);
         DbDataReader ReaderQuery(string query);
         uint LastInsertId();
 

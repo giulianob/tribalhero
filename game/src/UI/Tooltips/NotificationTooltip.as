@@ -33,7 +33,6 @@
 		}
 
 		private function createUI() : void {
-			ui.setBorder(null);
 			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 10));
 			ui.setMinimumWidth(200);
 

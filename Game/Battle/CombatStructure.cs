@@ -105,7 +105,7 @@ namespace Game.Battle {
             actualDmg = (int) Math.Min(hp, dmg);
         }
 
-        public override void TakeDamage(int dmg) {
+        public override void TakeDamage(int dmg, out Resource returning) {
             Structure.BeginUpdate();
             Structure.Stats.Hp -= (ushort) dmg;
             if (Structure.Stats.Hp < 0)
@@ -117,6 +117,7 @@ namespace Game.Battle {
             Structure.EndUpdate();
 
             Global.DbManager.Save(this);
+            returning = null;
         }
 
         public override void CleanUp() {

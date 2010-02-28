@@ -52,7 +52,7 @@ namespace Game.Setup {
                                                                 byte.Parse(toks[col["Stl"]]),
                                                                 byte.Parse(toks[col["Spd"]]), 0,
                                                                 Formula.GetRewardPoint(resource,
-                                                                                       ushort.Parse(toks[col["Hp"]])));
+                                                                                       ushort.Parse(toks[col["Hp"]])),0);
 
                     StructureBaseStats basestats = new StructureBaseStats(toks[col["Name"]],
                                                                           ushort.Parse(toks[col["Type"]]),

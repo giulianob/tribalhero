@@ -123,19 +123,20 @@ namespace Game.Battle {
         }
 
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, int actualDmg) {
-            int point = actualDmg*defender.Stats.Base.Reward;
-            switch (defender.ClassType) {
-                case BattleClass.STRUCTURE:
-                    return new Resource(point/5, point/7, point/9, point/5, 0);
-                case BattleClass.UNIT:
-                    return new Resource(point/11, point/15, point/19, point/11, 0);
-            }
-
-            return new Resource();
+            int totalCarry = attacker.BaseStats.Carry * attacker.Count;
+            int count = attacker.BaseStats.Carry * attacker.Count * Config.battle_loot_per_round / 100;
+            if (count == 0) count = 1;
+            Resource empty = new Resource(totalCarry, totalCarry, totalCarry, totalCarry, 0);
+            empty.subtract(((AttackCombatUnit) attacker).Loot);
+            return new Resource(Math.Min(count, empty.Crop),
+                                         Math.Min(count, empty.Gold),
+                                         Math.Min(count, empty.Iron),
+                                         Math.Min(count, empty.Wood),
+                                         0);
         }
 
         internal static ushort GetStamina(City city) {
-            return (ushort) (city.MainBuilding.Lvl*5 + 10 + Config.stamina_initial);
+            return (ushort)(20 + Config.stamina_initial);
         }
 
         internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round) {

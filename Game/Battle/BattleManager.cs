@@ -637,6 +637,7 @@ namespace Game.Battle {
                 }
 
                 #region Find Target
+
                 CombatObject defender;
 
                 if (attacker.CombatList == attackers)
@@ -651,9 +652,11 @@ namespace Game.Battle {
                     EventSkippedAttacker(attacker);
                     return true;
                 }
+
                 #endregion
 
                 #region Damage
+
                 ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
                 int actualDmg;
                 Resource lostResource;
@@ -671,10 +674,29 @@ namespace Game.Battle {
                 defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
                 ++defender.HitRecv;
 
-                defender.TakeDamage(actualDmg, out lostResource);
+                #endregion
+
+                #region Loot
+
+                if (attacker.CombatList == Attacker) {
+                    Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                    city.BeginUpdate();
+                    city.Resource.Subtract(loot, out loot);
+                    attacker.ReceiveReward(defender.Stats.Base.Reward*actualDmg, loot);
+                    city.EndUpdate();
+                } else {
+                    if (lostResource != null && !lostResource.Empty) {
+                        city.BeginUpdate();
+                        city.Resource.Add(lostResource);
+                        city.EndUpdate();
+                    }
+
+                }
+
                 #endregion
 
                 #region Object removal
+
                 if (defender.IsDead) {
                     EventUnitRemoved(defender);
                     battleOrder.Remove(defender);
@@ -688,40 +710,17 @@ namespace Game.Battle {
                         attackers.Remove(defender);
                         report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.DYING : ReportState.STAYING);
                     }
-                #endregion
 
-                    #region Loot
-                    if (attacker.CombatList == Attacker) {
-                        Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
-                        city.BeginUpdate();
-                        city.Resource.Subtract(loot, out loot);
-                        attacker.ReceiveReward(defender.Stats.Base.Reward * actualDmg, loot);
-                        city.EndUpdate();
-                    } else {
-                        if (lostResource != null && !lostResource.Empty) {
-                            city.BeginUpdate();
-                            city.Resource.Add(lostResource);
-                            city.EndUpdate();
-                        }
-
-                    }
                     defender.CleanUp();
                 }
-                    #endregion
 
-                if (attacker.CombatList == Attacker) {
-                    Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
-                    city.BeginUpdate();
-                    city.Resource.Subtract(loot, out loot);
-                    attacker.ReceiveReward(defender.Stats.Base.Reward * actualDmg, loot);
-                    city.EndUpdate();
-                }
+                #endregion
 
-                EventActionAttacked(attacker, defender, (ushort)actualDmg);
+                EventActionAttacked(attacker, defender, (ushort) actualDmg);
 
                 attacker.ParticipatedInRound();
 
-                EventExitTurn(Attacker, Defender, (int)turn++);
+                EventExitTurn(Attacker, Defender, (int) turn++);
 
                 if (!BattleIsValid()) {
                     BattleEnded();

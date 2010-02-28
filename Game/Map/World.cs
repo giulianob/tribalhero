@@ -307,7 +307,10 @@ namespace Game.Map {
         #region Channel Subscriptions
 
         internal void SubscribeRegion(Session session, ushort id) {
-            Global.Channel.Subscribe(session, "/WORLD/" + id);
+            try {
+                Global.Channel.Subscribe(session, "/WORLD/" + id);
+            }
+            catch (DuplicateSubscriptionException) { }
         }
 
         internal void UnsubscribeRegion(Session session, ushort id) {

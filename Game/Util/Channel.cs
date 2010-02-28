@@ -50,17 +50,29 @@ namespace Game.Util {
             lock (channelLock) {
                 Subscriber sub;
                 List<Subscriber> sublist;
+                // Check if the channel list already exists. To keep memory down, we don't keep around subscription lists
+                // for channels that have no subscribers
                 if (!subscribersByChannel.TryGetValue(channelId, out sublist)) {
                     sublist = new List<Subscriber>();
                     subscribersByChannel.Add(channelId, sublist);
                 }
-                if (subscribersBySession.TryGetValue(session, out sub))
+
+                // Check if there is already a subscription object for this session
+                if (subscribersBySession.TryGetValue(session, out sub)) {
+                    // If subscription already exists then throw exception
+                    if (sublist.Contains(sub)) {
+                        throw new DuplicateSubscriptionException();
+                    }
+
                     sub.channels.Add(channelId);
+                }
+                // If not we need to make an object for this session
                 else {
                     sub = new Subscriber(session);
                     sub.channels.Add(channelId);
                     subscribersBySession.Add(session, sub);
                 }
+
                 sublist.Add(sub);
             }
             return;
@@ -114,4 +126,6 @@ namespace Game.Util {
 
         #endregion
     }
+
+    public class DuplicateSubscriptionException : Exception {}
 }

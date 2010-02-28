@@ -12,7 +12,7 @@ using Game.Fighting;
 
 namespace Game.Data.Troop {
     public class TroopTemplate : IPersistableList, IEnumerable<KeyValuePair<ushort, BattleStats>> {
-        private TroopStub stub;
+        private readonly TroopStub stub;
         private Dictionary<ushort, BattleStats> stats = new Dictionary<ushort, BattleStats>();
 
         public TroopTemplate(TroopStub stub) {

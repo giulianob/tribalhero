@@ -327,10 +327,6 @@ namespace Game.Battle {
 
         #region Adding/Removing from Battle
 
-        public void AddToLocal(TroopStub stub, ReportState state) {
-            List<TroopStub> list = new List<TroopStub> { stub };
-            AddToLocal(list, state);
-        }
 
         public void AddToLocal(List<TroopStub> objects, ReportState state) {
             AddToCombatList(objects, defenders, true, state);
@@ -434,17 +430,18 @@ namespace Game.Battle {
                         //if it's our local troop then it should be in the battle formation since 
                         //it will be moved by the battle manager (who is calling this function) to the in battle formation
                         //There should be a better way to do this but I cant figure it out right now
-                        if (isLocal && formation.Type == FormationType.NORMAL)
-                            formation.Type = FormationType.IN_BATTLE;
+                        FormationType formationType = formation.Type;
+                        if (isLocal)
+                            formationType = FormationType.IN_BATTLE;
 
                         foreach (KeyValuePair<ushort, ushort> kvp in formation) {
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
-                                combatObjects = CombatUnitFactory.CreateDefenseCombatUnit(this, obj, formation.Type,
+                                combatObjects = CombatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType,
                                                                                           kvp.Key, kvp.Value);
                             else
                                 combatObjects = CombatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject,
-                                                                                         formation.Type, kvp.Key,
+                                                                                         formationType, kvp.Key,
                                                                                          kvp.Value);
 
                             foreach (CombatObject unit in combatObjects) {

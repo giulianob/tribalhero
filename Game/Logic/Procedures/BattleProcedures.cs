@@ -16,15 +16,14 @@ namespace Game.Logic.Procedures {
         }
 
         public static void AddLocalToBattle(BattleManager bm, City city, ReportState state) {
-            List<TroopStub> list = new List<TroopStub>(1) {city.DefaultTroop};
+            List<TroopStub> list = new List<TroopStub>(1) {city.DefaultTroop};           
 
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopStub.TroopState.BATTLE;
             city.DefaultTroop.Template.LoadStats();
-            MoveUnitFormation(city.DefaultTroop, FormationType.NORMAL, FormationType.IN_BATTLE);
-            city.DefaultTroop.EndUpdate();
-
             bm.AddToLocal(list, state);
+            MoveUnitFormation(city.DefaultTroop, FormationType.NORMAL, FormationType.IN_BATTLE);
+            city.DefaultTroop.EndUpdate(); 
         }
     }
 }

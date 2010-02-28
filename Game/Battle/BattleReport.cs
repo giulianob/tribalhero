@@ -204,7 +204,7 @@ namespace Game.Battle {
             // Log any troops that are entering the battle to the view table so they are able to see this report
             // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
             if (battle.City.Id != cityId && (state == ReportState.ENTERING || state == ReportState.REINFORCED)) {
-                Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', 0, NOW())", BATTLE_REPORT_VIEWS_DB, cityId, troopId, battle.BattleId, battleTroopId,
+                Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', 0, NOW())", BATTLE_REPORT_VIEWS_DB, cityId, troopId, battle.BattleId, objectId,
                                                      isAttacker ? 1 : 0));
             }
         }

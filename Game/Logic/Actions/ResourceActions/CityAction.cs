@@ -36,7 +36,8 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {            
+        public override void Interrupt(ActionInterrupt state) {
+            throw new Exception("This action cannot be cancelled.");
         }
 
         public override ActionType Type {

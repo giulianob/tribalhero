@@ -36,7 +36,7 @@ namespace Game.Logic.Actions {
         }
 
         public override void Interrupt(ActionInterrupt state) {
-            throw new Exception("The method or operation is not implemented.");
+            throw new Exception("This action cannot be cancelled.");
         }
 
         public override ActionType Type {

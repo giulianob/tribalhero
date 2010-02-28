@@ -124,11 +124,7 @@ namespace Game.Logic.Actions {
         #endregion
 
         public override void Interrupt(ActionInterrupt state) {
-            Global.Scheduler.Del(this);
-            switch (state) {
-                case ActionInterrupt.CANCEL:
-                    break;
-            }
+            throw new Exception("This action cannot be cancelled.");
         }
 
         #region IPersistable

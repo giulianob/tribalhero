@@ -88,6 +88,9 @@ namespace Game.Logic.Actions {
         public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
+                if (!IsValid())
+                    return;
+
                 Global.Scheduler.Del(this);
 
                 Technology tech;

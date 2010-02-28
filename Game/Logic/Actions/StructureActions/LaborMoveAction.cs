@@ -107,6 +107,9 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
+                if (!IsValid())
+                    return;
+
                 if (!city.TryGetStructure(structureId, out structure)) {
                     StateChange(ActionState.FAILED);
                     return;

@@ -142,7 +142,7 @@ class Battle extends AppModel {
                         )
                 ),
                 'fields' => array(
-                        'BattleReportView.id',
+                        'BattleReportView.id',                        
                         'BattleReportView.battle_id',
                         'BattleReportView.created',
                         'BattleReportView.is_attacker',
@@ -161,7 +161,7 @@ class Battle extends AppModel {
     }
 
 
-    function viewAttackReport($cities, $reportId) {
+    function viewAttackReport($cities, $reportViewId) {
         $report = $this->BattleReportView->find('first', array(
                 'joins' => array(
                         array(
@@ -177,10 +177,13 @@ class Battle extends AppModel {
                 ),
                 'fields' => array(
                         'BattleReportView.id',
-                        'BattleReportView.battle_id'
+                        'BattleReportView.battle_id',
+                        'BattleReportView.is_attacker',
+                        'BattleReportView.group_id'
                 ),
                 'conditions' => array(
-                        'BattleReportView.city_id' => $cities
+                        'BattleReportView.id' => $reportViewId,
+                        'BattleReportView.city_id' => $cities,
                 )
 
         ));

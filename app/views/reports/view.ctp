@@ -1,15 +1,6 @@
 <?php
 
-$troop_states_pst = array(
-        'joined the battle',
-        'stayed',
-        'left the battle',
-        'died',
-        'retreated',
-        'gained new units'
-);
-
-$results = array('snapshots' => array());
+$results = array('outcomeOnly' => false, 'snapshots' => array());
 
 if (count($battle_reports) > 0)
     $battleStartTime = strtotime($battle_reports[0]['BattleReport']['created']);

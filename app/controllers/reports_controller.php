@@ -6,6 +6,16 @@ class ReportsController extends AppController {
 
     var $allowedFromGame = array('index_local', 'view_local', 'index_remote', 'view_remote');
 
+
+    var $troop_states_pst = array(
+            'joined the battle',
+            'stayed',
+            'left the battle',
+            'died',
+            'retreated',
+            'gained new units'
+    );
+
     function beforeFilter() {
         if (!empty($this->params['named'])) {
             $this->params['form'] = $this->params['named'];
@@ -35,7 +45,7 @@ class ReportsController extends AppController {
 
         $this->set('battle_reports', $reports);
     }
-    
+
     function view_local() {
         if (empty($this->params['form']['id'])) {
             $this->render(false);
@@ -55,6 +65,7 @@ class ReportsController extends AppController {
 
         $reports = $this->Battle->viewBattle($this->params['form']['id']);
 
+        $this->set('troop_states_pst', $this->troop_states_pst);
         $this->set('main_report', $report);
         $this->set('battle_reports', $reports);
 
@@ -89,7 +100,6 @@ class ReportsController extends AppController {
                         'player_id' => $this->params['form']['playerId']
         )));
 
-        //main report data to find the beginning/end of the battle reports we need
         $report = $this->Battle->viewAttackReport(array_keys($cities), $this->params['form']['id']);
 
         if ($report === false) {
@@ -99,8 +109,69 @@ class ReportsController extends AppController {
 
         $reports = $this->Battle->viewBattle($report['BattleReportView']['battle_id']);
 
+        // If set, will render only this snapshot instead of the whole battle. This is used to show only the outcome of the battle instead of the whole thing.
+        $renderOnlySnapshot = null;
+
+        // If the player is an attacker and hasn't been in the battle for at least X # of rounds then he can only see the outcome
+        if ($report['BattleReportView']['is_attacker']) {
+            $enterRound = 0;
+            $enterSnapshot = null;
+            $enterReport = null;
+            $foundExit = false;
+            $groupId = $report['BattleReportView']['group_id'];
+
+            foreach ($reports as $battle_report) {
+                $round = $battle_report['BattleReport']['round'];
+
+                // Loop through each troop that was in this report to find the guy with the groupId specified above
+                foreach ($battle_report['BattleReportTroop'] as $snapshot) {
+                    if ($snapshot['group_id'] != $groupId) continue;
+
+                    $state = $snapshot['state'];
+
+                    switch($state) {
+                        case TROOP_STATE_ENTERING:
+                            $enterRound = $round;
+                            $enterSnapshot = $snapshot;
+                            $enterReport = $battle_report['BattleReport'];
+                            break;
+                        case TROOP_STATE_EXITING:
+                        case TROOP_STATE_DYING:
+                        case TROOP_STATE_RETREATING:
+                            $foundExit = true;
+                            break;
+                    }
+
+                    if ($foundExit) {
+                        // If player died or didn't last for more than the min rounds then he can only see the outcome report
+                        if ($state == TROOP_STATE_DYING || $round - $enterRound < BATTLE_VIEW_MIN_ROUNDS) {
+                            // Put the start and exit snapshot of their own troops since that's all they can see.
+                            $renderOnlySnapshot = array(
+                                    array('BattleReport' => $enterReport, 'snapshot' => $enterSnapshot),
+                                    array('BattleReport' => $battle_report['BattleReport'], 'snapshot' => $snapshot)
+                            );
+                        }
+
+                        break;
+                    }
+                }
+
+                // We found where the player exited the battle
+                if ($foundExit)
+                    break;
+            }
+        }
+
         $this->set('main_report', $report);
-        $this->set('battle_reports', $reports);
-        $this->render('view');
+        $this->set('troop_states_pst', $this->troop_states_pst);
+
+        if ($renderOnlySnapshot == null) {
+            $this->set('battle_reports', $reports);
+            $this->render('view');
+        }
+        else {
+            $this->set('battle_reports', $renderOnlySnapshot);
+            $this->render('view_outcome_only');
+        }
     }
 }

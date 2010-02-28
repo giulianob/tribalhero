@@ -49,5 +49,7 @@ define('TROOP_STATE_DYING', 3);
 define('TROOP_STATE_RETREATING', 4);
 define('TROOP_STATE_REINFORCED', 5);
 
+define('BATTLE_VIEW_MIN_ROUNDS', 5);
+
 define('FLASH_DOMAIN', 'local.tribalhero.com');
 ?>

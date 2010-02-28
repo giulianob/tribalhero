@@ -36,15 +36,7 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {
-            switch (state) {
-                case ActionInterrupt.ABORT:
-                    Global.Scheduler.Del(this);
-                    break;
-                case ActionInterrupt.KILLED:
-                    Global.Scheduler.Del(this);
-                    break;
-            }
+        public override void Interrupt(ActionInterrupt state) {            
         }
 
         public override ActionType Type {

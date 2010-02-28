@@ -272,7 +272,10 @@ namespace Game.Battle {
         }
 
         public void Subscribe(Session session) {
-            Global.Channel.Subscribe(session, "/BATTLE/" + city.Id);
+            try {
+                Global.Channel.Subscribe(session, "/BATTLE/" + city.Id);
+            }
+            catch (DuplicateSubscriptionException) {}
         }
 
         public void Unsubscribe(Session session) {

@@ -328,7 +328,10 @@ namespace Game.Data {
         #region Channel Events
 
         public void Subscribe(IChannel s) {
-            Global.Channel.Subscribe(s, "/CITY/" + id);
+            try {
+                Global.Channel.Subscribe(s, "/CITY/" + id);
+            }
+            catch (DuplicateSubscriptionException) { }
         }
 
         public void Unsubscribe(IChannel s) {

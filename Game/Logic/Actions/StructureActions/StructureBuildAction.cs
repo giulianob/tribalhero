@@ -172,6 +172,9 @@ namespace Game.Logic.Actions {
         public override void Interrupt(ActionInterrupt state) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
+                if (!IsValid())
+                    return;
+
                 Structure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                     throw new Exception();

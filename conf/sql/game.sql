@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 26, 2010 at 11:27 PM
+-- Generation Time: Feb 28, 2010 at 05:32 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -57,7 +57,7 @@ CREATE TABLE `battles` (
   KEY `ended` (`ended`),
   KEY `created` (`created`),
   KEY `city_id` (`city_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -96,7 +96,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -117,7 +117,7 @@ CREATE TABLE `battle_report_objects` (
   `formation_type` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -142,7 +142,7 @@ CREATE TABLE `battle_report_troops` (
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`),
   KEY `state` (`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -156,13 +156,13 @@ CREATE TABLE `battle_report_views` (
   `city_id` int(10) unsigned NOT NULL,
   `troop_stub_id` tinyint(3) unsigned NOT NULL,
   `battle_id` int(10) unsigned NOT NULL,
-  `battle_report_troop_id` int(10) unsigned NOT NULL,
+  `group_id` int(10) unsigned NOT NULL,
   `is_attacker` tinyint(1) NOT NULL,
   `read` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `battle_report_troop_id` (`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -382,7 +382,7 @@ CREATE TABLE `players` (
   KEY `login_key` (`login_key`),
   KEY `session_id` (`session_id`),
   KEY `facebook_id` (`facebook_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

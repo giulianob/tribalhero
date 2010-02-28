@@ -18,6 +18,7 @@ namespace Game.Battle {
         private readonly byte lvl;
         private readonly ushort type;
         private ushort count;
+        private Resource loot = new Resource();
 
         public ushort LeftOverHp { get; set; }
 
@@ -28,7 +29,7 @@ namespace Game.Battle {
         }
 
         public Resource Loot {
-            get { return TroopStub.TroopObject.Stats.Loot; }
+            get { return loot; }
         }
 
         public override bool IsDead {
@@ -115,7 +116,8 @@ namespace Game.Battle {
             }*/
         }
 
-        public override void TakeDamage(int dmg) {
+        public override void TakeDamage(int dmg, out Resource returning) {
+            returning = null;
             ushort dead = 0;
             if (dmg >= LeftOverHp) {
                 dmg -= LeftOverHp;
@@ -135,6 +137,19 @@ namespace Game.Battle {
                 TroopStub.BeginUpdate();
                 TroopStub[formation].Remove(type, dead);
                 TroopStub.EndUpdate();
+
+                int totalCarry = BaseStats.Carry * Count;
+                returning = new Resource(loot.Crop > totalCarry ? loot.Crop - totalCarry : 0,
+                                         loot.Gold > totalCarry ? loot.Gold - totalCarry : 0,
+                                         loot.Iron > totalCarry ? loot.Iron - totalCarry : 0,
+                                         loot.Wood > totalCarry ? loot.Wood - totalCarry : 0,
+                                         0);
+                loot.subtract(returning); 
+                TroopStub.TroopObject.BeginUpdate();
+                TroopStub.TroopObject.Stats.Loot.subtract(returning);
+                TroopStub.TroopObject.EndUpdate();
+
+
             }
 
             Global.DbManager.Save(this);
@@ -147,6 +162,8 @@ namespace Game.Battle {
         public override void ExitBattle() {}
 
         public override void ReceiveReward(int reward, Resource resource) {
+            loot.add(resource);
+            Global.DbManager.Save(this);
             TroopStub.TroopObject.BeginUpdate();
             TroopStub.TroopObject.Stats.RewardPoint += reward;
             TroopStub.TroopObject.Stats.Loot.add(resource);

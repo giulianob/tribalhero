@@ -64,6 +64,10 @@ namespace Game.Data {
             }
         }
 
+        public bool Empty {
+            get { return crop == 0 && gold == 00 && iron == 0 && wood == 0 && labor == 0; }
+        }
+
         public Resource() {}
 
         public Resource(Resource copy) {
@@ -160,6 +164,11 @@ namespace Game.Data {
             return true;
         }
 
+        internal void subtract(Resource resource) {
+            Resource dummy;
+            subtract(resource, out dummy);
+        }
+
         public void subtract(Resource cost, out Resource actual) {
             actual = new Resource();
             crop -= (actual.crop = crop > cost.crop ? cost.crop : crop);
@@ -187,5 +196,20 @@ namespace Game.Data {
             labor = 0;
             FireStatsUpdate();
         }
+        public static Resource GetMinValuesBetween(Resource a, Resource b) {
+            return new Resource(Math.Min(a.crop, b.crop),
+                                Math.Min(a.gold, b.gold),
+                                Math.Min(a.iron, b.iron),
+                                Math.Min(a.wood, b.wood),
+                                Math.Min(a.labor, b.labor));
+        }
+        public static Resource GetMaxValuesBetween(Resource a, Resource b) {
+            return new Resource(Math.Max(a.crop, b.crop),
+                                Math.Max(a.gold, b.gold),
+                                Math.Max(a.iron, b.iron),
+                                Math.Max(a.wood, b.wood),
+                                Math.Max(a.labor, b.labor));
+        }
+
     }
 }

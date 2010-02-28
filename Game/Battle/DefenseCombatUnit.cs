@@ -109,7 +109,7 @@ namespace Game.Battle {
             actualDmg = Math.Min((int) Hp, dmg);
         }
 
-        public override void TakeDamage(int dmg) {
+        public override void TakeDamage(int dmg, out Resource returning) {
             ushort dead = 0;
             if (dmg >= LeftOverHp) {
                 dmg -= LeftOverHp;
@@ -132,6 +132,7 @@ namespace Game.Battle {
             }
 
             Global.DbManager.Save(this);
+            returning = null;
         }
 
         public override void CleanUp() {

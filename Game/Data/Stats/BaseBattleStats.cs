@@ -42,12 +42,14 @@ namespace Game.Data {
 
         public ushort Reward { get; private set; }
 
+        public byte Carry { get; private set; }
+
         #endregion
 
         #region Constructors
 
         public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, ushort atk,
-                               ushort def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward) {
+                               ushort def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward, byte carry) {
             Type = type;
             Lvl = lvl;
             Weapon = weapon;
@@ -60,6 +62,7 @@ namespace Game.Data {
             Spd = speed;
             GroupSize = groupSize;
             Reward = reward;
+            Carry = carry;
         }
 
         #endregion

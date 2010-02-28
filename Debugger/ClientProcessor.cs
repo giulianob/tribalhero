@@ -8,7 +8,7 @@ namespace Debugger {
 
         public ClientProcessor():base() {
         }
-        public override void execute(Session session, Packet packet) {
+        public void execute(Session session, Packet packet) {
          //   base.execute(session, packet);
         }
     

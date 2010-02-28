@@ -51,9 +51,9 @@ namespace Game.Battle {
         private void BattleSkippedAttacker(CombatObject source) {
             Packet packet = new Packet(Command.BATTLE_SKIPPED);
             packet.AddUInt32(source.Id);
-            Global.Channel.Post(channelName, packet);            
+            Global.Channel.Post(channelName, packet);
         }
-        
+
         private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage) {
             Packet packet = new Packet(Command.BATTLE_ATTACK);
             packet.AddUInt16(battle.Stamina);
@@ -162,7 +162,7 @@ namespace Game.Battle {
             if (ActionAttacked != null)
                 ActionAttacked(source, target, dmg);
         }
-        
+
         public void EventSkippedAttacker(CombatObject source) {
             if (SkippedAttacker != null)
                 SkippedAttacker(source);
@@ -247,7 +247,7 @@ namespace Game.Battle {
 
         public City[] LockList {
             get {
-                Dictionary<uint, City> cities = new Dictionary<uint, City> {{city.Id, city}};
+                Dictionary<uint, City> cities = new Dictionary<uint, City> { { city.Id, city } };
 
                 foreach (CombatObject co in attackers)
                     cities[co.City.Id] = co.City;
@@ -274,8 +274,7 @@ namespace Game.Battle {
         public void Subscribe(Session session) {
             try {
                 Global.Channel.Subscribe(session, "/BATTLE/" + city.Id);
-            }
-            catch (DuplicateSubscriptionException) {}
+            } catch (DuplicateSubscriptionException) { }
         }
 
         public void Unsubscribe(Session session) {
@@ -296,7 +295,7 @@ namespace Game.Battle {
             return null;
         }
 
-        #region Database Loader 
+        #region Database Loader
 
         public void DbLoaderAddToLocal(CombatStructure structure, uint id) {
             structure.Id = id;
@@ -306,7 +305,7 @@ namespace Game.Battle {
 
             defenders.Add(structure, false);
 
-            idGen.set((int) structure.Id);
+            idGen.set((int)structure.Id);
         }
 
         public void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal) {
@@ -320,8 +319,8 @@ namespace Game.Battle {
             else
                 attackers.Add(obj, false);
 
-            idGen.set((int) obj.Id);
-            groupIdGen.set((int) obj.GroupId);
+            idGen.set((int)obj.Id);
+            groupIdGen.set((int)obj.GroupId);
         }
 
         #endregion
@@ -329,7 +328,7 @@ namespace Game.Battle {
         #region Adding/Removing from Battle
 
         public void AddToLocal(TroopStub stub, ReportState state) {
-            List<TroopStub> list = new List<TroopStub> {stub};
+            List<TroopStub> list = new List<TroopStub> { stub };
             AddToLocal(list, state);
         }
 
@@ -374,7 +373,7 @@ namespace Game.Battle {
         }
 
         public void AddToAttack(TroopStub stub) {
-            List<TroopStub> list = new List<TroopStub> {stub};
+            List<TroopStub> list = new List<TroopStub> { stub };
             AddToAttack(list);
         }
 
@@ -426,7 +425,7 @@ namespace Game.Battle {
                     uint id = 1;
 
                     if (!isLocal)
-                        id = (uint) idGen.getNext();
+                        id = (uint)idGen.getNext();
 
                     foreach (Formation formation in obj) {
                         if (formation.Type == FormationType.GARRISON || formation.Type == FormationType.IN_BATTLE)
@@ -451,7 +450,7 @@ namespace Game.Battle {
                             foreach (CombatObject unit in combatObjects) {
                                 added = true;
                                 unit.LastRound = round;
-                                unit.Id = (uint) idGen.getNext();
+                                unit.Id = (uint)idGen.getNext();
                                 unit.GroupId = id;
                                 combatList.Add(unit);
                                 list.Add(unit);
@@ -506,7 +505,7 @@ namespace Game.Battle {
 
         #endregion
 
-        #region Battle 
+        #region Battle
 
         public void RefreshBattleOrder() {
             battleOrder = new BattleOrder(round);
@@ -596,7 +595,7 @@ namespace Game.Battle {
             foreach (CombatObject combatObj in attackers) {
                 if (!combatObj.IsDead)
                     combatObj.ExitBattle();
-            }            
+            }
 
             EventExitBattle(attackers, defenders);
 
@@ -640,6 +639,7 @@ namespace Game.Battle {
                     return false;
                 }
 
+                #region Find Target
                 CombatObject defender;
 
                 if (attacker.CombatList == attackers)
@@ -654,11 +654,15 @@ namespace Game.Battle {
                     EventSkippedAttacker(attacker);
                     return true;
                 }
+                #endregion
 
+                #region Damage
                 ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
                 int actualDmg;
+                Resource lostResource;
 
                 defender.CalculateDamage(dmg, out actualDmg);
+                defender.TakeDamage(actualDmg, out lostResource);
 
                 attacker.DmgDealt += actualDmg;
                 attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
@@ -670,8 +674,10 @@ namespace Game.Battle {
                 defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
                 ++defender.HitRecv;
 
-                defender.TakeDamage(actualDmg);
+                defender.TakeDamage(actualDmg, out lostResource);
+                #endregion
 
+                #region Object removal
                 if (defender.IsDead) {
                     EventUnitRemoved(defender);
                     battleOrder.Remove(defender);
@@ -685,23 +691,40 @@ namespace Game.Battle {
                         attackers.Remove(defender);
                         report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.DYING : ReportState.STAYING);
                     }
+                #endregion
 
+                    #region Loot
+                    if (attacker.CombatList == Attacker) {
+                        Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                        city.BeginUpdate();
+                        city.Resource.Subtract(loot, out loot);
+                        attacker.ReceiveReward(defender.Stats.Base.Reward * actualDmg, loot);
+                        city.EndUpdate();
+                    } else {
+                        if (lostResource != null && !lostResource.Empty) {
+                            city.BeginUpdate();
+                            city.Resource.Add(lostResource);
+                            city.EndUpdate();
+                        }
+
+                    }
                     defender.CleanUp();
                 }
+                    #endregion
 
                 if (attacker.CombatList == Attacker) {
                     Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
                     city.BeginUpdate();
                     city.Resource.Subtract(loot, out loot);
-                    attacker.ReceiveReward(defender.Stats.Base.Reward*actualDmg, loot);
+                    attacker.ReceiveReward(defender.Stats.Base.Reward * actualDmg, loot);
                     city.EndUpdate();
                 }
 
-                EventActionAttacked(attacker, defender, (ushort) actualDmg);
+                EventActionAttacked(attacker, defender, (ushort)actualDmg);
 
                 attacker.ParticipatedInRound();
 
-                EventExitTurn(Attacker, Defender, (int) turn++);
+                EventExitTurn(Attacker, Defender, (int)turn++);
 
                 if (!BattleIsValid()) {
                     BattleEnded();
@@ -723,13 +746,12 @@ namespace Game.Battle {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("city_id", city.Id, DbType.UInt32)}; }
+            get { return new[] { new DbColumn("city_id", city.Id, DbType.UInt32) }; }
         }
 
         public DbDependency[] DbDependencies {
             get {
-                return new[]
-                       {new DbDependency("ReportedObjects", true, true), new DbDependency("ReportedTroops", true, true)};
+                return new[] { new DbDependency("ReportedObjects", true, true), new DbDependency("ReportedTroops", true, true) };
             }
         }
 

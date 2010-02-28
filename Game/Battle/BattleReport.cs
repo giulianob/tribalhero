@@ -85,7 +85,8 @@ namespace Game.Battle {
             if (co.ClassType == BattleClass.UNIT) {
                 ICombatUnit cu = co as ICombatUnit;
                 if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
-                    SnapTroop(state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.Loot);
+                    SnapTroop(state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker,
+                              out combatTroopId, cu.TroopStub.TroopObject.Stats.Loot);
                     ReportedTroops[cu.TroopStub] = combatTroopId;
                 } else if (state != ReportState.STAYING)
                     SnapTroopState(cu.TroopStub, state);
@@ -124,7 +125,7 @@ namespace Game.Battle {
                     ICombatUnit cu = co as ICombatUnit;
 
                     if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId)) {
-                        SnapTroop(state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.Loot);
+                        SnapTroop(state, cu.TroopStub.City.Id, cu.TroopStub.TroopId, co.GroupId, isAttacker, out combatTroopId, cu.TroopStub.TroopObject.Stats.Loot);
                         ReportedTroops[cu.TroopStub] = combatTroopId;
                     } else if ((state == ReportState.REINFORCED || state == ReportState.EXITING) && !updatedObj.Contains(cu.TroopStub)) {
                         //Exiting state should override anything else

@@ -264,7 +264,7 @@ namespace Game.Data {
             actual = new Resource();
             Crop.Subtract((actual.Crop = Crop.Value > cost.Crop ? cost.Crop : Crop.Value));
             Gold.Subtract((actual.Gold = Gold.Value > cost.Gold ? cost.Gold : Gold.Value));
-            Iron.Subtract((actual.Iron = Iron.Value > cost.Iron ? cost.Iron : Crop.Value));
+            Iron.Subtract((actual.Iron = Iron.Value > cost.Iron ? cost.Iron : Iron.Value));
             Wood.Subtract((actual.Wood = Wood.Value > cost.Wood ? cost.Wood : Wood.Value));
             Labor.Subtract((actual.Labor = Labor.Value > cost.Labor ? cost.Labor : Labor.Value));
             EndUpdate();

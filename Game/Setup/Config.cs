@@ -37,6 +37,7 @@ namespace Game.Setup {
         public static readonly double seconds_per_unit = 1.0; //dont make it zero
         public static readonly int battle_turn_interval = 60;
         public static readonly int battle_min_rounds = 3;
+        public static readonly int battle_loot_per_round = 10;  // percentage of total carry
         public static readonly int stamina_initial;
         public static readonly bool resource_upkeep;
         public static readonly bool resource_cap = true;
@@ -60,7 +61,7 @@ namespace Game.Setup {
         public static readonly bool ai_enabled;
         public static readonly int ai_count = 100;
 
-        public static readonly bool actions_instant_time;        
+        public static readonly bool actions_instant_time;
 
         public static Random Random { get; private set; }
 

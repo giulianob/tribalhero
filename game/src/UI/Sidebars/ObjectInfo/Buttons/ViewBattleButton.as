@@ -25,6 +25,11 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
+		// Override disable since this button can always be clicked
+		override public function disable():void 
+		{			
+		}
+		
 		public function onMouseOver(event: MouseEvent):void
 		{
 			tooltip.show(this);

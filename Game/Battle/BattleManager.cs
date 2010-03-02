@@ -649,6 +649,7 @@ namespace Game.Battle {
 
                 if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && defender.Stats.Def == 0)) {
                     attacker.ParticipatedInRound();
+                    Global.DbManager.Save(attacker);
                     EventSkippedAttacker(attacker);
                     return true;
                 }
@@ -658,7 +659,7 @@ namespace Game.Battle {
                 #region Damage
 
                 ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
-                int actualDmg;
+                ushort actualDmg;
                 Resource lostResource;
 
                 defender.CalculateDamage(dmg, out actualDmg);
@@ -674,7 +675,7 @@ namespace Game.Battle {
                 defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
                 ++defender.HitRecv;
 
-                #endregion
+                #endregion                
 
                 #region Loot
 
@@ -713,14 +714,19 @@ namespace Game.Battle {
 
                     defender.CleanUp();
                 }
+                else {
+                    Global.DbManager.Save(defender);
+                }
 
                 #endregion
 
-                EventActionAttacked(attacker, defender, (ushort) actualDmg);
+                EventActionAttacked(attacker, defender, actualDmg);
 
-                attacker.ParticipatedInRound();
+                attacker.ParticipatedInRound();                
 
                 EventExitTurn(Attacker, Defender, (int) turn++);
+
+                Global.DbManager.Save(attacker);
 
                 if (!BattleIsValid()) {
                     BattleEnded();

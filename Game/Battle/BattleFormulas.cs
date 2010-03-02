@@ -122,7 +122,7 @@ namespace Game.Battle {
             */
         }
 
-        internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, int actualDmg) {
+        internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg) {
             int totalCarry = attacker.BaseStats.Carry * attacker.Count;
             int count = attacker.BaseStats.Carry * attacker.Count * Config.battle_loot_per_round / 100;
             if (count == 0) count = 1;

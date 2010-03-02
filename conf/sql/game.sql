@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 28, 2010 at 05:32 PM
+-- Generation Time: Mar 02, 2010 at 02:13 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -268,6 +268,17 @@ CREATE TABLE `combat_units` (
   `troop_stub_city_id` int(10) unsigned NOT NULL,
   `troop_stub_id` tinyint(3) unsigned NOT NULL,
   `is_local` tinyint(1) NOT NULL,
+  `damage_min_dealt` smallint(5) unsigned NOT NULL,
+  `damage_max_dealt` smallint(5) unsigned NOT NULL,
+  `damage_min_received` smallint(5) unsigned NOT NULL,
+  `damage_max_received` smallint(5) unsigned NOT NULL,
+  `hits_dealt` smallint(5) unsigned NOT NULL,
+  `hits_received` smallint(5) unsigned NOT NULL,
+  `loot_crop` int(11) NOT NULL DEFAULT '0',
+  `loot_wood` int(11) NOT NULL DEFAULT '0',
+  `loot_iron` int(11) NOT NULL DEFAULT '0',
+  `loot_gold` int(11) NOT NULL DEFAULT '0',
+  `loot_labor` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -501,8 +512,8 @@ CREATE TABLE `structure_properties_list` (
   `name` varchar(16) NOT NULL,
   `value` varchar(32) NOT NULL,
   `datatype` tinyint(4) unsigned NOT NULL,
-  PRIMARY KEY (`city_id`,`structure_id`,`name`),
-  KEY `city_id` (`city_id`,`structure_id`)
+  UNIQUE KEY `city_id` (`city_id`,`structure_id`,`name`),
+  KEY `combo_index` (`city_id`,`structure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

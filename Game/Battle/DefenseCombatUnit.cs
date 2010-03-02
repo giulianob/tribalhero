@@ -105,8 +105,8 @@ namespace Game.Battle {
             get { return (uint) (Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp)); }
         }
 
-        public override void CalculateDamage(ushort dmg, out int actualDmg) {
-            actualDmg = Math.Min((int) Hp, dmg);
+        public override void CalculateDamage(ushort dmg, out ushort actualDmg) {
+            actualDmg = dmg;
         }
 
         public override void TakeDamage(int dmg, out Resource returning) {
@@ -130,8 +130,7 @@ namespace Game.Battle {
                 TroopStub[formation].Remove(type, dead);
                 TroopStub.EndUpdate();
             }
-
-            Global.DbManager.Save(this);
+            
             returning = null;
         }
 
@@ -164,9 +163,9 @@ namespace Game.Battle {
         public override DbColumn[] DbPrimaryKey {
             get {
                 return new[] {
-                                          new DbColumn("id", Id, DbType.UInt32),
-                                          new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)
-                                      };
+                                  new DbColumn("id", Id, DbType.UInt32),
+                                  new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)
+                              };
             }
         }
 
@@ -177,18 +176,31 @@ namespace Game.Battle {
         public override DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("last_round", LastRound, DbType.UInt32),
-                                          new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                                          new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
-                                          new DbColumn("damage_received", DmgRecv, DbType.Int32),
-                                          new DbColumn("group_id", GroupId, DbType.UInt32),
-                                          new DbColumn("formation_type", (byte) formation, DbType.Byte),
-                                          new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
-                                          new DbColumn("type", type, DbType.UInt16), new DbColumn("is_local", true, DbType.Boolean),
-                                          new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
-                                          new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
-                                          new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16)
-                                      };
+                                  new DbColumn("last_round", LastRound, DbType.UInt32),
+                                  new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+
+                                  new DbColumn("group_id", GroupId, DbType.UInt32),
+                                  new DbColumn("formation_type", (byte) formation, DbType.Byte),
+                                  new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
+                                  new DbColumn("type", type, DbType.UInt16), new DbColumn("is_local", true, DbType.Boolean),
+                                  
+                                  new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
+                                  new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
+                                  
+                                  new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16),
+
+                                  new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
+                                  new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
+
+                                  new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16),
+                                  new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
+                                  
+                                  new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
+                                  new DbColumn("damage_received", DmgRecv, DbType.Int32),
+
+                                  new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                                  new DbColumn("hits_received", HitRecv, DbType.UInt16),                                                                                                
+                            };
             }
         }
 

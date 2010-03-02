@@ -18,7 +18,7 @@ namespace Game.Battle {
         private readonly byte lvl;
         private readonly ushort type;
         private ushort count;
-        private Resource loot = new Resource();
+        private readonly Resource loot = new Resource();
 
         public ushort LeftOverHp { get; set; }
 
@@ -69,9 +69,13 @@ namespace Game.Battle {
             LeftOverHp = stats.MaxHp;
         }
 
+        // Used by the db loader
         public AttackCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl,
-                                ushort count, ushort leftOverHp) : this(owner, stub, formation, type, lvl, count) {
-            LeftOverHp = leftOverHp;
+                                ushort count, ushort leftOverHp, Resource loot)
+            : this(owner, stub, formation, type, lvl, count) {
+            LeftOverHp = leftOverHp;            
+
+            this.loot = loot;
         }
 
         public override bool InRange(CombatObject obj) {
@@ -109,11 +113,8 @@ namespace Game.Battle {
             get { return (uint) (Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp)); }
         }
 
-        public override void CalculateDamage(ushort dmg, out int actualDmg) {
-            actualDmg = Math.Min((int) Hp, dmg);
-/*            if (dmg >= stats.LeftOverHp) {
-                actualDmg += stats.LeftOverHp;
-            }*/
+        public override void CalculateDamage(ushort dmg, out ushort actualDmg) {
+            actualDmg = dmg;
         }
 
         public override void TakeDamage(int dmg, out Resource returning) {
@@ -148,11 +149,7 @@ namespace Game.Battle {
                 TroopStub.TroopObject.BeginUpdate();
                 TroopStub.TroopObject.Stats.Loot.subtract(returning);
                 TroopStub.TroopObject.EndUpdate();
-
-
-            }
-
-            Global.DbManager.Save(this);
+            }            
         }
 
         public override void CleanUp() {
@@ -162,8 +159,7 @@ namespace Game.Battle {
         public override void ExitBattle() {}
 
         public override void ReceiveReward(int reward, Resource resource) {
-            loot.add(resource);
-            Global.DbManager.Save(this);
+            loot.add(resource);            
             TroopStub.TroopObject.BeginUpdate();
             TroopStub.TroopObject.Stats.RewardPoint += reward;
             TroopStub.TroopObject.Stats.Loot.add(resource);
@@ -193,9 +189,9 @@ namespace Game.Battle {
         public override DbColumn[] DbPrimaryKey {
             get {
                 return new[] {
-                                          new DbColumn("id", Id, DbType.UInt32),
-                                          new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)
-                                      };
+                                  new DbColumn("id", Id, DbType.UInt32),
+                                  new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)
+                              };
             }
         }
 
@@ -206,18 +202,38 @@ namespace Game.Battle {
         public override DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("last_round", LastRound, DbType.UInt32),
-                                          new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                                          new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
-                                          new DbColumn("damage_received", DmgRecv, DbType.Int32),
-                                          new DbColumn("group_id", GroupId, DbType.UInt32),
-                                          new DbColumn("formation_type", (byte) formation, DbType.Byte),
-                                          new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16),
-                                          new DbColumn("type", type, DbType.UInt16), new DbColumn("is_local", false, DbType.Boolean),
-                                          new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
-                                          new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
-                                          new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16)
-                                      };
+                                  new DbColumn("group_id", GroupId, DbType.UInt32),
+                                  new DbColumn("formation_type", (byte) formation, DbType.Byte),
+                                  new DbColumn("level", lvl, DbType.Byte), 
+                                  new DbColumn("count", count, DbType.UInt16),
+                                  new DbColumn("type", type, DbType.UInt16), 
+                                  new DbColumn("is_local", false, DbType.Boolean),
+                                  new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16),
+                                  
+                                  new DbColumn("last_round", LastRound, DbType.UInt32),
+                                  new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+                                  
+                                  new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
+                                  new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),    
+
+                                  new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16),
+                                  new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
+
+                                  new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16),
+                                  new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
+                                  
+                                  new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
+                                  new DbColumn("damage_received", DmgRecv, DbType.Int32),
+
+                                  new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                                  new DbColumn("hits_received", HitRecv, DbType.UInt16),                                                                                                 
+
+                                  new DbColumn("loot_crop", loot.Crop, DbType.UInt32),
+                                  new DbColumn("loot_wood", loot.Wood, DbType.UInt32),
+                                  new DbColumn("loot_iron", loot.Iron, DbType.UInt32),
+                                  new DbColumn("loot_gold", loot.Gold, DbType.UInt32),
+                                  new DbColumn("loot_labor", loot.Labor, DbType.UInt32),
+                              };
             }
         }
 

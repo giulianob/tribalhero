@@ -14,58 +14,34 @@ namespace Game.Battle {
     }
 
     public abstract class CombatObject : IComparable<object>, IPersistableObject {
-        private int maxDmgRecv;
+        public ushort MaxDmgRecv { get; set; }
+        public ushort MinDmgRecv { get; set; }
 
-        public int MaxDmgRecv {
-            get { return maxDmgRecv; }
-            set { maxDmgRecv = value; }
-        }
+        public ushort MaxDmgDealt { get; set; }
+        public ushort MinDmgDealt { get; set; }
 
-        private int minDmgRecv = int.MaxValue;
-
-        public int MinDmgRecv {
-            get { return minDmgRecv; }
-            set { minDmgRecv = value; }
-        }
-
-        private int maxDmgDealt;
-
-        public int MaxDmgDealt {
-            get { return maxDmgDealt; }
-            set { maxDmgDealt = value; }
-        }
-
-        private int minDmgDealt = int.MaxValue;
-
-        public int MinDmgDealt {
-            get { return minDmgDealt; }
-            set { minDmgDealt = value; }
-        }
-
-        public int HitRecv { get; set; }
-
-        public int HitDealt { get; set; }
+        public ushort HitRecv { get; set; }
+        public ushort HitDealt { get; set; }
 
         public int DmgRecv { get; set; }
-
         public int DmgDealt { get; set; }
 
         public CombatList CombatList { get; set; }
 
         public int RoundsParticipated { get; set; }
 
-        private uint lastRound;
-
-        public uint LastRound {
-            get { return lastRound; }
-            set { lastRound = value; }
-        }
+        public uint LastRound { get; set; }
 
         public uint Id { get; set; }
 
         public uint GroupId { get; set; }
 
         protected BattleManager battleManager;
+
+        protected CombatObject() {
+            MinDmgDealt = ushort.MaxValue;
+            MinDmgRecv = ushort.MaxValue;
+        }
 
         public BattleManager Battle {
             get { return battleManager; }
@@ -83,7 +59,7 @@ namespace Game.Battle {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void CalculateDamage(ushort dmg, out int actualDmg) {
+        public virtual void CalculateDamage(ushort dmg, out ushort actualDmg) {
             throw new Exception("NOT IMPLEMENTED");
         }
 
@@ -150,15 +126,8 @@ namespace Game.Battle {
         }
 
         public void ParticipatedInRound() {
-            lastRound++;
-            RoundsParticipated++;
-            Global.DbManager.Save(this);
-        }
-
-        public void Print() {
-            Console.WriteLine(
-                "recv[{0}] dealt[{1}] hitRecv[{2}] hitDealt[{3}] maxDealt[{4}] minDealt[{5}] maxRecv[{6}] minRecv[{7}]",
-                DmgRecv, DmgDealt, HitRecv, HitDealt, maxDmgDealt, MinDmgDealt, maxDmgRecv, MaxDmgRecv);
+            LastRound++;
+            RoundsParticipated++;            
         }
 
         #region IComparable<GameObject> Members

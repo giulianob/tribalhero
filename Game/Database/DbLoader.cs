@@ -385,9 +385,17 @@ namespace Game.Database {
                                                                           (ushort) listReader["count"], (ushort) listReader["left_over_hp"]);
                                     } else {
                                         combatObj = new AttackCombatUnit(bm, troopStub, (FormationType) ((byte) listReader["formation_type"]), (ushort) listReader["type"], (byte) listReader["level"],
-                                                                         (ushort) listReader["count"], (ushort) listReader["left_over_hp"]);
+                                                                         (ushort) listReader["count"], (ushort) listReader["left_over_hp"],
+                                                                         new Resource((int) listReader["loot_crop"], (int) listReader["loot_gold"], (int) listReader["loot_iron"],
+                                                                                      (int) listReader["loot_wood"], (int) listReader["loot_labor"]));
                                     }
 
+                                    combatObj.MinDmgDealt = (ushort) listReader["damage_min_dealt"];
+                                    combatObj.MaxDmgDealt = (ushort) listReader["damage_max_dealt"];
+                                    combatObj.MinDmgRecv = (ushort) listReader["damage_min_received"];
+                                    combatObj.MinDmgDealt = (ushort) listReader["damage_max_received"];
+                                    combatObj.HitDealt = (ushort) listReader["hits_dealt"];
+                                    combatObj.HitRecv = (ushort) listReader["hits_received"];
                                     combatObj.GroupId = (uint) listReader["group_id"];
                                     combatObj.DmgDealt = (int) listReader["damage_dealt"];
                                     combatObj.DmgRecv = (int) listReader["damage_received"];

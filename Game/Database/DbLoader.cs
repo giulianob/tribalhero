@@ -100,11 +100,16 @@ namespace Game.Database {
                     Global.Logger.Info("Loading cities...");
                     using (reader = dbManager.Select(City.DB_TABLE)) {
                         while (reader.Read()) {
-                            LazyResource resource = new LazyResource((int) reader["crop"], (DateTime) reader["crop_realize_time"], (int) reader["crop_production_rate"], (int) reader["crop_upkeep"],
-                                                                     (int) reader["gold"], (DateTime) reader["gold_realize_time"], (int) reader["gold_production_rate"], (int) reader["iron"],
-                                                                     (DateTime) reader["iron_realize_time"], (int) reader["iron_production_rate"], (int) reader["wood"],
-                                                                     (DateTime) reader["wood_realize_time"], (int) reader["wood_production_rate"], (int) reader["labor"],
-                                                                     (DateTime) reader["labor_realize_time"], (int) reader["labor_production_rate"]);
+                            DateTime cropRealizeTime = ((DateTime) reader["crop_realize_time"]).Add(downTime);
+                            DateTime woodRealizeTime = ((DateTime) reader["wood_realize_time"]).Add(downTime);
+                            DateTime ironRealizeTime = ((DateTime) reader["iron_realize_time"]).Add(downTime);
+                            DateTime laborRealizeTime = ((DateTime) reader["labor_realize_time"]).Add(downTime);
+                            DateTime goldRealizeTime = ((DateTime) reader["gold_realize_time"]).Add(downTime);
+
+                            LazyResource resource = new LazyResource((int) reader["crop"], cropRealizeTime, (int) reader["crop_production_rate"], (int) reader["crop_upkeep"], (int) reader["gold"],
+                                                                     goldRealizeTime, (int) reader["gold_production_rate"], (int) reader["iron"], ironRealizeTime, (int) reader["iron_production_rate"],
+                                                                     (int) reader["wood"], woodRealizeTime, (int) reader["wood_production_rate"], (int) reader["labor"], laborRealizeTime,
+                                                                     (int) reader["labor_production_rate"]);
                             City city = new City(Global.Players[(uint) reader["player_id"]], (string) reader["name"], resource, null)
                                             {
                                                 Radius = (byte) reader["radius"],

@@ -172,11 +172,11 @@ namespace Game.Battle {
 
             foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL)) {
                 if (effect.id == EffectCode.BattleStatsArmoryMod &&
-                    stats.Armor == (ArmorType) Enum.Parse(typeof (ArmorType), (string) effect.value[0]))
+                    stats.Armor == (ArmorType) Enum.Parse(typeof (ArmorType), (string) effect.value[0], true))
                     hp = Math.Max((int) effect.value[1], hp);
 
                 if (effect.id == EffectCode.BattleStatsBlacksmithMod &&
-                    stats.Weapon == (WeaponType) Enum.Parse(typeof (WeaponType), (string) effect.value[0]))
+                    stats.Weapon == (WeaponType) Enum.Parse(typeof (WeaponType), (string) effect.value[0], true))
                     atk = Math.Max((int) effect.value[1], atk);
             }
 

@@ -88,7 +88,7 @@ package src.UI.Sidebars.ObjectInfo {
 				addStatRow("Range", structPrototype.range.toString());
 				addStatRow("Stealth", structPrototype.stealth.toString());
 				if (structPrototype.maxlabor > 0)
-				addStatRow("Labor", gameObject.labor + "/" + structPrototype.maxlabor);
+				addStatRow("Laborer", gameObject.labor + "/" + structPrototype.maxlabor);
 
 				var propPrototype: Array = PropertyFactory.getProperties(gameObject.type);
 

@@ -23,7 +23,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{			
 			super(btn, parentObj);
 			
-			textToolTip = new TextTooltip("Assign Workers");
+			textToolTip = new TextTooltip("Assign Laborers");
 			
 			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
 			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);

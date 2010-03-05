@@ -21,7 +21,11 @@ namespace Game.Logic {
         }
 
         public static bool MainBuilding(out Structure structure) {
-            structure = StructureFactory.GetStructure(2000, 1);
+            return MainBuilding(out structure, 1);
+        }
+
+        public static bool MainBuilding(out Structure structure, byte lvl) {
+            structure = StructureFactory.GetStructure(2000, lvl);
             uint x, y;
             if (!MapFactory.NextLocation(out x, out y)) {
                 structure = null;

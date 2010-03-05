@@ -36,7 +36,7 @@ namespace Game.Setup {
 
         public static readonly double seconds_per_unit = 1.0; //dont make it zero
         public static readonly int battle_turn_interval = 60;
-        public static readonly int battle_min_rounds = 3;
+        public static readonly int battle_min_rounds = 5;
         public static readonly int battle_loot_per_round = 10;  // percentage of total carry
         public static readonly int stamina_initial;
         public static readonly bool resource_upkeep;

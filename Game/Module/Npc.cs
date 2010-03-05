@@ -268,7 +268,7 @@ namespace Game.Module {
                     List<City> cities = npc.getCityList();
 
                     Structure structure;
-                    if (!Randomizer.MainBuilding(out structure)) {
+                    if (!Randomizer.MainBuilding(out structure, 2)) {
                         Global.Logger.Info(npc.Name);
                         break;
                     }

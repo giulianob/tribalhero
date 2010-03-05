@@ -143,7 +143,7 @@ namespace Testing.Resources {
         [TestMethod]
         public void TestSubtract() {
             LazyValue resource = new LazyValue(0, begin, 100, 0);
-
+            
             SystemClock.SetClock(begin.AddMinutes(30));
             resource.Subtract(30);
             Assert.AreEqual(resource.Value, 20);

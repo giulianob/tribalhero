@@ -61,7 +61,7 @@
 			lblArmorTitle = titleLabelMaker("Armor");
 			lblWeaponTitle = titleLabelMaker("Weapon");
 			lblHpTitle = titleLabelMaker("HP");
-			lblMaxLaborTitle = titleLabelMaker("Max Labor");
+			lblMaxLaborTitle = titleLabelMaker("Max Laborer");
 			lblDefenseTitle = titleLabelMaker("Defense");
 			lblStealthTitle = titleLabelMaker("Stealth");
 			lblRangeTitle = titleLabelMaker("Range");

@@ -152,7 +152,7 @@
 			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
 			shadow.alpha = 0.4;
 			shadow.filters = [new BlurFilter(5, 5)];	
-			shadow.mouseEnabled = false;
+			shadow.mouseEnabled = false;			
 			structureObj.addChild(shadow);
 			
 			var img: DisplayObject = getSprite(type, level);

@@ -43,11 +43,13 @@
 		public static function marketTax(structure: StructureObject): Number
 		{
 			if (structure.level == 1)
-				return 0.30;
+				return 0.25;
 			else if (structure.level == 2)
 				return 0.20;
 			else if (structure.level == 3)
-				return 0.10;
+				return 0.15;
+			else if (structure.level == 4)
+				return 0.10;			
 			else 
 				return 0.05;
 		}		

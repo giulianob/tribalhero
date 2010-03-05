@@ -14,9 +14,9 @@ namespace Game.Logic.Actions {
         private uint structureId;
         private uint techId;
 
-        private bool isSelfInit = false;
+        private bool isSelfInit;
 
-        public TechnologyUpgradeAction() {}
+        public TechnologyUpgradeAction() { }
 
         public TechnologyUpgradeAction(uint cityId, uint structureId, uint techId) {
             this.cityId = cityId;
@@ -62,7 +62,7 @@ namespace Game.Logic.Actions {
             if (!structure.Technologies.TryGetTechnology(techId, out tech))
                 return Error.OBJECT_NOT_FOUND;
 
-            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
+            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
             if (techBase == null)
                 return Error.OBJECT_NOT_FOUND;
@@ -70,7 +70,8 @@ namespace Game.Logic.Actions {
             if (isSelfInit) {
                 beginTime = DateTime.Now;
                 endTime = DateTime.Now;
-            } else {
+            }
+            else {
                 if (!city.Resource.HasEnough(techBase.resources))
                     return Error.RESOURCE_NOT_ENOUGH;
 
@@ -79,7 +80,7 @@ namespace Game.Logic.Actions {
                 city.EndUpdate();
 
                 beginTime = DateTime.Now;
-                endTime = DateTime.Now.AddSeconds(techBase.time*Config.seconds_per_unit);
+                endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : techBase.time * Config.seconds_per_unit);
             }
 
             return Error.OK;
@@ -99,7 +100,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
+                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
                 if (techBase == null) {
                     StateChange(ActionState.FAILED);
@@ -114,7 +115,7 @@ namespace Game.Logic.Actions {
                     case ActionInterrupt.CANCEL:
                         Global.Scheduler.Del(this);
                         city.BeginUpdate();
-                        city.Resource.Add(techBase.resources/2);
+                        city.Resource.Add(techBase.resources / 2);
                         city.EndUpdate();
                         StateChange(ActionState.INTERRUPTED);
                         break;
@@ -146,7 +147,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
+                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
                 if (techBase == null) {
                     StateChange(ActionState.FAILED);

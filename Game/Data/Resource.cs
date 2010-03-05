@@ -147,7 +147,13 @@ namespace Game.Data {
             else
                 woodDelta = (int) (wood/costPerUnit.wood);
 
-            return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(woodDelta, ironDelta)));
+            int laborDelta;
+            if (costPerUnit.labor == 0)
+                laborDelta = int.MaxValue;
+            else
+                laborDelta = (int)(labor / costPerUnit.labor);
+
+            return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(woodDelta, Math.Min(laborDelta, ironDelta))));
         }
 
         public bool hasEnough(Resource cost) {
@@ -173,7 +179,7 @@ namespace Game.Data {
             actual = new Resource();
             crop -= (actual.crop = crop > cost.crop ? cost.crop : crop);
             gold -= (actual.gold = gold > cost.gold ? cost.gold : gold);
-            iron -= (actual.iron = iron > cost.iron ? cost.iron : crop);
+            iron -= (actual.iron = iron > cost.iron ? cost.iron : iron);
             wood -= (actual.wood = wood > cost.wood ? cost.wood : wood);
             labor -= (actual.labor = labor > cost.labor ? cost.labor : labor);
             FireStatsUpdate();

@@ -103,7 +103,7 @@ UNIVERSITY_STRUCTURE_LVL_8,Level 8 description
 UNIVERSITY_STRUCTURE_LVL_9,Level 9 description
 UNIVERSITY_STRUCTURE_LVL_10,Level 10 description
 ARMORY_STRUCTURE_NAME,Armory
-ARMORY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city's military.
+ARMORY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city's military defense.
 ARMORY_STRUCTURE_LVL_1,Level 1 description
 ARMORY_STRUCTURE_LVL_2,Level 2 description
 ARMORY_STRUCTURE_LVL_3,Level 3 description
@@ -114,6 +114,18 @@ ARMORY_STRUCTURE_LVL_7,Level 7 description
 ARMORY_STRUCTURE_LVL_8,Level 8 description
 ARMORY_STRUCTURE_LVL_9,Level 9 description
 ARMORY_STRUCTURE_LVL_10,Level 10 description
+BLACKSMITH_STRUCTURE_NAME,Blacksmith
+BLACKSMITH_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city's military offense.
+BLACKSMITH_STRUCTURE_LVL_1,Level 1 description
+BLACKSMITH_STRUCTURE_LVL_2,Level 2 description
+BLACKSMITH_STRUCTURE_LVL_3,Level 3 description
+BLACKSMITH_STRUCTURE_LVL_4,Level 4 description
+BLACKSMITH_STRUCTURE_LVL_5,Level 5 description
+BLACKSMITH_STRUCTURE_LVL_6,Level 6 description
+BLACKSMITH_STRUCTURE_LVL_7,Level 7 description
+BLACKSMITH_STRUCTURE_LVL_8,Level 8 description
+BLACKSMITH_STRUCTURE_LVL_9,Level 9 description
+BLACKSMITH_STRUCTURE_LVL_10,Level 10 description
 TOWER_STRUCTURE_NAME,Tower
 TOWER_STRUCTURE_DESCRIPTION,Provides defense against nearby buildings during an attack.
 TOWER_STRUCTURE_LVL_1,Protects buildings within a 1 tile radius.

@@ -170,14 +170,14 @@ namespace Game.Battle {
     }
 
     public class BattleManager : BattleBase, IPersistableObject {
-        private LargeIdGenerator idGen = new LargeIdGenerator(ushort.MaxValue);
-        private LargeIdGenerator groupIdGen = new LargeIdGenerator(ushort.MaxValue);
+        private readonly LargeIdGenerator idGen = new LargeIdGenerator(ushort.MaxValue);
+        private readonly LargeIdGenerator groupIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        private CombatList attackers = new CombatList();
-        private CombatList defenders = new CombatList();
+        private readonly CombatList attackers = new CombatList();
+        private readonly CombatList defenders = new CombatList();
 
         private BattleOrder battleOrder = new BattleOrder(0);
-        private BattleReport report;
+        private readonly BattleReport report;
 
         #region Properties Members
 

@@ -67,9 +67,9 @@ namespace Game.Data.Troop {
         public DbColumn[] DbPrimaryKey {
             get {
                 return new[] {
-                                          new DbColumn("city_id", stub.TroopManager.City.Id, DbType.UInt32),
-                                          new DbColumn("troop_stub_id", stub.TroopId, DbType.UInt32),
-                                      };
+                                  new DbColumn("city_id", stub.TroopManager.City.Id, DbType.UInt32),
+                                  new DbColumn("troop_stub_id", stub.TroopId, DbType.UInt32),
+                              };
             }
         }
 

@@ -8,7 +8,7 @@ using Game.Database;
 
 namespace Game.Logic {
     public abstract class ScheduledPassiveAction : PassiveAction, ISchedule, IActionTime {
-        public ScheduledPassiveAction() {}
+        protected ScheduledPassiveAction() {}
 
         #region IActionTime Members
 
@@ -30,10 +30,7 @@ namespace Game.Logic {
 
         public DateTime NextTime {
             get {
-                if (nextTime == DateTime.MinValue)
-                    return endTime;
-                else
-                    return nextTime;
+                return nextTime == DateTime.MinValue ? endTime : nextTime;
             }
             set { nextTime = value; }
         }
@@ -52,7 +49,7 @@ namespace Game.Logic {
 
         #region IPersistable Members
 
-        public ScheduledPassiveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible) {
+        protected ScheduledPassiveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible) {
             ActionId = id;
             IsVisible = isVisible;
             this.beginTime = beginTime;
@@ -62,15 +59,17 @@ namespace Game.Logic {
 
         public override DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
-                                          new DbColumn("is_chain", IsChain, DbType.Boolean),
-                                          new DbColumn("is_scheduled", true, DbType.Boolean),
-                                          new DbColumn("is_visible", IsVisible, DbType.Boolean), new DbColumn("type", Type, DbType.UInt32)
-                                          , new DbColumn("begin_time", BeginTime, DbType.DateTime),
-                                          new DbColumn("end_time", EndTime, DbType.DateTime),
-                                          new DbColumn("next_time", nextTime, DbType.DateTime),
-                                          new DbColumn("properties", Properties, DbType.String)
-                                      };
+                return new[] {
+                                new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                                new DbColumn("is_chain", IsChain, DbType.Boolean),
+                                new DbColumn("is_scheduled", true, DbType.Boolean),
+                                new DbColumn("is_visible", IsVisible, DbType.Boolean), 
+                                new DbColumn("type", Type, DbType.UInt32), 
+                                new DbColumn("begin_time", BeginTime, DbType.DateTime),
+                                new DbColumn("end_time", EndTime, DbType.DateTime),
+                                new DbColumn("next_time", nextTime, DbType.DateTime),
+                                new DbColumn("properties", Properties, DbType.String)
+                            };
             }
         }
 

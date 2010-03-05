@@ -83,13 +83,15 @@ namespace Game.Database {
 
             MySqlConnection connection = GetConnection();
 
-            if (connection == null)
-                throw new Exception("Did not get a connection"); //Should blow up ?          
+            if (connection == null) {
+                HandleGeneralException(new Exception("Did not get a connection"), null);
+                return;
+            }
 
             if (Config.database_verbose)
                 Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
 
-            persistantTransaction.transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            persistantTransaction.transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
 
             MySqlCommand command = new MySqlCommand("SET AUTOCOMMIT = 0",
                                                     (persistantTransaction.transaction as MySqlTransaction).Connection,
@@ -100,8 +102,10 @@ namespace Game.Database {
         private MySqlDbTransaction CreateTransaction() {
             MySqlConnection connection = GetConnection();
 
-            if (connection == null)
-                return null; //Should blow up ? 
+            if (connection == null) {
+                HandleGeneralException(new Exception("Did not get a connection"), null);
+                return null;
+            }
 
             if (Config.database_verbose)
                 Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
@@ -620,9 +624,14 @@ namespace Game.Database {
         }
 
         public void HandleGeneralException(Exception e, MySqlCommand command) {
+
             StringWriter writer = new StringWriter();
-            foreach (MySqlParameter param in command.Parameters)
-                writer.Write(param + "=" + param.Value + ",");
+            if (command != null) {
+                writer.Write(command.CommandText);
+                foreach (MySqlParameter param in command.Parameters) {                    
+                    writer.Write(param + "=" + param.Value + ",");
+                }
+            }
 
             Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") " + writer, e);
 

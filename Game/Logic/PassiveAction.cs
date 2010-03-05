@@ -37,11 +37,13 @@ namespace Game.Logic {
         public override DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("is_chain", isChain, DbType.Boolean),
-                                          new DbColumn("is_scheduled", false, DbType.Boolean),
-                                          new DbColumn("is_visible", isVisible, DbType.Boolean), new DbColumn("type", Type, DbType.UInt32)
-                                          , new DbColumn("properties", Properties, DbType.String),
-                                      };
+                                new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                                new DbColumn("is_chain", isChain, DbType.Boolean),
+                                new DbColumn("is_scheduled", false, DbType.Boolean),
+                                new DbColumn("is_visible", isVisible, DbType.Boolean), 
+                                new DbColumn("type", Type, DbType.UInt32), 
+                                new DbColumn("properties", Properties, DbType.String),
+                            };
             }
         }
     }

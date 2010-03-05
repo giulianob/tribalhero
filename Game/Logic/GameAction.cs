@@ -115,8 +115,7 @@ namespace Game.Logic {
             get {
                 return new[] {
                                  new DbColumn("id", actionId, DbType.UInt16),
-                                 new DbColumn("city_id", workerObject.City.Id, DbType.UInt32),
-                                 new DbColumn("object_id", workerObject.WorkerId, DbType.UInt32)
+                                 new DbColumn("city_id", workerObject.City.Id, DbType.UInt32)
                              };
             }
         }

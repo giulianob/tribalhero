@@ -92,10 +92,11 @@ namespace Game.Data {
         public DbColumn[] DbColumns {
             get {
                 return new[] {
-                                 new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
-                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),
-                                 new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()),
-                                              DbType.String)
+                                new DbColumn("troop_stub_id", Stub.TroopId, DbType.Byte),
+                                new DbColumn("x", X, DbType.UInt32), 
+                                new DbColumn("y", Y, DbType.Int32),
+                                new DbColumn("state", (byte) State.Type, DbType.Boolean),
+                                new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
                              };
             }
         }
@@ -103,8 +104,8 @@ namespace Game.Data {
         public DbColumn[] DbPrimaryKey {
             get {
                 return new[] {
-                                 new DbColumn("id", ObjectId, DbType.UInt32), new DbColumn("city_id", City.Id, DbType.UInt32)
-                                 , new DbColumn("troop_stub_id", Stub.TroopId, DbType.Byte)
+                                 new DbColumn("id", ObjectId, DbType.UInt32), 
+                                 new DbColumn("city_id", City.Id, DbType.UInt32)                                 
                              };
             }
         }

@@ -63,14 +63,15 @@ namespace Game.Logic {
         public override DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("type", Type, DbType.UInt32),
-                                          new DbColumn("begin_time", BeginTime, DbType.DateTime),
-                                          new DbColumn("end_time", EndTime, DbType.DateTime),
-                                          new DbColumn("next_time", nextTime, DbType.DateTime),
-                                          new DbColumn("worker_type", WorkerType, DbType.Int32),
-                                          new DbColumn("worker_index", WorkerIndex, DbType.Byte),
-                                          new DbColumn("count", ActionCount, DbType.UInt16),
-                                          new DbColumn("properties", Properties, DbType.String)
+                                new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
+                                new DbColumn("type", Type, DbType.UInt32),
+                                new DbColumn("begin_time", BeginTime, DbType.DateTime),
+                                new DbColumn("end_time", EndTime, DbType.DateTime),
+                                new DbColumn("next_time", nextTime, DbType.DateTime),
+                                new DbColumn("worker_type", WorkerType, DbType.Int32),
+                                new DbColumn("worker_index", WorkerIndex, DbType.Byte),
+                                new DbColumn("count", ActionCount, DbType.UInt16),
+                                new DbColumn("properties", Properties, DbType.String)
                 };
             }
         }

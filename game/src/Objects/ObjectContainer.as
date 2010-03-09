@@ -138,7 +138,7 @@ package src.Objects {
 				ignoreClick = true;
 			}
 
-			var tilePos: Point = MapUtil.getActualCoord(e.stageX + Global.map.gameContainer.camera.x, e.stageY + Global.map.gameContainer.camera.y);
+			var tilePos: Point = MapUtil.getActualCoord(e.stageX + Global.gameContainer.camera.x, e.stageY + Global.gameContainer.camera.y);
 
 			if (tilePos.x < 0 || tilePos.y < 0)
 			return;

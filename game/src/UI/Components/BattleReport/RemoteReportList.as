@@ -69,7 +69,7 @@
 			btnNext.setVisible(false);
 			lblPages.setText("Loading...");
 
-			Global.map.mapComm.BattleReport.listRemote(loader, page);
+			Global.mapComm.BattleReport.listRemote(loader, page);
 		}
 
 		private function onLoaded(e: Event) : void {

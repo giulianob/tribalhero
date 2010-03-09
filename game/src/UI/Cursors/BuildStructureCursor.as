@@ -2,6 +2,7 @@
 package src.UI.Cursors {
 	import flash.filters.GlowFilter;
 	import flash.geom.Point;
+	import src.Global;
 	import src.Map.City;
 	import src.Map.Map;
 	import src.Map.MapUtil;
@@ -43,7 +44,7 @@ package src.UI.Cursors {
 			this.level = level;
 
 			this.map = map;
-			map.gameContainer.setOverlaySprite(this);
+			src.Global.gameContainer.setOverlaySprite(this);
 			map.selectObject(null);
 
 			structPrototype = StructureFactory.getPrototype(type, level);
@@ -61,7 +62,7 @@ package src.UI.Cursors {
 			rangeCursor.alpha = 0.6;
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
-			map.gameContainer.setSidebar(sidebar);
+			src.Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);
@@ -72,7 +73,7 @@ package src.UI.Cursors {
 
 		public function dispose():void
 		{
-			map.gameContainer.message.hide();
+			src.Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
@@ -104,10 +105,10 @@ package src.UI.Cursors {
 			event.stopImmediatePropagation();
 
 			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			map.mapComm.Object.buildStructure(parentObj.cityId, parentObj.objectId, type, pos.x, pos.y);
+			Global.mapComm.Object.buildStructure(parentObj.cityId, parentObj.objectId, type, pos.x, pos.y);
 
-			map.gameContainer.setOverlaySprite(null);
-			map.gameContainer.setSidebar(null);
+			src.Global.gameContainer.setOverlaySprite(null);
+			src.Global.gameContainer.setSidebar(null);
 			map.selectObject(parentObj, false);
 		}
 
@@ -121,7 +122,7 @@ package src.UI.Cursors {
 			if (event.buttonDown)
 			return;
 
-			var pos: Point = MapUtil.getActualCoord(map.gameContainer.camera.x + Math.max(event.stageX, 0), map.gameContainer.camera.y + Math.max(event.stageY, 0));
+			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + Math.max(event.stageX, 0), src.Global.gameContainer.camera.y + Math.max(event.stageY, 0));
 
 			if (pos.x != objX || pos.y != objY)
 			{
@@ -131,13 +132,13 @@ package src.UI.Cursors {
 				//Range cursor
 				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
 				rangeCursor.setX(objX); rangeCursor.setY(objY);
-				rangeCursor.moveWithCamera(map.gameContainer.camera);
+				rangeCursor.moveWithCamera(src.Global.gameContainer.camera);
 				map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
 
 				//Object cursor
 				if (cursor.stage != null) map.objContainer.removeObject(cursor);
 				cursor.setX(objX); cursor.setY(objY);
-				cursor.moveWithCamera(map.gameContainer.camera);
+				cursor.moveWithCamera(src.Global.gameContainer.camera);
 				map.objContainer.addObject(cursor);
 				validateBuilding();
 			}
@@ -154,18 +155,18 @@ package src.UI.Cursors {
 			{
 				hideCursors();
 
-				map.gameContainer.message.showMessage("Can not build on top of another structure");
+				src.Global.gameContainer.message.showMessage("Can not build on top of another structure");
 				return;
 			}
 			else if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
 				hideCursors();
-				map.gameContainer.message.showMessage("This structure must be built within the city walls");
+				src.Global.gameContainer.message.showMessage("This structure must be built within the city walls");
 				return;
 			}
 			else
 			{
 				showCursors();
-				map.gameContainer.message.hide();
+				src.Global.gameContainer.message.hide();
 			}
 
 			if (structPrototype != null)
@@ -180,7 +181,7 @@ package src.UI.Cursors {
 				{
 					filters.push(new GlowFilter(0xFF0000));
 
-					map.gameContainer.message.showMessage("Some of the building requirements have not been met");
+					src.Global.gameContainer.message.showMessage("Some of the building requirements have not been met");
 				}
 
 				showCursors();

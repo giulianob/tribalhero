@@ -12,13 +12,11 @@
 
 	public class CityComm {
 		
-		private var mapComm: MapComm;
-		private var map: Map;
+		private var mapComm: MapComm;		
 		private var session: Session;
 		
 		public function CityComm(mapComm: MapComm) {
-			this.mapComm = mapComm;
-			this.map = mapComm.map;
+			this.mapComm = mapComm;			
 			this.session = mapComm.session;
 			
 			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
@@ -63,7 +61,7 @@
 			var cityId: int = packet.readUInt();
 			var radius: int = packet.readUByte();
 			
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			
 			if (city != null)
 			{
@@ -83,7 +81,7 @@
 				new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt())
 			);						
 			
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			
 			if (city != null)
 			{
@@ -108,7 +106,7 @@
 			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
 				objLabor = packet.readUByte();
 				
-			var city: City = map.cities.get(objCityId);			
+			var city: City = Global.map.cities.get(objCityId);			
 			
 			if (city == null)
 			{
@@ -143,7 +141,7 @@
 			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
 				objLabor = packet.readUByte();			
 					
-			var city: City = map.cities.get(objCityId);
+			var city: City = Global.map.cities.get(objCityId);
 						
 			if (city == null)
 			{
@@ -158,7 +156,7 @@
 		{
 			var objCityId: int = packet.readUInt();
 			var objId: int = packet.readUInt();				
-			var city: City = map.cities.get(objCityId);
+			var city: City = Global.map.cities.get(objCityId);
 			
 			if (city == null)
 			{
@@ -186,7 +184,7 @@
 			
 			var techStats: TechnologyStats = new TechnologyStats(TechnologyFactory.getPrototype(techType, techLevel), ownerLocation, ownerId);
 			
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			
 			if (city == null) {
 				trace("Received technology notification for unknown city");
@@ -231,8 +229,8 @@
 				}
 			}
 			
-			if (map.selectedObject != null)
-				map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+			if (Global.map.selectedObject != null)
+				Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 		}
 		
 		public function technologyUpgrade(cityId: int, parent: int, type: int):void
@@ -252,7 +250,7 @@
 			
 			var notification: Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 									
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 				return;	
 						
@@ -265,7 +263,7 @@
 		
 		public function onReceiveRemoveNotification(packet: Packet):void
 		{						
-			var city: City = map.cities.get(packet.readUInt());
+			var city: City = Global.map.cities.get(packet.readUInt());
 		
 			if (city == null)
 				return;				

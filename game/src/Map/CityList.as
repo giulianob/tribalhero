@@ -15,8 +15,6 @@ package src.Map {
 	public class CityList extends BinaryList {
 		public static const CITY_UPDATE: String = "CITY_UPDATE";
 		
-		private var cities: Array = new Array();
-		
 		public function CityList() {			
 			super(City.sortOnId, City.compare);
 		}

@@ -125,7 +125,7 @@ package src.Objects {
 			circle.setX(getX());
 			circle.setY(getY());
 			
-			circle.moveWithCamera(Global.map.gameContainer.camera);
+			circle.moveWithCamera(Global.gameContainer.camera);
 			
 			Global.map.objContainer.addObject(circle, ObjectContainer.LOWER);
 		}		

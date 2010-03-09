@@ -46,11 +46,11 @@ package src.Objects.Prototypes {
 		public function getDescription(): String
 		{
 			var str: String = Locale.loadString(spriteClass + "UNIT_LVL_" + level);
-			if (str && str != "")
+			if (str)
 			return str;
 
 			str = Locale.loadString(spriteClass + "_UNIT_LVL_1");
-			if (str && str != "")
+			if (str)
 			return str;
 
 			return "";

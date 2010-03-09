@@ -31,7 +31,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onClickEvent(e: MouseEvent):void
 		{
-			Global.map.mapComm.Object.cancelAction(parentObj.cityId, parentObj.objectId, id);
+			Global.mapComm.Object.cancelAction(parentObj.cityId, parentObj.objectId, id);
 		}
 
 	}

@@ -6,16 +6,15 @@
 	import src.Objects.*;
 	import src.Objects.Actions.*;
 	import src.Objects.Troop.*;
+	import src.Global;
 
 	public class TroopComm {
 
-		private var mapComm: MapComm;
-		private var map: Map;
+		private var mapComm: MapComm;		
 		private var session: Session;
 
 		public function TroopComm(mapComm: MapComm) {
-			this.mapComm = mapComm;
-			this.map = mapComm.map;
+			this.mapComm = mapComm;			
 			this.session = mapComm.session;
 
 			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
@@ -88,7 +87,7 @@
 		{
 			var cityId: int = packet.readUInt();
 
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
 
@@ -100,14 +99,14 @@
 
 			city.template.sort();
 
-			map.selectObject(map.selectedObject, false);
+			Global.map.selectObject(Global.map.selectedObject, false);
 		}
 
 		public function onCityUpdateTroop(packet: Packet):void
 		{
 			var cityId: int = packet.readUInt();
 
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
 
@@ -120,7 +119,7 @@
 		{
 			var cityId: int = packet.readUInt();
 
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
 
@@ -136,7 +135,7 @@
 			var troopCityId: int = packet.readUInt();
 			var troopId: int = packet.readUByte();
 
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
 
@@ -197,7 +196,7 @@
 				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUShort()));
 			}
 
-			map.selectObject(obj, false);
+			Global.map.selectObject(obj, false);
 		}
 
 		public function trainUnit(city: int, parent: int, type: int, count: int):void

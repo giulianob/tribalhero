@@ -32,8 +32,8 @@ package src.UI.Sidebars.CursorCancel {
 		
 		public function onCancel(event: MouseEvent):void
 		{		
-			Global.map.gameContainer.setOverlaySprite(null);
-			Global.map.gameContainer.setSidebar(null);
+			Global.gameContainer.setOverlaySprite(null);
+			Global.gameContainer.setSidebar(null);
 			
 			if (parentObj != null)
 				Global.map.selectObject(parentObj);

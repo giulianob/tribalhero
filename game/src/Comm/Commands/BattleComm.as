@@ -9,13 +9,11 @@
 	public class BattleComm {
 		
 		private var battle: BattleManager;
-		private var mapComm: MapComm;
-		private var map: Map;
+		private var mapComm: MapComm;		
 		private var session: Session;
 		
 		public function BattleComm(mapComm: MapComm) {
-			this.mapComm = mapComm;
-			this.map = mapComm.map;
+			this.mapComm = mapComm;			
 			this.session = mapComm.session;
 			
 			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);

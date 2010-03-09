@@ -8,17 +8,16 @@
 	import src.Constants;
 	import src.Objects.Actions.*;
 	import flash.events.Event;
+	import src.Global;
 	import src.Objects.Troop.*;
 
 	public class ObjectComm {
 
 		private var mapComm: MapComm;
-		private var map: Map;
 		private var session: Session;
 
 		public function ObjectComm(mapComm: MapComm) {
 			this.mapComm = mapComm;
-			this.map = mapComm.map;
 			this.session = mapComm.session;
 
 			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
@@ -229,7 +228,7 @@
 				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUShort()));
 			}
 
-			map.selectObject(obj, false);
+			Global.map.selectObject(obj, false);
 		}
 
 		public function onUpdateObject(packet: Packet):void
@@ -246,7 +245,7 @@
 			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
 			var objState: int = packet.readUByte();
 
-			var obj: SimpleGameObject = map.regions.updateObject(regionId, objPlayerId, objCityId, objId, objType, objLvl, objHpPercent, objX, objY);
+			var obj: SimpleGameObject = Global.map.regions.updateObject(regionId, objPlayerId, objCityId, objId, objType, objLvl, objHpPercent, objX, objY);
 
 			if (objState > 0)
 			{
@@ -273,9 +272,9 @@
 				obj.State = objState;
 				obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 
-				if (obj as GameObject != null && obj == map.selectedObject)
+				if (obj as GameObject != null && obj == Global.map.selectedObject)
 				{
-					map.selectObject(obj as GameObject);
+					Global.map.selectObject(obj as GameObject);
 				}
 			}
 		}
@@ -292,7 +291,7 @@
 			var objHpPercent: int = 100;
 			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
 			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-			var obj: SimpleGameObject = map.regions.addObject(null, regionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
+			var obj: SimpleGameObject = Global.map.regions.addObject(null, regionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
 			var objState: int = packet.readUByte();
 
 			if (objId == 1) { // main building
@@ -312,7 +311,7 @@
 			var cityId: int = packet.readUInt();
 			var objId: int = packet.readUInt();
 
-			map.regions.removeObject(regionId, cityId, objId);
+			Global.map.regions.removeObject(regionId, cityId, objId);
 		}
 
 		public function onMoveObject(packet: Packet):void
@@ -330,7 +329,7 @@
 			var objY: int = packet.readUShort() + int(newRegionId / Constants.mapRegionW) * Constants.regionTileH;
 			var objState: int = packet.readUByte();
 
-			var obj: SimpleGameObject = map.regions.moveObject(oldRegionId, newRegionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
+			var obj: SimpleGameObject = Global.map.regions.moveObject(oldRegionId, newRegionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
 
 			if (!obj)
 			return;
@@ -368,7 +367,7 @@
 			else
 			currentAction = new CurrentActiveAction(objId, packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
 
@@ -383,7 +382,7 @@
 			var mode: int = packet.readUByte();
 			var actionId: int = packet.readUShort();
 
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
 
@@ -418,7 +417,7 @@
 			else
 			currentAction = new CurrentActiveAction(objId, packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
-			var city: City = map.cities.get(cityId);
+			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
 
@@ -443,3 +442,4 @@
 	}
 
 }
+

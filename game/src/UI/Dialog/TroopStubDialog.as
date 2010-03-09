@@ -138,7 +138,7 @@ package src.UI.Dialog {
 		
 		public function onClickRetreat(event: AWEvent):void
 		{
-			Global.map.mapComm.Troop.retreat(troop.cityId, troop.id);
+			Global.mapComm.Troop.retreat(troop.cityId, troop.id);
 		}
 
 		public function onClickManage(e: AWEvent) :void
@@ -155,7 +155,7 @@ package src.UI.Dialog {
 			if (troop.getIndividualUnitCount() == 0)
 			return;
 
-			Global.map.mapComm.Troop.moveUnit(city.id, troop);
+			Global.mapComm.Troop.moveUnit(city.id, troop);
 		}
 
 		private function createUI() : void {

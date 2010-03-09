@@ -5,16 +5,15 @@
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Constants;
+	import src.Global;
 
 	public class RegionComm {
 		
-		private var mapComm: MapComm;
-		private var map: Map;
+		private var mapComm: MapComm;		
 		private var session: Session;
 		
 		public function RegionComm(mapComm: MapComm) {
-			this.mapComm = mapComm;
-			this.map = mapComm.map;
+			this.mapComm = mapComm;			
 			this.session = mapComm.session;			
 		}
 		
@@ -47,7 +46,7 @@
 				var id: int = packet.readUShort();
 				var mapArray:Array = packet.read2dShortArray(Constants.regionTileW, Constants.regionTileH);		
 				
-				var newRegion: Region = map.addRegion(id, mapArray);
+				var newRegion: Region = Global.map.addRegion(id, mapArray);
 				
 				var objCnt: int = packet.readUShort();
 				
@@ -95,7 +94,7 @@
 				newRegion.sortObjects();
 			}
 			
-			map.objContainer.moveWithCamera(map.gameContainer.camera.x, map.gameContainer.camera.y);
+			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.x, Global.gameContainer.camera.y);
 		}										
 		
 		public function getCityRegion(ids: Array):void
@@ -120,7 +119,7 @@
 			{
 				var id: int = packet.readUShort();
 				
-				var newRegion: CityRegion = map.gameContainer.miniMap.addCityRegion(id);
+				var newRegion: CityRegion = Global.gameContainer.miniMap.addCityRegion(id);
 				
 				var objCnt: int = packet.readUShort();
 				
@@ -144,7 +143,7 @@
 				newRegion.sortObjects();
 			}			
 			
-			map.gameContainer.miniMap.objContainer.moveWithCamera(map.gameContainer.camera.miniMapX, map.gameContainer.camera.miniMapY);
+			Global.gameContainer.miniMap.objContainer.moveWithCamera(Global.gameContainer.camera.miniMapX, Global.gameContainer.camera.miniMapY);
 		}		
 	}	
 }

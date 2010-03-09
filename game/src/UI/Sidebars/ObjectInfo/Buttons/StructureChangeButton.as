@@ -51,7 +51,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (enabled)
 			{
-				Global.map.mapComm.Object.changeStructure(parentObj.cityId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
+				Global.mapComm.Object.changeStructure(parentObj.cityId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
 			}
 		}
 

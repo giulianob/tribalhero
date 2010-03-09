@@ -52,13 +52,14 @@ package src.UI.Tooltips {
 			createUI();
 
 			lblTitle.setText("Train " + unitPrototype.getName());
-			lblLevel.setText("Level " + unitPrototype.level);
-			lblTime.setText(Util.formatTime(Formula.buildTime(unitPrototype.trainTime, null)));
+			lblLevel.setText("Level " + unitPrototype.level);			
 			lblDescription.setText(unitPrototype.getDescription());
 		}
 
 		public function draw(count: int, max: int) :void
 		{
+			lblTime.setText(Util.formatTime(Formula.trainTime(parentObj, unitPrototype.trainTime, null)));
+			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
 				GameLookAndFeel.changeClass(label, "Tooltip.text");

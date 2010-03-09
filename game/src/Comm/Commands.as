@@ -51,6 +51,7 @@ package src.Comm {
         public static const CITY_RESOURCES_UPDATE: int  = 462;
 		public static const CITY_UNIT_LIST: int = 463;		
 		public static const CITY_RADIUS_UPDATE: int = 465;
+		public static const CITY_CREATE_INITIAL: int = 499;
 		
 		public static const UNIT_TRAIN: int = 501;
         public static const UNIT_UPGRADE: int = 502;

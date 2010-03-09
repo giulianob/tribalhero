@@ -79,7 +79,8 @@ package src.Objects.Prototypes {
 			if (str && str != "")
 				return str;
 
-			return "[" + name + "_STRUCTURE_LVL_" + level + "]";
+			//return "[" + name + "_STRUCTURE_LVL_" + level + "]";
+			return "";
 		}
 
 		public static function sortOnTypeAndLevel(a:StructurePrototype, b:StructurePrototype):Number {

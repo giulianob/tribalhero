@@ -66,7 +66,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 				}
 				
-				var inputDialog: NumberInputDialog = new NumberInputDialog("How many " + unitPrototype.getName() + " would you like to train?", 1, maxValue, onAcceptDialog, 1, unitPrototype.trainResources, Formula.trainTime(unitPrototype.trainTime, null));
+				var inputDialog: NumberInputDialog = new NumberInputDialog("How many " + unitPrototype.getName() + " would you like to train?", 1, maxValue, onAcceptDialog, 1, unitPrototype.trainResources, Formula.trainTime(parentObj, unitPrototype.trainTime, null));
 				
 				inputDialog.show();
 			}
@@ -75,7 +75,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		public function onAcceptDialog(sender: NumberInputDialog):void
 		{
 			sender.getFrame().dispose();
-			Global.map.mapComm.Troop.trainUnit(this.parentObj.cityId, this.parentObj.objectId, unitPrototype.type, sender.getAmount().getValue());
+			Global.mapComm.Troop.trainUnit(this.parentObj.cityId, this.parentObj.objectId, unitPrototype.type, sender.getAmount().getValue());
 		}		
 		
 		override public function validateButton(): Boolean

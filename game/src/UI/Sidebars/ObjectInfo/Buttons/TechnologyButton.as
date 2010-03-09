@@ -54,7 +54,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (enabled)
 			{
-				Global.map.mapComm.City.technologyUpgrade(parentObj.cityId, parentObj.objectId, techPrototype.techtype);
+				Global.mapComm.City.technologyUpgrade(parentObj.cityId, parentObj.objectId, techPrototype.techtype);
 			}
 		}
 

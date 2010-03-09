@@ -55,7 +55,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (enabled)
 			{
-				Global.map.mapComm.Object.upgradeStructure(parentObj.cityId, parentObj.objectId);
+				Global.mapComm.Object.upgradeStructure(parentObj.cityId, parentObj.objectId);
 			}
 		}
 

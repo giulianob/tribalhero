@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Text.RegularExpressions;
 using Game.Battle;
 using Game.Comm;
 using Game.Data.Troop;
@@ -139,7 +140,7 @@ namespace Game.Data {
             Worker.ActionRemoved += WorkerActionRemoved;
             Worker.ActionStarted += WorkerActionAdded;
             Worker.ActionRescheduled += WorkerActionRescheduled;
-            owner.add(this);
+            owner.Add(this);
             
             resource.Labor.Add(10);
 
@@ -600,5 +601,9 @@ namespace Game.Data {
         }
 
         #endregion
+
+        public static bool IsNameValid(string cityName) {
+            return cityName != string.Empty && cityName.Length >= 3 && cityName.Length <= 16 && Regex.IsMatch(cityName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace Game.Comm {
 
             //check to make sure that the city belongs to us
             using (new MultiObjectLock(session.Player)) {
-                if (session.Player.getCity(cityId) == null && session.Player.getCity(srcCityId) == null) {
+                if (session.Player.GetCity(cityId) == null && session.Player.GetCity(srcCityId) == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
@@ -55,7 +55,7 @@ namespace Game.Comm {
                 reply.AddUInt32(notification.GameObject.X);
                 reply.AddUInt32(notification.GameObject.Y);
 
-                session.write(reply);
+                session.Write(reply);
             }
         }
 
@@ -116,7 +116,7 @@ namespace Game.Comm {
                 Global.World.UnsubscribeRegion(session, regionId);
             }
 
-            session.write(reply);
+            session.Write(reply);
         }
 
         public void CmdGetCityRegion(Session session, Packet packet) {
@@ -153,7 +153,7 @@ namespace Game.Comm {
                 reply.AddBytes(Global.World.GetCityRegion(regionId).GetCityBytes());
             }
 
-            session.write(reply);
+            session.Write(reply);
         }        
     }
 }

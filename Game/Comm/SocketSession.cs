@@ -13,11 +13,11 @@ namespace Game.Comm {
             this.socket = socket;
         }
 
-        protected override void close() {
+        protected override void Close() {
             socket.Disconnect(false);
         }
 
-        public override bool write(Packet packet) {
+        public override bool Write(Packet packet) {
             Console.Out.WriteLine("Sending: " + packet.ToString(32));
             byte[] packetBytes = packet.GetBytes();
             int ret;

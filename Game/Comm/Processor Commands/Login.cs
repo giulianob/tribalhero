@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic;
@@ -22,7 +23,7 @@ namespace Game.Comm {
         public void CmdQueryXml(Session session, Packet packet) {
             Packet reply = new Packet(packet);
             reply.AddString(File.ReadAllText("C:\\source\\GameServer\\Game\\Setup\\CSV\\data.xml"));
-            session.write(reply);
+            session.Write(reply);
         }
 
         public void CmdLogin(Session session, Packet packet) {
@@ -104,11 +105,12 @@ namespace Game.Comm {
             string sessionId = BitConverter.ToString(
                 sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.Now.Ticks))).
                 Replace("-", String.Empty);
-
+            
             bool newPlayer;
             lock (loginLock) {
                 newPlayer = !Global.Players.TryGetValue(playerId, out player);
 
+                //If it's a new player then add him to our session
                 if (newPlayer) {
                     Global.Logger.Info(String.Format("Creating new player {0}({1})", playerName, playerId));
                     player = new Player(playerId, playerName, sessionId);
@@ -132,32 +134,12 @@ namespace Game.Comm {
                     player.DbPersisted = Config.database_load_players;
 
                     Global.DbManager.Save(player);
-
-                    Structure structure;
-                    if (!Randomizer.MainBuilding(out structure)) {
-                        Global.Players.Remove(player.PlayerId);
-                        Global.DbManager.Rollback();
-                        //If this happens and its not a bug, I'll be a very happy game developer
-                        ReplyError(session, packet, Error.MAP_FULL);
-                        return;
-                    }
-
-                    Resource res = new Resource(500, 0, 0, 500, 0);
-
-                    City city = new City(player, "City " + player.PlayerId, res, structure);
-
-                    Global.World.Add(city);
-                    Global.World.Add(structure);
-
-                    InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
-
-                    city.Worker.DoPassive(city, new CityAction(city.Id), false);
                 }
 
                 //User session
                 session.Player = player;
                 player.Session = session;
-
+                
                 //Player Id
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(sessionId);
@@ -169,50 +151,70 @@ namespace Game.Comm {
                 //Server rate
                 reply.AddString(Config.seconds_per_unit.ToString());
 
-                //Cities
-                List<City> list = player.getCityList();
-                reply.AddByte((byte) list.Count);
-                foreach (City city in list) {
-                    city.Subscribe(session);
-                    reply.AddUInt32(city.Id);
-                    reply.AddString(city.Name);
-                    PacketHelper.AddToPacket(city.Resource, reply);
-                    reply.AddByte(city.Radius);
-
-                    //City Actions
-                    PacketHelper.AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), reply, true);
-
-                    //Notifications
-                    reply.AddUInt16(city.Worker.Notifications.Count);
-                    foreach (NotificationManager.Notification notification in city.Worker.Notifications)
-                        PacketHelper.AddToPacket(notification, reply);
-
-                    //Structures
-                    List<Structure> structs = new List<Structure>(city);
-                    reply.AddUInt16((ushort) structs.Count);
-                    foreach (Structure structure in structs) {
-                        reply.AddUInt16(Region.getRegionIndex(structure));
-                        PacketHelper.AddToPacket(structure, reply, false);
-
-                        reply.AddUInt16((ushort) structure.Technologies.OwnedTechnologyCount);
-                        foreach (Technology tech in structure.Technologies) {
-                            if (tech.ownerLocation != EffectLocation.OBJECT)
-                                continue;
-                            reply.AddUInt32(tech.Type);
-                            reply.AddByte(tech.Level);
-                        }
-                    }
-
-                    //City Troops
-                    reply.AddByte(city.Troops.Size);
-                    foreach (TroopStub stub in city.Troops)
-                        PacketHelper.AddToPacket(stub, reply);
-
-                    //Unit Template
-                    PacketHelper.AddToPacket(city.Template, reply);
+                // If it's a new player we send simply a 1 which means the client will need to send back a city name
+                // Otherwise, we just send the whole login info
+                if (player.GetCityList().Count == 0) {
+                    reply.AddByte(1);
+                }
+                else {                    
+                    reply.AddByte(0);
+                    PacketHelper.AddLoginToPacket(session, reply);
                 }
 
-                session.write(reply);
+                session.Write(reply);
+            }
+        }
+
+        public void CmdCreateInitialCity(Session session, Packet packet) {
+            using (new MultiObjectLock(session.Player)) {
+                string cityName;
+                try {
+                    cityName = packet.GetString().Trim();
+                }
+                catch (Exception) {
+                    ReplyError(session, packet, Error.UNEXPECTED);
+                    return;
+                }
+
+                // Verify city name is valid
+                if (!City.IsNameValid(cityName)) {
+                    ReplyError(session, packet, Error.CITY_NAME_INVALID);
+                    return;
+                }
+
+                City city;
+                Structure structure;                                    
+
+                lock (Global.World.Lock) {
+                    // Verify city name is unique
+                    if (Global.World.CityNameTaken(cityName)) {
+                        ReplyError(session, packet, Error.CITY_NAME_TAKEN);
+                        return;                        
+                    }
+                    
+                    if (!Randomizer.MainBuilding(out structure)) {
+                        Global.Players.Remove(session.Player.PlayerId);
+                        Global.DbManager.Rollback();
+                        // If this happens I'll be a very happy game developer
+                        ReplyError(session, packet, Error.MAP_FULL);
+                        return;
+                    }
+
+                    Resource res = new Resource(500, 0, 0, 500, 0);
+
+                    city = new City(session.Player, cityName, res, structure);
+
+                    Global.World.Add(city);
+                    Global.World.Add(structure);
+                }
+
+                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
+
+                city.Worker.DoPassive(city, new CityAction(city.Id), false);
+
+                Packet reply = new Packet(packet);
+                PacketHelper.AddLoginToPacket(session, reply);
+                session.Write(reply);
             }
         }
     }

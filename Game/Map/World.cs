@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Threading;
 using Game.Comm;
@@ -16,15 +17,11 @@ namespace Game.Map {
     public class World {
         #region Members
 
-        private uint worldWidth;
-        public uint WorldWidth {
-            get { return worldWidth; }
-        }
+        public uint WorldWidth { get; private set; }
 
-        private uint worldHeight;
-        public uint WorldHeight {
-            get { return worldHeight; }
-        }
+        public uint WorldHeight { get; private set; }
+
+        public object Lock { get; private set; }
 
         private Region[] regions;
         private CityRegion[] cityRegions;
@@ -32,6 +29,10 @@ namespace Game.Map {
         private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
 
         #endregion
+
+        public World() {
+            Lock = new object();
+        }
 
         #region Object Getters
 
@@ -42,37 +43,19 @@ namespace Game.Map {
         public bool TryGetObjects(uint cityId, byte troopStubId, out City city, out TroopStub troopStub) {
             troopStub = null;
 
-            if (!cities.TryGetValue(cityId, out city))
-                return false;
-
-            if (!city.Troops.TryGetStub(troopStubId, out troopStub))
-                return false;
-
-            return true;
+            return cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
         }
 
         public bool TryGetObjects(uint cityId, uint structureId, out City city, out Structure structure) {
             structure = null;
 
-            if (!cities.TryGetValue(cityId, out city))
-                return false;
-
-            if (!city.TryGetStructure(structureId, out structure))
-                return false;
-
-            return true;
+            return cities.TryGetValue(cityId, out city) && city.TryGetStructure(structureId, out structure);
         }
 
         public bool TryGetObjects(uint cityId, uint troopObjectId, out City city, out TroopObject troopObject) {
             troopObject = null;
 
-            if (!cities.TryGetValue(cityId, out city))
-                return false;
-
-            if (!city.TryGetTroop(troopObjectId, out troopObject))
-                return false;
-
-            return true;
+            return cities.TryGetValue(cityId, out city) && city.TryGetTroop(troopObjectId, out troopObject);
         }
 
         #endregion
@@ -82,10 +65,6 @@ namespace Game.Map {
         public List<GameObject> this[uint x, uint y] {
             get { return GetRegion(x, y).getObjects(x, y); }
         }
-
-        #endregion
-
-        #region Constructors
 
         #endregion
 
@@ -99,8 +78,8 @@ namespace Game.Map {
             if (inWorldWidth%regionWidth != 0 || inWorldHeight%regionHeight != 0)
                 return false;
 
-            worldWidth = inWorldWidth;
-            worldHeight = inWorldHeight;
+            WorldWidth = inWorldWidth;
+            WorldHeight = inWorldHeight;
 
             // creating regions;
             uint regionSize = regionWidth*regionHeight;
@@ -134,21 +113,20 @@ namespace Game.Map {
         }
 
         public bool Add(City city) {
-            city.BeginUpdate();
-            city.Id = (uint) cityIdGen.getNext();
-            city.EndUpdate();
-            cities[city.Id] = city;
+            lock (Lock) {
+                city.BeginUpdate();
+                city.Id = (uint) cityIdGen.getNext();
+                city.EndUpdate();
+                cities[city.Id] = city;
 
-            //Initial save of these objects
-            Global.DbManager.Save(city.MainBuilding);
-            foreach (TroopStub stub in city.Troops)
-                Global.DbManager.Save(stub);
+                //Initial save of these objects
+                Global.DbManager.Save(city.MainBuilding);
+                foreach (TroopStub stub in city.Troops)
+                    Global.DbManager.Save(stub);
 
-            CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
-            if (region == null)
-                return false;
-
-            return region.Add(city);
+                CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
+                return region != null && region.Add(city);
+            }
         }
 
         public void DbLoaderAdd(uint id, City city) {
@@ -172,12 +150,16 @@ namespace Game.Map {
         }
 
         public void Remove(City city) {
-            cities[city.Id] = null;
-            cityIdGen.release((int) city.Id);
-            CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
-            if (region == null)
-                return;
-            region.Remove(city);
+            lock (Lock) {
+                cities[city.Id] = null;
+                cityIdGen.release((int) city.Id);
+                CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
+                
+                if (region == null)
+                    return;
+
+                region.Remove(city);
+            }
         }
 
         public bool Add(GameObject obj) {
@@ -222,9 +204,7 @@ namespace Game.Map {
 
         public List<GameObject> GetObjects(uint x, uint y) {
             Region region = GetRegion(x, y);
-            if (region == null)
-                return null;
-            return region.getObjects(x, y);
+            return region == null ? null : region.getObjects(x, y);
         }
 
         #endregion
@@ -270,16 +250,17 @@ namespace Game.Map {
 
             //Handles updating city region information
             Structure structObject = sender as Structure;
-            if (structObject != null && structObject.City.MainBuilding == structObject) {
-                //If object is the main building then we need to update the city region
-                CityRegion region = GetCityRegion(origX, origY);
-                if (region != null)                    
-                    region.Remove(structObject.City);
+            if (structObject == null || structObject.City.MainBuilding != structObject)
+                return;
 
-                region = GetCityRegion(structObject.X, structObject.Y);
-                if (region != null)
-                    region.Add(structObject.City);
-            }
+            //If object is the main building then we need to update the city region
+            CityRegion region = GetCityRegion(origX, origY);
+            if (region != null)                    
+                region.Remove(structObject.City);
+
+            region = GetCityRegion(structObject.X, structObject.Y);
+            if (region != null)
+                region.Add(structObject.City);
         }
 
         #endregion
@@ -342,6 +323,13 @@ namespace Game.Map {
         public ushort GetTileType(uint x, uint y) {
             Region region = GetRegion(x, y);
             return region.getTileType(x, y);
+        }
+
+        public bool CityNameTaken(string name) {
+            DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = '{1}' LIMIT 1", City.DB_TABLE, name));
+            bool exists = reader.HasRows;
+            reader.Close();
+            return exists;
         }
     }
 }

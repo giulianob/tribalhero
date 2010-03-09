@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channel\ChannelTest.cs" />
+    <Compile Include="City\CityTest.cs" />
     <Compile Include="Database\DatabasePerformanceTest.cs" />
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />

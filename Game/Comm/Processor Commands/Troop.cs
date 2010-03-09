@@ -70,7 +70,7 @@ namespace Game.Comm {
                         new List<ReferenceStub>(troop.City.Worker.References.GetReferences(troop)), reply);
                 }
 
-                session.write(reply);
+                session.Write(reply);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -170,7 +170,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -209,7 +209,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -255,7 +255,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                if (session.Player.getCity(cityId) == null) {
+                if (session.Player.GetCity(cityId) == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
@@ -351,7 +351,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                if (session.Player.getCity(cityId) == null) {
+                if (session.Player.GetCity(cityId) == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }

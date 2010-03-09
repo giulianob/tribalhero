@@ -30,7 +30,7 @@ namespace Game.Comm {
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.Subscribe(session);
-                session.write(reply);
+                session.Write(reply);
             }
         }
 

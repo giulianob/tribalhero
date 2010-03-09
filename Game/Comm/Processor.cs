@@ -24,6 +24,7 @@ namespace Game.Comm {
 
         public Processor() {
             RegisterCommand(Command.LOGIN, CmdLogin);
+            RegisterCommand(Command.CITY_CREATE_INITIAL, CmdCreateInitialCity);
             RegisterCommand(Command.QUERY_XML, CmdQueryXml);
             RegisterCommand(Command.REGION_GET, CmdGetRegion);
             RegisterCommand(Command.CITY_REGION_GET, CmdGetCityRegion);
@@ -80,7 +81,7 @@ namespace Game.Comm {
             Packet reply = new Packet(packet) {
                                                   Option = (ushort) Packet.Options.REPLY
                                               };
-            session.write(reply);
+            session.Write(reply);
         }
 
         public void ReplyError(Session session, Packet packet, Error error) {
@@ -88,14 +89,18 @@ namespace Game.Comm {
                                                   Option = (ushort) Packet.Options.FAILED | (ushort) Packet.Options.REPLY
                                               };
             reply.AddInt32((int) error);
-            session.write(reply);
+            session.Write(reply);
         }
 
         public virtual void Execute(Session session, Packet packet) {
             Global.Logger.Info(packet.ToString(32));
 
             lock (session) {
-                commands[packet.Cmd].function(session, packet);
+                ProcessorCommand command;
+                if (!commands.TryGetValue(packet.Cmd, out command))
+                    return;
+
+                command.function(session, packet);
             }
         }
 

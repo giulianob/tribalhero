@@ -11,58 +11,40 @@ using Game.Util;
 
 namespace Game {
     public class Player : ILockable, IPersistableObject {
-        private List<City> list = new List<City>();
+        private readonly List<City> list = new List<City>();
 
-        private Session session = null;
+        public Session Session { get; set; }
 
-        public Session Session {
-            get { return session; }
-            set { session = value; }
-        }
+        public string Name { get; private set; }
 
-        private string name;
+        public uint PlayerId { get; private set; }
 
-        public string Name {
-            get { return name; }
-        }
-
-        private uint playerid;
-
-        public uint PlayerId {
-            get { return playerid; }
-        }
-
-        private string sessionId;
-
-        public string SessionId {
-            get { return sessionId; }
-            set { sessionId = value; }
-        }
+        public string SessionId { get; set; }
 
         public Player(uint playerid, string name) : this(playerid, name, string.Empty) {}
 
         public Player(uint playerid, string name, string sessionId) {
-            this.playerid = playerid;
-            this.name = name;
-            this.sessionId = sessionId;
+            PlayerId = playerid;
+            Name = name;
+            SessionId = sessionId;
         }
 
-        public void add(City city) {
+        public void Add(City city) {
             list.Add(city);
         }
 
-        internal List<City> getCityList() {
+        internal List<City> GetCityList() {
             return list;
         }
 
-        internal City getCity(uint id) {
-            return list.Find(delegate(City city) { return city.Id == id; });
+        internal City GetCity(uint id) {
+            return list.Find(city => city.Id == id);
         }
 
         #region ILockable Members
 
         public int Hash {
-            get { return unchecked((int) playerid); }
+            get { return unchecked((int) PlayerId); }
         }
 
         public object Lock {
@@ -81,7 +63,7 @@ namespace Game {
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("name", Name, DbType.String, 32),
                                           new DbColumn("session_id", SessionId, DbType.String, 128)
                                       };
@@ -89,19 +71,14 @@ namespace Game {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new DbColumn[] {new DbColumn("id", PlayerId, DbType.UInt32)}; }
+            get { return new[] {new DbColumn("id", PlayerId, DbType.UInt32)}; }
         }
 
         public DbDependency[] DbDependencies {
             get { return new DbDependency[] {}; }
         }
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
     }

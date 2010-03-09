@@ -16,7 +16,7 @@ namespace Game.Comm {
             reply.AddUInt16((ushort) Market.Crop.Price);
             reply.AddUInt16((ushort) Market.Wood.Price);
             reply.AddUInt16((ushort) Market.Iron.Price);
-            session.write(reply);
+            session.Write(reply);
         }
 
         public void CmdMarketBuy(Session session, Packet packet) {
@@ -43,7 +43,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -96,7 +96,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);

@@ -84,6 +84,8 @@ namespace Game.Comm {
         CITY_UNIT_LIST = 463,
         CITY_RADIUS_UPDATE = 465,
 
+        CITY_CREATE_INITIAL = 499,
+
         #endregion
 
         #region Troop
@@ -122,6 +124,6 @@ namespace Game.Comm {
         BATTLE_ENDED = 705,
         BATTLE_SKIPPED = 706,
 
-        #endregion
+        #endregion        
     }
 }

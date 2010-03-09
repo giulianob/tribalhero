@@ -10,37 +10,37 @@ namespace Game.Comm {
     class PacketMaker {
         private MemoryStream ms = new MemoryStream();
 
-        public void append(byte[] data) {
+        public void Append(byte[] data) {
             ms.Write(data, 0, data.Length);
         }
 
-        public Packet getNextPacket() {
+        public Packet GetNextPacket() {
             if (ms.Position < Packet.HEADER_SIZE)
                 return null;
-            int payload_len = BitConverter.ToUInt16(ms.GetBuffer(), Packet.LENGTH_OFFSET);
-            if (payload_len > (ms.Position - Packet.HEADER_SIZE))
+            int payloadLen = BitConverter.ToUInt16(ms.GetBuffer(), Packet.LENGTH_OFFSET);
+            if (payloadLen > (ms.Position - Packet.HEADER_SIZE))
                 return null;
 
-            MemoryStream new_ms = new MemoryStream();
-            int packet_len = Packet.HEADER_SIZE + payload_len;
-            new_ms.Write(ms.GetBuffer(), packet_len, (int) ms.Position - packet_len);
-            Packet packet = new Packet(ms.GetBuffer(), 0, packet_len);
-            ms = new_ms;
+            MemoryStream newMs = new MemoryStream();
+            int packetLen = Packet.HEADER_SIZE + payloadLen;
+            newMs.Write(ms.GetBuffer(), packetLen, (int) ms.Position - packetLen);
+            Packet packet = new Packet(ms.GetBuffer(), 0, packetLen);
+            ms = newMs;
             return packet;
         }
     }
 
     public abstract class Session : IChannel {
         public string name;
-        private Player player = null;
+        private Player player;
         protected Processor processor;
-        private PacketMaker packetMaker;
+        private readonly PacketMaker packetMaker;
 
         public delegate void CloseCallback();
 
         public event CloseCallback OnClose;
 
-        public Session(string name, Processor processor) {
+        protected Session(string name, Processor processor) {
             this.name = name;
             this.processor = processor;
             packetMaker = new PacketMaker();
@@ -55,37 +55,43 @@ namespace Game.Comm {
             set { player = value; }
         }
 
-        public abstract bool write(Packet packet);
+        public abstract bool Write(Packet packet);
 
         public void CloseSession() {
             if (OnClose != null)
                 OnClose();
-            close();
+            Close();
         }
 
-        protected abstract void close();
+        protected abstract void Close();
 
-        public void appendBytes(byte[] data) {
-            packetMaker.append(data);
+        public void AppendBytes(byte[] data) {
+            packetMaker.Append(data);
         }
 
-        public Packet getNextPacket() {
-            return packetMaker.getNextPacket();
+        public Packet GetNextPacket() {
+            return packetMaker.GetNextPacket();
         }
 
-        public void process(object obj) {
+        public void Process(object obj) {
             Packet p = (Packet) obj;
 
             if (!IsLoggedIn && p.Cmd != Command.LOGIN)
                 return;
-            else if (IsLoggedIn && p.Cmd == Command.LOGIN)
-                return;
+
+            if (IsLoggedIn) {
+                if (p.Cmd == Command.LOGIN)
+                    return;
+
+                if (player.GetCityList().Count == 0 && p.Cmd != Command.CITY_CREATE_INITIAL)
+                    return;
+            }
 
             if (processor != null)
                 processor.Execute(this, p);
         }
 
-        public void processEvent(object obj) {
+        public void ProcessEvent(object obj) {
             if (processor != null)
                 processor.ExecuteEvent(this, (Packet) obj);
         }
@@ -93,7 +99,7 @@ namespace Game.Comm {
         #region IChannel Members
 
         public void OnPost(object message) {
-            write(message as Packet);
+            Write(message as Packet);
         }
 
         #endregion

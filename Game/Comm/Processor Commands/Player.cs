@@ -36,7 +36,7 @@ namespace Game.Comm {
                 reply.AddString(player.Name);
             }
 
-            session.write(reply);
+            session.Write(reply);
         }
     }
 }

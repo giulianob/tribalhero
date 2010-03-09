@@ -46,6 +46,8 @@ namespace Game.Setup {
         MAP_FULL = 410,
         TILE_MISMATCH = 411,
         STRUCTURE_EXISTS = 412,
+        CITY_NAME_TAKEN = 413,
+        CITY_NAME_INVALID = 414,
 
         #endregion
 

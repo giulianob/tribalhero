@@ -63,7 +63,7 @@ namespace Game.Module {
                         continue;
                     }
 
-                    foreach (City city in intelligence.player.getCityList()) {
+                    foreach (City city in intelligence.player.GetCityList()) {
                         Structure mainBuilding = city.MainBuilding;
 
                         bool ret = false;
@@ -265,7 +265,7 @@ namespace Game.Module {
                         continue;
                     }
 
-                    List<City> cities = npc.getCityList();
+                    List<City> cities = npc.GetCityList();
 
                     Structure structure;
                     if (!Randomizer.MainBuilding(out structure, 2)) {
@@ -273,7 +273,7 @@ namespace Game.Module {
                         break;
                     }
 
-                    City city = new City(npc, string.Format("{0} {1}", npc.Name, npc.getCityList().Count + 1),
+                    City city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityList().Count + 1),
                                          new Resource(500, 500, 500, 500, 10), structure);
 
                     Global.World.Add(city);

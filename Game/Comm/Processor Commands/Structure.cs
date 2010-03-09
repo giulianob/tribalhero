@@ -84,7 +84,7 @@ namespace Game.Comm {
                         new List<ReferenceStub>(structure.City.Worker.References.GetReferences(structure)), reply);
                 }
 
-                session.write(reply);
+                session.Write(reply);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Game.Comm {
                 reply.AddString(city.Name);
             }
 
-            session.write(reply);
+            session.Write(reply);
         }
 
         public void CmdLaborMove(Session session, Packet packet) {
@@ -139,7 +139,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                city = session.Player.getCity(cityId);
+                city = session.Player.GetCity(cityId);
 
                 if (city == null || !city.TryGetStructure(objectId, out obj)) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -198,7 +198,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 Structure obj;
 
@@ -233,7 +233,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -267,7 +267,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -312,7 +312,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
@@ -354,7 +354,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player)) {
-                City city = session.Player.getCity(cityId);
+                City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);

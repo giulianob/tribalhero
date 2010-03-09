@@ -247,5 +247,50 @@ namespace Game.Comm {
                 packet.AddUInt32(obj.Hp);
             }
         }
+
+        public static void AddLoginToPacket(Session session, Packet packet) {
+            //Cities
+            List<City> list = session.Player.GetCityList();
+            packet.AddByte((byte)list.Count);
+            foreach (City city in list) {
+                city.Subscribe(session);
+                packet.AddUInt32(city.Id);
+                packet.AddString(city.Name);
+                AddToPacket(city.Resource, packet);
+                packet.AddByte(city.Radius);
+
+                //City Actions
+                AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
+
+                //Notifications
+                packet.AddUInt16(city.Worker.Notifications.Count);
+                foreach (NotificationManager.Notification notification in city.Worker.Notifications)
+                    AddToPacket(notification, packet);
+
+                //Structures
+                List<Structure> structs = new List<Structure>(city);
+                packet.AddUInt16((ushort)structs.Count);
+                foreach (Structure structure in structs) {
+                    packet.AddUInt16(Region.getRegionIndex(structure));
+                    AddToPacket(structure, packet, false);
+
+                    packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
+                    foreach (Technology tech in structure.Technologies) {
+                        if (tech.ownerLocation != EffectLocation.OBJECT)
+                            continue;
+                        packet.AddUInt32(tech.Type);
+                        packet.AddByte(tech.Level);
+                    }
+                }
+
+                //City Troops
+                packet.AddByte(city.Troops.Size);
+                foreach (TroopStub stub in city.Troops)
+                    AddToPacket(stub, packet);
+
+                //Unit Template
+                AddToPacket(city.Template, packet);
+            }
+        }
     }
 }

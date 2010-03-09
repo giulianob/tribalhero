@@ -5,20 +5,18 @@
 	import src.Objects.Prototypes.*;
 	import src.Objects.Factories.*;
 	import src.Objects.Actions.*;
+	import src.Global;
 	
 	public class MarketComm {
 		
-		private var mapComm: MapComm;
-		private var map: Map;
+		private var mapComm: MapComm;		
 		private var session: Session;
 		
 		public function MarketComm(mapComm: MapComm) {
-			this.mapComm = mapComm;
-			this.map = mapComm.map;
+			this.mapComm = mapComm;			
 			this.session = mapComm.session;
 		}
-		
-		
+				
 		public function getResourcePrices(callback: Function):void
 		{
 			var packet: Packet = new Packet();

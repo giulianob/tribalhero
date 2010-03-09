@@ -54,7 +54,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			{
 				pnlGetPrices = InfoDialog.showMessageDialog("Loading", "Getting current market prices...", null, null, true, false, 0);
 				
-				Global.map.mapComm.Market.getResourcePrices(onReceiveMarketPrices);
+				Global.mapComm.Market.getResourcePrices(onReceiveMarketPrices);
 			}
 		}
 		
@@ -96,7 +96,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 			}
 			
-			Global.map.mapComm.Market.sellResources(onMarketResponse, marketDialog, parentObj.cityId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
+			Global.mapComm.Market.sellResources(onMarketResponse, marketDialog, parentObj.cityId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
 		}		
 		
 		public function onAcceptBuyDialog(marketDialog: MarketBuyDialog):void
@@ -121,7 +121,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 			}
 			
-			Global.map.mapComm.Market.buyResources(onMarketResponse, marketDialog, parentObj.cityId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);			
+			Global.mapComm.Market.buyResources(onMarketResponse, marketDialog, parentObj.cityId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);			
 		}
 		
 		public function onMarketResponse(status: int, custom: *):void

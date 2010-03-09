@@ -62,7 +62,7 @@
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
-			Global.map.gameContainer.setOverlaySprite(this);
+			Global.gameContainer.setOverlaySprite(this);
 		}
 
 		public function onAddedToStage(e: Event):void
@@ -78,7 +78,7 @@
 				cursor.dispose();
 			}
 
-			Global.map.gameContainer.message.hide();
+			Global.gameContainer.message.hide();
 
 			if (highlightedObj)
 			{
@@ -104,10 +104,10 @@
 			if (gameObj == null || gameObj.objectId != 1)
 			return;
 
-			Global.map.mapComm.Troop.troopReinforce(city.id, gameObj.cityId, troop);
+			Global.mapComm.Troop.troopReinforce(city.id, gameObj.cityId, troop);
 
-			Global.map.gameContainer.setOverlaySprite(null);
-			Global.map.gameContainer.setSidebar(null);
+			Global.gameContainer.setOverlaySprite(null);
+			Global.gameContainer.setSidebar(null);
 			Global.map.selectObject(null);
 		}
 
@@ -126,7 +126,7 @@
 
 		public function moveTo(x: int, y: int):void
 		{
-			var pos: Point = MapUtil.getActualCoord(Global.map.gameContainer.camera.x + Math.max(x, 0), Global.map.gameContainer.camera.y + Math.max(y, 0));
+			var pos: Point = MapUtil.getActualCoord(Global.gameContainer.camera.x + Math.max(x, 0), Global.gameContainer.camera.y + Math.max(y, 0));
 
 			if (pos.x != objX || pos.y != objY)
 			{
@@ -138,7 +138,7 @@
 				cursor.setX(objX);
 				cursor.setY(objY);
 
-				cursor.moveWithCamera(Global.map.gameContainer.camera);
+				cursor.moveWithCamera(Global.gameContainer.camera);
 
 				Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
 
@@ -160,7 +160,7 @@
 
 			if (gameObj == null || (gameObj as StructureObject) == null || (gameObj as StructureObject).objectId != 1)
 			{
-				Global.map.gameContainer.message.showMessage("Choose a town center to defend");
+				Global.gameContainer.message.showMessage("Choose a town center to defend");
 			}
 			else
 			{
@@ -172,7 +172,7 @@
 				var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 				var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
 
-				Global.map.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
+				Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
 			}
 		}
 	}

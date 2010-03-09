@@ -69,7 +69,7 @@
 			btnNext.setVisible(false);
 			lblPages.setText("Loading...");
 
-			Global.map.mapComm.BattleReport.listLocal(loader, page);
+			Global.mapComm.BattleReport.listLocal(loader, page);
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame

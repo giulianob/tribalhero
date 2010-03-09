@@ -33,7 +33,7 @@
 
 			this.battleCityId = battleCityId;
 
-			battle = Global.map.mapComm.Battle.battleSubscribe(battleCityId);
+			battle = Global.mapComm.Battle.battleSubscribe(battleCityId);
 			battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, onAddedAttack);
 			battle.addEventListener(BattleManager.OBJECT_REMOVED_ATTACK, onRemoved);
 			battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, onAddedDefense);
@@ -67,7 +67,7 @@
 				battle.removeEventListener(BattleManager.OBJECT_ATTACKED, updateStamina);
 				battle.removeEventListener(BattleManager.END, updateStamina);
 
-				Global.map.mapComm.Battle.battleUnsubscribe(battleCityId);
+				Global.mapComm.Battle.battleUnsubscribe(battleCityId);
 			}
 		}
 

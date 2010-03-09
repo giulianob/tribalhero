@@ -9,6 +9,7 @@
 	import flash.ui.ContextMenuItem;
 	import src.Map.*;
 	import src.UI.Dialog.InfoDialog;
+	import src.UI.Dialog.InitialCityDialog;
 	import src.UI.Dialog.LoginDialog;
 	import src.UI.GameLookAndFeel;
 	import src.Util.*;
@@ -25,7 +26,6 @@
 
 		private var map:Map;
 		private var miniMap: MiniMap;
-		private var mapComm: MapComm;
 		private var frameCounter:FPSCounter;
 		public var packetCounter:GeneralCounter;
 		private var session:TcpSession;
@@ -148,6 +148,9 @@
 
 		public function onDisconnected(event: Event):void
 		{
+			Global.mapComm = null;
+			Global.map = null;
+			session = null;
 			gameContainer.dispose();
 
 			if (parms.hostname)
@@ -170,6 +173,10 @@
 			}
 			else
 			{
+				Global.mapComm = new MapComm(session);
+				Global.map = map = new Map();
+				miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
+
 				if (Constants.loginKey)
 				session.login(Constants.loginKey);
 				else
@@ -190,15 +197,19 @@
 
 			if (loginDialog != null) loginDialog.getFrame().dispose();
 
-			gameContainer.show();
+			var newPlayer: Boolean = Global.mapComm.Login.onLogin(packet);
 
-			map = new Map(gameContainer.camera);
-			mapComm = new MapComm(map, session);
-			map.init(mapComm);
+			if (!newPlayer) {
+				completeLogin(packet);
+			}
+			else {
+				// Need to make the createInitialCity static and pass in the session
+				var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
+					Global.mapComm.Login.createInitialCity(sender.getCityName(), completeLogin);
+				});
 
-			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
-
-			completeLogin(packet);
+				createCityDialog.show();
+			}
 		}
 
 		public function onReceiveXML(e: Event):void
@@ -220,9 +231,9 @@
 			WorkerFactory.init(map, Constants.objData);
 			ObjectFactory.init(map, Constants.objData);
 
-			mapComm.Login.onLogin(packet);
-			gameContainer.setMap(map, miniMap);
-			map.parseRegions();
+			gameContainer.show();			
+			Global.mapComm.Login.readLoginInfo(packet);
+			gameContainer.setMap(map, miniMap);			
 
 			if (Constants.debug > 0) {
 				if (frameCounter)

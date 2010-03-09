@@ -49,7 +49,7 @@
 				var inputDialog: DefaultActionDialog = new DefaultActionDialog();				
 				
 				inputDialog.init(Global.map, parentObj as StructureObject, onAcceptDialog, onCloseDialog);
-				Global.map.gameContainer.showDialog(inputDialog);
+				Global.gameContainer.showDialog(inputDialog);
 			}
 		}
 		
@@ -60,13 +60,13 @@
 		
 		public function onAcceptDialog(sender: DefaultActionDialog):void
 		{
-			Global.map.mapComm.Object.defaultAction(this.parentObj.cityId, this.parentObj.objectId, sender.Command(), sender.Value());
-			Global.map.gameContainer.closeDialog(sender);
+			Global.mapComm.Object.defaultAction(this.parentObj.cityId, this.parentObj.objectId, sender.Command(), sender.Value());
+			Global.gameContainer.closeDialog(sender);
 		}
 		
 		public function onCloseDialog(sender: DefaultActionDialog):void
 		{
-			Global.map.gameContainer.closeDialog(sender);
+			Global.gameContainer.closeDialog(sender);
 		}		
 	}
 	

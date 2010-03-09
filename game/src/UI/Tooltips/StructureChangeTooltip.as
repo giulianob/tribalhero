@@ -12,6 +12,7 @@ package src.UI.Tooltips {
 	import flash.display.MovieClip;
 	import src.Objects.StructureObject;	
 	import src.UI.Components.ResourcesPanel;
+	import src.UI.Components.StructureStatBox;
 	import src.UI.GameLookAndFeel;
 	import src.Util.Util;
 	import src.Objects.Effects.Formula;
@@ -24,7 +25,6 @@ package src.UI.Tooltips {
 	
 	public class StructureChangeTooltip extends Tooltip {
 		
-		private var structPrototype: StructurePrototype;		
 		private var nextStructPrototype: StructurePrototype;		
 		private var parentObj: StructureObject;
 		
@@ -150,10 +150,13 @@ package src.UI.Tooltips {
 			layout4.setAlignment(AsWingConstants.RIGHT);
 			pnlResources.setLayout(layout4);
 			
+			var statsBox: StructureStatBox = new StructureStatBox(nextStructPrototype.type, nextStructPrototype.level);
+			
 			//component layoution
 			ui.append(pnlHeader);
 			ui.append(lblDescription);
 			ui.append(lblLvlDescription);
+			ui.append(statsBox);
 			ui.append(pnlRequired);
 			ui.append(pnlFooter);
 			

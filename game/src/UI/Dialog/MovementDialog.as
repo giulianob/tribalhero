@@ -105,7 +105,7 @@
 			cursor.init(troop, city.id);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
-			Global.map.gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 		}
 
 		public function onSendTroopAttack(dialog: AttackTroopDialog):void
@@ -124,7 +124,7 @@
 			cursor.init(troop, dialog.getMode(), city.id);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
-			Global.map.gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 		}
 
 		private function onTroopUpdated(e: BinaryListEvent) : void {

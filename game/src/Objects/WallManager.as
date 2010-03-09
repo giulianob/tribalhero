@@ -1,6 +1,7 @@
 ﻿package src.Objects
 {
 	import flash.geom.Point;
+	import src.Global;
 	import src.Map.Map;
 	import src.Map.MapUtil;
 	import src.Objects.Factories.ObjectFactory;
@@ -97,7 +98,7 @@
 			wall.setX(x);
 			wall.setY(y);
 			map.objContainer.addObject(wall);
-			wall.moveWithCamera(map.gameContainer.camera);
+			wall.moveWithCamera(Global.gameContainer.camera);
 
 			objects.push(wall);
 		}

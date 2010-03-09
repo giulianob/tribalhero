@@ -45,9 +45,9 @@
 		private function load() : void {
 
 			if (isLocal)
-			Global.map.mapComm.BattleReport.viewLocal(loader, id);
+			Global.mapComm.BattleReport.viewLocal(loader, id);
 			else
-			Global.map.mapComm.BattleReport.viewRemote(loader, id);
+			Global.mapComm.BattleReport.viewRemote(loader, id);
 		}
 
 		private function onLoaded(e: Event) : void {

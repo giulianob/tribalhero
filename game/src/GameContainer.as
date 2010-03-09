@@ -149,7 +149,7 @@
 			zoomIntoMinimap(!minimapZoomed);
 		}
 
-		public function zoomIntoMinimap(zoom: Boolean) : void {
+		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
 			if (zoom) {
 				miniMap.resize(Constants.miniMapLargeScreenW, Constants.miniMapLargeScreenH);
 				miniMap.x = Constants.miniMapLargeScreenX;
@@ -171,7 +171,9 @@
 			}
 
 			minimapZoomed = zoom;
-			map.onMove();
+			if (query) {
+				map.onMove();
+			}
 
 			alignMinimapTools();
 		}
@@ -193,12 +195,10 @@
 		public function setMap(map: Map, miniMap: MiniMap):void
 		{
 			this.map = map;
-			Global.map = map;
 			this.miniMap = miniMap;
 			(lstCities.getModel() as VectorListModel).clear();
 
 			mapHolder.addChild(map);
-			map.setGameContainer(this);
 
 			this.mapOverlay = new MovieClip();
 			this.mapOverlay.graphics.beginFill(0xCCFF00);
@@ -210,7 +210,7 @@
 			this.mapOverlay.y = mapHolder.y;
 			addChild(this.mapOverlay);
 
-			for each (var city: City in map.cities.each()) {				
+			for each (var city: City in map.cities.each()) {
 				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return city.name; } } );
 			}
 
@@ -218,7 +218,10 @@
 				lstCities.setSelectedIndex(0);
 				selectedCity = lstCities.getSelectedItem().city;
 				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-				map.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+			}
+			else {
+				map.parseRegions();
 			}
 
 			//Show resources box
@@ -231,11 +234,12 @@
 			//Set minimap position and initial state
 			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 			addChild(miniMap);
-			zoomIntoMinimap(false);
+			zoomIntoMinimap(false, false);
 		}
 
 		public function show() : void {
 			camera.reset();
+			closeAllFrames();
 			visible = true;
 		}
 
@@ -249,16 +253,18 @@
 			resourcesContainer = null;
 			setSidebar(null);
 
-			map.dispose();
-			mapHolder.removeChild(map);
-			removeChild(mapOverlay);
-			removeChild(miniMap);
-			removeChild(minimapTools);
+			if (map) {
+				map.dispose();
+				mapHolder.removeChild(map);
+				removeChild(mapOverlay);
+				removeChild(miniMap);
+				removeChild(minimapTools);
 
-			miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
-			map = null;
-			miniMap = null;
+				map = null;
+				miniMap = null;
+			}
 		}
 
 		private function alignMinimapTools() : void {

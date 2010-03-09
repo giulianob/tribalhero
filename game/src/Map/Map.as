@@ -7,6 +7,7 @@
 	import flash.utils.*;
 	import flash.ui.Keyboard;
 	import src.GameContainer;
+	import src.Global;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.ObjectContainer;
@@ -32,8 +33,7 @@
 		private var pendingRegions: Array;
 
 		public var selectViewable: Object;
-		public var selectedObject: GameObject;
-		public var gameContainer: GameContainer;
+		public var selectedObject: GameObject;		
 
 		private var listenersDefined: Boolean;
 
@@ -43,16 +43,15 @@
 
 		public var cities: CityList = new CityList();
 
-		public var mapComm: MapComm;
 		public var usernames: UsernameManager;
 
 		private var timeDelta: int = 0;
 
 		public var scrollRate: Number = 1;
 
-		public function Map(camera: Camera)
+		public function Map()
 		{
-			this.camera = camera;
+			camera = Global.gameContainer.camera;
 			camera.addEventListener(Camera.ON_MOVE, onMove);
 
 			selectedObject = null;
@@ -66,7 +65,9 @@
 			addChild(overlayerSpace);
 
 			pendingRegions = new Array();
-			regions = new RegionList(this);
+			regions = new RegionList();
+
+			usernames = new UsernameManager();
 
 			addEventListener(Event.ADDED_TO_STAGE, eventAddedToStage);
 			addEventListener(Event.REMOVED_FROM_STAGE, eventRemovedFromStage);
@@ -74,16 +75,10 @@
 			listenersDefined = false;
 		}
 
-		public function init(mapComm: MapComm):void
-		{
-			this.mapComm = mapComm;
-			usernames = new UsernameManager(this);
-		}
-
 		public function dispose():void
 		{
-			setGameContainer(null);
 			camera.removeEventListener(Camera.ON_MOVE, onMove);
+			disableMouse(true);
 		}
 
 		//###################################################################
@@ -104,17 +99,12 @@
 		//########################## Setters ################################
 		//###################################################################
 
-		public function setGameContainer(gameContainer: GameContainer):void
-		{
-			this.gameContainer = gameContainer;
-		}
-
 		public function disableMouse(disable: Boolean):void
 		{
 			if (disable) {
 				if (listenersDefined)
 				{
-					stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+					stage.removeEventListener(KeyboardEvent.KEY_UP, eventKeyPress);
 					stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 					stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 					stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
@@ -125,7 +115,7 @@
 			}
 			else {
 				if (!listenersDefined) {
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+					stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyPress);
 					stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 					stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 					stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
@@ -285,20 +275,9 @@
 			//and add any regions we are going to be asking the server to the pending regions list
 			for (i = requiredRegions.length - 1; i >= 0; i--)
 			{
-				found = -1;
-
-				for (a = 0; a < pendingRegions.length; a++)
+				if (pendingRegions.indexOf(requiredRegions[i]) > -1)
 				{
-					if (pendingRegions[a] == requiredRegions[i])
-					{
-						found = i;
-						break;
-					}
-				}
-
-				if (found >= 0)
-				{
-					requiredRegions.splice(found, 1);
+					requiredRegions.splice(i, 1);
 				}
 				else
 				{
@@ -307,12 +286,12 @@
 			}
 
 			//regions that we still need, query server
-			if (requiredRegions.length > 0)
+			if (requiredRegions.length > 0 || outdatedRegions.length > 0)
 			{
 				if (Constants.debug >= 3)
 				trace("Required:" + requiredRegions);
 
-				mapComm.Region.getRegion(requiredRegions, outdatedRegions);
+				Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
 			}
 		}
 
@@ -349,7 +328,7 @@
 
 			//If the reselecting bit is on, then we dont want to refresh the whole UI. This just makes a better user experience.
 			if (!reselecting) {
-				gameContainer.setSidebar(null);
+				Global.gameContainer.setSidebar(null);
 
 				if (selectedObject != null)
 				selectedObject.setSelected(false);
@@ -362,10 +341,12 @@
 				if (query) {
 					obj.setSelected(true);
 
-					if (obj is StructureObject)
-					mapComm.Object.getStructureInfo(obj as StructureObject);
-					else if (obj is TroopObject)
-					mapComm.Troop.getTroopInfo(obj as TroopObject);
+					if (obj is StructureObject) {
+						Global.mapComm.Object.getStructureInfo(obj as StructureObject);
+					}
+					else if (obj is TroopObject) {
+						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);
+					}
 				}
 				else {
 					doSelectedObject(obj);
@@ -397,7 +378,7 @@
 				sidebar = new TroopInfoSidebar(obj);
 			}
 
-			gameContainer.setSidebar(sidebar);
+			Global.gameContainer.setSidebar(sidebar);
 		}
 
 		//###################################################################
@@ -417,11 +398,11 @@
 		//###################################################################
 		//#################### Mouse/Keyboard Events ########################
 		//###################################################################
-		public function eventKeyDown(event: KeyboardEvent):void
+		public function eventKeyPress(event: KeyboardEvent):void
 		{
 			if (event.keyCode == Keyboard.ESCAPE)
 			{
-				gameContainer.setOverlaySprite(null);
+				Global.gameContainer.setOverlaySprite(null);
 				doSelectedObject(null);
 			}
 
@@ -506,15 +487,15 @@
 		public function onMove(event: Event = null):void
 		{
 			var pt: Point = MapUtil.getMapCoord(camera.x, camera.y);
-			gameContainer.minimapTools.txtCoords.text = "(" + pt.x + "," + pt.y + ")";
+			Global.gameContainer.minimapTools.txtCoords.text = "(" + pt.x + "," + pt.y + ")";
 
 			if (!disabledMapQueries) {
 				parseRegions();
 				objContainer.moveWithCamera(camera.x, camera.y);
 			}
 
-			gameContainer.miniMap.parseRegions();
-			gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
+			Global.gameContainer.miniMap.parseRegions();
+			Global.gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
 		}
 	}
 }

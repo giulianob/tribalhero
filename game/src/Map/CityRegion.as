@@ -3,6 +3,7 @@
 	import flash.display.*;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import src.Global;
 	import src.Objects.Factories.ObjectFactory;
 	import src.UI.Tooltips.MinimapInfoTooltip;
 	import src.Util.BinaryList.*;
@@ -48,7 +49,7 @@
 		{
 			for each(var gameObj: SimpleGameObject in objects.each())
 			{
-				map.gameContainer.miniMap.objContainer.removeObject(gameObj);
+				src.Global.gameContainer.miniMap.objContainer.removeObject(gameObj);
 			}
 
 			objects.clear();
@@ -153,7 +154,7 @@
 
 			gameObj.setProperties(level, hpPercent, coord.x, coord.y);
 
-			map.gameContainer.miniMap.objContainer.addObject(gameObj);
+			src.Global.gameContainer.miniMap.objContainer.addObject(gameObj);
 
 			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onObjectMouseOver);			
 			gameObj.addEventListener(MouseEvent.MOUSE_OUT, onObjectMouseOut);
@@ -170,7 +171,7 @@
 			if (gameObj == null)
 			return null;
 
-			map.gameContainer.miniMap.objContainer.removeObject(gameObj, 0, dispose);
+			Global.gameContainer.miniMap.objContainer.removeObject(gameObj, 0, dispose);
 
 			return gameObj;
 		}

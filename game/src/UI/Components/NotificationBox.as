@@ -44,7 +44,7 @@
 			if (!tooltipMode) {
 				icon.buttonMode = true;
 				icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent):void {
-					Global.map.mapComm.City.gotoNotificationLocation(Global.gameContainer.selectedCity.id, notification.cityId, notification.actionId);
+					Global.mapComm.City.gotoNotificationLocation(Global.gameContainer.selectedCity.id, notification.cityId, notification.actionId);
 					Global.map.selectWhenViewable(notification.cityId, notification.objectId);
 					Util.getFrame(getParent()).dispose();
 				});

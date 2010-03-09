@@ -34,6 +34,7 @@
 		private var miniMapHeight: int;
 
 		private var lastClick: Number;
+		private var lastClickPoint: Point = new Point();
 
 		public function MiniMap(width: int, height: int)
 		{
@@ -73,15 +74,17 @@
 
 		private function onNavigate(e: MouseEvent) : void {
 
-			if ((new Date().time) - lastClick > 350) {
+			var currentMousePoint: Point = new Point(stage.mouseX, stage.mouseY);
+			if (Point.distance(currentMousePoint, lastClickPoint) > 10 || (new Date().time) - lastClick > 350) {
 				lastClick = new Date().time;
+				lastClickPoint = currentMousePoint;
 				return;
 			}
 
 			lastClick = new Date().time;
 			//Calculate where the user clicked in real map position
-			var camX: int = Global.map.gameContainer.camera.miniMapX - mapHolder.x;
-			var camY: int = Global.map.gameContainer.camera.miniMapY - mapHolder.y;
+			var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
+			var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;
 
 			var local: Point = this.globalToLocal(new Point(e.stageX, e.stageY));
 			var centeredOffsetX: int = local.x;
@@ -131,7 +134,7 @@
 			}
 
 			regions.add(newRegion);
-			newRegion.moveWithCamera(Global.map.gameContainer.camera);
+			newRegion.moveWithCamera(Global.gameContainer.camera);
 			regionSpace.addChild(newRegion);
 
 			return newRegion;
@@ -140,14 +143,14 @@
 		public function parseRegions():void
 		{
 			if (Constants.debug >= 4) {
-				trace("on move: " + Global.map.gameContainer.camera.miniMapX + "," + Global.map.gameContainer.camera.miniMapY);
+				trace("on move: " + Global.gameContainer.camera.miniMapX + "," + Global.gameContainer.camera.miniMapY);
 			}
 
 			//calculate which regions we need to render
 			var requiredRegions: Array = new Array();
 
-			var camX: int = Global.map.gameContainer.camera.miniMapX - mapHolder.x;
-			var camY: int = Global.map.gameContainer.camera.miniMapY - mapHolder.y;
+			var camX: int = Global.gameContainer.camera.miniMapX - mapHolder.x;
+			var camY: int = Global.gameContainer.camera.miniMapY - mapHolder.y;
 
 			var regionsW: int = Math.ceil(miniMapWidth / Constants.cityRegionW);
 			var regionsH: int = Math.ceil(miniMapHeight / (Constants.cityRegionH / 2));
@@ -178,7 +181,7 @@
 				if (found >= 0)
 				{
 					//adjust the position of this region
-					region.moveWithCamera(Global.map.gameContainer.camera);
+					region.moveWithCamera(Global.gameContainer.camera);
 
 					if (Constants.debug >= 4)
 					trace("Moved: " + region.id + " " + region.x + "," + region.y);
@@ -228,7 +231,7 @@
 				if (Constants.debug >= 3)
 				trace("Required:" + requiredRegions);
 
-				Global.map.mapComm.Region.getCityRegion(requiredRegions);
+				Global.mapComm.Region.getCityRegion(requiredRegions);
 			}
 		}
 	}

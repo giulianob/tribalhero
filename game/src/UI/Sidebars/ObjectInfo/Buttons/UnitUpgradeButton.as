@@ -53,7 +53,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (enabled)
 			{
-				Global.map.mapComm.Troop.upgradeUnit(parentObj.cityId, parentObj.objectId, nextUnitPrototype.type);
+				Global.mapComm.Troop.upgradeUnit(parentObj.cityId, parentObj.objectId, nextUnitPrototype.type);
 			}
 		}
 

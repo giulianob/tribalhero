@@ -4,12 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
-using Game.Map;
 using Game.Setup;
 
 #endregion
 
-namespace Game {
+namespace Game.Map {
     public class Region {
         #region Constants
 
@@ -19,9 +18,9 @@ namespace Game {
 
         #region Members
 
-        private ObjectList objlist = new ObjectList();
-        private object objLock = new object();
-        private byte[] map;
+        private readonly ObjectList objlist = new ObjectList();
+        private readonly object objLock = new object();
+        private readonly byte[] map;
         private byte[] objects;
         private bool isDirty;
 
@@ -55,7 +54,7 @@ namespace Game {
 
         #region Methods
 
-        public bool add(GameObject obj) {
+        public bool Add(GameObject obj) {
             lock (objlist) {
                 objlist.addGameObject(obj);
                 isDirty = true;
@@ -64,21 +63,21 @@ namespace Game {
             return true;
         }
 
-        public void remove(GameObject obj) {
+        public void Remove(GameObject obj) {
             lock (objlist) {
                 objlist.remove(obj);
                 isDirty = true;
             }
         }
 
-        public void remove(GameObject obj, uint origX, uint origY) {
+        public void Remove(GameObject obj, uint origX, uint origY) {
             lock (objlist) {
                 objlist.remove(obj, origX, origY);
                 isDirty = true;
             }
         }
 
-        public void update(GameObject obj, uint origX, uint origY) {
+        public void Update(GameObject obj, uint origX, uint origY) {
             lock (objlist) {
                 if (obj.X != origX || obj.Y != origY) {
                     if (!objlist.remove(obj, origX, origY))
@@ -89,11 +88,11 @@ namespace Game {
             }
         }
 
-        public List<GameObject> getObjects(uint x, uint y) {
+        public List<GameObject> GetObjects(uint x, uint y) {
             return objlist.get(x, y);
         }
 
-        public byte[] getObjectBytes() {
+        public byte[] GetObjectBytes() {
             if (isDirty || objects == null) {
                 lock (objlist) {
                     using (MemoryStream ms = new MemoryStream()) {
@@ -139,31 +138,31 @@ namespace Game {
             return objects;
         }
 
-        public byte[] getBytes() {
+        public byte[] GetBytes() {
             return map;
         }
 
-        public ushort getTileType(uint x, uint y) {
-            return BitConverter.ToUInt16(map, getTileIndex(x, y)*2);
+        public ushort GetTileType(uint x, uint y) {
+            return BitConverter.ToUInt16(map, GetTileIndex(x, y)*2);
         }
 
         #endregion
 
         #region Static Util Methods
 
-        public static ushort getRegionIndex(GameObject obj) {
-            return getRegionIndex(obj.X, obj.Y);
+        public static ushort GetRegionIndex(GameObject obj) {
+            return GetRegionIndex(obj.X, obj.Y);
         }
 
-        public static ushort getRegionIndex(uint x, uint y) {
+        public static ushort GetRegionIndex(uint x, uint y) {
             return (ushort) (x/Config.region_width + (y/Config.region_height)*Config.column);
         }
 
-        public static int getTileIndex(GameObject obj) {
-            return getTileIndex(obj.X, obj.Y);
+        public static int GetTileIndex(GameObject obj) {
+            return GetTileIndex(obj.X, obj.Y);
         }
 
-        public static int getTileIndex(uint x, uint y) {
+        public static int GetTileIndex(uint x, uint y) {
             return (int) (x%Config.region_width + (y%Config.region_height)*Config.region_width);
         }
 

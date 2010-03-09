@@ -63,7 +63,7 @@ namespace Game.Map {
         #region Properties
 
         public List<GameObject> this[uint x, uint y] {
-            get { return GetRegion(x, y).getObjects(x, y); }
+            get { return GetRegion(x, y).GetObjects(x, y); }
         }
 
         #endregion
@@ -167,8 +167,8 @@ namespace Game.Map {
             if (region == null)
                 return false;
 
-            if (region.add(obj)) {
-                ushort regionId = Region.getRegionIndex(obj);
+            if (region.Add(obj)) {
+                ushort regionId = Region.GetRegionIndex(obj);
                 Packet packet = new Packet(Command.OBJECT_ADD);
                 packet.AddUInt16(regionId);
                 PacketHelper.AddToPacket(obj, packet, true);
@@ -191,20 +191,20 @@ namespace Game.Map {
             if (region == null)
                 return;
 
-            ushort regionId = Region.getRegionIndex(obj);
+            ushort regionId = Region.GetRegionIndex(obj);
 
             Packet packet = new Packet(Command.OBJECT_REMOVE);
             packet.AddUInt16(regionId);
             packet.AddUInt32(obj.City.Id);
             packet.AddUInt32(obj.ObjectId);
 
-            region.remove(obj);
+            region.Remove(obj);
             Global.Channel.Post("/WORLD/" + regionId, packet);
         }
 
         public List<GameObject> GetObjects(uint x, uint y) {
             Region region = GetRegion(x, y);
-            return region == null ? null : region.getObjects(x, y);
+            return region == null ? null : region.GetObjects(x, y);
         }
 
         #endregion
@@ -215,19 +215,19 @@ namespace Game.Map {
             //Check if object has moved
             if (sender.X != origX || sender.Y != origY) {
                 //if object has moved then we need to do some logic to see if it has changed regions
-                ushort oldRegionId = Region.getRegionIndex(origX, origY);
-                ushort newRegionId = Region.getRegionIndex(sender);
+                ushort oldRegionId = Region.GetRegionIndex(origX, origY);
+                ushort newRegionId = Region.GetRegionIndex(sender);
 
                 //object has not changed regions so simply update
                 if (oldRegionId == newRegionId) {
-                    regions[newRegionId].update(sender, origX, origY);
+                    regions[newRegionId].Update(sender, origX, origY);
                     Packet packet = new Packet(Command.OBJECT_UPDATE);
                     packet.AddUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
                 } else {
-                    regions[oldRegionId].remove(sender, origX, origY);
-                    regions[newRegionId].add(sender);
+                    regions[oldRegionId].Remove(sender, origX, origY);
+                    regions[newRegionId].Add(sender);
                     Packet packet = new Packet(Command.OBJECT_MOVE);
                     packet.AddUInt16(oldRegionId);
                     packet.AddUInt16(newRegionId);
@@ -240,8 +240,8 @@ namespace Game.Map {
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
                 }
             } else {
-                ushort regionId = Region.getRegionIndex(sender);
-                regions[regionId].update(sender, sender.X, sender.Y);
+                ushort regionId = Region.GetRegionIndex(sender);
+                regions[regionId].Update(sender, sender.X, sender.Y);
                 Packet packet = new Packet(Command.OBJECT_UPDATE);
                 packet.AddUInt16(regionId);
                 PacketHelper.AddToPacket(sender, packet, true);
@@ -268,7 +268,7 @@ namespace Game.Map {
         #region Helpers
 
         public Region GetRegion(uint x, uint y) {
-            return GetRegion(Region.getRegionIndex(x, y));
+            return GetRegion(Region.GetRegionIndex(x, y));
         }
 
         public Region GetRegion(ushort id) {
@@ -322,7 +322,7 @@ namespace Game.Map {
 
         public ushort GetTileType(uint x, uint y) {
             Region region = GetRegion(x, y);
-            return region.getTileType(x, y);
+            return region.GetTileType(x, y);
         }
 
         public bool CityNameTaken(string name) {

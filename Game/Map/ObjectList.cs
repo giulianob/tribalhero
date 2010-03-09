@@ -82,7 +82,7 @@ namespace Game.Map {
         #region Methods
 
         internal void addGameObject(GameObject obj) {
-            add(obj, Region.getTileIndex(obj.X, obj.Y));
+            add(obj, Region.GetTileIndex(obj.X, obj.Y));
         }
 
         private void add(GameObject obj, int index) {
@@ -107,7 +107,7 @@ namespace Game.Map {
 
         internal bool remove(GameObject obj, uint origX, uint origY) {
             List<GameObject> list;
-            int index = Region.getTileIndex(origX, origY);
+            int index = Region.GetTileIndex(origX, origY);
 
             if (dict.TryGetValue(index, out list)) {
                 --count;
@@ -125,7 +125,7 @@ namespace Game.Map {
         internal List<GameObject> get(uint x, uint y) {
             List<GameObject> list;
 
-            int index = Region.getTileIndex(x, y);
+            int index = Region.GetTileIndex(x, y);
 
             if (dict.TryGetValue(index, out list))
                 return new List<GameObject>(list);

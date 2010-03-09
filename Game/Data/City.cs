@@ -11,6 +11,7 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
 using Game.Logic;
+using Game.Map;
 using Game.Util;
 
 #endregion
@@ -370,7 +371,7 @@ namespace Game.Data {
                 return;
 
             Packet packet = new Packet(Command.CITY_OBJECT_ADD);
-            packet.AddUInt16(Region.getRegionIndex(obj));
+            packet.AddUInt16(Region.GetRegionIndex(obj));
             PacketHelper.AddToPacket(obj, packet, false);
             Global.Channel.Post("/CITY/" + id, packet);
         }
@@ -390,7 +391,7 @@ namespace Game.Data {
                 return;
 
             Packet packet = new Packet(Command.CITY_OBJECT_UPDATE);
-            packet.AddUInt16(Region.getRegionIndex(sender));
+            packet.AddUInt16(Region.GetRegionIndex(sender));
             PacketHelper.AddToPacket(sender, packet, false);
             Global.Channel.Post("/CITY/" + id, packet);
         }

@@ -8,6 +8,7 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Fighting;
 using Game.Logic;
+using Game.Map;
 using Game.Util;
 
 #endregion
@@ -271,7 +272,7 @@ namespace Game.Comm {
                 List<Structure> structs = new List<Structure>(city);
                 packet.AddUInt16((ushort)structs.Count);
                 foreach (Structure structure in structs) {
-                    packet.AddUInt16(Region.getRegionIndex(structure));
+                    packet.AddUInt16(Region.GetRegionIndex(structure));
                     AddToPacket(structure, packet, false);
 
                     packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);

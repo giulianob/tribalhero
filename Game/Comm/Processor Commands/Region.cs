@@ -90,8 +90,8 @@ namespace Game.Comm {
                 }
 
                 reply.AddUInt16(regionId);
-                reply.AddBytes(Global.World.GetRegion(regionId).getBytes());
-                reply.AddBytes(Global.World.GetRegion(regionId).getObjectBytes());
+                reply.AddBytes(Global.World.GetRegion(regionId).GetBytes());
+                reply.AddBytes(Global.World.GetRegion(regionId).GetObjectBytes());
                 Global.World.SubscribeRegion(session, regionId);
             }
 

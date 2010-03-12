@@ -342,7 +342,8 @@ namespace Game.Battle {
                     if (obj.Stats.Hp == 0 || defenders.Contains(obj))
                         continue;
 
-                    if (obj == obj.City.MainBuilding && obj.Lvl <= 1)
+                    // Don't add main building if lvl 1 or if a building is lvl 0
+                    if ((obj == obj.City.MainBuilding && obj.Lvl <= 1) || (obj.Lvl == 0))
                         continue;
 
                     added = true;

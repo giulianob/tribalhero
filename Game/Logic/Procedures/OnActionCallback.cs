@@ -13,7 +13,7 @@ namespace Game.Logic.Procedures {
             }
 
             if (ObjectTypeFactory.IsStructureType("Crop", structure)) {
-                structure.City.Resource.Wood.Rate += laborDelta;
+                structure.City.Resource.Crop.Rate += laborDelta;
             }            
         }
 

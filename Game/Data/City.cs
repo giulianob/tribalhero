@@ -141,9 +141,7 @@ namespace Game.Data {
             Worker.ActionRemoved += WorkerActionRemoved;
             Worker.ActionStarted += WorkerActionAdded;
             Worker.ActionRescheduled += WorkerActionRescheduled;
-            owner.Add(this);
-            
-            resource.Labor.Add(10);
+            owner.Add(this);                       
 
             if (mainBuilding != null) {
                 mainBuilding.ObjectId = 1;

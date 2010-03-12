@@ -25,7 +25,7 @@ namespace Game.Logic.Actions {
         public LaborMoveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                byte workerIndex, ushort actionCount, IDictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
-            cityToStructure = bool.Parse(properties["city_to_tructure"]);
+            cityToStructure = bool.Parse(properties["city_to_structure"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }
@@ -131,7 +131,7 @@ namespace Game.Logic.Actions {
                             structure.EndUpdate();
                             
                             structure.City.BeginUpdate();
-                            Procedure.AdjustCityResourceRates(structure, -1 * ActionCount);
+                            Procedure.AdjustCityResourceRates(structure, 1 * ActionCount);
                             structure.City.EndUpdate();
                         }
                         StateChange(ActionState.INTERRUPTED);

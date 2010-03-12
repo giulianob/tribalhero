@@ -200,7 +200,7 @@ namespace Game.Comm {
                         return;
                     }
 
-                    Resource res = new Resource(500, 0, 0, 500, 0);
+                    Resource res = new Resource(500, 0, 0, 500, 20);
 
                     city = new City(session.Player, cityName, res, structure);
 

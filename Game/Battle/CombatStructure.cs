@@ -107,14 +107,10 @@ namespace Game.Battle {
 
         public override void TakeDamage(int dmg, out Resource returning) {
             Structure.BeginUpdate();
-            Structure.Stats.Hp -= (ushort) dmg;
-            if (Structure.Stats.Hp < 0)
-                Structure.Stats.Hp = 0;
-
-            hp -= (ushort) dmg;
-            if (hp < 0)
-                hp = 0;
+            Structure.Stats.Hp = (dmg > Structure.Stats.Hp) ? (ushort)0 : (ushort)(Structure.Stats.Hp - (ushort)dmg);            
             Structure.EndUpdate();
+
+            hp = (dmg > hp) ? 0 : hp - (ushort)dmg;
             
             returning = null;
         }

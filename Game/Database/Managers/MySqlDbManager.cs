@@ -91,7 +91,13 @@ namespace Game.Database {
             if (Config.database_verbose)
                 Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
 
-            persistantTransaction.transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+            try {
+                persistantTransaction.transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+            }
+            catch (Exception e) {
+                HandleGeneralException(e, null);
+                return;
+            }
 
             MySqlCommand command = new MySqlCommand("SET AUTOCOMMIT = 0",
                                                     (persistantTransaction.transaction as MySqlTransaction).Connection,

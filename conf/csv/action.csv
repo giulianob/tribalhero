@@ -99,7 +99,7 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 //Stable,,,,,,,,,,
 22021,0,1,,,,,,,,
 22021,1,1,structure_Upgrade,10,,,,,,
-22021,2,1,unit_train,201,,,,,22013,UPWARD
+22021,2,1,unit_train,201,,,,,,
 22022,0,1,,,,,,,,
 22022,1,1,structure_Upgrade,10,,,,,,
 22022,2,1,unit_train,201,,,,,,
@@ -115,7 +115,7 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 22024,0,1,,,,,,,,
 22024,1,1,structure_Upgrade,10,,,,,,
 22024,2,1,unit_train,201,,,,,,
-22024,3,1,unit_train,202,,,,,,
+22024,3,1,unit_train,202,,,,,22013,UPWARD
 22024,4,1,structure_Change,2203,1,,,,,
 22024,5,1,technology_Upgrade,22022,2,,,,22022,UPWARD
 22024,6,1,unit_upgrade,201,10,,,,,

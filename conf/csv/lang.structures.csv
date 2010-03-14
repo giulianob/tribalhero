@@ -16,7 +16,7 @@ BARRACK_STRUCTURE_DESCRIPTION,Enables the ability to train advanced military uni
 BARRACK_STRUCTURE_LVL_1,Allows training swordsmen and archers.
 BARRACK_STRUCTURE_LVL_2,Allows training pikemen.
 BARRACK_STRUCTURE_LVL_3,"Enables upgrading fighters, pikemen, and bowmen"
-BARRACK_STRUCTURE_LVL_4,
+BARRACK_STRUCTURE_LVL_4,Improves barrack strength.
 BARRACK_STRUCTURE_LVL_5,Decreases training time by 5%.
 BARRACK_STRUCTURE_LVL_6,Decreases training time by 10%.
 BARRACK_STRUCTURE_LVL_7,Decreases training time by 15%.
@@ -28,7 +28,7 @@ TRAINING_GROUND_STRUCTURE_DESCRIPTION,Enables the ability to train your laborers
 TRAINING_GROUND_STRUCTURE_LVL_1,Allows training fighters and bowmen.
 TRAINING_GROUND_STRUCTURE_LVL_2,Allows building defensive towers.
 TRAINING_GROUND_STRUCTURE_LVL_3,Enables upgrading fighters and bowmen.
-TRAINING_GROUND_STRUCTURE_LVL_4,
+TRAINING_GROUND_STRUCTURE_LVL_4,Improves training ground strength.
 TRAINING_GROUND_STRUCTURE_LVL_5,Decreases training time by 5%. Allows converting the structure to a Barrack.
 TRAINING_GROUND_STRUCTURE_LVL_6,Decreases training time by 10%.
 TRAINING_GROUND_STRUCTURE_LVL_7,Decreases training time by 15%.
@@ -69,7 +69,7 @@ FOUNDRY_STRUCTURE_LVL_5,Increases to a maximum of 50 laborers. One labor can rep
 STABLE_STRUCTURE_NAME,Stable
 STABLE_STRUCTURE_DESCRIPTION,Trains mounted units.
 STABLE_STRUCTURE_LVL_1,Allows training calvary.
-STABLE_STRUCTURE_LVL_2,
+STABLE_STRUCTURE_LVL_2,Improved stable strength.
 STABLE_STRUCTURE_LVL_3,Allows training heavy calvary.
 STABLE_STRUCTURE_LVL_4,Enables upgrading calvary and heavy calvary.
 STABLE_STRUCTURE_LVL_5,Enables converting the stable into a workshop. Decreases unit training time by 5%.
@@ -81,9 +81,9 @@ STABLE_STRUCTURE_LVL_10,Decreases training time by 40%.
 WORKSHOP_STRUCTURE_NAME,Workshop
 WORKSHOP_STRUCTURE_DESCRIPTION,Ability to train siege engines such as catapults and helepolis.
 WORKSHOP_STRUCTURE_LVL_1,Enables training catapults and helepolis.
-WORKSHOP_STRUCTURE_LVL_2,
+WORKSHOP_STRUCTURE_LVL_2,Improves workshop strength.
 WORKSHOP_STRUCTURE_LVL_3,Enables upgrading catapults and helepolis.
-WORKSHOP_STRUCTURE_LVL_4,
+WORKSHOP_STRUCTURE_LVL_4,Improves workshop strength.
 WORKSHOP_STRUCTURE_LVL_5,Decreases unit training time by 5%.
 WORKSHOP_STRUCTURE_LVL_6,Decreases training time by 10%.
 WORKSHOP_STRUCTURE_LVL_7,Decreases training time by 15%.

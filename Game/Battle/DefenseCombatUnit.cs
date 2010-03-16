@@ -7,6 +7,7 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
+using Game.Logic;
 using Game.Setup;
 
 #endregion
@@ -109,7 +110,9 @@ namespace Game.Battle {
             actualDmg = dmg;
         }
 
-        public override void TakeDamage(int dmg, out Resource returning) {
+        public override void TakeDamage(int dmg, out Resource returning, out int attackPoints) {
+            attackPoints = 0;
+
             ushort dead = 0;
             if (dmg >= LeftOverHp) {
                 dmg -= LeftOverHp;
@@ -121,11 +124,14 @@ namespace Game.Battle {
             LeftOverHp -= (ushort) (dmg%stats.MaxHp);
 
             if (dead > 0) {
-                if (dead >= count)
-                    count = 0;
-                else
-                    count -= dead;
+                if (dead > count)
+                    dead = count;
+                
+                count -= dead;
 
+                attackPoints = Formula.GetUnitKilledAttackPoint(type, lvl, dead);
+
+                // Remove dead units from troop stub
                 TroopStub.BeginUpdate();
                 TroopStub[formation].Remove(type, dead);
                 TroopStub.EndUpdate();

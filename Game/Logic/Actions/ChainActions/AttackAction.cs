@@ -23,6 +23,7 @@ namespace Game.Logic.Actions {
         private readonly uint targetCityId;
         private readonly uint targetStructureId;
         private readonly AttackMode mode;
+        private int initialTroopValue;
 
         public AttackAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode) {
             this.cityId = cityId;
@@ -56,6 +57,8 @@ namespace Game.Logic.Actions {
             stub.BeginUpdate();
             stub.Template.LoadStats();
             stub.EndUpdate();
+
+            initialTroopValue = stub.Value;
 
             city.Worker.References.Add(stub.TroopObject, this);
             city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
@@ -119,18 +122,28 @@ namespace Game.Logic.Actions {
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");
 
+                    // Check if troop is still alive
                     if (stub.TotalCount > 0) {
+                        // Calculate how many attack points to give to the city
+                        city.BeginUpdate();
+                        Procedure.GiveAttackPoints(city, stub.TroopObject.Stats.AttackPoint, initialTroopValue, stub.Value);
+                        city.EndUpdate();
+
+                        // Send troop back home
                         TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId,
                                                                   city.MainBuilding.X, city.MainBuilding.Y);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                     } else {
                         targetCity.BeginUpdate();
                         city.BeginUpdate();
-
+                        
+                        // Give back the loot to the target city
                         targetCity.Resource.Add(stub.TroopObject.Stats.Loot);
 
+                        // Remove this actions reference from the troop
                         city.Worker.References.Remove(stub.TroopObject, this);
-
+                        
+                        // Remove troop since he's dead
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
 
                         targetCity.EndUpdate();

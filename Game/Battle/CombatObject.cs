@@ -55,7 +55,7 @@ namespace Game.Battle {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void TakeDamage(int dmg, out Resource returning) {
+        public virtual void TakeDamage(int dmg, out Resource returning, out int attackPoints) {
             throw new Exception("NOT IMPLEMENTED");
         }
 

@@ -19,6 +19,7 @@ namespace Game.Logic.Procedures {
 
                 troop.City.BeginUpdate();
                 troop.City.Resource.Add(troop.Stats.Loot);
+                troop.City.LootStolen += (uint)troop.Stats.Loot.Total;
                 troop.City.EndUpdate();
             }
 

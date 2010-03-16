@@ -27,9 +27,6 @@ namespace Game.Data {
 
         private readonly Dictionary<uint, Structure> structures = new Dictionary<uint, Structure>();
         private readonly Dictionary<uint, TroopObject> troopobjects = new Dictionary<uint, TroopObject>();
-        private readonly Player owner;
-        private readonly LazyResource resource;
-        private readonly UnitTemplate unitTemplate;
 
         #region Properties
 
@@ -52,6 +49,18 @@ namespace Game.Data {
             get { return structures[1]; }
         }
 
+        public uint X {
+            get {
+                return MainBuilding.X;
+            }     
+        }
+
+        public uint Y {
+            get {
+                return MainBuilding.Y;
+            }
+        } 
+
         public BattleManager Battle { get; set; }
 
         public TroopManager Troops { get; private set; }
@@ -63,13 +72,11 @@ namespace Game.Data {
             set { Troops[1] = value; }
         }
 
-        public UnitTemplate Template {
-            get { return unitTemplate; }
-        }
+        public UnitTemplate Template { get; private set; }
 
-        public LazyResource Resource {
-            get { return resource; }
-        }
+        public LazyResource Resource { get; private set; }
+
+        public uint LootStolen { get; set; }        
 
         public uint Id {
             get { return id; }
@@ -87,9 +94,7 @@ namespace Game.Data {
             }
         }
 
-        public Player Owner {
-            get { return owner; }
-        }
+        public Player Owner { get; private set; }
 
         public GameObject this[uint objectId] {
             get {
@@ -105,6 +110,15 @@ namespace Game.Data {
             }
         }
 
+        /// <summary>
+        /// Attack points earned by this city
+        /// </summary>
+        public int AttackPoint { get; set; }
+
+        /// <summary>
+        /// Defense points earned by this city
+        /// </summary>
+        public int DefensePoint { get; set; }        
         #endregion
 
         #region Constructors
@@ -113,9 +127,9 @@ namespace Game.Data {
             : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), mainBuilding) {}
 
         public City(Player owner, string name, LazyResource resource, Structure mainBuilding) {
-            this.owner = owner;
+            Owner = owner;
             this.name = name;
-            this.resource = resource;
+            Resource = resource;
 
             Worker = new ActionWorker(this);
 
@@ -135,8 +149,8 @@ namespace Game.Data {
             Troops.TroopRemoved += TroopManagerTroopRemoved;
             Troops.TroopAdded += TroopManagerTroopAdded;
 
-            unitTemplate = new UnitTemplate(this);
-            unitTemplate.UnitUpdated += UnitTemplateUnitUpdated;
+            Template = new UnitTemplate(this);
+            Template.UnitUpdated += UnitTemplateUnitUpdated;
 
             Worker.ActionRemoved += WorkerActionRemoved;
             Worker.ActionStarted += WorkerActionAdded;
@@ -296,31 +310,31 @@ namespace Game.Data {
         #endregion
 
         #region Updates
-
-        private bool updating;
+        
+        public bool IsUpdating { get; private set; }
 
         private void CheckUpdateMode() {
             if (!Global.FireEvents)
                 return;
 
-            if (!updating)
+            if (!IsUpdating)
                 throw new Exception("Changed state outside of begin/end update block");
 
             MultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         public void BeginUpdate() {
-            if (updating)
+            if (IsUpdating)
                 throw new Exception("Nesting beginupdate");
-            updating = true;
+            IsUpdating = true;
         }
 
         public void EndUpdate() {
-            if (!updating)
+            if (!IsUpdating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
             Global.DbManager.Save(this);
-            updating = false;
+            IsUpdating = false;
         }
 
         #endregion
@@ -346,7 +360,7 @@ namespace Game.Data {
 
             Packet packet = new Packet(Command.CITY_RESOURCES_UPDATE);
             packet.AddUInt32(Id);
-            PacketHelper.AddToPacket(resource, packet);
+            PacketHelper.AddToPacket(Resource, packet);
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
@@ -486,7 +500,7 @@ namespace Game.Data {
         }
 
         private void TroopManagerTroopRemoved(TroopStub stub) {
-            bool doUpdate = updating;
+            bool doUpdate = IsUpdating;
             if (!doUpdate) BeginUpdate();            
             Resource.Crop.Upkeep = Troops.Upkeep;
             if (!doUpdate) EndUpdate();
@@ -541,24 +555,30 @@ namespace Game.Data {
         public DbColumn[] DbColumns {
             get {
                 return new[] {
-                                new DbColumn("player_id", owner.PlayerId, DbType.UInt32),
-                                new DbColumn("name", Name, DbType.String, 32), new DbColumn("radius", Radius, DbType.Byte),
-                                new DbColumn("gold", resource.Gold.RawValue, DbType.Int32),
-                                new DbColumn("gold_realize_time", resource.Gold.LastRealizeTime, DbType.DateTime),
-                                new DbColumn("gold_production_rate", resource.Gold.Rate, DbType.Int32),
-                                new DbColumn("wood", resource.Wood.RawValue, DbType.Int32),
-                                new DbColumn("wood_realize_time", resource.Wood.LastRealizeTime, DbType.DateTime),
-                                new DbColumn("wood_production_rate", resource.Wood.Rate, DbType.Int32),
-                                new DbColumn("iron", resource.Iron.RawValue, DbType.Int32),
-                                new DbColumn("iron_realize_time", resource.Iron.LastRealizeTime, DbType.DateTime),
-                                new DbColumn("iron_production_rate", resource.Iron.Rate, DbType.Int32),
-                                new DbColumn("crop", resource.Crop.RawValue, DbType.Int32),
-                                new DbColumn("crop_realize_time", resource.Crop.LastRealizeTime, DbType.DateTime),
-                                new DbColumn("crop_production_rate", resource.Crop.Rate, DbType.Int32),
-                                new DbColumn("crop_upkeep", resource.Crop.Upkeep, DbType.Int32),
-                                new DbColumn("labor", resource.Labor.RawValue, DbType.Int32),
-                                new DbColumn("labor_realize_time", resource.Labor.LastRealizeTime, DbType.DateTime),
-                                new DbColumn("labor_production_rate", resource.Labor.Rate, DbType.Int32),
+                                new DbColumn("player_id", Owner.PlayerId, DbType.UInt32),
+                                new DbColumn("name", Name, DbType.String, 32), 
+                                new DbColumn("radius", Radius, DbType.Byte),
+                                new DbColumn("loot_stolen", LootStolen, DbType.UInt32),
+                                new DbColumn("attack_point", AttackPoint, DbType.Int32),
+                                new DbColumn("defense_point", DefensePoint, DbType.Int32),
+                                new DbColumn("gold", Resource.Gold.RawValue, DbType.Int32),
+                                new DbColumn("gold_realize_time", Resource.Gold.LastRealizeTime, DbType.DateTime),
+                                new DbColumn("gold_production_rate", Resource.Gold.Rate, DbType.Int32),
+                                new DbColumn("wood", Resource.Wood.RawValue, DbType.Int32),
+                                new DbColumn("wood_realize_time", Resource.Wood.LastRealizeTime, DbType.DateTime),
+                                new DbColumn("wood_production_rate", Resource.Wood.Rate, DbType.Int32),
+                                new DbColumn("iron", Resource.Iron.RawValue, DbType.Int32),
+                                new DbColumn("iron_realize_time", Resource.Iron.LastRealizeTime, DbType.DateTime),
+                                new DbColumn("iron_production_rate", Resource.Iron.Rate, DbType.Int32),
+                                new DbColumn("crop", Resource.Crop.RawValue, DbType.Int32),
+                                new DbColumn("crop_realize_time", Resource.Crop.LastRealizeTime, DbType.DateTime),
+                                new DbColumn("crop_production_rate", Resource.Crop.Rate, DbType.Int32),
+                                new DbColumn("crop_upkeep", Resource.Crop.Upkeep, DbType.Int32),
+                                new DbColumn("labor", Resource.Labor.RawValue, DbType.Int32),
+                                new DbColumn("labor_realize_time", Resource.Labor.LastRealizeTime, DbType.DateTime),
+                                new DbColumn("labor_production_rate", Resource.Labor.Rate, DbType.Int32),
+                                new DbColumn("x", X, DbType.UInt32),
+                                new DbColumn("y", Y, DbType.UInt32)
                             };
             }
         }
@@ -580,11 +600,11 @@ namespace Game.Data {
         #region ILockable Members
 
         public int Hash {
-            get { return unchecked((int)owner.PlayerId); }
+            get { return unchecked((int)Owner.PlayerId); }
         }
 
         public object Lock {
-            get { return owner; }
+            get { return Owner; }
         }
 
         #endregion

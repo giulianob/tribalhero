@@ -113,7 +113,10 @@ namespace Game.Database {
                             City city = new City(Global.Players[(uint) reader["player_id"]], (string) reader["name"], resource, null)
                                             {
                                                 Radius = (byte) reader["radius"],
-                                                DbPersisted = true
+                                                DbPersisted = true,
+                                                LootStolen = (uint)reader["loot_stolen"],
+                                                AttackPoint = (int)reader["attack_point"],
+                                                DefensePoint = (int)reader["defense_point"]
                                             };
                             Global.World.DbLoaderAdd((uint) reader["id"], city);
                         }
@@ -304,17 +307,16 @@ namespace Game.Database {
                             City city;
                             Global.World.TryGetObjects((uint) reader["city_id"], out city);
                             TroopStub stub = city.Troops[(byte) reader["troop_stub_id"]];
-                            TroopObject obj = new TroopObject(stub)
-                                                  {
-                                                      X = (uint) reader["x"],
-                                                      Y = (uint) reader["y"],
-                                                      ObjectId = (uint) reader["id"],
-                                                      DbPersisted = true,
-                                                      State =
-                                                          {
-                                                              Type = (ObjectState) ((byte) reader["state"])
-                                                          }
-                                                  };
+                            TroopObject obj = new TroopObject(stub) {
+                                X = (uint)reader["x"],
+                                Y = (uint)reader["y"],
+                                ObjectId = (uint)reader["id"],
+                                DbPersisted = true,
+                                State = {
+                                    Type = (ObjectState)((byte)reader["state"])
+                                },
+                                Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"])
+                            };
 
                             foreach (object variable in XMLSerializer.DeserializeList((string) reader["state_parameters"]))
                                 obj.State.Parameters.Add(variable);

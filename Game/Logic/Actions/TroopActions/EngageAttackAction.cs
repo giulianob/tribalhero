@@ -114,6 +114,7 @@ namespace Game.Logic.Actions {
             if (unit.TroopStub != stub || unit.TroopStub.TroopObject != stub.TroopObject)
                 return;
 
+            // Check to see if player should retreat
             remainingHp -= damage;
             if (unit.RoundsParticipated < Config.battle_min_rounds || remainingHp > Formula.GetAttackModeTolerance(originalHp, mode))
                 return;

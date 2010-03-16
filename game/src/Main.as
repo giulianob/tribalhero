@@ -141,17 +141,18 @@
 
 		public function onSecurityError(event: SecurityErrorEvent):void
 		{
-			//if (pnlLoading) pnlLoading.getFrame().dispose();
+			if (pnlLoading) pnlLoading.getFrame().dispose();
 
-			//InfoDialog.showMessageDialog("Security Error", event.toString());
+			InfoDialog.showMessageDialog("Security Error", event.toString());
 		}
 
 		public function onDisconnected(event: Event):void
 		{
+			gameContainer.dispose();
+			
 			Global.mapComm = null;
 			Global.map = null;
-			session = null;
-			gameContainer.dispose();
+			session = null;			
 
 			if (parms.hostname)
 			{

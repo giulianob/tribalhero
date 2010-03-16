@@ -17,6 +17,7 @@
 	import src.Objects.Factories.TroopFactory;
 	import src.Objects.Factories.WorkerFactory;
 	import src.Objects.Prototypes.Worker;
+	import src.Objects.Troop.TroopStub;
 	import src.UI.Components.SimpleTooltip;
 	import src.Util.Util;
 
@@ -32,7 +33,7 @@ public class NotificationGridCell extends JLabel implements GridListCell{
 	public function setCellValue(value:*):void{
 		this.value = value;
 		
-		setIcon(new AssetIcon(TroopFactory.getSprite(false)));
+		setIcon(new AssetIcon(TroopFactory.getStateSprite(TroopStub.IDLE)));
 	}
 	
 	public function getCellValue():*{

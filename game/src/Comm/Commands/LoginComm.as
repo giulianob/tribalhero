@@ -58,6 +58,7 @@
 			var serverTime: int = packet.readUInt();
 			Constants.secondsPerUnit = Number(packet.readString());
 
+			trace("Seconds per unit is " + Constants.secondsPerUnit);
 			trace("Server Time is " + new Date(serverTime * 1000));
 			var timeDelta: int = serverTime - int(now.time / 1000);
 			trace("Delta is " + timeDelta);

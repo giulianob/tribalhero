@@ -13,6 +13,7 @@
 	import src.Objects.ObjectContainer;
 	import src.Objects.StructureObject;
 	import src.Objects.Troop.*;
+	import src.UI.Dialog.RankingDialog;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
 	import src.UI.Sidebars.TroopInfo.TroopInfoSidebar;
@@ -402,6 +403,8 @@
 		{
 			if (event.keyCode == Keyboard.ESCAPE)
 			{
+				var t: RankingDialog = new RankingDialog();
+				t.show();
 				Global.gameContainer.setOverlaySprite(null);
 				doSelectedObject(null);
 			}

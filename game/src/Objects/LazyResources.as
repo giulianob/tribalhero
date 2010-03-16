@@ -73,10 +73,10 @@ package src.Objects {
 			
 			return true;
 		}
-				
-		public static function getHourlyRate(rate: int): int
-		{
-			return int(3600000 / (rate * Constants.secondsPerUnit));
+		
+		public static function getHourlyRate(resource: LazyValue, laborDelta: int): int
+		{			
+			return int(Math.max(0, (int)(3600000 / ((3600000 / (resource.getRate() + laborDelta)) * Constants.secondsPerUnit))));
 		}
 		
 		public function toString(): String

@@ -36,7 +36,7 @@ package src.Objects.Prototypes {
 
 		public function getName(): String
 		{
-			var str: String = Locale.loadString(spriteClass + "_UNIT");
+			var str: String = Locale.loadString(nlsname + "_UNIT");
 			if (str && str != "")
 			return str;
 
@@ -45,7 +45,7 @@ package src.Objects.Prototypes {
 
 		public function getDescription(): String
 		{
-			var str: String = Locale.loadString(spriteClass + "UNIT_LVL_" + level);
+			var str: String = Locale.loadString(nlsname + "UNIT_LVL_" + level);
 			if (str)
 			return str;
 

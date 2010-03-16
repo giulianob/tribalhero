@@ -184,7 +184,7 @@
 			bg.setLocation(new IntPoint(0, 5));
 			append(bg);
 
-			localTroopIcon = new AssetPane(new DEFAULT_TROOP());
+			localTroopIcon = new AssetPane(new TROOP_IDLE());
 			localTroopIcon.buttonMode = true;
 			localTroopIcon.setBorder(null);
 			localTroopIcon.pack();

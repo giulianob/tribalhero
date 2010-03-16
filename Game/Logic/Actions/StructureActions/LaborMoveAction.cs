@@ -83,7 +83,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                if (cityToStructure) {
+                if (cityToStructure) {                    
                     structure.BeginUpdate();
                     structure.Stats.Labor += (byte) ActionCount;
                     structure.EndUpdate();

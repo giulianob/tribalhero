@@ -14,7 +14,7 @@ namespace Game.Data {
     }
 
     public class Resource : BaseStats, IComparable {
-        private int gold = 0;
+        private int gold;
 
         public int Gold {
             get { return gold; }
@@ -24,7 +24,7 @@ namespace Game.Data {
             }
         }
 
-        private int wood = 0;
+        private int wood;
 
         public int Wood {
             get { return wood; }
@@ -34,7 +34,7 @@ namespace Game.Data {
             }
         }
 
-        private int iron = 0;
+        private int iron;
 
         public int Iron {
             get { return iron; }
@@ -44,7 +44,7 @@ namespace Game.Data {
             }
         }
 
-        private int crop = 0;
+        private int crop;
 
         public int Crop {
             get { return crop; }
@@ -54,7 +54,7 @@ namespace Game.Data {
             }
         }
 
-        private int labor = 0;
+        private int labor;        
 
         public int Labor {
             get { return labor; }
@@ -62,6 +62,12 @@ namespace Game.Data {
                 labor = value;
                 FireStatsUpdate();
             }
+        }
+
+        public int Total {
+            get {
+                return crop + gold + labor + wood + iron;
+            } 
         }
 
         public bool Empty {

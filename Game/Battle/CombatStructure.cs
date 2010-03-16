@@ -5,6 +5,7 @@ using System.Data;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Database;
+using Game.Logic;
 using Game.Logic.Procedures;
 
 #endregion
@@ -29,7 +30,7 @@ namespace Game.Battle {
         public CombatStructure(BattleManager owner, Structure structure, BattleStats stats) {
             battleManager = owner;
             this.stats = stats;
-            this.Structure = structure;
+            Structure = structure;
             type = structure.Type;
             lvl = structure.Lvl;
             hp = structure.Stats.Hp;
@@ -38,7 +39,7 @@ namespace Game.Battle {
         public CombatStructure(BattleManager owner, Structure structure, BattleStats stats, uint hp, ushort type,
                                byte lvl) {
             battleManager = owner;
-            this.Structure = structure;
+            Structure = structure;
             this.stats = stats;
             this.hp = hp;
             this.type = type;
@@ -105,12 +106,17 @@ namespace Game.Battle {
             actualDmg = dmg;
         }
 
-        public override void TakeDamage(int dmg, out Resource returning) {
+        public override void TakeDamage(int dmg, out Resource returning, out int attackPoints) {
+            attackPoints = 0;
+
             Structure.BeginUpdate();
             Structure.Stats.Hp = (dmg > Structure.Stats.Hp) ? (ushort)0 : (ushort)(Structure.Stats.Hp - (ushort)dmg);            
             Structure.EndUpdate();
 
             hp = (dmg > hp) ? 0 : hp - (ushort)dmg;
+
+            if (hp == 0)
+                attackPoints = Formula.GetStructureKilledAttackPoint(type, lvl);                
             
             returning = null;
         }

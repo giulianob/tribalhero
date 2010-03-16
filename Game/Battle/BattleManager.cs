@@ -8,6 +8,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
+using Game.Logic.Procedures;
 using Game.Util;
 
 #endregion
@@ -662,9 +663,10 @@ namespace Game.Battle {
                 ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
                 ushort actualDmg;
                 Resource lostResource;
+                int attackPoints;
 
                 defender.CalculateDamage(dmg, out actualDmg);
-                defender.TakeDamage(actualDmg, out lostResource);
+                defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
 
                 attacker.DmgDealt += actualDmg;
                 attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
@@ -678,21 +680,31 @@ namespace Game.Battle {
 
                 #endregion                
 
-                #region Loot
+                #region Loot and Attack Points
 
                 if (attacker.CombatList == Attacker) {
                     Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
                     city.BeginUpdate();
                     city.Resource.Subtract(loot, out loot);
-                    attacker.ReceiveReward(defender.Stats.Base.Reward*actualDmg, loot);
+                    attacker.ReceiveReward(attackPoints, loot);                    
                     city.EndUpdate();
-                } else {
+                } else {                    
+                    // Give back any lost resources if the attacker dropped them
                     if (lostResource != null && !lostResource.Empty) {
-                        city.BeginUpdate();
-                        city.Resource.Add(lostResource);
-                        city.EndUpdate();
+                        city.BeginUpdate();                    
+                        city.Resource.Add(lostResource);                        
+                    }
+                    
+                    // If the defender killed someone then give the city defense points
+                    if (attackPoints > 0) {
+                        if (!city.IsUpdating)
+                            city.BeginUpdate();                    
+
+                        city.DefensePoint += attackPoints;
                     }
 
+                    if (city.IsUpdating)
+                        city.EndUpdate();
                 }
 
                 #endregion

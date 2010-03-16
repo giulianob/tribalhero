@@ -22,12 +22,12 @@ namespace Game.Data.Stats {
             }
         }
 
-        private int rewardPoint;
+        private int attackPoint;
 
-        public int RewardPoint {
-            get { return rewardPoint; }
+        public int AttackPoint {
+            get { return attackPoint; }
             set {
-                rewardPoint = value;
+                attackPoint = value;
                 FireStatsUpdate();
             }
         }
@@ -38,7 +38,11 @@ namespace Game.Data.Stats {
 
         #region Constructors
 
-        public TroopStats(byte attackRadius, byte speed) {
+        public TroopStats(byte attackRadius, byte speed) :
+            this(0, attackRadius, speed) {}
+
+        public TroopStats(int attackPoint, byte attackRadius, byte speed) {
+            AttackPoint = attackPoint;
             Loot = new Resource();
             this.attackRadius = attackRadius;
             this.speed = speed;

@@ -7,6 +7,7 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
+using Game.Logic;
 using Game.Setup;
 
 #endregion
@@ -117,8 +118,10 @@ namespace Game.Battle {
             actualDmg = dmg;
         }
 
-        public override void TakeDamage(int dmg, out Resource returning) {
+        public override void TakeDamage(int dmg, out Resource returning, out int attackPoints) {
+            attackPoints = 0;
             returning = null;
+
             ushort dead = 0;
             if (dmg >= LeftOverHp) {
                 dmg -= LeftOverHp;
@@ -130,22 +133,32 @@ namespace Game.Battle {
             LeftOverHp -= (ushort) (dmg%stats.MaxHp);
 
             if (dead > 0) {
-                if (dead >= count)
-                    count = 0;
-                else
-                    count -= dead;
+                if (dead > count)
+                    dead = count;
 
+                // Find out how many points the defender should get
+                attackPoints = Formula.GetUnitKilledAttackPoint(type, lvl, dead);
+
+                // Remove troops that died from the count
+                count -= dead;
+
+                // Remove dead troops from the troop stub 
                 TroopStub.BeginUpdate();
                 TroopStub[formation].Remove(type, dead);
                 TroopStub.EndUpdate();
 
+                // Figure out how much loot we have to return to the city
                 int totalCarry = BaseStats.Carry * Count;
                 returning = new Resource(loot.Crop > totalCarry ? loot.Crop - totalCarry : 0,
                                          loot.Gold > totalCarry ? loot.Gold - totalCarry : 0,
                                          loot.Iron > totalCarry ? loot.Iron - totalCarry : 0,
                                          loot.Wood > totalCarry ? loot.Wood - totalCarry : 0,
                                          0);
+
+                // Remove it from our loot
                 loot.subtract(returning); 
+
+                // Since the loot is stored at the troop stub as well, we need to remove it from there too
                 TroopStub.TroopObject.BeginUpdate();
                 TroopStub.TroopObject.Stats.Loot.subtract(returning);
                 TroopStub.TroopObject.EndUpdate();
@@ -158,10 +171,11 @@ namespace Game.Battle {
 
         public override void ExitBattle() {}
 
-        public override void ReceiveReward(int reward, Resource resource) {
+        public override void ReceiveReward(int attackPoint, Resource resource) {
             loot.add(resource);            
+
             TroopStub.TroopObject.BeginUpdate();
-            TroopStub.TroopObject.Stats.RewardPoint += reward;
+            TroopStub.TroopObject.Stats.AttackPoint += attackPoint;
             TroopStub.TroopObject.Stats.Loot.add(resource);
             TroopStub.TroopObject.EndUpdate();
         }

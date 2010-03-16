@@ -200,11 +200,13 @@
     <Compile Include="Logic\Actions\StructureActions\LaborMoveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\PropertyCreateAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\EngageDefenseAction.cs" />
+    <Compile Include="Logic\Formulas\Ranking.cs" />
     <Compile Include="Logic\Formulas\Cost.cs" />
     <Compile Include="Logic\Formulas\Property.cs" />
     <Compile Include="Logic\Formulas\Time.cs" />
     <Compile Include="Logic\NotificationManager.cs" />
     <Compile Include="Logic\Procedures\BattleProcedures.cs" />
+    <Compile Include="Logic\Procedures\Ranking.cs" />
     <Compile Include="Logic\Procedures\OnActionCallback.cs" />
     <Compile Include="Logic\Procedures\RandomizeResource.cs" />
     <Compile Include="Logic\Procedures\TroopObjectCreateFromStation.cs" />

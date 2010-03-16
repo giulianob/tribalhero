@@ -25,22 +25,13 @@ namespace Game.Data.Troop {
         private bool isUpdating;
         private bool isDirty;
 
-        private object objLock = new object();
+        private readonly object objLock = new object();
 
         #region Properties
 
-        private TroopTemplate troopTemplate;
+        public TroopTemplate Template { get; private set; }
 
-        public TroopTemplate Template {
-            get { return troopTemplate; }
-        }
-
-        private TroopManager troopManager;
-
-        public TroopManager TroopManager {
-            get { return troopManager; }
-            set { troopManager = value; }
-        }
+        public TroopManager TroopManager { get; set; }
 
         public Formation this[FormationType type] {
             get { return data[type]; }
@@ -62,7 +53,7 @@ namespace Game.Data.Troop {
         }
 
         public City City {
-            get { return troopManager == null ? null : troopManager.City; }
+            get { return TroopManager == null ? null : TroopManager.City; }
         }
 
         public byte StationedTroopId { get; set; }
@@ -122,6 +113,25 @@ namespace Game.Data.Troop {
                     foreach (Formation formation in data.Values) {
                         foreach (KeyValuePair<ushort, ushort> kvp in formation)
                             count += (kvp.Value * City.Template[kvp.Key].Battle.MaxHp);
+                    }
+                }
+
+                return count;
+            }
+        }
+
+        /// <summary>
+        /// Returns how much the troop is worth
+        /// </summary>
+        public int Value {
+            get {
+                int count = 0;
+
+                lock (objLock) {
+                    foreach (Formation formation in data.Values) {
+                        foreach (KeyValuePair<ushort, ushort> kvp in formation) {
+                            count += (City.Template[kvp.Key].Cost * kvp.Value).Total;
+                        }
                     }
                 }
 
@@ -207,7 +217,7 @@ namespace Game.Data.Troop {
         #endregion
 
         public TroopStub() {
-            troopTemplate = new TroopTemplate(this);
+            Template = new TroopTemplate(this);
         }
 
         public void FireUpdated() {
@@ -398,7 +408,7 @@ namespace Game.Data.Troop {
             get {
                 return new[] {
                                           new DbColumn("id", troopId, DbType.UInt32),
-                                          new DbColumn("city_id", troopManager.City.Id, DbType.UInt32)
+                                          new DbColumn("city_id", TroopManager.City.Id, DbType.UInt32)
                                       };
             }
         }

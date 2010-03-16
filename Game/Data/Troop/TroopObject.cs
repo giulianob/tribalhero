@@ -12,17 +12,9 @@ using Game.Util;
 
 namespace Game.Data {
     public class TroopObject : GameObject, IPersistableObject {
-        private TroopStub troopStub;
+        public TroopStub Stub { get; private set; }
 
-        public TroopStub Stub {
-            get { return troopStub; }
-        }
-
-        private TroopStats stats;
-
-        public TroopStats Stats {
-            get { return stats; }
-        }
+        public TroopStats Stats { get; set; }
 
         public override uint ObjectId {
             get { return objectId; }
@@ -43,17 +35,17 @@ namespace Game.Data {
         #region Constructors
 
         public TroopObject(TroopStub stub) {
-            troopStub = stub;
+            Stub = stub;
 
-            stats = new TroopStats(Formula.GetTroopRadius(troopStub, null), Formula.GetTroopSpeed(troopStub, null));
-            stats.StatsUpdate += stats_StatsUpdate;
+            Stats = new TroopStats(Formula.GetTroopRadius(Stub, null), Formula.GetTroopSpeed(Stub, null));
+            Stats.StatsUpdate += StatsStatsUpdate;
         }
 
         #endregion
 
         #region Updates
 
-        private void stats_StatsUpdate() {
+        private void StatsStatsUpdate() {
             CheckUpdateMode();
         }
 
@@ -93,6 +85,13 @@ namespace Game.Data {
             get {
                 return new[] {
                                 new DbColumn("troop_stub_id", Stub.TroopId, DbType.Byte),
+                                new DbColumn("gold", Stats.Loot.Gold, DbType.Int32),
+                                new DbColumn("crop", Stats.Loot.Crop, DbType.Int32),
+                                new DbColumn("wood", Stats.Loot.Wood, DbType.Int32),
+                                new DbColumn("iron", Stats.Loot.Iron, DbType.Int32),
+                                new DbColumn("attack_point", Stats.AttackPoint, DbType.Int32),
+                                new DbColumn("attack_radius", Stats.AttackRadius, DbType.Byte),
+                                new DbColumn("speed", Stats.Speed, DbType.Byte),
                                 new DbColumn("x", X, DbType.UInt32), 
                                 new DbColumn("y", Y, DbType.Int32),
                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),

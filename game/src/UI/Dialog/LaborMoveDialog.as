@@ -93,14 +93,11 @@ package src.UI.Dialog{
 
 			if (resource)
 			{
-				var labor: int = 0;
-				if (resource.getRate() > 0)
-				labor = 3600000 / resource.getRate(); //total labors of this resource type (easier than looping through all buildings)
-
-				var laborDelta: int = sldCount.getValue() - structure.labor;
-				var newLabor: int = labor + laborDelta;
-
-				lblRate.setText((newLabor == 0? "0" : "+" + LazyResources.getHourlyRate(int(3600000 / newLabor))) + " per hour");
+				var laborDelta: int = (sldCount.getValue() - structure.labor);
+				
+				var newRate: int = LazyResources.getHourlyRate(resource, laborDelta);
+				
+				lblRate.setText((newRate == 0 ? "0" : "+" + newRate) + " per hour");
 			}
 
 			lblCount.setText(sldCount.getValue().toString() + " out of " + sldCount.getMaximum().toString());

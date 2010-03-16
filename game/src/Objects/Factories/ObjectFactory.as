@@ -105,12 +105,13 @@
 		public static function getSprite(obj: SimpleGameObject, centered: Boolean = false, encased: Boolean = false):DisplayObjectContainer
 		{
 			var sprite: DisplayObjectContainer;
-			if (obj is StructureObject)
-			sprite = StructureFactory.getSprite((obj as StructureObject).type, (obj as StructureObject).level, centered);
-			else if (obj is TroopObject)
-			sprite = TroopFactory.getSprite(centered);
-			else
-			return null;
+			if (obj is StructureObject) {
+				sprite = StructureFactory.getSprite((obj as StructureObject).type, (obj as StructureObject).level, centered);
+			} else if (obj is TroopObject) {
+				sprite = TroopFactory.getSprite(centered);
+			} else {
+				return null;
+			}
 
 			if (encased)
 			{
@@ -142,3 +143,4 @@
 	}
 
 }
+

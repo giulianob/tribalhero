@@ -79,7 +79,7 @@
 		public function addStub(troop: TroopStub) : TroopStubGridCell {
 			var model: VectorListModel = getModel() as VectorListModel;
 
-			var icon: DisplayObject = TroopFactory.getSprite(false);
+			var icon: DisplayObject = TroopFactory.getStateSprite(troop.state);
 
 			model.append( { source: icon, troop: troop } );
 

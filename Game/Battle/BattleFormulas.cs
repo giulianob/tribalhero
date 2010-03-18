@@ -10,11 +10,11 @@ using Game.Setup;
 namespace Game.Battle {
     public class BattleFormulas {
         public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor) {
-            const double weakest = 0.5;
-            const double weak = 0.75;
+            const double weakest = 0.3;
+            const double weak = 0.6;
             const double good = 1;
-            const double strong = 1.25;
-            const double strongest = 1.5;
+            const double strong = 1.3;
+            const double strongest = 1.6;
 
             switch (weapon) {
                 case WeaponType.SWORD:
@@ -28,7 +28,7 @@ namespace Game.Battle {
                         case ArmorType.WOODEN:
                             return good;
                         case ArmorType.STONE:
-                            return strong;
+                            return weak;
                     }
                     break;
                 case WeaponType.PIKE:
@@ -96,30 +96,7 @@ namespace Game.Battle {
             rawDmg /= 10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             rawDmg = (int) (typeModifier*rawDmg);
-            return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort) rawDmg;
-
-            /*
-                int rawDmg = (int)(attacker.Stats.Atk * attacker.Count);
-                int drate = target.Stats.Def;
-                int arate = attacker.Stats.Atk;
-                if (drate > arate / 2) {
-                    int deduction = 100 - (drate - arate) * 2 * 100 / ((drate + arate) * 3);
-                    rawDmg = rawDmg * deduction / 100;
-                } else {
-
-                }
-                return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
-            */
-
-            /*
-                double atk_rate = (attacker.Stats.Atk * attacker.Count);
-                double def_rate = (target.Stats.Def * target.Count + 1);
-                double power_modifier = Math.Pow(atk_rate / def_rate, .1);
-                double type_modifier = GetArmorTypeModifier(attacker.Stats.Weapon, target.Stats.Armor);
-                double base_dmg = attacker.Stats.Atk * attacker.Count;
-                double ret = base_dmg * power_modifier * type_modifier;
-                return ret > ushort.MaxValue ? ushort.MaxValue : (ushort)ret;
-            */
+            return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort) rawDmg;           
         }
 
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg) {

@@ -1,10 +1,10 @@
 Key,EN
 TOWNCENTER_STRUCTURE_NAME,Town Center
 TOWNCENTER_STRUCTURE_DESCRIPTION,The Town Center provides the foundation necessary to grow your city.
-TOWNCENTER_STRUCTURE_LVL_1,"Allows building farms and lumbermills. Town center can hold a maximum of 700 crop, 700 wood, and 200 iron."
+TOWNCENTER_STRUCTURE_LVL_1,"Allows building a farm and a lumbermill. Town center can hold a maximum of 700 crop, 700 wood, and 200 iron."
 TOWNCENTER_STRUCTURE_LVL_2,"Enables building barracks and a university. Increases the maximum resources to 1100 crop, 1100 wood, and 300 iron."
-TOWNCENTER_STRUCTURE_LVL_3,"Increases the maximum resources to 1600 crop, 1600 wood, and 500 iron."
-TOWNCENTER_STRUCTURE_LVL_4,"Allows building foundries, trading posts, and stables. Increases the maximum resources to 2500 crop, 2500 wood, and 800 iron."
+TOWNCENTER_STRUCTURE_LVL_3,"Allows building foundries, trading posts, and stables. Increases the maximum resources to 1600 crop, 1600 wood, and 500 iron."
+TOWNCENTER_STRUCTURE_LVL_4,"Ability to build another farm and lumbermill. Increases the maximum resources to 2500 crop, 2500 wood, and 800 iron."
 TOWNCENTER_STRUCTURE_LVL_5,"Increases the maximum resources to 3800 crop, 3800 wood, and 1200 iron."
 TOWNCENTER_STRUCTURE_LVL_6,"Increases the maximum resources to 5700 crop, 5700 wood, and 1800 iron."
 TOWNCENTER_STRUCTURE_LVL_7,"Increases the maximum resources to 8700 crop, 8700 wood, and 2800 iron."
@@ -37,28 +37,28 @@ TRAINING_GROUND_STRUCTURE_LVL_9,Decreases training time by 30%.
 TRAINING_GROUND_STRUCTURE_LVL_10,Decreases training time by 40%.
 FARM_STRUCTURE_NAME,Farm
 FARM_STRUCTURE_DESCRIPTION,Uses the city's laborers to grow and produce crops.
-FARM_STRUCTURE_LVL_1,Allows a maximum of 10 laborers to work in the farm.
-FARM_STRUCTURE_LVL_2,Increases the farm to support a maximum of 14 laborers.
-FARM_STRUCTURE_LVL_3,Increases the farm to support a maximum of 20 laborers.
-FARM_STRUCTURE_LVL_4,Increases the farm to support a maximum of 28 laborers.
-FARM_STRUCTURE_LVL_5,Increases the farm to support a maximum of 40 laborers.
-FARM_STRUCTURE_LVL_6,Increases the farm to support a maximum of 57 laborers.
-FARM_STRUCTURE_LVL_7,Increases the farm to support a maximum of 81 laborers.
-FARM_STRUCTURE_LVL_8,Increases the farm to support a maximum of 115 laborers.
-FARM_STRUCTURE_LVL_9,Increases the farm to support a maximum of 163 laborers.
-FARM_STRUCTURE_LVL_10,Increases the farm to support a maximum of 230 laborers.
+FARM_STRUCTURE_LVL_1,Allows a maximum of 20 laborers to work in the farm.
+FARM_STRUCTURE_LVL_2,Increases the farm to support a maximum of 45 laborers.
+FARM_STRUCTURE_LVL_3,Increases the farm to support a maximum of 70 laborers.
+FARM_STRUCTURE_LVL_4,Increases the farm to support a maximum of 95 laborers.
+FARM_STRUCTURE_LVL_5,Increases the farm to support a maximum of 120 laborers.
+FARM_STRUCTURE_LVL_6,Increases the farm to support a maximum of 145 laborers.
+FARM_STRUCTURE_LVL_7,Increases the farm to support a maximum of 170 laborers.
+FARM_STRUCTURE_LVL_8,Increases the farm to support a maximum of 195 laborers.
+FARM_STRUCTURE_LVL_9,Increases the farm to support a maximum of 215 laborers.
+FARM_STRUCTURE_LVL_10,Increases the farm to support a maximum of 240 laborers.
 LUMBERMILL_STRUCTURE_NAME,Lumbermill
 LUMBERMILL_STRUCTURE_DESCRIPTION,Use the city's laborers to produce wood.
-LUMBERMILL_STRUCTURE_LVL_1,Allows a maximum of 6 laborers to work in the lumbermill.
-LUMBERMILL_STRUCTURE_LVL_2,Increases the lumbermill to support a maximum of 8 laborers.
-LUMBERMILL_STRUCTURE_LVL_3,Increases the lumbermill to support a maximum of 11 laborers.
-LUMBERMILL_STRUCTURE_LVL_4,Increases the lumbermill to support a maximum of 18 laborers.
-LUMBERMILL_STRUCTURE_LVL_5,Increases the lumbermill to support a maximum of 28 laborers.
-LUMBERMILL_STRUCTURE_LVL_6,Increases the lumbermill to support a maximum of 45 laborers.
-LUMBERMILL_STRUCTURE_LVL_7,Increases the lumbermill to support a maximum of 70 laborers.
-LUMBERMILL_STRUCTURE_LVL_8,Increases the lumbermill to support a maximum of 110 laborers.
-LUMBERMILL_STRUCTURE_LVL_9,Increases the lumbermill to support a maximum of 172 laborers.
-LUMBERMILL_STRUCTURE_LVL_10,Increases the lumbermill to support a maximum of 255 laborers.
+LUMBERMILL_STRUCTURE_LVL_1,Allows a maximum of 15 laborers to work in the lumbermill.
+LUMBERMILL_STRUCTURE_LVL_2,Increases the lumbermill to support a maximum of 30 laborers.
+LUMBERMILL_STRUCTURE_LVL_3,Increases the lumbermill to support a maximum of 45 laborers.
+LUMBERMILL_STRUCTURE_LVL_4,Increases the lumbermill to support a maximum of 60 laborers.
+LUMBERMILL_STRUCTURE_LVL_5,Increases the lumbermill to support a maximum of 80 laborers.
+LUMBERMILL_STRUCTURE_LVL_6,Increases the lumbermill to support a maximum of 100 laborers.
+LUMBERMILL_STRUCTURE_LVL_7,Increases the lumbermill to support a maximum of 130 laborers.
+LUMBERMILL_STRUCTURE_LVL_8,Increases the lumbermill to support a maximum of 165 laborers.
+LUMBERMILL_STRUCTURE_LVL_9,Increases the lumbermill to support a maximum of 205 laborers.
+LUMBERMILL_STRUCTURE_LVL_10,Increases the lumbermill to support a maximum of 250 laborers.
 FOUNDRY_STRUCTURE_NAME,Foundry
 FOUNDRY_STRUCTURE_DESCRIPTION,Allow the city's laborer to use wood to repair buildings after they have been damaged in combat.
 FOUNDRY_STRUCTURE_LVL_1,Increases to a maximum of 10 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.

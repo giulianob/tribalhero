@@ -659,7 +659,7 @@ namespace Game.Database {
                     Global.DbLogger.Error("Unable to create backup", fe);
                 }
             }
-
+            
             Environment.Exit(-999);
         }
 

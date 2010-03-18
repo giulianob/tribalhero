@@ -6,7 +6,8 @@ Id,Method,P1,P2,P3,P4,P5,Description
 2402,HaveTechnology,2402,lvl=1,count=1,,,
 20001,HaveStructure,2302,minlvl=1,maxlvl=10,,,
 20002,HaveNoStructure,2301,minlvl=0,maxlvl=10,,,You can only have one per city.
-,,,,,,,
+210601,HaveNoStructure,2106,minlvl=0,maxlvl=10,,,You can only have one per city.
+210701,HaveNoStructure,2107,minlvl=0,maxlvl=10,,,You can only have one per city.
 ,,,,,,,
 //armory & blacksmith,,,,,,,
 23021,CountLessThan,id=2302,count=1,,,,You can upgrade once per level.

@@ -189,7 +189,7 @@ namespace Game.Battle {
         }
 
         internal static void SnapEndReport(uint reportId, uint battleId, uint round, uint turn) {
-            Global.DbManager.Query(string.Format("UPDATE {0} SET `ready` = 1, `round` = '{2}', turn = '{3}' WHERE id = '{1}' LIMIT 1", BATTLE_REPORTS_DB, reportId, round, turn));
+            Global.DbManager.Query(string.Format("UPDATE {0} SET `ready` = 1, `round` = '{2}', turn = '{3}', `created` = NOW() WHERE id = '{1}' LIMIT 1", BATTLE_REPORTS_DB, reportId, round, turn));
         }
 
         internal void SnapTroopState(TroopStub stub, ReportState state) {

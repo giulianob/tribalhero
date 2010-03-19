@@ -7,14 +7,6 @@ namespace Game.Setup {
 
         #endregion
 
-        #region Database Errors
-
-        TRANSACTION_COMMIT = 500,
-        TRANSACTION_SAVE = 501,
-        TRANSACTION_CREATE = 502,
-
-        #endregion
-
         #region Action Errors
 
         ACTION_TOTAL_MAX_REACHED = 100,

@@ -27,7 +27,7 @@ namespace Game.Logic {
         }
 
         internal static int MoveTime(byte speed) {
-            return 20 - speed;
+            return 50 - speed;
         }
     }
 }

@@ -38,6 +38,10 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSScriptLibrary, Version=2.6.0.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\CSScriptLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL" />
     <Reference Include="MySql.Data, Version=5.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -201,6 +205,11 @@
     <Compile Include="Logic\Actions\StructureActions\PropertyCreateAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\EngageDefenseAction.cs" />
     <Compile Include="Logic\Formulas\Ranking.cs" />
+    <Compile Include="Logic\Conditons\IBaseBattleStatsCondition.cs" />
+    <Compile Include="Logic\Conditons\ICombatObject.cs" />
+    <Compile Include="Logic\Conditons\ICityCondition.cs" />
+    <Compile Include="Logic\Conditons\IICombatUnitCondition.cs" />
+    <Compile Include="Logic\Conditons\IStructureCondition.cs" />
     <Compile Include="Logic\Formulas\Cost.cs" />
     <Compile Include="Logic\Formulas\Property.cs" />
     <Compile Include="Logic\Formulas\Time.cs" />
@@ -217,6 +226,7 @@
     <Compile Include="Module\Npc.cs" />
     <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\ASCIIStream.cs" />
+    <Compile Include="Setup\ConditionFactory.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />
     <Compile Include="Setup\SystemVariable.cs" />

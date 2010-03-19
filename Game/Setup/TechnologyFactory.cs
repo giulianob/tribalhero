@@ -38,7 +38,7 @@ namespace Game.Setup {
                     TechnologyBase tech = new TechnologyBase {
                                                                  techtype = uint.Parse(toks[col["TechType"]]),
                                                                  level = byte.Parse(toks[col["Lvl"]]),
-                                                                 time = ushort.Parse(toks[col["Time"]]),
+                                                                 time = uint.Parse(toks[col["Time"]]),
                                                                  resources =
                                                                      new Resource(int.Parse(toks[col["Crop"]]), int.Parse(toks[col["Gold"]]), int.Parse(toks[col["Iron"]]), int.Parse(toks[col["Wood"]]),
                                                                                   int.Parse(toks[col["Labor"]])),
@@ -67,10 +67,16 @@ namespace Game.Setup {
                     for (int i = 0; i < 5; ++i) {
                         string str = toks[col[string.Format("P{0}", i + 1)]];
                         int tmp;
-                        if (int.TryParse(str, out tmp))
+                        if (str.StartsWith("{")) {
+                            string name = str.Substring(1, str.IndexOf(':')-1);
+                            string condition = str.Substring(str.IndexOf(':') + 1);
+                            condition = condition.Remove(condition.LastIndexOf('}'));
+                            effect.value[i] = ConditionFactory.CreateICondition(name, condition);
+                        } else if (int.TryParse(str, out tmp)) {
                             effect.value[i] = tmp;
-                        else
+                        } else {
                             effect.value[i] = str;
+                        }
                     }
 
                     effect.location = (EffectLocation) Enum.Parse(typeof (EffectLocation), toks[col["Location"]], true);

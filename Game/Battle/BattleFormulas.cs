@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
+using Game.Logic.Conditons;
 
 #endregion
 
@@ -155,7 +156,14 @@ namespace Game.Battle {
                 if (effect.id == EffectCode.BattleStatsBlacksmithMod &&
                     stats.Weapon == (WeaponType) Enum.Parse(typeof (WeaponType), (string) effect.value[0], true))
                     atk = Math.Max((int) effect.value[1], atk);
+
+                if (effect.id == EffectCode.UnitStatMod) {
+                    if (((IBaseBattleStatsCondition)effect.value[2]).Check(stats)) {
+                        modifiedStats.Rng += (byte)((int)effect.value[1]);
+                    }
+                }
             }
+
 
             modifiedStats.MaxHp = (ushort) ((100 + hp)*stats.MaxHp/100);
             modifiedStats.Atk = (ushort) ((100 + atk)*stats.Atk/100);

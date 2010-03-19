@@ -32,6 +32,7 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5
 2301,1,ON_INIT,TechnologyCreateAction,techid=23011,techlvl=0,time=0,,
 2301,1,ON_INIT,TechnologyCreateAction,techid=23012,techlvl=0,time=0,,
 2301,1,ON_INIT,TechnologyCreateAction,23013,0,0,,
+2301,1,ON_INIT,TechnologyCreateAction,23014,0,0,,
 ,,,,,,,,
 //resource mill,,,,,,,,
 2105,1,ON_INIT,TechnologyCreateAction,techid=21051,techlvl=0,time=0,,

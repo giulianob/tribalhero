@@ -14,7 +14,7 @@ namespace Game.Data {
     public class TechnologyBase {
         public uint techtype;
         public byte level;
-        public ushort time;
+        public uint time;
         public Resource resources;
         public List<Effect> effects;
     }

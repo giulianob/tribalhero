@@ -51,6 +51,7 @@ namespace Game.Battle {
 
         private void BattleSkippedAttacker(CombatObject source) {
             Packet packet = new Packet(Command.BATTLE_SKIPPED);
+            packet.AddUInt16(battle.Stamina);
             packet.AddUInt32(source.Id);
             Global.Channel.Post(channelName, packet);
         }

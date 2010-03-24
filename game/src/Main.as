@@ -37,7 +37,7 @@
 		private var pnlLoading: InfoDialog;
 
 		public function Main()
-		{
+		{						
 			//Init ASWING
 			AsWingManager.initAsStandard(stage);
 			UIManager.setLookAndFeel(new GameLookAndFeel());
@@ -223,7 +223,7 @@
 		}
 
 		public function completeLogin(packet: Packet):void
-		{
+		{			
 			EffectReqFactory.init(map, Constants.objData);
 			PropertyFactory.init(map, Constants.objData);
 			StructureFactory.init(map, Constants.objData);

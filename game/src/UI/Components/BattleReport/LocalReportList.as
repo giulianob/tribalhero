@@ -127,12 +127,12 @@
 			pnlPaging.setConstraints("South");
 
 			btnPrevious = new JButton();
-			btnPrevious.setText("« Previous");
+			btnPrevious.setText("Previous");
 
 			lblPages = new JLabel();
 
 			btnNext = new JButton();
-			btnNext.setText("Next »");
+			btnNext.setText("Next");
 
 			//component layoution
 			append(pnlReportsScroll);

@@ -202,7 +202,7 @@
 
 				var cancelButton: CancelActionButton = new CancelActionButton(troopObj, currentAction.id);
 
-				var timeLeft: int = currentAction.endTime - Global.map.getServerTime();
+				var timeLeft: int = currentAction.endTime > 0 ? currentAction.endTime - Global.map.getServerTime() : 0;
 
 				var finishedAction: Boolean = false;
 				var color: String = "0x000000";

@@ -46,7 +46,7 @@ package src.UI.Dialog {
 
 			draw();
 		}
-		
+
 		private function onNotificationsChanged(e: BinaryListEvent) : void {
 			draw();
 		}
@@ -130,12 +130,15 @@ package src.UI.Dialog {
 		}
 
 		public function onClickLocate(event: AWEvent):void
-		{			
-			Global.map.selectWhenViewable(troop.cityId, troop.objectId);
-			Global.gameContainer.camera.ScrollTo(troop.x * Constants.tileW - Constants.screenW / 2, troop.y * Constants.tileH / 2 - Constants.screenH / 2);			
+		{
+			if (troop.objectId > 0) {
+				Global.map.selectWhenViewable(troop.cityId, troop.objectId);
+			}
+
+			Global.gameContainer.camera.ScrollTo(troop.x * Constants.tileW - Constants.screenW / 2, troop.y * Constants.tileH / 2 - Constants.screenH / 2);
 			Global.gameContainer.closeAllFrames();
 		}
-		
+
 		public function onClickRetreat(event: AWEvent):void
 		{
 			Global.mapComm.Troop.retreat(troop.cityId, troop.id);

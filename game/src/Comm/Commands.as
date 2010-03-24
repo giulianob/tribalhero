@@ -76,6 +76,7 @@ package src.Comm {
         public static const BATTLE_REINFORCE_ATTACKER: int = 703;
         public static const BATTLE_REINFORCE_DEFENDER: int = 704;
         public static const BATTLE_ENDED: int = 705;
+		public static const BATTLE_SKIPPED: int = 706;
 		
 	}
 	

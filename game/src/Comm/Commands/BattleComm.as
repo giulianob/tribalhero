@@ -33,6 +33,9 @@
 				case Commands.BATTLE_ENDED:
 					onReceiveBattleEnded(e.packet);
 					break;
+				case Commands.BATTLE_SKIPPED:
+					onReceiveBattleSkipped(e.packet);
+					break;
 			}
 		}
 		
@@ -173,6 +176,18 @@
 			
 			battle.attack(attackerObjId, defenderObjId, dmg);
 		}		
+		
+		
+		public function onReceiveBattleSkipped(packet: Packet):void
+		{
+			if (battle == null) return;
+			
+			battle.stamina = packet.readUShort();
+			
+			var attackerObjId: int = packet.readUInt();
+			
+			battle.skipped(attackerObjId);
+		}					
 		
 	}
 	

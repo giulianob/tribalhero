@@ -15,8 +15,9 @@
 		public var Troop: TroopComm;
 		public var Market: MarketComm;
 		public var BattleReport: BattleReportComm;
-		
-		public var session: Session;		
+		public var Ranking: RankingComm;
+
+		public var session: Session;
 
 		public function MapComm(session: Session)
 		{
@@ -29,8 +30,9 @@
 			Troop = new TroopComm(this);
 			Market = new MarketComm(this);
 			BattleReport = new BattleReportComm(this);
+			Ranking = new RankingComm(this);
 		}
-		
+
 		public function tryShowError(packet: Packet) : Boolean {
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{
@@ -54,3 +56,4 @@
 		}
 	}
 }
+

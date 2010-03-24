@@ -22,8 +22,15 @@ class AppController extends Controller {
         }
         */
 
+        $this->Auth->authError = "You have to login to do that!";
+        $this->Auth->userModel = 'Player';
+        $this->Auth->fields = array('username' => 'name', 'password' => 'password');
+        $this->Auth->loginAction = array('admin' => false, 'controller' => 'players', 'action' => 'login');
+        $this->Auth->loginRedirect = '/';
+        $this->Auth->autoRedirect = false;
+        
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
-            if (!array_key_exists('sessionId', $this->params['form']) || ! array_key_exists('playerId', $this->params['form'])) {
+            if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {
                 $this->Auth->deny($this->action);
             }
             else {
@@ -37,12 +44,5 @@ class AppController extends Controller {
                     $this->Auth->deny($this->action);
             }
         }
-
-        $this->Auth->authError = "You have to login to do that!";
-        $this->Auth->userModel = 'Player';
-        $this->Auth->fields = array('username' => 'name', 'password' => 'password');
-        $this->Auth->loginAction = array('admin' => false, 'controller' => 'players', 'action' => 'login');
-        $this->Auth->loginRedirect = '/';
-        $this->Auth->autoRedirect = false;
     }
 }

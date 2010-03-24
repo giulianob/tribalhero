@@ -6,7 +6,6 @@ class ReportsController extends AppController {
 
     var $allowedFromGame = array('index_local', 'view_local', 'index_remote', 'view_remote');
 
-
     var $troop_states_pst = array(
             'joined the battle',
             'stayed',

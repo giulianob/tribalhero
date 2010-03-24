@@ -2,8 +2,8 @@
 
 class PagesController extends AppController
 {
-	var $uses = array();
-	
+	var $uses = array();       
+
 	var $cacheAction = array(
 		'index/' => '1 month'
 	);

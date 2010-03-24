@@ -88,6 +88,9 @@
 
 			new SimpleTooltip(btnMessages, "View battle reports");
 			btnMessages.addEventListener(MouseEvent.CLICK, onViewMessages);
+			
+			new SimpleTooltip(btnRanking, "View ranking");
+			btnRanking.addEventListener(MouseEvent.CLICK, onViewRanking);			
 
 			new SimpleTooltip(btnCityInfo, "View city details");
 			btnCityInfo.addEventListener(MouseEvent.CLICK, onViewCityInfo);
@@ -119,6 +122,15 @@
 			var currentEventDialog: CityEventDialog = new CityEventDialog(selectedCity);
 			currentEventDialog.show();
 		}
+		
+		public function onViewRanking(e: MouseEvent) :void
+		{
+			if (!selectedCity)
+			return;
+
+			var rankingDialog: RankingDialog = new RankingDialog();
+			rankingDialog.show();
+		}		
 
 		public function onViewMessages(e: MouseEvent):void
 		{

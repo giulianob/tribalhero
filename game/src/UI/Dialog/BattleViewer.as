@@ -39,13 +39,16 @@
 			battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, onAddedDefense);
 			battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);
 			battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
-			battle.addEventListener(BattleManager.END, onEnd);
+			battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
+			battle.addEventListener(BattleManager.END, onEnd);			
 
+			// Every command sends the stamina so we update it with every action.
 			battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
 			battle.addEventListener(BattleManager.OBJECT_REMOVED_ATTACK, updateStamina);
 			battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, updateStamina);
 			battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, updateStamina);
 			battle.addEventListener(BattleManager.OBJECT_ATTACKED, updateStamina);
+			battle.addEventListener(BattleManager.OBJECT_SKIPPED, updateStamina);
 			battle.addEventListener(BattleManager.END, updateStamina);
 		}
 
@@ -58,6 +61,7 @@
 				battle.removeEventListener(BattleManager.OBJECT_ADDED_DEFENSE, onAddedDefense);
 				battle.removeEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);
 				battle.removeEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
+				battle.removeEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 				battle.removeEventListener(BattleManager.END, onEnd);
 
 				battle.removeEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
@@ -65,6 +69,7 @@
 				battle.removeEventListener(BattleManager.OBJECT_ADDED_DEFENSE, updateStamina);
 				battle.removeEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, updateStamina);
 				battle.removeEventListener(BattleManager.OBJECT_ATTACKED, updateStamina);
+				battle.removeEventListener(BattleManager.OBJECT_SKIPPED, updateStamina);
 				battle.removeEventListener(BattleManager.END, updateStamina);
 
 				Global.mapComm.Battle.battleUnsubscribe(battleCityId);
@@ -137,6 +142,18 @@
 			return null;
 		}
 
+		private function findObject(list: CombatObjectGridList, combatObjectId: int) : * {
+			var listData: VectorListModel = list.getModel() as VectorListModel;
+			for (var i: int = 0; i < listData.size(); i++) {
+				var combatObj: * = listData.getElementAt(i);
+				if (combatObj.data.combatObjectId == combatObjectId) {
+					return combatObj;
+				}
+			}
+
+			return null;
+		}
+
 		public function onEnd(e: BattleEvent):void
 		{
 			tabOffensive.removeAll();
@@ -174,6 +191,26 @@
 			addTab(e.combatObj, true);
 		}
 
+		public function onSkipped(e: BattleEvent) : void {
+			var srcObj: Object = findTab(e.combatObj.cityId, e.combatObj.troopStubId);
+
+			if (srcObj == null) {
+				trace("Received skip for unknown object");
+				return;
+			}
+
+			var attackObj: * = findObject(srcObj.grid, e.combatObj.combatObjectId);
+
+			if (attackObj == null) {
+				trace("Could not find attacker combat object");
+				return;
+			}
+
+			var srcCityName: Username = Global.map.usernames.cities.getUsername(e.combatObj.cityId);
+
+			log((srcCityName != null ? srcCityName.name + "(" + e.combatObj.troopStubId  + ")'s " : "") + attackObj.data.name + " couldn't hit anyone.");
+		}
+
 		public function onAttack(e: BattleEvent):void
 		{
 			var destObj: Object = findTab(e.destCombatObj.cityId, e.destCombatObj.troopStubId);
@@ -185,15 +222,7 @@
 			}
 
 			//find attacker
-			var attackObj: * = null;
-			var listData: VectorListModel = (srcObj.grid as CombatObjectGridList).getModel() as VectorListModel;
-			for (var i: int = 0; i < listData.size(); i++) {
-				var combatObj: Object = listData.getElementAt(i);
-				if (combatObj.data.combatObjectId == e.combatObj.combatObjectId) {
-					attackObj = combatObj;
-					break;
-				}
-			}
+			var attackObj: * = findObject(srcObj.grid, e.combatObj.combatObjectId);
 
 			if (attackObj == null) {
 				trace("Could not find attacker combat object");
@@ -201,15 +230,7 @@
 			}
 
 			//find defender
-			var defenseObj: * = null;
-			listData = (destObj.grid as CombatObjectGridList).getModel() as VectorListModel;
-			for (i = 0; i < listData.size(); i++) {
-				combatObj = listData.getElementAt(i);
-				if (combatObj.data.combatObjectId == e.destCombatObj.combatObjectId) {
-					defenseObj = combatObj;
-					break;
-				}
-			}
+			var defenseObj: * = findObject(destObj.grid, e.destCombatObj.combatObjectId);
 
 			if (defenseObj == null) {
 				trace("Could not find defender combat object");
@@ -225,7 +246,7 @@
 				log(defenseObj.data.name + " has been defeated");
 			}
 
-			listData.valueChanged(defenseObj);
+			destObj.grid.getModel().valueChanged(defenseObj);
 		}
 
 		private function log(str: String) : void {

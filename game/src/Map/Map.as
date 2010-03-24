@@ -403,9 +403,6 @@
 		{
 			if (event.keyCode == Keyboard.ESCAPE)
 			{
-				var t: RankingDialog = new RankingDialog();
-				t.show();
-				Global.gameContainer.setOverlaySprite(null);
 				doSelectedObject(null);
 			}
 

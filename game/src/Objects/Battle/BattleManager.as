@@ -14,6 +14,7 @@
 		public static const OBJECT_ADDED_ATTACK: String = "BATTLE_OBJECT_ADDED_ATTACK";
 		public static const OBJECT_ADDED_DEFENSE: String = "BATTLE_OBJECT_ADDED_DEFENSE";
 		public static const OBJECT_ATTACKED: String = "BATTLE_OBJECT_ATTACKED";
+		public static const OBJECT_SKIPPED: String = "BATTLE_OBJECT_SKIPPED";
 		public static const END: String = "BATTLE_ENDED";
 		
 		public static const STRUCTURE: int = 0;
@@ -65,6 +66,19 @@
 			all.add(combatObj);
 			
 			return combatObj;
+		}
+		
+		public function skipped(attackerCombatId: int):void
+		{
+			var attacker: CombatObject = all.get(attackerCombatId);			
+			
+			if (attacker == null)
+			{
+				trace("Received skip command for unknown combat object. Attacker: " + attackerCombatId);
+				return;
+			}
+						
+			dispatchEvent(new BattleEvent(OBJECT_SKIPPED, attacker, null, 0));		
 		}
 		
 		public function attack(attackerCombatId: int, defenderCombatId: int, dmg: int):void

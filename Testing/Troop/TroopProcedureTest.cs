@@ -19,9 +19,9 @@ namespace Testing.Troop {
         [TestInitialize]
         public void TestInitialize() {            
             stub = new TroopStub();
-            stub.AddFormation(Game.Fighting.FormationType.NORMAL);
-            stub.AddFormation(Game.Fighting.FormationType.GARRISON);
-            stub.AddFormation(Game.Fighting.FormationType.IN_BATTLE);
+            stub.AddFormation(FormationType.NORMAL);
+            stub.AddFormation(FormationType.GARRISON);
+            stub.AddFormation(FormationType.IN_BATTLE);
         }
         
         [TestCleanup]

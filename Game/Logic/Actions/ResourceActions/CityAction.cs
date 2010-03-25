@@ -91,10 +91,10 @@ namespace Game.Logic.Actions {
                 
                 if (Config.resource_upkeep) {                    
                     if (city.Resource.Crop.Upkeep > city.Resource.Crop.Rate) {
-                        int upkeepCost = (INTERVAL / 3600) * (city.Resource.Crop.Upkeep - city.Resource.Crop.Rate);
-
+                        int upkeepCost = Math.Max(1, (int)((INTERVAL / 3600f) / Config.seconds_per_unit) * (city.Resource.Crop.Upkeep - city.Resource.Crop.Rate));
+                        
                         if (city.Resource.Crop.Value < upkeepCost) {
-                            city.Troops.Starve();
+                            city.Worker.DoPassive(city, new StarveAction(city.Id), false);
                         }
 
                         city.Resource.Crop.Subtract(upkeepCost);

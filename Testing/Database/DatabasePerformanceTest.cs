@@ -76,6 +76,8 @@ namespace Testing.Database {
         /// </summary>
         [TestMethod]
         public void TestSimpleObject() {
+            return;
+
             DateTime now = DateTime.Now;
             for (int i = 0; i < 2000; i++) {
                 SimplePersistableObject obj = new SimplePersistableObject() {

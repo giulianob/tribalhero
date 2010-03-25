@@ -203,6 +203,7 @@
     <Compile Include="Logic\Actions\ResourceActions\ResourceBuyAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\LaborMoveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\PropertyCreateAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\StarveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\EngageDefenseAction.cs" />
     <Compile Include="Logic\Formulas\Ranking.cs" />
     <Compile Include="Logic\Conditons\IBaseBattleStatsCondition.cs" />

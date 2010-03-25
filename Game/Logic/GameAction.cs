@@ -18,6 +18,7 @@ namespace Game.Logic {
         TROOP_MOVE = 201,
         TROOP_CREATE = 202,
         TROOP_DELETE = 203,
+        STARVE = 210,
         ATTACK = 250,
         DEFENSE = 251,
         RETREAT = 252,

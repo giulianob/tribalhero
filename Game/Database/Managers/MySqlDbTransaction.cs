@@ -40,15 +40,11 @@ namespace Game.Database.Managers {
                 Global.Logger.Error(e.Message + " " + e.StackTrace);
                 try {
                     ((MySqlTransaction)transaction).Rollback();
-                }
-                catch (Exception ex) {
-                    Global.Logger.Error(ex.Message + " " + ex.StackTrace);
                     manager.Close(((MySqlTransaction)transaction).Connection);
-                    return false;
                 }
-                manager.Close(((MySqlTransaction)transaction).Connection);
+                catch {}                
 
-                return false;
+                throw;
             }
 
             manager.Close(((MySqlTransaction)transaction).Connection);

@@ -14,7 +14,6 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class BattleAction : ScheduledPassiveAction {
-        private BattleViewer viewer;
         private uint cityId;
 
         public BattleAction(uint cityId) {
@@ -36,27 +35,27 @@ namespace Game.Logic.Actions {
                 throw new Exception();
 
             city.Battle.ActionAttacked += Battle_ActionAttacked;
-            viewer = new BattleViewer(city.Battle);
         }
 
         #region ISchedule Members
 
         public override void Callback(object custom) {
             City city;
+            if (!Global.World.TryGetObjects(cityId, out city)) {
+                throw new Exception("City is missing");                
+            }
 
-            List<ILockable> toBeLocked = new List<ILockable>();
-
-            using (new MultiObjectLock(cityId, out city)) {
-                if (city == null) throw new Exception();
-
-                toBeLocked.Add(city);
+            CallbackLock.CallbackLockHandler lockHandler = delegate {                
+                List<ILockable> toBeLocked = new List<ILockable>();
                 toBeLocked.AddRange(city.Battle.LockList);
 
                 foreach (TroopStub stub in city.Troops.StationedHere())
                     toBeLocked.Add(stub.City);
-            }
 
-            using (new MultiObjectLock(toBeLocked.ToArray())) {
+                return toBeLocked.ToArray();
+            };            
+
+            using (new CallbackLock(lockHandler, null, city)) {
                 if (!city.Battle.ExecuteTurn()) {
                     city.Battle.ActionAttacked -= Battle_ActionAttacked;
                     Global.DbManager.Delete(city.Battle);
@@ -135,7 +134,6 @@ namespace Game.Logic.Actions {
             }
 
             city.Battle.AddToDefense(list);
-            viewer = new BattleViewer(city.Battle);
             beginTime = DateTime.Now;
             endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
 

@@ -424,7 +424,7 @@ namespace Game.Battle {
                     uint id = 1;
 
                     if (!isLocal)
-                        id = (uint)idGen.getNext();
+                        id = (uint) idGen.getNext();
 
                     foreach (Formation formation in obj) {
                         if (formation.Type == FormationType.GARRISON || formation.Type == FormationType.IN_BATTLE)
@@ -440,17 +440,14 @@ namespace Game.Battle {
                         foreach (KeyValuePair<ushort, ushort> kvp in formation) {
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
-                                combatObjects = CombatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType,
-                                                                                          kvp.Key, kvp.Value);
+                                combatObjects = CombatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
                             else
-                                combatObjects = CombatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject,
-                                                                                         formationType, kvp.Key,
-                                                                                         kvp.Value);
+                                combatObjects = CombatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
 
                             foreach (CombatObject unit in combatObjects) {
                                 added = true;
                                 unit.LastRound = round;
-                                unit.Id = (uint)idGen.getNext();
+                                unit.Id = (uint) idGen.getNext();
                                 unit.GroupId = id;
                                 combatList.Add(unit);
                                 list.Add(unit);

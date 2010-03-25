@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Util;
@@ -156,7 +157,10 @@ namespace Game.Data.Troop {
 
         public bool Remove(byte id) {
             TroopStub stub;
-            
+
+            if (id == 1) 
+                throw new Exception("Trying to remove default troop");
+
             if (!dict.TryGetValue(id, out stub))
                 return false;
             
@@ -177,25 +181,46 @@ namespace Game.Data.Troop {
         public int Upkeep {
             get {
                 int upkeep = 0;
-                foreach (TroopStub stub in dict.Values) {
-                    //Only want to factor in troops that belong to this city
-                    //not stationed
-                    if (stub.City == City)
-                        upkeep += stub.Upkeep;
+                foreach (TroopStub stub in MyStubs()) {
+                    upkeep += stub.Upkeep;
                 }
 
                 return upkeep;
             }
         }
 
-        public void Starve() {            
-            foreach (TroopStub stub in dict.Values) {
-                if (stub.City != City || stub.State != TroopStub.TroopState.IDLE || stub.StationedCity != null)
+        public void Starve() {
+            // Make a copy of the stub list since it might change during the foreach loop
+            TroopStub[] troopStubs = new TroopStub[dict.Values.Count];
+            dict.Values.CopyTo(troopStubs, 0);
+
+            foreach (TroopStub stub in troopStubs) {
+                // Skip troops that aren't ours
+                if (stub.City != City)
                     continue;
 
+                // Skip troops that are on the move
+                if (stub.TroopObject != null)
+                    continue;
+
+                // Skip troops that aren't idle
+                if (stub.State != TroopStub.TroopState.STATIONED && stub.State != TroopStub.TroopState.IDLE)
+                    continue;
+
+                // Starve the troop
                 stub.BeginUpdate();
                 stub.Starve();
                 stub.EndUpdate();
+
+                // Remove it if it's been starved to death (and isn't the default troop)
+                if (stub.TotalCount == 0 && !stub.IsDefault()) {
+                    if (stub.StationedCity != null) {
+                        City stationedCity = stub.StationedCity;
+                        stationedCity.Troops.RemoveStationed(stub.StationedTroopId);
+                    }
+
+                    City.Troops.Remove(stub.TroopId);
+                }
             }
         }
 
@@ -225,11 +250,28 @@ namespace Game.Data.Troop {
 
         #endregion
 
+        #region Enumeration Helpers
+        /// <summary>
+        /// Returns all foreign troops that are stationed in this city.
+        /// </summary>
+        /// <returns></returns>
         internal IEnumerable<TroopStub> StationedHere() {
             foreach (TroopStub stub in this) {
                 if (stub.StationedCity == City)
                     yield return stub;
             }
         }
+
+        /// <summary>
+        /// Only returns troops that belong to this city. Won't return troops that are stationed here but will return troops that may be stationed outside of the city.
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<TroopStub> MyStubs() {
+            foreach (TroopStub stub in this) {
+                if (stub.City == City)
+                    yield return stub;
+            }
+        }
+        #endregion
     }
 }

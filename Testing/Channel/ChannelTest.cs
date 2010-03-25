@@ -143,8 +143,7 @@ namespace Testing.Channel {
 
         // The channel class deletes the subscriber list if the channel becomes empty so we want to make sure it works
         [TestMethod]
-        public void TestRecreateChannel() {
-            var session1 = new Mock<IChannel>();
+        public void TestRecreateChannel() {            
 
             channel.Subscribe(session1.Object, "Channel1");
             channel.Unsubscribe(session1.Object, "Channel1");

@@ -72,36 +72,35 @@ namespace Game.Logic.Actions {
         }
 
         private void AfterTroopMoved(ActionState state) {
-            if (state == ActionState.COMPLETED) {                        
-                List<ILockable> toBeLocked = new List<ILockable>();
-                Dictionary<uint, City> cities;
-                //This is a 2 step process because we need to find all the cities that need to be locked first
+            if (state == ActionState.COMPLETED) {
+                City city;
+                City targetCity;
 
-                //1. Get all of the stationed city id's from the target city since they will be used by the engage attack action
-                using (new MultiObjectLock(out cities, cityId, targetCityId)) {
-                    City city = cities[cityId];
-                    City targetCity = cities[targetCityId];
+                if (!Global.World.TryGetObjects(cityId, out city)) {
+                    throw new Exception("City is missing");
+                }
 
-                    TroopStub stub = city.Troops[stubId];
-
+                if (!Global.World.TryGetObjects(targetCityId, out targetCity)) {
                     //If the target is missing, walk back
-                    if (targetCity == null) {
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId,
-                                                                  city.MainBuilding.X, city.MainBuilding.Y);
+                    using (new MultiObjectLock(city)) {
+                        TroopStub stub = city.Troops[stubId];
+                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
                     }
+                }
 
+                // Get all of the stationed city id's from the target city since they will be used by the engage attack action
+                CallbackLock.CallbackLockHandler lockAllStationed = delegate {
+                    List<ILockable> toBeLocked = new List<ILockable>();
                     foreach (TroopStub stationedStub in targetCity.Troops.StationedHere()) {
                         toBeLocked.Add(stationedStub.City);
                     }
 
-                    toBeLocked.Add(city);
-                    toBeLocked.Add(targetCity);
-                }
-
-                //2. Lock them all
-                using (new MultiObjectLock(toBeLocked.ToArray())) {
+                    return toBeLocked.ToArray();
+                };
+                                
+                using (new CallbackLock(lockAllStationed, null, city, targetCity)) {
                     EngageAttackAction bea = new EngageAttackAction(cityId, stubId, targetCityId, mode);
                     ExecuteChainAndWait(bea, AfterBattle);
                 }

@@ -92,6 +92,10 @@ namespace Game.Data.Troop {
             get { return (byte)data.Count; }
         }
 
+        public bool IsDefault() {
+            return TroopId == 1;
+        }
+
         public ushort TotalCount {
             get {
                 ushort count = 0;
@@ -108,7 +112,7 @@ namespace Game.Data.Troop {
         public int TotalHp {
             get {
                 int count = 0;
-                
+
                 lock (objLock) {
                     foreach (Formation formation in data.Values) {
                         foreach (KeyValuePair<ushort, ushort> kvp in formation)
@@ -167,6 +171,8 @@ namespace Game.Data.Troop {
                             formation[kvp.Key] = newCount;
                     }
                 }
+
+                FireUpdated();
             }
         }
 
@@ -237,6 +243,9 @@ namespace Game.Data.Troop {
                 throw new Exception("Changed state outside of begin/end update block");
 
             MultiObjectLock.ThrowExceptionIfNotLocked(this);
+
+            if (stationedCity != null)
+                MultiObjectLock.ThrowExceptionIfNotLocked(stationedCity);
         }
 
         public void BeginUpdate() {
@@ -260,6 +269,8 @@ namespace Game.Data.Troop {
                 if (data.ContainsKey(type))
                     return false;
                 data.Add(type, new Formation(type, this));
+
+                FireUpdated();
             }
 
             return true;
@@ -278,6 +289,8 @@ namespace Game.Data.Troop {
 
                     targetFormation.Add(stubFormation);
                 }
+
+                FireUpdated();
             }
 
             return true;
@@ -290,7 +303,10 @@ namespace Game.Data.Troop {
                     formation.Add(type, count);
                     return true;
                 }
+
+                FireUpdated();
             }
+
             return false;
         }
 
@@ -309,6 +325,8 @@ namespace Game.Data.Troop {
                     foreach (KeyValuePair<ushort, ushort> unit in formation)
                         targetFormation.Remove(unit.Key, unit.Value);
                 }
+
+                FireUpdated();
             }
 
             return true;
@@ -337,6 +355,8 @@ namespace Game.Data.Troop {
 
                 foreach (Formation formation in data.Values)
                     formation.Clear();
+
+                FireUpdated();
             }
         }
 
@@ -349,7 +369,7 @@ namespace Game.Data.Troop {
 
                     foreach (KeyValuePair<ushort, ushort> unit in formation) {
                         ushort count;
-                        
+
                         if (!targetFormation.TryGetValue(unit.Key, out count) || count < unit.Value)
                             return false;
                     }
@@ -468,5 +488,6 @@ namespace Game.Data.Troop {
         }
 
         #endregion
+
     }
 }

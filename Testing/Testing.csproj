@@ -45,14 +45,13 @@
   <ItemGroup>
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
+    <Compile Include="Lock\CallbackLockTest.cs" />
     <Compile Include="Database\DatabasePerformanceTest.cs" />
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Troop\TroopStarveTest.cs" />
     <Compile Include="Troop\TroopProcedureTest.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Game\Game.csproj">

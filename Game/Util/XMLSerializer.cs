@@ -115,8 +115,14 @@ namespace Game.Util {
 
     public class XMLSerializer {
         public static String SerializeList(params object[] variables) {
+            XmlWriterSettings writerSettings = new XmlWriterSettings {
+                                                                         OmitXmlDeclaration = true,
+                                                                         Indent = false,
+                                                                         NewLineOnAttributes = false
+                                                                     };
+
             StringWriter sw = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sw);
+            XmlWriter writer = XmlWriter.Create(sw, writerSettings);
 
             writer.WriteStartElement("Properties");
 
@@ -147,8 +153,14 @@ namespace Game.Util {
         }
 
         public static String Serialize(params XMLKVPair[] variables) {
+            XmlWriterSettings writerSettings = new XmlWriterSettings {
+                                                                         OmitXmlDeclaration = true,
+                                                                         Indent = false,
+                                                                         NewLineOnAttributes = false
+                                                                     };
+
             StringWriter sw = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sw);
+            XmlWriter writer = XmlWriter.Create(sw, writerSettings);
 
             writer.WriteStartElement("Properties");
 

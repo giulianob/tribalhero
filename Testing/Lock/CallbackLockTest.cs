@@ -1,11 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Game.Data.Troop;
-using Game.Fighting;
-using Game.Logic.Procedures;
-using Game.Util;
+﻿using Game.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Testing.Troop {

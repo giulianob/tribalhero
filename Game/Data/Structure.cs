@@ -65,10 +65,10 @@ namespace Game.Data {
         #region Indexers
 
         public object this[string name] {
-            get { return properties.get(name); }
+            get { return properties.Get(name); }
             set {
                 CheckUpdateMode();
-                properties.add(name, value);
+                properties.Add(name, value);
             }
         }
 

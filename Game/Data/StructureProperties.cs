@@ -24,20 +24,20 @@ namespace Game.Data {
             set { structure = value; }
         }
 
-        public bool contains(object key) {
+        public bool Contains(object key) {
             return properties.Contains(key);
         }
 
-        public void add(object key, object value) {
+        public void Add(object key, object value) {
             structure.CheckUpdateMode();
             properties.Add(key, value);
         }
 
-        public object get(object key) {
+        public object Get(object key) {
             return properties[key];
         }
 
-        public void clear() {
+        public void Clear() {
             structure.CheckUpdateMode();
             properties.Clear();
         }
@@ -52,7 +52,7 @@ namespace Game.Data {
 
         public DbColumn[] DbPrimaryKey {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("structure_id", structure.ObjectId, DbType.UInt32),
                                           new DbColumn("city_id", structure.City.Id, DbType.UInt32)
                                       };
@@ -69,19 +69,14 @@ namespace Game.Data {
 
         public DbColumn[] DbListColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("name", DbType.String), new DbColumn("value", DbType.String),
                                           new DbColumn("datatype", DbType.Byte)
                                       };
             }
         }
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
             IDictionaryEnumerator itr = properties.GetEnumerator();
@@ -90,7 +85,7 @@ namespace Game.Data {
                 byte datatype = DataTypeSerializer.Serialize(itr.Value);
 
                 yield return
-                    new DbColumn[] {
+                    new[] {
                                        new DbColumn("name", itr.Key, DbType.String), new DbColumn("value", itr.Value, DbType.String),
                                        new DbColumn("datatype", datatype, DbType.Byte)
                                    };

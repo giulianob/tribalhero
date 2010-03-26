@@ -41,7 +41,7 @@ namespace Game.Comm {
                     reply.AddUInt16(structure.Stats.Hp);
 
                     foreach (Property prop in PropertyFactory.getProperties(structure.Type)) {
-                        if (!structure.Properties.contains(prop.name)) {
+                        if (!structure.Properties.Contains(prop.name)) {
                             switch (prop.type) {
                                 case DataType.Byte:
                                     reply.AddByte(Byte.MaxValue);

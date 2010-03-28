@@ -61,10 +61,10 @@ namespace Game.Setup {
         #region Troop Errors
 
         ATTACK_SELF = 600,
-        CITY_IN_BATTLE = 601,
+        CITY_IN_BATTLE = 601,        
         DEFEND_SELF = 602,
+        BATTLE_NOT_VIEWABLE = 603
 
-        #endregion
-
+        #endregion        
     }
 }

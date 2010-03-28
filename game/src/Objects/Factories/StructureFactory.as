@@ -6,10 +6,10 @@
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import src.Constants;
 	import src.Map.City;
 	import src.Map.CityObject;
 	import src.Map.Map;
+	import src.Objects.Actions.TechUpgradeAction;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.SimpleLayout;
 	import src.Objects.Prototypes.TechnologyPrototype;
@@ -144,17 +144,17 @@
 		}
 
 		public static function getInstance(type: int, level: int): Object
-		{	
-			var structureObj: StructureObject = new StructureObject();			
-			
+		{
+			var structureObj: StructureObject = new StructureObject();
+
 			var shadow: DisplayObjectContainer = StructureFactory.getSprite(type, level);
 			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
 			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
 			shadow.alpha = 0.4;
-			shadow.filters = [new BlurFilter(5, 5)];	
-			shadow.mouseEnabled = false;			
+			shadow.filters = [new BlurFilter(5, 5)];
+			shadow.mouseEnabled = false;
 			structureObj.addChild(shadow);
-			
+
 			var img: DisplayObject = getSprite(type, level);
 			structureObj.addChild(img);
 
@@ -179,6 +179,30 @@
 			return worker.getButtons(parentObj, structPrototype);
 		}
 
+		private static function getTechButtonInstance(techPrototype: TechnologyPrototype) : SimpleButton {
+			var objRef: Class;
+
+			if (techPrototype != null)
+			{
+				try
+				{
+					objRef = getDefinitionByName(techPrototype.spriteClass + "_TECHNOLOGY_BUTTON") as Class;
+				}
+				catch (error: Error)
+				{
+					trace("Missing technology button sprite class: " + techPrototype.spriteClass + "_TECHNOLOGY_BUTTON. Loading default");
+					objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
+				}
+			}
+			else
+			{
+				trace("Missing technology prototype for object type tech type " + techPrototype.techtype + " tech level " + techPrototype.level);
+				objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
+			}
+
+			return new objRef();
+		}
+
 		public static function getTechButtons(gameObj: StructureObject): Array
 		{
 			var structPrototype: StructurePrototype = getPrototype(gameObj.type, gameObj.level);
@@ -200,37 +224,32 @@
 
 			var worker: Worker = WorkerFactory.getPrototype(structPrototype.workerid);
 
+			var upgradeActions: Array = worker.getTechUpgradeActions();
+			
 			var buttons: Array = new Array();
+
+			// Add all of the tech buttons that have technologies attached to them
 			for each (var techStats: TechnologyStats in cityObj.techManager.technologies)
 			{
-				var techPrototype: TechnologyPrototype = techStats.prototype;
+				var techBtn: TechnologyButton = new TechnologyButton(getTechButtonInstance(techStats.prototype), gameObj, structPrototype, techStats.prototype);
 
-				var objRef: Class;
-
-				if (techPrototype != null)
-				{
-					try
-					{
-						objRef = getDefinitionByName(techPrototype.spriteClass + "_TECHNOLOGY_BUTTON") as Class;
-					}
-					catch (error: Error)
-					{
-						trace("Missing technology button sprite class: " + techPrototype.spriteClass + "_TECHNOLOGY_BUTTON. Loading default");
-						objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
-					}
-				}
-				else
-				{
-					trace("Missing technology prototype for object type " + gameObj.type + " tech type " + techPrototype.techtype + " tech level " + techPrototype.level);
-					objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
+				for (var i: int = 0; i < upgradeActions.length; ++i) {
+					if (upgradeActions[i].techtype != techStats.prototype.techtype)
+						continue;
+						
+					techBtn.parentAction = upgradeActions[i];
+					upgradeActions.splice(i, 1);
+					break;
 				}
 
-				var btn: SimpleButton = new objRef();
-
-				var techBtn: TechnologyButton = new TechnologyButton(btn, gameObj, structPrototype, techPrototype);
-
-				techBtn.parentAction = worker.getTechUpgradeAction(techPrototype.techtype);
-
+				buttons.push(techBtn);
+			}
+			
+			// Add all of the upgrade technology actions that don't currently have technologies attached to them
+			for each (var upgradeAction: TechUpgradeAction in upgradeActions) {
+				var techPrototype: TechnologyPrototype = TechnologyFactory.getPrototype(upgradeAction.techtype, 0);
+				techBtn = new TechnologyButton(getTechButtonInstance(techPrototype), gameObj, structPrototype, techPrototype);
+				techBtn.parentAction = upgradeAction;
 				buttons.push(techBtn);
 			}
 

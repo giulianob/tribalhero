@@ -15,7 +15,7 @@
 		public static const OBJECT_ADDED_DEFENSE: String = "BATTLE_OBJECT_ADDED_DEFENSE";
 		public static const OBJECT_ATTACKED: String = "BATTLE_OBJECT_ATTACKED";
 		public static const OBJECT_SKIPPED: String = "BATTLE_OBJECT_SKIPPED";
-		public static const END: String = "BATTLE_ENDED";
+		public static const END: String = "BATTLE_ENDED";		
 		
 		public static const STRUCTURE: int = 0;
 		public static const UNIT: int = 1;

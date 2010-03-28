@@ -40,7 +40,7 @@
 			battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);
 			battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 			battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
-			battle.addEventListener(BattleManager.END, onEnd);			
+			battle.addEventListener(BattleManager.END, onEnd);
 
 			// Every command sends the stamina so we update it with every action.
 			battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
@@ -160,6 +160,8 @@
 			tabDefensive.removeAll();
 
 			log("Battle has ended");
+
+			getFrame().dispose();
 		}
 
 		public function onAddedAttack(e: BattleEvent):void

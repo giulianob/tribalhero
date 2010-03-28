@@ -34,21 +34,23 @@ namespace Game.Logic.Actions {
         }
 
         public override Error Validate(string[] parms) {
+            byte maxLevel = byte.Parse(parms[1]);
+
+            if (uint.Parse(parms[0]) != techId)
+                return Error.ACTION_INVALID;
+
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
 
             Technology tech;
-            if (!structure.Technologies.TryGetTechnology(techId, out tech))
-                return Error.TECHNOLOGY_NOT_FOUND;
+            if (!structure.Technologies.TryGetTechnology(techId, out tech))        
+                return Error.OK;                       
 
-            if (tech == null)
-                return Error.ACTION_INVALID;
-            if (uint.Parse(parms[0]) != tech.Type)
-                return Error.ACTION_INVALID;
-            if (tech.Level >= byte.Parse(parms[1]))
-                return Error.ACTION_INVALID;
+            if (tech.Level >= maxLevel)
+                return Error.TECHNOLOGY_MAX_LEVEL_REACHED;
+
             return Error.OK;
         }
 
@@ -59,10 +61,13 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             Technology tech;
-            if (!structure.Technologies.TryGetTechnology(techId, out tech))
-                return Error.OBJECT_NOT_FOUND;
-
-            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+            TechnologyBase techBase;
+            if (structure.Technologies.TryGetTechnology(techId, out tech)) {
+                techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+            }            
+            else {
+                techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
+            }
 
             if (techBase == null)
                 return Error.OBJECT_NOT_FOUND;
@@ -95,12 +100,11 @@ namespace Game.Logic.Actions {
                 Global.Scheduler.Del(this);
 
                 Technology tech;
-                if (!city.Technologies.TryGetTechnology(techId, out tech)) {
-                    StateChange(ActionState.FAILED);
-                    return;
-                }
-
-                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                TechnologyBase techBase;
+                if (city.Technologies.TryGetTechnology(techId, out tech))
+                    techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                else
+                    techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
 
                 if (techBase == null) {
                     StateChange(ActionState.FAILED);
@@ -142,26 +146,40 @@ namespace Game.Logic.Actions {
                 }
 
                 Technology tech;
-                if (!structure.Technologies.TryGetTechnology(techId, out tech)) {
-                    StateChange(ActionState.FAILED);
-                    return;
+                if (structure.Technologies.TryGetTechnology(techId, out tech)) {
+                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
+
+                    if (techBase == null) {
+                        StateChange(ActionState.FAILED);
+                        return;
+                    }
+
+                    structure.Technologies.BeginUpdate();
+                    if (!structure.Technologies.Upgrade(new Technology(techBase))) {
+                        structure.EndUpdate();
+                        StateChange(ActionState.FAILED);
+                        return;
+                    }
+
+                    structure.Technologies.EndUpdate();
                 }
+                else {
+                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
 
-                TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                    if (techBase == null) {
+                        StateChange(ActionState.FAILED);
+                        return;
+                    }
 
-                if (techBase == null) {
-                    StateChange(ActionState.FAILED);
-                    return;
+                    structure.Technologies.BeginUpdate();
+                    if (!structure.Technologies.Add(new Technology(techBase))) {
+                        structure.EndUpdate();
+                        StateChange(ActionState.FAILED);
+                        return;
+                    }
+
+                    structure.Technologies.EndUpdate();                    
                 }
-
-                structure.Technologies.BeginUpdate();
-                if (!structure.Technologies.Upgrade(new Technology(techBase))) {
-                    structure.EndUpdate();
-                    StateChange(ActionState.FAILED);
-                    return;
-                }
-
-                structure.Technologies.EndUpdate();
 
                 StateChange(ActionState.COMPLETED);
             }

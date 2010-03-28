@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Fighting;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Setup;
@@ -183,7 +184,7 @@ namespace Game.Comm {
                 }
 
                 City city;
-                Structure structure;                                    
+                Structure mainBuilding;                                    
 
                 lock (Global.World.Lock) {
                     // Verify city name is unique
@@ -192,7 +193,7 @@ namespace Game.Comm {
                         return;                        
                     }
                     
-                    if (!Randomizer.MainBuilding(out structure)) {
+                    if (!Randomizer.MainBuilding(out mainBuilding)) {
                         Global.Players.Remove(session.Player.PlayerId);
                         Global.DbManager.Rollback();
                         // If this happens I'll be a very happy game developer
@@ -202,13 +203,21 @@ namespace Game.Comm {
 
                     Resource res = new Resource(500, 0, 0, 500, 20);
 
-                    city = new City(session.Player, cityName, res, structure);
+                    city = new City(session.Player, cityName, res, mainBuilding);
 
                     Global.World.Add(city);
-                    Global.World.Add(structure);
+                    Global.World.Add(mainBuilding);
+
+                    TroopStub defaultTroop = new TroopStub();
+                    defaultTroop.BeginUpdate();
+                    defaultTroop.AddFormation(FormationType.NORMAL);
+                    defaultTroop.AddFormation(FormationType.GARRISON);
+                    defaultTroop.AddFormation(FormationType.IN_BATTLE);
+                    city.Troops.Add(defaultTroop);
+                    defaultTroop.EndUpdate();
                 }
 
-                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
+                InitFactory.InitGameObject(InitCondition.ON_INIT, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, new CityAction(city.Id), false);
 

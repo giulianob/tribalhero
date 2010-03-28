@@ -137,14 +137,6 @@ namespace Game.Data {
 
             Troops = new TroopManager(this);
 
-            TroopStub defaultTroop = new TroopStub();
-            defaultTroop.BeginUpdate();
-            defaultTroop.AddFormation(FormationType.NORMAL);
-            defaultTroop.AddFormation(FormationType.GARRISON);
-            defaultTroop.AddFormation(FormationType.IN_BATTLE);
-            Troops.Add(defaultTroop);
-            defaultTroop.EndUpdate();
-
             Troops.TroopUpdated += TroopManagerTroopUpdated;
             Troops.TroopRemoved += TroopManagerTroopRemoved;
             Troops.TroopAdded += TroopManagerTroopAdded;

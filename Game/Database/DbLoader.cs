@@ -184,7 +184,7 @@ namespace Game.Database {
 
                             using (DbDataReader listReader = dbManager.SelectList(structure.Properties)) {
                                 while (listReader.Read())
-                                    structure.Properties.add(listReader["name"], DataTypeSerializer.Deserialize((string) listReader["value"], (byte) listReader["datatype"]));
+                                    structure.Properties.Add(listReader["name"], DataTypeSerializer.Deserialize((string) listReader["value"], (byte) listReader["datatype"]));
                             }
                         }
                     }
@@ -240,9 +240,6 @@ namespace Game.Database {
                                 Global.World.TryGetObjects((uint) reader["stationed_city_id"], out stationedCity);
 
                             TroopStub stub = new TroopStub();
-
-                            if ((byte) reader["id"] == 1)
-                                stub = city.DefaultTroop;
 
                             stub.TroopManager = city.Troops;
                             stub.TroopId = (byte) reader["id"];

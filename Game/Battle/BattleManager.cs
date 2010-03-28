@@ -9,6 +9,7 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
 using Game.Logic.Procedures;
+using Game.Setup;
 using Game.Util;
 
 #endregion
@@ -295,6 +296,22 @@ namespace Game.Battle {
             }
 
             return null;
+        }
+
+        public bool CanWatchBattle(Player player) {
+            if (player == city.Owner) return true;
+        
+            foreach (CombatObject co in defenders) {
+                if (co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds)
+                    return true;
+            }
+
+            foreach (CombatObject co in attackers) {
+                if (co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds)
+                    return true;
+            }
+
+            return false;
         }
 
         #region Database Loader

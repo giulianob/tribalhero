@@ -1,7 +1,9 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Setup;
 using Game.Util;
 
@@ -20,11 +22,32 @@ namespace Game.Comm {
                 return;
             }
 
-            using (new MultiObjectLock(cityId, out city)) {
-                if (city == null || city.Battle == null) {
+            if (!Global.World.TryGetObjects(cityId, out city)) {
+                ReplyError(session, packet, Error.CITY_NOT_FOUND);
+            }
+
+            CallbackLock.CallbackLockHandler lockHandler = delegate {
+                List<ILockable> toBeLocked = new List<ILockable> {
+                                                                     session.Player
+                                                                 };
+
+                if (city.Battle != null)
+                    toBeLocked.AddRange(city.Battle.LockList);
+
+                return toBeLocked.ToArray();
+            };   
+
+            using (new CallbackLock(lockHandler, null, city)) {
+                if (city.Battle == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
+
+                if (!city.Battle.CanWatchBattle(session.Player)) {
+                    ReplyError(session, packet, Error.BATTLE_NOT_VIEWABLE);
+                    return;
+                }
+
                 Packet reply = new Packet(packet);
                 reply.AddUInt16(city.Battle.Stamina);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);

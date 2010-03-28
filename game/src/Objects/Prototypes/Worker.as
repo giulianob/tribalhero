@@ -38,15 +38,15 @@ package src.Objects.Prototypes {
 			return actions[index - 1];
 		}
 		
-		public function getTechUpgradeAction(techtype: int): TechUpgradeAction
+		public function getTechUpgradeActions(): Array
 		{
+			var upgradeActions: Array = new Array();			
 			for each (var technology: TechUpgradeAction in techUpgradeActions)
 			{
-				if (technology.techtype == techtype)
-					return technology;
+				upgradeActions.push(technology);
 			}
 			
-			return null;
+			return upgradeActions;
 		}
 		
 		public function getButtons(parentObj: GameObject, structPrototype: StructurePrototype): Array

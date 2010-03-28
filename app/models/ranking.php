@@ -79,6 +79,36 @@ class Ranking extends AppModel {
         return $this->find('all', $options);
     }
 
+    public function searchRankingListing($type, $search) {        
+        if (is_numeric($search))
+            $rank = max(1, intval($search));
+        else
+            $rank = $this->searchRanking($type, $search);
+        
+        if ($rank === false) return false;
+
+        return $this->getRankingListing($type, null, intval(($rank - 1) / $this->rankingsPerPage) + 1, true);
+    }
+
+    /*
+     * Searches for the ranking of the $search text in the city and player names
+     */
+    private function searchRanking($type, $search) {
+        if ($this->rankingTypes[$type]['cityBased']) {
+            // For city based ranking we allow searching for both cities and player
+            $city = $this->City->findByName($search);
+            if (!empty($city)) {
+                return $this->getCityRanking($type, $city['City']['id']);
+            }
+        }
+
+        $player = $this->Player->findByName($search);
+        if (empty($player))
+            return false;
+
+        return $player['Player']['id'];
+    }
+
     /*
      * Returns the ranking of the $type and $id.
      * The $id will either be a city_id or player_id depending on the $type provided.

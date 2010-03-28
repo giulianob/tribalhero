@@ -7,6 +7,7 @@
 package src.UI.Tooltips {
 	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.event.AWEvent;
 	import org.aswing.geom.IntPoint;
@@ -20,7 +21,7 @@ package src.UI.Tooltips {
 		private var viewObj: DisplayObject;
 
 		public function Tooltip() {
-			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));
+			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
 		}
 
 		public function getUI(): GameJBox {
@@ -32,9 +33,10 @@ package src.UI.Tooltips {
 			if (this.viewObj == null || this.viewObj != obj)
 			{
 				hide();
-
+				
 				this.viewObj = obj;
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
+				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);				
 
 				ui.addEventListener(AWEvent.PAINT, onPaint);
 				ui.show();
@@ -118,6 +120,7 @@ package src.UI.Tooltips {
 			if (this.viewObj != null)
 			{
 				this.viewObj.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
+				this.viewObj.removeEventListener(MouseEvent.MOUSE_DOWN, parentHidden);
 				this.viewObj = null;
 			}
 

@@ -6,6 +6,7 @@ package src.UI.Dialog{
 	import src.Comm.GameURLLoader;
 	import src.Constants;
 	import src.Global;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -50,6 +51,9 @@ package src.UI.Dialog{
 		private var playerDefenseRanking: JToggleButton;
 		private var playerLootRanking: JToggleButton;
 
+		private var txtSearch: JTextField;
+		private var btnSearch: JButton;
+		
 		public function RankingDialog() {
 			loader = new GameURLLoader();
 			loader.addEventListener(Event.COMPLETE, onLoadRanking);
@@ -68,33 +72,39 @@ package src.UI.Dialog{
 
 			btnPrevious.addActionListener(function() : void{
 				loadPage(page - 1);
-			});		
-			
+			});
+
 			// Handle different buttons being pressed
 			cityAttackRanking.addActionListener(onChangeRanking);
 			cityDefenseRanking.addActionListener(onChangeRanking);
 			cityLootRanking.addActionListener(onChangeRanking);
-			
+
 			playerAttackRanking.addActionListener(onChangeRanking);
 			playerDefenseRanking.addActionListener(onChangeRanking);
-			playerLootRanking.addActionListener(onChangeRanking);			
+			playerLootRanking.addActionListener(onChangeRanking);
 			
+			btnSearch.addActionListener(onSearch);
+
 			tabs.addStateListener(onTabChanged);
 		}
-		
+
 		private function onTabChanged(e: AWEvent) : void {
 			changeType();
 		}
 
 		private function onChangeRanking(e: AWEvent) : void {
-			changeType();			
+			changeType();
 		}
 		
+		private function onSearch(e: AWEvent) : void {
+			search(txtSearch.getText());
+		}		
+
 		// This will recalculate the proper ranking type and load the default page
 		private function changeType() : void {
 
 			// Here we define which buttons represent what type
-			
+
 			// City ranking
 			if (tabs.getSelectedIndex() == 0) {
 				if (cityAttackRanking.isSelected()) {
@@ -115,10 +125,16 @@ package src.UI.Dialog{
 					type = 5;
 				}
 			}
-	
+
 			loadPage(-1);
 		}
+
+		private function search(txt: String) : void {
+			pnlLoading = InfoDialog.showMessageDialog("Loading", "Searching...", null, null, true, false, 0);
 			
+			Global.mapComm.Ranking.search(loader, txt, type);
+		}
+		
 		private function loadPage(page: int) : void {
 			pnlLoading = InfoDialog.showMessageDialog("Loading", "Loading ranking...", null, null, true, false, 0);
 
@@ -134,18 +150,23 @@ package src.UI.Dialog{
 
 			var data: Object;
 			try
-			{
+			{			
 				data = loader.getDataAsObject();
 			}
 			catch (e: Error) {
 				InfoDialog.showMessageDialog("Error", "Unable to query ranking. Try again later.");
 				return;
 			}
+			
+			if (data.error != null && data.error != "") {
+				InfoDialog.showMessageDialog("Info", data.error);
+				return;
+			}
 
 			//Paging info
 			this.page = data.page;
-			btnPrevious.setVisible(page > 1);
-			btnNext.setVisible(page < data.pages);
+			btnPrevious.setEnabled(page > 1);
+			btnNext.setEnabled(page < data.pages);
 			lblPages.setText(data.page + " of " + data.pages);
 
 			if (rankings[type].cityBased)
@@ -224,13 +245,17 @@ package src.UI.Dialog{
 			var playerButtonGroupHolder: JPanel = new JPanel();
 			playerButtonGroupHolder.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking);
 			playerRanking.append(playerButtonGroupHolder);
-			
-			tabs = new JTabbedPane();			
+
+			tabs = new JTabbedPane();
 			tabs.appendTab(cityRanking, "City");
 			tabs.appendTab(playerRanking, "Player");
 
+			// Bottom bar
+			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));			
+			
 			// Paging
 			pnlPaging = new JPanel();
+			pnlPaging.setConstraints("West");
 
 			btnPrevious = new JButton();
 			btnPrevious.setText("Previous");
@@ -239,15 +264,30 @@ package src.UI.Dialog{
 
 			btnNext = new JButton();
 			btnNext.setText("Next");
+			
+			// Search
+			var pnlSearch: JPanel = new JPanel();
+			pnlSearch.setConstraints("East");
+			
+			txtSearch = new JTextField("", 6);
+			new SimpleTooltip(txtSearch, "Enter a rank or a name to search for");
+			
+			btnSearch = new JButton("Search");			
 
 			//component layoution
 			pnlPaging.append(btnPrevious);
 			pnlPaging.append(lblPages);
 			pnlPaging.append(btnNext);
+			
+			pnlSearch.append(txtSearch);
+			pnlSearch.append(btnSearch);
 
+			pnlFooter.append(pnlPaging);
+			pnlFooter.append(pnlSearch);			
+			
 			append(tabs);
 			append(rankingTable);
-			append(pnlPaging);
+			append(pnlFooter);
 		}
 	}
 }

@@ -35,6 +35,7 @@ namespace Game.Setup {
         CITY_NOT_FOUND = 403,
         STRUCTURE_NOT_FOUND = 404,
         TECHNOLOGY_NOT_FOUND = 405,
+        TECHNOLOGY_MAX_LEVEL_REACHED = 406,
         MAP_FULL = 410,
         TILE_MISMATCH = 411,
         STRUCTURE_EXISTS = 412,
@@ -64,5 +65,6 @@ namespace Game.Setup {
         DEFEND_SELF = 602,
 
         #endregion
+
     }
 }

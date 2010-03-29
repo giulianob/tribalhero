@@ -14,7 +14,7 @@ class ReportsController extends AppController {
             'retreated',
             'gained new units'
     );
-
+    
     function beforeFilter() {
         if (!empty($this->params['named'])) {
             $this->params['form'] = $this->params['named'];

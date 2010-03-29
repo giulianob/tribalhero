@@ -28,20 +28,26 @@ class AppController extends Controller {
         $this->Auth->loginAction = array('admin' => false, 'controller' => 'players', 'action' => 'login');
         $this->Auth->loginRedirect = '/';
         $this->Auth->autoRedirect = false;
+        $this->Auth->authorize = 'controller';
         
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
-            if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {
-                $this->Auth->deny($this->action);
-            }
-            else {
+            if (array_key_exists('sessionId', $this->params['form']) && array_key_exists('playerId', $this->params['form'])) {
                 $playerModel =& ClassRegistry::init('Player');
 
                 $player = $playerModel->find('first', array('conditions' => array('session_id' => $this->params['form']['sessionId'], 'id' => $this->params['form']['playerId'])));
 
-                if (!empty($player))
+                if (!empty($player)) {
                     $this->Auth->allow($this->action);
-                else
+                } else
                     $this->Auth->deny($this->action);
+            }
+        }
+    }
+
+    function isAuthorized() {        
+        if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
+            if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {                
+                $this->Auth->deny($this->action);
             }
         }
     }

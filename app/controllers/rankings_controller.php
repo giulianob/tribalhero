@@ -8,7 +8,7 @@ class RankingsController extends AppController {
         $this->Ranking->batchRanking();
         $this->render(false);
     }
-
+    
     function beforeFilter() {
         if (!empty($this->params['named'])) {
             $this->params['form'] = $this->params['named'];
@@ -37,7 +37,7 @@ class RankingsController extends AppController {
     }
 
     function search() {
-        $search = array_key_exists('search', $this->params['form']) ? $this->params['form']['search'] : null;       
+        $search = array_key_exists('search', $this->params['form']) ? $this->params['form']['search'] : null;
 
         $options = $this->Ranking->searchRankingListing($this->params['form']['type'], $search);
 

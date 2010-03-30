@@ -9,6 +9,7 @@ package src.Objects.Prototypes {
 	import src.Map.City;
 	import src.Map.Map;
 	import src.Objects.Resources;
+	import src.Objects.StructureObject;
 
 	public class StructurePrototype {
 
@@ -43,8 +44,9 @@ package src.Objects.Prototypes {
 
 		public function validateLayout(map: Map, city: City, x: int, y: int): Boolean
 		{
-			if (map.regions.getObjectAt(x, y) != null)
-			return false;
+			if (map.regions.getObjectsAt(x, y, StructureObject).length > 0) {
+				return false;
+			}
 
 			for each(var layout: ILayout in layouts)
 			{
@@ -64,20 +66,20 @@ package src.Objects.Prototypes {
 			return "[" + name + "_STRUCTURE_NAME]";
 		}
 
-		public function getGeneralDescription(): String 
+		public function getGeneralDescription(): String
 		{
 			var str: String = Locale.loadString(name + "_STRUCTURE_DESCRIPTION");
 			if (str && str != "")
-				return str;
-			
+			return str;
+
 			return "[" + name + "_STRUCTURE_DESCRIPTION]";
 		}
-		
+
 		public function getDescription(): String
 		{
 			var str: String = Locale.loadString(name + "_STRUCTURE_LVL_" + level);
 			if (str && str != "")
-				return str;
+			return str;
 
 			//return "[" + name + "_STRUCTURE_LVL_" + level + "]";
 			return "";

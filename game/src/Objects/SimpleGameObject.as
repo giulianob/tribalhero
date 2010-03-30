@@ -116,7 +116,7 @@ package src.Objects {
 			
 			if (!circle)
 			{							
-				circle = new GroundCircle(radius);
+				circle = new GroundCircle(radius, true);
 				circle.alpha = 0.6;
 			}			
 			else

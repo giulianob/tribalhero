@@ -157,6 +157,16 @@
 
 			return objs;
 		}
+		
+		public function getTileAt(x: int, y: int) : int {
+			var regionStartingX: int = (id % Constants.mapRegionW);
+			var regionStartingY: int = int(id / Constants.mapRegionW);
+			
+			x -= regionStartingX;
+			y -= regionStartingY;
+			
+			return tiles[y][x];
+		}
 
 		public function addObject(level: int, type: int, playerId: int, cityId: int, objectId: int, hpPercent: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
 		{

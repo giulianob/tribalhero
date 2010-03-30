@@ -8,6 +8,7 @@ package src.UI.Cursors {
 	import src.Map.MapUtil;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
+	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.GameObject;
 	import src.Objects.IDisposable;
@@ -34,16 +35,18 @@ package src.UI.Cursors {
 		private var parentObj: GameObject;
 		private var type: int;
 		private var level: int;
+		private var tilerequirement: String;
 
 		public function BuildStructureCursor() { }
 
-		public function init(map: Map, type: int, level: int, parentObject: GameObject):void
+		public function init(map: Map, type: int, level: int, tilerequirement: String, parentObject: GameObject):void
 		{
 			doubleClickEnabled = true;
 
 			this.parentObj = parentObject;
 			this.type = type;
 			this.level = level;
+			this.tilerequirement = tilerequirement;
 			this.map = map;
 
 			city = map.cities.get(parentObj.cityId);
@@ -70,7 +73,7 @@ package src.UI.Cursors {
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 			buildableArea.setX(point.x); buildableArea.setY(point.y);
 			buildableArea.moveWithCamera(src.Global.gameContainer.camera);
-			map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);			
+			map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			src.Global.gameContainer.setSidebar(sidebar);
@@ -162,8 +165,17 @@ package src.UI.Cursors {
 
 			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+			
+			// Get the tile type
+			var mapPos: Point = MapUtil.getMapCoord(point.x + x, point.y + y);			
+			var tileType: int = map.regions.getTileAt(mapPos.x, mapPos.y);
 
 			if (!structPrototype.validateLayout(map, city, point.x + x, point.y + y)) {
+				return false;
+			} else if (tilerequirement == "" && !ObjectFactory.isType("TileBuildable", tileType)) {
+				return false;
+			}
+			else if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) {
 				return false;
 			}
 
@@ -176,13 +188,24 @@ package src.UI.Cursors {
 
 			var city: City = map.cities.get(parentObj.cityId);
 			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
+			var tileType: int = map.regions.getTileAt(mapObjPos.x, mapObjPos.y);
 
+			// Check for valid layout
 			if (!structPrototype.validateLayout(map, city, objX, objY))
 			{
 				hideCursors();
 				return;
 			}
+			// Check if cursor is inside city walls
 			else if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
+				hideCursors();
+				return;
+			}
+			else if (tilerequirement == "" && !ObjectFactory.isType("TileBuildable", tileType)) {
+				hideCursors();
+				return;
+			}
+			else if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) {
 				hideCursors();
 				return;
 			}

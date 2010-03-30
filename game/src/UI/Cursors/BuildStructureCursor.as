@@ -1,6 +1,6 @@
 ﻿
 package src.UI.Cursors {
-	import flash.filters.GlowFilter;
+	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import src.Global;
 	import src.Map.City;
@@ -14,6 +14,7 @@ package src.UI.Cursors {
 	import src.Objects.ObjectContainer;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleObject;
+	import src.UI.Components.GroundCallbackCircle;
 	import src.UI.Components.GroundCircle;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 
@@ -22,11 +23,13 @@ package src.UI.Cursors {
 		private var map: Map;
 		private var objX: int;
 		private var objY: int;
+		private var city: City;
 
 		private var originPoint: Point;
 
 		private var cursor: SimpleObject;
 		private var rangeCursor: GroundCircle;
+		private var buildableArea: GroundCallbackCircle;
 		private var structPrototype: StructurePrototype;
 		private var parentObj: GameObject;
 		private var type: int;
@@ -39,11 +42,12 @@ package src.UI.Cursors {
 			doubleClickEnabled = true;
 
 			this.parentObj = parentObject;
-
 			this.type = type;
 			this.level = level;
-
 			this.map = map;
+
+			city = map.cities.get(parentObj.cityId);
+
 			src.Global.gameContainer.setOverlaySprite(this);
 			map.selectObject(null);
 
@@ -58,8 +62,15 @@ package src.UI.Cursors {
 
 			cursor.alpha = 0.7;
 
-			rangeCursor = new GroundCircle(structPrototype.radius);
+			rangeCursor = new GroundCircle(structPrototype.radius, true, new ColorTransform(1.0, 1.0, 1.0, 1.0, 236, 88, 0));
 			rangeCursor.alpha = 0.6;
+
+			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
+			buildableArea.alpha = 0.3;
+			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+			buildableArea.setX(point.x); buildableArea.setY(point.y);
+			buildableArea.moveWithCamera(src.Global.gameContainer.camera);
+			map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);			
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			src.Global.gameContainer.setSidebar(sidebar);
@@ -69,6 +80,8 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+
+			src.Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
 		}
 
 		public function dispose():void
@@ -79,6 +92,7 @@ package src.UI.Cursors {
 			{
 				if (cursor.stage != null) map.objContainer.removeObject(cursor);
 				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
+				if (buildableArea.stage != null) map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
 			}
 		}
 
@@ -144,6 +158,18 @@ package src.UI.Cursors {
 			}
 		}
 
+		private function validateTileCallback(x: int, y: int, isCenter: Boolean) : * {
+
+			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
+			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
+
+			if (!structPrototype.validateLayout(map, city, point.x + x, point.y + y)) {
+				return false;
+			}
+
+			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
+		}
+
 		public function validateBuilding():void
 		{
 			var msg: XML;
@@ -151,41 +177,18 @@ package src.UI.Cursors {
 			var city: City = map.cities.get(parentObj.cityId);
 			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
 
-			if (map.regions.getObjectAt(objX, objY) != null)
+			if (!structPrototype.validateLayout(map, city, objX, objY))
 			{
 				hideCursors();
-
-				src.Global.gameContainer.message.showMessage("Can not build on top of another structure");
 				return;
 			}
 			else if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
 				hideCursors();
-				src.Global.gameContainer.message.showMessage("This structure must be built within the city walls");
 				return;
 			}
-			else
-			{
-				showCursors();
-				src.Global.gameContainer.message.hide();
-			}
 
-			if (structPrototype != null)
-			{
-				var filters: Array = new Array();
-
-				if (structPrototype.validateLayout(map, map.cities.get(parentObj.cityId), objX, objY))
-				{
-					filters.push(new GlowFilter(0x00FF00));
-				}
-				else
-				{
-					filters.push(new GlowFilter(0xFF0000));
-
-					src.Global.gameContainer.message.showMessage("Some of the building requirements have not been met");
-				}
-
-				showCursors();
-			}
+			showCursors();
 		}
 	}
 }
+

@@ -10,7 +10,6 @@
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
 	import src.Objects.SimpleGameObject;
-	import src.Map.Map;
 	import src.Map.MapUtil;
 	import src.Objects.IDisposable;
 	import src.Objects.StructureObject;
@@ -99,10 +98,13 @@
 
 			event.stopImmediatePropagation();
 
-			var gameObj: SimpleGameObject = Global.map.regions.getObjectAt(objX, objY);
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);
 
-			if (gameObj == null || gameObj.objectId != 1)
-			return;
+			if (objects.length == 0) return;
+
+			var gameObj: SimpleGameObject = objects[0];
+
+			if (gameObj.objectId != 1) return;
 
 			Global.mapComm.Troop.troopReinforce(city.id, gameObj.cityId, troop);
 
@@ -118,8 +120,9 @@
 
 		public function onMouseMove(event: MouseEvent):void
 		{
-			if (event.buttonDown)
-			return;
+			if (event.buttonDown) {
+				return;
+			}
 
 			moveTo(event.stageX, event.stageY);
 		}
@@ -154,26 +157,24 @@
 				highlightedObj = null;
 			}
 
-			var msg: XML;
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);
 
-			var gameObj: SimpleGameObject = Global.map.regions.getObjectAt(objX, objY);
-
-			if (gameObj == null || (gameObj as StructureObject) == null || (gameObj as StructureObject).objectId != 1)
-			{
+			if (objects.length == 0 || objects[0].objectId != 1) {
 				Global.gameContainer.message.showMessage("Choose a town center to defend");
+				return;
 			}
-			else
-			{
-				var structObj: StructureObject = gameObj as StructureObject;
-				structObj.setHighlighted(true);
-				highlightedObj = (gameObj as GameObject);
 
-				var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
-				var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
-				var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
+			var gameObj: SimpleGameObject = objects[0];
 
-				Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
-			}
+			var structObj: StructureObject = gameObj as StructureObject;
+			structObj.setHighlighted(true);
+			highlightedObj = (gameObj as GameObject);
+
+			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
+			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
+
+			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
 		}
 	}
 

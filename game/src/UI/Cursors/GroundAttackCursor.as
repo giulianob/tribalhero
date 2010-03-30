@@ -102,15 +102,15 @@
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) > 4)
-			return;
+			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) > 4) return;
 
 			event.stopImmediatePropagation();
 
-			var gameObj: SimpleGameObject = Global.map.regions.getObjectAt(objX, objY);
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
 
-			if (gameObj == null)
-			return;
+			if (objects.length == 0) return;
+
+			var gameObj: SimpleGameObject = objects[0];
 
 			Global.mapComm.Troop.troopAttack(city.id, gameObj.cityId, gameObj.objectId, mode, troop);
 
@@ -164,24 +164,24 @@
 
 			var msg: XML;
 
-			var gameObj: SimpleGameObject = Global.map.regions.getObjectAt(objX, objY);
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY)
 
-			if (gameObj == null || (gameObj as StructureObject) == null)
-			{
+			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage("Choose target to attack");
+				return;
 			}
-			else
-			{
-				var structObj: StructureObject = gameObj as StructureObject;
-				structObj.setHighlighted(true);
-				highlightedObj = (gameObj as GameObject);
 
-				var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
-				var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
-				var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
+			var gameObj: SimpleGameObject = objects[0];
 
-				Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to attack.");
-			}
+			var structObj: StructureObject = gameObj as StructureObject;
+			structObj.setHighlighted(true);
+			highlightedObj = (gameObj as GameObject);
+
+			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
+			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
+			var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
+
+			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to attack.");
 		}
 	}
 

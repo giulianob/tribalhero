@@ -105,7 +105,7 @@
 			return updateObject(newRegionId, playerId, cityId, objectId, type, level, hpPercent, objX, objY);
 		}
 
-		public function getObjectAt(x: int, y: int): SimpleGameObject
+		public function getObjectsAt(x: int, y: int, objClass: Class = null): Array
 		{
 			var regionId: int = MapUtil.getRegionId(x, y);
 			var region: Region = get(regionId);
@@ -113,7 +113,7 @@
 			if (region == null)
 			return null;
 
-			return region.objectAt(x, y);
+			return region.getObjectsAt(x, y, objClass);
 		}
 
 		public function addObject(baseObj: SimpleGameObject, regionId: int, level: int, type: int, playerId: int, cityId: int, objectId: int, hpPercent: int, objX: int, objY : int): SimpleGameObject

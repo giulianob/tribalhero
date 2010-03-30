@@ -2,30 +2,22 @@
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.events.Event;
-	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import src.Constants;
 	import src.Map.MapUtil;
 	import src.Objects.SimpleObject;
 	import src.UI.SmartMovieClip;
 
-	public class GroundCircle extends SimpleObject
+	public class GroundCallbackCircle extends SimpleObject
 	{
 		private var size: int;
 		private var circle: SmartMovieClip;
 		private var tiles: Array;
-		private var colorTransform: ColorTransform;
-		private var skipCenter: Boolean;
+		private var callback: Function;
 
-		public function GroundCircle(size: int, skipCenter: Boolean = false, colorTransform: ColorTransform = null) {
-			if (colorTransform == null) {
-				colorTransform = new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100, 0);
-			}
-
-			this.skipCenter = skipCenter;
-			this.colorTransform = colorTransform;
+		public function GroundCallbackCircle(size: int, callback: Function) {
 			this.size = size;
-			drawCircle(this.size);
+			this.callback = callback;
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -83,8 +75,9 @@
 			tile.x = point.x - size * Constants.tileW;
 			tile.y = point.y - (size * Constants.tileH);
 
-			if (tile.x == 0 && tile.y == 0 && skipCenter)
-			return;
+			var colorTransform: * = callback(tile.x, tile.y, tile.x == 0 && tile.y == 0);
+
+			if (colorTransform == false) return;
 
 			tile.bitmapData.draw(tiledata, null, colorTransform);
 

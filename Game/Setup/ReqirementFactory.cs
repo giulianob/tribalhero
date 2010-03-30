@@ -13,9 +13,10 @@ namespace Game.Setup {
     class ReqirementFactory {
         private static Dictionary<int, LayoutRequirement> dict;
 
-        public static void init(string filename) {
+        public static void Init(string filename) {
             if (dict != null)
                 return;
+
             dict = new Dictionary<int, LayoutRequirement>();
 
             using (
@@ -28,41 +29,44 @@ namespace Game.Setup {
                 for (int i = 0; i < reader.Columns.Length; ++i)
                     col.Add(reader.Columns[i], i);
 
-                LayoutRequirement layout_req;
-                Reqirement req;
+                LayoutRequirement layoutReq;
 
                 while ((toks = reader.ReadRow()) != null) {
                     if (toks[0].Length <= 0)
                         continue;
                     int index = int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]);
-                    if (!dict.TryGetValue(index, out layout_req)) {
+                    if (!dict.TryGetValue(index, out layoutReq)) {
                         switch (toks[col["Layout"]]) {
                             case "Simple":
-                                layout_req = new SimpleLayout();
+                                layoutReq = new SimpleLayout();
                                 break;
                             default:
-                                layout_req = new SimpleLayout();
+                                layoutReq = new SimpleLayout();
                                 break;
                         }
                     }
-                    req = new Reqirement(ushort.Parse(toks[col["Rtype"]]), byte.Parse(toks[col["Cmp"]]),
-                                         byte.Parse(toks[col["Lmin"]]), byte.Parse(toks[col["Lmax"]]),
-                                         byte.Parse(toks[col["Dmin"]]), byte.Parse(toks[col["Dmax"]]));
-                    layout_req.add(req);
+
+                    Reqirement req = new Reqirement(ushort.Parse(toks[col["Rtype"]]), byte.Parse(toks[col["Cmp"]]),
+                                                    byte.Parse(toks[col["Lmin"]]), byte.Parse(toks[col["Lmax"]]),
+                                                    byte.Parse(toks[col["Dmin"]]), byte.Parse(toks[col["Dmax"]]));
+                    layoutReq.Add(req);
 
                     Global.Logger.Info(string.Format("{0}",
                                                      int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]])));
-                    dict[index] = layout_req;
+                    dict[index] = layoutReq;
                 }
             }
         }
 
-        public static LayoutRequirement getLayoutRequirement(ushort type, byte lvl) {
+        public static LayoutRequirement GetLayoutRequirement(ushort type, byte lvl) {
             if (dict == null)
                 return null;
+
             LayoutRequirement tmp;
+
             if (dict.TryGetValue(type*100 + lvl, out tmp))
                 return tmp;
+
             return new SimpleLayout();
         }
     }

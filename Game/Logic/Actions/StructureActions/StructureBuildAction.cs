@@ -58,7 +58,7 @@ namespace Game.Logic.Actions {
             }
 
             // layout requirement
-            if (!ReqirementFactory.getLayoutRequirement(type, (byte) 1).validate(city, x, y)) {
+            if (!ReqirementFactory.GetLayoutRequirement(type, (byte) 1).Validate(city, x, y)) {
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }
@@ -146,12 +146,9 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
 
-            List<Structure> list = new List<Structure>(city);
             if (ushort.Parse(parms[0]) == type) {
                 if (parms[1].Length == 0) {
                     ushort tileType = Global.World.GetTileType(x, y);
-                    if (ObjectTypeFactory.IsTileType("TileNonBuildable", tileType))
-                        return Error.TILE_MISMATCH;
                     if (ObjectTypeFactory.IsTileType("TileBuildable", tileType))
                         return Error.OK;
                     return Error.TILE_MISMATCH;

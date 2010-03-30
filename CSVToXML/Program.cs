@@ -11,46 +11,11 @@ using Game.Data;
 namespace CSVToXML {
     public class Converter {        
 
-        #region WriteToConstant
-
-        /*
-        private static void WriteToConstant(string constantAs) {
-            FileStream xmlfile = new FileStream(Config.csv_compiled_folder + "data.xml", FileMode.Open, FileAccess.Read);
-            StreamReader xmlStream = new StreamReader(xmlfile);
-            string newXml = xmlStream.ReadToEnd();
-            xmlStream.Close();
-            xmlfile.Close();
-
-            try {
-                File.Copy(constantAs, constantAs + ".bak", true);
-            }
-            catch {
-                Console.Out.WriteLine("Unable to backup constants file");
-            }
-            
-            FileStream file = new FileStream(constantAs, FileMode.Open, FileAccess.ReadWrite);
-            StreamReader sr = new StreamReader(file);
-            string s = sr.ReadToEnd();
-            sr.Close();
-            file.Close();
-
-            int begin = s.IndexOf("<Data>");
-            int end = s.LastIndexOf("</Data>") + 7;
-            string trimmed = s.Remove(begin, end - begin);
-
-            Console.Out.WriteLine(s.Length);
-            string final = trimmed.Insert(begin, newXml);
-            Console.Out.WriteLine(s.Length);
-
-            FileStream newFile = new FileStream(constantAs, FileMode.Truncate, FileAccess.Write);
-            StreamWriter sw = new StreamWriter(newFile);
-            sw.Write(final);
-            sw.Close();
-            newFile.Close();
-        }
-        */
-        #endregion
-
+        static XmlTextWriter writer;
+        static String dataOutputFolder;
+        static String csvDataFolder;
+        static String langDataFolder;
+      
         #region Property
 
         private class Property {
@@ -147,55 +112,36 @@ namespace CSVToXML {
             return split[split.Length - 1].Trim();
         }
 
-        public static void Go(string dataOutputFolder, string csvDataFolder, string langDataFolder) {
-            XmlTextWriter writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "data.xml", FileMode.Create))) {Formatting = Formatting.Indented};
+        public static void Go(string _dataOutputFolder, string _csvDataFolder, string _langDataFolder) {
+            dataOutputFolder = _dataOutputFolder;
+            csvDataFolder = _csvDataFolder;
+            langDataFolder = _langDataFolder;
 
-            List<Property> properties = new List<Property>();
-            using (CsvReader propReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "property.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
-                while (true) {
-                    string[] obj = propReader.ReadRow();
-                    if (obj == null)
-                        break;
+            #region Data XML
+            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "data.xml", FileMode.Create))) {
+                                                                                                                        Formatting = Formatting.None                                                                                                                        
+                                                                                                                    };
+            writer.WriteStartElement("Data");
 
-                    if (obj[0].Length <= 0)
-                        continue;
-                    Property prop = new Property {
-                                                     type = obj[0],
-                                                     name = obj[1],
-                                                     datatype = obj[2]
-                                                 };
+            WriteStructures();
+            WriteUnits();
+            WriteObjectTypes();
+            WriteWorkers();
+            WriteTechnologies();
+            WriteProperties();
+            WriteEffectRequirements();
 
-                    properties.Add(prop);
-                }
-            }
+            writer.WriteEndElement();
+            writer.Close();
 
-            List<TechnologyEffects> techEffects = new List<TechnologyEffects>();
+            #endregion
 
-            using (CsvReader techEffectsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "technology_effects.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
-                while (true) {
-                    string[] obj = techEffectsReader.ReadRow();
-                    if (obj == null)
-                        break;
+            WriteLanguageFile();
+        }
 
-                    if (obj[0].Length <= 0)
-                        continue;
+        static void WriteStructures() {
 
-                    TechnologyEffects techEffect = new TechnologyEffects {
-                                                                             techid = obj[0],
-                                                                             lvl = obj[1],
-                                                                             effect = ((int) ((EffectCode) Enum.Parse(typeof (EffectCode), obj[2], true))).ToString(),
-                                                                             location = ((int) ((EffectLocation) Enum.Parse(typeof (EffectLocation), obj[3], true))).ToString(),
-                                                                             isprivate = obj[4],
-                                                                             param1 = obj[5],
-                                                                             param2 = obj[6],
-                                                                             param3 = obj[7],
-                                                                             param4 = obj[8],
-                                                                             param5 = obj[9]
-                                                                         };
-
-                    techEffects.Add(techEffect);
-                }
-            }
+            #region Get Layouts
 
             List<Layout> layouts = new List<Layout>();
 
@@ -223,8 +169,8 @@ namespace CSVToXML {
                 }
             }
 
-            writer.WriteStartElement("Data");
-
+            #endregion
+            
             writer.WriteStartElement("Structures");
             using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "structure.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
@@ -281,7 +227,9 @@ namespace CSVToXML {
                 }
             }
             writer.WriteEndElement();
+        }
 
+        static void WriteUnits() {
             writer.WriteStartElement("Units");
             using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "unit.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
@@ -328,14 +276,16 @@ namespace CSVToXML {
                 }
             }
             writer.WriteEndElement();
+        }
 
+        static void WriteObjectTypes() {
             writer.WriteStartElement("ObjectTypes");
             using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "object_type.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                 while (true) {
                     string[] obj = statsReader.ReadRow();
                     if (obj == null)
                         break;
-                    
+
                     if (obj[0] == string.Empty)
                         continue;
 
@@ -352,7 +302,9 @@ namespace CSVToXML {
                 }
             }
             writer.WriteEndElement();
+        }
 
+        static void WriteWorkers() {
             writer.WriteStartElement("Workers");
 
             List<WorkerActions> workerActions = new List<WorkerActions>();
@@ -413,6 +365,7 @@ namespace CSVToXML {
                     case "structure_build":
                         writer.WriteStartElement("StructureBuild");
                         writer.WriteAttributeString("type", workerAction.param1);
+                        writer.WriteAttributeString("tilerequirement", workerAction.param2);
                         break;
                     case "unit_train":
                         writer.WriteStartElement("TrainUnit");
@@ -472,8 +425,39 @@ namespace CSVToXML {
             #endregion
 
             writer.WriteEndElement();
+        }
 
-            #region Technologies
+        static void WriteTechnologies() {
+
+            #region Get Tech Effects
+            List<TechnologyEffects> techEffects = new List<TechnologyEffects>();
+
+            using (CsvReader techEffectsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "technology_effects.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
+                    string[] obj = techEffectsReader.ReadRow();
+                    if (obj == null)
+                        break;
+
+                    if (obj[0].Length <= 0)
+                        continue;
+
+                    TechnologyEffects techEffect = new TechnologyEffects {
+                        techid = obj[0],
+                        lvl = obj[1],
+                        effect = ((int)((EffectCode)Enum.Parse(typeof(EffectCode), obj[2], true))).ToString(),
+                        location = ((int)((EffectLocation)Enum.Parse(typeof(EffectLocation), obj[3], true))).ToString(),
+                        isprivate = obj[4],
+                        param1 = obj[5],
+                        param2 = obj[6],
+                        param3 = obj[7],
+                        param4 = obj[8],
+                        param5 = obj[9]
+                    };
+
+                    techEffects.Add(techEffect);
+                }
+            }
+            #endregion
 
             writer.WriteStartElement("Technologies");
 
@@ -520,26 +504,38 @@ namespace CSVToXML {
 
             writer.WriteEndElement();
 
-            #endregion
+        }
 
-            #region Properties
+        static void WriteProperties() {
 
             writer.WriteStartElement("Property");
+            
+            using (CsvReader propReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "property.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
+                    string[] obj = propReader.ReadRow();
+                    if (obj == null)
+                        break;
 
-            foreach (Property prop in properties) {
-                writer.WriteStartElement("Prop");
-                writer.WriteAttributeString("type", prop.type);
-                writer.WriteAttributeString("datatype", prop.datatype.ToUpper());
-                writer.WriteAttributeString("name", prop.name);
-                writer.WriteEndElement();
+                    if (obj[0].Length <= 0)
+                        continue;
+                    Property prop = new Property {
+                                                     type = obj[0],
+                                                     name = obj[1],
+                                                     datatype = obj[2]
+                                                 };
+
+                    writer.WriteStartElement("Prop");
+                    writer.WriteAttributeString("type", prop.type);
+                    writer.WriteAttributeString("datatype", prop.datatype.ToUpper());
+                    writer.WriteAttributeString("name", prop.name);
+                    writer.WriteEndElement();
+                }
             }
 
             writer.WriteEndElement();
+        }
 
-            #endregion
-
-            #region Effect Requirement
-
+        static void WriteEffectRequirements() {
             writer.WriteStartElement("EffectRequirements");
 
             using (CsvReader effectReqReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "effect_requirement.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
@@ -547,7 +543,7 @@ namespace CSVToXML {
                     string[] obj = effectReqReader.ReadRow();
                     if (obj == null)
                         break;
-                    
+
                     if (obj[0] == string.Empty)
                         continue;
 
@@ -568,13 +564,10 @@ namespace CSVToXML {
 
             writer.WriteEndElement();
 
-            #endregion
+        }
 
-            writer.WriteEndElement();
+        static void WriteLanguageFile() {
 
-            writer.Close();
-
-            #region Languages
             // TODO Hardcoded to just do English for now but later we can do all the languages
             writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "Game_en.xml", FileMode.Create))) { Formatting = Formatting.Indented };
 
@@ -619,10 +612,7 @@ namespace CSVToXML {
 
             writer.WriteEndElement();
 
-            writer.Close();
-            #endregion            
-
-            //WriteToConstant();
+            writer.Close();                
         }
     }
 }

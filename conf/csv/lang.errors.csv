@@ -25,3 +25,4 @@ ERROR_414,The city name must start with a letter and can only contain alpha nume
 ERROR_600,You can't attack yourself!
 ERROR_601,Not allowed while city is in battle
 ERROR_602,Why would you want to defend yourself?
+ERROR_603,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.

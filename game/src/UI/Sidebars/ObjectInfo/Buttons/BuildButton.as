@@ -6,6 +6,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.Actions.BuildAction;
 	import src.Objects.Factories.*;
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
@@ -47,7 +48,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (enabled)
 			{
 				var cursor: BuildStructureCursor = new BuildStructureCursor();
-				cursor.init(Global.map, structPrototype.type, 1, parentObj);//hardcoded here to always create level 1
+				cursor.init(Global.map, (parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1
 			}
 		}
 

@@ -21,12 +21,14 @@ package src.Objects.Actions {
 	public class BuildAction extends Action implements IAction
 	{	
 		public var type: int;
+		public var tilerequirement: String;
 		public var level: int = 1;
 		
-		public function BuildAction(type: int)
+		public function BuildAction(type: int, tilerequirement: String)
 		{
 			super(Action.STRUCTURE_BUILD);
 			this.type = type;			
+			this.tilerequirement = tilerequirement;
 		}
 		
 		public function toString(): String

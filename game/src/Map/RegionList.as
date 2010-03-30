@@ -116,6 +116,18 @@
 			return region.getObjectsAt(x, y, objClass);
 		}
 
+		public function getTileAt(x: int, y: int): int
+		{
+			var regionId: int = MapUtil.getRegionId(x, y);
+			var region: Region = get(regionId);
+
+			if (region == null) {
+				return -1;
+			}
+
+			return region.getTileAt(x, y);
+		}
+
 		public function addObject(baseObj: SimpleGameObject, regionId: int, level: int, type: int, playerId: int, cityId: int, objectId: int, hpPercent: int, objX: int, objY : int): SimpleGameObject
 		{
 			var region: Region = get(regionId);
@@ -141,3 +153,4 @@
 	}
 
 }
+

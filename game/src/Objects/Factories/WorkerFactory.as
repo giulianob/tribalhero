@@ -63,7 +63,7 @@
 					switch(new String(actionNode.name()))
 					{
 						case "StructureBuild":
-							action = new BuildAction(actionNode.@type);
+							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement);
 						break;
 						case "StructureChange":
 							action = new StructureChangeAction(actionNode.@type, actionNode.@level);

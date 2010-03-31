@@ -18,6 +18,7 @@
 			ICON_GOLD;
 			ICON_WOOD;
 			ICON_LABOR;
+			ICON_ALERT;
 			
 			//Passive Action Icons
 			PASSIVE_ATTACKING;

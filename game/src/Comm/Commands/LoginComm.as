@@ -87,6 +87,9 @@
 
 				var city: City = new City(id, name, radius, resources);
 
+				// Add the name of this city to the list of city names
+				Global.map.usernames.cities.add(new Username(id, name));
+
 				//Current Actions
 				var currentActionCount: int = packet.readUByte();
 				for (var k: int = 0; k < currentActionCount; k++) {

@@ -14,6 +14,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.NumberInputDialog;
+	import src.UI.Dialog.UnitTrainDialog;
 	import src.UI.Tooltips.TrainTooltip;
 	
 	public class TrainButton extends ActionButton
@@ -66,13 +67,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 				}
 				
-				var inputDialog: NumberInputDialog = new NumberInputDialog("How many " + unitPrototype.getName() + " would you like to train?", 1, maxValue, onAcceptDialog, 1, unitPrototype.trainResources, Formula.trainTime(parentObj, unitPrototype.trainTime, null));
+				var inputDialog: UnitTrainDialog = new UnitTrainDialog(unitPrototype, onAcceptDialog, Formula.trainTime(parentObj, unitPrototype.trainTime, null));
 				
 				inputDialog.show();
 			}
 		}
 		
-		public function onAcceptDialog(sender: NumberInputDialog):void
+		public function onAcceptDialog(sender: UnitTrainDialog):void
 		{
 			sender.getFrame().dispose();
 			Global.mapComm.Troop.trainUnit(this.parentObj.cityId, this.parentObj.objectId, unitPrototype.type, sender.getAmount().getValue());

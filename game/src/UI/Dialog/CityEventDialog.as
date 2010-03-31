@@ -15,7 +15,6 @@
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import src.Util.StringHelper;
-	import src.Util.Util;
 
 	/**
 	 * CityEventDialog
@@ -33,6 +32,7 @@
 		private var lblIron: JLabel;
 		private var lblLabor: JLabel;
 		private var lblUpkeep: JLabel;
+		private var lblUpkeepMsg: JLabel;
 
 		private var city: City;
 
@@ -108,6 +108,11 @@
 			lblIron.setText(resourceLabelText(city.resources.iron));
 			lblLabor.setText(simpleLabelText(city.resources.labor.getValue().toString() + " " + StringHelper.makePlural(city.resources.labor.getValue(), "is", "are", "are") + " idle and " + city.getBusyLaborCount().toString() + " " + StringHelper.makePlural(city.getBusyLaborCount(), "is", "are", "are") + " working", false, false));
 			lblUpkeep.setText(simpleLabelText(city.resources.crop.getUpkeep().toString(), true, true));
+			lblUpkeepMsg.setVisible(city.resources.crop.getRate() < city.resources.crop.getUpkeep());
+
+			if (getFrame() != null) {
+				getFrame().pack();
+			}
 		}
 
 		private function createUI(): void {
@@ -144,6 +149,9 @@
 			lblLabor = simpleLabelMaker("Laborer", new AssetIcon(new ICON_LABOR()));
 			lblUpkeep = simpleLabelMaker("Troop Upkeep", new AssetIcon(new ICON_CROP()));
 
+			lblUpkeepMsg = new JLabel("Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.", new AssetIcon(new ICON_ALERT()));
+			lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));
+
 			pnlResources.append(lblGold);
 			pnlResources.append(lblWood);
 			pnlResources.append(lblCrop);
@@ -152,6 +160,7 @@
 			pnlResources.append(lblUpkeep);
 
 			//component layoution
+			append(lblUpkeepMsg);
 			append(pnlResources);
 			append(pnlLocalEvents);
 

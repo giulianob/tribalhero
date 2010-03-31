@@ -37,9 +37,6 @@ namespace Game.Logic {
             List<Reqirement> list = new List<Reqirement>(requirements);
             List<Structure> gameObjects = new List<Structure>(objects);
 
-            if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
-                return false;
-
             foreach (Reqirement req in list) {
                 Structure lastObject = null;
 

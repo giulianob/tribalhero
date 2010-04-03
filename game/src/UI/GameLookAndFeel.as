@@ -61,7 +61,10 @@
 				"FrameTitleBar.colorAdjust", new UIStyleTune(0.0, 0.0, 0.0, 0.0, 0, new UIStyleTune(0.2, -0.3, 0.08, 0.1, 1)), 
 				
 				"Label.font", new ASFontUIResource("Arial", 11),
-				"TextArea.font", new ASFontUIResource("Arial", 11),					
+				
+				"TextArea.font", new ASFontUIResource("Arial", 11),			
+				
+				"LabelButton.font", new ASFontUIResource("Arial", 12, false, false, true),
 				
 				/* CLASSES */				
 				"Class.header", [

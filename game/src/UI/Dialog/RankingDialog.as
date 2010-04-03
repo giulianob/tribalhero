@@ -30,9 +30,10 @@ package src.UI.Dialog{
 		private var page: int = -1;
 		private var type: int = 0;
 		private var pnlPaging:JPanel;
-		private var btnPrevious:JButton;
+		private var btnPrevious:JLabelButton;
+		private var btnFirst:JLabelButton;
 		private var lblPages:JLabel;
-		private var btnNext:JButton;
+		private var btnNext:JLabelButton;
 
 		private var pnlLoading: GameJPanel;
 
@@ -53,7 +54,7 @@ package src.UI.Dialog{
 
 		private var txtSearch: JTextField;
 		private var btnSearch: JButton;
-		
+
 		public function RankingDialog() {
 			loader = new GameURLLoader();
 			loader.addEventListener(Event.COMPLETE, onLoadRanking);
@@ -66,6 +67,10 @@ package src.UI.Dialog{
 			});
 
 			// Paging buttons
+			btnFirst.addActionListener(function() : void {
+				loadPage(1);
+			});
+
 			btnNext.addActionListener(function() : void {
 				loadPage(page + 1);
 			});
@@ -82,7 +87,7 @@ package src.UI.Dialog{
 			playerAttackRanking.addActionListener(onChangeRanking);
 			playerDefenseRanking.addActionListener(onChangeRanking);
 			playerLootRanking.addActionListener(onChangeRanking);
-			
+
 			btnSearch.addActionListener(onSearch);
 
 			tabs.addStateListener(onTabChanged);
@@ -95,10 +100,10 @@ package src.UI.Dialog{
 		private function onChangeRanking(e: AWEvent) : void {
 			changeType();
 		}
-		
+
 		private function onSearch(e: AWEvent) : void {
 			search(txtSearch.getText());
-		}		
+		}
 
 		// This will recalculate the proper ranking type and load the default page
 		private function changeType() : void {
@@ -131,10 +136,10 @@ package src.UI.Dialog{
 
 		private function search(txt: String) : void {
 			pnlLoading = InfoDialog.showMessageDialog("Loading", "Searching...", null, null, true, false, 0);
-			
+
 			Global.mapComm.Ranking.search(loader, txt, type);
 		}
-		
+
 		private function loadPage(page: int) : void {
 			pnlLoading = InfoDialog.showMessageDialog("Loading", "Loading ranking...", null, null, true, false, 0);
 
@@ -150,14 +155,14 @@ package src.UI.Dialog{
 
 			var data: Object;
 			try
-			{			
+			{
 				data = loader.getDataAsObject();
 			}
 			catch (e: Error) {
 				InfoDialog.showMessageDialog("Error", "Unable to query ranking. Try again later.");
 				return;
 			}
-			
+
 			if (data.error != null && data.error != "") {
 				InfoDialog.showMessageDialog("Info", data.error);
 				return;
@@ -165,8 +170,9 @@ package src.UI.Dialog{
 
 			//Paging info
 			this.page = data.page;
-			btnPrevious.setEnabled(page > 1);
-			btnNext.setEnabled(page < data.pages);
+			btnFirst.setVisible(page > 1);
+			btnPrevious.setVisible(page > 1);
+			btnNext.setVisible(page < data.pages);
 			lblPages.setText(data.page + " of " + data.pages);
 
 			if (rankings[type].cityBased)
@@ -199,11 +205,21 @@ package src.UI.Dialog{
 			[null, null, null, null]
 			);
 
+			var selectIdx: int = -1;
+
 			for each(var rank: Object in data.rankings) {
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "cityId": rank.cityId, "cityName": rank.cityName, "playerName": rank.playerName, "playerId": rank.playerId } );
+
+				if (rank.playerId == Constants.playerId)  {
+					selectIdx = rankingList.size() - 1;
+				}
 			}
 
 			rankingTable.setModel(rankingModel);
+
+			if (selectIdx > -1) {
+				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+			}
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
@@ -251,40 +267,39 @@ package src.UI.Dialog{
 			tabs.appendTab(playerRanking, "Player");
 
 			// Bottom bar
-			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));			
-			
+			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));
+
 			// Paging
 			pnlPaging = new JPanel();
 			pnlPaging.setConstraints("West");
 
-			btnPrevious = new JButton();
-			btnPrevious.setText("Previous");
+			btnFirst = new JLabelButton("<< First");
+			btnPrevious = new JLabelButton("< Previous");
+			btnNext = new JLabelButton("Next >");
 
 			lblPages = new JLabel();
 
-			btnNext = new JButton();
-			btnNext.setText("Next");
-			
 			// Search
 			var pnlSearch: JPanel = new JPanel();
 			pnlSearch.setConstraints("East");
-			
+
 			txtSearch = new JTextField("", 6);
 			new SimpleTooltip(txtSearch, "Enter a rank or a name to search for");
-			
-			btnSearch = new JButton("Search");			
+
+			btnSearch = new JButton("Search");
 
 			//component layoution
+			pnlPaging.append(btnFirst);
 			pnlPaging.append(btnPrevious);
 			pnlPaging.append(lblPages);
 			pnlPaging.append(btnNext);
-			
+
 			pnlSearch.append(txtSearch);
 			pnlSearch.append(btnSearch);
 
 			pnlFooter.append(pnlPaging);
-			pnlFooter.append(pnlSearch);			
-			
+			pnlFooter.append(pnlSearch);
+
 			append(tabs);
 			append(rankingTable);
 			append(pnlFooter);

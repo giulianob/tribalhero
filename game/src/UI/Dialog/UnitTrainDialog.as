@@ -2,11 +2,11 @@ package src.UI.Dialog {
 
 	import flash.events.Event;
 	import src.Global;
+	import src.Objects.LazyResources;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.UI.Components.SimpleResourcesPanel;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
-	import src.Util.StringHelper;
 	import src.Util.Util;
 
 	import org.aswing.*;
@@ -20,6 +20,7 @@ package src.UI.Dialog {
 		private var txtTitle:JLabel;
 		private var panel4:JPanel;
 		private var sldAmount:JAdjuster;
+		private var pnlUpkeepMsg: JPanel;
 		private var panel8:JPanel;
 		private var pnlResources: JPanel;
 		private var lblTime: JLabel;
@@ -27,6 +28,7 @@ package src.UI.Dialog {
 		private var btnOk:JButton;
 		private var unitPrototype: UnitPrototype;
 		private var trainTime: int;
+		private var lblUpkeepMsg: MultilineLabel;
 
 		public function UnitTrainDialog(unitPrototype: UnitPrototype, onAccept: Function, trainTime: int):void {
 			this.unitPrototype = unitPrototype;
@@ -58,10 +60,18 @@ package src.UI.Dialog {
 		}
 
 		private function updateResources(e: Event = null) : void {
-			lblUpkeep.setText("-" + (unitPrototype.upkeep * sldAmount.getValue()) + " per hour");
-			
+			var totalUpkeep: int = (unitPrototype.upkeep * sldAmount.getValue());
+			lblUpkeep.setText("-" + totalUpkeep + " per hour");
+
+			var cityResources: LazyResources = Global.gameContainer.selectedCity.resources;
+			pnlUpkeepMsg.setVisible((cityResources.crop.getUpkeep() + totalUpkeep) > cityResources.crop.getRate());
+
 			pnlResources.removeAll();
 			pnlResources.append(new SimpleResourcesPanel(unitPrototype.trainResources.multiplyByUnit(sldAmount.getValue())));
+			
+			if (getFrame() != null) {
+				getFrame().pack();
+			}
 		}
 
 		public function getAmount(): JAdjuster
@@ -78,10 +88,10 @@ package src.UI.Dialog {
 		}
 
 		private function createUI(): void
-		{
-			setPreferredSize(new IntDimension(250, 150));
+		{		
+			setPreferredWidth(275);
 			//component creation
-			var layout0:SoftBoxLayout = new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 2);
+			var layout0:SoftBoxLayout = new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5);
 			setLayout(layout0);
 
 			txtTitle = new JLabel();
@@ -106,32 +116,40 @@ package src.UI.Dialog {
 			btnOk.setText("Ok");
 
 			var pnlCost: JPanel = new JPanel(new BorderLayout(5, 5));
-			
+
 			pnlResources = new JPanel();
 			pnlResources.setConstraints("North");
 
 			lblTime = new JLabel("", new AssetIcon(new ICON_CLOCK()));
 			lblTime.setConstraints("West");
 			new SimpleTooltip(lblTime, "Time to train units");
-			
+
 			lblUpkeep = new JLabel("", new AssetIcon(new ICON_CROP()));
 			lblUpkeep.setConstraints("East");
 			new SimpleTooltip(lblUpkeep, "Upkeep");
-			
+
+			pnlUpkeepMsg = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 3));
+			pnlUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));
+			lblUpkeepMsg = new MultilineLabel("The upkeep required to train this many units may exceed your city's crop production rate. Your units will starve if the upkeep is higher than the crop production rate.", 0, 28);			
+			pnlUpkeepMsg.setVisible(false);
+
 			//component layoution
-			append(txtTitle);
-			append(panel4);
-
-			pnlCost.append(pnlResources);
-			pnlCost.append(lblTime);
-			pnlCost.append(lblUpkeep);			
-			append(pnlCost);
-
-			append(panel8);
+			pnlUpkeepMsg.append(new AssetPane(new ICON_ALERT()));
+			pnlUpkeepMsg.append(lblUpkeepMsg);
 
 			panel4.append(sldAmount);
 
 			panel8.append(btnOk);
+
+			pnlCost.append(pnlResources);
+			pnlCost.append(lblTime);
+			pnlCost.append(lblUpkeep);
+
+			append(txtTitle);
+			append(panel4);
+			append(pnlCost);
+			append(pnlUpkeepMsg);
+			append(panel8);
 		}
 	}
 

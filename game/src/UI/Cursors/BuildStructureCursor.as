@@ -8,8 +8,7 @@ package src.UI.Cursors {
 	import src.Map.MapUtil;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Factories.StructureFactory;
+	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.IDisposable;
 	import src.Objects.ObjectContainer;
@@ -165,9 +164,9 @@ package src.UI.Cursors {
 
 			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
-			
+
 			// Get the tile type
-			var mapPos: Point = MapUtil.getMapCoord(point.x + x, point.y + y);			
+			var mapPos: Point = MapUtil.getMapCoord(point.x + x, point.y + y);
 			var tileType: int = map.regions.getTileAt(mapPos.x, mapPos.y);
 
 			if (!structPrototype.validateLayout(map, city, point.x + x, point.y + y)) {

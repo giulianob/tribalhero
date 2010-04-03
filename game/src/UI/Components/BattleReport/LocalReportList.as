@@ -5,7 +5,6 @@
 	import org.aswing.event.TableCellEditEvent;
 	import org.aswing.table.PropertyTableModel;
 	import src.Comm.GameURLLoader;
-	import src.Constants;
 	import src.Global;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
@@ -24,9 +23,9 @@
 
 		private var tblReports:JTable;
 		private var pnlPaging:JPanel;
-		private var btnPrevious:JButton;
+		private var btnPrevious:JLabelButton;
 		private var lblPages:JLabel;
-		private var btnNext:JButton;
+		private var btnNext:JLabelButton;
 		private var reportList: VectorListModel;
 		private var tableModel: PropertyTableModel;
 
@@ -105,7 +104,7 @@
 			reportList.append(snapshot);
 		}
 
-		private function createUI() : void {			
+		private function createUI() : void {
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
 
@@ -118,7 +117,10 @@
 			);
 
 			tblReports = new JTable(tableModel);
+			tblReports.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);
+			tblReports.getColumnAt(0).setPreferredWidth(100);
+			tblReports.getColumnAt(1).setPreferredWidth(465);
 
 			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
 			pnlReportsScroll.setConstraints("Center");
@@ -126,13 +128,11 @@
 			pnlPaging = new JPanel();
 			pnlPaging.setConstraints("South");
 
-			btnPrevious = new JButton();
-			btnPrevious.setText("Previous");
+			btnPrevious = new JLabelButton("< Newer");
 
 			lblPages = new JLabel();
 
-			btnNext = new JButton();
-			btnNext.setText("Next");
+			btnNext = new JLabelButton("Older >");
 
 			//component layoution
 			append(pnlReportsScroll);
@@ -146,3 +146,4 @@
 	}
 
 }
+

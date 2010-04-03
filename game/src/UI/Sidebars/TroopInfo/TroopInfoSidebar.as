@@ -9,7 +9,6 @@
 	import src.UI.Dialog.*;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.UI.Sidebars.TroopInfo.Buttons.ViewUnitsButton;
 	import src.Util.*;
 	import flash.display.*;
 	import flash.utils.Timer;
@@ -41,7 +40,7 @@
 			this.troopObj = troopObj as TroopObject;
 
 			troopObj.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
-			
+
 			createUI();
 			update();
 		}
@@ -57,10 +56,10 @@
 
 			clear();
 
-			var usernameLabel: JLabel = addStatRow("Owner", "-");
+			var usernameLabel: JLabel = addStatRow("Player", "-");
 			var cityLabel: JLabel = addStatRow("Troop", "-");
 
-			Global.map.usernames.players.setLabelUsername(troopObj.playerId, usernameLabel);			
+			Global.map.usernames.players.setLabelUsername(troopObj.playerId, usernameLabel);
 			Global.map.usernames.cities.getUsername(troopObj.cityId, function (username: Username, custom: *) : void {
 				custom.setText(username.name + troopObj.getNiceStubId(true));
 			}, cityLabel);
@@ -294,3 +293,4 @@
 	}
 
 }
+

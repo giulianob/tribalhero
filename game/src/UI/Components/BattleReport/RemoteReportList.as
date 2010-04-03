@@ -24,9 +24,9 @@
 
 		private var tblReports:JTable;
 		private var pnlPaging:JPanel;
-		private var btnPrevious:JButton;
+		private var btnPrevious:JLabelButton;
 		private var lblPages:JLabel;
-		private var btnNext:JButton;
+		private var btnNext:JLabelButton;
 		private var reportList: VectorListModel;
 		private var tableModel: PropertyTableModel;
 
@@ -118,13 +118,11 @@
 			pnlPaging = new JPanel();
 			pnlPaging.setConstraints("South");
 
-			btnPrevious = new JButton();
-			btnPrevious.setText("Previous");
+			btnPrevious = new JLabelButton("< Newer");			
 
 			lblPages = new JLabel();
-
-			btnNext = new JButton();
-			btnNext.setText("Next");
+			
+			btnNext = new JLabelButton("Older >");
 
 			//component layoution
 			append(pnlReportsScroll);

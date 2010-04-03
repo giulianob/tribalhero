@@ -9,6 +9,7 @@ package src.UI.Tooltips {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.border.EmptyBorder;
+	import org.aswing.Component;
 	import org.aswing.event.AWEvent;
 	import org.aswing.geom.IntPoint;
 	import org.aswing.Insets;
@@ -21,7 +22,7 @@ package src.UI.Tooltips {
 		private var viewObj: DisplayObject;
 
 		public function Tooltip() {
-			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
+			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));
 		}
 
 		public function getUI(): GameJBox {
@@ -33,17 +34,17 @@ package src.UI.Tooltips {
 			if (this.viewObj == null || this.viewObj != obj)
 			{
 				hide();
-				
+
 				this.viewObj = obj;
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
-				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);				
+				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);
 
 				ui.addEventListener(AWEvent.PAINT, onPaint);
 				ui.show();
 				ui.getFrame().pack();
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
-				
+
 				adjustPosition();
 			}
 			else {
@@ -65,6 +66,10 @@ package src.UI.Tooltips {
 		{
 			if (ui.getFrame() == null || ui.getFrame().stage == null || ui.getComBounds().width == 0) {
 				return;
+			}
+
+			if (viewObj is Component) {
+				(viewObj as Component).requestFocus();
 			}
 
 			var mouseX: Number = ui.getFrame().stage.mouseX;

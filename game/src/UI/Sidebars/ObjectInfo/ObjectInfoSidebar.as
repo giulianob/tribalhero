@@ -70,7 +70,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structureObject: StructureObject = gameObject as StructureObject;
 
-			var usernameLabel: JLabel = addStatRow("Owner", "-");
+			var usernameLabel: JLabel = addStatRow("Player", "-");
 			var cityLabel: JLabel = addStatRow("City", "-");
 
 			Global.map.usernames.players.setLabelUsername(gameObject.playerId, usernameLabel);

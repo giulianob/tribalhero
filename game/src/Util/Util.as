@@ -155,7 +155,7 @@ package src.Util {
 				if (hours > 1)
 				nice += hours + " hours";
 				else
-				nice += " an hour";
+				nice += "an hour";
 
 				if (minutes > 0)
 				nice += " and ";

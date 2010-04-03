@@ -8,7 +8,7 @@ foreach($battle_reports as $battle_report)
 {
 	$results['snapshots'][] = array(
 		'id' => $battle_report['Battle']['id'],
-		'date' => $battle_report['Battle']['created'],
+		'date' => $time->niceShort($battle_report['Battle']['created']),
 		'location' => $battle_report['City']['name'],
 	);
 }

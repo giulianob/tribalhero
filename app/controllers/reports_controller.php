@@ -2,7 +2,7 @@
 
 class ReportsController extends AppController {
     var $uses = array('Battle');
-    var $helpers = array('TimeAdv');
+    var $helpers = array('TimeAdv', 'Time');
 
     var $allowedFromGame = array('index_local', 'view_local', 'index_remote', 'view_remote');
 

@@ -143,6 +143,8 @@
 		
 		public function onViewMessages(e: MouseEvent):void
 		{
+			var messagingDialog: MessagingDialog = new MessagingDialog();
+			messagingDialog.show();
 		}		
 
 		public function onGoToCity(e: Event) : void {

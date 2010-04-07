@@ -1,24 +1,25 @@
 <?php
 
-debug($messages);
-
 $paging = $paginator->params('Message');
 
 $data = array();
 
 foreach ($messages as $message) {
-    $isRecipient = $playerId == $message['Message']['recipient_player_id'];
-    $subjectAllowedLength = min(strlen($message['Message']['subject']), 30);
-    $messageAllowedLength = 90 - strlen($message['Message']['subject']);
-    
+
+    // Remove new lines
+    $message['Message']['message'] = str_replace("\r", "  ", $message['Message']['message']);
+
+    $isRecipient = $playerId == $message['Message']['recipient_player_id'];    
+    $messageAllowedLength = 75 - strlen($message['Message']['subject']);   
+
     $data[] = array(
             'name' => $isRecipient ?  $message['Sender']['name'] : $message['Recipient']['name'],
             'isRecipient' => $isRecipient,
             'id' => $message['Message']['id'],
-            'subject' => $text->truncate($message['Message']['subject'], $subjectAllowedLength),
+            'subject' => $message['Message']['subject'],
             'preview' => $text->truncate($message['Message']['message'], $messageAllowedLength),
             'date' => $time->niceShort($message['Message']['created']),
-            'unread' => $isRecipient ? ($message['Message']['recipient_state'] == 0) : ($message['Message']['sender_state'] == 0)
+            'unread' => $isRecipient ? ($message['Message']['recipient_state'] == 0) : false
     );
 }
 

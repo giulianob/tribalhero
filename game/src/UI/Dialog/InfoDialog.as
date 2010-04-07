@@ -28,7 +28,7 @@ public class InfoDialog extends GameJPanel {
 	public function InfoDialog() {
 		setLayout(new BorderLayout());
 		centerPane = SoftBox.createVerticalBox(6);
-		msgLabel = new MultilineLabel("", 0, 20);
+		msgLabel = new MultilineLabel("", 0, 40);
 		centerPane.append(AsWingUtils.createPaneToHold(msgLabel, new FlowLayout(FlowLayout.CENTER, 5, 5)));
 		inputText = new JTextField();
 		var inputContainer:JPanel = new JPanel(new BorderLayout());		

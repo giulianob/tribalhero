@@ -84,6 +84,18 @@
 					"TextArea.foreground", new ASColorUIResource(0xFFFFFF)
 				],
 				
+				"Class.Message.preview", [
+					"Textfield.foreground", new ASColorUIResource(0x707070)
+				],				
+				"Class.Message.unread", [
+					"Textfield.font", new ASFontUIResource("Arial", 12, true),
+					"Textfield.foreground", new ASColorUIResource(0x000000)
+				],			
+				"Class.Message.read", [
+					"Textfield.font", new ASFontUIResource("Arial", 12, false),
+					"Textfield.foreground", new ASColorUIResource(0x000000)
+				],					
+				
 				"Class.Label.small", [
 					"Label.font", new ASFontUIResource("Arial", 11, false),					
 					"TextArea.font", new ASFontUIResource("Arial", 11, false),					
@@ -95,7 +107,11 @@
 				"Class.Label.success", [
 					"Label.font", new ASFontUIResource("Arial", 13, false),
 					"Label.foreground", new ASColorUIResource(0x00FF00)
-				],						
+				],			
+				
+				"Class.Form.label", [
+					"Label.font", new ASFontUIResource("Arial", 11, true)
+				]
 			];
 			
 			table.putDefaults(comDefaults);

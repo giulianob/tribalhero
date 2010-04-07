@@ -190,11 +190,21 @@ package src.UI.Dialog{
 			[null, null, null, null]
 			);
 
+			var selectIdx: int = -1;
+			
 			for each(var rank: Object in data.rankings) {
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "cityId": rank.cityId, "cityName": rank.cityName, "playerName": rank.playerName, "playerId": rank.playerId } );
+
+				if (rank.playerId == Constants.playerId)  {
+					selectIdx = rankingList.size() - 1;
+				}
 			}
 
 			rankingTable.setModel(rankingModel);
+
+			if (selectIdx > -1) {
+				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+			}
 		}
 		private function onCityRanking(data: Object) : void {
 			rankingList = new VectorListModel();
@@ -237,7 +247,7 @@ package src.UI.Dialog{
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 
 			rankingTable = new JTable();
-			rankingTable.setSelectionMode(JTable.SINGLE_SELECTION);
+			rankingTable.setSelectionMode(JTable.MULTIPLE_SELECTION);
 			rankingTable.setPreferredSize(new IntDimension(415, 350));
 
 			cityRanking = new JPanel(new BorderLayout(0, 10));

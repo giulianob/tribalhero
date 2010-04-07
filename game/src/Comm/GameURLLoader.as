@@ -1,6 +1,6 @@
 ﻿package src.Comm 
 {
-	import com.adobe.serialization.json.JSONDecoder;
+	import com.adobe.serialization.json.*;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.net.*;
@@ -39,8 +39,16 @@
 			
 			for each (var obj: * in params) {
 				if (!first) request.data += "&";
-				first = false;
-				request.data += obj.key + "=" + obj.value;
+				first = false; 
+				if (obj.value is Array) {
+					for (var i: int = 0; i < (obj.value as Array).length; i++) {
+						if (i > 0) request.data += "&";
+						request.data += obj.key + "[]=" + obj.value[i];
+					}
+				}
+				else {
+					request.data += obj.key + "=" + obj.value;
+				}
 			}
 			
 			request.method = URLRequestMethod.POST;

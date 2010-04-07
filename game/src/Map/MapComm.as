@@ -16,6 +16,7 @@
 		public var Market: MarketComm;
 		public var BattleReport: BattleReportComm;
 		public var Ranking: RankingComm;
+		public var Messaging: MessagingComm;
 
 		public var session: Session;
 
@@ -31,6 +32,7 @@
 			Market = new MarketComm(this);
 			BattleReport = new BattleReportComm(this);
 			Ranking = new RankingComm(this);
+			Messaging = new MessagingComm(this);
 		}
 
 		public function tryShowError(packet: Packet) : Boolean {

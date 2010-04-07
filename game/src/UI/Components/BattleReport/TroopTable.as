@@ -72,6 +72,7 @@
 			);			
 			
 			tblUnits = new JTable(tableModel);
+			tblUnits.setRowSelectionAllowed(false);
 			tblUnits.setRowHeight(42);
 			tblUnits.getColumn("Type").setCellFactory(new GeneralTableCellFactory(UnitIconCell));
 			

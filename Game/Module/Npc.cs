@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Troop;
+using Game.Fighting;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Map;
@@ -89,7 +91,7 @@ namespace Game.Module {
                                         ret = BuildStructure(city, x, y);
                                     break;
                                 case 2:
-                                    if (rand.Next(0, 100) < 100*intelligence.military)
+                                    if (rand.Next(0, 1000) < 100*intelligence.military)
                                         ret = TrainUnit(intelligence, city);
                                     break;
                                 case 3:
@@ -278,6 +280,14 @@ namespace Game.Module {
 
                     Global.World.Add(city);
                     Global.World.Add(structure);
+
+                    TroopStub defaultTroop = new TroopStub();
+                    defaultTroop.BeginUpdate();
+                    defaultTroop.AddFormation(FormationType.NORMAL);
+                    defaultTroop.AddFormation(FormationType.GARRISON);
+                    defaultTroop.AddFormation(FormationType.IN_BATTLE);
+                    city.Troops.Add(defaultTroop);
+                    defaultTroop.EndUpdate();
 
                     InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type,
                                                structure.Stats.Base.Lvl);

@@ -101,12 +101,17 @@ namespace Game.Comm {
                 playerName = "Player " + playerId;
             }
 
-            //Create the session id that will be used for the calls to the web server
+            //Create the session id that will be used for the calls to the web server                        
+#if DEBUG
+            string sessionId = playerId.ToString();
+#else
             SHA1 sha = new SHA1CryptoServiceProvider();
+
             string sessionId = BitConverter.ToString(
                 sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.Now.Ticks))).
                 Replace("-", String.Empty);
-            
+#endif
+
             bool newPlayer;
             lock (loginLock) {
                 newPlayer = !Global.Players.TryGetValue(playerId, out player);

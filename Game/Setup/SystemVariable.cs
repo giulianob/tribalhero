@@ -29,12 +29,7 @@ namespace Game.Setup {
 
         #region IPersistableObject Members
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
 
@@ -47,7 +42,7 @@ namespace Game.Setup {
         }
 
         public DbColumn[] DbPrimaryKey {
-            get { return new DbColumn[] {new DbColumn("name", key, DbType.String)}; }
+            get { return new[] {new DbColumn("name", key, DbType.String)}; }
         }
 
         public DbDependency[] DbDependencies {
@@ -56,7 +51,7 @@ namespace Game.Setup {
 
         public DbColumn[] DbColumns {
             get {
-                return new DbColumn[] {
+                return new[] {
                                           new DbColumn("value", value, DbType.String),
                                           new DbColumn("datatype", DataTypeSerializer.Serialize(value), DbType.Byte)
                                       };

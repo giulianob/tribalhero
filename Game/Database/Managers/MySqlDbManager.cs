@@ -34,7 +34,7 @@ namespace Game.Database {
         private static MySqlDbTransaction persistantTransaction;
 
         public MySqlDbManager(string hostname, string username, string password, string database) {
-            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};", database, hostname, username, password);
+            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout=60", database, hostname, username, password);
             backupCommand = string.Format("mysqldump ---user={0} ---password={1} {2} > ", username, password, database);
         }
 
@@ -629,7 +629,7 @@ namespace Game.Database {
             return 0;
         }
 
-        public void HandleGeneralException(Exception e, MySqlCommand command) {
+        public static void HandleGeneralException(Exception e, MySqlCommand command) {
 
             StringWriter writer = new StringWriter();
             if (command != null) {
@@ -640,25 +640,6 @@ namespace Game.Database {
             }
 
             Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") " + writer, e);
-
-            //Backup database
-            if (Config.database_dump) {
-                try {
-                    string fileDestination = Config.data_folder + String.Format("{0:d.M.yy.HH.mm.ss}", DateTime.Now);
-                    using (Process process = Process.Start(backupCommand + fileDestination)) {
-                        if (process != null)
-                            process.WaitForExit();
-                    }
-
-                    using (StreamWriter backupWriter = new StreamWriter(File.Open(fileDestination, FileMode.Open))) {
-                        backupWriter.WriteLine("-- " + e.Message);
-                        backupWriter.WriteLine("-- " + e.StackTrace.Replace("\r\n", "\r\n --"));
-                    }
-                }
-                catch (Exception fe) {
-                    Global.DbLogger.Error("Unable to create backup", fe);
-                }
-            }
             
             Environment.Exit(-999);
         }
@@ -718,29 +699,19 @@ namespace Game.Database {
             MySqlConnection connection = GetConnection();
 
             MySqlCommand command = connection.CreateCommand();
-
-            command.CommandText = "TRUNCATE TABLE `reference_stubs`;" + "TRUNCATE TABLE `chain_actions`;" +
-                                  "TRUNCATE TABLE `active_actions`;" + "TRUNCATE TABLE `passive_actions`;" +
-                                  "TRUNCATE TABLE `cities`;" + "TRUNCATE TABLE `players`;" +
-                                  "TRUNCATE TABLE `structures`;" + "TRUNCATE TABLE `structure_properties`;" +
-                                  "TRUNCATE TABLE `structure_properties_list`;" + "TRUNCATE TABLE `technologies`;" +
-                                  "TRUNCATE TABLE `technologies_list`;" + "TRUNCATE TABLE `troops`;" +
-                                  "TRUNCATE TABLE `troop_stubs`;" + "TRUNCATE TABLE `troop_stubs_list`;" +
-                                  "TRUNCATE TABLE `unit_templates`;" + "TRUNCATE TABLE `unit_templates_list`;" +
-                                  "TRUNCATE TABLE `battles`;" + "TRUNCATE TABLE `battle_managers`;" +
-                                  "TRUNCATE TABLE `battle_reports`;" + "TRUNCATE TABLE `battle_report_objects`;" +
-                                  "TRUNCATE TABLE `battle_report_troops`;" + "TRUNCATE TABLE `battle_report_views`;" +
-                                  "TRUNCATE TABLE `reported_troops`;" +
-                                  "TRUNCATE TABLE `reported_troops_list`;" + "TRUNCATE TABLE `reported_objects`;" +
-                                  "TRUNCATE TABLE `reported_objects_list`;" + "TRUNCATE TABLE `combat_structures`;" +
-                                  "TRUNCATE TABLE `combat_units`;" + "TRUNCATE TABLE `notifications`;" +
-                                  "TRUNCATE TABLE `notifications_list`;" + "TRUNCATE TABLE `market`;" +
-                                  "TRUNCATE TABLE `system_variables`;" + "TRUNCATE TABLE `troop_templates`;" +
-                                  "TRUNCATE TABLE `troop_templates_list`;";
-
             command.Connection = connection;
+            command.CommandText = "SHOW TABLES";
 
-            command.ExecuteNonQuery();
+            MySqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read()) {
+                MySqlConnection truncateConnection = GetConnection();
+                MySqlCommand truncateCommand = connection.CreateCommand();
+                truncateCommand.CommandText = string.Format("TRUNCATE TABLE `{0}`", reader[0]);
+                truncateCommand.Connection = truncateConnection;
+                truncateCommand.ExecuteNonQuery();
+                Close(truncateConnection);
+            }
 
             Close(connection);
         }

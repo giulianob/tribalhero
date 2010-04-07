@@ -121,12 +121,7 @@ namespace Game.Module {
 
         #region IPersistableObject Members
 
-        private bool dbPersisted = false;
-
-        public bool DbPersisted {
-            get { return dbPersisted; }
-            set { dbPersisted = value; }
-        }
+        public bool DbPersisted { get; set; }
 
         #endregion
 

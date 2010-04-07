@@ -42,8 +42,9 @@ namespace Game.Database.Managers {
                     ((MySqlTransaction)transaction).Rollback();
                     manager.Close(((MySqlTransaction)transaction).Connection);
                 }
-                catch {}                
+                catch {}
 
+                MySqlDbManager.HandleGeneralException(e, null);
                 throw;
             }
 

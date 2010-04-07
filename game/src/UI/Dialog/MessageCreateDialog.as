@@ -126,8 +126,11 @@
 			lblMessage.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblMessage, "Form.label");
 
-			txtMessage = new JTextArea();
-			txtMessage.setPreferredSize(new IntDimension(400, 150));
+			var scrollMessage: JScrollPane = new JScrollPane();
+			scrollMessage.setPreferredSize(new IntDimension(400, 200));
+			
+			txtMessage = new JTextArea();			
+			txtMessage.setWordWrap(true);
 			txtMessage.setMaxChars(950);
 
 			pnlFooter = new JPanel();
@@ -151,7 +154,9 @@
 			pnlSubject.append(txtSubject);
 
 			pnlMessage.append(lblMessage);
-			pnlMessage.append(txtMessage);
+			pnlMessage.append(scrollMessage);
+			
+			scrollMessage.append(txtMessage);
 
 			pnlFooter.append(btnSend);
 

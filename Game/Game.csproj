@@ -175,6 +175,7 @@
     <Compile Include="Battle\BattleReport.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Battle\StatsModCalculator.cs" />
     <Compile Include="Battle\ICombatUnit.cs" />
     <Compile Include="Battle\DefenseCombatUnit.cs" />
     <Compile Include="Battle\ReportedObjects.cs" />

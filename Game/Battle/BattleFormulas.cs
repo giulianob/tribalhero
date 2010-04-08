@@ -142,34 +142,35 @@ namespace Game.Battle {
         }
 
         internal static BattleStats LoadStats(ushort type, byte lvl, City city) {
-            int hp = 0;
-            int atk = 0;
-
             BaseBattleStats stats = UnitFactory.GetUnitStats(type, lvl).Battle;
-            BattleStats modifiedStats = new BattleStats(stats);
-
+            BattleStatsModCalculator calculator = new BattleStatsModCalculator(stats);
             foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL)) {
-                if (effect.id == EffectCode.BattleStatsArmoryMod &&
-                    stats.Armor == (ArmorType) Enum.Parse(typeof (ArmorType), (string) effect.value[0], true))
-                    hp = Math.Max((int) effect.value[1], hp);
-
-                if (effect.id == EffectCode.BattleStatsBlacksmithMod &&
-                    stats.Weapon == (WeaponType) Enum.Parse(typeof (WeaponType), (string) effect.value[0], true))
-                    atk = Math.Max((int) effect.value[1], atk);
-
                 if (effect.id == EffectCode.UnitStatMod) {
-                    if (((IBaseBattleStatsCondition)effect.value[2]).Check(stats)) {
-                        modifiedStats.Rng += (byte)((int)effect.value[1]);
+                    if (((IBaseBattleStatsCondition)effect.value[3]).Check(stats)) {
+                        switch ((string)effect.value[0]) {
+                            case "Atk":
+                                calculator.Atk.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                break;
+                            case "Def":
+                                calculator.Def.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                break;
+                            case "Spd":
+                                calculator.Spd.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                break;
+                            case "Stl":
+                                calculator.Stl.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                break;
+                            case "Rng":
+                                calculator.Rng.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                break;
+                            case "MaxHp":
+                                calculator.MaxHp.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                break;
+                        }
                     }
                 }
             }
-
-
-            modifiedStats.MaxHp = (ushort) ((100 + hp)*stats.MaxHp/100);
-            modifiedStats.Atk = (ushort) ((100 + atk)*stats.Atk/100);
-            modifiedStats.Def = (ushort) ((100 + atk)*stats.Def/100);
-
-            return modifiedStats;
+            return calculator.GetStats();
         }
     }
 }

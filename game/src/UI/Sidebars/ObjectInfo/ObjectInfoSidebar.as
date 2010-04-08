@@ -6,6 +6,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import flash.geom.Point;
 	import flash.text.*;
 	import flash.utils.Timer;
+	import src.Constants;
 	import src.Global;
 	import src.Map.*;
 	import src.Objects.Actions.*;
@@ -13,6 +14,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.Objects.*;
 	import src.Objects.Prototypes.*;
 	import src.UI.*;
+	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
 	import src.Util.BinaryList.*;
 	import src.Util.Util;
@@ -56,6 +58,18 @@ package src.UI.Sidebars.ObjectInfo {
 			update();
 		}
 
+		private function setPlayerUsername(username: Username, custom: * ) : void {
+			var usernameLabel: JLabel = custom as JLabel;
+			
+			usernameLabel.setText(username.name);
+			
+			// Show message icon if its not the current player
+			if (username.id != Constants.playerId) {
+				usernameLabel.setIcon(new MessagingIcon(username.name));
+				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
+			}
+		}
+
 		public function update():void
 		{
 			t.reset();
@@ -73,7 +87,7 @@ package src.UI.Sidebars.ObjectInfo {
 			var usernameLabel: JLabel = addStatRow("Player", "-");
 			var cityLabel: JLabel = addStatRow("City", "-");
 
-			Global.map.usernames.players.setLabelUsername(gameObject.playerId, usernameLabel);
+			Global.map.usernames.players.getUsername(gameObject.playerId, setPlayerUsername, usernameLabel);
 			Global.map.usernames.cities.setLabelUsername(gameObject.cityId, cityLabel);
 
 			addStatRow("Level", gameObject.level.toString());
@@ -231,7 +245,7 @@ package src.UI.Sidebars.ObjectInfo {
 				var timeLeft: int = Math.max(0, currentAction.endTime - Global.map.getServerTime());
 
 				//component creation
-				var pnlActionRow: JPanel = new JPanel(new BorderLayout());							
+				var pnlActionRow: JPanel = new JPanel(new BorderLayout());
 
 				var panel: JPanel = new JPanel();
 				panel.setConstraints("North");

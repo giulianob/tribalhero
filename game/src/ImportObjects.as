@@ -19,6 +19,7 @@
 			ICON_WOOD;
 			ICON_LABOR;
 			ICON_ALERT;
+			ICON_MESSAGE;
 			
 			//Passive Action Icons
 			PASSIVE_ATTACKING;

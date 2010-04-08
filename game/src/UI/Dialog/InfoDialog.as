@@ -28,7 +28,7 @@ public class InfoDialog extends GameJPanel {
 	public function InfoDialog() {
 		setLayout(new BorderLayout());
 		centerPane = SoftBox.createVerticalBox(6);
-		msgLabel = new MultilineLabel("", 0, 40);
+		msgLabel = new MultilineLabel("", 0);
 		centerPane.append(AsWingUtils.createPaneToHold(msgLabel, new FlowLayout(FlowLayout.CENTER, 5, 5)));
 		inputText = new JTextField();
 		var inputContainer:JPanel = new JPanel(new BorderLayout());		
@@ -83,8 +83,10 @@ public class InfoDialog extends GameJPanel {
 	public function addButton(button:JButton):void{
 		buttonPane.append(button);
 	}
+	
 	private function setMessage(msg:String):void{
-		msgLabel.setText(msg);		
+		msgLabel.setText(msg);				
+		msgLabel.setColumns(Math.max(20, Math.min(msg.length - 20, 40)));
 	}
 	private function addCloseListener(button:JButton):void{
 		var f:JFrame = getFrame();		

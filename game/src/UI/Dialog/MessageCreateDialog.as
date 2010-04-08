@@ -1,4 +1,6 @@
 ﻿package src.UI.Dialog {
+	import flash.events.Event;
+	import src.Comm.GameURLLoader;
 	import src.Global;
 	import src.Map.*;
 	import src.Objects.*;
@@ -26,7 +28,7 @@
 		private var pnlFooter:JPanel;
 		private var btnSend:JButton;
 
-		public function MessageCreateDialog(onAccept: Function, to: String = "")
+		public function MessageCreateDialog(onSent: Function, to: String = "")
 		{
 			createUI();
 
@@ -36,23 +38,48 @@
 
 			var self: MessageCreateDialog = this;
 			btnSend.addActionListener(function():void {
-				
+
 				if (txtTo.getLength() == 0) {
 					InfoDialog.showMessageDialog("Error", "Please specify a recipient.");
 					return;
-				}				
-				
+				}
+
 				if (txtSubject.getLength() < 3) {
 					InfoDialog.showMessageDialog("Error", "Subject must be at least 3 characters long.");
 					return;
 				}
-				
+
 				if (txtMessage.getLength() == 0) {
 					InfoDialog.showMessageDialog("Error", "Please enter a message.");
 					return;
-				}								
-				
-				if (onAccept != null) onAccept(self);
+				}				
+
+				var pnlLoading: InfoDialog = InfoDialog.showMessageDialog("Sending", "Sending message...", null, null, true, false, 0);
+
+				var messageLoader: GameURLLoader = new GameURLLoader();
+				messageLoader.addEventListener(Event.COMPLETE, function(event: Event) : void {
+					pnlLoading.getFrame().dispose();
+
+					var data: Object;
+					try
+					{
+						data = messageLoader.getDataAsObject();
+					}
+					catch (e: Error) {
+						InfoDialog.showMessageDialog("Error", "Unable to send message. Try again later.");
+						return;
+					}
+
+					if (data.error != null && data.error != "") {
+						InfoDialog.showMessageDialog("Info", data.error);
+						return;
+					}
+					
+					if (onSent != null) onSent(self);
+				});
+
+				var message: * = getMessage();
+				Global.mapComm.Messaging.send(messageLoader, message.to, message.subject, message.message);				
 			});
 		}
 
@@ -71,6 +98,11 @@
 
 			Global.gameContainer.showFrame(frame);
 
+			// Set focus to subject field if the To is already filled
+			if (txtTo.getText() != "") {
+				txtSubject.requestFocus();
+			}
+			
 			return frame;
 		}
 
@@ -128,8 +160,8 @@
 
 			var scrollMessage: JScrollPane = new JScrollPane();
 			scrollMessage.setPreferredSize(new IntDimension(400, 200));
-			
-			txtMessage = new JTextArea();			
+
+			txtMessage = new JTextArea();
 			txtMessage.setWordWrap(true);
 			txtMessage.setMaxChars(950);
 
@@ -155,7 +187,7 @@
 
 			pnlMessage.append(lblMessage);
 			pnlMessage.append(scrollMessage);
-			
+
 			scrollMessage.append(txtMessage);
 
 			pnlFooter.append(btnSend);

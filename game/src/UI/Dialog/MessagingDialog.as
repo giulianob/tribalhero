@@ -90,37 +90,11 @@ package src.UI.Dialog{
 		}
 
 		private function onNewMessageSend(dialog: MessageCreateDialog) : void {
-			var message: * = dialog.getMessage();
-
-			pnlLoading = InfoDialog.showMessageDialog("Sending", "Sending message...", null, null, true, false, 0);
-
-			var messageLoader: GameURLLoader = new GameURLLoader();
-			messageLoader.addEventListener(Event.COMPLETE, function(event: Event) : void {
-				pnlLoading.getFrame().dispose();
-
-				var data: Object;
-				try
-				{
-					data = messageLoader.getDataAsObject();
-				}
-				catch (e: Error) {
-					InfoDialog.showMessageDialog("Error", "Unable to send message. Try again later.");
-					return;
-				}
-
-				if (data.error != null && data.error != "") {
-					InfoDialog.showMessageDialog("Info", data.error);
-					return;
-				}
-
-				dialog.getFrame().dispose();
-				// Refresh if on send tab
-				if (tabs.getSelectedIndex() == 1 && page < 2) {
-					loadPage(1);
-				}
-			});
-
-			Global.mapComm.Messaging.send(messageLoader, message.to, message.subject, message.message);
+			dialog.getFrame().dispose();
+			// Refresh if on send tab
+			if (tabs.getSelectedIndex() == 1 && page < 2) {
+				loadPage(1);
+			}
 		}
 
 		private function deleteChecked(e: Event = null) : void {
@@ -292,7 +266,7 @@ package src.UI.Dialog{
 		}
 
 		private function nameTranslator(message: *, key: String) : String {
-			if (message.isRecipient) {
+			if (message.isRecipient || message.name.substr(0, 4) == "To: ") {
 				return message.name;
 			}
 			else {

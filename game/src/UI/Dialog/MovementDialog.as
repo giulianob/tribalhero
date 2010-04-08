@@ -176,13 +176,13 @@
 			var layout: EmptyLayout = new EmptyLayout();
 			setLayout(layout);
 			setSize(new IntDimension(858, 600));
-			setBorder(null);
+			setBorder(new EmptyBorder());			
 
 			var bg: AssetPane = new AssetPane(new MOVEMENT_DIALOG_BG());
-			bg.setBorder(null);
+			bg.setBorder(new EmptyBorder());
 			bg.pack();
 			bg.setLocation(new IntPoint(0, 5));
-			append(bg);
+			append(bg);		
 
 			localTroopIcon = new AssetPane(new TROOP_IDLE());
 			localTroopIcon.buttonMode = true;

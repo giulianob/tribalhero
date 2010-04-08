@@ -1,2 +1,8 @@
 Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
 2502,1,Simple,2501,1,5,0,1,1
+,,,,,,,,
+//Armory,,,,,,,,
+2302,1,Simple,2301,1,20,0,1,1
+,,,,,,,,
+//Blacksmith,,,,,,,,
+2303,1,Simple,2301,1,20,0,1,1

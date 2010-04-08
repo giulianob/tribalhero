@@ -8,7 +8,13 @@ using Game.Setup;
 namespace Game.Logic {
     public partial class Formula {
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {
-            return (int) (300 * (count+ (count/10*count/10))*Config.seconds_per_unit);
+            int[] discount = { 0, 2, 4, 6, 8, 10, 15, 20, 30, 50, 80 };
+            foreach( Structure obj in structure.City ) {
+                if( ObjectTypeFactory.IsStructureType("University",obj) ) {
+                    return (int)((100 - discount[obj.Lvl]) * count * 300 * Config.seconds_per_unit / 100);
+                }
+            }
+            return (int)(count * 300 * Config.seconds_per_unit);
         }
 
         private static int TimeDiscount(int lvl) {

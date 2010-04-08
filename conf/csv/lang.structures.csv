@@ -91,17 +91,17 @@ WORKSHOP_STRUCTURE_LVL_8,Decreases training time by 20%.
 WORKSHOP_STRUCTURE_LVL_9,Decreases training time by 30%.
 WORKSHOP_STRUCTURE_LVL_10,Decreases training time by 40%.
 UNIVERSITY_STRUCTURE_NAME,University
-UNIVERSITY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city in various ways.
-UNIVERSITY_STRUCTURE_LVL_1,
-UNIVERSITY_STRUCTURE_LVL_2,
-UNIVERSITY_STRUCTURE_LVL_3,
-UNIVERSITY_STRUCTURE_LVL_4,
-UNIVERSITY_STRUCTURE_LVL_5,
-UNIVERSITY_STRUCTURE_LVL_6,
-UNIVERSITY_STRUCTURE_LVL_7,
-UNIVERSITY_STRUCTURE_LVL_8,
-UNIVERSITY_STRUCTURE_LVL_9,
-UNIVERSITY_STRUCTURE_LVL_10,
+UNIVERSITY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city in various ways and decreases labor Training time.
+UNIVERSITY_STRUCTURE_LVL_1,Decreases Labor Training time by  2% and allows building Armory. 
+UNIVERSITY_STRUCTURE_LVL_2,Decreases Labor Training time by  4% and enables upgrading Hanzo Sword technology.
+UNIVERSITY_STRUCTURE_LVL_3,Decreases Labor Training time by  6% and allows building Blacksmith.
+UNIVERSITY_STRUCTURE_LVL_4,Decreases Labor Training time by  8% and enables upgrading Long Bow technology.
+UNIVERSITY_STRUCTURE_LVL_5,Decreases Labor Training time by  10% and enables upgrading Long Composite technology.
+UNIVERSITY_STRUCTURE_LVL_6,Decreases Labor Training time by  15% and enables upgrading Long Crossbow technology.
+UNIVERSITY_STRUCTURE_LVL_7,Decreases Labor Training time by  20%
+UNIVERSITY_STRUCTURE_LVL_8,Decreases Labor Training time by  30%
+UNIVERSITY_STRUCTURE_LVL_9,Decreases Labor Training time by  50%
+UNIVERSITY_STRUCTURE_LVL_10,Decreases Labor Training time by  80%
 ARMORY_STRUCTURE_NAME,Armory
 ARMORY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city's military defense.
 ARMORY_STRUCTURE_LVL_1,

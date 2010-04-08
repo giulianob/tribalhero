@@ -201,6 +201,10 @@ package src.UI.Dialog{
 			}
 
 			rankingTable.setModel(rankingModel);
+			
+			rankingTable.getColumnAt(0).setPreferredWidth(45);
+			rankingTable.getColumnAt(1).setPreferredWidth(220);
+			rankingTable.getColumnAt(2).setPreferredWidth(150);
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
@@ -226,6 +230,11 @@ package src.UI.Dialog{
 			}
 
 			rankingTable.setModel(rankingModel);
+			
+			rankingTable.getColumnAt(0).setPreferredWidth(43);
+			rankingTable.getColumnAt(1).setPreferredWidth(120);
+			rankingTable.getColumnAt(2).setPreferredWidth(130);
+			rankingTable.getColumnAt(3).setPreferredWidth(120);		
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);

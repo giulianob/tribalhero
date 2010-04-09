@@ -5,8 +5,10 @@
  */
 
 package src.Util {
+	import fl.motion.AdjustColor;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	import org.aswing.Component;
@@ -121,7 +123,7 @@ package src.Util {
 
 			return ret;
 		}
-		
+
 		public static function formatTime(time: int): String
 		{
 			if (time <= 0) return "--:--:--";
@@ -167,6 +169,34 @@ package src.Util {
 			nice += "a minute";
 
 			return nice;
+		}
+
+		private static var filterBW: Array;
+
+		public static function setGrayed(obj: DisplayObject, gray: Boolean) : void {
+
+			if (filterBW == null) {
+				var color : AdjustColor;
+				var colorMatrix : ColorMatrixFilter;
+				var matrix : Array;
+				var filterBW : Array;
+
+				color = new AdjustColor();
+				color.brightness = 0;
+				color.contrast = 0;
+				color.hue = 0;
+				color.saturation = -100;
+
+				matrix = color.CalculateFinalFlatArray();
+				colorMatrix = new ColorMatrixFilter(matrix);
+				filterBW = [colorMatrix];
+			}
+
+			if (gray) {
+				obj.filters = filterBW;
+			} else {
+				obj.filters = [];
+			}
 		}
 
 	}

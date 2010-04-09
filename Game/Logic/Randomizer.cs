@@ -71,7 +71,7 @@ namespace Game.Logic {
             byte radius = city.Radius;
             Structure structure = city.MainBuilding;
             Random_foreach feObject = new Random_foreach(transaction, city);
-            RadiusLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false,
+            TileLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false,
                                          RandomizeNpcResourceWork, feObject);
         }
     }

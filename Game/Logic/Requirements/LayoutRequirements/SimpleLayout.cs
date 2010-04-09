@@ -66,7 +66,7 @@ namespace Game.Logic {
             if (obj.Lvl < req.minLvl)
                 return false;
 
-            int dist = obj.Distance(x, y);
+            int dist = obj.TileDistance(x, y);
 
             if (dist > req.maxDist)
                 return false;

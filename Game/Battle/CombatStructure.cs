@@ -51,19 +51,19 @@ namespace Game.Battle {
 
             if (obj is AttackCombatUnit) {
                 //building can attack anyone who can attack them
-                dist = obj.Distance(Structure.X, Structure.Y);
+                dist = obj.TileDistance(Structure.X, Structure.Y);
                 if (dist <= (obj as AttackCombatUnit).TroopStub.TroopObject.Stats.AttackRadius)
                     return true;
             } else if (obj is DefenseCombatUnit)
                 return true;
 
-            dist = obj.Distance(Structure.X, Structure.Y);
+            dist = obj.TileDistance(Structure.X, Structure.Y);
 
             return dist <= Stats.Rng;
         }
 
-        public override int Distance(uint x, uint y) {
-            return GameObject.Distance(x, y, Structure.X, Structure.Y);
+        public override int TileDistance(uint x, uint y) {
+            return GameObject.TileDistance(x, y, Structure.X, Structure.Y);
         }
 
         public override uint Visibility {

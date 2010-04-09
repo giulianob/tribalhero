@@ -35,7 +35,7 @@ namespace Game.Logic.Procedures {
             using (new MultiObjectLock(city)) {
                 byte radius = city.Radius;
                 Structure structure = city.MainBuilding;
-                RadiusLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false, Work, city);
+                TileLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false, Work, city);
             }
 
             return true;

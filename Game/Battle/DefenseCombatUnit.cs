@@ -80,7 +80,7 @@ namespace Game.Battle {
             return true;
         }
 
-        public override int Distance(uint x, uint y) {
+        public override int TileDistance(uint x, uint y) {
             return 0;
         }
 

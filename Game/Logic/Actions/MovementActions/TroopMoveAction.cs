@@ -50,7 +50,7 @@ namespace Game.Logic.Actions {
 
         private bool work(uint ox, uint oy, uint x, uint y, object custom) {
             Record_Foreach record_foreach = (Record_Foreach) custom;
-            int distance = GameObject.Distance(x, y, this.x, this.y);
+            int distance = GameObject.TileDistance(x, y, this.x, this.y);
 
             if (distance < record_foreach.shortest_distance) {
                 record_foreach.shortest_distance = distance;
@@ -67,13 +67,13 @@ namespace Game.Logic.Actions {
         }
 
         private bool calculateNext(TroopObject obj) {
-            int distance = obj.Distance(x, y);
+            int distance = obj.TileDistance(x, y);
             if (distance == 0)
                 return false;
             Record_Foreach record_foreach = new Record_Foreach();
             record_foreach.shortest_distance = int.MaxValue;
             record_foreach.isShortestDistanceDiagonal = false;
-            RadiusLocator.foreach_object(obj.X, obj.Y, 1, false, work, record_foreach);
+            TileLocator.foreach_object(obj.X, obj.Y, 1, false, work, record_foreach);
             nextX = record_foreach.x;
             nextY = record_foreach.y;
 
@@ -95,7 +95,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.OBJECT_NOT_FOUND;
 
-            distanceRemaining = troopObj.Distance(x, y);
+            distanceRemaining = troopObj.TileDistance(x, y);
             endTime =
                 DateTime.Now.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed)*Config.seconds_per_unit)*
                                         distanceRemaining);

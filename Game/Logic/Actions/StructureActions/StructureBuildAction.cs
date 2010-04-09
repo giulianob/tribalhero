@@ -52,7 +52,7 @@ namespace Game.Logic.Actions {
             }
 
             // radius requirements
-            if (city.MainBuilding.Distance(x, y) >= city.Radius) {
+            if (city.MainBuilding.TileDistance(x, y) >= city.Radius) {
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }

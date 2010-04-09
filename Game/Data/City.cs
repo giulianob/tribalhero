@@ -292,7 +292,7 @@ namespace Game.Data {
             List<GameObject> ret = new List<GameObject>();
 
             foreach (Structure structure in this) {
-                if (structure.Distance(x, y) <= inRadius)
+                if (structure.TileDistance(x, y) <= inRadius)
                     ret.Add(structure);
             }
 

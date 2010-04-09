@@ -76,7 +76,7 @@ namespace Game.Module {
                             uint x;
                             uint y;
 
-                            RadiusLocator.random_point(mainBuilding.X, mainBuilding.Y, (byte) (city.Radius - 1), true,
+                            TileLocator.random_point(mainBuilding.X, mainBuilding.Y, (byte) (city.Radius - 1), true,
                                                        out x, out y);
 
                             byte step = (byte) rand.Next(0, 4);
@@ -294,7 +294,7 @@ namespace Game.Module {
 
                     city.Worker.DoPassive(city, new CityAction(city.Id), false);
 
-                    RadiusLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false,
+                    TileLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false,
                                                  BuildBasicStructures, city);
                 }
             }

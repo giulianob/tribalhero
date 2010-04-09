@@ -67,7 +67,7 @@ namespace Game.Battle {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual int Distance(uint x, uint y) {
+        public virtual int TileDistance(uint x, uint y) {
             throw new Exception("NOT IMPLEMENTED");
         }
 

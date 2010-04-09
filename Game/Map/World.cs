@@ -316,7 +316,7 @@ namespace Game.Map {
 
         public List<GameObject> GetObjectsWithin(uint x, uint y, byte radius) {
             List<GameObject> list = new List<GameObject>();
-            RadiusLocator.foreach_object(x, y, radius, false, GetObjectsForeach, list);
+            TileLocator.foreach_object(x, y, radius, false, GetObjectsForeach, list);
             return list;
         }
 

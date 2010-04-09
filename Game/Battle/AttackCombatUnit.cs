@@ -83,13 +83,13 @@ namespace Game.Battle {
             if (obj is AttackCombatUnit || obj is DefenseCombatUnit) //all units can attack other units
                 return true;
 
-            int dist = obj.Distance(TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
+            int dist = obj.TileDistance(TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
 
             return dist <= TroopStub.TroopObject.Stats.AttackRadius;
         }
 
-        public override int Distance(uint x, uint y) {
-            return GameObject.Distance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
+        public override int TileDistance(uint x, uint y) {
+            return GameObject.TileDistance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
         }
 
         public override uint Visibility {

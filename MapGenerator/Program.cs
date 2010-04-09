@@ -76,17 +76,17 @@ namespace MapGenerator {
             uint x;
             uint y;
 
-            RadiusLocator.foreach_object(cityLocation.X, cityLocation.Y, radius, true, AreaClear, map);
+            TileLocator.foreach_object(cityLocation.X, cityLocation.Y, radius, true, AreaClear, map);
             for (int i = 0; i < numberOfFarm; ++i) {
                 do {
-                    RadiusLocator.random_point(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
+                    TileLocator.random_point(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
                 } while (map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE);
                 map[y * region_width + x] = FARM_TILE;
             }
 
             for (int i = 0; i < numberOfWoodland; ++i) {
                 do {
-                    RadiusLocator.random_point(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
+                    TileLocator.random_point(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
                 } while (map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE);
                 map[y * region_width + x] = WOODLAND_TILE;
             }              

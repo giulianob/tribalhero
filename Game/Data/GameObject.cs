@@ -146,7 +146,7 @@ namespace Game.Data {
             return !(y%2 == y1%2);
         }
 
-        public static int Distance(uint x, uint y, uint x1, uint y1) {
+        public static int TileDistance(uint x, uint y, uint x1, uint y1) {
             /***********************************************************
              *   1,1  |  2,1  |  3,1  |  4,1  |
              *       1,2  |  2,2  |  3,2  |  4,2
@@ -164,14 +164,31 @@ namespace Game.Data {
             return dist;
         }
 
-        public int Distance(uint x1, uint y1) {
-            return Distance(x, y, x1, y1);
+        public int TileDistance(uint x1, uint y1) {
+            return TileDistance(x, y, x1, y1);
         }
 
-        public int Distance(GameObject obj) {
-            return Distance(obj.x, obj.y);
+        public int TileDistance(GameObject obj) {
+            return TileDistance(obj.x, obj.y);
         }
 
+        public static float RadiusDistance(uint x, uint y, uint x1, uint y1) {
+            /***********************************************************
+             *   1,1  |  2,1  |  3,1  |  4,1  |
+             *       1,2  |  2,2  |  3,2  |  4,2
+             *   1,3  |  2,3  |  3,3  |  4,3  |
+             *       1,4  |  2,4  |  3,4  |  4,4
+             * 
+             * *********************************************************/
+            float offset = 0;
+            if (y % 2 == 1 && y1 % 2 == 0 && x1 <= x)
+                offset = 0.5f;
+            if (y % 2 == 0 && y1 % 2 == 1 && x1 >= x)
+                offset = 0.5f; 
+            float dist = (float)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1) / 2 + offset);
+
+            return dist;
+        }
         #endregion
 
         #region ICanDo Members

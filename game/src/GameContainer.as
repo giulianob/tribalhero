@@ -6,6 +6,7 @@
 	import flash.utils.Timer;
 	import org.aswing.event.AWEvent;
 	import org.aswing.event.PopupEvent;
+	import src.Components.MessageTimer;
 	import src.Map.*;
 	import src.Objects.Effects.*;
 	import src.Objects.*;
@@ -54,6 +55,9 @@
 		//Resources timer that fires every second
 		public var resourcesTimer: Timer = new Timer(1000);
 
+		//Timer to load unread message count
+		public var messageTimer: MessageTimer;
+
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer = new MinimapToolsContainer();
 		private var minimapZoomed: Boolean = false;
@@ -88,12 +92,12 @@
 
 			new SimpleTooltip(btnReports, "View battle reports");
 			btnReports.addEventListener(MouseEvent.CLICK, onViewReports);
-			
+
 			new SimpleTooltip(btnMessages, "View messages");
-			btnMessages.addEventListener(MouseEvent.CLICK, onViewMessages);			
-			
+			btnMessages.addEventListener(MouseEvent.CLICK, onViewMessages);
+
 			new SimpleTooltip(btnRanking, "View ranking");
-			btnRanking.addEventListener(MouseEvent.CLICK, onViewRanking);			
+			btnRanking.addEventListener(MouseEvent.CLICK, onViewRanking);
 
 			new SimpleTooltip(btnCityInfo, "View city details");
 			btnCityInfo.addEventListener(MouseEvent.CLICK, onViewCityInfo);
@@ -104,6 +108,7 @@
 			sidebarHolder = new Sprite();
 			addChild(sidebarHolder);
 
+			//Set up resources timer
 			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);
 			resourcesTimer.start();
 		}
@@ -125,7 +130,7 @@
 			var currentEventDialog: CityEventDialog = new CityEventDialog(selectedCity);
 			currentEventDialog.show();
 		}
-		
+
 		public function onViewRanking(e: MouseEvent) :void
 		{
 			if (!selectedCity)
@@ -133,19 +138,19 @@
 
 			var rankingDialog: RankingDialog = new RankingDialog();
 			rankingDialog.show();
-		}		
+		}
 
 		public function onViewReports(e: MouseEvent):void
 		{
 			var battleReportDialog: BattleReportList = new BattleReportList();
 			battleReportDialog.show();
 		}
-		
+
 		public function onViewMessages(e: MouseEvent):void
 		{
 			var messagingDialog: MessagingDialog = new MessagingDialog();
 			messagingDialog.show();
-		}		
+		}
 
 		public function onGoToCity(e: Event) : void {
 			if (selectedCity == null) return;
@@ -260,12 +265,20 @@
 
 		public function show() : void {
 			camera.reset();
+			
 			closeAllFrames();
+			
 			visible = true;
+			
+			messageTimer = new MessageTimer();
+			messageTimer.start();
 		}
 
 		public function dispose() : void {
-			visible = false;
+			messageTimer.stop();
+			messageTimer = null;
+			
+			visible = false;			
 
 			if (resourcesContainer && resourcesContainer.getFrame()) {
 				resourcesContainer.getFrame().dispose();

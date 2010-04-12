@@ -57,16 +57,5 @@ namespace Testing.Channel {
         public void TestNewLine() {
             Assert.IsFalse(City.IsNameValid("xx\nxxx"));
         }
-
-        [TestMethod]
-        public void TestRadius() {
-            Assert.AreEqual(0.5f, GameObject.RadiusDistance(2, 2, 2, 1));
-            Assert.AreEqual(0.5f, GameObject.RadiusDistance(2, 2, 3, 1));
-            Assert.AreEqual(0.5f, GameObject.RadiusDistance(2, 2, 2, 3));
-            Assert.AreEqual(0.5f, GameObject.RadiusDistance(2, 2, 3, 3));
-            Assert.AreEqual(1.0f, GameObject.RadiusDistance(2, 2, 1, 2));
-            Assert.AreEqual(1.0f, GameObject.RadiusDistance(2, 2, 2, 4));
-            Assert.AreEqual(1.0f, GameObject.RadiusDistance(2, 2, 3, 2));
-        }
     }
 }

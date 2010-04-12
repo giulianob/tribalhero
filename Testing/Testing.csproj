@@ -8,6 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Testing</RootNamespace>
+    <ResultFilePath>c:\foo</ResultFilePath>
     <AssemblyName>Testing</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,12 +42,14 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />
     <Compile Include="Database\DatabasePerformanceTest.cs" />
+    <Compile Include="MapMath\RadiusTest.cs" />
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

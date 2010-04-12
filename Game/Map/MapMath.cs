@@ -10,6 +10,12 @@ namespace Game.Map {
         public uint y;
     }
 
+    public class MapMath {
+        public static uint AbsDiff(uint val1, uint val2) {
+            return (val1 > val2 ? val1 - val2 : val2 - val1);
+        }
+    }
+
     public class TileLocator {
         private static Random rand = new Random();
 

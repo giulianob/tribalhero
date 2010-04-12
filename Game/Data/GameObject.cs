@@ -2,6 +2,7 @@
 
 using System;
 using Game.Logic;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 
@@ -146,19 +147,26 @@ namespace Game.Data {
             return !(y%2 == y1%2);
         }
 
+        public static int GetOffset(uint x, uint y, uint x1, uint y1) {
+            if (y % 2 == 1 && y1 % 2 == 0 && x1 <= x)
+                return 1;
+            if (y % 2 == 0 && y1 % 2 == 1 && x1 >= x)
+                return 1;
+
+            return 0;
+        }
+
         public static int TileDistance(uint x, uint y, uint x1, uint y1) {
             /***********************************************************
-             *   1,1  |  2,1  |  3,1  |  4,1  |
-             *       1,2  |  2,2  |  3,2  |  4,2
-             *   1,3  |  2,3  |  3,3  |  4,3  |
-             *       1,4  |  2,4  |  3,4  |  4,4
-             * 
-             * *********************************************************/
-            uint offset = 0;
-            if (y%2 == 1 && y1%2 == 0 && x1 <= x)
-                offset = 1;
-            if (y%2 == 0 && y1%2 == 1 && x1 >= x)
-                offset = 1;
+					     13,12  |  14,12 
+			        12,13  |  13,13  |  14,13  |  15,13
+               12,14  | (13,14) |  14,14  |  15,14  | 16,14
+          11,15  |  12,15  |  13,15  |  14,15
+               12,16  |  13,16  |  14,16
+                    12,17  |  13,17  | 14,17
+			             13,18     14,18
+             *********************************************************/			 
+            int offset = GetOffset(x, y, x1, y1);
             int dist = (int) ((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1)/2 + offset);
 
             return dist;
@@ -173,21 +181,16 @@ namespace Game.Data {
         }
 
         public static float RadiusDistance(uint x, uint y, uint x1, uint y1) {
-            /***********************************************************
-             *   1,1  |  2,1  |  3,1  |  4,1  |
-             *       1,2  |  2,2  |  3,2  |  4,2
-             *   1,3  |  2,3  |  3,3  |  4,3  |
-             *       1,4  |  2,4  |  3,4  |  4,4
-             * 
-             * *********************************************************/
-            float offset = 0;
-            if (y % 2 == 1 && y1 % 2 == 0 && x1 <= x)
-                offset = 0.5f;
-            if (y % 2 == 0 && y1 % 2 == 1 && x1 >= x)
-                offset = 0.5f; 
-            float dist = (float)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1) / 2 + offset);
+            
+            // Calculate the x and y distances
+            int offset = GetOffset(x, y, x1, y1);
+            
+            int xDistance = (int)MapMath.AbsDiff(x, x1);
+            int yDistance = (int)MapMath.AbsDiff(y, y1);
 
-            return dist;
+            float radius = Math.Abs(xDistance - yDistance) * 1f + Math.Min(xDistance, yDistance) * 1.5f;
+
+            return radius;
         }
         #endregion
 

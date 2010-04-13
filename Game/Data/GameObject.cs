@@ -181,14 +181,38 @@ namespace Game.Data {
         }
 
         public static float RadiusDistance(uint x, uint y, uint x1, uint y1) {
-            
+            /***********************************************************
+10,11  |  11,11  |  12,11  |  13,11  |  14,11  |  15,11
+			   12,12  |	 13,12  |  14,12 
+		  11,13     12,13  |  13,13  |  14,13  |  15,13
+               12,14  | (13,14) |  (14,14)  |  15,14  | 16,14
+          11,15  |  12,15  |  13,15  |  14,15
+               12,16  |  13,16  |  14,16
+                    12,17  |  13,17  | 14,17
+			             13,18     14,18
+             *********************************************************/
             // Calculate the x and y distances
-            int offset = GetOffset(x, y, x1, y1);
-            
-            int xDistance = (int)MapMath.AbsDiff(x, x1);
+            float offset=0;
+            int xoffset=0;
+            if (y % 2 != y1 % 2) {
+                if (y % 2 == 0) {
+                    if (x > x1) {
+                        xoffset = 1;
+                    }
+                } else {
+                    if (x1 > x) {
+                        xoffset = 1;
+                    }
+                }
+                offset = 1;
+            }
+            int xDistance = (int)MapMath.AbsDiff(x, x1) - xoffset;
             int yDistance = (int)MapMath.AbsDiff(y, y1);
-
-            float radius = Math.Abs(xDistance - yDistance) * 1f + Math.Min(xDistance, yDistance) * 1.5f;
+            int yhalf = yDistance / 2;
+            int x05 = Math.Min(xDistance, yhalf);
+            int x15 = xDistance > yhalf ? xDistance - yhalf : 0;
+            float radius = x05 * 0.5f + x15 * 1.5f + yhalf * 1.5f + offset;
+                
 
             return radius;
         }

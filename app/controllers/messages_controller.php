@@ -2,7 +2,7 @@
 
 class MessagesController extends AppController {
     var $helpers = array('Time', 'Text');
-    var $allowedFromGame = array('listing', 'view', 'del', 'mark_as_read', 'send');
+    var $allowedFromGame = array('listing', 'view', 'del', 'mark_as_read', 'send', 'unread');
 
     function beforeFilter() {
         if (!empty($this->params['named'])) {
@@ -115,6 +115,17 @@ class MessagesController extends AppController {
         } else {
             $data = $this->Message->send($playerId, $to, $subject, $message);
         }
+
+        $this->set(compact('data'));
+        $this->render('/elements/to_json');
+    }
+
+    function unread() {
+        $playerId = $this->params['form']['playerId'];
+
+        $unread = $this->Message->getUnreadCount($playerId);
+
+        $data = array('unread' => $unread);
 
         $this->set(compact('data'));
         $this->render('/elements/to_json');

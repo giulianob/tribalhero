@@ -158,6 +158,16 @@ class Message extends AppModel {
         ));
     }
 
+    function getUnreadCount($playerId) {
+        return $this->find('count', array(
+                'contain' => array(),
+                'conditions' => array(
+                        'Message.recipient_player_id' => $playerId,
+                        'Message.recipient_state' => $this->states['unread']
+                )
+        ));
+    }
+
     function send($playerId, $to, $subject, $message) {
         // Find recipient
         $recipient = $this->Recipient->findByName($to);

@@ -9,6 +9,7 @@ namespace LauncherService {
         }
         
         protected override void OnStart(string[] args) {
+            Factory.CompileConfigFiles();
             CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
             if (!Game.Engine.Start()) {

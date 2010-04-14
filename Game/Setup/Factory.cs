@@ -31,38 +31,29 @@ namespace Game.Setup {
             sw.Close();
         }
 
-        public static void InitAll() {
+        public static void CompileConfigFiles() {
             BuildFiles(Config.csv_compiled_folder + "structure.csv", Config.csv_folder, "*structure.csv");
-            StructureFactory.Init(Config.csv_compiled_folder + "structure.csv");
-
             BuildFiles(Config.csv_compiled_folder + "action.csv", Config.csv_folder, "*action.csv");
-            ActionFactory.init(Config.csv_compiled_folder + "action.csv");
-
-            BuildFiles(Config.csv_compiled_folder + "effect_requirement.csv", Config.csv_folder,
-                       "*effect_requirement.csv");
-            EffectRequirementFactory.init(Config.csv_compiled_folder + "effect_requirement.csv");
-
+            BuildFiles(Config.csv_compiled_folder + "effect_requirement.csv", Config.csv_folder, "*effect_requirement.csv");
             BuildFiles(Config.csv_compiled_folder + "init.csv", Config.csv_folder, "*init.csv");
-            InitFactory.Init(Config.csv_compiled_folder + "init.csv");
-
             BuildFiles(Config.csv_compiled_folder + "property.csv", Config.csv_folder, "*property.csv");
-            PropertyFactory.init(Config.csv_compiled_folder + "property.csv");
-
             BuildFiles(Config.csv_compiled_folder + "layout.csv", Config.csv_folder, "*layout.csv");
-            ReqirementFactory.Init(Config.csv_compiled_folder + "layout.csv");
-
             BuildFiles(Config.csv_compiled_folder + "technology.csv", Config.csv_folder, "*technology.csv");
-            BuildFiles(Config.csv_compiled_folder + "technology_effects.csv", Config.csv_folder,
-                       "*technology_effects.csv");
-            TechnologyFactory.Init(Config.csv_compiled_folder + "technology.csv",
-                                   Config.csv_folder + "technology_effects.csv");
-
+            BuildFiles(Config.csv_compiled_folder + "technology_effects.csv", Config.csv_folder, "*technology_effects.csv");
             BuildFiles(Config.csv_compiled_folder + "unit.csv", Config.csv_folder, "*unit.csv");
-            UnitFactory.Init(Config.csv_compiled_folder + "unit.csv");
-
             File.Copy(Config.csv_folder + "object_type.csv", Config.csv_compiled_folder + "object_type.csv", true);
-            ObjectTypeFactory.init(Config.csv_compiled_folder + "object_type.csv");
+        }
 
+        public static void InitAll() {
+            StructureFactory.Init(Config.csv_compiled_folder + "structure.csv");
+            ActionFactory.init(Config.csv_compiled_folder + "action.csv");
+            EffectRequirementFactory.init(Config.csv_compiled_folder + "effect_requirement.csv");
+            InitFactory.Init(Config.csv_compiled_folder + "init.csv");
+            PropertyFactory.init(Config.csv_compiled_folder + "property.csv");
+            ReqirementFactory.Init(Config.csv_compiled_folder + "layout.csv");
+            TechnologyFactory.Init(Config.csv_compiled_folder + "technology.csv", Config.csv_folder + "technology_effects.csv");
+            UnitFactory.Init(Config.csv_compiled_folder + "unit.csv");
+            ObjectTypeFactory.init(Config.csv_compiled_folder + "object_type.csv");
             MapFactory.init(Config.settings_folder + "CityLocations.txt");
         }
     }

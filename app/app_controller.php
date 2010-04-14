@@ -44,7 +44,12 @@ class AppController extends Controller {
             }
         }
     }
-    
-    function isAuthorized() {
+
+    function isAuthorized() {        
+        if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
+            if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {                
+                $this->Auth->deny($this->action);
+            }
+        }
     }
 }

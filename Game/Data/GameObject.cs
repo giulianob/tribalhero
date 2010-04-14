@@ -165,7 +165,7 @@ namespace Game.Data {
                12,16  |  13,16  |  14,16
                     12,17  |  13,17  | 14,17
 			             13,18     14,18
-             *********************************************************/			 
+             *********************************************************/
             int offset = GetOffset(x, y, x1, y1);
             int dist = (int) ((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1)/2 + offset);
 
@@ -180,7 +180,7 @@ namespace Game.Data {
             return TileDistance(obj.x, obj.y);
         }
 
-        public static float RadiusDistance(uint x, uint y, uint x1, uint y1) {
+        public static int RadiusDistance(uint x, uint y, uint x1, uint y1) {
             /***********************************************************
 10,11  |  11,11  |  12,11  |  13,11  |  14,11  |  15,11
 			   12,12  |	 13,12  |  14,12 
@@ -192,10 +192,10 @@ namespace Game.Data {
 			             13,18     14,18
              *********************************************************/
             // Calculate the x and y distances
-            float offset=0;
-            int xoffset=0;
-            if (y % 2 != y1 % 2) {
-                if (y % 2 == 0) {
+            int offset = 0;
+            int xoffset = 0;
+            if (y%2 != y1%2) {
+                if (y%2 == 0) {
                     if (x > x1) {
                         xoffset = 1;
                     }
@@ -206,16 +206,17 @@ namespace Game.Data {
                 }
                 offset = 1;
             }
-            int xDistance = (int)MapMath.AbsDiff(x, x1) - xoffset;
-            int yDistance = (int)MapMath.AbsDiff(y, y1);
-            int yhalf = yDistance / 2;
+
+            int xDistance = (int) MapMath.AbsDiff(x, x1) - xoffset;
+            int yDistance = (int) MapMath.AbsDiff(y, y1);
+            int yhalf = yDistance/2;
             int x05 = Math.Min(xDistance, yhalf);
             int x15 = xDistance > yhalf ? xDistance - yhalf : 0;
-            float radius = x05 * 0.5f + x15 * 1.5f + yhalf * 1.5f + offset;
-                
+            float radius = x05*0.5f + x15*1.5f + yhalf*1.5f + offset;
 
-            return radius;
+            return (int) (radius*2) - 1;
         }
+
         #endregion
 
         #region ICanDo Members

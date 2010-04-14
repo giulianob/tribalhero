@@ -18,53 +18,53 @@ namespace Testing.MapMath {
         [TestMethod]
         public void TestEvenyEveny1() {
             //Even y Even y1
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 14, 12, 14));
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 14, 14, 14));
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 14, 13, 12));
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 14, 13, 16));
-            Assert.AreEqual(2.0f, GameObject.RadiusDistance(13, 14, 14, 16));
-            Assert.AreEqual(3.0f, GameObject.RadiusDistance(13, 14, 13, 18));
-            Assert.AreEqual(4.5f, GameObject.RadiusDistance(13, 14, 16, 14));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 14, 12, 14));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 14, 14, 14));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 14, 13, 12));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 14, 13, 16));
+            Assert.AreEqual(3, GameObject.RadiusDistance(13, 14, 14, 16));
+            Assert.AreEqual(5, GameObject.RadiusDistance(13, 14, 13, 18));
+            Assert.AreEqual(8, GameObject.RadiusDistance(13, 14, 16, 14));
         }
         [TestMethod]
         public void TesOddyOddy1() {
             //Odd y Odd y1
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 15, 12, 15));
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 15, 14, 15));
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 15, 13, 13));
-            Assert.AreEqual(1.5f, GameObject.RadiusDistance(13, 15, 13, 17));
-            Assert.AreEqual(2.0f, GameObject.RadiusDistance(13, 15, 14, 17));
-            Assert.AreEqual(3.0f, GameObject.RadiusDistance(13, 15, 13, 19));
-            Assert.AreEqual(4.5f, GameObject.RadiusDistance(13, 15, 16, 15));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 15, 12, 15));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 15, 14, 15));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 15, 13, 13));
+            Assert.AreEqual(2, GameObject.RadiusDistance(13, 15, 13, 17));
+            Assert.AreEqual(3, GameObject.RadiusDistance(13, 15, 14, 17));
+            Assert.AreEqual(5, GameObject.RadiusDistance(13, 15, 13, 19));
+            Assert.AreEqual(8, GameObject.RadiusDistance(13, 15, 16, 15));
         }
 
         [TestMethod]
         public void TestEvenyOddy1() {
 
             //Even y Odd y1
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 14, 12, 13));
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 14, 13, 13));
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 14, 12, 15));
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 14, 13, 15));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 14, 12, 13));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 14, 13, 13));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 14, 12, 15));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 14, 13, 15));
 
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 13, 17));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 14, 13, 19));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 14, 15));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 14, 15, 15));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 13, 17));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 14, 13, 19));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 14, 15));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 14, 15, 15));
 
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 14, 13));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 14, 15, 13));
-            Assert.AreEqual(3f, GameObject.RadiusDistance(13, 14, 11, 17));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 13, 11));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 14, 13, 9));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 14, 13));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 14, 15, 13));
+            Assert.AreEqual(5, GameObject.RadiusDistance(13, 14, 11, 17));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 13, 11));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 14, 13, 9));
 
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 11, 13));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 14, 10, 13));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 12, 11));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 14, 12, 9));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 11, 13));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 14, 10, 13));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 12, 11));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 14, 12, 9));
 
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 12, 17));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 14, 11, 13));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 12, 17));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 14, 11, 13));
 
         }
 
@@ -81,24 +81,24 @@ namespace Testing.MapMath {
                          13,18     14,18
              *********************************************************/
 
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 15, 13, 14));
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 15, 14, 14));
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 15, 14, 16));
-            Assert.AreEqual(1f, GameObject.RadiusDistance(13, 15, 13, 16));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 15, 13, 14));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 15, 14, 14));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 15, 14, 16));
+            Assert.AreEqual(1, GameObject.RadiusDistance(13, 15, 13, 16));
 
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 13, 12));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 12, 14));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 14, 12));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 15, 14));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 12, 16));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 13, 18));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 14, 18));
-            Assert.AreEqual(2.5f, GameObject.RadiusDistance(13, 15, 15, 16));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 13, 12));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 12, 14));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 14, 12));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 15, 14));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 12, 16));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 13, 18));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 14, 18));
+            Assert.AreEqual(4, GameObject.RadiusDistance(13, 15, 15, 16));
 
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 15, 16, 14));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 15, 14, 20));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 15, 13, 20));
-            Assert.AreEqual(4f, GameObject.RadiusDistance(13, 15, 11, 14));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 15, 16, 14));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 15, 14, 20));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 15, 13, 20));
+            Assert.AreEqual(7, GameObject.RadiusDistance(13, 15, 11, 14));
         }
     }
 }

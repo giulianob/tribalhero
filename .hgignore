@@ -1,0 +1,8 @@
+relre:/bin/
+relre:/obj/
+glob:_ReSharper.Game/
+glob:conf/csv/compiled/*.csv
+glob:conf/maps/*.dat
+relre:.suo
+glob:conf/data/*.xml
+glob:*.user

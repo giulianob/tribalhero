@@ -180,6 +180,14 @@ namespace Game.Data {
             return TileDistance(obj.x, obj.y);
         }
 
+        public int RadiusDistance(uint x1, uint y1) {
+            return RadiusDistance(x, y, x1, y1);
+        }
+
+        public int RadiusDistance(GameObject obj) {
+            return RadiusDistance(obj.x, obj.y);
+        }
+
         public static int RadiusDistance(uint x, uint y, uint x1, uint y1) {
             /***********************************************************
 10,11  |  11,11  |  12,11  |  13,11  |  14,11  |  15,11

@@ -76,7 +76,7 @@ package src.Map {
 		{
 			var xadd:int = 0;
 			
-			if (Math.abs(y % 2) == 1) // odd tile
+			if (Math.abs(y % 2) == 1) //    odd tile
 				xadd =+ (Constants.tileW / 2);
 
 			var xcoord:int = Math.floor(x * Constants.tileW + xadd - int(Constants.tileW / 2));

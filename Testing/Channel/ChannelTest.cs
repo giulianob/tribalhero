@@ -7,6 +7,7 @@ namespace Testing.Channel {
     /// <summary>
     /// Summary description for ChannelTest
     /// </summary>
+    
     [TestClass]
     public class ChannelTest {
 

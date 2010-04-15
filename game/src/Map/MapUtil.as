@@ -82,7 +82,7 @@ package src.Map {
 			var xcoord:int = Math.floor(x * Constants.tileW + xadd - int(Constants.tileW / 2));
 			var ycoord:int = Math.floor(y * (Constants.tileH / 2) - (Constants.tileH / 2));
 			
-			return new Point(xcoord, ycoord);
+			return new Point(xcoord, ycoord);  
 		}
 		
 		public static function getMiniMapScreenCoord(x: int, y: int) : Point // from map coord to where it belongs on screen

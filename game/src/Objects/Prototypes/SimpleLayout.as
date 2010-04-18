@@ -31,7 +31,7 @@ package src.Objects.Prototypes {
 			if (mindist == -1)
 			objects = city.objects.toArray();
 			else
-			objects = city.nearObjects(mindist, maxdist, x, y, type);
+			objects = city.nearObjectsByRadius(mindist, maxdist, x, y, type);
 
 			for each (var obj: CityObject in objects)
 			{

@@ -50,7 +50,7 @@
 			circle = new SmartMovieClip();
 			tiles = new Array();
 
-			MapUtil.foreach_object(size, size * 2 + 1, size, this.addTileCallback, true, null);
+			MapUtil.radius_foreach_object(Math.ceil(size / 2.0), Math.ceil(size / 2.0) * 2 + 1, size, this.addTileCallback, true, null);
 
 			addChild(circle);
 		}
@@ -75,16 +75,16 @@
 		public function addTileCallback(x: int, y: int, custom: *):void
 		{
 			var tiledata: MASK_TILE = new MASK_TILE(Constants.tileW, Constants.tileH);
-
 			var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
 
+			var tileRadius: int = Math.ceil(size / 2.0);
 			var point: Point = MapUtil.getScreenCoord(x, y);
+			tile.x = point.x - tileRadius * Constants.tileW;
+			tile.y = point.y - tileRadius * Constants.tileH;
 
-			tile.x = point.x - size * Constants.tileW;
-			tile.y = point.y - (size * Constants.tileH);
-
-			if (tile.x == 0 && tile.y == 0 && skipCenter)
-			return;
+			if (tile.x == 0 && tile.y == 0 && skipCenter) {
+				return;
+			}
 
 			tile.bitmapData.draw(tiledata, null, colorTransform);
 

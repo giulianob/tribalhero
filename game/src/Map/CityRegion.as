@@ -2,6 +2,7 @@
 {
 	import flash.display.*;
 	import flash.events.MouseEvent;
+	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import src.Global;
 	import src.Objects.Factories.ObjectFactory;
@@ -15,8 +16,16 @@
 
 	public class CityRegion extends Sprite
 	{
-		public static const DOT_SPRITE: String = "DOT_SPRITE";
-		public static const DOT_SPRITE_OWN: String = "DOT_SPRITE_ORANGE";
+		public static const DOT_SPRITE: String = "DOT_SPRITE_BLACK";
+		public static const DOT_SPRITE_OWN: String = "DOT_SPRITE";		
+
+		public static const DIFFICULTY_COLORS: Array = [
+		{ r: 200, g: 200, b: 200 },
+		{ r: 0, g: 156, b: 20 },
+		{ r: 255, g: 223, b: 0},
+		{ r: 255, g: 169, b: 0 },
+		{ r: 210, g: 0, b: 0 }
+		];
 
 		public var id: int;
 		private var globalX: int;
@@ -25,7 +34,7 @@
 		private var map: Map;
 
 		public function CityRegion(id: int, map: Map)
-		{		
+		{
 			this.id = id;
 
 			this.map = map;
@@ -138,11 +147,29 @@
 
 			var obj: SimpleGameObject;
 
+			// If it's our city, we just show a special flag
 			if (map.cities.get(cityId)) {
 				obj = ObjectFactory.getSimpleGameObject(DOT_SPRITE_OWN);
 			}
 			else {
 				obj = ObjectFactory.getSimpleGameObject(DOT_SPRITE);
+				
+				// Apply the difficulty transformation to the tile
+				var levelDelta: int = level - Global.gameContainer.selectedCity.MainBuilding.level;
+				var difficultyIdx: int;
+				if (levelDelta <= -3) {
+					difficultyIdx = 0;
+				} else if (levelDelta <= 0) {
+					difficultyIdx = 1;
+				} else if (levelDelta <= 2) {
+					difficultyIdx = 2;
+				} else if (levelDelta <= 3) {
+					difficultyIdx = 3;
+				} else {
+					difficultyIdx = 4;
+				}
+
+				obj.transform.colorTransform = new ColorTransform(1, 1, 1, 1, DIFFICULTY_COLORS[difficultyIdx].r, DIFFICULTY_COLORS[difficultyIdx].g, DIFFICULTY_COLORS[difficultyIdx].b);
 			}
 
 			//add object to map and objects list
@@ -156,7 +183,7 @@
 
 			src.Global.gameContainer.miniMap.objContainer.addObject(gameObj);
 
-			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onObjectMouseOver);			
+			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onObjectMouseOver);
 			gameObj.addEventListener(MouseEvent.MOUSE_OUT, onObjectMouseOut);
 
 			objects.add(gameObj, resort);

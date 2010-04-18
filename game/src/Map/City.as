@@ -51,6 +51,26 @@ package src.Map {
 			dispatchEvent(new Event(RESOURCES_UPDATE));
 		}
 
+		public function nearObjectsByRadius(mindist: int, maxdist: int, x: int, y: int, type: int = -1): Array
+		{
+			var ret: Array = new Array();
+
+			var pos: Point = MapUtil.getMapCoord(x, y);
+
+			for each(var obj: CityObject in objects.each())
+			{
+				if (type != -1 && obj.type != type)
+				continue;
+
+				var dist: Number = obj.radiusDistance(pos.x, pos.y);
+
+				if (mindist <= dist && maxdist >= dist)
+				ret.push(obj);
+			}
+
+			return ret;
+		}
+
 		public function nearObjects(mindist: int, maxdist: int, x: int, y: int, type: int = -1): Array
 		{
 			var ret: Array = new Array();

@@ -1,0 +1,25 @@
+Id,Method,P1,P2,P3,P4,P5,Description
+100,CanBuild,1002,,,,,
+22013,HaveTechnology,23011,lvl=1,count=1,,,
+22014,HaveTechnology,23011,lvl=1,count=2,,,
+2105,CountLessThan,id=2105,count=5,,,,
+2402,HaveTechnology,2402,lvl=1,count=1,,,
+20001,HaveStructure,2302,minlvl=1,maxlvl=10,,,
+20002,HaveNoStructure,2301,minlvl=0,maxlvl=10,,,You can only have one per city.
+210601,HaveNoStructure,2106,minlvl=0,maxlvl=10,,,You can only have one per city.
+210701,HaveNoStructure,2107,minlvl=0,maxlvl=10,,,You can only have one per city.
+,,,,,,,
+//armory & blacksmith,,,,,,,
+23021,CountLessThan,id=2302,count=1,,,,You can upgrade once per level.
+23022,CountLessThan,id=2302,count=2,,,,You can upgrade once per level.
+23023,CountLessThan,id=2302,count=3,,,,You can upgrade once per level.
+23024,CountLessThan,id=2302,count=4,,,,You can upgrade once per level.
+23025,CountLessThan,id=2302,count=5,,,,You can upgrade once per level.
+23026,CountLessThan,id=2302,count=6,,,,You can upgrade once per level.
+23027,CountLessThan,id=2302,count=7,,,,You can upgrade once per level.
+23028,CountLessThan,id=2302,count=8,,,,You can upgrade once per level.
+23029,CountLessThan,id=2302,count=9,,,,You can upgrade once per level.
+23030,CountLessThan,id=2302,count=10,,,,You can upgrade once per level.
+,,,,,,,
+//stable,,,,,,,
+22022,HaveStructure,id=2501,minlvl=3,maxlvl=10,,,

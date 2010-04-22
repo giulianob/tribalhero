@@ -40,8 +40,7 @@ namespace Game.Logic.Actions {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
-
-            Region region = Global.World.GetRegion(x, y);
+           
             Global.World.LockRegion(x, y);
 
             // cost requirement
@@ -58,13 +57,13 @@ namespace Game.Logic.Actions {
             }
 
             // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(type, (byte) 1).Validate(city, x, y)) {
+            if (!ReqirementFactory.GetLayoutRequirement(type, 1).Validate(city, x, y)) {
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }
 
             // check if tile is occupied
-            if (Global.World[x, y].Exists(delegate(GameObject obj) { return obj is Structure; })) {
+            if (Global.World[x, y].Exists(obj => obj is Structure)) {
                 Global.DbManager.Rollback();
                 Global.World.UnlockRegion(x, y);
                 StateChange(ActionState.FAILED);
@@ -106,11 +105,7 @@ namespace Game.Logic.Actions {
             Global.World.UnlockRegion(x, y);
 
             return Error.OK;
-        }
-
-        public object Custom {
-            get { return null; }
-        }
+        }       
 
         public override void Callback(object custom) {
             City city;

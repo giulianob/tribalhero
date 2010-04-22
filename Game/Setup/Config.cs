@@ -86,6 +86,8 @@ namespace Game.Setup {
                     }
                 }
 
+                settingsFile = Path.GetFullPath(settingsFile);
+
                 if (!File.Exists(settingsFile)) {
                     return;
                 }

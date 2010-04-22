@@ -41,41 +41,42 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        private class Record_Foreach {
-            public int shortest_distance;
+        private class RecordForeach {
+            public int shortestDistance;
             public uint x;
             public uint y;
             public bool isShortestDistanceDiagonal;
         }
 
-        private bool work(uint ox, uint oy, uint x, uint y, object custom) {
-            Record_Foreach record_foreach = (Record_Foreach) custom;
+        private bool Work(uint ox, uint oy, uint x, uint y, object custom) {
+            RecordForeach recordForeach = (RecordForeach) custom;
             int distance = GameObject.TileDistance(x, y, this.x, this.y);
 
-            if (distance < record_foreach.shortest_distance) {
-                record_foreach.shortest_distance = distance;
-                record_foreach.x = x;
-                record_foreach.y = y;
-                record_foreach.isShortestDistanceDiagonal = GameObject.IsDiagonal(x, y, ox, oy);
-            } else if (distance == record_foreach.shortest_distance && !record_foreach.isShortestDistanceDiagonal) {
-                record_foreach.shortest_distance = distance;
-                record_foreach.x = x;
-                record_foreach.y = y;
-                record_foreach.isShortestDistanceDiagonal = GameObject.IsDiagonal(x, y, ox, oy);
+            if (distance < recordForeach.shortestDistance) {
+                recordForeach.shortestDistance = distance;
+                recordForeach.x = x;
+                recordForeach.y = y;
+                recordForeach.isShortestDistanceDiagonal = GameObject.IsDiagonal(x, y, ox, oy);
+            } else if (distance == recordForeach.shortestDistance && !recordForeach.isShortestDistanceDiagonal) {
+                recordForeach.shortestDistance = distance;
+                recordForeach.x = x;
+                recordForeach.y = y;
+                recordForeach.isShortestDistanceDiagonal = GameObject.IsDiagonal(x, y, ox, oy);
             }
             return true;
         }
 
-        private bool calculateNext(TroopObject obj) {
+        private bool CalculateNext(TroopObject obj) {
             int distance = obj.TileDistance(x, y);
             if (distance == 0)
                 return false;
-            Record_Foreach record_foreach = new Record_Foreach();
-            record_foreach.shortest_distance = int.MaxValue;
-            record_foreach.isShortestDistanceDiagonal = false;
-            TileLocator.foreach_object(obj.X, obj.Y, 1, false, work, record_foreach);
-            nextX = record_foreach.x;
-            nextY = record_foreach.y;
+            RecordForeach recordForeach = new RecordForeach {
+                                                                shortestDistance = int.MaxValue,
+                                                                isShortestDistanceDiagonal = false
+                                                            };
+            TileLocator.foreach_object(obj.X, obj.Y, 1, false, Work, recordForeach);
+            nextX = recordForeach.x;
+            nextY = recordForeach.y;
 
             int mod = 100;
 
@@ -104,7 +105,7 @@ namespace Game.Logic.Actions {
             troopObj.Stub.BeginUpdate();
             troopObj.Stub.State = TroopStub.TroopState.MOVING;
 
-            if (!calculateNext(troopObj)) {
+            if (!CalculateNext(troopObj)) {
                 troopObj.Stub.State = TroopStub.TroopState.IDLE;
                 StateChange(ActionState.COMPLETED);
                 troopObj.Stub.EndUpdate();
@@ -124,7 +125,7 @@ namespace Game.Logic.Actions {
                     case ActionInterrupt.CANCEL:
                         x = city.MainBuilding.X;
                         y = city.MainBuilding.Y;
-                        if (!calculateNext(troopObj)) {
+                        if (!CalculateNext(troopObj)) {
                             Global.Scheduler.Del(this);
                             StateChange(ActionState.COMPLETED);
                             return;
@@ -151,7 +152,7 @@ namespace Game.Logic.Actions {
                 --distanceRemaining;
                 troopObj.EndUpdate();
 
-                if (!calculateNext(troopObj)) {
+                if (!CalculateNext(troopObj)) {
                     troopObj.Stub.BeginUpdate();
                     troopObj.Stub.State = TroopStub.TroopState.IDLE;
                     troopObj.Stub.EndUpdate();
@@ -170,7 +171,7 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("city_id", cityId), new XMLKVPair("troop_id", troopObjectId),
                                                                 new XMLKVPair("x", x), new XMLKVPair("y", y),
                                                                 new XMLKVPair("next_x", nextX), new XMLKVPair("next_y", nextY),

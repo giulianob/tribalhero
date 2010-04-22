@@ -1,6 +1,5 @@
 Id,Method,P1,P2,P3,P4,P5,Description
 100,CanBuild,1002,,,,,
-22013,HaveTechnology,23011,lvl=1,count=1,,,
 22014,HaveTechnology,23011,lvl=1,count=2,,,
 2105,CountLessThan,id=2105,count=5,,,,
 2402,HaveTechnology,2402,lvl=1,count=1,,,
@@ -23,3 +22,4 @@ Id,Method,P1,P2,P3,P4,P5,Description
 ,,,,,,,
 //stable,,,,,,,
 22022,HaveStructure,id=2501,minlvl=3,maxlvl=10,,,
+22013,HaveStructure,id=2302,minlvl=3,maxlvl=10,,,

@@ -1,0 +1,171 @@
+Key,EN
+TOWNCENTER_STRUCTURE_NAME,Town Center
+TOWNCENTER_STRUCTURE_DESCRIPTION,The Town Center provides the foundation necessary to grow your city.
+TOWNCENTER_STRUCTURE_LVL_1,"Allows building a farm and a lumbermill. Town center can hold a maximum of 700 crop, 700 wood, and 200 iron."
+TOWNCENTER_STRUCTURE_LVL_2,"Enables building barracks and a university. Increases the maximum resources to 1100 crop, 1100 wood, and 300 iron."
+TOWNCENTER_STRUCTURE_LVL_3,"Allows building foundries, trading posts, and stables. Increases the maximum resources to 1600 crop, 1600 wood, and 500 iron."
+TOWNCENTER_STRUCTURE_LVL_4,"Ability to build another farm and lumbermill. Increases the maximum resources to 2500 crop, 2500 wood, and 800 iron."
+TOWNCENTER_STRUCTURE_LVL_5,"Increases the maximum resources to 3800 crop, 3800 wood, and 1200 iron."
+TOWNCENTER_STRUCTURE_LVL_6,"Increases the maximum resources to 5700 crop, 5700 wood, and 1800 iron."
+TOWNCENTER_STRUCTURE_LVL_7,"Increases the maximum resources to 8700 crop, 8700 wood, and 2800 iron."
+TOWNCENTER_STRUCTURE_LVL_8,"Increases the maximum resources to 13200 crop, 13200 wood, and 4400 iron."
+TOWNCENTER_STRUCTURE_LVL_9,"Increases the maximum resources to 20100 crop, 20100 wood, and 6800 iron."
+TOWNCENTER_STRUCTURE_LVL_10,"Increases the maximum resources to 30000 crop, 30000 wood, and 10000 iron."
+BARRACK_STRUCTURE_NAME,Barrack
+BARRACK_STRUCTURE_DESCRIPTION,Enables the ability to train advanced military units without requiring laborers.
+BARRACK_STRUCTURE_LVL_1,Allows training swordsmen and archers.
+BARRACK_STRUCTURE_LVL_2,Allows training pikemen.
+BARRACK_STRUCTURE_LVL_3,"Enables upgrading fighters, pikemen, and bowmen"
+BARRACK_STRUCTURE_LVL_4,Improves barrack strength.
+BARRACK_STRUCTURE_LVL_5,Decreases training time by 5%.
+BARRACK_STRUCTURE_LVL_6,Decreases training time by 10%.
+BARRACK_STRUCTURE_LVL_7,Decreases training time by 15%.
+BARRACK_STRUCTURE_LVL_8,Decreases training time by 20%.
+BARRACK_STRUCTURE_LVL_9,Decreases training time by 30%.
+BARRACK_STRUCTURE_LVL_10,Decreases training time by 40%.
+TRAINING_GROUND_STRUCTURE_NAME,Training Ground
+TRAINING_GROUND_STRUCTURE_DESCRIPTION,Enables the ability to train your laborers into military units and provides defensive structures.
+TRAINING_GROUND_STRUCTURE_LVL_1,Allows training fighters and bowmen.
+TRAINING_GROUND_STRUCTURE_LVL_2,Allows building defensive towers.
+TRAINING_GROUND_STRUCTURE_LVL_3,Enables upgrading fighters and bowmen.
+TRAINING_GROUND_STRUCTURE_LVL_4,Improves training ground strength.
+TRAINING_GROUND_STRUCTURE_LVL_5,Decreases training time by 5%. Allows converting the structure to a Barrack.
+TRAINING_GROUND_STRUCTURE_LVL_6,Decreases training time by 10%.
+TRAINING_GROUND_STRUCTURE_LVL_7,Decreases training time by 15%.
+TRAINING_GROUND_STRUCTURE_LVL_8,Decreases training time by 20%.
+TRAINING_GROUND_STRUCTURE_LVL_9,Decreases training time by 30%.
+TRAINING_GROUND_STRUCTURE_LVL_10,Decreases training time by 40%.
+FARM_STRUCTURE_NAME,Farm
+FARM_STRUCTURE_DESCRIPTION,Uses the city's laborers to grow and produce crops.
+FARM_STRUCTURE_LVL_1,Allows a maximum of 20 laborers to work in the farm.
+FARM_STRUCTURE_LVL_2,Increases the farm to support a maximum of 45 laborers.
+FARM_STRUCTURE_LVL_3,Increases the farm to support a maximum of 70 laborers.
+FARM_STRUCTURE_LVL_4,Increases the farm to support a maximum of 95 laborers.
+FARM_STRUCTURE_LVL_5,Increases the farm to support a maximum of 120 laborers.
+FARM_STRUCTURE_LVL_6,Increases the farm to support a maximum of 145 laborers.
+FARM_STRUCTURE_LVL_7,Increases the farm to support a maximum of 170 laborers.
+FARM_STRUCTURE_LVL_8,Increases the farm to support a maximum of 195 laborers.
+FARM_STRUCTURE_LVL_9,Increases the farm to support a maximum of 215 laborers.
+FARM_STRUCTURE_LVL_10,Increases the farm to support a maximum of 240 laborers.
+LUMBERMILL_STRUCTURE_NAME,Lumbermill
+LUMBERMILL_STRUCTURE_DESCRIPTION,Use the city's laborers to produce wood.
+LUMBERMILL_STRUCTURE_LVL_1,Allows a maximum of 15 laborers to work in the lumbermill.
+LUMBERMILL_STRUCTURE_LVL_2,Increases the lumbermill to support a maximum of 30 laborers.
+LUMBERMILL_STRUCTURE_LVL_3,Increases the lumbermill to support a maximum of 45 laborers.
+LUMBERMILL_STRUCTURE_LVL_4,Increases the lumbermill to support a maximum of 60 laborers.
+LUMBERMILL_STRUCTURE_LVL_5,Increases the lumbermill to support a maximum of 80 laborers.
+LUMBERMILL_STRUCTURE_LVL_6,Increases the lumbermill to support a maximum of 100 laborers.
+LUMBERMILL_STRUCTURE_LVL_7,Increases the lumbermill to support a maximum of 130 laborers.
+LUMBERMILL_STRUCTURE_LVL_8,Increases the lumbermill to support a maximum of 165 laborers.
+LUMBERMILL_STRUCTURE_LVL_9,Increases the lumbermill to support a maximum of 205 laborers.
+LUMBERMILL_STRUCTURE_LVL_10,Increases the lumbermill to support a maximum of 250 laborers.
+FOUNDRY_STRUCTURE_NAME,Foundry
+FOUNDRY_STRUCTURE_DESCRIPTION,Allow the city's laborer to use wood to repair buildings after they have been damaged in combat.
+FOUNDRY_STRUCTURE_LVL_1,Increases to a maximum of 10 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.
+FOUNDRY_STRUCTURE_LVL_2,Increases to a maximum of 20 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.
+FOUNDRY_STRUCTURE_LVL_3,Increases to a maximum of 30 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.
+FOUNDRY_STRUCTURE_LVL_4,Increases to a maximum of 40 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.
+FOUNDRY_STRUCTURE_LVL_5,Increases to a maximum of 50 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.
+STABLE_STRUCTURE_NAME,Stable
+STABLE_STRUCTURE_DESCRIPTION,Trains mounted units.
+STABLE_STRUCTURE_LVL_1,Allows training calvary.
+STABLE_STRUCTURE_LVL_2,Improved stable strength.
+STABLE_STRUCTURE_LVL_3,Allows training heavy calvary.
+STABLE_STRUCTURE_LVL_4,Enables upgrading calvary and heavy calvary.
+STABLE_STRUCTURE_LVL_5,Enables converting the stable into a workshop. Decreases unit training time by 5%.
+STABLE_STRUCTURE_LVL_6,Decreases training time by 10%.
+STABLE_STRUCTURE_LVL_7,Decreases training time by 15%.
+STABLE_STRUCTURE_LVL_8,Decreases training time by 20%.
+STABLE_STRUCTURE_LVL_9,Decreases training time by 30%.
+STABLE_STRUCTURE_LVL_10,Decreases training time by 40%.
+WORKSHOP_STRUCTURE_NAME,Workshop
+WORKSHOP_STRUCTURE_DESCRIPTION,Ability to train siege engines such as catapults and helepolis.
+WORKSHOP_STRUCTURE_LVL_1,Enables training catapults and helepolis.
+WORKSHOP_STRUCTURE_LVL_2,Improves workshop strength.
+WORKSHOP_STRUCTURE_LVL_3,Enables upgrading catapults and helepolis.
+WORKSHOP_STRUCTURE_LVL_4,Improves workshop strength.
+WORKSHOP_STRUCTURE_LVL_5,Decreases unit training time by 5%.
+WORKSHOP_STRUCTURE_LVL_6,Decreases training time by 10%.
+WORKSHOP_STRUCTURE_LVL_7,Decreases training time by 15%.
+WORKSHOP_STRUCTURE_LVL_8,Decreases training time by 20%.
+WORKSHOP_STRUCTURE_LVL_9,Decreases training time by 30%.
+WORKSHOP_STRUCTURE_LVL_10,Decreases training time by 40%.
+UNIVERSITY_STRUCTURE_NAME,University
+UNIVERSITY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city in various ways and decreases labor Training time.
+UNIVERSITY_STRUCTURE_LVL_1,Decreases Labor Training time by  2% and allows building Armory. 
+UNIVERSITY_STRUCTURE_LVL_2,Decreases Labor Training time by  4% and enables upgrading Hanzo Sword technology.
+UNIVERSITY_STRUCTURE_LVL_3,Decreases Labor Training time by  6% and allows building Blacksmith.
+UNIVERSITY_STRUCTURE_LVL_4,Decreases Labor Training time by  8% and enables upgrading Long Bow technology.
+UNIVERSITY_STRUCTURE_LVL_5,Decreases Labor Training time by  10% and enables upgrading Long Composite technology.
+UNIVERSITY_STRUCTURE_LVL_6,Decreases Labor Training time by  15% and enables upgrading Long Crossbow technology.
+UNIVERSITY_STRUCTURE_LVL_7,Decreases Labor Training time by  20%
+UNIVERSITY_STRUCTURE_LVL_8,Decreases Labor Training time by  30%
+UNIVERSITY_STRUCTURE_LVL_9,Decreases Labor Training time by  50%
+UNIVERSITY_STRUCTURE_LVL_10,Decreases Labor Training time by  80%
+ARMORY_STRUCTURE_NAME,Armory
+ARMORY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city's military defense.
+ARMORY_STRUCTURE_LVL_1,
+ARMORY_STRUCTURE_LVL_2,
+ARMORY_STRUCTURE_LVL_3,
+ARMORY_STRUCTURE_LVL_4,
+ARMORY_STRUCTURE_LVL_5,
+ARMORY_STRUCTURE_LVL_6,
+ARMORY_STRUCTURE_LVL_7,
+ARMORY_STRUCTURE_LVL_8,
+ARMORY_STRUCTURE_LVL_9,
+ARMORY_STRUCTURE_LVL_10,
+BLACKSMITH_STRUCTURE_NAME,Blacksmith
+BLACKSMITH_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city's military offense.
+BLACKSMITH_STRUCTURE_LVL_1,
+BLACKSMITH_STRUCTURE_LVL_2,
+BLACKSMITH_STRUCTURE_LVL_3,
+BLACKSMITH_STRUCTURE_LVL_4,
+BLACKSMITH_STRUCTURE_LVL_5,
+BLACKSMITH_STRUCTURE_LVL_6,
+BLACKSMITH_STRUCTURE_LVL_7,
+BLACKSMITH_STRUCTURE_LVL_8,
+BLACKSMITH_STRUCTURE_LVL_9,
+BLACKSMITH_STRUCTURE_LVL_10,
+TOWER_STRUCTURE_NAME,Tower
+TOWER_STRUCTURE_DESCRIPTION,Provides defense to nearby buildings during an attack.
+TOWER_STRUCTURE_LVL_1,Protects buildings within a 1 tile radius.
+TOWER_STRUCTURE_LVL_2,Increases tower defenses.
+TOWER_STRUCTURE_LVL_3,Increases tower defenses.
+TOWER_STRUCTURE_LVL_4,Increases tower defenses.
+TOWER_STRUCTURE_LVL_5,Increases radius to cover 2 tiles. Allows converting the tower to a structure that is stronger against units with wooden armor.
+TOWER_STRUCTURE_LVL_6,Increases tower defenses.
+TOWER_STRUCTURE_LVL_7,Increases tower defenses.
+TOWER_STRUCTURE_LVL_8,Increases tower defenses.
+TOWER_STRUCTURE_LVL_9,Increases tower defenses.
+TOWER_STRUCTURE_LVL_10,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_NAME,Cannon Tower
+CANNON_TOWER_STRUCTURE_DESCRIPTION,Provides defense to nearby buildings during an attack. Strong against enemies with wooden armor.
+CANNON_TOWER_STRUCTURE_LVL_1,Protects buildings within a 1 tile radius.
+CANNON_TOWER_STRUCTURE_LVL_2,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_LVL_3,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_LVL_4,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_LVL_5,Increases radius to cover 2 tiles.
+CANNON_TOWER_STRUCTURE_LVL_6,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_LVL_7,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_LVL_8,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_LVL_9,Increases tower defenses.
+CANNON_TOWER_STRUCTURE_LVL_10,Increases tower defenses.
+TRADING_POST_STRUCTURE_NAME,Trading Post
+TRADING_POST_STRUCTURE_DESCRIPTION,Allows sending caravans with resources to other players. Gives the ability to build a market.
+TRADING_POST_STRUCTURE_LVL_1,Ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_2,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_3,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_4,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_5,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_6,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_7,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_8,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_9,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_10,Increase ability to send a maximum of ### resources.
+MARKET_STRUCTURE_NAME,Market
+MARKET_STRUCTURE_DESCRIPTION,Allows selling and buying resources from the world market.
+MARKET_STRUCTURE_LVL_1,Ability to sell and buy resources at a 25% tax rate.
+MARKET_STRUCTURE_LVL_2,Decreases the tax rate to 20%.
+MARKET_STRUCTURE_LVL_3,Decreases the tax rate to 15%.
+MARKET_STRUCTURE_LVL_4,Decreases the tax rate to 10%.
+MARKET_STRUCTURE_LVL_5,Decreases the tax rate to 5%.

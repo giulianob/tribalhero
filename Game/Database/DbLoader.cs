@@ -772,7 +772,7 @@ namespace Game.Database {
                         }
                     }
 
-                    city.Worker.Notifications.dbLoaderAdd(false, notification);
+                    city.Worker.Notifications.DbLoaderAdd(false, notification);
 
                     notification.DbPersisted = true;
                 }

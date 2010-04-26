@@ -38,7 +38,7 @@ namespace Game.Logic.Actions {
                 throw new Exception();
 
             stub.City.Worker.References.Add(stub.TroopObject, this);
-            stub.City.Worker.Notifications.add(stub.TroopObject, this);
+            stub.City.Worker.Notifications.Add(stub.TroopObject, this);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X,
                                                       stub.City.MainBuilding.Y);
@@ -58,7 +58,7 @@ namespace Game.Logic.Actions {
 
                     if (stub.City.Battle == null) {
                         stub.City.Worker.References.Remove(stub.TroopObject, this);
-                        stub.City.Worker.Notifications.remove(this);
+                        stub.City.Worker.Notifications.Remove(this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
                         StateChange(ActionState.COMPLETED);
                     } else {
@@ -79,7 +79,7 @@ namespace Game.Logic.Actions {
                         throw new Exception();
 
                     stub.City.Worker.References.Remove(stub.TroopObject, this);
-                    stub.City.Worker.Notifications.remove(this);
+                    stub.City.Worker.Notifications.Remove(this);
                     if (stub.TotalCount == 0)
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
                     else

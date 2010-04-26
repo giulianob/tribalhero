@@ -49,7 +49,7 @@ namespace Game.Logic.Actions {
             stub.EndUpdate();
 
             city.Worker.References.Add(stub.TroopObject, this);
-            city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
+            city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetCity.MainBuilding.X,
                                                       targetCity.MainBuilding.Y);
@@ -72,7 +72,7 @@ namespace Game.Logic.Actions {
                         throw new Exception();
 
                     city.Worker.References.Remove(stub.TroopObject, this);
-                    city.Worker.Notifications.remove(this);
+                    city.Worker.Notifications.Remove(this);
 
                     Procedure.TroopObjectStation(stub.TroopObject, targetCity);
 

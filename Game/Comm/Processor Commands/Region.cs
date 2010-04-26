@@ -47,7 +47,7 @@ namespace Game.Comm {
                 City city = cities[cityId];
 
                 NotificationManager.Notification notification;
-                if (!srcCity.Worker.Notifications.tryGetValue(city, actionId, out notification)) {
+                if (!srcCity.Worker.Notifications.TryGetValue(city, actionId, out notification)) {
                     ReplyError(session, packet, Error.ACTION_NOT_FOUND);
                     return;
                 }

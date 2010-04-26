@@ -64,7 +64,7 @@ namespace Game.Logic.Actions {
             initialTroopValue = stub.Value;
 
             city.Worker.References.Add(stub.TroopObject, this);
-            city.Worker.Notifications.add(stub.TroopObject, this, targetCity);
+            city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X,
                                                       targetStructure.Y);
@@ -119,7 +119,7 @@ namespace Game.Logic.Actions {
                     City targetCity = cities[targetCityId];
 
                     //Remove notification to target city once battle is over
-                    city.Worker.Notifications.remove(this);
+                    city.Worker.Notifications.Remove(this);
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");

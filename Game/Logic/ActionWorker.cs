@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Game.Data;
-using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
 
@@ -20,7 +19,7 @@ namespace Game.Logic {
         public EffectInheritance effectReqInherit;
     }
 
-    public class ActionWorker : ISchedule {
+    public class ActionWorker {
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
 
         private readonly ListDictionary<ushort, ActiveAction> active = new ListDictionary<ushort, ActiveAction>();
@@ -79,7 +78,7 @@ namespace Game.Logic {
                     if (ActionRescheduled != null)
                         ActionRescheduled(actionStub);
 
-                    if (action is PassiveAction || action is ChainAction)
+                    if (action is PassiveAction)
                         Global.DbManager.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
@@ -89,7 +88,7 @@ namespace Game.Logic {
                     if (ActionStarted != null)
                         ActionStarted(actionStub);
 
-                    if (action is PassiveAction || action is ChainAction)
+                    if (action is PassiveAction)
                         Global.DbManager.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
@@ -102,11 +101,11 @@ namespace Game.Logic {
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub);
 
-                    if (action is PassiveAction || action is ChainAction)
+                    if (action is PassiveAction)
                         Global.DbManager.Delete(actionStub);
                     break;
                 case ActionState.FIRED:
-                    if (action is PassiveAction || action is ChainAction)
+                    if (action is PassiveAction)
                         Global.DbManager.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
@@ -120,7 +119,7 @@ namespace Game.Logic {
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub);
 
-                    if (action is PassiveAction || action is ChainAction)
+                    if (action is PassiveAction)
                         Global.DbManager.Delete(actionStub);
                     break;
             }
@@ -417,17 +416,5 @@ namespace Game.Logic {
 
             return Error.ACTION_NOT_FOUND;
         }
-
-        #region ISchedule Members
-
-        public DateTime Time {
-            get { throw new NotImplementedException(); }
-        }
-
-        public void Callback(object custom) {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

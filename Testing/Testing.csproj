@@ -50,6 +50,8 @@
     <Compile Include="Lock\CallbackLockTest.cs" />
     <Compile Include="Database\DatabasePerformanceTest.cs" />
     <Compile Include="MapMath\RadiusTest.cs" />
+    <Compile Include="Misc\XmlSerializerTest.cs" />
+    <Compile Include="Resources\AggressiveLazyResourceTest.cs" />
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

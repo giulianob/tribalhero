@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Game.Data;
 
@@ -16,16 +17,6 @@ namespace CSVToXML {
         static String csvDataFolder;
         static String langDataFolder;
       
-        #region Property
-
-        private class Property {
-            public string type;
-            public string name;
-            public string datatype;
-        }
-
-        #endregion
-
         #region Layout
 
         private class Layout {
@@ -92,15 +83,10 @@ namespace CSVToXML {
             public string param1, param2, param3, param4, param5;
         }
 
-        private static List<TechnologyEffects> FindAllTechEffects(List<TechnologyEffects> techEffects, int techid,
+        private static IEnumerable<TechnologyEffects> FindAllTechEffects(IEnumerable<TechnologyEffects> techEffects, int techid,
                                                                   int lvl) {
-            List<TechnologyEffects> ret = new List<TechnologyEffects>();
-            foreach (TechnologyEffects prop in techEffects) {
-                if (Int32.Parse(prop.techid) == techid && Int32.Parse(prop.lvl) == lvl)
-                    ret.Add(prop);
-            }
 
-            return ret;
+            return techEffects.Where(effect => Int32.Parse(effect.techid) == techid && Int32.Parse(effect.lvl) == lvl).ToList();
         }
 
         #endregion
@@ -362,6 +348,10 @@ namespace CSVToXML {
                 }
 
                 switch (workerAction.action.ToLower()) {
+                    case "forest_camp_build":
+                        writer.WriteStartElement("ForestCampBuild");
+                        writer.WriteAttributeString("type", workerAction.param1);
+                        break;
                     case "structure_build":
                         writer.WriteStartElement("StructureBuild");
                         writer.WriteAttributeString("type", workerAction.param1);
@@ -483,7 +473,7 @@ namespace CSVToXML {
                     writer.WriteAttributeString("labor", obj[8]);
                     writer.WriteAttributeString("time", obj[9]);
 
-                    List<TechnologyEffects> effects = FindAllTechEffects(techEffects, Int32.Parse(obj[0]), Int32.Parse(obj[3]));
+                    IEnumerable<TechnologyEffects> effects = FindAllTechEffects(techEffects, Int32.Parse(obj[0]), Int32.Parse(obj[3]));
                     foreach (TechnologyEffects effect in effects) {
                         //TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
                         writer.WriteStartElement("Effect");
@@ -518,16 +508,13 @@ namespace CSVToXML {
 
                     if (obj[0].Length <= 0)
                         continue;
-                    Property prop = new Property {
-                                                     type = obj[0],
-                                                     name = obj[1],
-                                                     datatype = obj[2]
-                                                 };
 
                     writer.WriteStartElement("Prop");
-                    writer.WriteAttributeString("type", prop.type);
-                    writer.WriteAttributeString("datatype", prop.datatype.ToUpper());
-                    writer.WriteAttributeString("name", prop.name);
+                    writer.WriteAttributeString("type", obj[0]);
+                    writer.WriteAttributeString("index", obj[1]);
+                    writer.WriteAttributeString("name", obj[2]);
+                    writer.WriteAttributeString("datatype", obj[3].ToUpper());
+                    writer.WriteAttributeString("visibility", obj[4].ToUpper());
                     writer.WriteEndElement();
                 }
             }

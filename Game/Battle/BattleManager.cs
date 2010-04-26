@@ -358,7 +358,7 @@ namespace Game.Battle {
                 bool added = false;
 
                 foreach (Structure obj in objects) {
-                    if (obj.Stats.Hp == 0 || defenders.Contains(obj))
+                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || ObjectTypeFactory.IsStructureType("Unattackable", obj))
                         continue;
 
                     // Don't add main building if lvl 1 or if a building is lvl 0

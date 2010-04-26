@@ -23,7 +23,7 @@ namespace Game.Logic.Procedures {
                 if (!Global.World.Add(structure)) {
                     city.Remove(structure);
                     Global.World.UnlockRegion(x, y);
-                    return false;
+                    return true;
                 }
                 InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 Global.World.UnlockRegion(x, y);

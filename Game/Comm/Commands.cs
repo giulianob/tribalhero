@@ -74,6 +74,11 @@ namespace Game.Comm {
 
         #endregion
 
+        #region Forest
+        FOREST_INFO = 350,
+        FOREST_CREATE_CAMP = 351,
+        #endregion
+
         #region City
 
         CITY_OBJECT_ADD = 451,

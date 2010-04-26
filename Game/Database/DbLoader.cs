@@ -21,8 +21,9 @@ using Game.Util;
 namespace Game.Database {
     public class DbLoader {
         public static bool LoadFromDatabase(IDbManager dbManager) {
+            SystemTimeUpdater.Pause();
             Global.Scheduler.Pause();
-            Global.PauseEvents();
+            Global.FireEvents = false;
 
             Global.Logger.Info("Loading database...");
 
@@ -48,13 +49,14 @@ namespace Game.Database {
                     LoadStructures(dbManager);
                     LoadStructureProperties(dbManager);
                     LoadTechnologies(dbManager);
+                    LoadForests(dbManager, downTime);
                     LoadTroopStubs(dbManager);
                     LoadTroopStubTemplates(dbManager);
                     LoadTroops(dbManager);
                     LoadBattleManagers(dbManager);
                     LoadActions(dbManager, downTime);
                     LoadActionReferences(dbManager);
-                    LoadActionNotifications(dbManager);                    
+                    LoadActionNotifications(dbManager);
 
                     Global.World.AfterDbLoaded();
 
@@ -72,8 +74,8 @@ namespace Game.Database {
             Global.Logger.Info("Database loading finished");
 
             SystemTimeUpdater.Resume();
-            Global.ResumeEvents();
-            Global.Scheduler.Resume();            
+            Global.FireEvents = true;
+            Global.Scheduler.Resume();
             return true;
         }
 
@@ -89,7 +91,7 @@ namespace Game.Database {
                 }
             }
 
-            #endregion            
+            #endregion
         }
 
         static void LoadMarket(IDbManager dbManager) {
@@ -126,9 +128,9 @@ namespace Game.Database {
             Global.Logger.Info("Loading players...");
             using (var reader = dbManager.Select(Player.DB_TABLE)) {
                 while (reader.Read()) {
-                    Player player = new Player((uint) reader["id"], (string) reader["name"]) {
-                                                                                                 DbPersisted = true
-                                                                                             };
+                    Player player = new Player((uint)reader["id"], (string)reader["name"]) {
+                        DbPersisted = true
+                    };
                     Global.Players.Add(player.PlayerId, player);
                 }
             }
@@ -142,25 +144,24 @@ namespace Game.Database {
             Global.Logger.Info("Loading cities...");
             using (var reader = dbManager.Select(City.DB_TABLE)) {
                 while (reader.Read()) {
-                    DateTime cropRealizeTime = ((DateTime) reader["crop_realize_time"]).Add(downTime);
-                    DateTime woodRealizeTime = ((DateTime) reader["wood_realize_time"]).Add(downTime);
-                    DateTime ironRealizeTime = ((DateTime) reader["iron_realize_time"]).Add(downTime);
-                    DateTime laborRealizeTime = ((DateTime) reader["labor_realize_time"]).Add(downTime);
-                    DateTime goldRealizeTime = ((DateTime) reader["gold_realize_time"]).Add(downTime);
+                    DateTime cropRealizeTime = ((DateTime)reader["crop_realize_time"]).Add(downTime);
+                    DateTime woodRealizeTime = ((DateTime)reader["wood_realize_time"]).Add(downTime);
+                    DateTime ironRealizeTime = ((DateTime)reader["iron_realize_time"]).Add(downTime);
+                    DateTime laborRealizeTime = ((DateTime)reader["labor_realize_time"]).Add(downTime);
+                    DateTime goldRealizeTime = ((DateTime)reader["gold_realize_time"]).Add(downTime);
 
-                    LazyResource resource = new LazyResource((int) reader["crop"], cropRealizeTime, (int) reader["crop_production_rate"], (int) reader["crop_upkeep"], (int) reader["gold"],
-                                                             goldRealizeTime, (int) reader["gold_production_rate"], (int) reader["iron"], ironRealizeTime, (int) reader["iron_production_rate"],
-                                                             (int) reader["wood"], woodRealizeTime, (int) reader["wood_production_rate"], (int) reader["labor"], laborRealizeTime,
-                                                             (int) reader["labor_production_rate"]);
-                    City city = new City(Global.Players[(uint) reader["player_id"]], (string) reader["name"], resource, null)
-                                    {
-                                        Radius = (byte) reader["radius"],
-                                        DbPersisted = true,
-                                        LootStolen = (uint) reader["loot_stolen"],
-                                        AttackPoint = (int) reader["attack_point"],
-                                        DefensePoint = (int) reader["defense_point"]
-                                    };
-                    Global.World.DbLoaderAdd((uint) reader["id"], city);
+                    LazyResource resource = new LazyResource((int)reader["crop"], cropRealizeTime, (int)reader["crop_production_rate"], (int)reader["crop_upkeep"], (int)reader["gold"],
+                                                             goldRealizeTime, (int)reader["gold_production_rate"], (int)reader["iron"], ironRealizeTime, (int)reader["iron_production_rate"],
+                                                             (int)reader["wood"], woodRealizeTime, (int)reader["wood_production_rate"], (int)reader["labor"], laborRealizeTime,
+                                                             (int)reader["labor_production_rate"]);
+                    City city = new City(Global.Players[(uint)reader["player_id"]], (string)reader["name"], resource, null) {
+                        Radius = (byte)reader["radius"],
+                        DbPersisted = true,
+                        LootStolen = (uint)reader["loot_stolen"],
+                        AttackPoint = (int)reader["attack_point"],
+                        DefensePoint = (int)reader["defense_point"]
+                    };
+                    Global.World.DbLoaderAdd((uint)reader["id"], city);
                 }
             }
 
@@ -174,17 +175,61 @@ namespace Game.Database {
             using (var reader = dbManager.Select(UnitTemplate.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
                     city.Template.DbPersisted = true;
 
                     using (DbDataReader listReader = dbManager.SelectList(city.Template)) {
                         while (listReader.Read())
-                            city.Template.dbLoaderAdd((ushort) listReader["type"], UnitFactory.GetUnitStats((ushort) listReader["type"], (byte) listReader["level"]));
+                            city.Template.dbLoaderAdd((ushort)listReader["type"], UnitFactory.GetUnitStats((ushort)listReader["type"], (byte)listReader["level"]));
                     }
                 }
             }
 
             #endregion
+        }
+
+        static void LoadForests(IDbManager dbManager, TimeSpan downTime) {
+            Global.Logger.Info("Loading forests...");
+            using (var reader = dbManager.Select(Forest.DB_TABLE)) {
+                while (reader.Read()) {
+                    Forest forest = new Forest((byte)reader["level"], (int)reader["capacity"], (int)reader["rate"]) {
+                        DbPersisted = true,
+                        X = (uint)reader["x"],
+                        Y = (uint)reader["y"],
+                        Labor = (ushort)reader["labor"],
+                        ObjectId = (uint)reader["id"],
+                        State = {
+                            Type =
+                                (ObjectState)
+                                ((byte)reader["state"])
+                        },
+                        Wood = new AggressiveLazyValue((int)reader["lumber"], ((DateTime)reader["last_realize_time"]).Add(downTime), 0, (int)reader["upkeep"]) {
+                            Limit = (int)reader["capacity"]
+                        }
+                    };
+
+                    foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
+                        forest.State.Parameters.Add(variable);
+
+                    // Add lumberjacks
+                    foreach (object[] vars in XMLSerializer.DeserializeComplexList((string)reader["structures"])) {
+                        City city;
+                        if (!Global.World.TryGetObjects((uint)vars[0], out city))
+                            throw new Exception("City not found");
+
+                        Structure structure;
+                        if (!city.TryGetStructure((uint)vars[1], out structure))
+                            throw new Exception("Structure not found");
+
+                        forest.AddLumberjack(structure);
+                    }
+
+                    forest.SetDepleteAction();
+
+                    Global.World.DbLoaderAdd(forest);
+                    Global.Forests.DbLoaderAdd(forest);
+                }
+            }
         }
 
         static void LoadStructures(IDbManager dbManager) {
@@ -194,18 +239,18 @@ namespace Game.Database {
             using (var reader = dbManager.Select(Structure.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                    Structure structure = StructureFactory.GetStructure(null, (ushort) reader["type"], (byte) reader["level"], false, false);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    Structure structure = StructureFactory.GetStructure(null, (ushort)reader["type"], (byte)reader["level"], false, false);
                     structure.Technologies.Parent = city.Technologies;
-                    structure.X = (uint) reader["x"];
-                    structure.Y = (uint) reader["y"];
-                    structure.Stats.Hp = (ushort) reader["hp"];
-                    structure.ObjectId = (uint) reader["id"];
-                    structure.Stats.Labor = (byte) reader["labor"];
+                    structure.X = (uint)reader["x"];
+                    structure.Y = (uint)reader["y"];
+                    structure.Stats.Hp = (ushort)reader["hp"];
+                    structure.ObjectId = (uint)reader["id"];
+                    structure.Stats.Labor = (byte)reader["labor"];
                     structure.DbPersisted = true;
-                    structure.State.Type = (ObjectState) ((byte) reader["state"]);
+                    structure.State.Type = (ObjectState)((byte)reader["state"]);
 
-                    foreach (object variable in XMLSerializer.DeserializeList((string) reader["state_parameters"]))
+                    foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
                         structure.State.Parameters.Add(variable);
 
                     city.Add(structure.ObjectId, structure, false);
@@ -225,17 +270,17 @@ namespace Game.Database {
                 while (reader.Read()) {
 
                     // Simple optimization                        
-                    if (city == null || city.Id != (uint) reader["city_id"]) {
-                        Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    if (city == null || city.Id != (uint)reader["city_id"]) {
+                        Global.World.TryGetObjects((uint)reader["city_id"], out city);
                     }
 
-                    Structure structure = (Structure) city[(uint) reader["structure_id"]];
+                    Structure structure = (Structure)city[(uint)reader["structure_id"]];
 
                     structure.Properties.DbPersisted = true;
 
                     using (DbDataReader listReader = dbManager.SelectList(structure.Properties)) {
                         while (listReader.Read())
-                            structure.Properties.Add(listReader["name"], DataTypeSerializer.Deserialize((string) listReader["value"], (byte) listReader["datatype"]));
+                            structure.Properties.Add(listReader["name"], DataTypeSerializer.Deserialize((string)listReader["value"], (byte)listReader["datatype"]));
                     }
                 }
             }
@@ -249,23 +294,23 @@ namespace Game.Database {
             Global.Logger.Info("Loading technologies...");
             using (var reader = dbManager.Select(TechnologyManager.DB_TABLE)) {
                 while (reader.Read()) {
-                    EffectLocation ownerLocation = (EffectLocation) ((byte) reader["owner_location"]);
+                    EffectLocation ownerLocation = (EffectLocation)((byte)reader["owner_location"]);
 
                     TechnologyManager manager;
 
                     switch (ownerLocation) {
                         case EffectLocation.OBJECT: {
-                            City city;
-                            Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                            Structure structure = (Structure) city[(uint) reader["owner_id"]];
-                            manager = structure.Technologies;
-                        }
+                                City city;
+                                Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                                Structure structure = (Structure)city[(uint)reader["owner_id"]];
+                                manager = structure.Technologies;
+                            }
                             break;
                         case EffectLocation.CITY: {
-                            City city;
-                            Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                            manager = city.Technologies;
-                        }
+                                City city;
+                                Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                                manager = city.Technologies;
+                            }
                             break;
                         default:
                             throw new Exception("Unknown effect location?");
@@ -275,7 +320,7 @@ namespace Game.Database {
 
                     using (DbDataReader listReader = dbManager.SelectList(manager)) {
                         while (listReader.Read())
-                            manager.Add(TechnologyFactory.GetTechnology((uint) listReader["type"], (byte) listReader["level"]), false);
+                            manager.Add(TechnologyFactory.GetTechnology((uint)listReader["type"], (byte)listReader["level"]), false);
                     }
                 }
             }
@@ -290,32 +335,32 @@ namespace Game.Database {
             using (var reader = dbManager.Select(TroopStub.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
                     City stationedCity = null;
 
-                    if ((uint) reader["stationed_city_id"] != 0)
-                        Global.World.TryGetObjects((uint) reader["stationed_city_id"], out stationedCity);
+                    if ((uint)reader["stationed_city_id"] != 0)
+                        Global.World.TryGetObjects((uint)reader["stationed_city_id"], out stationedCity);
 
-                    TroopStub stub = new TroopStub();
+                    TroopStub stub = new TroopStub {
+                        TroopManager = city.Troops,
+                        TroopId = (byte)reader["id"],
+                        State = (TroopStub.TroopState)Enum.Parse(typeof(TroopStub.TroopState), reader["state"].ToString(), true),
+                        DbPersisted = true
+                    };
 
-                    stub.TroopManager = city.Troops;
-                    stub.TroopId = (byte) reader["id"];
-                    stub.State = (TroopStub.TroopState) Enum.Parse(typeof (TroopStub.TroopState), reader["state"].ToString());
-                    stub.DbPersisted = true;
-
-                    ushort formationMask = (ushort) reader["formations"];
-                    FormationType[] formations = (FormationType[]) Enum.GetValues(typeof (FormationType));
+                    ushort formationMask = (ushort)reader["formations"];
+                    FormationType[] formations = (FormationType[])Enum.GetValues(typeof(FormationType));
                     foreach (FormationType type in formations) {
-                        if ((formationMask & (ushort) Math.Pow(2, (ushort) type)) != 0)
+                        if ((formationMask & (ushort)Math.Pow(2, (ushort)type)) != 0)
                             stub.AddFormation(type);
                     }
 
                     using (DbDataReader listReader = dbManager.SelectList(stub)) {
                         while (listReader.Read())
-                            stub.AddUnit((FormationType) ((byte) listReader["formation_type"]), (ushort) listReader["type"], (ushort) listReader["count"]);
+                            stub.AddUnit((FormationType)((byte)listReader["formation_type"]), (ushort)listReader["type"], (ushort)listReader["count"]);
                     }
 
-                    city.Troops.DbLoaderAdd((byte) reader["id"], stub);
+                    city.Troops.DbLoaderAdd((byte)reader["id"], stub);
                     if (stationedCity != null)
                         stationedCity.Troops.AddStationed(stub);
                 }
@@ -331,21 +376,22 @@ namespace Game.Database {
             using (var reader = dbManager.Select(TroopTemplate.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                    TroopStub stub = city.Troops[(byte) reader["troop_stub_id"]];
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    TroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
                     stub.Template.DbPersisted = true;
 
                     using (DbDataReader listReader = dbManager.SelectList(stub.Template)) {
                         while (listReader.Read()) {
                             //First we load the BaseBattleStats and pass it into the BattleStats
                             //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
-                            BattleStats battleStats = new BattleStats(UnitFactory.GetBattleStats((ushort) listReader["type"], (byte) listReader["level"]));
-                            battleStats.MaxHp = (ushort) listReader["max_hp"];
-                            battleStats.Atk = (ushort) listReader["attack"];
-                            battleStats.Def = (ushort) listReader["defense"];
-                            battleStats.Rng = (byte) listReader["range"];
-                            battleStats.Stl = (byte) listReader["stealth"];
-                            battleStats.Spd = (byte) listReader["speed"];
+                            BattleStats battleStats = new BattleStats(UnitFactory.GetBattleStats((ushort)listReader["type"], (byte)listReader["level"])) {
+                                MaxHp = (ushort)listReader["max_hp"],
+                                Atk = (ushort)listReader["attack"],
+                                Def = (ushort)listReader["defense"],
+                                Rng = (byte)listReader["range"],
+                                Stl = (byte)listReader["stealth"],
+                                Spd = (byte)listReader["speed"]
+                            };
 
                             stub.Template.DbLoaderAdd(battleStats);
                         }
@@ -363,20 +409,20 @@ namespace Game.Database {
             using (var reader = dbManager.Select(TroopObject.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
-                    TroopStub stub = city.Troops[(byte) reader["troop_stub_id"]];
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    TroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
                     TroopObject obj = new TroopObject(stub) {
-                                                                X = (uint) reader["x"],
-                                                                Y = (uint) reader["y"],
-                                                                ObjectId = (uint) reader["id"],
-                                                                DbPersisted = true,
-                                                                State = {
-                                                                            Type = (ObjectState) ((byte) reader["state"])
-                                                                        },
-                                                                Stats = new TroopStats((int) reader["attack_point"], (byte) reader["attack_radius"], (byte) reader["speed"])
-                                                            };
+                        X = (uint)reader["x"],
+                        Y = (uint)reader["y"],
+                        ObjectId = (uint)reader["id"],
+                        DbPersisted = true,
+                        State = {
+                            Type = (ObjectState)((byte)reader["state"])
+                        },
+                        Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"])
+                    };
 
-                    foreach (object variable in XMLSerializer.DeserializeList((string) reader["state_parameters"]))
+                    foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
                         obj.State.Parameters.Add(variable);
 
                     city.Add(obj.ObjectId, obj, false);
@@ -394,91 +440,49 @@ namespace Game.Database {
             using (var reader = dbManager.Select(BattleManager.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
                     BattleManager bm = new BattleManager(city);
                     city.Battle = bm;
                     bm.DbPersisted = true;
-                    bm.BattleId = (uint) reader["battle_id"];
-                    bm.BattleStarted = (bool) reader["battle_started"];
-                    bm.Round = (uint) reader["round"];
-                    bm.Turn = (uint) reader["round"];
-                    bm.Stamina = (ushort) reader["stamina"];
+                    bm.BattleId = (uint)reader["battle_id"];
+                    bm.BattleStarted = (bool)reader["battle_started"];
+                    bm.Round = (uint)reader["round"];
+                    bm.Turn = (uint)reader["round"];
+                    bm.Stamina = (ushort)reader["stamina"];
 
-                    bm.BattleReport.ReportFlag = (bool) reader["report_flag"];
-                    bm.BattleReport.ReportStarted = (bool) reader["report_started"];
-                    bm.BattleReport.ReportId = (uint) reader["report_id"];
+                    bm.BattleReport.ReportFlag = (bool)reader["report_flag"];
+                    bm.BattleReport.ReportStarted = (bool)reader["report_started"];
+                    bm.BattleReport.ReportId = (uint)reader["report_id"];
 
                     using (DbDataReader listReader = dbManager.SelectList(CombatStructure.DB_TABLE, new DbColumn("city_id", city.Id, DbType.UInt32))) {
                         while (listReader.Read()) {
                             City structureCity;
-                            Global.World.TryGetObjects((uint) listReader["structure_city_id"], out structureCity);
+                            Global.World.TryGetObjects((uint)listReader["structure_city_id"], out structureCity);
 
-                            Structure structure = (Structure) structureCity[(uint) listReader["structure_id"]];
+                            Structure structure = (Structure)structureCity[(uint)listReader["structure_id"]];
 
                             //First we load the BaseBattleStats and pass it into the BattleStats
                             //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
-                            BattleStats battleStats = new BattleStats(structure.Stats.Base.Battle);
-                            battleStats.MaxHp = (ushort) listReader["max_hp"];
-                            battleStats.Atk = (ushort) listReader["attack"];
-                            battleStats.Def = (ushort) listReader["defense"];
-                            battleStats.Rng = (byte) listReader["range"];
-                            battleStats.Stl = (byte) listReader["stealth"];
-                            battleStats.Spd = (byte) listReader["speed"];
+                            BattleStats battleStats = new BattleStats(structure.Stats.Base.Battle) {
+                                MaxHp = (ushort)listReader["max_hp"],
+                                Atk = (ushort)listReader["attack"],
+                                Def = (ushort)listReader["defense"],
+                                Rng = (byte)listReader["range"],
+                                Stl = (byte)listReader["stealth"],
+                                Spd = (byte)listReader["speed"]
+                            };
 
-                            CombatStructure combatStructure = new CombatStructure(bm, structure, battleStats, (uint) listReader["hp"], (ushort) listReader["type"], (byte) listReader["level"])
-                                                                  {
-                                                                      GroupId
-                                                                          =
-                                                                          (
-                                                                          uint
-                                                                          )
-                                                                          listReader
-                                                                              [
-                                                                              "group_id"
-                                                                              ],
-                                                                      DmgDealt
-                                                                          =
-                                                                          (
-                                                                          int
-                                                                          )
-                                                                          listReader
-                                                                              [
-                                                                              "damage_dealt"
-                                                                              ],
-                                                                      DmgRecv
-                                                                          =
-                                                                          (
-                                                                          int
-                                                                          )
-                                                                          listReader
-                                                                              [
-                                                                              "damage_received"
-                                                                              ],
-                                                                      LastRound
-                                                                          =
-                                                                          (
-                                                                          uint
-                                                                          )
-                                                                          listReader
-                                                                              [
-                                                                              "last_round"
-                                                                              ],
-                                                                      RoundsParticipated
-                                                                          =
-                                                                          (
-                                                                          int
-                                                                          )
-                                                                          listReader
-                                                                              [
-                                                                              "rounds_participated"
-                                                                              ],
-                                                                      DbPersisted
-                                                                          =
-                                                                          true
-                                                                  };
+                            CombatStructure combatStructure = new CombatStructure(bm, structure, battleStats, (uint)listReader["hp"], (ushort)listReader["type"], (byte)listReader["level"]) {
+                                GroupId = (uint)listReader["group_id"],
+                                DmgDealt = (int)listReader["damage_dealt"],
+                                DmgRecv = (int)listReader["damage_received"],
+                                LastRound = (uint)listReader["last_round"],
+                                RoundsParticipated = (int)listReader["rounds_participated"],
+                                DbPersisted = true
+                            };
 
-                            bm.DbLoaderAddToLocal(combatStructure, (uint) listReader["id"]);
+                            bm.DbLoaderAddToLocal(combatStructure, (uint)listReader["id"]);
                         }
                     }
 
@@ -486,34 +490,35 @@ namespace Game.Database {
                     using (DbDataReader listReader = dbManager.SelectList(DefenseCombatUnit.DB_TABLE, new DbColumn("city_id", city.Id, DbType.UInt32))) {
                         while (listReader.Read()) {
                             City troopStubCity;
-                            Global.World.TryGetObjects((uint) listReader["troop_stub_city_id"], out troopStubCity);
-                            TroopStub troopStub = troopStubCity.Troops[(byte) listReader["troop_stub_id"]];
+                            Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity);
+                            TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                             CombatObject combatObj;
-                            if ((bool) listReader["is_local"]) {
-                                combatObj = new DefenseCombatUnit(bm, troopStub, (FormationType) ((byte) listReader["formation_type"]), (ushort) listReader["type"], (byte) listReader["level"],
-                                                                  (ushort) listReader["count"], (ushort) listReader["left_over_hp"]);
-                            } else {
-                                combatObj = new AttackCombatUnit(bm, troopStub, (FormationType) ((byte) listReader["formation_type"]), (ushort) listReader["type"], (byte) listReader["level"],
-                                                                 (ushort) listReader["count"], (ushort) listReader["left_over_hp"],
-                                                                 new Resource((int) listReader["loot_crop"], (int) listReader["loot_gold"], (int) listReader["loot_iron"], (int) listReader["loot_wood"],
-                                                                              (int) listReader["loot_labor"]));
+                            if ((bool)listReader["is_local"]) {
+                                combatObj = new DefenseCombatUnit(bm, troopStub, (FormationType)((byte)listReader["formation_type"]), (ushort)listReader["type"], (byte)listReader["level"],
+                                                                  (ushort)listReader["count"], (ushort)listReader["left_over_hp"]);
+                            }
+                            else {
+                                combatObj = new AttackCombatUnit(bm, troopStub, (FormationType)((byte)listReader["formation_type"]), (ushort)listReader["type"], (byte)listReader["level"],
+                                                                 (ushort)listReader["count"], (ushort)listReader["left_over_hp"],
+                                                                 new Resource((int)listReader["loot_crop"], (int)listReader["loot_gold"], (int)listReader["loot_iron"], (int)listReader["loot_wood"],
+                                                                              (int)listReader["loot_labor"]));
                             }
 
-                            combatObj.MinDmgDealt = (ushort) listReader["damage_min_dealt"];
-                            combatObj.MaxDmgDealt = (ushort) listReader["damage_max_dealt"];
-                            combatObj.MinDmgRecv = (ushort) listReader["damage_min_received"];
-                            combatObj.MinDmgDealt = (ushort) listReader["damage_max_received"];
-                            combatObj.HitDealt = (ushort) listReader["hits_dealt"];
-                            combatObj.HitRecv = (ushort) listReader["hits_received"];
-                            combatObj.GroupId = (uint) listReader["group_id"];
-                            combatObj.DmgDealt = (int) listReader["damage_dealt"];
-                            combatObj.DmgRecv = (int) listReader["damage_received"];
-                            combatObj.LastRound = (uint) listReader["last_round"];
-                            combatObj.RoundsParticipated = (int) listReader["rounds_participated"];
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_min_dealt"];
+                            combatObj.MaxDmgDealt = (ushort)listReader["damage_max_dealt"];
+                            combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
+                            combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
+                            combatObj.HitDealt = (ushort)listReader["hits_dealt"];
+                            combatObj.HitRecv = (ushort)listReader["hits_received"];
+                            combatObj.GroupId = (uint)listReader["group_id"];
+                            combatObj.DmgDealt = (int)listReader["damage_dealt"];
+                            combatObj.DmgRecv = (int)listReader["damage_received"];
+                            combatObj.LastRound = (uint)listReader["last_round"];
+                            combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
                             combatObj.DbPersisted = true;
 
-                            bm.DbLoaderAddToCombatList(combatObj, (uint) listReader["id"], (bool) listReader["is_local"]);
+                            bm.DbLoaderAddToCombatList(combatObj, (uint)listReader["id"], (bool)listReader["is_local"]);
                         }
                     }
 
@@ -521,20 +526,20 @@ namespace Game.Database {
                     using (DbDataReader listReader = dbManager.SelectList(bm.ReportedTroops)) {
                         while (listReader.Read()) {
                             City troopStubCity;
-                            Global.World.TryGetObjects((uint) listReader["troop_stub_city_id"], out troopStubCity);
-                            TroopStub troopStub = troopStubCity.Troops[(byte) listReader["troop_stub_id"]];
+                            Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity);
+                            TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                             if (troopStub == null)
                                 continue;
 
-                            bm.ReportedTroops[troopStub] = (uint) listReader["combat_troop_id"];
+                            bm.ReportedTroops[troopStub] = (uint)listReader["combat_troop_id"];
                         }
                     }
 
                     bm.ReportedObjects.DbPersisted = true;
                     using (DbDataReader listReader = dbManager.SelectList(bm.ReportedObjects)) {
                         while (listReader.Read()) {
-                            CombatObject co = bm.GetCombatObject((uint) listReader["combat_object_id"]);
+                            CombatObject co = bm.GetCombatObject((uint)listReader["combat_object_id"]);
 
                             if (co == null)
                                 continue;
@@ -554,37 +559,36 @@ namespace Game.Database {
             #region Active Actions
 
             Global.Logger.Info("Loading active actions...");
-            Type[] types = new[] {typeof (ushort), typeof (DateTime), typeof (DateTime), typeof (DateTime), typeof (int), typeof (byte), typeof (ushort), typeof (Dictionary<string, string>)};
+            Type[] types = new[] { typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(int), typeof(byte), typeof(ushort), typeof(Dictionary<string, string>) };
 
             using (var reader = dbManager.Select(ActiveAction.DB_TABLE)) {
                 while (reader.Read()) {
-                    ActionType actionType = (ActionType) ((int) reader["type"]);
+                    ActionType actionType = (ActionType)((int)reader["type"]);
                     Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "ACTION", true, true);
                     ConstructorInfo cInfo = type.GetConstructor(types);
 
-                    DateTime beginTime = ((DateTime) reader["begin_time"]).Add(downTime);
+                    DateTime beginTime = ((DateTime)reader["begin_time"]).Add(downTime);
 
-                    DateTime nextTime = (DateTime) reader["next_time"];
+                    DateTime nextTime = (DateTime)reader["next_time"];
                     if (nextTime != DateTime.MinValue)
                         nextTime.Add(downTime);
 
-                    DateTime endTime = ((DateTime) reader["end_time"]).Add(downTime);
+                    DateTime endTime = ((DateTime)reader["end_time"]).Add(downTime);
 
-                    Dictionary<string, string> properties = XMLSerializer.Deserialize((string) reader["properties"]);
-                    object[] parms = new object[]
-                                         {(ushort) reader["id"], beginTime, nextTime, endTime, (int) reader["worker_type"], (byte) reader["worker_index"], (ushort) reader["count"], properties};
+                    Dictionary<string, string> properties = XMLSerializer.Deserialize((string)reader["properties"]);
+                    object[] parms = new object[] { (ushort)reader["id"], beginTime, nextTime, endTime, (int)reader["worker_type"], (byte)reader["worker_index"], (ushort)reader["count"], properties };
 
-                    ScheduledActiveAction action = (ScheduledActiveAction) cInfo.Invoke(parms);
+                    ScheduledActiveAction action = (ScheduledActiveAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
 
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    uint workerId = (uint) reader["object_id"];
+                    uint workerId = (uint)reader["object_id"];
                     if (workerId == 0)
                         action.WorkerObject = city;
                     else
-                        action.WorkerObject = city[(uint) reader["object_id"]];
+                        action.WorkerObject = city[(uint)reader["object_id"]];
 
                     city.Worker.DbLoaderDoActive(action);
 
@@ -600,18 +604,18 @@ namespace Game.Database {
             Dictionary<uint, List<PassiveAction>> chainActions = new Dictionary<uint, List<PassiveAction>>();
             //this will hold chain actions that we encounter for the next phase
 
-            types = new[] {typeof (ushort), typeof (bool), typeof (Dictionary<string, string>)};
+            types = new[] { typeof(ushort), typeof(bool), typeof(Dictionary<string, string>) };
 
-            Type[] scheduledTypes = new[] {typeof (ushort), typeof (DateTime), typeof (DateTime), typeof (DateTime), typeof (bool), typeof (Dictionary<string, string>)};
+            Type[] scheduledTypes = new[] { typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(bool), typeof(Dictionary<string, string>) };
 
             using (var reader = dbManager.Select(PassiveAction.DB_TABLE)) {
                 while (reader.Read()) {
-                    ActionType actionType = (ActionType) ((int) reader["type"]);
+                    ActionType actionType = (ActionType)((int)reader["type"]);
                     Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "ACTION", true, true);
 
                     ConstructorInfo cInfo;
 
-                    if ((bool) reader["is_scheduled"])
+                    if ((bool)reader["is_scheduled"])
                         cInfo = type.GetConstructor(scheduledTypes);
                     else
                         cInfo = type.GetConstructor(types);
@@ -619,38 +623,39 @@ namespace Game.Database {
                     if (cInfo == null)
                         throw new Exception(type.Name + " is missing the db loader constructor");
 
-                    Dictionary<string, string> properties = XMLSerializer.Deserialize((string) reader["properties"]);
+                    Dictionary<string, string> properties = XMLSerializer.Deserialize((string)reader["properties"]);
 
                     object[] parms;
 
-                    if ((bool) reader["is_scheduled"]) {
-                        DateTime beginTime = ((DateTime) reader["begin_time"]);
+                    if ((bool)reader["is_scheduled"]) {
+                        DateTime beginTime = ((DateTime)reader["begin_time"]);
                         beginTime = beginTime.Add(downTime);
 
-                        DateTime nextTime = (DateTime) reader["next_time"];
+                        DateTime nextTime = (DateTime)reader["next_time"];
                         if (nextTime != DateTime.MinValue)
                             nextTime = nextTime.Add(downTime);
 
-                        DateTime endTime = ((DateTime) reader["end_time"]);
+                        DateTime endTime = ((DateTime)reader["end_time"]);
                         endTime = endTime.Add(downTime);
 
-                        parms = new object[] {(ushort) reader["id"], beginTime, nextTime, endTime, (bool) reader["is_visible"], properties};
-                    } else
-                        parms = new object[] {(ushort) reader["id"], (bool) reader["is_visible"], properties};
+                        parms = new object[] { (ushort)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], properties };
+                    }
+                    else
+                        parms = new object[] { (ushort)reader["id"], (bool)reader["is_visible"], properties };
 
-                    PassiveAction action = (PassiveAction) cInfo.Invoke(parms);
+                    PassiveAction action = (PassiveAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
 
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    uint workerId = (uint) reader["object_id"];
+                    uint workerId = (uint)reader["object_id"];
                     if (workerId == 0)
                         action.WorkerObject = city;
                     else
                         action.WorkerObject = city[workerId];
 
-                    if ((bool) reader["is_chain"] == false)
+                    if ((bool)reader["is_chain"] == false)
                         city.Worker.DbLoaderDoPassive(action);
                     else {
                         List<PassiveAction> chainList;
@@ -672,18 +677,18 @@ namespace Game.Database {
             #region Chain Actions
 
             Global.Logger.Info("Loading chain actions...");
-            types = new[] {typeof (ushort), typeof (string), typeof (PassiveAction), typeof (ActionState), typeof (bool), typeof (Dictionary<string, string>)};
+            types = new[] { typeof(ushort), typeof(string), typeof(PassiveAction), typeof(ActionState), typeof(bool), typeof(Dictionary<string, string>) };
 
             using (var reader = dbManager.Select(ChainAction.DB_TABLE)) {
                 while (reader.Read()) {
-                    ActionType actionType = (ActionType) ((int) reader["type"]);
+                    ActionType actionType = (ActionType)((int)reader["type"]);
                     Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "ACTION", true, true);
                     ConstructorInfo cInfo = type.GetConstructor(types);
 
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    ushort currentActionId = (ushort) reader["current_action_id"];
+                    ushort currentActionId = (ushort)reader["current_action_id"];
 
                     List<PassiveAction> chainList;
                     PassiveAction currentAction = null;
@@ -691,17 +696,17 @@ namespace Game.Database {
                     if (chainActions.TryGetValue(city.Id, out chainList))
                         currentAction = chainList.Find(lookupAction => lookupAction.ActionId == currentActionId);
 
-                    Dictionary<string, string> properties = XMLSerializer.Deserialize((string) reader["properties"]);
-                    object[] parms = new[] {(ushort) reader["id"], reader["chain_callback"], currentAction, (ActionState) ((byte) reader["chain_state"]), (bool) reader["is_visible"], properties};
+                    Dictionary<string, string> properties = XMLSerializer.Deserialize((string)reader["properties"]);
+                    object[] parms = new[] { (ushort)reader["id"], reader["chain_callback"], currentAction, (ActionState)((byte)reader["chain_state"]), (bool)reader["is_visible"], properties };
 
-                    ChainAction action = (ChainAction) cInfo.Invoke(parms);
+                    ChainAction action = (ChainAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
 
-                    uint workerId = (uint) reader["object_id"];
+                    uint workerId = (uint)reader["object_id"];
                     if (workerId == 0)
                         action.WorkerObject = city;
                     else
-                        action.WorkerObject = city[(uint) reader["object_id"]];
+                        action.WorkerObject = city[(uint)reader["object_id"]];
 
                     city.Worker.DbLoaderDoPassive(action);
 
@@ -719,24 +724,24 @@ namespace Game.Database {
             using (var reader = dbManager.Select(ReferenceStub.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
                     GameAction action;
-                    if ((bool) reader["is_active"])
-                        action = city.Worker.ActiveActions[(ushort) reader["action_id"]];
+                    if ((bool)reader["is_active"])
+                        action = city.Worker.ActiveActions[(ushort)reader["action_id"]];
                     else
-                        action = city.Worker.PassiveActions[(ushort) reader["action_id"]];
+                        action = city.Worker.PassiveActions[(ushort)reader["action_id"]];
 
                     ICanDo obj;
-                    uint workerId = (uint) reader["object_id"];
+                    uint workerId = (uint)reader["object_id"];
                     if (workerId == 0)
                         obj = city;
                     else
-                        obj = city[(uint) reader["object_id"]];
+                        obj = city[(uint)reader["object_id"]];
 
-                    ReferenceStub referenceStub = new ReferenceStub((ushort) reader["id"], obj, action) {
-                                                                                                            DbPersisted = true
-                                                                                                        };
+                    ReferenceStub referenceStub = new ReferenceStub((ushort)reader["id"], obj, action) {
+                        DbPersisted = true
+                    };
 
                     city.Worker.References.DbLoaderAdd(referenceStub);
                 }
@@ -752,17 +757,17 @@ namespace Game.Database {
             using (var reader = dbManager.Select(NotificationManager.Notification.DB_TABLE)) {
                 while (reader.Read()) {
                     City city;
-                    Global.World.TryGetObjects((uint) reader["city_id"], out city);
+                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    GameObject obj = city[(uint) reader["object_id"]];
-                    PassiveAction action = city.Worker.PassiveActions[(ushort) reader["action_id"]];
+                    GameObject obj = city[(uint)reader["object_id"]];
+                    PassiveAction action = city.Worker.PassiveActions[(ushort)reader["action_id"]];
 
                     NotificationManager.Notification notification = new NotificationManager.Notification(obj, action);
 
                     using (DbDataReader listReader = dbManager.SelectList(notification)) {
                         while (listReader.Read()) {
                             City subscriptionCity;
-                            Global.World.TryGetObjects((uint) listReader["subscription_city_id"], out subscriptionCity);
+                            Global.World.TryGetObjects((uint)listReader["subscription_city_id"], out subscriptionCity);
                             notification.Subscriptions.Add(subscriptionCity);
                         }
                     }

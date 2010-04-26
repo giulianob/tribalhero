@@ -23,15 +23,19 @@ namespace Game.Map {
 
         public object Lock { get; private set; }
 
+        public LargeIdGenerator ObjectIdGenerator { get; private set; }
+
         private Region[] regions;
         private CityRegion[] cityRegions;
         private readonly Dictionary<uint, City> cities = new Dictionary<uint, City>();
         private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
+        private readonly ForestManager forests = new ForestManager();
 
         #endregion
 
         public World() {
             Lock = new object();
+            ObjectIdGenerator = new LargeIdGenerator(int.MaxValue);
         }
 
         #region Object Getters
@@ -62,7 +66,7 @@ namespace Game.Map {
 
         #region Properties
 
-        public List<GameObject> this[uint x, uint y] {
+        public List<SimpleGameObject> this[uint x, uint y] {
             get { return GetRegion(x, y).GetObjects(x, y); }
         }
 
@@ -162,47 +166,82 @@ namespace Game.Map {
             }
         }
 
-        public bool Add(GameObject obj) {
+        public bool Add(SimpleGameObject obj) {
             Region region = GetRegion(obj.X, obj.Y);
             if (region == null)
                 return false;
 
-            if (region.Add(obj)) {
-                ushort regionId = Region.GetRegionIndex(obj);
-                Packet packet = new Packet(Command.OBJECT_ADD);
-                packet.AddUInt16(regionId);
-                PacketHelper.AddToPacket(obj, packet, true);
+            if (region.Add(obj)) {                
 
-                if (Global.FireEvents)
+                // If simple object, we must assign an id
+                if (!(obj is GameObject)) {
+                    obj.ObjectId = (uint)ObjectIdGenerator.getNext();
+                }
+
+                // Send obj add event
+                if (Global.FireEvents) {
+                    ushort regionId = Region.GetRegionIndex(obj);
+
+                    Packet packet = new Packet(Command.OBJECT_ADD);                    
+                    packet.AddUInt16(regionId);
+                    PacketHelper.AddToPacket(obj, packet, true);
+
                     Global.Channel.Post("/WORLD/" + regionId, packet);
+                }
+
                 return true;
             }
 
             return false;
         }
 
-        public void Remove(GameObject obj) {
+        public void DbLoaderAdd(SimpleGameObject obj) {
+            Region region = GetRegion(obj.X, obj.Y);
+            if (region == null)
+                return;
+
+            region.Add(obj);
+
+            // Set id in use
+            if (!(obj is GameObject)) {
+                ObjectIdGenerator.set((int)obj.ObjectId);
+            }
+        }
+
+        public void Remove(SimpleGameObject obj) {
             Remove(obj, obj.X, obj.Y);
         }
 
-        private void Remove(GameObject obj, uint origX, uint origY) {
+        private void Remove(SimpleGameObject obj, uint origX, uint origY) {
             Region region = GetRegion(origX, origY);
 
             if (region == null)
                 return;
 
+            // Remove from region
             ushort regionId = Region.GetRegionIndex(obj);
-
-            Packet packet = new Packet(Command.OBJECT_REMOVE);
-            packet.AddUInt16(regionId);
-            packet.AddUInt32(obj.City.Id);
-            packet.AddUInt32(obj.ObjectId);
-
             region.Remove(obj);
-            Global.Channel.Post("/WORLD/" + regionId, packet);
+
+            // Free object id if this is SimpleGameObject
+            if (!(obj is GameObject)) {
+                ObjectIdGenerator.release((int) obj.ObjectId);
+            }
+
+            // Send remove update
+            if (Global.FireEvents) {
+                Packet packet = new Packet(Command.OBJECT_REMOVE);
+                packet.AddUInt16(regionId);
+                if (obj is GameObject)
+                    packet.AddUInt32(((GameObject) obj).City.Id);
+                else
+                    packet.AddUInt32(0);
+                packet.AddUInt32(obj.ObjectId);
+
+                Global.Channel.Post("/WORLD/" + regionId, packet);
+            }
         }
 
-        public List<GameObject> GetObjects(uint x, uint y) {
+        public List<SimpleGameObject> GetObjects(uint x, uint y) {
             Region region = GetRegion(x, y);
             return region == null ? null : region.GetObjects(x, y);
         }
@@ -211,7 +250,7 @@ namespace Game.Map {
 
         #region Events
 
-        public void ObjectUpdateEvent(GameObject sender, uint origX, uint origY) {
+        public void ObjectUpdateEvent(SimpleGameObject sender, uint origX, uint origY) {
             //Check if object has moved
             if (sender.X != origX || sender.Y != origY) {
                 //if object has moved then we need to do some logic to see if it has changed regions
@@ -310,12 +349,12 @@ namespace Game.Map {
 
         private bool GetObjectsForeach(uint ox, uint oy, uint x, uint y, object custom) {
             if (x < WorldWidth && y < WorldHeight)
-                ((List<GameObject>) custom).AddRange(GetObjects(x, y));
+                ((List<SimpleGameObject>) custom).AddRange(GetObjects(x, y));
             return true;
         }
 
-        public List<GameObject> GetObjectsWithin(uint x, uint y, byte radius) {
-            List<GameObject> list = new List<GameObject>();
+        public List<SimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius) {
+            List<SimpleGameObject> list = new List<SimpleGameObject>();
             TileLocator.foreach_object(x, y, radius, false, GetObjectsForeach, list);
             return list;
         }

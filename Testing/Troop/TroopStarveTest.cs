@@ -17,12 +17,12 @@ namespace Testing.Troop {
 
         [TestInitialize]
         public void TestInitialize() {
-            Global.PauseEvents();
+            Global.FireEvents = false;;
         }
 
         [TestCleanup]
         public void TestCleanup() {
-            Global.ResumeEvents();
+            Global.FireEvents = true;
         }
 
         public TroopStub CreateSimpleStub() {

@@ -29,6 +29,8 @@ namespace Game.Comm {
             RegisterCommand(Command.REGION_GET, CmdGetRegion);
             RegisterCommand(Command.CITY_REGION_GET, CmdGetCityRegion);
             RegisterCommand(Command.STRUCTURE_INFO, CmdGetStructureInfo);
+            RegisterCommand(Command.FOREST_INFO, CmdGetForestInfo);
+            RegisterCommand(Command.FOREST_CREATE_CAMP, CmdCreateForestCamp);
             RegisterCommand(Command.STRUCTURE_BUILD, CmdCreateStructure);
             RegisterCommand(Command.STRUCTURE_UPGRADE, CmdUpgradeStructure);
             RegisterCommand(Command.STRUCTURE_CHANGE, CmdChangeStructure);

@@ -32,12 +32,9 @@ namespace Game.Data {
                 int delta = 0;
                 int calculatedRate = GetCalculatedRate();
 
-                if (calculatedRate > 0) {
+                if (calculatedRate != 0) {
                     int elapsed = (int)SystemClock.Now.Subtract(LastRealizeTime).TotalMilliseconds;
                     delta = elapsed / calculatedRate;
-
-                    if (delta < 0)
-                        throw new Exception("Delta is negative?");
                 }
 
                 if (limit > 0 && (value + delta) > limit)
@@ -116,7 +113,7 @@ namespace Game.Data {
         private void Realize() {
             int calculatedRate = GetCalculatedRate();
 
-            if (calculatedRate > 0) {
+            if (calculatedRate != 0) {
                 DateTime now = SystemClock.Now;
                 int elapsed = (int)now.Subtract(LastRealizeTime).TotalMilliseconds;
                 int delta = elapsed / calculatedRate;
@@ -143,8 +140,20 @@ namespace Game.Data {
             }
         }
 
-        private int GetCalculatedRate() {
+        protected virtual int GetCalculatedRate() {
             return Math.Max(0, (int)((3600000f / (rate - upkeep)) * Config.seconds_per_unit));
+        }
+    }
+
+    public class AggressiveLazyValue : LazyValue {
+        public AggressiveLazyValue(int val) : base(val) { }
+
+        public AggressiveLazyValue(int val, DateTime lastRealizeTime, int rate, int upkeep)
+            : base(val, lastRealizeTime, rate, upkeep) {
+        }
+
+        protected override int GetCalculatedRate() {
+            return (int)((3600000f / (Rate - Upkeep)) * Config.seconds_per_unit);
         }
     }
 

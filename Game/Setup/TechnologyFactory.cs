@@ -71,7 +71,7 @@ namespace Game.Setup {
                             string name = str.Substring(1, str.IndexOf(':')-1);
                             string condition = str.Substring(str.IndexOf(':') + 1);
                             condition = condition.Remove(condition.LastIndexOf('}'));
-                            effect.value[i] = ConditionFactory.CreateICondition(name, condition);
+                            // effect.value[i] = ConditionFactory.CreateICondition(name, condition);
                         } else if (int.TryParse(str, out tmp)) {
                             effect.value[i] = tmp;
                         } else {

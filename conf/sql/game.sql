@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 06, 2010 at 08:13 PM
+-- Generation Time: Apr 25, 2010 at 10:45 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `game`
+-- Database: `game_lumbermill`
 --
 
 -- --------------------------------------------------------
@@ -294,6 +294,30 @@ CREATE TABLE `combat_units` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `forests`
+--
+
+DROP TABLE IF EXISTS `forests`;
+CREATE TABLE `forests` (
+  `id` int(10) unsigned NOT NULL,
+  `x` int(10) unsigned NOT NULL,
+  `y` int(10) unsigned NOT NULL,
+  `level` tinyint(3) unsigned NOT NULL,
+  `labor` smallint(5) unsigned NOT NULL,
+  `rate` int(11) NOT NULL,
+  `capacity` int(10) NOT NULL,
+  `state` tinyint(3) unsigned NOT NULL,
+  `state_parameters` text NOT NULL,
+  `last_realize_time` datetime NOT NULL,
+  `lumber` int(11) NOT NULL,
+  `upkeep` int(11) NOT NULL,
+  `structures` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `market`
 --
 
@@ -402,7 +426,7 @@ CREATE TABLE `players` (
   KEY `login_key` (`login_key`),
   KEY `session_id` (`session_id`),
   KEY `facebook_id` (`facebook_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

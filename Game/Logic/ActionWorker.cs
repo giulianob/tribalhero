@@ -375,6 +375,8 @@ namespace Game.Logic {
         public void Remove(GameObject workerObject, ActionInterrupt actionInterrupt, params GameAction[] ignoreActions) {
             MultiObjectLock.ThrowExceptionIfNotLocked(city);
 
+            references.Remove(workerObject);
+
             List<GameAction> ignoreActionList = new List<GameAction>(ignoreActions);
 
             List<ActiveAction> list =

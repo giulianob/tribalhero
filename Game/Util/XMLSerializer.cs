@@ -113,7 +113,52 @@ namespace Game.Util {
         #endregion
     }
 
-    public class XMLSerializer {
+    public class XMLSerializer {       
+
+        public static String SerializeComplexList(IEnumerable<object[]> list) {
+            XmlWriterSettings writerSettings = new XmlWriterSettings {
+                OmitXmlDeclaration = true,
+                Indent = false,
+                NewLineOnAttributes = false
+            };
+
+            StringWriter sw = new StringWriter();
+            XmlWriter writer = XmlWriter.Create(sw, writerSettings);
+
+            writer.WriteStartElement("List");
+
+            foreach (object[] variables in list) {
+                writer.WriteStartElement("Properties");
+
+                foreach (object variable in variables) {
+                    if (variable is byte)
+                        writer.WriteStartElement("Byte");
+                    else if (variable is short)
+                        writer.WriteStartElement("Short");
+                    else if (variable is int)
+                        writer.WriteStartElement("Int");
+                    else if (variable is ushort)
+                        writer.WriteStartElement("Ushort");
+                    else if (variable is uint)
+                        writer.WriteStartElement("Uint");
+                    else if (variable is string)
+                        writer.WriteStartElement("String");
+                    else
+                        throw new Exception("Unsupported variable type " + variable.GetType().Name);
+
+                    writer.WriteAttributeString("value", variable.ToString());
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+            }            
+
+            writer.WriteEndElement();
+            writer.Flush();
+
+            return sw.GetStringBuilder().ToString();
+        }
+
         public static String SerializeList(params object[] variables) {
             XmlWriterSettings writerSettings = new XmlWriterSettings {
                                                                          OmitXmlDeclaration = true,
@@ -175,6 +220,54 @@ namespace Game.Util {
             writer.Flush();
 
             return sw.GetStringBuilder().ToString();
+        }
+
+        public static List<object[]> DeserializeComplexList(String xml) {
+            List<object[]> ret = new List<object[]>();
+
+            StringReader stringReader = new StringReader(xml);
+            XmlReader reader = XmlReader.Create(stringReader);
+
+            List<object> properties = null;
+
+            while (reader.Read()) {
+                if (reader.NodeType == XmlNodeType.Element) {
+                    switch (reader.Name) {
+                        case "List":
+                            continue;
+                        case "Properties":                            
+                            if (properties != null)
+                                ret.Add(properties.ToArray());
+                            properties = new List<object>();
+                            break;
+                        case "String":
+                            properties.Add(reader["value"]);
+                            break;
+                        case "Short":
+                            properties.Add(short.Parse(reader["value"]));
+                            break;
+                        case "Int":
+                            properties.Add(int.Parse(reader["value"]));
+                            break;
+                        case "Ushort":
+                            properties.Add(ushort.Parse(reader["value"]));
+                            break;
+                        case "Uint":
+                            properties.Add(uint.Parse(reader["value"]));
+                            break;
+                        case "Byte":
+                            properties.Add(byte.Parse(reader["value"]));
+                            break;
+                        default:
+                            throw new Exception("Unsupported variable type");
+                    }
+                }
+            }
+
+            if (properties != null)
+                ret.Add(properties.ToArray());
+
+            return ret;
         }
 
         public static List<object> DeserializeList(String xml) {

@@ -13,6 +13,13 @@ using log4net;
 
 namespace Game.Data {
     public class Global {
+        /// <summary>
+        /// List of global locks. These should all have negative ids so they do not conflict with player locks.
+        /// </summary>
+        public enum Locks {
+            FOREST = -1
+        }
+
         public static readonly ILog Logger = LogManager.GetLogger(typeof(Global));
         public static readonly ILog DbLogger = LogManager.GetLogger(typeof(IDbManager));
 
@@ -20,33 +27,26 @@ namespace Game.Data {
                                                                 Config.database_password, Config.database_database);
 
         public static readonly AI Ai = new AI();
+
         public static readonly Scheduler Scheduler = new Scheduler();
         public static readonly Channel Channel = new Channel();
 
         public static Dictionary<uint, Player> Players { get; private set; }
 
+        public static ForestManager Forests { get; private set; }
+
         public static World World { get; private set; }
 
         public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
 
-        private static bool fireEvents = true;
-
-        public static bool FireEvents {
-            get { return fireEvents; }
-        }
+        public static bool FireEvents { get; set; }
 
         static Global() {
+            FireEvents = true;
             SystemVariables = new Dictionary<string, SystemVariable>();
             World = new World();
             Players = new Dictionary<uint, Player>();
-        }
-
-        public static void PauseEvents() {
-            fireEvents = false;
-        }
-
-        public static void ResumeEvents() {
-            fireEvents = true;
+            Forests = new ForestManager();
         }
     }
 }

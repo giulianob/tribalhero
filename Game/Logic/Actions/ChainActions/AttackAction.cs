@@ -53,6 +53,9 @@ namespace Game.Logic.Actions {
                 !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.OBJECT_NOT_FOUND;
 
+            if (ObjectTypeFactory.IsStructureType("Unattackable", targetStructure))
+                return Error.OBJECT_NOT_ATTACKABLE;
+
             //Load the units stats into the stub
             stub.BeginUpdate();
             stub.Template.LoadStats();

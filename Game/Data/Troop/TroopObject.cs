@@ -25,7 +25,7 @@ namespace Game.Data {
         }
 
         public override ushort Type {
-            get { return 100; }
+            get { return (ushort) Types.TROOP; }
         }
 
         public override byte Lvl {

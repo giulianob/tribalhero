@@ -54,42 +54,42 @@ namespace Game.Map {
 
         #region Methods
 
-        public bool Add(GameObject obj) {
+        public bool Add(SimpleGameObject obj) {
             lock (objlist) {
-                objlist.addGameObject(obj);
+                objlist.AddGameObject(obj);
                 isDirty = true;
             }
 
             return true;
         }
 
-        public void Remove(GameObject obj) {
+        public void Remove(SimpleGameObject obj) {
             lock (objlist) {
-                objlist.remove(obj);
+                objlist.Remove(obj);
                 isDirty = true;
             }
         }
 
-        public void Remove(GameObject obj, uint origX, uint origY) {
+        public void Remove(SimpleGameObject obj, uint origX, uint origY) {
             lock (objlist) {
-                objlist.remove(obj, origX, origY);
+                objlist.Remove(obj, origX, origY);
                 isDirty = true;
             }
         }
 
-        public void Update(GameObject obj, uint origX, uint origY) {
+        public void Update(SimpleGameObject obj, uint origX, uint origY) {
             lock (objlist) {
                 if (obj.X != origX || obj.Y != origY) {
-                    if (!objlist.remove(obj, origX, origY))
+                    if (!objlist.Remove(obj, origX, origY))
                         throw new Exception("WTF");
-                    objlist.addGameObject(obj);
+                    objlist.AddGameObject(obj);
                 }
                 isDirty = true;
             }
         }
 
-        public List<GameObject> GetObjects(uint x, uint y) {
-            return objlist.get(x, y);
+        public List<SimpleGameObject> GetObjects(uint x, uint y) {
+            return objlist.Get(x, y);
         }
 
         public byte[] GetObjectBytes() {
@@ -98,11 +98,19 @@ namespace Game.Map {
                     using (MemoryStream ms = new MemoryStream()) {
                         BinaryWriter bw = new BinaryWriter(ms);
                         bw.Write(Count);
-                        foreach (GameObject obj in objlist) {
+                        foreach (SimpleGameObject obj in objlist) {
                             bw.Write(obj.Lvl);
                             bw.Write(obj.Type);
-                            bw.Write(obj.City.Owner.PlayerId);
-                            bw.Write(obj.City.Id);
+
+                            if (obj is GameObject) {
+                                bw.Write(((GameObject)obj).City.Owner.PlayerId);
+                                bw.Write(((GameObject)obj).City.Id);
+                            }
+                            else {
+                                bw.Write((uint) 0);
+                                bw.Write((uint) 0);
+                            }
+
                             bw.Write(obj.ObjectId);
                             bw.Write((ushort) (obj.RelX));
                             bw.Write((ushort) (obj.RelY));
@@ -123,8 +131,8 @@ namespace Game.Map {
                             }
 
                             //if this is the main building then include radius
-                            if (obj.ObjectId == obj.City.MainBuilding.ObjectId)
-                                bw.Write(obj.City.Radius);
+                            if (obj is GameObject && obj == ((GameObject)obj).City.MainBuilding)
+                                bw.Write(((GameObject)obj).City.Radius);
                         }
 
                         isDirty = false;
@@ -150,7 +158,7 @@ namespace Game.Map {
 
         #region Static Util Methods
 
-        public static ushort GetRegionIndex(GameObject obj) {
+        public static ushort GetRegionIndex(SimpleGameObject obj) {
             return GetRegionIndex(obj.X, obj.Y);
         }
 
@@ -158,7 +166,7 @@ namespace Game.Map {
             return (ushort) (x/Config.region_width + (y/Config.region_height)*Config.column);
         }
 
-        public static int GetTileIndex(GameObject obj) {
+        public static int GetTileIndex(SimpleGameObject obj) {
             return GetTileIndex(obj.X, obj.Y);
         }
 

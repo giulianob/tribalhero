@@ -21,7 +21,7 @@ namespace Game.Util {
 
         private DbTransaction transaction;
 
-        [Conditional("Debug")]
+        [Conditional("DEBUG")]
         public static void ThrowExceptionIfNotLocked(ILockable obj) {
             if (!IsLocked(obj)) 
                 throw new Exception("Object not locked");

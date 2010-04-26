@@ -1,7 +1,10 @@
 #region
 
 using System;
+using Game.Data;
+using Game.Database;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -13,6 +16,11 @@ namespace Launcher {
 
             if (!Game.Engine.Start()) {
                 throw new Exception("Failed to load server");
+            }
+
+            //Test Code
+            using (new MultiObjectLock(Global.Forests)) {
+                Global.Forests.CreateForestAt(1, 1000, 2, 5, 5);
             }
 
             while (true) {

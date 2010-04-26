@@ -178,7 +178,7 @@ namespace Game.Module {
         }
 
         private bool BuildStructure(City city, uint x, uint y) {
-            List<GameObject> objects = Global.World.GetObjects(x, y);
+            List<SimpleGameObject> objects = Global.World.GetObjects(x, y);
             if (objects.Count > 0)
                 return false;
 
@@ -212,7 +212,7 @@ namespace Game.Module {
         }
 
         private bool UpgradeStructure(City city, uint x, uint y) {
-            List<GameObject> objects = Global.World.GetObjects(x, y);
+            List<SimpleGameObject> objects = Global.World.GetObjects(x, y);
             Structure structure = null;
 
             foreach (GameObject obj in objects) {

@@ -51,16 +51,19 @@ namespace Game.Comm {
         //will be accepting it as a CityObject
         //
         //These add to packet methods might need to be broken up a bit since this one has too many "cases"
-        public static void AddToPacket(GameObject obj, Packet packet, bool sendRegularObject) {
+        public static void AddToPacket(SimpleGameObject obj, Packet packet, bool sendRegularObject) {
             packet.AddByte(obj.Lvl);
             packet.AddUInt16(obj.Type);
-            if (obj.City == null) {
+
+            GameObject gameObj = obj as GameObject;
+            if (gameObj == null || gameObj.City == null) {
                 packet.AddUInt32(0); //playerid
                 packet.AddUInt32(0); //cityid
             } else {
-                packet.AddUInt32(obj.City.Owner.PlayerId);
-                packet.AddUInt32(obj.City.Id);
+                packet.AddUInt32(gameObj.City.Owner.PlayerId);
+                packet.AddUInt32(gameObj.City.Id);
             }
+
             packet.AddUInt32(obj.ObjectId);
             packet.AddUInt16((ushort) (obj.RelX));
             packet.AddUInt16((ushort) (obj.RelY));
@@ -82,8 +85,8 @@ namespace Game.Comm {
                         packet.AddString((string) parameter);
                 }
 
-                if (obj.ObjectId == 1) //main building, send radius
-                    packet.AddByte(obj.City.Radius);
+                if (gameObj != null && gameObj.ObjectId == 1) //main building, send radius
+                    packet.AddByte(gameObj.City.Radius);
             } else if (obj is Structure) {
                 //if obj is a structure and we are sending it as CityObj we include the labor
                 packet.AddByte((obj as Structure).Stats.Labor);
@@ -97,12 +100,21 @@ namespace Game.Comm {
             packet.AddUInt32((uint) resource.Wood);
         }
 
+        public static void AddToPacket(LazyValue value, Packet packet) {
+            packet.AddInt32(value.RawValue);
+            packet.AddInt32(value.Rate);
+            packet.AddInt32(value.Upkeep);
+            packet.AddInt32(value.Limit);
+            packet.AddUInt32(UnixDateTime.DateTimeToUnix(value.LastRealizeTime.ToUniversalTime()));                        
+        }
+
+
         public static void AddToPacket(LazyResource resource, Packet packet) {
             packet.AddInt32(resource.Crop.RawValue);
             packet.AddInt32(resource.Crop.Rate);
             packet.AddInt32(resource.Crop.Upkeep);
             packet.AddInt32(resource.Crop.Limit);
-            packet.AddUInt32(UnixDateTime.DateTimeToUnix(resource.Crop.LastRealizeTime.ToUniversalTime()));            
+            packet.AddUInt32(UnixDateTime.DateTimeToUnix(resource.Crop.LastRealizeTime.ToUniversalTime()));
 
             packet.AddInt32(resource.Iron.RawValue);
             packet.AddInt32(resource.Iron.Rate);

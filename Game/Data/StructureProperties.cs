@@ -30,6 +30,7 @@ namespace Game.Data {
 
         public void Add(object key, object value) {
             structure.CheckUpdateMode();
+            properties.Remove(key);
             properties.Add(key, value);
         }
 

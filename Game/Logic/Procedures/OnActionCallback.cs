@@ -8,10 +8,6 @@ using Game.Setup;
 namespace Game.Logic.Procedures {
     public partial class Procedure {
         public static void AdjustCityResourceRates(Structure structure, int laborDelta) {
-            if (ObjectTypeFactory.IsStructureType("Wood", structure)) {
-                structure.City.Resource.Wood.Rate += laborDelta;
-            }
-
             if (ObjectTypeFactory.IsStructureType("Crop", structure)) {
                 structure.City.Resource.Crop.Rate += laborDelta;
             }            

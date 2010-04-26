@@ -62,7 +62,7 @@ namespace Game.Setup {
         public static readonly int ai_count = 100;
 
         public static readonly bool actions_instant_time;
-
+        
         public static Random Random { get; private set; }
 
         static Config() {

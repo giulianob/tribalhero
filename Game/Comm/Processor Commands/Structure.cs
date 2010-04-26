@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
@@ -40,52 +41,82 @@ namespace Game.Comm {
                     reply.AddByte(structure.Stats.Labor);
                     reply.AddUInt16(structure.Stats.Hp);
 
-                    foreach (Property prop in PropertyFactory.getProperties(structure.Type)) {
-                        if (!structure.Properties.Contains(prop.name)) {
-                            switch (prop.type) {
-                                case DataType.Byte:
-                                    reply.AddByte(Byte.MaxValue);
-                                    break;
-                                case DataType.UShort:
-                                    reply.AddUInt16(UInt16.MinValue);
-                                    break;
-                                case DataType.UInt:
-                                    reply.AddUInt32(UInt32.MinValue);
-                                    break;
-                                case DataType.String:
-                                    reply.AddString("N/A");
-                                    break;
-                                case DataType.Int:
-                                    reply.AddInt32(Int16.MaxValue);
-                                    break;
-                            }
-                        } else {
-                            switch (prop.type) {
-                                case DataType.Byte:
-                                    reply.AddByte((byte) prop.getValue(structure));
-                                    break;
-                                case DataType.UShort:
-                                    reply.AddUInt16((ushort) prop.getValue(structure));
-                                    break;
-                                case DataType.UInt:
-                                    reply.AddUInt32((uint) prop.getValue(structure));
-                                    break;
-                                case DataType.String:
-                                    reply.AddString((string) prop.getValue(structure));
-                                    break;
-                                case DataType.Int:
-                                    reply.AddInt32((int) prop.getValue(structure));
-                                    break;
-                            }
+                    foreach (Property prop in PropertyFactory.GetProperties(structure.Type)) {
+                        switch (prop.Type) {
+                            case DataType.BYTE:
+                                reply.AddByte((byte) prop.GetValue(structure));
+                                break;
+                            case DataType.USHORT:
+                                reply.AddUInt16((ushort) prop.GetValue(structure));
+                                break;
+                            case DataType.UINT:
+                                reply.AddUInt32((uint) prop.GetValue(structure));
+                                break;
+                            case DataType.STRING:
+                                reply.AddString((string) prop.GetValue(structure));
+                                break;
+                            case DataType.INT:
+                                reply.AddInt32((int) prop.GetValue(structure));
+                                break;
                         }
                     }
 
                     PacketHelper.AddToPacket(
                         new List<ReferenceStub>(structure.City.Worker.References.GetReferences(structure)), reply);
                 }
+                else {
+                    foreach (Property prop in PropertyFactory.GetProperties(structure.Type, Visibility.PUBLIC)) {
+                        switch (prop.Type) {
+                            case DataType.BYTE:
+                                reply.AddByte((byte)prop.GetValue(structure));
+                                break;
+                            case DataType.USHORT:
+                                reply.AddUInt16((ushort)prop.GetValue(structure));
+                                break;
+                            case DataType.UINT:
+                                reply.AddUInt32((uint)prop.GetValue(structure));
+                                break;
+                            case DataType.STRING:
+                                reply.AddString((string)prop.GetValue(structure));
+                                break;
+                            case DataType.INT:
+                                reply.AddInt32((int)prop.GetValue(structure));
+                                break;
+                        }
+                    }                    
+                }
 
                 session.Write(reply);
             }
+        }
+
+        public void CmdGetForestInfo(Session session, Packet packet) {
+            Packet reply = new Packet(packet);
+            Forest forest;
+
+            uint forestId;            
+
+            try {
+                forestId = packet.GetUInt32();                
+            }
+            catch (Exception) {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            using (new MultiObjectLock(Global.Forests)) {
+                if (!Global.Forests.TryGetValue(forestId, out forest)) {
+                    ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
+                    return;
+                }
+                
+                reply.AddInt32((int)(forest.Rate / Config.seconds_per_unit));
+                reply.AddInt32(forest.Labor);
+                reply.AddUInt32(UnixDateTime.DateTimeToUnix(forest.DepleteTime.ToUniversalTime()));
+                PacketHelper.AddToPacket(forest.Wood, reply);                
+            }
+
+            session.Write(reply);
         }
 
         public void CmdGetCityUsername(Session session, Packet packet) {
@@ -369,6 +400,57 @@ namespace Game.Comm {
 
                 StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, changeAction, obj.Technologies);
+                if (ret != 0)
+                    ReplyError(session, packet, ret);
+                else
+                    ReplySuccess(session, packet);
+                return;
+            }
+        }
+
+        public void CmdCreateForestCamp(Session session, Packet packet) {
+            uint cityId;            
+            uint forestId;
+            ushort type;
+            byte labor;
+
+            try {
+                cityId = packet.GetUInt32();                
+                forestId = packet.GetUInt32();
+                type = packet.GetUInt16();
+                labor = packet.GetByte();
+            }
+            catch (Exception) {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            City city = session.Player.GetCity(cityId);
+            if (city == null) {
+                ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                return;
+            }
+
+            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+                
+                // Get the lumbermill
+                Structure lumbermill = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("Wood", structure));
+                
+                if (lumbermill == null) {
+                    ReplyError(session, packet, Error.LUMBERMILL_UNAVAILABLE);
+                    return;
+                }
+
+                // Count number of camps and verify there's enough space left                
+                int campCount = city.Count(structure => ObjectTypeFactory.IsStructureType("ForestCamp", structure));
+                if (campCount > Formula.GetMaxForestCount(lumbermill.Lvl)) {
+                    ReplyError(session, packet, Error.LUMBERMILL_UNAVAILABLE);
+                    return;
+                }
+
+                ForestCampBuildAction buildaction = new ForestCampBuildAction(cityId, lumbermill.ObjectId, forestId, type, labor);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(lumbermill), lumbermill, buildaction,
+                                                 lumbermill.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else

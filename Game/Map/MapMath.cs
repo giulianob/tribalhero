@@ -91,31 +91,37 @@ namespace Game.Map {
             uint cx = ox;
             uint cy = oy - (uint) (2*radius);
             uint last = cx;
+            bool done = false;
             for (byte row = 0; row < radius*2 + 1; ++row) {
                 for (byte count = 0; count < radius*2 + 1; ++count) {
                     if (row%2 == 0) {
                         if (mode == 0) {
                             if (!do_self && ox == cx + (uint) ((count)/2) && oy == cy + count)
                                 continue;
-                            work(ox, oy, cx + (uint) ((count)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (uint) ((count)/2), cy + count, custom);
                         } else {
                             if (!do_self && ox == cx + (uint) ((count + 1)/2) && oy == cy + count)
                                 continue;
-                            work(ox, oy, cx + (uint) ((count + 1)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (uint)((count + 1) / 2), cy + count, custom);
                         }
                     } else {
                         // alternate row
                         if (mode == 0) {
                             if (!do_self && ox == cx + (uint) ((count + 1)/2) && oy == cy + count)
                                 continue;
-                            work(ox, oy, cx + (uint) ((count + 1)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (uint)((count + 1) / 2), cy + count, custom);
                         } else {
                             if (!do_self && ox == cx + (uint) ((count)/2) && oy == cy + count)
                                 continue;
-                            work(ox, oy, cx + (uint) ((count)/2), cy + count, custom);
+                            done = !work(ox, oy, cx + (uint)((count) / 2), cy + count, custom);
                         }
                     }
+
+                    if (done) break;
                 }
+                
+                if (done) break;
+
                 if (mode == 0) {
                     cx -= (uint) ((row + 1)%2);
                     //     Console.Out.WriteLine("cx:" + cx);

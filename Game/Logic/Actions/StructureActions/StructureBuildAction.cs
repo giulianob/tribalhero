@@ -64,7 +64,7 @@ namespace Game.Logic.Actions {
             }
 
             // check if tile is occupied
-            if (Global.World[x, y].Exists(delegate(GameObject obj) { return obj is Structure; })) {
+            if (Global.World[x, y].Exists(obj => obj is Structure)) {
                 Global.DbManager.Rollback();
                 Global.World.UnlockRegion(x, y);
                 StateChange(ActionState.FAILED);

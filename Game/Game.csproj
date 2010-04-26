@@ -102,7 +102,7 @@
     <Compile Include="Data\Troop\TroopObject.cs" />
     <Compile Include="Data\Troop\TroopStub.cs" />
     <Compile Include="Engine.cs" />
-    <Compile Include="Data\GameObject.cs" />
+    <Compile Include="Data\SimpleGameObject.cs" />
     <Compile Include="Logic\Actions\ChainActions\AttackAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMoveAction.cs" />
@@ -182,6 +182,8 @@
     <Compile Include="Comm\Processor Commands\Market.cs" />
     <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Database\PersistableList.cs" />
+    <Compile Include="Data\GameObject.cs" />
+    <Compile Include="Data\ForestManager.cs" />
     <Compile Include="Data\GameObjectState.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -194,18 +196,22 @@
     <Compile Include="Data\Stats\StructureStats.cs" />
     <Compile Include="Data\Stats\UnitStats.cs" />
     <Compile Include="Data\StructureProperties.cs" />
+    <Compile Include="Data\Forest.cs" />
     <Compile Include="Data\Troop\TroopTemplate.cs" />
     <Compile Include="Logic\ActionDispatcher.cs" />
     <Compile Include="Logic\Actions\ChainActions\DefenseAction.cs" />
     <Compile Include="Logic\Actions\ChainActions\RetreatAction.cs" />
     <Compile Include="Logic\Actions\ChainExecuter.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestDepleteAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceSellAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceBuyAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampBuildAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\LaborMoveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\PropertyCreateAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\StarveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\EngageDefenseAction.cs" />
+    <Compile Include="Logic\Formulas\Forest.cs" />
     <Compile Include="Logic\Formulas\Ranking.cs" />
     <Compile Include="Logic\Conditons\IBaseBattleStatsCondition.cs" />
     <Compile Include="Logic\Conditons\ICombatObject.cs" />

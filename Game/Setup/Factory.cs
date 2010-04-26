@@ -49,7 +49,7 @@ namespace Game.Setup {
             ActionFactory.init(Config.csv_compiled_folder + "action.csv");
             EffectRequirementFactory.init(Config.csv_compiled_folder + "effect_requirement.csv");
             InitFactory.Init(Config.csv_compiled_folder + "init.csv");
-            PropertyFactory.init(Config.csv_compiled_folder + "property.csv");
+            PropertyFactory.Init(Config.csv_compiled_folder + "property.csv");
             ReqirementFactory.Init(Config.csv_compiled_folder + "layout.csv");
             TechnologyFactory.Init(Config.csv_compiled_folder + "technology.csv", Config.csv_folder + "technology_effects.csv");
             UnitFactory.Init(Config.csv_compiled_folder + "unit.csv");

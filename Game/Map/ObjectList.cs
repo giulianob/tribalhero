@@ -12,17 +12,17 @@ namespace Game.Map {
         #region Members
 
         private bool isNew = true;
-        private ObjectList _objectList;
-        private Dictionary<int, List<GameObject>>.Enumerator itr;
-        private List<GameObject>.Enumerator list_itr;
+        private readonly ObjectList objectList;
+        private Dictionary<int, List<SimpleGameObject>>.Enumerator itr;
+        private List<SimpleGameObject>.Enumerator listItr;
 
         #endregion
 
         #region Constructors
 
         public AllObjectEnum(ObjectList objectList) {
-            _objectList = objectList;
-            itr = _objectList.dict.GetEnumerator();
+            this.objectList = objectList;
+            itr = this.objectList.dict.GetEnumerator();
         }
 
         #endregion
@@ -30,34 +30,35 @@ namespace Game.Map {
         #region IEnumerator Members
 
         public void Reset() {
-            itr = _objectList.dict.GetEnumerator();
+            itr = objectList.dict.GetEnumerator();
         }
 
         public object Current {
-            get { return list_itr.Current; }
+            get { return listItr.Current; }
         }
 
         public bool MoveNext() {
             if (isNew) {
                 isNew = false;
                 if (itr.MoveNext()) {
-                    list_itr = itr.Current.Value.GetEnumerator();
+                    listItr = itr.Current.Value.GetEnumerator();
 
-                    return list_itr.MoveNext();
-                } else
-                    return false;
-            } else {
-                if (list_itr.MoveNext())
-                    return true;
-                else {
-                    if (itr.MoveNext()) {
-                        list_itr = itr.Current.Value.GetEnumerator();
-
-                        return list_itr.MoveNext();
-                    } else
-                        return false;
+                    return listItr.MoveNext();
                 }
+
+                return false;
             }
+
+            if (listItr.MoveNext())
+                return true;
+            
+            if (itr.MoveNext()) {
+                listItr = itr.Current.Value.GetEnumerator();
+
+                return listItr.MoveNext();
+            }
+
+            return false;
         }
 
         #endregion
@@ -66,51 +67,50 @@ namespace Game.Map {
     public class ObjectList : IEnumerable {
         #region Members
 
-        internal Dictionary<int, List<GameObject>> dict = new Dictionary<int, List<GameObject>>();
-        private ushort count;
+        internal Dictionary<int, List<SimpleGameObject>> dict = new Dictionary<int, List<SimpleGameObject>>();
 
         #endregion
 
         #region Properties
 
-        public ushort Count {
-            get { return count; }
-        }
+        public ushort Count { get; private set; }
 
         #endregion
 
         #region Methods
 
-        internal void addGameObject(GameObject obj) {
-            add(obj, Region.GetTileIndex(obj.X, obj.Y));
+        internal void AddGameObject(SimpleGameObject obj) {
+            Add(obj, Region.GetTileIndex(obj.X, obj.Y));
         }
 
-        private void add(GameObject obj, int index) {
-            List<GameObject> list;
+        private void Add(SimpleGameObject obj, int index) {
+            List<SimpleGameObject> list;
 
             if (dict.TryGetValue(index, out list)) {
                 if (list.Contains(obj))
                     throw new Exception("WTF");
                 list.Add(obj);
-            } else {
-                list = new List<GameObject>();
-                list.Add(obj);
+            }
+            else {
+                list = new List<SimpleGameObject> {
+                                                      obj
+                                                  };
                 dict[index] = list;
             }
 
-            ++count;
+            ++Count;
         }
 
-        internal bool remove(GameObject obj) {
-            return remove(obj, obj.X, obj.Y);
+        internal bool Remove(SimpleGameObject obj) {
+            return Remove(obj, obj.X, obj.Y);
         }
 
-        internal bool remove(GameObject obj, uint origX, uint origY) {
-            List<GameObject> list;
+        internal bool Remove(SimpleGameObject obj, uint origX, uint origY) {
+            List<SimpleGameObject> list;
             int index = Region.GetTileIndex(origX, origY);
 
             if (dict.TryGetValue(index, out list)) {
-                --count;
+                --Count;
                 bool ret = list.Remove(obj);
 
                 if (list.Count == 0)
@@ -122,15 +122,15 @@ namespace Game.Map {
             return true;
         }
 
-        internal List<GameObject> get(uint x, uint y) {
-            List<GameObject> list;
+        internal List<SimpleGameObject> Get(uint x, uint y) {
+            List<SimpleGameObject> list;
 
             int index = Region.GetTileIndex(x, y);
 
             if (dict.TryGetValue(index, out list))
-                return new List<GameObject>(list);
-            else
-                return new List<GameObject>();
+                return new List<SimpleGameObject>(list);
+            
+            return new List<SimpleGameObject>();
         }
 
         #endregion

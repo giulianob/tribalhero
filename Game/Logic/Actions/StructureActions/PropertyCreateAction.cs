@@ -39,20 +39,21 @@ namespace Game.Logic.Actions {
                 throw new Exception();
             name = parms[0];
             switch ((DataType) Enum.Parse(typeof (DataType), parms[1], true)) {
-                case DataType.Byte:
+                case DataType.BYTE:
                     value = byte.Parse(parms[2]);
                     break;
-                case DataType.UShort:
+                case DataType.USHORT:
                     value = ushort.Parse(parms[2]);
                     break;
-                case DataType.UInt:
+                case DataType.UINT:
                     value = uint.Parse(parms[2]);
                     break;
-                case DataType.String:
+                case DataType.STRING:
                     value = parms[2];
                     break;
             }
-            this.Execute();
+            
+            Execute();
         }
 
         #endregion

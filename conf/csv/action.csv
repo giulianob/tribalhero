@@ -48,7 +48,7 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 // Lumbermill,,,,,,,,,,
 21071,0,1,,,,,,,,
 21071,1,1,structure_Upgrade,10,,,,,,
-21071,2,1,labor_move,,,,,,,
+21071,2,1,forest_camp_build,2108,,,,,,
 ,,,,,,,,,,
 // Foundry,,,,,,,,,,
 2110,0,1,,,,,,,,

@@ -106,6 +106,17 @@ namespace Game.Logic {
             });
         }
 
+        public void Remove(GameObject referenceObject) {
+            reference.RemoveAll(referenceStub => {
+                bool ret = (referenceObject == referenceStub.WorkerObject);
+
+                if (ret)
+                    Global.DbManager.Delete(referenceStub);
+
+                return ret;
+            });
+        }
+
         public IEnumerable<ReferenceStub> GetReferences(ICanDo worker) {
             return reference.FindAll(stub => stub.WorkerObject.WorkerId == worker.WorkerId);
         }

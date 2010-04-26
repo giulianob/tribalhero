@@ -24,6 +24,10 @@ namespace Game.Setup {
         RESOURCE_NOT_TRADABLE = 201,
         LABOR_NOT_ENOUGH = 202,
         LABOR_OVERFLOW = 203,
+        FOREST_FULL = 204,
+        LUMBERMILL_UNAVAILABLE = 205,
+        ALREADY_IN_FOREST = 206,
+        FOREST_INACCESSIBLE = 207,
 
         #endregion
 
@@ -41,6 +45,7 @@ namespace Game.Setup {
         STRUCTURE_EXISTS = 412,
         CITY_NAME_TAKEN = 413,
         CITY_NAME_INVALID = 414,
+        OBJECT_NOT_ATTACKABLE = 415,
 
         #endregion
 
@@ -51,7 +56,7 @@ namespace Game.Setup {
 
         #endregion
 
-        #region Market Errors            
+        #region Market Errors
 
         MARKET_PRICE_CHANGED = 300,
         MARKET_INVALID_QUANTITY = 301,

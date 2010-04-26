@@ -37,11 +37,6 @@ namespace Game.Logic {
         }
 
         #region Properties
-
-        public byte Count {
-            get { return (byte) active.Count; }
-        }
-
         public ListDictionary<ushort, ActiveAction> ActiveActions {
             get { return active; }
         }

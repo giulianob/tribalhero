@@ -76,7 +76,8 @@ namespace Game.Comm {
 
         #region Forest
         FOREST_INFO = 350,
-        FOREST_CREATE_CAMP = 351,
+        FOREST_CAMP_CREATE = 351,
+        FOREST_CAMP_REMOVE = 352,
         #endregion
 
         #region City

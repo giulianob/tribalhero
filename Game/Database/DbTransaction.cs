@@ -9,7 +9,8 @@ namespace Game.Database {
         public enum DbTransactionState {
             IN_PROGRESS,
             COMMITTED,
-            ROLLEDBACK,
+            ROLLEDBACK,  
+            DISPOSED
         }
 
         internal object transaction;
@@ -33,14 +34,18 @@ namespace Game.Database {
             this.transaction = transaction;
         }
 
-        protected virtual bool Commit() {
+        protected virtual void Commit() {
             state = DbTransactionState.COMMITTED;
 
-            return true;
+            if (referenceCount == 0)
+                state = DbTransactionState.DISPOSED;
         }
 
         public virtual void Rollback() {
             state = DbTransactionState.ROLLEDBACK;
+
+            if (referenceCount == 0)
+                state = DbTransactionState.DISPOSED;
         }
 
         #region IDisposable Members
@@ -55,13 +60,10 @@ namespace Game.Database {
                 case DbTransactionState.ROLLEDBACK:
                     Rollback();
                     break;
-                case DbTransactionState.COMMITTED:
-                    manager.ClearThreadTransaction();
-                    throw new Exception("Transaction was already committed");
-                default:
+                case DbTransactionState.IN_PROGRESS:
                     Commit();
                     break;
-            }
+            }            
 
             manager.ClearThreadTransaction();
         }

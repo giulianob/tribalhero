@@ -175,36 +175,25 @@ namespace Game.Logic.Actions {
 
                 Structure structure;
                 if (!city.TryGetStructure(structureId, out structure))
-                    throw new Exception();
+                    return;
+
+                Global.Scheduler.Del(this);
+
+                city.Worker.References.Remove(structure, this);
+
+                Global.World.Remove(structure);
+                city.Remove(structure);
 
                 switch (state) {
-                    case ActionInterrupt.KILLED:
-                        Global.Scheduler.Del(this);
-                        city.Worker.References.Remove(structure, this);
-                        Global.World.LockRegion(x, y);
-                        Global.DbManager.Delete(structure);
-                        Global.World.Remove(structure);
-                        Global.World.UnlockRegion(x, y);
-                        StateChange(ActionState.FAILED);
-                        break;
+                    case ActionInterrupt.ABORT:
                     case ActionInterrupt.CANCEL:
-                        Global.Scheduler.Del(this);
-
-                        city.Worker.References.Remove(structure, this);
-
-                        Global.World.LockRegion(x, y);
-
                         city.BeginUpdate();
-                        city.Resource.Subtract(cost/2);
-                        city.EndUpdate();
-
-                        Global.DbManager.Delete(structure);
-
-                        Global.World.Remove(structure);
-                        Global.World.UnlockRegion(x, y);
-                        StateChange(ActionState.INTERRUPTED);
+                        city.Resource.Add(cost/2);
+                        city.EndUpdate();                        
                         break;
                 }
+
+                StateChange(ActionState.FAILED);
             }
         }
 

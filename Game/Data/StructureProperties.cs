@@ -34,6 +34,11 @@ namespace Game.Data {
             properties.Add(key, value);
         }
 
+        public void Remove(object key) {
+            structure.CheckUpdateMode();
+            properties.Remove(key);
+        }
+
         public object Get(object key) {
             return properties[key];
         }

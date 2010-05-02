@@ -180,10 +180,8 @@ namespace Game.Logic.Actions {
                     city.EndUpdate();
 
                     // Remove the camp
-                    Global.World.LockRegion(structure.X, structure.Y);
-                    Global.DbManager.Delete(structure);
                     Global.World.Remove(structure);
-                    Global.World.UnlockRegion(structure.X, structure.Y);
+                    city.Remove(structure);
 
                     StateChange(ActionState.FAILED);
                     return;
@@ -228,7 +226,7 @@ namespace Game.Logic.Actions {
                     return;
 
                 switch (state) {
-                    // Lumbermill has been destroyed.
+                    case ActionInterrupt.CANCEL:
                     case ActionInterrupt.ABORT:
                     case ActionInterrupt.KILLED:                    
                         Global.Scheduler.Del(this);
@@ -241,6 +239,13 @@ namespace Game.Logic.Actions {
 
                         city.Worker.References.Remove(structure, this);
 
+                        // If action was cancelled, give back the labor to the city
+                        if (state == ActionInterrupt.CANCEL) {
+                            city.BeginUpdate();
+                            city.Resource.Labor.Add(labors);
+                            city.EndUpdate();
+                        }
+
                         // Remove camp from forest and recalculate forest
                         Forest forest;
                         if (Global.Forests.TryGetValue(forestId, out forest)) {
@@ -250,11 +255,10 @@ namespace Game.Logic.Actions {
                             forest.EndUpdate();
                         }
 
-                        // Remove the camp
-                        Global.World.LockRegion(structure.X, structure.Y);
-                        Global.DbManager.Delete(structure);
-                        Global.World.Remove(structure);
-                        Global.World.UnlockRegion(structure.X, structure.Y);
+                        // Remove the camp                        
+                        Global.World.Remove(structure);                        
+                        city.Remove(structure);
+
                         StateChange(ActionState.FAILED);
                         break;
                 }

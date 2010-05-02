@@ -21,14 +21,14 @@ namespace Game.Database.Managers {
             ((MySqlTransaction)transaction).Rollback();
         }
 
-        protected override bool Commit() {
+        protected override void Commit() {
             base.Commit();
 
             if (ReferenceCount > 0)
-                return true;
+                return;
 
             if (transaction == null) //no queries ran
-                return true;
+                return;
 
             try {
                 ((MySqlTransaction)transaction).Commit();
@@ -49,8 +49,6 @@ namespace Game.Database.Managers {
             }
 
             manager.Close(((MySqlTransaction)transaction).Connection);
-
-            return true;
         }
     }
 }

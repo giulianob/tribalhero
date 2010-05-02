@@ -95,7 +95,7 @@ namespace Game.Setup {
                     while ((line = file.ReadLine()) != null) {
                         line = line.Trim();
 
-                        if (line == string.Empty)
+                        if (line == string.Empty || line.StartsWith("#") || line.StartsWith(";") || line.StartsWith("\\\\"))
                             continue;
 
                         key = line.Substring(0, line.IndexOf('=')).ToLower();

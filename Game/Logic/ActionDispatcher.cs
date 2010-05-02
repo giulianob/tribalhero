@@ -24,11 +24,11 @@ namespace Game.Logic {
         }
 
         public void Callback(object custom) {
-            GameAction action = this.action as GameAction;
+            GameAction gameAction = action as GameAction;
             City city;
 
             try {
-                city = action.WorkerObject.City;
+                city = gameAction.WorkerObject.City;
                 if (city == null)
                     throw new NullReferenceException();
             }
@@ -36,7 +36,7 @@ namespace Game.Logic {
                 return; //structure is dead
             }
 
-            city.Worker.FireCallback(this.action);
+            city.Worker.FireCallback(action);
         }
 
         #endregion

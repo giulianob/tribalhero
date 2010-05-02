@@ -30,7 +30,7 @@ namespace Game.Comm {
             RegisterCommand(Command.CITY_REGION_GET, CmdGetCityRegion);
             RegisterCommand(Command.STRUCTURE_INFO, CmdGetStructureInfo);
             RegisterCommand(Command.FOREST_INFO, CmdGetForestInfo);
-            RegisterCommand(Command.FOREST_CREATE_CAMP, CmdCreateForestCamp);
+            RegisterCommand(Command.FOREST_CAMP_CREATE, CmdCreateForestCamp);
             RegisterCommand(Command.STRUCTURE_BUILD, CmdCreateStructure);
             RegisterCommand(Command.STRUCTURE_UPGRADE, CmdUpgradeStructure);
             RegisterCommand(Command.STRUCTURE_CHANGE, CmdChangeStructure);
@@ -57,26 +57,12 @@ namespace Game.Comm {
             RegisterEvent(Command.ON_CONNECT, EventOnConnect);
         }
 
-        protected bool RegisterCommand(Command cmd, DoWork func) {
-            try {
-                commands[cmd] = new ProcessorCommand(func);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            return true;
+        protected void RegisterCommand(Command cmd, DoWork func) {
+            commands[cmd] = new ProcessorCommand(func);
         }
 
-        protected bool RegisterEvent(Command cmd, DoWork func) {
-            try {
-                events[cmd] = new ProcessorCommand(func);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            return true;
+        protected void RegisterEvent(Command cmd, DoWork func) {
+            events[cmd] = new ProcessorCommand(func);
         }
 
         public void ReplySuccess(Session session, Packet packet) {

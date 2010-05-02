@@ -58,13 +58,10 @@ namespace Game.Data {
         }
 
 
-        public void RemoveForest(Forest forest) {                   
-            Global.World.LockRegion(forest.X, forest.Y);
-            Global.World.Remove(forest);
-            Global.World.UnlockRegion(forest.X, forest.Y);
-
+        public void RemoveForest(Forest forest) {
             forests.Remove(forest.ObjectId);
 
+            Global.World.Remove(forest);            
             Global.DbManager.Delete(forest);
         }
 

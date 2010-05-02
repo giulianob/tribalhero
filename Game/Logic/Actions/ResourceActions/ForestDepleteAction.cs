@@ -19,8 +19,14 @@ namespace Game.Logic.Actions.ResourceActions {
 
         public void Callback(object custom) {
             
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { Forest.ObjectId }, Global.Forests)) {                
-                foreach (Structure obj in Forest) {
+            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { Forest.ObjectId }, Global.Forests)) {
+                List<Structure> camps = new List<Structure>(Forest);
+
+                foreach (Structure obj in camps) {
+                    Forest.BeginUpdate();
+                    Forest.RemoveLumberjack(obj);
+                    Forest.EndUpdate();
+
                     obj.City.BeginUpdate();
                     // Remove wood production rate
                     obj.City.Resource.Wood.Rate -= (int) obj["Rate"];
@@ -28,11 +34,8 @@ namespace Game.Logic.Actions.ResourceActions {
                     obj.City.Resource.Labor.Add(obj.Stats.Labor);
                     obj.City.EndUpdate();
 
-                    // Destroy structure
-                    Global.World.LockRegion(obj.X, obj.Y);
-                    Global.World.Remove(obj);
-                    Global.World.UnlockRegion(obj.X, obj.Y);
-
+                    // Destroy structure                    
+                    Global.World.Remove(obj);                    
                     obj.City.Remove(obj);
                 }
 

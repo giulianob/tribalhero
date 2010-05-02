@@ -203,6 +203,7 @@
     <Compile Include="Logic\Actions\ChainActions\RetreatAction.cs" />
     <Compile Include="Logic\Actions\ChainExecuter.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampHarvestAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestDepleteAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceSellAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceBuyAction.cs" />

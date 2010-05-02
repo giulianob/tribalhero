@@ -9,6 +9,7 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
+using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Setup;
 using Game.Util;
@@ -71,8 +72,9 @@ namespace Game.Data {
 
         /// <summary>
         /// Time until forest is depleted
+        /// Only the db loader should be setting this.
         /// </summary>
-        public DateTime DepleteTime { get; private set; }
+        public DateTime DepleteTime { get; set; }
 
         #region Constructors
 
@@ -92,8 +94,17 @@ namespace Game.Data {
         public void AddLumberjack(Structure structure) {
             CheckUpdateMode();
             structures.Add(structure);
+
+            // Store the forest_id in the structure so we have a way of getting the forest from the structure
+            structure.BeginUpdate();
+            structure["forest_id"] = ObjectId;
+            structure.EndUpdate();
         }
 
+        /// <summary>
+        /// Removes structure from forest
+        /// </summary>
+        /// <param name="structure">Structure to remove</param>        
         public void RemoveLumberjack(Structure structure) {
             CheckUpdateMode();
             structures.Remove(structure);
@@ -148,6 +159,20 @@ namespace Game.Data {
             Labor = totalLabor;
 
             SetDepleteAction();
+
+            //Reset the harvest actions
+            foreach (Structure obj in this.Where(obj => obj.Lvl > 0)) {
+                // Remove the harvesting action
+                ForestCampHarvestAction action = (ForestCampHarvestAction)obj.City.Worker.FindAction(obj, typeof(ForestCampHarvestAction));
+                if (action != null) {
+                    action.Reschedule();
+                }
+                else {
+                    // Set new harvesting action                             
+                    action = new ForestCampHarvestAction(obj.City.Id, ObjectId);
+                    obj.City.Worker.DoPassive(obj, action, true);
+                }
+            }
         }
 
         /// <summary>
@@ -160,6 +185,8 @@ namespace Game.Data {
             DateTime depleteTime = DateTime.Now.AddDays(2).AddMinutes(Config.Random.Next(360));
             if (Wood.Upkeep != 0)
                 depleteTime = DateTime.Now.AddHours(Wood.Value / (Wood.Upkeep / Config.seconds_per_unit));
+
+            Global.Logger.Info(string.Format("DepleteTime[{0}] Wood.Upkeep[{1}] Wood.Value[{2}]", depleteTime, Wood.Upkeep, Wood.Value));
 
             DepleteAction = new ForestDepleteAction(this, depleteTime);
 
@@ -227,6 +254,7 @@ namespace Game.Data {
                                 new DbColumn("upkeep", Wood.Upkeep, DbType.Int32),                                
                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),
                                 new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
+                                new DbColumn("deplete_time", DepleteTime, DbType.DateTime),
                                 new DbColumn("structures", XMLSerializer.SerializeComplexList(structures.Select(structure => new object[] {structure.City.Id, structure.ObjectId})), DbType.String)
                 };
             }

@@ -31,6 +31,8 @@ namespace Game.Logic {
         RESOURCE_BUY = 306,
         RESOURCE_SELL = 307,
         FOREST_CAMP_BUILD = 308,
+        FOREST_CAMP_REMOVE = 309,
+        FOREST_CAMP_HARVEST = 310,
 
         CITY_LABOR = 501,
         CITY = 502,

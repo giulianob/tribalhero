@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
@@ -278,7 +279,7 @@ namespace Game.Logic {
             Error ret = action.Execute();
             if (ret != Error.OK) {
                 action.StateChange(ActionState.FAILED);
-                active.Remove(action.ActionId);
+                passive.Remove(action.ActionId);
                 ReleaseId(action.ActionId);
             } else
                 action.StateChange(ActionState.STARTED);
@@ -366,6 +367,10 @@ namespace Game.Logic {
 
         #endregion
 
+        public PassiveAction FindAction(GameObject workerObject, Type type) {
+            return passive.Values.FirstOrDefault(action => action.WorkerObject == workerObject && action.GetType() == type);
+        }
+
         public void Remove(GameObject workerObject, ActionInterrupt actionInterrupt, params GameAction[] ignoreActions) {
             MultiObjectLock.ThrowExceptionIfNotLocked(city);
 
@@ -398,14 +403,24 @@ namespace Game.Logic {
             }
         }
 
-        private static void CancelCallback(object item) {
+        private static void ActiveCancelCallback(object item) {
             ((ActiveAction) item).Interrupt(ActionInterrupt.CANCEL);
         }
 
+        private static void PassiveCancelCallback(object item) {
+            ((PassiveAction)item).Interrupt(ActionInterrupt.CANCEL);
+        }        
+
         public Error Cancel(ushort id) {
-            ActiveAction action;
-            if (ActiveActions.TryGetValue(id, out action) && !action.isDone) {
-                ThreadPool.QueueUserWorkItem(CancelCallback, action);
+            ActiveAction activeAction;
+            if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.isDone) {
+                ThreadPool.QueueUserWorkItem(ActiveCancelCallback, activeAction);
+                return Error.OK;
+            }
+
+            PassiveAction passiveAction;
+            if (PassiveActions.TryGetValue(id, out passiveAction) && !passiveAction.isDone) {
+                ThreadPool.QueueUserWorkItem(PassiveCancelCallback, passiveAction);
                 return Error.OK;
             }
 

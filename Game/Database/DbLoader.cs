@@ -12,6 +12,7 @@ using Game.Data.Troop;
 using Game.Fighting;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Actions.ResourceActions;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
@@ -205,7 +206,8 @@ namespace Game.Database {
                         },
                         Wood = new AggressiveLazyValue((int)reader["lumber"], ((DateTime)reader["last_realize_time"]).Add(downTime), 0, (int)reader["upkeep"]) {
                             Limit = (int)reader["capacity"]
-                        }
+                        },
+                        DepleteTime = (DateTime)reader["deplete_time"]
                     };
 
                     foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
@@ -224,7 +226,8 @@ namespace Game.Database {
                         forest.AddLumberjack(structure);
                     }
 
-                    forest.SetDepleteAction();
+                    // Create deplete time
+                    Global.Scheduler.Put(new ForestDepleteAction(forest, (DateTime)reader["deplete_time"]));
 
                     Global.World.DbLoaderAdd(forest);
                     Global.Forests.DbLoaderAdd(forest);

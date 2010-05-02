@@ -352,6 +352,9 @@ namespace CSVToXML {
                         writer.WriteStartElement("ForestCampBuild");
                         writer.WriteAttributeString("type", workerAction.param1);
                         break;
+                    case "forest_camp_remove":
+                        writer.WriteStartElement("ForestCampRemove");
+                        break;
                     case "structure_build":
                         writer.WriteStartElement("StructureBuild");
                         writer.WriteAttributeString("type", workerAction.param1);

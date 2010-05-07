@@ -23,7 +23,7 @@ namespace Game.Logic.Actions {
             ActionCount = count;
         }
 
-        public UnitTrainAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public UnitTrainAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             type = ushort.Parse(properties["type"]);
@@ -52,12 +52,12 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            int buildtime = Formula.TrainTime((int) UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
+            int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
 
             // add to queue for completion
-            nextTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
-            beginTime = DateTime.Now;
-            endTime = DateTime.Now.AddSeconds((double) buildtime*ActionCount);
+            nextTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
+            beginTime = DateTime.UtcNow;
+            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 * ActionCount : (double) buildtime * ActionCount);
 
             return Error.OK;
         }
@@ -103,33 +103,35 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override void Interrupt(ActionInterrupt state) {
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
-                Global.Scheduler.Del(this);
-
                 if (!city.TryGetStructure(structureId, out structure)) {
                     StateChange(ActionState.FAILED);
                     return;
                 }
 
-                switch (state) {
-                    case ActionInterrupt.KILLED:
-                        StateChange(ActionState.FAILED);
-                        break;
-                    case ActionInterrupt.CANCEL:
-                        Resource totalCost = cost*ActionCount;
-                        structure.City.BeginUpdate();
-                        structure.City.Resource.Add(totalCost/2);
-                        structure.City.EndUpdate();
-                        StateChange(ActionState.INTERRUPTED);
-                        break;
+                if (!wasKilled) {
+                    Resource totalCost = cost*ActionCount;
+                    structure.City.BeginUpdate();
+                    structure.City.Resource.Add(totalCost/2);
+                    structure.City.EndUpdate();
                 }
+
+                StateChange(ActionState.FAILED);
             }
+        }
+
+        public override void UserCancelled() {
+            InterruptCatchAll(false);
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            InterruptCatchAll(wasKilled);
         }
 
         #region IPersistable
@@ -137,7 +139,7 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("type", type), new XMLKVPair("city_id", cityId),
                                                                 new XMLKVPair("structure_id", structureId)
                                                             });

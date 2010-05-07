@@ -7,6 +7,16 @@ using Game.Util;
 
 namespace Game.Data {
     public abstract class GameObject : SimpleGameObject, ICanDo {
+
+        bool isBlocked;
+        public bool IsBlocked {
+            get { return isBlocked; }
+            set {
+                CheckUpdateMode();
+                isBlocked = value;
+            }
+        }
+        
         public City City { get; set; }
 
         #region ICanDo Members

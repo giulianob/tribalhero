@@ -11,8 +11,10 @@ namespace Game.Logic.Procedures {
             target.Troops.AddStationed(troop.Stub);
             troop.Stub.EndUpdate();
 
+            troop.BeginUpdate();
             Global.World.Remove(troop);
-            troop.City.Remove(troop);
+            troop.City.ScheduleRemove(troop, false);
+            troop.EndUpdate();
         }
     }
 }

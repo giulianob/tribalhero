@@ -22,7 +22,7 @@ namespace Game.Logic.Actions {
             UnitType = type;
         }
 
-        public UnitUpgradeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public UnitUpgradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                  byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             UnitType = ushort.Parse(properties["type"]);
@@ -64,25 +64,28 @@ namespace Game.Logic.Actions {
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(UnitFactory.GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)),city.MainBuilding.Lvl, structure.Technologies));
-            beginTime = DateTime.Now;
+            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(UnitFactory.GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)),city.MainBuilding.Lvl, structure.Technologies));
+            beginTime = DateTime.UtcNow;
 
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {
+        private void InterruptCatchAll() {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
-                Global.Scheduler.Del(this);
-                switch (state) {
-                    case ActionInterrupt.CANCEL:
-                        StateChange(ActionState.FAILED);
-                        break;
-                }
+                StateChange(ActionState.FAILED);
             }
+        }
+
+        public override void UserCancelled() {
+            InterruptCatchAll();
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            InterruptCatchAll();
         }
 
         public override ActionType Type {

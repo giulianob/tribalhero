@@ -33,7 +33,7 @@ namespace Game.Logic.Actions {
             this.mode = mode;
         }
 
-        public AttackAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
+        public AttackAction(uint id, string chainCallback, PassiveAction current, ActionState chainState,
                             bool isVisible, IDictionary<string, string> properties)
             : base(id, chainCallback, current, chainState, isVisible) {
             cityId = uint.Parse(properties["city_id"]);

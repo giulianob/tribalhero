@@ -108,7 +108,7 @@ namespace Game.Comm {
             SHA1 sha = new SHA1CryptoServiceProvider();
 
             string sessionId = BitConverter.ToString(
-                sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.Now.Ticks))).
+                sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.UtcNow.Ticks))).
                 Replace("-", String.Empty);
 #endif
 
@@ -152,7 +152,7 @@ namespace Game.Comm {
                 reply.AddString(player.Name);
 
                 //Server time
-                reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.Now.ToUniversalTime()));
+                reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.UtcNow.ToUniversalTime()));
 
                 //Server rate
                 reply.AddString(Config.seconds_per_unit.ToString());

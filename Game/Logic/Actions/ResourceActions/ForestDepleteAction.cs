@@ -20,6 +20,9 @@ namespace Game.Logic.Actions.ResourceActions {
         public void Callback(object custom) {
             
             using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { Forest.ObjectId }, Global.Forests)) {
+                
+                Global.Logger.Info(string.Format("Destroying forest[{0}]", Forest.ObjectId));
+
                 List<Structure> camps = new List<Structure>(Forest);
 
                 foreach (Structure obj in camps) {
@@ -27,16 +30,11 @@ namespace Game.Logic.Actions.ResourceActions {
                     Forest.RemoveLumberjack(obj);
                     Forest.EndUpdate();
 
-                    obj.City.BeginUpdate();
-                    // Remove wood production rate
-                    obj.City.Resource.Wood.Rate -= (int) obj["Rate"];
-                    // Add labor back to city
-                    obj.City.Resource.Labor.Add(obj.Stats.Labor);
-                    obj.City.EndUpdate();
-
-                    // Destroy structure                    
-                    Global.World.Remove(obj);                    
-                    obj.City.Remove(obj);
+                    // Remove structure from city
+                    obj.BeginUpdate();
+                    Global.World.Remove(obj);
+                    obj.City.ScheduleRemove(obj, false);
+                    obj.EndUpdate();
                 }
 
                 Global.Forests.RemoveForest(Forest);

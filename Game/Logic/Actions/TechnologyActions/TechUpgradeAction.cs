@@ -24,7 +24,7 @@ namespace Game.Logic.Actions {
             this.techId = techId;
         }
 
-        public TechnologyUpgradeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime,
+        public TechnologyUpgradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime,
                                        int workerType, byte workerIndex, ushort actionCount,
                                        Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
@@ -73,8 +73,8 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             if (isSelfInit) {
-                beginTime = DateTime.Now;
-                endTime = DateTime.Now;
+                beginTime = DateTime.UtcNow;
+                endTime = DateTime.UtcNow;
             }
             else {
                 if (!city.Resource.HasEnough(techBase.resources))
@@ -84,25 +84,23 @@ namespace Game.Logic.Actions {
                 city.Resource.Subtract(techBase.resources);
                 city.EndUpdate();
 
-                beginTime = DateTime.Now;
-                endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : techBase.time * Config.seconds_per_unit);
+                beginTime = DateTime.UtcNow;
+                endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : techBase.time * Config.seconds_per_unit);
             }
 
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
-                Global.Scheduler.Del(this);
-
                 Technology tech;
                 TechnologyBase techBase;
                 if (city.Technologies.TryGetTechnology(techId, out tech))
-                    techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                    techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte) (tech.Level + 1));
                 else
                     techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
 
@@ -111,20 +109,22 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                switch (state) {
-                    case ActionInterrupt.KILLED:
-                        Global.Scheduler.Del(this);
-                        StateChange(ActionState.FAILED);
-                        break;
-                    case ActionInterrupt.CANCEL:
-                        Global.Scheduler.Del(this);
-                        city.BeginUpdate();
-                        city.Resource.Add(techBase.resources / 2);
-                        city.EndUpdate();
-                        StateChange(ActionState.INTERRUPTED);
-                        break;
+                if (!wasKilled) {
+                    city.BeginUpdate();
+                    city.Resource.Add(techBase.resources/2);
+                    city.EndUpdate();
                 }
+
+                StateChange(ActionState.FAILED);
             }
+        }
+
+        public override void UserCancelled() {
+            InterruptCatchAll(false);
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            InterruptCatchAll(wasKilled);
         }
 
         public override ActionType Type {
@@ -206,7 +206,7 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("tech_id", techId), new XMLKVPair("city_id", cityId),
                                                                 new XMLKVPair("structure_id", structureId)
                                                             });

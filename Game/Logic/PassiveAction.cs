@@ -9,7 +9,7 @@ namespace Game.Logic {
     public abstract class PassiveAction : GameAction {
         protected PassiveAction() {}
 
-        protected PassiveAction(ushort id, bool isVisible) {
+        protected PassiveAction(uint id, bool isVisible) {
             ActionId = id;
             IsVisible = isVisible;
         }

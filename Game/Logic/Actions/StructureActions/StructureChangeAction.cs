@@ -23,7 +23,7 @@ namespace Game.Logic.Actions {
             this.lvl = lvl;
         }
 
-        public StructureChangeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public StructureChangeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                      byte workerIndex, ushort actionCount, IDictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
@@ -55,34 +55,34 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Formula.BuildTime(StructureFactory.GetTime((ushort)type, lvl), city.MainBuilding.Lvl, structure.Technologies));
-            beginTime = DateTime.Now;
+            endTime = DateTime.UtcNow.AddSeconds(Formula.BuildTime(StructureFactory.GetTime((ushort)type, lvl), city.MainBuilding.Lvl, structure.Technologies));
+            beginTime = DateTime.UtcNow;
 
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
-                switch (state) {
-                    case ActionInterrupt.KILLED:
-                        Global.Scheduler.Del(this);
-                        StateChange(ActionState.FAILED);
-                        break;
-                    case ActionInterrupt.CANCEL:
-                        Global.Scheduler.Del(this);
-
-                        city.BeginUpdate();
-                        city.Resource.Add(cost/2);
-                        city.EndUpdate();
-
-                        StateChange(ActionState.INTERRUPTED);
-                        break;
+                if (!wasKilled) {
+                    city.BeginUpdate();
+                    city.Resource.Add(cost/2);
+                    city.EndUpdate();
                 }
+
+                StateChange(ActionState.FAILED);
             }
+        }
+
+        public override void UserCancelled() {
+            InterruptCatchAll(false);
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            InterruptCatchAll(wasKilled);
         }
 
         public override ActionType Type {

@@ -1,14 +1,19 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Game.Database;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
 namespace Game.Logic {
     public enum ActionType {
+        OBJECT_REMOVE = 10,
+
+        STRUCTURE_DOWNGRADE = 100,
         STRUCTURE_BUILD = 101,
         STRUCTURE_UPGRADE = 102,
         STRUCTURE_CHANGE = 103,
@@ -37,12 +42,14 @@ namespace Game.Logic {
         CITY_LABOR = 501,
         CITY = 502,
 
-        TECHNOLOGY_UPGRADE = 402,
+        TECH_CREATE = 400,
+        TECHNOLOGY_UPGRADE = 402,        
+
         UNIT_TRAIN = 601,
         UNIT_UPGRADE = 602,
         BATTLE = 701,
         ENGAGE_ATTACK = 702,
-        ENGAGE_DEFENSE = 703
+        ENGAGE_DEFENSE = 703,
     }
 
     public enum ActionInterrupt {
@@ -56,8 +63,7 @@ namespace Game.Logic {
         STARTED = 1,
         FAILED = 2,
         FIRED = 3,
-        RESCHEDULED = 4,
-        INTERRUPTED = 5,
+        RESCHEDULED = 4,        
     }
 
     public abstract class GameAction : IPersistableObject {
@@ -79,9 +85,9 @@ namespace Game.Logic {
             set { isDone = value; }
         }
 
-        private ushort actionId;
+        private uint actionId;
 
-        public ushort ActionId {
+        public uint ActionId {
             get { return actionId; }
             set { actionId = value; }
         }
@@ -90,17 +96,15 @@ namespace Game.Logic {
             if (OnNotify != null)
                 OnNotify(this, state);
         }
-
+        
         public abstract Error Validate(string[] parms);
         public abstract Error Execute();
-        public abstract void Interrupt(ActionInterrupt state);
+        public abstract void UserCancelled();
+        public abstract void WorkerRemoved(bool wasKilled);
         public abstract ActionType Type { get; }
 
         protected bool IsValid() {
-            if (workerObject == null)
-                return false;
-
-            return workerObject.City != null && workerObject.City.Worker.Contains(this);
+            return !isDone;
         }
 
         #region IPersistable Members

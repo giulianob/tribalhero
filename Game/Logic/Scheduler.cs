@@ -128,7 +128,7 @@ namespace Game.Logic {
                 return;
             }
 
-            TimeSpan ts = schedules[0].Time.Subtract(DateTime.Now);
+            TimeSpan ts = schedules[0].Time.Subtract(DateTime.UtcNow);
             if (ts < TimeSpan.Zero)
                 ts = TimeSpan.Zero; // cannot be negative !
             timer.Change((int)ts.TotalMilliseconds, Timeout.Infinite); // invoke after the timespan

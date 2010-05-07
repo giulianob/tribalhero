@@ -45,7 +45,7 @@ namespace Game.Module {
 
         public void Callback(object custom) {
             if (playerList.Count == 0) {
-                time = DateTime.Now.AddSeconds(5);
+                time = DateTime.UtcNow.AddSeconds(5);
                 Global.Scheduler.Put(this);
                 return;
             }
@@ -53,7 +53,7 @@ namespace Game.Module {
             //we want there to be relatively 
             int cnt = (int) (playerList.Count*0.25);
 
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.UtcNow;
             int successCount = 0;
 
             for (int z = 0; z < cnt; ++z) {
@@ -69,57 +69,48 @@ namespace Game.Module {
                         Structure mainBuilding = city.MainBuilding;
 
                         bool ret = false;
-                        int count = 0;
-                        do {
-                            count++;
 
-                            uint x;
-                            uint y;
+                        uint x;
+                        uint y;
 
-                            TileLocator.random_point(mainBuilding.X, mainBuilding.Y, (byte) (city.Radius - 1), true,
-                                                       out x, out y);
+                        TileLocator.random_point(mainBuilding.X, mainBuilding.Y, (byte) (city.Radius - 1), true, out x, out y);
 
-                            byte step = (byte) rand.Next(0, 4);
+                        byte step = (byte) rand.Next(0, 4);
 
-                            switch (step) {
-                                case 0:
-                                    if (rand.Next(0, 100) < 100*intelligence.builder)
-                                        ret = UpgradeStructure(city, x, y);
-                                    break;
-                                case 1:
-                                    if (rand.Next(0, 100) < 100*intelligence.builder)
-                                        ret = BuildStructure(city, x, y);
-                                    break;
-                                case 2:
-                                    if (rand.Next(0, 1000) < 100*intelligence.military)
-                                        ret = TrainUnit(intelligence, city);
-                                    break;
-                                case 3:
-                                    ret = SetLabor(city);
-                                    break;
-                                case 4:
-                                    intelligence.savingUp = (byte) (rand.Next(5, 20)*intelligence.builder);
-                                    ret = true;
-                                    break;
-                                default:
-                                    break;
-                            }
+                        switch (step) {
+                            case 0:
+                                if (rand.Next(0, 100) < 100*intelligence.builder)
+                                    ret = UpgradeStructure(city, x, y);
+                                break;
+                            case 1:
+                                if (rand.Next(0, 100) < 100*intelligence.builder)
+                                    ret = BuildStructure(city, x, y);
+                                break;
+                            case 2:
+                                if (rand.Next(0, 1000) < 100*intelligence.military)
+                                    ret = TrainUnit(intelligence, city);
+                                break;
+                            case 3:
+                                ret = SetLabor(city);
+                                break;
+                            case 4:
+                                intelligence.savingUp = (byte) (rand.Next(5, 20)*intelligence.builder);
+                                ret = true;
+                                break;
+                            default:
+                                break;
+                        }
 
-                            if (ret) successCount++;
-
-                            break;
-
-                            if (count > 20)
-                                Global.Logger.Warn("NPC loop count at " + count);
-                        } while (!ret);
+                        if (ret)
+                            successCount++;
                     }
                 }                
             }
 
-            int timeTaken = (int)DateTime.Now.Subtract(now).TotalMilliseconds;
+            int timeTaken = (int)DateTime.UtcNow.Subtract(now).TotalMilliseconds;
             Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms", timeTaken, successCount, (double)timeTaken / successCount));
 
-            time = DateTime.Now.AddSeconds(30 * Config.seconds_per_unit);
+            time = DateTime.UtcNow.AddSeconds(30 * Config.seconds_per_unit);
             Global.Scheduler.Put(this);
         }
 
@@ -299,7 +290,7 @@ namespace Game.Module {
                 }
             }
 
-            Global.Ai.time = DateTime.Now.AddSeconds(10);
+            Global.Ai.time = DateTime.UtcNow.AddSeconds(10);
             Global.Scheduler.Put(Global.Ai);
 
             Global.Logger.Info("Loading AI finished.");

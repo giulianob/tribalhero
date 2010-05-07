@@ -84,6 +84,7 @@ namespace Game.Data {
         public DbColumn[] DbColumns {
             get {
                 return new[] {
+                                new DbColumn("is_blocked", IsBlocked, DbType.Boolean),
                                 new DbColumn("troop_stub_id", Stub.TroopId, DbType.Byte),
                                 new DbColumn("gold", Stats.Loot.Gold, DbType.Int32),
                                 new DbColumn("crop", Stats.Loot.Crop, DbType.Int32),
@@ -94,6 +95,7 @@ namespace Game.Data {
                                 new DbColumn("speed", Stats.Speed, DbType.Byte),
                                 new DbColumn("x", X, DbType.UInt32), 
                                 new DbColumn("y", Y, DbType.Int32),
+                                new DbColumn("in_world", InWorld, DbType.Boolean),
                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),
                                 new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
                              };

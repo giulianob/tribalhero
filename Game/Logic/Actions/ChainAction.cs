@@ -34,7 +34,7 @@ namespace Game.Logic.Actions {
 
             current = chainable;
             current.WorkerObject = WorkerObject;
-            current.ActionId = (ushort) WorkerObject.City.Worker.GetId();
+            current.ActionId = (uint) WorkerObject.City.Worker.GetId();
 
             Global.DbManager.Save(this);
             if (chainable.Execute() == Error.OK)
@@ -61,8 +61,7 @@ namespace Game.Logic.Actions {
                     Global.DbManager.Save(this);
 
                     return;
-                case ActionState.COMPLETED:
-                case ActionState.INTERRUPTED:
+                case ActionState.COMPLETED:                
                 case ActionState.FAILED:
                     WorkerObject.City.Worker.ReleaseId(action.ActionId);
                     Global.DbManager.Delete(action);
@@ -81,9 +80,12 @@ namespace Game.Logic.Actions {
             Global.Scheduler.Put(new ChainExecuter(currentChain, state));
         }
 
-        public override void Interrupt(ActionInterrupt state) {
-            using (new MultiObjectLock(WorkerObject.City))
-                current.Interrupt(state);
+        public override void UserCancelled() {
+            current.UserCancelled();
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            throw new Exception("Unsupported at the moment");
         }
 
         #region IPersistable Members
@@ -94,7 +96,7 @@ namespace Game.Logic.Actions {
             get { return DB_TABLE; }
         }
 
-        protected ChainAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
+        protected ChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState,
                            bool isVisible) {
             ActionId = id;
             this.chainState = chainState;
@@ -108,8 +110,7 @@ namespace Game.Logic.Actions {
 
             switch (chainState) {
                 case ActionState.COMPLETED:
-                case ActionState.FAILED:
-                case ActionState.INTERRUPTED:
+                case ActionState.FAILED:                
                     Global.Scheduler.Put(new ChainExecuter(this.chainCallback, chainState));
                     break;
                 default:
@@ -128,7 +129,7 @@ namespace Game.Logic.Actions {
                                           new DbColumn("type", Type, DbType.UInt32), new DbColumn("is_visible", IsVisible, DbType.Boolean)
                                           ,
                                           new DbColumn("current_action_id", current != null ? (object) current.ActionId : null,
-                                                       DbType.UInt16),
+                                                       DbType.UInt32),
                                           new DbColumn("chain_callback", chainCallback != null ? chainCallback.Method.Name : null,
                                                        DbType.String), new DbColumn("chain_state", (byte) chainState, DbType.Byte),
                                           new DbColumn("properties", Properties, DbType.String)

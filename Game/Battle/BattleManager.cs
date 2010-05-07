@@ -271,7 +271,7 @@ namespace Game.Battle {
             stamina = BattleFormulas.GetStamina(city);
             report = new BattleReport(this);
             Channel = new BattleChannel(this, "/BATTLE/" + city.Id);
-            groupIdGen.set(1);
+            groupIdGen.Set(1);
         }
 
         public void Subscribe(Session session) {
@@ -324,7 +324,7 @@ namespace Game.Battle {
 
             defenders.Add(structure, false);
 
-            idGen.set((int)structure.Id);
+            idGen.Set((int)structure.Id);
         }
 
         public void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal) {
@@ -338,8 +338,8 @@ namespace Game.Battle {
             else
                 attackers.Add(obj, false);
 
-            idGen.set((int)obj.Id);
-            groupIdGen.set((int)obj.GroupId);
+            idGen.Set((int)obj.Id);
+            groupIdGen.Set((int)obj.GroupId);
         }
 
         #endregion
@@ -358,7 +358,7 @@ namespace Game.Battle {
                 bool added = false;
 
                 foreach (Structure obj in objects) {
-                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || ObjectTypeFactory.IsStructureType("Unattackable", obj))
+                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || ObjectTypeFactory.IsStructureType("Unattackable", obj) || obj.IsBlocked)
                         continue;
 
                     // Don't add main building if lvl 1 or if a building is lvl 0
@@ -372,7 +372,7 @@ namespace Game.Battle {
                     obj.EndUpdate();
 
                     CombatObject combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj)) {
-                        Id = (uint)idGen.getNext(),
+                        Id = (uint)idGen.GetNext(),
                         GroupId = 1
                     };
                     defenders.Add(combatObject);
@@ -441,7 +441,7 @@ namespace Game.Battle {
                     uint id = 1;
 
                     if (!isLocal)
-                        id = (uint) idGen.getNext();
+                        id = (uint) idGen.GetNext();
 
                     foreach (Formation formation in obj) {
                         if (formation.Type == FormationType.GARRISON || formation.Type == FormationType.IN_BATTLE)
@@ -464,7 +464,7 @@ namespace Game.Battle {
                             foreach (CombatObject unit in combatObjects) {
                                 added = true;
                                 unit.LastRound = round;
-                                unit.Id = (uint) idGen.getNext();
+                                unit.Id = (uint) idGen.GetNext();
                                 unit.GroupId = id;
                                 combatList.Add(unit);
                                 list.Add(unit);
@@ -560,7 +560,7 @@ namespace Game.Battle {
         }
 
         private bool BattleIsValid() {
-            if (attackers.Count == 0 || defenders.Count == 0)
+            if (attackers.Count == 0 || defenders.Count == 0 || Stamina == 0)
                 return false;
 
             //Check to see if there are still units in the local troop

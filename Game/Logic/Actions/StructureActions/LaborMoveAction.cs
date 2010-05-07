@@ -22,7 +22,7 @@ namespace Game.Logic.Actions {
             ActionCount = count;
         }
 
-        public LaborMoveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public LaborMoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                byte workerIndex, ushort actionCount, IDictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityToStructure = bool.Parse(properties["city_to_structure"]);
@@ -57,10 +57,51 @@ namespace Game.Logic.Actions {
             }
 
             // add to queue for completion
-            beginTime = DateTime.Now;
-            endTime = DateTime.Now.AddSeconds(Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
+            beginTime = DateTime.UtcNow;
+            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
 
             return Error.OK;
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            City city;            
+            using (new MultiObjectLock(cityId, out city)) {
+                if (!IsValid())
+                    return;
+
+                StateChange(ActionState.FAILED);
+            }
+        }
+
+        public override void UserCancelled() {
+            City city;
+            Structure structure;
+
+            using (new MultiObjectLock(cityId, out city)) {
+                if (!IsValid())
+                    return;
+
+                if (!city.TryGetStructure(structureId, out structure)) {
+                    StateChange(ActionState.FAILED);
+                    return;
+                }
+
+                if (cityToStructure) {
+                    structure.City.BeginUpdate();
+                    structure.City.Resource.Labor.Add(ActionCount);
+                    structure.City.EndUpdate();
+                } else {
+                    structure.BeginUpdate();
+                    structure.Stats.Labor += (byte) ActionCount;
+                    structure.EndUpdate();
+
+                    structure.City.BeginUpdate();
+                    Procedure.AdjustCityResourceRates(structure, 1*ActionCount);
+                    structure.City.EndUpdate();
+                }
+
+                StateChange(ActionState.FAILED);
+            }
         }
 
         public override Error Validate(string[] parms) {
@@ -102,43 +143,6 @@ namespace Game.Logic.Actions {
         }
 
         #endregion
-
-        public override void Interrupt(ActionInterrupt state) {
-            City city;
-            Structure structure;
-            using (new MultiObjectLock(cityId, out city)) {
-                if (!IsValid())
-                    return;
-
-                if (!city.TryGetStructure(structureId, out structure)) {
-                    StateChange(ActionState.FAILED);
-                    return;
-                }
-
-                Global.Scheduler.Del(this);
-                switch (state) {
-                    case ActionInterrupt.KILLED:
-                        StateChange(ActionState.FAILED);
-                        break;
-                    case ActionInterrupt.CANCEL:
-                        if (cityToStructure) {
-                            structure.City.BeginUpdate();
-                            structure.City.Resource.Labor.Add(ActionCount);
-                            structure.City.EndUpdate();
-                        } else {
-                            structure.BeginUpdate();
-                            structure.Stats.Labor += (byte) ActionCount;
-                            structure.EndUpdate();
-                            
-                            structure.City.BeginUpdate();
-                            Procedure.AdjustCityResourceRates(structure, 1 * ActionCount);
-                            structure.City.EndUpdate();
-                        }
-                        StateChange(ActionState.INTERRUPTED);
-                        break;
-                }
-            }
-        }
 
         #region IPersistable
 

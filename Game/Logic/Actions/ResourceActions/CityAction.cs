@@ -19,7 +19,7 @@ namespace Game.Logic.Actions {
             this.cityId = cityId;
         }
 
-        public CityAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
+        public CityAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
                           Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
@@ -31,12 +31,19 @@ namespace Game.Logic.Actions {
         }
 
         public override Error Execute() {
-            beginTime = DateTime.Now;
-            endTime = DateTime.Now.AddSeconds(INTERVAL*Config.seconds_per_unit);
+            beginTime = DateTime.UtcNow;
+            endTime = DateTime.UtcNow.AddSeconds(INTERVAL*Config.seconds_per_unit);
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {            
+        public override void UserCancelled() {            
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            City city;
+            using (new MultiObjectLock(cityId, out city)) {
+                StateChange(ActionState.FAILED);
+            }
         }
 
         public override ActionType Type {
@@ -165,8 +172,8 @@ namespace Game.Logic.Actions {
 
                 city.EndUpdate();
 
-                beginTime = DateTime.Now;
-                endTime = DateTime.Now.AddSeconds(INTERVAL*Config.seconds_per_unit);
+                beginTime = DateTime.UtcNow;
+                endTime = DateTime.UtcNow.AddSeconds(INTERVAL*Config.seconds_per_unit);
                 StateChange(ActionState.FIRED);
             }
         }

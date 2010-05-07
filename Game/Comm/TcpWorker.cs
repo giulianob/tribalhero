@@ -103,7 +103,7 @@ namespace Game.Comm {
                             socketAvailable.WaitOne(-1, false);
                     }
                     catch (Exception e) {
-                        Console.Out.Write("Socket exception: " + e.Message);
+                        Global.Logger.Info("Socket exception: " + e.Message);
                         continue;
                     }
 

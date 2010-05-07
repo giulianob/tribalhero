@@ -119,7 +119,7 @@ namespace Game.Map {
         public bool Add(City city) {
             lock (Lock) {
                 city.BeginUpdate();
-                city.Id = (uint) cityIdGen.getNext();
+                city.Id = (uint) cityIdGen.GetNext();
                 city.EndUpdate();
                 cities[city.Id] = city;
 
@@ -136,12 +136,16 @@ namespace Game.Map {
         public void DbLoaderAdd(uint id, City city) {
             city.Id = id;
             cities[city.Id] = city;
-            cityIdGen.set((int) id);
+            cityIdGen.Set((int) id);
         }
 
         public void AfterDbLoaded() {
             IEnumerator<City> iter = cities.Values.GetEnumerator();
             while (iter.MoveNext()) {
+
+                // Resave city to update times
+                Global.DbManager.Save(iter.Current);
+
                 //Set resource cap
                 Formula.ResourceCap(iter.Current);
 
@@ -149,6 +153,7 @@ namespace Game.Map {
                 CityRegion region = GetCityRegion(iter.Current.MainBuilding.X, iter.Current.MainBuilding.Y);
                 if (region == null)
                     continue;
+
                 region.Add(iter.Current);
             }
         }
@@ -156,7 +161,7 @@ namespace Game.Map {
         public void Remove(City city) {
             lock (Lock) {
                 cities[city.Id] = null;
-                cityIdGen.release((int) city.Id);
+                cityIdGen.Release((int) city.Id);
                 CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
                 
                 if (region == null)
@@ -171,11 +176,13 @@ namespace Game.Map {
             if (region == null)
                 return false;
 
-            if (region.Add(obj)) {                
+            if (region.Add(obj)) {
+
+                obj.InWorld = true;
 
                 // If simple object, we must assign an id
                 if (!(obj is GameObject)) {
-                    obj.ObjectId = (uint)ObjectIdGenerator.getNext();
+                    obj.ObjectId = (uint)ObjectIdGenerator.GetNext();
                 }
 
                 // Send obj add event
@@ -187,7 +194,7 @@ namespace Game.Map {
                     PacketHelper.AddToPacket(obj, packet, true);
 
                     Global.Channel.Post("/WORLD/" + regionId, packet);
-                }
+                }                
 
                 return true;
             }
@@ -200,19 +207,22 @@ namespace Game.Map {
             if (region == null)
                 return;
 
-            region.Add(obj);
+            if (obj.InWorld)
+                region.Add(obj);
 
             // Set id in use
             if (!(obj is GameObject)) {
-                ObjectIdGenerator.set((int)obj.ObjectId);
+                ObjectIdGenerator.Set((int)obj.ObjectId);
             }
         }
 
         public void Remove(SimpleGameObject obj) {
-            Remove(obj, obj.X, obj.Y);
+            Remove(obj, obj.X, obj.Y);            
         }
 
         private void Remove(SimpleGameObject obj, uint origX, uint origY) {
+            obj.InWorld = false;
+
             Region region = GetRegion(origX, origY);
 
             if (region == null)
@@ -224,7 +234,7 @@ namespace Game.Map {
 
             // Free object id if this is SimpleGameObject
             if (!(obj is GameObject)) {
-                ObjectIdGenerator.release((int) obj.ObjectId);
+                ObjectIdGenerator.Release((int) obj.ObjectId);
             }
 
             // Send remove update

@@ -10,7 +10,7 @@ namespace Testing.Resources {
     [TestClass]
     public class LazyResourceTest {
 
-        DateTime begin = DateTime.Now;
+        DateTime begin = DateTime.UtcNow;
 
         [TestInitialize]
         public void TestInitialize() {

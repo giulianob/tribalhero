@@ -20,7 +20,7 @@ namespace Game.Logic.Actions {
             this.cityId = cityId;
         }
 
-        public ForestCampHarvestAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
+        public ForestCampHarvestAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, isVisible) {
             forestId = uint.Parse(properties["forest_id"]);
             cityId = uint.Parse(properties["city_id"]);
@@ -34,7 +34,7 @@ namespace Game.Logic.Actions {
 
             // add to queue for completion
             endTime = forest.DepleteTime;
-            beginTime = DateTime.Now;
+            beginTime = DateTime.UtcNow;
 
             return Error.OK;
         }
@@ -58,8 +58,9 @@ namespace Game.Logic.Actions {
 
             using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
                 if (!IsValid()) return;
-                
-                StateChange(ActionState.COMPLETED);
+
+                endTime = DateTime.UtcNow.AddSeconds(30);
+                StateChange(ActionState.RESCHEDULED);
             }
         }
 
@@ -71,47 +72,70 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {
+        public override void UserCancelled() {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city)) {
                 throw new Exception("City is missing");
             }
 
             using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
-                if (!IsValid()) return;
+                if (!IsValid())
+                    return;
 
-                switch (state) {               
-                    case ActionInterrupt.CANCEL:
-                    case ActionInterrupt.ABORT:
-                    case ActionInterrupt.KILLED:
-                        Global.Scheduler.Del(this);
+                Structure structure = (Structure)WorkerObject;                
 
-                        Structure structure;
-                        if (!city.TryGetStructure(((Structure)WorkerObject).ObjectId, out structure)) {
-                            StateChange(ActionState.FAILED);
-                            return;
-                        }
-
-                        Forest forest;
-                        if (Global.Forests.TryGetValue(forestId, out forest)) {
-                            // Recalculate the forest
-                            forest.BeginUpdate();
-                            forest.RemoveLumberjack(structure);
-                            forest.RecalculateForest();
-                            forest.EndUpdate();
-                        }
-
-                        // Give back the labors to the city
-                        city.BeginUpdate();
-                        city.Resource.Labor.Add(structure.Stats.Labor);
-                        city.EndUpdate();
-
-                        // Remove the camp
-                        Global.World.Remove(structure);
-                        city.Remove(structure);
-                        StateChange(ActionState.FAILED);
-                        break;
+                Forest forest;
+                if (Global.Forests.TryGetValue(forestId, out forest)) {
+                    // Recalculate the forest
+                    forest.BeginUpdate();
+                    forest.RemoveLumberjack(structure);
+                    forest.RecalculateForest();
+                    forest.EndUpdate();
                 }
+
+                // Give back the labors to the city
+                city.BeginUpdate();
+                city.Resource.Labor.Add(structure.Stats.Labor);
+                city.EndUpdate();
+
+                // Remove ourselves
+                structure.BeginUpdate();
+                Global.World.Remove(structure);
+                city.ScheduleRemove(structure, false);
+                structure.EndUpdate();
+
+                StateChange(ActionState.FAILED);
+            }
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            City city;
+            if (!Global.World.TryGetObjects(cityId, out city)) {
+                throw new Exception("City is missing");
+            }
+
+            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+                if (!IsValid())
+                    return;                
+
+                Structure structure = (Structure)WorkerObject;
+
+                Forest forest;
+                if (Global.Forests.TryGetValue(forestId, out forest)) {
+                    // Recalculate the forest
+                    forest.BeginUpdate();
+                    forest.RemoveLumberjack(structure);
+                    forest.RecalculateForest();
+                    forest.EndUpdate();
+                }
+
+                // Give back the labors to the city
+                city.BeginUpdate();
+                city.Resource.Wood.Rate -= (int)structure["Rate"];
+                city.Resource.Labor.Add(structure.Stats.Labor);
+                city.EndUpdate();
+
+                StateChange(ActionState.FAILED);
             }
         }
 

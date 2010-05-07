@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
-using Game.Map;
 using Game.Setup;
 using Game.Util;
 
@@ -24,7 +23,7 @@ namespace Game.Logic.Actions {
             this.y = y;
         }
 
-        public StructureBuildAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public StructureBuildAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                     byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
@@ -41,7 +40,6 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
 
-            Region region = Global.World.GetRegion(x, y);
             Global.World.LockRegion(x, y);
 
             // cost requirement
@@ -58,7 +56,7 @@ namespace Game.Logic.Actions {
             }
 
             // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(type, (byte) 1).Validate(city, x, y)) {
+            if (!ReqirementFactory.GetLayoutRequirement(type, 1).Validate(city, x, y)) {
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }
@@ -84,7 +82,7 @@ namespace Game.Logic.Actions {
             city.Add(structure);
 
             if (!Global.World.Add(structure)) {
-                city.Remove(structure);
+                city.ScheduleRemove(structure, false);
                 city.BeginUpdate();
                 city.Resource.Add(cost);
                 city.EndUpdate();
@@ -98,8 +96,8 @@ namespace Game.Logic.Actions {
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(type, 1), city.MainBuilding.Lvl, city.Technologies));
-            beginTime = DateTime.Now;
+            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(type, 1), city.MainBuilding.Lvl, city.Technologies));
+            beginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);
 
@@ -167,7 +165,7 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override void Interrupt(ActionInterrupt state) {
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
@@ -177,24 +175,29 @@ namespace Game.Logic.Actions {
                 if (!city.TryGetStructure(structureId, out structure))
                     return;
 
-                Global.Scheduler.Del(this);
-
                 city.Worker.References.Remove(structure, this);
 
+                structure.BeginUpdate();
                 Global.World.Remove(structure);
-                city.Remove(structure);
+                city.ScheduleRemove(structure, wasKilled);
+                structure.EndUpdate();
 
-                switch (state) {
-                    case ActionInterrupt.ABORT:
-                    case ActionInterrupt.CANCEL:
+                if (!wasKilled) {
                         city.BeginUpdate();
                         city.Resource.Add(cost/2);
                         city.EndUpdate();                        
-                        break;
                 }
 
                 StateChange(ActionState.FAILED);
             }
+        }
+
+        public override void UserCancelled() {
+            InterruptCatchAll(false);
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            InterruptCatchAll(wasKilled);
         }
 
         #region IPersistable
@@ -202,7 +205,7 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("type", type), new XMLKVPair("x", x), new XMLKVPair("y", y),
                                                                 new XMLKVPair("city_id", cityId),
                                                                 new XMLKVPair("structure_id", structureId)

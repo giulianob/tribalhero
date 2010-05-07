@@ -45,7 +45,7 @@ namespace Game.Data {
             }
 
             forest.X = x;
-            forest.Y = y;           
+            forest.Y = y;
 
             Global.World.Add(forest);
             Global.World.UnlockRegion(x, y);
@@ -57,11 +57,13 @@ namespace Game.Data {
             forest.EndUpdate();
         }
 
-
-        public void RemoveForest(Forest forest) {
+        public void RemoveForest(Forest forest) {            
             forests.Remove(forest.ObjectId);
 
-            Global.World.Remove(forest);            
+            forest.BeginUpdate();
+            Global.World.Remove(forest);
+            forest.EndUpdate();
+
             Global.DbManager.Delete(forest);
         }
 
@@ -74,11 +76,15 @@ namespace Game.Data {
         /// <param name="custom">custom[0] should contain the forestId to lock</param>
         /// <returns>List of cities to lock for the forest.</returns>
         public ILockable[] CallbackLockHandler(object[] custom) {
+            return GetListOfLocks((uint) custom[0]);
+        }
+
+        public ILockable[] GetListOfLocks(uint forestId) {
+            MultiObjectLock.ThrowExceptionIfNotLocked(Global.Forests);
+
             Forest forest;
-            
-            if (!forests.TryGetValue((uint)custom[0], out forest)) return new ILockable[] { };
-            
-            return forest.Select(obj => obj.City).ToArray();
+
+            return !forests.TryGetValue(forestId, out forest) ? new ILockable[] { } : forest.Select(obj => obj.City).ToArray();
         }
 
         public bool TryGetValue(uint id, out Forest forest) {

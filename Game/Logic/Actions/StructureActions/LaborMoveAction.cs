@@ -105,6 +105,14 @@ namespace Game.Logic.Actions {
         }
 
         public override Error Validate(string[] parms) {
+            City city;
+            Structure structure;
+            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+                return Error.OBJECT_NOT_FOUND;
+            if (structure.Stats.Base.MaxLabor < 10 && ActionCount == 1)
+                return Error.OK;
+            if (ActionCount > structure.Stats.Base.MaxLabor / 10)
+                return Error.ACTION_COUNT_INVALID;
             return Error.OK;
         }
 

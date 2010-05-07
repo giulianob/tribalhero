@@ -15,6 +15,7 @@ namespace Game.Setup {
         ACTION_NOT_FOUND = 104,
         ACTION_INVALID = 105,
         ACTION_ALREADY_IN_PROGRESS = 106,
+        ACTION_COUNT_INVALID = 107,
 
         #endregion
 

@@ -138,6 +138,16 @@ namespace Game.Battle {
             return 100 - stealth > Config.Random.Next(0, 100);
         }
 
+        internal static bool UnitStatModCheck(BaseBattleStats stats, object comparison, object value) {
+            switch ((string)comparison) {
+                case "ArmorEqual":
+                    return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)value, true);
+                case "WeaponEqual":
+                    return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), (string)value, true);
+            }
+            return false;
+        }
+
         internal static BattleStats LoadStats(Structure structure) {
             return new BattleStats(structure.Stats.Base.Battle);
         }
@@ -147,7 +157,7 @@ namespace Game.Battle {
             BattleStatsModCalculator calculator = new BattleStatsModCalculator(stats);
             foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL)) {
                 if (effect.id == EffectCode.UnitStatMod) {
-                    if (((IBaseBattleStatsCondition)effect.value[3]).Check(stats)) {
+                    if (UnitStatModCheck(stats,effect.value[3],effect.value[4])) {
                         switch ((string)effect.value[0]) {
                             case "Atk":
                                 calculator.Atk.AddMod((string)effect.value[1], (int)effect.value[2]);

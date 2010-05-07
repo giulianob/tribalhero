@@ -39,7 +39,7 @@ namespace Game.Logic.Actions {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
-
+           
             Global.World.LockRegion(x, y);
 
             // cost requirement
@@ -104,11 +104,7 @@ namespace Game.Logic.Actions {
             Global.World.UnlockRegion(x, y);
 
             return Error.OK;
-        }
-
-        public object Custom {
-            get { return null; }
-        }
+        }       
 
         public override void Callback(object custom) {
             City city;

@@ -20,7 +20,7 @@ namespace Game.Logic.Actions {
             this.stubId = stubId;
         }
 
-        public RetreatAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
+        public RetreatAction(uint id, string chainCallback, PassiveAction current, ActionState chainState,
                              bool isVisible, Dictionary<string, string> properties)
             : base(id, chainCallback, current, chainState, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
@@ -42,7 +42,7 @@ namespace Game.Logic.Actions {
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X,
                                                       stub.City.MainBuilding.Y);
-            ExecuteChainAndWait(tma, new ChainCallback(AfterTroopMoved));
+            ExecuteChainAndWait(tma, AfterTroopMoved);
 
             return Error.OK;
         }
@@ -63,7 +63,7 @@ namespace Game.Logic.Actions {
                         StateChange(ActionState.COMPLETED);
                     } else {
                         EngageDefenseAction eda = new EngageDefenseAction(cityId, stubId);
-                        ExecuteChainAndWait(eda, new ChainCallback(AfterEngageDefense));
+                        ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }
             }
@@ -94,11 +94,7 @@ namespace Game.Logic.Actions {
         }
 
         public override string Properties {
-            get {
-                return
-                    XMLSerializer.Serialize(new XMLKVPair[]
-                                            {new XMLKVPair("city_id", cityId), new XMLKVPair("troop_stub_id", stubId)});
-            }
+            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId), new XMLKVPair("troop_stub_id", stubId)}); }
         }
     }
 }

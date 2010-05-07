@@ -78,7 +78,7 @@ namespace Testing.Database {
         public void TestSimpleObject() {
             Assert.IsTrue(true);
             /*
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.UtcNow;
             for (int i = 0; i < 2000; i++) {
                 SimplePersistableObject obj = new SimplePersistableObject() {
                     Id = i,
@@ -92,7 +92,7 @@ namespace Testing.Database {
                 }
             }
 
-            double testTime = DateTime.Now.Subtract(now).TotalMilliseconds;
+            double testTime = DateTime.UtcNow.Subtract(now).TotalMilliseconds;
             Console.Out.WriteLine("TestSimpleObject: " + testTime + " ms");
              */
         }

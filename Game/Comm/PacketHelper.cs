@@ -26,7 +26,7 @@ namespace Game.Comm {
         public static void AddToPacket(NotificationManager.Notification notification, Packet packet) {
             packet.AddUInt32(notification.Action.WorkerObject.City.Id);
             packet.AddUInt32(notification.GameObject.ObjectId);
-            packet.AddUInt16(notification.Action.ActionId);
+            packet.AddUInt32(notification.Action.ActionId);
             packet.AddUInt16((ushort) notification.Action.Type);
 
             if (notification.Action is IActionTime) {
@@ -141,7 +141,7 @@ namespace Game.Comm {
             packet.AddByte((byte) references.Count);
             foreach (ReferenceStub reference in references) {
                 packet.AddUInt32(reference.Action.WorkerObject.WorkerId);
-                packet.AddUInt16(reference.Action.ActionId);
+                packet.AddUInt32(reference.Action.ActionId);
             }
         }
 
@@ -157,11 +157,11 @@ namespace Game.Comm {
 
             if (actionStub is PassiveAction) {
                 packet.AddByte(0);
-                packet.AddUInt16(actionStub.ActionId);
+                packet.AddUInt32(actionStub.ActionId);
                 packet.AddUInt16((ushort) actionStub.Type);
             } else {
                 packet.AddByte(1);
-                packet.AddUInt16(actionStub.ActionId);
+                packet.AddUInt32(actionStub.ActionId);
                 packet.AddByte(((ActiveAction) actionStub).WorkerIndex);
                 packet.AddUInt16(((ActiveAction) actionStub).ActionCount);
             }

@@ -17,7 +17,7 @@ namespace Game.Logic.Actions {
         #region ISchedule Members
 
         public DateTime Time {
-            get { return DateTime.Now; }
+            get { return DateTime.UtcNow; }
         }
 
         public void Callback(object custom) {

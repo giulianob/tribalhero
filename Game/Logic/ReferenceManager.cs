@@ -35,7 +35,7 @@ namespace Game.Logic {
             get {
                 return new[] {
                                   new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32),
-                                  new DbColumn("action_id", Action.ActionId, DbType.UInt16),
+                                  new DbColumn("action_id", Action.ActionId, DbType.UInt32),
                                   new DbColumn("is_active", Action is ActiveAction ? true : false, DbType.Boolean)
                               };
             }
@@ -70,7 +70,7 @@ namespace Game.Logic {
         }
 
         public void DbLoaderAdd(ReferenceStub referenceObject) {
-            referenceIdGen.set(referenceObject.ReferenceId);
+            referenceIdGen.Set(referenceObject.ReferenceId);
             reference.Add(referenceObject);
         }
 
@@ -80,7 +80,7 @@ namespace Game.Logic {
                 throw new Exception("Action not found");
             }
 
-            ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, workingStub);
+            ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
             Global.DbManager.Save(newReference);
         }    
@@ -90,7 +90,7 @@ namespace Game.Logic {
             if (workingStub == null)
                 throw new Exception("Action not found");
 
-            ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.getNext(), referenceObject, workingStub);
+            ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
             Global.DbManager.Save(newReference);
         }

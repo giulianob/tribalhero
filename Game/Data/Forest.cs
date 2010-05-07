@@ -178,21 +178,22 @@ namespace Game.Data {
         /// <summary>
         /// Updates the deplete action to fire when appropriately.
         /// </summary>
-        public void SetDepleteAction() {            
+        private void SetDepleteAction() {            
             if (DepleteAction != null)
                 Global.Scheduler.Del(DepleteAction);
 
-            DateTime depleteTime = DateTime.Now.AddDays(2).AddMinutes(Config.Random.Next(360));
+            double hours = 2 * 24 + Config.Random.NextDouble() * 5;
+            
             if (Wood.Upkeep != 0)
-                depleteTime = DateTime.Now.AddHours(Wood.Value / (Wood.Upkeep / Config.seconds_per_unit));
+                hours = Wood.Value / (Wood.Upkeep / Config.seconds_per_unit);
 
-            Global.Logger.Info(string.Format("DepleteTime[{0}] Wood.Upkeep[{1}] Wood.Value[{2}]", depleteTime, Wood.Upkeep, Wood.Value));
+            Global.Logger.Info(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]", hours, Wood.Upkeep, Wood.Value));
 
-            DepleteAction = new ForestDepleteAction(this, depleteTime);
+            DepleteTime = DateTime.UtcNow.AddHours(hours);
+
+            DepleteAction = new ForestDepleteAction(this, DepleteTime);
 
             Global.Scheduler.Put(DepleteAction);
-
-            DepleteTime = depleteTime;
         }
         #endregion
 

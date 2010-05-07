@@ -49,7 +49,7 @@ namespace Game.Logic {
 
         #region IPersistable Members
 
-        protected ScheduledActiveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        protected ScheduledActiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                      byte workerIndex, ushort actionCount) {
             ActionId = id;
             this.beginTime = beginTime;

@@ -18,7 +18,7 @@ namespace Game.Logic.Actions {
             this.cityId = cityId;
         }
 
-        public StarveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
+        public StarveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
                           Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
@@ -42,8 +42,8 @@ namespace Game.Logic.Actions {
         }
 
         public override Error Execute() {
-            beginTime = DateTime.Now;
-            endTime = DateTime.Now.AddSeconds(1);
+            beginTime = DateTime.UtcNow;
+            endTime = DateTime.UtcNow.AddSeconds(1);
 
             return Error.OK;
         }
@@ -74,8 +74,10 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override void Interrupt(ActionInterrupt state) {
-            return;
+        public override void UserCancelled() {            
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {           
         }
 
         #region IPersistable

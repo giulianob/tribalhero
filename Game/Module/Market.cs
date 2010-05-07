@@ -54,7 +54,7 @@ namespace Game.Module {
         public Market(ResourceType resource, int defaultPrice, int quantityPerChange) {
             price = defaultPrice;
             this.quantityPerChange = quantityPerChange;
-            time = DateTime.Now;
+            time = DateTime.UtcNow;
             this.resource = resource;
             Global.Scheduler.Put(this);
         }
@@ -98,7 +98,7 @@ namespace Game.Module {
                     int flow = outgoing - incoming;
                     price += (flow/quantityPerChange);
                     outgoing = incoming = 0;
-                    time = DateTime.Now.AddSeconds(UpdateIntervalInSecond);
+                    time = DateTime.UtcNow.AddSeconds(UpdateIntervalInSecond);
                     Global.DbManager.Save(this);
                     Global.Scheduler.Put(this);
                 }

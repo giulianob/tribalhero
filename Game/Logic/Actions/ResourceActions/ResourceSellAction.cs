@@ -11,8 +11,8 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class ResourceSellAction : ScheduledActiveAction {
-        private const int TradeSize = 100;
-        private const int MaxTrade = 15;
+        private const int TRADE_SIZE = 100;
+        private const int MAX_TRADE = 15;
         private uint cityId;
         private uint structureId;
 
@@ -29,7 +29,7 @@ namespace Game.Logic.Actions {
             this.resourceType = resourceType;
         }
 
-        public ResourceSellAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public ResourceSellAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                   byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
@@ -48,10 +48,10 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
 
-            Market market = null;
-            Resource cost = null;
+            Market market;
+            Resource cost;
 
-            if (quantity == 0 || quantity%TradeSize != 0 || (quantity/TradeSize) > MaxTrade)
+            if (quantity == 0 || quantity%TRADE_SIZE != 0 || (quantity/TRADE_SIZE) > MAX_TRADE)
                 return Error.MARKET_INVALID_QUANTITY;
 
             switch (resourceType) {
@@ -71,9 +71,6 @@ namespace Game.Logic.Actions {
                     return Error.UNEXPECTED;
             }
 
-            if (cost == null)
-                return Error.UNEXPECTED;
-
             if (!structure.City.Resource.HasEnough(cost))
                 return Error.RESOURCE_NOT_ENOUGH;
 
@@ -84,10 +81,21 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Formula.TradeTime(structure));
-            beginTime = DateTime.Now;
+            endTime = DateTime.UtcNow.AddSeconds(Formula.TradeTime(structure));
+            beginTime = DateTime.UtcNow;
 
             return Error.OK;
+        }
+
+        public override void UserCancelled() {            
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            City city;
+            using (new MultiObjectLock(cityId, out city)) {
+                if (!IsValid()) return;
+                StateChange(ActionState.FAILED);
+            }
         }
 
         public override void Callback(object custom) {
@@ -103,10 +111,7 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.City.BeginUpdate();
-                structure.City.Resource.Add(0,
-                                            (int)
-                                            Math.Round(price*(quantity/TradeSize)*(1.0 - Formula.MarketTax(structure))),
-                                            0, 0, 0);
+                structure.City.Resource.Add(0, (int) Math.Round(price*(quantity/TRADE_SIZE)*(1.0 - Formula.MarketTax(structure))), 0, 0, 0);
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.COMPLETED);
@@ -123,16 +128,12 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override void Interrupt(ActionInterrupt state) {
-            throw new Exception("This action cannot be cancelled.");
-        }
-
         #region IPersistable
 
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("city_id", cityId),
                                                                 new XMLKVPair("structure_id", structureId),
                                                                 new XMLKVPair("resource_type", resourceType.ToString()),

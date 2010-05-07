@@ -11,6 +11,7 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
 using Game.Logic;
+using Game.Logic.Actions;
 using Game.Map;
 using Game.Util;
 
@@ -166,6 +167,23 @@ namespace Game.Data {
             return troopobjects[objectId];
         }
 
+        public bool TryGetObject(uint objectId, out GameObject obj) {
+            Structure structure;
+            if (structures.TryGetValue(objectId, out structure)) {
+                obj = structure;
+                return true;
+            }
+
+            TroopObject troop;
+            if (troopobjects.TryGetValue(objectId, out troop)) {
+                obj = troop;
+                return true;
+            }
+
+            obj = null;
+            return false;
+        }
+
         public bool TryGetStructure(uint objectId, out Structure structure) {
             return structures.TryGetValue(objectId, out structure);
         }
@@ -243,10 +261,55 @@ namespace Game.Data {
             }
         }
 
-        public bool Remove(TroopObject obj) {
+        public bool ScheduleRemove(TroopObject obj, bool wasKilled) {
             lock (objLock) {
                 if (!troopobjects.ContainsKey(obj.ObjectId))
                     return false;
+
+                obj.BeginUpdate();
+                obj.IsBlocked = true;
+                obj.EndUpdate();
+
+                ObjectRemoveAction removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled);
+                return Worker.DoPassive(this, removeAction, false) == Setup.Error.OK;
+            }
+        }
+
+        public bool ScheduleRemove(Structure obj, bool wasKilled) {
+            lock (objLock) {
+                if (obj == MainBuilding)
+                    throw new Exception("Trying to remove main building");
+
+                if (!structures.ContainsKey(obj.ObjectId))
+                    return false;
+
+                obj.IsBlocked = true;
+
+                ObjectRemoveAction removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled);
+                return Worker.DoPassive(this, removeAction, false) == Setup.Error.OK;
+            }
+        }
+
+        public void DoRemove(Structure obj) {
+            lock (objLock) {
+                if (obj == MainBuilding)
+                    throw new Exception("Trying to remove main building");
+
+                obj.Technologies.Clear();
+                structures.Remove(obj.ObjectId);
+
+                obj.Technologies.TechnologyAdded -= Technologies_TechnologyAdded;
+                obj.Technologies.TechnologyRemoved -= Technologies_TechnologyRemoved;
+                obj.Technologies.TechnologyUpgraded -= Technologies_TechnologyUpgraded;
+
+                Global.DbManager.Delete(obj);
+
+                ObjRemoveEvent(obj);
+            }
+        }
+
+        public void DoRemove(TroopObject obj) {
+            lock (objLock) {
 
                 troopobjects.Remove(obj.ObjectId);
 
@@ -259,33 +322,6 @@ namespace Game.Data {
 
                 ObjRemoveEvent(obj);
             }
-
-            return true;
-        }
-
-        public bool Remove(Structure obj) {
-            lock (objLock) {
-                if (obj == MainBuilding)
-                    throw new Exception("Trying to remove main building");
-
-                if (!structures.ContainsKey(obj.ObjectId))
-                    return false;
-
-                Worker.Remove(obj, ActionInterrupt.KILLED);
-                obj.Technologies.Clear();
-                structures.Remove(obj.ObjectId);
-
-                obj.Technologies.TechnologyAdded -= Technologies_TechnologyAdded;
-                obj.Technologies.TechnologyRemoved -= Technologies_TechnologyRemoved;
-                obj.Technologies.TechnologyUpgraded -= Technologies_TechnologyUpgraded;
-
-                Global.DbManager.Delete(obj);
-
-                obj.City = null;
-                ObjRemoveEvent(obj);
-            }
-
-            return true;
         }
 
         public List<GameObject> GetInRange(uint x, uint y, uint inRadius) {

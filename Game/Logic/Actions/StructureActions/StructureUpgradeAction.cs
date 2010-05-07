@@ -19,7 +19,7 @@ namespace Game.Logic.Actions {
             this.structureId = structureId;
         }
 
-        public StructureUpgradeAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public StructureUpgradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                       byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
@@ -51,8 +51,8 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city.MainBuilding.Lvl, structure.Technologies));
-            beginTime = DateTime.Now;
+            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city.MainBuilding.Lvl, structure.Technologies));
+            beginTime = DateTime.UtcNow;
 
             return Error.OK;
         }
@@ -90,36 +90,36 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override void Interrupt(ActionInterrupt state) {
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
             Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
-                if (!city.TryGetStructure(structureId, out structure)) {
-                    Global.Scheduler.Del(this);
+                if (!city.TryGetStructure(structureId, out structure)) {                    
                     StateChange(ActionState.FAILED);
                     return;
                 }
 
-                switch (state) {
-                    case ActionInterrupt.KILLED:
-                        Global.Scheduler.Del(this);
-                        StateChange(ActionState.FAILED);
-                        break;
-                    case ActionInterrupt.CANCEL:
-                        Global.Scheduler.Del(this);
-                        Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
+                if (!wasKilled) {
+                    Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
 
-                        city.BeginUpdate();
-                        city.Resource.Add(cost / 2);
-                        city.EndUpdate();
-
-                        StateChange(ActionState.INTERRUPTED);
-                        break;
+                    city.BeginUpdate();
+                    city.Resource.Add(cost/2);
+                    city.EndUpdate();
                 }
+
+                StateChange(ActionState.FAILED);                                        
             }
+        }
+
+        public override void UserCancelled() {
+            InterruptCatchAll(false);
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            InterruptCatchAll(wasKilled);
         }
 
         #region IPersistable

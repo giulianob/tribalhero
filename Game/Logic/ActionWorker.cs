@@ -23,8 +23,8 @@ namespace Game.Logic {
     public class ActionWorker {
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        private readonly ListDictionary<ushort, ActiveAction> active = new ListDictionary<ushort, ActiveAction>();
-        private readonly ListDictionary<ushort, PassiveAction> passive = new ListDictionary<ushort, PassiveAction>();
+        private readonly ListDictionary<uint, ActiveAction> active = new ListDictionary<uint, ActiveAction>();
+        private readonly ListDictionary<uint, PassiveAction> passive = new ListDictionary<uint, PassiveAction>();
 
         private readonly NotificationManager notifications;
         private readonly ReferenceManager references;
@@ -38,11 +38,11 @@ namespace Game.Logic {
         }
 
         #region Properties
-        public ListDictionary<ushort, ActiveAction> ActiveActions {
+        public ListDictionary<uint, ActiveAction> ActiveActions {
             get { return active; }
         }
 
-        public ListDictionary<ushort, PassiveAction> PassiveActions {
+        public ListDictionary<uint, PassiveAction> PassiveActions {
             get { return passive; }
         }
 
@@ -97,6 +97,9 @@ namespace Game.Logic {
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub);
 
+                    if (action is ScheduledPassiveAction)
+                        Global.Scheduler.Del(action as ScheduledPassiveAction);
+
                     if (action is PassiveAction)
                         Global.DbManager.Delete(actionStub);
                     break;
@@ -107,7 +110,6 @@ namespace Game.Logic {
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
                     break;
-                case ActionState.INTERRUPTED:
                 case ActionState.FAILED:
                     passive.Remove(actionStub.ActionId);
                     action.IsDone = true;
@@ -115,8 +117,11 @@ namespace Game.Logic {
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub);
 
+                    if (action is ScheduledPassiveAction)
+                        Global.Scheduler.Del(action as ScheduledPassiveAction);
+
                     if (action is PassiveAction)
-                        Global.DbManager.Delete(actionStub);
+                        Global.DbManager.Delete(actionStub);                                            
                     break;
             }
         }
@@ -154,25 +159,28 @@ namespace Game.Logic {
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub);
 
-                    if (action is ScheduledActiveAction)
+                    if (action is ScheduledActiveAction) {
                         Global.DbManager.Delete(actionStub);
+                        Global.Scheduler.Del(action as ISchedule);
+                    }
                     break;
                 case ActionState.FIRED:
                     if (action is ScheduledActiveAction) {
                         Global.DbManager.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
-                    break;
-                case ActionState.INTERRUPTED:
-                case ActionState.FAILED:
+                    break;                
+                case ActionState.FAILED:                       
                     active.Remove(actionStub.ActionId);
                     action.IsDone = true;
 
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub);
 
-                    if (action is ScheduledActiveAction)
+                    if (action is ScheduledActiveAction) {
                         Global.DbManager.Delete(actionStub);
+                        Global.Scheduler.Del(action as ISchedule);
+                    }
                     break;
             }
         }
@@ -187,7 +195,7 @@ namespace Game.Logic {
                 Schedule(action as ScheduledActiveAction);
 
             action.OnNotify += NotifyActive;
-            actionIdGen.set(action.ActionId);
+            actionIdGen.Set(action.ActionId);
             active.Add(action.ActionId, action);
         }
 
@@ -197,7 +205,7 @@ namespace Game.Logic {
                 Schedule(action as ScheduledPassiveAction);
 
             action.OnNotify += NotifyPassive;
-            actionIdGen.set(action.ActionId);
+            actionIdGen.Set(action.ActionId);
             passive.Add(action.ActionId, action);
         }
 
@@ -206,7 +214,12 @@ namespace Game.Logic {
         #region Scheduling
 
         public Error DoActive(int workerType, GameObject workerObject, ActiveAction action, IHasEffect effects) {
-            int actionId = actionIdGen.getNext();
+            
+            if (workerObject.IsBlocked)
+                return Error.OBJECT_NOT_FOUND;
+
+            int actionId = actionIdGen.GetNext();
+
             Error error;
             if (actionId == -1)
                 return Error.ACTION_TOTAL_MAX_REACHED;
@@ -264,15 +277,19 @@ namespace Game.Logic {
         }
 
         public Error DoPassive(ICanDo workerObject, PassiveAction action, bool visible) {
+
+            if (workerObject is GameObject && ((GameObject)workerObject).IsBlocked)
+                return Error.OBJECT_NOT_FOUND;
+
             action.IsVisible = visible;
 
-            int actionId = actionIdGen.getNext();
+            int actionId = actionIdGen.GetNext();
             if (actionId == -1)
                 return Error.ACTION_TOTAL_MAX_REACHED;
 
             action.OnNotify += NotifyPassive;
             action.WorkerObject = workerObject;
-            action.ActionId = (ushort) actionId;
+            action.ActionId = (uint) actionId;
 
             passive.Add(action.ActionId, action);
 
@@ -291,7 +308,7 @@ namespace Game.Logic {
             if (passive.Exists(a => a.Type == action.Type))
                 return;
 
-            int actionId = actionIdGen.getNext();
+            int actionId = actionIdGen.GetNext();
             if (actionId == -1)
                 throw new Exception(Error.ACTION_TOTAL_MAX_REACHED.ToString());
 
@@ -308,6 +325,15 @@ namespace Game.Logic {
 
         #region Methods
 
+        public IEnumerable<GameAction> GetActions(GameObject gameObject) {
+            List<GameAction> actions = new List<GameAction>();
+
+            actions.AddRange(PassiveActions.FindAll(x => x.WorkerObject == gameObject).Cast<GameAction>());
+            actions.AddRange(ActiveActions.FindAll(x => x.WorkerObject == gameObject).Cast<GameAction>());
+
+            return actions;
+        }
+
         public bool Contains(GameAction action) {
             if (action is ActiveAction)
                 return ActiveActions.ContainsKey(action.ActionId);
@@ -319,30 +345,31 @@ namespace Game.Logic {
         }
 
         public void FireCallback(ISchedule action) {
-            if (!((GameAction) action).IsDone)
+            if (!((GameAction)action).IsDone) {
                 action.Callback(null);
+            }
         }
 
         internal IEnumerable<GameAction> GetVisibleActions() {
-            foreach (KeyValuePair<ushort, ActiveAction> kvp in active)
+            foreach (KeyValuePair<uint, ActiveAction> kvp in active)
                 yield return kvp.Value;
 
-            foreach (KeyValuePair<ushort, PassiveAction> kvp in passive) {
+            foreach (KeyValuePair<uint, PassiveAction> kvp in passive) {
                 if (kvp.Value.IsVisible)
                     yield return kvp.Value;
             }
         }
 
         public int GetId() {
-            int actionId = actionIdGen.getNext();
+            int actionId = actionIdGen.GetNext();
             if (actionId == -1)
                 throw new Exception(Error.ACTION_TOTAL_MAX_REACHED.ToString());
 
             return actionId;
         }
 
-        public void ReleaseId(int actionId) {
-            actionIdGen.release(actionId);
+        public void ReleaseId(uint actionId) {
+            actionIdGen.Release(actionId);
         }
 
         private static void Schedule(ScheduledActiveAction action) {
@@ -372,43 +399,60 @@ namespace Game.Logic {
         }
 
         public void Remove(GameObject workerObject, ActionInterrupt actionInterrupt, params GameAction[] ignoreActions) {
-            MultiObjectLock.ThrowExceptionIfNotLocked(city);
-
-            references.Remove(workerObject);
-
             List<GameAction> ignoreActionList = new List<GameAction>(ignoreActions);
-
-            List<ActiveAction> list =
-                active.FindAll(actionStub => actionStub.WorkerObject == workerObject);
-
-            foreach (ActiveAction stub in list) {
-                if (ignoreActionList.Contains(stub))
-                    continue;
-
-                stub.Interrupt(actionInterrupt);
-                active.Remove(stub.ActionId);
-                Global.DbManager.Delete(stub);
+                        
+            // Cancel Active actions
+            List<ActiveAction> activeList;
+            using (new MultiObjectLock(City)) {
+                activeList = active.FindAll(actionStub => actionStub.WorkerObject == workerObject);
             }
 
-            List<PassiveAction> fullList =
-                passive.FindAll(action => action.WorkerObject == workerObject);
-
-            foreach (PassiveAction stub in fullList) {
+            foreach (ActiveAction stub in activeList) {
                 if (ignoreActionList.Contains(stub))
                     continue;
 
-                stub.Interrupt(actionInterrupt);
-                passive.Remove(stub.ActionId);
-                Global.DbManager.Delete(stub);
+                stub.UserCancelled();
+            }
+
+            // Cancel Passive actions
+            List<PassiveAction> passiveList;
+            using (new MultiObjectLock(City)) {
+                passiveList = passive.FindAll(action => action.WorkerObject == workerObject);
+            }
+
+            foreach (PassiveAction stub in passiveList) {
+                if (ignoreActionList.Contains(stub))
+                    continue;
+
+                stub.UserCancelled();
+            }
+
+            using (new MultiObjectLock(City)) {
+                references.Remove(workerObject);
+            }
+        }
+
+        public void DoInterrupt(ushort actionId, bool wasKilled) {            
+            ActiveAction activeAction;
+            if (ActiveActions.TryGetValue(actionId, out activeAction))
+            {
+                activeAction.WorkerRemoved(wasKilled);
+                return;
+            }
+
+            PassiveAction passiveAction;
+            if (PassiveActions.TryGetValue(actionId, out passiveAction)) {
+                passiveAction.WorkerRemoved(wasKilled);
+                return;
             }
         }
 
         private static void ActiveCancelCallback(object item) {
-            ((ActiveAction) item).Interrupt(ActionInterrupt.CANCEL);
+            ((ActiveAction) item).UserCancelled();
         }
 
         private static void PassiveCancelCallback(object item) {
-            ((PassiveAction)item).Interrupt(ActionInterrupt.CANCEL);
+            ((PassiveAction)item).UserCancelled();
         }        
 
         public Error Cancel(ushort id) {

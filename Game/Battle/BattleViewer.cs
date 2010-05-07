@@ -1,6 +1,7 @@
 #region
 
 using System;
+using Game.Data;
 using Game.Setup;
 
 #endregion
@@ -10,7 +11,7 @@ namespace Game.Battle {
         private BattleManager battle;
 
         protected virtual void Append(string str) {
-            Console.Out.WriteLine(str);
+            Global.Logger.Info(str);
         }
 
         public BattleViewer(BattleManager battle) {

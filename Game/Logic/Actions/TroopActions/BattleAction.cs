@@ -26,7 +26,7 @@ namespace Game.Logic.Actions {
             city.Battle.ActionAttacked += Battle_ActionAttacked;
         }
 
-        public BattleAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
+        public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
                             IDictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
 
@@ -96,7 +96,7 @@ namespace Game.Logic.Actions {
                 }
                 else {
                     Global.DbManager.Save(city.Battle);
-                    endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
+                    endTime = DateTime.UtcNow.AddSeconds(Config.battle_turn_interval);
                     StateChange(ActionState.FIRED);
                 }
             }
@@ -134,8 +134,8 @@ namespace Game.Logic.Actions {
             }
 
             city.Battle.AddToDefense(list);
-            beginTime = DateTime.Now;
-            endTime = DateTime.Now.AddSeconds(Config.battle_turn_interval);
+            beginTime = DateTime.UtcNow;
+            endTime = DateTime.UtcNow.AddSeconds(Config.battle_turn_interval);
 
             return Error.OK;
         }
@@ -157,8 +157,11 @@ namespace Game.Logic.Actions {
             }
         }
 
-        public override void Interrupt(ActionInterrupt state) {
-            throw new Exception("This action cannot be cancelled.");
+        public override void UserCancelled() {            
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            throw new Exception("City removed during battle?");
         }
 
         public override ActionType Type {

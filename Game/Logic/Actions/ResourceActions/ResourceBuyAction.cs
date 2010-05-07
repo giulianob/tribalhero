@@ -11,8 +11,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class ResourceBuyAction : ScheduledActiveAction {
-        private const int TradeSize = 100;
-        private const int MaxTrade = 15;
+        private const int TRADE_SIZE = 100;
         private uint cityId;
         private uint structureId;
         private ushort price;
@@ -27,7 +26,7 @@ namespace Game.Logic.Actions {
             this.resourceType = resourceType;
         }
 
-        public ResourceBuyAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public ResourceBuyAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                  byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
@@ -46,7 +45,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
 
-            if (quantity == 0 || quantity%TradeSize != 0 || quantity/TradeSize > 15)
+            if (quantity == 0 || quantity%TRADE_SIZE != 0 || quantity/TRADE_SIZE > 15)
                 return Error.MARKET_INVALID_QUANTITY;
 
             switch (resourceType) {
@@ -66,7 +65,7 @@ namespace Game.Logic.Actions {
 
             Resource cost = new Resource(0,
                                          (int)
-                                         Math.Round(price*(quantity/TradeSize)*(1.0 + Formula.MarketTax(structure))), 0,
+                                         Math.Round(price*(quantity/TRADE_SIZE)*(1.0 + Formula.MarketTax(structure))), 0,
                                          0, 0);
             if (!structure.City.Resource.HasEnough(cost)) {
                 Market.Crop.Supply(quantity);
@@ -77,10 +76,21 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.Now.AddSeconds(Formula.TradeTime(structure));
-            beginTime = DateTime.Now;
+            endTime = DateTime.UtcNow.AddSeconds(Formula.TradeTime(structure));
+            beginTime = DateTime.UtcNow;
 
             return Error.OK;
+        }
+
+        public override void UserCancelled() {            
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {
+            City city;
+            using (new MultiObjectLock(cityId, out city)) {
+                if (!IsValid()) return;
+                StateChange(ActionState.FAILED);
+            }
         }
 
         public override void Callback(object custom) {
@@ -123,16 +133,12 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override void Interrupt(ActionInterrupt state) {
-            throw new Exception("This action cannot be cancelled.");
-        }
-
         #region IPersistable
 
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("city_id", cityId),
                                                                 new XMLKVPair("structure_id", structureId),
                                                                 new XMLKVPair("resource_type", resourceType.ToString()),

@@ -13,7 +13,7 @@ namespace Game.Data {
         private StructureProperties properties;
         private readonly TechnologyManager techmanager;
 
-        private StructureStats stats;
+        private StructureStats stats;        
 
         public StructureStats Stats {
             get { return stats; }
@@ -109,14 +109,19 @@ namespace Game.Data {
 
         public DbColumn[] DbColumns {
             get {
-                return new[] {
-                                          new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.Int32),
-                                          new DbColumn("hp", stats.Hp, DbType.UInt16), new DbColumn("type", Type, DbType.Int16),
-                                          new DbColumn("level", Lvl, DbType.Byte), new DbColumn("labor", stats.Labor, DbType.Byte),
-                                          new DbColumn("state", (byte) State.Type, DbType.Boolean),
-                                          new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()),
-                                                       DbType.String)
-                                      };
+                return new[]
+                           {
+                               new DbColumn("x", X, DbType.UInt32),
+                               new DbColumn("y", Y, DbType.Int32),
+                               new DbColumn("hp", stats.Hp, DbType.UInt16), 
+                               new DbColumn("type", Type, DbType.Int16),
+                               new DbColumn("level", Lvl, DbType.Byte), 
+                               new DbColumn("labor", stats.Labor, DbType.Byte), 
+                               new DbColumn("is_blocked", IsBlocked, DbType.Boolean),
+                               new DbColumn("in_world", InWorld, DbType.Boolean),
+                               new DbColumn("state", (byte) State.Type, DbType.Boolean),
+                               new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)
+                           };
             }
         }
 

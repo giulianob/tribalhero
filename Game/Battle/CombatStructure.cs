@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Database;
 using Game.Logic;
+using Game.Logic.Actions;
 using Game.Logic.Procedures;
 
 #endregion
@@ -126,16 +127,17 @@ namespace Game.Battle {
                 City city = Structure.City;
 
                 Global.World.LockRegion(Structure.X, Structure.Y);
-                if (Structure.Lvl > 1) {
-                    Structure.City.BeginUpdate();
-                    Structure.BeginUpdate();
-                    Procedure.StructureDowngrade(Structure);
+                if (Structure.Lvl > 1) {                    
+                    Structure.BeginUpdate();                    
                     Structure.State = GameObjectState.NormalState();
                     Structure.EndUpdate();
-                    Structure.City.EndUpdate();
+
+                    Structure.City.Worker.DoPassive(Structure.City, new StructureDowngradeAction(Structure.City.Id, Structure.ObjectId), false);
                 } else {
-                    Global.World.Remove(Structure);
-                    city.Remove(Structure);
+                    Structure.BeginUpdate();
+                    Global.World.Remove(Structure);                   
+                    city.ScheduleRemove(Structure, true);
+                    Structure.EndUpdate();
                 }
                 Global.World.UnlockRegion(Structure.X, Structure.Y);
             }

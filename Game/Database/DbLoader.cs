@@ -28,7 +28,7 @@ namespace Game.Database {
 
             Global.Logger.Info("Loading database...");
 
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.UtcNow;
 
             using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                 try {
@@ -37,7 +37,7 @@ namespace Game.Database {
 
                     // Set system variable defaults
                     if (!Global.SystemVariables.ContainsKey("System.time")) {
-                        Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.Now));
+                        Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
                     }
 
                     // Calculate how long server was down
@@ -145,11 +145,11 @@ namespace Game.Database {
             Global.Logger.Info("Loading cities...");
             using (var reader = dbManager.Select(City.DB_TABLE)) {
                 while (reader.Read()) {
-                    DateTime cropRealizeTime = ((DateTime)reader["crop_realize_time"]).Add(downTime);
-                    DateTime woodRealizeTime = ((DateTime)reader["wood_realize_time"]).Add(downTime);
-                    DateTime ironRealizeTime = ((DateTime)reader["iron_realize_time"]).Add(downTime);
-                    DateTime laborRealizeTime = ((DateTime)reader["labor_realize_time"]).Add(downTime);
-                    DateTime goldRealizeTime = ((DateTime)reader["gold_realize_time"]).Add(downTime);
+                    DateTime cropRealizeTime = DateTime.SpecifyKind((DateTime)reader["crop_realize_time"], DateTimeKind.Utc).Add(downTime);
+                    DateTime woodRealizeTime = DateTime.SpecifyKind((DateTime)reader["wood_realize_time"], DateTimeKind.Utc).Add(downTime);
+                    DateTime ironRealizeTime = DateTime.SpecifyKind((DateTime)reader["iron_realize_time"], DateTimeKind.Utc).Add(downTime);
+                    DateTime laborRealizeTime = DateTime.SpecifyKind((DateTime)reader["labor_realize_time"], DateTimeKind.Utc).Add(downTime);
+                    DateTime goldRealizeTime = DateTime.SpecifyKind((DateTime)reader["gold_realize_time"], DateTimeKind.Utc).Add(downTime);
 
                     LazyResource resource = new LazyResource((int)reader["crop"], cropRealizeTime, (int)reader["crop_production_rate"], (int)reader["crop_upkeep"], (int)reader["gold"],
                                                              goldRealizeTime, (int)reader["gold_production_rate"], (int)reader["iron"], ironRealizeTime, (int)reader["iron_production_rate"],
@@ -162,6 +162,7 @@ namespace Game.Database {
                         AttackPoint = (int)reader["attack_point"],
                         DefensePoint = (int)reader["defense_point"]
                     };
+
                     Global.World.DbLoaderAdd((uint)reader["id"], city);
                 }
             }
@@ -204,10 +205,11 @@ namespace Game.Database {
                                 (ObjectState)
                                 ((byte)reader["state"])
                         },
-                        Wood = new AggressiveLazyValue((int)reader["lumber"], ((DateTime)reader["last_realize_time"]).Add(downTime), 0, (int)reader["upkeep"]) {
+                        Wood = new AggressiveLazyValue((int)reader["lumber"], DateTime.SpecifyKind((DateTime)reader["last_realize_time"], DateTimeKind.Utc).Add(downTime), 0, (int)reader["upkeep"]) {
                             Limit = (int)reader["capacity"]
                         },
-                        DepleteTime = (DateTime)reader["deplete_time"]
+                        DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc).Add(downTime),
+                        InWorld = true
                     };
 
                     foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
@@ -227,10 +229,13 @@ namespace Game.Database {
                     }
 
                     // Create deplete time
-                    Global.Scheduler.Put(new ForestDepleteAction(forest, (DateTime)reader["deplete_time"]));
+                    Global.Scheduler.Put(new ForestDepleteAction(forest, forest.DepleteTime));
 
                     Global.World.DbLoaderAdd(forest);
                     Global.Forests.DbLoaderAdd(forest);
+
+                    // Resave to include new time
+                    Global.DbManager.Save(forest);
                 }
             }
         }
@@ -244,6 +249,7 @@ namespace Game.Database {
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
                     Structure structure = StructureFactory.GetStructure(null, (ushort)reader["type"], (byte)reader["level"], false, false);
+                    structure.InWorld = (bool)reader["in_world"];
                     structure.Technologies.Parent = city.Technologies;
                     structure.X = (uint)reader["x"];
                     structure.Y = (uint)reader["y"];
@@ -252,12 +258,15 @@ namespace Game.Database {
                     structure.Stats.Labor = (byte)reader["labor"];
                     structure.DbPersisted = true;
                     structure.State.Type = (ObjectState)((byte)reader["state"]);
+                    structure.IsBlocked = (bool)reader["is_blocked"];
 
                     foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
                         structure.State.Parameters.Add(variable);
 
                     city.Add(structure.ObjectId, structure, false);
-                    Global.World.Add(structure);
+
+                    if (structure.InWorld)
+                        Global.World.Add(structure);
                 }
             }
 
@@ -422,14 +431,18 @@ namespace Game.Database {
                         State = {
                             Type = (ObjectState)((byte)reader["state"])
                         },
-                        Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"])
+                        Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"]),
+                        IsBlocked = (bool)reader["is_blocked"],
+                        InWorld = (bool)reader["in_world"]
                     };
 
                     foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
                         obj.State.Parameters.Add(variable);
 
                     city.Add(obj.ObjectId, obj, false);
-                    Global.World.Add(obj);
+
+                    if (obj.InWorld)
+                        Global.World.Add(obj);
                 }
             }
 
@@ -562,7 +575,7 @@ namespace Game.Database {
             #region Active Actions
 
             Global.Logger.Info("Loading active actions...");
-            Type[] types = new[] { typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(int), typeof(byte), typeof(ushort), typeof(Dictionary<string, string>) };
+            Type[] types = new[] { typeof(uint), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(int), typeof(byte), typeof(ushort), typeof(Dictionary<string, string>) };
 
             using (var reader = dbManager.Select(ActiveAction.DB_TABLE)) {
                 while (reader.Read()) {
@@ -570,16 +583,16 @@ namespace Game.Database {
                     Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "ACTION", true, true);
                     ConstructorInfo cInfo = type.GetConstructor(types);
 
-                    DateTime beginTime = ((DateTime)reader["begin_time"]).Add(downTime);
+                    DateTime beginTime = DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc).Add(downTime);
 
-                    DateTime nextTime = (DateTime)reader["next_time"];
+                    DateTime nextTime = DateTime.SpecifyKind((DateTime)reader["next_time"], DateTimeKind.Utc);
                     if (nextTime != DateTime.MinValue)
                         nextTime.Add(downTime);
 
-                    DateTime endTime = ((DateTime)reader["end_time"]).Add(downTime);
+                    DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc).Add(downTime);
 
                     Dictionary<string, string> properties = XMLSerializer.Deserialize((string)reader["properties"]);
-                    object[] parms = new object[] { (ushort)reader["id"], beginTime, nextTime, endTime, (int)reader["worker_type"], (byte)reader["worker_index"], (ushort)reader["count"], properties };
+                    object[] parms = new object[] { (uint)reader["id"], beginTime, nextTime, endTime, (int)reader["worker_type"], (byte)reader["worker_index"], (ushort)reader["count"], properties };
 
                     ScheduledActiveAction action = (ScheduledActiveAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
@@ -607,7 +620,7 @@ namespace Game.Database {
             Dictionary<uint, List<PassiveAction>> chainActions = new Dictionary<uint, List<PassiveAction>>();
             //this will hold chain actions that we encounter for the next phase
 
-            types = new[] { typeof(ushort), typeof(bool), typeof(Dictionary<string, string>) };
+            types = new[] { typeof(uint), typeof(bool), typeof(Dictionary<string, string>) };
 
             Type[] scheduledTypes = new[] { typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(bool), typeof(Dictionary<string, string>) };
 
@@ -631,20 +644,20 @@ namespace Game.Database {
                     object[] parms;
 
                     if ((bool)reader["is_scheduled"]) {
-                        DateTime beginTime = ((DateTime)reader["begin_time"]);
+                        DateTime beginTime = DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc);
                         beginTime = beginTime.Add(downTime);
 
-                        DateTime nextTime = (DateTime)reader["next_time"];
+                        DateTime nextTime = DateTime.SpecifyKind((DateTime)reader["next_time"], DateTimeKind.Utc);
                         if (nextTime != DateTime.MinValue)
                             nextTime = nextTime.Add(downTime);
 
-                        DateTime endTime = ((DateTime)reader["end_time"]);
+                        DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc);
                         endTime = endTime.Add(downTime);
 
-                        parms = new object[] { (ushort)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], properties };
+                        parms = new object[] { (uint)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], properties };
                     }
                     else
-                        parms = new object[] { (ushort)reader["id"], (bool)reader["is_visible"], properties };
+                        parms = new object[] { (uint)reader["id"], (bool)reader["is_visible"], properties };
 
                     PassiveAction action = (PassiveAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
@@ -671,6 +684,7 @@ namespace Game.Database {
                         chainList.Add(action);
                     }
 
+                    // Resave city to update times
                     Global.DbManager.Save(action);
                 }
             }
@@ -680,7 +694,7 @@ namespace Game.Database {
             #region Chain Actions
 
             Global.Logger.Info("Loading chain actions...");
-            types = new[] { typeof(ushort), typeof(string), typeof(PassiveAction), typeof(ActionState), typeof(bool), typeof(Dictionary<string, string>) };
+            types = new[] { typeof(uint), typeof(string), typeof(PassiveAction), typeof(ActionState), typeof(bool), typeof(Dictionary<string, string>) };
 
             using (var reader = dbManager.Select(ChainAction.DB_TABLE)) {
                 while (reader.Read()) {
@@ -700,7 +714,7 @@ namespace Game.Database {
                         currentAction = chainList.Find(lookupAction => lookupAction.ActionId == currentActionId);
 
                     Dictionary<string, string> properties = XMLSerializer.Deserialize((string)reader["properties"]);
-                    object[] parms = new[] { (ushort)reader["id"], reader["chain_callback"], currentAction, (ActionState)((byte)reader["chain_state"]), (bool)reader["is_visible"], properties };
+                    object[] parms = new[] { (uint)reader["id"], reader["chain_callback"], currentAction, (ActionState)((byte)reader["chain_state"]), (bool)reader["is_visible"], properties };
 
                     ChainAction action = (ChainAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
@@ -731,9 +745,9 @@ namespace Game.Database {
 
                     GameAction action;
                     if ((bool)reader["is_active"])
-                        action = city.Worker.ActiveActions[(ushort)reader["action_id"]];
+                        action = city.Worker.ActiveActions[(uint)reader["action_id"]];
                     else
-                        action = city.Worker.PassiveActions[(ushort)reader["action_id"]];
+                        action = city.Worker.PassiveActions[(uint)reader["action_id"]];
 
                     ICanDo obj;
                     uint workerId = (uint)reader["object_id"];

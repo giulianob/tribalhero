@@ -26,6 +26,15 @@ namespace Game.Data {
 
         #region Properties
 
+        private bool inWorld;
+        public bool InWorld {
+            get { return inWorld; }
+            set {
+                CheckUpdateMode();
+                inWorld = value;
+            }
+        }
+
         private GameObjectState state = GameObjectState.NormalState();
 
         public GameObjectState State {

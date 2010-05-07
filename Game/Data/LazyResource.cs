@@ -33,14 +33,14 @@ namespace Game.Data {
                 int calculatedRate = GetCalculatedRate();
 
                 if (calculatedRate != 0) {
-                    int elapsed = (int)SystemClock.Now.Subtract(LastRealizeTime).TotalMilliseconds;
+                    int elapsed = Math.Max(0, (int)SystemClock.Now.Subtract(LastRealizeTime).TotalMilliseconds);
                     delta = elapsed / calculatedRate;
                 }
 
                 if (limit > 0 && (value + delta) > limit)
                     return limit;
 
-                return value + delta;
+                return Math.Max(0, value + delta);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Game.Data {
 
             if (calculatedRate != 0) {
                 DateTime now = SystemClock.Now;
-                int elapsed = (int)now.Subtract(LastRealizeTime).TotalMilliseconds;
+                int elapsed = Math.Max(0, (int)now.Subtract(LastRealizeTime).TotalMilliseconds);
                 int delta = elapsed / calculatedRate;
                 value += delta;
 
@@ -141,7 +141,9 @@ namespace Game.Data {
         }
 
         protected virtual int GetCalculatedRate() {
-            return Math.Max(0, (int)((3600000f / (rate - upkeep)) * Config.seconds_per_unit));
+            int deltaRate = rate - upkeep;
+            if (deltaRate == 0) return 0;
+            return Math.Max(0, (int)((3600000f / deltaRate) * Config.seconds_per_unit));
         }
     }
 
@@ -153,7 +155,9 @@ namespace Game.Data {
         }
 
         protected override int GetCalculatedRate() {
-            return (int)((3600000f / (Rate - Upkeep)) * Config.seconds_per_unit);
+            int deltaRate = Rate - Upkeep;
+            if (deltaRate == 0) return 0;
+            return (int)((3600000f / deltaRate) * Config.seconds_per_unit);
         }
     }
 

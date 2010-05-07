@@ -74,7 +74,7 @@ namespace Game.Logic {
                     return new[] {
                                               new DbColumn("city_id", obj.City.Id, DbType.UInt32),
                                               new DbColumn("object_id", obj.ObjectId, DbType.UInt32),
-                                              new DbColumn("action_id", action.ActionId, DbType.UInt16),
+                                              new DbColumn("action_id", action.ActionId, DbType.UInt32),
                                           };
                 }
             }
@@ -171,7 +171,7 @@ namespace Game.Logic {
                     Packet packet = new Packet(Command.NOTIFICATION_REMOVE);
                     packet.AddUInt32(actionWorker.City.Id);
                     packet.AddUInt32(notification.Action.WorkerObject.City.Id);
-                    packet.AddUInt16(notification.Action.ActionId);
+                    packet.AddUInt32(notification.Action.ActionId);
 
                     Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
                 }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Net.Sockets;
+using Game.Data;
 
 #endregion
 
@@ -18,7 +19,7 @@ namespace Game.Comm {
         }
 
         public override bool Write(Packet packet) {
-            Console.Out.WriteLine("Sending: " + packet.ToString(32));
+            Global.Logger.Info("Sending: " + packet.ToString(32));
             byte[] packetBytes = packet.GetBytes();
             int ret;
             if (socket == null)

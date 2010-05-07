@@ -124,6 +124,7 @@ namespace Game.Battle {
         }
 
         internal static ushort GetStaminaRoundEnded(City city, ushort stamina, uint round) {
+            if (stamina == 0) return 0;
             return --stamina;
         }
 

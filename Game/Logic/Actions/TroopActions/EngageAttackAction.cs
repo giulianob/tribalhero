@@ -27,7 +27,7 @@ namespace Game.Logic.Actions {
             this.mode = mode;
         }
 
-        public EngageAttackAction(ushort id, bool isVisible, IDictionary<string, string> properties)
+        public EngageAttackAction(uint id, bool isVisible, IDictionary<string, string> properties)
             : base(id, isVisible) {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
@@ -155,8 +155,10 @@ namespace Game.Logic.Actions {
             StateChange(ActionState.COMPLETED);
         }
 
-        public override void Interrupt(ActionInterrupt state) {
-            return;
+        public override void UserCancelled() {            
+        }
+
+        public override void WorkerRemoved(bool wasKilled) {            
         }
 
         public override ActionType Type {

@@ -6,7 +6,7 @@ using System;
 
 namespace Game.Util {
     public class LargeIdGenerator {
-        private long last = 0;
+        private long last;
         private long max;
 
         private object objLock = new object();
@@ -15,7 +15,7 @@ namespace Game.Util {
             this.max = max;
         }
 
-        public int getNext() {
+        public int GetNext() {
             lock (objLock) {
                 last++;
                 if (last > max)
@@ -25,14 +25,14 @@ namespace Game.Util {
             }
         }
 
-        public void set(int id) {
+        public void Set(long id) {
             lock (objLock) {
                 if (last < id)
                     last = id;
             }
         }
 
-        public void release(int id) {
+        public void Release(long id) {
             lock (objLock) {
                 if (last == id)
                     last--;

@@ -35,12 +35,14 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {
-            throw new Exception("This action cannot be cancelled.");
+        public override void WorkerRemoved(bool wasKilled) {            
+        }
+
+        public override void UserCancelled() {            
         }
 
         public override ActionType Type {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get { return ActionType.TECH_CREATE; }
         }
 
         #region ICanInit Members

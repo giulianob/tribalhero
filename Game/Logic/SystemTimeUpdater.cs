@@ -21,7 +21,7 @@ namespace Game.Logic {
 
         public static void Callback(object obj) {
             using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
-                Global.SystemVariables["System.time"].Value = DateTime.Now;
+                Global.SystemVariables["System.time"].Value = DateTime.UtcNow;
                 Global.DbManager.Save(Global.SystemVariables["System.time"]);
             }
         }

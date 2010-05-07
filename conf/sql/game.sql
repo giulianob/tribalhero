@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 25, 2010 at 10:45 PM
+-- Generation Time: May 07, 2010 at 07:25 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -27,7 +27,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 DROP TABLE IF EXISTS `active_actions`;
 CREATE TABLE `active_actions` (
-  `id` smallint(5) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL,
   `city_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `type` int(10) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `battles` (
   KEY `ended` (`ended`),
   KEY `created` (`created`),
   KEY `city_id` (`city_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -96,7 +96,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -117,7 +117,7 @@ CREATE TABLE `battle_report_objects` (
   `formation_type` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -141,7 +141,7 @@ CREATE TABLE `battle_report_troops` (
   PRIMARY KEY (`id`),
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -163,7 +163,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -177,7 +177,7 @@ CREATE TABLE `chain_actions` (
   `city_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `type` int(11) NOT NULL,
-  `current_action_id` smallint(6) unsigned DEFAULT NULL,
+  `current_action_id` int(10) unsigned DEFAULT NULL,
   `chain_callback` varchar(32) NOT NULL,
   `chain_state` tinyint(3) unsigned NOT NULL,
   `is_visible` tinyint(1) NOT NULL,
@@ -311,6 +311,7 @@ CREATE TABLE `forests` (
   `last_realize_time` datetime NOT NULL,
   `lumber` int(11) NOT NULL,
   `upkeep` int(11) NOT NULL,
+  `deplete_time` datetime NOT NULL,
   `structures` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -363,7 +364,7 @@ DROP TABLE IF EXISTS `notifications`;
 CREATE TABLE `notifications` (
   `city_id` int(11) unsigned NOT NULL,
   `object_id` int(11) unsigned NOT NULL,
-  `action_id` smallint(5) unsigned NOT NULL,
+  `action_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`city_id`,`object_id`,`action_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -377,7 +378,7 @@ DROP TABLE IF EXISTS `notifications_list`;
 CREATE TABLE `notifications_list` (
   `city_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
-  `action_id` smallint(5) unsigned NOT NULL,
+  `action_id` int(10) unsigned NOT NULL,
   `subscription_city_id` int(10) unsigned NOT NULL,
   KEY `city_id` (`city_id`,`object_id`,`action_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -390,7 +391,7 @@ CREATE TABLE `notifications_list` (
 
 DROP TABLE IF EXISTS `passive_actions`;
 CREATE TABLE `passive_actions` (
-  `id` smallint(5) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL,
   `city_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `type` int(11) NOT NULL,
@@ -458,7 +459,7 @@ CREATE TABLE `reference_stubs` (
   `id` smallint(5) unsigned NOT NULL,
   `city_id` int(10) unsigned NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
-  `action_id` smallint(5) unsigned NOT NULL,
+  `action_id` int(10) unsigned NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -531,6 +532,8 @@ CREATE TABLE `structures` (
   `type` smallint(6) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
   `labor` tinyint(3) unsigned NOT NULL,
+  `is_blocked` tinyint(1) NOT NULL,
+  `in_world` tinyint(1) NOT NULL,
   `state` tinyint(3) unsigned NOT NULL,
   `state_parameters` text NOT NULL,
   PRIMARY KEY (`id`,`city_id`)
@@ -630,6 +633,8 @@ CREATE TABLE `troops` (
   `crop` int(11) NOT NULL,
   `iron` int(11) NOT NULL,
   `wood` int(11) NOT NULL,
+  `is_blocked` tinyint(1) NOT NULL,
+  `in_world` tinyint(1) NOT NULL,
   `attack_point` int(11) NOT NULL,
   `attack_radius` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,

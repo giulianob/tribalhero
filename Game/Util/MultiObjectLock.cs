@@ -53,7 +53,7 @@ namespace Game.Util {
 
             Array.Sort(list, CompareObject);
             for (int i = 0; i < list.Length; ++i) {
-                Monitor.Enter(list[i].Lock);
+                Monitor.Enter(list[i].Lock);                
                 lockedObjects[i] = list[i].Lock;
             }
 

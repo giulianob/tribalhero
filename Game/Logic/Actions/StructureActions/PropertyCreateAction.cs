@@ -3,6 +3,7 @@
 using System;
 using Game.Data;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -24,8 +25,16 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        public override void Interrupt(ActionInterrupt state) {
-            throw new Exception("This action cannot be cancelled.");
+        public override void WorkerRemoved(bool wasKilled) {
+            using (new MultiObjectLock(structure.City)) {
+                if (!IsValid()) return;
+
+                StateChange(ActionState.FAILED);
+            }
+        }
+
+        public override void UserCancelled() {
+            return;
         }
 
         public override ActionType Type {

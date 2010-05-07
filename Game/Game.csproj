@@ -107,7 +107,7 @@
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMoveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureBuildAction.cs" />
-    <Compile Include="Logic\Actions\StructureActions\StructureChange.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureChangeAction.cs" />
     <Compile Include="Logic\Actions\TechnologyActions\TechCreateAction.cs" />
     <Compile Include="Logic\Actions\TechnologyActions\TechUpgradeAction.cs" />
     <Compile Include="Logic\Actions\TechnologyActions\TechUpgradeOtherAction.cs" />
@@ -130,7 +130,6 @@
     <Compile Include="Logic\IHasEffect.cs" />
     <Compile Include="Logic\ISchedule.cs" />
     <Compile Include="Logic\Procedures\Procedure.cs" />
-    <Compile Include="Logic\Procedures\StructureDowngrade.cs" />
     <Compile Include="Logic\Procedures\TroopObjectCreate.cs" />
     <Compile Include="Logic\Procedures\TroopObjectDelete.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\LayoutRequirement.cs" />
@@ -202,12 +201,14 @@
     <Compile Include="Logic\Actions\ChainActions\DefenseAction.cs" />
     <Compile Include="Logic\Actions\ChainActions\RetreatAction.cs" />
     <Compile Include="Logic\Actions\ChainExecuter.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\ObjectRemoveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampHarvestAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestDepleteAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceSellAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceBuyAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampBuildAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureDowngradeAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\LaborMoveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\PropertyCreateAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\StarveAction.cs" />

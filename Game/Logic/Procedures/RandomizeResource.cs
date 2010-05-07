@@ -21,7 +21,7 @@ namespace Game.Logic.Procedures {
 
                 city.Add(structure);
                 if (!Global.World.Add(structure)) {
-                    city.Remove(structure);
+                    city.ScheduleRemove(structure, false);
                     Global.World.UnlockRegion(x, y);
                     return true;
                 }

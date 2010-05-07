@@ -22,7 +22,7 @@ namespace Game.Logic.Actions {
             this.targetCityId = targetCityId;
         }
 
-        public DefenseAction(ushort id, string chainCallback, PassiveAction current, ActionState chainState,
+        public DefenseAction(uint id, string chainCallback, PassiveAction current, ActionState chainState,
                              bool isVisible, Dictionary<string, string> properties)
             : base(id, chainCallback, current, chainState, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
@@ -54,7 +54,7 @@ namespace Game.Logic.Actions {
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetCity.MainBuilding.X,
                                                       targetCity.MainBuilding.Y);
 
-            ExecuteChainAndWait(tma, new ChainCallback(AfterTroopMoved));
+            ExecuteChainAndWait(tma, AfterTroopMoved);
 
             return Error.OK;
         }
@@ -105,7 +105,7 @@ namespace Game.Logic.Actions {
         public override string Properties {
             get {
                 return
-                    XMLSerializer.Serialize(new XMLKVPair[] {
+                    XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("city_id", cityId),
                                                                 new XMLKVPair("target_city_id", targetCityId),
                                                                 new XMLKVPair("troop_stub_id", stubId)

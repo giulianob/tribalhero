@@ -49,7 +49,7 @@ namespace Game.Logic {
 
         #region IPersistable Members
 
-        protected ScheduledPassiveAction(ushort id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible) {
+        protected ScheduledPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible) {
             ActionId = id;
             IsVisible = isVisible;
             this.beginTime = beginTime;

@@ -62,6 +62,9 @@
 
 					switch(new String(actionNode.name()))
 					{
+						case "ForestCampBuild":
+							action = new ForestCampBuildAction(actionNode.@type);
+						break;						
 						case "StructureBuild":
 							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement);
 						break;
@@ -90,6 +93,9 @@
 						case "LaborMove":
 							action = new LaborMoveAction();
 						break;
+						case "ForestCampRemove":
+							action = new ForestCampRemoveAction();
+						break;						
 						default:
 							trace("Unknown action '" + actionNode.name() + "' in worker '" + worker.type.toString() + "'");
 					}

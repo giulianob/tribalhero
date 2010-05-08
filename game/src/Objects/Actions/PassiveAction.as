@@ -16,11 +16,13 @@
 		public static const ATTACK: int = 250;
 		public static const DEFENSE: int = 251;		
 		public static const RETREAT: int = 252;			
+		public static const FOREST_CAMP_HARVEST: int = 310;	
 		
 		private static var actionLookup: Array = new Array(
 			{type: ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING" },
 			{type: DEFENSE, description: "Defending", notificationDescription: defenseNotification, icon: "PASSIVE_DEFENDING" },
-			{type: RETREAT, description: "Retreating", notificationDescription: retreatNotification, icon: "PASSIVE_RETREATING" }
+			{type: RETREAT, description: "Retreating", notificationDescription: retreatNotification, icon: "PASSIVE_RETREATING" },
+			{type: FOREST_CAMP_HARVEST, description: "Gathering Wood", notificationDescription: retreatNotification, icon: "PASSIVE_DEFENDING" }
 		);
 		
 		private static var actionsSorted: Boolean = false;

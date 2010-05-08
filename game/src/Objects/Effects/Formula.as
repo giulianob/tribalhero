@@ -55,5 +55,9 @@
 			else 
 				return 0.05;
 		}		
+		
+		public static function maxForestLabor(level: int) : int {
+			return level * 240;
+		}
 	}
 }

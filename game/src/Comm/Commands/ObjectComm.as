@@ -171,6 +171,50 @@
 			custom[0](id, username, custom[1]);
 		}
 
+		public function getForestInfo(obj: Forest):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.FOREST_INFO;
+
+			packet.writeUInt(obj.objectId);
+
+			session.write(packet, onReceiveForestInfo, obj);
+		}
+
+		public function onReceiveForestInfo(packet: Packet, custom: * ) : void {
+			if (mapComm.tryShowError(packet)) return;
+
+			var forest: Forest = custom as Forest;
+
+			forest.rate = packet.readInt();
+			forest.labor = packet.readInt();
+			forest.depleteTime = packet.readUInt();
+			forest.wood = new AggressiveLazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt());
+
+			Global.map.selectObject(forest, false);
+		}
+
+		public function createForestCamp(forestId: int, cityId: int, type: int, labor: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.FOREST_CAMP_CREATE;
+
+			packet.writeUInt(cityId);
+			packet.writeUInt(forestId);
+			packet.writeUShort(type);
+			packet.writeUByte(labor);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}
+
+		public function removeForestCamp(cityId: int, campId: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.FOREST_CAMP_REMOVE;
+
+			packet.writeUInt(cityId);
+			packet.writeUInt(campId);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}
+
 		public function getStructureInfo(obj: StructureObject):void
 		{
 			var packet: Packet = new Packet();
@@ -188,16 +232,15 @@
 
 			var obj:StructureObject = custom as StructureObject;
 
+			obj.clearProperties();
+
 			obj.level = packet.readUByte();
 
 			if (obj.playerId == Constants.playerId) {
 				obj.labor = packet.readUByte();
 				obj.hp = packet.readUShort();
 
-				obj.clearProperties();
-
-				var propPrototype: Array = PropertyFactory.getProperties(obj.type);
-
+				var propPrototype: Array = PropertyFactory.getAllProperties(obj.type);
 				for each (var prop: PropertyPrototype in propPrototype)
 				{
 					switch (prop.datatype)
@@ -214,6 +257,9 @@
 						case "STRING":
 							obj.addProperty(packet.readString());
 						break;
+						case "INT":
+							obj.addProperty(packet.readInt());
+						break;
 						default:
 							trace("Unknown datatype " + prop.datatype + " in object type " + obj.type);
 						break;
@@ -225,7 +271,35 @@
 				var currentActionCount: int = packet.readUByte();
 
 				for (var i: int = 0; i < currentActionCount; i++)
-				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUShort()));
+				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUInt()));
+			}
+			else {
+				propPrototype = PropertyFactory.getProperties(obj.type, PropertyPrototype.VISIBILITY_PUBLIC);
+
+				for each (prop in propPrototype)
+				{
+					switch (prop.datatype)
+					{
+						case "BYTE":
+							obj.addProperty(packet.readUByte().toString());
+						break;
+						case "USHORT":
+							obj.addProperty(packet.readUShort().toString());
+						break;
+						case "UINT":
+							obj.addProperty(packet.readUInt().toString());
+						break;
+						case "STRING":
+							obj.addProperty(packet.readString());
+						break;
+						case "INT":
+							obj.addProperty(packet.readInt());
+						break;
+						default:
+							trace("Unknown datatype " + prop.datatype + " in object type " + obj.type);
+						break;
+					}
+				}
 			}
 
 			Global.map.selectObject(obj, false);
@@ -262,7 +336,7 @@
 				}
 			}
 
-			if (objId == 1) { // main building
+			if (objId == 1 && obj is StructureObject) { // main building
 				var radius: int = packet.readUByte();
 				if (obj) obj.wall.draw(radius);
 			}
@@ -294,7 +368,7 @@
 			var obj: SimpleGameObject = Global.map.regions.addObject(null, regionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
 			var objState: int = packet.readUByte();
 
-			if (objId == 1) { // main building
+			if (objId == 1 && obj is StructureObject) { // main building
 				var radius: int = packet.readUByte();
 				if (obj) obj.wall.draw(radius);
 			}
@@ -347,7 +421,7 @@
 				}
 			}
 
-			if (objId == 1) { // main building
+			if (objId == 1 && obj is StructureObject) { // main building
 				var radius: int = packet.readUByte();
 				obj.wall.draw(radius);
 			}
@@ -363,10 +437,9 @@
 			var currentAction: CurrentAction;
 			trace("Got new actionz");
 			if (packet.readUByte() == 0)
-			currentAction = new CurrentPassiveAction(objId, packet.readUShort(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			else
-			currentAction = new CurrentActiveAction(objId, packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
-
+			currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
@@ -380,7 +453,7 @@
 			var objId: int = packet.readUInt();
 			var currentAction: *;
 			var mode: int = packet.readUByte();
-			var actionId: int = packet.readUShort();
+			var actionId: int = packet.readUInt();
 
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
@@ -413,9 +486,9 @@
 			var currentAction: CurrentAction;
 
 			if (packet.readUByte() == 0)
-			currentAction = new CurrentPassiveAction(objId, packet.readUShort(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			else
-			currentAction = new CurrentActiveAction(objId, packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
@@ -430,7 +503,7 @@
 			packet.cmd = Commands.ACTION_CANCEL;
 			packet.writeUInt(cityId);
 			packet.writeUInt(objectId);
-			packet.writeUShort(id);
+			packet.writeUInt(id);
 
 			session.write(packet, onReceiveCancelAction, objectId);
 		}

@@ -60,9 +60,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 		private function setPlayerUsername(username: Username, custom: * ) : void {
 			var usernameLabel: JLabel = custom as JLabel;
-			
+
 			usernameLabel.setText(username.name);
-			
+
 			// Show message icon if its not the current player
 			if (username.id != Constants.playerId) {
 				usernameLabel.setIcon(new MessagingIcon(username.name));
@@ -97,21 +97,38 @@ package src.UI.Sidebars.ObjectInfo {
 			//We check anywhere for city != null to make sure it belongs to this player
 			//since we only display basic stats for non owner viewing this building
 			if (city != null) {
-				addStatRow("HP", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
-				addStatRow("Attack", structPrototype.defense.toString());
-				addStatRow("Range", structPrototype.range.toString());
-				addStatRow("Stealth", structPrototype.stealth.toString());
-				if (structPrototype.maxlabor > 0)
-				addStatRow("Laborer", gameObject.labor + "/" + structPrototype.maxlabor);
+				// Only show stats if obj is attackable
+				if (!ObjectFactory.isType("Unattackable", structPrototype.type)) {
+					addStatRow("HP", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
+					addStatRow("Attack", structPrototype.defense.toString());
+					addStatRow("Range", structPrototype.range.toString());
+					addStatRow("Stealth", structPrototype.stealth.toString());
+				}
 
-				var propPrototype: Array = PropertyFactory.getProperties(gameObject.type);
+				if (structPrototype.maxlabor > 0) {
+					addStatRow("Laborers", gameObject.labor + "/" + structPrototype.maxlabor);
+				} else if (gameObject.labor > 0) {
+					addStatRow("Laborers", gameObject.labor.toString());
+				}
+
+				var propPrototype: Array = PropertyFactory.getAllProperties(gameObject.type);
 
 				if (structureObject != null)
 				{
-					for (var i: int = 0; i < structureObject.properties.length; i++)
+					for (var i: int = 0; i < propPrototype.length; i++)
 					addStatRow(propPrototype[i].name, structureObject.properties[i]);
 
 					buttons = buttons.concat(StructureFactory.getButtons(structureObject)).concat(StructureFactory.getTechButtons(structureObject));
+				}
+			}
+			else {
+				propPrototype = PropertyFactory.getProperties(gameObject.type, PropertyPrototype.VISIBILITY_PUBLIC);
+
+				if (structureObject != null)
+				{
+					for (i = 0; i < structureObject.properties.length; i++) {
+						addStatRow(propPrototype[i].name, structureObject.properties[i]);
+					}
 				}
 			}
 
@@ -289,9 +306,6 @@ package src.UI.Sidebars.ObjectInfo {
 					city.currentActions.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 				}
 
-				if (gameObject is StructureObject)
-				(gameObject as StructureObject).clearProperties();
-
 				gameObject.removeEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
 				gameObject.actionReferences.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 
@@ -323,7 +337,7 @@ package src.UI.Sidebars.ObjectInfo {
 			{
 				button.validateButton();
 
-				if (!button.countCurrentActions() || (city != null && workerPrototype != null && city.currentActions.getObjectActions(gameObject.objectId).length >= workerPrototype.maxCount)) {
+				if (!button.countCurrentActions() || (city != null && workerPrototype != null && city.currentActions.getObjectActions(gameObject.objectId, true).length >= workerPrototype.maxCount)) {
 					button.disable();
 				}
 			}

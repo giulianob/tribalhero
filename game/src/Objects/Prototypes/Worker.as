@@ -1,8 +1,8 @@
 /**
-* ...
-* @author Default
-* @version 0.1
-*/
+ * ...
+ * @author Default
+ * @version 0.1
+ */
 
 package src.Objects.Prototypes {
 	import src.Objects.Actions.Action;
@@ -10,64 +10,63 @@ package src.Objects.Prototypes {
 	import src.Objects.Actions.IAction;
 	import src.Objects.Actions.TechUpgradeAction;
 	import src.Objects.GameObject;
-	import src.Objects.SimpleGameObject;
 
 	public class Worker {
-		
+
 		public var type: int;
 		public var maxCount: int;
-		
+
 		private var actions: Array = new Array();
 		private var techUpgradeActions: Array = new Array();
-		
-		public function Worker() {			
+
+		public function Worker() {
 		}
-		
+
 		public function addAction(action: IAction): int
 		{
 			return actions.push(action);
 		}
-		
+
 		public function addTechUpgradeAction(action: TechUpgradeAction):void
 		{
 			techUpgradeActions.push(action);
 		}
-		
+
 		public function getAction(index: int): IAction
 		{
 			return actions[index - 1];
 		}
-		
+
 		public function getTechUpgradeActions(): Array
 		{
-			var upgradeActions: Array = new Array();			
+			var upgradeActions: Array = new Array();
 			for each (var technology: TechUpgradeAction in techUpgradeActions)
 			{
 				upgradeActions.push(technology);
 			}
-			
+
 			return upgradeActions;
 		}
-		
+
 		public function getButtons(parentObj: GameObject, structPrototype: StructurePrototype): Array
 		{
 			var ret: Array = new Array();
-			
+
 			for each (var action: IAction in actions)
 			{
 				var btn: ActionButton = action.getButton(parentObj, structPrototype);
-				
+
 				if (btn == null)
-					continue;
-				
+				continue;
+
 				btn.parentAction = action as Action;
-					
+
 				ret.push(btn);
 			}
-			
+
 			return ret;
 		}
-		
+
 		public static function sortOnType(a:Worker, b:Worker):Number {
 			var aType:Number = a.type;
 			var bType:Number = b.type;
@@ -80,11 +79,12 @@ package src.Objects.Prototypes {
 				return 0;
 			}
 		}
-		
+
 		public static function compare(a: Worker, value: int): int
 		{
 			return a.type - value;
 		}
 	}
-	
+
 }
+

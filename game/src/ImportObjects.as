@@ -52,6 +52,9 @@
 			WALL_W_1;
 			WALL_E_1;			
 			
+			//Forest
+			DEFAULT_FOREST;
+			
 			//Troops
 			DEFAULT_TROOP;			
 			
@@ -87,6 +90,7 @@
 			
 			//Object Info Sidebar Buttons
 			DEFAULT_LABOR_MOVE_BUTTON;
+			DEFAULT_FOREST_CAMP_REMOVE_BUTTON;
 			DEFAULT_BUILD_BUTTON;
 			DEFAULT_CHANGE_BUTTON;
 			DEFAULT_ACTION_BUTTON;

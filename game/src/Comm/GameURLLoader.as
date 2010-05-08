@@ -52,7 +52,13 @@
 			}
 			
 			request.method = URLRequestMethod.POST;
-			loader.load(request);
+			
+			try {
+				loader.load(request);
+			}
+			catch (e: Error) {
+				loader.dispatchEvent(new Event(Event.COMPLETE));
+			}
 		}
 		
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void{

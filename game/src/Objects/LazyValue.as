@@ -45,7 +45,7 @@
 			var delta: int = 0;
 			var calculatedRate: int = getCalculatedRate();
 
-			if (calculatedRate > 0) {
+			if (calculatedRate != 0) {
 				var elapsed: int = (Global.map.getServerTime() - lastRealizeTime) * 1000;
 				delta = int(elapsed / calculatedRate);
 			}
@@ -54,10 +54,11 @@
 				return limit;
 			}
 
-			return value + delta;
+			return Math.max(0, value + delta);
 		}
 
-		private function getCalculatedRate(): int {
+		protected function getCalculatedRate(): int {
+			if ((rate - upkeep) == 0) return 0;
 			return Math.max(0, (int)((3600000.0 / (rate - upkeep)) * Constants.secondsPerUnit));
 		}
 

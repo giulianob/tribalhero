@@ -3,6 +3,7 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import src.Map.Map;
+	import src.Objects.Forest;
 	import src.Objects.Prototypes.ObjectTypePrototype;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
@@ -19,6 +20,7 @@
 		public static const TYPE_UNIT: int = 1;
 		public static const TYPE_STRUCTURE: int = 2;
 		public static const TYPE_TROOP_OBJ: int = 3;
+		public static const TYPE_FOREST: int = 4;
 
 		private static var objectTypes: BinaryList;
 
@@ -38,6 +40,18 @@
 			objectTypes.sort();
 		}
 
+		public static function getList(name: String) : Array {
+			var ret: Array = new Array();
+
+			for each (var obj: ObjectTypePrototype in objectTypes.each()) {
+				if (obj.name == name) {
+					ret.push(obj.type);
+				}
+			}
+			
+			return ret;
+		}
+
 		public static function isType(name: String, type: int) : Boolean
 		{
 			return objectTypes.get([name, type]) != null;
@@ -49,6 +63,8 @@
 			return TYPE_STRUCTURE;
 			else if (type == 100)
 			return TYPE_TROOP_OBJ;
+			else if (type == 200)
+			return TYPE_FOREST;
 			else
 			return TYPE_UNIT;
 		}
@@ -73,6 +89,8 @@
 			return StructureFactory.getInstance(type, level) as SimpleObject;
 			else if (classType == TYPE_TROOP_OBJ)
 			return TroopFactory.getInstance() as SimpleObject;
+			else if (classType == TYPE_FOREST)
+			return ForestFactory.getInstance() as SimpleObject;
 			else
 			return null;
 		}
@@ -109,6 +127,8 @@
 				sprite = StructureFactory.getSprite((obj as StructureObject).type, (obj as StructureObject).level, centered);
 			} else if (obj is TroopObject) {
 				sprite = TroopFactory.getSprite(centered);
+			} else if (obj is Forest) {
+				sprite = ForestFactory.getSprite(centered);
 			} else {
 				return null;
 			}

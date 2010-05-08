@@ -6,15 +6,15 @@
 	import flash.geom.Point;
 	import flash.utils.*;
 	import flash.ui.Keyboard;
-	import src.GameContainer;
 	import src.Global;
+	import src.Objects.Forest;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.ObjectContainer;
 	import src.Objects.StructureObject;
 	import src.Objects.Troop.*;
-	import src.UI.Dialog.RankingDialog;
 	import src.UI.GameJSidebar;
+	import src.UI.Sidebars.ForestInfo.ForestInfoSidebar;
 	import src.UI.Sidebars.ObjectInfo.ObjectInfoSidebar;
 	import src.UI.Sidebars.TroopInfo.TroopInfoSidebar;
 
@@ -34,7 +34,7 @@
 		private var pendingRegions: Array;
 
 		public var selectViewable: Object;
-		public var selectedObject: GameObject;		
+		public var selectedObject: GameObject;
 
 		private var listenersDefined: Boolean;
 
@@ -348,6 +348,9 @@
 					else if (obj is TroopObject) {
 						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);
 					}
+					else if (obj is Forest) {
+						Global.mapComm.Object.getForestInfo(obj as Forest);
+					}
 				}
 				else {
 					doSelectedObject(obj);
@@ -377,6 +380,9 @@
 			}
 			else if (obj is TroopObject) {
 				sidebar = new TroopInfoSidebar(obj);
+			}
+			else if (obj is Forest) {
+				sidebar = new ForestInfoSidebar(obj as Forest);
 			}
 
 			Global.gameContainer.setSidebar(sidebar);

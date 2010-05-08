@@ -1,0 +1,42 @@
+/**
+ * ...
+ * @author Default
+ * @version 0.1
+ */
+
+package src.Objects.Actions {
+	import flash.display.SimpleButton;
+	import flash.utils.getDefinitionByName;
+	import src.Objects.Actions.IAction;
+	import src.Objects.GameObject;
+	import src.Objects.Prototypes.StructurePrototype;
+	import src.UI.Sidebars.ObjectInfo.Buttons.ForestCampRemoveButton;
+
+	public class ForestCampRemoveAction extends Action implements IAction
+	{
+		public function ForestCampRemoveAction()
+		{
+			super(Action.FOREST_CAMP_REMOVE);
+		}
+
+		public function toString(): String
+		{
+			return "Taking camp down";
+		}
+
+		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
+		{
+			var objRef: * = getDefinitionByName("DEFAULT_FOREST_CAMP_REMOVE_BUTTON") as Class;
+
+			var btn: SimpleButton = new objRef() as SimpleButton;
+
+			if (btn == null)
+			return null;
+
+			return new ForestCampRemoveButton(btn, parentObj) as ActionButton;
+		}
+
+	}
+
+}
+

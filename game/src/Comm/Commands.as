@@ -53,6 +53,10 @@ package src.Comm {
 		public static const CITY_RADIUS_UPDATE: int = 465;
 		public static const CITY_CREATE_INITIAL: int = 499;
 		
+		public static const FOREST_INFO: int = 350;
+        public static const FOREST_CAMP_CREATE: int = 351;
+		public static const FOREST_CAMP_REMOVE: int = 352;
+		
 		public static const UNIT_TRAIN: int = 501;
         public static const UNIT_UPGRADE: int = 502;
         public static const UNIT_TEMPLATE_UPGRADED: int = 503;

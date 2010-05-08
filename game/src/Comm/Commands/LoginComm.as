@@ -97,9 +97,9 @@
 					var workerId: int = packet.readUInt();
 
 					if (packet.readUByte() == 0)
-					city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUShort(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
+					city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
 					else
-					city.currentActions.add(new CurrentActiveAction(workerId, packet.readUShort(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
+					city.currentActions.add(new CurrentActiveAction(workerId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
 				}
 				city.currentActions.sort();
 
@@ -107,7 +107,7 @@
 				var notificationsCnt: int = packet.readUShort();
 				for (k = 0; k < notificationsCnt; k++)
 				{
-					var notification: Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+					var notification: Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 					city.notifications.add(notification, false);
 				}
 				city.notifications.sort();

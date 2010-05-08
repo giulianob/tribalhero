@@ -5,15 +5,16 @@
   <target-player>10.0.0</target-player>
   <compiler>
     <source-path append="true">
-      <path-element>C:\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs</path-element>
       <path-element>C:\source\Game\lib\src</path-element>
       <path-element>C:\source\Game\game</path-element>
+      <path-element>C:\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs</path-element>
       <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
     <library-path append="true">
       <path-element>C:\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs\flash.swc</path-element>
       <path-element>C:\source\Game\lib\swc\Game\Game.swc</path-element>
       <path-element>C:\source\Game\lib\swc\as3corelib\as3corelib.swc</path-element>
+      <path-element>C:\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs\flash.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>

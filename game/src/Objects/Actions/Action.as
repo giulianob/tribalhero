@@ -1,8 +1,10 @@
-﻿package src.Objects.Actions {
+﻿
+package src.Objects.Actions {
 	import src.Objects.Effects.EffectReqManager;
 	import src.Objects.GameObject;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
-	import src.UI.Sidebars.TroopInfo.Buttons.ViewUnitsButton;
+	import src.UI.Sidebars.ForestInfo.Buttons.*;
+	import src.UI.Sidebars.TroopInfo.Buttons.*;
 	
 	/**
 	* ...
@@ -11,11 +13,11 @@
 	public class Action {
 		
 		public static const groups: Object = [
-			{ name: "Buildings", actions: [ BuildButton ] },
+			{ name: "Buildings", actions: [ BuildButton, ForestCampBuildButton ] },
 			{ name: "Units", actions: [ TrainButton] },
 			{ name: "Upgrades", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Technologies", actions: [ TechnologyButton ] },			
-			{ name: "Others", actions: [ LaborMoveButton, MarketButton, ViewBattleButton, ViewUnitsButton ] },
+			{ name: "Others", actions: [ LaborMoveButton, MarketButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
 		];
 		
 		//the actions visible to the client need to be here
@@ -25,6 +27,8 @@
         public static const LABOR_MOVE: int = 105;        
         public static const RESOURCE_BUY: int = 306;
         public static const RESOURCE_SELL: int = 307;
+		public static const FOREST_CAMP_BUILD: int = 308;
+		public static const FOREST_CAMP_REMOVE: int = 309;
         public static const TECHNOLOGY_UPGRADE: int = 402;
         public static const UNIT_TRAIN: int = 601;
         public static const UNIT_UPGRADE: int = 602;
@@ -38,7 +42,7 @@
 		
 		public function Action(actionType: int = 0) 
 		{
-			this.actionType = actionType;
+			this.actionType = actionType;			
 		}
 		
 		public function validate(parentObj: GameObject, effects: Array): Array

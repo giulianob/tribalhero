@@ -6,6 +6,7 @@
 	import src.Objects.*;
 	import src.Constants;
 	import src.Global;
+	import src.Objects.Factories.ObjectFactory;
 
 	public class RegionComm {
 		
@@ -82,7 +83,7 @@
 					if (obj)
 						obj.State = objState;						
 					
-					if (objId == 1) { // main building
+					if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE && objId == 1) { // main building
 						var radius: int = packet.readUByte();
 						if (obj) 
 						{

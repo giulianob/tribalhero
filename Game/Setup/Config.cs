@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Game.Data;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -20,8 +21,8 @@ namespace Game.Setup {
         public static readonly string maps_folder = "conf/maps/";
         public static readonly string data_folder = "conf/data/";
 
-        public static readonly uint map_width = 3808;
-        public static readonly uint map_height = 6944;
+        public static readonly uint map_width = 1904;
+        public static readonly uint map_height = 3472;
         public static readonly uint region_width = 34;
         public static readonly uint region_height = 62;
 
@@ -46,6 +47,8 @@ namespace Game.Setup {
         public static readonly byte minimum_distance_apart = 8;
         public static readonly int height_margin = 10;
         public static readonly int width_margin = 10;
+
+        public static readonly int[] forest_count = new[] { 100, 100, 100, 100 };
 
         public static readonly bool database_verbose;
         public static readonly bool database_empty;
@@ -107,16 +110,26 @@ namespace Game.Setup {
 
                         Type type = Type.GetType("Game.Setup.Config");
                         FieldInfo field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);
-                        if (field.FieldType.FullName == "System.Boolean")
-                            field.SetValue(null, Boolean.Parse(value));
-                        else if (field.FieldType.FullName == "System.Double")
-                            field.SetValue(null, Double.Parse(value));
-                        else if (field.FieldType.FullName == "System.Int32")
-                            field.SetValue(null, Int32.Parse(value));
-                        else if (field.FieldType.FullName == "System.UInt32")
-                            field.SetValue(null, UInt32.Parse(value));
-                        else
-                            field.SetValue(null, value);
+                        switch (field.FieldType.FullName) {
+                            case "System.Boolean":
+                                field.SetValue(null, Boolean.Parse(value));
+                                break;
+                            case "System.Double":
+                                field.SetValue(null, Double.Parse(value));
+                                break;
+                            case "System.Int32":
+                                field.SetValue(null, Int32.Parse(value));
+                                break;
+                            case "System.UInt32":
+                                field.SetValue(null, UInt32.Parse(value));
+                                break;
+                            case "System.Int32[]":
+                                field.SetValue(null, JsonConvert.DeserializeObject<int[]>(value));
+                                break;
+                            default:
+                                field.SetValue(null, value);
+                                break;
+                        }
                     }
                 }
             }

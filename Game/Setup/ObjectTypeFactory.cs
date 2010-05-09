@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Game.Data;
 using Game.Util;
 
@@ -59,6 +60,20 @@ namespace Game.Setup {
             if (dict.TryGetValue(type, out set))
                 return set.Contains(tileType);
             return false;
+        }
+
+        public static bool HasTileType(string type, IEnumerable<ushort> tileTypes) {
+            if (dict == null)
+                return false;
+            List<ushort> set;
+            return dict.TryGetValue(type, out set) && tileTypes.Any(tileType => set.Contains(tileType));
+        }
+
+        public static bool IsAllTileType(string type, IEnumerable<ushort> tileTypes) {
+            if (dict == null)
+                return false;
+            List<ushort> set;
+            return dict.TryGetValue(type, out set) && tileTypes.All(tileType => set.Contains(tileType));
         }
     }
 }

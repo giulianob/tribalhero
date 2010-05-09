@@ -15,15 +15,15 @@ namespace MapGenerator {
         static Random random = new Random();
         static StreamWriter sw;
 
-        static int width = 3808;
-        static int height = 6944;
+        static int width = 1904;
+        static int height = 3472;
         static int region_width = 34;
         static int region_height = 62;
-        static int region_column = (int)(width / region_width);
-        static int region_row = (int)(height / region_height);
+        static int region_column = width / region_width;
+        static int region_row = height / region_height;
         static int numberOfTiles = 10;
         static int numberOfFarm = 2;
-        static int numberOfWoodland = 2;
+        static int numberOfWoodland = 1;
 
         const ushort FARM_TILE = 208;
         const ushort WOODLAND_TILE = 209;

@@ -73,7 +73,9 @@ package src.UI.Dialog{
 		}
 
 		private function updateSlider(e: Event = null): void {
-			var extent: int = structPrototype.maxlabor - (city.resources.labor.getValue() + structure.labor);
+			var maxAffordable: int = (city.resources.labor.getValue() + structure.labor);
+			var maxAllowed: int = Math.max(5 + structure.labor, Math.ceil(structPrototype.maxlabor / 10.0) + structure.labor);
+			var extent: int = structPrototype.maxlabor - Math.min(maxAffordable, maxAllowed);
 
 			if (sldCount.getValue() > sldCount.getMaximum() - extent) {
 				sldCount.setValue(sldCount.getMaximum() - extent);

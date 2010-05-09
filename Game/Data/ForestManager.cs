@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Game.Logic.Actions.ResourceActions;
 using Game.Setup;
 using Game.Util;
 
@@ -8,10 +9,17 @@ namespace Game.Data {
 
         public static readonly object ForestLock = new object();
 
-        Dictionary<uint, Forest> forests;
+        Dictionary<uint, Forest> forests;        
+
+        public int[] ForestDeletedCount { get; private set; }
 
         public ForestManager() {
+            ForestDeletedCount = new int[3];
             forests = new Dictionary<uint, Forest>();            
+        }
+
+        public void StartForestCreator() {
+            Global.Scheduler.Put(new ForestCreatorAction());
         }
 
         public void DbLoaderAdd(Forest forest) {
@@ -57,7 +65,9 @@ namespace Game.Data {
             forest.EndUpdate();
         }
 
-        public void RemoveForest(Forest forest) {            
+        public void RemoveForest(Forest forest) {
+            ForestDeletedCount[forest.Lvl]++;
+
             forests.Remove(forest.ObjectId);
 
             forest.BeginUpdate();

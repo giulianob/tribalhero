@@ -211,7 +211,9 @@ namespace Game.Comm {
                     city = new City(session.Player, cityName, res, mainBuilding);
 
                     Global.World.Add(city);
+                    mainBuilding.BeginUpdate();
                     Global.World.Add(mainBuilding);
+                    mainBuilding.EndUpdate();
 
                     TroopStub defaultTroop = new TroopStub();
                     defaultTroop.BeginUpdate();

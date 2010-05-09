@@ -80,21 +80,21 @@ namespace Game.Logic.Actions {
             uint emptyX = 0;
             uint emptyY = 0;
             TileLocator.foreach_object(forest.X, forest.Y, 1, false, delegate(uint ox, uint oy, uint x, uint y, object custom) {
-                // Check tile type                
-                if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y))) {
-                    return true;
-                }
+                                                                         // Check tile type                
+                                                                         if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y))) {
+                                                                             return true;
+                                                                         }
 
-                // Make sure it's not taken
-                if (Global.World[x, y].Count > 0) {
-                    return true;
-                }
+                                                                         // Make sure it's not taken
+                                                                         if (Global.World[x, y].Count > 0) {
+                                                                             return true;
+                                                                         }
 
-                emptyX = x;
-                emptyY = y;
+                                                                         emptyX = x;
+                                                                         emptyY = y;
 
-                return false;
-            }, null);
+                                                                         return false;
+                                                                     }, null);
 
             if (emptyX == 0 || emptyY == 0) {
                 return Error.MAP_FULL;
@@ -138,8 +138,8 @@ namespace Game.Logic.Actions {
             // add to queue for completion
             endTime =
                 DateTime.UtcNow.AddSeconds(Config.actions_instant_time
-                                            ? 3
-                                            : (Formula.BuildTime(StructureFactory.GetTime(campType, 1), city.MainBuilding.Lvl, city.Technologies) + lumbermill.RadiusDistance(forest) * 30));
+                                               ? 3
+                                               : (Formula.BuildTime(StructureFactory.GetTime(campType, 1), city.MainBuilding.Lvl, city.Technologies) + lumbermill.RadiusDistance(forest)));
             beginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);

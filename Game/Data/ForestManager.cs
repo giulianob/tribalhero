@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Logic.Actions.ResourceActions;
 using Game.Setup;
@@ -9,12 +10,12 @@ namespace Game.Data {
 
         public static readonly object ForestLock = new object();
 
-        Dictionary<uint, Forest> forests;        
+        Dictionary<uint, Forest> forests;
 
-        public int[] ForestDeletedCount { get; private set; }
+        public int[] ForestCount { get; private set; }
 
-        public ForestManager() {
-            ForestDeletedCount = new int[3];
+        public ForestManager() {            
+            ForestCount = new int[Config.forest_count.Length];
             forests = new Dictionary<uint, Forest>();            
         }
 
@@ -23,6 +24,7 @@ namespace Game.Data {
         }
 
         public void DbLoaderAdd(Forest forest) {
+            ForestCount[forest.Lvl - 1]++;
             forests.Add(forest.ObjectId, forest);
         }
 
@@ -36,12 +38,22 @@ namespace Game.Data {
             if (x == 0 || y == 0) {
                 while (true) {
                     x = (uint) Config.Random.Next(15, (int) Config.map_width - 15);
-                    y = (uint) Config.Random.Next(15, (int) Config.map_height - 15);
+                    y = (uint) Config.Random.Next(15, (int) Config.map_height - 15);                    
+
+                    // check if tile is safe
+                    List<ushort> tiles = Global.World.GetTilesWithin(x, y, 5);
+                    if (ObjectTypeFactory.HasTileType("CityStartTile", tiles)) {
+                        continue;
+                    }
+
+                    if (ObjectTypeFactory.IsAllTileType("TileBuildable", tiles)) {
+                        continue;
+                    }
 
                     Global.World.LockRegion(x, y);
 
-                    // check if near a city
-                    if (Global.World.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is TroopObject))) {
+                    // check if near any other objects
+                    if (Global.World.GetObjectsWithin(x, y, 2).Exists(obj => !(obj is TroopObject))) {
                         Global.World.UnlockRegion(x, y);
                         continue;
                     }
@@ -63,10 +75,12 @@ namespace Game.Data {
             forest.BeginUpdate();
             forest.RecalculateForest();
             forest.EndUpdate();
+
+            ForestCount[lvl - 1]++;
         }
 
         public void RemoveForest(Forest forest) {
-            ForestDeletedCount[forest.Lvl]++;
+            ForestCount[forest.Lvl - 1]--;
 
             forests.Remove(forest.ObjectId);
 

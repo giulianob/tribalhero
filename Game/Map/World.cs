@@ -95,9 +95,8 @@ namespace Game.Map {
             regions = new Region[regionsCount];
             for (int regionId = 0; regionId < regionsCount; ++regionId) {
                 Byte[] data = new Byte[regionSize*Region.TILE_SIZE]; // 1 tile is 2 bytes
-                if (stream.Read(data, 0, (int) (regionSize*Region.TILE_SIZE)) != regionSize*Region.TILE_SIZE) {
-                    Global.Logger.Error("Not enough map data");
-                    return false;
+                if (stream.Read(data, 0, (int) (regionSize*Region.TILE_SIZE)) != regionSize*Region.TILE_SIZE) {                    
+                    throw new Exception("Not enough map data");
                 }
                 regions[regionId] = new Region(data);
             }
@@ -157,6 +156,9 @@ namespace Game.Map {
 
                 region.Add(iter.Current);
             }
+
+            // Launch forest creator
+            Global.Forests.StartForestCreator();
         }
 
         public void Remove(City city) {
@@ -367,6 +369,18 @@ namespace Game.Map {
         public List<SimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius) {
             List<SimpleGameObject> list = new List<SimpleGameObject>();
             TileLocator.foreach_object(x, y, radius, false, GetObjectsForeach, list);
+            return list;
+        }
+
+        private bool GetTilesForeach(uint ox, uint oy, uint x, uint y, object custom) {
+            if (x < WorldWidth && y < WorldHeight)
+                ((List<ushort>) custom).Add(GetTileType(x, y));
+            return true;
+        }
+
+        public List<ushort> GetTilesWithin(uint x, uint y, byte radius) {
+            List<ushort> list = new List<ushort>();
+            TileLocator.foreach_object(x, y, radius, false, GetTilesForeach, list);
             return list;
         }
 

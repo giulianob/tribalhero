@@ -50,7 +50,7 @@ namespace Game.Logic {
         /// <param name="level"></param>
         /// <returns></returns>
         internal static int GetMaxForestCapacity(byte level) {
-            return (10000 * Config.Random.Next(-1250, 1250)) * level;
+            return (10000 + Config.Random.Next(-1250, 1250)) * level;
         }
 
         /// <summary>

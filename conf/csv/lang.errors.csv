@@ -10,11 +10,15 @@ ERROR_200,You do not have enough resources to do that
 ERROR_201,The specified resource is not tradable
 ERROR_202,Not enough laborers to do that
 ERROR_203,This building can't support that many laborers
+ERROR_204,This forest is already full
+ERROR_205,You must build a lumbermill first
+ERROR_206,You are already gathering from this forest
+ERROR_207,This forest is too high level for your lumbermill
 ERROR_250,The requirements for this action have not been met
 ERROR_251,The requirements for this action have not been met
 ERROR_300,The market price has changed since you opened the market dialog. Close the dialog and try again.
 ERROR_301,An invalid quantity was specified
-ERROR_400,The specified object does not exist
+ERROR_400,The selected object no longer exists
 ERROR_401,The specified structure does not exist
 ERROR_402,The specified player does not exist
 ERROR_410,The map is full!
@@ -22,6 +26,7 @@ ERROR_411,Unable to build on the specified tile
 ERROR_412,A structure already exists there.
 ERROR_413,This city name has already been used.
 ERROR_414,The city name must start with a letter and can only contain alpha numeric characters.
+ERROR_415,You cannot attack this object
 ERROR_600,You can't attack yourself!
 ERROR_601,Not allowed while city is in battle
 ERROR_602,Why would you want to defend yourself?

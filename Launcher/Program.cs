@@ -16,12 +16,7 @@ namespace Launcher {
 
             if (!Game.Engine.Start()) {
                 throw new Exception("Failed to load server");
-            }
-
-            //Test Code
-            using (new MultiObjectLock(Global.Forests)) {
-                Global.Forests.CreateForestAt(1, 1000, 2, 5, 5);
-            }
+            }           
 
             while (true) {
                 ConsoleKeyInfo key = Console.ReadKey();

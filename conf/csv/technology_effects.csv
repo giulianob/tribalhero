@@ -170,3 +170,14 @@ TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5,
 23014,1,UnitStatMod,City ,FALSE,Rng,RAW_BONUS,3,WeaponEqual,BOW,{BaseBattleStats: obj.Weapon==WeaponType.BOW}
 23014,2,UnitStatMod,City ,FALSE,Rng,RAW_BONUS,6,WeaponEqual,BOW,{BaseBattleStats: obj.Weapon==WeaponType.BOW}
 23014,3,UnitStatMod,City ,FALSE,Rng,RAW_BONUS,9,WeaponEqual,BOW,{BaseBattleStats: obj.Weapon==WeaponType.BOW}
+,,,,,,,,,,
+//foundry,,,,,,,,,,
+21101,1,ACallToArmMod,City ,FALSE,100,,,,,
+21101,2,ACallToArmMod,City ,FALSE,150,,,,,
+21101,3,ACallToArmMod,City ,FALSE,200,,,,,
+21101,4,ACallToArmMod,City ,FALSE,250,,,,,
+21101,5,ACallToArmMod,City ,FALSE,300,,,,,
+21102,1,AwayFromStructureMod,Object,TRUE,2111,-1,,,,
+21102,2,AwayFromStructureMod,Object,TRUE,2111,-2,,,,
+21102,3,AwayFromStructureMod,Object,TRUE,2111,-3,,,,
+21102,3,HaveTechnology,City,FALSE,21102,3,,,,

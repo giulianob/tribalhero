@@ -11,6 +11,7 @@ using Game.Fighting;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Logic;
 
 #endregion
 
@@ -700,7 +701,7 @@ namespace Game.Battle {
                 if (attacker.CombatList == Attacker) {
                     Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
                     city.BeginUpdate();
-                    city.Resource.Subtract(loot, out loot);
+                    city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
                     attacker.ReceiveReward(attackPoints, loot);                    
                     city.EndUpdate();
                 } else {                    

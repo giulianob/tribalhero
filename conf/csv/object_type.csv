@@ -10,4 +10,5 @@ TileCrop,208,,,,,,,,,,,,,,,
 TileBuildable,0,1,2,3,4,5,6,7,111,112,113,114,115,116,117,118
 RepairBuilding,2110,,,,,,,,,,,,,,,
 NonRepairable,2106,,,,,,,,,,,,,,,
-University,2301
+University,2301,,,,,,,,,,,,,,,
+Basement,2111,,,,,,,,,,,,,,,

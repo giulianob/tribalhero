@@ -11,8 +11,12 @@ namespace Game.Logic {
         CONTAINS = 1
     }
 
-    abstract class LayoutRequirement {
-        public abstract bool Validate(IEnumerable<Structure> objects, uint x, uint y);
-        public abstract void Add(Reqirement req);
+    public abstract class LayoutRequirement {
+        protected List<Reqirement> requirements = new List<Reqirement>();
+        public abstract bool Validate(Structure builder, ushort type, uint x, uint y);
+
+        public void Add(Reqirement req) {
+            requirements.Add(req);
+        }
     }
 }

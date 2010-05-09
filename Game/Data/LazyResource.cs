@@ -270,6 +270,17 @@ namespace Game.Data {
             EndUpdate();
         }
 
+        public void Subtract(Resource cost, Resource hidden, out Resource actual) {
+            BeginUpdate();
+            actual = new Resource();
+            Crop.Subtract((actual.Crop = Crop.Value - hidden.Crop > cost.Crop ? cost.Crop : Crop.Value - hidden.Crop));
+            Gold.Subtract((actual.Gold = Gold.Value - hidden.Gold > cost.Gold ? cost.Gold : Gold.Value - hidden.Gold));
+            Iron.Subtract((actual.Iron = Iron.Value - hidden.Iron > cost.Iron ? cost.Iron : Iron.Value - hidden.Iron));
+            Wood.Subtract((actual.Wood = Wood.Value - hidden.Wood > cost.Wood ? cost.Wood : Wood.Value - hidden.Wood));
+            Labor.Subtract((actual.Labor = Labor.Value - hidden.Labor > cost.Labor ? cost.Labor : Labor.Value - hidden.Labor));
+            EndUpdate();
+        }
+
         public void Add(Resource resource) {
             Add(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor);
             Update();

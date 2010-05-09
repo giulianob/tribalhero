@@ -6,3 +6,6 @@ Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
 ,,,,,,,,
 //Blacksmith,,,,,,,,
 2303,1,Simple,2301,1,20,0,1,1
+,,,,,,,,
+//Foundry,,,,,,,,
+2111,1,AwayFrom,2111,1,20,6,255,255

@@ -223,6 +223,7 @@
     <Compile Include="Logic\Procedures\TroopObjectCreateFromStation.cs" />
     <Compile Include="Logic\Procedures\TroopObjectStation.cs" />
     <Compile Include="Logic\ReferenceManager.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />
     <Compile Include="Logic\SystemTimeUpdater.cs" />
     <Compile Include="Map\CityRegion.cs" />
     <Compile Include="Module\Npc.cs" />

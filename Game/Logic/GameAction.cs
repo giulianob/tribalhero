@@ -12,8 +12,9 @@ namespace Game.Logic {
         STRUCTURE_BUILD = 101,
         STRUCTURE_UPGRADE = 102,
         STRUCTURE_CHANGE = 103,
-        PROPERTY_CREATE = 104,
-        LABOR_MOVE = 105,
+        STRUCTURE_DOWNGRADE = 104,
+        PROPERTY_CREATE = 105,
+        LABOR_MOVE = 106,
 
         TROOP_MOVE = 201,
         TROOP_CREATE = 202,

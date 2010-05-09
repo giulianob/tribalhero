@@ -7,7 +7,7 @@ using Game.Setup;
 #endregion
 
 namespace Game.Logic {
-    class Reqirement {
+    public class Reqirement {
         public ushort type;
         public byte cmp;
         public byte minLvl;
@@ -27,54 +27,67 @@ namespace Game.Logic {
     }
 
     class SimpleLayout : LayoutRequirement {
-        private List<Reqirement> requirements = new List<Reqirement>();
-
-        public override void Add(Reqirement req) {
-            requirements.Add(req);
-        }
-
-        public override bool Validate(IEnumerable<Structure> objects, uint x, uint y) {
-            List<Reqirement> list = new List<Reqirement>(requirements);
-            List<Structure> gameObjects = new List<Structure>(objects);
-
-            foreach (Reqirement req in list) {
-                Structure lastObject = null;
-
-                foreach (Structure obj in gameObjects) {
-                    if (!Satisfy(req, obj, x, y))
-                        continue;
-
-                    lastObject = obj;
-                    break;
+        public override bool Validate(Structure builder, ushort type, uint x, uint y) {
+            foreach (Reqirement req in requirements) {
+                switch (req.cmp) {
+                    case 1:
+                        if (!HaveBuilding(req, builder.City, x, y)) return false;
+                        break;
+                    case 2:
+                        if (!HaveNoBuilding(req, builder.City, x, y)) return false;
+                        break;
+                    default:
+                        return false;
                 }
-                
-                if (lastObject == null)
-                    return false;
-
-                gameObjects.Remove(lastObject);
             }
             return true;
         }
 
-        private static bool Satisfy(Reqirement req, GameObject obj, uint x, uint y) {
-            if (req.type != obj.Type)
-                return false;
-            
-            if (obj.Lvl > req.maxLvl)
-                return false;
+        private bool HaveNoBuilding(Reqirement req, IEnumerable<Structure> objects, uint x, uint y) {
+            foreach (Structure obj in objects) {
+                if (req.type != obj.Type)
+                    continue;
 
-            if (obj.Lvl < req.minLvl)
+                if (obj.Lvl > req.maxLvl)
+                    continue;
+
+                if (obj.Lvl < req.minLvl)
+                    continue;
+
+                int dist = obj.RadiusDistance(x, y);
+
+                if (dist > req.maxDist)
+                    continue;
+
+                if (dist < req.minDist)
+                    continue;
                 return false;
-
-            int dist = obj.RadiusDistance(x, y);
-
-            if (dist > req.maxDist)
-                return false;
-
-            if (dist < req.minDist)
-                return false;
-
+            }
             return true;
         }
+
+        private bool HaveBuilding(Reqirement req, IEnumerable<Structure> objects, uint x, uint y) {
+            foreach (Structure obj in objects) {
+                if (req.type != obj.Type)
+                    continue;
+
+                if (obj.Lvl > req.maxLvl)
+                    continue;
+
+                if (obj.Lvl < req.minLvl)
+                    continue;
+
+                int dist = obj.RadiusDistance(x, y);
+
+                if (dist > req.maxDist)
+                    continue;
+
+                if (dist < req.minDist)
+                    continue;
+                return true;
+            }
+            return false;
+        }
+
     }
 }

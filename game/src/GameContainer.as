@@ -275,8 +275,10 @@
 		}
 
 		public function dispose() : void {
-			messageTimer.stop();
-			messageTimer = null;
+			if (messageTimer) {
+				messageTimer.stop();
+				messageTimer = null;
+			}
 			
 			visible = false;			
 

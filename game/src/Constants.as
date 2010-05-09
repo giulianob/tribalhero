@@ -29,8 +29,8 @@ package src
 		public static const tileSetTileW:int = tileSetW / tileW;
 		public static const tileSetTileH:int = tileSetH / tileH;
 
-		public static const mapW:int = 3808 * tileW;
-		public static const mapH:int = 6944 * tileH;
+		public static const mapW:int = 1904 * tileW;
+		public static const mapH:int = 3472 * tileH;
 
 		public static const mapTileW:int = mapW / tileW;
 		public static const mapTileH:int = mapH / tileH;

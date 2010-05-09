@@ -46,6 +46,8 @@ namespace Game.Data {
         RepairSaving = 11,
         TroopSpeedMod = 12,
         UnitStatMod = 13,
+        AwayFromStructureMod = 14,
+        ACallToArmMod = 15,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

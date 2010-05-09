@@ -43,7 +43,7 @@ namespace Game.Logic.Actions {
 
             Region region = Global.World.GetRegion(x, y);
             Global.World.LockRegion(x, y);
-
+            
             // cost requirement
             cost = Formula.StructureCost(city, type, 1);
             if (!city.Resource.HasEnough(cost)) {
@@ -58,7 +58,7 @@ namespace Game.Logic.Actions {
             }
 
             // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(type, (byte) 1).Validate(city, x, y)) {
+            if (!ReqirementFactory.GetLayoutRequirement(type, (byte)1).Validate(this.WorkerObject as Structure, type, x, y)) {
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }

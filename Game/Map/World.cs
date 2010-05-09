@@ -9,6 +9,7 @@ using Game.Comm;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Setup;
 using Game.Util;
 
 #endregion

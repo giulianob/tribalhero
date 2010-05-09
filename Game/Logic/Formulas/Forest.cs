@@ -23,7 +23,7 @@ namespace Game.Logic {
         /// <param name="level"></param>
         /// <returns></returns>
         internal static ushort GetForestMaxLabor(byte level) {
-            return (ushort)(level * 300);
+            return (ushort)(level * 240);
         }
 
         /// <summary>
@@ -42,6 +42,24 @@ namespace Game.Logic {
                 return 3;
             
             return 4;
+        }
+
+        /// <summary>
+        /// Gets the maximum capacity of the forest
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        internal static int GetMaxForestCapacity(byte level) {
+            return (10000 * Config.Random.Next(-1250, 1250)) * level;
+        }
+
+        /// <summary>
+        /// Returns the forest rate
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        internal static int GetMaxForestRate(byte level) {
+            return 1;
         }
     }
 }

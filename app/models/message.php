@@ -96,7 +96,7 @@ class Message extends AppModel {
                 ),
                 'conditions' => array(
                         'Message.sender_player_id' => $playerId,
-                        'NOT' => array('Message.recipient_state' => $this->states['deleted'])
+                        'NOT' => array('Message.sender_state' => $this->states['deleted'])
                 ),
                 'page' => $page,
                 'limit' => $this->limitPerPage,

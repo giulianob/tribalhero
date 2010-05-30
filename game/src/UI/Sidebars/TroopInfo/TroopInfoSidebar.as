@@ -6,6 +6,8 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Prototypes.*;
 	import src.Objects.*;
+	import src.UI.Components.GoToCityIcon;
+	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Dialog.*;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
@@ -50,6 +52,29 @@
 			update();
 		}
 
+		private function setPlayerUsername(username: Username, custom: * ) : void {
+			var usernameLabel: JLabel = custom as JLabel;
+
+			usernameLabel.setText(username.name);
+
+			// Show message icon if its not the current player
+			if (username.id != Constants.playerId) {
+				usernameLabel.setIcon(new MessagingIcon(username.name));
+				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
+			}
+		}
+
+		private function setCityUsername(username: Username, custom: * ) : void {
+			var usernameLabel: JLabel = custom as JLabel;
+
+			usernameLabel.setText(username.name + troopObj.getNiceStubId(true));
+
+			if (username.id != Global.gameContainer.selectedCity.id) {
+				usernameLabel.setIcon(new GoToCityIcon(username.id));
+				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
+			}
+		}
+
 		public function update():void
 		{
 			t.reset();
@@ -59,10 +84,8 @@
 			var usernameLabel: JLabel = addStatRow("Player", "-");
 			var cityLabel: JLabel = addStatRow("Troop", "-");
 
-			Global.map.usernames.players.setLabelUsername(troopObj.playerId, usernameLabel);
-			Global.map.usernames.cities.getUsername(troopObj.cityId, function (username: Username, custom: *) : void {
-				custom.setText(username.name + troopObj.getNiceStubId(true));
-			}, cityLabel);
+			Global.map.usernames.players.getUsername(troopObj.playerId, setPlayerUsername, usernameLabel);
+			Global.map.usernames.cities.getUsername(troopObj.cityId, setCityUsername, cityLabel);
 
 			addStatRow("Radius", troopObj.attackRadius.toString());
 			addStatRow("Speed", troopObj.speed.toString());

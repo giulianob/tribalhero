@@ -3,6 +3,7 @@
 	import fl.lang.Locale;
 	import flash.display.MovieClip;
 	import flash.events.*;
+	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.ui.ContextMenu;

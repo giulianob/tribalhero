@@ -12,6 +12,7 @@
 	import src.Objects.*;
 	import src.Map.Map;
 	import src.UI.Components.*;
+	import src.UI.Cursors.BuildRoadCursor;
 	import src.UI.Dialog.*;
 	import src.UI.*;
 	import flash.ui.*;
@@ -205,7 +206,7 @@
 		}
 
 		public function eventKeyDown(e: KeyboardEvent):void
-		{
+		{			
 			if (e.charCode == Keyboard.ESCAPE)
 			{
 				if (map != null) {
@@ -274,11 +275,15 @@
 			messageTimer.start();
 		}
 
-		public function dispose() : void {
+		public function dispose() : void {						
 			if (messageTimer) {
 				messageTimer.stop();
 				messageTimer = null;
 			}
+			
+			message.hide();
+			
+			closeAllFrames();
 			
 			visible = false;			
 

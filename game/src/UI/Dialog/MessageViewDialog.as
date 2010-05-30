@@ -30,14 +30,15 @@
 		private var txtMessage:MultilineLabel;
 		private var pnlFooter:JPanel;
 		private var btnDelete:JButton;
+		private var btnReply:JButton;
 
 		private var message: *;
 
 		public function MessageViewDialog(message: *, onDelete: Function)
 		{
-			createUI();
-
 			this.message = message;
+
+			createUI();
 
 			txtName.setText(message.name);
 			txtMessage.setText(message.message);
@@ -55,6 +56,14 @@
 			var self: MessageViewDialog = this;
 			btnDelete.addActionListener(function(e: Event) : void {
 				if (onDelete != null) onDelete(self);
+			});
+
+			btnReply.addActionListener(function(e: Event) : void {
+				var newMessageDialog : MessageCreateDialog = new MessageCreateDialog(function(dlg: MessageCreateDialog) : void {
+					dlg.getFrame().dispose();
+				}, message.name, message.subject, true);
+				
+				newMessageDialog.show();
 			});
 		}
 
@@ -146,6 +155,8 @@
 			btnDelete = new JButton();
 			btnDelete.setText("Delete");
 
+			btnReply = new JButton("Reply");
+
 			//component layoution
 			append(pnlName);
 			append(pnlDate);
@@ -165,6 +176,10 @@
 			pnlMessage.append(scrollMessage);
 
 			scrollMessage.append(txtMessage);
+
+			if (message.isRecipient) {
+				pnlFooter.append(btnReply);
+			}
 
 			pnlFooter.append(btnDelete);
 

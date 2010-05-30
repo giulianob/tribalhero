@@ -152,7 +152,7 @@ package src.Map {
 			var x15: int = xDistance > yhalf ? xDistance - yhalf : 0;
 			var radius: Number = x05 * 0.5 + x15 * 1.5 + yhalf * 1.5 + offset;
 
-			return int(radius * 2) - 1;
+			return Math.max(0, int(radius * 2) - 1);
 		}
 
 		public static function radius_foreach_object(ox: int, oy: int, radius: int, work: Function, do_self: Boolean = true, custom: * = null):void {

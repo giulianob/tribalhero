@@ -10,6 +10,7 @@ package src.Map {
 	import flash.geom.Point;
 	import src.Objects.Actions.*;
 	import src.Objects.Battle.BattleManager;
+	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.Prototypes.EffectPrototype;
 	import src.Objects.*;
 	import src.Objects.Troop.*;
@@ -63,6 +64,60 @@ package src.Map {
 				continue;
 
 				var dist: Number = obj.radiusDistance(pos.x, pos.y);
+
+				if (mindist <= dist && maxdist >= dist)
+				ret.push(obj);
+			}
+
+			return ret;
+		}
+
+		public function hasStructureAt(mapPos: Point): Boolean
+		{
+			var ret: Array = new Array();
+
+			for each(var obj: CityObject in objects.each())
+			{
+				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
+				continue;
+
+				if (obj.x != mapPos.x || obj.y != mapPos.y)
+				continue;
+
+				return true;
+			}
+
+			return false;
+		}
+		
+		public function getStructureAt(mapPos: Point): CityObject
+		{
+			var ret: Array = new Array();
+
+			for each(var obj: CityObject in objects.each())
+			{
+				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
+				continue;
+
+				if (obj.x != mapPos.x || obj.y != mapPos.y)
+				continue;
+
+				return obj;
+			}
+
+			return null;
+		}		
+
+		public function nearObjectsByRadius2(mindist: int, maxdist: int, mapPos: Point, classType: int): Array
+		{
+			var ret: Array = new Array();
+
+			for each(var obj: CityObject in objects.each())
+			{
+				if (ObjectFactory.getClassType(obj.type) != classType)
+				continue;
+
+				var dist: Number = obj.radiusDistance(mapPos.x, mapPos.y);
 
 				if (mindist <= dist && maxdist >= dist)
 				ret.push(obj);

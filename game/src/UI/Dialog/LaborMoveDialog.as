@@ -28,6 +28,7 @@ package src.UI.Dialog{
 		private var sldCount:JSlider;
 		private var panel86:JPanel;
 		private var btnOk:JButton;
+		private var msg: JLabel;
 
 		private var structure: StructureObject;
 		private var structPrototype: StructurePrototype;
@@ -75,6 +76,8 @@ package src.UI.Dialog{
 		private function updateSlider(e: Event = null): void {
 			var maxAffordable: int = (city.resources.labor.getValue() + structure.labor);
 			var maxAllowed: int = Math.max(5 + structure.labor, Math.ceil(structPrototype.maxlabor / 10.0) + structure.labor);
+
+			msg.setText("You can only add " + (maxAllowed - structure.labor) + " labors at a time.");
 			var extent: int = structPrototype.maxlabor - Math.min(maxAffordable, maxAllowed);
 
 			if (sldCount.getValue() > sldCount.getMaximum() - extent) {
@@ -96,16 +99,17 @@ package src.UI.Dialog{
 			if (resource)
 			{
 				var laborDelta: int = (sldCount.getValue() - structure.labor);
-				
+
 				var newRate: int = LazyResources.getHourlyRate(resource, laborDelta);
-				
+
 				lblRate.setText((newRate == 0 ? "0" : "+" + newRate) + " per hour");
 			}
 
 			lblCount.setText(sldCount.getValue().toString() + " out of " + sldCount.getMaximum().toString());
 
-			if (getFrame() != null)
-			getFrame().pack();
+			if (getFrame() != null) {
+				getFrame().pack();
+			}
 		}
 
 		public function getCount():int{
@@ -131,15 +135,17 @@ package src.UI.Dialog{
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
 
-			label81 = new JLabel();
-			label81.setLocation(new IntPoint(5, 5));
-			label81.setSize(new IntDimension(250, 30));
-			label81.setPreferredSize(new IntDimension(260, 30));
-			label81.setConstraints("North");
-			label81.setText("How many laborers to place in this structure?");
+			var topPanel: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
+			topPanel.setConstraints("North");
+
+			msg = new JLabel("");
+			msg.setHorizontalAlignment(AsWingConstants.LEFT);
+
+			label81 = new JLabel("How many laborers to place in this structure?");
 			label81.setHorizontalAlignment(AsWingConstants.LEFT);
 
 			panel82 = new JPanel(new BorderLayout());
+			panel82.setBorder(new EmptyBorder(null, new Insets(15, 0, 5, 0)));
 			panel82.setLocation(new IntPoint(5, 37));
 			panel82.setSize(new IntDimension(230, 164));
 			panel82.setConstraints("Center");
@@ -158,7 +164,7 @@ package src.UI.Dialog{
 				break;
 			}
 
-			sldCount = new JSlider();
+			sldCount = new JSlider();			
 			sldCount.setConstraints("South");
 			sldCount.setMinimum(0);
 			sldCount.setMajorTickSpacing(1);
@@ -177,7 +183,10 @@ package src.UI.Dialog{
 			btnOk.setText("Ok");
 
 			//component layoution
-			append(label81);
+			topPanel.append(label81);
+			topPanel.append(msg);
+
+			append(topPanel);
 			append(panel82);
 			append(panel86);
 

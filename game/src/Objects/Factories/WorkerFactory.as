@@ -62,9 +62,15 @@
 
 					switch(new String(actionNode.name()))
 					{
+						case "RoadBuild":
+							action = new BuildRoadAction();
+						break;
+						case "RoadDestroy":
+							action = new DestroyRoadAction();
+						break;
 						case "ForestCampBuild":
 							action = new ForestCampBuildAction(actionNode.@type);
-						break;						
+						break;
 						case "StructureBuild":
 							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement);
 						break;
@@ -95,7 +101,7 @@
 						break;
 						case "ForestCampRemove":
 							action = new ForestCampRemoveAction();
-						break;						
+						break;
 						default:
 							trace("Unknown action '" + actionNode.name() + "' in worker '" + worker.type.toString() + "'");
 					}
@@ -122,3 +128,4 @@
 	}
 
 }
+

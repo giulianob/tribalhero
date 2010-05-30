@@ -22,6 +22,10 @@
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 
+		public function redraw() : void {
+			drawCircle(size);
+		}
+		
 		private function onAddedToStage(e: Event):void
 		{
 			drawCircle(size);
@@ -41,9 +45,7 @@
 
 			circle = new SmartMovieClip();
 			tiles = new Array();
-
 			MapUtil.foreach_object(size, size * 2 + 1, size, this.addTileCallback, true, null);
-
 			addChild(circle);
 		}
 

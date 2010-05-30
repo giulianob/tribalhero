@@ -14,6 +14,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.Objects.*;
 	import src.Objects.Prototypes.*;
 	import src.UI.*;
+	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
 	import src.Util.BinaryList.*;
@@ -70,6 +71,17 @@ package src.UI.Sidebars.ObjectInfo {
 			}
 		}
 
+		private function setCityUsername(username: Username, custom: * ) : void {
+			var usernameLabel: JLabel = custom as JLabel;
+
+			usernameLabel.setText(username.name);
+
+			if (username.id != Global.gameContainer.selectedCity.id) {
+				usernameLabel.setIcon(new GoToCityIcon(username.id));
+				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
+			}
+		}
+
 		public function update():void
 		{
 			t.reset();
@@ -88,7 +100,7 @@ package src.UI.Sidebars.ObjectInfo {
 			var cityLabel: JLabel = addStatRow("City", "-");
 
 			Global.map.usernames.players.getUsername(gameObject.playerId, setPlayerUsername, usernameLabel);
-			Global.map.usernames.cities.setLabelUsername(gameObject.cityId, cityLabel);
+			Global.map.usernames.cities.getUsername(gameObject.cityId, setCityUsername, cityLabel);
 
 			addStatRow("Level", gameObject.level.toString());
 
@@ -321,6 +333,9 @@ package src.UI.Sidebars.ObjectInfo {
 		public function onObjectUpdate(event: Event):void
 		{
 			update();
+
+			if (getFrame() != null)
+			getFrame().pack();
 		}
 
 		public function validateButtons():void
@@ -346,7 +361,7 @@ package src.UI.Sidebars.ObjectInfo {
 		private function createUI() : void
 		{
 			//component creation
-			setPreferredHeight(GameJSidebar.FULL_HEIGHT);
+			//setPreferredHeight(GameJSidebar.FULL_HEIGHT);
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 
 			lblName = new JLabel();

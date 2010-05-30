@@ -61,7 +61,8 @@ namespace Game.Util {
         }
 
         private void UnlockAll() {
-            transaction.Dispose();
+            if (transaction != null)
+                transaction.Dispose();
 
             for (int i = lockedObjects.Length - 1; i >= 0; --i)
                 Monitor.Exit(lockedObjects[i]);

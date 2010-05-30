@@ -22,11 +22,28 @@ namespace Game.Logic {
         private readonly Timer timer;
         private readonly Dictionary<int, ManualResetEvent> doneEvents = new Dictionary<int, ManualResetEvent>();
 
+        private int lastScheduleSize;
+        private int actionsFired;
+        private DateTime lastProbe;
+
         public bool Paused { get; private set; }
 
         public Scheduler() {
             timer = new Timer(DispatchAction, // main timer
                               null, Timeout.Infinite, Timeout.Infinite);
+        }
+
+        public void Probe(out DateTime outLastProbe, out int outActionsFired, out int schedulerSize, out int schedulerDelta) {
+            lock (schedulesLock) {
+                outLastProbe = lastProbe;
+                outActionsFired = actionsFired;
+                schedulerSize = schedules.Count;
+                schedulerDelta = schedulerSize - lastScheduleSize;
+
+                lastScheduleSize = schedulerSize;
+                lastProbe = DateTime.UtcNow;
+                actionsFired = 0;
+            }
         }
 
         public void Pause() {

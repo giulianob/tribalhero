@@ -16,6 +16,14 @@ namespace Testing.MapMath {
         public void TestCleanup() { }
 
         [TestMethod]
+        public void TestSelf() {
+            Assert.AreEqual(0, GameObject.RadiusDistance(13, 13, 13, 13));
+            Assert.AreEqual(0, GameObject.RadiusDistance(13, 14, 13, 14));
+            Assert.AreEqual(0, GameObject.RadiusDistance(14, 13, 14, 13));
+            Assert.AreEqual(0, GameObject.RadiusDistance(14, 14, 14, 14));
+        }
+
+        [TestMethod]
         public void TestEvenyEveny1() {
             //Even y Even y1
             Assert.AreEqual(2, GameObject.RadiusDistance(13, 14, 12, 14));

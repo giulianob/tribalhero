@@ -46,9 +46,19 @@ namespace Game.Comm {
 
         #region Region
 
+        REGION_ROAD_DESTROY = 102,
+        REGION_ROAD_BUILD = 103,
+        REGION_SET_TILE = 104,
         REGION_GET = 105,
         CITY_REGION_GET = 106,
 
+        #endregion
+
+        #region Road
+
+        ROAD_ADD = 150,
+        ROAD_REMOVE = 151,
+        
         #endregion
 
         #region Object
@@ -89,6 +99,7 @@ namespace Game.Comm {
         CITY_RESOURCES_UPDATE = 462,
         CITY_UNIT_LIST = 463,
         CITY_RADIUS_UPDATE = 465,
+        CITY_LOCATE = 466,
 
         CITY_CREATE_INITIAL = 499,
 

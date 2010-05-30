@@ -10,6 +10,12 @@ namespace Game.Logic {
         #region IComparer<ISchedule> Members
 
         public int Compare(ISchedule x, ISchedule y) {
+            if (x.Time.Kind != DateTimeKind.Utc)
+                throw new Exception(string.Format("Time is not UTC for schedule {0}", x));
+
+            if (y.Time.Kind != DateTimeKind.Utc)
+                throw new Exception(string.Format("Time is not UTC for schedule {0}", y));
+
             return DateTime.Compare(x.Time, y.Time);
         }
 

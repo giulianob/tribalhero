@@ -27,6 +27,8 @@ namespace Game.Database {
         private readonly string connectionString;
         private readonly string backupCommand;
 
+        private long queriesRan;
+        private DateTime lastProbe;
 
         private bool paused;
 
@@ -610,6 +612,9 @@ namespace Game.Database {
         }
 
         private int ExecuteNonQuery(MySqlCommand command) {
+
+            Interlocked.Increment(ref queriesRan);
+
             if (Config.database_verbose) {
                 StringWriter sqlwriter = new StringWriter();
                 foreach (MySqlParameter param in command.Parameters)
@@ -714,6 +719,13 @@ namespace Game.Database {
             }
 
             Close(connection);
+        }
+
+        public void Probe(out int queriesRan, out DateTime lastProbe) {            
+            queriesRan = (int)Interlocked.Read(ref this.queriesRan);
+            Interlocked.Exchange(ref this.queriesRan, 0);
+            lastProbe = this.lastProbe;
+            this.lastProbe = DateTime.UtcNow;
         }
     }
 }

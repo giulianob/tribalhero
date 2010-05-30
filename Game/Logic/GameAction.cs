@@ -38,9 +38,11 @@ namespace Game.Logic {
         FOREST_CAMP_BUILD = 308,
         FOREST_CAMP_REMOVE = 309,
         FOREST_CAMP_HARVEST = 310,
-
+        
         CITY_LABOR = 501,
         CITY = 502,
+        ROAD_BUILD = 510,
+        ROAD_DESTROY = 511,
 
         TECH_CREATE = 400,
         TECHNOLOGY_UPGRADE = 402,        

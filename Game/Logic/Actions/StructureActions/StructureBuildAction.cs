@@ -2,21 +2,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class StructureBuildAction : ScheduledActiveAction {
+namespace Game.Logic.Actions
+{
+    class StructureBuildAction : ScheduledActiveAction
+    {
         private uint cityId;
         private uint structureId;
         private ushort type;
         private uint x, y;
         private Resource cost;
 
-        public StructureBuildAction(uint cityId, ushort type, uint x, uint y) {
+        public StructureBuildAction(uint cityId, ushort type, uint x, uint y)
+        {
             this.cityId = cityId;
             this.type = type;
             this.x = x;
@@ -25,7 +30,8 @@ namespace Game.Logic.Actions {
 
         public StructureBuildAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                     byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
+            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             x = uint.Parse(properties["x"]);
@@ -35,38 +41,108 @@ namespace Game.Logic.Actions {
 
         #region IAction Members
 
-        public override Error Execute() {
+        public override Error Execute()
+        {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
-           
+
             Global.World.LockRegion(x, y);
 
             // cost requirement
             cost = Formula.StructureCost(city, type, 1);
-            if (!city.Resource.HasEnough(cost)) {
+            if (!city.Resource.HasEnough(cost))
+            {
                 Global.World.UnlockRegion(x, y);
                 return Error.RESOURCE_NOT_ENOUGH;
             }
 
             // radius requirements
-            if (city.MainBuilding.TileDistance(x, y) >= city.Radius) {
+            if (city.MainBuilding.TileDistance(x, y) >= city.Radius)
+            {
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }
 
             // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(type, 1).Validate(city, x, y)) {
+            if (!ReqirementFactory.GetLayoutRequirement(type, 1).Validate(city, x, y))
+            {
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }
 
             // check if tile is occupied
-            if (Global.World[x, y].Exists(obj => obj is Structure)) {
+            if (Global.World[x, y].Exists(obj => obj is Structure))
+            {
                 Global.DbManager.Rollback();
                 Global.World.UnlockRegion(x, y);
                 StateChange(ActionState.FAILED);
                 return Error.STRUCTURE_EXISTS;
+            }
+
+            // check for road requirements       
+            bool breaksRoad = false;
+            if (RoadManager.IsRoad(x, y)) {
+                foreach (Structure str in city) {
+                    if (str == city.MainBuilding) continue;
+
+                    if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(x, y))) {
+                        breaksRoad = true;
+                        break;
+                    }
+                }
+            }
+
+            if (breaksRoad)
+            {
+                Global.World.UnlockRegion(x, y);
+                return Error.ROAD_DESTROY_UNIQUE_PATH;
+            }
+
+            bool hasRoad = false;            
+
+            RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom)
+            {
+                // TODO: Fix radius locator for each
+                if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) > 1) return true;
+
+                Structure curStruct = (Structure) Global.World[x1, y1].Where(obj => obj is Structure).FirstOrDefault();
+
+                bool hasStructure = curStruct != null;
+
+                // Make sure we have a road around this building
+                if (!hasRoad && !hasStructure && RoadManager.IsRoad(x1, y1))
+                {
+                    hasRoad = true;
+                }
+                /*
+                if (hasStructure && !ObjectTypeFactory.IsStructureType("NoRoadRequired", curStruct))
+                {
+                    // Can always build next to town center as long as we are next to a road so we can just return here
+                    if (x1 == city.MainBuilding.X && y1 == city.MainBuilding.Y) {
+                        return true;
+                    }
+
+                    // Make sure buildings next to this one have another path
+                    if (!RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new List<Location> { new Location(origX, origY) })) {
+                        breaksRoad = true;
+                        return false;
+                    }
+                }
+                */
+                return true;
+            }, null);
+
+
+            if (breaksRoad)
+            {
+                Global.World.UnlockRegion(x, y);
+                return Error.ROAD_DESTROY_UNIQUE_PATH;
+            }
+
+            if (!ObjectTypeFactory.IsStructureType("NoRoadRequired", type) && !hasRoad) {
+                Global.World.UnlockRegion(x, y);
+                return Error.ROAD_NOT_AROUND;
             }
 
             // add structure to the map                    
@@ -81,7 +157,8 @@ namespace Game.Logic.Actions {
 
             city.Add(structure);
 
-            if (!Global.World.Add(structure)) {
+            if (!Global.World.Add(structure))
+            {
                 city.ScheduleRemove(structure, false);
                 city.BeginUpdate();
                 city.Resource.Add(cost);
@@ -104,16 +181,19 @@ namespace Game.Logic.Actions {
             Global.World.UnlockRegion(x, y);
 
             return Error.OK;
-        }       
+        }
 
-        public override void Callback(object custom) {
+        public override void Callback(object custom)
+        {
             City city;
-            using (new MultiObjectLock(cityId, out city)) {
+            using (new MultiObjectLock(cityId, out city))
+            {
                 if (!IsValid())
                     return;
 
                 Structure structure;
-                if (!city.TryGetStructure(structureId, out structure)) {
+                if (!city.TryGetStructure(structureId, out structure))
+                {
                     StateChange(ActionState.FAILED);
                     return;
                 }
@@ -130,26 +210,34 @@ namespace Game.Logic.Actions {
             }
         }
 
-        public override ActionType Type {
+        public override ActionType Type
+        {
             get { return ActionType.STRUCTURE_BUILD; }
         }
 
-        public override Error Validate(string[] parms) {
+        public override Error Validate(string[] parms)
+        {
             City city;
 
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
 
-            if (ushort.Parse(parms[0]) == type) {
-                if (parms[1].Length == 0) {
+            if (ushort.Parse(parms[0]) == type)
+            {
+                if (parms[1].Length == 0)
+                {
                     ushort tileType = Global.World.GetTileType(x, y);
-                    if (ObjectTypeFactory.IsTileType("TileBuildable", tileType))
+                    if (RoadManager.IsRoad(x, y) || ObjectTypeFactory.IsTileType("TileBuildable", tileType))
                         return Error.OK;
+
                     return Error.TILE_MISMATCH;
-                } else {
+                }
+                else
+                {
                     string[] tokens = parms[1].Split('|');
                     ushort tileType = Global.World.GetTileType(x, y);
-                    foreach (string str in tokens) {
+                    foreach (string str in tokens)
+                    {
                         if (ObjectTypeFactory.IsTileType(str, tileType))
                             return Error.OK;
                     }
@@ -161,9 +249,11 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        private void InterruptCatchAll(bool wasKilled) {
+        private void InterruptCatchAll(bool wasKilled)
+        {
             City city;
-            using (new MultiObjectLock(cityId, out city)) {
+            using (new MultiObjectLock(cityId, out city))
+            {
                 if (!IsValid())
                     return;
 
@@ -178,28 +268,33 @@ namespace Game.Logic.Actions {
                 city.ScheduleRemove(structure, wasKilled);
                 structure.EndUpdate();
 
-                if (!wasKilled) {
-                        city.BeginUpdate();
-                        city.Resource.Add(cost/2);
-                        city.EndUpdate();                        
+                if (!wasKilled)
+                {
+                    city.BeginUpdate();
+                    city.Resource.Add(cost / 2);
+                    city.EndUpdate();
                 }
 
                 StateChange(ActionState.FAILED);
             }
         }
 
-        public override void UserCancelled() {
+        public override void UserCancelled()
+        {
             InterruptCatchAll(false);
         }
 
-        public override void WorkerRemoved(bool wasKilled) {
+        public override void WorkerRemoved(bool wasKilled)
+        {
             InterruptCatchAll(wasKilled);
         }
 
         #region IPersistable
 
-        public override string Properties {
-            get {
+        public override string Properties
+        {
+            get
+            {
                 return
                     XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("type", type), new XMLKVPair("x", x), new XMLKVPair("y", y),

@@ -20,11 +20,16 @@ namespace Game.Setup {
         public static readonly string settings_folder = "conf/";
         public static readonly string maps_folder = "conf/maps/";
         public static readonly string data_folder = "conf/data/";
+        public static readonly string regions_folder = "conf/regions";
 
         public static readonly uint map_width = 1904;
         public static readonly uint map_height = 3472;
         public static readonly uint region_width = 34;
         public static readonly uint region_height = 62;
+
+        public static readonly int road_set_count;
+        public static readonly int road_start_tile_id;
+        public static readonly int road_end_tile_id;
 
         public static readonly int column = (int) (map_width/region_width);
         public static readonly int row = (int) (map_height/region_height);

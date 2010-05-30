@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using System.Linq;
 using Game.Data;
 
 #endregion
@@ -20,6 +21,10 @@ namespace Game.Comm {
         private readonly EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
 
         private static readonly List<TcpWorker> WorkerList = new List<TcpWorker>();
+
+        public static int GetSessionCount() {
+            return WorkerList.Sum(x => x.sessions.Count);
+        }
 
         public static void Add(object sessionObject) {
             SocketSession session = (SocketSession) sessionObject;

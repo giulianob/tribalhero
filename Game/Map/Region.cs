@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using Game.Data;
 using Game.Setup;
@@ -44,10 +45,8 @@ namespace Game.Map {
 
         #region Constructors
 
-        public Region() {}
-
-        public Region(Byte[] bytes) {
-            map = (byte[]) bytes.Clone();
+        public Region(byte[] map) {
+            this.map = map;
         }
 
         #endregion
@@ -151,7 +150,18 @@ namespace Game.Map {
         }
 
         public ushort GetTileType(uint x, uint y) {
-            return BitConverter.ToUInt16(map, GetTileIndex(x, y)*2);
+            lock (objlist) {
+                return BitConverter.ToUInt16(map, GetTileIndex(x, y)*2);
+            }
+        }
+
+        public void SetTileType(uint x, uint y, ushort tileType) {
+            lock (objlist) {
+                int idx = GetTileIndex(x, y) * TILE_SIZE;
+                byte[] ushortArr = BitConverter.GetBytes(tileType);
+                map[idx] = ushortArr[0];
+                map[idx+1] = ushortArr[1];
+            }
         }
 
         #endregion

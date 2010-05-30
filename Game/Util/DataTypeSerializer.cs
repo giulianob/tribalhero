@@ -9,18 +9,20 @@ namespace Game.Util {
         public static byte Serialize(object value) {
             if (value is uint)
                 return 1;
-            else if (value is ushort)
+            if (value is ushort)
                 return 2;
-            else if (value is byte)
+            if (value is byte)
                 return 3;
-            else if (value is string)
+            if (value is string)
                 return 4;
-            else if (value is short)
+            if (value is short)
                 return 5;
-            else if (value is int)
+            if (value is int)
                 return 6;
-            else if (value is DateTime)
+            if (value is DateTime)
                 return 7;
+            if (value is long)
+                return 8;
 
             throw new Exception("Unknown data type");
         }
@@ -40,7 +42,9 @@ namespace Game.Util {
                 case 6:
                     return int.Parse(value);
                 case 7:
-                    return DateTime.Parse(value);
+                    return DateTime.SpecifyKind(DateTime.Parse(value), DateTimeKind.Utc);
+                case 8:
+                    return long.Parse(value);
                 default:
                     throw new Exception("Unknown data type");
             }

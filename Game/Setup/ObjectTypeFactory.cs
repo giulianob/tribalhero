@@ -53,6 +53,21 @@ namespace Game.Setup {
             return false;
         }
 
+        public static bool IsStructureType(string type, ushort structureType)
+        {
+            if (dict == null)
+                return false;
+            List<ushort> set;
+            if (dict.TryGetValue(type, out set))
+                return set.Contains(structureType);
+            return false;
+        }
+
+        public static ushort[] GetTypes(string type) {
+            if (dict == null || !dict.ContainsKey(type)) return new ushort[] { };
+            return dict[type].ToArray();
+        }
+
         public static bool IsTileType(string type, ushort tileType) {
             if (dict == null)
                 return false;

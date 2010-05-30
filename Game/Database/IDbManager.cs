@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Data.Common;
 
 #endregion
@@ -28,5 +29,7 @@ namespace Game.Database {
         uint LastInsertId();
 
         void EmptyDatabase();
+
+        void Probe(out int queriesRan, out DateTime lastProbe);
     }
 }

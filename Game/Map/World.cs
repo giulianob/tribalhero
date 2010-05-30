@@ -18,6 +18,8 @@ namespace Game.Map {
     public class World {
         #region Members
 
+        public RoadManager RoadManager { get; private set; }
+
         public uint WorldWidth { get; private set; }
 
         public uint WorldHeight { get; private set; }
@@ -26,15 +28,24 @@ namespace Game.Map {
 
         public LargeIdGenerator ObjectIdGenerator { get; private set; }
 
+        public int CityCount {
+            get { return cities.Count; }
+        }
+        
         private Region[] regions;
         private CityRegion[] cityRegions;
         private readonly Dictionary<uint, City> cities = new Dictionary<uint, City>();
         private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
-        private readonly ForestManager forests = new ForestManager();
+
+        private int RegionsCount { get; set; }
+        private uint RegionSize { get; set; }
+        private Stream RegionChanges { get; set; }
+        private byte[] MapData { get; set; }
 
         #endregion
 
         public World() {
+            RoadManager = new RoadManager();
             Lock = new object();
             ObjectIdGenerator = new LargeIdGenerator(int.MaxValue);
         }
@@ -67,53 +78,78 @@ namespace Game.Map {
 
         #region Properties
 
-        public List<SimpleGameObject> this[uint x, uint y] {
-            get { return GetRegion(x, y).GetObjects(x, y); }
+        public List<SimpleGameObject> this[uint x, uint y]
+        {
+            get
+            {
+                Region region = GetRegion(x, y);
+                return region == null ? new List<SimpleGameObject>() : region.GetObjects(x, y);
+            }
         }
 
         #endregion
 
         #region Logical Methods
 
-        public bool Load(Stream stream, uint inWorldWidth, uint inWorldHeight, uint regionWidth, uint regionHeight,
+        public void Unload() {            
+            RegionChanges.Close();
+        }
+
+        public void Load(Stream mapStream, Stream regionChangesStream, bool createRegionChanges, uint inWorldWidth, uint inWorldHeight, uint regionWidth, uint regionHeight,
                          uint cityRegionWidth, uint cityRegionHeight) {
-            if (stream == null)
-                return false;
-            //        if (stream.Length != world_width * world_height) return false;
-            if (inWorldWidth%regionWidth != 0 || inWorldHeight%regionHeight != 0)
-                return false;
+            if (mapStream == null)
+                throw new Exception("Missing map");
+
+            if (regionChangesStream == null)
+                throw new Exception("Missing region changes");
+
+            if (inWorldWidth % regionWidth != 0 || inWorldHeight % regionHeight != 0)
+                throw new Exception("Invalid region size configured");
 
             WorldWidth = inWorldWidth;
             WorldHeight = inWorldHeight;
 
-            // creating regions;
-            uint regionSize = regionWidth*regionHeight;
+            // creating regions;            
+            RegionSize = regionWidth*regionHeight;
             int column = (int) (inWorldWidth/regionWidth);
             int row = (int) (inWorldHeight/regionHeight);
-            int regionsCount = column*row;
+            RegionsCount = column*row;
+            MapData = new byte[RegionSize * Region.TILE_SIZE * RegionsCount];
 
-            regions = new Region[regionsCount];
-            for (int regionId = 0; regionId < regionsCount; ++regionId) {
-                Byte[] data = new Byte[regionSize*Region.TILE_SIZE]; // 1 tile is 2 bytes
-                if (stream.Read(data, 0, (int) (regionSize*Region.TILE_SIZE)) != regionSize*Region.TILE_SIZE) {                    
+            RegionChanges = regionChangesStream;
+
+            regions = new Region[RegionsCount];
+            for (int regionId = 0; regionId < RegionsCount; ++regionId) {
+                
+                byte[] data = new byte[RegionSize*Region.TILE_SIZE]; // 1 tile is 2 bytes
+                
+                int mapDataOffset = (int)(RegionSize * Region.TILE_SIZE * regionId);
+
+                if (mapStream.Read(MapData, mapDataOffset, (int)(RegionSize * Region.TILE_SIZE)) != RegionSize * Region.TILE_SIZE)
                     throw new Exception("Not enough map data");
+
+                if (createRegionChanges) {
+                    Buffer.BlockCopy(MapData, mapDataOffset, data, 0, data.Length);
+                    regionChangesStream.Write(data, 0, data.Length);
+                } else {
+                    if (RegionChanges.Read(data, 0, (int)(RegionSize * Region.TILE_SIZE)) != RegionSize * Region.TILE_SIZE)
+                        throw new Exception("Not enough region change map data");
                 }
+
                 regions[regionId] = new Region(data);
             }
 
-            Global.Logger.Info(string.Format("map file length[{0}] position[{1}]", stream.Length, stream.Position));
+            Global.Logger.Info(string.Format("map file length[{0}] position[{1}]", mapStream.Length, mapStream.Position));
             Global.Logger.Info(regions.Length + " created.");
 
             // creating city regions;
             column = (int) (inWorldWidth/cityRegionWidth);
             row = (int) (inWorldHeight/cityRegionHeight);
-            regionsCount = column*row;
+            int cityRegionsCount = column*row;
 
-            cityRegions = new CityRegion[regionsCount];
-            for (int regionId = 0; regionId < regionsCount; ++regionId)
+            cityRegions = new CityRegion[cityRegionsCount];
+            for (int regionId = 0; regionId < cityRegionsCount; ++regionId)
                 cityRegions[regionId] = new CityRegion();
-
-            return true;
         }
 
         public bool Add(City city) {
@@ -181,11 +217,14 @@ namespace Game.Map {
 
             if (region.Add(obj)) {
 
+                // Keeps track of objects that exist in the map
                 obj.InWorld = true;
 
                 // If simple object, we must assign an id
                 if (!(obj is GameObject)) {
                     obj.ObjectId = (uint)ObjectIdGenerator.GetNext();
+                } else if (obj is Structure && !(ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)obj))) {
+                    RoadManager.CreateRoad(obj.X, obj.Y);
                 }
 
                 // Send obj add event
@@ -384,10 +423,62 @@ namespace Game.Map {
             return list;
         }
 
+        #region Map Region Methods
         public ushort GetTileType(uint x, uint y) {
             Region region = GetRegion(x, y);
             return region.GetTileType(x, y);
         }
+
+        public void RevertTileType(uint x, uint y) {
+            ushort regionId = Region.GetRegionIndex(x, y);
+            ushort tileType;
+
+            lock (RegionChanges) {
+                Region region = GetRegion(x, y);
+
+                long idx = (Region.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
+                tileType = MapData[idx];
+                RegionChanges.Seek(idx, SeekOrigin.Begin);
+                RegionChanges.Write(BitConverter.GetBytes(tileType), 0, 2);
+                RegionChanges.Flush();
+
+                region.SetTileType(x, y, tileType);
+            }
+
+            if (Global.FireEvents) {
+                Packet packet = new Packet(Command.REGION_SET_TILE);
+                packet.AddUInt32(x);
+                packet.AddUInt32(y);
+                packet.AddUInt16(tileType);
+
+                Global.Channel.Post("/WORLD/" + regionId, packet);
+            }
+        }
+
+        public void SetTileType(uint x, uint y, ushort tileType) {
+            ushort regionId = Region.GetRegionIndex(x, y);
+
+            lock (RegionChanges) {
+                Region region = GetRegion(x, y);
+
+                long idx = (Region.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
+                RegionChanges.Seek(idx, SeekOrigin.Begin);
+                RegionChanges.Write(BitConverter.GetBytes(tileType), 0, 2);
+                RegionChanges.Flush();
+
+                region.SetTileType(x, y, tileType);
+            }
+
+            if (Global.FireEvents) {
+                Packet packet = new Packet(Command.REGION_SET_TILE);
+                packet.AddUInt32(x);
+                packet.AddUInt32(y);
+                packet.AddUInt16(tileType);
+
+                Global.Channel.Post("/WORLD/" + regionId, packet);
+            }
+        }
+        #endregion
 
         public bool CityNameTaken(string name) {
             DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = '{1}' LIMIT 1", City.DB_TABLE, name));

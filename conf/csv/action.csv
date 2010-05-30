@@ -6,12 +6,16 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 20001,1,1,structure_Build,2106,TileCrop,,,,210601,SELF
 20001,2,1,structure_Build,2107,TileTree,,,,210701,SELF
 20001,3,1,structure_Upgrade,3,,,,,,
+20001,4,1,road_Build,,,,,,,
+20001,5,1,road_Destroy,,,,,,,
 20002,0,1,,,,,,,,
 20002,1,1,structure_Build,2106,TileCrop,,,,210601,SELF
 20002,2,1,structure_Build,2107,TileTree,,,,210701,SELF
 20002,3,1,structure_Build,2201,,,,,,
 20002,4,1,structure_Build,2301,,,,,20002,SELF
 20002,5,1,structure_Upgrade,3,,,,,,
+20002,6,1,road_Build,,,,,,,
+20002,7,1,road_Destroy,,,,,,,
 20003,0,1,,,,,,,,
 20003,1,1,structure_Build,2106,TileCrop,,,,210601,SELF
 20003,2,1,structure_Build,2107,TileTree,,,,210701,SELF
@@ -21,6 +25,7 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 20003,6,1,structure_Build,2501,,,,,,
 20003,7,1,structure_build,2202,,,,,20001,SELF
 20003,8,1,structure_Upgrade,5,,,,,,
+20003,9,1,road_Build,,,,,,,
 20004,0,1,,,,,,,,
 20004,1,1,structure_Build,2106,TileCrop,,,,,
 20004,2,1,structure_Build,2107,TileTree,,,,,

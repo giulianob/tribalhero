@@ -16,7 +16,11 @@ namespace Game.Logic.Procedures {
             troop.Y = y + 1;
 
             stub.City.Add(troop);
+
+            troop.BeginUpdate();
             Global.World.Add(troop);
+            troop.EndUpdate();
+
             return true;
         }
     }

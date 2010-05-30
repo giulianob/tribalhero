@@ -22,7 +22,7 @@ using Game.Util;
 namespace Game.Database {
     public class DbLoader {
         public static bool LoadFromDatabase(IDbManager dbManager) {
-            SystemTimeUpdater.Pause();
+            SystemVariablesUpdater.Pause();
             Global.Scheduler.Pause();
             Global.FireEvents = false;
 
@@ -34,11 +34,6 @@ namespace Game.Database {
                 try {
 
                     LoadSystemVariables(dbManager);
-
-                    // Set system variable defaults
-                    if (!Global.SystemVariables.ContainsKey("System.time")) {
-                        Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
-                    }
 
                     // Calculate how long server was down
                     TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
@@ -74,7 +69,7 @@ namespace Game.Database {
 
             Global.Logger.Info("Database loading finished");
 
-            SystemTimeUpdater.Resume();
+            SystemVariablesUpdater.Resume();
             Global.FireEvents = true;
             Global.Scheduler.Resume();
             return true;
@@ -92,6 +87,10 @@ namespace Game.Database {
                 }
             }
 
+            // Set system variable defaults
+            if (!Global.SystemVariables.ContainsKey("System.time")) {
+                Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
+            }
             #endregion
         }
 
@@ -266,7 +265,7 @@ namespace Game.Database {
                     city.Add(structure.ObjectId, structure, false);
 
                     if (structure.InWorld)
-                        Global.World.Add(structure);
+                        Global.World.DbLoaderAdd(structure);
                 }
             }
 
@@ -442,7 +441,7 @@ namespace Game.Database {
                     city.Add(obj.ObjectId, obj, false);
 
                     if (obj.InWorld)
-                        Global.World.Add(obj);
+                        Global.World.DbLoaderAdd(obj);
                 }
             }
 
@@ -705,7 +704,7 @@ namespace Game.Database {
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    ushort currentActionId = (ushort)reader["current_action_id"];
+                    uint currentActionId = (uint)reader["current_action_id"];
 
                     List<PassiveAction> chainList;
                     PassiveAction currentAction = null;
@@ -777,7 +776,7 @@ namespace Game.Database {
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
                     GameObject obj = city[(uint)reader["object_id"]];
-                    PassiveAction action = city.Worker.PassiveActions[(ushort)reader["action_id"]];
+                    PassiveAction action = city.Worker.PassiveActions[(uint)reader["action_id"]];
 
                     NotificationManager.Notification notification = new NotificationManager.Notification(obj, action);
 

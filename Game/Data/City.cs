@@ -266,9 +266,7 @@ namespace Game.Data {
                 if (!troopobjects.ContainsKey(obj.ObjectId))
                     return false;
 
-                obj.BeginUpdate();
                 obj.IsBlocked = true;
-                obj.EndUpdate();
 
                 ObjectRemoveAction removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled);
                 return Worker.DoPassive(this, removeAction, false) == Setup.Error.OK;

@@ -21,7 +21,9 @@ namespace Game.Logic.Procedures {
             city.Troops.Add(stub);
             city.Add(troop);
 
+            troop.BeginUpdate();
             Global.World.Add(troop);
+            troop.EndUpdate();
 
             return true;
         }

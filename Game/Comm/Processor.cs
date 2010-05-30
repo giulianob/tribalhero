@@ -52,6 +52,9 @@ namespace Game.Comm {
             RegisterCommand(Command.MARKET_SELL, CmdMarketSell);
             RegisterCommand(Command.MARKET_PRICES, CmdMarketGetPrices);
             RegisterCommand(Command.NOTIFICATION_LOCATE, CmdNotificationLocate);
+            RegisterCommand(Command.CITY_LOCATE, CmdCityLocate);
+            RegisterCommand(Command.REGION_ROAD_BUILD, CmdRoadCreate);
+            RegisterCommand(Command.REGION_ROAD_DESTROY, CmdRoadDestroy);
 
             RegisterEvent(Command.ON_DISCONNECT, EventOnDisconnect);
             RegisterEvent(Command.ON_CONNECT, EventOnConnect);

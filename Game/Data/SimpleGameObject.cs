@@ -217,7 +217,7 @@ namespace Game.Data {
             int x15 = xDistance > yhalf ? xDistance - yhalf : 0;
             float radius = x05*0.5f + x15*1.5f + yhalf*1.5f + offset;
 
-            return (int) (radius*2) - 1;
+            return Math.Max(0, (int) (radius*2) - 1);
         }
 
         #endregion

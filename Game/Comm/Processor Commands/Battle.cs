@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
-using Game.Data.Troop;
 using Game.Setup;
 using Game.Util;
 
@@ -73,6 +72,7 @@ namespace Game.Comm {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
+
                 if (city.Battle == null) {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;

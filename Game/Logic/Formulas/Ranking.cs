@@ -1,5 +1,6 @@
 #region
 
+using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
@@ -16,7 +17,7 @@ namespace Game.Logic {
         /// <param name="unitsKilled">Value of units in the troop killed</param>
         /// <returns></returns>
         public static int GetAttackPoint(int enemiesKilled, int unitsKilled) {
-            return enemiesKilled * 2 - unitsKilled;
+            return Math.Max(0, enemiesKilled * 2 - unitsKilled);
         }
 
         /// <summary>

@@ -117,6 +117,12 @@ namespace Game.Data {
                 DateTime now = SystemClock.Now;
                 int elapsed = Math.Max(0, (int)now.Subtract(LastRealizeTime).TotalMilliseconds);
                 int delta = elapsed / calculatedRate;
+
+                // Little ugly but just a check to make sure nothing bad is happening.
+                if (!(this is AggressiveLazyValue) && delta < 0) {
+                    throw new Exception(string.Format("Delta is negative! elapsed[{0}] calculatedRate[{1}]", elapsed, calculatedRate));
+                }
+
                 value += delta;
 
                 int leftOver = elapsed % calculatedRate;

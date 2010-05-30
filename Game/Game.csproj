@@ -236,8 +236,9 @@
     <Compile Include="Logic\Procedures\TroopObjectCreateFromStation.cs" />
     <Compile Include="Logic\Procedures\TroopObjectStation.cs" />
     <Compile Include="Logic\ReferenceManager.cs" />
-    <Compile Include="Logic\SystemTimeUpdater.cs" />
+    <Compile Include="Logic\SystemVariablesUpdater.cs" />
     <Compile Include="Map\CityRegion.cs" />
+    <Compile Include="Map\RoadManager.cs" />
     <Compile Include="Module\Npc.cs" />
     <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\ASCIIStream.cs" />

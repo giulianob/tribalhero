@@ -79,7 +79,7 @@ namespace Game.Logic.Actions {
             // find an open space around the forest
             uint emptyX = 0;
             uint emptyY = 0;
-            TileLocator.foreach_object(forest.X, forest.Y, 1, false, delegate(uint ox, uint oy, uint x, uint y, object custom) {
+            ReverseTileLocator.foreach_object(forest.X, forest.Y, 1, false, delegate(uint ox, uint oy, uint x, uint y, object custom) {
                                                                          // Check tile type                
                                                                          if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y))) {
                                                                              return true;

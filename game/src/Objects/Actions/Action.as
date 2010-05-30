@@ -17,7 +17,7 @@ package src.Objects.Actions {
 			{ name: "Units", actions: [ TrainButton] },
 			{ name: "Upgrades", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Technologies", actions: [ TechnologyButton ] },			
-			{ name: "Others", actions: [ LaborMoveButton, MarketButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
+			{ name: "Others", actions: [ LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
 		];
 		
 		//the actions visible to the client need to be here
@@ -30,6 +30,8 @@ package src.Objects.Actions {
 		public static const FOREST_CAMP_BUILD: int = 308;
 		public static const FOREST_CAMP_REMOVE: int = 309;
         public static const TECHNOLOGY_UPGRADE: int = 402;
+		public static const ROAD_BUILD: int = 510;
+		public static const ROAD_DESTROY: int = 511;
         public static const UNIT_TRAIN: int = 601;
         public static const UNIT_UPGRADE: int = 602;
         public static const BATTLE: int = 701;

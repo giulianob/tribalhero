@@ -1,27 +1,28 @@
 ﻿
 package src.UI.Cursors {
+	import flash.events.Event;
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
-	import src.Constants;
 	import src.Global;
 	import src.Map.City;
-	import src.Map.CityObject;
 	import src.Map.Map;
 	import src.Map.MapUtil;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
+	import src.Map.Region;
+	import src.Map.RegionList;
 	import src.Map.RoadPathFinder;
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.IDisposable;
 	import src.Objects.ObjectContainer;
-	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleObject;
+	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCallbackCircle;
 	import src.UI.Components.GroundCircle;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 
-	public class BuildStructureCursor extends MovieClip implements IDisposable
+	public class BuildRoadCursor extends MovieClip implements IDisposable
 	{
 		private var map: Map;
 		private var objX: int;
@@ -31,24 +32,16 @@ package src.UI.Cursors {
 		private var originPoint: Point;
 
 		private var cursor: SimpleObject;
-		private var rangeCursor: GroundCircle;
 		private var buildableArea: GroundCallbackCircle;
-		private var structPrototype: StructurePrototype;
 		private var parentObj: GameObject;
-		private var type: int;
-		private var level: int;
-		private var tilerequirement: String;
 
-		public function BuildStructureCursor() { }
+		public function BuildRoadCursor() { }
 
-		public function init(map: Map, type: int, level: int, tilerequirement: String, parentObject: GameObject):void
+		public function init(map: Map, parentObject: GameObject):void
 		{
 			doubleClickEnabled = true;
 
 			this.parentObj = parentObject;
-			this.type = type;
-			this.level = level;
-			this.tilerequirement = tilerequirement;
 			this.map = map;
 
 			city = map.cities.get(parentObj.cityId);
@@ -56,19 +49,8 @@ package src.UI.Cursors {
 			src.Global.gameContainer.setOverlaySprite(this);
 			map.selectObject(null);
 
-			structPrototype = StructureFactory.getPrototype(type, level);
-			cursor = StructureFactory.getSimpleObject(type, level);
-
-			if (StructureFactory.getSimpleObject(type, level) == null)
-			{
-				trace("Missing building cursor " + type);
-				return;
-			}
-
+			cursor = new GroundCircle(0);
 			cursor.alpha = 0.7;
-
-			rangeCursor = new GroundCircle(structPrototype.radius, true, new ColorTransform(1.0, 1.0, 1.0, 1.0, 236, 88, 0));
-			rangeCursor.alpha = 0.6;
 
 			buildableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
 			buildableArea.alpha = 0.3;
@@ -85,30 +67,36 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			
+			Global.map.regions.addEventListener(RegionList.REGION_UPDATED, update);
 
-			src.Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
+			src.Global.gameContainer.message.showMessage("Double click on the green squares to build roads.");
 		}
 
+		public function update(e: Event = null) : void {
+			buildableArea.redraw();
+			
+		}
+		
 		public function dispose():void
 		{
+			Global.map.regions.removeEventListener(RegionList.REGION_UPDATED, update);
+			
 			src.Global.gameContainer.message.hide();
 
 			if (cursor != null)
 			{
 				if (cursor.stage != null) map.objContainer.removeObject(cursor);
-				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
 				if (buildableArea.stage != null) map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
 			}
 		}
 
 		private function showCursors() : void {
 			if (cursor) cursor.visible = true;
-			if (rangeCursor) rangeCursor.visible = true;
 		}
 
 		private function hideCursors() : void {
 			if (cursor) cursor.visible = false;
-			if (rangeCursor) rangeCursor.visible = false;
 		}
 
 		public function onMouseStop(event: MouseEvent):void
@@ -124,11 +112,7 @@ package src.UI.Cursors {
 			event.stopImmediatePropagation();
 
 			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Object.buildStructure(parentObj.cityId, parentObj.objectId, type, pos.x, pos.y);
-
-			src.Global.gameContainer.setOverlaySprite(null);
-			src.Global.gameContainer.setSidebar(null);
-			map.selectObject(parentObj, false);
+			Global.mapComm.Region.buildRoad(parentObj.cityId, pos.x, pos.y);
 		}
 
 		public function onMouseDown(event: MouseEvent):void
@@ -148,12 +132,6 @@ package src.UI.Cursors {
 				objX = pos.x;
 				objY = pos.y;
 
-				//Range cursor
-				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
-				rangeCursor.setX(objX); rangeCursor.setY(objY);
-				rangeCursor.moveWithCamera(src.Global.gameContainer.camera);
-				map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
-
 				//Object cursor
 				if (cursor.stage != null) map.objContainer.removeObject(cursor);
 				cursor.setX(objX); cursor.setY(objY);
@@ -164,75 +142,31 @@ package src.UI.Cursors {
 		}
 
 		private function validateTile(screenPos: Point) : Boolean {
-			// Get the tile type
 			var mapPos: Point = MapUtil.getMapCoord(screenPos.x, screenPos.y);
 			var tileType: int = map.regions.getTileAt(mapPos.x, mapPos.y);
 
-			if (Constants.debug >= 4) {
-				trace("***");
-				trace("Validating:" + screenPos.x + "," + screenPos.y);
-				trace("Callback pos:" + x + "," + y);
-				trace("mapPos is" + mapPos.x + "," + mapPos.y);
-				trace("Tile type is: " + tileType);
-			}
+			if (RoadPathFinder.isRoad(tileType)) return false;
 
-			// Validate any layouts
-			if (!structPrototype.validateLayout(map, city, screenPos.x, screenPos.y)) return false;
+			if (!ObjectFactory.isType("TileBuildable", tileType)) return false;
 
-			// Check for tile requirement
-			if (tilerequirement == "" && !RoadPathFinder.isRoad(tileType) && !ObjectFactory.isType("TileBuildable", tileType)) return false;
+			if (Global.map.regions.getObjectsAt(screenPos.x, screenPos.y, StructureObject).length > 0) return false;
 
-			// Check for tile requirement
-			if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) return false;
-
-			// Check for road requirement
-			if (RoadPathFinder.isRoad(tileType)) {
-				var breaksPath: Boolean = false;
-				for each(var cityObject: CityObject in city.objects.each()) {
-					if (cityObject.x == city.MainBuilding.y && cityObject.y == city.MainBuilding.y) continue;
-
-					if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, false)) {
-						breaksPath = true;
-						break;
-					}
-				}
-
-				if (breaksPath) return false;
-			}
-
+			// Make sure there is a road next to this tile
 			var hasRoad: Boolean = false;
-			var breaksRoad: Boolean = false;
-
 			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
 			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) > 1) return true;
+				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
 
-				var structure: CityObject = city.getStructureAt(new Point(x1, y1));
-
-				var hasStructure: Boolean = structure != null;
-
-				// Make sure we have a road around this building
-				if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(x1, y1))
-				hasRoad = true;
-
-				/*
-				if (hasStructure && !ObjectFactory.isType("NoRoadRequired", structure.type)) {
-				// Can always build next to town center as long as we are next to a road so we can just return here
-				if (x1 == city.MainBuilding.x && y1 == city.MainBuilding.y) {
-				return true;
+				if (RoadPathFinder.isRoadByMapPosition(x1, y1))
+				{
+					hasRoad = true;
+					return false;
 				}
-				// Make sure buildings next to this one have another path
-				if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, new Array(new Point(mapPos.x, mapPos.y)))) {
-				breaksRoad = true;
-				return false;
-				}
-				}
-				*/
+
 				return true;
 			}, false, null);
 
-			if (!ObjectFactory.isType("NoRoadRequired", type) && !hasRoad) return false
-			if (breaksRoad) return false;
+			if (!hasRoad) return false;
 
 			return true;
 		}
@@ -258,6 +192,7 @@ package src.UI.Cursors {
 			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
 				hideCursors();
 			}
+			// Perform other validations
 			else if (!validateTile(new Point(objX, objY))) {
 				hideCursors();
 			}

@@ -80,6 +80,7 @@
     <hidden path="en" />
     <hidden path="bin" />
     <hidden path="map" />
+    <hidden path=".hg" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />

@@ -11,6 +11,7 @@ package src.Objects {
 	import src.Map.MapUtil;
 	import src.UI.Dialog.ObjectSelectDialog;
 	import src.UI.Tooltips.TextTooltip;
+	import src.Util.BinaryList.BinaryList;
 	import src.Util.Util;
 
 	import src.Objects.GameObject;
@@ -25,7 +26,7 @@ package src.Objects {
 		private var bottomSpace: Sprite;
 		private var topSpace: Sprite;
 
-		public var objects: Array = new Array();
+		public var objects: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
 
 		private var dimmedObjects: Array = new Array();
 		private var highlightedObject: GameObject;
@@ -85,12 +86,12 @@ package src.Objects {
 			
 			if (highlightedObject && !ignoreClick)
 			{
-				var idxs: Array = Util.binarySearchRange(objects, SimpleObject.compareXAndY, [highlightedObject.getX(), highlightedObject.getY()]);
+				var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [highlightedObject.getX(), highlightedObject.getY()]);
 				if (idxs.length > 1)
 				{
 					var multiObjects: Array = new Array();
 					for each(var idx: int in idxs)
-					multiObjects.push(objects[idx]);
+					multiObjects.push(objects.getByIndex(idx));
 
 					var objectSelection: ObjectSelectDialog = new ObjectSelectDialog(multiObjects,
 					function(sender: ObjectSelectDialog):void {
@@ -202,7 +203,7 @@ package src.Objects {
 				}
 			}
 
-			var idxs: Array = Util.binarySearchRange(this.objects, SimpleObject.compareXAndY, [highestObj.getX(), highestObj.getY()]);
+			var idxs: Array = Util.binarySearchRange(this.objects.each(), SimpleObject.compareXAndY, [highestObj.getX(), highestObj.getY()]);
 			if (idxs.length > 1)
 			{
 				multipleObjTooltip = new TextTooltip(idxs.length + " objects in this space. Click to view all");
@@ -269,7 +270,7 @@ package src.Objects {
 
 			if (layer == 0 && obj is SimpleGameObject)
 			{
-				objects.push(obj);
+				objects.add(obj, false);
 				resortObjects();
 				showBestObject(obj.getX(), obj.getY());
 			}
@@ -284,16 +285,16 @@ package src.Objects {
 
 			if (layer == 0 && obj is SimpleGameObject)
 			{
-				var idxs: Array = Util.binarySearchRange(objects, SimpleObject.compareXAndY, [obj.getX(), obj.getY()]);
+				var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [obj.getX(), obj.getY()]);
 
 				for each (var idx: int in idxs)
 				{
-					var currObj: SimpleGameObject = objects[idx] as SimpleGameObject;
+					var currObj: SimpleGameObject = objects.getByIndex(idx) as SimpleGameObject;
 
 					if (SimpleGameObject.compareCityIdAndObjId(obj as SimpleGameObject, [currObj.cityId, currObj.objectId]) == 0)
 					{
 						if (dispose) (obj as SimpleGameObject).dispose();
-						objects.splice(idx, 1);
+						objects.removeByIndex(idx);
 						break;
 					}
 				}
@@ -305,14 +306,14 @@ package src.Objects {
 		private function showBestObject(x: int, y: int):void
 		{
 			//figure out which object is the best to show on the map if multiple obj exist on this tile
-			var idxs: Array = Util.binarySearchRange(objects, SimpleObject.compareXAndY, [x, y]);
+			var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [x, y]);
 
 			var bestObj: SimpleGameObject = null;
 			var currObj: SimpleGameObject = null;
 
 			for each (var idx: int in idxs)
 			{
-				currObj = objects[idx] as SimpleGameObject;
+				currObj = objects.getByIndex(idx) as SimpleGameObject;
 
 				if (bestObj == null)
 				{
@@ -332,14 +333,14 @@ package src.Objects {
 
 			for each (idx in idxs)
 			{
-				currObj = objects[idx] as SimpleGameObject;
+				currObj = objects.getByIndex(idx) as SimpleGameObject;
 				currObj.visible = (SimpleGameObject.compareCityIdAndObjId(bestObj, [currObj.cityId, currObj.objectId]) == 0);
 			}
 		}
 
 		private function resortObjects():void
 		{
-			objects.sort(SimpleObject.sortOnXandY);
+			objects.sort();
 		}
 
 		public function moveWithCamera(x: int, y: int):void

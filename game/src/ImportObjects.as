@@ -11,6 +11,7 @@
 		public function ImportObjects() 
 		{
 			//Icons
+			ICON_WORLD;
 			ICON_CROP;
 			ICON_BATTLE;
 			ICON_CLOCK;
@@ -89,6 +90,8 @@
 			CANNON_TOWER_STRUCTURE;
 			
 			//Object Info Sidebar Buttons
+			DEFAULT_BUILD_ROAD_BUTTON;
+			DEFAULT_ROAD_DESTROY_BUTTON;
 			DEFAULT_LABOR_MOVE_BUTTON;
 			DEFAULT_FOREST_CAMP_REMOVE_BUTTON;
 			DEFAULT_BUILD_BUTTON;

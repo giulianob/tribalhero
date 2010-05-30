@@ -1,8 +1,11 @@
 ﻿package src.Map
 {
 	import flash.display.*;
+	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.Timer;
 	import src.Objects.Factories.ObjectFactory;
 	import src.Util.BinaryList.*;
 
@@ -22,10 +25,13 @@
 		private var bitmapParts: Array;
 		private var objects: BinaryList = new BinaryList(SimpleGameObject.sortOnCityIdAndObjId, SimpleGameObject.compareCityIdAndObjId);
 		private var map: Map;
+		private var redrawLaterTimer: Timer = new Timer(250);
 
 		public function Region(id: int, data: Array, map: Map)
 		{
 			mouseEnabled = false;
+
+			redrawLaterTimer.addEventListener(TimerEvent.TIMER, redrawLater);
 
 			this.id = id;
 			tiles = data;
@@ -48,16 +54,22 @@
 			}
 		}
 
-		public function disposeData():void
-		{
+		// Removes all of the tiles from this region
+		private function cleanTiles(): void {
+
 			for (var i: int = 0; i < bitmapParts.length; i++)
 			{
+				removeChild(bitmapParts[i]);
 				bitmapParts[i].bitmapData.dispose();
 				bitmapParts[i] = null;
 			}
 
-			bitmapParts.slice();
-			bitmapParts = null;
+			bitmapParts = new Array();
+		}
+
+		public function disposeData():void
+		{
+			cleanTiles();
 
 			for each(var gameObj: SimpleGameObject in objects.each())
 			{
@@ -94,6 +106,19 @@
 		public function sortObjects():void
 		{
 			objects.sort();
+		}
+
+		public function setTile(x: int, y: int, tileType: int): void {
+			redrawLaterTimer.stop();
+			var pt: Point = getTilePos(x, y);
+			tiles[pt.y][pt.x] = tileType;
+			redrawLaterTimer.start();
+		}
+
+		private function redrawLater(e: Event) : void {
+			redrawLaterTimer.stop();
+			cleanTiles();
+			createRegion();
 		}
 
 		public function createRegionPart(tileset:TileSet, x: int, y:int):void
@@ -157,15 +182,21 @@
 
 			return objs;
 		}
-		
+
 		public function getTileAt(x: int, y: int) : int {
+			var pt: Point = getTilePos(x, y);
+
+			return tiles[pt.y][pt.x];
+		}
+
+		private function getTilePos(x: int, y: int) : Point {
 			var regionStartingX: int = (id % Constants.mapRegionW);
 			var regionStartingY: int = int(id / Constants.mapRegionW);
-			
-			x -= regionStartingX;
-			y -= regionStartingY;
-			
-			return tiles[y][x];
+
+			x -= (regionStartingX * Constants.regionTileW);
+			y -= (regionStartingY * Constants.regionTileH);
+
+			return new Point(x, y);
 		}
 
 		public function addObject(level: int, type: int, playerId: int, cityId: int, objectId: int, hpPercent: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
@@ -262,3 +293,4 @@
 		}
 	}
 }
+

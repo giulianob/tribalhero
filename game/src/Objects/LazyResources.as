@@ -60,7 +60,7 @@ package src.Objects {
 			else
 				laborDelta = int(labor.getValue() / resource.labor);
 			
-			return Math.min(cropDelta, goldDelta, woodDelta, ironDelta);
+			return Math.min(cropDelta, goldDelta, woodDelta, ironDelta, laborDelta);
 		}
 		
 		public function GreaterThanOrEqual(resource: Resources): Boolean

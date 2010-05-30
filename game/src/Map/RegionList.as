@@ -1,5 +1,6 @@
 ﻿package src.Map
 {
+	import flash.events.Event;
 	import flash.geom.Point;
 	import src.Global;
 	import src.Objects.GameObject;
@@ -12,6 +13,8 @@
 	 */
 	public class RegionList extends BinaryList
 	{
+		public static const REGION_UPDATED: String = "REGION_UPDATED";
+		
 		public function RegionList()
 		{
 			super(Region.sortOnId, Region.compare);
@@ -118,7 +121,7 @@
 
 		public function getTileAt(x: int, y: int): int
 		{
-			var regionId: int = MapUtil.getRegionId(x, y);
+			var regionId: int = MapUtil.getRegionIdFromMapCoord(x, y);
 			var region: Region = get(regionId);
 
 			if (region == null) {
@@ -126,6 +129,18 @@
 			}
 
 			return region.getTileAt(x, y);
+		}
+
+		public function setTileType(x: int, y: int, tileType: int) : void {
+			var regionId: int = MapUtil.getRegionIdFromMapCoord(x, y);
+			var region: Region = get(regionId);
+
+			if (region == null) {
+				return;
+			}
+
+			region.setTile(x, y, tileType);
+			dispatchEvent(new Event(REGION_UPDATED));
 		}
 
 		public function addObject(baseObj: SimpleGameObject, regionId: int, level: int, type: int, playerId: int, cityId: int, objectId: int, hpPercent: int, objX: int, objY : int): SimpleGameObject

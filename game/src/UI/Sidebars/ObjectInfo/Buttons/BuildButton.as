@@ -48,7 +48,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (enabled)
 			{
 				var cursor: BuildStructureCursor = new BuildStructureCursor();
-				cursor.init(Global.map, (parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1
+				cursor.init(Global.map, (parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1			
 			}
 		}
 

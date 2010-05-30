@@ -5,6 +5,7 @@
 	import flash.geom.Point;
 	import src.Global;
 	import src.Map.City;
+	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.Forest;
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
@@ -98,7 +99,7 @@
 
 			var gameObj: SimpleGameObject = objects[0];
 
-			if (gameObj.objectId != 1) return;
+			if (ObjectFactory.getClassType(gameObj.type) != ObjectFactory.TYPE_FOREST) return;
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);

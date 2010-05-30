@@ -28,11 +28,17 @@
 		private var pnlFooter:JPanel;
 		private var btnSend:JButton;
 
-		public function MessageCreateDialog(onSent: Function, to: String = "")
+		public function MessageCreateDialog(onSent: Function, to: String = "", subject: String = "", isReply: Boolean = false)
 		{
 			createUI();
 
 			txtTo.setText(to);
+			
+			if (isReply && subject.substr(0, 3) != "Re:") {				
+				subject = "Re: " + subject;
+			}
+			
+			txtSubject.setText(subject);
 
 			title = "New Message";
 
@@ -99,9 +105,13 @@
 			Global.gameContainer.showFrame(frame);
 
 			// Set focus to subject field if the To is already filled
-			if (txtTo.getText() != "") {
+			if (txtSubject.getText() != "") {
+				txtMessage.requestFocus();
+			}			
+			else if (txtTo.getText() != "") {
 				txtSubject.requestFocus();
 			}
+		
 			
 			return frame;
 		}

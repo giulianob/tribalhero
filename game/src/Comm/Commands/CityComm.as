@@ -286,6 +286,19 @@
 			var pt: Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
+		
+		public function gotoCityLocation(cityId: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.CITY_LOCATE;
+			packet.writeUInt(cityId);
+			
+			session.write(packet, onReceiveCityLocation);
+		}
+		
+		public function onReceiveCityLocation(packet: Packet, custom: * ): void {
+			var pt: Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
+			Global.map.camera.ScrollToCenter(pt.x, pt.y);
+		}
 	}
 
 }

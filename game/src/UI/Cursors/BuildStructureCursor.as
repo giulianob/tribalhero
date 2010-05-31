@@ -185,11 +185,15 @@ package src.UI.Cursors {
 			// Check for tile requirement
 			if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) return false;
 
+			if (ObjectFactory.isType("NoRoadRequired", type)) return true;
+
+			// Keep non road related checks above this
 			// Check for road requirement
-			if (RoadPathFinder.isRoad(tileType)) {
+			var buildingOnRoad: Boolean = RoadPathFinder.isRoad(tileType);
+			if (buildingOnRoad) {
 				var breaksPath: Boolean = false;
 				for each(var cityObject: CityObject in city.objects.each()) {
-					if (cityObject.x == city.MainBuilding.y && cityObject.y == city.MainBuilding.y) continue;
+					if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
 
 					if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, false)) {
 						breaksPath = true;
@@ -205,33 +209,24 @@ package src.UI.Cursors {
 
 			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
 			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) > 1) return true;
+				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
 
 				var structure: CityObject = city.getStructureAt(new Point(x1, y1));
 
 				var hasStructure: Boolean = structure != null;
 
 				// Make sure we have a road around this building
-				if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(x1, y1))
-				hasRoad = true;
+				if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(x1, y1)) {
+					// If we are building on road, we need to check that all neighbor tiles have another connection to the main building
+					if (!buildingOnRoad || RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, true)) {
+						hasRoad = true;
+					}
+				}
 
-				/*
-				if (hasStructure && !ObjectFactory.isType("NoRoadRequired", structure.type)) {
-				// Can always build next to town center as long as we are next to a road so we can just return here
-				if (x1 == city.MainBuilding.x && y1 == city.MainBuilding.y) {
-				return true;
-				}
-				// Make sure buildings next to this one have another path
-				if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, new Array(new Point(mapPos.x, mapPos.y)))) {
-				breaksRoad = true;
-				return false;
-				}
-				}
-				*/
 				return true;
 			}, false, null);
 
-			if (!ObjectFactory.isType("NoRoadRequired", type) && !hasRoad) return false
+			if (!hasRoad) return false
 			if (breaksRoad) return false;
 
 			return true;

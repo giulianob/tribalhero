@@ -14,7 +14,7 @@
 	public class RegionList extends BinaryList
 	{
 		public static const REGION_UPDATED: String = "REGION_UPDATED";
-		
+
 		public function RegionList()
 		{
 			super(Region.sortOnId, Region.compare);
@@ -131,7 +131,7 @@
 			return region.getTileAt(x, y);
 		}
 
-		public function setTileType(x: int, y: int, tileType: int) : void {
+		public function setTileType(x: int, y: int, tileType: int, redraw: Boolean = false) : void {
 			var regionId: int = MapUtil.getRegionIdFromMapCoord(x, y);
 			var region: Region = get(regionId);
 
@@ -139,8 +139,18 @@
 				return;
 			}
 
-			region.setTile(x, y, tileType);
-			dispatchEvent(new Event(REGION_UPDATED));
+			region.setTile(x, y, tileType, redraw);
+			if (!redraw) dispatchEvent(new Event(REGION_UPDATED));
+		}
+
+		public function redrawRegion(regionId: int) : void {
+			var region: Region = get(regionId);
+
+			if (region == null) {
+				return;
+			}
+
+			region.redraw();
 		}
 
 		public function addObject(baseObj: SimpleGameObject, regionId: int, level: int, type: int, playerId: int, cityId: int, objectId: int, hpPercent: int, objX: int, objY : int): SimpleGameObject

@@ -26,7 +26,7 @@ package src.UI.Cursors {
 		private var cursor: SimpleObject;
 		private var destroyableArea: GroundCallbackCircle;
 		private var parentObj: GameObject;
-		
+
 		private var redrawLaterTimer: Timer = new Timer(250);
 
 		public function DestroyRoadCursor() { }
@@ -62,7 +62,7 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
 			Global.map.regions.addEventListener(RegionList.REGION_UPDATED, update);
-			
+
 			redrawLaterTimer.addEventListener(TimerEvent.TIMER, function(e: Event) : void {
 				redrawLaterTimer.stop();
 				destroyableArea.redraw();
@@ -150,7 +150,7 @@ package src.UI.Cursors {
 			// Make sure that buildings have a path back to the city without this point
 			var breaksPath: Boolean = false;
 			for each(var cityObject: CityObject in city.objects.each()) {
-				if (cityObject.x == city.MainBuilding.y && cityObject.y == city.MainBuilding.y) continue;
+				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
 
 				if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, false)) {
 					breaksPath = true;
@@ -160,27 +160,26 @@ package src.UI.Cursors {
 
 			if (breaksPath) return false;
 
-			/*
+			// Make sure all neighbors have a different path
 			var allNeighborsHaveOtherPaths: Boolean = true;
 			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
 			{
-			if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
+				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
 
-			if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
+				if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
+5
+				if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {
+					var allowPassThroughNeighborStructures: Boolean = !city.hasStructureAt(new Point(x1, y1));
+					if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, allowPassThroughNeighborStructures)) {
+						allNeighborsHaveOtherPaths = false;
+						return false;
+					}
+				}
 
-			if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {
-			var allowPassThroughNeighborStructures: Boolean = !city.hasStructureAt(new Point(x1, y1));
-			if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, new Array(new Point(mapPos.x, mapPos.y)), allowPassThroughNeighborStructures)) {
-			allNeighborsHaveOtherPaths = false;
-			return false;
-			}
-			}
-
-			return true;
+				return true;
 			}, false, null);
 
 			if (!allNeighborsHaveOtherPaths) return false;
-			*/
 
 			return true;
 		}

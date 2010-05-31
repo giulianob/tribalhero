@@ -1,11 +1,8 @@
 ﻿package src.Map
 {
 	import flash.display.*;
-	import flash.events.Event;
-	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.Timer;
 	import src.Objects.Factories.ObjectFactory;
 	import src.Util.BinaryList.*;
 
@@ -25,13 +22,10 @@
 		private var bitmapParts: Array;
 		private var objects: BinaryList = new BinaryList(SimpleGameObject.sortOnCityIdAndObjId, SimpleGameObject.compareCityIdAndObjId);
 		private var map: Map;
-		private var redrawLaterTimer: Timer = new Timer(250);
 
 		public function Region(id: int, data: Array, map: Map)
 		{
 			mouseEnabled = false;
-
-			redrawLaterTimer.addEventListener(TimerEvent.TIMER, redrawLater);
 
 			this.id = id;
 			tiles = data;
@@ -108,15 +102,13 @@
 			objects.sort();
 		}
 
-		public function setTile(x: int, y: int, tileType: int): void {
-			redrawLaterTimer.stop();
+		public function setTile(x: int, y: int, tileType: int, redraw: Boolean = true): void {
 			var pt: Point = getTilePos(x, y);
 			tiles[pt.y][pt.x] = tileType;
-			redrawLaterTimer.start();
+			if (redraw) { this.redraw(); }
 		}
 
-		private function redrawLater(e: Event) : void {
-			redrawLaterTimer.stop();
+		public function redraw() : void {
 			cleanTiles();
 			createRegion();
 		}

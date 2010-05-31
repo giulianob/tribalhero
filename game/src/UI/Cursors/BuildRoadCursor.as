@@ -67,7 +67,7 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			
+
 			Global.map.regions.addEventListener(RegionList.REGION_UPDATED, update);
 
 			src.Global.gameContainer.message.showMessage("Double click on the green squares to build roads.");
@@ -75,13 +75,13 @@ package src.UI.Cursors {
 
 		public function update(e: Event = null) : void {
 			buildableArea.redraw();
-			
+
 		}
-		
+
 		public function dispose():void
 		{
 			Global.map.regions.removeEventListener(RegionList.REGION_UPDATED, update);
-			
+
 			src.Global.gameContainer.message.hide();
 
 			if (cursor != null)

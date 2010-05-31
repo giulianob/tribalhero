@@ -45,13 +45,22 @@
 			packet.writeUInt(y);
 			session.write(packet, mapComm.catchAllErrors);
 		}
-		
-		public function onRegionSetTile(packet: Packet):void {
-			var x: int = packet.readUInt();
-			var y: int = packet.readUInt();
-			var tileType: int = packet.readUShort();
 
-			Global.map.regions.setTileType(x, y, tileType);
+		public function onRegionSetTile(packet: Packet):void {
+			var cnt: int = packet.readUShort();
+			var regionId: int;
+			
+			for (var i: int = 0; i < cnt; i++) {
+				var x: int = packet.readUInt();
+				var y: int = packet.readUInt();
+				var tileType: int = packet.readUShort();
+
+				Global.map.regions.setTileType(x, y, tileType, false);
+				
+				regionId = MapUtil.getRegionIdFromMapCoord(x, y);
+			}
+			
+			Global.map.regions.redrawRegion(regionId);
 		}
 
 		public function getRegion(ids: Array, outdatedIds: Array):void
@@ -184,3 +193,4 @@
 		}
 	}
 }
+

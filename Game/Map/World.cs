@@ -429,7 +429,7 @@ namespace Game.Map {
             return region.GetTileType(x, y);
         }
 
-        public void RevertTileType(uint x, uint y) {
+        public ushort RevertTileType(uint x, uint y, bool sendEvent) {
             ushort regionId = Region.GetRegionIndex(x, y);
             ushort tileType;
 
@@ -445,17 +445,20 @@ namespace Game.Map {
                 region.SetTileType(x, y, tileType);
             }
 
-            if (Global.FireEvents) {
+            if (sendEvent && Global.FireEvents) {
                 Packet packet = new Packet(Command.REGION_SET_TILE);
+                packet.AddUInt16(1);
                 packet.AddUInt32(x);
                 packet.AddUInt32(y);
                 packet.AddUInt16(tileType);
 
                 Global.Channel.Post("/WORLD/" + regionId, packet);
             }
+
+            return tileType;
         }
 
-        public void SetTileType(uint x, uint y, ushort tileType) {
+        public void SetTileType(uint x, uint y, ushort tileType, bool sendEvent) {
             ushort regionId = Region.GetRegionIndex(x, y);
 
             lock (RegionChanges) {
@@ -469,8 +472,9 @@ namespace Game.Map {
                 region.SetTileType(x, y, tileType);
             }
 
-            if (Global.FireEvents) {
+            if (sendEvent && Global.FireEvents) {
                 Packet packet = new Packet(Command.REGION_SET_TILE);
+                packet.AddUInt16(1);
                 packet.AddUInt32(x);
                 packet.AddUInt32(y);
                 packet.AddUInt16(tileType);

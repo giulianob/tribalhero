@@ -2,54 +2,131 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Game.Comm;
 using Game.Data;
 using Game.Setup;
 
 namespace Game.Map {
     public class RoadManager {
-        public void CreateRoad(uint x, uint y) {
-            CalculateRoad(x, y, true);
+        
+        /// <summary>
+        /// Simple wrapper to keep track of tiles that were updated so we can send it in one shot to the client.
+        /// </summary>
+        class TileUpdate {
+            public uint X { get; set; }
+            public uint Y { get; set; }
+            public ushort TileType { get; set; }
 
-            if (y % 2 == 0) {
-                CalculateRoad(x, y - 1, false);
-                CalculateRoad(x, y + 1, false);
-                CalculateRoad(x - 1, y - 1, false);
-                CalculateRoad(x - 1, y + 1, false);
+            public TileUpdate(uint x, uint y, ushort tileType) {
+                X = x;
+                Y = y;
+                TileType = tileType;
+            }
+        }
+
+        private void SendUpdate(Dictionary<ushort, List<TileUpdate>> updates) {
+            foreach (var list in updates)
+            {
+                Packet packet = new Packet(Command.REGION_SET_TILE);
+                packet.AddUInt16((ushort)list.Value.Count);
+                foreach (TileUpdate update in list.Value)
+                {
+                    packet.AddUInt32(update.X);
+                    packet.AddUInt32(update.Y);
+                    packet.AddUInt16(update.TileType);
+                }
+
+                Global.Channel.Post("/WORLD/" + list.Key, packet);
+            }
+        }
+
+        public void CreateRoad(uint x, uint y) {
+
+            List<Location> tiles = new List<Location>(5) {new Location(x, y)};
+
+            if (y % 2 == 0) {                
+                tiles.Add(new Location(x, y - 1));
+                tiles.Add(new Location(x, y + 1));
+                tiles.Add(new Location(x - 1, y - 1));
+                tiles.Add(new Location(x - 1, y + 1));
             }
             else {
-                CalculateRoad(x + 1, y - 1, false);
-                CalculateRoad(x + 1, y + 1, false);
-                CalculateRoad(x, y - 1, false);
-                CalculateRoad(x, y + 1, false);
-            }            
+                tiles.Add(new Location(x + 1, y - 1));
+                tiles.Add(new Location(x + 1, y + 1));
+                tiles.Add(new Location(x, y - 1));
+                tiles.Add(new Location(x, y + 1));
+            }
+
+            var updates = new Dictionary<ushort, List<TileUpdate>>();
+
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                ushort regionId = Region.GetRegionIndex(tiles[i].x, tiles[i].y);
+                TileUpdate update = new TileUpdate(tiles[i].x, tiles[i].y, CalculateRoad(tiles[i].x, tiles[i].y, i == 0));
+                if (update.TileType == ushort.MaxValue) continue; // Not a road here
+                List<TileUpdate> list;
+                if (!updates.TryGetValue(regionId, out list))
+                {
+                    list = new List<TileUpdate>() { update };
+                    updates.Add(regionId, list);
+                }
+                else
+                    updates[regionId].Add(update);
+            }
+
+            SendUpdate(updates);
         }
 
         public void DestroyRoad(uint x, uint y)
         {
-            Global.World.RevertTileType(x, y);
+            List<Location> tiles = new List<Location>(5) { new Location(x, y) };
 
             if (y % 2 == 0)
             {
-                CalculateRoad(x, y - 1, false);
-                CalculateRoad(x, y + 1, false);
-                CalculateRoad(x - 1, y - 1, false);
-                CalculateRoad(x - 1, y + 1, false);
+                tiles.Add(new Location(x, y - 1));
+                tiles.Add(new Location(x, y + 1));
+                tiles.Add(new Location(x - 1, y - 1));
+                tiles.Add(new Location(x - 1, y + 1));
             }
             else
             {
-                CalculateRoad(x + 1, y - 1, false);
-                CalculateRoad(x + 1, y + 1, false);
-                CalculateRoad(x, y - 1, false);
-                CalculateRoad(x, y + 1, false);
+                tiles.Add(new Location(x + 1, y - 1));
+                tiles.Add(new Location(x + 1, y + 1));
+                tiles.Add(new Location(x, y - 1));
+                tiles.Add(new Location(x, y + 1));
             }
+
+            var updates = new Dictionary<ushort, List<TileUpdate>>();
+
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                ushort regionId = Region.GetRegionIndex(tiles[i].x, tiles[i].y);
+
+                TileUpdate update;
+                if (i == 0)
+                    update = new TileUpdate(tiles[i].x, tiles[i].y, Global.World.RevertTileType(tiles[i].x, tiles[i].y, false));
+                else
+                    update = new TileUpdate(tiles[i].x, tiles[i].y, CalculateRoad(tiles[i].x, tiles[i].y, false));
+                if (update.TileType == ushort.MaxValue) continue; // Not a road here
+                List<TileUpdate> list;
+                if (!updates.TryGetValue(regionId, out list))
+                {
+                    list = new List<TileUpdate> { update };
+                    updates.Add(regionId, list);
+                }
+                else
+                    updates[regionId].Add(update);
+            }
+
+            SendUpdate(updates);
         }
 
-        private void CalculateRoad(uint x, uint y, bool createHere) {
+        private ushort CalculateRoad(uint x, uint y, bool createHere) {
             if (x <= 1 || y <= 1 || x >= Config.map_width || y >= Config.map_height)
-                return;
+                return ushort.MaxValue;
 
             if (!createHere && !IsRoad(Global.World.GetTileType(x, y)))
-                return;
+                return ushort.MaxValue;
 
             // Create array of neighbor roads
             byte[] neighbors;
@@ -96,7 +173,9 @@ namespace Game.Map {
             ushort[] types = ObjectTypeFactory.GetTypes("RoadSet1");
 
             // Set the new road tile
-            Global.World.SetTileType(x, y, types[roadType]);
+            Global.World.SetTileType(x, y, types[roadType], false);
+
+            return types[roadType];
         }
 
         public static bool IsRoad(uint x, uint y) {

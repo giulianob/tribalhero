@@ -82,7 +82,8 @@ namespace Game.Logic.Actions
 
             // check for road requirements       
             bool breaksRoad = false;
-            if (RoadManager.IsRoad(x, y)) {
+            bool buildingOnRoad = RoadManager.IsRoad(x, y);
+            if (buildingOnRoad) {
                 foreach (Structure str in city) {
                     if (str == city.MainBuilding) continue;
 
@@ -104,41 +105,20 @@ namespace Game.Logic.Actions
             RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom)
             {
                 // TODO: Fix radius locator for each
-                if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) > 1) return true;
+                if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1) return true;
 
                 Structure curStruct = (Structure) Global.World[x1, y1].Where(obj => obj is Structure).FirstOrDefault();
 
                 bool hasStructure = curStruct != null;
 
                 // Make sure we have a road around this building
-                if (!hasRoad && !hasStructure && RoadManager.IsRoad(x1, y1))
-                {
-                    hasRoad = true;
+                if (!hasRoad && !hasStructure && RoadManager.IsRoad(x1, y1)) {
+                    if (!buildingOnRoad || RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(origX, origY)))
+                        hasRoad = true;
                 }
-                /*
-                if (hasStructure && !ObjectTypeFactory.IsStructureType("NoRoadRequired", curStruct))
-                {
-                    // Can always build next to town center as long as we are next to a road so we can just return here
-                    if (x1 == city.MainBuilding.X && y1 == city.MainBuilding.Y) {
-                        return true;
-                    }
-
-                    // Make sure buildings next to this one have another path
-                    if (!RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new List<Location> { new Location(origX, origY) })) {
-                        breaksRoad = true;
-                        return false;
-                    }
-                }
-                */
+                                                             
                 return true;
             }, null);
-
-
-            if (breaksRoad)
-            {
-                Global.World.UnlockRegion(x, y);
-                return Error.ROAD_DESTROY_UNIQUE_PATH;
-            }
 
             if (!ObjectTypeFactory.IsStructureType("NoRoadRequired", type) && !hasRoad) {
                 Global.World.UnlockRegion(x, y);

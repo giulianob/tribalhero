@@ -356,7 +356,7 @@ namespace Game.Database {
                     TroopStub stub = new TroopStub {
                         TroopManager = city.Troops,
                         TroopId = (byte)reader["id"],
-                        State = (TroopStub.TroopState)Enum.Parse(typeof(TroopStub.TroopState), reader["state"].ToString(), true),
+                        State = (TroopState)Enum.Parse(typeof(TroopStub.TroopState), reader["state"].ToString(), true),
                         DbPersisted = true
                     };
 

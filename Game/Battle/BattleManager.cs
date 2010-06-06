@@ -11,6 +11,7 @@ using Game.Fighting;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Logic;
 
 #endregion
 
@@ -362,7 +363,9 @@ namespace Game.Battle {
                         continue;
 
                     // Don't add main building if lvl 1 or if a building is lvl 0
-                    if ((obj == obj.City.MainBuilding && obj.Lvl <= 1) || (obj.Lvl == 0))
+                    if ((ObjectTypeFactory.IsStructureType("Undestroyable",obj) && obj.Lvl <= 1) || 
+                        (obj.Lvl == 0) || 
+                        ObjectTypeFactory.IsStructureType("Noncombatstructure",obj))
                         continue;
 
                     added = true;
@@ -664,7 +667,7 @@ namespace Game.Battle {
                 else
                     throw new Exception("How can this happen");
 
-                if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && defender.Stats.Def == 0)) {
+                if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && attacker.Stats.Def == 0)) {
                     attacker.ParticipatedInRound();
                     Global.DbManager.Save(attacker);
                     EventSkippedAttacker(attacker);
@@ -700,7 +703,7 @@ namespace Game.Battle {
                 if (attacker.CombatList == Attacker) {
                     Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
                     city.BeginUpdate();
-                    city.Resource.Subtract(loot, out loot);
+                    city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
                     attacker.ReceiveReward(attackPoints, loot);                    
                     city.EndUpdate();
                 } else {                    

@@ -11,15 +11,23 @@ using Game.Util;
 #endregion
 
 namespace Game.Data.Troop {
+    public enum TroopState {
+        IDLE = 0,
+        BATTLE = 1,
+        STATIONED = 2,
+        BATTLE_STATIONED = 3,
+        MOVING = 4
+    }
+
+    public enum TroopBattleGroup {
+        LOCAL = 0,
+        ATTACK = 1,
+        DEFENSE = 2,
+    }
+
     public class TroopStub : IEnumerable<Formation>,
                              IPersistableList, ILockable {
-        public enum TroopState {
-            IDLE = 0,
-            BATTLE = 1,
-            STATIONED = 2,
-            BATTLE_STATIONED = 3,
-            MOVING = 4
-        }
+
 
         protected Dictionary<FormationType, Formation> data = new Dictionary<FormationType, Formation>();
         private bool isUpdating;

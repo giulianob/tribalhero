@@ -159,7 +159,6 @@ TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5,
 22022,2,TroopSpeedMod,City,FALSE,10,,,,,
 ,,,,,,,,,,
 // Academy,,,,,,,,,,
-23011,1,CanBuild,City,FALSE,2003,,,,,
 23011,1,HaveTechnology,City,FALSE,23011,1,,,,
 23013,1,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,110,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
 23013,2,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,120,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }

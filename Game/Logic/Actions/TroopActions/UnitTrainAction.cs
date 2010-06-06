@@ -55,7 +55,7 @@ namespace Game.Logic.Actions {
             int buildtime = Formula.TrainTime((int) UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
 
             // add to queue for completion
-            nextTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
+            nextTime = DateTime.Now.AddSeconds(Config.actions_instant_time ? 0.1 : buildtime);
             beginTime = DateTime.Now;
             endTime = DateTime.Now.AddSeconds((double) buildtime*ActionCount);
 
@@ -96,7 +96,7 @@ namespace Game.Logic.Actions {
                 }
 
                 int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
-                nextTime = nextTime.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
+                nextTime = nextTime.AddSeconds(Config.actions_instant_time ? 0.1 : buildtime);
                 StateChange(ActionState.RESCHEDULED);
             }
         }

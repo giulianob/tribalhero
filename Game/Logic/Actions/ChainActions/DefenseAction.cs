@@ -45,7 +45,7 @@ namespace Game.Logic.Actions {
 
             //Load the units stats into the stub
             stub.BeginUpdate();
-            stub.Template.LoadStats();
+            stub.Template.LoadStats(TroopBattleGroup.DEFENSE);
             stub.EndUpdate();
 
             city.Worker.References.Add(stub.TroopObject, this);
@@ -80,7 +80,7 @@ namespace Game.Logic.Actions {
                         List<TroopStub> list = new List<TroopStub>();
 
                         stub.BeginUpdate();
-                        stub.State = TroopStub.TroopState.BATTLE_STATIONED;
+                        stub.State = TroopState.BATTLE_STATIONED;
                         stub.EndUpdate();
 
                         list.Add(stub);

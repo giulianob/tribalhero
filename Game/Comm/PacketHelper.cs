@@ -196,12 +196,12 @@ namespace Game.Comm {
 
             //Add state specific variables
             switch (stub.State) {
-                case TroopStub.TroopState.MOVING:
+                case TroopState.MOVING:
                     packet.AddUInt32(stub.TroopObject.ObjectId);
                     packet.AddUInt32(stub.TroopObject.X);
                     packet.AddUInt32(stub.TroopObject.Y);
                     break;
-                case TroopStub.TroopState.BATTLE:
+                case TroopState.BATTLE:
                     if (stub.TroopObject != null) {
                         packet.AddUInt32(stub.TroopObject.ObjectId);
                         packet.AddUInt32(stub.TroopObject.X);
@@ -212,8 +212,8 @@ namespace Game.Comm {
                         packet.AddUInt32(stub.City.MainBuilding.Y);
                     }
                     break;
-                case TroopStub.TroopState.STATIONED:
-                case TroopStub.TroopState.BATTLE_STATIONED:
+                case TroopState.STATIONED:
+                case TroopState.BATTLE_STATIONED:
                     packet.AddUInt32(stub.StationedCity.MainBuilding.ObjectId);
                     packet.AddUInt32(stub.StationedCity.MainBuilding.X);
                     packet.AddUInt32(stub.StationedCity.MainBuilding.Y);

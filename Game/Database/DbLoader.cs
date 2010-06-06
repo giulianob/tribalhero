@@ -300,7 +300,7 @@ namespace Game.Database {
 
                     stub.TroopManager = city.Troops;
                     stub.TroopId = (byte) reader["id"];
-                    stub.State = (TroopStub.TroopState) Enum.Parse(typeof (TroopStub.TroopState), reader["state"].ToString());
+                    stub.State = (TroopState) Enum.Parse(typeof (TroopState), reader["state"].ToString());
                     stub.DbPersisted = true;
 
                     ushort formationMask = (ushort) reader["formations"];

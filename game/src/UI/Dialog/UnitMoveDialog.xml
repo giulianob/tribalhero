@@ -1,0 +1,97 @@
+<AsWingUI name="UnitMoveDialog" packageName="src.UI.Dialog">
+  <Com name="JPanel" id="panel12">
+    <Properties>
+      <Property name="attr_scope" type="attr_scope">
+        <Value value="private"/>
+      </Property>
+      <Property name="getter_scope" type="getter_scope">
+        <Value value="none"/>
+      </Property>
+      <Property name="Size" type="Size">
+        <Value value="400,400"/>
+      </Property>
+      <Property name="Layout" type="Layout">
+        <Value>
+          <Layout name="SoftBoxLayout">
+            <Properties>
+              <Property name="Axis" type="Axis">
+                <Value value="1"/>
+              </Property>
+              <Property name="Gap" type="Gap">
+                <Value value="10"/>
+              </Property>
+            </Properties>
+          </Layout>
+        </Value>
+      </Property>
+    </Properties>
+    <Com name="JPanel" id="pnlFormations">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="pnlFormations"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="400,10"/>
+        </Property>
+      </Properties>
+    </Com>
+    <Com name="JPanel" id="pnlBottom">
+      <Properties>
+        <Property name="id" type="id">
+          <Value value="pnlBottom"/>
+        </Property>
+        <Property name="attr_scope" type="attr_scope">
+          <Value value="private"/>
+        </Property>
+        <Property name="getter_scope" type="getter_scope">
+          <Value value="none"/>
+        </Property>
+        <Property name="Location" type="Location">
+          <Value value="5,5"/>
+        </Property>
+        <Property name="Size" type="Size">
+          <Value value="10,10"/>
+        </Property>
+        <Property name="Layout" type="Layout">
+          <Value>
+            <Layout name="FlowLayout">
+              <Properties>
+                <Property name="Alignment" type="Alignment">
+                  <Value value="0"/>
+                </Property>
+              </Properties>
+            </Layout>
+          </Value>
+        </Property>
+      </Properties>
+      <Com name="JButton" id="btnOk">
+        <Properties>
+          <Property name="id" type="id">
+            <Value value="btnOk"/>
+          </Property>
+          <Property name="attr_scope" type="attr_scope">
+            <Value value="private"/>
+          </Property>
+          <Property name="getter_scope" type="getter_scope">
+            <Value value="public"/>
+          </Property>
+          <Property name="Location" type="Location">
+            <Value value="184,5"/>
+          </Property>
+          <Property name="Size" type="Size">
+            <Value value="31,22"/>
+          </Property>
+          <Property name="Text" type="Text">
+            <Value value="label"/>
+          </Property>
+        </Properties>
+      </Com>
+    </Com>
+  </Com>
+</AsWingUI>

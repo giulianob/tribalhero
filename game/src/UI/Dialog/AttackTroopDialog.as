@@ -152,11 +152,12 @@
 			btnOk.setSize(new IntDimension(22, 22));
 			btnOk.setText("Ok");
 
-			//component layoution
+			//component layoution			
 			append(panel2);
+			append(new JLabel("Hint: Drag units to assign to the different troops", null, AsWingConstants.LEFT));
 			append(pnlLocal);
 			append(pnlAttack);
-			append(panel9);
+			append(panel9);			
 
 			panel2.append(lblAttackStrength);
 

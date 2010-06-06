@@ -151,6 +151,7 @@ package src.UI.Cursors {
 			var breaksPath: Boolean = false;
 			for each(var cityObject: CityObject in city.objects.each()) {
 				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
+				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
 
 				if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, false)) {
 					breaksPath = true;

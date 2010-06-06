@@ -342,6 +342,12 @@ namespace Game.Comm {
                 return;
             }
 
+            if (!Global.World.IsValidXandY(x, y))
+            {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
             using (new MultiObjectLock(session.Player)) {
                 City city = session.Player.GetCity(cityId);
 

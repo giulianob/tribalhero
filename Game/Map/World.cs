@@ -358,11 +358,16 @@ namespace Game.Map {
 
         #region Helpers
 
+        public bool IsValidXandY(uint x, uint y) {
+            return x < Config.map_width && y < Config.map_height;
+        }
+
         public Region GetRegion(uint x, uint y) {
             return GetRegion(Region.GetRegionIndex(x, y));
         }
 
         public Region GetRegion(ushort id) {
+            if (id >= regions.Length) return null;
             return regions[id];
         }
 
@@ -425,7 +430,7 @@ namespace Game.Map {
 
         #region Map Region Methods
         public ushort GetTileType(uint x, uint y) {
-            Region region = GetRegion(x, y);
+            Region region = GetRegion(x, y);            
             return region.GetTileType(x, y);
         }
 

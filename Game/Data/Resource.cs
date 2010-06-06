@@ -200,6 +200,16 @@ namespace Game.Data {
             FireStatsUpdate();
         }
 
+
+        public void add(int crop, int gold, int iron, int wood, int labor) {
+            this.crop += crop;
+            this.gold += gold;
+            this.iron += iron;
+            this.wood += wood;
+            this.labor += labor;
+            FireStatsUpdate();
+        }
+
         internal void Clear() {
             crop = 0;
             gold = 0;
@@ -222,6 +232,7 @@ namespace Game.Data {
                                 Math.Max(a.wood, b.wood),
                                 Math.Max(a.labor, b.labor));
         }
+
 
     }
 }

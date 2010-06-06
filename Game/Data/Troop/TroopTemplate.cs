@@ -32,7 +32,7 @@ namespace Game.Data.Troop {
         /// <summary>
         /// Must call begin/end update on the troop stub that owns this template
         /// </summary>
-        public void LoadStats() {
+        public void LoadStats(TroopBattleGroup group) {
             stats = new Dictionary<ushort, BattleStats>();
 
             foreach (Formation formation in stub) {
@@ -40,7 +40,7 @@ namespace Game.Data.Troop {
                     if (stats.ContainsKey(type))
                         continue;
 
-                    BattleStats stat = BattleFormulas.LoadStats(type, stub.City.Template[type].Lvl, stub.City);
+                    BattleStats stat = BattleFormulas.LoadStats(type, stub.City.Template[type].Lvl, stub.City, group);
                     stats.Add(type, stat);
                 }
             }

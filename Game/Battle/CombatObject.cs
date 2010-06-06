@@ -163,5 +163,10 @@ namespace Game.Battle {
         }
 
         #endregion
+
+
+        public void Print() {
+          //  throw new NotImplementedException();
+        }
     }
 }

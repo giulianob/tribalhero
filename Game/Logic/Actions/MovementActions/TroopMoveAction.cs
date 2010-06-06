@@ -100,10 +100,10 @@ namespace Game.Logic.Actions {
             beginTime = DateTime.UtcNow;
 
             troopObj.Stub.BeginUpdate();
-            troopObj.Stub.State = TroopStub.TroopState.MOVING;
+            troopObj.Stub.State = TroopState.MOVING;
 
             if (!CalculateNext(troopObj)) {
-                troopObj.Stub.State = TroopStub.TroopState.IDLE;
+                troopObj.Stub.State = TroopState.IDLE;
                 StateChange(ActionState.COMPLETED);
                 troopObj.Stub.EndUpdate();
                 return 0;
@@ -139,7 +139,7 @@ namespace Game.Logic.Actions {
 
                 if (!CalculateNext(troopObj)) {
                     troopObj.Stub.BeginUpdate();
-                    troopObj.Stub.State = TroopStub.TroopState.IDLE;
+                    troopObj.Stub.State = TroopState.IDLE;
                     troopObj.Stub.EndUpdate();
                     StateChange(ActionState.COMPLETED);
                     return;

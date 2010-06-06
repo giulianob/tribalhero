@@ -27,10 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherService", "LauncherService\LauncherService.csproj", "{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSimulator", "ConsoleSimulator\ConsoleSimulator.csproj", "{831301A1-D65D-4DD6-AB67-23FBBE59145A}"
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Game7.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -72,6 +72,10 @@ Global
 		{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F934F8B0-48F3-4E07-BFB3-D074B4A1BDE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

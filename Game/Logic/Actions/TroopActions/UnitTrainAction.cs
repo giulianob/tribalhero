@@ -55,7 +55,7 @@ namespace Game.Logic.Actions {
             int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
 
             // add to queue for completion
-            nextTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
+            nextTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 0.1 : buildtime);
             beginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 * ActionCount : (double) buildtime * ActionCount);
 
@@ -96,7 +96,7 @@ namespace Game.Logic.Actions {
                 }
 
                 int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
-                nextTime = nextTime.AddSeconds(Config.actions_instant_time ? 3 : buildtime);
+                nextTime = nextTime.AddSeconds(Config.actions_instant_time ? 0.1 : buildtime);
                 StateChange(ActionState.RESCHEDULED);
             }
         }
@@ -109,6 +109,8 @@ namespace Game.Logic.Actions {
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
+
+
 
                 if (!city.TryGetStructure(structureId, out structure)) {
                     StateChange(ActionState.FAILED);

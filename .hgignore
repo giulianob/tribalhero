@@ -6,4 +6,5 @@ glob:conf/maps/*.dat
 relre:.suo
 glob:conf/data/*.xml
 glob:*.user
+glob:swordsman.csv
 glob:TestResults/*

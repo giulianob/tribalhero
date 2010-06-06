@@ -158,7 +158,7 @@ namespace Game.Comm
                 bool breaksRoad = false;
 
                 foreach (Structure str in city) {
-                    if (str == city.MainBuilding)
+                    if (str == city.MainBuilding || ObjectTypeFactory.IsStructureType("NoRoadRequired", str))
                         continue;
 
                     if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(x, y))) {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Game.Data;
 using Game.Setup;
 using Game;
 using Game.Battle;
@@ -9,22 +10,25 @@ using Game.Fighting;
 using log4net.Config;
 using log4net;
 using System.IO;
+using Game.Data.Stats;
 
 namespace ConsoleSimulator {
     class Program {
         static void Main(string[] args) {
-            Factory.initAll();
-            Global.dbManager.Pause();
+            Factory.CompileConfigFiles();
+            // CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+            Factory.InitAll();
+            Global.DbManager.Pause();
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Program));
-            
-            BattleReport.WriterInit();
+
+      //      BattleReport.WriterInit();
             File.Delete("swordsman.csv");
             Simulation sim;
-            foreach( KeyValuePair<int,UnitStats> kvp in UnitFactory.dict ) {
-                sim = new Simulation((ushort)(kvp.Key/100), kvp.Value.lvl, 1, Simulation.QuantityUnit.GroupSize,false);
+            foreach( KeyValuePair<int,BaseUnitStats> kvp in UnitFactory.dict ) {
+                sim = new Simulation((ushort)(kvp.Key/100), kvp.Value.Lvl, 1, Simulation.QuantityUnit.GroupSize,false);
                 sim.RunDef("swordsman.csv");
-                sim = new Simulation((ushort)(kvp.Key / 100), kvp.Value.lvl, 1, Simulation.QuantityUnit.GroupSize, false);
+                sim = new Simulation((ushort)(kvp.Key / 100), kvp.Value.Lvl, 1, Simulation.QuantityUnit.GroupSize, false);
                 sim.RunAtk("swordsman.csv");
             }
         }

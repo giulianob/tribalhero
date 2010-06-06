@@ -63,7 +63,7 @@ namespace Game.Logic.Actions {
             stub.TroopObject.State = GameObjectState.BattleState(cityId);
             stub.TroopObject.EndUpdate();
             stub.TroopObject.Stub.BeginUpdate();
-            stub.TroopObject.Stub.State = TroopStub.TroopState.BATTLE;
+            stub.TroopObject.Stub.State = TroopState.BATTLE;
             stub.TroopObject.Stub.EndUpdate();
 
             return Error.OK;
@@ -96,7 +96,7 @@ namespace Game.Logic.Actions {
 
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
-            stub.TroopObject.Stub.State = TroopStub.TroopState.IDLE;
+            stub.TroopObject.Stub.State = TroopState.IDLE;
             stub.TroopObject.EndUpdate();
             StateChange(ActionState.COMPLETED);
         }
@@ -113,7 +113,7 @@ namespace Game.Logic.Actions {
             stub.TroopObject.BeginUpdate();
             stub.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
-            stub.State = TroopStub.TroopState.IDLE;
+            stub.State = TroopState.IDLE;
             stub.EndUpdate();
             stub.TroopObject.EndUpdate();
 

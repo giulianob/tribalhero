@@ -123,7 +123,7 @@ namespace Game.Data.Troop {
                 return false;
             byte id = (byte) nextId;
             stub.StationedTroopId = id;
-            stub.State = TroopStub.TroopState.STATIONED;
+            stub.State = TroopState.STATIONED;
             stub.StationedCity = City;
             dict.Add(id, stub);
             stub.UnitUpdate += StubUpdateEvent;
@@ -204,7 +204,7 @@ namespace Game.Data.Troop {
                     continue;
 
                 // Skip troops that aren't idle
-                if (stub.State != TroopStub.TroopState.STATIONED && stub.State != TroopStub.TroopState.IDLE)
+                if (stub.State != TroopState.STATIONED && stub.State != TroopState.IDLE)
                     continue;
 
                 // Starve the troop

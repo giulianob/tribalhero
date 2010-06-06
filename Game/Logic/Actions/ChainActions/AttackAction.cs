@@ -55,7 +55,7 @@ namespace Game.Logic.Actions {
 
             //Load the units stats into the stub
             stub.BeginUpdate();
-            stub.Template.LoadStats();
+            stub.Template.LoadStats(TroopBattleGroup.ATTACK);
             stub.EndUpdate();
 
             initialTroopValue = stub.Value;

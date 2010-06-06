@@ -5,21 +5,56 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 using System.Linq;
+using Game.Data.Troop;
+using Game.Fighting;
 #endregion
 
 namespace Game.Logic {
     public class RequirementFormula {
+        public static Error DefensePoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
+            switch (parms[0]) {
+                case "lt":
+                    if (obj.City.DefensePoint < int.Parse(parms[1])) return Error.OK;
+                    break;
+                case "gt":
+                    if (obj.City.DefensePoint > int.Parse(parms[1])) return Error.OK;
+                    break;
+                default:
+                    throw new Exception("Bad requirement parameter!");
+            }
+            return Error.EFFECT_REQUIREMENT_NOT_MET;
+        }
 
-        public static Error HaveAttackRate(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
-            if (obj.City.AttackPoint > int.Parse(parms[0])) {
-                return Error.OK;
+        public static Error AttackPoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
+            switch(parms[0]) {
+                case "lt":
+                    if (obj.City.AttackPoint < int.Parse(parms[1])) return Error.OK;
+                    break;
+                case "gt":
+                    if (obj.City.AttackPoint > int.Parse(parms[1])) return Error.OK;
+                    break;
+                default:
+                    throw new Exception("Bad requirement parameter!");
             }
             return Error.EFFECT_REQUIREMENT_NOT_MET;
         }
 
         public static Error HaveUnit(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
-            
+            ushort type = ushort.Parse(parms[0]);
+            int sum = obj.City.Troops.MyStubs().Sum(stub => stub.Sum<Formation>(formation => formation.ContainsKey(type) ? formation[type] : 0));
+            switch(parms[1]) {
+                case "lt":
+                    if (sum < int.Parse(parms[2])) return Error.OK;
+                    break;
+                case "gt":
+                    if (sum > int.Parse(parms[2])) return Error.OK;
+                    break;
+                default:
+                    throw new Exception("Bad requirement parameter!");    
+            }
+            return Error.EFFECT_REQUIREMENT_NOT_MET;
         }
+
         public static Error AwayFromStructure(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
             int distance = int.Parse(parms[1]) + effects.Sum<Effect>(x=> (x.id == EffectCode.AwayFromStructureMod && (int)x.value[0] == id) ? (int)x.value[1]:0);
             int type = int.Parse(parms[0]);

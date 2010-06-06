@@ -5,17 +5,18 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
 using Game.Logic.Conditons;
+using Game.Data.Troop;
 
 #endregion
 
 namespace Game.Battle {
     public class BattleFormulas {
         public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor) {
-            const double weakest = 0.3;
+            const double weakest = 0.2;
             const double weak = 0.6;
             const double good = 1;
-            const double strong = 1.3;
-            const double strongest = 1.6;
+            const double strong = 1.4;
+            const double strongest = 1.8;
 
             switch (weapon) {
                 case WeaponType.SWORD:
@@ -93,7 +94,8 @@ namespace Game.Battle {
         }
 
         public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk) {
-            int rawDmg = (useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk)*attacker.Count;
+            ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
+            int rawDmg = atk * attacker.Count;
             rawDmg /= 10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             rawDmg = (int) (typeModifier*rawDmg);
@@ -114,7 +116,7 @@ namespace Game.Battle {
         }
 
         internal static ushort GetStamina(City city) {
-            return (ushort)(20 + Config.stamina_initial);
+            return (ushort)(20 + Config.battle_stamina_initial);
         }
 
         internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round) {
@@ -151,9 +153,10 @@ namespace Game.Battle {
             return new BattleStats(structure.Stats.Base.Battle);
         }
 
-        internal static BattleStats LoadStats(ushort type, byte lvl, City city) {
+        internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group) {
             BaseBattleStats stats = UnitFactory.GetUnitStats(type, lvl).Battle;
             BattleStatsModCalculator calculator = new BattleStatsModCalculator(stats);
+
             foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL)) {
                 if (effect.id == EffectCode.UnitStatMod) {
                     if (UnitStatModCheck(stats,effect.value[3],effect.value[4])) {
@@ -178,6 +181,8 @@ namespace Game.Battle {
                                 break;
                         }
                     }
+                } else if(effect.id == EffectCode.ACallToArmMod && group== TroopBattleGroup.LOCAL) {
+                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.value[0] * city.Resource.Labor.Value) / (city.MainBuilding.Lvl * 100)));
                 }
             }
             return calculator.GetStats();

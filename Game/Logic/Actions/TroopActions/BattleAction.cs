@@ -82,11 +82,11 @@ namespace Game.Logic.Actions {
 
                         stub.BeginUpdate();
                         switch (stub.State) {
-                            case TroopStub.TroopState.BATTLE_STATIONED:
-                                stub.State = TroopStub.TroopState.STATIONED;
+                            case TroopState.BATTLE_STATIONED:
+                                stub.State = TroopState.STATIONED;
                                 break;
-                            case TroopStub.TroopState.BATTLE:
-                                stub.State = TroopStub.TroopState.IDLE;
+                            case TroopState.BATTLE:
+                                stub.State = TroopState.IDLE;
                                 break;
                         }
                         stub.EndUpdate();
@@ -122,12 +122,12 @@ namespace Game.Logic.Actions {
 
             //Add reinforcement
             foreach (TroopStub stub in city.Troops) {
-                if (stub == city.DefaultTroop || stub.State != TroopStub.TroopState.STATIONED ||
+                if (stub == city.DefaultTroop || stub.State != TroopState.STATIONED ||
                     stub.StationedCity != city)
                     continue; //skip if troop is the default troop or isn't stationed here
 
                 stub.BeginUpdate();
-                stub.State = TroopStub.TroopState.BATTLE_STATIONED;
+                stub.State = TroopState.BATTLE_STATIONED;
                 stub.EndUpdate();
 
                 list.Add(stub);

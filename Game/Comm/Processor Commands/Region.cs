@@ -34,6 +34,11 @@ namespace Game.Comm
                 return;
             }
 
+            if (!Global.World.IsValidXandY(x, y)) {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;                
+            }
+
             City city;
             using (new MultiObjectLock(cityId, out city))
             {
@@ -110,6 +115,12 @@ namespace Game.Comm
                 y = packet.GetUInt32();
             }
             catch (Exception) {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            if (!Global.World.IsValidXandY(x, y))
+            {
                 ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }

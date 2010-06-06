@@ -73,7 +73,7 @@ namespace Game.Data.Troop {
         public TroopObject TroopObject {
             get { return troopObject; }
             set {
-                CheckUpdateMode();
+                CheckUpdateMode(false);
                 troopObject = value;
             }
         }
@@ -236,6 +236,10 @@ namespace Game.Data.Troop {
         }
 
         private void CheckUpdateMode() {
+            CheckUpdateMode(true);
+        }
+
+        private void CheckUpdateMode(bool checkStationedCity) {
             if (!Global.FireEvents || City == null)
                 return;
 
@@ -244,7 +248,7 @@ namespace Game.Data.Troop {
 
             MultiObjectLock.ThrowExceptionIfNotLocked(this);
 
-            if (stationedCity != null)
+            if (checkStationedCity && stationedCity != null)
                 MultiObjectLock.ThrowExceptionIfNotLocked(stationedCity);
         }
 

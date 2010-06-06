@@ -170,7 +170,14 @@ namespace Game.Map {
             else if (neighbors.SequenceEqual(new byte[] { 1, 1, 1, 1 })) roadType = 6;
 
             // Grab the list of actual tiles based on the road type we need.
-            ushort[] types = ObjectTypeFactory.GetTypes("RoadSet1");
+            ushort[] types;
+
+            if (Global.World[x, y].Exists(s => s is Structure))
+                types = ObjectTypeFactory.GetTypes("RoadSetStructures");
+            else {
+                //TODO: Load random road set
+                types = ObjectTypeFactory.GetTypes("RoadSet1");
+            }
 
             // Set the new road tile
             Global.World.SetTileType(x, y, types[roadType], false);

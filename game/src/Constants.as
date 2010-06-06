@@ -21,7 +21,7 @@ package src
 
 		/* ROAD CONSTANTS */
 		public static const road_start_tile_id: int = 224;
-		public static const road_end_tile_id: int = 234;
+		public static const road_end_tile_id: int = 250;
 		
 		/* MAP CONSTANTS */
 		public static const tileW:int = 108;

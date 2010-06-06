@@ -106,6 +106,7 @@
 			btnOk.setText("Ok");
 
 			//component layoution
+			append(new JLabel("Hint: Drag units to assign to the different troops", null, AsWingConstants.LEFT));
 			append(pnlLocal);
 			append(pnlAttack);
 			append(panel9);

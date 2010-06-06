@@ -45,5 +45,21 @@ namespace Game.Logic {
             return (ushort)Math.Max(5, Math.Ceiling(structure.Stats.Base.MaxLabor / 10.0f));
         }
 
+        internal static int GetAwayFromRadius(IEnumerable<Effect> effects, byte radius, ushort type) {
+            return radius + effects.Sum(x => (x.id == EffectCode.AwayFromStructureMod && (int)x.value[0] == type) ? (int)x.value[1] : 0);
+        }
+
+        static int[] rateCrop = { 0, 100, 200, 300, 500, 1000 };
+        static int[] rateWood = { 0, 100, 200, 300, 500, 1000 };
+        static int[] rateGold = { 0, 0, 50, 100, 200, 400 };
+        static int[] rateIron = { 0, 0, 0, 50, 100, 200 };
+        internal static Resource HiddenResource(City city) {
+            Resource resource = new Resource();
+            foreach (Structure structure in city.Where(x=>ObjectTypeFactory.IsStructureType("Basement",x))) {
+                resource.add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
+            }
+            return resource;
+        }
+
     }
 }

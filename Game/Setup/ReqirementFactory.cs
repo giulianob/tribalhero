@@ -40,6 +40,9 @@ namespace Game.Setup {
                             case "Simple":
                                 layoutReq = new SimpleLayout();
                                 break;
+                            case "AwayFrom":
+                                layoutReq = new AwayFromLayout();
+                                break;
                             default:
                                 layoutReq = new SimpleLayout();
                                 break;

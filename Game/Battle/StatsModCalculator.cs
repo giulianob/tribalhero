@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Data.Stats;
 
@@ -34,7 +33,7 @@ namespace Game.Battle {
         }
         
         public int Product {
-            get { return list.AsQueryable<int>().Aggregate((total, value) => total * value); }
+            get { return list.AsQueryable().Aggregate((total, value) => total * value); }
         }
 
         public int Count {
@@ -107,13 +106,15 @@ namespace Game.Battle {
         }
 
         public BattleStats GetStats() {
-            BattleStats stats= new BattleStats(baseStats);
-            stats.Atk = (ushort)Atk.GetResult();
-            stats.Def = (ushort)Def.GetResult();
-            stats.Rng = (byte)Rng.GetResult();
-            stats.Spd = (byte)Spd.GetResult();
-            stats.Stl = (byte)Stl.GetResult();
-            stats.MaxHp = (ushort)MaxHp.GetResult();
+            BattleStats stats= new BattleStats(baseStats)
+                                   {
+                                       Atk = (ushort) Atk.GetResult(),
+                                       Def = (ushort) Def.GetResult(),
+                                       Rng = (byte) Rng.GetResult(),
+                                       Spd = (byte) Spd.GetResult(),
+                                       Stl = (byte) Stl.GetResult(),
+                                       MaxHp = (ushort) MaxHp.GetResult()
+                                   };
             return stats;
         }
     }

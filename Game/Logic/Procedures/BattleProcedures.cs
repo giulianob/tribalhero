@@ -19,8 +19,8 @@ namespace Game.Logic.Procedures {
             List<TroopStub> list = new List<TroopStub>(1) {city.DefaultTroop};           
 
             city.DefaultTroop.BeginUpdate();
-            city.DefaultTroop.State = TroopStub.TroopState.BATTLE;
-            city.DefaultTroop.Template.LoadStats();
+            city.DefaultTroop.State = TroopState.BATTLE;
+            city.DefaultTroop.Template.LoadStats(TroopBattleGroup.LOCAL);
             bm.AddToLocal(list, state);
             MoveUnitFormation(city.DefaultTroop, FormationType.NORMAL, FormationType.IN_BATTLE);
             city.DefaultTroop.EndUpdate(); 

@@ -13,7 +13,6 @@ namespace Game.Logic {
     public enum ActionType {
         OBJECT_REMOVE = 10,
 
-        STRUCTURE_DOWNGRADE = 100,
         STRUCTURE_BUILD = 101,
         STRUCTURE_UPGRADE = 102,
         STRUCTURE_CHANGE = 103,

@@ -20,7 +20,7 @@ namespace Game.Logic {
         public Error validate(GameObject obj, IEnumerable<Effect> effects) {
             Error error;
             foreach (EffectRequirement req in list) {
-                object[] parms = new object[] {obj, effects, req.parms};
+                object[] parms = new object[] {obj, effects, req.parms, ID};
                 if ((error = (Error) req.method.Invoke(null, parms)) != Error.OK)
                     return error;
             }

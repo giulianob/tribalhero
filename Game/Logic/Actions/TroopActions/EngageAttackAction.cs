@@ -93,7 +93,7 @@ namespace Game.Logic.Actions {
             stub.TroopObject.EndUpdate();
 
             stub.TroopObject.Stub.BeginUpdate();
-            stub.TroopObject.Stub.State = TroopStub.TroopState.BATTLE;
+            stub.TroopObject.Stub.State = TroopState.BATTLE;
             stub.TroopObject.Stub.EndUpdate();
 
             return Error.OK;
@@ -148,7 +148,7 @@ namespace Game.Logic.Actions {
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.Stub.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
-            stub.TroopObject.Stub.State = TroopStub.TroopState.IDLE;
+            stub.TroopObject.Stub.State = TroopState.IDLE;
             stub.TroopObject.Stub.EndUpdate();
             stub.TroopObject.EndUpdate();
 

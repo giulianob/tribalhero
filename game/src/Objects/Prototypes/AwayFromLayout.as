@@ -8,7 +8,7 @@ package src.Objects.Prototypes {
 	import src.Map.*;
 	import src.Objects.Factories.StructureFactory;
 
-	public class SimpleLayout implements ILayout {
+	public class AwayFromLayout implements ILayout {
 
 		public var type: int;
 		public var minlevel: int;
@@ -19,24 +19,29 @@ package src.Objects.Prototypes {
 
 		private var structPrototype: StructurePrototype;
 
-		public function SimpleLayout() {			
+		public function AwayFromLayout() {
 		}
 
 		public function validate(builder: CityObject, city: City, x: int, y: int): Boolean
-		{
-			var objects: Array;
-			if (mindist == -1)
-			objects = city.objects.toArray();
-			else
-			objects = city.nearObjectsByRadius(mindist, maxdist, x, y, type);
+		{		
+			var radius: int = mindist;
 
+			var effects: Array = builder.techManager.getAllEffects(EffectPrototype.INHERIT_SELF_ALL);
+			for each (var effect: EffectPrototype in effects) {
+				if (effect.effectCode == EffectPrototype.EFFECT_AWAY_FROM_STRUCTURE_MOD && effect.param1 == type) {
+					radius += effect.param2;
+				}
+			}			
+
+			var objects: Array = city.nearObjectsByRadius(0, radius, x, y, type);
+			
 			for each (var obj: CityObject in objects)
 			{
 				if (obj.level >= minlevel && obj.level <= maxlevel)
-				return true;
+				return false;
 			}
 
-			return false;
+			return true;
 		}
 
 		private function loadPrototype():void
@@ -51,25 +56,9 @@ package src.Objects.Prototypes {
 		{
 			loadPrototype();
 
-			var desc: String = "";
-
-			if (mindist > -1)
-			{
-				if (maxdist < 5)
-				desc += "Close ";
-				else if (maxdist < 12)
-				desc += "Nearby ";
-			}
-
-			var lvlReq: String = minlevel.toString();
-
-			if (structPrototype != null)
-			desc += structPrototype.getName() + " (Level " + lvlReq + ")";
-			else
-			desc += type.toString() + " (Level " + lvlReq + ")";
-
-			return desc;
+			return "Away from all " + structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
 		}
 	}
 
 }
+

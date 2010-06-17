@@ -68,12 +68,12 @@
 			return Math.min(15, 10 - Math.max(count, 5));
 		}
 
-		public function getIndividualUnitCount(): int
+		public function getIndividualUnitCount(type: int = -1): int
 		{
 			var total: int = 0;
 			for each (var formation: Formation in each())
 			{
-				total += formation.getIndividualUnitCount();
+				total += formation.getIndividualUnitCount(type);
 			}
 
 			return total;

@@ -68,7 +68,7 @@ package src.UI.Cursors {
 				destroyableArea.redraw();
 			});
 
-			src.Global.gameContainer.message.showMessage("Double click on the green squares to build roads.");
+			src.Global.gameContainer.message.showMessage("Double click on a highlighted road to destroy it. Roads that are not highlighted may not be destroyed.");
 		}
 
 		public function update(e: Event = null) : void {

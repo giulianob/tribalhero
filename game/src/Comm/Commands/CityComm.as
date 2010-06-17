@@ -53,9 +53,25 @@
 				case Commands.TECHNOLOGY_UPGRADED:
 					onReceiveTechnologyChanged(e.packet);
 				break;
+				case Commands.CITY_ATTACK_DEFENSE_POINT_UPDATE:
+					onReceiveDefenseAttackPoint(e.packet);
+					break;
 			}
 		}
 
+		public function onReceiveDefenseAttackPoint(packet: Packet): void {
+			var cityId: int = packet.readUInt();
+			var attackPoint: int = packet.readInt();
+			var defensePoint: int = packet.readInt();
+			
+			var city: City = Global.map.cities.get(cityId);
+			
+			if (city != null) {
+				city.attackPoint = attackPoint;
+				city.defensePoint = defensePoint;
+			}
+		}
+		
 		public function onCityRadiusUpdate(packet: Packet):void
 		{
 			var cityId: int = packet.readUInt();

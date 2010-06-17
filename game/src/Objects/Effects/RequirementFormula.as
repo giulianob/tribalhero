@@ -5,6 +5,7 @@
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Prototypes.*
+	import src.Objects.TechnologyStats;
 	import src.Util.Util;
 
 	/**
@@ -18,7 +19,11 @@
 		{name: "HaveTechnology", method: haveTechnology, message: haveTechnologyMsg },
 		{name: "HaveStructure", method: haveStructure, message: haveStructureMsg },
 		{name: "HaveNoStructure", method: haveNoStructure, message: haveNoStructureMsg },
-		{name: "CountLessThan", method: countLessThan, message: countLessThanMsg }
+		{name: "CountLessThan", method: countLessThan, message: countLessThanMsg },
+		{name: "DefensePoint", method: defensePoint, message: defensePointMsg },
+		{name: "AttackPoint", method: attackPoint, message: attackPointMsg },
+		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
+		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg }
 		);
 
 		private static var methodsSorted: Boolean = false;
@@ -147,7 +152,7 @@
 			if (techName == '' || techName == null)
 			techName = "[" + tech.spriteClass + "]";
 
-			return techName + " (Lvl " + techLevel.toString() + ")";
+			return "Upgraded " + techName + " to level " + techLevel.toString();
 		}
 
 		/*HAVE STRUCTURE*/
@@ -168,7 +173,7 @@
 		{
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
 
-			return structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
+			return "Built a " + structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
 		}
 
 		/*HAVE NO STRUCTURE*/
@@ -188,8 +193,8 @@
 		private static function haveNoStructureMsg(parentObj: GameObject, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): String
 		{
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
-
-			return "Has not built " + structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
+			
+			return "Does not already have a " + structPrototype.getName() + (minlevel > 0 || maxlevel > 0 ? " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")" : "");
 		}
 
 		/*COUNT LESS THAN*/
@@ -208,7 +213,134 @@
 		{
 			return "Count less than";
 		}
-	}
 
+		/*DEFENSE POINT*/
+		private static function defensePoint(parentObj: GameObject, effects: Array, comparison: String, value: int, param3: int, param4: int, param5:int): Boolean
+		{
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			if (city == null) return false;
+
+			if (comparison == "lt")
+			return city.defensePoint < value;
+
+			if (comparison == "gt")
+			return city.defensePoint > value;
+
+			return false;
+		}
+
+		private static function defensePointMsg(parentObj: GameObject, comparison: String, value: int, param3: int, param4: int, param5:int): String
+		{
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			if (city == null) return "";
+
+			if (comparison == "lt")
+			return "Less than " + value + " defense points" + (city.defensePoint >= value ? ". You currently have " + city.defensePoint + " defense points." : "");
+
+			if (comparison == "gt")
+			return "More than " + value + " defense points" + (city.defensePoint <= value ? ". You currently have " + city.defensePoint + " defense points." : "");
+
+			return "";
+		}
+
+		/*ATTACK POINT*/
+		private static function attackPoint(parentObj: GameObject, effects: Array, comparison: String, value: int, param3: int, param4: int, param5:int): Boolean
+		{
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			if (city == null) return false;
+
+			if (comparison == "lt")
+			return city.attackPoint < value;
+
+			if (comparison == "gt")
+			return city.attackPoint > value;
+
+			return false;
+		}
+
+		private static function attackPointMsg(parentObj: GameObject, comparison: String, value: int, param3: int, param4: int, param5:int): String
+		{
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			if (city == null) return "";
+
+			if (comparison == "lt")
+			return "Less than " + value + " attack points" + (city.attackPoint >= value ? ". You currently have " + city.attackPoint + " attack points." : "");
+
+			if (comparison == "gt")
+			return "More than " + value + " attack points" + (city.attackPoint <= value ? ". You currently have " + city.attackPoint + " attack points." : "");
+
+			return "";
+		}
+
+		/*HAVE UNIT*/
+		private static function haveUnit(parentObj: GameObject, effects: Array, type: int, comparison: String, count: int, param4: int, param5:int): Boolean
+		{
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			if (city == null) return false;
+
+			var total: int = city.troops.getIndividualUnitCount(type);
+
+			if (comparison == "lt")
+			return total < count;
+
+			if (comparison == "gt")
+			return total > count;
+
+			return false;
+		}
+
+		private static function haveUnitMsg(parentObj: GameObject, type: int, comparison: String, count: int, param4: int, param5:int): String
+		{
+			var unit: UnitPrototype = UnitFactory.getPrototype(101, 1);
+
+			if (!unit) return "";
+
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			if (city == null) return "";
+
+			var total: int = city.troops.getIndividualUnitCount(type);
+
+			if (comparison == "lt")
+			return "Trained less than " + count + " " + unit.getName() + (total >= count ? ". You currently have " + total + " " + unit.getName() + ".": "");
+
+			if (comparison == "gt")
+			return "Trained more than " + count + " " + unit.getName() + (total <= count ? ". You currently have " + total + " " + unit.getName() + ".": "");
+
+			return "";
+		}
+
+		/*HAVE UNIT*/
+		private static function uniqueTechnology(parentObj: GameObject, effects: Array, type: int, param2: int, param3: int, param4: int, param5:int): Boolean
+		{
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			if (city == null) return false;
+
+			for each (var obj: CityObject in city.objects.each()) {
+				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE) continue;
+
+				// Skip the current obj
+				if (obj.objectId == parentObj.objectId) continue;
+
+				for each (var tech: TechnologyStats in obj.techManager.technologies) {
+					if (tech.prototype.level > 0 && tech.prototype.techtype == type)
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private static function uniqueTechnologyMsg(parentObj: GameObject, type: int, param2: int, param3: int, param4: int, param5:int): String
+		{
+			return "Does not already have this technology elsewhere";
+		}
+	}
 }
 

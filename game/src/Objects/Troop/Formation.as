@@ -31,12 +31,14 @@ package src.Objects.Troop {
 			this.type = type;
 		}
 		
-		public function getIndividualUnitCount(): int
+		public function getIndividualUnitCount(type: int = -1): int
 		{
 			var total: int = 0;
 			for each(var unit: Unit in each())
 			{
-				total += unit.count;
+				if (type > -1 && unit.type != type) continue;
+				
+				total += unit.count;				
 			}
 			
 			return total;

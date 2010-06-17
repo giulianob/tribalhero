@@ -7,11 +7,11 @@
 	public class EffectReqPrototype {
 		
 		public var method: String;
-		public var param1: int;
-		public var param2: int;
-		public var param3: int;
-		public var param4: int;
-		public var param5: int;
+		public var param1: String;
+		public var param2: String;
+		public var param3: String;
+		public var param4: String;
+		public var param5: String;
 		public var description: String;
 		
 		public function EffectReqPrototype() {

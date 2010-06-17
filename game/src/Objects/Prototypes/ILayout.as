@@ -1,16 +1,17 @@
 /**
-* ...
-* @author Default
-* @version 0.1
-*/
+ * ...
+ * @author Default
+ * @version 0.1
+ */
 
 package src.Objects.Prototypes {
 	import src.Map.City;
-	import src.Map.Map;
+	import src.Map.CityObject;
 
-	public interface ILayout {		
+	public interface ILayout {
 		function toString(): String;
-		function validate(map: Map, city: City, x: int, y: int): Boolean;
+		function validate(builder: CityObject, city: City, x: int, y: int): Boolean;
 	}
-	
+
 }
+

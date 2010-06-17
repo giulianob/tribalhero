@@ -70,7 +70,7 @@
 			lstCities.setModel(new VectorListModel());
 			lstCities.addActionListener(onChangeCitySelection);
 			lstCities.setSize(new IntDimension(128, 22));
-			lstCities.setLocation(new IntPoint(25, 10));
+			lstCities.setLocation(new IntPoint(33, 16));
 			addChild(lstCities);
 
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {

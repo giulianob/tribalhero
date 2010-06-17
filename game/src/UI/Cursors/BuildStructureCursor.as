@@ -39,6 +39,9 @@ package src.UI.Cursors {
 		private var level: int;
 		private var tilerequirement: String;
 
+		private var hasBuildableArea: Boolean;
+		private var hasRoadNearby: Boolean;
+
 		public function BuildStructureCursor() { }
 
 		public function init(map: Map, type: int, level: int, tilerequirement: String, parentObject: GameObject):void
@@ -86,7 +89,13 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseStop);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
-			src.Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
+			if (!hasRoadNearby) {
+				src.Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build extra roads first then try again.");
+			} else if (!hasBuildableArea) {
+				src.Global.gameContainer.message.showMessage("There are no spaces available to build on.");
+			} else {
+				src.Global.gameContainer.message.showMessage("Double click on a green square to build a " + structPrototype.getName().toLowerCase() + ".");
+			}
 		}
 
 		public function dispose():void
@@ -176,8 +185,16 @@ package src.UI.Cursors {
 				trace("Tile type is: " + tileType);
 			}
 
+			var requiredRoad: Boolean = !ObjectFactory.isType("NoRoadRequired", type);
+
+			// Set flag so that buildings that dont require roads dont screw up the on screen msg 
+			if (!requiredRoad) this.hasRoadNearby = true;			
+
 			// Validate any layouts
-			if (!structPrototype.validateLayout(map, city, screenPos.x, screenPos.y)) return false;
+			var builder: CityObject = city.objects.get(parentObj.objectId);
+			if (!structPrototype.validateLayout(builder, city, screenPos.x, screenPos.y)) {
+				return false;
+			}
 
 			// Check for tile requirement
 			if (tilerequirement == "" && !RoadPathFinder.isRoad(tileType) && !ObjectFactory.isType("TileBuildable", tileType)) return false;
@@ -185,11 +202,18 @@ package src.UI.Cursors {
 			// Check for tile requirement
 			if (tilerequirement != "" && !ObjectFactory.isType(tilerequirement, tileType)) return false;
 
-			if (ObjectFactory.isType("NoRoadRequired", type)) return true;
+			var buildingOnRoad: Boolean = RoadPathFinder.isRoad(tileType);
+
+			if (!requiredRoad) {
+				// Don't allow structures that don't need roads to be built on top of roads
+				if (buildingOnRoad) return false;
+
+				this.hasBuildableArea = true;
+				return true;
+			}
 
 			// Keep non road related checks above this
 			// Check for road requirement
-			var buildingOnRoad: Boolean = RoadPathFinder.isRoad(tileType);
 			if (buildingOnRoad) {
 				var breaksPath: Boolean = false;
 				for each(var cityObject: CityObject in city.objects.each()) {
@@ -226,8 +250,14 @@ package src.UI.Cursors {
 				return true;
 			}, false, null);
 
+			// Set global variable to identify if we have buildable road. This is used for the on screen message
+			if (hasRoad) this.hasRoadNearby = true;
+
 			if (!hasRoad) return false
 			if (breaksRoad) return false;
+
+			//Set other global variable to identify we have a buildable spot.
+			hasBuildableArea = true;
 
 			return true;
 		}

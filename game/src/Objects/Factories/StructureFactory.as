@@ -10,6 +10,8 @@
 	import src.Map.CityObject;
 	import src.Map.Map;
 	import src.Objects.Actions.TechUpgradeAction;
+	import src.Objects.Prototypes.AwayFromLayout;
+	import src.Objects.Prototypes.ILayout;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.SimpleLayout;
 	import src.Objects.Prototypes.TechnologyPrototype;
@@ -59,15 +61,27 @@
 				strctObj.weapon = structNode.@weapon;
 				strctObj.workerid = structNode.@workerid;
 
-				for each (var simpleLayoutNode: XML in structNode.Layout.Simple)
+				for each (var layoutNode: XML in structNode.Layout.*)
 				{
-					var layout: SimpleLayout = new SimpleLayout(map);
-					layout.type = simpleLayoutNode.@type;
-					layout.minlevel = simpleLayoutNode.@minlevel;
-					layout.maxlevel = simpleLayoutNode.@maxlevel;
-					layout.mindist = simpleLayoutNode.@mindist;
-					layout.maxdist = simpleLayoutNode.@maxdist;
-					layout.compare = simpleLayoutNode.@compare;
+					var layout: * ;
+					var name: String = layoutNode.name().localName;
+					switch (name) {
+						case "Simple":
+							layout = new SimpleLayout();
+						break;
+						case "AwayFrom":
+							layout = new AwayFromLayout();
+						break;
+						default:
+							continue;
+					}
+
+					layout.type = layoutNode.@type;
+					layout.minlevel = layoutNode.@minlevel;
+					layout.maxlevel = layoutNode.@maxlevel;
+					layout.mindist = layoutNode.@mindist;
+					layout.maxdist = layoutNode.@maxdist;
+					layout.compare = layoutNode.@compare;
 
 					strctObj.addLayout(layout);
 				}
@@ -225,7 +239,7 @@
 			var worker: Worker = WorkerFactory.getPrototype(structPrototype.workerid);
 
 			var upgradeActions: Array = worker.getTechUpgradeActions();
-			
+
 			var buttons: Array = new Array();
 
 			// Add all of the tech buttons that have technologies attached to them
@@ -235,8 +249,8 @@
 
 				for (var i: int = 0; i < upgradeActions.length; ++i) {
 					if (upgradeActions[i].techtype != techStats.prototype.techtype)
-						continue;
-						
+					continue;
+
 					techBtn.parentAction = upgradeActions[i];
 					upgradeActions.splice(i, 1);
 					break;
@@ -244,7 +258,7 @@
 
 				buttons.push(techBtn);
 			}
-			
+
 			// Add all of the upgrade technology actions that don't currently have technologies attached to them
 			for each (var upgradeAction: TechUpgradeAction in upgradeActions) {
 				var techPrototype: TechnologyPrototype = TechnologyFactory.getPrototype(upgradeAction.techtype, 0);

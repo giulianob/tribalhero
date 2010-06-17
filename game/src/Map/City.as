@@ -25,6 +25,8 @@ package src.Map {
 		public var resources: LazyResources;
 		public var name: String;
 		public var radius: int = 0;
+		public var attackPoint: int = 0;
+		public var defensePoint: int = 0;
 
 		public var battle: BattleManager;
 
@@ -41,11 +43,13 @@ package src.Map {
 			return objects.get(1);
 		}
 
-		public function City(id: int, name: String, radius: int, resources: LazyResources) {
+		public function City(id: int, name: String, radius: int, resources: LazyResources, attackPoint: int, defensePoint: int) {
 			this.id = id;
 			this.resources = resources;
 			this.radius = radius;
 			this.name = name;
+			this.attackPoint = attackPoint;
+			this.defensePoint = defensePoint;
 
 			troops = new TroopManager(this);
 
@@ -65,7 +69,7 @@ package src.Map {
 
 				var dist: Number = obj.radiusDistance(pos.x, pos.y);
 
-				if (mindist <= dist && maxdist >= dist)
+				if (mindist <= dist && (maxdist == -1 || maxdist >= dist))
 				ret.push(obj);
 			}
 

@@ -85,7 +85,10 @@
 
 				var radius: int = packet.readUByte();
 
-				var city: City = new City(id, name, radius, resources);
+				var attackPoint: int = packet.readInt();
+				var defensePoint: int = packet.readInt();
+
+				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint);
 
 				// Add the name of this city to the list of city names
 				Global.map.usernames.cities.add(new Username(id, name));

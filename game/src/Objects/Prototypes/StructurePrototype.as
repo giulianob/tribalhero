@@ -6,8 +6,9 @@
 
 package src.Objects.Prototypes {
 	import fl.lang.Locale;
+	import src.Global;
 	import src.Map.City;
-	import src.Map.Map;
+	import src.Map.CityObject;
 	import src.Objects.Resources;
 	import src.Objects.StructureObject;
 
@@ -42,15 +43,17 @@ package src.Objects.Prototypes {
 			layouts.push(layout);
 		}
 
-		public function validateLayout(map: Map, city: City, x: int, y: int): Boolean
+		public function validateLayout(builder: CityObject, city: City, x: int, y: int): Boolean
 		{
-			if (map.regions.getObjectsAt(x, y, StructureObject).length > 0) {
+			if (!builder) return false;
+
+			if (Global.map.regions.getObjectsAt(x, y, StructureObject).length > 0) {
 				return false;
 			}
 
 			for each(var layout: ILayout in layouts)
 			{
-				if (!layout.validate(map, city, x, y))
+				if (!layout.validate(builder, city, x, y))
 				return false;
 			}
 

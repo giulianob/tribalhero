@@ -17,6 +17,8 @@
 		public static const EFFECT_WOOD_CUTTING: int = 8;
 		public static const EFFECT_HAVE_TECHNOLOGY: int = 9;
 		public static const EFFECT_COUNT_LESS_THAN: int = 10;
+		public static const EFFECT_AWAY_FROM_STRUCTURE_MOD: int = 14;
+		
 		
 		public static const LOCATION_OBJECT: int = 0;
 		public static const LOCATION_CITY: int = 1;
@@ -25,8 +27,9 @@
 	
 		public static const INHERIT_INVISIBLE: int = 1;
 		public static const INHERIT_SELF: int = 2;
-		public static const INHERIT_UPWARD: int = 3;
-		
+		public static const INHERIT_SELF_ALL: int = 3;
+		public static const INHERIT_UPWARD: int = 4;
+		public static const INHERIT_ALL: int = 7;		
 		
 		public var effectCode: int;
 		public var isPrivate: Boolean;

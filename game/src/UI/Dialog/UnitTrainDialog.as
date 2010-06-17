@@ -130,7 +130,7 @@ package src.UI.Dialog {
 
 			pnlUpkeepMsg = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 3));
 			pnlUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));
-			lblUpkeepMsg = new MultilineLabel("The upkeep required to train this many units may exceed your city's crop production rate. Your units will starve if the upkeep is higher than the crop production rate.", 0, 28);			
+			lblUpkeepMsg = new MultilineLabel("The upkeep required to train this many units may exceed your city's crop production rate. Your units will starve and die out if there is not enough crop.", 0, 28);			
 			pnlUpkeepMsg.setVisible(false);
 
 			//component layoution

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Game.Data;
 using Game.Map;
 using System.IO;
 using System.Xml;
@@ -11,7 +12,6 @@ using System.Runtime.InteropServices;
 
 namespace MapGenerator {
     class Program {
-        static List<uint> cityLocations = new List<uint>();
         static Random random = new Random();
         static StreamWriter sw;
 
@@ -80,14 +80,14 @@ namespace MapGenerator {
             for (int i = 0; i < numberOfFarm; ++i) {
                 do {
                     TileLocator.random_point(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
-                } while (map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE);
+                } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 || map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE);
                 map[y * region_width + x] = FARM_TILE;
             }
 
             for (int i = 0; i < numberOfWoodland; ++i) {
                 do {
                     TileLocator.random_point(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
-                } while (map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE);
+                } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 || map[y * region_width + x] == FARM_TILE || map[y * region_width + x] == WOODLAND_TILE);
                 map[y * region_width + x] = WOODLAND_TILE;
             }              
         }

@@ -65,7 +65,7 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(type, (byte)1).Validate(this.WorkerObject as Structure, type, x, y)) {            
+            if (!ReqirementFactory.GetLayoutRequirement(type, 1).Validate(WorkerObject as Structure, type, x, y)) {            
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }
@@ -80,48 +80,61 @@ namespace Game.Logic.Actions
             }
 
             // check for road requirements       
+            bool roadRequired = !ObjectTypeFactory.IsStructureType("NoRoadRequired", type);
             bool breaksRoad = false;
             bool buildingOnRoad = RoadManager.IsRoad(x, y);
-            if (buildingOnRoad) {
-                foreach (Structure str in city) {
-                    if (str == city.MainBuilding) continue;
 
-                    if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(x, y))) {
-                        breaksRoad = true;
-                        break;
+            if (roadRequired) {
+                if (buildingOnRoad) {
+                    foreach (Structure str in city) {
+                        if (str == city.MainBuilding)
+                            continue;
+
+                        if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(x, y))) {
+                            breaksRoad = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (breaksRoad)
-            {
-                Global.World.UnlockRegion(x, y);
-                return Error.ROAD_DESTROY_UNIQUE_PATH;
-            }
-
-            bool hasRoad = false;            
-
-            RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom)
-            {
-                // TODO: Fix radius locator for each
-                if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1) return true;
-
-                Structure curStruct = (Structure) Global.World[x1, y1].Where(obj => obj is Structure).FirstOrDefault();
-
-                bool hasStructure = curStruct != null;
-
-                // Make sure we have a road around this building
-                if (!hasRoad && !hasStructure && RoadManager.IsRoad(x1, y1)) {
-                    if (!buildingOnRoad || RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(origX, origY)))
-                        hasRoad = true;
+                if (breaksRoad) {
+                    Global.World.UnlockRegion(x, y);
+                    return Error.ROAD_DESTROY_UNIQUE_PATH;
                 }
-                                                             
-                return true;
-            }, null);
 
-            if (!ObjectTypeFactory.IsStructureType("NoRoadRequired", type) && !hasRoad) {
-                Global.World.UnlockRegion(x, y);
-                return Error.ROAD_NOT_AROUND;
+                bool hasRoad = false;
+
+                RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom) {
+                                                                 // TODO: Fix radius locator for each
+                                                                 if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                                     return true;
+
+                                                                 Structure curStruct = (Structure) Global.World[x1, y1].Where(obj => obj is Structure).FirstOrDefault();
+
+                                                                 bool hasStructure = curStruct != null;
+
+                                                                 // Make sure we have a road around this building
+                                                                 if (!hasRoad && !hasStructure && RoadManager.IsRoad(x1, y1)) {
+                                                                     if (!buildingOnRoad ||
+                                                                         RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city,
+                                                                                                new Location(origX, origY), true))
+                                                                         hasRoad = true;
+                                                                 }
+
+                                                                 return true;
+                                                             }, null);
+
+                if (!hasRoad) {
+                    Global.World.UnlockRegion(x, y);
+                    return Error.ROAD_NOT_AROUND;
+                }
+            }
+            else {
+                // Cant build on road if this building doesnt require roads
+                if (buildingOnRoad) {
+                    Global.World.UnlockRegion(x, y);
+                    return Error.ROAD_DESTROY_UNIQUE_PATH;                    
+                }
             }
 
             // add structure to the map                    

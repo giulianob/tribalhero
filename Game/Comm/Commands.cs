@@ -100,6 +100,7 @@ namespace Game.Comm {
         CITY_UNIT_LIST = 463,
         CITY_RADIUS_UPDATE = 465,
         CITY_LOCATE = 466,
+        CITY_ATTACK_DEFENSE_POINT_UPDATE = 467,
 
         CITY_CREATE_INITIAL = 499,
 

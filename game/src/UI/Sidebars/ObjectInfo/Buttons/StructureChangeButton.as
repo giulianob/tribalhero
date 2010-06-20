@@ -20,9 +20,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var changeToolTip: StructureChangeTooltip;
 
-		public function StructureChangeButton(button: SimpleButton, parentObj: GameObject, structPrototype: StructurePrototype, nextStructPrototype: StructurePrototype)
+		public function StructureChangeButton(parentObj: GameObject, structPrototype: StructurePrototype, nextStructPrototype: StructurePrototype)
 		{
-			super(button, parentObj);
+			super(parentObj, nextStructPrototype.getName());
 
 			if (!structPrototype)
 			return;
@@ -31,10 +31,10 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			changeToolTip = new StructureChangeTooltip(parentObj as StructureObject, nextStructPrototype);
 
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
 		public function onMouseOver(event: MouseEvent):void
@@ -49,7 +49,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				Global.mapComm.Object.changeStructure(parentObj.cityId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
 			}

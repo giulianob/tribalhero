@@ -26,14 +26,7 @@ package src.Objects.Actions {
 
 		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
 		{
-			var objRef: * = getDefinitionByName("DEFAULT_FOREST_CAMP_REMOVE_BUTTON") as Class;
-
-			var btn: SimpleButton = new objRef() as SimpleButton;
-
-			if (btn == null)
-			return null;
-
-			return new ForestCampRemoveButton(btn, parentObj) as ActionButton;
+			return new ForestCampRemoveButton(parentObj) as ActionButton;
 		}
 
 	}

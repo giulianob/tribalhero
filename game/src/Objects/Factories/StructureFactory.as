@@ -245,7 +245,7 @@
 			// Add all of the tech buttons that have technologies attached to them
 			for each (var techStats: TechnologyStats in cityObj.techManager.technologies)
 			{
-				var techBtn: TechnologyButton = new TechnologyButton(getTechButtonInstance(techStats.prototype), gameObj, structPrototype, techStats.prototype);
+				var techBtn: TechnologyButton = new TechnologyButton(gameObj, structPrototype, techStats.prototype);
 
 				for (var i: int = 0; i < upgradeActions.length; ++i) {
 					if (upgradeActions[i].techtype != techStats.prototype.techtype)
@@ -262,7 +262,7 @@
 			// Add all of the upgrade technology actions that don't currently have technologies attached to them
 			for each (var upgradeAction: TechUpgradeAction in upgradeActions) {
 				var techPrototype: TechnologyPrototype = TechnologyFactory.getPrototype(upgradeAction.techtype, 0);
-				techBtn = new TechnologyButton(getTechButtonInstance(techPrototype), gameObj, structPrototype, techPrototype);
+				techBtn = new TechnologyButton(gameObj, structPrototype, techPrototype);
 				techBtn.parentAction = upgradeAction;
 				buttons.push(techBtn);
 			}

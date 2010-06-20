@@ -119,12 +119,12 @@
 
 			lblDescription = new MultilineLabel();
 			lblDescription.setConstraints("South");
-			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");			
+			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 
 			lblLvl = new JLabel("Level 1");
 			lblLvl.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLvl, "header");
-			
+
 			lblLvlDescription = new MultilineLabel();
 			GameLookAndFeel.changeClass(lblLvlDescription, "Tooltip.text");
 

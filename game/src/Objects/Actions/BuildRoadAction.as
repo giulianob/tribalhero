@@ -26,14 +26,7 @@ package src.Objects.Actions {
 
 		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
 		{
-			var objRef:Class = getDefinitionByName("DEFAULT_BUILD_ROAD_BUTTON") as Class;
-
-			var ui: SimpleButton = new objRef() as SimpleButton;
-
-			if (ui == null)
-			return null;
-
-			return new BuildRoadButton(ui, parentObj);
+			return new BuildRoadButton(parentObj);
 		}
 
 	}

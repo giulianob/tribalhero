@@ -45,34 +45,8 @@ package src.Objects.Actions {
 		}
 		
 		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
-		{
-			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, level);
-			var objRef:Class;
-			
-			if (structPrototype != null)
-			{							
-				try
-				{
-					objRef = getDefinitionByName(structPrototype.spriteClass + "_BUILD_BUTTON") as Class;
-				}
-				catch (error: Error)
-				{
-					trace("Missing button sprite class: " + structPrototype.spriteClass + "_BUILD_BUTTON. Loading default");
-					objRef = getDefinitionByName("DEFAULT_BUILD_BUTTON") as Class;
-				}
-			}
-			else
-			{
-				trace("Missing prototype class when creating button type: " + type + " level " + level + ". Loading default");
-				objRef = getDefinitionByName("DEFAULT_BUILD_BUTTON") as Class;				
-			}
-			
-			var ui: SimpleButton = new objRef() as SimpleButton;
-						
-			if (ui == null)
-				return null;
-			
-			return new BuildButton(ui, parentObj, structPrototype);
+		{		
+			return new BuildButton(parentObj, StructureFactory.getPrototype(type, level));
 		}
 		
 	}

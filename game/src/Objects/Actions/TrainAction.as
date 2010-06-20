@@ -40,32 +40,8 @@ package src.Objects.Actions {
 		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
 		{			
 			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(type, Global.map.cities.getTemplateLevel(parentObj.cityId, type));
-			var objRef:Class;						
 			
-			if (unitPrototype != null)
-			{							
-				try
-				{
-					objRef = getDefinitionByName(unitPrototype.spriteClass + "_TRAIN_BUTTON") as Class;
-				}
-				catch (error: Error)
-				{
-					trace("Missing button sprite class: " + unitPrototype.spriteClass + "_TRAIN_BUTTON. Loading default");
-					objRef = getDefinitionByName("DEFAULT_TRAIN_BUTTON") as Class;
-				}
-			}
-			else
-			{
-				trace("Missing prototype class when creating button type: " + type + " level " + Global.map.cities.getTemplateLevel(parentObj.cityId, type) + ". Loading default");
-				objRef = getDefinitionByName("DEFAULT_TRAIN_BUTTON") as Class;				
-			}
-			
-			var btn: SimpleButton = new objRef() as SimpleButton;
-						
-			if (btn == null)
-				return null;
-			
-			return new TrainButton(btn, parentObj, unitPrototype) as ActionButton;
+			return new TrainButton(parentObj, unitPrototype) as ActionButton;
 		}
 		
 	}

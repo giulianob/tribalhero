@@ -13,11 +13,11 @@ package src.Objects.Actions {
 	public class Action {
 		
 		public static const groups: Object = [
-			{ name: "Buildings", actions: [ BuildButton, ForestCampBuildButton ] },
-			{ name: "Units", actions: [ TrainButton] },
-			{ name: "Upgrades", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
-			{ name: "Technologies", actions: [ TechnologyButton ] },			
-			{ name: "Others", actions: [ LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
+			{ name: "Build", actions: [ BuildButton ] },
+			{ name: "Train", actions: [ TrainButton] },
+			{ name: "Upgrade", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
+			{ name: "Research", actions: [ TechnologyButton ] },			
+			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
 		];
 		
 		//the actions visible to the client need to be here

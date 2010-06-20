@@ -135,33 +135,16 @@
 					groupedButtons = groupedButtons.concat(tmp);
 				}
 
-				if (groupedButtons.length == 0) continue;
-
-				var pnlGroup: JPanel = new JPanel();
-				var border: TitledBorder = new TitledBorder();
-				pnlGroup.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
-				border.setColor(new ASColor(0x0, 1));
-				border.setTitle(group.name);
-				border.setBeveled(false);
-				border.setRound(10);
-				pnlGroup.setBorder(border);
-
-				var cnt: int = 0;
-				var lastActionType: int = -1;
-				var pnlRow: JPanel = null;
+				if (groupedButtons.length == 0) continue;				
+				
+				var pnlGroup: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 3));
+				pnlGroup.setBorder(new TitledBorder(null, group.name, AsWingConstants.TOP, AsWingConstants.CENTER, 0, 10));
+				
 				for each(var groupButton: ActionButton in groupedButtons) {
-					if (cnt == 3 || lastActionType == -1 || lastActionType != groupButton.parentAction.actionType) {
-						pnlRow = new JPanel();
-						pnlRow.setLayout(new FlowLayout(AsWingConstants.LEFT, 8));
-						pnlGroup.append(pnlRow);
-						lastActionType = groupButton.parentAction.actionType;
-						cnt = 0;
-					}
+					if (groupButton.parentAction == null) continue;
 
-					pnlRow.append(new AssetPane(groupButton));
+					pnlGroup.append(groupButton);
 					groupButton.validateButton();
-
-					cnt++;
 				}
 
 				pnlGroups.append(pnlGroup);

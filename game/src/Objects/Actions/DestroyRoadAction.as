@@ -27,14 +27,7 @@ package src.Objects.Actions {
 
 		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
 		{
-			var objRef:Class = getDefinitionByName("DEFAULT_ROAD_DESTROY_BUTTON") as Class;
-
-			var ui: SimpleButton = new objRef() as SimpleButton;
-
-			if (ui == null)
-			return null;
-
-			return new DestroyRoadButton(ui, parentObj);
+			return new DestroyRoadButton(parentObj);
 		}
 
 	}

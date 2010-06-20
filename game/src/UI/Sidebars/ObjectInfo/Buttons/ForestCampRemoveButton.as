@@ -19,16 +19,16 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{							
 		private var textToolTip: TextTooltip;
 		
-		public function ForestCampRemoveButton(btn: SimpleButton, parentObj: GameObject) 
+		public function ForestCampRemoveButton(parentObj: GameObject) 
 		{			
-			super(btn, parentObj);
+			super(parentObj, "Demolish Camp");
 			
-			textToolTip = new TextTooltip("Demolish camp");
+			textToolTip = new TextTooltip("Demolish Camp");
 			
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);						
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);						
 		}
 		
 		public function onMouseOver(event: MouseEvent):void
@@ -43,7 +43,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				Global.mapComm.Object.removeForestCamp(parentObj.cityId, parentObj.objectId);
 			}
@@ -51,7 +51,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		
 		public override function validateButton():Boolean 
 		{
-			return enabled;
+			return isEnabled();
 		}
 	}
 	

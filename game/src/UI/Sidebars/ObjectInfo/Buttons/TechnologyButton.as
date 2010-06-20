@@ -25,19 +25,19 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var techToolTip: TechnologyTooltip;
 
-		public function TechnologyButton(button: SimpleButton, parentObj: StructureObject, structPrototype: StructurePrototype, techPrototype: TechnologyPrototype )
+		public function TechnologyButton(parentObj: StructureObject, structPrototype: StructurePrototype, techPrototype: TechnologyPrototype )
 		{
-			super(button, parentObj);
+			super(parentObj, techPrototype.getName());
 
 			this.techPrototype = techPrototype;
 			this.structPrototype = structPrototype;
 
 			techToolTip = new TechnologyTooltip(parentObj, techPrototype);
 
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
 		public function onMouseOver(event: MouseEvent):void
@@ -52,7 +52,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				Global.mapComm.City.technologyUpgrade(parentObj.cityId, parentObj.objectId, techPrototype.techtype);
 			}

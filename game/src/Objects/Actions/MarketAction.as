@@ -39,15 +39,8 @@ package src.Objects.Actions {
 		}
 		
 		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
-		{			
-			var objRef: * = getDefinitionByName("DEFAULT_MARKET_" + mode.toUpperCase() + "_BUTTON") as Class;							
-			
-			var btn: SimpleButton = new objRef() as SimpleButton;
-			
-			if (btn == null)
-				return null;
-			
-			return new MarketButton(btn, parentObj, mode) as ActionButton;
+		{						
+			return new MarketButton(parentObj, mode) as ActionButton;
 		}
 		
 	}

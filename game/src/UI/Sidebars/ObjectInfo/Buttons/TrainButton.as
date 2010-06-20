@@ -23,18 +23,18 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		
 		private var trainToolTip: TrainTooltip;
 		
-		public function TrainButton(button: SimpleButton, parentObj: GameObject, unitPrototype: UnitPrototype)
+		public function TrainButton(parentObj: GameObject, unitPrototype: UnitPrototype)
 		{				
-			super(button, parentObj);
+			super(parentObj, unitPrototype.getName());
 			
 			this.unitPrototype = unitPrototype;
 			
 			trainToolTip = new TrainTooltip(parentObj as StructureObject, unitPrototype);			
 			
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);						
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);						
 		}
 		
 		public function onMouseOver(event: MouseEvent):void
@@ -49,7 +49,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{				
 				var city: City = Global.map.cities.get(parentObj.cityId);
 				

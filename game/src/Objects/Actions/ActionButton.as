@@ -5,30 +5,33 @@
  */
 
 package src.Objects.Actions {
-	import flash.display.MovieClip;
-	import flash.display.SimpleButton;
 	import flash.events.MouseEvent;
 	import flash.filters.*;
+	import org.aswing.AsWingConstants;
+	import org.aswing.Icon;
+	import org.aswing.JButton;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.GameObject;
+	import src.UI.GameLookAndFeel;
 
-	public class ActionButton extends MovieClip {
-		protected var ui: SimpleButton;
+	public class ActionButton extends JButton {
 		protected var parentObj: GameObject;
 
 		public var parentAction: Action = new Action();
 		public var currentCount: int;
 
-		public function ActionButton(button: SimpleButton, parentObj: GameObject)
+		public function ActionButton(parentObj: GameObject, buttonText: String, icon: Icon = null)
 		{
+			super(buttonText, icon);
+
+			GameLookAndFeel.changeClass(this, "Button.action");
+
+			setHorizontalAlignment(AsWingConstants.LEFT);
 			this.parentObj = parentObj;
 
-			this.ui = button;
-			addChild(button);
-
-			ui.addEventListener(MouseEvent.CLICK, eventMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseClick);
+			addEventListener(MouseEvent.CLICK, eventMouseClick);
+			addEventListener(MouseEvent.MOUSE_DOWN, eventMouseClick);
 		}
 
 		public function eventMouseClick(e: MouseEvent):void
@@ -37,15 +40,14 @@ package src.Objects.Actions {
 		}
 
 		public function enable():void {
-			enabled = true;
-			ui.enabled = true;
-			ui.filters = new Array();
+			setEnabled(true);
+			//filters = new Array();
 		}
 
 		public function disable():void {
-			enabled = false;
-			ui.enabled = false;
-			ui.filters = [new DropShadowFilter(width, 0, 0, 0.4, 0, 0, 1, 1, true, false, false)];
+			setEnabled(false);
+			mouseEnabled = true;
+			//filters = [new DropShadowFilter(width, 0, 0, 0.4, 0, 0, 1, 1, true, false, false)];
 		}
 
 		public function validateButton(): Boolean

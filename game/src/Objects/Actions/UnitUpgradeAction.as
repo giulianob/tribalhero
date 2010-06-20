@@ -44,32 +44,7 @@ package src.Objects.Actions {
 			var template: UnitTemplate = city.template.get(type);			
 			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(type, template?template.level:1);
 			
-			var objRef:Class;
-			
-			if (unitPrototype != null)
-			{							
-				try
-				{
-					objRef = getDefinitionByName(unitPrototype.spriteClass + "_UPGRADE_BUTTON") as Class;
-				}
-				catch (error: Error)
-				{
-					trace("Missing button sprite class: " + unitPrototype.spriteClass + "_UPGRADE_BUTTON. Loading default");
-					objRef = getDefinitionByName("DEFAULT_UNIT_UPGRADE_BUTTON") as Class;
-				}
-			}
-			else
-			{
-				trace("Missing prototype class when creating button type: " + unitPrototype.type + " level " + unitPrototype.level + ". Loading default");
-				objRef = getDefinitionByName("DEFAULT_UNIT_UPGRADE_BUTTON") as Class;
-			}
-			
-			var btn: SimpleButton = new objRef() as SimpleButton;
-						
-			if (btn == null)
-				return null;
-			
-			return new UnitUpgradeButton(btn, parentObj, unitPrototype) as ActionButton;
+			return new UnitUpgradeButton(parentObj, unitPrototype) as ActionButton;
 		}
 		
 	}

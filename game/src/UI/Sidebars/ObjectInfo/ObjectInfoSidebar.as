@@ -182,32 +182,13 @@ package src.UI.Sidebars.ObjectInfo {
 
 				if (groupedButtons.length == 0) continue;
 
-				var pnlGroup: JPanel = new JPanel();
-				var border: TitledBorder = new TitledBorder();
-				pnlGroup.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
-				border.setColor(new ASColor(0x0, 1));
-				border.setTitle(group.name);
-				border.setBeveled(false);
-				border.setRound(10);
-				pnlGroup.setBorder(border);
-
-				var cnt: int = 0;
-				var lastActionType: int = -1;
-				var pnlRow: JPanel = null;
+				var pnlGroup: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 3));
+				pnlGroup.setBorder(new TitledBorder(null, group.name, AsWingConstants.TOP, AsWingConstants.CENTER, 0, 10));
+				
 				for each(var groupButton: ActionButton in groupedButtons) {
 					if (groupButton.parentAction == null) continue;
 
-					if (cnt == 3 || lastActionType == -1 || lastActionType != groupButton.parentAction.actionType) {
-						pnlRow = new JPanel();
-						pnlRow.setLayout(new FlowLayout(AsWingConstants.LEFT, 8));
-						pnlGroup.append(pnlRow);
-						lastActionType = (groupButton.parentAction ? groupButton.parentAction.actionType : 0);
-						cnt = 0;
-					}
-
-					pnlRow.append(new AssetPane(groupButton));
-
-					cnt++;
+					pnlGroup.append(groupButton);
 				}
 
 				pnlGroups.append(pnlGroup);
@@ -372,7 +353,7 @@ package src.UI.Sidebars.ObjectInfo {
 			pnlStats = new Form();
 
 			pnlGroups = new JPanel();
-			pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 3));
+			pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));
 
 			pnlActions = new JPanel();

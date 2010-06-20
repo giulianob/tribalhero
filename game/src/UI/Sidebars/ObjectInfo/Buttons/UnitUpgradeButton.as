@@ -1,6 +1,5 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.display.SimpleButton;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Global;
@@ -22,9 +21,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var upgradeToolTip: UnitUpgradeTooltip;
 
-		public function UnitUpgradeButton(button: SimpleButton, parentObj: GameObject, unitPrototype: UnitPrototype)
+		public function UnitUpgradeButton(parentObj: GameObject, unitPrototype: UnitPrototype)
 		{
-			super(button, parentObj);
+			super(parentObj, unitPrototype.getName());
 
 			if (!unitPrototype)
 			return;
@@ -33,10 +32,10 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			upgradeToolTip = new UnitUpgradeTooltip(parentObj as StructureObject, unitPrototype, nextUnitPrototype);
 
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
 		public function onMouseOver(event: MouseEvent):void
@@ -51,7 +50,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				Global.mapComm.Troop.upgradeUnit(parentObj.cityId, parentObj.objectId, nextUnitPrototype.type);
 			}

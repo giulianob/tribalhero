@@ -12,18 +12,18 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 	public class DestroyRoadButton extends ActionButton
 	{
-		public function DestroyRoadButton(button: SimpleButton, parentObj: GameObject)
+		public function DestroyRoadButton(parentObj: GameObject)
 		{
-			super(button, parentObj);
+			super(parentObj, "Destroy Road");
 
-			new SimpleTooltip(button, "Destroy Road");
+			new SimpleTooltip(this, "Destroy Road");
 
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				var cursor: DestroyRoadCursor = new DestroyRoadCursor();
 				cursor.init(Global.map, parentObj);

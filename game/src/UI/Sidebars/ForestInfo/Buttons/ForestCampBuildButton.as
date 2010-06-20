@@ -20,14 +20,14 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 
 		public function ForestCampBuildButton(parentObj: GameObject)
 		{
-			super(new ForestCampBuildButton_base(), parentObj);
+			super(parentObj, "Gather Lumber");
 
 			tooltip = new TextTooltip("Gather Lumber");
 
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
 		public function onMouseOver(event: MouseEvent):void
@@ -42,7 +42,7 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 
 		public function onMouseClick(event: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				// Check to see if this is being called from the forest or from the lumbermill. If this is from the forest, then the parent action will be null
 				var forestCampBuildAction: ForestCampBuildAction = parentAction as ForestCampBuildAction;
@@ -70,7 +70,7 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 			var campTypes: Array = ObjectFactory.getList("ForestCamp");
 
 			Global.mapComm.Object.createForestCamp(dlg.getForest().objectId , Global.gameContainer.selectedCity.id, campTypes[0], dlg.getCount());
-			
+
 			dlg.getFrame().dispose();
 		}
 	}

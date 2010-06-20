@@ -1,6 +1,5 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.display.SimpleButton;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Global;
@@ -19,22 +18,22 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		private var structPrototype: StructurePrototype;
 		private var buildToolTip: StructureBuildTooltip;
 
-		public function BuildButton(button: SimpleButton, parentObj: GameObject, structPrototype: StructurePrototype)
+		public function BuildButton(parentObj: GameObject, structPrototype: StructurePrototype)
 		{
-			super(button, parentObj);
+			super(parentObj, structPrototype.getName());
 
 			this.structPrototype = structPrototype;
 
 			buildToolTip = new StructureBuildTooltip(parentObj as StructureObject, structPrototype);
 
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
 		public function onMouseOver(event: MouseEvent):void
-		{			
+		{
 			buildToolTip.show(this);
 		}
 
@@ -45,10 +44,10 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				var cursor: BuildStructureCursor = new BuildStructureCursor();
-				cursor.init(Global.map, (parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1			
+				cursor.init(Global.map, (parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1
 			}
 		}
 

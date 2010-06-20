@@ -15,14 +15,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function ViewBattleButton(parentObj: GameObject)
 		{
-			super(new ViewBattleButton_base(), parentObj);
+			super(parentObj, "View Battle");
 
 			tooltip = new TextTooltip("View Battle");
 
-			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
-			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
+			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
 		// Override disable since this button can always be clicked
@@ -42,7 +42,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onMouseClick(event: Event):void
 		{
-			if (enabled)
+			if (isEnabled())
 			{
 				var battleViewer: BattleViewer = new BattleViewer(parentObj.battleCityId);
 				battleViewer.show();

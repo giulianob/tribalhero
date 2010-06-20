@@ -12,7 +12,6 @@
 	import src.Objects.*;
 	import src.Map.Map;
 	import src.UI.Components.*;
-	import src.UI.Cursors.BuildRoadCursor;
 	import src.UI.Dialog.*;
 	import src.UI.*;
 	import flash.ui.*;
@@ -75,8 +74,7 @@
 
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-			}
-			);
+			});
 
 			visible = false;
 
@@ -206,7 +204,7 @@
 		}
 
 		public function eventKeyDown(e: KeyboardEvent):void
-		{			
+		{
 			if (e.charCode == Keyboard.ESCAPE)
 			{
 				if (map != null) {
@@ -266,26 +264,26 @@
 
 		public function show() : void {
 			camera.reset();
-			
+
 			closeAllFrames();
-			
+
 			visible = true;
-			
+
 			messageTimer = new MessageTimer();
 			messageTimer.start();
 		}
 
-		public function dispose() : void {						
+		public function dispose() : void {
 			if (messageTimer) {
 				messageTimer.stop();
 				messageTimer = null;
 			}
-			
+
 			message.hide();
-			
+
 			closeAllFrames();
-			
-			visible = false;			
+
+			visible = false;
 
 			if (resourcesContainer && resourcesContainer.getFrame()) {
 				resourcesContainer.getFrame().dispose();

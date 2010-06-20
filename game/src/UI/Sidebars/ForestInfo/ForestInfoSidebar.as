@@ -43,7 +43,7 @@
 
 			createUI();
 
-			pnlGroups.append(new AssetPane(new ForestCampBuildButton(forestObj)));
+			pnlGroups.append(new ForestCampBuildButton(forestObj));
 
 			update();
 

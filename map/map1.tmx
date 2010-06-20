@@ -2,11 +2,11 @@
 <!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
 <map version="1.0" orientation="rectiso" width="34" height="62" tilewidth="108" tileheight="54">
  <tileset name="Untitled" firstgid="1" tilewidth="108" tileheight="108">
-  <image source="../graphics/Tilemap.large.png"/>
+  <image source="../../../Users/Giuliano/Documents/My Dropbox/Game/Tilemap.large.png"/>
  </tileset>
  <layer name="Layer 0" width="34" height="62">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAAM2YTW/CMAyGQ6mQKGwcxmCXITRt7I/vQ+K446TtH+zCL1ojHMmy8mE7SdvDKxA09tPXTtJ0YYxZTEDdBBio5qCxGXzfx2RpJ+JNm/BrKAbnRRtgqsnl8s6Rmkjemv64/DNgmplw/9bgoD7gHqWftRXiGFo+jhBLqHdL81CusXxZgSgL14fUfOfe27LXba9XpR8pXi7LyVz34UPhukhj7cEPy/GCfm8YY0utv3/gxwE8kY5vUV7fWEm8JarLHXPMJeKHtrbOD9wfnJqE8sbmT6o/LMNWeR+xuki0IwwSL2K10Hhyr+BIzRVt70h9kM5ZDoOmP9tIDkmv7APjNP3m4xh638zNuc/MvyD5a+xNkpixazVzV9sjNZ7jcr0t0Zslzgm5HNqez93rY+O46547g5WaL5o1iDLgOFJvY/0g2QtC8bgsHI5UnJRnEk9C95HDoOmNmBex/0vlpzEvAX80cWt6l6OVkK3EPKHX23PJYyIerU+pZyDKse51w4whne+cNd0xjPEem7KshX5w7pc71ukEXnDOaKn1IzU2dp199jwCh/bZKnfOr8CPJ3PdE98K1FijB3N9x3SEeL+93pm14Nb+gn7z1cUyrIHBrh2fvb4q++G7FnNY2blyDvhRa823DB3yYsvwg66psXMRl/sIHB14YllmAT84Pmv23hOqhVu/LMdPr+9K/vu0RByYxfbHh9CHHO0QwzMw5Lzv0sjdxw4YNiDH0RjdOy+tNp7vjRmeY6qiXozlCa3HmLWhuf8B1JDy0/AgAAA=
+   H4sIAAAAAAAAAM2YTU/cMBCGvSEg7UfLgWWXC2iF2vQ3Ij4OIC5IwBUO3IBKPXJEon+grZD4RfVox9JosD3jjywcXiXZtcdP3hk7TjaMMRufQKNPwMC1huojdpfA4Dv/KD/g2PbsjVat4JfUthaD86KNjOPzroZ/a56YTcQPzvGjYh7d+AOMPzDh+nXnHbmHr4Us3AfqMT/GvKzhSYgjJadtYj8th2aOUAbQd/LfYSEP59Lw+xiPrI4LOMYozuKbw7553iLDudWtwB3T0CxrP6XuKDNw3FmdWV0rPAypM8vn8F4Gh7s+tTqwuvHkXKs5+gEctO4aoR+fL8BygblJZfiHfuyhJznz151fevKSEm9I8rKl7PPmyQ/UyJV5X6taOT9ofUg54bUK1ycol7NUjjkyTDP6lqzJ/LcZY9B4oWGQPPH12S7k8MWP7a9iz1Pt+Lw+NffJfw/1T6lPX5yQJ1JO4DiPsKbWme9a8qz2vjx3v+r6zAvH5/dV8/5yYsba5qxnqTUitZUYYvmotd+skZMSnlKOkpqv5WnqGkS56btXzXxoveEMNE6qtyXrstQnhUXDoX1OxHKn9SR0HyUMObUR8yL2f63xecy3gD85cfv0rkTjRLYa84S3h/eSXSGeZr9YwuU4JlZflDFS57tmTXcMH/Edm7NMEv3Q3K+2r1OHXmje0aT1Q+obawd7nQVy5O6tSuf8GP3YN8tn4n2FHOdoxyy/MS0w3m+rB2UutLnn3x14e2CYIAOsHT+tngK8DfaH/ex6gR++tpQDBHPlV8CPGEdpPkbEi6ngB/XV53Huc3aBHCP0BFgGAT80Ocl59nYkF279Ao4Xq+dAnz7yMiQclAXq43GFHDPC8A0ZpLW0qczi8jZDhk3UlI3X1/hcm57zxrzn4Dx9Mkni4/fJ8od5wT1ZlQ88H39X7DlngeMr6j/jDBBl8CAAAA==
   </data>
  </layer>
 </map>

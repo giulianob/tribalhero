@@ -23,6 +23,8 @@ namespace Game.Data {
         private string name = "Washington";
         private uint nextObjectId;
         private byte radius = 4;
+        private int attackPoint;
+        private int defensePoint;
 
         private readonly object objLock = new object();
 
@@ -113,13 +115,34 @@ namespace Game.Data {
 
         /// <summary>
         /// Attack points earned by this city
-        /// </summary>
-        public int AttackPoint { get; set; }
+        /// </summary>        
+        public int AttackPoint { 
+            get {
+                return attackPoint;
+            } 
+            set {
+                CheckUpdateMode();
+                attackPoint = value;
+                DefenseAttackPointUpdate();
+            } 
+        }
 
         /// <summary>
         /// Defense points earned by this city
         /// </summary>
-        public int DefensePoint { get; set; }        
+        public int DefensePoint
+        {
+            get
+            {
+                return defensePoint;
+            }
+            set
+            {
+                CheckUpdateMode();
+                defensePoint = value;
+                DefenseAttackPointUpdate();
+            }
+        }
         #endregion
 
         #region Constructors
@@ -400,6 +423,20 @@ namespace Game.Data {
 
             packet.AddUInt32(Id);
             packet.AddByte(radius);
+
+            Global.Channel.Post("/CITY/" + id, packet);
+        }
+
+        public void DefenseAttackPointUpdate()
+        {
+            if (!Global.FireEvents)
+                return;
+
+            Packet packet = new Packet(Command.CITY_ATTACK_DEFENSE_POINT_UPDATE);
+
+            packet.AddUInt32(Id);
+            packet.AddInt32(attackPoint);
+            packet.AddInt32(defensePoint);
 
             Global.Channel.Post("/CITY/" + id, packet);
         }

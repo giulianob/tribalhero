@@ -30,8 +30,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherService", "Launcher
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSimulator", "ConsoleSimulator\ConsoleSimulator.csproj", "{831301A1-D65D-4DD6-AB67-23FBBE59145A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallGenerator", "WallGenerator\WallGenerator.csproj", "{3EA58B92-1988-4B63-976E-A4879BC2F3E4}"
+EndProject
 Global
-		CategoryFile = Game8.vsmdi
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -77,6 +78,10 @@ Global
 		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{831301A1-D65D-4DD6-AB67-23FBBE59145A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EA58B92-1988-4B63-976E-A4879BC2F3E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EA58B92-1988-4B63-976E-A4879BC2F3E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EA58B92-1988-4B63-976E-A4879BC2F3E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EA58B92-1988-4B63-976E-A4879BC2F3E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

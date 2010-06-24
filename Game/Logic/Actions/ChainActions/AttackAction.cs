@@ -41,6 +41,7 @@ namespace Game.Logic.Actions {
             mode = (AttackMode) uint.Parse(properties["mode"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
             targetStructureId = uint.Parse(properties["target_object_id"]);
+            initialTroopValue = int.Parse(properties["initial_troop_value"]);
         }
 
         public override Error Execute() {
@@ -216,7 +217,8 @@ namespace Game.Logic.Actions {
                                                 new XMLKVPair("city_id", cityId), new XMLKVPair("stub_id", stubId),
                                                 new XMLKVPair("target_city_id", targetCityId),
                                                 new XMLKVPair("target_object_id", targetStructureId),
-                                                new XMLKVPair("mode", (byte) mode)
+                                                new XMLKVPair("mode", (byte) mode),
+                                                new XMLKVPair("initial_troop_value", initialTroopValue)
                     });
             }
         }

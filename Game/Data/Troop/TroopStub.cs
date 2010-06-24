@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Game.Database;
 using Game.Fighting;
 using Game.Util;
@@ -133,7 +134,7 @@ namespace Game.Data.Troop {
         }
 
         /// <summary>
-        /// Returns how much the troop is worth
+        /// Returns the sum of the upkeep for all units in troop stub
         /// </summary>
         public int Value {
             get {
@@ -141,9 +142,7 @@ namespace Game.Data.Troop {
 
                 lock (objLock) {
                     foreach (Formation formation in data.Values) {
-                        foreach (KeyValuePair<ushort, ushort> kvp in formation) {
-                            count += (City.Template[kvp.Key].Cost * kvp.Value).Total;
-                        }
+                        count += formation.Sum(kvp => City.Template[kvp.Key].Upkeep * kvp.Value);
                     }
                 }
 

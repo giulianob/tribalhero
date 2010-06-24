@@ -122,7 +122,13 @@ namespace Game.Battle {
         }
 
         public bool CanSee(CombatObject obj) {
-            return Visibility >= obj.Stats.Stl;
+            switch(obj.BaseStats.Weapon) {
+                case WeaponType.BOW:
+                    return Visibility + BaseStats.Spd / 2 >= obj.Stats.Stl;
+                default:
+                    return Visibility >= obj.Stats.Stl;
+
+            }      
         }
 
         public void ParticipatedInRound() {

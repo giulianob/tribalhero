@@ -6,7 +6,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Comment
 20002,HaveNoStructure,2301,minlvl=0,maxlvl=10,,,You can only have one per city.,1 University per city
 20003,HaveUnit,type=101,gt,count=4,,,Requires training 5 fighters.,For Upgrading mainbuilding to lvl 3
 //20004,HaveStructure,2301,minlvl=1,maxlvl=10,,,Require University Lvl 1,For Upgrading mainbuilding to lvl 4
-20005,HaveStructure,2501,minlvl=1,maxlvl=10,,,Require Stable Lvl 1 ,For building Stable
+20005,HaveStructure,2202,minlvl=1,maxlvl=10,,,Require Stable Lvl 1 ,For building trading post
 20006,AttackPoint,gt,50,,,,Requires at least 50 Attack Points.,For Upgrading mainbuilding to lvl 5
 210601,HaveNoStructure,2106,minlvl=0,maxlvl=10,,,You can only have one per city until Town Center reaches Lvl 4,Require Lvl4 Main building for 2nd Farm and Lumbermill
 210701,HaveNoStructure,2107,minlvl=0,maxlvl=10,,,You can only have one per city until Town Center reaches Lvl 4,Require Lvl4 Main building for 2nd Farm and Lumbermill

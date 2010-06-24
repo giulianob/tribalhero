@@ -43,8 +43,8 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 20005,3,1,structure_Build,2201,,,,,,
 20005,4,1,structure_Build,2301,,,,,20002,SELF
 20005,5,1,structure_Build,2110,,,,,,
-20005,6,1,structure_Build,2501,,,,,,
-20005,7,1,structure_build,2202,,,,,20005,SELF
+20005,6,1,structure_Build,2501,,,,,20005,SELF
+20005,7,1,structure_build,2202,,,,,,
 20005,8,1,structure_Upgrade,10,,,,,20006,SELF
 20005,9,1,road_Build,,,,,,,
 20005,10,1,road_Destroy,,,,,,,

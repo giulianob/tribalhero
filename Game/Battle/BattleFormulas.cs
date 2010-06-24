@@ -11,6 +11,33 @@ using Game.Data.Troop;
 
 namespace Game.Battle {
     public class BattleFormulas {
+        public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor) {
+            switch(weapon) {
+                case WeaponClass.BASIC:
+                    switch(armor) {
+                        case ArmorClass.LEATHER:
+                        case ArmorClass.WOODEN:
+                            return 1;
+                        case ArmorClass.METAL:
+                        case ArmorClass.STONE:
+                            return 0.8;
+                    }
+                    break;
+                case WeaponClass.ELEMENTAL:
+                    switch (armor) {
+                        case ArmorClass.LEATHER:
+                        case ArmorClass.WOODEN:
+                            return 0.9;
+                        case ArmorClass.METAL:
+                        case ArmorClass.STONE:
+                            return 1.2;
+                    }
+                    break;
+            }
+
+            return 1;
+        }
+
         public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor) {
             const double weakest = 0.2;
             const double weak = 0.6;
@@ -21,71 +48,49 @@ namespace Game.Battle {
             switch (weapon) {
                 case WeaponType.SWORD:
                     switch (armor) {
-                        case ArmorType.LEATHER:
-                            return good;
-                        case ArmorType.METAL:
-                            return weak;
+                        case ArmorType.GROUND:
+                            return strong;
                         case ArmorType.MOUNT:
-                            return weakest;
-                        case ArmorType.WOODEN:
-                            return good;
-                        case ArmorType.STONE:
                             return weak;
+                        case ArmorType.MACHINE:
+                            return strong;
+                        case ArmorType.BUILDING:
+                            return good;
                     }
                     break;
                 case WeaponType.PIKE:
                     switch (armor) {
-                        case ArmorType.LEATHER:
-                            return weak;
-                        case ArmorType.METAL:
-                            return strong;
-                        case ArmorType.MOUNT:
+                        case ArmorType.GROUND:
                             return good;
-                        case ArmorType.WOODEN:
-                            return weak;
-                        case ArmorType.STONE:
+                        case ArmorType.MOUNT:
+                            return strongest;
+                        case ArmorType.MACHINE:
+                            return weakest;
+                        case ArmorType.BUILDING:
                             return weak;
                     }
                     break;
                 case WeaponType.BOW:
                     switch (armor) {
-                        case ArmorType.LEATHER:
-                            return strongest;
-                        case ArmorType.METAL:
-                            return weak;
+                        case ArmorType.GROUND:
+                            return strong;
                         case ArmorType.MOUNT:
-                            return good;
-                        case ArmorType.WOODEN:
+                            return strong;
+                        case ArmorType.MACHINE:
                             return weak;
-                        case ArmorType.STONE:
+                        case ArmorType.BUILDING:
                             return weakest;
                     }
                     break;
-                case WeaponType.FIRE_BALL:
+                case WeaponType.BALL:
                     switch (armor) {
-                        case ArmorType.LEATHER:
+                        case ArmorType.GROUND:
                             return weak;
-                        case ArmorType.METAL:
-                            return good;
                         case ArmorType.MOUNT:
-                            return strong;
-                        case ArmorType.WOODEN:
+                            return weakest;
+                        case ArmorType.MACHINE:
                             return good;
-                        case ArmorType.STONE:
-                            return weak;
-                    }
-                    break;
-                case WeaponType.STONE_BALL:
-                    switch (armor) {
-                        case ArmorType.LEATHER:
-                            return weakest;
-                        case ArmorType.METAL:
-                            return weakest;
-                        case ArmorType.MOUNT:
-                            return weak;
-                        case ArmorType.WOODEN:
-                            return strong;
-                        case ArmorType.STONE:
+                        case ArmorType.BUILDING:
                             return strongest;
                     }
                     break;
@@ -98,7 +103,8 @@ namespace Game.Battle {
             int rawDmg = atk * attacker.Count;
             rawDmg /= 10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
-            rawDmg = (int) (typeModifier*rawDmg);
+            double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
+            rawDmg = (int)(typeModifier * classModifier* rawDmg);
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort) rawDmg;           
         }
 

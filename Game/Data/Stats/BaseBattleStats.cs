@@ -1,18 +1,28 @@
 namespace Game.Data {
     public enum ArmorType {
+        GROUND = 0,
+        MOUNT = 1,
+        MACHINE = 2,
+        BUILDING = 3
+    }
+
+    public enum ArmorClass {
         LEATHER = 0,
         METAL = 1,
-        MOUNT = 2,
-        WOODEN = 3,
-        STONE = 4
+        WOODEN = 2,
+        STONE = 3
     }
 
     public enum WeaponType {
         SWORD = 0,
         PIKE = 1,
         BOW = 2,
-        FIRE_BALL = 3,
-        STONE_BALL = 4
+        BALL = 3
+    }
+
+    public enum WeaponClass {
+        BASIC = 0,
+        ELEMENTAL = 1
     }
 
     public class BaseBattleStats {
@@ -26,7 +36,11 @@ namespace Game.Data {
 
         public WeaponType Weapon { get; private set; }
 
+        public WeaponClass WeaponClass { get; private set; }
+
         public ArmorType Armor { get; private set; }
+
+        public ArmorClass ArmorClass { get; private set; }
 
         public ushort MaxHp { get; private set; }
 
@@ -48,12 +62,14 @@ namespace Game.Data {
 
         #region Constructors
 
-        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, ArmorType armor, ushort maxHp, ushort atk,
+        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, WeaponClass wpnClass, ArmorType armor, ArmorClass armrClass, ushort maxHp, ushort atk,
                                ushort def, byte range, byte stealth, byte speed, ushort groupSize, ushort reward, byte carry) {
             Type = type;
             Lvl = lvl;
             Weapon = weapon;
+            WeaponClass = wpnClass;
             Armor = armor;
+            ArmorClass = ArmorClass;
             MaxHp = maxHp;
             Atk = atk;
             Def = def;

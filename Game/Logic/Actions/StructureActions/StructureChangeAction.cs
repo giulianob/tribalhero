@@ -94,6 +94,19 @@ namespace Game.Logic.Actions {
         public override void Callback(object custom) {
             City city;
             Structure structure;
+
+            // Block structure
+            using (new MultiObjectLock(cityId, structureId, out city, out structure)) {
+                if (!IsValid())
+                    return;
+
+                structure.BeginUpdate();
+                structure.IsBlocked = true;
+                structure.EndUpdate();
+            }
+
+            structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, new GameAction[] { this });
+
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
@@ -107,7 +120,7 @@ namespace Game.Logic.Actions {
                 StructureFactory.GetStructure(structure, (ushort) type, lvl, false);
                 structure.Technologies.Parent = structure.City.Technologies;
                 InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
-                structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, this);
+                structure.IsBlocked = false;
                 structure.EndUpdate();
 
                 StateChange(ActionState.COMPLETED);

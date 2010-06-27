@@ -56,7 +56,7 @@
 				}
 
 				if (txtMessage.getLength() == 0) {
-					InfoDialog.showMessageDialog("Error", "Please enter a message.");
+					InfoDialog.showMessageDialog("Error", "Please write a message.");
 					return;
 				}				
 

@@ -118,9 +118,9 @@ package src.UI.Sidebars.ObjectInfo {
 				}
 
 				if (structPrototype.maxlabor > 0) {
-					addStatRow("Laborers", gameObject.labor + "/" + structPrototype.maxlabor);
+					addStatRow("Laborers", gameObject.labor + "/" + structPrototype.maxlabor, new AssetIcon(new ICON_LABOR()));
 				} else if (gameObject.labor > 0) {
-					addStatRow("Laborers", gameObject.labor.toString());
+					addStatRow("Laborers", gameObject.labor.toString(), new AssetIcon(new ICON_LABOR()));
 				}
 
 				var propPrototype: Array = PropertyFactory.getAllProperties(gameObject.type);
@@ -203,14 +203,16 @@ package src.UI.Sidebars.ObjectInfo {
 			t.start();
 		}
 
-		private function addStatRow(title: String, value: String) : JLabel {
+		private function addStatRow(title: String, value: String, icon: Icon = null) : JLabel {
 			var rowTitle: JLabel = new JLabel(title);
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");
 
 			var rowValue: JLabel = new JLabel(value);
 			rowValue.setHorizontalAlignment(AsWingConstants.LEFT);
+			rowValue.setHorizontalTextPosition(AsWingConstants.LEFT);
 			rowValue.setName("value");
+			rowValue.setIcon(icon);
 
 			pnlStats.addRow(rowTitle, rowValue);
 

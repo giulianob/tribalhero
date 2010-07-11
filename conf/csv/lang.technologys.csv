@@ -1,0 +1,11 @@
+Key,EN
+A_CALL_TO_ARMS_TECHNOLOGY_NAME,A-Call-To-Arm
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide little more help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide lot more  help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide ballkicking help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide suicidal help defending when the town is under attack.  
+TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation Research
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Improves underground engineering.  Reduces distance requirement by 1 for underground structures.
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Improves underground engineering.  Reduces distance requirement by 2 for underground structures.
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Improves underground engineering.  Reduces distance requirement by 3 for underground structures.

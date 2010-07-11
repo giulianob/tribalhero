@@ -69,7 +69,7 @@ namespace Game.Data {
             Weapon = weapon;
             WeaponClass = wpnClass;
             Armor = armor;
-            ArmorClass = ArmorClass;
+            ArmorClass = armrClass;
             MaxHp = maxHp;
             Atk = atk;
             Def = def;

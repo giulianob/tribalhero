@@ -188,10 +188,10 @@ namespace CSVToXML {
                         writer.WriteAttributeString("time", obj[18]);
                         writer.WriteAttributeString("workerid", obj[19]);
                         writer.WriteAttributeString("weapon", obj[20]);
-                        writer.WriteAttributeString("weaponclass", obj[20]);
-                        writer.WriteAttributeString("armor", obj[21]);
-                        writer.WriteAttributeString("armorclass", obj[22]);
-                        writer.WriteAttributeString("maxlabor", obj[23]);
+                        writer.WriteAttributeString("weaponclass", obj[21]);
+                        writer.WriteAttributeString("armor", obj[22]);
+                        writer.WriteAttributeString("armorclass", obj[23]);
+                        writer.WriteAttributeString("maxlabor", obj[24]);
 
                         writer.WriteStartElement("Layout");
 

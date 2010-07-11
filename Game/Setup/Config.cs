@@ -16,11 +16,11 @@ namespace Game.Setup {
         public static readonly string flash_domain = "*";
 
         public static readonly string csv_folder = "conf/csv/";
-        public static readonly string csv_compiled_folder = "conf/csv/compiled";
+        public static readonly string csv_compiled_folder = "conf/csv/compiled/";
         public static readonly string settings_folder = "conf/";
         public static readonly string maps_folder = "conf/maps/";
         public static readonly string data_folder = "conf/data/";
-        public static readonly string regions_folder = "conf/regions";
+        public static readonly string regions_folder = "conf/regions/";
 
         public static readonly uint map_width = 1904;
         public static readonly uint map_height = 3472;

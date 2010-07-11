@@ -79,7 +79,7 @@ STABLE_STRUCTURE_LVL_1,Allows training calvary.
 STABLE_STRUCTURE_LVL_2,Improved stable strength.
 STABLE_STRUCTURE_LVL_3,Allows training heavy calvary.
 STABLE_STRUCTURE_LVL_4,Enables upgrading calvary and heavy calvary.
-STABLE_STRUCTURE_LVL_5,Enables converting the stable into a workshop. Decreases unit training time by 5%.
+STABLE_STRUCTURE_LVL_5,Decreases unit training time by 5%.
 STABLE_STRUCTURE_LVL_6,Decreases training time by 10%.
 STABLE_STRUCTURE_LVL_7,Decreases training time by 15%.
 STABLE_STRUCTURE_LVL_8,Decreases training time by 20%.
@@ -104,7 +104,7 @@ UNIVERSITY_STRUCTURE_LVL_2,Decreases Labor Training time by  4% and enables upgr
 UNIVERSITY_STRUCTURE_LVL_3,Decreases Labor Training time by  6% and allows building Blacksmith.
 UNIVERSITY_STRUCTURE_LVL_4,Decreases Labor Training time by  8% and enables upgrading Long Bow technology.
 UNIVERSITY_STRUCTURE_LVL_5,Decreases Labor Training time by  10% and enables upgrading Long Composite technology.
-UNIVERSITY_STRUCTURE_LVL_6,Decreases Labor Training time by  15% and enables upgrading Long Crossbow technology.
+UNIVERSITY_STRUCTURE_LVL_6,Allows building workshop.  Decreases Labor Training time by  15% and enables upgrading Long Crossbow technology.
 UNIVERSITY_STRUCTURE_LVL_7,Decreases Labor Training time by  20%
 UNIVERSITY_STRUCTURE_LVL_8,Decreases Labor Training time by  30%
 UNIVERSITY_STRUCTURE_LVL_9,Decreases Labor Training time by  50%

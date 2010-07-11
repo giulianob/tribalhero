@@ -20,17 +20,17 @@ namespace Game.Battle {
                             return 1;
                         case ArmorClass.METAL:
                         case ArmorClass.STONE:
-                            return 0.8;
+                            return 0.6;
                     }
                     break;
                 case WeaponClass.ELEMENTAL:
                     switch (armor) {
                         case ArmorClass.LEATHER:
                         case ArmorClass.WOODEN:
-                            return 0.9;
+                            return 0.75;
                         case ArmorClass.METAL:
                         case ArmorClass.STONE:
-                            return 1.2;
+                            return 2;
                     }
                     break;
             }
@@ -39,11 +39,12 @@ namespace Game.Battle {
         }
 
         public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor) {
+            const double nodamage = 0.1;
             const double weakest = 0.2;
-            const double weak = 0.6;
+            const double weak = 0.7;
             const double good = 1;
-            const double strong = 1.4;
-            const double strongest = 1.8;
+            const double strong = 1.5;
+            const double strongest = 3;
 
             switch (weapon) {
                 case WeaponType.SWORD:
@@ -61,13 +62,13 @@ namespace Game.Battle {
                 case WeaponType.PIKE:
                     switch (armor) {
                         case ArmorType.GROUND:
-                            return good;
+                            return weak;
                         case ArmorType.MOUNT:
                             return strongest;
                         case ArmorType.MACHINE:
-                            return weakest;
-                        case ArmorType.BUILDING:
                             return weak;
+                        case ArmorType.BUILDING:
+                            return strong;
                     }
                     break;
                 case WeaponType.BOW:
@@ -75,9 +76,9 @@ namespace Game.Battle {
                         case ArmorType.GROUND:
                             return strong;
                         case ArmorType.MOUNT:
-                            return strong;
+                            return good;
                         case ArmorType.MACHINE:
-                            return weak;
+                            return weakest;
                         case ArmorType.BUILDING:
                             return weakest;
                     }
@@ -85,9 +86,9 @@ namespace Game.Battle {
                 case WeaponType.BALL:
                     switch (armor) {
                         case ArmorType.GROUND:
-                            return weak;
+                            return nodamage;
                         case ArmorType.MOUNT:
-                            return weakest;
+                            return nodamage;
                         case ArmorType.MACHINE:
                             return good;
                         case ArmorType.BUILDING:

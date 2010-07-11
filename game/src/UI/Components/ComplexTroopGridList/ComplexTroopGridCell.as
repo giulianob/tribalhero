@@ -6,7 +6,7 @@
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 	import src.Objects.Troop.Unit;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class ComplexTroopGridCell extends JLabel implements GridListCell{
 

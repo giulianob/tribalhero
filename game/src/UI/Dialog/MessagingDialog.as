@@ -189,6 +189,9 @@ package src.UI.Dialog{
 		}
 
 		private function onTabChanged(e: AWEvent) : void {
+			messageTable.getParent().remove(messageTable);
+			(tabs.getSelectedComponent() as Container).append(messageTable);
+			(tabs.getSelectedComponent() as Container).pack();
 			loadPage(1);
 		}
 
@@ -308,15 +311,20 @@ package src.UI.Dialog{
 			btnInboxMarkAsRead = new JButton("Mark as Read");
 			btnInboxDelete = new JButton("Delete");
 
-			pnlInbox = new JPanel();
-			pnlInbox.append(btnInboxMarkAsRead);
-			pnlInbox.append(btnInboxDelete);
+			pnlInbox = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			var pnlInboxButtons: JPanel = new JPanel();
+			pnlInboxButtons.append(btnInboxMarkAsRead);
+			pnlInboxButtons.append(btnInboxDelete);
+			pnlInbox.append(pnlInboxButtons);
+			pnlInbox.append(messageTable);
 
 			// Sent buttons
 			btnSentDelete = new JButton("Delete");
 
-			pnlSent = new JPanel();
-			pnlSent.append(btnSentDelete);
+			pnlSent = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			var pnlSentButtons: JPanel = new JPanel();
+			pnlSentButtons.append(btnSentDelete);
+			pnlSent.append(pnlSentButtons);
 
 			// Bottom bar
 			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));
@@ -354,7 +362,6 @@ package src.UI.Dialog{
 			pnlFooter.append(pnlNewMessage);
 
 			append(tabs);
-			append(messageTable);
 			append(pnlFooter);
 		}
 	}

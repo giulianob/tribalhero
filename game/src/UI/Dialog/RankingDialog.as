@@ -94,6 +94,10 @@ package src.UI.Dialog{
 		}
 
 		private function onTabChanged(e: AWEvent) : void {
+			rankingTable.getParent().remove(rankingTable);
+			(tabs.getSelectedComponent() as Container).append(rankingTable);
+			(tabs.getSelectedComponent() as Container).pack();
+
 			changeType();
 		}
 
@@ -259,7 +263,7 @@ package src.UI.Dialog{
 			rankingTable.setSelectionMode(JTable.MULTIPLE_SELECTION);
 			rankingTable.setPreferredSize(new IntDimension(415, 350));
 
-			cityRanking = new JPanel(new BorderLayout(0, 10));
+			cityRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			cityAttackRanking = new JToggleButton("Attack");
 			cityAttackRanking.setSelected(true);
 			cityDefenseRanking = new JToggleButton("Defense");
@@ -269,8 +273,9 @@ package src.UI.Dialog{
 			var cityButtonGroupHolder: JPanel = new JPanel();
 			cityButtonGroupHolder.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking);
 			cityRanking.append(cityButtonGroupHolder);
+			cityRanking.append(rankingTable);
 
-			playerRanking = new JPanel(new BorderLayout(0, 10));
+			playerRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			playerAttackRanking = new JToggleButton("Attack");
 			playerAttackRanking.setSelected(true);
 			playerDefenseRanking = new JToggleButton("Defense");
@@ -320,7 +325,6 @@ package src.UI.Dialog{
 			pnlFooter.append(pnlSearch);
 
 			append(tabs);
-			append(rankingTable);
 			append(pnlFooter);
 		}
 	}

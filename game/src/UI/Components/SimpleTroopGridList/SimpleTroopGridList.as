@@ -3,7 +3,6 @@
 	import flash.display.DisplayObject;
 	import org.aswing.AsWingConstants;
 	import org.aswing.border.EmptyBorder;
-	import org.aswing.border.TitledBorder;
 	import org.aswing.ext.GeneralGridListCellFactory;
 	import org.aswing.ext.GridList;
 	import org.aswing.ext.GridListItemEvent;
@@ -20,10 +19,10 @@
 	import src.UI.Tooltips.UnitTooltip;
 
 	/**
-	 * 
+	 *
 	 * The SimpleTroopGridList is used when the grid list only needs to look at the unit template from the city for the levels.
 	 * This is usually used for the drag and drop unit lists and the other basic uses.
-	 * 
+	 *
 	 * @author Giuliano
 	 */
 	public class SimpleTroopGridList extends GridList
@@ -42,7 +41,6 @@
 
 			setTileWidth(40);
 			setTileHeight(32);
-
 
 			addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);
 			addEventListener(GridListItemEvent.ITEM_ROLL_OUT, onItemRollOut);
@@ -195,13 +193,16 @@
 
 			for each(var ts: SimpleTroopGridList in tilelists)
 			{
-				if (includeFormationName)
-					ts.setBorder(new TitledBorder(null, Formation.TypeStrings[ts.getFormation().type], AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));
-				else
+				if (includeFormationName) {
+					var tabHolder: JTabbedPane = new JTabbedPane();
+					tabHolder.appendTab(ts, Formation.TypeStrings[ts.getFormation().type]);
+					panel.append(tabHolder);
+				} else {
 					ts.setBorder(new EmptyBorder());
-					
+					panel.append(ts);
+				}
+
 				ts.setPreferredSize(new IntDimension(300, 100));
-				panel.append(ts);
 			}
 
 			return panel;

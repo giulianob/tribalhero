@@ -4,7 +4,6 @@
 	import org.aswing.AsWingConstants;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.border.SimpleTitledBorder;
-	import org.aswing.border.TitledBorder;
 	import org.aswing.ext.GeneralGridListCellFactory;
 	import org.aswing.ext.GridList;
 	import org.aswing.ext.GridListItemEvent;
@@ -19,7 +18,7 @@
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Objects.Troop.*;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Tooltips.ComplexUnitTooltip;
 	import src.UI.Tooltips.Tooltip;
 
@@ -170,13 +169,15 @@
 				if (tooltipMode) {
 					ts.setBorder(new SimpleTitledBorder(null, Formation.TypeStrings[ts.getFormation().type], AsWingConstants.TOP, AsWingConstants.LEFT, 0, GameLookAndFeel.getClassAttribute("Tooltip.text", "Label.font"), GameLookAndFeel.getClassAttribute("Tooltip.text", "Label.foreground")));
 					ts.setPreferredWidth(250);
+					panel.append(ts);
 				}
 				else {
-					ts.setBorder(new TitledBorder(null, Formation.TypeStrings[ts.getFormation().type], AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));
-					ts.setPreferredSize(new IntDimension(300, 100));
+					var tabHolder: JTabbedPane = new JTabbedPane();
+					ts.setBorder(new EmptyBorder(null, new Insets()));
+					tabHolder.appendTab(ts, Formation.TypeStrings[ts.getFormation().type]);
+					panel.append(tabHolder);
+					ts.setPreferredSize(new IntDimension(300, 75));
 				}
-
-				panel.append(ts);
 			}
 
 			return panel;

@@ -9,7 +9,7 @@
 	import org.aswing.plaf.ASColorUIResource;
 	import org.aswing.plaf.ComponentUI;
 	import org.aswing.SoftBoxLayout;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class TextTooltip extends Tooltip {
 		

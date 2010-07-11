@@ -4,7 +4,7 @@
 	import org.aswing.event.AWEvent;
 	import src.Map.City;
 	import src.Objects.*;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	
 	import org.aswing.*;
 	import org.aswing.border.*;

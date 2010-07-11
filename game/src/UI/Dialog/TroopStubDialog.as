@@ -17,6 +17,7 @@ package src.UI.Dialog {
 	import src.UI.Components.ComplexTroopGridList.*;
 	import src.UI.Components.NotificationBox;
 	import src.UI.GameJPanel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.BinaryList.BinaryListEvent;
 
 	public class TroopStubDialog extends GameJPanel {
@@ -176,6 +177,7 @@ package src.UI.Dialog {
 
 			lblStatus = new JLabel(troop.getStateName());
 			lblStatus.setHorizontalAlignment(AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblStatus, "darkHeader");
 
 			pnlHeaderWest.append(lblStatus);
 

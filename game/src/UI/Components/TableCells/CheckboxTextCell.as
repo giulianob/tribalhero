@@ -5,6 +5,7 @@
 	import org.aswing.Component;
 	import org.aswing.JCheckBox;
 	import org.aswing.JPanel;
+	import org.aswing.JTable;
 	import org.aswing.JToggleButton;
 	import org.aswing.table.AbstractTableCell;
 
@@ -28,6 +29,7 @@
 				value.checked = checkbox.isSelected();
 			});
 			wrapper = new JPanel(new CenterLayout());
+			wrapper.setOpaque(true);
 			wrapper.append(checkbox);
 		}
 
@@ -45,6 +47,16 @@
 		override public function getCellComponent():Component
 		{
 			return wrapper;
+		}
+
+		override public function setTableCellStatus(table:JTable, isSelected:Boolean, row:int, column:int):void{
+			if(isSelected){
+				wrapper.setBackground(table.getSelectionBackground());
+				wrapper.setForeground(table.getSelectionForeground());
+			}else{
+				wrapper.setBackground(table.getBackground());
+				wrapper.setForeground(table.getForeground());
+			}
 		}
 	}
 

@@ -69,8 +69,10 @@
 			lstCities.setModel(new VectorListModel());
 			lstCities.addActionListener(onChangeCitySelection);
 			lstCities.setSize(new IntDimension(128, 22));
-			lstCities.setLocation(new IntPoint(33, 16));
+			lstCities.setLocation(new IntPoint(37, 12));
 			addChild(lstCities);
+
+			chains.visible = false;
 
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
@@ -105,7 +107,7 @@
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
 
 			sidebarHolder = new Sprite();
-			addChild(sidebarHolder);
+			addChildAt(sidebarHolder, 1);
 
 			//Set up resources timer
 			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);
@@ -313,13 +315,17 @@
 
 		public function setSidebar(sidebar: GameJSidebar):void
 		{
-			if (this.sidebar != null)
-			this.sidebar.getFrame().dispose();
+			if (this.sidebar != null) {
+				this.sidebar.getFrame().dispose();
+			}
 
+			chains.visible = false;
 			this.sidebar = sidebar;
 
-			if (sidebar != null)
-			sidebar.show(sidebarHolder);
+			if (sidebar != null) {
+				chains.visible = true;
+				sidebar.show(sidebarHolder);
+			}
 		}
 
 		public function closeAllFrames() : void {

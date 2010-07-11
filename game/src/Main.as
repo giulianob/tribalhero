@@ -3,16 +3,16 @@
 	import fl.lang.Locale;
 	import flash.display.MovieClip;
 	import flash.events.*;
-	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
+	import org.aswing.skinbuilder.orange.*;
 	import src.Map.*;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.InitialCityDialog;
 	import src.UI.Dialog.LoginDialog;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.*;
 	import src.Comm.*;
 	import src.Objects.Factories.*;
@@ -38,7 +38,7 @@
 		private var pnlLoading: InfoDialog;
 
 		public function Main()
-		{						
+		{
 			//Init ASWING
 			AsWingManager.initAsStandard(stage);
 			UIManager.setLookAndFeel(new GameLookAndFeel());
@@ -150,10 +150,10 @@
 		public function onDisconnected(event: Event):void
 		{
 			gameContainer.dispose();
-			
+
 			Global.mapComm = null;
 			Global.map = null;
-			session = null;			
+			session = null;
 
 			if (parms.hostname)
 			{
@@ -224,7 +224,7 @@
 		}
 
 		public function completeLogin(packet: Packet):void
-		{			
+		{
 			EffectReqFactory.init(map, Constants.objData);
 			PropertyFactory.init(map, Constants.objData);
 			StructureFactory.init(map, Constants.objData);
@@ -233,9 +233,9 @@
 			WorkerFactory.init(map, Constants.objData);
 			ObjectFactory.init(map, Constants.objData);
 
-			gameContainer.show();			
+			gameContainer.show();
 			Global.mapComm.Login.readLoginInfo(packet);
-			gameContainer.setMap(map, miniMap);			
+			gameContainer.setMap(map, miniMap);
 
 			if (Constants.debug > 0) {
 				if (frameCounter)

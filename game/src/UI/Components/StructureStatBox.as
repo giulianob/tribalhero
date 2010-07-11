@@ -8,7 +8,7 @@
 	import org.aswing.ext.*;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.Prototypes.StructurePrototype;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class StructureStatBox extends JPanel
 	{

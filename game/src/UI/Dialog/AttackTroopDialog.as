@@ -20,8 +20,8 @@
 		private var rdAssault:JRadioButton;
 		private var rdRaid:JRadioButton;
 		private var rdSlaughter:JRadioButton;
-		private var pnlLocal:JPanel;
-		private var pnlAttack:JPanel;
+		private var pnlLocal:JTabbedPane;
+		private var pnlAttack:JTabbedPane;
 		private var panel9:JPanel;
 		private var btnOk:JButton;
 		private var radioGroup: ButtonGroup;
@@ -47,7 +47,7 @@
 			//create local tile lists
 			var localTilelists: Array = SimpleTroopGridList.getGridList(srcTroop, city.template, [Formation.Normal]);
 
-			pnlLocal.append(SimpleTroopGridList.stackGridLists(localTilelists, false));
+			pnlLocal.appendTab(SimpleTroopGridList.stackGridLists(localTilelists, false), "Local Troop");
 
 			//create attack tile lists
 			var newTroop: TroopStub = new TroopStub();
@@ -56,7 +56,7 @@
 
 			attackTilelists = SimpleTroopGridList.getGridList(newTroop, city.template);
 
-			pnlAttack.append(SimpleTroopGridList.stackGridLists(attackTilelists, false));
+			pnlAttack.appendTab(SimpleTroopGridList.stackGridLists(attackTilelists, false), "Attack Troop");
 
 			//drag handler
 			tilelists = localTilelists.concat(attackTilelists);
@@ -129,16 +129,11 @@
 			rdSlaughter.setText("Slaughter");
 			new SimpleTooltip(rdSlaughter, "Fight until death");
 
-			pnlLocal = new JPanel();
-			pnlLocal.setLocation(new IntPoint(278, 13));
+			pnlLocal = new JTabbedPane();			
 			pnlLocal.setSize(new IntDimension(389, 35));
-			var border1:TitledBorder = new TitledBorder();
-			pnlLocal.setBorder(new TitledBorder(null, "Local Troop", AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));
 
-			pnlAttack = new JPanel();
-			pnlAttack.setLocation(new IntPoint(0, 82));
+			pnlAttack = new JTabbedPane();			
 			pnlAttack.setSize(new IntDimension(389, 35));
-			pnlAttack.setBorder(new TitledBorder(null, "Attack Troop", AsWingConstants.TOP, AsWingConstants.LEFT, 0, 10));
 
 			panel9 = new JPanel();
 			panel9.setLocation(new IntPoint(0, 127));

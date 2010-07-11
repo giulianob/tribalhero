@@ -5,7 +5,8 @@
 	import src.Objects.*;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
+	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -62,7 +63,7 @@
 				var newMessageDialog : MessageCreateDialog = new MessageCreateDialog(function(dlg: MessageCreateDialog) : void {
 					dlg.getFrame().dispose();
 				}, message.name, message.subject, true);
-				
+
 				newMessageDialog.show();
 			});
 		}
@@ -145,6 +146,8 @@
 			scrollMessage.setPreferredSize(new IntDimension(400, 250));
 
 			txtMessage = new MultilineLabel();
+			txtMessage.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
+			txtMessage.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));
 			txtMessage.setColumns(50);
 
 			pnlFooter = new JPanel();

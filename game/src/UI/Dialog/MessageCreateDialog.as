@@ -6,7 +6,7 @@
 	import src.Objects.*;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -132,13 +132,13 @@
 			pnlTo.setLayout(layout1);
 
 			lblTo = new JLabel();
-			lblTo.setPreferredSize(new IntDimension(45, 21));
+			lblTo.setPreferredSize(new IntDimension(45, 25));
 			lblTo.setText("To");
 			lblTo.setHorizontalAlignment(AsWingConstants.RIGHT);
 			GameLookAndFeel.changeClass(lblTo, "Form.label");
 
 			txtTo = new JTextField();
-			txtTo.setPreferredSize(new IntDimension(100, 21));
+			txtTo.setPreferredSize(new IntDimension(100, 25));
 
 			pnlSubject = new JPanel();
 			var layout2:FlowLayout = new FlowLayout();
@@ -147,14 +147,14 @@
 			pnlSubject.setLayout(layout2);
 
 			lblSubject = new JLabel();
-			lblSubject.setPreferredSize(new IntDimension(45, 21));
+			lblSubject.setPreferredSize(new IntDimension(45, 25));
 			lblSubject.setText("Subject");
 			lblSubject.setHorizontalAlignment(AsWingConstants.RIGHT);
 			GameLookAndFeel.changeClass(lblSubject, "Form.label");
 
 			txtSubject = new JTextField();
 			txtSubject.setMaxChars(60);
-			txtSubject.setPreferredSize(new IntDimension(355, 21));
+			txtSubject.setPreferredSize(new IntDimension(355, 25));
 
 			pnlMessage = new JPanel();
 			var layout3:SoftBoxLayout = new SoftBoxLayout();

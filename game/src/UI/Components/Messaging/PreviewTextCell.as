@@ -4,9 +4,11 @@
 	import org.aswing.Component;
 	import org.aswing.FlowLayout;
 	import org.aswing.JPanel;
+	import org.aswing.JTable;
 	import org.aswing.JTextField;
+	import org.aswing.plaf.basic.background.TextComponentBackBround;
 	import org.aswing.table.AbstractTableCell;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	/**
 	 * ...
@@ -26,12 +28,14 @@
 			super();
 
 			subject = new JTextField();
+			subject.setBackgroundDecorator(new TextComponentBackBround());
 			subject.getTextField().mouseEnabled = false;
 			subject.setEditable(false);
 			subject.setOpaque(false);
 			subject.getTextField().selectable = false;
 
 			preview = new JTextField();
+			preview.setBackgroundDecorator(new TextComponentBackBround());
 			preview.setForeground(GameLookAndFeel.getClassAttribute("Message.preview", "Textfield.foreground"));
 			preview.getTextField().mouseEnabled = false;
 			preview.getTextField().selectable = false;
@@ -39,9 +43,10 @@
 			preview.setOpaque(false);
 
 			wrapper = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
-			wrapper.buttonMode = true;
+			wrapper.buttonMode = true;					
 			wrapper.append(subject);
 			wrapper.append(preview);
+			wrapper.setOpaque(true);
 		}
 
 		override public function setCellValue(value:*):void
@@ -63,6 +68,16 @@
 		override public function getCellComponent():Component
 		{
 			return wrapper;
+		}
+
+		override public function setTableCellStatus(table:JTable, isSelected:Boolean, row:int, column:int):void{
+			if(isSelected){
+				wrapper.setBackground(table.getSelectionBackground());
+				wrapper.setForeground(table.getSelectionForeground());
+			}else{				
+				wrapper.setBackground(table.getBackground());
+				wrapper.setForeground(table.getForeground());
+			}			
 		}
 	}
 

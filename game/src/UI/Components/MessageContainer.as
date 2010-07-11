@@ -13,7 +13,7 @@
 	import src.Constants;
 	import src.Global;
 	import src.Map.City;
-	import src.UI.GameLookAndFeel;	
+	import src.UI.LookAndFeel.GameLookAndFeel;	
 	import src.UI.GameJBox;
 	import src.UI.Tooltips.*;
 	

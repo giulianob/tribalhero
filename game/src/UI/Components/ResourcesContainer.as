@@ -1,79 +1,103 @@
-﻿package src.UI.Components 
+﻿package src.UI.Components
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.AssetIcon;
 	import org.aswing.AsWingConstants;
+	import org.aswing.border.EmptyBorder;
+	import org.aswing.border.LineBorder;
+	import org.aswing.EmptyLayout;
 	import org.aswing.FlowLayout;
+	import org.aswing.FlowWrapLayout;
+	import org.aswing.geom.IntDimension;
+	import org.aswing.geom.IntPoint;
 	import org.aswing.Icon;
+	import org.aswing.Insets;
+	import org.aswing.JFrame;
 	import org.aswing.JLabel;
-	import src.Constants;
+	import org.aswing.JPanel;
 	import src.Global;
 	import src.Map.City;
-	import src.UI.GameLookAndFeel;	
-	import src.UI.GameJBox;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Tooltips.ResourcesTooltip;
-	
-	public class ResourcesContainer extends GameJBox
+
+	public class ResourcesContainer extends JPanel
 	{
 		private var tooltip: ResourcesTooltip;
-		
-		public function ResourcesContainer() 
+		private var frame: JFrame;
+
+		public function ResourcesContainer()
 		{
-			var me: GameJBox = this;		
-			
+			var me: JPanel = this;
+
 			addEventListener(MouseEvent.MOUSE_MOVE, function(e: Event) : void {
-				if (!tooltip) 
-					tooltip = new ResourcesTooltip(Global.gameContainer.selectedCity);
-					
+				if (!tooltip)
+				tooltip = new ResourcesTooltip(Global.gameContainer.selectedCity);
+
 				tooltip.show(me);
 			});
-			
+
 			addEventListener(MouseEvent.MOUSE_OUT, function(e: Event) : void {
 				if (tooltip) {
-					tooltip.hide();				
+					tooltip.hide();
 					tooltip = null;
 				}
-			});									
+			});
 		}
-		
+
+		public function getFrame(): JFrame {
+			return frame;
+		}
+
 		public function displayResources():void
-		{																
-			var resourceLabelMaker: Function = function(value: int, max : int, icon: Icon = null) : JLabel {				
+		{			
+			var resourceLabelMaker: Function = function(value: int, max : int, icon: Icon = null, labelWidth: int = 30) : JLabel {
 				var label: JLabel = new JLabel(value.toString(), icon);
 				if (max != -1 && value >= max)
-					GameLookAndFeel.changeClass(label, "Label.success Label.small");
+				GameLookAndFeel.changeClass(label, "Label.success Label.small");
 				else
-					GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
-				
+				GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
+
 				label.mouseEnabled = false;
+				label.setPreferredSize(new IntDimension(labelWidth, 16));				
 				label.mouseChildren = false;
-				label.setIconTextGap(0);			
-				label.setHorizontalTextPosition(AsWingConstants.RIGHT);				
+				label.setIconTextGap(0);
+				label.setHorizontalTextPosition(AsWingConstants.RIGHT);
+				label.setHorizontalAlignment(AsWingConstants.LEFT);
 				
 				return label;
-			};						
-								
+			};
+
 			var selectedCity: City = Global.gameContainer.selectedCity;
-			
-			setLayout(new FlowLayout(AsWingConstants.LEFT, 10, 5, true));
+
+			setLayout(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 			removeAll();
-			
-			append(resourceLabelMaker(selectedCity.resources.labor.getValue(), -1, new AssetIcon(new ICON_LABOR())));
-			append(resourceLabelMaker(selectedCity.resources.gold.getValue(), -1, new AssetIcon(new ICON_GOLD())));			
-			append(resourceLabelMaker(selectedCity.resources.wood.getValue(), selectedCity.resources.wood.getLimit(), new AssetIcon(new ICON_WOOD())));			
-			append(resourceLabelMaker(selectedCity.resources.crop.getValue(), selectedCity.resources.crop.getLimit(), new AssetIcon(new ICON_CROP())));			
-			append(resourceLabelMaker(selectedCity.resources.iron.getValue(), selectedCity.resources.iron.getLimit(), new AssetIcon(new ICON_IRON())));			
-			
-			if (!getFrame())
+
+			append(resourceLabelMaker(selectedCity.resources.labor.getValue(), -1, new AssetIcon(new ICON_LABOR()), 48));
+			append(resourceLabelMaker(selectedCity.resources.gold.getValue(), -1, new AssetIcon(new ICON_GOLD()), 61));
+			append(resourceLabelMaker(selectedCity.resources.wood.getValue(), selectedCity.resources.wood.getLimit(), new AssetIcon(new ICON_WOOD()), 61));
+			append(resourceLabelMaker(selectedCity.resources.crop.getValue(), selectedCity.resources.crop.getLimit(), new AssetIcon(new ICON_CROP()), 61));
+			append(resourceLabelMaker(selectedCity.resources.iron.getValue(), selectedCity.resources.iron.getLimit(), new AssetIcon(new ICON_IRON()), 56));
+
+			if (!frame)
 			{
-				show();										
-			}
-					
-			getFrame().pack();			
-			getFrame().setLocationXY(Constants.screenW - getFrame().getWidth() + 10, 3);								
-		}		
-		
+				frame = new JFrame(null, "", false);
+				frame.setContentPane(this);
+				frame.setBorder(new EmptyBorder(null, new Insets(0, 0, 0, 0)));
+				frame.setBackgroundDecorator(null);
+				frame.setTitleBar(null);
+				frame.setDragable(false);
+				frame.setClosable(false);
+				frame.setResizable(false);
+				frame.show();
+				
+				frame.setLocationXY(687, 14);
+			}			
+			
+			frame.pack();
+		}
+
 	}
 
 }
+

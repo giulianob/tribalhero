@@ -3,7 +3,7 @@
 	import org.aswing.JPanel;
 	import org.aswing.SoftBoxLayout;
 	import src.Objects.Prototypes.StructurePrototype;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	import org.aswing.*;
 	import org.aswing.border.*;

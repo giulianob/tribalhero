@@ -8,7 +8,7 @@
 	import src.Objects.Troop.UnitTemplate;
 	import src.Objects.Troop.UnitTemplateManager;
 	import src.UI.Components.UnitStatBox;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.BinaryList.BinaryList;
 
 	import org.aswing.*;

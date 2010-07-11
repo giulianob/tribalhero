@@ -14,7 +14,7 @@
 	import src.Global;
 	import src.Objects.Actions.Notification;
 	import src.Objects.Actions.PassiveAction;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.Util;
 
 	/**
@@ -87,7 +87,7 @@
 		{
 			mouseEnabled = false;
 			mouseChildren = false;
-			
+
 			setLayout(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 
 			pnlText = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));

@@ -49,7 +49,7 @@
 		}
 
 		private function createUI(): void {
-			setPreferredWidth(900);
+			setPreferredWidth(880);
 			border = new SimpleTitledBorder(null, "", AsWingConstants.TOP, AsWingConstants.LEFT, 0, new ASFont("Arial", 13, true));
 			setBorder(border);
 
@@ -69,7 +69,7 @@
 			var layout3:GridLayout = new GridLayout();
 			layout3.setRows(1);
 			layout3.setColumns(2);
-			layout3.setHgap(30);
+			layout3.setHgap(10);
 			pnlTroops.setLayout(layout3);
 
 			pnlDefense = new JTabbedPane();

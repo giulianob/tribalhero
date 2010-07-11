@@ -61,6 +61,10 @@
 		public function onUpdateActions(e: Event): void {
 			(getModel() as VectorListModel).clear();
 			
+			if (city.currentActions.size() == 0) {
+				(getModel() as VectorListModel).append( { 'message': 'There is nothing going on...' } );
+			}
+			
 			for each(var currentAction: CurrentAction in city.currentActions.each()) {		
 				if (currentAction is CurrentActionReference) continue; //Skip action references as it should only show actions directly related to objects
 				if (currentAction.workerId == 0) continue; //Skip city actions

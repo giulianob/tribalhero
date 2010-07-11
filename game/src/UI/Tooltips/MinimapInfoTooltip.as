@@ -8,7 +8,7 @@
 	import src.Global;
 	import src.Map.Username;
 	import src.Objects.SimpleGameObject;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Tooltips.TextTooltip;
 
 	/**

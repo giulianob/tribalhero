@@ -7,7 +7,7 @@ package src.UI.Tooltips {
 	import src.Objects.Prototypes.TechnologyPrototype;
 	import src.Objects.StructureObject;
 	import src.UI.Components.ResourcesPanel;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.Util;
 
 	import org.aswing.*;

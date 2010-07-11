@@ -10,6 +10,9 @@
 		
 		public function ImportObjects() 
 		{
+			//Fonts
+			RegularText;
+			
 			//Icons
 			ICON_WORLD;
 			ICON_CROP;

@@ -22,7 +22,7 @@
 	public class CityEventDialog extends GameJPanel{
 
 		private var pnlResources:JPanel;
-		private var pnlLocalEvents:JPanel;
+		private var pnlLocalEvents:JTabbedPane;
 
 		private var gridLocalActions: CityActionGridList;
 
@@ -127,20 +127,9 @@
 
 			pnlResources = new JPanel(new GridLayout(3, 2, 20, 10));
 
-			pnlLocalEvents = new JPanel();
-			var border1:TitledBorder = new TitledBorder();
+			pnlLocalEvents = new JTabbedPane();
 			pnlLocalEvents.setPreferredSize(new IntDimension(500, 200));
-			border1.setColor(new ASColor(0x0, 1));
-			border1.setTitle("Local Events");
-			border1.setPosition(1);
-			border1.setAlign(AsWingConstants.LEFT);
-			border1.setBeveled(true);
-			border1.setRound(10);
-			pnlLocalEvents.setBorder(border1);
-			var layout2:BoxLayout = new BoxLayout();
-			pnlLocalEvents.setLayout(layout2);
-
-			pnlLocalEvents.append(new JScrollPane(gridLocalActions));
+			pnlLocalEvents.appendTab(new JScrollPane(gridLocalActions), "Local Events");
 
 			lblGold = resourceLabelMaker("Gold", new AssetIcon(new ICON_GOLD()));
 			lblWood = resourceLabelMaker("Wood", new AssetIcon(new ICON_WOOD()));

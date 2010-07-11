@@ -13,7 +13,7 @@ package src.Objects.Actions {
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.GameObject;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class ActionButton extends JButton {
 		protected var parentObj: GameObject;

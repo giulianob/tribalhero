@@ -32,18 +32,18 @@
 			}
 
 			pnlEvents.append(new JLabel("Round " + (int(snapshot.round) + 1) + " Turn " + (int(snapshot.turn) + 1), null, AsWingConstants.LEFT));
-			
+
 			//Battle events
 			for each (var event: Object in snapshot.events) {
 				pnlEvents.append(new JLabel(event.toString(), null, AsWingConstants.LEFT));
 			}
-			
+
 			//Units
 			pnlUnits.appendTab(new TroopTable(snapshot.troop), snapshot.troop.name);
 		}
 
-		private function createUI(): void {			
-			setPreferredWidth(475);
+		private function createUI(): void {
+			setPreferredWidth(500);
 			border = new SimpleTitledBorder(null, "", AsWingConstants.TOP, AsWingConstants.LEFT, 0, new ASFont("Arial", 13, true));
 			setBorder(border);
 
@@ -63,7 +63,7 @@
 
 			pnlUnits = new JTabbedPane();
 
-			//component layoution		
+			//component layoution
 			append(pnlEvents);
 			append(pnlTroops);
 
@@ -72,3 +72,4 @@
 	}
 
 }
+

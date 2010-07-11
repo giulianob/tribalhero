@@ -5,7 +5,7 @@
 	import src.Objects.Actions.Notification;
 	import src.Objects.Troop.*;
 	import src.UI.Components.NotificationBox;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	import org.aswing.*;
 	import org.aswing.border.*;

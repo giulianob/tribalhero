@@ -1,6 +1,6 @@
 ﻿package src.UI.Tooltips {
 	import src.Objects.Prototypes.UnitPrototype;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	import org.aswing.*;
 	import org.aswing.border.*;

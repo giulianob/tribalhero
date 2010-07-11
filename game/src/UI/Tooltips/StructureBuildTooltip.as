@@ -8,7 +8,7 @@
 	import src.Objects.StructureObject;
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.Components.StructureStatBox;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.StringHelper;
 	import src.Util.Util;
 	import src.Objects.Effects.Formula;

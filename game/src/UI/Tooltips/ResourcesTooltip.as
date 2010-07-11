@@ -9,7 +9,7 @@
 	import org.aswing.ext.*;
 	import src.Map.City;
 	import src.Objects.LazyValue;
-	import src.UI.GameLookAndFeel;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.StringHelper;
 	import src.Util.Util;
 

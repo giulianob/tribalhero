@@ -18,6 +18,23 @@ namespace ConsoleSimulator {
             Factory.CompileConfigFiles();
             // CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
             Factory.InitAll();
+            // Load map
+            using (FileStream map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open)) {
+
+                // Create region changes file or open it depending on config settings
+                string regionChangesPath = Config.regions_folder + "region_changes.dat";
+#if DEBUG
+                bool createRegionChanges = Config.database_empty || !File.Exists(regionChangesPath);
+#else
+                bool createRegionChanges = !File.Exists(regionChangesPath);
+#endif
+                FileStream regionChanges = File.Open(regionChangesPath, createRegionChanges ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite);
+
+                // Load map
+                Global.World.Load(map, regionChanges, createRegionChanges, Config.map_width, Config.map_height, Config.region_width, Config.region_height,
+                                  Config.city_region_width, Config.city_region_height);
+            }
+
             Global.DbManager.Pause();
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Program));

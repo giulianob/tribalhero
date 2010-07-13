@@ -22,7 +22,6 @@ namespace CSVToXML {
             string line;
             while (true) {
                 line = sr.ReadLine();
-
                 if (line == null)
                     return null;
 

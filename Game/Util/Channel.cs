@@ -124,6 +124,23 @@ namespace Game.Util {
             return false;
         }
 
+        public bool Unsubscribe(string channelId) {
+            lock (channelLock) {
+                List<Subscriber> subs;
+                if (subscribersByChannel.TryGetValue(channelId, out subs)) {
+
+                    foreach (Subscriber sub in subs) {
+                        sub.channels.Remove(channelId);
+                        if (sub.channels.Count == 0)
+                            subscribersBySession.Remove(sub.session);
+                    }
+                    subscribersByChannel.Remove(channelId);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         #endregion
     }
 

@@ -619,6 +619,9 @@ namespace Game.Battle {
             //have to call to remove from the database
             attackers.Clear();
             defenders.Clear();
+            
+            //unsubscribe all
+            Global.Channel.Unsubscribe("/BATTLE/" + city.Id);
         }
 
         public bool GroupIsDead(CombatObject co, CombatList combatList) {

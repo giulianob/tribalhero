@@ -151,8 +151,12 @@ namespace Game.Battle {
             switch ((string)comparison) {
                 case "ArmorEqual":
                     return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)value, true);
+                case "ArmorClassEqual":
+                    return stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), (string)value, true);
                 case "WeaponEqual":
                     return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), (string)value, true);
+                case "WeaponClassEqual":
+                    return stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), (string)value, true);
             }
             return false;
         }

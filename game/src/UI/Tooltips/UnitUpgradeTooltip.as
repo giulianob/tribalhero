@@ -34,7 +34,6 @@ package src.UI.Tooltips {
 
 		private var pnlNextLvl:JPanel;
 		private var lblNextLvlTime:JLabel;
-		private var lblNextLvlDescription:JLabel;
 		private var nextStatsBox: UnitStatBox;
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
@@ -84,8 +83,7 @@ package src.UI.Tooltips {
 			if (nextUnitPrototype != null)
 			{
 				ui.append(pnlNextLvl);
-
-				lblNextLvlDescription.setText(nextUnitPrototype.getDescription());
+				
 				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(nextUnitPrototype.upgradeTime, null)));
 
 				if (missingRequirements != null && missingRequirements.length > 0)
@@ -142,10 +140,6 @@ package src.UI.Tooltips {
 			lblNextLvl.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblNextLvl, "header");
 
-			lblNextLvlDescription = new JLabel();
-			lblNextLvlDescription.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblNextLvlDescription, "Tooltip.text");
-
 			pnlRequired = new JPanel();
 			pnlRequired.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));
 
@@ -178,8 +172,7 @@ package src.UI.Tooltips {
 
 			if (nextUnitPrototype != null) {
 				ui.append(new JPanel());
-				pnlNextLvl.append(pnlHeader);
-				pnlNextLvl.append(lblNextLvlDescription);
+				pnlNextLvl.append(pnlHeader);				
 				pnlNextLvl.append(nextStatsBox);
 				pnlNextLvl.append(pnlRequired);
 				pnlNextLvl.append(new JPanel());

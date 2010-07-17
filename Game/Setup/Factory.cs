@@ -54,7 +54,7 @@ namespace Game.Setup {
             TechnologyFactory.Init(Config.csv_compiled_folder + "technology.csv", Config.csv_folder + "technology_effects.csv");
             UnitFactory.Init(Config.csv_compiled_folder + "unit.csv");
             ObjectTypeFactory.init(Config.csv_compiled_folder + "object_type.csv");
-            MapFactory.init(Config.settings_folder + "CityLocations.txt");
+            MapFactory.init(Config.maps_folder + "CityLocations.txt");
         }
     }
 }

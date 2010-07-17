@@ -131,15 +131,15 @@
 		["",   "",   "NW", "",   "",   "",   "",   "",   "NE", "",   "",   ],
 		["",   "O1", "",   "",   "",   "",   "",   "",   "NE", "",   "",   ],
 		["",   "SE", "",   "",   "",   "",   "",   "",   "",   "E", "",   ],
-		["",   "",   "",   "",   "",   "",   "",   "",   "NW", "",   "",   ],
-		["",   "NE", "",   "",   "",   "",   "",   "",   "O1", "",   "",   ],
-		["",   "NE", "",   "",   "",   "",   "",   "SE", "",   "",   "",   ],
-		["",   "",   "O2", "",   "",   "",   "",   "SE", "",   "",   "",   ],
-		["",   "",   "SW", "",   "",   "",   "SE", "",   "",   "",   "",   ],
-		["",   "",   "",   "SW", "",   "",   "SE", "",   "",   "",   "",   ],
-		["",   "",   "",   "O3", "",   "SE", "",   "",   "",   "",   "",   ],
-		["",   "",   "",   "",   "",   "S", "",   "",   "",   "",   "",   ],
 		["",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   ],
+		["",   "NE", "",   "",   "",   "",   "",   "",   "",   "NW", "",   ],
+		["",   "NE", "",   "",   "",   "",   "",   "",   "O1", "",   "",   ],
+		["",   "",   "O2", "",   "",   "",   "",   "",   "SE", "",   "",   ],
+		["",   "",   "SW", "",   "",   "",   "",   "SE", "",   "",   "",   ],
+		["",   "",   "",   "SW", "",   "",   "",   "SE", "",   "",   "",   ],
+		["",   "",   "",   "O3", "",   "",   "SE", "",   "",   "",   "",   ],
+		["",   "",   "",   "",   "",   "SW", "SE", "",   "",   "",   "",   ],
+		["",   "",   "",   "",   "",   "S", "",   "",   "",   "",   "",   ],
 		["",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   ],
 		["",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   ],
 		],
@@ -179,7 +179,9 @@
 					if (WALLS[typeHash][y][x] == "") continue;
 
 					var mapX: int = pos.x + ( x - int(WALL_WIDTH/2));
-					var mapY: int = pos.y + ( y - int(WALL_HEIGHT/2));
+					var mapY: int = pos.y + ( y - int(WALL_HEIGHT / 2));
+
+					if (pos.y % 2 == 1 && y % 2 == 1) mapX += 1;
 
 					pushWall(WALLS[typeHash][y][x], mapX, mapY);
 				}
@@ -237,7 +239,7 @@
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
 
-			var wall: SimpleObject = ObjectFactory.getSimpleObject("WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString()));
+			var wall: SimpleObject = ObjectFactory.getSimpleObject("WALL_" + wallName + (wallName.charAt(0) == 'O' ? "" : "_" + wallHash(x, y).toString()), false);
 
 			var pos: Point = MapUtil.getScreenCoord(x, y);
 			x = pos.x;

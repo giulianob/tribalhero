@@ -1,4 +1,6 @@
 ﻿package src.Objects.Troop {
+	import src.Global;
+	import src.Map.City;
 	import src.Util.BinaryList.*;
 	import fl.lang.Locale;
 
@@ -74,6 +76,28 @@
 			for each (var formation: Formation in each())
 			{
 				total += formation.getIndividualUnitCount(type);
+			}
+
+			return total;
+		}
+
+		public function getUpkeep(): int
+		{
+			var total: int = 0;
+			var useTemplate: * ;
+			
+			// If this is local troop, then use city's template, otherwise use troop stub template
+			if (id == 1) {
+				var city: City = Global.map.cities.get(cityId);
+				useTemplate = city.template;
+			} else {		
+				useTemplate = template;
+			}
+			
+			for each (var formation: Formation in each())
+			{
+				// InBattle formation always uses the troop's template
+				total += formation.getUpkeep(formation.type == Formation.InBattle ? template : useTemplate);
 			}
 
 			return total;

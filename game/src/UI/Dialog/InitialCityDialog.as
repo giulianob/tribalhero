@@ -69,20 +69,20 @@ package src.UI.Dialog{
 
 			rowName = new FormRow();
 			rowName.setLocation(new IntPoint(0, 42));
-			rowName.setSize(new IntDimension(256, 21));
+			rowName.setSize(new IntDimension(256, 25));
 			rowName.setColumnChildrenIndecis("-1,0,1,2");
 
 			lblName = new JLabel();
 			lblName.setLocation(new IntPoint(0, 2));
-			lblName.setSize(new IntDimension(52, 17));
+			lblName.setSize(new IntDimension(52, 25));
 			lblName.setText("City Name");
 			lblName.setHorizontalAlignment(AsWingConstants.RIGHT);
 
 			txtName = new JTextField();
 			txtName.setMaxChars(16);
 			txtName.setLocation(new IntPoint(74, 20));
-			txtName.setSize(new IntDimension(150, 21));
-			txtName.setPreferredSize(new IntDimension(150, 21));
+			txtName.setSize(new IntDimension(150,25));
+			txtName.setPreferredSize(new IntDimension(150, 25));
 
 			separator14 = new JSeparator();
 			separator14.setLocation(new IntPoint(10, 33));
@@ -98,7 +98,7 @@ package src.UI.Dialog{
 			btnOk = new JButton();
 			btnOk.setLocation(new IntPoint(87, 5));
 			btnOk.setSize(new IntDimension(34, 22));
-			btnOk.setText("Ok");
+			btnOk.setText("Create!");
 
 			lblWelcome = new MultilineLabel("Welcome! Since this is your first time on this server, you have to choose a name for your first city");
 

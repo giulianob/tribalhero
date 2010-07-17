@@ -71,6 +71,14 @@
 			}
 
 			objects.clear();
+			
+			for (var i: int = numChildren - 1; i >= 0; i--) {
+				removeChildAt(i);				
+			}
+			
+			objects = null;		
+			map = null;
+			tiles = null;			
 		}
 
 		public function createRegion():void

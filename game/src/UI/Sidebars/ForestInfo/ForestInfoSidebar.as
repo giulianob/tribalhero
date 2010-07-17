@@ -61,10 +61,10 @@
 			pnlStats.removeAll();
 
 			addStatRow("Level", forestObj.level.toString());
-			addStatRow("Rate", "+" + forestObj.rate.toString() + " per hour", new AssetIcon(new ICON_WOOD()));
+			addStatRow("Rate", "+" + forestObj.rate.toString() + "/hr", new AssetIcon(new ICON_WOOD()));
 			addStatRow("Laborers", forestObj.labor + "/" + Formula.maxForestLabor(forestObj.level));
-			addStatRow("Wood", forestObj.wood.getValue() + "/" + forestObj.wood.getLimit(), new AssetIcon(new ICON_WOOD()));
-			addStatRow("Deforestation", "-" + (forestObj.wood.getUpkeep() / Constants.secondsPerUnit) + " per hour", new AssetIcon(new ICON_WOOD()));
+			addStatRow("Wood", forestObj.wood.getValue().toString(), new AssetIcon(new ICON_WOOD()));
+			addStatRow("Depletion", "-" + (forestObj.wood.getUpkeep() / Constants.secondsPerUnit) + "/hr", new AssetIcon(new ICON_WOOD()));
 			var timeLeft: int = forestObj.depleteTime > 0 ? forestObj.depleteTime - Global.map.getServerTime() : 0;
 			addStatRow("Time left", Util.formatTime(timeLeft), new AssetIcon(new ICON_CLOCK()));
 		}
@@ -100,12 +100,6 @@
 			setSize(new IntDimension(288, 180));
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 
-			lblName = new JLabel();
-			lblName.setFont(new ASFont("Tahoma", 11, true, false, false, false));
-			lblName.setSize(new IntDimension(400, 17));
-			lblName.setText("Name (x,y)");
-			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
-
 			pnlStats = new Form();
 
 			pnlGroups = new JPanel();
@@ -118,7 +112,6 @@
 			pnlGroups.setBorder(border);
 
 			//component layoution
-			//append(lblName);
 			append(pnlStats);
 			append(pnlGroups);
 		}

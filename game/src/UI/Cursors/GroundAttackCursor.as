@@ -164,7 +164,7 @@
 
 			var msg: XML;
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY)
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
 
 			if (objects.length == 0) {
 				Global.gameContainer.message.showMessage("Choose target to attack");

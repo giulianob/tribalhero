@@ -2,6 +2,9 @@
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
+	import flash.filters.BlurFilter;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
 	import src.Map.Map;
 	import src.Objects.Forest;
 	import src.Objects.Prototypes.ObjectTypePrototype;
@@ -48,7 +51,7 @@
 					ret.push(obj.type);
 				}
 			}
-			
+
 			return ret;
 		}
 
@@ -152,10 +155,20 @@
 			return obj;
 		}
 
-		public static function getSimpleObject(name: String): SimpleObject {
+		public static function getSimpleObject(name: String, addShadow: Boolean = true): SimpleObject {
 			var obj: SimpleObject = new SimpleObject();
-
 			var objRef: Class = getDefinitionByName(name) as Class;
+
+			if (addShadow) {
+				var shadow: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
+				shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
+				shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
+				shadow.alpha = 0.4;
+				shadow.filters = [new BlurFilter(5, 5)];
+				shadow.mouseEnabled = false;
+				obj.addChild(shadow);
+			}
+
 			obj.addChild(new objRef() as DisplayObject);
 
 			return obj;

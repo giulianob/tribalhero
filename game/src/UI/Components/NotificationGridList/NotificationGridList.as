@@ -34,8 +34,8 @@
 
 			setBorder(new EmptyBorder(null, new Insets(8, 3, 8, 3)));
 
-			setTileWidth(32);
-			setTileHeight(32);
+			setTileWidth(160);
+			setTileHeight(72);			
 
 			onUpdateNotifications(null);
 

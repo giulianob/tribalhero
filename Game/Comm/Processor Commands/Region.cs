@@ -296,7 +296,8 @@ namespace Game.Comm
 
         public void CmdGetRegion(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            Packet reply = new Packet(packet);            
+            reply.Option |= (ushort)Packet.Options.COMPRESSED;
 
             ushort regionId;
 

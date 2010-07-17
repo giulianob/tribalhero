@@ -38,15 +38,20 @@ namespace Game.Data {
             if (x == 0 || y == 0) {
                 while (true) {
                     x = (uint) Config.Random.Next(15, (int) Config.map_width - 15);
-                    y = (uint) Config.Random.Next(15, (int) Config.map_height - 15);                    
+                    y = (uint) Config.Random.Next(15, (int) Config.map_height - 15);
+
+                    if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
+                    {
+                        continue;
+                    }
 
                     // check if tile is safe
-                    List<ushort> tiles = Global.World.GetTilesWithin(x, y, 5);
+                    List<ushort> tiles = Global.World.GetTilesWithin(x, y, 7);
                     if (ObjectTypeFactory.HasTileType("CityStartTile", tiles)) {
                         continue;
                     }
 
-                    if (ObjectTypeFactory.IsAllTileType("TileBuildable", tiles)) {
+                    if (!ObjectTypeFactory.IsAllTileType("TileBuildable", tiles)) {
                         continue;
                     }
 

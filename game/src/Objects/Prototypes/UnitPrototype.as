@@ -45,15 +45,11 @@ package src.Objects.Prototypes {
 
 		public function getDescription(): String
 		{
-			var str: String = Locale.loadString(nlsname + "UNIT_LVL_" + level);
+			var str: String = Locale.loadString(nlsname + "_UNIT_DESC");
 			if (str)
 			return str;
 
-			str = Locale.loadString(spriteClass + "_UNIT_LVL_1");
-			if (str)
-			return str;
-
-			return "";
+			return "[" + nlsname + "_UNIT_DESC" + "]";
 		}
 
 		public static function sortOnTypeAndLevel(a:UnitPrototype, b:UnitPrototype):Number {

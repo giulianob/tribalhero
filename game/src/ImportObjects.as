@@ -10,8 +10,7 @@
 		
 		public function ImportObjects() 
 		{
-			//Fonts
-			RegularText;
+			
 			
 			//Icons
 			ICON_WORLD;
@@ -71,6 +70,23 @@
 			
 			//Dialog
 			MOVEMENT_DIALOG_BG;
+			
+			//MOVEMENT TROOP ICONS
+			TROOP_ATTACK_0;
+			TROOP_ATTACK_1;
+			TROOP_ATTACK_2;
+			TROOP_ATTACK_3;
+			TROOP_ATTACK_4;
+			TROOP_IDLE_0;
+			TROOP_IDLE_1;
+			TROOP_IDLE_2;
+			TROOP_IDLE_3;
+			TROOP_IDLE_4;
+			TROOP_DEFENSE_0;
+			TROOP_DEFENSE_1;
+			TROOP_DEFENSE_2;
+			TROOP_DEFENSE_3;
+			TROOP_DEFENSE_4;						
 			
 			//Structures
 			ARMORY_STRUCTURE;

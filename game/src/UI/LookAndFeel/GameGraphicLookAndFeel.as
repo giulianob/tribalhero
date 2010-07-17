@@ -1134,7 +1134,7 @@ package src.UI.LookAndFeel
 			comDefaults = [
 			"Class.Sidebar.frame", [
 			"Frame.activeBG", Sidebar_frame_activeBG,
-			"Frame.inactiveBG", Sidebar_frame_activeBG, // use same img as active for now
+			"Frame.inactiveBG", Sidebar_frame_activeBG, // use same img as active for now			
 			]
 			];
 			table.putDefaults(comDefaults);
@@ -1149,6 +1149,7 @@ package src.UI.LookAndFeel
 			"Frame.activeBG", Frame_activeBG,
 			"Frame.inactiveBG", Frame_activeBG, // use same img as active for now
 
+			"FrameTitleBar.colorAdjust", new UIStyleTune(0.0, 0.0, 0.0, 0.0, 0, new UIStyleTune(0.04, -0.06, 1, 0.22, 5)),
 			"FrameTitleBar.bg", SkinFrameTitleBarBG,
 			"FrameTitleBar.foreground", table.get("windowText"),
 			"FrameTitleBar.opaque", false,

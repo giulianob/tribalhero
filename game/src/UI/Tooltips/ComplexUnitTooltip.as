@@ -51,7 +51,7 @@
 			lblName.setText(unit.count + " " + unitPrototype.getName());
 			lblUpkeep.setText("-" + unitPrototype.upkeep * unit.count);
 			lblLevel.setText("Level " + unitPrototype.level);
-			lblInfo.setText("Stats for a " + unitPrototype.getName().toLowerCase());
+			lblInfo.setText("Stats for a single " + unitPrototype.getName().toLowerCase());
 		}
 
 		private function createUI() : void {

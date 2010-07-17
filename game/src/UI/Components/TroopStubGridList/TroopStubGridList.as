@@ -8,6 +8,7 @@
 	import org.aswing.Insets;
 	import org.aswing.VectorListModel;
 	import src.Map.City;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.TroopFactory;
 	import src.Objects.Troop.*;
 	import src.UI.Dialog.TroopStubDialog;
@@ -22,13 +23,15 @@
 
 		public function TroopStubGridList(city: City)
 		{
-			super(new VectorListModel(), new GeneralGridListCellFactory(TroopStubGridCell), 0, 2);
+			super(new VectorListModel(), new GeneralGridListCellFactory(TroopStubGridCell), 4, 0);
 
 			this.city = city;
 			setBorder(new EmptyBorder(null, new Insets(8, 3, 8, 3)));
 
-			setTileWidth(32);
-			setTileHeight(32);
+			setTileWidth(160);
+			setTileHeight(72);
+			setHGap(0);
+			setVGap(0);
 
 			addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);
 			addEventListener(GridListItemEvent.ITEM_ROLL_OUT, onItemRollOut);
@@ -39,7 +42,7 @@
 		{
 			var dp: TroopStubGridCell = event.getCell() as TroopStubGridCell;
 			var troop: TroopStub = dp.getCellValue().troop;
-			
+
 			var troopStubDialog: TroopStubDialog = new TroopStubDialog(city, troop);
 			troopStubDialog.show();
 		}
@@ -74,16 +77,26 @@
 					break;
 				}
 			}
+
+			if (this.tooltip) {
+				this.tooltip.hide();
+				this.tooltip = null;
+			}
 		}
 
 		public function addStub(troop: TroopStub) : TroopStubGridCell {
 			var model: VectorListModel = getModel() as VectorListModel;
 
-			var icon: DisplayObject = TroopFactory.getStateSprite(troop.state);
+			var icon: DisplayObject = TroopFactory.getStateSprite(troop.state, Formula.movementIconTroopSize(troop));
 
 			model.append( { source: icon, troop: troop } );
 
 			model.sortOn(["cityId", "id"], Array.NUMERIC);
+
+			if (this.tooltip) {
+				this.tooltip.hide();
+				this.tooltip = null;
+			}
 
 			return getCellByIndex(getModel().getSize() - 1) as TroopStubGridCell;
 		}

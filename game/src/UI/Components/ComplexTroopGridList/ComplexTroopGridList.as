@@ -47,7 +47,7 @@
 			this.city = city;
 			this.formationType = formationType;
 
-			setTileWidth(40);
+			setTileWidth(45);
 			setTileHeight(20);
 
 			if (!tooltipMode) {

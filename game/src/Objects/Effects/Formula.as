@@ -5,9 +5,11 @@
 	 * @author Default
 	 */
 	import src.Constants;
+	import src.Map.City;
 	import src.Objects.GameObject;
 	import src.Objects.StructureObject;
 	import src.Objects.TechnologyManager;
+	import src.Objects.Troop.TroopStub;
 
 	public class Formula {
 
@@ -55,6 +57,11 @@
 
 		public static function maxForestLabor(level: int) : int {
 			return level * 240;
+		}
+		
+		public static function movementIconTroopSize(troopStub: TroopStub) : int {
+			var upkeep: int = troopStub.getUpkeep();
+			return Math.min(4, upkeep / 100);
 		}
 	}
 }

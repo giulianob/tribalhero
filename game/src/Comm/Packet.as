@@ -33,14 +33,14 @@
 				
 				if (incomingBytes.length != Constants.headerSize + length)
 					return;
-					
+
 				if ( (option & Options.COMPRESSED) == Options.COMPRESSED)
 				{
 					var payloadBytes:ByteArray = new ByteArray();
 					payloadBytes.endian = Endian.LITTLE_ENDIAN;
 					incomingBytes.readBytes(payloadBytes, 0, length);
-					payloadBytes.uncompress();
-					payloadBytes.readBytes(bytes, 0, length);
+					payloadBytes.uncompress();					
+					payloadBytes.readBytes(bytes, 0, payloadBytes.length);
 				}
 				else
 				{
@@ -185,7 +185,11 @@
 						break;
 				}
 			}
-				
+			
+			if ( (option & Options.COMPRESSED) == Options.COMPRESSED) {
+				bytes.deflate();
+			}
+			
 			return bytes;
 			
 		}

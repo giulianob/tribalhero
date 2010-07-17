@@ -20,7 +20,7 @@
 			addEventListener(DragAndDropEvent.DRAG_RECOGNIZED, __dragRecognized);
 			
 			setBorder(new LineBorder(null, ASColor.BLACK, 1, 3));
-			setPreferredSize(new IntDimension(40, 30));
+			setPreferredSize(new IntDimension(45, 30));
 			setHorizontalTextPosition(AsWingConstants.LEFT);
 			setIconTextGap(0);
 		}

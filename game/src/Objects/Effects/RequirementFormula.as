@@ -296,7 +296,7 @@
 
 		private static function haveUnitMsg(parentObj: GameObject, type: int, comparison: String, count: int, param4: int, param5:int): String
 		{
-			var unit: UnitPrototype = UnitFactory.getPrototype(101, 1);
+			var unit: UnitPrototype = UnitFactory.getPrototype(type, 1);
 
 			if (!unit) return "";
 
@@ -310,7 +310,7 @@
 			return "Trained less than " + count + " " + unit.getName() + (total >= count ? ". You currently have " + total + " " + unit.getName() + ".": "");
 
 			if (comparison == "gt")
-			return "Trained more than " + count + " " + unit.getName() + (total <= count ? ". You currently have " + total + " " + unit.getName() + ".": "");
+			return "Trained at least " + (count+1) + " " + unit.getName() + (total <= count ? ". You currently have " + total + " " + unit.getName() + ".": "");
 
 			return "";
 		}

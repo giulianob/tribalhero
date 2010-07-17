@@ -15,7 +15,7 @@
 		public function ComplexTroopGridCell(){
 			super();
 
-			setPreferredSize(new IntDimension(40, 20));			
+			setPreferredSize(new IntDimension(45, 20));			
 			setHorizontalTextPosition(AsWingConstants.LEFT);
 			setIconTextGap(0);			
 		}

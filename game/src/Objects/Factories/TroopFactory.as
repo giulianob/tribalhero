@@ -2,9 +2,9 @@
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
 	import src.Objects.Troop.TroopObject;
+	import src.Objects.Troop.TroopStub;
 
 	/**
 	 * ...
@@ -15,16 +15,22 @@
 		public function TroopFactory() {
 		}
 
-		public static function getStateSprite(state: int): DisplayObjectContainer
+		public static function getStateSprite(state: int, size: int = 1): DisplayObjectContainer
 		{
 			var name: String = "";
 			switch (state) {
+				case TroopStub.BATTLE:
+					name = "TROOP_ATTACK";
+				break;
+				case TroopStub.BATTLE_STATIONED:
+					name = "TROOP_DEFENSE";
+				break;
 				default:
 					name = "TROOP_IDLE";
 				break;
 			}
 
-			var objRef: Class = getDefinitionByName(name) as Class;
+			var objRef: Class = getDefinitionByName(name + "_" + size) as Class;
 
 			var sprite: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
 

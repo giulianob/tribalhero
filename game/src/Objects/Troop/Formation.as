@@ -1,15 +1,16 @@
 ﻿/**
-* ...
-* @author Default
-* @version 0.1
-*/
+ * ...
+ * @author Default
+ * @version 0.1
+ */
 
 package src.Objects.Troop {
+	import src.Objects.Factories.UnitFactory;
+	import src.Objects.Prototypes.UnitPrototype;
 	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	
+
 	public class Formation extends BinaryList {
-		
+
 		public static const Normal: int = 1;
 		public static const Attack: int = 2;
 		public static const Defense: int = 3;
@@ -20,59 +21,83 @@ package src.Objects.Troop {
 		public static const Captured: int = 11;
 		public static const Wounded: int = 12;
 		public static const Killed: int = 13;
-		
+
 		public static const TypeStrings: Array = ["", "Normal", "Attack", "Defense", "Scout", "Garrison", "Structure", "In Battle", "", "", "", "", "Captured", "Wounded", "Killed"];
-		
+
 		public var type: int;
-		
-		public function Formation(type: int) 
+
+		public function Formation(type: int)
 		{
 			super(Unit.sortOnType, Unit.compareUnitType);
 			this.type = type;
 		}
-		
+
 		public function getIndividualUnitCount(type: int = -1): int
 		{
 			var total: int = 0;
 			for each(var unit: Unit in each())
 			{
 				if (type > -1 && unit.type != type) continue;
-				
-				total += unit.count;				
+
+				total += unit.count;
 			}
-			
+
 			return total;
 		}
-		
-		override public function add(obj: *, resort: Boolean = true):void
-		{						
-			var unit: Unit = get((obj as Unit).type);			
-			
-			if (unit == null)						
-				super.add(obj, resort);			
-			else
-				unit.count = (obj as Unit).count;			
+
+		public function getUpkeep(template: *): int
+		{
+			var total: int = 0;
+			for each(var unit: Unit in each())
+			{
+				var unitPrototype: UnitPrototype;
+				
+				// Template is from a city
+				if (template is UnitTemplateManager) {
+					var unitTemplate: UnitTemplate = template.get(unit.type);
+					unitPrototype = UnitFactory.getPrototype(unitTemplate.type, unitTemplate.level);
+				} 
+				// Use troop template
+				else {
+					var troopTemplate: TroopTemplate = template.get(unit.type);
+					unitPrototype = UnitFactory.getPrototype(troopTemplate.type, troopTemplate.level);
+				}
+
+				total += (unitPrototype.upkeep * unit.count);
+			}
+
+			return total;
 		}
-		
+
+		override public function add(obj: *, resort: Boolean = true):void
+		{
+			var unit: Unit = get((obj as Unit).type);
+
+			if (unit == null)
+			super.add(obj, resort);
+			else
+			unit.count = (obj as Unit).count;
+		}
+
 		override public function remove(val: *): *
-		{								
+		{
 			var type: int = val[0];
 			var count: int = val[1];
-			
+
 			var unit: Unit = get(type);
-			
+
 			if (unit == null)
-				return;
-			
-			unit.count -= count;	
-			
+			return;
+
+			unit.count -= count;
+
 			if (unit.count <= 0)
-				return super.remove(type);
-			
+			return super.remove(type);
+
 			return unit;
 		}
-		
-		public static function sortOnType(a:Formation, b:Formation):Number 
+
+		public static function sortOnType(a:Formation, b:Formation):Number
 		{
 			var aType:Number = a.type;
 			var bType:Number = b.type;
@@ -85,12 +110,13 @@ package src.Objects.Troop {
 				return 0;
 			}
 		}
-		
+
 		public static function compareType(a: Formation, value: int):int
 		{
 			return a.type - value;
-		}	
-		
+		}
+
 	}
-	
+
 }
+

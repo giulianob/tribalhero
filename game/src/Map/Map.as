@@ -299,7 +299,9 @@
 
 				Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
 			}
-		}			
+
+			region = null;
+		}
 
 		//###################################################################
 		//#################### Object Manipulation ##########################
@@ -410,31 +412,31 @@
 		//###################################################################
 		//#################### Mouse/Keyboard Events ########################
 		//###################################################################
-		
+
 		public function eventKeyUp(event: KeyboardEvent):void
 		{
 			// clear key press
 			delete pressedKeys[event.keyCode];
 		}
-		
+
 		public function eventKeyDown(event: KeyboardEvent):void
 		{
 			// Key down
-			
-			//end key down			
-			
+
+			//end key down
+
 			// Key Press Handler
 			if(pressedKeys[event.keyCode]) return;
 			pressedKeys[event.keyCode] = 1;
 
 			// Key press
-			if (event.keyCode == Keyboard.ESCAPE) doSelectedObject(null);			
-			
+			if (event.keyCode == Keyboard.ESCAPE) doSelectedObject(null);
+
 			camera.beginMove();
 			if (event.keyCode == Keyboard.LEFT) camera.MoveLeft(500);
-			if (event.keyCode == Keyboard.RIGHT) camera.MoveRight(500);			
+			if (event.keyCode == Keyboard.RIGHT) camera.MoveRight(500);
 			if (event.keyCode == Keyboard.UP) camera.MoveUp(500);
-			if (event.keyCode == Keyboard.DOWN) camera.MoveDown(500);			
+			if (event.keyCode == Keyboard.DOWN) camera.MoveDown(500);
 			camera.endMove();
 			//end key press
 		}

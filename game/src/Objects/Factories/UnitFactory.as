@@ -38,6 +38,8 @@
 				unitObj.upgradeResources = new Resources(unitNode.@upgradecrop, unitNode.@upgradegold, unitNode.@upgradeiron, unitNode.@upgradewood, unitNode.@upgradelabor);
 				unitObj.upgradeTime = unitNode.@time;
 				unitObj.weapon = unitNode.@weapon;
+				unitObj.unitClass = unitNode.@unitclass;
+				unitObj.weaponClass = unitNode.@weaponclass;
 				unitObj.armor = unitNode.@armor;
 				unitObj.upkeep = unitNode.@upkeep;
 

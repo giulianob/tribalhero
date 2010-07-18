@@ -110,6 +110,10 @@ namespace Game.Logic.Actions {
             }
             troopObj.Stub.EndUpdate();
 
+            troopObj.BeginUpdate();
+            troopObj.State = GameObjectState.Movingstate(x, y);
+            troopObj.EndUpdate();
+
             return Error.OK;
         }
 
@@ -137,10 +141,19 @@ namespace Game.Logic.Actions {
                 --distanceRemaining;
                 troopObj.EndUpdate();
 
+                // Fire updated to force sending new position
+                troopObj.Stub.BeginUpdate();
+                troopObj.Stub.FireUpdated();
+                troopObj.Stub.EndUpdate();
+
                 if (!CalculateNext(troopObj)) {
                     troopObj.Stub.BeginUpdate();
                     troopObj.Stub.State = TroopState.IDLE;
                     troopObj.Stub.EndUpdate();
+
+                    troopObj.BeginUpdate();
+                    troopObj.State = GameObjectState.NormalState();
+                    troopObj.EndUpdate();
                     StateChange(ActionState.COMPLETED);
                     return;
                 }

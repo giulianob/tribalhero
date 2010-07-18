@@ -359,11 +359,6 @@
 			readWall(obj, packet);
 
 			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
-
-			if (obj as GameObject != null && obj == Global.map.selectedObject)
-			{
-				Global.map.selectObject(obj as GameObject);
-			}
 		}
 
 		public function onAddObject(packet: Packet):void
@@ -430,7 +425,7 @@
 			var cityId: int = packet.readUInt();
 			var objId: int = packet.readUInt();
 			var currentAction: CurrentAction;
-			trace("Got new actionz");
+			
 			if (packet.readUByte() == 0)
 			currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			else

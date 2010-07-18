@@ -75,7 +75,7 @@ package src.Objects {
 
 		public function dispose():void {
 			if (wall) wall.clear();
-			if (circle) hideRadius();
+			hideRadius();
 		}
 
 		private function onObjectUpdate(e: Event): void {

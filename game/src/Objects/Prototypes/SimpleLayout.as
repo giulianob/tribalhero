@@ -56,9 +56,9 @@ package src.Objects.Prototypes {
 			if (mindist > -1)
 			{
 				if (maxdist < 5)
-				desc += "Close ";
+				desc += "Close to ";
 				else if (maxdist < 12)
-				desc += "Nearby ";
+				desc += "Near ";
 			}
 
 			var lvlReq: String = minlevel.toString();

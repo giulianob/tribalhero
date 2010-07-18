@@ -7,25 +7,21 @@ using System.Collections.Generic;
 namespace Game.Data {
     public enum ObjectState {
         NORMAL = 0,
-        BATTLE = 1
+        BATTLE = 1,
+        MOVING = 2
     }
 
     public class GameObjectState {
-        private List<object> parameters = new List<object>();
+        private readonly List<object> parameters = new List<object>();
 
-        private ObjectState type;
-
-        public ObjectState Type {
-            get { return type; }
-            set { type = value; }
-        }
+        public ObjectState Type { get; set; }
 
         public List<object> Parameters {
             get { return parameters; }
         }
 
         private GameObjectState(ObjectState type, params object[] parms) {
-            this.type = type;
+            Type = type;
             parameters.AddRange(parms);
         }
 
@@ -35,6 +31,10 @@ namespace Game.Data {
 
         public static GameObjectState BattleState(uint cityid) {
             return new GameObjectState(ObjectState.BATTLE, cityid);
+        }
+
+        public static GameObjectState Movingstate(uint x, uint y) {
+            return new GameObjectState(ObjectState.MOVING, x, y);
         }
     }
 }

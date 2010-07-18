@@ -270,16 +270,18 @@ namespace Game.Module {
                                          new Resource(500, 500, 500, 500, 10), structure);
 
                     Global.World.Add(city);
-                    Global.World.Add(structure);
+                    
+                        Global.World.Add(structure);
 
-                    TroopStub defaultTroop = new TroopStub();
-                    defaultTroop.BeginUpdate();
-                    defaultTroop.AddFormation(FormationType.NORMAL);
-                    defaultTroop.AddFormation(FormationType.GARRISON);
-                    defaultTroop.AddFormation(FormationType.IN_BATTLE);
-                    city.Troops.Add(defaultTroop);
-                    defaultTroop.EndUpdate();
-
+                        TroopStub defaultTroop = new TroopStub();
+                        defaultTroop.BeginUpdate();
+                        defaultTroop.AddFormation(FormationType.NORMAL);
+                        defaultTroop.AddFormation(FormationType.GARRISON);
+                        defaultTroop.AddFormation(FormationType.IN_BATTLE);
+                        city.Troops.Add(defaultTroop);
+                        defaultTroop.EndUpdate();
+                      city.EndUpdate();
+                    
                     InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type,
                                                structure.Stats.Base.Lvl);
 

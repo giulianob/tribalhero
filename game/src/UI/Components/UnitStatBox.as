@@ -26,6 +26,8 @@
 		private var lblArmor: JLabel;
 		private var lblWeapon: JLabel;
 		private var lblHp: JLabel;
+		private var lblUnitClass: JLabel;
+		private var lblWeaponClass: JLabel;
 		private var lblAttack: JLabel;
 		private var lblDefense: JLabel;
 		private var lblStealth: JLabel;
@@ -36,6 +38,8 @@
 		private var lblArmorTitle: JLabel;
 		private var lblWeaponTitle: JLabel;
 		private var lblHpTitle: JLabel;
+		private var lblUnitClassTitle: JLabel;
+		private var lblWeaponClassTitle: JLabel;
 		private var lblAttackTitle: JLabel;
 		private var lblDefenseTitle: JLabel;
 		private var lblStealthTitle: JLabel;
@@ -59,7 +63,7 @@
 
 			var statBox: UnitStatBox = new UnitStatBox();
 
-			statBox.init(unitPrototype.armor, unitPrototype.weapon, unitPrototype.hp, unitPrototype.upkeep, unitPrototype.attack, unitPrototype.defense, unitPrototype.stealth, unitPrototype.range, unitPrototype.speed);
+			statBox.init(unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, unitPrototype.hp, unitPrototype.upkeep, unitPrototype.attack, unitPrototype.defense, unitPrototype.stealth, unitPrototype.range, unitPrototype.speed);
 
 			return statBox;			
 		}
@@ -70,7 +74,7 @@
 
 			var statBox: UnitStatBox = new UnitStatBox();
 
-			statBox.init(unitPrototype.armor, unitPrototype.weapon, troopTemplate.maxHp, unitPrototype.upkeep, troopTemplate.attack, troopTemplate.defense, troopTemplate.stealth, troopTemplate.range, troopTemplate.speed);
+			statBox.init(unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, troopTemplate.maxHp, unitPrototype.upkeep, troopTemplate.attack, troopTemplate.defense, troopTemplate.stealth, troopTemplate.range, troopTemplate.speed);
 
 			return statBox;
 		}
@@ -80,13 +84,15 @@
 			createUI();
 		}
 
-		private function init(armor: String, weapon: String, hp: int, upkeep: int, attack: int, defense: int, stealth: int, range: int, speed: int) : void {
+		private function init(armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, defense: int, stealth: int, range: int, speed: int) : void {
 			lblAttack.setText(attack.toString());
 			lblDefense.setText(defense.toString());
 			lblSpeed.setText(speed.toString());
 			lblRange.setText(range.toString());
 			lblStealth.setText(stealth.toString());
 			lblHp.setText(hp.toString());
+			lblUnitClass.setText(unitClass);
+			lblWeaponClass.setText(weaponClass);
 			lblUpkeep.setText("-" + upkeep.toString());
 			lblWeapon.setText(weapon);
 			lblArmor.setText(armor);
@@ -94,11 +100,13 @@
 
 		private function createUI() : void
 		{
-			setLayout(new GridLayout(5, 4, 5, 0));
+			setLayout(new GridLayout(6, 4, 3, 0));
 
 			lblArmorTitle = titleLabelMaker("Armor");
 			lblWeaponTitle = titleLabelMaker("Weapon");
 			lblHpTitle = titleLabelMaker("HP");
+			lblWeaponClassTitle = titleLabelMaker("Weapon Class");
+			lblUnitClassTitle = titleLabelMaker("Unit Class");
 			lblAttackTitle = titleLabelMaker("Attack");
 			lblDefenseTitle = titleLabelMaker("Defense");
 			lblStealthTitle = titleLabelMaker("Stealth");
@@ -110,15 +118,18 @@
 			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
 			lblAttack = valueLabelMaker();
+			lblWeaponClass = valueLabelMaker();
+			lblUnitClass = valueLabelMaker();
 			lblDefense = valueLabelMaker();
 			lblStealth = valueLabelMaker();
 			lblRange = valueLabelMaker();
 			lblSpeed = valueLabelMaker();
 			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
 
-			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());
+			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());			
+			appendAll(lblArmorTitle, lblArmor, lblUnitClassTitle, lblUnitClass);
+			appendAll(lblWeaponTitle, lblWeapon, lblWeaponClassTitle, lblWeaponClass);
 			appendAll(lblAttackTitle, lblAttack, lblDefenseTitle, lblDefense);
-			appendAll(lblWeaponTitle, lblWeapon, lblArmorTitle, lblArmor);
 			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
 			appendAll(lblSpeedTitle, lblSpeed, lblUpkeepTitle, lblUpkeep);
 		}

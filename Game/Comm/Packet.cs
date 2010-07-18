@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using Game.Util;
+using zlib;
 
 #endregion
 
@@ -78,15 +79,12 @@ namespace Game.Comm {
                 MemoryStream compressedMemory = new MemoryStream(data, index + HEADER_SIZE, count - HEADER_SIZE);
                 MemoryStream uncompressedMemory = new MemoryStream();
                 compressedMemory.Position = 0;
-                GZipStream gs = new GZipStream(compressedMemory, CompressionMode.Decompress, false);
-                //      ZInputStream gs = new ZInputStream(compressedMemory);
-
-                int len;
-                byte[] buff = new byte[4096];
-                while ((len = gs.Read(buff, 0, 4096)) > 0)
-                    uncompressedMemory.Write(buff, 0, len);
-
-                gs.Close();
+                using (DeflateStream ds = new DeflateStream(compressedMemory, CompressionMode.Decompress)) {
+                    int len;
+                    byte[] buff = new byte[4096];
+                    while ((len = ds.Read(buff, 0, 4096)) > 0)
+                        uncompressedMemory.Write(buff, 0, len);
+                }
 
                 bytes = new byte[HEADER_SIZE + uncompressedMemory.Length];
                 Length = (ushort) bytes.Length;
@@ -228,17 +226,17 @@ namespace Game.Comm {
                 binaryWriter.Write(UInt16.MinValue); //place holder for length
 
                 if ((option & (int) Options.COMPRESSED) == (int) Options.COMPRESSED) {
-                    MemoryStream compressedMemory = new MemoryStream();
-                    //         ZOutputStream gs = new ZOutputStream(memory, zlibConst.Z_DEFAULT_COMPRESSION,true);
-                    GZipStream gs = new GZipStream(memory, CompressionMode.Compress, true);
-
-                    foreach (Parameter param in parameters) {
-                        byte[] paramBytes = param.getBytes();
-                        gs.Write(param.getBytes(), 0, paramBytes.Length);
+                    using (MemoryStream compressed = new MemoryStream()) {
+                        using (ZOutputStream ds = new ZOutputStream(compressed, 3)) {
+                            foreach (Parameter param in parameters) {
+                                byte[] paramBytes = param.getBytes();
+                                ds.Write(param.getBytes(), 0, paramBytes.Length);
+                            }
+                            ds.finish();
+                            compressed.Position = 0;
+                            compressed.WriteTo(memory);
+                        }
                     }
-
-                    gs.Close();
-                    compressedMemory.WriteTo(memory);
                 } else {
                     foreach (Parameter param in parameters) {
                         byte[] paramBytes = param.getBytes();

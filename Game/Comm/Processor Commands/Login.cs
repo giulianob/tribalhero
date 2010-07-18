@@ -30,6 +30,7 @@ namespace Game.Comm {
         public void CmdLogin(Session session, Packet packet) {
             Player player;
             Packet reply = new Packet(packet);
+            reply.Option |= (ushort)Packet.Options.COMPRESSED;
 
             byte loginMode;
             string loginKey = string.Empty;
@@ -229,6 +230,7 @@ namespace Game.Comm {
                 city.Worker.DoPassive(city, new CityAction(city.Id), false);
 
                 Packet reply = new Packet(packet);
+                reply.Option |= (ushort)Packet.Options.COMPRESSED;
                 PacketHelper.AddLoginToPacket(session, reply);
                 session.Write(reply);
             }

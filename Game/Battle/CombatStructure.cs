@@ -104,7 +104,7 @@ namespace Game.Battle {
         }
 
         public override void CalculateDamage(ushort dmg, out ushort actualDmg) {
-            actualDmg = dmg;
+            actualDmg = (ushort)Math.Min(Hp,dmg);
         }
 
         public override void TakeDamage(int dmg, out Resource returning, out int attackPoints) {

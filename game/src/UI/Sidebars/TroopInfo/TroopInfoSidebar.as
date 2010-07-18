@@ -100,11 +100,14 @@
 			}
 
 			//Special Case Buttons
-			switch(troopObj.State)
+			switch(troopObj.State.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
 					buttons.push(new ViewBattleButton(troopObj));
 				break;
+				case SimpleGameObject.STATE_MOVING:
+					buttons.push(new ViewDestinationButton(troopObj));
+				break;				
 			}
 
 			//Add buttons to UI

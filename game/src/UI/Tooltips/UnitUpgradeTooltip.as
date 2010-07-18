@@ -83,7 +83,7 @@ package src.UI.Tooltips {
 			if (nextUnitPrototype != null)
 			{
 				ui.append(pnlNextLvl);
-				
+
 				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(nextUnitPrototype.upgradeTime, null)));
 
 				if (missingRequirements != null && missingRequirements.length > 0)
@@ -172,7 +172,7 @@ package src.UI.Tooltips {
 
 			if (nextUnitPrototype != null) {
 				ui.append(new JPanel());
-				pnlNextLvl.append(pnlHeader);				
+				pnlNextLvl.append(pnlHeader);
 				pnlNextLvl.append(nextStatsBox);
 				pnlNextLvl.append(pnlRequired);
 				pnlNextLvl.append(new JPanel());

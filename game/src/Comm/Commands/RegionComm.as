@@ -6,6 +6,8 @@
 	import src.Constants;
 	import src.Global;
 	import src.Objects.Factories.ObjectFactory;
+	import src.Objects.States.BattleState;
+	import src.Objects.States.GameObjectState;
 
 	public class RegionComm {
 
@@ -49,17 +51,17 @@
 		public function onRegionSetTile(packet: Packet):void {
 			var cnt: int = packet.readUShort();
 			var regionId: int;
-			
+
 			for (var i: int = 0; i < cnt; i++) {
 				var x: int = packet.readUInt();
 				var y: int = packet.readUInt();
 				var tileType: int = packet.readUShort();
 
 				Global.map.regions.setTileType(x, y, tileType, false);
-				
+
 				regionId = MapUtil.getRegionIdFromMapCoord(x, y);
 			}
-			
+
 			Global.map.regions.redrawRegion(regionId);
 		}
 
@@ -110,31 +112,9 @@
 
 					var obj:SimpleGameObject = newRegion.addObject(objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY, false);
 
-					//obj may be null so we have to check it here (but we should still read all the stream)
-					if (objState > 0)
-					{
-						switch(objState)
-						{
-							case SimpleGameObject.STATE_BATTLE:
-								var battleCityId: int = packet.readUInt();
-								if (obj) obj.battleCityId = battleCityId;
-							break;
-							default:
-								trace("Unknown object state in onReceiveRegion:" + objState);
-							break;
-						}
-					}
+					mapComm.Object.readState(obj, packet, objState);
 
-					if (obj)
-					obj.State = objState;
-
-					if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE && objId == 1) { // main building
-						var radius: int = packet.readUByte();
-						if (obj)
-						{
-							obj.wall.draw(radius);
-						}
-					}
+					mapComm.Object.readWall(obj, packet);
 				}
 
 				newRegion.sortObjects();

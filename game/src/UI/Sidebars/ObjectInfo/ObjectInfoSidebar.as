@@ -145,11 +145,14 @@ package src.UI.Sidebars.ObjectInfo {
 			}
 
 			//Special Case Buttons
-			switch(structureObject.State)
+			switch(structureObject.State.getStateType())
 			{
 				case SimpleGameObject.STATE_BATTLE:
 					buttons.push(new ViewBattleButton(structureObject));
 				break;
+				case SimpleGameObject.STATE_MOVING:
+					buttons.push(new ViewDestinationButton(structureObject));
+				break;					
 			}
 
 			var buttonsCache: Array = buttons.concat();
@@ -184,7 +187,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 				var pnlGroup: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 3));
 				pnlGroup.setBorder(new TitledBorder(null, group.name, AsWingConstants.TOP, AsWingConstants.CENTER, 0, 10));
-				
+
 				for each(var groupButton: ActionButton in groupedButtons) {
 					if (groupButton.parentAction == null) continue;
 

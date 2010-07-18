@@ -2,6 +2,7 @@
 {
 	import fl.lang.Locale;
 	import org.aswing.*;
+	import src.Constants;
 	import src.UI.Dialog.InfoDialog;
 
 	public class GameError
@@ -10,9 +11,9 @@
 		{
 			var str: String = Locale.loadString("ERROR_" + errorCode.toString());
 			if (str && str != "")
-			return str + " [" + errorCode + "]";
+			return str + (Constants.debug > 0 ? " [" + errorCode + "]" : "");
 			else
-			return "An unexpected error occurred [" + errorCode + "]";
+			return "An unexpected error occurred. [" + errorCode + "]";
 		}
 
 		public static function showMessage(errorCode: int, callback: Function = null) : void

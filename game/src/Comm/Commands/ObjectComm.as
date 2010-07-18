@@ -9,6 +9,9 @@
 	import src.Objects.Actions.*;
 	import flash.events.Event;
 	import src.Global;
+	import src.Objects.States.BattleState;
+	import src.Objects.States.GameObjectState;
+	import src.Objects.States.MovingState;
 	import src.Objects.Troop.*;
 
 	public class ObjectComm {
@@ -48,6 +51,34 @@
 				case Commands.ACTION_RESCHEDULE:
 					onReceiveRescheduledObjectAction(e.packet);
 				break;
+			}
+		}
+
+		public function readState(obj: SimpleGameObject, packet: Packet, objState: int) : void {
+			switch(objState)
+			{
+				case SimpleGameObject.STATE_NORMAL:
+					if (obj) obj.State = new GameObjectState();
+				break;
+				case SimpleGameObject.STATE_BATTLE:
+					var battleCityId: int = packet.readUInt();
+					if (obj) obj.State = new BattleState(battleCityId);
+				break;
+				case SimpleGameObject.STATE_MOVING:
+					var destX: int = packet.readUInt();
+					var destY: int = packet.readUInt();
+					if (obj) obj.State = new MovingState(destX, destY);
+				break;
+				default:
+					trace("Unknown object state in onReceiveRegion:" + objState);
+				break;
+			}
+		}
+
+		public function readWall(obj: SimpleGameObject, packet: Packet) : void {
+			if (ObjectFactory.getClassType(obj.type) == ObjectFactory.TYPE_STRUCTURE && obj.objectId == 1) {
+				var radius: int = packet.readUByte();
+				if (obj) obj.wall.draw(radius);
 			}
 		}
 
@@ -321,35 +352,17 @@
 
 			var obj: SimpleGameObject = Global.map.regions.updateObject(regionId, objPlayerId, objCityId, objId, objType, objLvl, objHpPercent, objX, objY);
 
-			if (objState > 0)
+			if (!obj) return;
+
+			readState(obj, packet, objState);
+
+			readWall(obj, packet);
+
+			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+
+			if (obj as GameObject != null && obj == Global.map.selectedObject)
 			{
-				switch(objState)
-				{
-					case SimpleGameObject.STATE_BATTLE:
-						var battleCityId: int = packet.readUInt();
-						if (obj) obj.battleCityId = battleCityId;
-						else trace("Receive battle id for unknown object");
-					break;
-					default:
-						trace("Unknown object state in onReceiveRegion:" + objState);
-					break;
-				}
-			}
-
-			if (objId == 1 && obj is StructureObject) { // main building
-				var radius: int = packet.readUByte();
-				if (obj) obj.wall.draw(radius);
-			}
-
-			if (obj)
-			{
-				obj.State = objState;
-				obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
-
-				if (obj as GameObject != null && obj == Global.map.selectedObject)
-				{
-					Global.map.selectObject(obj as GameObject);
-				}
+				Global.map.selectObject(obj as GameObject);
 			}
 		}
 
@@ -368,15 +381,13 @@
 			var obj: SimpleGameObject = Global.map.regions.addObject(null, regionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
 			var objState: int = packet.readUByte();
 
-			if (objId == 1 && obj is StructureObject) { // main building
-				var radius: int = packet.readUByte();
-				if (obj) obj.wall.draw(radius);
-			}
+			if (!obj) return;
 
-			if (obj) {
-				obj.State = objState;
-				obj.fadeIn();
-			}
+			readState(obj, packet, objState);
+
+			readWall(obj, packet);
+
+			obj.fadeIn();
 		}
 
 		public function onRemoveObject(packet: Packet):void
@@ -405,28 +416,12 @@
 
 			var obj: SimpleGameObject = Global.map.regions.moveObject(oldRegionId, newRegionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
 
-			if (!obj)
-			return;
+			if (!obj) return;
 
-			if (objState > 0)
-			{
-				switch(objState)
-				{
-					case SimpleGameObject.STATE_BATTLE:
-						obj.battleCityId = packet.readUInt();;
-					break;
-					default:
-						trace("Unknown object state in onReceiveRegion:" + objState);
-					break;
-				}
-			}
+			readState(obj, packet, objState);
 
-			if (objId == 1 && obj is StructureObject) { // main building
-				var radius: int = packet.readUByte();
-				obj.wall.draw(radius);
-			}
+			readWall(obj, packet);
 
-			obj.State = objState;
 			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 		}
 

@@ -23,6 +23,7 @@
 			ICON_LABOR;
 			ICON_ALERT;
 			ICON_MESSAGE;
+			ICON_UPGRADE;
 			
 			//Passive Action Icons
 			PASSIVE_ATTACKING;

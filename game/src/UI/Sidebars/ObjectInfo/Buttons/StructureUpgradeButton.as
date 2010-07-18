@@ -1,10 +1,8 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
-	import flash.display.SimpleButton;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
+	import org.aswing.AssetIcon;
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
@@ -26,7 +24,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function StructureUpgradeButton(parentObj: GameObject, structPrototype: StructurePrototype)
 		{
-			super(parentObj, structPrototype.getName());
+			super(parentObj, structPrototype.getName(), new AssetIcon(new ICON_UPGRADE()));
 
 			if (!structPrototype)
 			return;
@@ -38,7 +36,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);	
+			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		}
 
 		public function onMouseOver(event: MouseEvent):void

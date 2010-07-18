@@ -5,6 +5,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.States.BattleState;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.BattleViewer;
 	import src.UI.Tooltips.TextTooltip;
@@ -26,10 +27,10 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		}
 
 		// Override disable since this button can always be clicked
-		override public function disable():void 
-		{			
+		override public function disable():void
+		{
 		}
-		
+
 		public function onMouseOver(event: MouseEvent):void
 		{
 			tooltip.show(this);
@@ -44,8 +45,10 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var battleViewer: BattleViewer = new BattleViewer(parentObj.battleCityId);
-				battleViewer.show();
+				if (parentObj.State is BattleState) {
+					var battleViewer: BattleViewer = new BattleViewer((parentObj.State as BattleState).battleCityId);
+					battleViewer.show();
+				}
 			}
 
 			event.stopImmediatePropagation();

@@ -17,7 +17,7 @@ package src.Objects.Actions {
 			{ name: "Train", actions: [ TrainButton] },
 			{ name: "Upgrade", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Research", actions: [ TechnologyButton ] },			
-			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
+			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
 		];
 		
 		//the actions visible to the client need to be here

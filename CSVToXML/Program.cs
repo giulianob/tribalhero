@@ -189,8 +189,8 @@ namespace CSVToXML {
                         writer.WriteAttributeString("workerid", obj[19]);
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
-                        writer.WriteAttributeString("armor", obj[22]);
-                        writer.WriteAttributeString("armorclass", obj[23]);
+                        writer.WriteAttributeString("unitclass", obj[22]);
+                        writer.WriteAttributeString("armor", obj[23]);
                         writer.WriteAttributeString("maxlabor", obj[24]);
 
                         writer.WriteStartElement("Layout");
@@ -234,8 +234,8 @@ namespace CSVToXML {
                         writer.WriteAttributeString("level", obj[2]);
                         writer.WriteAttributeString("weapon", obj[3]);
                         writer.WriteAttributeString("weaponclass", obj[4]);
-                        writer.WriteAttributeString("armor", obj[5]);
-                        writer.WriteAttributeString("armorclass", obj[6]);
+                        writer.WriteAttributeString("unitclass", obj[5]);
+                        writer.WriteAttributeString("armor", obj[6]);
                         writer.WriteAttributeString("class", obj[7]);
                         writer.WriteAttributeString("spriteclass", obj[8]);
                         writer.WriteAttributeString("hp", obj[9]);

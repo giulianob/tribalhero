@@ -1,5 +1,6 @@
 #region
 
+using System;
 using Game.Data;
 using Game.Setup;
 
@@ -7,6 +8,11 @@ using Game.Setup;
 
 namespace Game.Logic {
     public partial class Formula {
+        internal static double TradeTime(Structure structure)
+        {
+            return 50 + 50 / structure.Lvl;
+        }
+
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {
             int[] discount = { 0, 2, 4, 6, 8, 10, 15, 20, 30, 50, 80 };
             foreach( Structure obj in structure.City ) {
@@ -23,7 +29,6 @@ namespace Game.Logic {
         }
 
         public static int TrainTime(int baseValue, int structureLvl, TechnologyManager em) {
-            //            int buildtime = baseValue * em.Min(EffectCode.TrainTimeMultiplier, EffectInheritance.SELF_ALL, 0) / 100;
             return (int)(baseValue * Config.seconds_per_unit * (100 - TimeDiscount(structureLvl)) / 100);
         }
 
@@ -33,7 +38,7 @@ namespace Game.Logic {
         }
 
         internal static int MoveTime(byte speed) {
-            return 50 - speed;
+            return Math.Max(1, 50 - speed);
         }
     }
 }

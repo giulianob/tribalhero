@@ -25,10 +25,13 @@ namespace Game.Logic.Actions {
             if (techBase == null)
                 return Error.OBJECT_NOT_FOUND;
 
-            Technology tech = new Technology(techBase);
-            obj.Technologies.BeginUpdate();
-            obj.Technologies.Add(tech);
-            obj.Technologies.EndUpdate();
+            Technology tech;
+            if (!obj.Technologies.TryGetTechnology(techBase.techtype, out tech)) {
+                tech = new Technology(techBase);
+                obj.Technologies.BeginUpdate();
+                obj.Technologies.Add(tech);
+                obj.Technologies.EndUpdate();
+            }
 
             StateChange(ActionState.COMPLETED);
 

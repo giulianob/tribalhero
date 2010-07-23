@@ -11,7 +11,7 @@ using Game.Util;
 #endregion
 
 namespace Game.Logic.Actions {
-    enum AttackMode {
+    public enum AttackMode {
         WEAK = 0,
         NORMAL = 1,
         STRONG = 2

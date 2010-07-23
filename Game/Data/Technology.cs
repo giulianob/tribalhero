@@ -338,8 +338,8 @@ namespace Game.Data {
                 tech.Print();
         }
 
-        public bool TryGetTechnology(uint techId, out Technology technology) {
-            technology = technologies.Find(tech => tech.Type == techId && tech.ownerId == ownerId && tech.ownerLocation == ownerLocation);
+        public bool TryGetTechnology(uint techType, out Technology technology) {
+            technology = technologies.Find(tech => tech.Type == techType && tech.ownerId == ownerId && tech.ownerLocation == ownerLocation);
 
             return technology != null;
         }

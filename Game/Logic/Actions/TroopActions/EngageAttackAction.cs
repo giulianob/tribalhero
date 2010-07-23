@@ -59,6 +59,32 @@ namespace Game.Logic.Actions {
             return listStruct;
         }
 
+        private static IEnumerable<Structure> GetProtectingStructures(IEnumerable<Structure> city, IEnumerable<Structure> structuresBeingAttacked, TroopObject attacker) {
+            List<Structure> protectingStructures = new List<Structure>();
+            foreach (Structure structure in city) {
+                if (structure.Stats.Base.Radius == 0)
+                    continue;
+
+                bool found = false;
+
+                foreach (Structure structureBeingAttacked in structuresBeingAttacked) {
+                    if (structureBeingAttacked == structure) {
+                        found = false;
+                        break;
+                    }
+                    
+                    if (structure.RadiusDistance(structureBeingAttacked) <= structure.Stats.Base.Radius) {
+                        found = true;
+                    }                                        
+                }
+
+                if (found)
+                    protectingStructures.Add(structure);
+            }
+
+            return protectingStructures;
+        }
+
         public override Error Execute() {
             City city;
             City targetCity;
@@ -75,7 +101,11 @@ namespace Game.Logic.Actions {
                 targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
                 targetCity.Battle.ExitBattle += Battle_ExitBattle;
                 Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.REINFORCED);
-                targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
+                
+                List<Structure> defenders = GetStructuresInRadius(targetCity, stub.TroopObject);
+                defenders.AddRange(GetProtectingStructures(targetCity, defenders, stub.TroopObject));
+                targetCity.Battle.AddToLocal(defenders);                
+                
                 targetCity.Battle.AddToAttack(list);
             }
             else {
@@ -83,7 +113,11 @@ namespace Game.Logic.Actions {
                 targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
                 targetCity.Battle.ExitBattle += Battle_ExitBattle;
                 BattleAction ba = new BattleAction(targetCityId);
-                targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
+                
+                List<Structure> defenders = GetStructuresInRadius(targetCity, stub.TroopObject);
+                defenders.AddRange(GetProtectingStructures(targetCity, defenders, stub.TroopObject));
+                targetCity.Battle.AddToLocal(defenders);                
+
                 targetCity.Battle.AddToAttack(list);
                 targetCity.Worker.DoPassive(targetCity, ba, false);
             }

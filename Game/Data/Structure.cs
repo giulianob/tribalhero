@@ -13,7 +13,7 @@ namespace Game.Data {
         private StructureProperties properties;
         private readonly TechnologyManager techmanager;
 
-        private StructureStats stats;        
+        private StructureStats stats;
 
         public StructureStats Stats {
             get { return stats; }

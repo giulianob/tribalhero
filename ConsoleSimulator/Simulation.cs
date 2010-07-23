@@ -153,9 +153,9 @@ namespace ConsoleSimulator {
                 obj.HitDealt, 
                 obj.HitRecv,
                 obj.MaxDmgDealt,
-                obj.MinDmgDealt==int.MaxValue?0:obj.MinDmgDealt, 
+                obj.MinDmgDealt==ushort.MaxValue?0:obj.MinDmgDealt, 
                 obj.MaxDmgRecv,
-                obj.MinDmgRecv==int.MaxValue?0:obj.MinDmgRecv,
+                obj.MinDmgRecv==ushort.MaxValue?0:obj.MinDmgRecv,
                 obj.Count);
         }
 

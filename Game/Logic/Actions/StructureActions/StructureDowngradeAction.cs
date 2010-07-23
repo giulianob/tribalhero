@@ -77,7 +77,7 @@ namespace Game.Logic.Actions {
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
                 Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
                 InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);
-                Formula.ResourceCap(structure.City);
+                Procedure.SetResourceCap(structure.City);
                 
                 structure.IsBlocked = false;
                 structure.EndUpdate();

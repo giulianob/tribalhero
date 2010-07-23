@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Fighting;
@@ -12,140 +13,47 @@ using Game.Setup;
 
 namespace Game.Logic {
     public partial class Formula {
-        public static int ResourceRate(TechnologyManager em) {
-            // return em.Sum(EffectCode.ResourceRate);
-            return 0;
-        }
 
-        public static bool HarvestSurprise(TechnologyManager em) {
-            int min = em.Min(EffectCode.HarvestSurprise, EffectInheritance.SELF_ALL, 0);
-            if (min == int.MaxValue)
-                return false;
-            return Config.Random.Next(0, 100) < em.Min(EffectCode.HarvestSurprise, EffectInheritance.SELF_ALL, 0);
-        }
-
-        public static bool OverDigging(TechnologyManager em) {
-            int max = em.Max(EffectCode.OverDigging, EffectInheritance.SELF_ALL, 0);
-            if (max == int.MinValue)
-                return false;
-            return Config.Random.Next(0, 1000) < em.Min(EffectCode.OverDigging, EffectInheritance.SELF_ALL, 0);
-        }
-
-        internal static byte GetTroopRadius(TroopStub stub, TechnologyManager em) {
-            int count = 0;
-            foreach (Formation formation in stub) {
-                if (formation.Type == FormationType.SCOUT)
-                    continue;
-                foreach (KeyValuePair<ushort, ushort> kvp in formation)
-                    count += kvp.Value;
-            }
-
-            return (byte) Math.Min((int) Math.Ceiling((decimal) count/100), 5);
-        }
-
-        internal static byte GetTroopSpeed(TroopStub stub, object p) {
-            int count = 0;
-            foreach (Formation formation in stub) {
-                if (formation.Type == FormationType.SCOUT)
-                    continue;
-                foreach (KeyValuePair<ushort, ushort> kvp in formation)
-                    count += kvp.Value;
-            }
-            return (byte) Math.Min(15, (10 - Math.Max(count/100, 5)));
-                //limiting it to max of 15 because Formula.MoveTime will return negative if greater than 20
-        }
-
-        internal static Resource GetMillResource(byte millLvl, TechnologyManager em) {
-            Resource res = new Resource(millLvl*5, millLvl*4, millLvl*2, millLvl*3, 0);
-            foreach (Effect effect in em.GetEffects(EffectCode.CountEffect, EffectInheritance.SELF)) {
-                switch ((int) effect.value[0]) {
-                    case 21051:
-                        res.Crop *= (int) effect.value[1];
-                        break;
-                    case 21052:
-                        res.Gold *= (int) effect.value[1];
-                        break;
-                    case 21053:
-                        res.Wood *= (int) effect.value[1];
-                        break;
-                    case 21054:
-                        res.Iron *= (int) effect.value[1];
-                        break;
-                }
-            }
-            return res;
-        }
-
-        internal static byte GetRadius(uint totalLabor) {
-            return (byte) Math.Min(4, (int) (totalLabor/400)+2);
-        }
-
-        internal static int GetAttackModeTolerance(int totalCount, AttackMode mode) {
-            switch (mode) {
-                case AttackMode.WEAK:
-                    return (ushort) (totalCount*2/3);
-                case AttackMode.NORMAL:
-                    return (ushort) (totalCount/3);
-                case AttackMode.STRONG:
-                    return 0;
-            }
-            return 0;
-        }
-
-        internal static int GetResource(byte lvl, ushort labor) {
-            if (labor == 0)
-                return 0;
-            //return lvl*labor*(100+labor/lvl)/100;
-            return labor;
-        }
-
-        internal static ushort GetRewardPoint(Resource resource, ushort hp) {
-            ushort total = (ushort) (resource.Crop + resource.Gold + resource.Wood + resource.Iron*2);
-            return (ushort) Math.Max(total/hp, 1);
-        }
-
-        internal static double TradeTime(Structure structure) {
-            return 50 + 50/structure.Lvl;
-        }
-
-        internal static double MarketTax(Structure structure) {
-            switch (structure.Lvl) {
-                case 1:
-                    return .25;
-                case 2:
-                    return .20;
-                case 3:
-                    return .15;
-                case 4:
-                    return .10;
-                case 5:
-                    return .05; 
-            }
-            throw new Exception("WTF");
-        }
-        internal static int ResourceCropCap(byte lvl) {
+        /// <summary>
+        /// Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
+        /// </summary>
+        /// <param name="effects"></param>
+        /// <param name="radius"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static int GetAwayFromRadius(IEnumerable<Effect> effects, byte radius, ushort type)
+        {
+            return radius + effects.Sum(x => (x.id == EffectCode.AwayFromStructureMod && (int)x.value[0] == type) ? (int)x.value[1] : 0);
+        }        
+        
+        /// <summary>
+        /// Returns the crop cap based on the main building level
+        /// </summary>
+        /// <param name="lvl"></param>
+        /// <returns></returns>
+        public static int ResourceCropCap(byte lvl) {
             int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
             return cap[lvl];
         }
-        internal static int ResourceWoodCap(byte lvl) {
+        
+        /// <summary>
+        /// /// Returns the wood cap based on the main building level
+        /// </summary>
+        /// <param name="lvl"></param>
+        /// <returns></returns>
+        public static int ResourceWoodCap(byte lvl) {
             int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
             return cap[lvl];
         }
-        internal static int ResourceIronCap(byte lvl) {
+
+        /// <summary>
+        /// Returns the iron cap based on the main building level
+        /// </summary>
+        /// <param name="lvl"></param>
+        /// <returns></returns>
+        public static int ResourceIronCap(byte lvl) {
             int[] cap = { 200, 200, 300, 500, 800, 1200, 1800, 2800, 4400, 6800, 10000 };
             return cap[lvl];
-        }
-
-
-        internal static void ResourceCap(City city) {
-            if (Config.resource_cap) {
-                city.Resource.SetLimits(ResourceCropCap(city.MainBuilding.Lvl), 0, ResourceIronCap(city.MainBuilding.Lvl), ResourceWoodCap(city.MainBuilding.Lvl), 0);
-            } else
-                city.Resource.SetLimits(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
-        }
-
-        internal static byte GetCityActionMax(City owner) {
-            return (byte) (owner.MainBuilding.Lvl >= 10 ? 2 : 1);
         }
     }
 }

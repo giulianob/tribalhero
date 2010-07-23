@@ -27,6 +27,7 @@ package src.Objects.Actions {
 
 			GameLookAndFeel.changeClass(this, "Button.action");
 
+			setPreferredHeight(20);
 			setHorizontalAlignment(AsWingConstants.LEFT);
 			this.parentObj = parentObj;
 

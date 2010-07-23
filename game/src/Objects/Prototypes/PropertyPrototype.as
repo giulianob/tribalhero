@@ -5,6 +5,9 @@
  */
 
 package src.Objects.Prototypes {
+	import flash.display.DisplayObject;
+	import org.aswing.AssetIcon;
+	import flash.utils.getDefinitionByName;
 
 	public class PropertyPrototype {
 
@@ -16,12 +19,16 @@ package src.Objects.Prototypes {
 		public var name: String;
 		public var datatype: String;
 		public var visibility: int;
+		public var perHour: Boolean;
+		public var icon: String;
 
-		public function PropertyPrototype(index: int, type: int, name: String, datatype: String, visibility: int) {
+		public function PropertyPrototype(index: int, type: int, name: String, datatype: String, visibility: int, perHour: Boolean, icon: String) {
 			this.type = type;
 			this.name = name;
 			this.datatype = datatype;
 			this.visibility = visibility;
+			this.perHour = perHour;
+			this.icon = icon;
 		}
 
 		public static function sortOnType(a:PropertyPrototype, b:PropertyPrototype):Number {
@@ -60,9 +67,18 @@ package src.Objects.Prototypes {
 			return a.type - value;
 		}
 
-		public function toString(): String
+		public function getIcon(): AssetIcon 
 		{
-			return name + " " + type;
+			if (icon == "" || icon == null) return null;
+			
+			var objRef: Class = getDefinitionByName("ICON_" + icon) as Class;
+
+			return new AssetIcon(new objRef() as DisplayObject);
+		}
+		
+		public function toString(value: *): String
+		{			
+			return (perHour && value >0 ? "+" : "") + value.toString() + (perHour ? "/hour" : "");
 		}
 	}
 

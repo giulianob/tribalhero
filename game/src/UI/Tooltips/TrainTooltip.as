@@ -58,7 +58,7 @@ package src.UI.Tooltips {
 
 		public function draw(count: int, max: int) :void
 		{
-			lblTime.setText(Util.formatTime(Formula.trainTime(parentObj, unitPrototype.trainTime, null)));
+			lblTime.setText(Util.formatTime(Formula.trainTime(parentObj, unitPrototype.trainTime, parentObj.getCorrespondingCityObj().techManager)));
 			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
@@ -147,6 +147,7 @@ package src.UI.Tooltips {
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 
 			lblActionCount = new JLabel();
+			lblActionCount.setVisible(false);
 			lblActionCount.setConstraints("West");
 			lblActionCount.setText("0/1");
 			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);

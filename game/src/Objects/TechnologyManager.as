@@ -1,65 +1,65 @@
 ﻿package src.Objects {
-	
+
 	/**
-	* ...
-	* @author Default
-	*/
-	
+	 * ...
+	 * @author Default
+	 */
+
 	import src.Objects.Prototypes.EffectPrototype;
-	
+
 	public class TechnologyManager {
-		
+
 		public var technologies: Array = new Array();
 		public var location: int;
 		public var parent: TechnologyManager;
-		
+
 		public function TechnologyManager(location: int, parent: TechnologyManager = null) {
 			this.location = location;
 			this.parent = parent;
 		}
-		
+
 		public function add(tech: TechnologyStats, notify: Boolean = true):void
 		{
 			if (tech.ownerLocation != location)
 			{
 				var effects: Array = tech.getAllEffects(EffectPrototype.INHERIT_SELF, location);
-				
+
 				if (effects.length == 0)
-					return; //do not add effects that do not affect this location							
+				return; //do not add effects that do not affect this location
 			}
-			
+
 			//check for duplicates
 			var dupe: Boolean = false;
 			for each(var currTech: TechnologyStats in technologies)
 			{
-				if (currTech.ownerId == tech.ownerId && currTech.ownerLocation == tech.ownerLocation && currTech.prototype.techtype == tech.prototype.techtype)				
+				if (currTech.ownerId == tech.ownerId && currTech.ownerLocation == tech.ownerLocation && currTech.prototype.techtype == tech.prototype.techtype)
 				{
 					dupe = true;
 					break;
 				}
 			}
-			
+
 			if (!dupe)
-				technologies.push(tech);
-			
+			technologies.push(tech);
+
 			if (parent != null && notify)
-				parent.add(tech);
+			parent.add(tech);
 		}
-		
+
 		public function find(techtype: int): TechnologyStats
 		{
 			for each(var currTech: TechnologyStats in technologies)
 			{
 				if (currTech.ownerLocation != EffectPrototype.LOCATION_OBJECT)
-					continue;
-					
+				continue;
+
 				if (currTech.prototype.techtype == techtype)
-					return currTech;
+				return currTech;
 			}
-			
+
 			return null;
 		}
-		
+
 		public function remove(tech: TechnologyStats, notify: Boolean = true):void
 		{
 			for (var i: int = 0; i < technologies.length; i++)
@@ -71,82 +71,91 @@
 					break;
 				}
 			}
-			
+
 			if (parent != null && notify)
-				parent.remove(tech);
+			parent.remove(tech);
 		}
-		
+
 		public function clear():void
 		{
 			technologies = new Array();
 		}
-		
+
 		public function update(technologyStats: TechnologyStats):void
 		{
 			remove(technologyStats, false);
 			add(technologyStats, false);
-			
+
 			if (parent != null)
-				parent.update(technologyStats);
+			parent.update(technologyStats);
 		}
-		
+
 		public function getAllEffects(inheritance: int): Array
 		{
 			var ret: Array = new Array();
-			
+
 			var i: int;
 			var f: Array;
 			for each(var tech: TechnologyStats in technologies)
 			{
 				f = tech.getAllEffects(inheritance, location);
-				
+
 				for (i = 0; i < f.length; i++)
-					ret.push(f[i]);
+				ret.push(f[i]);
 			}
-			
+
 			if ( (inheritance & EffectPrototype.INHERIT_UPWARD) == EffectPrototype.INHERIT_UPWARD )
 			{
 				if (parent != null)
 				{
 					f = parent.getAllEffects(EffectPrototype.INHERIT_SELF | EffectPrototype.INHERIT_UPWARD);
-					
+
 					for (i = 0; i < f.length; i++)
-						ret.push(f[i]);
+					ret.push(f[i]);
 				}
-					
+
 			}
-			
+
 			return ret;
 		}
-		
+
 		public function getEffects(effectCode: int, inheritance: int): Array
 		{
 			var ret: Array = new Array();
-			
+
 			var i: int;
 			var f: Array;
 			for each(var tech: TechnologyStats in technologies)
 			{
 				f = tech.getEffects(effectCode, inheritance, location);
-				
+
 				for (i = 0; i < f.length; i++)
-					ret.push(f[i]);
+				ret.push(f[i]);
 			}
-			
+
 			if ( (inheritance & EffectPrototype.INHERIT_UPWARD) == EffectPrototype.INHERIT_UPWARD )
 			{
 				if (parent != null)
 				{
 					f = parent.getEffects(effectCode, EffectPrototype.INHERIT_SELF | EffectPrototype.INHERIT_UPWARD);
-					
+
 					for (i = 0; i < f.length; i++)
-						ret.push(f[i]);
+					ret.push(f[i]);
 				}
+			}
+
+			return ret;
+		}
+
+		public function sum(effectCode: int, inherit: int) : int {
+			var ret: int = 0;
+			for each (var e: EffectPrototype in getEffects(effectCode, inherit)) {
+				//ret += e....
 			}
 			
 			return ret;
 		}
-		   
+
 	}
-	
+
 }

@@ -67,7 +67,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 				}
 				
-				var inputDialog: UnitTrainDialog = new UnitTrainDialog(unitPrototype, onAcceptDialog, Formula.trainTime(parentObj, unitPrototype.trainTime, null));
+				var inputDialog: UnitTrainDialog = new UnitTrainDialog(unitPrototype, onAcceptDialog, Formula.trainTime(parentObj, unitPrototype.trainTime, parentObj.getCorrespondingCityObj().techManager));
 				
 				inputDialog.show();
 			}

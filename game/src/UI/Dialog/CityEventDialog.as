@@ -32,6 +32,8 @@
 		private var lblIron: JLabel;
 		private var lblLabor: JLabel;
 		private var lblUpkeep: JLabel;
+		private var lblAttackPoints: JLabel;
+		private var lblDefensePoints: JLabel;
 		private var lblUpkeepMsg: JLabel;
 
 		private var city: City;
@@ -109,6 +111,8 @@
 			lblLabor.setText(simpleLabelText(city.resources.labor.getValue().toString() + " " + StringHelper.makePlural(city.resources.labor.getValue(), "is", "are", "are") + " idle and " + city.getBusyLaborCount().toString() + " " + StringHelper.makePlural(city.getBusyLaborCount(), "is", "are", "are") + " working", false, false));
 			lblUpkeep.setText(simpleLabelText(city.resources.crop.getUpkeep().toString(), true, true));
 			lblUpkeepMsg.setVisible(city.resources.crop.getRate() < city.resources.crop.getUpkeep());
+			lblAttackPoints.setText(city.attackPoint + " attack points");
+			lblDefensePoints.setText(city.defensePoint + " defense points");
 
 			if (getFrame() != null) {
 				getFrame().pack();
@@ -125,7 +129,7 @@
 			var cityName: Username = Global.map.usernames.cities.get(city.id);
 			title = cityName.name + " - Overview";
 
-			pnlResources = new JPanel(new GridLayout(3, 2, 20, 10));
+			pnlResources = new JPanel(new GridLayout(4, 2, 20, 10));
 
 			pnlLocalEvents = new JTabbedPane();
 			pnlLocalEvents.setPreferredSize(new IntDimension(500, 200));
@@ -137,6 +141,8 @@
 			lblIron = resourceLabelMaker("Iron", new AssetIcon(new ICON_IRON()));
 			lblLabor = simpleLabelMaker("Laborer", new AssetIcon(new ICON_LABOR()));
 			lblUpkeep = simpleLabelMaker("Troop Upkeep", new AssetIcon(new ICON_CROP()));
+			lblDefensePoints = simpleLabelMaker("Defense Points", new AssetIcon(new ICON_SHIELD()));
+			lblAttackPoints = simpleLabelMaker("Attack Points", new AssetIcon(new ICON_BATTLE()));
 
 			lblUpkeepMsg = new JLabel("Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.", new AssetIcon(new ICON_ALERT()));
 			lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));
@@ -147,6 +153,8 @@
 			pnlResources.append(lblIron);
 			pnlResources.append(lblLabor);
 			pnlResources.append(lblUpkeep);
+			pnlResources.append(lblDefensePoints);
+			pnlResources.append(lblAttackPoints);
 
 			//component layoution
 			append(lblUpkeepMsg);

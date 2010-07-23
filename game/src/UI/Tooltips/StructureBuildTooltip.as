@@ -67,7 +67,7 @@
 				return label;
 			};
 
-			lblTime.setText(Util.formatTime(Formula.buildTime(structPrototype.buildTime, null)));
+			lblTime.setText(Util.formatTime(Formula.buildTime(parentObj, structPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
 
 			lblActionCount.setText(count + "/" + max);
 
@@ -140,6 +140,7 @@
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 
 			lblActionCount = new JLabel();
+			lblActionCount.setVisible(false);
 			lblActionCount.setConstraints("West");
 			lblActionCount.setText("0/1");
 			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);

@@ -67,7 +67,7 @@ package src.UI.Tooltips {
 			
 			lblTitle.setText("Convert to " + nextStructPrototype.getName());
 			
-			lblTime.setText(Util.formatTime(Formula.buildTime(nextStructPrototype.buildTime, null)));			
+			lblTime.setText(Util.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));			
 			
 			lblDescription.setText(nextStructPrototype.getGeneralDescription());						
 			
@@ -139,6 +139,7 @@ package src.UI.Tooltips {
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 			
 			lblActionCount = new JLabel();
+			lblActionCount.setVisible(false);
 			lblActionCount.setConstraints("West");
 			lblActionCount.setText("0/1");
 			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);

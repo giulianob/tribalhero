@@ -19,9 +19,18 @@
 			properties = new BinaryList(PropertyPrototype.sortOnTypeAndIndex, PropertyPrototype.compareType);
 
 			for each (var propNode: XML in data.Property.*) {
-				properties.add(new PropertyPrototype(propNode.@index, propNode.@type, propNode.@name, propNode.@datatype, propNode.@visibility == "PUBLIC" ? 1 : 0), false);
+				var propPrototype: PropertyPrototype = new PropertyPrototype(
+				propNode.@index,
+				propNode.@type,
+				propNode.@name,
+				propNode.@datatype,
+				propNode.@visibility == "PUBLIC" ? 1 : 0,
+				propNode.@perhour.toUpperCase() == "TRUE" ? true : false,
+				propNode.@icon
+				);
+				properties.add(propPrototype, false);
 			}
-			
+
 			properties.sort();
 		}
 

@@ -27,7 +27,7 @@ package src.UI.Tooltips {
 
 		private var lblTitle:JLabel;
 		private var lblLevel:JLabel;
-		private var lblDescription:JLabel;
+		private var lblDescription:MultilineLabel;
 		private var pnlHeader:JPanel;
 
 		private var pnlNextLvl:JPanel;
@@ -78,7 +78,7 @@ package src.UI.Tooltips {
 				ui.append(pnlNextLvl);
 
 				lblNextLvlDescription.setText(nextTechPrototype.getDescription());
-				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(nextTechPrototype.time, null)));
+				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(parentObj, nextTechPrototype.time, parentObj.getCorrespondingCityObj().techManager)));
 
 				if (missingRequirements != null && missingRequirements.length > 0)
 				{
@@ -121,8 +121,7 @@ package src.UI.Tooltips {
 			lblNextLvlTime.setConstraints("East");
 			GameLookAndFeel.changeClass(lblNextLvlTime, "Tooltip.text");
 
-			lblDescription = new JLabel();
-			lblDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblDescription = new MultilineLabel();			
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 
 			pnlNextLvl = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL));
@@ -150,6 +149,7 @@ package src.UI.Tooltips {
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 
 			lblActionCount = new JLabel();
+			lblActionCount.setVisible(false);
 			lblActionCount.setConstraints("West");
 			lblActionCount.setText("0/1");
 			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);

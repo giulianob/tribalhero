@@ -10,6 +10,8 @@ package src.Objects {
 	import flash.geom.Point;
 	import flash.events.Event;
 	import flash.text.TextField;
+	import src.Map.City;
+	import src.Map.CityObject;
 	import src.Map.Map;
 	import src.Objects.Actions.CurrentActionManager;
 	import src.Objects.States.GameObjectState;
@@ -71,6 +73,12 @@ package src.Objects {
 		public function getType(): int
 		{
 			return type;
+		}
+		
+		public function getCorrespondingCityObj() : CityObject {
+			var city: City = Global.map.cities.get(cityId);
+			if (!city) return null;
+			return city.objects.get(objectId);
 		}
 
 		public function dispose():void {

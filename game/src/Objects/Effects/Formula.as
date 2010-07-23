@@ -5,8 +5,10 @@
 	 * @author Default
 	 */
 	import src.Constants;
+	import src.Global;
 	import src.Map.City;
 	import src.Objects.GameObject;
+	import src.Objects.Prototypes.EffectPrototype;
 	import src.Objects.StructureObject;
 	import src.Objects.TechnologyManager;
 	import src.Objects.Troop.TroopStub;
@@ -22,9 +24,17 @@
 			return (baseValue * Constants.secondsPerUnit) * (100 - discount[parentObj.level]) / 100;
 		}
 
-		public static function buildTime(baseValue: int, techManager:TechnologyManager): int
+		public static function buildTime(parentObj: GameObject, baseValue: int, techManager:TechnologyManager): int
 		{
-			return (baseValue * Constants.secondsPerUnit);
+			var discount: Array = [ 0, 0, 0, 0, 0, 5, 10, 15, 20, 30, 40 ];
+			var mainBuildingLvl: int = 0;
+			
+			var city: City = Global.map.cities.get(parentObj.cityId);			
+			if (city) mainBuildingLvl = city.MainBuilding.level;			
+			
+			var buildTime: int = (baseValue * (100 - discount[mainBuildingLvl]) / 100) - techManager.sum(EffectPrototype.EFFECT_BUILD_TIME_MULTIPLIER, EffectPrototype.INHERIT_SELF);
+			
+			return (buildTime * Constants.secondsPerUnit);
 		}
 
 		public static function moveTime(speed: int) : int {

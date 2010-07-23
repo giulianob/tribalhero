@@ -76,7 +76,7 @@ package src.UI.Tooltips {
 			if (nextStructPrototype != null)
 			{
 				lblNextLvlDescription.setText(nextStructPrototype.getDescription());
-				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(nextStructPrototype.buildTime, null)));
+				lblNextLvlTime.setText(Util.formatTime(Formula.buildTime(parentObj, nextStructPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
 
 				if (nextStructPrototype.layouts.length > 0 || (missingRequirements != null && missingRequirements.length > 0))
 				{
@@ -149,6 +149,7 @@ package src.UI.Tooltips {
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 
 			lblActionCount = new JLabel();
+			lblActionCount.setVisible(false);
 			lblActionCount.setConstraints("West");
 			lblActionCount.setText("0/1");
 			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);

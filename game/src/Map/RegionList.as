@@ -32,23 +32,19 @@
 			if (obj == null)
 			return null;
 
+			var reselect: Boolean = Global.map.selectedObject == obj;
+
+			if (Global.map.selectedObject == obj) Global.map.selectObject(null);
+
 			if (level != obj.level || type != obj.type)
 			{
-				var reselect: Boolean = Global.map.selectedObject == obj;
-
-				if (Global.map.selectedObject == obj)
-				Global.map.selectObject(null);
-
 				region.removeObject(cityId, objectId);
 
 				var wallRadius: int = obj.wall.radius; //preserve wall
 
 				obj = addObject(obj, regionId, level, type, playerId, cityId, objectId, hpPercent, objX, objY);
 
-				obj.fadeIn();
-
-				if (reselect && obj is GameObject)
-				Global.map.selectObject(obj as GameObject);
+				obj.fadeIn();				
 
 				if (wallRadius > 0)
 				obj.wall.draw(wallRadius);
@@ -65,6 +61,8 @@
 
 				obj.moveWithCamera(Global.gameContainer.camera);
 			}
+			
+			if (reselect && obj is GameObject) Global.map.selectObject(obj as GameObject);			
 
 			return obj;
 		}

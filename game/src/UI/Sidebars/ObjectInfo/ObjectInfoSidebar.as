@@ -127,8 +127,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 				if (structureObject != null)
 				{
-					for (var i: int = 0; i < propPrototype.length; i++)
-					addStatRow(propPrototype[i].name, structureObject.properties[i]);
+					for (var i: int = 0; i < propPrototype.length; i++) {
+						addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+					}
 
 					buttons = buttons.concat(StructureFactory.getButtons(structureObject)).concat(StructureFactory.getTechButtons(structureObject));
 				}
@@ -152,7 +153,7 @@ package src.UI.Sidebars.ObjectInfo {
 				break;
 				case SimpleGameObject.STATE_MOVING:
 					buttons.push(new ViewDestinationButton(structureObject));
-				break;					
+				break;
 			}
 
 			var buttonsCache: Array = buttons.concat();

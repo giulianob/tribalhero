@@ -55,6 +55,8 @@ namespace Game.Logic.Actions {
         }
 
         public override Error Execute() {
+            throw new Exception("Have to add logic so that it only upgrades to a certain level since if the building gets downgrade then upgraded again it will keep increasing the tech level");
+
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))

@@ -12,7 +12,8 @@ class ReportsController extends AppController {
             'left the battle',
             'died',
             'retreated',
-            'gained new units'
+            'gained new units',
+            'run out of stamina'
     );
     
     function beforeFilter() {
@@ -137,6 +138,7 @@ class ReportsController extends AppController {
                         case TROOP_STATE_EXITING:
                         case TROOP_STATE_DYING:
                         case TROOP_STATE_RETREATING:
+                        case TROOP_STATE_OUT_OF_STAMINA:
                             $foundExit = true;
                             break;
                     }

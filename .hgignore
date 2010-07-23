@@ -1,3 +1,6 @@
 glob:app/tmp/cache/models/cake_*
 glob:app/tmp/cache/persistent/cake_*
 glob:app/tmp/logs/*
+glob:nbproject/private/private.properties
+glob:nbproject/project.xml
+glob:nbproject/project.properties

@@ -1,5 +1,7 @@
 namespace Game.Data.Stats {
     public class StructureStats : BaseStats {
+
+
         private ushort hp;
 
         public ushort Hp {

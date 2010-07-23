@@ -599,10 +599,12 @@ namespace Game.Battle {
             return false;
         }
 
-        private void BattleEnded() {
-            report.WriteBeginReport();
-            report.CompleteReport(ReportState.EXITING);
-            report.CompleteBattle();
+        private void BattleEnded(bool writeReport) {
+            if (writeReport) {
+                report.WriteBeginReport();
+                report.CompleteReport(Stamina == 0 ? ReportState.OUT_OF_STAMINA : ReportState.EXITING);
+                report.CompleteBattle();
+            }
 
             foreach (CombatObject combatObj in defenders) {
                 if (!combatObj.IsDead)
@@ -635,10 +637,18 @@ namespace Game.Battle {
 
         public bool ExecuteTurn() {
             lock (this) {
+                // This will finalize any reports already started.
                 report.WriteReport(ReportState.STAYING);
 
                 if (!battleStarted) {
                     RefreshBattleOrder();
+
+                    // Makes sure battle is valid before even starting it
+                    if (!BattleIsValid()) {
+                        BattleEnded(false);
+                        return false;
+                    }
+                    
                     battleStarted = true;
                     report.CreateBattleReport();
                     EventEnterBattle(attackers, defenders);
@@ -655,7 +665,7 @@ namespace Game.Battle {
                 }
 
                 if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
-                    BattleEnded();
+                    BattleEnded(true);
                     return false;
                 }
 
@@ -763,7 +773,7 @@ namespace Game.Battle {
                 Global.DbManager.Save(attacker);
 
                 if (!BattleIsValid()) {
-                    BattleEnded();
+                    BattleEnded(true);
                     return false;
                 }
 

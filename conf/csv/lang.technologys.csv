@@ -1,5 +1,5 @@
 Key,EN
-A_CALL_TO_ARMS_TECHNOLOGY_NAME,A-Call-To-Arm
+A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. 
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide little more help defending when the town is under attack. 
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide lot more  help defending when the town is under attack. 
@@ -9,4 +9,74 @@ TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation Research
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Improves underground engineering.  Reduces distance requirement by 1 for underground structures.
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Improves underground engineering.  Reduces distance requirement by 2 for underground structures.
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Improves underground engineering.  Reduces distance requirement by 3 for underground structures.
-ARCHERY_RESEARCH_TECHNOLOGY_NAME,Enables training bow yielding units.
+,
+DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases travel speed of the troop by 5% (Stackable up to 50%)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases travel speed of the troop by 10% (Stackable up to 50%)
+,
+ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
+ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
+HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Sword
+HANZO_SWORD_TECHNOLOGY_LVL_1,Increases damage of sword units by 10%
+HANZO_SWORD_TECHNOLOGY_LVL_2,Increases damage of sword units by 20%
+HANZO_SWORD_TECHNOLOGY_LVL_3,Increases damage of sword units by 25%
+BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
+BOW_RESEARCH_TECHNOLOGY_LVL_1,Produces Long Bow!  Increases bow range by 3.
+BOW_RESEARCH_TECHNOLOGY_LVL_2,Produces Composite Bow!  Increases bow range by 6.
+BOW_RESEARCH_TECHNOLOGY_LVL_3,Produces Crossbow!  Increases bow range by 9.
+,
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_NAME,Ground Unit Defence
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all ground units by 5%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all ground units by 10%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all ground units by 15%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all ground units by 20%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all ground units by 25%.
+,
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Mounted Unit Defence
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all mounted units by 5%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all mounted units by 10%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all mounted units by 15%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all mounted units by 20%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all mounted units by 25%.
+,
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Machinery Unit Defence
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all machinery units by 5%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all machinery units by 10%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all machinery units by 15%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all machinery units by 20%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all machinery units by 25%.
+,
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defence
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all structures by 5%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all structures by 10%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all structures by 15%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all structures by 20%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all structures by 25%.
+,
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Damage Boost
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use swords by 5%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use swords by 10%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use swords by 15%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use swords by 20%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use swords by 25%.
+,
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Damage Boost
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use pikes by 5%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use pikes by 10%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use pikes by 15%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use pikes by 20%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use pikes by 25%.
+,
+BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Bow Damage Boost
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use bows by 5%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use bows by 10%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use bows by 15%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use bows by 20%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use bows by 25%.
+,
+BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Ballistic Damage Boost
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use ballistic weapons by 5%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use ballistic weapons by 10%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use ballistic weapons by 15%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use ballistic weapons by 20%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use ballistic weapons by 25%.

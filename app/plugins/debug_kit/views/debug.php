@@ -21,19 +21,13 @@
  **/
 App::import('Vendor', 'DebugKit.DebugKitDebugger');
 App::import('Component', 'DebugKit.Toolbar');
+
 /**
  * DebugView used by DebugKit
  *
  * @package debug_kit.views
- * @todo Remove workarounds.
  */
 class DebugView extends DoppelGangerView {
-/**
- * The old extension of the current template.
- *
- * @var string
- */
-	var $_oldExtension = null;
 /**
  * Overload _render to capture filenames and time actual rendering of each view file
  *
@@ -43,13 +37,9 @@ class DebugView extends DoppelGangerView {
  * @access protected
  */
 	function _render($___viewFn, $___dataForView, $loadHelpers = true, $cached = false) {
-		if (isset($this->_oldExtension) && strstr($___viewFn, '.debug_view')) {
-			$___viewFn = substr($___viewFn, 0, -10) . $this->_oldExtension;
-		}
 		if (!isset($___dataForView['disableTimer'])) {
-			DebugKitDebugger::startTimer('render_' . basename($___viewFn), sprintf(__('Rendering %s', true), Debugger::trimPath($___viewFn)));
+			DebugKitDebugger::startTimer('render_' . basename($___viewFn), sprintf(__d('debug_kit', 'Rendering %s', true), Debugger::trimPath($___viewFn)));
 		}
-
 		$out = parent::_render($___viewFn, $___dataForView, $loadHelpers, $cached);
 
 		if (!isset($___dataForView['disableTimer'])) {
@@ -57,7 +47,28 @@ class DebugView extends DoppelGangerView {
 		}
 		return $out;
 	}
-	
+
+/**
+ * Element method, adds comment injection to the features View offers.
+ *
+ * @return void
+ */
+	function element($name, $params = array(), $loadHelpers = false) {
+		$out = '';
+		$isHtml = (
+			(isset($this->params['url']['ext']) && $this->params['url']['ext'] === 'html') ||
+			!isset($this->params['url']['ext'])
+		);
+		if ($isHtml) {
+			$out .= sprintf("<!-- %s - %s -->\n", __d('debug_kit', 'Starting to render', true), $name); 
+		}
+		$out .= parent::element($name, $params, $loadHelpers);
+		if ($isHtml) {
+			$out .= sprintf("<!-- %s - %s -->\n", __d('debug_kit', 'Finished', true), $name);
+		}
+		return $out;
+	}
+
 /**
  * Renders view for given action and layout. If $file is given, that is used
  * for a view filename (e.g. customFunkyView.ctp).
@@ -67,63 +78,24 @@ class DebugView extends DoppelGangerView {
  * @param string $layout Layout to use
  * @param string $file Custom filename for view
  * @return string Rendered Element
- */	
+ */
 	function render($action = null, $layout = null, $file = null) {
-		DebugKitDebugger::startTimer('viewRender', __('Rendering View', true));
+		DebugKitDebugger::startTimer('viewRender', __d('debug_kit', 'Rendering View', true));
+
 		$out = parent::render($action, $layout, $file);
+
 		DebugKitDebugger::stopTimer('viewRender');
 		DebugKitDebugger::stopTimer('controllerRender');
-		
-		if (isset($this->loaded['toolbar'])) {
-			$this->loaded['toolbar']->postRender();
+		DebugKitDebugger::setMemoryPoint(__d('debug_kit', 'View render complete', true));
+
+		if (empty($this->params['requested']) && isset($this->loaded['toolbar'])) {
+			$backend = $this->loaded['toolbar']->getName();
+			$this->loaded['toolbar']->{$backend}->send();
 		}
 		if (empty($this->output)) {
 			return $out;
 		}
-		//Temporary work around to hide the SQL dump at page bottom
-		Configure::write('debug', 0);
 		return $this->output;
-	}
-
-/**
- * Workaround _render() limitation in core. Which forces View::_render() for .ctp and .thtml templates
- * Creates temporary extension to trick View::render() & View::renderLayout()
- *
- * @param string $name Action name.
- * @return string
- **/
-	function _getViewFileName($name = null) {
-		$filename = parent::_getViewFileName($name);
-		return $this->_replaceExtension($filename);
-	}
-	
-/**
- * Workaround _render() limitation in core. Which forces View::_render() for .ctp and .thtml templates
- * Creates temporary extension to trick View::render() & View::renderLayout()
- *
- * @param string $name Layout Name
- * @return string
- **/
-	function _getLayoutFileName($name = null) {
-		$filename = parent::_getLayoutFileName($name);
-		return $this->_replaceExtension($filename);
-	}
-	
-/**
- * replace the Extension on a filename and set the temporary workaround extension.
- *
- * @param string $filename Filename to replace extension for.
- * @return string
- **/
-	function _replaceExtension($filename) {
-		if (substr($filename, -3) == 'ctp') {
-			$this->_oldExtension = 'ctp';
-			$filename = substr($filename, 0, strlen($filename) -3) . 'debug_view';
-		} elseif (substr($filename, -5) == 'thtml') {
-			$this->_oldExtension = 'thtml';
-			$filename = substr($filename, 0, strlen($filename) -5) . 'debug_view';
-		}
-		return $filename;
 	}
 }
 ?>

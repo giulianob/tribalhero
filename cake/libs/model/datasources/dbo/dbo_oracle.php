@@ -1,33 +1,25 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Oracle layer for DBO.
  *
- * Long description for file
- *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP v 1.2.0.4041
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
- * Short description for class.
+ * Oracle layer for DBO.
  *
  * Long description for class
  *
@@ -37,17 +29,17 @@
 class DboOracle extends DboSource {
 
 /**
- * Enter description here...
+ * Configuration options
  *
- * @var unknown_type
+ * @var array
  * @access public
  */
 	var $config = array();
 
 /**
- * Enter description here...
+ * Alias
  *
- * @var unknown_type
+ * @var string
  */
 	var $alias = '';
 
@@ -64,9 +56,9 @@ class DboOracle extends DboSource {
 	var $__transactionStarted = false;
 
 /**
- * Enter description here...
+ * Column definitions
  *
- * @var unknown_type
+ * @var array
  * @access public
  */
 	var $columns = array(
@@ -85,25 +77,25 @@ class DboOracle extends DboSource {
 		'inet' => array('name' => 'inet'));
 
 /**
- * Enter description here...
+ * Connection object
  *
- * @var unknown_type
+ * @var mixed
  * @access protected
  */
 	var $connection;
 
 /**
- * Enter description here...
+ * Query limit
  *
- * @var unknown_type
+ * @var int
  * @access protected
  */
 	var $_limit = -1;
 
 /**
- * Enter description here...
+ * Query offset
  *
- * @var unknown_type
+ * @var int
  * @access protected
  */
 	var $_offset = 0;
@@ -117,25 +109,25 @@ class DboOracle extends DboSource {
 	var $_map;
 
 /**
- * Enter description here...
+ * Current Row
  *
- * @var unknown_type
+ * @var mixed
  * @access protected
  */
 	var $_currentRow;
 
 /**
- * Enter description here...
+ * Number of rows
  *
- * @var unknown_type
+ * @var int
  * @access protected
  */
 	var $_numRows;
 
 /**
- * Enter description here...
+ * Query results
  *
- * @var unknown_type
+ * @var mixed
  * @access protected
  */
 	var $_results;
@@ -180,12 +172,11 @@ class DboOracle extends DboSource {
 		$this->connected = false;
 		$config['charset'] = !empty($config['charset']) ? $config['charset'] : null;
 
-		if ($this->config['persistent']) {
-			$connect = 'ociplogon';
+		if (!$config['persistent']) {
+			$this->connection = @ocilogon($config['login'], $config['password'], $config['database'], $config['charset']);
 		} else {
-			$connect = 'ocilogon';
+			$this->connection = @ociplogon($config['login'], $config['password'], $config['database'], $config['charset']);
 		}
-		$this->connection = @$connect($config['login'], $config['password'], $config['database'], $config['charset']);
 
 		if ($this->connection) {
 			$this->connected = true;
@@ -387,9 +378,9 @@ class DboOracle extends DboSource {
 	}
 
 /**
- * Enter description here...
+ * Fetch result row
  *
- * @return unknown
+ * @return array
  * @access public
  */
 	function fetchRow() {
@@ -453,10 +444,10 @@ class DboOracle extends DboSource {
 	}
 
 /**
- * Enter description here...
+ * Create trigger
  *
- * @param unknown_type $table
- * @return unknown
+ * @param string $table
+ * @return mixed
  * @access public
  */
 	function createTrigger($table) {
@@ -498,7 +489,7 @@ class DboOracle extends DboSource {
  * @access public
  */
 	function describe(&$model) {
-		$table = $model->fullTableName($model, false);
+		$table = $this->fullTableName($model, false);
 
 		if (!empty($model->sequence)) {
 			$this->_sequenceMap[$table] = $model->sequence;
@@ -592,7 +583,7 @@ class DboOracle extends DboSource {
  */
 	function constraint($action, $table) {
 		if (empty($table)) {
-			trigger_error(__('Must specify table to operate on constraints'));
+			trigger_error(__('Must specify table to operate on constraints', true));
 		}
 
 		$table = strtoupper($table);
@@ -650,7 +641,7 @@ class DboOracle extends DboSource {
 					return $constraints;
 					break;
 				default:
-					trigger_error(__('DboOracle::constraint() accepts only enable, disable, or list'));
+					trigger_error(__('DboOracle::constraint() accepts only enable, disable, or list', true));
 			}
 		}
 		return true;
@@ -741,7 +732,7 @@ class DboOracle extends DboSource {
 						break;
 					}
 				}
-				$out .= "\t" . join(",\n\t", $colList) . ";\n\n";
+				$out .= "\t" . implode(",\n\t", $colList) . ";\n\n";
 			}
 		}
 		return $out;
@@ -952,7 +943,7 @@ class DboOracle extends DboSource {
 
 		switch (strtolower($type)) {
 			case 'select':
-				return "SELECT {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$order} {$limit}";
+				return "SELECT {$fields} FROM {$table} {$alias} {$joins} {$conditions} {$group} {$order} {$limit}";
 			break;
 			case 'create':
 				return "INSERT INTO {$table} ({$fields}) VALUES ({$values})";
@@ -972,7 +963,7 @@ class DboOracle extends DboSource {
 			case 'schema':
 				foreach (array('columns', 'indexes') as $var) {
 					if (is_array(${$var})) {
-						${$var} = "\t" . join(",\n\t", array_filter(${$var}));
+						${$var} = "\t" . implode(",\n\t", array_filter(${$var}));
 					}
 				}
 				if (trim($indexes) != '') {
@@ -1025,7 +1016,7 @@ class DboOracle extends DboSource {
 					$fetch = array();
 					$ins = array_chunk($ins, 1000);
 					foreach ($ins as $i) {
-						$q = str_replace('{$__cakeID__$}', join(', ', $i), $query);
+						$q = str_replace('{$__cakeID__$}', implode(', ', $i), $query);
 						$q = str_replace('= (', 'IN (', $q);
 						$res = $this->fetchAll($q, $model->cacheQueries, $model->alias);
 						$fetch = array_merge($fetch, $res);
@@ -1069,7 +1060,7 @@ class DboOracle extends DboSource {
 					$fetch = array();
 					$ins = array_chunk($ins, 1000);
 					foreach ($ins as $i) {
-						$q = str_replace('{$__cakeID__$}', '(' .join(', ', $i) .')', $query);
+						$q = str_replace('{$__cakeID__$}', '(' .implode(', ', $i) .')', $query);
 						$q = str_replace('= (', 'IN (', $q);
 						$q = str_replace('  WHERE 1 = 1', '', $q);
 
@@ -1166,4 +1157,3 @@ class DboOracle extends DboSource {
 			return $out;
 		}
 }
-?>

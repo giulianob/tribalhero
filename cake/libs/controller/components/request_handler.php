@@ -1,6 +1,4 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Request object for handling alternative HTTP requests
  *
@@ -8,33 +6,26 @@
  * and the like.  These units have no use for Ajax requests, and this Component can tell how Cake
  * should respond to the different needs of a handheld computer and a desktop machine.
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 0.10.4.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
-if (!defined('REQUEST_MOBILE_UA')) {
-	define('REQUEST_MOBILE_UA', '(iPhone|MIDP|AvantGo|BlackBerry|J2ME|Opera Mini|DoCoMo|NetFront|Nokia|PalmOS|PalmSource|portalmmm|Plucker|ReqwirelessWeb|SonyEricsson|Symbian|UP\.Browser|Windows CE|Xiino)');
-}
 
 /**
  * Request object for handling HTTP requests
  *
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
+ * @link http://book.cakephp.org/view/1291/Request-Handling
  *
  */
 class RequestHandlerComponent extends Object {
@@ -112,6 +103,37 @@ class RequestHandlerComponent extends Object {
 	);
 
 /**
+ * List of regular expressions for matching mobile device's user agent string
+ *
+ * @var array
+ * @access public
+ */
+	var $mobileUA = array(
+		'Android',
+		'AvantGo',
+		'BlackBerry',
+		'DoCoMo',
+		'iPod',
+		'iPhone',
+		'J2ME',
+		'MIDP',
+		'NetFront',
+		'Nokia',
+		'Opera Mini',
+		'PalmOS',
+		'PalmSource',
+		'portalmmm',
+		'Plucker',
+		'ReqwirelessWeb',
+		'SonyEricsson',
+		'Symbian',
+		'UP\.Browser',
+		'webOS',
+		'Windows CE',
+		'Xiino'
+	);
+
+/**
  * Content-types accepted by the client.  If extension parsing is enabled in the
  * Router, and an extension is detected, the corresponding content-type will be
  * used as the overriding primary content-type accepted.
@@ -171,14 +193,16 @@ class RequestHandlerComponent extends Object {
  * as the first item.
  *
  * @param object $controller A reference to the controller
+ * @param array $settings Array of settings to _set().
  * @return void
  * @see Router::parseExtensions()
  * @access public
  */
-	function initialize(&$controller) {
+	function initialize(&$controller, $settings = array()) {
 		if (isset($controller->params['url']['ext'])) {
 			$this->ext = $controller->params['url']['ext'];
 		}
+		$this->_set($settings);
 	}
 
 /**
@@ -223,10 +247,10 @@ class RequestHandlerComponent extends Object {
 			}
 			$xml = new Xml(trim(file_get_contents('php://input')));
 
-			if (is_object($xml->child('data')) && count($xml->children) == 1) {
-				$controller->data = $xml->child('data');
+			if (count($xml->children) == 1 && is_object($dataNode = $xml->child('data'))) {
+				$controller->data = $dataNode->toArray();
 			} else {
-				$controller->data = $xml;
+				$controller->data = $xml->toArray();
 			}
 		}
 	}
@@ -236,16 +260,26 @@ class RequestHandlerComponent extends Object {
  *
  * @param object $controller A reference to the controller
  * @param mixed $url A string or array containing the redirect location
+ * @param mixed HTTP Status for redirect
  * @access public
  */
-	function beforeRedirect(&$controller, $url) {
+	function beforeRedirect(&$controller, $url, $status = null) {
 		if (!$this->isAjax()) {
 			return;
 		}
 		foreach ($_POST as $key => $val) {
 			unset($_POST[$key]);
 		}
-		echo $this->requestAction($url, array('return'));
+		if (is_array($url)) {
+			$url = Router::url($url + array('base' => false));
+		}
+		if (!empty($status)) {
+			$statusCode = $controller->httpCodes($status);
+			$code = key($statusCode);
+			$msg = $statusCode[$code];
+			$controller->header("HTTP/1.1 {$code} {$msg}");
+		}
+		echo $this->requestAction($url, array('return', 'bare' => false));
 		$this->_stop();
 	}
 
@@ -315,10 +349,16 @@ class RequestHandlerComponent extends Object {
  *
  * @return boolean True if user agent is a mobile web browser
  * @access public
+ * @deprecated Use of constant REQUEST_MOBILE_UA is deprecated and will be removed in future versions
  */
 	function isMobile() {
-		preg_match('/' . REQUEST_MOBILE_UA . '/i', env('HTTP_USER_AGENT'), $match);
-		if (!empty($match) || $this->accepts('wap')) {
+		if (defined('REQUEST_MOBILE_UA')) {
+			$regex = '/' . REQUEST_MOBILE_UA . '/i';
+		} else {
+			$regex = '/' . implode('|', $this->mobileUA) . '/i';
+		}
+
+		if (preg_match($regex, env('HTTP_USER_AGENT')) || $this->accepts('wap')) {
 			return true;
 		}
 		return false;
@@ -414,7 +454,7 @@ class RequestHandlerComponent extends Object {
  * @return string Server address
  * @access public
  */
-	function getReferrer() {
+	function getReferer() {
 		if (env('HTTP_HOST') != null) {
 			$sessHost = env('HTTP_HOST');
 		}
@@ -617,9 +657,9 @@ class RequestHandlerComponent extends Object {
 		$controller->ext = '.ctp';
 
 		if (empty($this->__renderType)) {
-			$controller->viewPath .= '/' . $type;
+			$controller->viewPath .= DS . $type;
 		} else {
-			$remove = preg_replace("/(?:\/{$this->__renderType})$/", '/' . $type, $controller->viewPath);
+			$remove = preg_replace("/([\/\\\\]{$this->__renderType})$/", DS . $type, $controller->viewPath);
 			$controller->viewPath = $remove;
 		}
 		$this->__renderType = $type;
@@ -650,7 +690,6 @@ class RequestHandlerComponent extends Object {
  *    like 'application/x-shockwave'.
  * @param array $options If $type is a friendly type name that is associated with
  *    more than one type of content, $index is used to select which content-type to use.
- *
  * @return boolean Returns false if the friendly type name given in $type does
  *    not exist in the type map, or if the Content-type header has
  *    already been set by this method.
@@ -659,9 +698,6 @@ class RequestHandlerComponent extends Object {
  */
 	function respondAs($type, $options = array()) {
 		$this->__initializeTypes();
-		if ($this->__responseTypeSet != null) {
-			return false;
-		}
 		if (!array_key_exists($type, $this->__requestContent) && strpos($type, '/') === false) {
 			return false;
 		}
@@ -698,15 +734,26 @@ class RequestHandlerComponent extends Object {
 				$header .= '; charset=' . $options['charset'];
 			}
 			if (!empty($options['attachment'])) {
-				header("Content-Disposition: attachment; filename=\"{$options['attachment']}\"");
+				$this->_header("Content-Disposition: attachment; filename=\"{$options['attachment']}\"");
 			}
 			if (Configure::read() < 2 && !defined('CAKEPHP_SHELL')) {
-				@header($header);
+				$this->_header($header);
 			}
 			$this->__responseTypeSet = $cType;
 			return true;
 		}
 		return false;
+	}
+
+/**
+ * Wrapper for header() so calls can be easily tested.
+ *
+ * @param string $header The header to be sent.
+ * @return void
+ * @access protected
+ */
+	function _header($header) {
+		header($header);
 	}
 
 /**
@@ -775,5 +822,3 @@ class RequestHandlerComponent extends Object {
 		$this->__typesInitialized = true;
 	}
 }
-
-?>

@@ -36,10 +36,9 @@ class FirePhpToolbarHelper extends ToolbarHelper {
  * @return void
  * @access protected
  */
-	function _send() {
+	function send() {
 		$view =& ClassRegistry::getObject('view');
 		$view->element('debug_toolbar', array('plugin' => 'debug_kit', 'disableTimer' => true));
-		Configure::write('debug', 1);
 	}
 /**
  * makeNeatArray.
@@ -75,8 +74,27 @@ class FirePhpToolbarHelper extends ToolbarHelper {
 		if (isset($options['title'])) {
 			$title = $options['title'];
 		}
+		foreach ($rows as $i => $row) {
+			$rows[$i] = array_values($row);
+		}
 		array_unshift($rows, $headers);
 		FireCake::table($title, $rows);
+	}
+/**
+ * Start a panel which is a 'Group' in FirePHP
+ *
+ * @return void
+ **/
+	function panelStart($title, $anchor) {
+		FireCake::group($title);
+	}
+/**
+ * End a panel (Group)
+ *
+ * @return void
+ **/
+	function panelEnd() {
+		FireCake::groupEnd();
 	}
 }
 ?>

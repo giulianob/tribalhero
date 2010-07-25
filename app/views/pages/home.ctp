@@ -21,8 +21,8 @@
 	</div>
 	
 	<div class="span-6 last"">
-		<p><?=$html->link($html->image('buttons/register-button.gif'), '/players/register', array(), false, false)?></p>
-		<p><?=$html->link($html->image('buttons/invite-button.gif'), '/players/invite', array(), false, false)?></p>
+		<p><?=$html->link($html->image('buttons/register-button.gif'), '/players/register', array('escape' => false))?></p>
+		<p><?=$html->link($html->image('buttons/invite-button.gif'), '/players/invite', array('escape' => false))?></p>
 	</div>
 </div>
 

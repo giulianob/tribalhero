@@ -11,7 +11,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.tests.cases.console.libs.tasks
  * @since         CakePHP(tm) v 1.3
@@ -60,8 +60,9 @@ class FixtureTaskTest extends CakeTestCase {
  * fixtures
  *
  * @var array
- **/
-	var $fixtures = array('core.article', 'core.comment');
+ * @access public
+ */
+	var $fixtures = array('core.article', 'core.comment', 'core.datatype', 'core.binary_test');
 
 /**
  * startTest method
@@ -94,12 +95,13 @@ class FixtureTaskTest extends CakeTestCase {
  * test that initialize sets the path
  *
  * @return void
- **/
+ * @access public
+ */
 	function testConstruct() {
-		$this->Dispatch->params['working'] = '/my/path';
+		$this->Dispatch->params['working'] = DS . 'my' . DS . 'path';
 		$Task =& new FixtureTask($this->Dispatch);
 
-		$expected = '/my/path/tests/fixtures/';
+		$expected = DS . 'my' . DS . 'path' . DS . 'tests' . DS . 'fixtures' . DS;
 		$this->assertEqual($Task->path, $expected);
 	}
 
@@ -107,7 +109,8 @@ class FixtureTaskTest extends CakeTestCase {
  * test import option array generation
  *
  * @return void
- **/
+ * @access public
+ */
 	function testImportOptions() {
 		$this->Task->setReturnValueAt(0, 'in', 'y');
 		$this->Task->setReturnValueAt(1, 'in', 'y');
@@ -136,8 +139,10 @@ class FixtureTaskTest extends CakeTestCase {
  * test generating a fixture with database conditions.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testImportRecordsFromDatabaseWithConditions() {
+		$this->Task->interactive = true;
 		$this->Task->setReturnValueAt(0, 'in', 'WHERE 1=1 LIMIT 10');
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
@@ -155,7 +160,8 @@ class FixtureTaskTest extends CakeTestCase {
  * test that execute passes runs bake depending with named model.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteWithNamedModel() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
@@ -166,10 +172,42 @@ class FixtureTaskTest extends CakeTestCase {
 	}
 
 /**
+ * test that execute passes runs bake depending with named model.
+ *
+ * @return void
+ * @access public
+ */
+	function testExecuteWithNamedModelVariations() {
+		$this->Task->connection = 'test_suite';
+		$this->Task->path = '/my/path/';
+
+		$this->Task->args = array('article');
+		$filename = '/my/path/article_fixture.php';
+		$this->Task->expectAt(0, 'createFile', array($filename, new PatternExpectation('/class ArticleFixture/')));
+		$this->Task->execute();
+
+		$this->Task->args = array('articles');
+		$filename = '/my/path/article_fixture.php';
+		$this->Task->expectAt(1, 'createFile', array($filename, new PatternExpectation('/class ArticleFixture/')));
+		$this->Task->execute();
+
+		$this->Task->args = array('Articles');
+		$filename = '/my/path/article_fixture.php';
+		$this->Task->expectAt(2, 'createFile', array($filename, new PatternExpectation('/class ArticleFixture/')));
+		$this->Task->execute();
+
+		$this->Task->args = array('Article');
+		$filename = '/my/path/article_fixture.php';
+		$this->Task->expectAt(3, 'createFile', array($filename, new PatternExpectation('/class ArticleFixture/')));
+		$this->Task->execute();
+	}
+
+/**
  * test that execute runs all() when args[0] = all
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteIntoAll() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
@@ -186,10 +224,33 @@ class FixtureTaskTest extends CakeTestCase {
 	}
 
 /**
+ * test using all() with -count and -records
+ *
+ * @return void
+ * @access public
+ */
+	function testAllWithCountAndRecordsFlags() {
+		$this->Task->connection = 'test_suite';
+		$this->Task->path = '/my/path/';
+		$this->Task->args = array('all');
+		$this->Task->params = array('count' => 10, 'records' => true);
+		$this->Task->Model->setReturnValue('listAll', array('articles', 'comments'));
+
+		$filename = '/my/path/article_fixture.php';
+		$this->Task->expectAt(0, 'createFile', array($filename, new PatternExpectation('/title\' => \'Third Article\'/')));
+
+		$filename = '/my/path/comment_fixture.php';
+		$this->Task->expectAt(1, 'createFile', array($filename, new PatternExpectation('/comment\' => \'First Comment for First Article/')));
+		$this->Task->expectCallCount('createFile', 2);
+		$this->Task->all();
+	}
+
+/**
  * test interactive mode of execute
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteInteractive() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
@@ -207,7 +268,8 @@ class FixtureTaskTest extends CakeTestCase {
  * Test that bake works
  *
  * @return void
- **/
+ * @access public
+ */
 	function testBake() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
@@ -222,6 +284,7 @@ class FixtureTaskTest extends CakeTestCase {
 		$this->assertPattern('/class ArticleFixture extends CakeTestFixture/', $result);
 		$this->assertPattern('/var \$name \= \'Article\';/', $result);
 		$this->assertPattern('/var \$table \= \'comments\';/', $result);
+		$this->assertPattern('/var \$fields = array\(/', $result);
 
 		$result = $this->Task->bake('Article', 'comments', array('records' => true));
 		$this->assertPattern("/var \\\$import \= array\('records' \=\> true\);/", $result);
@@ -238,10 +301,28 @@ class FixtureTaskTest extends CakeTestCase {
 	}
 
 /**
+ * test record generation with float and binary types
+ *
+ * @return void
+ * @access public
+ */
+	function testRecordGenerationForBinaryAndFloat() {
+		$this->Task->connection = 'test_suite';
+		$this->Task->path = '/my/path/';
+
+		$result = $this->Task->bake('Article', 'datatypes');
+		$this->assertPattern("/'float_field' => 1/", $result);
+
+		$result = $this->Task->bake('Article', 'binary_tests');
+		$this->assertPattern("/'data' => 'Lorem ipsum dolor sit amet'/", $result);
+	}
+
+/**
  * Test that file generation includes headers and correct path for plugins.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testGenerateFixtureFile() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
@@ -258,7 +339,8 @@ class FixtureTaskTest extends CakeTestCase {
  * test generating files into plugins.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testGeneratePluginFixtureFile() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
@@ -269,4 +351,3 @@ class FixtureTaskTest extends CakeTestCase {
 		$result = $this->Task->generateFixtureFile('Article', array());
 	}
 }
-?>

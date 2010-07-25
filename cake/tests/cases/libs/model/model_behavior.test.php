@@ -12,8 +12,8 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @copyright     CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model
  * @since         1.2
@@ -21,6 +21,8 @@
  */
 App::import('Model', 'AppModel');
 require_once dirname(__FILE__) . DS . 'models.php';
+
+Mock::generatePartial('BehaviorCollection', 'MockModelBehaviorCollection', array('cakeError', '_stop'));
 
 /**
  * TestBehavior class
@@ -432,7 +434,7 @@ class BehaviorTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function tearDown() {
+	function endTest() {
 		ClassRegistry::flush();
 	}
 
@@ -449,7 +451,8 @@ class BehaviorTest extends CakeTestCase {
 		$Apple->Behaviors->attach('Test', array('key' => 'value'));
 		$this->assertIdentical($Apple->Behaviors->attached(), array('Test'));
 		$this->assertEqual(strtolower(get_class($Apple->Behaviors->Test)), 'testbehavior');
-		$this->assertEqual($Apple->Behaviors->Test->settings['Apple'], array('beforeFind' => 'on', 'afterFind' => 'off', 'key' => 'value'));
+		$expected = array('beforeFind' => 'on', 'afterFind' => 'off', 'key' => 'value');
+		$this->assertEqual($Apple->Behaviors->Test->settings['Apple'], $expected);
 		$this->assertEqual(array_keys($Apple->Behaviors->Test->settings), array('Apple'));
 
 		$this->assertIdentical($Apple->Sample->Behaviors->attached(), array());
@@ -480,8 +483,6 @@ class BehaviorTest extends CakeTestCase {
 		$Apple->Parent->Behaviors->attach('Test', array('key' => 'value', 'key2' => 'value', 'key3' => 'value', 'beforeFind' => 'off'));
 		$this->assertNotEqual($Apple->Parent->Behaviors->Test->settings['Parent'], $Apple->Sample->Behaviors->Test->settings['Sample']);
 
-		$this->assertFalse($Apple->Behaviors->attach('NoSuchBehavior'));
-
 		$Apple->Behaviors->attach('Plugin.Test', array('key' => 'new value'));
 		$expected = array(
 			'beforeFind' => 'off', 'afterFind' => 'off', 'key' => 'new value',
@@ -501,6 +502,41 @@ class BehaviorTest extends CakeTestCase {
 		$Apple->Behaviors->attach('Test', array('mangle' => 'trigger'));
 		$expected = array_merge($current, array('mangle' => 'trigger mangled'));
 		$this->assertEqual($Apple->Behaviors->Test->settings['Apple'], $expected);
+	}
+
+/**
+ * test that attach()/detach() works with plugin.banana
+ *
+ * @return void
+ */
+	function testDetachWithPluginNames() {
+		$Apple = new Apple();
+		$Apple->Behaviors->attach('Plugin.Test');
+		$this->assertTrue(isset($Apple->Behaviors->Test), 'Missing behavior');
+		$this->assertEqual($Apple->Behaviors->attached(), array('Test'));
+
+		$Apple->Behaviors->detach('Plugin.Test');
+		$this->assertEqual($Apple->Behaviors->attached(), array());
+
+		$Apple->Behaviors->attach('Plugin.Test');
+		$this->assertTrue(isset($Apple->Behaviors->Test), 'Missing behavior');
+		$this->assertEqual($Apple->Behaviors->attached(), array('Test'));
+
+		$Apple->Behaviors->detach('Test');
+		$this->assertEqual($Apple->Behaviors->attached(), array());
+	}
+
+/**
+ * test that attaching a non existant Behavior triggers a cake error.
+ *
+ * @return void
+ */
+	function testInvalidBehaviorCausingCakeError() {
+		$Apple =& new Apple();
+		$Apple->Behaviors =& new MockModelBehaviorCollection();
+		$Apple->Behaviors->expectOnce('cakeError');
+		$Apple->Behaviors->expectAt(0, 'cakeError', array('missingBehaviorFile', '*'));
+		$this->assertFalse($Apple->Behaviors->attach('NoSuchBehavior'));
 	}
 
 /**
@@ -772,15 +808,15 @@ class BehaviorTest extends CakeTestCase {
 				'Apple' => array('id' => 3),
 				'Parent' => array('id' => 2,'name' => 'Bright Red Apple', 'mytime' => '22:57:17'))
 		);
-		$result = $Apple->find('all', array('fields' => array('Apple.id', 'Parent.*'), 'conditions' => array('Apple.id <' => '4')));
-		//$this->assertEqual($result, $expected2);
+		$result = $Apple->find('all', array(
+			'fields' => array('Apple.id', 'Parent.id', 'Parent.name', 'Parent.mytime'),
+			'conditions' => array('Apple.id <' => '4')
+		));
+		$this->assertEqual($result, $expected2);
 
 		$Apple->Parent->Behaviors->disable('Test');
 		$result = $Apple->find('all');
 		$this->assertEqual($result, $expected);
-
-		$Apple->Parent->Behaviors->attach('Test', array('before' => 'off', 'after' => 'on'));
-		//$this->assertIdentical($Apple->find('all'), array());
 
 		$Apple->Parent->Behaviors->attach('Test', array('after' => 'off'));
 		$this->assertEqual($Apple->find('all'), $expected);
@@ -1004,6 +1040,8 @@ class BehaviorTest extends CakeTestCase {
 		$Apple->set('field', 'value');
 		$this->assertTrue($Apple->testData());
 		$this->assertTrue($Apple->data['Apple']['field_2']);
+
+		$this->assertTrue($Apple->testData('one', 'two', 'three', 'four', 'five', 'six'));
 	}
 
 /**
@@ -1087,7 +1125,7 @@ class BehaviorTest extends CakeTestCase {
  *
  * @access public
  * @return void
- **/
+ */
 	function testBehaviorAttachAndDetach() {
 		$Sample =& new Sample();
 		$Sample->actsAs = array('Test3' => array('bar'), 'Test2' => array('foo', 'bar'));
@@ -1098,4 +1136,3 @@ class BehaviorTest extends CakeTestCase {
 		$Sample->Behaviors->trigger($Sample, 'beforeTest');
 	}
 }
-?>

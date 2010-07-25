@@ -1,28 +1,20 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * TranslateBehaviorTest file
  *
- * Long description for file
- *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model.behaviors
  * @since         CakePHP(tm) v 1.2.0.5669
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -56,7 +48,8 @@ class TranslateBehaviorTest extends CakeTestCase {
  */
 	var $fixtures = array(
 		'core.translated_item', 'core.translate', 'core.translate_table',
-		'core.translated_article', 'core.translate_article', 'core.user', 'core.comment', 'core.tag', 'core.articles_tag'
+		'core.translated_article', 'core.translate_article', 'core.user', 'core.comment', 'core.tag', 'core.articles_tag',
+		'core.translate_with_prefix'
 	);
 
 /**
@@ -79,21 +72,25 @@ class TranslateBehaviorTest extends CakeTestCase {
 		$TestModel =& new Tag();
 		$TestModel->translateTable = 'another_i18n';
 		$TestModel->Behaviors->attach('Translate', array('title'));
-		$this->assertEqual($TestModel->translateModel()->name, 'I18nModel');
-		$this->assertEqual($TestModel->translateModel()->useTable, 'another_i18n');
+		$translateModel =& $TestModel->Behaviors->Translate->translateModel($TestModel);
+		$this->assertEqual($translateModel->name, 'I18nModel');
+		$this->assertEqual($translateModel->useTable, 'another_i18n');
 
 		$TestModel =& new User();
 		$TestModel->Behaviors->attach('Translate', array('title'));
-		$this->assertEqual($TestModel->translateModel()->name, 'I18nModel');
-		$this->assertEqual($TestModel->translateModel()->useTable, 'i18n');
+		$translateModel =& $TestModel->Behaviors->Translate->translateModel($TestModel);
+		$this->assertEqual($translateModel->name, 'I18nModel');
+		$this->assertEqual($translateModel->useTable, 'i18n');
 
 		$TestModel =& new TranslatedArticle();
-		$this->assertEqual($TestModel->translateModel()->name, 'TranslateArticleModel');
-		$this->assertEqual($TestModel->translateModel()->useTable, 'article_i18n');
+		$translateModel =& $TestModel->Behaviors->Translate->translateModel($TestModel);
+		$this->assertEqual($translateModel->name, 'TranslateArticleModel');
+		$this->assertEqual($translateModel->useTable, 'article_i18n');
 
 		$TestModel =& new TranslatedItem();
-		$this->assertEqual($TestModel->translateModel()->name, 'TranslateTestModel');
-		$this->assertEqual($TestModel->translateModel()->useTable, 'i18n');
+		$translateModel =& $TestModel->Behaviors->Translate->translateModel($TestModel);
+		$this->assertEqual($translateModel->name, 'TranslateTestModel');
+		$this->assertEqual($translateModel->useTable, 'i18n');
 	}
 
 /**
@@ -859,5 +856,43 @@ class TranslateBehaviorTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expected);
 	}
+/**
+ * testTranslateTableWithPrefix method
+ * Tests that is possible to have a translation model with a custom tablePrefix
+ *
+ * @access public
+ * @return void
+ */
+	function testTranslateTableWithPrefix() {
+		$this->loadFixtures('TranslateWithPrefix', 'TranslatedItem');
+		$TestModel =& new TranslatedItem2;
+		$TestModel->locale = 'eng';
+		$result = $TestModel->read(null, 1);
+		$expected = array('TranslatedItem' => array(
+			'id' => 1,
+			'slug' => 'first_translated',
+			'locale' => 'eng',
+			'content' => 'Content #1',
+			'title' => 'Title #1'
+		));
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Test infinite loops not occuring with unbindTranslation()
+ *
+ * @return void
+ */
+	function testUnbindTranslationInfinteLoop() {
+		$this->loadFixtures('Translate', 'TranslatedItem');
+
+		$TestModel =& new TranslatedItem();
+		$TestModel->Behaviors->detach('Translate');
+		$TestModel->actsAs = array();
+		$TestModel->Behaviors->attach('Translate');
+		$TestModel->bindTranslation(array('title', 'content'), true);
+		$result = $TestModel->unbindTranslation();
+
+		$this->assertFalse($result);
+	}
 }
-?>

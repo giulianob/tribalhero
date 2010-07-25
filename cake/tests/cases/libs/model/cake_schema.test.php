@@ -1,30 +1,24 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Test for Schema database management
  *
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5550
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-App::import('Core', 'CakeSchema');
+App::import('Model', 'CakeSchema', false);
 
 /**
  * Test for Schema database management
@@ -138,6 +132,7 @@ class TestAppSchema extends CakeSchema {
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'updated' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => true)),
+		'tableParameters' => array(),
 	);
 
 /**
@@ -155,6 +150,7 @@ class TestAppSchema extends CakeSchema {
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'updated' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => true)),
+		'tableParameters' => array(),
 	);
 
 /**
@@ -166,7 +162,8 @@ class TestAppSchema extends CakeSchema {
 	var $posts_tags = array(
 		'post_id' => array('type' => 'integer', 'null' => false, 'key' => 'primary'),
 		'tag_id' => array('type' => 'string', 'null' => false, 'key' => 'primary'),
-		'indexes' => array('posts_tag' => array('column' => array('tag_id', 'post_id'), 'unique' => 1))
+		'indexes' => array('posts_tag' => array('column' => array('tag_id', 'post_id'), 'unique' => 1)),
+		'tableParameters' => array()
 	);
 
 /**
@@ -180,7 +177,8 @@ class TestAppSchema extends CakeSchema {
 		'tag' => array('type' => 'string', 'null' => false),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'updated' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => true))
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => true)),
+		'tableParameters' => array()
 	);
 
 /**
@@ -191,8 +189,9 @@ class TestAppSchema extends CakeSchema {
  */
 	var $datatypes = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => 0, 'key' => 'primary'),
-		'float_field' => array('type' => 'float', 'null' => false, 'length' => '5,2'),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => true))
+		'float_field' => array('type' => 'float', 'null' => false, 'length' => '5,2', 'default' => ''),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => true)),
+		'tableParameters' => array()
 	);
 
 /**
@@ -371,6 +370,112 @@ class Testdescribe extends CakeTestModel {
 }
 
 /**
+ * SchemaCrossDatabase class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ */
+class SchemaCrossDatabase extends CakeTestModel {
+
+/**
+ * name property
+ *
+ * @var string 'SchemaCrossDatabase'
+ * @access public
+ */
+	var $name = 'SchemaCrossDatabase';
+
+/**
+ * useTable property
+ *
+ * @var string 'posts'
+ * @access public
+ */
+	var $useTable = 'cross_database';
+
+/**
+ * useDbConfig property
+ *
+ * @var string 'test2'
+ * @access public
+ */
+	var $useDbConfig = 'test2';
+}
+
+/**
+ * SchemaCrossDatabaseFixture class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ */
+class SchemaCrossDatabaseFixture extends CakeTestFixture {
+
+/**
+ * name property
+ *
+ * @var string 'CrossDatabase'
+ * @access public
+ */
+	var $name = 'CrossDatabase';
+
+/**
+ * table property
+ *
+ * @access public
+ */
+	var $table = 'cross_database';
+
+/**
+ * fields property
+ *
+ * @var array
+ * @access public
+ */
+	var $fields = array(
+		'id' => array('type' => 'integer', 'key' => 'primary'),
+		'name' => 'string'
+	);
+
+/**
+ * records property
+ *
+ * @var array
+ * @access public
+ */
+	var $records = array(
+		array('id' => 1, 'name' => 'First'),
+		array('id' => 2, 'name' => 'Second'),
+	);
+}
+
+/**
+ * SchemaPrefixAuthUser class
+ *
+ * @package       cake
+ * @subpackage    cake.tests.cases.libs.model
+ */
+class SchemaPrefixAuthUser extends CakeTestModel {
+/**
+ * name property
+ *
+ * @var string
+ */
+	var $name = 'SchemaPrefixAuthUser';
+/**
+ * table prefix
+ *
+ * @var string
+ */
+	var $tablePrefix = 'auth_';
+/**
+ * useTable
+ *
+ * @var string
+ */
+	var $useTable = 'users';
+}
+
+/**
  * CakeSchemaTest
  *
  * @package       cake
@@ -384,7 +489,11 @@ class CakeSchemaTest extends CakeTestCase {
  * @var array
  * @access public
  */
-	var $fixtures = array('core.post', 'core.tag', 'core.posts_tag', 'core.comment', 'core.datatype');
+	var $fixtures = array(
+		'core.post', 'core.tag', 'core.posts_tag', 'core.test_plugin_comment',
+		'core.datatype', 'core.auth_user', 'core.author',
+		'core.test_plugin_article', 'core.user', 'core.comment'
+	);
 
 /**
  * setUp method
@@ -405,6 +514,7 @@ class CakeSchemaTest extends CakeTestCase {
 	function tearDown() {
 		@unlink(TMP . 'tests' . DS .'schema.php');
 		unset($this->Schema);
+		ClassRegistry::flush();
 	}
 
 /**
@@ -431,7 +541,6 @@ class CakeSchemaTest extends CakeTestCase {
  * @return void
  */
 	function testSchemaRead() {
-
 		$read = $this->Schema->read(array(
 			'connection' => 'test_suite',
 			'name' => 'TestApp',
@@ -439,8 +548,13 @@ class CakeSchemaTest extends CakeTestCase {
 		));
 		unset($read['tables']['missing']);
 
-		$this->assertEqual($read['tables'], $this->Schema->tables);
-		$this->assertIdentical(
+		$expected = array('comments', 'datatypes', 'posts', 'posts_tags', 'tags');
+		$this->assertEqual(array_keys($read['tables']), $expected);
+		foreach ($read['tables'] as $table => $fields) {
+			$this->assertEqual(array_keys($fields), array_keys($this->Schema->tables[$table]));
+		}
+
+		$this->assertEqual(
 			$read['tables']['datatypes']['float_field'],
 			$this->Schema->tables['datatypes']['float_field']
 		);
@@ -451,8 +565,137 @@ class CakeSchemaTest extends CakeTestCase {
 		ConnectionManager::create('schema_prefix', $config);
 		$read = $this->Schema->read(array('connection' => 'schema_prefix', 'models' => false));
 		$this->assertTrue(empty($read['tables']));
+
+		$SchemaPost =& ClassRegistry::init('SchemaPost');
+		$SchemaPost->table = 'sts';
+		$SchemaPost->tablePrefix = 'po';
+		$read = $this->Schema->read(array(
+			'connection' => 'test_suite',
+			'name' => 'TestApp',
+			'models' => array('SchemaPost')
+		));
+		$this->assertFalse(isset($read['tables']['missing']['posts']), 'Posts table was not read from tablePrefix %s');
+
+		$read = $this->Schema->read(array(
+			'connection' => 'test_suite',
+			'name' => 'TestApp',
+			'models' => array('SchemaComment', 'SchemaTag', 'SchemaPost')
+		));
+		$this->assertFalse(isset($read['tables']['missing']['posts_tags']), 'Join table marked as missing %s');
 	}
 
+/**
+ * test read() with tablePrefix properties.
+ *
+ * @return void
+ */
+	function testSchemaReadWithTablePrefix() {
+		$model =& new SchemaPrefixAuthUser();
+
+		$Schema =& new CakeSchema();
+		$read = $Schema->read(array(
+			'connection' => 'test_suite',
+			'name' => 'TestApp',
+			'models' => array('SchemaPrefixAuthUser')
+		));
+		unset($read['tables']['missing']);
+		$this->assertTrue(isset($read['tables']['auth_users']), 'auth_users key missing %s');
+
+	}
+
+/**
+ * test reading schema from plugins.
+ *
+ * @return void
+ */
+	function testSchemaReadWithPlugins() {
+		App::objects('model', null, false);
+		App::build(array(
+			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS)
+		));
+
+		$Schema =& new CakeSchema();
+		$Schema->plugin = 'TestPlugin';
+		$read = $Schema->read(array(
+			'connection' => 'test_suite',
+			'name' => 'TestApp',
+			'models' => true
+		));
+		unset($read['tables']['missing']);
+		$this->assertTrue(isset($read['tables']['auth_users']));
+		$this->assertTrue(isset($read['tables']['authors']));
+		$this->assertTrue(isset($read['tables']['test_plugin_comments']));
+		$this->assertTrue(isset($read['tables']['posts']));
+		$this->assertEqual(count($read['tables']), 4);
+
+		App::build();
+	}
+
+/**
+ * test reading schema with tables from another database.
+ *
+ * @return void
+ */
+	function testSchemaReadWithCrossDatabase() {
+		$config = new DATABASE_CONFIG();
+		$skip = $this->skipIf(
+			!isset($config->test) || !isset($config->test2),
+			 '%s Primary and secondary test databases not configured, skipping cross-database '
+			.'join tests.'
+			.' To run these tests, you must define $test and $test2 in your database configuration.'
+		);
+		if ($skip) {
+			return;
+		}
+
+		$db2 =& ConnectionManager::getDataSource('test2');
+		$fixture = new SchemaCrossDatabaseFixture();
+		$fixture->create($db2);
+		$fixture->insert($db2);
+
+		$read = $this->Schema->read(array(
+			'connection' => 'test_suite',
+			'name' => 'TestApp',
+			'models' => array('SchemaCrossDatabase', 'SchemaPost')
+		));
+		unset($read['tables']['missing']);
+		$this->assertTrue(isset($read['tables']['posts']));
+		$this->assertFalse(isset($read['tables']['cross_database']));
+
+		$read = $this->Schema->read(array(
+			'connection' => 'test2',
+			'name' => 'TestApp',
+			'models' => array('SchemaCrossDatabase', 'SchemaPost')
+		));
+		unset($read['tables']['missing']);
+		$this->assertFalse(isset($read['tables']['posts']));
+		$this->assertTrue(isset($read['tables']['cross_database']));
+
+		$fixture->drop($db2);
+	}
+
+/**
+ * test that tables are generated correctly
+ *
+ * @return void
+ */
+	function testGenerateTable() {
+		$fields = array(
+			'id' => array('type' => 'integer', 'null' => false, 'default' => 0, 'key' => 'primary'),
+			'author_id' => array('type' => 'integer', 'null' => false),
+			'title' => array('type' => 'string', 'null' => false),
+			'body' => array('type' => 'text', 'null' => true, 'default' => null),
+			'published' => array('type' => 'string', 'null' => true, 'default' => 'N', 'length' => 1),
+			'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+			'updated' => array('type' => 'datetime', 'null' => true, 'default' => null),
+			'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => true)),
+		);
+		$result = $this->Schema->generateTable('posts', $fields);
+		$this->assertPattern('/var \$posts/', $result);
+
+		eval(substr($result, 4));
+		$this->assertEqual($posts, $fields);
+	}
 /**
  * testSchemaWrite method
  *
@@ -482,25 +725,161 @@ class CakeSchemaTest extends CakeTestCase {
 			'comments' => array(
 				'add' => array(
 					'post_id' => array('type' => 'integer', 'null' => false, 'default' => 0),
-					'title' => array('type' => 'string', 'null' => false, 'length' => 100)
+					'title' => array('type' => 'string', 'null' => false, 'length' => 100),
 				),
-				'drop' => array('article_id' => array('type' => 'integer', 'null' => false)),
+				'drop' => array(
+					'article_id' => array('type' => 'integer', 'null' => false),
+					'tableParameters' => array(),
+				),
 				'change' => array(
-					'comment' => array('type' => 'text', 'null' => false, 'default' => null)
+					'comment' => array('type' => 'text', 'null' => false, 'default' => null),
 				)
 			),
 			'posts' => array(
-				'add' => array('summary' => array('type' => 'text', 'null' => 1)),
+				'add' => array(
+					'summary' => array('type' => 'text', 'null' => 1),
+				),
+				'drop' => array(
+					'tableParameters' => array(),
+				),
 				'change' => array(
 					'author_id' => array('type' => 'integer', 'null' => true, 'default' => ''),
 					'title' => array('type' => 'string', 'null' => false, 'default' => 'Title'),
-					'published' => array(
-						'type' => 'string', 'null' => true, 'default' => 'Y', 'length' => '1'
-					)
+					'published' => array('type' => 'string', 'null' => true, 'default' => 'Y', 'length' => '1')
 				)
 			),
 		);
 		$this->assertEqual($expected, $compare);
+
+		$tables = array(
+			'missing' => array(
+				'categories' => array(
+					'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
+					'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+					'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+					'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
+					'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+					'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+				)
+			),
+			'ratings' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
+				'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL),
+				'model' => array('type' => 'varchar', 'null' => false, 'default' => NULL),
+				'value' => array('type' => 'float', 'null' => false, 'length' => '5,2', 'default' => NULL),
+				'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+				'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+				'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+				'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+			)
+		);
+		$compare = $New->compare($this->Schema, $tables);
+		$expected = array(
+			'ratings' => array(
+				'add' => array(
+					'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
+					'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL),
+					'model' => array('type' => 'varchar', 'null' => false, 'default' => NULL),
+					'value' => array('type' => 'float', 'null' => false, 'length' => '5,2', 'default' => NULL),
+					'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+					'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+					'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+					'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+				)
+			)
+		);
+		$this->assertEqual($expected, $compare);
+	}
+
+/**
+ * Test comparing tableParameters and indexes.
+ *
+ * @return void
+ */
+	function testTableParametersAndIndexComparison() {
+		$old = array(
+			'posts' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0, 'key' => 'primary'),
+				'author_id' => array('type' => 'integer', 'null' => false),
+				'title' => array('type' => 'string', 'null' => false),
+				'indexes' => array(
+					'PRIMARY' => array('column' => 'id', 'unique' => true)
+				),
+				'tableParameters' => array(
+					'charset' => 'latin1',
+					'collate' => 'latin1_general_ci'
+				)
+			),
+			'comments' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0, 'key' => 'primary'),
+				'post_id' => array('type' => 'integer', 'null' => false, 'default' => 0),
+				'comment' => array('type' => 'text'),
+				'indexes' => array(
+					'PRIMARY' => array('column' => 'id', 'unique' => true),
+					'post_id' => array('column' => 'post_id'),
+				),
+				'tableParameters' => array(
+					'engine' => 'InnoDB',
+					'charset' => 'latin1',
+					'collate' => 'latin1_general_ci'
+				)
+			)
+		);
+		$new = array(
+			'posts' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0, 'key' => 'primary'),
+				'author_id' => array('type' => 'integer', 'null' => false),
+				'title' => array('type' => 'string', 'null' => false),
+				'indexes' => array(
+					'PRIMARY' => array('column' => 'id', 'unique' => true),
+					'author_id' => array('column' => 'author_id'),
+				),
+				'tableParameters' => array(
+					'charset' => 'utf8',
+					'collate' => 'utf8_general_ci',
+					'engine' => 'MyISAM'
+				)
+			),
+			'comments' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0, 'key' => 'primary'),
+				'post_id' => array('type' => 'integer', 'null' => false, 'default' => 0),
+				'comment' => array('type' => 'text'),
+				'indexes' => array(
+					'PRIMARY' => array('column' => 'id', 'unique' => true),
+				),
+				'tableParameters' => array(
+					'charset' => 'utf8',
+					'collate' => 'utf8_general_ci'
+				)
+			)
+		);
+		$compare = $this->Schema->compare($old, $new);
+		$expected = array(
+			'posts' => array(
+				'add' => array(
+					'indexes' => array('author_id' => array('column' => 'author_id')),
+				),
+				'change' => array(
+					'tableParameters' => array(
+						'charset' => 'utf8',
+						'collate' => 'utf8_general_ci',
+						'engine' => 'MyISAM'
+					)
+				)
+			),
+			'comments' => array(
+				'drop' => array(
+					'indexes' => array('post_id' => array('column' => 'post_id')),
+				),
+				'change' => array(
+					'tableParameters' => array(
+						'charset' => 'utf8',
+						'collate' => 'utf8_general_ci',
+					)
+				)
+			)
+		);
+		$this->assertEqual($compare, $expected);
 	}
 
 /**
@@ -510,9 +889,25 @@ class CakeSchemaTest extends CakeTestCase {
  * @return void
  */
 	function testSchemaLoading() {
-		$Other = $this->Schema->load(array('name' => 'MyOtherApp', 'path' => TMP . 'tests'));
+		$Other =& $this->Schema->load(array('name' => 'MyOtherApp', 'path' => TMP . 'tests'));
 		$this->assertEqual($Other->name, 'MyOtherApp');
 		$this->assertEqual($Other->tables, $this->Schema->tables);
+	}
+
+/**
+ * test loading schema files inside of plugins.
+ *
+ * @return void
+ */
+	function testSchemaLoadingFromPlugin() {
+		App::build(array(
+			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS)
+		));
+		$Other =& $this->Schema->load(array('name' => 'TestPluginApp', 'plugin' => 'TestPlugin'));
+		$this->assertEqual($Other->name, 'TestPluginApp');
+		$this->assertEqual(array_keys($Other->tables), array('acos'));
+
+		App::build();
 	}
 
 /**
@@ -546,4 +941,3 @@ class CakeSchemaTest extends CakeTestCase {
 		$this->assertPattern('/' . preg_quote($column, '/') . '/', $sql);
 	}
 }
-?>

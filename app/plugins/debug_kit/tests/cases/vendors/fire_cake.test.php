@@ -18,7 +18,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  **/
 App::import('Vendor', 'DebugKit.FireCake');
-App::import('File', 'TestFireCake', false, Configure::read('pluginPaths'), 'test_objects.php');
+require_once App::pluginPath('DebugKit') . 'tests' . DS . 'cases' . DS . 'test_objects.php';
 
 /**
  * Test Case For FireCake
@@ -36,7 +36,7 @@ class FireCakeTestCase extends CakeTestCase {
  */
 	function setUp() {
 		$this->firecake =& FireCake::getInstance('TestFireCake');
-	}	
+	}
 /**
  * test getInstance cheat.
  *
@@ -162,19 +162,26 @@ class FireCakeTestCase extends CakeTestCase {
  * @return void
  **/
 	function testStringEncode() {
-		$result = $this->firecake->stringEncode(array(1,2,3));
+		$vars = array(1,2,3);
+		$result = $this->firecake->stringEncode($vars);
 		$this->assertEqual($result, array(1,2,3));
 
 		$this->firecake->setOptions(array('maxArrayDepth' => 3));
 		$deep = array(1 => array(2 => array(3)));
 		$result = $this->firecake->stringEncode($deep);
 		$this->assertEqual($result, array(1 => array(2 => '** Max Array Depth (3) **')));
-
+	}
+/**
+ * test object encoding
+ *
+ * @return void
+ **/
+	function testStringEncodeObjects() {
 		$obj =& FireCake::getInstance();
 		$result = $this->firecake->stringEncode($obj);
+
 		$this->assertTrue(is_array($result));
 		$this->assertEqual($result['_defaultOptions']['useNativeJsonEncode'], true);
-		$this->assertEqual($result['_log'], null);
 		$this->assertEqual($result['_encodedObjects'][0], '** Recursion (TestFireCake) **');
 	}
 /**
@@ -205,6 +212,7 @@ class FireCakeTestCase extends CakeTestCase {
 		FireCake::trace('myTrace');
 		$this->assertFalse(empty($this->firecake->sentHeaders));
 	}
+
 /**
  * test correct line continuation markers on multi line headers.
  *
@@ -212,18 +220,24 @@ class FireCakeTestCase extends CakeTestCase {
  * @return void
  */	
 	function testMultiLineOutput() {
+		$skip = $this->skipIf(!PHP5, 'Output is not long enough with PHP4');
+		if ($skip) {
+			return;
+		}
 		FireCake::trace('myTrace');
-		$this->assertEqual($this->firecake->sentHeaders['X-Wf-1-Index'], 3);
+		$this->assertEqual($this->firecake->sentHeaders['X-Wf-1-Index'], 4);
 		$header = $this->firecake->sentHeaders['X-Wf-1-1-1-1'];
 		$this->assertEqual(substr($header, -2), '|\\');
-		
+
 		$header = $this->firecake->sentHeaders['X-Wf-1-1-1-2'];
 		$this->assertEqual(substr($header, -2), '|\\');
-		
+
 		$header = $this->firecake->sentHeaders['X-Wf-1-1-1-3'];
+		$this->assertEqual(substr($header, -2), '|\\');
+
+		$header = $this->firecake->sentHeaders['X-Wf-1-1-1-4'];
 		$this->assertEqual(substr($header, -1), '|');
 	}
-	
 /**
  * test inclusion of line numbers
  *
@@ -246,7 +260,7 @@ class FireCakeTestCase extends CakeTestCase {
 		FireCake::group('test');
 		FireCake::info('my info');
 		FireCake::groupEnd();
-		$this->assertEqual($this->firecake->sentHeaders['X-Wf-1-1-1-1'], '44|[{"Type":"GROUP_START","Label":"test"},null]|');
+		$this->assertEqual($this->firecake->sentHeaders['X-Wf-1-1-1-1'], '63|[{"Collapsed":"true","Type":"GROUP_START","Label":"test"},null]|');
 		$this->assertEqual($this->firecake->sentHeaders['X-Wf-1-1-1-3'], '27|[{"Type":"GROUP_END"},null]|');
 		$this->assertEqual($this->firecake->sentHeaders['X-Wf-1-Index'], 3);
 	}

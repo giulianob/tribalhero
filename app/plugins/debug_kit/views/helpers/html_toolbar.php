@@ -29,7 +29,7 @@ class HtmlToolbarHelper extends ToolbarHelper {
  * @var array
  * @access public
  */
-	var $helpers = array('Html', 'Javascript');
+	var $helpers = array('Html', 'Form');
 /**
  * settings property
  *
@@ -59,6 +59,9 @@ class HtmlToolbarHelper extends ToolbarHelper {
 			if (is_null($values)) {
 				$values = array(null);
 			}
+		}
+		if (empty($values)) {
+			$values[] = '(empty)';
 		}
 		foreach ($values as $key => $value) {
 			$out .= '<li><strong>' . $key . '</strong>';
@@ -100,6 +103,16 @@ class HtmlToolbarHelper extends ToolbarHelper {
 		return sprintf('<p><strong>%s</strong> %s</p>', $label, $message);
 	}
 /**
+ * Start a panel.
+ * make a link and anchor.
+ *
+ * @return void
+ **/
+	function panelStart($title, $anchor) {
+		$link = $this->Html->link($title, '#' . $anchor);
+		return $link;
+	}
+/**
  * Create a table.
  *
  * @param array $rows Rows to make.
@@ -111,7 +124,7 @@ class HtmlToolbarHelper extends ToolbarHelper {
 		if (!empty($headers)) {
 			$out .= $this->Html->tableHeaders($headers);
 		}
-		$out .= $this->Html->tableCells($rows, array('class' => 'even'), array('class' => 'odd'));
+		$out .= $this->Html->tableCells($rows, array('class' => 'odd'), array('class' => 'even'), false, false);
 		$out .= '</table>';
 		return $out;
 	}
@@ -119,9 +132,9 @@ class HtmlToolbarHelper extends ToolbarHelper {
  * send method
  *
  * @return void
- * @access protected
+ * @access public
  */
-	function _send() {
+	function send() {
 		if (!$this->settings['forceEnable'] && Configure::read('debug') == 0) {
 			return;
 		}
@@ -130,7 +143,7 @@ class HtmlToolbarHelper extends ToolbarHelper {
 		if (isset($view->viewVars['debugToolbarJavascript'])) {
 			foreach ($view->viewVars['debugToolbarJavascript'] as $script) {
 				if ($script) {
-					$head .= $this->Javascript->link($script);
+					$head .= $this->Html->script($script);
 				}
 			}
 		}
@@ -141,6 +154,37 @@ class HtmlToolbarHelper extends ToolbarHelper {
 		if (preg_match('#</body>#', $view->output)) {
 			$view->output = preg_replace('#</body>#', $toolbar . "\n</body>", $view->output, 1);
 		}
+	}
+/**
+ * Generates a SQL explain link for a given query
+ *
+ * @param string $sql SQL query string you want an explain link for.
+ * @return string Rendered Html link or '' if the query is not a select/describe
+ */
+	function explainLink($sql, $connection) {
+		if (!preg_match('/^(SELECT)/i', $sql)) {
+			return '';
+		}
+		App::import('Core', 'Security');
+		$hash = Security::hash($sql . $connection, null, true);
+		$url = array(
+			'plugin' => 'debug_kit',
+			'controller' => 'toolbar_access',
+			'action' => 'sql_explain'
+		);
+		foreach (Router::prefixes() as $prefix) {
+			$url[$prefix] = false;
+		}
+		$form = $this->Form->create('log', array('url' => $url));
+		$form .= $this->Form->hidden('log.ds', array('value' => $connection));
+		$form .= $this->Form->hidden('log.sql', array('value' => $sql));
+		$form .= $this->Form->hidden('log.hash', array('value' => $hash));
+		$form .= $this->Form->submit(__d('debug_kit', 'Explain', true), array(
+			'div' => false,
+			'class' => 'sql-explain-link'
+		));
+		$form .= $this->Form->end();
+		return $form;
 	}
 }
 ?>

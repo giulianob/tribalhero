@@ -1,29 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * PostgreSQL layer for DBO.
  *
- * Long description for file
- *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP(tm) v 0.9.1.114
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
@@ -63,7 +55,6 @@ class DboPostgres extends DboSource {
  * @access protected
  */
 	var $_baseConfig = array(
-		'connect'	=> 'pg_pconnect',
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'root',
@@ -90,8 +81,20 @@ class DboPostgres extends DboSource {
 		'inet' => array('name'  => 'inet')
 	);
 
+/**
+ * Starting Quote
+ *
+ * @var string
+ * @access public
+ */
 	var $startQuote = '"';
 
+/**
+ * Ending Quote
+ *
+ * @var string
+ * @access public
+ */
 	var $endQuote = '"';
 
 /**
@@ -129,6 +132,14 @@ class DboPostgres extends DboSource {
 		return $this->connected;
 	}
 
+/**
+ * Check if PostgreSQL is enabled/loaded
+ *
+ * @return boolean
+ */
+	function enabled() {
+		return extension_loaded('pgsql');
+	}
 /**
  * Disconnects from database.
  *
@@ -220,7 +231,12 @@ class DboPostgres extends DboSource {
 					if (!empty($c['char_length'])) {
 						$length = intval($c['char_length']);
 					} elseif (!empty($c['oct_length'])) {
-						$length = intval($c['oct_length']);
+						if ($c['type'] == 'character varying') {
+							$length = null;
+							$c['type'] = 'text';
+						} else {
+							$length = intval($c['oct_length']);
+						}
 					} else {
 						$length = $this->length($c['type']);
 					}
@@ -275,7 +291,7 @@ class DboPostgres extends DboSource {
 			return $parent;
 		}
 
-		if ($data === null) {
+		if ($data === null || (is_array($data) && empty($data))) {
 			return 'NULL';
 		}
 		if (empty($column)) {
@@ -289,6 +305,7 @@ class DboPostgres extends DboSource {
 			case 'date':
 			case 'datetime':
 			case 'timestamp':
+			case 'time':
 				if ($data === '') {
 					return $read ? 'NULL' : 'DEFAULT';
 				}
@@ -428,9 +445,23 @@ class DboPostgres extends DboSource {
 		}
 		$count = count($fields);
 
-		if ($count >= 1 && $fields[0] != '*' && strpos($fields[0], 'COUNT(*)') === false) {
+		if ($count >= 1 && strpos($fields[0], 'COUNT(*)') === false) {
+			$result = array();
 			for ($i = 0; $i < $count; $i++) {
 				if (!preg_match('/^.+\\(.*\\)/', $fields[$i]) && !preg_match('/\s+AS\s+/', $fields[$i])) {
+					if (substr($fields[$i], -1) == '*') {
+						if (strpos($fields[$i], '.') !== false && $fields[$i] != $alias . '.*') {
+							$build = explode('.', $fields[$i]);
+							$AssociatedModel = $model->{$build[0]};
+						} else {
+							$AssociatedModel = $model;
+						}
+
+						$_fields = $this->fields($AssociatedModel, $AssociatedModel->alias, array_keys($AssociatedModel->schema()));
+						$result = array_merge($result, $_fields);
+						continue;
+					}
+
 					$prepend = '';
 					if (strpos($fields[$i], 'DISTINCT') !== false) {
 						$prepend = 'DISTINCT ';
@@ -443,10 +474,38 @@ class DboPostgres extends DboSource {
 						$build = explode('.', $fields[$i]);
 						$fields[$i] = $prepend . $this->name($build[0]) . '.' . $this->name($build[1]) . ' AS ' . $this->name($build[0] . '__' . $build[1]);
 					}
+				} else {
+					$fields[$i] = preg_replace_callback('/\(([\s\.\w]+)\)/',  array(&$this, '__quoteFunctionField'), $fields[$i]);
 				}
+				$result[] = $fields[$i];
 			}
+			return $result;
 		}
 		return $fields;
+	}
+
+/**
+ * Auxiliary function to quote matched `(Model.fields)` from a preg_replace_callback call
+ *
+ * @param string matched string
+ * @return string quoted strig
+ * @access private
+ */
+	function __quoteFunctionField($match) {
+		$prepend = '';
+		if (strpos($match[1], 'DISTINCT') !== false) {
+			$prepend = 'DISTINCT ';
+			$match[1] = trim(str_replace('DISTINCT', '', $match[1]));
+		}
+		if (strpos($match[1], '.') === false) {
+			$match[1] = $this->name($match[1]);
+		} else {
+			$parts = explode('.', $match[1]);
+			if (!Set::numeric($parts)) {
+				$match[1] = $this->name($match[1]);
+			}
+		}
+		return '(' . $prepend .$match[1] . ')';
 	}
 
 /**
@@ -534,7 +593,23 @@ class DboPostgres extends DboSource {
 									$col['name'] = $field;
 								}
 								$fieldName = $this->name($field);
+
+								$default = isset($col['default']) ? $col['default'] : null;
+								$nullable = isset($col['null']) ? $col['null'] : null;
+								unset($col['default'], $col['null']);
 								$colList[] = 'ALTER COLUMN '. $fieldName .' TYPE ' . str_replace($fieldName, '', $this->buildColumn($col));
+
+								if (isset($nullable)) {
+									$nullable = ($nullable) ? 'DROP NOT NULL' : 'SET NOT NULL';
+									$colList[] = 'ALTER COLUMN '. $fieldName .'  ' . $nullable;
+								}
+
+								if (isset($default)) {
+									$colList[] = 'ALTER COLUMN '. $fieldName .'  SET DEFAULT ' . $this->value($default, $col['type']);
+								} else {
+									$colList[] = 'ALTER COLUMN '. $fieldName .'  DROP DEFAULT';
+								}
+
 							}
 						break;
 					}
@@ -551,11 +626,11 @@ class DboPostgres extends DboSource {
 				}
 
 				if (!empty($colList)) {
-					$out .= "\t" . join(",\n\t", $colList) . ";\n\n";
+					$out .= "\t" . implode(",\n\t", $colList) . ";\n\n";
 				} else {
 					$out = '';
 				}
-				$out .= join(";\n\t", $this->_alterIndexes($curTable, $indexes)) . ";";
+				$out .= implode(";\n\t", $this->_alterIndexes($curTable, $indexes)) . ";";
 			}
 		}
 		return $out;
@@ -593,7 +668,7 @@ class DboPostgres extends DboSource {
 					$out .= 'INDEX ';
 				}
 				if (is_array($value['column'])) {
-					$out .= $name . ' ON ' . $table . ' (' . join(', ', array_map(array(&$this, 'name'), $value['column'])) . ')';
+					$out .= $name . ' ON ' . $table . ' (' . implode(', ', array_map(array(&$this, 'name'), $value['column'])) . ')';
 				} else {
 					$out .= $name . ' ON ' . $table . ' (' . $this->name($value['column']) . ')';
 				}
@@ -852,7 +927,7 @@ class DboPostgres extends DboSource {
 					$out .= 'UNIQUE ';
 				}
 				if (is_array($value['column'])) {
-					$value['column'] = join(', ', array_map(array(&$this, 'name'), $value['column']));
+					$value['column'] = implode(', ', array_map(array(&$this, 'name'), $value['column']));
 				} else {
 					$value['column'] = $this->name($value['column']);
 				}
@@ -886,7 +961,7 @@ class DboPostgres extends DboSource {
 
 				foreach (array('columns', 'indexes') as $var) {
 					if (is_array(${$var})) {
-						${$var} = join($join[$var], array_filter(${$var}));
+						${$var} = implode($join[$var], array_filter(${$var}));
 					}
 				}
 				return "CREATE TABLE {$table} (\n\t{$columns}\n);\n{$indexes}";
@@ -897,4 +972,3 @@ class DboPostgres extends DboSource {
 		}
 	}
 }
-?>

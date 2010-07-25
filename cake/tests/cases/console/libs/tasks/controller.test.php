@@ -11,7 +11,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.tests.cases.console.libs.tasks
  * @since         CakePHP(tm) v 1.3
@@ -55,7 +55,7 @@ Mock::generatePartial(
 
 Mock::generatePartial(
 	'ProjectTask', 'ControllerMockProjectTask',
-	array('in', 'out', 'err', 'createFile', '_stop', '_checkUnitTest', 'getAdmin')
+	array('in', 'out', 'err', 'createFile', '_stop', '_checkUnitTest', 'getPrefix')
 );
 
 Mock::generate('TestTask', 'ControllerMockTestTask');
@@ -88,7 +88,8 @@ class ControllerTaskTest extends CakeTestCase {
  * fixtures
  *
  * @var array
- **/
+ * @access public
+ */
 	var $fixtures = array('core.article', 'core.comment', 'core.articles_tag', 'core.tag');
 
 /**
@@ -100,6 +101,7 @@ class ControllerTaskTest extends CakeTestCase {
 	function startTest() {
 		$this->Dispatcher =& new TestControllerTaskMockShellDispatcher();
 		$this->Task =& new MockControllerTask($this->Dispatcher);
+		$this->Task->name = 'ControllerTask';
 		$this->Task->Dispatch =& $this->Dispatcher;
 		$this->Task->Dispatch->shellPaths = App::path('shells');
 		$this->Task->Template =& new TemplateTask($this->Task->Dispatch);
@@ -124,7 +126,8 @@ class ControllerTaskTest extends CakeTestCase {
  * test ListAll
  *
  * @return void
- **/
+ * @access public
+ */
 	function testListAll() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->interactive = true;
@@ -153,8 +156,10 @@ class ControllerTaskTest extends CakeTestCase {
  * Test that getName interacts with the user and returns the controller name.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testGetName() {
+		$this->Task->interactive = true;
 		$this->Task->setReturnValue('in', 1);
 
 		$this->Task->setReturnValueAt(0, 'in', 'q');
@@ -180,7 +185,8 @@ class ControllerTaskTest extends CakeTestCase {
  * test helper interactions
  *
  * @return void
- **/
+ * @access public
+ */
 	function testDoHelpers() {
 		$this->Task->setReturnValue('in', 'n');
 		$result = $this->Task->doHelpers();
@@ -203,7 +209,8 @@ class ControllerTaskTest extends CakeTestCase {
  * test component interactions
  *
  * @return void
- **/
+ * @access public
+ */
 	function testDoComponents() {
 		$this->Task->setReturnValue('in', 'n');
 		$result = $this->Task->doComponents();
@@ -226,7 +233,8 @@ class ControllerTaskTest extends CakeTestCase {
  * test Confirming controller user interaction
  *
  * @return void
- **/
+ * @access public
+ */
 	function testConfirmController() {
 		$controller = 'Posts';
 		$scaffold = false;
@@ -244,7 +252,8 @@ class ControllerTaskTest extends CakeTestCase {
  * test the bake method
  *
  * @return void
- **/
+ * @access public
+ */
 	function testBake() {
 		$helpers = array('Ajax', 'Time');
 		$components = array('Acl', 'Auth');
@@ -253,7 +262,7 @@ class ControllerTaskTest extends CakeTestCase {
 		$result = $this->Task->bake('Articles', '--actions--', $helpers, $components);
 		$this->assertPattern('/class ArticlesController extends AppController/', $result);
 		$this->assertPattern('/\$components \= array\(\'Acl\', \'Auth\'\)/', $result);
-		$this->assertPattern('/\$helpers \= array\(\'Html\', \'Form\', \'Ajax\', \'Time\'\)/', $result);
+		$this->assertPattern('/\$helpers \= array\(\'Ajax\', \'Time\'\)/', $result);
 		$this->assertPattern('/\-\-actions\-\-/', $result);
 
 		$result = $this->Task->bake('Articles', 'scaffold', $helpers, $components);
@@ -261,13 +270,20 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->assertPattern('/var \$scaffold/', $result);
 		$this->assertNoPattern('/helpers/', $result);
 		$this->assertNoPattern('/components/', $result);
+
+		$result = $this->Task->bake('Articles', '--actions--', array(), array());
+		$this->assertPattern('/class ArticlesController extends AppController/', $result);
+		$this->assertNoPattern('/components/', $result);
+		$this->assertNoPattern('/helpers/', $result);
+		$this->assertPattern('/\-\-actions\-\-/', $result);
 	}
 
 /**
  * test bake() with a -plugin param
  *
  * @return void
- **/
+ * @access public
+ */
 	function testBakeWithPlugin() {
 		$this->Task->plugin = 'ControllerTest';
 		$helpers = array('Ajax', 'Time');
@@ -289,7 +305,8 @@ class ControllerTaskTest extends CakeTestCase {
  * test that bakeActions is creating the correct controller Code. (Using sessions)
  *
  * @return void
- **/
+ * @access public
+ */
 	function testBakeActionsUsingSessions() {
 		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
 			'Testing bakeActions requires Article, Comment & Tag Model to be undefined. %s');
@@ -303,21 +320,20 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->assertTrue(strpos($result, "\$this->set('articles', \$this->paginate());") !== false);
 
 		$this->assertTrue(strpos($result, 'function view($id = null)') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('Invalid Article', true))") !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('Invalid article', true));") !== false);
 		$this->assertTrue(strpos($result, "\$this->set('article', \$this->Article->read(null, \$id)") !== false);
 
 		$this->assertTrue(strpos($result, 'function add()') !== false);
 		$this->assertTrue(strpos($result, 'if (!empty($this->data))') !== false);
 		$this->assertTrue(strpos($result, 'if ($this->Article->save($this->data))') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('The Article has been saved', true))") !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('The article has been saved', true));") !== false);
 
 		$this->assertTrue(strpos($result, 'function edit($id = null)') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('The Article could not be saved. Please, try again.', true));") !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('The article could not be saved. Please, try again.', true));") !== false);
 
 		$this->assertTrue(strpos($result, 'function delete($id = null)') !== false);
-		$this->assertTrue(strpos($result, 'if ($this->Article->del($id))') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('Article deleted', true))") !== false);
-
+		$this->assertTrue(strpos($result, 'if ($this->Article->delete($id))') !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('Article deleted', true));") !== false);
 
 		$result = $this->Task->bakeActions('Articles', 'admin_', true);
 
@@ -332,7 +348,8 @@ class ControllerTaskTest extends CakeTestCase {
  * Test baking with Controller::flash() or no sessions.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testBakeActionsWithNoSessions() {
 		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
 			'Testing bakeActions requires Article, Tag, Comment Models to be undefined. %s');
@@ -346,20 +363,20 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->assertTrue(strpos($result, "\$this->set('articles', \$this->paginate());") !== false);
 
 		$this->assertTrue(strpos($result, 'function view($id = null)') !== false);
-		$this->assertTrue(strpos($result, "\$this->flash(__('Invalid Article', true), array('action' => 'index'))") !== false);
+		$this->assertTrue(strpos($result, "\$this->flash(__('Invalid article', true), array('action' => 'index'))") !== false);
 		$this->assertTrue(strpos($result, "\$this->set('article', \$this->Article->read(null, \$id)") !== false);
 
 		$this->assertTrue(strpos($result, 'function add()') !== false);
 		$this->assertTrue(strpos($result, 'if (!empty($this->data))') !== false);
 		$this->assertTrue(strpos($result, 'if ($this->Article->save($this->data))') !== false);
-		$this->assertTrue(strpos($result, "\$this->flash(__('The Article has been saved.', true), array('action' => 'index'))") !== false);
+		$this->assertTrue(strpos($result, "\$this->flash(__('The article has been saved.', true), array('action' => 'index'))") !== false);
 
 		$this->assertTrue(strpos($result, 'function edit($id = null)') !== false);
 		$this->assertTrue(strpos($result, "\$this->Article->Tag->find('list')") !== false);
 		$this->assertTrue(strpos($result, "\$this->set(compact('tags'))") !== false);
 
 		$this->assertTrue(strpos($result, 'function delete($id = null)') !== false);
-		$this->assertTrue(strpos($result, 'if ($this->Article->del($id))') !== false);
+		$this->assertTrue(strpos($result, 'if ($this->Article->delete($id))') !== false);
 		$this->assertTrue(strpos($result, "\$this->flash(__('Article deleted', true), array('action' => 'index'))") !== false);
 	}
 
@@ -367,23 +384,27 @@ class ControllerTaskTest extends CakeTestCase {
  * test baking a test
  *
  * @return void
- **/
+ * @access public
+ */
 	function testBakeTest() {
 		$this->Task->plugin = 'ControllerTest';
 		$this->Task->connection = 'test_suite';
+		$this->Task->interactive = false;
 
 		$this->Task->Test->expectOnce('bake', array('Controller', 'Articles'));
 		$this->Task->bakeTest('Articles');
 
 		$this->assertEqual($this->Task->plugin, $this->Task->Test->plugin);
 		$this->assertEqual($this->Task->connection, $this->Task->Test->connection);
+		$this->assertEqual($this->Task->interactive, $this->Task->Test->interactive);
 	}
 
 /**
  * test Interactive mode.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testInteractive() {
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path';
@@ -404,10 +425,40 @@ class ControllerTaskTest extends CakeTestCase {
 	}
 
 /**
+ * test Interactive mode.
+ *
+ * @return void
+ * @access public
+ */
+	function testInteractiveAdminMethodsNotInteractive() {
+		$this->Task->connection = 'test_suite';
+		$this->Task->interactive = true;
+		$this->Task->path = '/my/path';
+		$this->Task->setReturnValue('in', '1');
+		$this->Task->setReturnValueAt(1, 'in', 'y'); // build interactive
+		$this->Task->setReturnValueAt(2, 'in', 'n'); // build no scaffolds
+		$this->Task->setReturnValueAt(3, 'in', 'y'); // build normal methods
+		$this->Task->setReturnValueAt(4, 'in', 'y'); // build admin methods
+		$this->Task->setReturnValueAt(5, 'in', 'n'); // helpers?
+		$this->Task->setReturnValueAt(6, 'in', 'n'); // components?
+		$this->Task->setReturnValueAt(7, 'in', 'y'); // use sessions
+		$this->Task->setReturnValueAt(8, 'in', 'y'); // looks good
+		$this->Task->setReturnValue('createFile', true);
+		$this->Task->Project->setReturnValue('getPrefix', 'admin_');
+
+		$result = $this->Task->execute();
+		$this->assertPattern('/admin_index/', $result);
+
+		$filename = '/my/path/articles_controller.php';
+		$this->Task->expectAt(0, 'createFile', array($filename, new PatternExpectation('/class ArticlesController/')));
+	}
+
+/**
  * test that execute runs all when the first arg == all
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteIntoAll() {
 		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
 			'Execute into all could not be run as an Article, Tag or Comment model was already loaded. %s');
@@ -432,7 +483,8 @@ class ControllerTaskTest extends CakeTestCase {
  * test that `cake bake controller foos` works.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteWithController() {
 		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
 			'Execute with scaffold param requires no Article, Tag or Comment model to be defined. %s');
@@ -452,10 +504,63 @@ class ControllerTaskTest extends CakeTestCase {
 	}
 
 /**
+ * test that both plural and singular forms work for controller baking.
+ *
+ * @return void
+ * @access public
+ */
+	function testExecuteWithControllerNameVariations() {
+		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
+			'Execute with scaffold param requires no Article, Tag or Comment model to be defined. %s');
+		if ($skip) {
+			return;
+		}
+		$this->Task->connection = 'test_suite';
+		$this->Task->path = '/my/path/';
+		$this->Task->args = array('Articles');
+
+		$filename = '/my/path/articles_controller.php';
+		$this->Task->expectAt(0, 'createFile', array(
+			$filename, new PatternExpectation('/\$scaffold/')
+		));
+
+		$this->Task->execute();
+
+		$this->Task->args = array('Article');
+		$filename = '/my/path/articles_controller.php';
+		$this->Task->expectAt(1, 'createFile', array(
+			$filename, new PatternExpectation('/class ArticlesController/')
+		));
+		$this->Task->execute();
+
+		$this->Task->args = array('article');
+		$filename = '/my/path/articles_controller.php';
+		$this->Task->expectAt(2, 'createFile', array(
+			$filename, new PatternExpectation('/class ArticlesController/')
+		));
+
+		$this->Task->args = array('articles');
+		$filename = '/my/path/articles_controller.php';
+		$this->Task->expectAt(3, 'createFile', array(
+			$filename, new PatternExpectation('/class ArticlesController/')
+		));
+		$this->Task->execute();
+
+		$this->Task->args = array('Articles');
+		$filename = '/my/path/articles_controller.php';
+		$this->Task->expectAt(4, 'createFile', array(
+			$filename, new PatternExpectation('/class ArticlesController/')
+		));
+		$this->Task->execute();
+		$this->Task->execute();
+	}
+
+/**
  * test that `cake bake controller foo scaffold` works.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteWithPublicParam() {
 		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
 			'Execute with scaffold param requires no Article, Tag or Comment model to be defined. %s');
@@ -478,14 +583,15 @@ class ControllerTaskTest extends CakeTestCase {
  * test that `cake bake controller foos both` works.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteWithControllerAndBoth() {
 		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
 			'Execute with scaffold param requires no Article, Tag or Comment model to be defined. %s');
 		if ($skip) {
 			return;
 		}
-		$this->Task->Project->setReturnValue('getAdmin', 'admin_');
+		$this->Task->Project->setReturnValue('getPrefix', 'admin_');
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
 		$this->Task->args = array('Articles', 'public', 'admin');
@@ -502,14 +608,15 @@ class ControllerTaskTest extends CakeTestCase {
  * test that `cake bake controller foos admin` works.
  *
  * @return void
- **/
+ * @access public
+ */
 	function testExecuteWithControllerAndAdmin() {
 		$skip = $this->skipIf(!defined('ARTICLE_MODEL_CREATED'),
 			'Execute with scaffold param requires no Article, Tag or Comment model to be defined. %s');
 		if ($skip) {
 			return;
 		}
-		$this->Task->Project->setReturnValue('getAdmin', 'admin_');
+		$this->Task->Project->setReturnValue('getPrefix', 'admin_');
 		$this->Task->connection = 'test_suite';
 		$this->Task->path = '/my/path/';
 		$this->Task->args = array('Articles', 'admin');
@@ -522,4 +629,3 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->Task->execute();
 	}
 }
-?>

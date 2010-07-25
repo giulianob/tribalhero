@@ -1,27 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * DboMssqlTest file
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
@@ -367,6 +361,18 @@ class DboMssqlTest extends CakeTestCase {
 		$expected = "'1,2'";
 		$result = $this->db->value('1,2', 'float');
 		$this->assertIdentical($expected, $result);
+
+		$expected = 'NULL';
+		$result = $this->db->value('', 'integer');
+		$this->assertIdentical($expected, $result);
+
+		$expected = 'NULL';
+		$result = $this->db->value('', 'float');
+		$this->assertIdentical($expected, $result);
+
+		$expected = 'NULL';
+		$result = $this->db->value('', 'binary');
+		$this->assertIdentical($expected, $result);
 	}
 /**
  * testFields method
@@ -545,6 +551,33 @@ class DboMssqlTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 	}
 /**
+ * testBuildIndex method
+ *
+ * @return void
+ * @access public
+ */
+	function testBuildIndex() {
+		$indexes = array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'client_id' => array('column' => 'client_id', 'unique' => 1)
+		);
+		$result = $this->db->buildIndex($indexes, 'items');
+		$expected = array(
+			'PRIMARY KEY ([id])',
+			'ALTER TABLE items ADD CONSTRAINT client_id UNIQUE([client_id]);'
+		);
+		$this->assertEqual($result, $expected);
+
+		$indexes = array('client_id' => array('column' => 'client_id'));
+		$result = $this->db->buildIndex($indexes, 'items');
+		$this->assertEqual($result, array());
+
+		$indexes = array('client_id' => array('column' => array('client_id', 'period_id'), 'unique' => 1));
+		$result = $this->db->buildIndex($indexes, 'items');
+		$expected = array('ALTER TABLE items ADD CONSTRAINT client_id UNIQUE([client_id], [period_id]);');
+		$this->assertEqual($result, $expected);
+	}
+/**
  * testUpdateAllSyntax method
  *
  * @return void
@@ -616,5 +649,29 @@ class DboMssqlTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expected);
 	}
+/**
+ * testLastError
+ *
+ * @return void
+ * @access public
+ */
+	function testLastError() {
+		$debug = Configure::read('debug');
+		Configure::write('debug', 0);
+
+		$this->db->simulate = false;
+		$query = 'SELECT [name] FROM [categories]';
+		$this->assertTrue($this->db->execute($query) !== false);
+		$this->assertNull($this->db->lastError());
+
+		$query = 'SELECT [inexistent_field] FROM [categories]';
+		$this->assertFalse($this->db->execute($query));
+		$this->assertNotNull($this->db->lastError());
+
+		$query = 'SELECT [name] FROM [categories]';
+		$this->assertTrue($this->db->execute($query) !== false);
+		$this->assertNull($this->db->lastError());
+
+		Configure::write('debug', $debug);
+	}
 }
-?>

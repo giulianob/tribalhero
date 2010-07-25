@@ -1,28 +1,20 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * ApcEngineTest file
  *
- * Long description for file
- *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.cache
  * @since         CakePHP(tm) v 1.2.0.5434
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('Cache')) {
@@ -35,7 +27,7 @@ if (!class_exists('Cache')) {
  * @package       cake
  * @subpackage    cake.tests.cases.libs.cache
  */
-class ApcEngineTest extends UnitTestCase {
+class ApcEngineTest extends CakeTestCase {
 
 /**
  * skip method
@@ -45,7 +37,7 @@ class ApcEngineTest extends UnitTestCase {
  */
 	function skip() {
 		$skip = true;
-		if (Cache::engine('Apc')) {
+		if (function_exists('apc_store')) {
 			$skip = false;
 		}
 		$this->skipIf($skip, '%s Apc is not installed or configured properly');
@@ -71,6 +63,7 @@ class ApcEngineTest extends UnitTestCase {
  */
 	function tearDown() {
 		Configure::write('Cache.disable', $this->_cacheDisable);
+		Cache::drop('apc');
 		Cache::config('default');
 	}
 
@@ -118,7 +111,7 @@ class ApcEngineTest extends UnitTestCase {
 		$result = Cache::read('other_test');
 		$this->assertFalse($result);
 
-		Cache::set(array('duration' =>  "+1 second"));
+		Cache::set(array('duration' =>  1));
 
 		$data = 'this is a test of the emergency broadcasting system';
 		$result = Cache::write('other_test', $data);
@@ -147,5 +140,57 @@ class ApcEngineTest extends UnitTestCase {
 		$result = Cache::delete('delete_test');
 		$this->assertTrue($result);
 	}
+
+/**
+ * testDecrement method
+ *
+ * @access public
+ * @return void
+ */
+	function testDecrement() {
+		if ($this->skipIf(!function_exists('apc_dec'), 'No apc_dec() function, cannot test decrement() %s')) {
+			return;
+		}
+		$result = Cache::write('test_decrement', 5);
+		$this->assertTrue($result);
+
+		$result = Cache::decrement('test_decrement');
+		$this->assertEqual(4, $result);
+
+		$result = Cache::read('test_decrement');
+		$this->assertEqual(4, $result);
+
+		$result = Cache::decrement('test_decrement', 2);
+		$this->assertEqual(2, $result);
+
+		$result = Cache::read('test_decrement');
+		$this->assertEqual(2, $result);
+		
+	}
+
+/**
+ * testIncrement method
+ *
+ * @access public
+ * @return void
+ */
+	function testIncrement() {
+		if ($this->skipIf(!function_exists('apc_inc'), 'No apc_inc() function, cannot test increment() %s')) {
+			return;
+		}
+		$result = Cache::write('test_increment', 5);
+		$this->assertTrue($result);
+
+		$result = Cache::increment('test_increment');
+		$this->assertEqual(6, $result);
+
+		$result = Cache::read('test_increment');
+		$this->assertEqual(6, $result);
+
+		$result = Cache::increment('test_increment', 2);
+		$this->assertEqual(8, $result);
+
+		$result = Cache::read('test_increment');
+		$this->assertEqual(8, $result);
+	}
 }
-?>

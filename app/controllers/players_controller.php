@@ -63,7 +63,7 @@ class PlayersController extends AppController {
         }
         else {
             $this->data['Player']['name'] = $this->Session->read('Player.name');
-            $this->Session->del('Player.name');
+            $this->Session->delete('Player.name');
         }
 
         unset($this->data['Player']['password']);

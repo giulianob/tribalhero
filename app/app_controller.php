@@ -1,8 +1,8 @@
 <?php
 
 class AppController extends Controller {
-    var $components = array('Auth', 'Security');
-    var $helpers = array('Html', 'Javascript', 'Form');
+    var $components = array('Auth', 'Security', 'Session');
+    var $helpers = array('Html', 'Javascript', 'Form', 'Session');
 
     var $recaptchaPrivateKey = '6LdYFgYAAAAAAMrRHyqHasNnktIyoTh1fwPKV0Jy';
     var $recaptchaPublicKey = '6LdYFgYAAAAAAEJVxFq049CUy9ml57Ds9hSRlw41';
@@ -26,7 +26,7 @@ class AppController extends Controller {
         $this->Auth->userModel = 'Player';
         $this->Auth->fields = array('username' => 'name', 'password' => 'password');
         $this->Auth->loginAction = array('admin' => false, 'controller' => 'players', 'action' => 'login');
-        $this->Auth->loginRedirect = '/';
+        $this->Auth->loginRedirect = array('/');
         $this->Auth->autoRedirect = false;
         $this->Auth->authorize = 'controller';
 
@@ -39,17 +39,22 @@ class AppController extends Controller {
 
                 if (!empty($player)) {
                     $this->Auth->allow($this->action);
-                } else
+                } else {
+                    debug('denied');
                     $this->Auth->deny($this->action);
+                }
             }
         }
     }
 
     function isAuthorized() {        
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
-            if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {                
-                $this->Auth->deny($this->action);
+            if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {
+                debug('denied');
+                return false;
             }
         }
+
+        return true;
     }
 }

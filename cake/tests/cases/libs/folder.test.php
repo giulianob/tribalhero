@@ -1,28 +1,20 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * FolderTest file
  *
- * Long description for file
- *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'File');
@@ -89,6 +81,64 @@ class FolderTest extends CakeTestCase {
 	}
 
 /**
+ * test creation of single and mulitple paths.
+ *
+ * @return void
+ */
+	function testCreation() {
+		$folder =& new Folder(TMP . 'tests');
+		$result = $folder->create(TMP . 'tests' . DS . 'first' . DS . 'second' . DS . 'third');
+		$this->assertTrue($result);
+
+		rmdir(TMP . 'tests' . DS . 'first' . DS . 'second' . DS . 'third');
+		rmdir(TMP . 'tests' . DS . 'first' . DS . 'second');
+		rmdir(TMP . 'tests' . DS . 'first');
+
+		$folder =& new Folder(TMP . 'tests');
+		$result = $folder->create(TMP . 'tests' . DS . 'first');
+		$this->assertTrue($result);
+		rmdir(TMP . 'tests' . DS . 'first');
+	}
+
+/**
+ * test that creation of folders with trailing ds works
+ *
+ * @return void
+ */
+	function testCreateWithTrailingDs() {
+		$folder =& new Folder(TMP);
+		$path = TMP . 'tests' . DS . 'trailing' . DS . 'dir' . DS;
+		$folder->create($path);
+
+		$this->assertTrue(is_dir($path), 'Folder was not made');
+
+		$folder =& new Folder(TMP . 'tests' . DS . 'trailing');
+		$this->assertTrue($folder->delete());
+	}
+
+/**
+ * test recurisve directory create failure.
+ *
+ * @return void
+ */
+	function testRecursiveCreateFailure() {
+		if ($this->skipIf(DS == '\\', 'Cant perform operations using permissions on windows. %s')) {
+			return;
+		}
+		$path = TMP . 'tests' . DS . 'one';
+		mkdir($path);
+		chmod($path, '0444');
+
+		$this->expectError();
+
+		$folder =& new Folder($path);
+		$result = $folder->create($path . DS . 'two' . DS . 'three');
+		$this->assertFalse($result);
+
+		chmod($path, '0777');
+		rmdir($path);
+	}
+/**
  * testOperations method
  *
  * @access public
@@ -110,7 +160,7 @@ class FolderTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$copy = TMP . 'test_folder_copy';
-		$result = $Folder->cp($copy);
+		$result = $Folder->copy($copy);
 		$this->assertTrue($result);
 
 		$copy = TMP . 'test_folder_copy';
@@ -125,7 +175,7 @@ class FolderTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$mv = TMP . 'test_folder_mv_2';
-		$result = $Folder->mv($mv);
+		$result = $Folder->move($mv);
 		$this->assertTrue($result);
 
 		$result = $Folder->delete($new);
@@ -134,7 +184,7 @@ class FolderTest extends CakeTestCase {
 		$result = $Folder->delete($mv);
 		$this->assertTrue($result);
 
-		$result = $Folder->rm($mv);
+		$result = $Folder->delete($mv);
 		$this->assertTrue($result);
 
 		$new = APP . 'index.php';
@@ -224,6 +274,18 @@ class FolderTest extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
+/**
+ * test Adding path elements to a path
+ *
+ * @return void
+ */
+	function testAddPathElement() {
+		$result = Folder::addPathElement(DS . 'some' . DS . 'dir', 'another_path');
+		$this->assertEqual($result, DS . 'some' . DS . 'dir' . DS . 'another_path');
+
+		$result = Folder::addPathElement(DS . 'some' . DS . 'dir' . DS, 'another_path');
+		$this->assertEqual($result, DS . 'some' . DS . 'dir' . DS . 'another_path');
+	}
 /**
  * testFolderRead method
  *
@@ -452,7 +514,7 @@ class FolderTest extends CakeTestCase {
 
 		$Folder->cd(TMP);
 		$file = new File($Folder->pwd() . DS . 'paths.php', true);
-		$Folder->mkdir($Folder->pwd() . DS . 'testme');
+		$Folder->create($Folder->pwd() . DS . 'testme');
 		$Folder->cd('testme');
 		$result = $Folder->find('paths\.php');
 		$expected = array();
@@ -493,7 +555,7 @@ class FolderTest extends CakeTestCase {
 		$this->assertIdentical($result, $expected);
 
 		$Folder->cd(TMP);
-		$Folder->mkdir($Folder->pwd() . DS . 'testme');
+		$Folder->create($Folder->pwd() . DS . 'testme');
 		$Folder->cd('testme');
 		$File =& new File($Folder->pwd() . DS . 'paths.php');
 		$File->create();
@@ -727,4 +789,3 @@ class FolderTest extends CakeTestCase {
 		$Folder->delete();
 	}
 }
-?>

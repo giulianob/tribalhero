@@ -28,7 +28,7 @@
 		
 		public function CityActionGridList(city: City, tileWidth: int) 
 		{
-			super(new VectorListModel(), new GeneralGridListCellFactory(CityActionGridCell), 0, 2);
+			super(new VectorListModel(), new GeneralGridListCellFactory(CityActionGridCell), 2, 0);
 			
 			this.city = city;
 			

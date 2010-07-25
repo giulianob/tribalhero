@@ -4,3 +4,4 @@ glob:app/tmp/logs/*
 glob:nbproject/private/private.properties
 glob:nbproject/project.xml
 glob:nbproject/project.properties
+glob:nbproject/private/private.xml

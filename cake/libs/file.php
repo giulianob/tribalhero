@@ -1,27 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Convenience class for reading, writing and appending to files.
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
@@ -108,16 +102,7 @@ class File extends Object {
 			$this->name = basename($path);
 		}
 		$this->pwd();
-
-		if (!$this->exists()) {
-			if ($create === true) {
-				if ($this->safe($path) && $this->create() === false) {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
+		!$this->exists() && $create && $this->safe($path) && $this->create();
 	}
 
 /**
@@ -177,7 +162,7 @@ class File extends Object {
  * Return the contents of this File as a string.
  *
  * @param string $bytes where to start
- * @param string $mode
+ * @param string $mode A `fread` compatible mode.
  * @param boolean $force If true then the file will be re-opened even if its already opened, otherwise it won't
  * @return mixed string on success, false on failure
  * @access public
@@ -200,7 +185,6 @@ class File extends Object {
 		while (!feof($this->handle)) {
 			$data .= fgets($this->handle, 4096);
 		}
-		$data = trim($data);
 
 		if ($this->lock !== null) {
 			flock($this->handle, LOCK_UN);
@@ -208,7 +192,7 @@ class File extends Object {
 		if ($bytes === false) {
 			$this->close();
 		}
-		return $data;
+		return trim($data);
 	}
 
 /**
@@ -231,11 +215,12 @@ class File extends Object {
 	}
 
 /**
- * Prepares a ascii string for writing
- * fixes line endings
+ * Prepares a ascii string for writing.  Converts line endings to the 
+ * correct terminator for the current platform.  If windows "\r\n" will be used
+ * all other platforms will use "\n"
  *
  * @param string $data Data to prepare for writing.
- * @return string
+ * @return string The with converted line endings.
  * @access public
  */
 	function prepare($data, $forceWindows = false) {
@@ -249,9 +234,9 @@ class File extends Object {
 /**
  * Write given data to this File.
  *
- * @param string $data	Data to write to this File.
- * @param string $mode	Mode of writing. {@link http://php.net/fwrite See fwrite()}.
- * @param string $force	force the file to open
+ * @param string $data Data to write to this File.
+ * @param string $mode Mode of writing. {@link http://php.net/fwrite See fwrite()}.
+ * @param string $force force the file to open
  * @return boolean Success
  * @access public
  */
@@ -278,7 +263,7 @@ class File extends Object {
  * Append given data string to this File.
  *
  * @param string $data Data to write
- * @param string $force	force the file to open
+ * @param string $force force the file to open
  * @return boolean Success
  * @access public
  */
@@ -314,7 +299,7 @@ class File extends Object {
 	}
 
 /**
- * Returns the File extension.
+ * Returns the File info.
  *
  * @return string The File extension
  * @access public
@@ -366,7 +351,8 @@ class File extends Object {
 /**
  * makes filename safe for saving
  *
- * @param string $name the name of the file to make safe if different from $this->name
+ * @param string $name The name of the file to make safe if different from $this->name
+ * @param strin $ext The name of the extension to make safe if different from $this->ext
  * @return string $ext the extension of the file
  * @access public
  */
@@ -493,7 +479,7 @@ class File extends Object {
 	}
 
 /**
- * Returns the File group.
+ * Returns the File's group.
  *
  * @return integer the Filegroup
  * @access public
@@ -540,5 +526,19 @@ class File extends Object {
 	function &Folder() {
 		return $this->Folder;
 	}
+
+/**
+ * Copy the File to $dest
+ *
+ * @param string $dest destination for the copy
+ * @param boolean $overwrite Overwrite $dest if exists
+ * @return boolean Succes
+ * @access public
+ */
+	function copy($dest, $overwrite = true) {
+		if (!$this->exists() || is_file($dest) && !$overwrite) {
+			return false;
+		}
+		return copy($this->path, $dest);
+	}
 }
-?>

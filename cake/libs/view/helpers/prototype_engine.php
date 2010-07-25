@@ -7,19 +7,18 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.libs.view.helpers
  * @since         CakePHP(tm) v 1.3
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::import('Helper', 'Js');
 
@@ -28,16 +27,17 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
  * Is the current selection a multiple selection? or is it just a single element.
  *
  * @var boolean
- **/
+ */
 	var $_multiple = false;
+
 /**
  * Option mappings for Prototype
  *
  * @var array
- **/
+ */
 	var $_optionMap = array(
 		'request' => array(
-			'async' => 'asyncrhronous',
+			'async' => 'asynchronous',
 			'data' => 'parameters',
 			'before' => 'onCreate',
 			'success' => 'onSuccess',
@@ -74,7 +74,7 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
  * Contains a list of callback names -> default arguments.
  *
  * @var array
- **/
+ */
 	var $_callbackArguments = array(
 		'slider' => array(
 			'onSlide' => 'value',
@@ -109,7 +109,7 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
  *
  * @param string $selector The selector that is targeted
  * @return object instance of $this. Allows chained methods.
- **/
+ */
 	function get($selector) {
 		$this->_multiple = false;
 		if ($selector == 'window' || $selector == 'document') {
@@ -124,19 +124,20 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		$this->selection = '$$("' . $selector . '")';
 		return $this;
 	}
+
 /**
  * Add an event to the script cache. Operates on the currently selected elements.
  *
  * ### Options
  *
- * - 'wrap' - Whether you want the callback wrapped in an anonymous function. (defaults true)
- * - 'stop' - Whether you want the event to stopped. (defaults true)
+ * - `wrap` - Whether you want the callback wrapped in an anonymous function. (defaults true)
+ * - `stop` - Whether you want the event to stopped. (defaults true)
  *
  * @param string $type Type of event to bind to the current 946 id
  * @param string $callback The Javascript function you wish to trigger or the function literal
  * @param array $options Options for the event.
  * @return string completed event handler
- **/
+ */
 	function event($type, $callback, $options = array()) {
 		$defaults = array('wrap' => true, 'stop' => true);
 		$options = array_merge($defaults, $options);
@@ -151,36 +152,42 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		$out = $this->selection . ".observe(\"{$type}\", $callback);";
 		return $out;
 	}
+
 /**
  * Create a domReady event. This is a special event in many libraries
  *
  * @param string $functionBody The code to run on domReady
  * @return string completed domReady method
- **/
+ * @access public
+ */
 	function domReady($functionBody) {
 		$this->selection = 'document';
 		return $this->event('dom:loaded', $functionBody, array('stop' => false));
 	}
+
 /**
  * Create an iteration over the current selection result.
  *
  * @param string $method The method you want to apply to the selection
  * @param string $callback The function body you wish to apply during the iteration.
  * @return string completed iteration
- **/
+ * @access public
+ */
 	function each($callback) {
 		return $this->selection . '.each(function (item, index) {' . $callback . '});';
 	}
+
 /**
  * Trigger an Effect.
  *
- * #### Note: Effects require Scriptaculous to be loaded.
+ * ### Note: Effects require Scriptaculous to be loaded.
  *
  * @param string $name The name of the effect to trigger.
  * @param array $options Array of options for the effect.
  * @return string completed string with effect.
+ * @access public
  * @see JsBaseEngineHelper::effect()
- **/
+ */
 	function effect($name, $options = array()) {
 		$effect = '';
 		$optionString = null;
@@ -215,13 +222,15 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		}
 		return $effect;
 	}
+
 /**
  * Create an Ajax or Ajax.Updater call.
  *
  * @param mixed $url
  * @param array $options
  * @return string The completed ajax call.
- **/
+ * @access public
+ */
 	function request($url, $options = array()) {
 		$url = '"'. $this->url($url) . '"';
 		$options = $this->_mapOptions('request', $options);
@@ -235,19 +244,19 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 			$type = '.Updater';
 			unset($options['update'], $options['type']);
 		}
-		$safe = array();
+		$safe = array_keys($this->_callbackArguments['request']);
+		$options = $this->_prepareCallbacks('request', $options, $safe);
 		if (isset($options['dataExpression'])) {
 			$safe[] = 'parameters';
 			unset($options['dataExpression']);
 		}
-		$safe = array_merge($safe, array_keys($this->_callbackArguments['request']));
-		$options = $this->_prepareCallbacks('request', $options, $safe);
 		$options = $this->_parseOptions($options, $safe);
 		if (!empty($options)) {
 			$options = ', {' . $options . '}';
 		}
 		return "var jsRequest = new Ajax$type($url$options);";
 	}
+
 /**
  * Create a sortable element.
  *
@@ -255,8 +264,9 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
  *
  * @param array $options Array of options for the sortable.
  * @return string Completed sortable script.
- * @see JsHelper::sortable() for options list.
- **/
+ * @access public
+ * @see JsBaseEngineHelper::sortable() for options list.
+ */
 	function sortable($options = array()) {
 		$options = $this->_processOptions('sortable', $options);
 		if (!empty($options)) {
@@ -264,6 +274,7 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		}
 		return 'var jsSortable = Sortable.create(' . $this->selection . $options . ');';
 	}
+
 /**
  * Create a Draggable element.
  *
@@ -271,8 +282,9 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
  *
  * @param array $options Array of options for the draggable.
  * @return string Completed draggable script.
- * @see JsHelper::draggable() for options list.
- **/
+ * @access public
+ * @see JsBaseEngineHelper::draggable() for options list.
+ */
 	function drag($options = array()) {
 		$options = $this->_processOptions('drag', $options);
 		if (!empty($options)) {
@@ -283,6 +295,7 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		}
 		return 'var jsDrag = new Draggable(' . $this->selection . $options . ');';
 	}
+
 /**
  * Create a Droppable element.
  *
@@ -290,8 +303,9 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
  *
  * @param array $options Array of options for the droppable.
  * @return string Completed droppable script.
- * @see JsHelper::droppable() for options list.
- **/
+ * @access public
+ * @see JsBaseEngineHelper::droppable() for options list.
+ */
 	function drop($options = array()) {
 		$options = $this->_processOptions('drop', $options);
 		if (!empty($options)) {
@@ -299,6 +313,7 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		}
 		return 'Droppables.add(' . $this->selection . $options . ');';
 	}
+
 /**
  * Creates a slider control widget.
  *
@@ -306,8 +321,9 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
  *
  * @param array $options Array of options for the slider.
  * @return string Completed slider script.
- * @see JsHelper::slider() for options list.
- **/
+ * @access public
+ * @see JsBaseEngineHelper::slider() for options list.
+ */
 	function slider($options = array()) {
 		$slider = $this->selection;
 		$this->get($options['handle']);
@@ -325,13 +341,15 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		$this->selection = $slider;
 		return $out;
 	}
+
 /**
  * Serialize the form attached to $selector.
  *
  * @param array $options Array of options.
  * @return string Completed serializeForm() snippet
- * @see JsHelper::serializeForm()
- **/
+ * @access public
+ * @see JsBaseEngineHelper::serializeForm()
+ */
 	function serializeForm($options = array()) {
 		$options = array_merge(array('isForm' => false, 'inline' => false), $options);
 		$selection = $this->selection;
@@ -345,4 +363,3 @@ class PrototypeEngineHelper extends JsBaseEngineHelper {
 		return $selection . $method;
 	}
 }
-?>

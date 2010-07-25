@@ -1,28 +1,20 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * SecurityTest file
  *
- * Long description for file
- *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Security');
@@ -98,7 +90,7 @@ class SecurityTest extends CakeTestCase {
  * @return void
  */
 	function testHash() {
-		$Security = Security::getInstance();
+		$Security =& Security::getInstance();
 		$_hashType =  $Security->hashType;
 
 		$key = 'someKey';
@@ -167,6 +159,15 @@ class SecurityTest extends CakeTestCase {
 		$result = Security::cipher($txt, $key);
 		$this->assertError();
 		$this->assertIdentical($result, '');
+
+		$txt = 123456;
+		$key = 'my_key';
+		$result = Security::cipher($txt, $key);
+		$this->assertEqual(Security::cipher($result, $key), $txt);
+
+		$txt = '123456';
+		$key = 'my_key';
+		$result = Security::cipher($txt, $key);
+		$this->assertEqual(Security::cipher($result, $key), $txt);
 	}
 }
-?>

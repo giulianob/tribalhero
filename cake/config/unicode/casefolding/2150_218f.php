@@ -1,6 +1,4 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Case Folding Properties.
  *
@@ -12,22 +10,18 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.config.unicode.casefolding
  * @since         CakePHP(tm) v 1.2.0.5691
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
@@ -62,4 +56,3 @@ $config['2150_218f'][] = array('upper' => 8557, 'status' => 'C', 'lower' => arra
 $config['2150_218f'][] = array('upper' => 8558, 'status' => 'C', 'lower' => array(8574)); /* ROMAN NUMERAL FIVE HUNDRED */
 $config['2150_218f'][] = array('upper' => 8559, 'status' => 'C', 'lower' => array(8575)); /* ROMAN NUMERAL ONE THOUSAND */
 $config['2150_218f'][] = array('upper' => 8579, 'status' => 'C', 'lower' => array(8580)); /* ROMAN NUMERAL REVERSED ONE HUNDRED */
-?>

@@ -1,27 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Methods for displaying presentation data in the view.
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
@@ -139,14 +133,6 @@ class View extends Object {
 	var $layoutPath = null;
 
 /**
- * Title HTML element of this View.
- *
- * @var string
- * @access public
- */
-	var $pageTitle = false;
-
-/**
  * Turns on or off Cake's conventional mode of rendering views. On by default.
  *
  * @var boolean
@@ -166,6 +152,7 @@ class View extends Object {
  * File extension. Defaults to Cake's template ".ctp".
  *
  * @var string
+ * @access public
  */
 	var $ext = '.ctp';
 
@@ -173,15 +160,17 @@ class View extends Object {
  * Sub-directory for this view file.
  *
  * @var string
+ * @access public
  */
 	var $subDir = null;
-
+	
 /**
  * Theme name.
  *
  * @var string
+ * @access public
  */
-	var $themeWeb = null;
+	var $theme = null;
 
 /**
  * Used to define methods a controller that will be cached.
@@ -196,6 +185,7 @@ class View extends Object {
  * holds current errors for the model validation
  *
  * @var array
+ * @access public
  */
 	var $validationErrors = array();
 
@@ -203,6 +193,7 @@ class View extends Object {
  * True when the view has been rendered.
  *
  * @var boolean
+ * @access public
  */
 	var $hasRendered = false;
 
@@ -210,6 +201,7 @@ class View extends Object {
  * Array of loaded view helpers.
  *
  * @var array
+ * @access public
  */
 	var $loaded = array();
 
@@ -217,6 +209,7 @@ class View extends Object {
  * True if in scope of model-specific region
  *
  * @var boolean
+ * @access public
  */
 	var $modelScope = false;
 
@@ -224,6 +217,7 @@ class View extends Object {
  * Name of current model this view context is attached to
  *
  * @var string
+ * @access public
  */
 	var $model = null;
 
@@ -231,6 +225,7 @@ class View extends Object {
  * Name of association model this view context is attached to
  *
  * @var string
+ * @access public
  */
 	var $association = null;
 
@@ -238,6 +233,7 @@ class View extends Object {
  * Name of current model field this view context is attached to
  *
  * @var string
+ * @access public
  */
 	var $field = null;
 
@@ -245,6 +241,7 @@ class View extends Object {
  * Suffix of current field this view context is attached to
  *
  * @var string
+ * @access public
  */
 	var $fieldSuffix = null;
 
@@ -252,6 +249,7 @@ class View extends Object {
  * The current model ID this view context is attached to
  *
  * @var mixed
+ * @access public
  */
 	var $modelId = null;
 
@@ -259,6 +257,7 @@ class View extends Object {
  * List of generated DOM UUIDs
  *
  * @var array
+ * @access public
  */
 	var $uuids = array();
 
@@ -266,7 +265,8 @@ class View extends Object {
  * Holds View output.
  *
  * @var string
- **/
+ * @access public
+ */
 	var $output = false;
 
 /**
@@ -277,7 +277,7 @@ class View extends Object {
  */
 	var $__passedVars = array(
 		'viewVars', 'action', 'autoLayout', 'autoRender', 'ext', 'base', 'webroot',
-		'helpers', 'here', 'layout', 'name', 'pageTitle', 'layoutPath', 'viewPath',
+		'helpers', 'here', 'layout', 'name', 'layoutPath', 'viewPath',
 		'params', 'data', 'plugin', 'passedArgs', 'cacheAction'
 	);
 
@@ -293,12 +293,15 @@ class View extends Object {
  * Holds an array of paths.
  *
  * @var array
+ * @access private
  */
 	var $__paths = array();
 
 /**
  * Constructor
  *
+ * @param Controller $controller A controller object to pull View::__passedArgs from.
+ * @param boolean $register Should the View instance be registered in the ClassRegistry
  * @return View
  */
 	function __construct(&$controller, $register = true) {
@@ -323,15 +326,17 @@ class View extends Object {
  * and the $params array is used to send data to be used in the
  * Element.  Elements can be cached through use of the cache key.
  *
+ * ### Special params
+ *
+ * - `cache` - enable caching for this element accepts boolean or strtotime compatible string.
+ *   Can also be an array. If `cache` is an array,
+ *   `time` is used to specify duration of cache.
+ *   `key` can be used to create unique cache files.
+ * - `plugin` - Load an element from a specific plugin.
+ *
  * @param string $name Name of template file in the/app/views/elements/ folder
  * @param array $params Array of data to be made available to the for rendered
- *                      view (i.e. the Element)
- *    Special params:
- *		cache - enable caching for this element accepts boolean or strtotime compatible string.
- *      Can also be an array
- *				if an array,'time' is used to specify duration of cache.  'key' can be used to
- *              create unique cache files.
- *
+ *    view (i.e. the Element)
  * @return string Rendered Element
  * @access public
  */
@@ -372,9 +377,6 @@ class View extends Object {
 			if (file_exists($path . 'elements' . DS . $name . $this->ext)) {
 				$file = $path . 'elements' . DS . $name . $this->ext;
 				break;
-			} elseif (file_exists($path . 'elements' . DS . $name . '.thtml')) {
-				$file = $path . 'elements' . DS . $name . '.thtml';
-				break;
 			}
 		}
 
@@ -401,6 +403,7 @@ class View extends Object {
  * @param string $layout Layout to use
  * @param string $file Custom filename for view
  * @return string Rendered Element
+ * @access public
  */
 	function render($action = null, $layout = null, $file = null) {
 		if ($this->hasRendered) {
@@ -413,11 +416,7 @@ class View extends Object {
 		}
 
 		if ($action !== false && $viewFileName = $this->_getViewFileName($action)) {
-			if (substr($viewFileName, -3) === 'ctp' || substr($viewFileName, -5) === 'thtml') {
-				$out = View::_render($viewFileName, $this->viewVars);
-			} else {
-				$out = $this->_render($viewFileName, $this->viewVars);
-			}
+			$out = $this->_render($viewFileName, $this->viewVars);
 		}
 
 		if ($layout === null) {
@@ -440,8 +439,7 @@ class View extends Object {
 			$this->hasRendered = true;
 		} else {
 			$out = $this->_render($viewFileName, $this->viewVars);
-			$msg = __("Error in view %s, got: <blockquote>%s</blockquote>", true);
-			trigger_error(sprintf($msg, $viewFileName, $out), E_USER_ERROR);
+			trigger_error(sprintf(__("Error in view %s, got: <blockquote>%s</blockquote>", true), $viewFileName, $out), E_USER_ERROR);
 		}
 		return $out;
 	}
@@ -449,13 +447,14 @@ class View extends Object {
 /**
  * Renders a layout. Returns output from _render(). Returns false on error.
  * Several variables are created for use in layout.
- *	title_for_layout - contains page title
- *	content_for_layout - contains rendered view file
- *	scripts_for_layout - contains scripts added to header
- *  cakeDebug - if debug is on, cake debug information is added.
+ *
+ * - `title_for_layout` - A backwards compatible place holder, you should set this value if you want more control.
+ * - `content_for_layout` - contains rendered view file
+ * - `scripts_for_layout` - contains scripts added to header
  *
  * @param string $content_for_layout Content to render in a view, wrapped by the surrounding layout.
  * @return mixed Rendered output, or false on error
+ * @access public
  */
 	function renderLayout($content_for_layout, $layout = null) {
 		$layoutFileName = $this->_getLayoutFileName($layout);
@@ -463,45 +462,28 @@ class View extends Object {
 			return $this->output;
 		}
 
-		$debug = '';
-
-		if (isset($this->viewVars['cakeDebug']) && Configure::read() > 2) {
-			$params = array('controller' => $this->viewVars['cakeDebug']);
-			$debug = View::element('dump', $params, false);
-			unset($this->viewVars['cakeDebug']);
-		}
-
-		if ($this->pageTitle !== false) {
-			$pageTitle = $this->pageTitle;
-		} else {
-			$pageTitle = Inflector::humanize($this->viewPath);
-		}
-		$data_for_layout = array_merge($this->viewVars, array(
-			'title_for_layout' => $pageTitle,
+		$dataForLayout = array_merge($this->viewVars, array(
 			'content_for_layout' => $content_for_layout,
-			'scripts_for_layout' => join("\n\t", $this->__scripts),
-			'cakeDebug' => $debug
+			'scripts_for_layout' => implode("\n\t", $this->__scripts),
 		));
+
+		if (!isset($dataForLayout['title_for_layout'])) {
+			$dataForLayout['title_for_layout'] = Inflector::humanize($this->viewPath);
+		}
 
 		if (empty($this->loaded) && !empty($this->helpers)) {
 			$loadHelpers = true;
 		} else {
 			$loadHelpers = false;
-			$data_for_layout = array_merge($data_for_layout, $this->loaded);
+			$dataForLayout = array_merge($dataForLayout, $this->loaded);
 		}
 
 		$this->_triggerHelpers('beforeLayout');
-
-		if (substr($layoutFileName, -3) === 'ctp' || substr($layoutFileName, -5) === 'thtml') {
-			$this->output = View::_render($layoutFileName, $data_for_layout, $loadHelpers, true);
-		} else {
-			$this->output = $this->_render($layoutFileName, $data_for_layout, $loadHelpers);
-		}
+		$this->output = $this->_render($layoutFileName, $dataForLayout, $loadHelpers, true);
 
 		if ($this->output === false) {
 			$this->output = $this->_render($layoutFileName, $data_for_layout);
-			$msg = __("Error in layout %s, got: <blockquote>%s</blockquote>", true);
-			trigger_error(sprintf($msg, $layoutFileName, $this->output), E_USER_ERROR);
+			trigger_error(sprintf(__("Error in layout %s, got: <blockquote>%s</blockquote>", true), $layoutFileName, $this->output), E_USER_ERROR);
 			return false;
 		}
 
@@ -511,7 +493,8 @@ class View extends Object {
 	}
 
 /**
- * Fire a callback on all loaded Helpers
+ * Fire a callback on all loaded Helpers. All helpers must implement this method, 
+ * it is not checked before being called.  You can add additional helper callbacks in AppHelper.
  *
  * @param string $callback name of callback fire.
  * @access protected
@@ -533,10 +516,13 @@ class View extends Object {
 	}
 
 /**
- * Render cached view
+ * Render cached view. Works in concert with CacheHelper and Dispatcher to 
+ * render cached view files.
  *
  * @param string $filename the cache file to include
  * @param string $timeStart the page render start time
+ * @return boolean Success of rendering the cached file.
+ * @access public
  */
 	function renderCache($filename, $timeStart) {
 		ob_start();
@@ -556,7 +542,8 @@ class View extends Object {
 				if ($this->layout === 'xml') {
 					header('Content-type: text/xml');
 				}
-				echo str_replace('<!--cachetime:' . $match['1'] . '-->', '', $out);
+				$commentLength = strlen('<!--cachetime:' . $match['1'] . '-->');
+				echo substr($out, $commentLength);
 				return true;
 			}
 		}
@@ -565,7 +552,7 @@ class View extends Object {
 /**
  * Returns a list of variables available in the current View context
  *
- * @return array
+ * @return array Array of the set view variable names.
  * @access public
  */
 	function getVars() {
@@ -575,7 +562,8 @@ class View extends Object {
 /**
  * Returns the contents of the given View variable(s)
  *
- * @return array
+ * @param string $var The view var you want the contents of.
+ * @return mixed The content of the named var if its set, otherwise null.
  * @access public
  */
 	function getVar($var) {
@@ -588,10 +576,11 @@ class View extends Object {
 
 /**
  * Adds a script block or other element to be inserted in $scripts_for_layout in
- * the <head /> of a document layout
+ * the `<head />` of a document layout
  *
- * @param string $name
- * @param string $content
+ * @param string $name Either the key name for the script, or the script content. Name can be used to
+ *   update/replace a script element.
+ * @param string $content The content of the script being added, optional.
  * @return void
  * @access public
  */
@@ -629,9 +618,23 @@ class View extends Object {
  * Returns the entity reference of the current context as an array of identity parts
  *
  * @return array An array containing the identity elements of an entity
+ * @access public
  */
 	function entity() {
 		$assoc = ($this->association) ? $this->association : $this->model;
+		if (!empty($this->entityPath)) {
+			$path = explode('.', $this->entityPath);
+			$count = count($path);
+			if (
+				($count == 1 && !empty($this->association)) ||
+				($count == 1 && $this->model != $this->entityPath) ||
+				($count  == 2 && !empty($this->fieldSuffix)) ||
+				is_numeric($path[0]) && !empty($assoc)
+			) {
+				array_unshift($path, $assoc);
+			}
+			return Set::filter($path);
+		}
 		return array_values(Set::filter(
 			array($assoc, $this->modelId, $this->field, $this->fieldSuffix)
 		));
@@ -643,9 +646,9 @@ class View extends Object {
  *
  * @param mixed $one A string or an array of data.
  * @param mixed $two Value in case $one is a string (which then works as the key).
- *              Unused if $one is an associative array, otherwise serves as the
- *              values to $one's keys.
- * @return unknown
+ *    Unused if $one is an associative array, otherwise serves as the values to $one's keys.
+ * @return void
+ * @access public
  */
 	function set($one, $two = null) {
 		$data = null;
@@ -658,18 +661,10 @@ class View extends Object {
 		} else {
 			$data = array($one => $two);
 		}
-
 		if ($data == null) {
 			return false;
 		}
-
-		foreach ($data as $name => $value) {
-			if ($name == 'title') {
-				$this->pageTitle = $value;
-			} else {
-				$this->viewVars[$name] = $value;
-			}
-		}
+		$this->viewVars = array_merge($this->viewVars, $data);
 	}
 
 /**
@@ -678,6 +673,7 @@ class View extends Object {
  * @param integer $code HTTP Error code (for instance: 404)
  * @param string $name Name of the error (for instance: Not Found)
  * @param string $message Error message as a web page
+ * @access public
  */
 	function error($code, $name, $message) {
 		header ("HTTP/1.1 {$code} {$name}");
@@ -693,6 +689,8 @@ class View extends Object {
  *
  * @param string $___viewFn Filename of the view
  * @param array $___dataForView Data to include in rendered view
+ * @param boolean $loadHelpers Boolean to indicate that helpers should be loaded.
+ * @param boolean $cached Whether or not to trigger the creation of a cache file.
  * @return string Rendered output
  * @access protected
  */
@@ -705,10 +703,17 @@ class View extends Object {
 			$helperNames = array_map(array('Inflector', 'variable'), $helpers);
 
 			for ($i = count($helpers) - 1; $i >= 0; $i--) {
-				${$helperNames[$i]} =& $loadedHelpers[$helpers[$i]];
-				$this->loaded[$helperNames[$i]] =& ${$helperNames[$i]};
+				$name = $helperNames[$i];
+				$helper =& $loadedHelpers[$helpers[$i]];
+
+				if (!isset($___dataForView[$name])) {
+					${$name} =& $helper;
+				}
+				$this->loaded[$helperNames[$i]] =& $helper;
+				$this->{$helpers[$i]} =& $helper;
 			}
 			$this->_triggerHelpers('beforeRender');
+			unset($name, $loadedHelpers, $helpers, $i, $helperNames, $helper);
 		}
 
 		extract($___dataForView, EXTR_SKIP);
@@ -738,7 +743,7 @@ class View extends Object {
 				$cache->helpers = $this->helpers;
 				$cache->action = $this->action;
 				$cache->controllerName = $this->name;
-				$cache->layout	= $this->layout;
+				$cache->layout = $this->layout;
 				$cache->cacheAction = $this->cacheAction;
 				$cache->cache($___viewFn, $out, $cached);
 			}
@@ -752,13 +757,10 @@ class View extends Object {
  * @param array $loaded List of helpers that are already loaded.
  * @param array $helpers List of helpers to load.
  * @param string $parent holds name of helper, if loaded helper has helpers
- * @return array
+ * @return array Array containing the loaded helpers.
+ * @access protected
  */
 	function &_loadHelpers(&$loaded, $helpers, $parent = null) {
-		if (empty($loaded)) {
-			$helpers[] = 'Session';
-		}
-
 		foreach ($helpers as $i => $helper) {
 			$options = array();
 
@@ -766,18 +768,14 @@ class View extends Object {
 				$options = $helper;
 				$helper = $i;
 			}
-			$plugin = $this->plugin;
-
-			if (strpos($helper, '.') !== false) {
-				list($plugin, $helper) = explode('.', $helper);
-			}
+			list($plugin, $helper) = pluginSplit($helper, true, $this->plugin);
 			$helperCn = $helper . 'Helper';
 
 			if (!isset($loaded[$helper])) {
 				if (!class_exists($helperCn)) {
 					$isLoaded = false;
 					if (!is_null($plugin)) {
-						$isLoaded = App::import('Helper', $plugin . '.' . $helper);
+						$isLoaded = App::import('Helper', $plugin . $helper);
 					}
 					if (!$isLoaded) {
 						if (!App::import('Helper', $helper)) {
@@ -799,9 +797,7 @@ class View extends Object {
 					}
 				}
 				$loaded[$helper] =& new $helperCn($options);
-				$vars = array(
-					'base', 'webroot', 'here', 'params', 'action', 'data', 'themeWeb', 'plugin'
-				);
+				$vars = array('base', 'webroot', 'here', 'params', 'action', 'data', 'theme', 'plugin');
 				$c = count($vars);
 
 				for ($j = 0; $j < $c; $j++) {
@@ -827,7 +823,7 @@ class View extends Object {
  * CamelCased action names will be under_scored! This means that you can have
  * LongActionNames that refer to long_action_names.ctp views.
  *
- * @param string $action Controller action to find template filename for
+ * @param string $name Controller action to find template filename for
  * @return string Template filename
  * @access protected
  */
@@ -857,16 +853,17 @@ class View extends Object {
 				$name = $this->viewPath . DS . $subDir . $name;
 			}
 		}
-
 		$paths = $this->_paths(Inflector::underscore($this->plugin));
-
-		foreach ($paths as $path) {
-			if (file_exists($path . $name . $this->ext)) {
-				return $path . $name . $this->ext;
-			} elseif (file_exists($path . $name . '.ctp')) {
-				return $path . $name . '.ctp';
-			} elseif (file_exists($path . $name . '.thtml')) {
-				return $path . $name . '.thtml';
+		
+		$exts = array($this->ext);
+		if ($this->ext !== '.ctp') {
+			array_push($exts, '.ctp');
+		}
+		foreach ($exts as $ext) {
+			foreach ($paths as $path) {
+				if (file_exists($path . $name . $ext)) {
+					return $path . $name . $ext;
+				}
 			}
 		}
 		$defaultPath = $paths[0];
@@ -886,6 +883,7 @@ class View extends Object {
 /**
  * Returns layout filename for this template as a string.
  *
+ * @param string $name The name of the layout to find.
  * @return string Filename for layout file (.ctp).
  * @access protected
  */
@@ -900,10 +898,13 @@ class View extends Object {
 		}
 		$paths = $this->_paths(Inflector::underscore($this->plugin));
 		$file = 'layouts' . DS . $subDir . $name;
-
-		$exts = array($this->ext, '.ctp', '.thtml');
-		foreach ($paths as $path) {
-			foreach ($exts as $ext) {
+		
+		$exts = array($this->ext);
+		if ($this->ext !== '.ctp') {
+			array_push($exts, '.ctp');
+		}
+		foreach ($exts as $ext) {
+			foreach ($paths as $path) {
 				if (file_exists($path . $file . $ext)) {
 					return $path . $file . $ext;
 				}
@@ -916,10 +917,10 @@ class View extends Object {
  * Return a misssing view error message
  *
  * @param string $viewFileName the filename that should exist
- * @return cakeError
+ * @return false
+ * @access protected
  */
 	function _missingView($file, $error = 'missingView') {
-
 		if ($error === 'missingView') {
 			$this->cakeError('missingView', array(
 				'className' => $this->name,
@@ -941,7 +942,8 @@ class View extends Object {
 /**
  * Return all possible paths to find view files in order
  *
- * @param string $plugin
+ * @param string $plugin Optional plugin name to scan for view files.
+ * @param boolean $cached Set to true to force a refresh of view paths.
  * @return array paths
  * @access protected
  */
@@ -951,34 +953,18 @@ class View extends Object {
 		}
 		$paths = array();
 		$viewPaths = App::path('views');
+		$corePaths = array_flip(App::core('views'));
 
 		if (!empty($plugin)) {
 			$count = count($viewPaths);
 			for ($i = 0; $i < $count; $i++) {
-				$paths[] = $viewPaths[$i] . 'plugins' . DS . $plugin . DS;
+				if (!isset($corePaths[$viewPaths[$i]])) {
+					$paths[] = $viewPaths[$i] . 'plugins' . DS . $plugin . DS;
+				}
 			}
-			$pluginPaths = App::path('plugins');
-			$count = count($pluginPaths);
-
-			for ($i = 0; $i < $count; $i++) {
-				$paths[] = $pluginPaths[$i] . $plugin . DS . 'views' . DS;
-			}
+			$paths[] = App::pluginPath($plugin) . 'views' . DS;
 		}
-		$paths = array_merge($paths, $viewPaths);
-
-		if (empty($this->__paths)) {
-			$this->__paths = $paths;
-		}
-		return $paths;
-	}
-
-/**
- * @deprecated
- * @see View::element
- */
-	function renderElement($name, $params = array(), $loadHelpers = false) {
-		return $this->element($name, $params, $loadHelpers);
+		$this->__paths = array_merge($paths, $viewPaths);
+		return $this->__paths;
 	}
 }
-
-?>

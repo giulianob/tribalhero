@@ -1,29 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
- * Short description for file.
+ * Path configuration
  *
  * In this file you set paths to different directories used by Cake.
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.app.config
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
@@ -72,6 +66,11 @@ if (!defined('APP')) {
 	define('COMPONENTS', CONTROLLERS.'components'.DS);
 
 /**
+ * Path to the application's libs directory.
+ */
+	define('APPLIBS', APP.'libs'.DS);
+
+/**
  * Path to the application's views directory.
  */
 	define('VIEWS', APP.'views'.DS);
@@ -99,11 +98,6 @@ if (!defined('APP')) {
 if (!defined('CONFIGS')) {
 	define('CONFIGS', APP.'config'.DS);
 }
-
-/**
- * Path to the libs directory.
- */
-	define('INFLECTIONS', CAKE.'config'.DS.'inflections'.DS);
 
 /**
  * Path to the libs directory.
@@ -199,13 +193,6 @@ if (!defined('VENDORS')) {
 }
 
 /**
- * Path to the Pear directory
- * The purporse is to make it easy porting Pear libs into Cake
- * without setting the include_path PHP variable.
- */
-	define('PEAR', VENDORS.'Pear'.DS);
-
-/**
  *  Full url prefix
  */
 if (!defined('FULL_BASE_URL')) {
@@ -242,4 +229,3 @@ if (!defined('CSS_URL')) {
 if (!defined('JS_URL')) {
 	define('JS_URL', 'js/');
 }
-?>

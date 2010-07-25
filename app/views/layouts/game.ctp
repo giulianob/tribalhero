@@ -40,6 +40,5 @@
 			Copyright &copy; Tribal Hero <?php echo date("Y");?>. All Rights Reserved.
 		</div>
 	</div>
-	<?php echo $cakeDebug; ?>
 </body>
 </html>

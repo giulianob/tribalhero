@@ -1,6 +1,4 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * EmailComponentTest file
  *
@@ -8,21 +6,17 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.cake.tests.cases.libs.controller.components
  * @since         CakePHP(tm) v 1.2.0.5347
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Component', 'Email');
@@ -42,7 +36,7 @@ class EmailTestComponent extends EmailComponent {
  * @return mixed
  */
 	function smtpSend($data, $code = '250') {
-		return parent::__smtpSend($data, $code);
+		return parent::_smtpSend($data, $code);
 	}
 
 /**
@@ -116,13 +110,23 @@ class EmailTestComponent extends EmailComponent {
 	}
 
 /**
+ * Convenience getter for testing.
+ *
+ * @access protected
+ * @return string
+ */
+	function _getMessage() {
+		return $this->__message;
+	}
+
+/**
  * Convenience method for testing.
  *
  * @access public
  * @return string
  */
 	function strip($content, $message = false) {
-		return parent::__strip($content, $message);
+		return parent::_strip($content, $message);
 	}
 }
 
@@ -156,7 +160,7 @@ class EmailTestController extends Controller {
  * @var array
  * @access public
  */
-	var $components = array('EmailTest');
+	var $components = array('Session', 'EmailTest');
 
 /**
  * pageTitle property
@@ -224,9 +228,44 @@ class EmailComponentTest extends CakeTestCase {
 	function tearDown() {
 		Configure::write('App.encoding', $this->_appEncoding);
 		App::build();
-		$this->Controller->Session->del('Message');
+		$this->Controller->Session->delete('Message');
 		restore_error_handler();
 		ClassRegistry::flush();
+	}
+
+/**
+ * osFix method
+ *
+ * @param string $string
+ * @access private
+ * @return string
+ */
+	function __osFix($string) {
+		return str_replace(array("\r\n", "\r"), "\n", $string);
+	}
+
+/**
+ * testSmtpConfig method
+ *
+ * @access public
+ * @return void
+ */
+	function testSmtpConfig() {
+		$this->Controller->EmailTest->delivery = 'smtp';
+		$this->Controller->EmailTest->smtpOptions = array();
+		$this->Controller->EmailTest->send('anything');
+		$config = array(
+			'host' => 'localhost',
+			'port' => 25,
+			'protocol' => 'smtp',
+			'timeout' => 30
+		);
+		$this->assertEqual($config, $this->Controller->EmailTest->smtpOptions);
+
+		$this->Controller->EmailTest->smtpOptions = array('port' => 80);
+		$this->Controller->EmailTest->send('anything');
+		$config['port'] = 80;
+		$this->assertEqual($config, $this->Controller->EmailTest->smtpOptions);
 	}
 
 /**
@@ -251,7 +290,7 @@ class EmailComponentTest extends CakeTestCase {
 		if (!$this->skipIf(!@fsockopen('localhost', 25), '%s No SMTP server running on localhost')) {
 			return;
 		}
-		$this->Controller->EmailTest->reset();
+
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
 		$this->Controller->EmailTest->subject = 'Cake SMTP test';
@@ -291,6 +330,112 @@ TEMPDOC;
 	}
 
 /**
+ * testSmtpEhlo method
+ *
+ * @access public
+ * @return void
+ */
+	function testSmtpEhlo() {
+		if (!$this->skipIf(!@fsockopen('localhost', 25), '%s No SMTP server running on localhost')) {
+			return;
+		}
+
+		$connection =& new CakeSocket(array('protocol'=>'smtp', 'host' => 'localhost', 'port' => 25));
+		$this->Controller->EmailTest->setConnectionSocket($connection);
+		$this->Controller->EmailTest->smtpOptions['timeout'] = 10;
+		$this->assertTrue($connection->connect());
+		$this->assertTrue($this->Controller->EmailTest->smtpSend(null, '220') !== false);
+		$this->skipIf($this->Controller->EmailTest->smtpSend('EHLO locahost', '250') === false, '%s do not support EHLO.');
+		$connection->disconnect();
+
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Cake SMTP test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->template = null;
+
+		$this->Controller->EmailTest->delivery = 'smtp';
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+
+		$this->Controller->EmailTest->_debug = true;
+		$this->Controller->EmailTest->sendAs = 'text';
+		$expect = <<<TEMPDOC
+<pre>Host: localhost
+Port: 25
+Timeout: 30
+To: postmaster@localhost
+From: noreply@example.com
+Subject: Cake SMTP test
+Header:
+
+To: postmaster@localhost
+From: noreply@example.com
+Reply-To: noreply@example.com
+Subject: Cake SMTP test
+X-Mailer: CakePHP Email Component
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bitParameters:
+
+Message:
+
+This is the body of the message
+
+</pre>
+TEMPDOC;
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$this->assertEqual($this->Controller->Session->read('Message.email.message'), $this->__osFix($expect));
+	}
+
+/**
+ * testSmtpSendMultipleTo method
+ *
+ * @access public
+ * @return void
+ */
+	function testSmtpSendMultipleTo() {
+		if (!$this->skipIf(!@fsockopen('localhost', 25), '%s No SMTP server running on localhost')) {
+			return;
+		}
+		$this->Controller->EmailTest->reset();
+		$this->Controller->EmailTest->to = array('postmaster@localhost', 'root@localhost');
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Cake SMTP multiple To test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->template = null;
+
+		$this->Controller->EmailTest->delivery = 'smtp';
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+
+		$this->Controller->EmailTest->_debug = true;
+		$this->Controller->EmailTest->sendAs = 'text';
+		$expect = <<<TEMPDOC
+<pre>Host: localhost
+Port: 25
+Timeout: 30
+To: postmaster@localhost, root@localhost
+From: noreply@example.com
+Subject: Cake SMTP multiple To test
+Header:
+
+To: postmaster@localhost, root@localhost
+From: noreply@example.com
+Reply-To: noreply@example.com
+Subject: Cake SMTP multiple To test
+X-Mailer: CakePHP Email Component
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bitParameters:
+
+Message:
+
+This is the body of the message
+
+</pre>
+TEMPDOC;
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$this->assertEqual($this->Controller->Session->read('Message.email.message'), $this->__osFix($expect));
+	}
+
+/**
  * testAuthenticatedSmtpSend method
  *
  * @access public
@@ -299,7 +444,6 @@ TEMPDOC;
 	function testAuthenticatedSmtpSend() {
 		$this->skipIf(!@fsockopen('localhost', 25), '%s No SMTP server running on localhost');
 
-		$this->Controller->EmailTest->reset();
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
 		$this->Controller->EmailTest->subject = 'Cake SMTP test';
@@ -324,13 +468,13 @@ TEMPDOC;
  * @return void
  */
 	function testSendFormats() {
-		$this->Controller->EmailTest->reset();
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
 		$this->Controller->EmailTest->subject = 'Cake SMTP test';
 		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
 		$this->Controller->EmailTest->template = null;
 		$this->Controller->EmailTest->delivery = 'debug';
+		$this->Controller->EmailTest->messageId = false;
 
 		$message = <<<MSGBLOC
 <pre>To: postmaster@localhost
@@ -375,13 +519,13 @@ MSGBLOC;
  * @return void
  */
 	function testTemplates() {
-		$this->Controller->EmailTest->reset();
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
 		$this->Controller->EmailTest->subject = 'Cake SMTP test';
 		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
 
 		$this->Controller->EmailTest->delivery = 'debug';
+		$this->Controller->EmailTest->messageId = false;
 
 		$header = <<<HEADBLOC
 To: postmaster@localhost
@@ -408,8 +552,6 @@ HEADBLOC;
 This is the body of the message
 
 This email was sent using the CakePHP Framework, http://cakephp.org.
-
-
 TEXTBLOC;
 
 		$html = <<<HTMLBLOC
@@ -417,7 +559,7 @@ TEXTBLOC;
 
 <html>
 <head>
-	<title>EmailTest</title>
+	<title>Email Test</title>
 </head>
 
 <body>
@@ -425,7 +567,6 @@ TEXTBLOC;
 	<p>This email was sent using the <a href="http://cakephp.org">CakePHP Framework</a></p>
 </body>
 </html>
-
 HTMLBLOC;
 
 		$this->Controller->EmailTest->sendAs = 'text';
@@ -452,7 +593,7 @@ HTMLBLOC;
 
 <html>
 <head>
-	<title>EmailTest</title>
+	<title>Email Test</title>
 </head>
 
 <body>
@@ -477,8 +618,6 @@ standards.
 This is the body of the message
 
 This email was sent using the CakePHP Framework, http://cakephp.org.
-
-
 TEXTBLOC;
 
 		$this->Controller->EmailTest->sendAs = 'text';
@@ -496,7 +635,7 @@ TEXTBLOC;
 	function testSmtpSendSocket() {
 		$this->skipIf(!@fsockopen('localhost', 25), '%s No SMTP server running on localhost');
 
-		$this->Controller->EmailTest->reset();
+		$this->Controller->EmailTest->smtpOptions['timeout'] = 10;
 		$socket =& new CakeSocket(array_merge(array('protocol'=>'smtp'), $this->Controller->EmailTest->smtpOptions));
 		$this->Controller->EmailTest->setConnectionSocket($socket);
 
@@ -505,10 +644,9 @@ TEXTBLOC;
 		$response = $this->Controller->EmailTest->smtpSend('HELO', '250');
 		$this->assertPattern('/501 Syntax: HELO hostname/', $this->Controller->EmailTest->smtpError);
 
-		$this->Controller->EmailTest->smtpError = null;
+		$this->Controller->EmailTest->reset();
 		$response = $this->Controller->EmailTest->smtpSend('HELO somehostname', '250');
 		$this->assertNoPattern('/501 Syntax: HELO hostname/', $this->Controller->EmailTest->smtpError);
-
 	}
 
 /**
@@ -518,15 +656,181 @@ TEXTBLOC;
  * @return void
  */
 	function testSendDebug() {
-		$this->Controller->EmailTest->reset();
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
-		$this->Controller->EmailTest->subject = 'Cake SMTP test';
+		$this->Controller->EmailTest->subject = 'Cake Debug Test';
 		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
 		$this->Controller->EmailTest->template = null;
 
 		$this->Controller->EmailTest->delivery = 'debug';
 		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$result = $this->Controller->Session->read('Message.email.message');
+
+		$this->assertPattern('/To: postmaster@localhost\n/', $result);
+		$this->assertPattern('/Subject: Cake Debug Test\n/', $result);
+		$this->assertPattern('/Reply-To: noreply@example.com\n/', $result);
+		$this->assertPattern('/From: noreply@example.com\n/', $result);
+		$this->assertPattern('/X-Mailer: CakePHP Email Component\n/', $result);
+		$this->assertPattern('/Content-Type: text\/plain; charset=UTF-8\n/', $result);
+		$this->assertPattern('/Content-Transfer-Encoding: 7bitParameters:\n/', $result);
+		$this->assertPattern('/This is the body of the message/', $result);
+	}
+
+/**
+ * test send with delivery = debug and not using sessions.
+ *
+ * @return void
+ */
+	function testSendDebugWithNoSessions() {
+		$session =& $this->Controller->Session;
+		unset($this->Controller->Session);
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Cake Debug Test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->template = null;
+
+		$this->Controller->EmailTest->delivery = 'debug';
+		$result = $this->Controller->EmailTest->send('This is the body of the message');
+
+		$this->assertPattern('/To: postmaster@localhost\n/', $result);
+		$this->assertPattern('/Subject: Cake Debug Test\n/', $result);
+		$this->assertPattern('/Reply-To: noreply@example.com\n/', $result);
+		$this->assertPattern('/From: noreply@example.com\n/', $result);
+		$this->assertPattern('/X-Mailer: CakePHP Email Component\n/', $result);
+		$this->assertPattern('/Content-Type: text\/plain; charset=UTF-8\n/', $result);
+		$this->assertPattern('/Content-Transfer-Encoding: 7bitParameters:\n/', $result);
+		$this->assertPattern('/This is the body of the message/', $result);
+		$this->Controller->Session = $session;
+	}
+
+/**
+ * testMessageRetrievalWithoutTemplate method
+ *
+ * @access public
+ * @return void
+ */
+	function testMessageRetrievalWithoutTemplate() {
+		App::build(array(
+			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)
+		));
+
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Cake Debug Test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->layout = 'default';
+		$this->Controller->EmailTest->template = null;
+
+		$this->Controller->EmailTest->delivery = 'debug';
+
+		$text = $html = 'This is the body of the message';
+
+		$this->Controller->EmailTest->sendAs = 'both';
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$this->assertEqual($this->Controller->EmailTest->textMessage, $this->__osFix($text));
+		$this->assertEqual($this->Controller->EmailTest->htmlMessage, $this->__osFix($html));
+
+		$this->Controller->EmailTest->sendAs = 'text';
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$this->assertEqual($this->Controller->EmailTest->textMessage, $this->__osFix($text));
+		$this->assertNull($this->Controller->EmailTest->htmlMessage);
+
+		$this->Controller->EmailTest->sendAs = 'html';
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$this->assertNull($this->Controller->EmailTest->textMessage);
+		$this->assertEqual($this->Controller->EmailTest->htmlMessage, $this->__osFix($html));
+	}
+
+/**
+ * testMessageRetrievalWithTemplate method
+ *
+ * @access public
+ * @return void
+ */
+	function testMessageRetrievalWithTemplate() {
+		App::build(array(
+			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)
+		));
+
+		$this->Controller->set('value', 22091985);
+		$this->Controller->set('title_for_layout', 'EmailTest');
+
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Cake Debug Test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->layout = 'default';
+		$this->Controller->EmailTest->template = 'custom';
+
+		$this->Controller->EmailTest->delivery = 'debug';
+
+		$text = <<<TEXTBLOC
+
+Here is your value: 22091985
+This email was sent using the CakePHP Framework, http://cakephp.org.
+TEXTBLOC;
+
+		$html = <<<HTMLBLOC
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+	<title>EmailTest</title>
+</head>
+
+<body>
+	<p>Here is your value: <b>22091985</b></p>
+	<p>This email was sent using the <a href="http://cakephp.org">CakePHP Framework</a></p>
+</body>
+</html>
+HTMLBLOC;
+
+		$this->Controller->EmailTest->sendAs = 'both';
+		$this->assertTrue($this->Controller->EmailTest->send());
+		$this->assertEqual($this->Controller->EmailTest->textMessage, $this->__osFix($text));
+		$this->assertEqual($this->Controller->EmailTest->htmlMessage, $this->__osFix($html));
+
+		$this->Controller->EmailTest->sendAs = 'text';
+		$this->assertTrue($this->Controller->EmailTest->send());
+		$this->assertEqual($this->Controller->EmailTest->textMessage, $this->__osFix($text));
+		$this->assertNull($this->Controller->EmailTest->htmlMessage);
+
+		$this->Controller->EmailTest->sendAs = 'html';
+		$this->assertTrue($this->Controller->EmailTest->send());
+		$this->assertNull($this->Controller->EmailTest->textMessage);
+		$this->assertEqual($this->Controller->EmailTest->htmlMessage, $this->__osFix($html));
+	}
+
+/**
+ * testContentArray method
+ *
+ * @access public
+ * @return void
+ */
+	function testSendContentArray() {
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Cake Debug Test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->template = null;
+		$this->Controller->EmailTest->delivery = 'debug';
+
+		$content = array('First line', 'Second line', 'Third line');
+		$this->assertTrue($this->Controller->EmailTest->send($content));
+		$result = $this->Controller->Session->read('Message.email.message');
+
+		$this->assertPattern('/To: postmaster@localhost\n/', $result);
+		$this->assertPattern('/Subject: Cake Debug Test\n/', $result);
+		$this->assertPattern('/Reply-To: noreply@example.com\n/', $result);
+		$this->assertPattern('/From: noreply@example.com\n/', $result);
+		$this->assertPattern('/X-Mailer: CakePHP Email Component\n/', $result);
+		$this->assertPattern('/Content-Type: text\/plain; charset=UTF-8\n/', $result);
+		$this->assertPattern('/Content-Transfer-Encoding: 7bitParameters:\n/', $result);
+		$this->assertPattern('/First line\n/', $result);
+		$this->assertPattern('/Second line\n/', $result);
+		$this->assertPattern('/Third line\n/', $result);
+
 	}
 
 /**
@@ -553,7 +857,38 @@ TEXTBLOC;
 		$result  = $this->Controller->EmailTest->strip($content, true);
 		$expected = $content;
 		$this->assertEqual($result, $expected);
+	}
 
+/**
+ * test that the _encode() will set mb_internal_encoding.
+ *
+ * @return void
+ */
+	function test_encodeSettingInternalCharset() {
+		$skip = !function_exists('mb_internal_encoding');
+		if ($this->skipIf($skip, 'Missing mb_* functions, cannot run test.')) {
+			return;
+		}
+		mb_internal_encoding('ISO-8859-1');
+
+		$this->Controller->charset = 'UTF-8';
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'هذه رسالة بعنوان طويل مرسل للمستلم';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->template = null;
+		$this->Controller->EmailTest->delivery = 'debug';
+
+		$this->Controller->EmailTest->sendAs = 'text';
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+
+		$subject = '=?UTF-8?B?2YfYsNmHINix2LPYp9mE2Kkg2KjYudmG2YjYp9mGINi32YjZitmEINmF2LE=?=' . "\r\n" . ' =?UTF-8?B?2LPZhCDZhNmE2YXYs9iq2YTZhQ==?=';
+
+		preg_match('/Subject: (.*)Header:/s', $this->Controller->Session->read('Message.email.message'), $matches);
+		$this->assertEqual(trim($matches[1]), $subject);
+
+		$result = mb_internal_encoding();
+		$this->assertEqual($result, 'ISO-8859-1');
 	}
 
 /**
@@ -563,7 +898,7 @@ TEXTBLOC;
  * @return void
  */
 	function testMultibyte() {
-		$this->Controller->EmailTest->reset();
+		$this->Controller->charset = 'UTF-8';
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
 		$this->Controller->EmailTest->subject = 'هذه رسالة بعنوان طويل مرسل للمستلم';
@@ -595,8 +930,33 @@ TEXTBLOC;
  * @return void
  * @access public
  */
+	function testSendWithAttachments() {
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Attachment Test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->template = null;
+		$this->Controller->EmailTest->delivery = 'debug';
+		$this->Controller->EmailTest->attachments = array(
+			__FILE__,
+			'some-name.php' => __FILE__
+		);
+		$body = '<p>This is the body of the message</p>';
+
+		$this->Controller->EmailTest->sendAs = 'text';
+		$this->assertTrue($this->Controller->EmailTest->send($body));
+		$msg = $this->Controller->Session->read('Message.email.message');
+		$this->assertPattern('/' . preg_quote('Content-Disposition: attachment; filename="email.test.php"') . '/', $msg);
+		$this->assertPattern('/' . preg_quote('Content-Disposition: attachment; filename="some-name.php"') . '/', $msg);
+	}
+
+/**
+ * testSendAsIsNotIgnoredIfAttachmentsPresent method
+ *
+ * @return void
+ * @access public
+ */
 	function testSendAsIsNotIgnoredIfAttachmentsPresent() {
-		$this->Controller->EmailTest->reset();
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
 		$this->Controller->EmailTest->subject = 'Attachment Test';
@@ -628,13 +988,12 @@ TEXTBLOC;
 	}
 
 /**
- * undocumented function
+ * testNoDoubleNewlinesInHeaders function
  *
  * @return void
  * @access public
  */
 	function testNoDoubleNewlinesInHeaders() {
-		$this->Controller->EmailTest->reset();
 		$this->Controller->EmailTest->to = 'postmaster@localhost';
 		$this->Controller->EmailTest->from = 'noreply@example.com';
 		$this->Controller->EmailTest->subject = 'Attachment Test';
@@ -670,13 +1029,16 @@ TEXTBLOC;
 		$this->Controller->EmailTest->delivery = 'smtp';
 		$this->Controller->EmailTest->smtpOptions['host'] = 'blah';
 		$this->Controller->EmailTest->attachments = array('attachment1', 'attachment2');
+		$this->Controller->EmailTest->textMessage = 'This is the body of the message';
+		$this->Controller->EmailTest->htmlMessage = 'This is the body of the message';
+		$this->Controller->EmailTest->messageId = false;
 
 		$this->assertFalse($this->Controller->EmailTest->send('Should not work'));
 
 		$this->Controller->EmailTest->reset();
 
 		$this->assertNull($this->Controller->EmailTest->template);
-		$this->assertNull($this->Controller->EmailTest->to);
+		$this->assertIdentical($this->Controller->EmailTest->to, array());
 		$this->assertNull($this->Controller->EmailTest->from);
 		$this->assertNull($this->Controller->EmailTest->replyTo);
 		$this->assertNull($this->Controller->EmailTest->return);
@@ -689,17 +1051,104 @@ TEXTBLOC;
 		$this->assertIdentical($this->Controller->EmailTest->getMessage(), array());
 		$this->assertNull($this->Controller->EmailTest->smtpError);
 		$this->assertIdentical($this->Controller->EmailTest->attachments, array());
+		$this->assertNull($this->Controller->EmailTest->textMessage);
+		$this->assertTrue($this->Controller->EmailTest->messageId);
+	}
+
+	function testPluginCustomViewClass() {
+		App::build(array(
+			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS),
+			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)
+		));
+
+		$this->Controller->view = 'TestPlugin.Email';
+
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'CustomViewClass test';
+		$this->Controller->EmailTest->delivery = 'debug';
+		$body = 'Body of message';
+
+		$this->assertTrue($this->Controller->EmailTest->send($body));
+		$result = $this->Controller->Session->read('Message.email.message');
+
+		$this->assertPattern('/Body of message/', $result);
+
 	}
 
 /**
- * osFix method
+ * testStartup method
  *
- * @param string $string
- * @access private
- * @return string
+ * @access public
+ * @return void
  */
-	function __osFix($string) {
-		return str_replace(array("\r\n", "\r"), "\n", $string);
+	function testStartup() {
+		$this->assertNull($this->Controller->EmailTest->startup($this->Controller));
+	}
+
+/**
+ * testMessageId method
+ *
+ * @access public
+ * @return void
+ */
+	function testMessageId() {
+		$this->Controller->EmailTest->to = 'postmaster@localhost';
+		$this->Controller->EmailTest->from = 'noreply@example.com';
+		$this->Controller->EmailTest->subject = 'Cake Debug Test';
+		$this->Controller->EmailTest->replyTo = 'noreply@example.com';
+		$this->Controller->EmailTest->template = null;
+
+		$this->Controller->EmailTest->delivery = 'debug';
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$result = $this->Controller->Session->read('Message.email.message');
+
+		$this->assertPattern('/Message-ID: \<[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}@' . env('HTTP_HOST') . '\>\n/', $result);
+
+		$this->Controller->EmailTest->messageId = '<22091985.998877@localhost>';
+
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$result = $this->Controller->Session->read('Message.email.message');
+
+		$this->assertPattern('/Message-ID: <22091985.998877@localhost>\n/', $result);
+
+		$this->Controller->EmailTest->messageId = false;
+
+		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message'));
+		$result = $this->Controller->Session->read('Message.email.message');
+
+		$this->assertNoPattern('/Message-ID:/', $result);
+	}
+
+/**
+ * testSendMessage method
+ *
+ * @access public
+ * @return void
+ */
+	function testSendMessage() {
+		$this->Controller->EmailTest->delivery = 'getMessage';
+		$this->Controller->EmailTest->lineLength = 70;
+
+		$text = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+		$this->Controller->EmailTest->sendAs = 'text';
+		$result = $this->Controller->EmailTest->send($text);
+		$expected = array(
+			'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do',
+			'eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+			'',
+			''
+		);
+		$this->assertEqual($expected, $result);
+
+		$text = 'Lorem ipsum dolor sit amet, <b>consectetur</b> adipisicing elit, sed do <span>eiusmod tempor</span> incididunt ut labore et dolore magna aliqua.';
+		$this->Controller->EmailTest->sendAs = 'html';
+		$result = $this->Controller->EmailTest->send($text);
+		$expected = array(
+			$text,
+			'',
+			''
+		);
+		$this->assertEqual($expected, $result);
 	}
 }
-?>

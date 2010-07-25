@@ -7,13 +7,13 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.4560
@@ -41,7 +41,7 @@ if (!class_exists('String')) {
  *
  * @package       cake
  * @subpackage    cake.cake.libs
- * @link          http://book.cakephp.org/view/460/Using-the-Debugger-Class
+ * @link          http://book.cakephp.org/view/1191/Using-the-Debugger-Class
  */
 class Debugger extends Object {
 
@@ -207,38 +207,30 @@ class Debugger extends Object {
  *
  * @param $var mixed the variable to dump
  * @return void
- * @see exportVar
+ * @see Debugger::exportVar()
  * @access public
  * @static
- * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
+ * @link http://book.cakephp.org/view/1191/Using-the-Debugger-Class
 */
 	function dump($var) {
-		$_this = Debugger::getInstance();
+		$_this =& Debugger::getInstance();
 		pr($_this->exportVar($var));
 	}
 
 /**
- * Creates a detailed stack trace log at the time of invocation, much like dump()
- * but to debug.log.
+ * Creates an entry in the log file.  The log entry will contain a stack trace from where it was called.
+ * as well as export the variable using exportVar. By default the log is written to the debug log.
  *
  * @param $var mixed Variable or content to log
  * @param $level int type of log to use. Defaults to LOG_DEBUG
  * @return void
  * @static
- * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
+ * @link http://book.cakephp.org/view/1191/Using-the-Debugger-Class
  */
 	function log($var, $level = LOG_DEBUG) {
-		$_this = Debugger::getInstance();
-		$trace = $_this->trace(array('start' => 1, 'depth' => 2, 'format' => 'array'));
-		$source = null;
-
-		if (is_object($trace[0]['object']) && isset($trace[0]['object']->_reporter->_test_stack)) {
-			$stack = $trace[0]['object']->_reporter->_test_stack;
-			$source = sprintf('[%1$s, %3$s::%2$s()]' . "\n",
-								array_shift($stack), array_pop($stack), array_pop($stack));
-		}
-
-		CakeLog::write($level, $source . $_this->exportVar($var));
+		$_this =& Debugger::getInstance();
+		$source = $_this->trace(array('start' => 1)) . "\n";
+		CakeLog::write($level, "\n" . $source . $_this->exportVar($var));
 	}
 
 /**
@@ -257,7 +249,7 @@ class Debugger extends Object {
 			return;
 		}
 
-		$_this = Debugger::getInstance();
+		$_this =& Debugger::getInstance();
 
 		if (empty($file)) {
 			$file = '[internal]';
@@ -274,7 +266,6 @@ class Debugger extends Object {
 			return;
 		}
 
-		$level = LOG_DEBUG;
 		switch ($code) {
 			case E_PARSE:
 			case E_ERROR:
@@ -297,7 +288,7 @@ class Debugger extends Object {
 				$level = LOG_NOTICE;
 			break;
 			default:
-				return false;
+				return;
 			break;
 		}
 
@@ -321,7 +312,7 @@ class Debugger extends Object {
 		}
 
 		if ($error == 'Fatal Error') {
-			die();
+			exit();
 		}
 		return true;
 	}
@@ -329,14 +320,23 @@ class Debugger extends Object {
 /**
  * Outputs a stack trace based on the supplied options.
  *
+ * ### Options
+ *
+ * - `depth` - The number of stack frames to return. Defaults to 999
+ * - `format` - The format you want the return.  Defaults to the currently selected format.  If
+ *    format is 'array' or 'points' the return will be an array.
+ * - `args` - Should arguments for functions be shown?  If true, the arguments for each method call
+ *   will be displayed.
+ * - `start` - The stack frame to start generating a trace from.  Defaults to 0
+ *
  * @param array $options Format for outputting stack trace
- * @return string Formatted stack trace
+ * @return mixed Formatted stack trace
  * @access public
  * @static
- * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
+ * @link http://book.cakephp.org/view/1191/Using-the-Debugger-Class
  */
 	function trace($options = array()) {
-		$_this = Debugger::getInstance();
+		$_this =& Debugger::getInstance();
 		$defaults = array(
 			'depth'   => 999,
 			'format'  => $_this->_outputFormat,
@@ -402,7 +402,7 @@ class Debugger extends Object {
 		if ($options['format'] == 'array' || $options['format'] == 'points') {
 			return $back;
 		}
-		return join("\n", $back);
+		return implode("\n", $back);
 	}
 
 /**
@@ -426,7 +426,8 @@ class Debugger extends Object {
 		} elseif (strpos($path, ROOT) === 0) {
 			return str_replace(ROOT, 'ROOT', $path);
 		}
-		$corePaths = Configure::corePaths('cake');
+		$corePaths = App::core('cake');
+
 		foreach ($corePaths as $corePath) {
 			if (strpos($path, $corePath) === 0) {
 				return str_replace($corePath, 'CORE' .DS . 'cake' .DS, $path);
@@ -444,7 +445,7 @@ class Debugger extends Object {
  * @return array Set of lines highlighted
  * @access public
  * @static
- * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
+ * @link http://book.cakephp.org/view/1191/Using-the-Debugger-Class
  */
 	function excerpt($file, $line, $context = 2) {
 		$data = $lines = array();
@@ -477,10 +478,10 @@ class Debugger extends Object {
  * @return string Variable as a formatted string
  * @access public
  * @static
- * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
+ * @link http://book.cakephp.org/view/1191/Using-the-Debugger-Class
  */
 	function exportVar($var, $recursion = 0) {
-		$_this =  Debugger::getInstance();
+		$_this =& Debugger::getInstance();
 		switch (strtolower(gettype($var))) {
 			case 'boolean':
 				return ($var) ? 'true' : 'false';
@@ -511,10 +512,10 @@ class Debugger extends Object {
 					}
 				}
 				$n = null;
-				if (count($vars) > 0) {
+				if (!empty($vars)) {
 					$n = "\n";
 				}
-				return $out . join(",", $vars) . "{$n})";
+				return $out . implode(",", $vars) . "{$n})";
 			break;
 			case 'resource':
 				return strtolower(gettype($var));
@@ -531,7 +532,7 @@ class Debugger extends Object {
  * @param string $var Object to convert
  * @return string
  * @access private
- * @see Debugger:exportVar()
+ * @see Debugger::exportVar()
  */
 	function __object($var) {
 		$out = array();
@@ -553,18 +554,19 @@ class Debugger extends Object {
 				$out[] = "$className::$$key = " . $value;
 			}
 		}
-		return join("\n", $out);
+		return implode("\n", $out);
 	}
 
 /**
  * Switches output format, updates format strings
  *
  * @param string $format Format to use, including 'js' for JavaScript-enhanced HTML, 'html' for
- *        straight HTML output, or 'text' for unformatted text.
+ *    straight HTML output, or 'txt' for unformatted text.
+ * @param array $strings Template strings to be used for the output format.
  * @access protected
  */
 	function output($format = null, $strings = array()) {
-		$_this = Debugger::getInstance();
+		$_this =& Debugger::getInstance();
 		$data = null;
 
 		if (is_null($format)) {
@@ -672,14 +674,18 @@ class Debugger extends Object {
 	}
 
 /**
- * Verifies that the application's salt value has been changed from the default value.
+ * Verifies that the application's salt and cipher seed value has been changed from the default value.
  *
  * @access public
  * @static
  */
-	function checkSessionKey() {
+	function checkSecurityKeys() {
 		if (Configure::read('Security.salt') == 'DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi') {
 			trigger_error(__('Please change the value of \'Security.salt\' in app/config/core.php to a salt value specific to your application', true), E_USER_NOTICE);
+		}
+
+		if (Configure::read('Security.cipherSeed') === '76859309657453542496749683645') {
+			trigger_error(__('Please change the value of \'Security.cipherSeed\' in app/config/core.php to a numeric (digits only) seed value specific to your application', true), E_USER_NOTICE);
 		}
 	}
 
@@ -690,7 +696,7 @@ class Debugger extends Object {
  * @param object $debugger A reference to the Debugger object
  * @access public
  * @static
- * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
+ * @link http://book.cakephp.org/view/1191/Using-the-Debugger-Class
  */
 	function invoke(&$debugger) {
 		set_error_handler(array(&$debugger, 'handleError'));
@@ -700,5 +706,3 @@ class Debugger extends Object {
 if (!defined('DISABLE_DEFAULT_ERROR_HANDLING')) {
 	Debugger::invoke(Debugger::getInstance());
 }
-
-?>

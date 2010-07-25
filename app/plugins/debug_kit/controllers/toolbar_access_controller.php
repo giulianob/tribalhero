@@ -26,12 +26,7 @@ class ToolbarAccessController extends DebugKitAppController {
  * @var string
  */
 	var $name = 'ToolbarAccess';
-/**
- * uses array
- *
- * @var array
- **/
-	var $uses = array();
+
 /**
  * Helpers
  *
@@ -41,12 +36,21 @@ class ToolbarAccessController extends DebugKitAppController {
 		'DebugKit.Toolbar' => array('output' => 'DebugKit.HtmlToolbar'),
 		'Javascript', 'Number', 'DebugKit.SimpleGraph'
 	);
+
 /**
- * components
+ * Components
  *
  * @var array
  **/
-	var $components = array('RequestHandler');
+	var $components = array('RequestHandler', 'DebugKit.Toolbar');
+
+/**
+ * Uses
+ *
+ * @var array
+ **/
+	var $uses = array('DebugKit.ToolbarAccess');
+
 /**
  * beforeFilter callback
  *
@@ -73,5 +77,35 @@ class ToolbarAccessController extends DebugKitAppController {
 		$oldState = $this->Toolbar->loadState($key);
 		$this->set('toolbarState', $oldState);
 		$this->set('debugKitInHistoryMode', true);
+	}
+
+/**
+ * Run SQL explain/profiling on queries. Checks the hash + the hashed queries, 
+ * if there is mismatch a 404 will be rendered.  If debug == 0 a 404 will also be
+ * rendered.  No explain will be run if a 404 is made.
+ *
+ * @return void
+ */
+	function sql_explain() {
+		if (
+			!$this->RequestHandler->isPost() ||
+			empty($this->data['log']['sql']) || 
+			empty($this->data['log']['ds']) ||
+			empty($this->data['log']['hash']) ||
+			Configure::read('debug') == 0
+		) {
+			$this->cakeError('error404', array(array(
+				'message' => 'Invalid parameters'
+			)));
+		}
+		App::import('Core', 'Security');
+		$hash = Security::hash($this->data['log']['sql'] . $this->data['log']['ds'], null, true);
+		if ($hash !== $this->data['log']['hash']) {
+			$this->cakeError('error404', array(array(
+				'message' => 'Invalid parameters'
+			)));
+		}
+		$result = $this->ToolbarAccess->explainQuery($this->data['log']['ds'], $this->data['log']['sql']);
+		$this->set(compact('result'));
 	}
 }

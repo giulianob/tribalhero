@@ -69,6 +69,8 @@ package src.UI.Sidebars.ObjectInfo {
 				usernameLabel.setIcon(new MessagingIcon(username.name));
 				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
 			}
+			
+			if (getFrame()) getFrame().pack();
 		}
 
 		private function setCityUsername(username: Username, custom: * ) : void {
@@ -80,6 +82,8 @@ package src.UI.Sidebars.ObjectInfo {
 				usernameLabel.setIcon(new GoToCityIcon(username.id));
 				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
 			}
+			
+			if (getFrame()) getFrame().pack();
 		}
 
 		public function update():void

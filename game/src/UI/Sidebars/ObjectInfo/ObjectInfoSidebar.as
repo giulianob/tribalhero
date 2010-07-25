@@ -142,10 +142,10 @@ package src.UI.Sidebars.ObjectInfo {
 				propPrototype = PropertyFactory.getProperties(gameObject.type, PropertyPrototype.VISIBILITY_PUBLIC);
 
 				if (structureObject != null)
-				{
-					for (i = 0; i < structureObject.properties.length; i++) {
-						addStatRow(propPrototype[i].name, structureObject.properties[i]);
-					}
+				{					
+					for (i = 0; i < propPrototype.length; i++) {
+						addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+					}					
 				}
 			}
 

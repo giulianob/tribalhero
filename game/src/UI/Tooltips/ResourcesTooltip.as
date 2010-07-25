@@ -44,30 +44,30 @@
 		{
 			ui.removeAll();
 
-			ui.append(resourceLabelMaker(city.resources.gold, new AssetIcon(new ICON_GOLD()), false, false));
-			ui.append(resourceLabelMaker(city.resources.wood, new AssetIcon(new ICON_WOOD())));
-			ui.append(resourceLabelMaker(city.resources.crop, new AssetIcon(new ICON_CROP())));
-			ui.append(resourceLabelMaker(city.resources.iron, new AssetIcon(new ICON_IRON())));
-			ui.append(simpleLabelMaker(city.resources.labor.getValue().toString() + " " + StringHelper.makePlural(city.resources.labor.getValue(), "is", "are", "are") + " idle and " + city.getBusyLaborCount().toString() + " " + StringHelper.makePlural(city.getBusyLaborCount(), "is", "are", "are") + " working", false, false, new AssetIcon(new ICON_LABOR())));
-			ui.append(simpleLabelMaker(city.resources.crop.getUpkeep().toString(), true, true, new AssetIcon(new ICON_CROP())));
+			ui.append(resourceLabelMaker("Gold", city.resources.gold, new AssetIcon(new ICON_GOLD()), false, false));
+			ui.append(resourceLabelMaker("Wood", city.resources.wood, new AssetIcon(new ICON_WOOD())));
+			ui.append(resourceLabelMaker("Crop", city.resources.crop, new AssetIcon(new ICON_CROP())));
+			ui.append(resourceLabelMaker("Iron", city.resources.iron, new AssetIcon(new ICON_IRON())));
+			ui.append(simpleLabelMaker("Laborers", city.resources.labor.getValue().toString() + " idle, " + city.getBusyLaborCount().toString() + " working", false, "", false, new AssetIcon(new ICON_LABOR())));
+			ui.append(simpleLabelMaker("Upkeep", city.resources.crop.getUpkeep().toString(), true, "crop", true, new AssetIcon(new ICON_CROP())));
 		}
 
-		private function simpleLabelMaker(value: String, hourly: Boolean = false, negative: Boolean = false, icon: Icon = null) : JLabel {
-			var label: JLabel = new JLabel((hourly?(negative?"-":"+"):"") + value + (hourly?" per hour":""), icon);
+		private function simpleLabelMaker(name: String, value: String, hourly: Boolean = false, unit: String = "", negative: Boolean = false, icon: Icon = null) : JLabel {
+			var label: JLabel = new JLabel((name != "" ? (name + ": ") : "") + (hourly?(negative?"-":"+"):"") + value + (unit?" "+unit:"") + (hourly?" per hour":""), icon);
 
 			GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
 
-			label.setIconTextGap(0);
+			label.setIconTextGap(0);			
 			label.setHorizontalTextPosition(AsWingConstants.RIGHT);
 			label.setHorizontalAlignment(AsWingConstants.LEFT);
 
 			return label;
 		}
 
-		private function resourceLabelMaker(resource: LazyValue, icon: Icon = null, includeLimit: Boolean = true, includeRate: Boolean = true) : JLabel {
+		private function resourceLabelMaker(name: String, resource: LazyValue, icon: Icon = null, includeLimit: Boolean = true, includeRate: Boolean = true) : JLabel {
 			var value: int = resource.getValue();
 
-			var label: JLabel = new JLabel(value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (+" + resource.getHourlyRate() + " per hour)" : ""), icon);
+			var label: JLabel = new JLabel((name != "" ? (name + ": ") : "") + value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (+" + resource.getHourlyRate() + " per hour)" : ""), icon);
 
 			GameLookAndFeel.changeClass(label, "Tooltip.text Label.small");
 

@@ -44,12 +44,10 @@
 			timer.stop();
 		}
 
-		private function onMessageMouseOver(e: Event = null) : void {
-			Util.setGrayed(messageButton, false);
+		private function onMessageMouseOver(e: Event = null) : void {			
 		}
 
-		private function onMessageMouseOut(e: Event = null) : void {
-			Util.setGrayed(messageButton, unread == 0);
+		private function onMessageMouseOut(e: Event = null) : void {			
 		}
 
 		private function onTimer(e: TimerEvent = null) : void {
@@ -65,9 +63,10 @@
 				
 				unread = data.unread;
 				
-				// Set to gray if mouse isnt hovering icon
-				if (!messageButton.hitTestPoint(messageButton.stage.mouseX, messageButton.stage.mouseY)) {
-					Util.setGrayed(messageButton, unread == 0);
+				Global.gameContainer.txtUnread.visible = unread > 0;
+				
+				if (unread > 0) {
+					Global.gameContainer.txtUnread.txtUnreadCount.text = unread > 9 ? "!" : unread.toString();
 				}
 			}
 			catch (e: Error) { }

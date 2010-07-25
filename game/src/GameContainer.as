@@ -73,6 +73,10 @@
 			addChild(lstCities);
 
 			chains.visible = false;
+			
+			txtUnread.visible = false;
+			txtUnread.mouseChildren = false;
+			txtUnread.mouseEnabled = false;
 
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
@@ -326,6 +330,8 @@
 				chains.visible = true;
 				sidebar.show(sidebarHolder);
 			}
+			
+			stage.focus = null;
 		}
 
 		public function closeAllFrames() : void {

@@ -50,15 +50,15 @@ FARM_STRUCTURE_LVL_10,Increases the farm to support a maximum of 240 laborers.
 LUMBERMILL_STRUCTURE_NAME,Lumbermill
 LUMBERMILL_STRUCTURE_DESCRIPTION,Use the city's laborers to produce wood.
 LUMBERMILL_STRUCTURE_LVL_1,Allows gathering wood from level 1 forests.
-LUMBERMILL_STRUCTURE_LVL_2,Allows gathering wood from level 1 forests.
+LUMBERMILL_STRUCTURE_LVL_2,Allows gathering from 2 forests simultaneously.
 LUMBERMILL_STRUCTURE_LVL_3,Allows gathering wood from level 2 forests.
-LUMBERMILL_STRUCTURE_LVL_4,Allows gathering wood from level 2 forests.
+LUMBERMILL_STRUCTURE_LVL_4,Allows gathering from 3 forests simultaneously.
 LUMBERMILL_STRUCTURE_LVL_5,Allows gathering wood from level 3 forests.
-LUMBERMILL_STRUCTURE_LVL_6,Allows gathering wood from level 3 forests.
+LUMBERMILL_STRUCTURE_LVL_6,Allows gathering from 4 forests simultaneously.
 LUMBERMILL_STRUCTURE_LVL_7,Allows gathering wood from level 4 forests.
-LUMBERMILL_STRUCTURE_LVL_8,Allows gathering wood from level 4 forests.
-LUMBERMILL_STRUCTURE_LVL_9,Allows gathering wood from level 4 forests.
-LUMBERMILL_STRUCTURE_LVL_10,Allows gathering wood from level 4 forests.
+LUMBERMILL_STRUCTURE_LVL_8,Allows gathering from 5 forests simultaneously.
+LUMBERMILL_STRUCTURE_LVL_9,Allows gathering from 6 forests simultaneously.
+LUMBERMILL_STRUCTURE_LVL_10,Allows gathering from 7 forests simultaneously.
 FOUNDRY_STRUCTURE_NAME,Foundry
 FOUNDRY_STRUCTURE_DESCRIPTION,Allow the city's laborer to use wood to repair buildings after they have been damaged in combat and develop underground storage to protect resources.
 FOUNDRY_STRUCTURE_LVL_1,Increases to a maximum of 10 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.

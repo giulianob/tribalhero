@@ -55,8 +55,6 @@ namespace Game.Logic.Actions {
         }
 
         public override Error Execute() {
-            throw new Exception("Have to add logic so that it only upgrades to a certain level since if the building gets downgrade then upgraded again it will keep increasing the tech level");
-
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
@@ -192,6 +190,8 @@ namespace Game.Logic.Actions {
         #region ICanInit Members
 
         public void ScriptInit(GameObject obj, string[] parms) {
+            throw new Exception("have to add logic so that upgrading after a building has been knocked down won't upgrade this tech again");
+
             if ((obj = obj as Structure) == null)
                 throw new Exception();
             cityId = obj.City.Id;

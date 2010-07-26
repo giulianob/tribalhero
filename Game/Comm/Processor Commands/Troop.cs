@@ -39,11 +39,11 @@ namespace Game.Comm {
                 }
 
                 Packet reply = new Packet(packet);
+                reply.AddByte(troop.Stub.TroopId);
 
                 if (city.Owner == session.Player) {
                     reply.AddByte(troop.Stats.AttackRadius);
-                    reply.AddByte(troop.Stats.Speed);
-                    reply.AddByte(troop.Stub.TroopId);
+                    reply.AddByte(troop.Stats.Speed);                    
 
                     UnitTemplate template = new UnitTemplate(city);
 

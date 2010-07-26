@@ -281,22 +281,22 @@ namespace Game.Data {
         public void Subtract(Resource cost, out Resource actual) {
             BeginUpdate();
             actual = new Resource();
-            Crop.Subtract((actual.Crop = Crop.Value > cost.Crop ? cost.Crop : Crop.Value));
-            Gold.Subtract((actual.Gold = Gold.Value > cost.Gold ? cost.Gold : Gold.Value));
-            Iron.Subtract((actual.Iron = Iron.Value > cost.Iron ? cost.Iron : Iron.Value));
-            Wood.Subtract((actual.Wood = Wood.Value > cost.Wood ? cost.Wood : Wood.Value));
-            Labor.Subtract((actual.Labor = Labor.Value > cost.Labor ? cost.Labor : Labor.Value));
+            Crop.Subtract((actual.Crop = (Crop.Value > cost.Crop ? cost.Crop : Crop.Value)));
+            Gold.Subtract((actual.Gold = (Gold.Value > cost.Gold ? cost.Gold : Gold.Value)));
+            Iron.Subtract((actual.Iron = (Iron.Value > cost.Iron ? cost.Iron : Iron.Value)));
+            Wood.Subtract((actual.Wood = (Wood.Value > cost.Wood ? cost.Wood : Wood.Value)));
+            Labor.Subtract((actual.Labor = (Labor.Value > cost.Labor ? cost.Labor : Labor.Value)));
             EndUpdate();
         }
 
         public void Subtract(Resource cost, Resource hidden, out Resource actual) {
             BeginUpdate();
             actual = new Resource();
-            Crop.Subtract((actual.Crop = Crop.Value - hidden.Crop > cost.Crop ? cost.Crop : Crop.Value - hidden.Crop));
-            Gold.Subtract((actual.Gold = Gold.Value - hidden.Gold > cost.Gold ? cost.Gold : Gold.Value - hidden.Gold));
-            Iron.Subtract((actual.Iron = Iron.Value - hidden.Iron > cost.Iron ? cost.Iron : Iron.Value - hidden.Iron));
-            Wood.Subtract((actual.Wood = Wood.Value - hidden.Wood > cost.Wood ? cost.Wood : Wood.Value - hidden.Wood));
-            Labor.Subtract((actual.Labor = Labor.Value - hidden.Labor > cost.Labor ? cost.Labor : Labor.Value - hidden.Labor));
+            Crop.Subtract((actual.Crop = (Crop.Value - hidden.Crop > cost.Crop ? cost.Crop : Math.Max(0, Crop.Value - hidden.Crop))));
+            Gold.Subtract((actual.Gold = (Gold.Value - hidden.Gold > cost.Gold ? cost.Gold : Math.Max(0, Gold.Value - hidden.Gold))));
+            Iron.Subtract((actual.Iron = (Iron.Value - hidden.Iron > cost.Iron ? cost.Iron : Math.Max(0, Iron.Value - hidden.Iron))));
+            Wood.Subtract((actual.Wood = (Wood.Value - hidden.Wood > cost.Wood ? cost.Wood : Math.Max(0, Wood.Value - hidden.Wood))));
+            Labor.Subtract((actual.Labor = (Labor.Value - hidden.Labor > cost.Labor ? cost.Labor : Math.Max(0, Labor.Value - hidden.Labor))));
             EndUpdate();
         }
 

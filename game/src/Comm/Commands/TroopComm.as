@@ -159,11 +159,11 @@
 
 			var obj: TroopObject = custom as TroopObject;
 			obj.troop = new TroopStub();
+			obj.stubId = packet.readUByte();
 
 			if (obj.playerId == Constants.playerId) {
 				obj.attackRadius = packet.readUByte();
-				obj.speed = packet.readUByte();
-				obj.stubId = packet.readUByte();
+				obj.speed = packet.readUByte();				
 
 				var formationCnt: int = packet.readUByte();
 				var unitType: int;

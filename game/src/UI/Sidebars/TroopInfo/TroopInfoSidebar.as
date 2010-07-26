@@ -91,16 +91,13 @@
 			Global.map.usernames.players.getUsername(troopObj.playerId, setPlayerUsername, usernameLabel);
 			Global.map.usernames.cities.getUsername(troopObj.cityId, setCityUsername, cityLabel);
 
-			addStatRow("Radius", troopObj.attackRadius.toString());
-			addStatRow("Speed", troopObj.speed.toString());
-
 			var buttons: Array = new Array();
 
 			var city: City = Global.map.cities.get(troopObj.cityId);
 
 			if (city != null) {
-				//add view troop button here
-				//buttons.push(new ViewUnitsButton(troopObj));
+				addStatRow("Radius", troopObj.attackRadius.toString());
+				addStatRow("Speed", troopObj.speed.toString());
 			}
 
 			//Special Case Buttons

@@ -529,6 +529,8 @@ namespace CSVToXML {
                     writer.WriteAttributeString("name", obj[2]);
                     writer.WriteAttributeString("datatype", obj[3].ToUpper());
                     writer.WriteAttributeString("visibility", obj[4].ToUpper());
+                    writer.WriteAttributeString("perhour", obj[5]);
+                    writer.WriteAttributeString("icon", obj[6]);
                     writer.WriteEndElement();
                 }
             }

@@ -1,2 +1,2 @@
-Type,Index,Name,DataType,Visibility
-2108,1,Rate,INT,PUBLIC
+Type,Index,Name,DataType,Visibility,PerHour?,Icon
+2108,1,Rate,INT,PUBLIC,TRUE,WOOD

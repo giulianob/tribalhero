@@ -190,6 +190,8 @@ namespace Game.Logic.Actions {
         #region ICanInit Members
 
         public void ScriptInit(GameObject obj, string[] parms) {
+            throw new Exception("have to add logic so that upgrading after a building has been knocked down won't upgrade this tech again");
+
             if ((obj = obj as Structure) == null)
                 throw new Exception();
             cityId = obj.City.Id;

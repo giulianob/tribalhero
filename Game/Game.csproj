@@ -230,13 +230,14 @@
     <Compile Include="Logic\Conditons\IICombatUnitCondition.cs" />
     <Compile Include="Logic\Conditons\IStructureCondition.cs" />
     <Compile Include="Logic\Formulas\Cost.cs" />
-    <Compile Include="Logic\Formulas\Property.cs" />
+    <Compile Include="Logic\Formulas\Troop.cs" />
     <Compile Include="Logic\Formulas\Time.cs" />
     <Compile Include="Logic\NotificationManager.cs" />
     <Compile Include="Logic\Procedures\BattleProcedures.cs" />
     <Compile Include="Logic\Procedures\Ranking.cs" />
     <Compile Include="Logic\Procedures\OnActionCallback.cs" />
     <Compile Include="Logic\Procedures\RandomizeResource.cs" />
+    <Compile Include="Logic\Procedures\ResourceCap.cs" />
     <Compile Include="Logic\Procedures\TroopObjectCreateFromStation.cs" />
     <Compile Include="Logic\Procedures\TroopObjectStation.cs" />
     <Compile Include="Logic\ReferenceManager.cs" />

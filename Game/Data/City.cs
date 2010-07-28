@@ -12,6 +12,7 @@ using Game.Database;
 using Game.Fighting;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Util;
 
@@ -176,7 +177,7 @@ namespace Game.Data {
             if (mainBuilding != null) {
                 mainBuilding.ObjectId = 1;
                 Add(1, mainBuilding, false);
-                Formula.ResourceCap(this);
+                Procedure.SetResourceCap(this);
             }
 
             resource.ResourcesUpdate += ResourceUpdateEvent;
@@ -311,6 +312,10 @@ namespace Game.Data {
             }
         }
 
+        /// <summary>
+        /// Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
+        /// </summary>
+        /// <param name="obj"></param>
         public void DoRemove(Structure obj) {
             lock (objLock) {
                 if (obj == MainBuilding)
@@ -329,6 +334,10 @@ namespace Game.Data {
             }
         }
 
+        /// <summary>
+        /// Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
+        /// </summary>
+        /// <param name="obj"></param>
         public void DoRemove(TroopObject obj) {
             lock (objLock) {
 

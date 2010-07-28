@@ -16,7 +16,7 @@ namespace Game.Comm {
         public void CmdGetStructureInfo(Session session, Packet packet) {
             City city;
             Structure structure;
-
+            
             uint cityId;
             uint objectId;
 
@@ -271,14 +271,17 @@ namespace Game.Comm {
                     return;
                 }
 
-                Structure obj = city[objectId] as Structure;
-                if (obj != null) {
-                    Error ret;
-                    if ((ret = city.Worker.Cancel(actionId)) != Error.OK)
-                        ReplyError(session, packet, ret);
-                    else
-                        ReplySuccess(session, packet);
+                Structure obj;
+                if (!city.TryGetStructure(objectId, out obj)) {
+                    ReplyError(session, packet, Error.UNEXPECTED);
+                    return;
                 }
+
+                Error ret;
+                if ((ret = city.Worker.Cancel(actionId)) != Error.OK)
+                    ReplyError(session, packet, ret);
+                else
+                    ReplySuccess(session, packet);
 
                 ReplyError(session, packet, Error.UNEXPECTED);
             }

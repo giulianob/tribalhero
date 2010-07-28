@@ -9,6 +9,7 @@ using Game.Comm;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 
@@ -183,7 +184,7 @@ namespace Game.Map {
                 Global.DbManager.Save(iter.Current);
 
                 //Set resource cap
-                Formula.ResourceCap(iter.Current);
+                Procedure.SetResourceCap(iter.Current);
 
                 //Set up the city region (for minimap)
                 CityRegion region = GetCityRegion(iter.Current.MainBuilding.X, iter.Current.MainBuilding.Y);

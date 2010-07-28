@@ -25,7 +25,9 @@ namespace Game {
         static TcpServer server;
         public static EngineState State { get; private set; }
 
-        public static bool Start() {
+        public static bool Start() {            
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             if (State != EngineState.STOPPED)
                 throw new Exception("Server is not stopped");
 
@@ -81,6 +83,11 @@ namespace Game {
             State = EngineState.STARTED;
 
             return true;
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {            
+            Exception ex = (Exception)e.ExceptionObject;
+            Global.Logger.Error("Unhandled Exception", ex);
         }
 
         public static void Stop() {

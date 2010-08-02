@@ -32,7 +32,11 @@ namespace Game.Logic {
             get {
                 return nextTime == DateTime.MinValue ? endTime : nextTime;
             }
-            set { nextTime = value; }
+            set {
+                nextTime = value;
+                // Cap the end time so it can never be less than the next time
+                if (endTime < nextTime) endTime = nextTime;
+            }
         }
 
         #endregion

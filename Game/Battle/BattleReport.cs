@@ -180,7 +180,7 @@ namespace Game.Battle {
         }
 
         internal static void SnapBattle(out uint battleId, uint cityId) {
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', '{1}', NOW(), NULL)", BATTLE_DB, cityId));
+            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', '{1}', NOW(), NULL, '0')", BATTLE_DB, cityId));
             battleId = Global.DbManager.LastInsertId();
         }
 
@@ -219,8 +219,8 @@ namespace Game.Battle {
         internal void SnapCombatObject(uint troopId, CombatObject co) {
             ICombatUnit unit = co as ICombatUnit;
 
-            Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')", BATTLE_REPORT_OBJECTS_DB, troopId, co.Type, co.Lvl, co.Hp,
-                                                 co.Count, co.DmgRecv, co.DmgDealt, (byte) (unit == null ? FormationType.STRUCTURE : unit.Formation)));
+            Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}')", BATTLE_REPORT_OBJECTS_DB, troopId, co.Type, co.Lvl, co.Hp,
+                                                 co.Count, co.DmgRecv, co.DmgDealt, (byte) (unit == null ? FormationType.STRUCTURE : unit.Formation), co.HitDealt, co.HitRecv));
         }
     }
 }

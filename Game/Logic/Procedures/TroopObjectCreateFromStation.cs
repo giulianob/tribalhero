@@ -1,6 +1,7 @@
 #region
 
 using Game.Data;
+using Game.Data.Stats;
 using Game.Data.Troop;
 
 #endregion
@@ -11,13 +12,12 @@ namespace Game.Logic.Procedures {
             if (!stub.StationedCity.Troops.RemoveStationed(stub.StationedTroopId))
                 return false;
 
-            TroopObject troop = new TroopObject(stub);
-            troop.X = x;
-            troop.Y = y + 1;
+            TroopObject troop = new TroopObject(stub) {X = x, Y = y + 1};
 
             stub.City.Add(troop);
 
             troop.BeginUpdate();
+            troop.Stats = new TroopStats(Formula.GetTroopRadius(stub, null), Formula.GetTroopSpeed(stub));
             Global.World.Add(troop);
             troop.EndUpdate();
 

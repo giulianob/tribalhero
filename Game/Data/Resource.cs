@@ -183,11 +183,11 @@ namespace Game.Data {
 
         public void subtract(Resource cost, out Resource actual) {
             actual = new Resource();
-            crop -= (actual.crop = crop > cost.crop ? cost.crop : crop);
-            gold -= (actual.gold = gold > cost.gold ? cost.gold : gold);
-            iron -= (actual.iron = iron > cost.iron ? cost.iron : iron);
-            wood -= (actual.wood = wood > cost.wood ? cost.wood : wood);
-            labor -= (actual.labor = labor > cost.labor ? cost.labor : labor);
+            crop -= (actual.crop = (crop > cost.crop ? cost.crop : crop));
+            gold -= (actual.gold = (gold > cost.gold ? cost.gold : gold));
+            iron -= (actual.iron = (iron > cost.iron ? cost.iron : iron));
+            wood -= (actual.wood = (wood > cost.wood ? cost.wood : wood));
+            labor -= (actual.labor = (labor > cost.labor ? cost.labor : labor));
             FireStatsUpdate();
         }
 

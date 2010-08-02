@@ -37,6 +37,7 @@ namespace Game.Logic.Actions
             x = uint.Parse(properties["x"]);
             y = uint.Parse(properties["y"]);
             type = ushort.Parse(properties["type"]);
+            cost = new Resource(int.Parse(properties["crop"]), int.Parse(properties["gold"]), int.Parse(properties["iron"]), int.Parse(properties["wood"]), int.Parse(properties["labor"]));
         }
 
         #region IAction Members
@@ -289,10 +290,17 @@ namespace Game.Logic.Actions
             {
                 return
                     XMLSerializer.Serialize(new[] {
-                                                                new XMLKVPair("type", type), new XMLKVPair("x", x), new XMLKVPair("y", y),
-                                                                new XMLKVPair("city_id", cityId),
-                                                                new XMLKVPair("structure_id", structureId)
-                                                            });
+                                                        new XMLKVPair("type", type), 
+                                                        new XMLKVPair("x", x), 
+                                                        new XMLKVPair("y", y),
+                                                        new XMLKVPair("city_id", cityId),
+                                                        new XMLKVPair("structure_id", structureId),
+                                                        new XMLKVPair("wood", cost.Wood),
+                                                        new XMLKVPair("crop", cost.Crop),
+                                                        new XMLKVPair("iron", cost.Iron),
+                                                        new XMLKVPair("gold", cost.Gold),
+                                                        new XMLKVPair("labor", cost.Labor),
+                    });
             }
         }
 

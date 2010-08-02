@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 #endregion
 
 namespace Game.Setup {
+
     public class Config {
+
         public static readonly int server_port = 48888;
         public static readonly string server_listen_address = "0.0.0.0";
 
@@ -55,6 +57,8 @@ namespace Game.Setup {
         public static readonly int width_margin = 10;
 
         public static readonly int[] forest_count = new[] { 100, 100, 100, 100 };
+
+        public static readonly int newbie_protection = 259200; // Number of seconds for newbie protection
 
         public static readonly bool database_verbose;
         public static readonly bool database_empty;

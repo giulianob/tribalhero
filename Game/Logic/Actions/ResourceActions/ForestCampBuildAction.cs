@@ -46,6 +46,12 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !Global.Forests.TryGetValue(forestId, out forest))
                 return Error.OBJECT_NOT_FOUND;
 
+            // Count number of camps and verify there's enough space left                
+            int campCount = city.Count(s => ObjectTypeFactory.IsStructureType("ForestCamp", s));
+            if (campCount >= Formula.GetMaxForestCount(lumbermill.Lvl)) {
+                return Error.FOREST_CAMP_MAX_REACHED;
+            }
+
             // Make sure some labors are being put in
             if (labors <= 0) {
                 return Error.LABOR_NOT_ENOUGH;

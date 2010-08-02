@@ -15,8 +15,8 @@ namespace Game.Comm {
     public partial class Processor {
         public void CmdGetStructureInfo(Session session, Packet packet) {
             City city;
-            Structure structure;
-            
+            Structure structure;           
+
             uint cityId;
             uint objectId;
 
@@ -446,13 +446,6 @@ namespace Game.Comm {
                 Structure lumbermill = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("Wood", structure));
                 
                 if (lumbermill == null) {
-                    ReplyError(session, packet, Error.LUMBERMILL_UNAVAILABLE);
-                    return;
-                }
-
-                // Count number of camps and verify there's enough space left                
-                int campCount = city.Count(structure => ObjectTypeFactory.IsStructureType("ForestCamp", structure));
-                if (campCount > Formula.GetMaxForestCount(lumbermill.Lvl)) {
                     ReplyError(session, packet, Error.LUMBERMILL_UNAVAILABLE);
                     return;
                 }

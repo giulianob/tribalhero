@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Map;
@@ -76,24 +77,22 @@ namespace Game.Logic.Actions
             return true;
         }
 
-        private bool CalculateNext(TroopObject obj)
-        {
+        private bool CalculateNext(TroopObject obj) {
             int distance = obj.TileDistance(x, y);
             if (distance == 0)
                 return false;
-            RecordForeach recordForeach = new RecordForeach { shortestDistance = int.MaxValue, isShortestDistanceDiagonal = false };
+            RecordForeach recordForeach = new RecordForeach {shortestDistance = int.MaxValue, isShortestDistanceDiagonal = false};
             TileLocator.foreach_object(obj.X, obj.Y, 1, false, Work, recordForeach);
             nextX = recordForeach.x;
             nextY = recordForeach.y;
 
-            int mod = 100;
+            int mod = Math.Max(50, obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int) effect.value[0]));
+            int moveTime = Formula.MoveTime(obj.Stats.Speed);
 
-            foreach (Effect effect in obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL))
-                mod -= (int)effect.value[0];
-            if (mod < 50)
-                mod = 50;
-            nextTime =
-                DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Config.seconds_per_unit * mod / 100));
+            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100));
+
+            distanceRemaining = obj.TileDistance(x, y);
+            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100)*distanceRemaining);
             return true;
         }
 
@@ -105,9 +104,11 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.OBJECT_NOT_FOUND;
 
+            int mod = Math.Max(50, city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int)effect.value[0]));
+
             distanceRemaining = troopObj.TileDistance(x, y);
             endTime =
-                DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit) *
+                DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * mod / 100) *
                                         distanceRemaining);
             beginTime = DateTime.UtcNow;
 

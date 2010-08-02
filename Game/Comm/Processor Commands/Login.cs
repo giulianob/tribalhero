@@ -35,6 +35,7 @@ namespace Game.Comm {
             byte loginMode;
             string loginKey = string.Empty;
             string playerName = string.Empty;
+            DateTime playerCreated = DateTime.MinValue;
             string playerPassword = string.Empty;
             uint playerId;
 
@@ -87,6 +88,7 @@ namespace Game.Comm {
 
                 playerId = (uint) reader["id"];
                 playerName = (string) reader["name"];
+                playerCreated = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
 
                 reader.Close();
 
@@ -120,7 +122,7 @@ namespace Game.Comm {
                 //If it's a new player then add him to our session
                 if (newPlayer) {
                     Global.Logger.Info(String.Format("Creating new player {0}({1})", playerName, playerId));
-                    player = new Player(playerId, playerName, sessionId);
+                    player = new Player(playerId, playerCreated, playerName, sessionId);
                     Global.Players.Add(player.PlayerId, player);
                 }
                 else {

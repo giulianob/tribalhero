@@ -4,7 +4,7 @@ TOWNCENTER_STRUCTURE_DESCRIPTION,The Town Center provides the foundation necessa
 TOWNCENTER_STRUCTURE_LVL_1,"Allows building a farm and a lumbermill. Town center can hold a maximum of 700 crop, 700 wood, and 200 iron."
 TOWNCENTER_STRUCTURE_LVL_2,"Enables building barracks. Increases the maximum resources to 1100 crop, 1100 wood, and 300 iron."
 TOWNCENTER_STRUCTURE_LVL_3,"Allows building university and foundries. Increases the maximum resources to 1600 crop, 1600 wood, and 500 iron."
-TOWNCENTER_STRUCTURE_LVL_4,"Ability to build another farm and lumbermill. Increases the maximum resources to 2500 crop, 2500 wood, and 800 iron."
+TOWNCENTER_STRUCTURE_LVL_4,"Ability to build another farm. Increases the maximum resources to 2500 crop, 2500 wood, and 800 iron."
 TOWNCENTER_STRUCTURE_LVL_5,"Allows building trading posts, and stables.  Increases the maximum resources to 3800 crop, 3800 wood, and 1200 iron."
 TOWNCENTER_STRUCTURE_LVL_6,"Increases the maximum resources to 5700 crop, 5700 wood, and 1800 iron."
 TOWNCENTER_STRUCTURE_LVL_7,"Increases the maximum resources to 8700 crop, 8700 wood, and 2800 iron."
@@ -37,6 +37,7 @@ TRAINING_GROUND_STRUCTURE_LVL_9,Decreases training time by 30%.
 TRAINING_GROUND_STRUCTURE_LVL_10,Decreases training time by 40%.
 FARM_STRUCTURE_NAME,Farm
 FARM_STRUCTURE_DESCRIPTION,Uses the city's laborers to grow and produce crops.
+FARM_STRUCTURE_LABOR_MOVE,Assign your city's laborers to grow and produce crops.
 FARM_STRUCTURE_LVL_1,Allows a maximum of 20 laborers to work in the farm.
 FARM_STRUCTURE_LVL_2,Increases the farm to support a maximum of 45 laborers.
 FARM_STRUCTURE_LVL_3,Increases the farm to support a maximum of 70 laborers.
@@ -61,11 +62,11 @@ LUMBERMILL_STRUCTURE_LVL_9,Allows gathering from 6 forests simultaneously.
 LUMBERMILL_STRUCTURE_LVL_10,Allows gathering from 7 forests simultaneously.
 FOUNDRY_STRUCTURE_NAME,Foundry
 FOUNDRY_STRUCTURE_DESCRIPTION,Allow the city's laborer to use wood to repair buildings after they have been damaged in combat and develop underground storage to protect resources.
-FOUNDRY_STRUCTURE_LVL_1,Increases to a maximum of 10 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.
-FOUNDRY_STRUCTURE_LVL_2,Increases to a maximum of 20 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.  Ability to build basement to hide resources.
-FOUNDRY_STRUCTURE_LVL_3,Increases to a maximum of 30 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.  Enable technology A-Call-To-Arm.
-FOUNDRY_STRUCTURE_LVL_4,Increases to a maximum of 40 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.  Upgrade underground architectural research.
-FOUNDRY_STRUCTURE_LVL_5,Increases to a maximum of 50 laborers. One labor can repair up to 10 HP every 30 minutes. Each HP restored will cost 1 wood.  Ability to remove structures.
+FOUNDRY_STRUCTURE_LABOR_MOVE,Assign your city's laborers to repair damaged structures.
+FOUNDRY_STRUCTURE_LVL_2,Increases to a maximum of 20 laborers. One labor can repair up to 10 HP every 30 minutes. It will cost 10 wood per labor everytime a building has to be repaired. Ability to build basement to hide resources.
+FOUNDRY_STRUCTURE_LVL_3,Increases to a maximum of 30 laborers. One labor can repair up to 10 HP every 30 minutes. It will cost 10 wood per labor everytime a building has to be repaired. Enable technology A-Call-To-Arm.
+FOUNDRY_STRUCTURE_LVL_4,Increases to a maximum of 40 laborers. One labor can repair up to 10 HP every 30 minutes. It will cost 10 wood per labor everytime a building has to be repaired. Upgrade underground architectural research.
+FOUNDRY_STRUCTURE_LVL_5,Increases to a maximum of 50 laborers. One labor can repair up to 10 HP every 30 minutes. It will cost 10 wood per labor everytime a building has to be repaired. Ability to remove structures.
 BASEMENT_STRUCTURE_NAME,Basement
 BASEMENT_STRUCTURE_DESCRIPTION,Allow city to hide resources.
 BASEMENT_STRUCTURE_LVL_1,Increases storage space to hide 100 crop 100 wood.

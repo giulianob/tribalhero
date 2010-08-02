@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
@@ -19,12 +20,15 @@ namespace Game {
 
         public uint PlayerId { get; private set; }
 
+        public DateTime Created { get; private set; }
+
         public string SessionId { get; set; }
 
-        public Player(uint playerid, string name) : this(playerid, name, string.Empty) {}
+        public Player(uint playerid, DateTime created, string name) : this(playerid, created, name, string.Empty) {}
 
-        public Player(uint playerid, string name, string sessionId) {
+        public Player(uint playerid, DateTime created, string name, string sessionId) {
             PlayerId = playerid;
+            Created = created;
             Name = name;
             SessionId = sessionId;
         }
@@ -64,9 +68,10 @@ namespace Game {
         public DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("name", Name, DbType.String, 32),
-                                          new DbColumn("session_id", SessionId, DbType.String, 128)
-                                      };
+                                  new DbColumn("name", Name, DbType.String, 32),
+                                  new DbColumn("created", Created, DbType.DateTime),
+                                  new DbColumn("session_id", SessionId, DbType.String, 128)
+                              };
             }
         }
 

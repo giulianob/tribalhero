@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Data.Troop;
@@ -732,6 +733,16 @@ namespace Game.Battle {
                             city.BeginUpdate();                    
 
                         city.DefensePoint += attackPoints;
+
+                        // Give anyone stationed defense points as well
+                        List<City> uniqueCities = new List<City>();
+                        foreach (CombatObject co in defenders.Where(co => co.City != city && !uniqueCities.Contains(co.City))) {
+                            co.City.BeginUpdate();
+                            co.City.DefensePoint += attackPoints;
+                            co.City.EndUpdate();
+
+                            uniqueCities.Add(co.City);
+                        }
                     }
 
                     if (city.IsUpdating)

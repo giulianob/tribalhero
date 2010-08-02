@@ -28,6 +28,7 @@ namespace Game.Setup {
         LUMBERMILL_UNAVAILABLE = 205,
         ALREADY_IN_FOREST = 206,
         FOREST_INACCESSIBLE = 207,
+        FOREST_CAMP_MAX_REACHED = 208,
 
         #endregion
 
@@ -47,7 +48,8 @@ namespace Game.Setup {
         CITY_NAME_INVALID = 414,
         OBJECT_NOT_ATTACKABLE = 415,
         NOT_WITHIN_WALLS = 416,
-        STRUCTURE_UNDESTROYABLE = 417,
+        PLAYER_NEWBIE_PROTECTION = 417,
+        STRUCTURE_UNDESTROYABLE = 418,
 
         ROAD_NOT_AROUND = 420,
         ROAD_ALREADY_EXISTS = 421,
@@ -74,7 +76,8 @@ namespace Game.Setup {
         ATTACK_SELF = 600,
         CITY_IN_BATTLE = 601,        
         DEFEND_SELF = 602,
-        BATTLE_NOT_VIEWABLE = 603
+        BATTLE_NOT_VIEWABLE = 603,
+        TROOP_CHANGED = 604
 
         #endregion                
     }

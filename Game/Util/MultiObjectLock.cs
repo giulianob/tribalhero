@@ -21,22 +21,25 @@ namespace Game.Util {
     }
 
     public class MultiObjectLock : IDisposable {
+
         [ThreadStatic]
         private static MultiObjectLock currentLock;
 
         private DbTransaction transaction;
 
-        [Conditional("DEBUG")]
         public static void ThrowExceptionIfNotLocked(ILockable obj) {
+#if DEBUG
+            if (!IsLocked(obj))
+                throw new LockException("Object not locked");            
+            
+#elif CHECK_LOCKS
             if (!IsLocked(obj)) 
-                throw new LockException("Object not locked");
+                Global.Logger.Error(string.Format("Object not locked id[{0}] {1}", obj.Hash, Environment.StackTrace));
+#endif
         }
 
         public static bool IsLocked(ILockable obj) {
-            if (currentLock == null)
-                return false;
-
-            return currentLock.lockedObjects.Any(lck => lck == obj.Lock);
+            return currentLock != null && currentLock.lockedObjects.Any(lck => lck == obj.Lock);
         }
 
         private static int CompareObject(ILockable x, ILockable y) {
@@ -203,15 +206,10 @@ namespace Game.Util {
                     continue;
                 }
 
-                for (int i = 0; i < newToBeLocked.Count; ++i) {
-                    if (newToBeLocked[i].Hash == toBeLocked[i].Hash) {                        
-                        continue;
-                    }
-
+                if (newToBeLocked.Where((t, i) => t.Hash != toBeLocked[i].Hash).Any()) {
                     currentLock.Dispose();
                     currentLock = null;
                     Thread.Sleep(0);
-                    break;
                 }
             }
         }

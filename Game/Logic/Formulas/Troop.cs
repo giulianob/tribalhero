@@ -2,11 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
+using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Fighting;
 using Game.Logic.Actions;
 using Game.Module;
+using Game.Setup;
 
 #endregion
 
@@ -27,19 +30,21 @@ namespace Game.Logic {
             return (byte)Math.Min((int)Math.Ceiling((decimal)count / 100), 5);
         }
 
-        public static byte GetTroopSpeed(TroopStub stub, object p)
+        public static byte GetTroopSpeed(TroopStub stub)
         {
             int count = 0;
+            int totalSpeed = 0;
+            
             foreach (Formation formation in stub)
             {
-                if (formation.Type == FormationType.SCOUT)
-                    continue;
+                foreach (KeyValuePair<ushort, ushort> kvp in formation) {
+                    BaseUnitStats stats = stub.City.Template[kvp.Key];
+                    count += (kvp.Value * stats.Upkeep);
+                    totalSpeed += (kvp.Value * stats.Upkeep * stats.Battle.Spd);
+                }
+            }            
 
-                foreach (KeyValuePair<ushort, ushort> kvp in formation)
-                    count += kvp.Value;
-            }
-            return (byte)Math.Min(15, (10 - Math.Max(count / 100, 5)));
-            //limiting it to max of 15 because Formula.MoveTime will return negative if greater than 20
+            return (byte)(totalSpeed / count);
         }
 
         public static int GetAttackModeTolerance(int totalCount, AttackMode mode)

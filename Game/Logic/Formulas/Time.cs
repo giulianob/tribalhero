@@ -38,7 +38,7 @@ namespace Game.Logic {
         }
 
         internal static int MoveTime(byte speed) {
-            return Math.Max(1, 50 - speed);
+            return 3600 / (speed * 10);
         }
     }
 }

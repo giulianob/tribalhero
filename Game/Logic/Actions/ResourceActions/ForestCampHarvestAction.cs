@@ -95,6 +95,7 @@ namespace Game.Logic.Actions {
 
                 // Give back the labors to the city
                 city.BeginUpdate();
+                city.Resource.Wood.Rate -= (int)structure["Rate"];
                 city.Resource.Labor.Add(structure.Stats.Labor);
                 city.EndUpdate();
 

@@ -30,6 +30,7 @@ namespace Game.Logic.Actions {
             structureId = uint.Parse(properties["structure_id"]);
             lvl = byte.Parse(properties["lvl"]);
             type = uint.Parse(properties["type"]);
+            cost = new Resource(int.Parse(properties["crop"]), int.Parse(properties["gold"]), int.Parse(properties["iron"]), int.Parse(properties["wood"]), int.Parse(properties["labor"]));
         }
 
         public override Error Validate(string[] parms) {
@@ -135,9 +136,15 @@ namespace Game.Logic.Actions {
             get {
                 return
                     XMLSerializer.Serialize(new[] {
-                                                      new XMLKVPair("type", type), new XMLKVPair("lvl", lvl),
-                                                      new XMLKVPair("city_id", cityId),
-                                                      new XMLKVPair("structure_id", structureId)
+                                                        new XMLKVPair("type", type), 
+                                                        new XMLKVPair("lvl", lvl),
+                                                        new XMLKVPair("city_id", cityId),
+                                                        new XMLKVPair("structure_id", structureId),
+                                                        new XMLKVPair("wood", cost.Wood),
+                                                        new XMLKVPair("crop", cost.Crop),
+                                                        new XMLKVPair("iron", cost.Iron),
+                                                        new XMLKVPair("gold", cost.Gold),
+                                                        new XMLKVPair("labor", cost.Labor),
                     });
             }
         }

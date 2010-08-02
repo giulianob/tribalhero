@@ -191,19 +191,21 @@ namespace Game.Battle {
         public override DbColumn[] DbColumns {
             get {
                 return new[] {
-                                          new DbColumn("last_round", LastRound, DbType.UInt32),
-                                          new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                                          new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
-                                          new DbColumn("damage_received", DmgRecv, DbType.Int32),
-                                          new DbColumn("group_id", GroupId, DbType.UInt32),
-                                          new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
-                                          new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32),
-                                          new DbColumn("hp", hp, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
-                                          new DbColumn("level", lvl, DbType.Byte), //BattleStats
-                                          new DbColumn("max_hp", stats.MaxHp, DbType.UInt16),
-                                          new DbColumn("attack", stats.Atk, DbType.UInt16), new DbColumn("defense", stats.Def, DbType.UInt16),
-                                          new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte),
-                                          new DbColumn("speed", stats.Spd, DbType.Byte)
+                                            new DbColumn("last_round", LastRound, DbType.UInt32),
+                                            new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
+                                            new DbColumn("damage_dealt", DmgDealt, DbType.Int32),
+                                            new DbColumn("damage_received", DmgRecv, DbType.Int32),
+                                            new DbColumn("group_id", GroupId, DbType.UInt32),
+                                            new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
+                                            new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32),
+                                            new DbColumn("hp", hp, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
+                                            new DbColumn("level", lvl, DbType.Byte), //BattleStats
+                                            new DbColumn("max_hp", stats.MaxHp, DbType.UInt16),
+                                            new DbColumn("attack", stats.Atk, DbType.UInt16), new DbColumn("defense", stats.Def, DbType.UInt16),
+                                            new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte),
+                                            new DbColumn("speed", stats.Spd, DbType.Byte),
+                                            new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                                            new DbColumn("hits_received", HitRecv, DbType.UInt16),       
                                       };
             }
         }

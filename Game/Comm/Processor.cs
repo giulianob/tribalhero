@@ -33,6 +33,7 @@ namespace Game.Comm {
             RegisterCommand(Command.FOREST_CAMP_CREATE, CmdCreateForestCamp);
             RegisterCommand(Command.STRUCTURE_BUILD, CmdCreateStructure);
             RegisterCommand(Command.STRUCTURE_UPGRADE, CmdUpgradeStructure);
+            RegisterCommand(Command.STRUCTURE_DOWNGRADE, CmdDowngradeStructure);
             RegisterCommand(Command.STRUCTURE_CHANGE, CmdChangeStructure);
             RegisterCommand(Command.STRUCTURE_LABOR_MOVE, CmdLaborMove);
             RegisterCommand(Command.UNIT_TRAIN, CmdTrainUnit);

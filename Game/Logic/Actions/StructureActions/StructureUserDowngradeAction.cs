@@ -10,16 +10,16 @@ using Game.Util;
 #endregion
 
 namespace Game.Logic.Actions {
-    class StructureUpgradeAction : ScheduledActiveAction {
+    class StructureUserDowngradeAction : ScheduledActiveAction {
         private readonly uint cityId;
         private readonly uint structureId;
 
-        public StructureUpgradeAction(uint cityId, uint structureId) {
+        public StructureUserDowngradeAction(uint cityId, uint structureId) {
             this.cityId = cityId;
             this.structureId = structureId;
         }
 
-        public StructureUpgradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
+        public StructureUserDowngradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
                                       byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
@@ -34,54 +34,70 @@ namespace Game.Logic.Actions {
 
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
-
-            // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure, structure.Type, structure.X, structure.Y))
-                return Error.LAYOUT_NOT_FULLFILLED;
-
-            Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
-
-            if (cost == null)
-                return Error.OBJECT_STRUCTURE_NOT_FOUND;
-
-            if (!structure.City.Resource.HasEnough(cost))
-                return Error.RESOURCE_NOT_ENOUGH;
-
-            structure.City.BeginUpdate();
-            structure.City.Resource.Subtract(cost);
-            structure.City.EndUpdate();
+            if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
+                return Error.STRUCTURE_UNDESTROYABLE;
 
             endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city.MainBuilding.Lvl, structure.Technologies));
             beginTime = DateTime.UtcNow;
 
+            city.Worker.References.Add(structure, this);
             return Error.OK;
         }
 
         public override void Callback(object custom) {
             City city;
             Structure structure;
-            using (new MultiObjectLock(cityId, out city)) {
+
+            // Block structure
+            using (new MultiObjectLock(cityId, structureId, out city, out structure)) {
                 if (!IsValid())
                     return;
 
-                if (!city.TryGetStructure(structureId, out structure)) {
+                city.Worker.References.Remove(structure, this);
+                if (structure == null) {
+                    StateChange(ActionState.COMPLETED);
+                    return;
+                }
+
+                if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1) {
+                    StateChange(ActionState.FAILED);
+                    return;
+                }
+
+                if (structure.State.Type == ObjectState.BATTLE && structure.Lvl <= 1) {
                     StateChange(ActionState.FAILED);
                     return;
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                structure.IsBlocked = true;
                 structure.EndUpdate();
+            }
 
-                Procedure.OnStructureUpgrade(structure);
+            structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, new GameAction[] { this });
+
+            using (new MultiObjectLock(cityId, structureId, out city, out structure)) {
+                city.BeginUpdate();
+                structure.BeginUpdate();
+                byte oldLabor = structure.Stats.Labor;
+                StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
+                structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
+                structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
+                Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
+                if (oldLabor > structure.Stats.Base.MaxLabor) city.Resource.Labor.Add(oldLabor - structure.Stats.Base.MaxLabor);
+                InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);
+                Procedure.SetResourceCap(structure.City);
+
+                structure.IsBlocked = false;
+                structure.EndUpdate();
+                city.EndUpdate();
 
                 StateChange(ActionState.COMPLETED);
             }
         }
 
         public override ActionType Type {
-            get { return ActionType.STRUCTURE_UPGRADE; }
+            get { return ActionType.STRUCTURE_USERDOWNGRADE; }
         }
 
         public override Error Validate(string[] parms) {
@@ -92,25 +108,11 @@ namespace Game.Logic.Actions {
 
         private void InterruptCatchAll(bool wasKilled) {
             City city;
-            Structure structure;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
-                if (!city.TryGetStructure(structureId, out structure)) {                    
-                    StateChange(ActionState.FAILED);
-                    return;
-                }
-
-                if (!wasKilled) {
-                    Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
-
-                    city.BeginUpdate();
-                    city.Resource.Add(cost/2);
-                    city.EndUpdate();
-                }
-
-                StateChange(ActionState.FAILED);                                        
+                StateChange(ActionState.FAILED);
             }
         }
 

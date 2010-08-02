@@ -138,7 +138,7 @@ namespace Game.Logic.Actions
             }
 
             // add structure to the map                    
-            Structure structure = StructureFactory.GetStructure(type, 0);
+            Structure structure = StructureFactory.GetNewStructure(type, 0);
             structure.X = x;
             structure.Y = y;
 
@@ -193,7 +193,7 @@ namespace Game.Logic.Actions
                 city.Worker.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                StructureFactory.GetStructure(structure, structure.Type, 1, false);
+                StructureFactory.GetUpgradedStructure(structure, structure.Type, 1);
                 InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();

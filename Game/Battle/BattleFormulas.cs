@@ -123,13 +123,11 @@ namespace Game.Battle {
         }
 
         internal static ushort GetStamina(City city) {
-            return (ushort)(20 + Config.battle_stamina_initial);
+            return (ushort)(Config.battle_stamina_initial);
         }
 
         internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round) {
-            if (round >= city.MainBuilding.Lvl*5)
-                return stamina;
-            return (ushort) (stamina + city.MainBuilding.Lvl*5 - round);
+            return (ushort) (stamina);
         }
 
         internal static ushort GetStaminaRoundEnded(City city, ushort stamina, uint round) {
@@ -138,9 +136,9 @@ namespace Game.Battle {
         }
 
         internal static ushort GetStaminaStructureDestroyed(City city, ushort stamina, uint round) {
-            if (stamina <= 10)
+            if (stamina < Config.battle_stamina_destroyed_deduction)
                 return 0;
-            return (ushort) (stamina - 10);
+            return (ushort)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
         internal static bool IsAttackMissed(byte stealth) {

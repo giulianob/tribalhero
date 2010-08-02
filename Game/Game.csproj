@@ -217,6 +217,7 @@
     <Compile Include="Logic\Actions\ResourceActions\ResourceSellAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceBuyAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ForestCampBuildAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureUserDowngradeAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureDowngradeAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\LaborMoveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\PropertyCreateAction.cs" />

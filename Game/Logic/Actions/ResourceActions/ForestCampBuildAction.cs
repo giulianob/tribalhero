@@ -103,7 +103,7 @@ namespace Game.Logic.Actions {
             Global.World.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
-            Structure structure = StructureFactory.GetStructure(campType, 0);
+            Structure structure = StructureFactory.GetNewStructure(campType, 0);
             structure["Rate"] = 0; // Set initial rate for camp
             structure.X = emptyX;
             structure.Y = emptyY;
@@ -188,7 +188,7 @@ namespace Game.Logic.Actions {
                 // Upgrade the camp
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                StructureFactory.GetStructure(structure, structure.Type, 1, true);
+                StructureFactory.GetUpgradedStructure(structure, structure.Type, 1);
                 InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 

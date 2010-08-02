@@ -306,7 +306,7 @@ namespace Game.Module {
             ushort tileType = Global.World.GetTileType(x, y);
             if (ObjectTypeFactory.IsTileType("TileTree", tileType)) {
                 // Lumber mill
-                Structure structure = StructureFactory.GetStructure(2107, 1);
+                Structure structure = StructureFactory.GetNewStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
@@ -315,7 +315,7 @@ namespace Game.Module {
                 Global.World.Add(structure);
             } else if (ObjectTypeFactory.IsTileType("TileCrop", tileType)) {
                 // Farm
-                Structure structure = StructureFactory.GetStructure(2106, 1);
+                Structure structure = StructureFactory.GetNewStructure(2106, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
@@ -324,7 +324,7 @@ namespace Game.Module {
                 Global.World.Add(structure);
             } else if (x == origX - 1 && y == origY - 1) {
                 // Barrack
-                Structure structure = StructureFactory.GetStructure(2201, 1);
+                Structure structure = StructureFactory.GetNewStructure(2201, 1);
                 structure.X = x;
                 structure.Y = y;
 

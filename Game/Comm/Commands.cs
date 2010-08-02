@@ -77,6 +77,7 @@ namespace Game.Comm {
         STRUCTURE_UPGRADE = 302,
         STRUCTURE_CHANGE = 303,
         STRUCTURE_LABOR_MOVE = 304,
+        STRUCTURE_DOWNGRADE = 305,
         TECH_ADDED = 311,
         TECH_UPGRADE = 312,
         TECH_REMOVED = 313,

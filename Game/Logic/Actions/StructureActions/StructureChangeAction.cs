@@ -117,7 +117,7 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.GetStructure(structure, (ushort) type, lvl, false);
+                StructureFactory.GetUpgradedStructure(structure, (ushort) type, lvl);
                 structure.Technologies.Parent = structure.City.Technologies;
                 InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
                 structure.IsBlocked = false;

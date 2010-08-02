@@ -1,11 +1,15 @@
 Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
-2502,1,Simple,2501,1,5,0,1,1
+//Building Market @ Trading post,,,,,,,,
+2502,1,Simple,2501,1,5,0,3,1
 ,,,,,,,,
-//Armory,,,,,,,,
-2302,1,Simple,2301,1,20,0,1,1
+//Building Armory @ Univeristy,,,,,,,,
+2302,1,Simple,2301,1,20,0,3,1
 ,,,,,,,,
-//Blacksmith,,,,,,,,
-2303,1,Simple,2301,1,20,0,1,1
+//Building Blacksmith @ University,,,,,,,,
+2303,1,Simple,2301,1,20,0,3,1
 ,,,,,,,,
-//Foundry,,,,,,,,
+//Building basement @ Foundry away from basement,,,,,,,,
 2111,1,AwayFrom,2111,1,20,6,255,255
+,,,,,,,,
+//Building Tower @training ground away from Tower,,,,,,,,
+2402,1,AwayFrom,2402,1,20,3,255,255

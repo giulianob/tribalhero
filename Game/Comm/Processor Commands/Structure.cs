@@ -326,6 +326,46 @@ namespace Game.Comm {
             }
         }
 
+        public void CmdDowngradeStructure(Session session, Packet packet) {
+            uint cityId;
+            uint objectId;
+            uint targetId;
+
+            try {
+                cityId = packet.GetUInt32();
+                targetId = objectId = packet.GetUInt32();
+               // targetId = packet.GetUInt32();
+            } catch (Exception) {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            using (new MultiObjectLock(session.Player)) {
+                City city = session.Player.GetCity(cityId);
+
+                if (city == null) {
+                    ReplyError(session, packet, Error.UNEXPECTED);
+                    return;
+                }
+
+                Structure obj;
+                if (!city.TryGetStructure(objectId, out obj)) {
+                    ReplyError(session, packet, Error.UNEXPECTED);
+                    return;
+                }
+
+                StructureUserDowngradeAction downgradeAction = new StructureUserDowngradeAction(cityId, targetId);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, downgradeAction,
+                                                 obj.Technologies);
+                if (ret != 0)
+                    ReplyError(session, packet, ret);
+                else
+                    ReplySuccess(session, packet);
+
+                return;
+            }
+        }
+
         public void CmdCreateStructure(Session session, Packet packet) {
             uint cityId;
             uint objectId;

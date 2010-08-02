@@ -97,50 +97,43 @@ namespace Game.Setup {
             return -1;
         }
 
-        public static Structure GetStructure(ushort type, byte lvl) {
-            return GetStructure(null, type, lvl, true);
-        }
-
-        public static Structure GetStructure(Structure oldStructure, ushort type, byte lvl, bool append) {
-            return GetStructure(oldStructure, type, lvl, append, true);
-        }
-
-        public static Structure GetStructure(Structure oldStructure, ushort type, byte lvl, bool append, bool init) {
+        public static Structure GetNewStructure(ushort type, byte lvl) {
             if (dict == null)
                 return null;
+
             StructureBaseStats baseStats;
-
             if (dict.TryGetValue(type*100 + lvl, out baseStats)) {
-                //Creating new structure
-                if (oldStructure == null) {
-                    Structure obj = new Structure(new StructureStats(baseStats));
-                    return obj;
-                }
-
-                if (!append) {
-                    //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
-                    ushort newHp = oldStructure.Stats.Hp;
-                    if (baseStats.Battle.MaxHp > oldStructure.Stats.Base.Battle.MaxHp)
-                        newHp =
-                            (ushort)
-                            (oldStructure.Stats.Hp + (baseStats.Battle.MaxHp - oldStructure.Stats.Base.Battle.MaxHp));
-
-                    oldStructure.Stats = new StructureStats(baseStats) {Hp = newHp};
-                    oldStructure.Properties.Clear();                    
-                }
-                else {
-                    //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
-                    StructureStats oldStats = oldStructure.Stats;
-
-                    ushort newHp = oldStats.Hp;
-                    if (baseStats.Battle.MaxHp > oldStats.Base.Battle.MaxHp)
-                        newHp = (ushort)(oldStats.Hp + (baseStats.Battle.MaxHp - oldStats.Base.Battle.MaxHp));
-
-                    oldStructure.Stats = new StructureStats(baseStats) {Hp = newHp, Labor = oldStats.Labor};
-                }
+                return new Structure(new StructureStats(baseStats));
+            } else {
+                throw new Exception(String.Format("Structure not found in csv type[%d] lvl[%d]!", type, lvl));
             }
+        }
 
-            return null;
+        public static void GetUpgradedStructure(Structure structure, ushort type, byte lvl) {
+            if (dict == null)
+                return;
+            StructureBaseStats baseStats;
+            if (dict.TryGetValue(type * 100 + lvl, out baseStats)) {
+                //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
+                StructureStats oldStats = structure.Stats;
+
+                ushort newHp = oldStats.Hp;
+                if (baseStats.Battle.MaxHp > oldStats.Base.Battle.MaxHp) {
+                    newHp = (ushort) (oldStats.Hp + (baseStats.Battle.MaxHp - oldStats.Base.Battle.MaxHp));
+                } else if (newHp > baseStats.Battle.MaxHp) {
+                    newHp = baseStats.Battle.MaxHp;
+                }
+
+                byte newLabor = oldStats.Labor;
+                if (newLabor > baseStats.MaxLabor) {
+                    newLabor = baseStats.MaxLabor;
+                }
+
+                structure.Stats = new StructureStats(baseStats) { Hp = newHp, Labor = newLabor };
+            } else {
+                throw new Exception(String.Format("Structure not found in csv type[%d] lvl[%d]!", type, lvl));
+            }
+            return;
         }
 
         internal static int GetActionWorkerType(Structure structure) {

@@ -4,7 +4,6 @@ namespace Game.Setup {
 
         UNEXPECTED = -1,
         OK = 0,
-
         #endregion
 
         #region Action Errors
@@ -48,6 +47,7 @@ namespace Game.Setup {
         CITY_NAME_INVALID = 414,
         OBJECT_NOT_ATTACKABLE = 415,
         NOT_WITHIN_WALLS = 416,
+        STRUCTURE_UNDESTROYABLE = 417,
 
         ROAD_NOT_AROUND = 420,
         ROAD_ALREADY_EXISTS = 421,

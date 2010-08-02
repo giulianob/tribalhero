@@ -72,7 +72,7 @@ namespace Game.Logic.Actions {
                 city.BeginUpdate();
                 structure.BeginUpdate();
                 byte oldLabor = structure.Stats.Labor;
-                StructureFactory.GetStructure(structure, structure.Type, (byte)(structure.Lvl - 1), true);
+                StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
                 Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);

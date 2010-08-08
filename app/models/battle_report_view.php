@@ -13,13 +13,6 @@ class BattleReportView extends AppModel {
                             'fields' => '',
                             'order' => ''
             ),
-            'BattleReportTroop' => array(
-                            'className' => 'BattleReportTroop',
-                            'foreignKey' => 'battle_report_troop_id',
-                            'conditions' => '',
-                            'fields' => '',
-                            'order' => ''
-            ),
             'City' => array(
                             'className' => 'City',
                             'foreignKey' => 'city_id',

@@ -1,6 +1,6 @@
 <?php
 
-$results = array('outcomeOnly' => false, 'snapshots' => array());
+$results = array('refreshOnClose' => $refresh_on_close, 'outcomeOnly' => false, 'snapshots' => array());
 
 if (count($battle_reports) > 0)
     $battleStartTime = strtotime($battle_reports[0]['BattleReport']['created']);
@@ -29,7 +29,9 @@ foreach($battle_reports as $battle_report) {
                     'count' => $battle_object['count'],
                     'hp' => $battle_object['hp'],
                     'dmgTaken' => $battle_object['damage_taken'],
-                    'dmgDealt' => $battle_object['damage_dealt']
+                    'dmgDealt' => $battle_object['damage_dealt'],					
+					'hitsTaken' => $battle_object['hits_received'],
+					'hitsDealt' => $battle_object['hits_dealt'],					
             );
         }
 

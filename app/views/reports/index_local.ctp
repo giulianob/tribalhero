@@ -10,6 +10,7 @@ foreach($battle_reports as $battle_report)
 		'id' => $battle_report['Battle']['id'],
 		'date' => $time->niceShort($battle_report['Battle']['created']),
 		'location' => $battle_report['City']['name'],
+                'unread' => $battle_report['Battle']['read'] ? false : true
 	);
 }
 

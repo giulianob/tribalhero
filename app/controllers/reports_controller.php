@@ -1,7 +1,7 @@
 <?php
 
 class ReportsController extends AppController {
-    var $uses = array('Battle');
+    var $uses = array('Report', 'Battle');
     var $helpers = array('TimeAdv', 'Time');
 
     var $allowedFromGame = array('index_local', 'view_local', 'index_remote', 'view_remote');
@@ -15,13 +15,13 @@ class ReportsController extends AppController {
             'gained new units',
             'run out of stamina'
     );
-    
+
     function beforeFilter() {
         if (!empty($this->params['named'])) {
             $this->params['form'] = $this->params['named'];
         }
         else {
-            Configure::write('debug', 0);
+            //Configure::write('debug', 0);
         }
 
         $this->layout = 'ajax';
@@ -63,11 +63,18 @@ class ReportsController extends AppController {
             return;
         }
 
+        $refreshOnClose = false;
+        if (!$report['Battle']['read']) {
+            $this->Report->markAsRead($this->params['form']['playerId'], true, $this->params['form']['id']);
+            $refreshOnClose = true;
+        }
+
         $reports = $this->Battle->viewBattle($this->params['form']['id']);
 
         $this->set('troop_states_pst', $this->troop_states_pst);
         $this->set('main_report', $report);
         $this->set('battle_reports', $reports);
+        $this->set('refresh_on_close', $refreshOnClose);
 
         $this->render('view');
     }
@@ -85,7 +92,7 @@ class ReportsController extends AppController {
                 'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
         );
 
-        $reports = $this->paginate('BattleReportView');
+        $reports = $this->paginate($this->Battle->BattleReportView);
 
         $this->set('battle_reports', $reports);
     }
@@ -108,6 +115,12 @@ class ReportsController extends AppController {
         }
 
         $reports = $this->Battle->viewBattle($report['BattleReportView']['battle_id']);
+
+        $refreshOnClose = false;
+        if (!$report['BattleReportView']['read']) {
+            $this->Report->markAsRead($this->params['form']['playerId'], false, $this->params['form']['id']);
+            $refreshOnClose = true;
+        }
 
         // If set, will render only this snapshot instead of the whole battle. This is used to show only the outcome of the battle instead of the whole thing.
         $renderOnlySnapshot = null;
@@ -165,6 +178,7 @@ class ReportsController extends AppController {
 
         $this->set('main_report', $report);
         $this->set('troop_states_pst', $this->troop_states_pst);
+        $this->set('refresh_on_close', $refreshOnClose);
 
         if ($renderOnlySnapshot == null) {
             $this->set('battle_reports', $reports);

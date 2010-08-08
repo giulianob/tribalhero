@@ -5,3 +5,4 @@ glob:nbproject/private/private.properties
 glob:nbproject/project.xml
 glob:nbproject/project.properties
 glob:nbproject/private/private.xml
+glob:app/tmp/cache/cake_*

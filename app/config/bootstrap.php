@@ -41,7 +41,9 @@
  *
  */
 //EOF
-        
+
+date_default_timezone_set('UTC');
+	
 define('TROOP_STATE_ENTERING', 0);
 define('TROOP_STATE_STAYING', 1);
 define('TROOP_STATE_EXITING', 2);

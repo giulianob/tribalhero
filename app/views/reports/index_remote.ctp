@@ -11,7 +11,8 @@ foreach($battle_reports as $battle_report)
 		'date' => $time->niceShort($battle_report['BattleReportView']['created']),
 		'location' => $battle_report['City']['name'],
 		'troop' => $battle_report['TroopCity']['name'] . '(' . $battle_report['BattleReportView']['troop_stub_id'] . ')',
-		'side' => $battle_report['BattleReportView']['is_attacker']?'Attack':'Defense'
+		'side' => $battle_report['BattleReportView']['is_attacker']?'Attack':'Defense',
+                'unread' => $battle_report['BattleReportView']['read'] ? false : true
 	);
 }
 

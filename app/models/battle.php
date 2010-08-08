@@ -50,6 +50,7 @@ class Battle extends AppModel {
                         'City.name',
                         'Battle.created',
                         'Battle.id',
+                        'Battle.read'
                 ),
                 'conditions' => array(
                         'Battle.city_id' => $cities,
@@ -72,7 +73,8 @@ class Battle extends AppModel {
         $report = $this->find('first', array(
                 'fields' => array(
                         'Battle.id',
-                        'Battle.created'
+                        'Battle.created',
+                        'Battle.read'
                 ),
                 'conditions' => array(
                         'Battle.city_id' => $cities,
@@ -148,6 +150,7 @@ class Battle extends AppModel {
                         'BattleReportView.created',
                         'BattleReportView.is_attacker',
                         'BattleReportView.troop_stub_id',
+                        'BattleReportView.read',
                         'TroopCity.name',
                         'City.name'
                 ),
@@ -180,7 +183,8 @@ class Battle extends AppModel {
                         'BattleReportView.id',
                         'BattleReportView.battle_id',
                         'BattleReportView.is_attacker',
-                        'BattleReportView.group_id'
+                        'BattleReportView.group_id',
+                        'BattleReportView.read'
                 ),
                 'conditions' => array(
                         'BattleReportView.id' => $reportViewId,

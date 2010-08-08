@@ -1,7 +1,7 @@
 <?php
 
 class AppController extends Controller {
-    var $components = array('Auth', 'Security', 'Session');
+    var $components = array('Auth', 'Security', 'Session', 'DebugKit.Toolbar');
     var $helpers = array('Html', 'Javascript', 'Form', 'Session');
 
     var $recaptchaPrivateKey = '6LdYFgYAAAAAAMrRHyqHasNnktIyoTh1fwPKV0Jy';
@@ -50,7 +50,6 @@ class AppController extends Controller {
     function isAuthorized() {        
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
             if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {
-                debug('denied');
                 return false;
             }
         }

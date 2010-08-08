@@ -14,6 +14,7 @@
 	import src.Objects.IDisposable;
 	import src.UI.Components.GroundCircle;
 	import src.Objects.Troop.*;
+	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 
 	public class GroundForestCursor extends MovieClip implements IDisposable
 	{
@@ -48,6 +49,9 @@
 			cursor.alpha = 0.6;
 
 			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+			
+			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(null);
+			src.Global.gameContainer.setSidebar(sidebar);			
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);

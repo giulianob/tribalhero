@@ -21,9 +21,9 @@
 			this.iron = iron;
 			this.wood = wood;
 			this.labor = labor;
-		}
+		}				
 		
-		public function multiplyByUnit(count: int) : Resources {
+		public function multiplyByUnit(count: Number) : Resources {
 			return new Resources(crop * count, gold * count, iron * count, wood * count, labor * count);
 		}
 		

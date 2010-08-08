@@ -17,14 +17,21 @@ package src.Objects.Actions {
 			{ name: "Train", actions: [ TrainButton] },
 			{ name: "Upgrade", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Research", actions: [ TechnologyButton ] },			
-			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton ] },
+			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton ] },
 		];
+		
+		public static const STATE_COMPLETED: int = 0;
+		public static const STATE_STARTED: int = 1;
+		public static const STATE_FAILED: int = 2;
+		public static const STATE_FIRED: int = 3;
+		public static const STATE_RESCHEDULED: int = 4;
 		
 		//the actions visible to the client need to be here
         public static const STRUCTURE_BUILD: int = 101;
         public static const STRUCTURE_UPGRADE: int = 102;
         public static const STRUCTURE_CHANGE: int = 103;
-        public static const LABOR_MOVE: int = 105;        
+        public static const LABOR_MOVE: int = 106;        
+		public static const STRUCTURE_USERDOWNGRADE: int = 107;
         public static const RESOURCE_BUY: int = 306;
         public static const RESOURCE_SELL: int = 307;
 		public static const FOREST_CAMP_BUILD: int = 308;

@@ -6,6 +6,7 @@
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import src.Constants;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.UI.LookAndFeel.GameLookAndFeel;
@@ -20,10 +21,10 @@
 		private var lblArmor: JLabel; //Armor is not currently used
 		private var lblWeapon: JLabel;
 		private var lblHp: JLabel;
-		private var lblDefense: JLabel;
+		private var lblDefense: StarRating;
 		private var lblMaxLabor: JLabel;
-		private var lblStealth: JLabel;
-		private var lblRange: JLabel;
+		private var lblStealth: StarRating;
+		private var lblRange: StarRating;
 		private var lblRadius: JLabel;
 
 		private var lblArmorTitle: JLabel;
@@ -46,9 +47,9 @@
 			createUI();
 
 			lblMaxLabor.setText(structurePrototype.maxlabor.toString());
-			lblDefense.setText(structurePrototype.defense.toString());
-			lblRange.setText(structurePrototype.range.toString());
-			lblStealth.setText(structurePrototype.stealth.toString());
+			lblDefense.setValue(structurePrototype.defense);
+			lblRange.setValue(structurePrototype.range);
+			lblStealth.setValue(structurePrototype.stealth);
 			lblHp.setText(structurePrototype.hp.toString());
 			lblWeapon.setText(structurePrototype.weapon);
 			lblRadius.setText(structurePrototype.radius.toString());
@@ -71,9 +72,9 @@
 			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
 			lblMaxLabor = valueLabelMaker();
-			lblDefense = valueLabelMaker();
-			lblStealth = valueLabelMaker();
-			lblRange = valueLabelMaker();
+			lblDefense = new StarRating(Constants.structureStatRanges.defense.min, Constants.structureStatRanges.defense.max, 0, 5);
+			lblStealth = new StarRating(Constants.structureStatRanges.stealth.min, Constants.structureStatRanges.stealth.max, 0, 5);
+			lblRange = new StarRating(Constants.structureStatRanges.range.min, Constants.structureStatRanges.range.max, 0, 5);
 			lblRadius = valueLabelMaker();
 
 			appendAll(lblHpTitle, lblHp, lblDefenseTitle, lblDefense);

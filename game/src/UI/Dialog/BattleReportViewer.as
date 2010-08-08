@@ -26,6 +26,8 @@
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var id: int;
 		private var isLocal: Boolean;
+		
+		public var refreshOnClose: Boolean;
 
 		public function BattleReportViewer(id: int, isLocal: Boolean)
 		{
@@ -54,6 +56,7 @@
 			try
 			{
 				data = loader.getDataAsObject();
+				refreshOnClose = data.refreshOnClose;
 				renderSnapshots();
 				chkViewAll.setEnabled(!data.outcomeOnly);
 			}

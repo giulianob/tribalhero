@@ -47,8 +47,8 @@
 			this.city = city;
 			this.formationType = formationType;
 
-			setTileWidth(45);
-			setTileHeight(20);
+			setTileWidth(55);
+			setTileHeight(32);
 
 			if (!tooltipMode) {
 				addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);

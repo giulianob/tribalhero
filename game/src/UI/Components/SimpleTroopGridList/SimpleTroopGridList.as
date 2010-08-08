@@ -39,8 +39,8 @@
 			this.templates = templateManager;
 			this.formationType = formationType;
 
-			setTileWidth(45);
-			setTileHeight(32);
+			setTileWidth(60);
+			setTileHeight(36);
 
 			addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);
 			addEventListener(GridListItemEvent.ITEM_ROLL_OUT, onItemRollOut);
@@ -96,6 +96,7 @@
 				var value: * = troopCell.getCellValue();
 				if (value.data.type == type) {
 					value.data.count += count;
+					troopCell.setCellValue(value);
 					return null;
 				}
 			}

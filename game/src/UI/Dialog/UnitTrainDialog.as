@@ -2,8 +2,12 @@ package src.UI.Dialog {
 
 	import flash.events.Event;
 	import src.Global;
+	import src.Map.City;
+	import src.Objects.Effects.Formula;
+	import src.Objects.GameObject;
 	import src.Objects.LazyResources;
 	import src.Objects.Prototypes.UnitPrototype;
+	import src.Objects.Resources;
 	import src.UI.Components.SimpleResourcesPanel;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
@@ -17,6 +21,8 @@ package src.UI.Dialog {
 
 	public class UnitTrainDialog extends GameJPanel {
 
+		private var parentObj:GameObject;
+		private var city: City;
 		private var txtTitle:JLabel;
 		private var panel4:JPanel;
 		private var sldAmount:JAdjuster;
@@ -30,9 +36,11 @@ package src.UI.Dialog {
 		private var trainTime: int;
 		private var lblUpkeepMsg: MultilineLabel;
 
-		public function UnitTrainDialog(unitPrototype: UnitPrototype, onAccept: Function, trainTime: int):void {
+		public function UnitTrainDialog(parentObj: GameObject, unitPrototype: UnitPrototype, onAccept: Function, trainTime: int):void {
 			this.unitPrototype = unitPrototype;
 			this.trainTime = trainTime;
+			this.parentObj = parentObj;
+			this.city = Global.map.cities.get(parentObj.cityId);		
 
 			createUI();
 
@@ -41,7 +49,7 @@ package src.UI.Dialog {
 			txtTitle.setText("How many units would you like to train?");
 
 			sldAmount.setMinimum(1);
-			sldAmount.setValues(1, 0, 1, Global.gameContainer.selectedCity.resources.Div(unitPrototype.trainResources));
+			sldAmount.setValues(1, 0, 1, Global.gameContainer.selectedCity.resources.Div(Formula.unitTrainCost(city, unitPrototype)));
 
 			sldAmount.addStateListener(updateResources);
 			sldAmount.addStateListener(updateTime);
@@ -66,8 +74,10 @@ package src.UI.Dialog {
 			var cityResources: LazyResources = Global.gameContainer.selectedCity.resources;
 			pnlUpkeepMsg.setVisible((cityResources.crop.getUpkeep() + totalUpkeep) > cityResources.crop.getRate());
 
+			var cost: Resources = Formula.unitTrainCost(city, unitPrototype);
+
 			pnlResources.removeAll();
-			pnlResources.append(new SimpleResourcesPanel(unitPrototype.trainResources.multiplyByUnit(sldAmount.getValue())));
+			pnlResources.append(new SimpleResourcesPanel(cost.multiplyByUnit(sldAmount.getValue())));
 
 			if (getFrame() != null) {
 				getFrame().pack();

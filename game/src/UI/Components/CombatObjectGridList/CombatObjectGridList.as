@@ -30,7 +30,7 @@
 			setBorder(new EmptyBorder(null, new Insets(8, 3, 8, 3)));
 			setTracksWidth(true);
 
-			setTileWidth(60);
+			setTileWidth(66);
 			setTileHeight(60);
 
 			addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);

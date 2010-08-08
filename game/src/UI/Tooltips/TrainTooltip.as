@@ -92,8 +92,9 @@ package src.UI.Tooltips {
 				pnlRequired.setVisible(false);
 			}
 
+			var city: City = Global.map.cities.get(parentObj.cityId);
 			pnlResources.removeAll();
-			pnlResources.append(new ResourcesPanel(unitPrototype.trainResources, Global.map.cities.get(parentObj.cityId)));
+			pnlResources.append(new ResourcesPanel(Formula.unitTrainCost(city, unitPrototype), city));
 		}
 
 		private function createUI(): void {

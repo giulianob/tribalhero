@@ -73,15 +73,20 @@
 			],
 
 			"Class.Message.preview", [
-			"Textfield.foreground", new ASColorUIResource(0x707070)
+			"Textfield.foreground", new ASColorUIResource(0x707070),
+			"Label.foreground", new ASColorUIResource(0x707070),
 			],
 			"Class.Message.unread", [
 			"Textfield.font", new ASFontUIResource("Arial", 12, true),
-			"Textfield.foreground", new ASColorUIResource(0x000000)
+			"Textfield.foreground", new ASColorUIResource(0x000000),
+			"Label.font", new ASFontUIResource("Arial", 12, true),
+			"Label.foreground", new ASColorUIResource(0x000000)			
 			],
 			"Class.Message.read", [
 			"Textfield.font", new ASFontUIResource("Arial", 12, false),
-			"Textfield.foreground", new ASColorUIResource(0x000000)
+			"Textfield.foreground", new ASColorUIResource(0x000000),
+			"Label.font", new ASFontUIResource("Arial", 12, false),
+			"Label.foreground", new ASColorUIResource(0x000000)			
 			],
 
 			"Class.Label.small", [

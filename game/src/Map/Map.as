@@ -503,8 +503,8 @@
 
 		public function onMove(event: Event = null):void
 		{
-			var pt: Point = MapUtil.getMapCoord(camera.x, camera.y);
-			Global.gameContainer.minimapTools.txtCoords.text = "(" + pt.x + "," + pt.y + ")";
+			var pt: Point = MapUtil.getMapCoord(camera.x + Constants.screenW / 2, camera.y + Constants.screenH / 2);
+			Global.gameContainer.minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
 
 			if (!disabledMapQueries) {
 				parseRegions();

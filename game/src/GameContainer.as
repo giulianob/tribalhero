@@ -12,6 +12,7 @@
 	import src.Objects.*;
 	import src.Map.Map;
 	import src.UI.Components.*;
+	import src.UI.Components.ScreenMessages.ScreenMessagePanel;
 	import src.UI.Dialog.*;
 	import src.UI.*;
 	import flash.ui.*;
@@ -58,6 +59,9 @@
 		//Timer to load unread message count
 		public var messageTimer: MessageTimer;
 
+		//On screen message component
+		public var screenMessage: ScreenMessagePanel;
+
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer = new MinimapToolsContainer();
 		private var minimapZoomed: Boolean = false;
@@ -65,6 +69,7 @@
 
 		public function GameContainer()
 		{
+			// Create and position the city list
 			lstCities = new JComboBox();
 			lstCities.setModel(new VectorListModel());
 			lstCities.addActionListener(onChangeCitySelection);
@@ -72,20 +77,30 @@
 			lstCities.setLocation(new IntPoint(37, 12));
 			addChild(lstCities);
 
-			chains.visible = false;
-			
-			txtUnread.visible = false;
-			txtUnread.mouseChildren = false;
-			txtUnread.mouseEnabled = false;
+			// Hide the new count bubble for messaged and reports
+			txtUnreadMessages.visible = false;
+			txtUnreadMessages.mouseChildren = false;
+			txtUnreadMessages.mouseEnabled = false;
 
+			txtUnreadReports.visible = false;
+			txtUnreadReports.mouseChildren = false;
+			txtUnreadReports.mouseEnabled = false;
+
+			// Add key down listener to stage
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
 			});
 
+			// Hide game container for now
 			visible = false;
 
+			// Hide the connecting chains for the sidebar (this is just a graphic)
+			chains.visible = false;
+
+			// Disable mouse for coordinates
 			minimapTools.txtCoords.mouseEnabled = false;
 
+			// Set up tooltips
 			minimapZoomTooltip = new SimpleTooltip(minimapTools.btnMinimapZoom);
 			minimapTools.btnMinimapZoom.addEventListener(MouseEvent.CLICK, onZoomIntoMinimap);
 
@@ -110,6 +125,7 @@
 			new SimpleTooltip(btnCityTroops, "View unit movement");
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
 
+			// Set up sidebar holder
 			sidebarHolder = new Sprite();
 			addChildAt(sidebarHolder, 1);
 
@@ -148,13 +164,21 @@
 		public function onViewReports(e: MouseEvent):void
 		{
 			var battleReportDialog: BattleReportList = new BattleReportList();
-			battleReportDialog.show();
+			battleReportDialog.show(null, true, function(dialog: BattleReportList) : void {
+				if (battleReportDialog.getRefreshOnClose()) {
+					messageTimer.check();
+				}
+			});
 		}
 
 		public function onViewMessages(e: MouseEvent):void
 		{
 			var messagingDialog: MessagingDialog = new MessagingDialog();
-			messagingDialog.show();
+			messagingDialog.show(null, true, function(dialog: MessagingDialog) : void {
+				if (messagingDialog.getRefreshOnClose()) {
+					messageTimer.check();
+				}
+			});
 		}
 
 		public function onGoToCity(e: Event) : void {
@@ -257,7 +281,7 @@
 
 			//Show resources box
 			resourcesContainer = new ResourcesContainer();
-			displayResources();
+			displayResources();			
 
 			//Add minimap tools
 			addChild(minimapTools);
@@ -269,12 +293,19 @@
 		}
 
 		public function show() : void {
+			// Reset camera pos
 			camera.reset();
 
+			// Close any previous open frames (Shouldnt really have any but just to be safe)
 			closeAllFrames();
 
+			// Set visible
 			visible = true;
+			
+			// Create on screen message component, it'll auto show itself
+			screenMessage = new ScreenMessagePanel();			
 
+			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
 			messageTimer.start();
 		}
@@ -293,6 +324,10 @@
 
 			if (resourcesContainer && resourcesContainer.getFrame()) {
 				resourcesContainer.getFrame().dispose();
+			}
+
+			if (screenMessage) {
+				screenMessage.dispose();
 			}
 
 			resourcesContainer = null;
@@ -330,7 +365,7 @@
 				chains.visible = true;
 				sidebar.show(sidebarHolder);
 			}
-			
+
 			stage.focus = null;
 		}
 

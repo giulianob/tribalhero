@@ -17,6 +17,8 @@
 		public static const EFFECT_WOOD_CUTTING: int = 8;
 		public static const EFFECT_HAVE_TECHNOLOGY: int = 9;
 		public static const EFFECT_COUNT_LESS_THAN: int = 10;
+		public static const EFFECT_REPAIR_SAVING: int = 11;
+		public static const EFFECT_TROOP_SPEED_MOD: int = 12;
 		public static const EFFECT_AWAY_FROM_STRUCTURE_MOD: int = 14;
 		
 		

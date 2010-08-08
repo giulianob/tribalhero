@@ -42,6 +42,7 @@ package src.Comm {
 		public static const STRUCTURE_UPGRADE: int = 302;
 		public static const STRUCTURE_CHANGE: int = 303;
 		public static const STRUCTURE_LABOR_MOVE: int = 304;
+		public static const STRUCTURE_DOWNGRADE: int = 305;
 		
 		public static const TECHNOLOGY_ADDED: int = 311;
 		public static const TECHNOLOGY_UPGRADE: int = 312;
@@ -56,6 +57,8 @@ package src.Comm {
 		public static const CITY_RADIUS_UPDATE: int = 465;
 		public static const CITY_LOCATE: int = 466;
 		public static const CITY_ATTACK_DEFENSE_POINT_UPDATE: int = 467;
+		public static const CITY_BATTLE_STARTED: int = 490;
+		public static const CITY_BATTLE_ENDED: int = 491;
 		public static const CITY_CREATE_INITIAL: int = 499;
 		
 		public static const FOREST_INFO: int = 350;

@@ -99,8 +99,9 @@ package src.UI.Tooltips {
 				else
 				pnlRequired.setVisible(false);
 
+				var city: City = Global.map.cities.get(parentObj.cityId);
 				pnlResources.removeAll();
-				pnlResources.append(new ResourcesPanel(nextUnitPrototype.upgradeResources, Global.map.cities.get(parentObj.cityId)));
+				pnlResources.append(new ResourcesPanel(Formula.unitUpgradeCost(city, nextUnitPrototype), city));
 			}
 			else
 			ui.remove(pnlNextLvl);

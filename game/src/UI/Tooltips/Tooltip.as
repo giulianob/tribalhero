@@ -101,23 +101,7 @@ package src.UI.Tooltips {
 			}
 
 			ui.getFrame().setGlobalLocation(new IntPoint(boxX, boxY));
-			ui.getFrame().revalidate();
-			/*
-			trace("");
-			trace("Frame");
-			trace("Preferred: " + ui.getFrame().getPreferredWidth() + "x" + ui.getFrame().getPreferredHeight());
-			trace("Size: " + ui.getFrame().getSize().width + "x" + ui.getFrame().getSize().height);
-			trace("Basic width and height: " + ui.getFrame().getWidth() + "x" + ui.getFrame().getHeight());
-			trace("ComBounds: " + ui.getFrame().getComBounds().width + "x" + ui.getFrame().getComBounds().height);
-
-			trace("UI");
-			trace("Preferred: " + ui.getPreferredWidth() + "x" + ui.getPreferredHeight());
-			trace("Size: " + ui.getSize().width + "x" + ui.getSize().height);
-			trace("Basic width and height: " + ui.getWidth() + "x" + ui.getHeight());
-			trace("ComBounds: " + ui.getComBounds().width + "x" + ui.getComBounds().height);
-
-			trace("Final pos:" + boxX + "," + boxY);
-			*/
+			ui.getFrame().revalidate();			
 		}
 
 		public function hide():void

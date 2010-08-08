@@ -14,7 +14,7 @@
 			this.type = type;
 		}
 		
-		public function toString(gameObject: IObject) : String 
+		public override function toString(gameObject: IObject) : String 
 		{
 			return PassiveAction.toString(type);
 		}

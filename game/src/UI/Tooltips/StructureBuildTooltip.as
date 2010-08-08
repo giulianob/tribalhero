@@ -1,6 +1,7 @@
 ﻿package src.UI.Tooltips {
 
 	import src.Global;
+	import src.Map.City;
 	import src.Objects.Effects.RequirementFormula;
 	import src.Objects.Prototypes.EffectReqPrototype;
 	import src.Objects.Prototypes.ILayout;
@@ -38,11 +39,14 @@
 		private var lblActionCount:JLabel;
 		private var pnlResources:JPanel;
 		private var statsBox: StructureStatBox;
+		
+		private var city: City;
 
 		public function StructureBuildTooltip(parentObj: StructureObject, structPrototype: StructurePrototype)
 		{
 			this.parentObj = parentObj;
 			this.structPrototype = structPrototype;
+			this.city = Global.map.cities.get(parentObj.cityId);
 
 			createUI();
 
@@ -90,7 +94,7 @@
 			pnlRequired.setVisible(false);
 
 			pnlResources.removeAll();
-			pnlResources.append(new ResourcesPanel(structPrototype.buildResources, Global.map.cities.get(parentObj.cityId)));
+			pnlResources.append(new ResourcesPanel(Formula.buildCost(city, structPrototype), city));
 		}
 
 		private function createUI(): void {

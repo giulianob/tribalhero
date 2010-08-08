@@ -6,6 +6,8 @@
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import src.Constants;
+	import src.Global;
 	import src.Map.City;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
@@ -28,11 +30,11 @@
 		private var lblHp: JLabel;
 		private var lblUnitClass: JLabel;
 		private var lblWeaponClass: JLabel;
-		private var lblAttack: JLabel;
-		private var lblDefense: JLabel;
-		private var lblStealth: JLabel;
-		private var lblRange: JLabel;
-		private var lblSpeed: JLabel;
+		private var lblAttack: StarRating;
+		private var lblDefense: StarRating;
+		private var lblStealth: StarRating;
+		private var lblRange: StarRating;
+		private var lblSpeed: StarRating;
 		private var lblUpkeep: JLabel;
 
 		private var lblArmorTitle: JLabel;
@@ -85,11 +87,11 @@
 		}
 
 		private function init(armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, defense: int, stealth: int, range: int, speed: int) : void {
-			lblAttack.setText(attack.toString());
-			lblDefense.setText(defense.toString());
-			lblSpeed.setText(speed.toString());
-			lblRange.setText(range.toString());
-			lblStealth.setText(stealth.toString());
+			lblAttack.setValue(attack);
+			lblDefense.setValue(defense);
+			lblSpeed.setValue(speed);
+			lblRange.setValue(range);
+			lblStealth.setValue(stealth);
 			lblHp.setText(hp.toString());
 			lblUnitClass.setText(unitClass);
 			lblWeaponClass.setText(weaponClass);
@@ -117,13 +119,13 @@
 			lblArmor = valueLabelMaker();
 			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
-			lblAttack = valueLabelMaker();
+			lblAttack = new StarRating(Constants.unitStatRanges.attack.min, Constants.unitStatRanges.attack.max, 0, 5);
 			lblWeaponClass = valueLabelMaker();
 			lblUnitClass = valueLabelMaker();
-			lblDefense = valueLabelMaker();
-			lblStealth = valueLabelMaker();
-			lblRange = valueLabelMaker();
-			lblSpeed = valueLabelMaker();
+			lblDefense = new StarRating(Constants.unitStatRanges.defense.min, Constants.unitStatRanges.defense.max, 0, 5);
+			lblStealth = new StarRating(Constants.unitStatRanges.stealth.min, Constants.unitStatRanges.stealth.max, 0, 5);
+			lblRange = new StarRating(Constants.unitStatRanges.range.min, Constants.unitStatRanges.range.max, 0, 5);
+			lblSpeed = new StarRating(Constants.unitStatRanges.speed.min, Constants.unitStatRanges.speed.max, 0, 5);
 			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
 
 			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());			

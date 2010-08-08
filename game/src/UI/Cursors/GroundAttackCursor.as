@@ -3,7 +3,6 @@
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	import src.Constants;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Effects.Formula;
@@ -34,6 +33,7 @@
 		private var tiles: Array = new Array();
 
 		private var troop: TroopStub;
+		private var troopSpeed: int;
 		private var city: City;
 		private var mode: int;
 
@@ -52,6 +52,8 @@
 			this.troop = troop;
 			this.city = Global.map.cities.get(cityId);
 			this.mode = mode;
+
+			troopSpeed = troop.getSpeed(city);
 
 			Global.map.selectObject(null);
 			Global.map.objContainer.resetObjects();
@@ -179,7 +181,7 @@
 
 			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
-			var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
+			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance);
 
 			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to attack.");
 		}

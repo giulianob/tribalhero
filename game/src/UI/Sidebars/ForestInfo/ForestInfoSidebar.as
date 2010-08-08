@@ -1,4 +1,5 @@
 ﻿package src.UI.Sidebars.ForestInfo {
+	import fl.motion.SimpleEase;
 	import flash.events.*;
 	import flash.geom.Point;
 	import flash.utils.Timer;
@@ -8,6 +9,7 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Prototypes.*;
 	import src.Objects.*;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.Dialog.*;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.ForestInfo.Buttons.ForestCampBuildButton;
@@ -60,8 +62,13 @@
 		{
 			pnlStats.removeAll();
 
+			var lbl: JLabel;
+			
 			addStatRow("Level", forestObj.level.toString());
-			addStatRow("Rate", "+" + forestObj.rate.toString() + "/hr", new AssetIcon(new ICON_WOOD()));
+			
+			lbl = addStatRow("Rate", "+" + forestObj.rate.toString() + "/hr", new AssetIcon(new ICON_WOOD()));
+			new SimpleTooltip(lbl, "Each labor will gather " + forestObj.rate.toString() + " wood per hour");
+			
 			addStatRow("Laborers", forestObj.labor + "/" + Formula.maxForestLabor(forestObj.level));
 			addStatRow("Wood", forestObj.wood.getValue().toString(), new AssetIcon(new ICON_WOOD()));
 			addStatRow("Depletion", "-" + (forestObj.wood.getUpkeep() / Constants.secondsPerUnit) + "/hr", new AssetIcon(new ICON_WOOD()));

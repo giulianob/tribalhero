@@ -9,6 +9,7 @@
 	import src.Objects.Prototypes.*;
 	import src.Objects.Effects.*;
 	import src.Objects.Factories.*;
+	import src.UI.Components.ScreenMessages.BuiltInMessages;
 
 	public class CityComm {
 
@@ -55,7 +56,11 @@
 				break;
 				case Commands.CITY_ATTACK_DEFENSE_POINT_UPDATE:
 					onReceiveDefenseAttackPoint(e.packet);
-					break;
+				break;
+				case Commands.CITY_BATTLE_ENDED:
+				case Commands.CITY_BATTLE_STARTED:
+					onReceiveBattleStateChange(e.packet);
+				break;
 			}
 		}
 
@@ -63,15 +68,27 @@
 			var cityId: int = packet.readUInt();
 			var attackPoint: int = packet.readInt();
 			var defensePoint: int = packet.readInt();
-			
+
 			var city: City = Global.map.cities.get(cityId);
-			
+
 			if (city != null) {
 				city.attackPoint = attackPoint;
 				city.defensePoint = defensePoint;
 			}
 		}
-		
+
+		public function onReceiveBattleStateChange(packet: Packet): void {
+			var cityId: int = packet.readUInt();
+
+			var city: City = Global.map.cities.get(cityId);
+
+			if (city != null) {
+				city.inBattle = packet.cmd == Commands.CITY_BATTLE_STARTED;
+
+				BuiltInMessages.showInBattle(city);
+			}
+		}
+
 		public function onCityRadiusUpdate(packet: Packet):void
 		{
 			var cityId: int = packet.readUInt();
@@ -103,6 +120,8 @@
 			{
 				city.resources = resources;
 				city.dispatchEvent(new Event(City.RESOURCES_UPDATE));
+
+				BuiltInMessages.showTroopsStarving(city);
 			}
 		}
 
@@ -275,6 +294,8 @@
 			}
 
 			city.notifications.add(notification);
+			
+			BuiltInMessages.showIncomingAttack(city);
 		}
 
 		public function onReceiveRemoveNotification(packet: Packet):void
@@ -285,6 +306,8 @@
 			return;
 
 			city.notifications.remove( [ packet.readUInt(), packet.readUInt() ] );
+			
+			BuiltInMessages.showIncomingAttack(city);
 		}
 
 		public function gotoNotificationLocation(srcCityId: int, cityId: int, actionId: int) : void {
@@ -302,15 +325,15 @@
 			var pt: Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}
-		
+
 		public function gotoCityLocation(cityId: int) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.CITY_LOCATE;
 			packet.writeUInt(cityId);
-			
+
 			session.write(packet, onReceiveCityLocation);
 		}
-		
+
 		public function onReceiveCityLocation(packet: Packet, custom: * ): void {
 			var pt: Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
@@ -318,3 +341,4 @@
 	}
 
 }
+

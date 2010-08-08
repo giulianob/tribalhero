@@ -3,9 +3,9 @@
 	import flash.events.Event;
 	import org.aswing.event.SelectionEvent;
 	import org.aswing.event.TableCellEditEvent;
+	import org.aswing.table.GeneralTableCellFactory;
 	import org.aswing.table.PropertyTableModel;
 	import src.Comm.GameURLLoader;
-	import src.Constants;
 	import src.Global;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
@@ -33,6 +33,8 @@
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
 
+		public var refreshOnClose: Boolean = false;
+		
 		public function RemoteReportList()
 		{
 			createUI();
@@ -45,12 +47,18 @@
 			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {
 				if (tblReports.getSelectedRow() == -1) return;
 
-				var id: int = reportList.get(tblReports.getSelectedRow()).id;
+				var row: * = reportList.get(tblReports.getSelectedRow());
+				var id: int = row.id;
 
 				tblReports.clearSelection(true);
 
 				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, false);
-				battleReportDialog.show();
+				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
+					if (battleReportDialog.refreshOnClose) {
+						refreshOnClose = true;
+						loadPage(page);
+					}
+				});
 			});
 
 			btnNext.addActionListener(function() : void {
@@ -75,7 +83,7 @@
 		private function onLoaded(e: Event) : void {
 			var data: Object;
 			try
-			{				
+			{
 				data = loader.getDataAsObject();
 			}
 			catch (e: Error) {
@@ -97,7 +105,7 @@
 			reportList.append(snapshot);
 		}
 
-		private function createUI() : void {			
+		private function createUI() : void {
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
 
@@ -105,12 +113,13 @@
 
 			tableModel = new PropertyTableModel(reportList,
 			["Date", "Battle Location", "Troop", "Side"],
-			["date", "location", "troop", "side"],
+			["date", ".", "troop", "side"],
 			[null, null, null, null]
 			);
 
 			tblReports = new JTable(tableModel);
 			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);
+			tblReports.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(UnreadTextCell));
 
 			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
 			pnlReportsScroll.setConstraints("Center");
@@ -118,10 +127,10 @@
 			pnlPaging = new JPanel();
 			pnlPaging.setConstraints("South");
 
-			btnPrevious = new JLabelButton("< Newer");			
+			btnPrevious = new JLabelButton("< Newer");
 
 			lblPages = new JLabel();
-			
+
 			btnNext = new JLabelButton("Older >");
 
 			//component layoution

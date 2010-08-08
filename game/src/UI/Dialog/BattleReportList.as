@@ -17,10 +17,14 @@
 		private var pnlRemote: JPanel;
 
 		private var localReports: LocalReportList;
-		private var remoteReports: RemoteReportList;
+		private var remoteReports: RemoteReportList;		
 
 		public function BattleReportList() {
 			createUI();
+		}
+		
+		public function getRefreshOnClose() : Boolean {
+			return localReports.refreshOnClose || remoteReports.refreshOnClose;
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame

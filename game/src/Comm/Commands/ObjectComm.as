@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 
+	import org.aswing.AssetIcon;
 	import src.Comm.*;
 	import src.Map.*;
 	import src.Objects.*;
@@ -13,6 +14,7 @@
 	import src.Objects.States.GameObjectState;
 	import src.Objects.States.MovingState;
 	import src.Objects.Troop.*;
+	import src.UI.Components.ScreenMessages.*;
 
 	public class ObjectComm {
 
@@ -115,6 +117,17 @@
 			packet.writeUInt(city);
 			packet.writeUInt(objectid);
 			packet.writeUByte(value);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}
+
+		public function downgrade(city: int, objectId: int, targetId: int) :void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRUCTURE_DOWNGRADE;
+			packet.writeUInt(city);
+			packet.writeUInt(objectId);
+			packet.writeUInt(targetId);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}
@@ -425,7 +438,7 @@
 			var cityId: int = packet.readUInt();
 			var objId: int = packet.readUInt();
 			var currentAction: CurrentAction;
-			
+
 			if (packet.readUByte() == 0)
 			currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			else
@@ -470,19 +483,26 @@
 
 		public function onReceiveCompleteObjectAction(packet: Packet):void
 		{
+			var state: int = packet.readInt();
 			var cityId: int = packet.readUInt();
 			var objId: int = packet.readUInt();
 
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0)
-			currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
-			else
-			currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
 			var city: City = Global.map.cities.get(cityId);
-			if (city == null)
-			return;
+			if (city == null) return;
+
+			// Show screen message if action completes
+			if (state == Action.STATE_COMPLETED) {
+				var obj: CityObject = city.objects.get(objId);
+				if (obj) {
+					var strPrototype: StructurePrototype = StructureFactory.getPrototype(obj.getType(), obj.getLevel());
+					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": " + currentAction.toString(obj) + " has completed", new AssetIcon(new ICON_CLOCK), 2000));
+				}
+			}
 
 			city.currentActions.remove(currentAction.id);
 		}
@@ -495,11 +515,7 @@
 			packet.writeUInt(objectId);
 			packet.writeUInt(id);
 
-			session.write(packet, onReceiveCancelAction, objectId);
-		}
-
-		public function onReceiveCancelAction(packet: Packet, custom: *):void
-		{
+			session.write(packet, mapComm.catchAllErrors, objectId);
 		}
 
 	}

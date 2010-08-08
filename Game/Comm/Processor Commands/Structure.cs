@@ -333,8 +333,8 @@ namespace Game.Comm {
 
             try {
                 cityId = packet.GetUInt32();
-                targetId = objectId = packet.GetUInt32();
-               // targetId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+                targetId = packet.GetUInt32();
             } catch (Exception) {
                 ReplyError(session, packet, Error.UNEXPECTED);
                 return;

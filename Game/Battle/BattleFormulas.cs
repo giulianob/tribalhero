@@ -4,7 +4,6 @@ using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
-using Game.Logic.Conditons;
 using Game.Data.Troop;
 
 #endregion
@@ -127,7 +126,7 @@ namespace Game.Battle {
         }
 
         internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round) {
-            return (ushort) (stamina);
+            return stamina;
         }
 
         internal static ushort GetStaminaRoundEnded(City city, ushort stamina, uint round) {

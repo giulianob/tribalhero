@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 22, 2010 at 08:46 PM
+-- Generation Time: Aug 08, 2010 at 01:02 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -53,6 +53,7 @@ CREATE TABLE `battles` (
   `city_id` int(10) unsigned NOT NULL,
   `created` datetime NOT NULL,
   `ended` datetime DEFAULT NULL,
+  `read` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ended` (`ended`),
   KEY `created` (`created`),
@@ -115,6 +116,8 @@ CREATE TABLE `battle_report_objects` (
   `damage_taken` int(10) unsigned NOT NULL,
   `damage_dealt` int(10) unsigned NOT NULL,
   `formation_type` tinyint(3) unsigned NOT NULL,
+  `hits_dealt` smallint(5) unsigned NOT NULL,
+  `hits_received` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
@@ -239,6 +242,8 @@ CREATE TABLE `combat_structures` (
   `rounds_participated` int(10) NOT NULL,
   `damage_dealt` int(11) NOT NULL,
   `damage_received` int(11) NOT NULL,
+  `hits_dealt` smallint(6) unsigned NOT NULL,
+  `hits_received` smallint(6) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `structure_city_id` int(10) unsigned NOT NULL,
   `structure_id` int(10) unsigned NOT NULL,
@@ -421,6 +426,7 @@ CREATE TABLE `players` (
   `login_key` varchar(64) DEFAULT NULL,
   `login_key_date` datetime DEFAULT NULL,
   `session_id` varchar(128) NOT NULL,
+  `created` datetime NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),

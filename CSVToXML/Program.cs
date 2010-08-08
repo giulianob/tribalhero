@@ -403,6 +403,9 @@ namespace CSVToXML {
                     case "labor_move":
                         writer.WriteStartElement("LaborMove");
                         break;
+                    case "structure_userdowngrade":
+                        writer.WriteStartElement("StructureDowngrade");
+                        break;
                     default:
                         writer.WriteStartElement("MISSING_WORKER_ACTION");
                         writer.WriteAttributeString("name", workerAction.action);

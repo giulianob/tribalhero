@@ -303,17 +303,7 @@ namespace Game.Battle {
         public bool CanWatchBattle(Player player) {
             if (player == city.Owner) return true;
         
-            foreach (CombatObject co in defenders) {
-                if (co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds)
-                    return true;
-            }
-
-            foreach (CombatObject co in attackers) {
-                if (co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds)
-                    return true;
-            }
-
-            return false;
+            return defenders.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds) || attackers.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds);
         }
 
         #region Database Loader

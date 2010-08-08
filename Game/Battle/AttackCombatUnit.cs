@@ -89,7 +89,7 @@ namespace Game.Battle {
         }
 
         public override int TileDistance(uint x, uint y) {
-            return GameObject.TileDistance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
+            return SimpleGameObject.TileDistance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
         }
 
         public override uint Visibility {

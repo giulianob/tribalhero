@@ -41,7 +41,7 @@ namespace Game.Logic.Actions {
             if (!ReqirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure, structure.Type, structure.X, structure.Y))
                 return Error.LAYOUT_NOT_FULLFILLED;
 
-            cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
+            cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
 
             if (cost == null)
                 return Error.OBJECT_STRUCTURE_NOT_FOUND;

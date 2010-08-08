@@ -96,7 +96,7 @@ Type,Index,Max,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 21105,2,1,labor_move,,,,,,,
 21105,3,1,technology_upgrade,21101,5,,,,21101,SELF
 21105,4,1,technology_upgrade,21102,3,,,,,
-21105,5,1,structure_downgrade,,,,,,,
+21105,5,1,structure_userdowngrade,,,,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
 // Basement,,,,,,,,,,

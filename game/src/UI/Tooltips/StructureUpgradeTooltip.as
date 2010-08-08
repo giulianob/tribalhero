@@ -2,6 +2,7 @@
 package src.UI.Tooltips {
 
 	import src.Global;
+	import src.Map.City;
 	import src.Objects.Effects.RequirementFormula;
 	import src.Objects.Prototypes.EffectReqPrototype;
 	import src.Objects.Prototypes.ILayout;
@@ -97,8 +98,10 @@ package src.UI.Tooltips {
 				else
 				pnlRequired.setVisible(false);
 
+				var city: City = Global.map.cities.get(parentObj.cityId);
+
 				pnlResources.removeAll();
-				pnlResources.append(new ResourcesPanel(nextStructPrototype.buildResources, Global.map.cities.get(parentObj.cityId)));
+				pnlResources.append(new ResourcesPanel(Formula.buildCost(city, nextStructPrototype), city));
 			}
 		}
 

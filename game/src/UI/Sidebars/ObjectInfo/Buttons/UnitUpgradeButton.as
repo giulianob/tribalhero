@@ -6,6 +6,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.City;
 	import src.Map.CityObject;
 	import src.Objects.Actions.UnitUpgradeAction;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
@@ -99,7 +100,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 
-			if (city.resources.GreaterThanOrEqual(nextUnitPrototype.upgradeResources))
+			if (city.resources.GreaterThanOrEqual(Formula.unitUpgradeCost(city, nextUnitPrototype)))
 			{
 				enable();
 				return true;

@@ -1,6 +1,9 @@
 ﻿package src.Objects.Troop {
+	import adobe.utils.CustomActions;
 	import src.Global;
 	import src.Map.City;
+	import src.Objects.Factories.UnitFactory;
+	import src.Objects.Prototypes.UnitPrototype;
 	import src.Util.BinaryList.*;
 	import fl.lang.Locale;
 
@@ -53,21 +56,22 @@
 			return "[" + STATE_NAMES[state] + "]";
 		}
 
-		public function getSpeed() : int
-		{
+		public function getSpeed(city: City) : int
+		{			
 			var count: int = 0;
+			var totalSpeed: int = 0;
 
 			for each (var formation: Formation in each())
 			{
-				if (formation.type == Formation.Scout) continue;
 				for each (var unit: Unit in formation.each()) {
-					count += unit.count;
+					var template: UnitTemplate = city.template.get(unit.type);
+					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, template.level);
+                    count += (unit.count * unitPrototype.upkeep);
+                    totalSpeed += (unit.count * unitPrototype.upkeep * unitPrototype.speed);									
 				}
 			}
 
-			count /= 100;
-
-			return Math.min(15, 10 - Math.max(count, 5));
+			return totalSpeed / count;
 		}
 
 		public function getIndividualUnitCount(type: int = -1): int

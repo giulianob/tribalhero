@@ -1,10 +1,13 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
+	import fl.lang.Locale;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Global;
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.Factories.StructureFactory;
+	import src.Objects.Prototypes.StructurePrototype;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.LaborMoveDialog;
 	import src.UI.Tooltips.TextTooltip;
@@ -17,7 +20,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			super(parentObj, "Assign Laborers");
 
-			textToolTip = new TextTooltip("Assign Laborers");
+			var strPrototype: StructurePrototype = StructureFactory.getPrototype(parentObj.type, parentObj.level);
+
+			var str: String = Locale.loadString(strPrototype.name + "_STRUCTURE_LABOR_MOVE");
+			if (!str || str == "") {
+				str = "Assign Laborers";
+			}
+
+			textToolTip = new TextTooltip(str);
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
@@ -57,3 +67,4 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	}
 
 }
+

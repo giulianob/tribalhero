@@ -32,7 +32,7 @@ package src.UI.Tooltips {
 
 		private var pnlNextLvl:JPanel;
 		private var lblNextLvlTime:JLabel;
-		private var lblNextLvlDescription:JLabel;
+		private var lblNextLvlDescription:MultilineLabel;
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
 		private var pnlFooter:JPanel;
@@ -133,8 +133,7 @@ package src.UI.Tooltips {
 			lblNextLvl.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblNextLvl, "header");
 
-			lblNextLvlDescription = new JLabel();
-			lblNextLvlDescription.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblNextLvlDescription = new MultilineLabel();			
 			GameLookAndFeel.changeClass(lblNextLvlDescription, "Tooltip.text");
 
 			pnlRequired = new JPanel();

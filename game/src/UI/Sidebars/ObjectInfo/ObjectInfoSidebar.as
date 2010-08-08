@@ -258,6 +258,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 				if (currentAction is CurrentActionReference) {
 					currentAction = currentAction.getAction(gameObject);
+					if (!currentAction) continue;
 				}
 
 				var cancelButton: CancelActionButton = new CancelActionButton(gameObject, currentAction.id);

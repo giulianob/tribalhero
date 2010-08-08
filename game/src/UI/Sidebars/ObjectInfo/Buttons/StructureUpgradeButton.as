@@ -6,6 +6,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
@@ -91,7 +92,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 
-			if (city.resources.GreaterThanOrEqual(nextStructPrototype.buildResources))
+			if (city.resources.GreaterThanOrEqual(Formula.buildCost(city, nextStructPrototype)))
 			{
 				enable();
 				return true;

@@ -5,6 +5,7 @@
 */
 
 package src.Objects.Actions {
+	import src.Objects.IObject;
 	import src.Objects.SimpleGameObject;
 
 	public class CurrentAction {
@@ -45,6 +46,11 @@ package src.Objects.Actions {
 		{
 			return a.endTime - value;
 		}	
+		
+		public function toString(gameObject: IObject) : String
+		{
+			return "";
+		}
 	}
 	
 }

@@ -16,6 +16,7 @@ package src.UI.Dialog {
 	import src.Objects.Troop.*;
 	import src.UI.Components.ComplexTroopGridList.*;
 	import src.UI.Components.NotificationBox;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.BinaryList.BinaryListEvent;
@@ -187,6 +188,7 @@ package src.UI.Dialog {
 			btnLocate = new JButton("Locate");
 			btnRetreat = new JButton("Retreat");
 			btnManage = new JButton("Manage");
+			new SimpleTooltip(btnManage, "Move units between normal and garrison formations.\n\nUnits in the normal formation will defend your city if it is attacked. Units in garrison will hide while your city is being attacked.");
 
 			append(pnlHeader);
 		}

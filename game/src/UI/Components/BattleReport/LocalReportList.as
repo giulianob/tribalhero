@@ -3,6 +3,7 @@
 	import flash.events.Event;
 	import org.aswing.event.SelectionEvent;
 	import org.aswing.event.TableCellEditEvent;
+	import org.aswing.table.GeneralTableCellFactory;
 	import org.aswing.table.PropertyTableModel;
 	import src.Comm.GameURLLoader;
 	import src.Global;
@@ -31,6 +32,8 @@
 
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
+		
+		public var refreshOnClose: Boolean = false;
 
 		public function LocalReportList()
 		{
@@ -44,12 +47,19 @@
 			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {
 				if (tblReports.getSelectedRow() == -1) return;
 
-				var id: int = reportList.get(tblReports.getSelectedRow()).id;
+				var row: * = reportList.get(tblReports.getSelectedRow());
+				
+				var id: int = row.id;
 
 				tblReports.clearSelection(true);
 
 				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, true);
-				battleReportDialog.show();
+				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
+					if (battleReportDialog.refreshOnClose) {
+						refreshOnClose = true;
+						loadPage(page);
+					}
+				});
 			});
 
 			btnNext.addActionListener(function() : void {
@@ -112,7 +122,7 @@
 
 			tableModel = new PropertyTableModel(reportList,
 			["Date", "Battle Location"],
-			["date", "location"],
+			["date", "."],
 			[null, null, null, null]
 			);
 
@@ -120,7 +130,8 @@
 			tblReports.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			tblReports.setSelectionMode(JTable.SINGLE_SELECTION);
 			tblReports.getColumnAt(0).setPreferredWidth(100);
-			tblReports.getColumnAt(1).setPreferredWidth(465);
+			tblReports.getColumnAt(1).setPreferredWidth(400);
+			tblReports.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(UnreadTextCell));
 
 			var pnlReportsScroll: JScrollPane = new JScrollPane(tblReports);
 			pnlReportsScroll.setConstraints("Center");

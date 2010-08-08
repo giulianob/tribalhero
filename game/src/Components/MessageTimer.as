@@ -16,21 +16,15 @@
 	public class MessageTimer
 	{
 		private var timer: Timer = new Timer(60000);
-		private var loader: GameURLLoader = new GameURLLoader();
-		private var messageButton: DisplayObject;
-		private var unread: int = 0;
+		private var loader: GameURLLoader = new GameURLLoader();		
 
 		public function MessageTimer()
 		{
-			messageButton = Global.gameContainer.btnMessages;
 			timer.addEventListener(TimerEvent.TIMER, onTimer);
 			loader.addEventListener(Event.COMPLETE, onReceiveUnread);
 		}
 
 		public function start() : void {
-			messageButton.addEventListener(MouseEvent.MOUSE_OVER, onMessageMouseOver);
-			messageButton.addEventListener(MouseEvent.MOUSE_OUT, onMessageMouseOut);
-
 			timer.start();
 
 			// Call initial unread
@@ -38,21 +32,18 @@
 		}
 
 		public function stop() : void {
-			messageButton.removeEventListener(MouseEvent.MOUSE_OVER, onMessageMouseOver);
-			messageButton.removeEventListener(MouseEvent.MOUSE_OUT, onMessageMouseOut);
-
 			timer.stop();
 		}
-
-		private function onMessageMouseOver(e: Event = null) : void {			
+		
+		public function check() : void {
+			timer.stop();
+			onTimer();
+			timer.start();
 		}
-
-		private function onMessageMouseOut(e: Event = null) : void {			
-		}
-
+		
 		private function onTimer(e: TimerEvent = null) : void {
 			try {
-				loader.load("/messages/unread", [ ], true);
+				loader.load("/actions/unread", [ ], true);
 			}
 			catch (e: Error) { }
 		}
@@ -61,13 +52,13 @@
 			try {
 				var data: * = loader.getDataAsObject();
 				
-				unread = data.unread;
+				var unreadMessages: int = data.unreadMessages;								
+				Global.gameContainer.txtUnreadMessages.visible = unreadMessages > 0;				
+				if (unreadMessages > 0) Global.gameContainer.txtUnreadMessages.txtUnreadCount.text = unreadMessages > 9 ? "!" : unreadMessages.toString();				
 				
-				Global.gameContainer.txtUnread.visible = unread > 0;
-				
-				if (unread > 0) {
-					Global.gameContainer.txtUnread.txtUnreadCount.text = unread > 9 ? "!" : unread.toString();
-				}
+				var unreadReports: int = data.unreadReports;
+				Global.gameContainer.txtUnreadReports.visible = unreadReports > 0;				
+				if (unreadReports > 0) Global.gameContainer.txtUnreadReports.txtUnreadCount.text = unreadReports > 9 ? "!" : unreadReports.toString();								
 			}
 			catch (e: Error) { }
 		}

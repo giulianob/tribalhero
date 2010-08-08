@@ -1,4 +1,5 @@
 ﻿package src.Comm.Commands {
+	import org.aswing.AssetIcon;
 	import src.Comm.*;
 	import src.Constants;
 	import src.Global;
@@ -8,6 +9,8 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Actions.*;
 	import src.Objects.Troop.*;
+	import src.UI.Components.ScreenMessages.BuiltInMessages;
+	import src.UI.Components.ScreenMessages.ScreenMessageItem;
 	import src.UI.Dialog.InfoDialog;
 
 	public class LoginComm {
@@ -88,7 +91,15 @@
 				var attackPoint: int = packet.readInt();
 				var defensePoint: int = packet.readInt();
 
-				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint);
+				var inBattle: Boolean = packet.readByte() == 1;
+
+				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, inBattle);
+
+				// Show under attack message if city in battle
+				BuiltInMessages.showInBattle(city);
+				
+				// Show starving message if needed
+				BuiltInMessages.showTroopsStarving(city);
 
 				// Add the name of this city to the list of city names
 				Global.map.usernames.cities.add(new Username(id, name));

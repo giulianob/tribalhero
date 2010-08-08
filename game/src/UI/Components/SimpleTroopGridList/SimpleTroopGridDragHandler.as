@@ -60,9 +60,10 @@
 			var dragInitiator: Component = e.getDragInitiator();
 
 			if (targetComponent is SimpleTroopGridList && targetComponent.isDragAcceptableInitiator(dragInitiator)) {
+				var cell: SimpleTroopGridCell = dragInitiator as SimpleTroopGridCell;
 				var sourceGrid: SimpleTroopGridList = (dragInitiator as SimpleTroopGridCell).getParent().getParent() as SimpleTroopGridList;
 				var targetGrid: SimpleTroopGridList = SimpleTroopGridList(targetComponent);
-				var cellValue: * = (dragInitiator as SimpleTroopGridCell).getCellValue();
+				var cellValue: * = cell.getCellValue();
 
 				if (cellValue.data.count > 1)
 				{
@@ -76,6 +77,7 @@
 						else
 						{
 							cellValue.data.count -= numberInput.getAmount().getValue();
+							cell.setCellValue(cellValue);							
 						}
 
 						var newTroopCell: SimpleTroopGridCell = targetGrid.addUnit(cellValue.data.type, numberInput.getAmount().getValue());

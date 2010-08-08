@@ -45,6 +45,8 @@ package src.UI.Dialog{
 		private var pnlSent: JPanel;
 
 		private var btnNewMessage: JButton;
+		
+		private var refreshOnClose: Boolean = false;
 
 		public function MessagingDialog() {
 			loader = new GameURLLoader();
@@ -84,6 +86,10 @@ package src.UI.Dialog{
 			tabs.addStateListener(onTabChanged);
 		}
 
+		public function getRefreshOnClose() : Boolean {
+			return refreshOnClose;
+		}
+		
 		private function onNewMessage(e: Event = null) : void {
 			var newMessageDialog: MessageCreateDialog = new MessageCreateDialog(onNewMessageSend);
 			newMessageDialog.show();
@@ -168,6 +174,7 @@ package src.UI.Dialog{
 
 				viewMessageDialog.show(null, true, function(viewDialog: MessageViewDialog = null) : void {
 					if (data.refreshOnClose) {
+						refreshOnClose = true;
 						loadPage(page);
 					}
 				});

@@ -28,6 +28,8 @@ package src.Map {
 		public var attackPoint: int = 0;
 		public var defensePoint: int = 0;
 
+		public var inBattle: Boolean;
+
 		public var battle: BattleManager;
 
 		public var techManager: TechnologyManager = new TechnologyManager(EffectPrototype.LOCATION_CITY);
@@ -43,13 +45,14 @@ package src.Map {
 			return objects.get(1);
 		}
 
-		public function City(id: int, name: String, radius: int, resources: LazyResources, attackPoint: int, defensePoint: int) {
+		public function City(id: int, name: String, radius: int, resources: LazyResources, attackPoint: int, defensePoint: int, inBattle: Boolean) {
 			this.id = id;
 			this.resources = resources;
 			this.radius = radius;
 			this.name = name;
 			this.attackPoint = attackPoint;
 			this.defensePoint = defensePoint;
+			this.inBattle = inBattle;
 
 			troops = new TroopManager(this);
 
@@ -93,7 +96,7 @@ package src.Map {
 
 			return false;
 		}
-		
+
 		public function getStructureAt(mapPos: Point): CityObject
 		{
 			var ret: Array = new Array();
@@ -110,7 +113,7 @@ package src.Map {
 			}
 
 			return null;
-		}		
+		}
 
 		public function nearObjectsByRadius2(mindist: int, maxdist: int, mapPos: Point, classType: int): Array
 		{

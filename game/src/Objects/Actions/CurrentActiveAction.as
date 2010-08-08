@@ -20,7 +20,7 @@
 			this.count = count;
 		}
 		
-		public function toString(gameObject: IObject) : String {		
+		public override function toString(gameObject: IObject) : String {		
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.getType(), gameObject.getLevel());
 			
 			var workerPrototype: Worker;

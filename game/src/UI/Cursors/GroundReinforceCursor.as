@@ -14,6 +14,7 @@
 	import src.Objects.IDisposable;
 	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCircle;
+	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.Util.Util;
 	import src.Objects.Troop.*;
 
@@ -30,6 +31,8 @@
 
 		private var troop: TroopStub;
 		private var city: City;
+		
+		private var troopSpeed: int;
 
 		private var highlightedObj: GameObject;
 
@@ -46,6 +49,8 @@
 
 			Global.map.selectObject(null);
 			Global.map.objContainer.resetObjects();
+			
+			troopSpeed = troop.getSpeed(city);
 
 			var size: int = 0;
 
@@ -53,7 +58,7 @@
 			cursor.alpha = 0.6;
 
 			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
-
+			
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);
@@ -172,7 +177,7 @@
 
 			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
-			var timeAwayInSeconds: int = Math.max(1, Formula.moveTime(troop.getSpeed()) * Constants.secondsPerUnit * distance);
+			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance);
 
 			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
 		}

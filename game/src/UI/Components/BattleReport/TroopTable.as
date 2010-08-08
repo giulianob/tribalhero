@@ -46,7 +46,7 @@
 				
 				new SimpleTooltip(icon, prototype.getName());
 				
-				unitList.append({icon: icon, level: unit.level, count: unit.count, hp: unit.hp, dmgTaken: unit.dmgTaken, dmgDealt: unit.dmgDealt});			
+				unitList.append({icon: icon, level: unit.level, count: unit.count, hp: unit.hp, hitsTaken: unit.hitsTaken, dmgTaken: unit.dmgTaken, hitsDealt: unit.hitsDealt, dmgDealt: unit.dmgDealt});			
 			}
 			
 			if (troop.resources != null) {
@@ -66,14 +66,14 @@
 			
 			unitList = new VectorListModel();
 			tableModel = new PropertyTableModel(unitList,
-				["Type", "Level", "Count", "HP", "Dmg Taken", "Dmg Dealt"],
-				["icon", "level", "count", "hp", "dmgTaken", "dmgDealt"],
+				["Type", "Level", "Count", "HP", "Hits\nTaken", "Damage\nTaken", "Hits\nDealt", "Damage\nDealt"],
+				["icon", "level", "count", "hp", "hitsTaken", 	"dmgTaken", 	 "hitsDealt", 	"dmgDealt"],
 				[null, null, null, null, null, null]
 			);			
 			
 			tblUnits = new JTable(tableModel);
 			tblUnits.setRowSelectionAllowed(false);
-			tblUnits.setRowHeight(42);
+			tblUnits.setRowHeight(42);			
 			tblUnits.getColumn("Type").setCellFactory(new GeneralTableCellFactory(UnitIconCell));
 			
 			pnlResources = new JPanel(new FlowLayout(AsWingConstants.LEFT, 12, 5, false));			

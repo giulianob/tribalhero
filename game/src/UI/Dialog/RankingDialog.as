@@ -79,6 +79,14 @@ package src.UI.Dialog{
 				loadPage(page - 1);
 			});
 
+			// Tooltips
+			new SimpleTooltip(cityAttackRanking, "Sort by attack points");
+			new SimpleTooltip(playerAttackRanking, "Sort by attack points");
+			new SimpleTooltip(cityDefenseRanking, "Sort by defense points");
+			new SimpleTooltip(playerDefenseRanking, "Sort by attack points");
+			new SimpleTooltip(cityLootRanking, "Sort by total loot stolen");
+			new SimpleTooltip(playerLootRanking, "Sort by total loot stolen");
+			
 			// Handle different buttons being pressed
 			cityAttackRanking.addActionListener(onChangeRanking);
 			cityDefenseRanking.addActionListener(onChangeRanking);

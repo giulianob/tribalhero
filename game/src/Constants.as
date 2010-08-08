@@ -93,14 +93,27 @@ package src
 		public static const miniMapLargeScreenX: int = (screenW / 2) - (miniMapLargeScreenW / 2);
 		public static const miniMapLargeScreenY: int = (screenH / 2) - (miniMapLargeScreenH / 2) + 30;
 
-		/* ACTION LITERAL MAPPING */
-		public static const structureBuild: String = "BUILD";
-
 		/* GAME DATA */
 		public static const queryData: Boolean = true;
 
 		/* TROOP */
 		public static const troopWorkerId: int = 100;
+		
+		/* STAT RANGES */
+		public static const unitStatRanges: * = {
+			"attack": { min: 1, max: 110 },
+			"defense": { min: 0, max: 84 },
+			"stealth": { min: 0, max: 14 },
+			"range": { min: 0, max: 19 },
+			"speed": { min: 2, max: 22 },
+			"carry": { min: 0, max: 246 }
+		};
+		
+		public static const structureStatRanges: * = {			
+			"defense": { min: 0, max: 12500 },			
+			"stealth": { min: 0, max: 20 },
+			"range": { min: 0, max: 15 }
+		};		
 
 		public static var objData: XML = <Data></Data>;
 	}

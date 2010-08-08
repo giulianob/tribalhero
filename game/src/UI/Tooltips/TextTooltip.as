@@ -1,30 +1,32 @@
 ﻿package src.UI.Tooltips {
-	import org.aswing.ASColor;
-	import org.aswing.AssetPane;
 	import org.aswing.AsWingConstants;
-	import org.aswing.Icon;
+	import org.aswing.Component;
+	import org.aswing.ext.MultilineLabel;
 	import org.aswing.JLabel;
-	import org.aswing.JPanel;
-	import org.aswing.JToggleButton;
-	import org.aswing.plaf.ASColorUIResource;
-	import org.aswing.plaf.ComponentUI;
 	import org.aswing.SoftBoxLayout;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class TextTooltip extends Tooltip {
-		
-		public function TextTooltip(text: String, icon: Icon = null) {				
-			var label: JLabel = new JLabel(text, icon);	
-			
-			GameLookAndFeel.changeClass(label, "header");
-			
+
+		public function TextTooltip(text: String) {
+			var label: Component;
+
+			if (text.length < 30) {
+				label = new JLabel(text);
+			} else {
+				label = new MultilineLabel(text, 0, 20);
+			}
+
+			GameLookAndFeel.changeClass(label, "Tooltip.text");
+
 			var layout0:SoftBoxLayout = new SoftBoxLayout();
 			layout0.setAxis(AsWingConstants.VERTICAL);
 			layout0.setGap(5);
 			ui.setLayout(layout0);
-			
+
 			ui.append(label);
 		}
 	}
-	
+
 }
+

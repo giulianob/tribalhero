@@ -3,6 +3,8 @@
 	import src.Comm.*;
 	import src.Map.MapComm;
 	import src.Objects.Battle.BattleManager;
+	import src.Objects.GameError;
+	import src.UI.Dialog.InfoDialog;
 
 	public class BattleComm {
 
@@ -55,13 +57,18 @@
 			return battle;
 		}
 
-		public function onReceiveBattleSubscribe(packet: Packet, custom: * ):void
+		public function onReceiveBattleSubscribe(packet: Packet, custom: *):void
 		{
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{
 				battle.end();
 				battle = null;
-				mapComm.catchAllErrors(packet, custom);
+
+				var err: int = packet.readUInt();
+				var roundsLeft: int = packet.readInt();
+
+				InfoDialog.showMessageDialog("Battle", GameError.getMessage(err) + (roundsLeft > 0 ? " Battle will be viewable in approximately " + roundsLeft + " rounds." : ""));				
+
 				return;
 			}
 
@@ -192,3 +199,4 @@
 	}
 
 }
+

@@ -3,6 +3,7 @@
 	import src.Objects.Actions.*;
 	import src.Objects.Effects.EffectReqManager;
 	import src.Objects.Prototypes.EffectPrototype;
+	import src.UI.Cursors.StructureDowngradeCursor;
 	import src.Util.BinaryList.*;
 	import src.Objects.Prototypes.Worker;
 
@@ -76,6 +77,9 @@
 						break;
 						case "StructureChange":
 							action = new StructureChangeAction(actionNode.@type, actionNode.@level);
+						break;
+						case "StructureDowngrade":
+							action = new StructureUserDowngradeAction();
 						break;
 						case "TechnologyUpgrade":
 							action = new TechUpgradeAction(actionNode.@type, actionNode.@maxlevel);

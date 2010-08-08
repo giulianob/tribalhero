@@ -63,9 +63,23 @@ namespace Game.Data {
             get {
                 return MainBuilding.Y;
             }
-        } 
+        }
 
-        public BattleManager Battle { get; set; }
+        private BattleManager battle;
+        public BattleManager Battle {
+            get {
+                return battle;   
+            }
+            set {
+                battle = value;
+
+                if (value == null) {
+                    BattleEnded();
+                } else {
+                    BattleStarted();
+                }
+            }
+        }
 
         public TroopManager Troops { get; private set; }
 
@@ -480,7 +494,7 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void WorkerActionRescheduled(GameAction stub) {
+        private void WorkerActionRescheduled(GameAction stub, ActionState state) {
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
@@ -490,7 +504,7 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void WorkerActionAdded(GameAction stub) {
+        private void WorkerActionAdded(GameAction stub, ActionState state) {
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
@@ -500,11 +514,12 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void WorkerActionRemoved(GameAction stub) {
+        private void WorkerActionRemoved(GameAction stub, ActionState state) {
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
             Packet packet = new Packet(Command.ACTION_COMPLETED);
+            packet.AddInt32((int)state);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(stub, packet, true);
             Global.Channel.Post("/CITY/" + id, packet);
@@ -592,6 +607,19 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
+        public void BattleStarted()
+        {
+            Packet packet = new Packet(Command.CITY_BATTLE_STARTED);
+            packet.AddUInt32(Id);            
+            Global.Channel.Post("/CITY/" + id, packet);
+        }
+
+        public void BattleEnded()
+        {
+            Packet packet = new Packet(Command.CITY_BATTLE_ENDED);
+            packet.AddUInt32(Id);
+            Global.Channel.Post("/CITY/" + id, packet);
+        }
         #endregion
 
         #region IEnumerable Members

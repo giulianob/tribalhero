@@ -44,7 +44,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_STRUCTURE_NOT_FOUND;
 
-            cost = Formula.UnitCost(structure.City, type, structure.City.Template[type].Lvl);
+            cost = Formula.UnitTrainCost(structure.City, type, structure.City.Template[type].Lvl);
             Resource totalCost = cost*ActionCount;
             if (!structure.City.Resource.HasEnough(totalCost))
                 return Error.RESOURCE_NOT_ENOUGH;

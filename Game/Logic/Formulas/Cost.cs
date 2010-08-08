@@ -35,12 +35,27 @@ namespace Game.Logic
         /// <param name="type"></param>
         /// <param name="lvl"></param>
         /// <returns></returns>
-        public static Resource UnitCost(City city, ushort type, byte lvl)
+        public static Resource UnitTrainCost(City city, ushort type, byte lvl)
         {
             if (city.Battle == null)
                 return UnitFactory.GetCost(type, lvl);
 
             return UnitFactory.GetCost(type, lvl) * 1.5;
+        }
+
+        /// <summary>
+        /// Returns the cost for upgrading the specified unit
+        /// </summary>
+        /// <param name="city"></param>
+        /// <param name="type"></param>
+        /// <param name="lvl"></param>
+        /// <returns></returns>
+        public static Resource UnitUpgradeCost(City city, ushort type, byte lvl)
+        {
+            if (city.Battle == null)
+                return UnitFactory.GetUpgradeCost(type, lvl);
+
+            return UnitFactory.GetUpgradeCost(type, lvl) * 1.5;
         }
 
         /// <summary>

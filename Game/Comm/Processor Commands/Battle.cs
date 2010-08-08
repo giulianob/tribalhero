@@ -43,7 +43,9 @@ namespace Game.Comm {
                 }
 
                 if (!city.Battle.CanWatchBattle(session.Player)) {
-                    ReplyError(session, packet, Error.BATTLE_NOT_VIEWABLE);
+                    packet = ReplyError(session, packet, Error.BATTLE_NOT_VIEWABLE, false);
+                    packet.AddInt32((int)(Config.battle_min_rounds - city.Battle.Round));
+                    session.Write(packet);
                     return;
                 }
 

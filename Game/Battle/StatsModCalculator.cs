@@ -43,7 +43,7 @@ namespace Game.Battle {
     public abstract class ModCalculator<T> {
         protected Dictionary<string, ModParameter> parameters = new Dictionary<string, ModParameter>();
 
-        public ModCalculator() {
+        protected ModCalculator() {
             SetParameters();
         }
         public void AddMod(String parameter, int value) {

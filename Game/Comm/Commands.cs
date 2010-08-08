@@ -103,6 +103,9 @@ namespace Game.Comm {
         CITY_LOCATE = 466,
         CITY_ATTACK_DEFENSE_POINT_UPDATE = 467,
 
+        CITY_BATTLE_STARTED = 490,
+        CITY_BATTLE_ENDED = 491,
+
         CITY_CREATE_INITIAL = 499,
 
         #endregion

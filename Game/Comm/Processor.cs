@@ -76,12 +76,20 @@ namespace Game.Comm {
             session.Write(reply);
         }
 
-        public void ReplyError(Session session, Packet packet, Error error) {
+        public Packet ReplyError(Session session, Packet packet, Error error) {
+            return ReplyError(session, packet, error, true);
+        }
+
+        public Packet ReplyError(Session session, Packet packet, Error error, bool sendPacket) {
             Packet reply = new Packet(packet) {
                                                   Option = (ushort) Packet.Options.FAILED | (ushort) Packet.Options.REPLY
                                               };
             reply.AddInt32((int) error);
-            session.Write(reply);
+
+            if (sendPacket)
+                session.Write(reply);
+
+            return reply;
         }
 
         public virtual void Execute(Session session, Packet packet) {

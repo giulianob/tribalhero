@@ -73,7 +73,7 @@ namespace Game.Logic {
             switch (state) {
                 case ActionState.RESCHEDULED:
                     if (ActionRescheduled != null)
-                        ActionRescheduled(actionStub);
+                        ActionRescheduled(actionStub, state);
 
                     if (action is PassiveAction)
                         Global.DbManager.Save(actionStub);
@@ -83,7 +83,7 @@ namespace Game.Logic {
                     break;
                 case ActionState.STARTED:
                     if (ActionStarted != null)
-                        ActionStarted(actionStub);
+                        ActionStarted(actionStub, state);
 
                     if (action is PassiveAction)
                         Global.DbManager.Save(actionStub);
@@ -96,7 +96,7 @@ namespace Game.Logic {
                     action.IsDone = true;
 
                     if (ActionRemoved != null)
-                        ActionRemoved(actionStub);
+                        ActionRemoved(actionStub, state);
 
                     if (action is ScheduledPassiveAction)
                         Global.Scheduler.Del(action as ScheduledPassiveAction);
@@ -116,7 +116,7 @@ namespace Game.Logic {
                     action.IsDone = true;
 
                     if (ActionRemoved != null)
-                        ActionRemoved(actionStub);
+                        ActionRemoved(actionStub, state);
 
                     if (action is ScheduledPassiveAction)
                         Global.Scheduler.Del(action as ScheduledPassiveAction);
@@ -137,7 +137,7 @@ namespace Game.Logic {
             switch (state) {
                 case ActionState.RESCHEDULED:
                     if (ActionRescheduled != null)
-                        ActionRescheduled(actionStub);
+                        ActionRescheduled(actionStub, state);
 
                     if (actionStub is ScheduledActiveAction) {
                         Global.DbManager.Save(actionStub);
@@ -146,7 +146,7 @@ namespace Game.Logic {
                     break;
                 case ActionState.STARTED:
                     if (ActionStarted != null)
-                        ActionStarted(actionStub);
+                        ActionStarted(actionStub, state);
 
                     if (action is ScheduledActiveAction) {
                         Global.DbManager.Save(actionStub);
@@ -158,7 +158,7 @@ namespace Game.Logic {
                     action.IsDone = true;
 
                     if (ActionRemoved != null)
-                        ActionRemoved(actionStub);
+                        ActionRemoved(actionStub, state);
 
                     if (action is ScheduledActiveAction) {
                         Global.DbManager.Delete(actionStub);
@@ -176,7 +176,7 @@ namespace Game.Logic {
                     action.IsDone = true;
 
                     if (ActionRemoved != null)
-                        ActionRemoved(actionStub);
+                        ActionRemoved(actionStub, state);
 
                     if (action is ScheduledActiveAction) {
                         Global.DbManager.Delete(actionStub);
@@ -387,7 +387,7 @@ namespace Game.Logic {
 
         #region Event
 
-        public delegate void UpdateCallback(GameAction stub);
+        public delegate void UpdateCallback(GameAction stub, ActionState state);
 
         public event UpdateCallback ActionStarted;
         public event UpdateCallback ActionRescheduled;

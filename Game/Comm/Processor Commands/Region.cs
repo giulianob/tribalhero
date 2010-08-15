@@ -299,12 +299,14 @@ namespace Game.Comm
             Packet reply = new Packet(packet);            
             reply.Option |= (ushort)Packet.Options.COMPRESSED;
 
-            ushort regionId;
+            ushort regionId;            
 
             byte regionSubscribeCount;
             try
             {
                 regionSubscribeCount = packet.GetByte();
+
+                if (regionSubscribeCount > 15) throw new Exception("Too many regions requested");
             }
             catch (Exception)
             {
@@ -342,6 +344,8 @@ namespace Game.Comm
             try
             {
                 regionUnsubscribeCount = packet.GetByte();
+
+                if (regionUnsubscribeCount > 15) throw new Exception("Too many unsubscribe regions");
             }
             catch (Exception)
             {
@@ -364,7 +368,10 @@ namespace Game.Comm
                 Global.World.UnsubscribeRegion(session, regionId);
             }
 
-            session.Write(reply);
+            if (Global.Channel.SubscriptionCount(session) > 30) {
+                session.CloseSession();
+            }
+            else session.Write(reply);
         }
 
         public void CmdGetCityRegion(Session session, Packet packet)

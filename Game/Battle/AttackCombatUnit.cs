@@ -89,7 +89,7 @@ namespace Game.Battle {
         }
 
         public override int TileDistance(uint x, uint y) {
-            return GameObject.TileDistance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
+            return SimpleGameObject.TileDistance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
         }
 
         public override uint Visibility {
@@ -156,11 +156,11 @@ namespace Game.Battle {
                                          0);
 
                 // Remove it from our loot
-                loot.subtract(returning); 
+                loot.Subtract(returning); 
 
                 // Since the loot is stored at the troop stub as well, we need to remove it from there too
                 TroopStub.TroopObject.BeginUpdate();
-                TroopStub.TroopObject.Stats.Loot.subtract(returning);
+                TroopStub.TroopObject.Stats.Loot.Subtract(returning);
                 TroopStub.TroopObject.EndUpdate();
             }            
         }
@@ -169,14 +169,15 @@ namespace Game.Battle {
             Global.DbManager.Delete(this);
         }
 
-        public override void ExitBattle() {}
+        public override void ExitBattle() {
+        }
 
         public override void ReceiveReward(int attackPoint, Resource resource) {
-            loot.add(resource);            
+            loot.Add(resource);            
 
             TroopStub.TroopObject.BeginUpdate();
             TroopStub.TroopObject.Stats.AttackPoint += attackPoint;
-            TroopStub.TroopObject.Stats.Loot.add(resource);
+            TroopStub.TroopObject.Stats.Loot.Add(resource);
             TroopStub.TroopObject.EndUpdate();
         }
 

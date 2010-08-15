@@ -12,9 +12,22 @@ using Game.Util;
 
 namespace Game.Data {
     public class TroopObject : GameObject, IPersistableObject {
+
         public TroopStub Stub { get; private set; }
 
-        public TroopStats Stats { get; set; }
+        TroopStats stats = new TroopStats(0, 0);
+        public TroopStats Stats {
+            get {
+                return stats;
+            }
+            set {
+                if (stats != null)
+                    Stats.StatsUpdate -= StatsStatsUpdate;
+                
+                stats = value;
+                stats.StatsUpdate += StatsStatsUpdate;
+            }
+        }
 
         public override uint ObjectId {
             get { return objectId; }
@@ -36,9 +49,6 @@ namespace Game.Data {
 
         public TroopObject(TroopStub stub) {
             Stub = stub;
-
-            Stats = new TroopStats(Formula.GetTroopRadius(Stub, null), Formula.GetTroopSpeed(Stub, null));
-            Stats.StatsUpdate += StatsStatsUpdate;
         }
 
         #endregion

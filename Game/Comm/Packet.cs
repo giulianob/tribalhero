@@ -229,8 +229,8 @@ namespace Game.Comm {
                     using (MemoryStream compressed = new MemoryStream()) {
                         using (ZOutputStream ds = new ZOutputStream(compressed, 3)) {
                             foreach (Parameter param in parameters) {
-                                byte[] paramBytes = param.getBytes();
-                                ds.Write(param.getBytes(), 0, paramBytes.Length);
+                                byte[] paramBytes = param.GetBytes();
+                                ds.Write(param.GetBytes(), 0, paramBytes.Length);
                             }
                             ds.finish();
                             compressed.Position = 0;
@@ -239,7 +239,7 @@ namespace Game.Comm {
                     }
                 } else {
                     foreach (Parameter param in parameters) {
-                        byte[] paramBytes = param.getBytes();
+                        byte[] paramBytes = param.GetBytes();
                         binaryWriter.Write(paramBytes);
                     }
                 }

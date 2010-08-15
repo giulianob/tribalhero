@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Battle;
 using Game.Data;
+using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -40,8 +42,19 @@ namespace Game.Logic.Actions {
 
             City targetCity;
             Global.World.TryGetObjects(targetCityId, out targetCity);
+            RegisterBattleListeners(targetCity);
+        }
+
+        private void RegisterBattleListeners(City targetCity) {
             targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
             targetCity.Battle.ExitBattle += Battle_ExitBattle;
+            targetCity.Battle.WithdrawAttacker += Battle_WithdrawAttacker;            
+        }
+
+        private void DeregisterBattleListeners(City targetCity) {
+            targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
+            targetCity.Battle.ExitBattle -= Battle_ExitBattle;
+            targetCity.Battle.WithdrawAttacker -= Battle_WithdrawAttacker;
         }
 
         public override Error Validate(string[] parms) {
@@ -97,9 +110,9 @@ namespace Game.Logic.Actions {
             List<TroopStub> list = new List<TroopStub> { stub };
             originalHp = remainingHp = stub.TotalHp;
 
-            if (targetCity.Battle != null) {
-                targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
-                targetCity.Battle.ExitBattle += Battle_ExitBattle;
+            if (targetCity.Battle != null) {                
+                RegisterBattleListeners(targetCity);
+                
                 Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.REINFORCED);
                 
                 List<Structure> defenders = GetStructuresInRadius(targetCity, stub.TroopObject);
@@ -110,8 +123,9 @@ namespace Game.Logic.Actions {
             }
             else {
                 targetCity.Battle = new BattleManager(targetCity);
-                targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
-                targetCity.Battle.ExitBattle += Battle_ExitBattle;
+                
+                RegisterBattleListeners(targetCity);
+
                 BattleAction ba = new BattleAction(targetCityId);
                 
                 List<Structure> defenders = GetStructuresInRadius(targetCity, stub.TroopObject);
@@ -131,6 +145,40 @@ namespace Game.Logic.Actions {
             stub.TroopObject.Stub.EndUpdate();
 
             return Error.OK;
+        }
+
+        private void Battle_WithdrawAttacker(IEnumerable<CombatObject> list) {
+            TroopStub stub;
+            City targetCity;
+            City city;
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+                throw new ArgumentException();
+
+            bool retreat = list.Any(co => co is AttackCombatUnit && ((AttackCombatUnit) co).TroopStub == stub);
+
+            if (!retreat) return;
+
+            DeregisterBattleListeners(targetCity);
+
+            stub.TroopObject.BeginUpdate();
+            stub.TroopObject.State = GameObjectState.NormalState();
+            SetLootedResources(targetCity.Battle, stub);
+            stub.TroopObject.EndUpdate();
+
+            StateChange(ActionState.COMPLETED);
+        }
+
+        private void SetLootedResources(BattleManager battle, TroopStub stub) {
+            // Calculate bonus
+            Resource resource = BattleFormulas.GetBonusResources(stub.TroopObject);
+
+            // Add bonus to troop object            
+            Resource returning;
+            Resource actual;
+            stub.TroopObject.Stats.Loot.Add(resource, stub.Carry, out actual, out returning);            
+
+            // Update battle report view with actual received bonus
+            battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, stub.TroopObject.Stats.Loot, actual);
         }
 
         private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
@@ -157,14 +205,6 @@ namespace Game.Logic.Actions {
                                                            stub
                                                        };
             targetCity.Battle.RemoveFromAttack(list, remainingHp == 0 ? ReportState.DYING : ReportState.RETREATING);
-            targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
-            targetCity.Battle.ExitBattle -= Battle_ExitBattle;
-
-            stub.TroopObject.BeginUpdate();
-            stub.TroopObject.State = GameObjectState.NormalState();
-            stub.TroopObject.EndUpdate();
-
-            StateChange(ActionState.COMPLETED);
         }
 
         private void Battle_ExitBattle(CombatList atk, CombatList def) {
@@ -176,10 +216,10 @@ namespace Game.Logic.Actions {
                 !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
-            targetCity.Battle.ActionAttacked -= Battle_ActionAttacked;
-            targetCity.Battle.ExitBattle -= Battle_ExitBattle;
+            DeregisterBattleListeners(targetCity);
 
             stub.TroopObject.BeginUpdate();
+            SetLootedResources(targetCity.Battle, stub);
             stub.TroopObject.Stub.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
             stub.TroopObject.Stub.State = TroopState.IDLE;

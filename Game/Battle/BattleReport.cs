@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Troop;
@@ -180,7 +181,7 @@ namespace Game.Battle {
         }
 
         internal static void SnapBattle(out uint battleId, uint cityId) {
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', '{1}', NOW(), NULL)", BATTLE_DB, cityId));
+            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', '{1}', NOW(), NULL, '0')", BATTLE_DB, cityId));
             battleId = Global.DbManager.LastInsertId();
         }
 
@@ -211,7 +212,7 @@ namespace Game.Battle {
             // Log any troops that are entering the battle to the view table so they are able to see this report
             // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
             if (battle.City.Id != cityId && (state == ReportState.ENTERING || state == ReportState.REINFORCED)) {
-                Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', 0, NOW())", BATTLE_REPORT_VIEWS_DB, cityId, troopId, battle.BattleId, objectId,
+                Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW())", BATTLE_REPORT_VIEWS_DB, cityId, troopId, battle.BattleId, objectId,
                                                      isAttacker ? 1 : 0));
             }
         }
@@ -219,8 +220,15 @@ namespace Game.Battle {
         internal void SnapCombatObject(uint troopId, CombatObject co) {
             ICombatUnit unit = co as ICombatUnit;
 
-            Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')", BATTLE_REPORT_OBJECTS_DB, troopId, co.Type, co.Lvl, co.Hp,
-                                                 co.Count, co.DmgRecv, co.DmgDealt, (byte) (unit == null ? FormationType.STRUCTURE : unit.Formation)));
+            Global.DbManager.Query(string.Format("INSERT INTO {0} VALUES ('', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}')", BATTLE_REPORT_OBJECTS_DB, troopId, co.Type, co.Lvl, co.Hp,
+                                                 co.Count, co.DmgRecv, co.DmgDealt, (byte) (unit == null ? FormationType.STRUCTURE : unit.Formation), co.HitDealt, co.HitRecv));
+        }
+
+        public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource) {
+            Global.DbManager.Query(
+                string.Format(
+                    "UPDATE {0} SET `loot_wood` = '{1}', `loot_gold` = '{2}', `loot_crop` = '{3}', `loot_iron` = '{4}', `bonus_wood` = '{5}', `bonus_gold` = '{6}', `bonus_crop` = '{7}', `bonus_iron` = '{8}' WHERE `city_id` = '{9}' AND `battle_id` = '{10}' AND `troop_stub_id` = '{11}' LIMIT 1",
+                    BATTLE_REPORT_VIEWS_DB, lootResource.Wood, lootResource.Gold, lootResource.Crop, lootResource.Iron, bonusResource.Wood, bonusResource.Gold, bonusResource.Crop, bonusResource.Iron, cityId, battleId, troopId));
         }
     }
 }

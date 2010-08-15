@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Util;
 
 #endregion
@@ -180,12 +181,7 @@ namespace Game.Data.Troop {
 
         public int Upkeep {
             get {
-                int upkeep = 0;
-                foreach (TroopStub stub in MyStubs()) {
-                    upkeep += stub.Upkeep;
-                }
-
-                return upkeep;
+                return MyStubs().Sum(stub => stub.Upkeep);
             }
         }
 
@@ -267,11 +263,9 @@ namespace Game.Data.Troop {
         /// </summary>
         /// <returns></returns>
         internal IEnumerable<TroopStub> MyStubs() {
-            foreach (TroopStub stub in this) {
-                if (stub.City == City)
-                    yield return stub;
-            }
+            return this.Where(stub => stub.City == City);
         }
+
         #endregion
     }
 }

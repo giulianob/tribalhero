@@ -27,6 +27,10 @@
 			return new Resources(crop * count, gold * count, iron * count, wood * count, labor * count);
 		}
 		
+		public static function sum(r1: Resources, r2: Resources) : Resources {
+			return new Resources(r1.crop + r2.crop, r1.gold + r2.gold, r1.iron + r2.iron, r1.wood + r2.wood, r1.labor + r2.labor);
+		}
+		
 		public function toString():String 
 		{
 			return "Gold: " + gold.toString() + " Wood:" + wood.toString() + " Iron:" + iron.toString() + " Crop:" + crop.toString() + " Labor:" + labor.toString();

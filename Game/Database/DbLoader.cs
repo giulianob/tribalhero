@@ -104,13 +104,13 @@ namespace Game.Database {
                     market.dbLoad((int)reader["outgoing"], (int)reader["incoming"]);
                     market.DbPersisted = true;
                     switch (type) {
-                        case ResourceType.Crop:
+                        case ResourceType.CROP:
                             Market.Crop = market;
                             break;
-                        case ResourceType.Wood:
+                        case ResourceType.WOOD:
                             Market.Wood = market;
                             break;
-                        case ResourceType.Iron:
+                        case ResourceType.IRON:
                             Market.Iron = market;
                             break;
                         default:

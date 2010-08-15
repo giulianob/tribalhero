@@ -394,6 +394,9 @@ namespace CSVToXML {
                         writer.WriteAttributeString("type", workerAction.param1);
                         writer.WriteAttributeString("maxlevel", workerAction.param2);
                         break;
+                    case "resource_send":
+                        writer.WriteStartElement("ResourceSend");
+                        break;
                     case "resource_sell":
                         writer.WriteStartElement("ResourceSell");
                         break;

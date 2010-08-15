@@ -55,15 +55,15 @@ namespace Game.Logic.Actions {
                 return Error.MARKET_INVALID_QUANTITY;
 
             switch (resourceType) {
-                case ResourceType.Crop:
+                case ResourceType.CROP:
                     market = Market.Crop;
                     cost = new Resource(quantity, 0, 0, 0, 0);
                     break;
-                case ResourceType.Wood:
+                case ResourceType.WOOD:
                     market = Market.Wood;
                     cost = new Resource(0, 0, 0, quantity, 0);
                     break;
-                case ResourceType.Iron:
+                case ResourceType.IRON:
                     cost = new Resource(0, 0, quantity, 0, 0);
                     market = Market.Iron;
                     break;

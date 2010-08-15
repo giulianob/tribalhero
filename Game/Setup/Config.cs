@@ -71,6 +71,7 @@ namespace Game.Setup {
         public static readonly int ai_count = 100;
 
         public static readonly bool actions_instant_time;
+        public static readonly int actions_free_cancel_interval_in_sec = 60;
         
         public static Random Random { get; private set; }
 

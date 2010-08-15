@@ -8,6 +8,10 @@ using Game.Setup;
 
 namespace Game.Logic {
     public partial class Formula {
+        internal static double SendTime(int distance) {
+            return distance * 2000;
+        }
+
         internal static double TradeTime(Structure structure)
         {
             return 50 + 50 / structure.Lvl;

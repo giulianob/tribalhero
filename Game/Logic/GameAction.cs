@@ -10,6 +10,12 @@ using Game.Util;
 #endregion
 
 namespace Game.Logic {
+
+    [Flags]
+    public enum ActionOption {
+        Nothing  = 0,
+        Uncancelable = 1
+    }
     public enum ActionType {
         OBJECT_REMOVE = 10,
 
@@ -33,7 +39,7 @@ namespace Game.Logic {
         FARM = 302,
         RESOURCE = 303,
         REFINERY = 304,
-        RESOURCE_MILL = 305,
+        RESOURCE_SEND = 305,
         RESOURCE_BUY = 306,
         RESOURCE_SELL = 307,
         FOREST_CAMP_BUILD = 308,

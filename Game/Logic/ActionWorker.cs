@@ -15,6 +15,7 @@ namespace Game.Logic {
         public byte index;
         public byte max;
         public ActionType type;
+        public ActionOption option;
         public string[] parms;
         public uint effectReqId;
         public EffectInheritance effectReqInherit;
@@ -458,6 +459,9 @@ namespace Game.Logic {
         public Error Cancel(ushort id) {
             ActiveAction activeAction;
             if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.isDone) {
+                if ((ActionFactory.getActionRequirementRecord(activeAction.WorkerType).list[activeAction.WorkerIndex].option & ActionOption.Uncancelable) == ActionOption.Uncancelable) {
+                    return Error.ACTION_UNCANCELABLE;
+                }
                 ThreadPool.QueueUserWorkItem(ActiveCancelCallback, activeAction);
                 return Error.OK;
             }

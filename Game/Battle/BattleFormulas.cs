@@ -68,7 +68,7 @@ namespace Game.Battle {
                         case ArmorType.MACHINE:
                             return weak;
                         case ArmorType.BUILDING:
-                            return strong;
+                            return good;
                     }
                     break;
                 case WeaponType.BOW:

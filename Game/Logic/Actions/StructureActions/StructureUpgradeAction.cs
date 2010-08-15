@@ -104,9 +104,8 @@ namespace Game.Logic.Actions {
 
                 if (!wasKilled) {
                     Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
-
                     city.BeginUpdate();
-                    city.Resource.Add(cost/2);
+                    city.Resource.Add(Formula.GetActionCancelResource(beginTime,cost));
                     city.EndUpdate();
                 }
 

@@ -5,24 +5,29 @@ using System.Data;
 using Game.Data;
 using Game.Database;
 using Game.Logic;
+using Game.Setup;
 
 #endregion
 
 namespace Game.Module {
     public class Market : ISchedule, IPersistableObject {
+        private const int UpdateIntervalInSecond = 3600;
+
+        private const int MinPrice = 5;
         private const int DefaulPrice = 50;
-        private const int QuantityPerChange = 4;
-        private const int UpdateIntervalInSecond = 5;
+        private const int MaxPrice = 500;
+
+        private const int QuantityPerChangePerPlayer = 200;
 
         public static void Init() {
             if (crop == null)
-                crop = new Market(ResourceType.Crop, DefaulPrice, QuantityPerChange);
+                crop = new Market(ResourceType.Crop, DefaulPrice, QuantityPerChangePerPlayer);
 
             if (iron == null)
-                iron = new Market(ResourceType.Iron, DefaulPrice, QuantityPerChange);
+                iron = new Market(ResourceType.Iron, DefaulPrice, QuantityPerChangePerPlayer);
 
             if (wood == null)
-                wood = new Market(ResourceType.Wood, DefaulPrice, QuantityPerChange);
+                wood = new Market(ResourceType.Wood, DefaulPrice, QuantityPerChangePerPlayer);
         }
 
         private static Market crop;
@@ -47,14 +52,15 @@ namespace Game.Module {
         private int incoming = 0;
         private int outgoing = 0;
         private int price;
-        private int quantityPerChange;
+        private int quantityPerChangePerPlayer;
         private DateTime time;
         private ResourceType resource;
 
-        public Market(ResourceType resource, int defaultPrice, int quantityPerChange) {
+        public Market(ResourceType resource, int defaultPrice, int quantityerChangePerPlayer) {
             price = defaultPrice;
-            this.quantityPerChange = quantityPerChange;
-            time = DateTime.UtcNow;
+            // parameter quantityerChangePerPlayer is not in used(so I can change the setting on the fly without changing database)
+            this.quantityPerChangePerPlayer = QuantityPerChangePerPlayer;
+            time = DateTime.UtcNow.AddSeconds(UpdateIntervalInSecond * Config.seconds_per_unit);
             this.resource = resource;
             Global.Scheduler.Put(this);
         }
@@ -89,16 +95,18 @@ namespace Game.Module {
         #region ISchedule Members
 
         public DateTime Time {
-            get { return time.AddSeconds(UpdateIntervalInSecond); }
+            get { return time; }
         }
 
         public void Callback(object custom) {
             lock (this) {
                 using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                     int flow = outgoing - incoming;
-                    price += (flow/quantityPerChange);
+                    price += (flow/(quantityPerChangePerPlayer*Global.Players.Count));
+                    if (price < MinPrice) price = MinPrice;
+                    if (price > MaxPrice) price = MaxPrice;
                     outgoing = incoming = 0;
-                    time = DateTime.UtcNow.AddSeconds(UpdateIntervalInSecond);
+                    time = DateTime.UtcNow.AddSeconds(UpdateIntervalInSecond * Config.seconds_per_unit);
                     Global.DbManager.Save(this);
                     Global.Scheduler.Put(this);
                 }
@@ -145,8 +153,9 @@ namespace Game.Module {
             get {
                 return new DbColumn[] {
                                           new DbColumn("incoming", incoming, DbType.Int32),
-                                          new DbColumn("outgoing", outgoing, DbType.Int32), new DbColumn("price", price, DbType.Int32),
-                                          new DbColumn("quantity_per_change", quantityPerChange, DbType.Int32)
+                                          new DbColumn("outgoing", outgoing, DbType.Int32),
+                                          new DbColumn("price", price, DbType.Int32),
+                                          new DbColumn("quantity_per_change", quantityPerChangePerPlayer, DbType.Int32)
                                       };
             }
         }

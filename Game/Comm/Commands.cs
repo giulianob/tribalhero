@@ -97,6 +97,7 @@ namespace Game.Comm {
         CITY_OBJECT_UPDATE = 452,
         CITY_OBJECT_REMOVE = 453,
 
+        CITY_RESOURCE_SEND = 460,
         CITY_RESOURCES_UPDATE = 462,
         CITY_UNIT_LIST = 463,
         CITY_RADIUS_UPDATE = 465,

@@ -15,6 +15,7 @@ namespace Game.Setup {
         ACTION_INVALID = 105,
         ACTION_ALREADY_IN_PROGRESS = 106,
         ACTION_COUNT_INVALID = 107,
+        ACTION_UNCANCELABLE = 108,
 
         #endregion
 
@@ -28,7 +29,8 @@ namespace Game.Setup {
         LUMBERMILL_UNAVAILABLE = 205,
         ALREADY_IN_FOREST = 206,
         FOREST_INACCESSIBLE = 207,
-
+        RESOURCE_EXCEED_TRADE_LIMIT = 208,
+        
         #endregion
 
         #region Map Errors

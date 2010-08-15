@@ -128,7 +128,7 @@ namespace Game.Database {
             Global.Logger.Info("Loading players...");
             using (var reader = dbManager.Select(Player.DB_TABLE)) {
                 while (reader.Read()) {
-                    Player player = new Player((uint)reader["id"], DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc), (string)reader["name"]) {
+                    Player player = new Player((uint)reader["id"], DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc), DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc), (string)reader["name"]) {
                         DbPersisted = true
                     };
                     Global.Players.Add(player.PlayerId, player);

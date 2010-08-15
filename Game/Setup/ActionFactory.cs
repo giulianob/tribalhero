@@ -10,6 +10,7 @@ using Game.Util;
 #endregion
 
 namespace Game.Setup {
+
     public class ActionRecord {
         public byte max;
         public List<ActionRequirement> list;
@@ -53,6 +54,10 @@ namespace Game.Setup {
                         action_req = new ActionRequirement();
                         action_req.index = action_index;
                         action_req.type = (ActionType) Enum.Parse(typeof (ActionType), toks[col["Action"]], true);
+                        if (toks[col["Option"]].Length > 0) {
+                            foreach (string opt in toks[col["Option"]].Split('|'))
+                                action_req.option |= (ActionOption) Enum.Parse(typeof (ActionOption), opt, true);
+                        }
                         action_req.max = byte.Parse(toks[col["Max"]]);
                         action_req.parms = new string[toks.Length - 4];
                         for (int i = 4; i < toks.Length; ++i) {

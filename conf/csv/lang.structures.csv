@@ -71,10 +71,15 @@ FOUNDRY_STRUCTURE_LVL_5,Increases to a maximum of 50 laborers. One labor can rep
 BASEMENT_STRUCTURE_NAME,Basement
 BASEMENT_STRUCTURE_DESCRIPTION,Allow city to hide resources.
 BASEMENT_STRUCTURE_LVL_1,Increases storage space to hide 100 crop 100 wood.
-BASEMENT_STRUCTURE_LVL_2,Increases storage space to hide 200 crop 200 wood 50 gold.
-BASEMENT_STRUCTURE_LVL_3,Increases storage space to hide 300 crop 300 wood 100 gold 50 iron.
-BASEMENT_STRUCTURE_LVL_4,Increases storage space to hide 500 crop 500 wood  200 gold 100 iron.
-BASEMENT_STRUCTURE_LVL_5,Increases storage space to hide 1000 crop 1000 wood 400 gold 200 iron.
+BASEMENT_STRUCTURE_LVL_2,Increases storage space to hide 150 crop 150 wood.
+BASEMENT_STRUCTURE_LVL_3,Increases storage space to hide 220 crop 220 wood.
+BASEMENT_STRUCTURE_LVL_4,Increases storage space to hide 330 crop 330 wood.
+BASEMENT_STRUCTURE_LVL_5,Increases storage space to hide 500 crop 500 wood 100 gold.
+BASEMENT_STRUCTURE_LVL_6,Increases storage space to hide 740 crop 740 wood 150 gold.
+BASEMENT_STRUCTURE_LVL_7,Increases storage space to hide 1100 crop 1100 wood 220 gold.
+BASEMENT_STRUCTURE_LVL_8,Increases storage space to hide 1100 crop 1100 wood 330 gold 200 iron.
+BASEMENT_STRUCTURE_LVL_9,Increases storage space to hide 1100 crop 1100 wood 500 gold 360 iron.
+BASEMENT_STRUCTURE_LVL_10,Increases storage space to hide 1100 crop 1100 wood 740 gold 660 iron.
 STABLE_STRUCTURE_NAME,Stable
 STABLE_STRUCTURE_DESCRIPTION,Trains mounted units.
 STABLE_STRUCTURE_LVL_1,Allows training calvary.
@@ -161,21 +166,21 @@ CANNON_TOWER_STRUCTURE_LVL_9,Increases tower defenses.
 CANNON_TOWER_STRUCTURE_LVL_10,Increases tower defenses.
 TRADING_POST_STRUCTURE_NAME,Trading Post
 TRADING_POST_STRUCTURE_DESCRIPTION,Allows sending caravans with resources to other players. Gives the ability to build a market.
-TRADING_POST_STRUCTURE_LVL_1,Ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_2,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_3,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_4,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_5,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_6,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_7,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_8,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_9,Increase ability to send a maximum of ### resources.
-TRADING_POST_STRUCTURE_LVL_10,Increase ability to send a maximum of ### resources.
+TRADING_POST_STRUCTURE_LVL_1,Ability to send a maximum of 200 resources.
+TRADING_POST_STRUCTURE_LVL_2,Increase ability to send a maximum of 400 resources.
+TRADING_POST_STRUCTURE_LVL_3,Increase ability to send a maximum of 600 resources.
+TRADING_POST_STRUCTURE_LVL_4,Increase ability to send a maximum of 800 resources.
+TRADING_POST_STRUCTURE_LVL_5,Increase ability to send a maximum of 1000 resources.
+TRADING_POST_STRUCTURE_LVL_6,Increase ability to send a maximum of 1200 resources.
+TRADING_POST_STRUCTURE_LVL_7,Increase ability to send a maximum of 1400 resources.
+TRADING_POST_STRUCTURE_LVL_8,Increase ability to send a maximum of 1600 resources.
+TRADING_POST_STRUCTURE_LVL_9,Increase ability to send a maximum of 1800 resources.
+TRADING_POST_STRUCTURE_LVL_10,Increase ability to send a maximum of 2000 resources.
 MARKET_STRUCTURE_NAME,Market
 MARKET_STRUCTURE_DESCRIPTION,Allows selling and buying resources from the world market.
-MARKET_STRUCTURE_LVL_1,Ability to sell and buy resources at a 25% tax rate.
-MARKET_STRUCTURE_LVL_2,Decreases the tax rate to 20%.
-MARKET_STRUCTURE_LVL_3,Decreases the tax rate to 15%.
-MARKET_STRUCTURE_LVL_4,Decreases the tax rate to 10%.
-MARKET_STRUCTURE_LVL_5,Decreases the tax rate to 5%.
+MARKET_STRUCTURE_LVL_1,Ability to sell and buy resources at a 10% tax rate.
+MARKET_STRUCTURE_LVL_2,Decreases the tax rate to 5%.
+MARKET_STRUCTURE_LVL_3,Tax-Free!
+MARKET_STRUCTURE_LVL_4,Tax-Free! Trading at 5% discount rate.
+MARKET_STRUCTURE_LVL_5,Tax-Free! Trading at 10% discount rate.
 FORESTCAMP_STRUCTURE_NAME,Lumbering Camp

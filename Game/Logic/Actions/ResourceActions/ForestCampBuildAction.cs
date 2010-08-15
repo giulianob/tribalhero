@@ -237,10 +237,11 @@ namespace Game.Logic.Actions {
 
                 city.Worker.References.Remove(structure, this);
 
-                // If action was cancelled, give back the labor to the city
+                // If action was cancelled, give back the labor and cost to the city
                 if (!wasKilled) {
                     city.BeginUpdate();
                     city.Resource.Labor.Add(labors);
+                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Formula.StructureCost(city, campType, 1)));
                     city.EndUpdate();
                 }
 

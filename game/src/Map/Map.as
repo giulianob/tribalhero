@@ -3,6 +3,7 @@
 	import flash.display.Sprite;
 	import flash.events.*;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.*;
 	import flash.ui.Keyboard;
 	import src.Global;
@@ -29,6 +30,7 @@
 		private var disabledMapQueries: Boolean;
 
 		public var camera: Camera;
+		private var lastParseRegionLoc: Point = new Point();
 		private var lastQueryTime: int = 0;
 		private var pendingRegions: Array;
 
@@ -177,65 +179,22 @@
 			var requiredRegions: Array = new Array();
 			var outdatedRegions: Array = new Array();
 
+			// Get list of required regions
 			const offset:int = 200;
-			var requiredId: int = 0;
 
-			//middle
-			requiredId = MapUtil.getRegionId(camera.x + Constants.screenW/2, camera.y + Constants.screenH/2);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
+			var screenRect: Rectangle = new Rectangle(camera.x - offset, camera.y - offset, Constants.screenW + offset * 2, Constants.screenH + offset * 2);
+			for (var reqX: int = -1; reqX <= Math.ceil(Constants.screenW / Constants.regionW); reqX++) {
+				for (var reqY: int = -1; reqY <= Math.ceil(Constants.screenH / (Constants.regionH / 2)); reqY++) {
+					var curX: int = camera.x + (Constants.regionW * reqX);
+					var curY: int = camera.y + (Constants.regionH / 2 * reqY);
+					var requiredId: int = MapUtil.getRegionId(curX, curY);
 
-			//top-left (up cache)
-			requiredId = MapUtil.getRegionId(camera.x, camera.y - offset);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//top-left (left cache)
-			requiredId = MapUtil.getRegionId(camera.x - offset, camera.y);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//top-left
-			requiredId = MapUtil.getRegionId(camera.x, camera.y);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
+					var regionRect: Rectangle = MapUtil.getRegionRect(requiredId);
+					if (!regionRect.containsRect(screenRect) && !screenRect.intersects(regionRect)) continue;
 
-			//bottom-left (left)
-			requiredId = MapUtil.getRegionId(camera.x - offset, camera.y + Constants.screenH);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//bottom-left (down)
-			requiredId = MapUtil.getRegionId(camera.x, camera.y + Constants.screenH + offset);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//bottom-left
-			requiredId = MapUtil.getRegionId(camera.x, camera.y + Constants.screenH);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-
-			//top-right (up)
-			requiredId = MapUtil.getRegionId(camera.x + Constants.screenW, camera.y - offset);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//top-right (right)
-			requiredId = MapUtil.getRegionId(camera.x + Constants.screenW + offset, camera.y);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//top-right
-			requiredId = MapUtil.getRegionId(camera.x + Constants.screenW, camera.y);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-
-			//bottom-right (down)
-			requiredId = MapUtil.getRegionId(camera.x + Constants.screenW, camera.y + Constants.screenH + offset);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//bottom-right (right)
-			requiredId = MapUtil.getRegionId(camera.x + Constants.screenW + offset, camera.y + Constants.screenH);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
-			//bottom-right
-			requiredId = MapUtil.getRegionId(camera.x + Constants.screenW, camera.y + Constants.screenH);
-			if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1)
-			requiredRegions.push(requiredId);
+					if (requiredId > -1 && requiredRegions.indexOf(requiredId) == -1) requiredRegions.push(requiredId);
+				}
+			}
 
 			//remove any outdated regions from regions we have
 			for (var i: int = regions.size() - 1; i >= 0; i--)
@@ -297,7 +256,11 @@
 				if (Constants.debug >= 3)
 				trace("Required:" + requiredRegions);
 
-				Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
+				// Don't parse every single pixel we move
+				if (Math.abs(lastParseRegionLoc.x - camera.x) > 10 || Math.abs(lastParseRegionLoc.y - camera.y) > 10) {
+					lastParseRegionLoc = new Point(camera.x, camera.y);
+					Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
+				}
 			}
 
 			region = null;
@@ -307,6 +270,8 @@
 		//#################### Object Manipulation ##########################
 		//###################################################################
 		public function selectWhenViewable(cityId: int, objectId: int) : void {
+			selectObject(null);
+
 			selectViewable = null;
 			for each(var gameObject: GameObject in objContainer.objects) {
 				if (SimpleGameObject.compareCityIdAndObjId(gameObject, [cityId, objectId]) == 0) {
@@ -489,14 +454,21 @@
 			camera.Move(dx, dy);
 		}
 
+		public function onStageResized(e: Event) : void {
+			onMove();
+		}
+
 		public function eventAddedToStage(event: Event):void
 		{
 			addEventListener(MouseEvent.CLICK, eventMouseClick);
 			disableMouse(false);
+
+			stage.addEventListener(Event.RESIZE, onStageResized);
 		}
 
 		public function eventRemovedFromStage(event: Event):void
 		{
+			stage.removeEventListener(Event.RESIZE, onStageResized);
 			removeEventListener(MouseEvent.CLICK, eventMouseClick);
 			disableMouse(true);
 		}

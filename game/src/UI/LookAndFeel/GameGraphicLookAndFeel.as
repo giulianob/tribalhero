@@ -100,6 +100,13 @@ package src.UI.LookAndFeel
 		}
 
 		//----------------------------------------------------------------------
+		//___________________________ Gamebar ___________________________________
+		//======================================================================
+		[Embed(source="assets/Game-bar.png", scaleGridTop="5", scaleGridBottom="40",
+		scaleGridLeft="190", scaleGridRight="675")]
+		private var GameContainer_gameBar:Class;
+
+		//----------------------------------------------------------------------
 		//___________________________ System ___________________________________
 		//======================================================================
 		[Embed(source="assets/System_hResizeCursor.png")]
@@ -1001,8 +1008,15 @@ package src.UI.LookAndFeel
 
 		override protected function initComponentDefaults(table:UIDefaults):void{
 			super.initComponentDefaults(table);
-			// *** Button
+			
+			// *** Game Menu
 			var comDefaults:Array = [
+				"GameMenu.bar", GameContainer_gameBar
+			];
+			table.putDefaults(comDefaults);
+			
+			// *** Button
+			comDefaults = [
 			"Button.background", new ASColorUIResource(0x839DAD), //this is just for calculate disabled color
 			"Button.foreground", new ASColorUIResource(0xffffff),
 			"Button.textFilters", new ArrayUIResource([]),
@@ -1134,7 +1148,7 @@ package src.UI.LookAndFeel
 			comDefaults = [
 			"Class.Sidebar.frame", [
 			"Frame.activeBG", Sidebar_frame_activeBG,
-			"Frame.inactiveBG", Sidebar_frame_activeBG, // use same img as active for now			
+			"Frame.inactiveBG", Sidebar_frame_activeBG, // use same img as active for now
 			]
 			];
 			table.putDefaults(comDefaults);

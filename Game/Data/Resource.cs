@@ -191,7 +191,7 @@ namespace Game.Data {
             FireStatsUpdate();
         }
 
-        public void Add(Resource cost, int cap, out Resource returning) {
+        public void Add(Resource cost, int cap, out Resource actual, out Resource returning) {
             Resource total = this + cost;
             returning = new Resource(total.Crop > cap ? total.Crop - cap : 0,
                                          total.Gold > cap ? total.Gold - cap : 0,
@@ -199,13 +199,18 @@ namespace Game.Data {
                                          total.Wood > cap ? total.Wood - cap : 0,
                                          total.labor > cap ? total.labor - cap : 0);
 
-            crop += (cost.crop - returning.crop);
-            gold += (cost.gold - returning.gold);
-            iron += (cost.iron - returning.iron);
-            wood += (cost.wood - returning.wood);
-            labor += (cost.labor - returning.labor);
+            actual = new Resource(cost.crop - returning.crop, cost.gold - returning.gold, cost.iron - returning.iron, cost.wood - returning.wood, cost.labor - returning.labor);
+            Add(cost, cap);
 
             FireStatsUpdate();
+        }
+
+        public void Add(Resource cost, int cap) {
+            crop = Math.Min(crop + cost.Crop, cap);
+            gold = Math.Min(gold + cost.Gold, cap);
+            iron = Math.Min(iron + cost.Iron, cap);
+            wood = Math.Min(wood + cost.Wood, cap);
+            labor = Math.Min(labor + cost.Labor, cap);
         }
 
         public void Add(Resource cost) {

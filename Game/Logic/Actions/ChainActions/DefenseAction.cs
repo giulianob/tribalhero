@@ -36,6 +36,9 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.OBJECT_NOT_FOUND;
 
+            if (city.Troops.Size > 12)
+                return Error.TOO_MANY_TROOPS;
+
             City targetCity;
             if (!Global.World.TryGetObjects(targetCityId, out targetCity))
                 return Error.OBJECT_NOT_FOUND;

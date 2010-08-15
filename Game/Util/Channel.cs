@@ -100,6 +100,17 @@ namespace Game.Util {
             return false;
         }
 
+        public int SubscriptionCount(IChannel session) {
+            lock (channelLock) {                
+                Subscriber sub;
+                if (subscribersBySession.TryGetValue(session, out sub)) {
+                    return sub.channels.Count;
+                }
+            }
+
+            return 0;
+        }
+
         public bool Unsubscribe(IChannel session) {
             lock (channelLock) {
                 Subscriber sub;

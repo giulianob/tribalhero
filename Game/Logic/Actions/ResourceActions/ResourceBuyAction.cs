@@ -49,15 +49,15 @@ namespace Game.Logic.Actions {
                 return Error.MARKET_INVALID_QUANTITY;
 
             switch (resourceType) {
-                case ResourceType.Crop:
+                case ResourceType.CROP:
                     if (!Market.Crop.Buy(quantity, price))
                         return Error.MARKET_PRICE_CHANGED;
                     break;
-                case ResourceType.Wood:
+                case ResourceType.WOOD:
                     if (!Market.Wood.Buy(quantity, price))
                         return Error.MARKET_PRICE_CHANGED;
                     break;
-                case ResourceType.Iron:
+                case ResourceType.IRON:
                     if (!Market.Iron.Buy(quantity, price))
                         return Error.MARKET_PRICE_CHANGED;
                     break;
@@ -107,13 +107,13 @@ namespace Game.Logic.Actions {
 
                 structure.City.BeginUpdate();
                 switch (resourceType) {
-                    case ResourceType.Crop:
+                    case ResourceType.CROP:
                         structure.City.Resource.Crop.Add(quantity);
                         break;
-                    case ResourceType.Wood:
+                    case ResourceType.WOOD:
                         structure.City.Resource.Wood.Add(quantity);
                         break;
-                    case ResourceType.Iron:
+                    case ResourceType.IRON:
                         structure.City.Resource.Iron.Add(quantity);
                         break;
                 }

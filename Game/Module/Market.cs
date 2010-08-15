@@ -16,13 +16,13 @@ namespace Game.Module {
 
         public static void Init() {
             if (crop == null)
-                crop = new Market(ResourceType.Crop, DefaulPrice, QuantityPerChange);
+                crop = new Market(ResourceType.CROP, DefaulPrice, QuantityPerChange);
 
             if (iron == null)
-                iron = new Market(ResourceType.Iron, DefaulPrice, QuantityPerChange);
+                iron = new Market(ResourceType.IRON, DefaulPrice, QuantityPerChange);
 
             if (wood == null)
-                wood = new Market(ResourceType.Wood, DefaulPrice, QuantityPerChange);
+                wood = new Market(ResourceType.WOOD, DefaulPrice, QuantityPerChange);
         }
 
         private static Market crop;

@@ -77,7 +77,8 @@ namespace Game.Setup {
         CITY_IN_BATTLE = 601,        
         DEFEND_SELF = 602,
         BATTLE_NOT_VIEWABLE = 603,
-        TROOP_CHANGED = 604
+        TROOP_CHANGED = 604,
+        TOO_MANY_TROOPS = 605
 
         #endregion                
     }

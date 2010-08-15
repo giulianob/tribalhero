@@ -62,7 +62,7 @@ namespace Game.Setup {
                                                                 ushort.Parse(toks[col["GrpSize"]]),
                                                                 Formula.GetRewardPoint(resource,
                                                                                        ushort.Parse(toks[col["Hp"]])),
-                                                                byte.Parse(toks[col["Carry"]]));
+                                                                ushort.Parse(toks[col["Carry"]]));
 
                     BaseUnitStats basestats = new BaseUnitStats(toks[col["Name"]], ushort.Parse(toks[col["Type"]]),
                                                                 byte.Parse(toks[col["Lvl"]]), resource, upgradeResource,

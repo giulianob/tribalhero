@@ -16,6 +16,7 @@
 	import org.aswing.JFrame;
 	import org.aswing.JLabel;
 	import org.aswing.JPanel;
+	import src.Constants;
 	import src.Global;
 	import src.Map.City;
 	import src.UI.LookAndFeel.GameLookAndFeel;
@@ -82,6 +83,7 @@
 			if (!frame)
 			{
 				frame = new JFrame(null, "", false);
+				frame.name = "Resources Container Frame";
 				frame.setContentPane(this);
 				frame.setBorder(new EmptyBorder(null, new Insets(0, 0, 0, 0)));
 				frame.setBackgroundDecorator(null);
@@ -89,9 +91,11 @@
 				frame.setDragable(false);
 				frame.setClosable(false);
 				frame.setResizable(false);
-				frame.show();
+				frame.show();			
 				
-				frame.setLocationXY(687, 14);
+				frame.pack();
+				
+				frame.setLocationXY(Constants.screenW - frame.getWidth(), 14);
 			}			
 			
 			frame.pack();

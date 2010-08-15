@@ -94,6 +94,9 @@
 						case "UnitUpgrade":
 							action = new UnitUpgradeAction(actionNode.@type, actionNode.@maxlevel);
 						break;
+						case "ResourceSend":
+							action = new SendResourcesAction();
+						break;
 						case "ResourceBuy":
 							action = new MarketAction("buy");
 						break;

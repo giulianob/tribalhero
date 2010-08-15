@@ -2,6 +2,8 @@
 {
 	import fl.lang.Locale;
 	import flash.display.MovieClip;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
 	import flash.events.*;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -23,7 +25,6 @@
 		private var importObjects: ImportObjects;
 
 		private var gameContainer: GameContainer;
-		private var bgImage: MovieClip;
 
 		private var map:Map;
 		private var miniMap: MiniMap;
@@ -43,18 +44,21 @@
 			AsWingManager.initAsStandard(stage);
 			UIManager.setLookAndFeel(new GameLookAndFeel());
 
+			//Init stage options
+			stage.stageFocusRect = false;
+			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.align = StageAlign.TOP_LEFT;
+
 			Global.main = this;
 
 			//Init right context menu for debugging
-			var fm_menu:ContextMenu = new ContextMenu();
-			var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
-			dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { Util.dumpDisplayObject(stage); } );
-			fm_menu.customItems.push(dump);
-			contextMenu = fm_menu;
-
-			//Init Background
-			bgImage = new IntroBackground();
-			addChild(bgImage);
+			if (Constants.debug > 0) {
+				var fm_menu:ContextMenu = new ContextMenu();
+				var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
+				dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { Util.dumpDisplayObject(stage); } );
+				fm_menu.customItems.push(dump);
+				contextMenu = fm_menu;
+			}
 
 			//Flash params
 			parms = loaderInfo.parameters;
@@ -254,6 +258,11 @@
 				trace("Received packet to main processor");
 				trace(packet);
 			}
+		}
+
+		private function resizeHandler(event:Event):void {
+			trace("resizeHandler: " + event);
+			trace("stageWidth: " + stage.stageWidth + " stageHeight: " + stage.stageHeight);
 		}
 	}
 }

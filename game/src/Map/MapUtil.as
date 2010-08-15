@@ -7,6 +7,7 @@
 package src.Map {
 
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import src.Constants;
 
 	public class MapUtil {
@@ -33,6 +34,13 @@ package src.Map {
 		{
 			var p: Point = getScreenCoord(rX, rY);
 			return getRegionId(p.x, p.y);
+		}
+		
+		public static function getRegionRect(id: int): Rectangle
+		{
+			var x: int = (id % Constants.mapRegionW) * Constants.regionW;
+			var y: int = int(id / Constants.mapRegionW) * (Constants.regionH / 2);			
+			return new Rectangle(x, y, Constants.regionW, Constants.regionH / 2);
 		}
 
 		public static function getRegionId(rX: int, rY: int): int // from screen coord to region id

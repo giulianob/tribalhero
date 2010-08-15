@@ -17,7 +17,7 @@ package src.Objects.Actions {
 			{ name: "Train", actions: [ TrainButton] },
 			{ name: "Upgrade", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Research", actions: [ TechnologyButton ] },			
-			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton ] },
+			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton ] },
 		];
 		
 		public static const STATE_COMPLETED: int = 0;
@@ -32,6 +32,7 @@ package src.Objects.Actions {
         public static const STRUCTURE_CHANGE: int = 103;
         public static const LABOR_MOVE: int = 106;        
 		public static const STRUCTURE_USERDOWNGRADE: int = 107;
+		public static const RESOURCE_SEND: int = 305;
         public static const RESOURCE_BUY: int = 306;
         public static const RESOURCE_SELL: int = 307;
 		public static const FOREST_CAMP_BUILD: int = 308;

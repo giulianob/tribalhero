@@ -22,7 +22,7 @@ package src
 		/* ROAD CONSTANTS */
 		public static const road_start_tile_id: int = 224;
 		public static const road_end_tile_id: int = 250;
-		
+
 		/* MAP CONSTANTS */
 		public static const tileW:int = 108;
 		public static const tileH:int = 54;
@@ -54,11 +54,11 @@ package src
 		public static const mapRegionW: int = mapW / regionW;
 		public static const mapRegionH: int = mapH / regionH;
 
-		public static const screenW:int = 976;
-		public static const screenH:int = 640;
-
-		public static const movieW:int = 976;
-		public static const movieH:int = 640;
+		public static var origScreenW:int = 976;
+		public static var origScreenH:int = 640;
+		
+		public static var screenW:int = origScreenW;
+		public static var screenH:int = origScreenH;
 
 		/* MINI MAP CONSTANTS */
 		public static const miniMapTileW: int = 6;
@@ -83,22 +83,30 @@ package src
 		public static const miniMapScreenW: int = 288;
 		public static const miniMapScreenH: int = 138;
 
-		public static const miniMapScreenX: int = 6;
-		public static const miniMapScreenY: int = screenH - miniMapScreenH - 6;
+		public static const miniMapScreenX: Function = function() : int {
+			return 6;
+		}
+		public static const miniMapScreenY: Function = function() : int {
+			return screenH - miniMapScreenH - 6;
+		}
 
 		// Expanded mini map constants
 		public static const miniMapLargeScreenW: int = 800;
 		public static const miniMapLargeScreenH: int = 550;
 
-		public static const miniMapLargeScreenX: int = (screenW / 2) - (miniMapLargeScreenW / 2);
-		public static const miniMapLargeScreenY: int = (screenH / 2) - (miniMapLargeScreenH / 2) + 30;
+		public static const miniMapLargeScreenX: Function = function() : int {
+			return (screenW / 2) - (miniMapLargeScreenW / 2);
+		}
+		public static const miniMapLargeScreenY: Function = function() : int {
+			return (screenH / 2) - (miniMapLargeScreenH / 2) + 30;
+		}
 
 		/* GAME DATA */
 		public static const queryData: Boolean = true;
 
 		/* TROOP */
 		public static const troopWorkerId: int = 100;
-		
+
 		/* STAT RANGES */
 		public static const unitStatRanges: * = {
 			"attack": { min: 1, max: 110 },
@@ -108,13 +116,14 @@ package src
 			"speed": { min: 2, max: 22 },
 			"carry": { min: 0, max: 246 }
 		};
-		
-		public static const structureStatRanges: * = {			
-			"defense": { min: 0, max: 12500 },			
+
+		public static const structureStatRanges: * = {
+			"defense": { min: 0, max: 12500 },
 			"stealth": { min: 0, max: 20 },
 			"range": { min: 0, max: 15 }
-		};		
+		};
 
 		public static var objData: XML = <Data></Data>;
 	}
 }
+

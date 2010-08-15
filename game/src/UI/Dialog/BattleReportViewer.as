@@ -106,7 +106,7 @@
 					pnlSnapshots.append(new Snapshot(snapshot));
 					
 					//Resize accordingly
-					setPreferredSize(new IntDimension(950, 520));
+					setPreferredSize(new IntDimension(600, 520));
 					getFrame().pack();
 					Util.centerFrame(getFrame());
 				}

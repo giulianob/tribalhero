@@ -77,9 +77,9 @@
 			lblRange = new StarRating(Constants.structureStatRanges.range.min, Constants.structureStatRanges.range.max, 0, 5);
 			lblRadius = valueLabelMaker();
 
-			appendAll(lblHpTitle, lblHp, lblDefenseTitle, lblDefense);
-			appendAll(lblWeaponTitle, lblWeapon, structurePrototype.maxlabor>0?lblMaxLaborTitle:new JLabel(), structurePrototype.maxlabor>0?lblMaxLabor:new JLabel());
+			appendAll(lblHpTitle, lblHp, lblDefenseTitle, lblDefense);			
 			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
+			appendAll(lblWeaponTitle, lblWeapon, structurePrototype.maxlabor>0?lblMaxLaborTitle:new JLabel(), structurePrototype.maxlabor>0?lblMaxLabor:new JLabel());			
 			if (structurePrototype.radius > 0) {
 				(getLayout() as GridLayout).setRows(4);
 				appendAll(lblRadiusTitle, lblRadius, new JLabel(), new JLabel());

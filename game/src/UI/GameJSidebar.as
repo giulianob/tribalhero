@@ -14,10 +14,11 @@
 		protected var frame: GameJFrame = null;
 
 		public static const FULL_HEIGHT: int = Constants.screenH - 105;
+		public static const WIDTH: int = 175;
 
 		public function GameJSidebar()
 		{
-			setPreferredWidth(175);
+			setPreferredWidth(WIDTH);
 		}
 
 		public function getFrame(): GameJFrame {
@@ -38,9 +39,8 @@
 
 			frame.setResizable(false);
 			frame.setDragable(false);
-			frame.getTitleBar().setCloseButton(null);
-
-			frame.setLocation(new IntPoint(Constants.screenW - frame.getWidth() - 5, 60));
+			frame.getTitleBar().setCloseButton(null);			
+			frame.setLocationXY(0, 0);
 
 			return frame;
 		}

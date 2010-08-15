@@ -268,6 +268,21 @@
 			Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 		}
 
+		public function sendResources(resources: Resources, cityId: int, objId: int, targetCityId: int):void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.CITY_RESOURCES_SEND;
+			packet.writeUInt(cityId);
+			packet.writeUInt(objId);
+			packet.writeUInt(targetCityId);
+			packet.writeUInt(resources.crop);
+			packet.writeUInt(resources.gold);
+			packet.writeUInt(resources.iron);
+			packet.writeUInt(resources.wood);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}
+
 		public function technologyUpgrade(cityId: int, parent: int, type: int):void
 		{
 			var packet: Packet = new Packet();
@@ -294,7 +309,7 @@
 			}
 
 			city.notifications.add(notification);
-			
+
 			BuiltInMessages.showIncomingAttack(city);
 		}
 
@@ -306,7 +321,7 @@
 			return;
 
 			city.notifications.remove( [ packet.readUInt(), packet.readUInt() ] );
-			
+
 			BuiltInMessages.showIncomingAttack(city);
 		}
 

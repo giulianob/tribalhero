@@ -67,8 +67,14 @@
 		private var minimapZoomed: Boolean = false;
 		private var minimapZoomTooltip: SimpleTooltip;
 
+		//Handles fancy auto resizing
+		private var resizeManager: ResizeManager;
+
+		// Game bar bg. Can't be in Flash because of scale9 issue
+		private var barBg: DisplayObject;
+
 		public function GameContainer()
-		{
+		{				
 			// Create and position the city list
 			lstCities = new JComboBox();
 			lstCities.setModel(new VectorListModel());
@@ -76,6 +82,11 @@
 			lstCities.setSize(new IntDimension(128, 22));
 			lstCities.setLocation(new IntPoint(37, 12));
 			addChild(lstCities);
+
+			// Create barBg
+			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
+			barBg = new barBgClass() as DisplayObject;
+			addChildAt(barBg, 1);
 
 			// Hide the new count bubble for messaged and reports
 			txtUnreadMessages.visible = false;
@@ -127,7 +138,16 @@
 
 			// Set up sidebar holder
 			sidebarHolder = new Sprite();
+			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
+			sidebarHolder.y = 60;
 			addChildAt(sidebarHolder, 1);
+
+			addEventListener(Event.ADDED_TO_STAGE, function(e: Event = null): void {
+				if (!resizeManager) {
+					// Set up auto resizer
+					resizeManager = new ResizeManager(stage);					
+				}
+			});
 
 			//Set up resources timer
 			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);
@@ -207,8 +227,8 @@
 		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
 			if (zoom) {
 				miniMap.resize(Constants.miniMapLargeScreenW, Constants.miniMapLargeScreenH);
-				miniMap.x = Constants.miniMapLargeScreenX;
-				miniMap.y = Constants.miniMapLargeScreenY;
+				miniMap.x = Constants.miniMapLargeScreenX();
+				miniMap.y = Constants.miniMapLargeScreenY();
 				minimapZoomTooltip.setText("Map view");
 				miniMap.setScreenRectHidden(true);
 				setSidebar(null);
@@ -217,8 +237,8 @@
 			}
 			else {
 				miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
-				miniMap.x = Constants.miniMapScreenX;
-				miniMap.y = Constants.miniMapScreenY;
+				miniMap.x = Constants.miniMapScreenX();
+				miniMap.y = Constants.miniMapScreenY();
 				minimapZoomTooltip.setText("World view");
 				miniMap.setScreenRectHidden(false);
 				map.disableMapQueries(false);
@@ -276,15 +296,25 @@
 				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
 			}
 			else {
-				map.parseRegions();
+				map.onMove();
 			}
 
 			//Show resources box
 			resourcesContainer = new ResourcesContainer();
-			displayResources();			
+			displayResources();
 
 			//Add minimap tools
 			addChild(minimapTools);
+
+			// Add objects to resize manager
+			resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
+			resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
+			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
+			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
+			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			
+			resizeManager.forceMove();
 
 			//Set minimap position and initial state
 			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
@@ -301,9 +331,9 @@
 
 			// Set visible
 			visible = true;
-			
+
 			// Create on screen message component, it'll auto show itself
-			screenMessage = new ScreenMessagePanel();			
+			screenMessage = new ScreenMessagePanel();
 
 			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
@@ -314,6 +344,10 @@
 			if (messageTimer) {
 				messageTimer.stop();
 				messageTimer = null;
+			}
+
+			if (resizeManager) {
+				resizeManager.removeAllObjects();
 			}
 
 			message.hide();

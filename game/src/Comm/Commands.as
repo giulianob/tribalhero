@@ -42,7 +42,7 @@ package src.Comm {
 		public static const STRUCTURE_UPGRADE: int = 302;
 		public static const STRUCTURE_CHANGE: int = 303;
 		public static const STRUCTURE_LABOR_MOVE: int = 304;
-		public static const STRUCTURE_DOWNGRADE: int = 305;
+		public static const STRUCTURE_DOWNGRADE: int = 305;		
 		
 		public static const TECHNOLOGY_ADDED: int = 311;
 		public static const TECHNOLOGY_UPGRADE: int = 312;
@@ -52,6 +52,7 @@ package src.Comm {
         public static const CITY_OBJECT_ADD: int  = 451;
         public static const CITY_OBJECT_UPDATE: int  = 452;
         public static const CITY_OBJECT_REMOVE: int  = 453;
+		public static const CITY_RESOURCES_SEND: int = 460;
         public static const CITY_RESOURCES_UPDATE: int  = 462;
 		public static const CITY_UNIT_LIST: int = 463;		
 		public static const CITY_RADIUS_UPDATE: int = 465;

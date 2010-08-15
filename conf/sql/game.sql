@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 15, 2010 at 05:33 PM
+-- Generation Time: Aug 15, 2010 at 06:29 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -435,6 +435,7 @@ CREATE TABLE `players` (
   `login_key_date` datetime DEFAULT NULL,
   `session_id` varchar(128) NOT NULL,
   `created` datetime NOT NULL,
+  `last_login` datetime NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),

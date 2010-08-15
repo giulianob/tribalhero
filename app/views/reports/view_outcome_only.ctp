@@ -2,6 +2,22 @@
 
 $results = array('refreshOnClose' => $refresh_on_close, 'outcomeOnly' => true, 'snapshots' => array());
 
+// Set resources gained if available
+if (array_key_exists('BattleReportView', $main_report)) {
+    $results['loot'] = array(
+        'crop' => $main_report['BattleReportView']['loot_crop'],
+        'wood' => $main_report['BattleReportView']['loot_wood'],
+        'iron' => $main_report['BattleReportView']['loot_iron'],
+        'gold' => $main_report['BattleReportView']['loot_gold']
+    );
+    $results['bonus'] = array(
+        'crop' => $main_report['BattleReportView']['bonus_crop'],
+        'wood' => $main_report['BattleReportView']['bonus_wood'],
+        'iron' => $main_report['BattleReportView']['bonus_iron'],
+        'gold' => $main_report['BattleReportView']['bonus_gold']
+    );
+}
+
 $battleStartTime = strtotime($battle_reports[0]['BattleReport']['created']);
 
 foreach($battle_reports as $battle_report) {

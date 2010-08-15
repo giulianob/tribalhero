@@ -45,7 +45,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(targetCityId, out targetCity))
                 return Error.OBJECT_NOT_FOUND;
 
-            if( !Formula.GetSendCapacity(structure).hasEnough(resource) ) {
+            if( !Formula.GetSendCapacity(structure).HasEnough(resource) ) {
                 return Error.RESOURCE_EXCEED_TRADE_LIMIT;
             }
 

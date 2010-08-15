@@ -338,7 +338,6 @@ namespace Game.Battle {
 
         #region Adding/Removing from Battle
 
-
         public void AddToLocal(List<TroopStub> objects, ReportState state) {
             AddToCombatList(objects, defenders, true, state);
         }
@@ -490,8 +489,9 @@ namespace Game.Battle {
                         continue;
 
                     ICombatUnit unit = obj as ICombatUnit;
-                    if (objects.Contains(unit.TroopStub))
+                    if (objects.Contains(unit.TroopStub)) {
                         list.Add(obj);
+                    }
                 }
 
                 combatList.RemoveAll(list.Contains);
@@ -499,14 +499,21 @@ namespace Game.Battle {
                 if (!battleStarted)
                     return;
 
-                if (combatList == Attacker) {
-                    report.WriteReportObjects(list, true, state);
-                    EventWithdrawAttacker(list);
-                } else if (combatList == Defender) {
-                    report.WriteReportObjects(list, false, state);
-                    EventWithdrawDefender(list);
+                // Snap a report of exit
+                report.WriteReportObjects(list, combatList == Attacker, state);
+
+                // Clean up object
+                foreach (CombatObject co in list.Where(co => !co.IsDead)) {
+                    co.ExitBattle();
                 }
 
+                // Send exit events
+                if (combatList == Attacker)              
+                    EventWithdrawAttacker(list);
+                else if (combatList == Defender)
+                    EventWithdrawDefender(list);                
+
+                // Refresh battle order
                 RefreshBattleOrder();
             }
         }
@@ -559,35 +566,25 @@ namespace Game.Battle {
 
             //Check to see if there are still units in the local troop
             bool localUnits = false;
-            foreach (CombatObject combatObj in defenders) {
-                if (combatObj.IsDead)
-                    continue;
-
+            foreach (CombatObject combatObj in defenders.Where(combatObj => !combatObj.IsDead)) {
                 if (combatObj is CombatStructure) {
                     localUnits = true;
                     break;
                 }
 
                 DefenseCombatUnit cu = combatObj as DefenseCombatUnit;
-                if (cu != null) {
-                    localUnits = true;
-                    break;
-                }
+                if (cu == null)
+                    continue;
+
+                localUnits = true;
+                break;
             }
 
             if (!localUnits)
                 return false;
 
             //Make sure units can still see each other
-            foreach (CombatObject combatObj in attackers) {
-                CombatObject target;
-                CombatList.BestTargetResult result = defenders.GetBestTarget(combatObj, out target);
-
-                if (result == CombatList.BestTargetResult.OK || result == CombatList.BestTargetResult.NONE_VISIBLE)
-                    return true;
-            }
-
-            return false;
+            return attackers.Any(combatObj => defenders.HasInRange(combatObj));
         }
 
         private void BattleEnded(bool writeReport) {
@@ -618,12 +615,7 @@ namespace Game.Battle {
         }
 
         public bool GroupIsDead(CombatObject co, CombatList combatList) {
-            foreach (CombatObject combatObject in combatList) {
-                if (combatObject.GroupId == co.GroupId && !combatObject.IsDead)
-                    return false;
-            }
-
-            return true;
+            return combatList.All(combatObject => combatObject.GroupId != co.GroupId || combatObject.IsDead);
         }
 
         public bool ExecuteTurn() {
@@ -664,9 +656,9 @@ namespace Game.Battle {
 
                 CombatObject defender;
 
-                if (attacker.CombatList == attackers)
+                if (attacker.CombatList == attackers) {
                     defenders.GetBestTarget(attacker, out defender);
-                else if (attacker.CombatList == defenders)
+                } else if (attacker.CombatList == defenders)
                     attackers.GetBestTarget(attacker, out defender);
                 else
                     throw new Exception("How can this happen");
@@ -708,7 +700,7 @@ namespace Game.Battle {
                     Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
                     city.BeginUpdate();
                     city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
-                    attacker.ReceiveReward(attackPoints, loot);                    
+                    attacker.ReceiveReward(attackPoints, loot);
                     city.EndUpdate();
                 } else {                    
                     // Give back any lost resources if the attacker dropped them
@@ -743,7 +735,9 @@ namespace Game.Battle {
 
                 #region Object removal
 
-                if (defender.IsDead) {
+                bool isDefenderDead = defender.IsDead;
+                if (isDefenderDead)
+                {
                     EventUnitRemoved(defender);
                     battleOrder.Remove(defender);
 
@@ -757,7 +751,7 @@ namespace Game.Battle {
                         report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.DYING : ReportState.STAYING);
                     }
 
-                    defender.CleanUp();
+                    defender.CleanUp();                    
                 }
                 else {
                     Global.DbManager.Save(defender);
@@ -767,11 +761,23 @@ namespace Game.Battle {
 
                 EventActionAttacked(attacker, defender, actualDmg);
 
-                attacker.ParticipatedInRound();                
+                attacker.ParticipatedInRound();
 
                 EventExitTurn(Attacker, Defender, (int) turn++);
 
                 Global.DbManager.Save(attacker);
+
+                if (isDefenderDead && defender.CombatList == defenders) {
+                    bool done;
+                    do {
+                        done = true;
+                        foreach (AttackCombatUnit co in attackers.OfType<AttackCombatUnit>().Where(co => !defenders.HasInRange(co))) {
+                            RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);
+                            done = false;
+                            break;
+                        }
+                    } while (!done);
+                }
 
                 if (!BattleIsValid()) {
                     BattleEnded(true);

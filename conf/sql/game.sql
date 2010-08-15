@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 08, 2010 at 01:02 PM
+-- Generation Time: Aug 15, 2010 at 05:33 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -160,6 +160,14 @@ CREATE TABLE `battle_report_views` (
   `battle_id` int(10) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `is_attacker` tinyint(1) NOT NULL,
+  `loot_crop` int(11) NOT NULL DEFAULT '0',
+  `loot_wood` int(11) NOT NULL DEFAULT '0',
+  `loot_iron` int(11) NOT NULL DEFAULT '0',
+  `loot_gold` int(11) NOT NULL DEFAULT '0',
+  `bonus_crop` int(11) NOT NULL DEFAULT '0',
+  `bonus_wood` int(11) NOT NULL DEFAULT '0',
+  `bonus_iron` int(11) NOT NULL DEFAULT '0',
+  `bonus_gold` int(11) NOT NULL DEFAULT '0',
   `read` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`),

@@ -164,6 +164,20 @@ namespace Game.Data.Troop {
             }
         }
 
+        public int Carry {                    
+            get {
+                int count = 0;
+                lock (objLock) {
+                    foreach (Formation formation in data.Values) {
+                        foreach (KeyValuePair<ushort, ushort> kvp in formation)
+                            count += (kvp.Value * City.Template[kvp.Key].Battle.Carry);
+                    }
+                }
+
+                return count;
+            }
+        }        
+
         public void Starve() {
             lock (objLock) {
                 CheckUpdateMode();

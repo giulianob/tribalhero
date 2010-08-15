@@ -53,7 +53,7 @@ namespace Game.Logic.Actions {
             }
 
             BaseUnitStats unitStats = city.Template[UnitType];
-            Resource cost = UnitFactory.GetUpgradeCost(UnitType, unitStats.Lvl + 1);
+            Resource cost = Formula.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
 
             if (cost == null)
                 return Error.OBJECT_NOT_FOUND;

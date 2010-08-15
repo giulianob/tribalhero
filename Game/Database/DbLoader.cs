@@ -104,13 +104,13 @@ namespace Game.Database {
                     market.dbLoad((int)reader["outgoing"], (int)reader["incoming"]);
                     market.DbPersisted = true;
                     switch (type) {
-                        case ResourceType.Crop:
+                        case ResourceType.CROP:
                             Market.Crop = market;
                             break;
-                        case ResourceType.Wood:
+                        case ResourceType.WOOD:
                             Market.Wood = market;
                             break;
-                        case ResourceType.Iron:
+                        case ResourceType.IRON:
                             Market.Iron = market;
                             break;
                         default:
@@ -128,7 +128,7 @@ namespace Game.Database {
             Global.Logger.Info("Loading players...");
             using (var reader = dbManager.Select(Player.DB_TABLE)) {
                 while (reader.Read()) {
-                    Player player = new Player((uint)reader["id"], (string)reader["name"]) {
+                    Player player = new Player((uint)reader["id"], DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc), (string)reader["name"]) {
                         DbPersisted = true
                     };
                     Global.Players.Add(player.PlayerId, player);
@@ -429,8 +429,8 @@ namespace Game.Database {
                         DbPersisted = true,
                         State = {
                             Type = (ObjectState)((byte)reader["state"])
-                        },
-                        Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"]),
+                        },                        
+                        Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"], new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0)),
                         IsBlocked = (bool)reader["is_blocked"],
                         InWorld = (bool)reader["in_world"]
                     };

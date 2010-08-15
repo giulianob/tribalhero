@@ -29,6 +29,7 @@ namespace Game.Logic.Actions {
             type = ushort.Parse(properties["type"]);
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
+            cost = new Resource(int.Parse(properties["crop"]), int.Parse(properties["gold"]), int.Parse(properties["iron"]), int.Parse(properties["wood"]), int.Parse(properties["labor"]));
         }
 
         #region IAction Members
@@ -43,7 +44,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_STRUCTURE_NOT_FOUND;
 
-            cost = Formula.UnitCost(structure.City, type, structure.City.Template[type].Lvl);
+            cost = Formula.UnitTrainCost(structure.City, type, structure.City.Template[type].Lvl);
             Resource totalCost = cost*ActionCount;
             if (!structure.City.Resource.HasEnough(totalCost))
                 return Error.RESOURCE_NOT_ENOUGH;
@@ -110,8 +111,6 @@ namespace Game.Logic.Actions {
                 if (!IsValid())
                     return;
 
-
-
                 if (!city.TryGetStructure(structureId, out structure)) {
                     StateChange(ActionState.FAILED);
                     return;
@@ -139,12 +138,19 @@ namespace Game.Logic.Actions {
         #region IPersistable
 
         public override string Properties {
-            get {
+            get
+            {
                 return
                     XMLSerializer.Serialize(new[] {
-                                                                new XMLKVPair("type", type), new XMLKVPair("city_id", cityId),
-                                                                new XMLKVPair("structure_id", structureId)
-                                                            });
+                                                        new XMLKVPair("type", type), 
+                                                        new XMLKVPair("city_id", cityId),
+                                                        new XMLKVPair("structure_id", structureId),
+                                                        new XMLKVPair("wood", cost.Wood),
+                                                        new XMLKVPair("crop", cost.Crop),
+                                                        new XMLKVPair("iron", cost.Iron),
+                                                        new XMLKVPair("gold", cost.Gold),
+                                                        new XMLKVPair("labor", cost.Labor),
+                    });
             }
         }
 

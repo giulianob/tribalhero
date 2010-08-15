@@ -39,11 +39,11 @@ namespace Game.Data.Stats {
         #region Constructors
 
         public TroopStats(byte attackRadius, byte speed) :
-            this(0, attackRadius, speed) {}
+            this(0, attackRadius, speed, new Resource()) {}
 
-        public TroopStats(int attackPoint, byte attackRadius, byte speed) {
+        public TroopStats(int attackPoint, byte attackRadius, byte speed, Resource loot) {
             AttackPoint = attackPoint;
-            Loot = new Resource();
+            Loot = loot;
             this.attackRadius = attackRadius;
             this.speed = speed;
 

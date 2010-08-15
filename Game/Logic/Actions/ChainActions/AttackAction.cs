@@ -54,8 +54,22 @@ namespace Game.Logic.Actions {
                 !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.OBJECT_NOT_FOUND;
 
+            if (city.Troops.Size > 12)
+                return Error.TOO_MANY_TROOPS;
+
+            // Can't attack if target is under newbie protection
+#if !DEBUG
+            if (SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
+                return Error.PLAYER_NEWBIE_PROTECTION;
+#endif
+
+            // Can't attack "Unattackable" Objects
             if (ObjectTypeFactory.IsStructureType("Unattackable", targetStructure))
                 return Error.OBJECT_NOT_ATTACKABLE;
+
+            // Can't attack "Undestroyable" Objects if they're level 1
+            if (targetStructure.Lvl <= 1 && ObjectTypeFactory.IsStructureType("Undestroyable", targetStructure))
+                return Error.OBJECT_NOT_ATTACKABLE;          
 
             //Load the units stats into the stub
             stub.BeginUpdate();

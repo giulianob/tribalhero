@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
@@ -21,6 +22,10 @@ namespace Game.Battle {
         public class NoneVisible : Exception {}
 
         public int Id { get; set; }
+
+        public bool HasInRange(CombatObject attacker) {
+            return this.Any(obj => (obj.InRange(attacker) && attacker.InRange(obj)) && !obj.IsDead);
+        }
 
         public BestTargetResult GetBestTarget(CombatObject attacker, out CombatObject result) {
             result = null;

@@ -34,13 +34,16 @@ namespace Game.Logic.Actions {
 
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
+
             if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
                 return Error.STRUCTURE_UNDESTROYABLE;
 
             endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city.MainBuilding.Lvl, structure.Technologies));
             beginTime = DateTime.UtcNow;
 
-            city.Worker.References.Add(structure, this);
+            if (WorkerObject.WorkerId != structureId)
+                city.Worker.References.Add(structure, this);
+
             return Error.OK;
         }
 
@@ -53,7 +56,9 @@ namespace Game.Logic.Actions {
                 if (!IsValid())
                     return;
 
-                city.Worker.References.Remove(structure, this);
+                if (WorkerObject.WorkerId != structureId)
+                    city.Worker.References.Remove(structure, this);
+
                 if (structure == null) {
                     StateChange(ActionState.COMPLETED);
                     return;
@@ -74,21 +79,36 @@ namespace Game.Logic.Actions {
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, new GameAction[] { this });
+            structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, new GameAction[] {this});
 
             using (new MultiObjectLock(cityId, structureId, out city, out structure)) {
                 city.BeginUpdate();
                 structure.BeginUpdate();
-                byte oldLabor = structure.Stats.Labor;
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
-                structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
-                structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
-                Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
-                if (oldLabor > structure.Stats.Base.MaxLabor) city.Resource.Labor.Add(oldLabor - structure.Stats.Base.MaxLabor);
-                InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);
-                Procedure.SetResourceCap(structure.City);
 
-                structure.IsBlocked = false;
+                // If structure is level 0 then we don't even try to give any laborers back or anything, just remove it
+                if (structure.Lvl == 0) {
+                    Global.World.Remove(structure);
+                    city.ScheduleRemove(structure, false);
+                } else {
+                    byte oldLabor = structure.Stats.Labor;
+                    StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte) (structure.Lvl - 1));
+                    structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
+                    structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
+                    Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
+                    if (oldLabor > structure.Stats.Base.MaxLabor)
+                        city.Resource.Labor.Add(oldLabor - structure.Stats.Base.MaxLabor);
+
+                    Procedure.SetResourceCap(structure.City);
+
+                    if (structure.Lvl > 0) {
+                        InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);
+                        structure.IsBlocked = false;
+                    } else {
+                        Global.World.Remove(structure);
+                        city.ScheduleRemove(structure, false);
+                    }
+                }
+
                 structure.EndUpdate();
                 city.EndUpdate();
 
@@ -111,6 +131,11 @@ namespace Game.Logic.Actions {
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
+
+                Structure structure;
+                if (WorkerObject.WorkerId != structureId && city.TryGetStructure(structureId, out structure)) {
+                    city.Worker.References.Remove(structure, this);
+                }
 
                 StateChange(ActionState.FAILED);
             }

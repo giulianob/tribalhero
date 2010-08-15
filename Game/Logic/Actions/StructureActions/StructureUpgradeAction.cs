@@ -13,6 +13,7 @@ namespace Game.Logic.Actions {
     class StructureUpgradeAction : ScheduledActiveAction {
         private readonly uint cityId;
         private readonly uint structureId;
+        private Resource cost;
 
         public StructureUpgradeAction(uint cityId, uint structureId) {
             this.cityId = cityId;
@@ -24,6 +25,7 @@ namespace Game.Logic.Actions {
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
+            cost = new Resource(int.Parse(properties["crop"]), int.Parse(properties["gold"]), int.Parse(properties["iron"]), int.Parse(properties["wood"]), int.Parse(properties["labor"]));
         }
 
         #region IAction Members
@@ -39,7 +41,7 @@ namespace Game.Logic.Actions {
             if (!ReqirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure, structure.Type, structure.X, structure.Y))
                 return Error.LAYOUT_NOT_FULLFILLED;
 
-            Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
+            cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
 
             if (cost == null)
                 return Error.OBJECT_STRUCTURE_NOT_FOUND;
@@ -102,8 +104,7 @@ namespace Game.Logic.Actions {
                     return;
                 }
 
-                if (!wasKilled) {
-                    Resource cost = StructureFactory.GetCost(structure.Type, structure.Lvl + 1);
+                if (!wasKilled) {                    
                     city.BeginUpdate();
                     city.Resource.Add(Formula.GetActionCancelResource(beginTime,cost));
                     city.EndUpdate();
@@ -127,8 +128,13 @@ namespace Game.Logic.Actions {
             get {
                 return
                     XMLSerializer.Serialize(new[] {
-                                                      new XMLKVPair("city_id", cityId),
-                                                      new XMLKVPair("structure_id", structureId)
+                                                        new XMLKVPair("city_id", cityId),
+                                                        new XMLKVPair("structure_id", structureId),
+                                                        new XMLKVPair("wood", cost.Wood),
+                                                        new XMLKVPair("crop", cost.Crop),
+                                                        new XMLKVPair("iron", cost.Iron),
+                                                        new XMLKVPair("gold", cost.Gold),
+                                                        new XMLKVPair("labor", cost.Labor),
                                                   });
             }
         }

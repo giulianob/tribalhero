@@ -37,7 +37,7 @@ namespace Game.Comm {
                 return;
             }
 
-            if (type == ResourceType.Gold) {
+            if (type == ResourceType.GOLD) {
                 ReplyError(session, packet, Error.RESOURCE_NOT_TRADABLE);
                 return;
             }
@@ -90,7 +90,7 @@ namespace Game.Comm {
                 return;
             }
 
-            if (type == ResourceType.Gold) {
+            if (type == ResourceType.GOLD) {
                 ReplyError(session, packet, Error.RESOURCE_NOT_TRADABLE);
                 return;
             }

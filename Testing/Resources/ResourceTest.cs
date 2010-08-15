@@ -63,76 +63,79 @@ namespace Testing.Resources {
         [TestMethod]
         public void TestMaxAffordableCrop() {
             Resource resource1 = new Resource(3, 0, 0, 0, 0);
-            Assert.IsTrue(resource1.maxAffordable(new Resource(3, 0, 0, 0, 0)) == 1);
+            Assert.IsTrue(resource1.MaxAffordable(new Resource(3, 0, 0, 0, 0)) == 1);
         }
 
         [TestMethod]
         public void TestMaxAffordableGold() {
             Resource resource1 = new Resource(0, 3, 0, 0, 0);
-            Assert.IsTrue(resource1.maxAffordable(new Resource(0, 3, 0, 0, 0)) == 1);
+            Assert.IsTrue(resource1.MaxAffordable(new Resource(0, 3, 0, 0, 0)) == 1);
         }
 
         [TestMethod]
         public void TestMaxAffordableIron() {
             Resource resource1 = new Resource(0, 0, 3, 0, 0);
-            Assert.IsTrue(resource1.maxAffordable(new Resource(0, 0, 3, 0, 0)) == 1);
+            Assert.IsTrue(resource1.MaxAffordable(new Resource(0, 0, 3, 0, 0)) == 1);
         }
 
         [TestMethod]
         public void TestMaxAffordableWood() {
             Resource resource1 = new Resource(0, 0, 0, 3, 0);
-            Assert.IsTrue(resource1.maxAffordable(new Resource(0, 0, 0, 3, 0)) == 1);
+            Assert.IsTrue(resource1.MaxAffordable(new Resource(0, 0, 0, 3, 0)) == 1);
         }
 
         [TestMethod]
         public void TestMaxAffordableLabor() {
             Resource resource1 = new Resource(0, 0, 0, 0, 3);
-            Assert.IsTrue(resource1.maxAffordable(new Resource(0, 0, 0, 0, 3)) == 1);
+            Assert.IsTrue(resource1.MaxAffordable(new Resource(0, 0, 0, 0, 3)) == 1);
         }
 
         [TestMethod]
         public void TestMaxAffordableMultiple() {
             Resource resource1 = new Resource(2, 4, 6, 8, 10);
-            Assert.IsTrue(resource1.maxAffordable(new Resource(1, 2, 3, 4, 5)) == 2);
+            Assert.IsTrue(resource1.MaxAffordable(new Resource(1, 2, 3, 4, 5)) == 2);
         }
 
         [TestMethod]
         public void TestMaxAffordableMax() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
-            Assert.IsTrue(resource1.maxAffordable(new Resource(0, 0, 0, 0, 0)) == int.MaxValue);
+            Assert.IsTrue(resource1.MaxAffordable(new Resource(0, 0, 0, 0, 0)) == int.MaxValue);
         }
 
         [TestMethod]
-        public void TestSubtractSimple() {
+        public void TestSubtractExact() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
             Resource actual;
-            resource1.subtract(new Resource(1, 2, 3, 4, 5), out actual);
+            resource1.Subtract(new Resource(1, 2, 3, 4, 5), out actual);
 
             Assert.IsTrue(resource1.CompareTo(new Resource(0, 0, 0, 0, 0)) == 0);
+            Assert.IsTrue(actual.CompareTo(new Resource(1, 2, 3, 4, 5)) == 0);
         }
 
         [TestMethod]
         public void TestSubtractOverflow() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
             Resource actual;
-            resource1.subtract(new Resource(10, 10, 10, 10, 10), out actual);
+            resource1.Subtract(new Resource(10, 10, 10, 10, 10), out actual);
 
             Assert.IsTrue(resource1.CompareTo(new Resource(0, 0, 0, 0, 0)) == 0);
+            Assert.IsTrue(actual.CompareTo(new Resource(1, 2, 3, 4, 5)) == 0);
         }
 
         [TestMethod]
-        public void TestSubtractActual() {
+        public void TestSubtractLess() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
             Resource actual;
-            resource1.subtract(new Resource(10, 10, 10, 10, 10), out actual);
+            resource1.Subtract(new Resource(0, 1, 2, 3, 4), out actual);
 
-            Assert.IsTrue(actual.CompareTo(new Resource(1, 2, 3, 4, 5)) == 0);
+            Assert.IsTrue(resource1.CompareTo(new Resource(1, 1, 1, 1, 1)) == 0);
+            Assert.IsTrue(actual.CompareTo(new Resource(0, 1, 2, 3, 4)) == 0);
         }
 
         [TestMethod]
         public void TestAddCrop() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);            
-            resource1.add(new Resource(10, 0, 0, 0, 0));
+            resource1.Add(new Resource(10, 0, 0, 0, 0));
 
             Assert.IsTrue(resource1.CompareTo(new Resource(11, 2, 3, 4, 5)) == 0);
         }
@@ -140,7 +143,7 @@ namespace Testing.Resources {
         [TestMethod]
         public void TestAddGold() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
-            resource1.add(new Resource(0, 10, 0, 0, 0));
+            resource1.Add(new Resource(0, 10, 0, 0, 0));
 
             Assert.IsTrue(resource1.CompareTo(new Resource(1, 12, 3, 4, 5)) == 0);
         }
@@ -148,7 +151,7 @@ namespace Testing.Resources {
         [TestMethod]
         public void TestAddIron() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
-            resource1.add(new Resource(0, 0, 10, 0, 0));
+            resource1.Add(new Resource(0, 0, 10, 0, 0));
 
             Assert.IsTrue(resource1.CompareTo(new Resource(1, 2, 13, 4, 5)) == 0);
         }
@@ -156,7 +159,7 @@ namespace Testing.Resources {
         [TestMethod]
         public void TestAddWood() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
-            resource1.add(new Resource(0, 0, 0, 10, 0));
+            resource1.Add(new Resource(0, 0, 0, 10, 0));
 
             Assert.IsTrue(resource1.CompareTo(new Resource(1, 2, 3, 14, 5)) == 0);
         }
@@ -164,9 +167,48 @@ namespace Testing.Resources {
         [TestMethod]
         public void TestAddLabor() {
             Resource resource1 = new Resource(1, 2, 3, 4, 5);
-            resource1.add(new Resource(0, 0, 0, 0, 10));
+            resource1.Add(new Resource(0, 0, 0, 0, 10));
 
             Assert.IsTrue(resource1.CompareTo(new Resource(1, 2, 3, 4, 15)) == 0);
+        }
+
+        [TestMethod]
+        public void TestAddWithCapAndCapIsHigher()
+        {
+            Resource resource1 = new Resource(1, 2, 3, 4, 5);
+            Resource returning;
+            Resource actual;
+            resource1.Add(new Resource(1, 2, 3, 4, 5), 10, out actual, out returning);
+
+            Assert.IsTrue(resource1.CompareTo(new Resource(2, 4, 6, 8, 10)) == 0);
+            Assert.IsTrue(returning.CompareTo(new Resource(0, 0, 0, 0, 0)) == 0);
+            Assert.IsTrue(actual.CompareTo(new Resource(1, 2, 3, 4, 5)) == 0);
+        }
+
+        [TestMethod]
+        public void TestAddWithCapAndCapIsLowerThanBase()
+        {
+            Resource resource1 = new Resource(1, 2, 3, 4, 5);
+            Resource returning;
+            Resource actual;
+            resource1.Add(new Resource(1, 2, 3, 4, 5), 5, out actual, out returning);
+
+            Assert.IsTrue(resource1.CompareTo(new Resource(2, 4, 5, 5, 5)) == 0);
+            Assert.IsTrue(returning.CompareTo(new Resource(0, 0, 1, 3, 5)) == 0);
+            Assert.IsTrue(actual.CompareTo(new Resource(1, 2, 2, 1, 0)) == 0);
+        }
+
+        [TestMethod]
+        public void TestAddWithCapAndInitialIsHigher()
+        {
+            Resource resource1 = new Resource(0, 20, 30, 40, 50);
+            Resource returning;
+            Resource actual;
+            resource1.Add(new Resource(1, 20, 30, 40, 50), 5, out actual, out returning);
+
+            Assert.IsTrue(resource1.CompareTo(new Resource(1, 5, 5, 5, 5)) == 0);
+            Assert.IsTrue(returning.CompareTo(new Resource(0, 35, 55, 75, 95)) == 0);
+            Assert.IsTrue(actual.CompareTo(new Resource(1, 0, 0, 0, 0)) == 0);
         }
     }
 }

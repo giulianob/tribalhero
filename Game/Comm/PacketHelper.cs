@@ -273,6 +273,7 @@ namespace Game.Comm {
                 packet.AddByte(city.Radius);
                 packet.AddInt32(city.AttackPoint);
                 packet.AddInt32(city.DefensePoint);
+                packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
 
                 //City Actions
                 AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);

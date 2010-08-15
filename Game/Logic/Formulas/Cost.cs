@@ -35,12 +35,27 @@ namespace Game.Logic
         /// <param name="type"></param>
         /// <param name="lvl"></param>
         /// <returns></returns>
-        public static Resource UnitCost(City city, ushort type, byte lvl)
+        public static Resource UnitTrainCost(City city, ushort type, byte lvl)
         {
             if (city.Battle == null)
                 return UnitFactory.GetCost(type, lvl);
 
             return UnitFactory.GetCost(type, lvl) * 1.5;
+        }
+
+        /// <summary>
+        /// Returns the cost for upgrading the specified unit
+        /// </summary>
+        /// <param name="city"></param>
+        /// <param name="type"></param>
+        /// <param name="lvl"></param>
+        /// <returns></returns>
+        public static Resource UnitUpgradeCost(City city, ushort type, byte lvl)
+        {
+            if (city.Battle == null)
+                return UnitFactory.GetUpgradeCost(type, lvl);
+
+            return UnitFactory.GetUpgradeCost(type, lvl) * 1.5;
         }
 
         /// <summary>
@@ -106,7 +121,7 @@ namespace Game.Logic
             Resource resource = new Resource();
             foreach (Structure structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
             {
-                resource.add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
+                resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
             }
             return resource;
         }

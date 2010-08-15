@@ -7,10 +7,10 @@ using Game.Data.Stats;
 
 namespace Game.Data {
     public enum ResourceType : byte {
-        Gold = 0,
-        Crop = 1,
-        Wood = 2,
-        Iron = 3
+        GOLD = 0,
+        CROP = 1,
+        WOOD = 2,
+        IRON = 3
     }
 
     public class Resource : BaseStats, IComparable {
@@ -85,11 +85,11 @@ namespace Game.Data {
         }
 
         public Resource(int crop, int gold, int iron, int wood, int labor) {
-            this.crop = crop;
-            this.gold = gold;
-            this.iron = iron;
-            this.wood = wood;
-            this.labor = labor;
+            this.crop = Math.Max(0, crop);
+            this.gold = Math.Max(0, gold);
+            this.iron = Math.Max(0, iron);
+            this.wood = Math.Max(0, wood);
+            this.labor = Math.Max(0, labor);
         }
 
         #region IComparable Members
@@ -99,8 +99,8 @@ namespace Game.Data {
 
             if (gold == obj2.gold && iron == obj2.iron && wood == obj2.wood && crop == obj2.crop && labor == obj2.labor)
                 return 0;
-            else
-                return -1;
+            
+            return -1;
         }
 
         public static Resource operator -(Resource obj, Resource obj2) {
@@ -128,7 +128,7 @@ namespace Game.Data {
 
         #endregion
 
-        public int maxAffordable(Resource costPerUnit) {
+        public int MaxAffordable(Resource costPerUnit) {
             int cropDelta;
             if (costPerUnit.crop == 0)
                 cropDelta = int.MaxValue;
@@ -139,30 +139,30 @@ namespace Game.Data {
             if (costPerUnit.gold == 0)
                 goldDelta = int.MaxValue;
             else
-                goldDelta = (int) (gold/costPerUnit.gold);
+                goldDelta = gold/costPerUnit.gold;
 
             int ironDelta;
             if (costPerUnit.iron == 0)
                 ironDelta = int.MaxValue;
             else
-                ironDelta = (int) (iron/costPerUnit.iron);
+                ironDelta = iron/costPerUnit.iron;
 
             int woodDelta;
             if (costPerUnit.wood == 0)
                 woodDelta = int.MaxValue;
             else
-                woodDelta = (int) (wood/costPerUnit.wood);
+                woodDelta = wood/costPerUnit.wood;
 
             int laborDelta;
             if (costPerUnit.labor == 0)
                 laborDelta = int.MaxValue;
             else
-                laborDelta = (int)(labor / costPerUnit.labor);
+                laborDelta = labor / costPerUnit.labor;
 
             return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(woodDelta, Math.Min(laborDelta, ironDelta))));
         }
 
-        public bool hasEnough(Resource cost) {
+        public bool HasEnough(Resource cost) {
             if (crop < cost.crop)
                 return false;
             if (gold < cost.gold)
@@ -176,22 +176,44 @@ namespace Game.Data {
             return true;
         }
 
-        internal void subtract(Resource resource) {
+        internal void Subtract(Resource resource) {
             Resource dummy;
-            subtract(resource, out dummy);
+            Subtract(resource, out dummy);
         }
 
-        public void subtract(Resource cost, out Resource actual) {
+        public void Subtract(Resource cost, out Resource actual) {
             actual = new Resource();
-            crop -= (actual.crop = crop > cost.crop ? cost.crop : crop);
-            gold -= (actual.gold = gold > cost.gold ? cost.gold : gold);
-            iron -= (actual.iron = iron > cost.iron ? cost.iron : iron);
-            wood -= (actual.wood = wood > cost.wood ? cost.wood : wood);
-            labor -= (actual.labor = labor > cost.labor ? cost.labor : labor);
+            crop -= (actual.crop = (crop > cost.crop ? cost.crop : crop));
+            gold -= (actual.gold = (gold > cost.gold ? cost.gold : gold));
+            iron -= (actual.iron = (iron > cost.iron ? cost.iron : iron));
+            wood -= (actual.wood = (wood > cost.wood ? cost.wood : wood));
+            labor -= (actual.labor = (labor > cost.labor ? cost.labor : labor));
             FireStatsUpdate();
         }
 
-        public void add(Resource cost) {
+        public void Add(Resource cost, int cap, out Resource actual, out Resource returning) {
+            Resource total = this + cost;
+            returning = new Resource(total.Crop > cap ? total.Crop - cap : 0,
+                                         total.Gold > cap ? total.Gold - cap : 0,
+                                         total.Iron > cap ? total.Iron - cap : 0,
+                                         total.Wood > cap ? total.Wood - cap : 0,
+                                         total.labor > cap ? total.labor - cap : 0);
+
+            actual = new Resource(cost.crop - returning.crop, cost.gold - returning.gold, cost.iron - returning.iron, cost.wood - returning.wood, cost.labor - returning.labor);
+            Add(cost, cap);
+
+            FireStatsUpdate();
+        }
+
+        public void Add(Resource cost, int cap) {
+            crop = Math.Min(crop + cost.Crop, cap);
+            gold = Math.Min(gold + cost.Gold, cap);
+            iron = Math.Min(iron + cost.Iron, cap);
+            wood = Math.Min(wood + cost.Wood, cap);
+            labor = Math.Min(labor + cost.Labor, cap);
+        }
+
+        public void Add(Resource cost) {
             crop += cost.crop;
             gold += cost.gold;
             iron += cost.iron;
@@ -200,8 +222,7 @@ namespace Game.Data {
             FireStatsUpdate();
         }
 
-
-        public void add(int crop, int gold, int iron, int wood, int labor) {
+        public void Add(int crop, int gold, int iron, int wood, int labor) {
             this.crop += crop;
             this.gold += gold;
             this.iron += iron;

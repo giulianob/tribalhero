@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using Game.Data;
+using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Fighting;
 
@@ -9,6 +10,7 @@ using Game.Fighting;
 
 namespace Game.Logic.Procedures {
     public partial class Procedure {
+
         public static bool TroopObjectCreate(City city, TroopStub stub, uint x, uint y) {
             if (!RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
@@ -19,9 +21,10 @@ namespace Game.Logic.Procedures {
                                                       };
 
             city.Troops.Add(stub);
-            city.Add(troop);
+            city.Add(troop);            
 
             troop.BeginUpdate();
+            troop.Stats = new TroopStats(Formula.GetTroopRadius(stub, null), Formula.GetTroopSpeed(stub));
             Global.World.Add(troop);
             troop.EndUpdate();
 

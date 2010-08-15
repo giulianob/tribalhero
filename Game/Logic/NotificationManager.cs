@@ -185,7 +185,7 @@ namespace Game.Logic {
             Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
         }
 
-        private void WorkerActionRescheduled(GameAction action) {
+        private void WorkerActionRescheduled(GameAction action, ActionState state) {
             if (!(action is PassiveAction))
                 return;
 

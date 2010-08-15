@@ -4,17 +4,21 @@ using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
-using Game.Logic.Conditons;
 using Game.Data.Troop;
 
 #endregion
 
-namespace Game.Battle {
-    public class BattleFormulas {
-        public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor) {
-            switch(weapon) {
+namespace Game.Battle
+{
+    public class BattleFormulas
+    {
+        public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)
+        {
+            switch (weapon)
+            {
                 case WeaponClass.BASIC:
-                    switch(armor) {
+                    switch (armor)
+                    {
                         case ArmorClass.LEATHER:
                         case ArmorClass.WOODEN:
                             return 1;
@@ -24,7 +28,8 @@ namespace Game.Battle {
                     }
                     break;
                 case WeaponClass.ELEMENTAL:
-                    switch (armor) {
+                    switch (armor)
+                    {
                         case ArmorClass.LEATHER:
                         case ArmorClass.WOODEN:
                             return 0.75;
@@ -38,7 +43,8 @@ namespace Game.Battle {
             return 1;
         }
 
-        public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor) {
+        public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor)
+        {
             const double nodamage = 0.1;
             const double weakest = 0.2;
             const double weak = 0.7;
@@ -46,9 +52,11 @@ namespace Game.Battle {
             const double strong = 1.5;
             const double strongest = 3;
 
-            switch (weapon) {
+            switch (weapon)
+            {
                 case WeaponType.SWORD:
-                    switch (armor) {
+                    switch (armor)
+                    {
                         case ArmorType.GROUND:
                             return strong;
                         case ArmorType.MOUNT:
@@ -60,7 +68,8 @@ namespace Game.Battle {
                     }
                     break;
                 case WeaponType.PIKE:
-                    switch (armor) {
+                    switch (armor)
+                    {
                         case ArmorType.GROUND:
                             return weak;
                         case ArmorType.MOUNT:
@@ -72,7 +81,8 @@ namespace Game.Battle {
                     }
                     break;
                 case WeaponType.BOW:
-                    switch (armor) {
+                    switch (armor)
+                    {
                         case ArmorType.GROUND:
                             return strong;
                         case ArmorType.MOUNT:
@@ -84,7 +94,8 @@ namespace Game.Battle {
                     }
                     break;
                 case WeaponType.BALL:
-                    switch (armor) {
+                    switch (armor)
+                    {
                         case ArmorType.GROUND:
                             return nodamage;
                         case ArmorType.MOUNT:
@@ -99,54 +110,59 @@ namespace Game.Battle {
             return 1;
         }
 
-        public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk) {
+        public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
+        {
             ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
             int rawDmg = atk * attacker.Count;
             rawDmg /= 10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
-            rawDmg = (int)(typeModifier * classModifier* rawDmg);
-            return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort) rawDmg;           
+            rawDmg = (int)(typeModifier * classModifier * rawDmg);
+            return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
         }
 
-        internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg) {
+        internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
+        {
             int totalCarry = attacker.BaseStats.Carry * attacker.Count;
-            int count = attacker.BaseStats.Carry * attacker.Count * Config.battle_loot_per_round / 100;
-            if (count == 0) count = 1;
+            int count = Math.Max(1, attacker.BaseStats.Carry * attacker.Count * Config.battle_loot_per_round / 100);
             Resource empty = new Resource(totalCarry, totalCarry, totalCarry, totalCarry, 0);
-            empty.subtract(((AttackCombatUnit) attacker).Loot);
-            return new Resource(Math.Min(count, empty.Crop),
-                                         Math.Min(count, empty.Gold),
-                                         Math.Min(count, empty.Iron),
-                                         Math.Min(count, empty.Wood),
-                                         0);
+            empty.Subtract(((AttackCombatUnit)attacker).Loot);
+            return new Resource(Math.Min(count, empty.Crop), Math.Min(count, empty.Gold / 2), Math.Min(count, empty.Iron), Math.Min(count, empty.Wood), 0);
         }
 
-        internal static ushort GetStamina(City city) {
+        internal static ushort GetStamina(City city)
+        {
             return (ushort)(Config.battle_stamina_initial);
         }
 
-        internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round) {
-            return (ushort) (stamina);
+        internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round)
+        {
+            return stamina;
         }
 
-        internal static ushort GetStaminaRoundEnded(City city, ushort stamina, uint round) {
-            if (stamina == 0) return 0;
+        internal static ushort GetStaminaRoundEnded(City city, ushort stamina, uint round)
+        {
+            if (stamina == 0)
+                return 0;
             return --stamina;
         }
 
-        internal static ushort GetStaminaStructureDestroyed(City city, ushort stamina, uint round) {
+        internal static ushort GetStaminaStructureDestroyed(City city, ushort stamina, uint round)
+        {
             if (stamina < Config.battle_stamina_destroyed_deduction)
                 return 0;
             return (ushort)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
-        internal static bool IsAttackMissed(byte stealth) {
+        internal static bool IsAttackMissed(byte stealth)
+        {
             return 100 - stealth > Config.Random.Next(0, 100);
         }
 
-        internal static bool UnitStatModCheck(BaseBattleStats stats, object comparison, object value) {
-            switch ((string)comparison) {
+        internal static bool UnitStatModCheck(BaseBattleStats stats, object comparison, object value)
+        {
+            switch ((string)comparison)
+            {
                 case "ArmorEqual":
                     return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)value, true);
                 case "ArmorClassEqual":
@@ -159,18 +175,24 @@ namespace Game.Battle {
             return false;
         }
 
-        internal static BattleStats LoadStats(Structure structure) {
+        internal static BattleStats LoadStats(Structure structure)
+        {
             return new BattleStats(structure.Stats.Base.Battle);
         }
 
-        internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group) {
+        internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
+        {
             BaseBattleStats stats = UnitFactory.GetUnitStats(type, lvl).Battle;
             BattleStatsModCalculator calculator = new BattleStatsModCalculator(stats);
 
-            foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL)) {
-                if (effect.id == EffectCode.UnitStatMod) {
-                    if (UnitStatModCheck(stats,effect.value[3],effect.value[4])) {
-                        switch ((string)effect.value[0]) {
+            foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL))
+            {
+                if (effect.id == EffectCode.UnitStatMod)
+                {
+                    if (UnitStatModCheck(stats, effect.value[3], effect.value[4]))
+                    {
+                        switch ((string)effect.value[0])
+                        {
                             case "Atk":
                                 calculator.Atk.AddMod((string)effect.value[1], (int)effect.value[2]);
                                 break;
@@ -191,11 +213,18 @@ namespace Game.Battle {
                                 break;
                         }
                     }
-                } else if(effect.id == EffectCode.ACallToArmMod && group== TroopBattleGroup.LOCAL) {
-                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.value[0] * city.Resource.Labor.Value) / (city.MainBuilding.Lvl * 100)));
                 }
+                else if (effect.id == EffectCode.ACallToArmMod && group == TroopBattleGroup.LOCAL)
+                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.value[0] * city.Resource.Labor.Value) / (city.MainBuilding.Lvl * 100)));
             }
             return calculator.GetStats();
+        }
+
+        public static Resource GetBonusResources(TroopObject troop)
+        {
+            Resource bonus = new Resource(troop.Stats.Loot);
+            bonus *= (Config.Random.NextDouble() + 1.0);
+            return bonus;
         }
     }
 }

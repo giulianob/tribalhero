@@ -39,11 +39,11 @@ namespace Game.Comm {
                 }
 
                 Packet reply = new Packet(packet);
+                reply.AddByte(troop.Stub.TroopId);
 
                 if (city.Owner == session.Player) {
                     reply.AddByte(troop.Stats.AttackRadius);
-                    reply.AddByte(troop.Stats.Speed);
-                    reply.AddByte(troop.Stub.TroopId);
+                    reply.AddByte(troop.Stats.Speed);                    
 
                     UnitTemplate template = new UnitTemplate(city);
 
@@ -316,16 +316,18 @@ namespace Game.Comm {
                     }
                 }
 
+                // Create troop object                
                 if (!Procedure.TroopObjectCreate(city, stub, city.MainBuilding.X, city.MainBuilding.Y)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.TROOP_CHANGED);
                     return;
                 }
 
                 AttackAction aa = new AttackAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
-                if (ret != 0)
+                if (ret != 0) {
+                    Procedure.TroopObjectDelete(stub.TroopObject, true);
                     ReplyError(session, packet, ret);
-                else
+                } else
                     ReplySuccess(session, packet);
             }
         }
@@ -393,7 +395,7 @@ namespace Game.Comm {
                         stub.AddUnit(formationType, type, count);
                     }
                 }
-
+                
                 if (!Procedure.TroopObjectCreate(city, stub, city.MainBuilding.X, city.MainBuilding.Y)) {
                     ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
                     return;
@@ -401,9 +403,10 @@ namespace Game.Comm {
 
                 DefenseAction da = new DefenseAction(cityId, stub.TroopId, targetCityId);
                 Error ret = city.Worker.DoPassive(city, da, true);
-                if (ret != 0)
+                if (ret != 0) {
+                    Procedure.TroopObjectDelete(stub.TroopObject, true);
                     ReplyError(session, packet, ret);
-                else
+                } else
                     ReplySuccess(session, packet);
             }
         }
@@ -460,6 +463,8 @@ namespace Game.Comm {
                     return;
                 }
 
+                stationedCity = stub.StationedCity;
+                
                 if (
                     !Procedure.TroopObjectCreateFromStation(stub, stub.StationedCity.MainBuilding.X,
                                                             stub.StationedCity.MainBuilding.Y)) {
@@ -470,9 +475,10 @@ namespace Game.Comm {
                 RetreatAction ra = new RetreatAction(cityId, troopId);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
-                if (ret != 0)
+                if (ret != 0) {
+                    Procedure.TroopObjectStation(stub.TroopObject, stationedCity);
                     ReplyError(session, packet, ret);
-                else
+                } else
                     ReplySuccess(session, packet);
             }
         }

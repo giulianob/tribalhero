@@ -404,6 +404,9 @@ namespace CSVToXML {
                         writer.WriteAttributeString("type", workerAction.param1);
                         writer.WriteAttributeString("maxlevel", workerAction.param2);
                         break;
+                    case "resource_send":
+                        writer.WriteStartElement("ResourceSend");
+                        break;
                     case "resource_sell":
                         writer.WriteStartElement("ResourceSell");
                         break;
@@ -412,6 +415,9 @@ namespace CSVToXML {
                         break;
                     case "labor_move":
                         writer.WriteStartElement("LaborMove");
+                        break;
+                    case "structure_userdowngrade":
+                        writer.WriteStartElement("StructureDowngrade");
                         break;
                     default:
                         writer.WriteStartElement("MISSING_WORKER_ACTION");

@@ -122,12 +122,13 @@ namespace Game.Comm {
                 //If it's a new player then add him to our session
                 if (newPlayer) {
                     Global.Logger.Info(String.Format("Creating new player {0}({1})", playerName, playerId));
-                    player = new Player(playerId, playerCreated, playerName, sessionId);
+                    player = new Player(playerId, playerCreated, SystemClock.Now, playerName, sessionId);
                     Global.Players.Add(player.PlayerId, player);
                 }
                 else {
                     Global.Logger.Info(String.Format("Player login in {0}({1})", player.Name, player.PlayerId));
                     player.SessionId = sessionId;
+                    player.LastLogin = SystemClock.Now;
                 }
             }
 

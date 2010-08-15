@@ -22,12 +22,16 @@ namespace Game {
 
         public DateTime Created { get; private set; }
 
+        public DateTime LastLogin { get; set; }
+
         public string SessionId { get; set; }
 
-        public Player(uint playerid, DateTime created, string name) : this(playerid, created, name, string.Empty) {}
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name) : this(playerid, created, lastLogin, name, string.Empty) {}
 
-        public Player(uint playerid, DateTime created, string name, string sessionId) {
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string sessionId)
+        {
             PlayerId = playerid;
+            LastLogin = lastLogin;
             Created = created;
             Name = name;
             SessionId = sessionId;
@@ -70,6 +74,7 @@ namespace Game {
                 return new[] {
                                   new DbColumn("name", Name, DbType.String, 32),
                                   new DbColumn("created", Created, DbType.DateTime),
+                                  new DbColumn("last_login", LastLogin, DbType.DateTime),
                                   new DbColumn("session_id", SessionId, DbType.String, 128)
                               };
             }

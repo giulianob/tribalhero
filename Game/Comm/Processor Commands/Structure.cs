@@ -282,8 +282,6 @@ namespace Game.Comm {
                     ReplyError(session, packet, ret);
                 else
                     ReplySuccess(session, packet);
-
-                ReplyError(session, packet, Error.UNEXPECTED);
             }
         }
 

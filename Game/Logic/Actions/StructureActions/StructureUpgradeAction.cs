@@ -106,7 +106,7 @@ namespace Game.Logic.Actions {
 
                 if (!wasKilled) {                    
                     city.BeginUpdate();
-                    city.Resource.Add(cost/2);
+                    city.Resource.Add(Formula.GetActionCancelResource(beginTime,cost));
                     city.EndUpdate();
                 }
 

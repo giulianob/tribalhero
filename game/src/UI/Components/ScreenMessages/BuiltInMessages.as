@@ -31,10 +31,12 @@ package src.UI.Components.ScreenMessages
 		}
 		
 		public static function showIncomingAttack(city: City): void {
-			for each (var notification: Notification in city.notifications.each()) {
-				if (notification.cityId != city.id && notification.type == PassiveAction.ATTACK) {
-					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", city.name + ": Incoming attack", new AssetIcon(new ICON_BATTLE)));
-					return;
+			if (!city.inBattle) {
+				for each (var notification: Notification in city.notifications.each()) {
+					if (notification.cityId != city.id && notification.type == PassiveAction.ATTACK) {
+						Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", city.name + ": Incoming attack", new AssetIcon(new ICON_BATTLE)));
+						return;
+					}
 				}
 			}
 			

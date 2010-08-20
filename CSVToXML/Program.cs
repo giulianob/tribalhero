@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Game.Data;
+using Game.Logic;
 
 #endregion
 
@@ -47,6 +48,7 @@ namespace CSVToXML {
 
         private class WorkerActions : IComparable {
             public string type;
+            public string option;
             public string action;
             public string param1, param2, param3, param4, param5;
             public string max;
@@ -307,18 +309,26 @@ namespace CSVToXML {
                         if (obj[0] == "")
                             continue;
 
+                        int actionOption = 0;
+                        if (obj[3].Length > 0) {
+                            foreach (string opt in obj[3].Split('|')) {
+                                actionOption += (int) ((ActionOption) Enum.Parse(typeof (ActionOption), opt, true));
+                            }
+                        }
+
                         WorkerActions workerAction = new WorkerActions {
                                                                            type = obj[0],
                                                                            index = obj[1],
                                                                            max = obj[2],
-                                                                           action = obj[3],
-                                                                           param1 = CleanCsvParam(obj[4]),
-                                                                           param2 = CleanCsvParam(obj[5]),
-                                                                           param3 = CleanCsvParam(obj[6]),
-                                                                           param4 = CleanCsvParam(obj[7]),
-                                                                           param5 = CleanCsvParam(obj[8]),
-                                                                           effectReq = CleanCsvParam(obj[9]),
-                                                                           effectReqInherit = CleanCsvParam(obj[10]).ToUpper()
+                                                                           option = actionOption.ToString(),
+                                                                           action = obj[4],
+                                                                           param1 = CleanCsvParam(obj[5]),
+                                                                           param2 = CleanCsvParam(obj[6]),
+                                                                           param3 = CleanCsvParam(obj[7]),
+                                                                           param4 = CleanCsvParam(obj[8]),
+                                                                           param5 = CleanCsvParam(obj[9]),
+                                                                           effectReq = CleanCsvParam(obj[10]),
+                                                                           effectReqInherit = CleanCsvParam(obj[11]).ToUpper()
                                                                        };
 
                         workerActions.Add(workerAction);
@@ -422,6 +432,8 @@ namespace CSVToXML {
 
                 writer.WriteAttributeString("index", workerAction.index);
                 writer.WriteAttributeString("max", workerAction.max);
+                writer.WriteAttributeString("option", workerAction.option);
+
                 if (workerAction.effectReq != "") {
                     writer.WriteAttributeString("effectreq", workerAction.effectReq);
                     writer.WriteAttributeString("effectreqinherit", workerAction.effectReqInherit);

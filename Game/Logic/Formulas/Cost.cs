@@ -98,23 +98,24 @@ namespace Game.Logic
             switch (structure.Lvl)
             {
                 case 1:
-                    return .25;
-                case 2:
-                    return .20;
-                case 3:
-                    return .15;
-                case 4:
                     return .10;
-                case 5:
+                case 2:
                     return .05;
+                case 3:
+                    return 0;
+                case 4:
+                    return -.05;
+                case 5:
+                    return -.10;
             }
             throw new Exception("WTF");
         }
 
-        static int[] rateCrop = { 0, 100, 200, 300, 500, 1000 };
-        static int[] rateWood = { 0, 100, 200, 300, 500, 1000 };
-        static int[] rateGold = { 0, 0, 50, 100, 200, 400 };
-        static int[] rateIron = { 0, 0, 0, 50, 100, 200 };
+        static int[] rateCrop = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
+        static int[] rateWood = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
+        static int[] rateGold = { 0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740 };
+        static int[] rateIron = { 0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660 };
+
         public static Resource HiddenResource(City city)
         {
             Resource resource = new Resource();
@@ -125,5 +126,17 @@ namespace Game.Logic
             return resource;
         }
 
+
+        internal static Resource GetActionCancelResource(DateTime beginTime, Resource cost) {
+            if (DateTime.UtcNow.Subtract(beginTime).Seconds <= Config.actions_free_cancel_interval_in_sec) {
+                return cost;
+            }
+            return new Resource(cost / 2);
+        }
+        
+        internal static Resource GetSendCapacity(Structure structure) {
+            int rate = structure.Lvl*200;
+            return new Resource(rate, rate, rate, rate, rate);
+        }
     }
 }

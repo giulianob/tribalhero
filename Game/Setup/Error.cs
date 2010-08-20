@@ -15,6 +15,7 @@ namespace Game.Setup {
         ACTION_INVALID = 105,
         ACTION_ALREADY_IN_PROGRESS = 106,
         ACTION_COUNT_INVALID = 107,
+        ACTION_UNCANCELABLE = 108,
 
         #endregion
 
@@ -29,7 +30,8 @@ namespace Game.Setup {
         ALREADY_IN_FOREST = 206,
         FOREST_INACCESSIBLE = 207,
         FOREST_CAMP_MAX_REACHED = 208,
-
+        RESOURCE_EXCEED_TRADE_LIMIT = 209,        
+        
         #endregion
 
         #region Map Errors

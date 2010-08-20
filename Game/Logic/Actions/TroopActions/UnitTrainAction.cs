@@ -119,7 +119,7 @@ namespace Game.Logic.Actions {
                 if (!wasKilled) {
                     Resource totalCost = cost*ActionCount;
                     structure.City.BeginUpdate();
-                    structure.City.Resource.Add(totalCost/2);
+                    structure.City.Resource.Add(Formula.GetActionCancelResource(BeginTime,totalCost));
                     structure.City.EndUpdate();
                 }
 

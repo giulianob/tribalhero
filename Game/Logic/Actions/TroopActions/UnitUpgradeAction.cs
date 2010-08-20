@@ -70,22 +70,28 @@ namespace Game.Logic.Actions {
             return Error.OK;
         }
 
-        private void InterruptCatchAll() {
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
             using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
+
+                if (!wasKilled) {
+                    city.BeginUpdate();
+                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, UnitFactory.GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
+                    city.EndUpdate();
+                }
 
                 StateChange(ActionState.FAILED);
             }
         }
 
         public override void UserCancelled() {
-            InterruptCatchAll();
+            InterruptCatchAll(false);
         }
 
         public override void WorkerRemoved(bool wasKilled) {
-            InterruptCatchAll();
+            InterruptCatchAll(wasKilled);
         }
 
         public override ActionType Type {

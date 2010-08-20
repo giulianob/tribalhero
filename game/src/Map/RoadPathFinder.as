@@ -63,32 +63,6 @@ package src.Map
 			}, excludedPoint);
 		}
 
-		/*
-		private static function breadthFirstOLD(end: Point, visited: Array, paths: Array, getNeighbors: Function) : void
-		{
-		var nodes: Array = getNeighbors(visited[visited.length-1]);
-		// Examine adjacent nodes for end goal
-		for each (var node: Point in nodes) {
-		if ((node.x == end.x && node.y == end.y) && !hasPoint(visited, node)) {
-		visited.push(node);
-		var newPath: Array = new Array();
-		for each (var point: Point in visited) newPath.push(point);
-		paths.push(newPath);
-		visited.pop();
-		break;
-		}
-		}
-
-		// in breadth-first, recursion needs to come after visiting adjacent nodes
-		for each (node in nodes) {
-		if (!(node.x == end.x && node.y == end.y) && !hasPoint(visited, node)) {
-		visited.push(node);
-		breadthFirstOLD(end, visited, paths, getNeighbors);
-		visited.pop();
-		}
-		}
-		}
-		*/
 		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Point, i: int = 0) : Boolean
 		{
 			var nodes: Array = getNeighbors(visited[visited.length - 1]);

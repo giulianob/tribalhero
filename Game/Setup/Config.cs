@@ -140,6 +140,8 @@ namespace Game.Setup {
                                 field.SetValue(null, value);
                                 break;
                         }
+
+                        Global.Logger.Info(key + "=" + value);
                     }
                 }
             }

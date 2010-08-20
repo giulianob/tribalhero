@@ -184,6 +184,8 @@ namespace Game.Battle {
         private BattleOrder battleOrder = new BattleOrder(0);
         private readonly BattleReport report;
 
+        private readonly object battleLock = new object();
+
         #region Properties Members
 
         private uint battleId;
@@ -343,7 +345,7 @@ namespace Game.Battle {
         }
 
         public void AddToLocal(List<Structure> objects) {
-            lock (this) {
+            lock (battleLock) {
                 List<CombatObject> list = new List<CombatObject>();
 
                 bool added = false;
@@ -399,7 +401,8 @@ namespace Game.Battle {
         }
 
         public void RemoveFromLocal(List<Structure> objects) {
-            lock (this) {
+            lock (battleLock)
+            {
                 List<CombatObject> list = new List<CombatObject>();
                 foreach (CombatObject obj in defenders) {
                     if (!(obj is CombatStructure))
@@ -425,7 +428,8 @@ namespace Game.Battle {
         }
 
         private void AddToCombatList(IEnumerable<TroopStub> objects, CombatList combatList, bool isLocal, ReportState state) {
-            lock (this) {
+            lock (battleLock)
+            {
                 List<CombatObject> list = new List<CombatObject>();
 
                 bool added = false;
@@ -482,7 +486,8 @@ namespace Game.Battle {
         }
 
         private void RemoveFromCombatList(List<TroopStub> objects, CombatList combatList, ReportState state) {
-            lock (this) {
+            lock (battleLock)
+            {
                 List<CombatObject> list = new List<CombatObject>();
                 foreach (CombatObject obj in combatList) {
                     if (!(obj is ICombatUnit))
@@ -619,7 +624,8 @@ namespace Game.Battle {
         }
 
         public bool ExecuteTurn() {
-            lock (this) {
+            lock (battleLock)
+            {
                 // This will finalize any reports already started.
                 report.WriteReport(ReportState.STAYING);
 

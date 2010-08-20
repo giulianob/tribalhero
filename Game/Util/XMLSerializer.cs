@@ -122,79 +122,79 @@ namespace Game.Util {
                 NewLineOnAttributes = false
             };
 
-            StringWriter sw = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sw, writerSettings);
+            using (StringWriter sw = new StringWriter()) {
+                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings)) {
 
-            writer.WriteStartElement("List");
+                    writer.WriteStartElement("List");
 
-            foreach (object[] variables in list) {
-                writer.WriteStartElement("Properties");
+                    foreach (object[] variables in list) {
+                        writer.WriteStartElement("Properties");
 
-                foreach (object variable in variables) {
-                    if (variable is byte)
-                        writer.WriteStartElement("Byte");
-                    else if (variable is short)
-                        writer.WriteStartElement("Short");
-                    else if (variable is int)
-                        writer.WriteStartElement("Int");
-                    else if (variable is ushort)
-                        writer.WriteStartElement("Ushort");
-                    else if (variable is uint)
-                        writer.WriteStartElement("Uint");
-                    else if (variable is string)
-                        writer.WriteStartElement("String");
-                    else
-                        throw new Exception("Unsupported variable type " + variable.GetType().Name);
+                        foreach (object variable in variables) {
+                            if (variable is byte)
+                                writer.WriteStartElement("Byte");
+                            else if (variable is short)
+                                writer.WriteStartElement("Short");
+                            else if (variable is int)
+                                writer.WriteStartElement("Int");
+                            else if (variable is ushort)
+                                writer.WriteStartElement("Ushort");
+                            else if (variable is uint)
+                                writer.WriteStartElement("Uint");
+                            else if (variable is string)
+                                writer.WriteStartElement("String");
+                            else
+                                throw new Exception("Unsupported variable type " + variable.GetType().Name);
 
-                    writer.WriteAttributeString("value", variable.ToString());
+                            writer.WriteAttributeString("value", variable.ToString());
+                            writer.WriteEndElement();
+                        }
+
+                        writer.WriteEndElement();
+                    }
+
                     writer.WriteEndElement();
+                    writer.Flush();
+
+                    return sw.GetStringBuilder().ToString();
                 }
-
-                writer.WriteEndElement();
-            }            
-
-            writer.WriteEndElement();
-            writer.Flush();
-
-            return sw.GetStringBuilder().ToString();
+            }
         }
 
         public static String SerializeList(params object[] variables) {
-            XmlWriterSettings writerSettings = new XmlWriterSettings {
-                                                                         OmitXmlDeclaration = true,
-                                                                         Indent = false,
-                                                                         NewLineOnAttributes = false
-                                                                     };
+            XmlWriterSettings writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
 
-            StringWriter sw = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sw, writerSettings);
+            using (StringWriter sw = new StringWriter()) {
+                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings)) {
 
-            writer.WriteStartElement("Properties");
+                    writer.WriteStartElement("Properties");
 
-            foreach (object variable in variables) {
-                if (variable is byte)
-                    writer.WriteStartElement("Byte");
-                else if (variable is short)
-                    writer.WriteStartElement("Short");
-                else if (variable is int)
-                    writer.WriteStartElement("Int");
-                else if (variable is ushort)
-                    writer.WriteStartElement("Ushort");
-                else if (variable is uint)
-                    writer.WriteStartElement("Uint");
-                else if (variable is string)
-                    writer.WriteStartElement("String");
-                else
-                    throw new Exception("Unsupported variable type " + variable.GetType().Name);
+                    foreach (object variable in variables) {
+                        if (variable is byte)
+                            writer.WriteStartElement("Byte");
+                        else if (variable is short)
+                            writer.WriteStartElement("Short");
+                        else if (variable is int)
+                            writer.WriteStartElement("Int");
+                        else if (variable is ushort)
+                            writer.WriteStartElement("Ushort");
+                        else if (variable is uint)
+                            writer.WriteStartElement("Uint");
+                        else if (variable is string)
+                            writer.WriteStartElement("String");
+                        else
+                            throw new Exception("Unsupported variable type " + variable.GetType().Name);
 
-                writer.WriteAttributeString("value", variable.ToString());
-                writer.WriteEndElement();
+                        writer.WriteAttributeString("value", variable.ToString());
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+                    writer.Flush();
+
+                    return sw.GetStringBuilder().ToString();
+                }
             }
-
-            writer.WriteEndElement();
-            writer.Flush();
-
-            return sw.GetStringBuilder().ToString();
         }
 
         public static String Serialize(params XMLKVPair[] variables) {
@@ -204,135 +204,143 @@ namespace Game.Util {
                                                                          NewLineOnAttributes = false
                                                                      };
 
-            StringWriter sw = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sw, writerSettings);
+            using (StringWriter sw = new StringWriter()) {
+                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings)) {
 
-            writer.WriteStartElement("Properties");
+                    writer.WriteStartElement("Properties");
 
-            foreach (XMLKVPair variable in variables) {
-                writer.WriteStartElement("Property");
-                writer.WriteAttributeString("name", variable.Key);
-                writer.WriteAttributeString("value", variable.Value);
-                writer.WriteEndElement();
+                    foreach (XMLKVPair variable in variables) {
+                        writer.WriteStartElement("Property");
+                        writer.WriteAttributeString("name", variable.Key);
+                        writer.WriteAttributeString("value", variable.Value);
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+                    writer.Flush();
+
+                    return sw.GetStringBuilder().ToString();
+                }
             }
-
-            writer.WriteEndElement();
-            writer.Flush();
-
-            return sw.GetStringBuilder().ToString();
         }
 
         public static List<object[]> DeserializeComplexList(String xml) {
             List<object[]> ret = new List<object[]>();
 
-            StringReader stringReader = new StringReader(xml);
-            XmlReader reader = XmlReader.Create(stringReader);
+            using (StringReader stringReader = new StringReader(xml)) {
+                using (XmlReader reader = XmlReader.Create(stringReader)) {
 
-            List<object> properties = null;
+                    List<object> properties = null;
 
-            while (reader.Read()) {
-                if (reader.NodeType == XmlNodeType.Element) {
-                    switch (reader.Name) {
-                        case "List":
-                            continue;
-                        case "Properties":                            
-                            if (properties != null)
-                                ret.Add(properties.ToArray());
-                            properties = new List<object>();
-                            break;
-                        case "String":
-                            properties.Add(reader["value"]);
-                            break;
-                        case "Short":
-                            properties.Add(short.Parse(reader["value"]));
-                            break;
-                        case "Int":
-                            properties.Add(int.Parse(reader["value"]));
-                            break;
-                        case "Ushort":
-                            properties.Add(ushort.Parse(reader["value"]));
-                            break;
-                        case "Uint":
-                            properties.Add(uint.Parse(reader["value"]));
-                            break;
-                        case "Byte":
-                            properties.Add(byte.Parse(reader["value"]));
-                            break;
-                        default:
-                            throw new Exception("Unsupported variable type");
+                    while (reader.Read()) {
+                        if (reader.NodeType == XmlNodeType.Element) {
+                            switch (reader.Name) {
+                                case "List":
+                                    continue;
+                                case "Properties":
+                                    if (properties != null)
+                                        ret.Add(properties.ToArray());
+                                    properties = new List<object>();
+                                    break;
+                                case "String":
+                                    properties.Add(reader["value"]);
+                                    break;
+                                case "Short":
+                                    properties.Add(short.Parse(reader["value"]));
+                                    break;
+                                case "Int":
+                                    properties.Add(int.Parse(reader["value"]));
+                                    break;
+                                case "Ushort":
+                                    properties.Add(ushort.Parse(reader["value"]));
+                                    break;
+                                case "Uint":
+                                    properties.Add(uint.Parse(reader["value"]));
+                                    break;
+                                case "Byte":
+                                    properties.Add(byte.Parse(reader["value"]));
+                                    break;
+                                default:
+                                    throw new Exception("Unsupported variable type");
+                            }
+                        }
                     }
+
+                    if (properties != null)
+                        ret.Add(properties.ToArray());
+
+                    return ret;
                 }
             }
-
-            if (properties != null)
-                ret.Add(properties.ToArray());
-
-            return ret;
         }
 
         public static List<object> DeserializeList(String xml) {
             List<object> ret = new List<object>();
 
-            StringReader stringReader = new StringReader(xml);
-            XmlReader reader = XmlReader.Create(stringReader);
+            using (StringReader stringReader = new StringReader(xml)) {
+                using (XmlReader reader = XmlReader.Create(stringReader)) {
 
-            while (reader.Read()) {
-                if (reader.NodeType == XmlNodeType.Element) {
-                    switch (reader.Name) {
-                        case "Properties":
-                            continue;
-                        case "String":
-                            ret.Add(reader["value"]);
-                            break;
-                        case "Short":
-                            ret.Add(short.Parse(reader["value"]));
-                            break;
-                        case "Int":
-                            ret.Add(int.Parse(reader["value"]));
-                            break;
-                        case "Ushort":
-                            ret.Add(ushort.Parse(reader["value"]));
-                            break;
-                        case "Uint":
-                            ret.Add(uint.Parse(reader["value"]));
-                            break;
-                        case "Byte":
-                            ret.Add(byte.Parse(reader["value"]));
-                            break;
-                        default:
-                            throw new Exception("Unsupported variable type");
+                    while (reader.Read()) {
+                        if (reader.NodeType == XmlNodeType.Element) {
+                            switch (reader.Name) {
+                                case "Properties":
+                                    continue;
+                                case "String":
+                                    ret.Add(reader["value"]);
+                                    break;
+                                case "Short":
+                                    ret.Add(short.Parse(reader["value"]));
+                                    break;
+                                case "Int":
+                                    ret.Add(int.Parse(reader["value"]));
+                                    break;
+                                case "Ushort":
+                                    ret.Add(ushort.Parse(reader["value"]));
+                                    break;
+                                case "Uint":
+                                    ret.Add(uint.Parse(reader["value"]));
+                                    break;
+                                case "Byte":
+                                    ret.Add(byte.Parse(reader["value"]));
+                                    break;
+                                default:
+                                    throw new Exception("Unsupported variable type");
+                            }
+                        }
                     }
+
+                    return ret;
                 }
             }
-
-            return ret;
         }
 
         public static Dictionary<String, String> Deserialize(String xml) {
             Dictionary<String, String> ret = new Dictionary<string, string>();
 
-            StringReader stringReader = new StringReader(xml);
-            XmlReader reader = XmlReader.Create(stringReader);
+            using (StringReader stringReader = new StringReader(xml)) {
+                using (XmlReader reader = XmlReader.Create(stringReader)) {
 
-            while (reader.Read()) {
-                string key = string.Empty;
-                string value = string.Empty;
-                if (reader.NodeType == XmlNodeType.Element && reader.Name == "Property") {
-                    while (reader.MoveToNextAttribute()) {
-                        switch (reader.Name) {
-                            case "name":
-                                key = reader.Value;
-                                break;
-                            case "value":
-                                value = reader.Value;
-                                break;
+                    while (reader.Read()) {
+                        string key = string.Empty;
+                        string value = string.Empty;
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "Property") {
+                            while (reader.MoveToNextAttribute()) {
+                                switch (reader.Name) {
+                                    case "name":
+                                        key = reader.Value;
+                                        break;
+                                    case "value":
+                                        value = reader.Value;
+                                        break;
+                                }
+                            }
+                            ret[key] = value;
                         }
                     }
-                    ret[key] = value;
+
+                    return ret;
                 }
             }
-
-            return ret;
         }
     }
 }

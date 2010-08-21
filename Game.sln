@@ -1,6 +1,17 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE2FE5FA-D81A-4387-BFEF-5387EEA6F84A}"
+	ProjectSection(SolutionItems) = preProject
+		Game10.vsmdi = Game10.vsmdi
+		Game5.vsmdi = Game5.vsmdi
+		Game6.vsmdi = Game6.vsmdi
+		Game7.vsmdi = Game7.vsmdi
+		Game8.vsmdi = Game8.vsmdi
+		Game9.vsmdi = Game9.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", "{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugger", "Debugger\Debugger.csproj", "{6E0A8482-B7A3-4915-AA37-F193473BF4EF}"
@@ -12,17 +23,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Simulator\Simulator.csproj", "{BE63626B-E81E-4A4A-80C0-F03E76C7F155}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launcher.csproj", "{6EE346B4-BB8C-4CE8-B95C-1DCD693B296B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DE2FE5FA-D81A-4387-BFEF-5387EEA6F84A}"
-	ProjectSection(SolutionItems) = preProject
-		Game10.vsmdi = Game10.vsmdi
-		Game5.vsmdi = Game5.vsmdi
-		Game6.vsmdi = Game6.vsmdi
-		Game7.vsmdi = Game7.vsmdi
-		Game8.vsmdi = Game8.vsmdi
-		Game9.vsmdi = Game9.vsmdi
-		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapGenerator", "MapGenerator\MapGenerator.csproj", "{DD17A617-76C6-4E55-8C4C-E04C4FEE58B8}"
 EndProject

@@ -12,9 +12,9 @@ namespace Game.Logic {
             return distance * 2000;
         }
 
-        internal static double TradeTime(Structure structure)
+        internal static double TradeTime(Structure structure, int quantity)
         {
-            return 50 + 50 / structure.Lvl;
+            return quantity * 30;
         }
 
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {

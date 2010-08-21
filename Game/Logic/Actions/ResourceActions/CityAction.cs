@@ -136,13 +136,14 @@ namespace Game.Logic.Actions
                 #endregion
 
                 #region Labor
-                laborTimeRemains += INTERVAL;
-                int laborRate = Formula.GetLaborRate(laborTotal);
-                int laborProduction = laborTimeRemains / laborRate;
-                if (laborProduction > 0)
-                {
-                    laborTimeRemains -= laborProduction * laborRate;
-                    city.Resource.Labor.Add(laborProduction);
+                if (DateTime.Now.Subtract(city.Owner.LastLogin).Days <= 2) {
+                    laborTimeRemains += INTERVAL;
+                    int laborRate = Formula.GetLaborRate(laborTotal);
+                    int laborProduction = laborTimeRemains/laborRate;
+                    if (laborProduction > 0) {
+                        laborTimeRemains -= laborProduction*laborRate;
+                        city.Resource.Labor.Add(laborProduction);
+                    }
                 }
 
                 #endregion

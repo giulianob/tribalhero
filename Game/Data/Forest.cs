@@ -242,7 +242,9 @@ namespace Game.Data {
         }
 
         public DbColumn[] DbColumns {
-            get {                                
+            get {
+                IEnumerable<object[]> structuresEnum = structures.Select(structure => new object[] { structure.City.Id, structure.ObjectId });                
+
                 return new[] {
                                 new DbColumn("labor", Labor, DbType.UInt16),
                                 new DbColumn("x", X, DbType.UInt32), 
@@ -256,7 +258,7 @@ namespace Game.Data {
                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),
                                 new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
                                 new DbColumn("deplete_time", DepleteTime, DbType.DateTime),
-                                new DbColumn("structures", XMLSerializer.SerializeComplexList(structures.Select(structure => new object[] {structure.City.Id, structure.ObjectId})), DbType.String)
+                                new DbColumn("structures", XMLSerializer.SerializeComplexList(structuresEnum), DbType.String)
                 };
             }
         }

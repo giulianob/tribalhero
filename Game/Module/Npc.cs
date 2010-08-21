@@ -237,15 +237,14 @@ namespace Game.Module {
             Global.Logger.Info("Loading AI...");
 
             for (uint i = 1; i <= Config.ai_count; ++i) {
-                
+
                 if (i%100 == 0)
                     Global.Logger.Info(String.Format("Creating NPC {0}/{1}...", i, Config.ai_count));
 
                 uint idx = 500000 + i;
 
                 Player npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i);
-                Intelligence intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()),
-                                                             Math.Max(0.5, rand.NextDouble()));
+                Intelligence intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()), Math.Max(0.5, rand.NextDouble()));
 
                 using (new MultiObjectLock(npc)) {
                     if (!Global.Players.ContainsKey(idx)) {
@@ -266,34 +265,31 @@ namespace Game.Module {
                         break;
                     }
 
-                    City city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityList().Count + 1),
-                                         new Resource(500, 500, 500, 500, 10), structure);
+                    City city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityList().Count + 1), new Resource(500, 500, 500, 500, 10), structure);
 
                     Global.World.Add(city);
+                    structure.BeginUpdate();
+                    Global.World.Add(structure);
+                    structure.EndUpdate();
                     
-                        Global.World.Add(structure);
+                    
+                    TroopStub defaultTroop = new TroopStub();
+                    defaultTroop.AddFormation(FormationType.NORMAL);
+                    defaultTroop.AddFormation(FormationType.GARRISON);
+                    defaultTroop.AddFormation(FormationType.IN_BATTLE);
+                    city.Troops.Add(defaultTroop);
+                    
 
-                        TroopStub defaultTroop = new TroopStub();
-                        defaultTroop.BeginUpdate();
-                        defaultTroop.AddFormation(FormationType.NORMAL);
-                        defaultTroop.AddFormation(FormationType.GARRISON);
-                        defaultTroop.AddFormation(FormationType.IN_BATTLE);
-                        city.Troops.Add(defaultTroop);
-                        defaultTroop.EndUpdate();
-                      city.EndUpdate();
-                    
-                    InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type,
-                                               structure.Stats.Base.Lvl);
+                    InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Stats.Base.Lvl);
 
                     city.Worker.DoPassive(city, new CityAction(city.Id), false);
 
-                    TileLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false,
-                                                 BuildBasicStructures, city);
+                    //TileLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false, BuildBasicStructures, city);
                 }
             }
 
             Global.Ai.time = DateTime.UtcNow.AddSeconds(10);
-            Global.Scheduler.Put(Global.Ai);
+            //Global.Scheduler.Put(Global.Ai);
 
             Global.Logger.Info("Loading AI finished.");
 

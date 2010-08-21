@@ -88,12 +88,14 @@ namespace Game.Map {
         }
 
         public List<SimpleGameObject> GetObjects(uint x, uint y) {
-            return objlist.Get(x, y);
+            lock (objlist) {
+                return objlist.Get(x, y);
+            }
         }
 
         public byte[] GetObjectBytes() {
-            if (isDirty || objects == null) {
-                lock (objlist) {
+            lock (objlist) {
+                if (isDirty || objects == null) {
                     using (MemoryStream ms = new MemoryStream()) {
                         BinaryWriter bw = new BinaryWriter(ms);
                         bw.Write(Count);
@@ -102,10 +104,9 @@ namespace Game.Map {
                             bw.Write(obj.Type);
 
                             if (obj is GameObject) {
-                                bw.Write(((GameObject)obj).City.Owner.PlayerId);
-                                bw.Write(((GameObject)obj).City.Id);
-                            }
-                            else {
+                                bw.Write(((GameObject) obj).City.Owner.PlayerId);
+                                bw.Write(((GameObject) obj).City.Id);
+                            } else {
                                 bw.Write((uint) 0);
                                 bw.Write((uint) 0);
                             }
@@ -130,8 +131,8 @@ namespace Game.Map {
                             }
 
                             //if this is the main building then include radius
-                            if (obj is GameObject && obj == ((GameObject)obj).City.MainBuilding)
-                                bw.Write(((GameObject)obj).City.Radius);
+                            if (obj is GameObject && obj == ((GameObject) obj).City.MainBuilding)
+                                bw.Write(((GameObject) obj).City.Radius);
                         }
 
                         isDirty = false;
@@ -140,13 +141,15 @@ namespace Game.Map {
                         objects = ms.ToArray();
                     }
                 }
-            }
 
-            return objects;
+                return objects;
+            }
         }
 
         public byte[] GetBytes() {
-            return map;
+            lock (objlist) {
+                return map;
+            }
         }
 
         public ushort GetTileType(uint x, uint y) {

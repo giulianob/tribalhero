@@ -1,0 +1,74 @@
+#region
+
+using System;
+using System.IO;
+using System.Text.RegularExpressions;
+
+#endregion
+
+namespace CSVToXML {
+    public class CsvReader : IDisposable {
+        private readonly StreamReader sr;
+
+        public string[] Columns { get; private set; }
+
+        public CsvReader(StreamReader sr) {
+            this.sr = sr;
+
+            Columns = TokenizeCsvLine(sr.ReadLine());
+        }
+
+        public string[] ReadRow() {
+            string line;
+            while (true) {
+                line = sr.ReadLine();
+                if (line == null)
+                    return null;
+
+                line = line.Trim();
+
+                if (line != string.Empty && !line.StartsWith("//"))
+                    break;
+            }
+
+            return RegexTokenizeCsvLine(line);
+        }
+
+        private static string[] RegexTokenizeCsvLine(string line) {
+            const RegexOptions options = ((RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline) | RegexOptions.IgnoreCase);
+            Regex reg = new Regex("(?:^|,)(\\\"(?:[^\\\"]+|\\\"\\\")*\\\"|[^,]*)", options);
+            MatchCollection coll = reg.Matches(line);
+            string[] items = new string[coll.Count];
+            int i = 0;
+            foreach (Match m in coll) {
+                items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Trim();
+            }
+
+            return items;
+        }
+
+        private static string[] TokenizeCsvLine(string line) {
+
+            string[] cells = line.Split(',');
+
+            string[] result = new string[cells.Length];
+            for (int i = 0; i < cells.Length; i++) {
+                string cell = cells[i].Trim();
+                if (cell.StartsWith("\""))
+                    result[i] = cell.Replace("\"\"", "\"").Trim('"');
+                else
+                    result[i] = cell;
+            }
+
+            return result;
+        }
+
+        #region IDisposable Members
+
+        public void Dispose() {
+            sr.Close();
+        }
+
+        #endregion
+    }
+}

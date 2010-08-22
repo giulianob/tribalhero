@@ -193,8 +193,8 @@
 		private static function haveNoStructureMsg(parentObj: GameObject, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): String
 		{
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
-			
-			return "Does not already have a " + structPrototype.getName() + (minlevel > 0 || maxlevel > 0 ? " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")" : "");
+
+			return "Does not already have a " + structPrototype.getName() + (minlevel > 0 ? " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")" : "");
 		}
 
 		/*COUNT LESS THAN*/

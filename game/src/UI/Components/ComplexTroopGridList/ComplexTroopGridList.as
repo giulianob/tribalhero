@@ -131,7 +131,7 @@
 					}
 
 					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, level);
-					var icon: DisplayObject = UnitFactory.getSprite(unit.type, level) as DisplayObject;
+					var icon: DisplayObject = UnitFactory.getSprite(unit.type, level, tooltipMode) as DisplayObject;
 
 					(ts.getModel() as VectorListModel).append( { source: icon, name: (unitPrototype != null ? unitPrototype.getName() : unit.type), data: unit, level: level, tooltipMode: tooltipMode } );
 				}

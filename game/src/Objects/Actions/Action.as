@@ -20,6 +20,8 @@ package src.Objects.Actions {
 			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton ] },
 		];
 		
+		public static const OPTION_UNCANCELABLE: int = 1;
+		
 		public static const STATE_COMPLETED: int = 0;
 		public static const STATE_STARTED: int = 1;
 		public static const STATE_FAILED: int = 2;
@@ -49,6 +51,7 @@ package src.Objects.Actions {
 		public var effectReqInherit: int;
 		public var index: int;
 		public var maxCount: int;
+		public var options: int;
 		
 		public function Action(actionType: int = 0) 
 		{

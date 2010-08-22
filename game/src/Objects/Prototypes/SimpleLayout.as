@@ -19,7 +19,7 @@ package src.Objects.Prototypes {
 
 		private var structPrototype: StructurePrototype;
 
-		public function SimpleLayout() {			
+		public function SimpleLayout() {
 		}
 
 		public function validate(builder: CityObject, city: City, x: int, y: int): Boolean
@@ -55,21 +55,27 @@ package src.Objects.Prototypes {
 
 			if (mindist > -1)
 			{
-				if (maxdist < 5)
-				desc += "Close to ";
-				else if (maxdist < 12)
-				desc += "Near ";
+				if (mindist <= 1) {
+					desc += "Within " + maxdist + " radius of a ";
+				} else {
+					desc += "Between " + mindist + "-" + maxdist + " radius of a ";
+				}
+			}			
+
+			if (structPrototype != null) {
+				desc += structPrototype.getName();
 			}
-
-			var lvlReq: String = minlevel.toString();
-
-			if (structPrototype != null)
-			desc += structPrototype.getName() + " (Level " + lvlReq + ")";
-			else
-			desc += type.toString() + " (Level " + lvlReq + ")";
+			else {
+				desc += type.toString();
+			}
+			
+			if (minlevel > 1) {
+				 desc += " (Level " + minlevel.toString() + ")";
+			}
 
 			return desc;
 		}
 	}
 
 }
+

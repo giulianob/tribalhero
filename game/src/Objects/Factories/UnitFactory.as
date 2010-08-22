@@ -54,7 +54,7 @@
 			return unitPrototypes.get([type, level]);
 		}
 
-		public static function getSprite(type: int, level: int): DisplayObjectContainer
+		public static function getSprite(type: int, level: int, forDarkBackground: Boolean = false): DisplayObjectContainer
 		{
 			var unitPrototype: UnitPrototype = getPrototype(type, level);
 			var objRef: Class;
@@ -66,13 +66,19 @@
 			}
 			else
 			{
+				var spriteClass: String = unitPrototype.spriteClass;
+
+				if (forDarkBackground) {
+					spriteClass = spriteClass.replace("_UNIT", "_DARK_UNIT");
+				}
+
 				try
 				{
-					objRef = getDefinitionByName(unitPrototype.spriteClass) as Class;
+					objRef = getDefinitionByName(spriteClass) as Class;
 				}
 				catch (error: Error)
 				{
-					trace("Missing sprite " + unitPrototype.spriteClass + ". Loading generic unit");
+					trace("Missing sprite " + spriteClass + ". Loading generic unit");
 					objRef = getDefinitionByName("DEFAULT_UNIT") as Class;
 				}
 			}
@@ -83,3 +89,4 @@
 	}
 
 }
+

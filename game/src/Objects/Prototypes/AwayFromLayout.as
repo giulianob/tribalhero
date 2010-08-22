@@ -56,7 +56,13 @@ package src.Objects.Prototypes {
 		{
 			loadPrototype();
 
-			return "Away from all " + structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
+			var desc: String = "At least " + mindist.toString() + " from all " + structPrototype.getName();
+			
+			if (minlevel > 1) {
+				 desc += " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
+			}
+			
+			return desc;
 		}
 	}
 

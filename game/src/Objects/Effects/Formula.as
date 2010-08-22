@@ -85,16 +85,20 @@
 
 		public static function marketTax(structure: StructureObject): Number
 		{
-			if (structure.level == 1)
-			return 0.25;
-			else if (structure.level == 2)
-			return 0.20;
-			else if (structure.level == 3)
-			return 0.15;
-			else if (structure.level == 4)
-			return 0.10;
-			else
-			return 0.05;
+			switch (structure.level) {
+				case 1:
+					return 0.10;
+				case 2:
+					return 0.05;
+				case 3:
+					return 0;
+				case 4:
+					return -0.05;
+				case 5:
+					return -0.10;
+				default:
+					return 0;
+			}
 		}
 
 		public static function maxForestLabor(level: int) : int {

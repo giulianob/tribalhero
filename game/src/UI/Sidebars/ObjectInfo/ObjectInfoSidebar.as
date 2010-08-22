@@ -69,7 +69,7 @@ package src.UI.Sidebars.ObjectInfo {
 				usernameLabel.setIcon(new MessagingIcon(username.name));
 				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
 			}
-			
+
 			if (getFrame()) getFrame().pack();
 		}
 
@@ -82,7 +82,7 @@ package src.UI.Sidebars.ObjectInfo {
 				usernameLabel.setIcon(new GoToCityIcon(username.id));
 				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
 			}
-			
+
 			if (getFrame()) getFrame().pack();
 		}
 
@@ -142,10 +142,10 @@ package src.UI.Sidebars.ObjectInfo {
 				propPrototype = PropertyFactory.getProperties(gameObject.type, PropertyPrototype.VISIBILITY_PUBLIC);
 
 				if (structureObject != null)
-				{					
+				{
 					for (i = 0; i < propPrototype.length; i++) {
 						addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
-					}					
+					}
 				}
 			}
 
@@ -247,8 +247,9 @@ package src.UI.Sidebars.ObjectInfo {
 			if (city == null) return;
 
 			var actions: Array = city.currentActions.getObjectActions(gameObject.objectId);
-			for each (var actionReference: CurrentActionReference in gameObject.actionReferences.each())
-			actions.push(actionReference);
+			for each (var actionReference: CurrentActionReference in gameObject.actionReferences.each()) {
+				actions.push(actionReference);
+			}
 
 			for (var i: int = 0; i < actions.length; i++)
 			{

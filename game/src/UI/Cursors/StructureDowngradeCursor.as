@@ -3,10 +3,8 @@
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	import src.Constants;
 	import src.Global;
 	import src.Map.City;
-	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
 	import src.Objects.SimpleGameObject;
@@ -15,7 +13,6 @@
 	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCircle;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.Util.Util;
 	import src.Objects.Troop.*;
 
 	public class StructureDowngradeCursor extends MovieClip implements IDisposable
@@ -27,10 +24,10 @@
 
 		private var cursor: GroundCircle;
 
-		private var city: City;		
+		private var city: City;
 
 		private var highlightedObj: GameObject;
-		
+
 		private var parentObj: StructureObject;
 
 		public function StructureDowngradeCursor() {
@@ -42,19 +39,19 @@
 			doubleClickEnabled = true;
 
 			this.parentObj = parentObj;
-			
+
 			city = Global.map.cities.get(parentObj.cityId);
 
 			Global.map.selectObject(null);
-			Global.map.objContainer.resetObjects();			
+			Global.map.objContainer.resetObjects();
 
 			cursor = new GroundCircle(0);
 			cursor.alpha = 0.6;
 
 			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
-			
+
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
-			src.Global.gameContainer.setSidebar(sidebar);			
+			src.Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
@@ -97,7 +94,7 @@
 		{
 			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) > 4)
 			return;
-			
+
 			event.stopImmediatePropagation();
 
 			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);

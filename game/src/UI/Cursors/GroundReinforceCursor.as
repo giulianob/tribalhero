@@ -3,7 +3,6 @@
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	import src.Constants;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Effects.Formula;
@@ -14,7 +13,6 @@
 	import src.Objects.IDisposable;
 	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCircle;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.Util.Util;
 	import src.Objects.Troop.*;
 
@@ -31,7 +29,7 @@
 
 		private var troop: TroopStub;
 		private var city: City;
-		
+
 		private var troopSpeed: int;
 
 		private var highlightedObj: GameObject;
@@ -49,7 +47,7 @@
 
 			Global.map.selectObject(null);
 			Global.map.objContainer.resetObjects();
-			
+
 			troopSpeed = troop.getSpeed(city);
 
 			var size: int = 0;
@@ -58,7 +56,7 @@
 			cursor.alpha = 0.6;
 
 			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);
 			addEventListener(MouseEvent.CLICK, onMouseStop, true);

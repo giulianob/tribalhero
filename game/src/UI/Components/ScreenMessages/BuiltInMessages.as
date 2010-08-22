@@ -31,18 +31,35 @@ package src.UI.Components.ScreenMessages
 				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/STARVE");
 			}
 		}
-		
+
 		public static function showIncomingAttack(city: City): void {
+
+			var inAtk: Boolean = false;
+			var inDef: Boolean = false;
+
 			if (!city.inBattle) {
 				for each (var notification: Notification in city.notifications.each()) {
-					if (notification.cityId != city.id && notification.type == PassiveAction.ATTACK) {
+					if (notification.cityId == city.id) continue;
+
+					if (notification.type == PassiveAction.ATTACK) {
 						Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INATK", city.name + ": Incoming attack", new AssetIcon(new ICON_BATTLE)));
-						return;
+						inAtk = true;
+					}
+
+					if (notification.type == PassiveAction.DEFENSE) {
+						Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/INDEF", city.name + ": Incoming reinforcement", new AssetIcon(new ICON_SHIELD)));
+						inDef = true;
 					}
 				}
 			}
-			
-			Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INATK");
+
+			if (!inAtk) {
+				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INATK");
+			}
+
+			if (!inDef) {
+				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INDEF");
+			}
 		}
 
 	}

@@ -275,10 +275,10 @@
 			packet.writeUInt(cityId);
 			packet.writeUInt(objId);
 			packet.writeUInt(targetCityId);
-			packet.writeUInt(resources.crop);
-			packet.writeUInt(resources.gold);
-			packet.writeUInt(resources.iron);
-			packet.writeUInt(resources.wood);
+			packet.writeInt(resources.crop);
+			packet.writeInt(resources.gold);
+			packet.writeInt(resources.iron);
+			packet.writeInt(resources.wood);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}

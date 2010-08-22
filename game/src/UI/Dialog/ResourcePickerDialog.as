@@ -94,24 +94,28 @@
 
 			lblCropAmount = new JAdjuster(3);
 			lblCropAmount.setMinimum(0);
+			lblCropAmount.setValue(0);
 
 			pnlIron = new JPanel();
 			pnlIron.setLayout(new FlowLayout(AsWingConstants.LEFT, 5, 0));
 
 			lblIronAmount = new JAdjuster(3);
 			lblIronAmount.setMinimum(0);
+			lblIronAmount.setValue(0);
 
 			pnlWood = new JPanel();
 			pnlWood.setLayout(new FlowLayout(AsWingConstants.CENTER, 5, 0));
 
 			lblWoodAmount = new JAdjuster(3);
 			lblWoodAmount.setMinimum(0);
+			lblWoodAmount.setValue(0);
 
 			pnlGold = new JPanel();
 			pnlGold.setLayout(new FlowLayout(AsWingConstants.LEFT, 5, 0));
 
 			lblGoldAmount = new JAdjuster(3);
 			lblGoldAmount.setMinimum(0);
+			lblGoldAmount.setValue(0);
 
 			pnlBottom = new JPanel();
 			pnlBottom.setSize(new IntDimension(200, 10));

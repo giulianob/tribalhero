@@ -13,6 +13,7 @@
 	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCircle;
 	import src.UI.Dialog.ResourcePickerDialog;
+	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.Util.Util;
 	import src.Objects.Troop.*;
 
@@ -49,6 +50,9 @@
 			cursor.alpha = 0.6;
 
 			Global.map.objContainer.addObject(cursor, ObjectContainer.LOWER);
+
+			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
+			src.Global.gameContainer.setSidebar(sidebar);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			addEventListener(MouseEvent.DOUBLE_CLICK, onMouseDoubleClick);

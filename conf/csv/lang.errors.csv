@@ -7,6 +7,7 @@ ERROR_104,The specified action was not found
 ERROR_105,The specified action is invalid
 ERROR_106,The specified action is already in progress
 ERROR_107,Invalid action count specified
+ERROR_108,This action cannot be cancelled
 ERROR_200,You do not have enough resources to do that
 ERROR_201,The specified resource is not tradable
 ERROR_202,Not enough laborers to do that
@@ -18,7 +19,7 @@ ERROR_207,This forest is too high level for your lumbermill
 ERROR_208,You must upgrade your lumbermill before you can gather from more forests at this time
 ERROR_250,The requirements for this action have not been met
 ERROR_251,The requirements for this action have not been met
-ERROR_300,The market price has changed since you opened the market dialog. Close the dialog and try again.
+ERROR_300,The market prices has changed since you opened the market dialog. Close the dialog and try again.
 ERROR_301,An invalid quantity was specified
 ERROR_400,The selected object no longer exists
 ERROR_401,The specified structure does not exist

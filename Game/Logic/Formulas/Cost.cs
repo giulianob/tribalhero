@@ -108,20 +108,20 @@ namespace Game.Logic
                 case 5:
                     return -.10;
             }
-            throw new Exception("WTF");
+            throw new Exception(string.Format("MarketTax was not expecting a market at level {0}", structure.Lvl));
         }
 
-        static int[] rateCrop = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
-        static int[] rateWood = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
-        static int[] rateGold = { 0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740 };
-        static int[] rateIron = { 0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660 };
+        static readonly int[] RateCrop = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
+        static readonly int[] RateWood = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
+        static readonly int[] RateGold = { 0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740 };
+        static readonly int[] RateIron = { 0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660 };
 
         public static Resource HiddenResource(City city)
         {
             Resource resource = new Resource();
             foreach (Structure structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
             {
-                resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
+                resource.Add(RateCrop[structure.Lvl], RateGold[structure.Lvl], RateIron[structure.Lvl], RateWood[structure.Lvl], 0);
             }
             return resource;
         }

@@ -38,15 +38,20 @@ namespace Game.Logic.Actions {
             City city, targetCity;
             Structure structure;
 
-          
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure)) {
                 return Error.OBJECT_NOT_FOUND;
+            }
 
-            if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!Global.World.TryGetObjects(targetCityId, out targetCity)) {
                 return Error.OBJECT_NOT_FOUND;
+            }
 
             if( !Formula.GetSendCapacity(structure).HasEnough(resource) ) {
                 return Error.RESOURCE_EXCEED_TRADE_LIMIT;
+            }
+
+            if (resource.Total == 0) {
+                return Error.RESOURCE_NOT_ENOUGH;
             }
 
             if( !city.Resource.HasEnough(resource) ) {
@@ -57,8 +62,8 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(resource);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(Formula.SendTime(structure.TileDistance(targetCity.MainBuilding)));
-            beginTime = DateTime.UtcNow;
+            endTime = SystemClock.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.SendTime(structure.TileDistance(targetCity.MainBuilding)));
+            beginTime = SystemClock.Now;
 
          //   targetCity.Worker.References.Add(targetCity.MainBuilding, this);
             //targetCity.Worker.Notifications.Add(
@@ -77,7 +82,6 @@ namespace Game.Logic.Actions {
         }
 
         public override void Callback(object custom) {
-            Structure structure;
             Dictionary<uint, City> cities;
             using (new MultiObjectLock(out cities, cityId, targetCityId)) {
                 if (!IsValid())
@@ -87,7 +91,9 @@ namespace Game.Logic.Actions {
                 target.BeginUpdate();
                 target.Resource.Add(resource);
                 target.EndUpdate();
-                target.Worker.References.Remove(target.MainBuilding, this);
+                
+                City sender = cities[cityId];
+                target.Owner.SendSystemMessage(sender.Owner, string.Format("{0} has sent you resources", sender.Name), string.Format("{0} has sent you {1}.", sender.Owner.Name, resource.ToNiceString()));
 
                 StateChange(ActionState.COMPLETED);
             }

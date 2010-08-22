@@ -17,6 +17,7 @@ ERROR_205,You must build a lumbermill first
 ERROR_206,You are already gathering from this forest
 ERROR_207,This forest is too high level for your lumbermill
 ERROR_208,You must upgrade your lumbermill before you can gather from more forests at this time
+ERROR_209,You are not allowed to send this many resources
 ERROR_250,The requirements for this action have not been met
 ERROR_251,The requirements for this action have not been met
 ERROR_300,The market prices has changed since you opened the market dialog. Close the dialog and try again.

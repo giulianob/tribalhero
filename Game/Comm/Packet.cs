@@ -141,9 +141,16 @@ namespace Game.Comm {
             return data;
         }
 
-        public int GetInt16() {
-            int tmp = BitConverter.ToInt16(bytes, offset);
-            offset += sizeof (int);
+        public short GetInt16() {
+            short tmp = BitConverter.ToInt16(bytes, offset);
+            offset += sizeof (short);
+            return tmp;
+        }
+
+        public int GetInt32()
+        {
+            int tmp = BitConverter.ToInt32(bytes, offset);
+            offset += sizeof(int);
             return tmp;
         }
 

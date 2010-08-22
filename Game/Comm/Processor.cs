@@ -56,6 +56,7 @@ namespace Game.Comm {
             RegisterCommand(Command.CITY_LOCATE, CmdCityLocate);
             RegisterCommand(Command.REGION_ROAD_BUILD, CmdRoadCreate);
             RegisterCommand(Command.REGION_ROAD_DESTROY, CmdRoadDestroy);
+            RegisterCommand(Command.CITY_RESOURCE_SEND, CmdSendResources);
 
             RegisterEvent(Command.ON_DISCONNECT, EventOnDisconnect);
             RegisterEvent(Command.ON_CONNECT, EventOnConnect);

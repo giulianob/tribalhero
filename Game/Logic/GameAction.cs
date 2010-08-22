@@ -13,9 +13,10 @@ namespace Game.Logic {
 
     [Flags]
     public enum ActionOption {
-        Nothing  = 0,
-        Uncancelable = 1
+        NOTHING  = 0,
+        UNCANCELABLE = 1
     }
+    
     public enum ActionType {
         OBJECT_REMOVE = 10,
 

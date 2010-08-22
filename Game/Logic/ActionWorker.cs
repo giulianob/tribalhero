@@ -225,7 +225,7 @@ namespace Game.Logic {
             if (actionId == -1)
                 return Error.ACTION_TOTAL_MAX_REACHED;
 
-            ActionRecord record = ActionFactory.getActionRequirementRecord(workerType);
+            ActionRecord record = ActionFactory.GetActionRequirementRecord(workerType);
 
             if (record == null)
                 return Error.ACTION_NOT_FOUND;
@@ -459,7 +459,7 @@ namespace Game.Logic {
         public Error Cancel(ushort id) {
             ActiveAction activeAction;
             if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.isDone) {
-                if ((ActionFactory.getActionRequirementRecord(activeAction.WorkerType).list[activeAction.WorkerIndex].option & ActionOption.Uncancelable) == ActionOption.Uncancelable) {
+                if ((ActionFactory.GetActionRequirementRecord(activeAction.WorkerType).list[activeAction.WorkerIndex].option & ActionOption.UNCANCELABLE) == ActionOption.UNCANCELABLE) {
                     return Error.ACTION_UNCANCELABLE;
                 }
                 ThreadPool.QueueUserWorkItem(ActiveCancelCallback, activeAction);
@@ -468,8 +468,7 @@ namespace Game.Logic {
 
             PassiveAction passiveAction;
             if (PassiveActions.TryGetValue(id, out passiveAction) && !passiveAction.isDone) {
-                ThreadPool.QueueUserWorkItem(PassiveCancelCallback, passiveAction);
-                return Error.OK;
+                return Error.ACTION_UNCANCELABLE;
             }
 
             return Error.ACTION_NOT_FOUND;

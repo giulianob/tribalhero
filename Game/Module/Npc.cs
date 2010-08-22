@@ -141,7 +141,7 @@ namespace Game.Module {
                 Structure structure = enumerator.Current.Value;
 
                 int workerType = StructureFactory.GetActionWorkerType(structure);
-                ActionRecord record = ActionFactory.getActionRequirementRecord(workerType);
+                ActionRecord record = ActionFactory.GetActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
 
@@ -177,7 +177,7 @@ namespace Game.Module {
             while (enumerator.MoveNext()) {
                 Structure structure = enumerator.Current.Value;
                 int workerType = StructureFactory.GetActionWorkerType(structure);
-                ActionRecord record = ActionFactory.getActionRequirementRecord(workerType);
+                ActionRecord record = ActionFactory.GetActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
 

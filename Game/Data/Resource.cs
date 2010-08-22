@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using Game.Data.Stats;
 
 #endregion
@@ -239,6 +240,7 @@ namespace Game.Data {
             labor = 0;
             FireStatsUpdate();
         }
+
         public static Resource GetMinValuesBetween(Resource a, Resource b) {
             return new Resource(Math.Min(a.crop, b.crop),
                                 Math.Min(a.gold, b.gold),
@@ -246,6 +248,7 @@ namespace Game.Data {
                                 Math.Min(a.wood, b.wood),
                                 Math.Min(a.labor, b.labor));
         }
+
         public static Resource GetMaxValuesBetween(Resource a, Resource b) {
             return new Resource(Math.Max(a.crop, b.crop),
                                 Math.Max(a.gold, b.gold),
@@ -254,6 +257,15 @@ namespace Game.Data {
                                 Math.Max(a.labor, b.labor));
         }
 
+        public string ToNiceString() {
+            List<String> parts = new List<string>();
+            if (wood > 0) parts.Add(wood + " wood");
+            if (crop > 0) parts.Add(crop + " crop");
+            if (iron > 0) parts.Add(iron + " iron");
+            if (gold > 0) parts.Add(gold + " gold");
+            if (labor > 0) parts.Add(labor + " labor");
 
+            return String.Join(", ", parts.ToArray());
+        }
     }
 }

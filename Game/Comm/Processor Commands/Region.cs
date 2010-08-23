@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using Game.Data;
 using Game.Logic;
 using Game.Map;
@@ -227,6 +228,46 @@ namespace Game.Comm
             {
                 if (city == null)
                 {
+                    ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                    return;
+                }
+
+                reply.AddUInt32(city.MainBuilding.X);
+                reply.AddUInt32(city.MainBuilding.Y);
+
+                session.Write(reply);
+            }
+        }
+
+        public void CmdCityLocateByName(Session session, Packet packet) {
+            Packet reply = new Packet(packet);
+            
+            string cityName;
+
+            try
+            {
+                cityName = packet.GetString();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            uint cityId;
+            using (DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = '{1}' LIMIT 1", City.DB_TABLE, cityName))) {
+                if (!reader.HasRows) {
+                    ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                    return;
+                }
+
+                reader.Read();
+                cityId = (uint) reader["id"];
+            }
+
+            City city;
+            using (new MultiObjectLock(cityId, out city)) {
+                if (city == null) {
                     ReplyError(session, packet, Error.CITY_NOT_FOUND);
                     return;
                 }

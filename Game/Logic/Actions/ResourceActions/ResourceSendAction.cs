@@ -11,11 +11,10 @@ using Game.Util;
 
 namespace Game.Logic.Actions {
     class ResourceSendAction : ScheduledActiveAction {
-        private const int TRADE_SIZE = 100;
-        private uint cityId;
-        private uint structureId;
-        private uint targetCityId;
-        private Resource resource;
+        private readonly uint cityId;
+        private readonly uint structureId;
+        private readonly uint targetCityId;
+        private readonly Resource resource;
 
         public ResourceSendAction(uint cityId, uint structureId, uint targetCityId, Resource resource) {
             this.cityId = cityId;

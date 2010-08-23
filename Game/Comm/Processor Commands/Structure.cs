@@ -273,7 +273,7 @@ namespace Game.Comm {
 
                 Structure obj;
                 if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.ACTION_UNCANCELABLE);
                     return;
                 }
 

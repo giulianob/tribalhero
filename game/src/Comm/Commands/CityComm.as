@@ -348,8 +348,17 @@
 
 			session.write(packet, onReceiveCityLocation);
 		}
+		
+		public function gotoCityLocationByName(cityName: String) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.CITY_LOCATE_BY_NAME;
+			packet.writeString(cityName);
+
+			session.write(packet, onReceiveCityLocation);
+		}		
 
 		public function onReceiveCityLocation(packet: Packet, custom: * ): void {
+			if (mapComm.tryShowError(packet)) return;			
 			var pt: Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}

@@ -55,6 +55,7 @@ package src.Comm {
 		public static const CITY_RESOURCES_SEND: int = 460;
         public static const CITY_RESOURCES_UPDATE: int  = 462;
 		public static const CITY_UNIT_LIST: int = 463;		
+		public static const CITY_LOCATE_BY_NAME: int = 464;
 		public static const CITY_RADIUS_UPDATE: int = 465;
 		public static const CITY_LOCATE: int = 466;
 		public static const CITY_ATTACK_DEFENSE_POINT_UPDATE: int = 467;

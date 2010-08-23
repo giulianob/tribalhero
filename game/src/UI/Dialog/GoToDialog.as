@@ -21,15 +21,19 @@
 		private var label10:JLabel;
 		private var txtY:JTextField;
 		private var panel86:JPanel;
-		private var btnOk:JButton;
+		private var btnOkCoord:JButton;
+		
+		private var txtCityName:JTextField;
+		private var btnOkName:JButton;
 	
 		public function GoToDialog() 
 		{
 			createUI();
-			btnOk.addActionListener(onOk);
+			btnOkCoord.addActionListener(onOkCoord);
+			btnOkName.addActionListener(onOkName);
 		}		
 		
-		private function onOk(e: *):void {
+		private function onOkCoord(e: *):void {
 			if (txtX.getText() == "" || txtY.getText() == "") 
 			{
 				getFrame().dispose();
@@ -41,6 +45,16 @@
 			
 			getFrame().dispose();
 		}
+		
+		private function onOkName(e: *):void {
+			if (txtCityName.getText() == "") {
+				getFrame().dispose();
+				return;
+			}
+			
+			Global.mapComm.City.gotoCityLocationByName(txtCityName.getText());	
+			getFrame().dispose();
+		}		
 		
 		private function getCoordX(): int {
 			return int(txtX.getText());
@@ -58,71 +72,87 @@
 		}		
 		
 		private function createUI():void {
-			title = "Go To";
-			//component creation
-			setSize(new IntDimension(200, 93));
-			var layout0:BorderLayout = new BorderLayout();
-			setLayout(layout0);
+			title = "Go To";			
+			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			
+			//coord panel			
+			var pnlCoords: JPanel = new JPanel(new BorderLayout());			
 			
 			label81 = new JLabel();
-			label81.setLocation(new IntPoint(5, 5));
-			label81.setSize(new IntDimension(300, 30));
-			label81.setPreferredSize(new IntDimension(200, 30));
 			label81.setConstraints("North");
 			label81.setText("Enter coordinates to visit");
+			label81.setPreferredSize(new IntDimension(200, 21));
 			label81.setHorizontalAlignment(AsWingConstants.LEFT);
 			
 			panel8 = new JPanel();
-			panel8.setLocation(new IntPoint(0, 30));
-			panel8.setSize(new IntDimension(220, 31));
 			panel8.setConstraints("Center");
-			var layout1:FlowLayout = new FlowLayout();
-			layout1.setAlignment(AsWingConstants.CENTER);
-			layout1.setHgap(0);
-			panel8.setLayout(layout1);
+			panel8.setLayout(new FlowLayout(AsWingConstants.CENTER, 0));
 			
 			txtX = new JTextField();
-			txtX.setLocation(new IntPoint(61, 5));
 			txtX.setSize(new IntDimension(40, 21));
 			txtX.setColumns(4);
 			txtX.setMaxChars(4);
 			txtX.setRestrict("0-9");
 			
 			label10 = new JLabel();
-			label10.setLocation(new IntPoint(20, 7));
 			label10.setSize(new IntDimension(26, 17));
 			label10.setText(",");
 			
 			txtY = new JTextField();
-			txtY.setLocation(new IntPoint(104, 5));
 			txtY.setSize(new IntDimension(40, 21));
 			txtY.setColumns(4);
 			txtY.setMaxChars(4);
 			txtY.setRestrict("0-9");
 			
 			panel86 = new JPanel();
-			panel86.setLocation(new IntPoint(0, 159));
-			panel86.setSize(new IntDimension(230, 32));
 			panel86.setConstraints("South");
-			var layout2:FlowLayout = new FlowLayout();
-			layout2.setAlignment(AsWingConstants.CENTER);
-			panel86.setLayout(layout2);
+			panel86.setLayout(new FlowLayout(AsWingConstants.CENTER));
 			
-			btnOk = new JButton();
-			btnOk.setLocation(new IntPoint(113, 5));
-			btnOk.setSize(new IntDimension(22, 22));
-			btnOk.setText("Ok");
+			btnOkCoord = new JButton();
+			btnOkCoord.setText("Ok");
+			
+			//city name panel
+			var pnlName: JPanel = new JPanel(new BorderLayout());			
+			
+			var pnlNameTitle: JLabel = new JLabel();
+			pnlNameTitle.setConstraints("North");
+			pnlNameTitle.setText("Enter city name to visit");
+			pnlNameTitle.setHorizontalAlignment(AsWingConstants.LEFT);
+			
+			var pnlNameCenter: JPanel = new JPanel();
+			pnlNameCenter.setConstraints("Center");
+			pnlNameCenter.setLayout(new FlowLayout(AsWingConstants.CENTER, 0));			
+			
+			txtCityName = new JTextField();
+			txtCityName.setColumns(16);
+			txtCityName.setMaxChars(32);
+			
+			var pnlNameSouth: JPanel = new JPanel();
+			pnlNameSouth.setConstraints("South");
+			pnlNameSouth.setLayout(new FlowLayout(AsWingConstants.CENTER));
+			
+			btnOkName = new JButton();
+			btnOkName.setText("Ok");			
 			
 			//component layoution
-			append(label81);
-			append(panel8);
-			append(panel86);
-			
+			pnlCoords.append(label81);
+			pnlCoords.append(panel8);
+			pnlCoords.append(panel86);			
 			panel8.append(txtX);
 			panel8.append(label10);
-			panel8.append(txtY);
+			panel8.append(txtY);			
+			panel86.append(btnOkCoord);		
 			
-			panel86.append(btnOk);			
+			pnlNameCenter.append(txtCityName);
+			pnlNameSouth.append(btnOkName);
+			pnlName.append(pnlNameTitle);
+			pnlName.append(pnlNameCenter);
+			pnlName.append(pnlNameSouth);
+			
+			append(pnlCoords);
+			append(new JSeparator());
+			append(pnlName);
+			
 		}
 	}
 	

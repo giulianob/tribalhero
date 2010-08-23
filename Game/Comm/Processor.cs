@@ -54,6 +54,7 @@ namespace Game.Comm {
             RegisterCommand(Command.MARKET_PRICES, CmdMarketGetPrices);
             RegisterCommand(Command.NOTIFICATION_LOCATE, CmdNotificationLocate);
             RegisterCommand(Command.CITY_LOCATE, CmdCityLocate);
+            RegisterCommand(Command.CITY_LOCATE_BY_NAME, CmdCityLocateByName);
             RegisterCommand(Command.REGION_ROAD_BUILD, CmdRoadCreate);
             RegisterCommand(Command.REGION_ROAD_DESTROY, CmdRoadDestroy);
             RegisterCommand(Command.CITY_RESOURCE_SEND, CmdSendResources);

@@ -10,7 +10,9 @@ namespace Game.Logic.Procedures {
         public static void AdjustCityResourceRates(Structure structure, int laborDelta) {
             if (ObjectTypeFactory.IsStructureType("Crop", structure)) {
                 structure.City.Resource.Crop.Rate += laborDelta;
-            }            
+            } else if (ObjectTypeFactory.IsStructureType("Iron", structure)) {
+                structure.City.Resource.Iron.Rate = Formula.GetIronRate(structure);
+            }
         }
 
         public static void OnStructureUpgrade(Structure structure) {

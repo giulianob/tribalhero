@@ -55,5 +55,14 @@ namespace Game.Logic {
             int[] cap = { 200, 200, 300, 500, 800, 1200, 1800, 2800, 4400, 6800, 10000 };
             return cap[lvl];
         }
+
+        public static int GetIronRate(Structure structure) {
+            int[] multiplier = { int.MaxValue, 70, 66, 63, 60, 56, 53, 5, 46, 43, 40 };
+            return structure.Stats.Labor * 10 / multiplier[structure.Lvl];
+        }
+        public static int GetXForOneCount(TechnologyManager tech) {
+            int ret = tech.GetEffects(EffectCode.XFor1, EffectInheritance.INVISIBLE).DefaultIfEmpty(new Effect()).Max(x => x.value[0]==null?1:(int)x.value[0]);
+            return ret;
+        }
     }
 }

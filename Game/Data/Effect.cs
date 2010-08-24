@@ -48,6 +48,8 @@ namespace Game.Data {
         UnitStatMod = 13,
         AwayFromStructureMod = 14,
         ACallToArmMod = 15,
+        AtticStorageMod = 16,
+        XFor1 =17,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

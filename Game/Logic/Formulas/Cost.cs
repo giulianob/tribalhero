@@ -118,12 +118,13 @@ namespace Game.Logic
 
         public static Resource HiddenResource(City city)
         {
+            int maxbonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SELF_ALL).Max(x => (int)x.value[0]);
             Resource resource = new Resource();
             foreach (Structure structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
             {
                 resource.Add(RateCrop[structure.Lvl], RateGold[structure.Lvl], RateIron[structure.Lvl], RateWood[structure.Lvl], 0);
             }
-            return resource;
+            return resource * maxbonus / 100;
         }
 
 

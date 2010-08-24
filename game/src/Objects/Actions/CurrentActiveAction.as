@@ -32,12 +32,13 @@
 				
 			var action: IAction = workerPrototype.getAction(index);
 				
+			if (action == null) 
+				return "Action";
+				
 			if (workerPrototype)
 				return action.toString() + (count > 0 ? "(" + count + ")" : "");
-			else if (action)
-				return "[" + index + "]";	
-			else 
-				return "Action";
+			
+			return "[" + index + "]";	
 		}
 	}
 	

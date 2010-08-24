@@ -287,7 +287,6 @@
     <Compile Include="Util\ListDictionary.cs" />
     <Compile Include="Util\SmallIdGenerator.cs" />
     <Compile Include="Util\SystemClock.cs" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="log4net.dll" />

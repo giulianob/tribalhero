@@ -13,10 +13,6 @@ namespace Game.Setup {
         private static bool initc;
 
         private static Dictionary<uint, TechnologyBase> technologies = new Dictionary<uint, TechnologyBase>();
-        //        static Dictionary<uint, List<TechnologyRecord>> technologiesBase = new Dictionary<uint, List<TechnologyRecord>>();
-
-        //        static Dictionary<uint, List<TechnologyEffectRecord>> technologiesEffectByTechType = new Dictionary<uint, List<TechnologyEffectRecord>>();
-        //        static Dictionary<uint, TechnologyEffectRecord> technologiesEffectByTechTypeAndLevel = new Dictionary<uint, TechnologyEffectRecord>();
 
         public static void Init(string technologyFilename, string technologyEffectsFilename) {
             if (initc)
@@ -37,6 +33,7 @@ namespace Game.Setup {
 
                     TechnologyBase tech = new TechnologyBase {
                                                                  techtype = uint.Parse(toks[col["TechType"]]),
+                                                                 name = toks[col["Name"]],
                                                                  level = byte.Parse(toks[col["Lvl"]]),
                                                                  time = uint.Parse(toks[col["Time"]]),
                                                                  resources =

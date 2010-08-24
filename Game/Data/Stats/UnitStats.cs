@@ -1,74 +1,41 @@
 ﻿namespace Game.Data.Stats {
     public class BaseUnitStats {
-        private string name;
+        public string Name { get; private set; }
 
-        public string Name {
-            get { return name; }
-        }
+        public string SpriteClass { get; private set; }
 
-        private Resource cost;
+        public Resource Cost { get; private set; }
 
-        public Resource Cost {
-            get { return cost; }
-        }
+        public Resource UpgradeCost { get; private set; }
 
-        private Resource upgradeCost;
+        public BaseBattleStats Battle { get; private set; }
 
-        public Resource UpgradeCost {
-            get { return upgradeCost; }
-        }
+        public ushort Type { get; private set; }
 
-        private BaseBattleStats battleStats;
+        public byte Lvl { get; private set; }
 
-        public BaseBattleStats Battle {
-            get { return battleStats; }
-        }
+        public int BuildTime { get; private set; }
 
-        private ushort type;
+        public int UpgradeTime { get; private set; }
 
-        public ushort Type {
-            get { return type; }
-        }
-
-        private byte lvl;
-
-        public byte Lvl {
-            get { return lvl; }
-        }
-
-        private int buildTime;
-
-        public int BuildTime {
-            get { return buildTime; }
-        }
-
-        private int upgradeTime;
-
-        public int UpgradeTime {
-            get { return upgradeTime; }
-        }
-
-        private byte upkeep;
-
-        public byte Upkeep {
-            get { return upkeep; }
-        }
+        public byte Upkeep { get; private set; }
 
         public int UnitHash {
-            get { return type*100 + lvl; }
+            get { return Type*100 + Lvl; }
         }
 
-        public BaseUnitStats(string name, ushort type, byte lvl, Resource cost, Resource upgradeCost,
+        public BaseUnitStats(string name, string spriteClass, ushort type, byte lvl, Resource cost, Resource upgradeCost,
                              BaseBattleStats battleStats, int buildTime, int upgradeTime, byte upkeep) {
-            this.name = name;
-            this.type = type;
-            this.lvl = lvl;
-            this.cost = cost;
-            this.upgradeCost = upgradeCost;
-            this.battleStats = battleStats;
-            this.buildTime = buildTime;
-            this.upgradeTime = upgradeTime;
-            this.upkeep = upkeep;
+            Name = name;
+            SpriteClass = spriteClass;
+            Type = type;
+            Lvl = lvl;
+            Cost = cost;
+            UpgradeCost = upgradeCost;
+            Battle = battleStats;
+            BuildTime = buildTime;
+            UpgradeTime = upgradeTime;
+            Upkeep = upkeep;
         }
     }
 }

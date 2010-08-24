@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using Game.Setup;
 
 #endregion
@@ -7,6 +8,8 @@ using Game.Setup;
 namespace Game.Data.Stats {
     public class StructureBaseStats {
         public string Name { get; private set; }
+
+        public string SpriteClass { get; private set; }
 
         public ushort Type { get; private set; }
 
@@ -26,9 +29,14 @@ namespace Game.Data.Stats {
 
         public BaseBattleStats Battle { get; private set; }
 
-        public StructureBaseStats(string name, ushort type, byte lvl, byte radius, Resource cost, BaseBattleStats baseBattleStats,
+        public int StructureHash {
+            get { return Type * 100 + Lvl; }            
+        }
+
+        public StructureBaseStats(string name, string spriteClass, ushort type, byte lvl, byte radius, Resource cost, BaseBattleStats baseBattleStats,
                                   byte maxLabor, int buildTime, int workerId, ClassId baseClass) {
             Name = name;
+            SpriteClass = spriteClass;
             Radius = radius;
             Type = type;
             Lvl = lvl;

@@ -61,6 +61,7 @@ namespace Game.Setup {
                                                                                        ushort.Parse(toks[col["Hp"]])),0);
 
                     StructureBaseStats basestats = new StructureBaseStats(toks[col["Name"]],
+                                                                          toks[col["SpriteClass"]],
                                                                           ushort.Parse(toks[col["Type"]]),
                                                                           byte.Parse(toks[col["Lvl"]]),
                                                                           byte.Parse(toks[col["Radius"]]),

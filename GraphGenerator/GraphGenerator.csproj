@@ -58,6 +58,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CSVToXML\CSVToXML.csproj">
+      <Project>{FAAE202A-B5DA-495F-A059-FCB229C5D151}</Project>
+      <Name>CSVToXML</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Game\Game.csproj">
       <Project>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</Project>
       <Name>Game</Name>

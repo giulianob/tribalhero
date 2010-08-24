@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using CSVToXML;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
@@ -12,17 +14,18 @@ namespace GraphGenerator
     {
         private const ushort MAIN_BUILDING = 2000;
 
-        static StreamWriter output;
+        static StringWriter nodeConnections;                
 
         static List<int> processedStructures = new List<int>();
         static List<int> processedUnits = new List<int>();
         static List<int> processedTechnologies = new List<int>();
+        static Dictionary<string, string> nodeDefintions = new Dictionary<string, string>();
+        static Dictionary<string, string> lang = new Dictionary<string, string>();
 
         static List<List<string>> ranks = new List<List<string>>();
 
         enum Result
         {
-            ERROR,
             OK,
             EMPTY,
             ALREADY_PROCESSED
@@ -30,21 +33,58 @@ namespace GraphGenerator
 
         static void Main(string[] args)
         {
+            Factory.CompileConfigFiles();
             Factory.InitAll();
 
-            using (output = new StreamWriter(File.Create("output.txt")))
-            {
-                ProcessStructure(StructureFactory.GetBaseStats(MAIN_BUILDING, 1), false);
-                WriteRankings();
+            LoadLanguages();
+
+            nodeConnections = new StringWriter(new StringBuilder());            
+            
+            ProcessStructure(StructureFactory.GetBaseStats(MAIN_BUILDING, 1), false);
+
+            using (StreamWriter output = new StreamWriter(File.Create("output.txt"))) {
+                output.Write(nodeConnections.ToString());
+                WriteDefinitions(output);                
+                WriteRankings(output);
             }
 
+
+            nodeConnections.Close();
         }
 
-        private static void WriteRankings() {
+        private static void LoadLanguages() {
+            string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
+            foreach (string file in files)
+            {
+                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open))))
+                {
+                    while (true)
+                    {
+                        string[] obj = langReader.ReadRow();
+                        if (obj == null)
+                            break;
+
+                        if (obj[0] == string.Empty)
+                            continue;
+
+                        lang[obj[0]] = obj[1];
+                    }
+                }
+            }
+        }
+
+        private static void WriteDefinitions(StreamWriter output) {
+            foreach (var kvp in nodeDefintions)
+            {
+                output.WriteLine("{0} {1}", kvp.Key, kvp.Value);
+            }            
+        }
+
+        private static void WriteRankings(StreamWriter output) {
             foreach (List<String> ranking in ranks) {
                 output.Write("{ rank=\"same\"; ");
                 foreach (string str in ranking)
-                    output.Write("\"{0}\"; ", str);
+                    output.Write("{0}; ", str);
                 output.WriteLine("}");
             }
         }
@@ -62,7 +102,7 @@ namespace GraphGenerator
 
             ActionRecord record = ActionFactory.GetActionRequirementRecord(structureBaseStats.WorkerId);
 
-            processedStructures.Add(hash);
+            processedStructures.Add(hash);            
 
             bool hadConnection = false;
 
@@ -77,7 +117,11 @@ namespace GraphGenerator
                         Result result = ProcessStructure(building, false);
                         if (result != Result.ALREADY_PROCESSED)
                         {
-                            WriteNode(structureBaseStats, building);
+                            if (action.type == ActionType.STRUCTURE_BUILD)
+                                WriteNode(structureBaseStats, building);
+                            else if (action.type == ActionType.STRUCTURE_CHANGE)
+                                WriteNode(structureBaseStats, building, "dashed");
+
                             hadConnection = true;
                         }
                         break;
@@ -86,6 +130,7 @@ namespace GraphGenerator
                         if (!processedUnits.Contains(training.UnitHash))
                         {
                             WriteNode(structureBaseStats, training);
+                            CreateDefinition(training);
                             hadConnection = true;
                             processedUnits.Add(training.UnitHash);
                         }
@@ -95,6 +140,7 @@ namespace GraphGenerator
                         if (!processedTechnologies.Contains(tech.TechnologyHash))
                         {
                             WriteNode(structureBaseStats, tech);
+                            CreateDefinition(tech);
                             hadConnection = true;
                             processedTechnologies.Add(tech.TechnologyHash);
                         }
@@ -116,13 +162,16 @@ namespace GraphGenerator
                                                        {
                                                            GetKey(from)
                                                        };
+
+                            CreateDefinition(from);
                             for (int i = from.Lvl; i < maxLvl; i++)
                             {
                                 StructureBaseStats to = StructureFactory.GetBaseStats(from.Type, (byte)(i + 1));
                                 Result result = ProcessStructure(to, true);
-                                if (result == Result.OK)
+                                if (result == Result.OK || i == maxLvl - 1)
                                 {
                                     WriteNode(from, to);
+                                    CreateDefinition(to);
                                     hadConnection = true;
                                     newRank.Add(GetKey(to));
                                     from = to;
@@ -138,23 +187,54 @@ namespace GraphGenerator
             return hadConnection ? Result.OK : Result.EMPTY;
         }
 
-        private static string GetKey(StructureBaseStats structureBaseStats) {
-            return string.Format("{0} (Lvl {1})", structureBaseStats.Name, structureBaseStats.Lvl);
+        private static string GetKey(StructureBaseStats stats) {
+            return "STRUCTURE_" + stats.StructureHash;
+        }
+
+        private static string GetKey(BaseUnitStats unit)
+        {
+            return "UNIT_" + unit.UnitHash;
+        }
+
+        private static string GetKey(TechnologyBase tech)
+        {
+            return "TECH_" + tech.TechnologyHash;
+        }
+
+        private static void CreateDefinition(StructureBaseStats stats) {
+            nodeDefintions[GetKey(stats)] = string.Format("[label=\"{0} (Level {1})\", labelloc=\"b\", height=1, shape=none, image=\"{2}.png\"]", lang[stats.Name + "_STRUCTURE_NAME"], stats.Lvl, stats.SpriteClass);
+        }
+
+        private static void CreateDefinition(BaseUnitStats stats)
+        {
+            nodeDefintions[GetKey(stats)] = string.Format("[label=\"{0}\", labelloc=\"b\", height=1, shape=none, image=\"{1}.png\"]", lang[stats.Name + "_UNIT"], stats.SpriteClass);
+        }
+
+        private static void CreateDefinition(TechnologyBase tech)
+        {
+            nodeDefintions[GetKey(tech)] = string.Format("[label=\"{0}\", shape=box]", lang[tech.name + "_TECHNOLOGY_NAME"]);
         }
 
         private static void WriteNode(StructureBaseStats from, StructureBaseStats to)
         {
-            output.WriteLine("\"{0}\" -> \"{1}\";", GetKey(from), GetKey(to));
+            nodeConnections.WriteLine("{0} -> {1};", GetKey(from), GetKey(to));
+        }
+
+        private static void WriteNode(StructureBaseStats from, StructureBaseStats to, string style)
+        {
+            // Causes graphviz to freak out and draw a lot of edge intersections
+            //nodeConnections.WriteLine("{0} -> {1} [ label = \"{2}\" ];", GetKey(from), GetKey(to), label);
+            nodeConnections.WriteLine("{0} -> {1} [style={2}];", GetKey(from), GetKey(to), style);
         }
 
         private static void WriteNode(StructureBaseStats from, BaseUnitStats to)
         {
-            output.WriteLine("\"{0} (Lvl {2})\" -> \"{1} (Lvl {3})\";", from.Name, to.Name, from.Lvl, to.Lvl);
+            nodeConnections.WriteLine("{0} -> {1};", GetKey(from), GetKey(to));
         }
 
         private static void WriteNode(StructureBaseStats from, TechnologyBase to)
         {
-            output.WriteLine("\"{0} (Lvl {2})\" -> \"{1} (Lvl {3})\";", from.Name, to.name, from.Lvl, to.level);
+            nodeConnections.WriteLine("{0} -> {1};", GetKey(from), GetKey(to));
         }
     }
 }

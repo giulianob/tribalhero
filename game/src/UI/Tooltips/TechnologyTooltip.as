@@ -121,7 +121,7 @@ package src.UI.Tooltips {
 			lblNextLvlTime.setConstraints("East");
 			GameLookAndFeel.changeClass(lblNextLvlTime, "Tooltip.text");
 
-			lblDescription = new MultilineLabel();			
+			lblDescription = new MultilineLabel("", 0, 20);
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 
 			pnlNextLvl = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL));
@@ -133,7 +133,7 @@ package src.UI.Tooltips {
 			lblNextLvl.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblNextLvl, "header");
 
-			lblNextLvlDescription = new MultilineLabel();			
+			lblNextLvlDescription = new MultilineLabel("", 0, 20);	
 			GameLookAndFeel.changeClass(lblNextLvlDescription, "Tooltip.text");
 
 			pnlRequired = new JPanel();

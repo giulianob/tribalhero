@@ -86,7 +86,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var techUpgradeAction: TechUpgradeAction = parentAction as TechUpgradeAction;
 
-			if (techPrototype.level >= techUpgradeAction.maxlevel)
+			if (techUpgradeAction == null || techPrototype.level >= techUpgradeAction.maxlevel)
 			{
 				techToolTip.draw(currentCount, parentAction.maxCount);
 				disable();

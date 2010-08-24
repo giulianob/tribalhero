@@ -336,13 +336,19 @@ package src.UI.Sidebars.ObjectInfo {
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.type, gameObject.level);
 			var workerPrototype: Worker = null;
 
-			if (structPrototype)
-			workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
+			if (structPrototype) {
+				workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
+			}
 
 			var city: City = Global.map.cities.get(gameObject.cityId);
 
 			for each(var button: ActionButton in buttons)
 			{
+				if (Constants.alwaysEnableButtons) {
+					button.enable();
+					continue;
+				}
+
 				button.validateButton();
 
 				if (!button.countCurrentActions() || (city != null && workerPrototype != null && city.currentActions.getObjectActions(gameObject.objectId, true).length >= workerPrototype.maxCount)) {

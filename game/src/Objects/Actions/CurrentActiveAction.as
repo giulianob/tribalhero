@@ -30,10 +30,14 @@
 			else
 				return "[" + index + "]";
 				
+			var action: IAction = workerPrototype.getAction(index);
+				
 			if (workerPrototype)
-				return workerPrototype.getAction(index).toString() + (count > 0 ? "(" + count + ")" : "");
-			else
+				return action.toString() + (count > 0 ? "(" + count + ")" : "");
+			else if (action)
 				return "[" + index + "]";	
+			else 
+				return "Action";
 		}
 	}
 	

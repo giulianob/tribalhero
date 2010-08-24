@@ -12,11 +12,17 @@ using Game.Util;
 
 namespace Game.Data {
     public class TechnologyBase {
+        public string name;
         public uint techtype;
         public byte level;
         public uint time;
         public Resource resources;
-        public List<Effect> effects;
+        public List<Effect> effects;        
+
+        public int TechnologyHash
+        {
+            get { return (int)(techtype * 100 + level); }
+        }
     }
 
     public class Technology {

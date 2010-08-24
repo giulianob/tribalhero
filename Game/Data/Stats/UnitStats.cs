@@ -54,6 +54,10 @@
             get { return upkeep; }
         }
 
+        public int UnitHash {
+            get { return type*100 + lvl; }
+        }
+
         public BaseUnitStats(string name, ushort type, byte lvl, Resource cost, Resource upgradeCost,
                              BaseBattleStats battleStats, int buildTime, int upgradeTime, byte upkeep) {
             this.name = name;

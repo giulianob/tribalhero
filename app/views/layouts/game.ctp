@@ -18,27 +18,6 @@
 	?>	
 </head>
 <body>
-	<div id="game-container">
-		<div id="header" class="container prepend-top">
-			<div class="span-24 last">
-				<div class="float-right">
-					<cake:nocache>
-						Logged in as, <strong><?php echo $session->read('Auth.Player.name')?></strong>.
-						<?php echo $html->link('Logout', '/players/logout')?>
-					</cake:nocache>
-				</div>
-			</div>
-		</div>			
-		
-		<div id="game-content" class="prepend-top">		
-			<div>
-				<?php echo $content_for_layout; ?>
-			</div>			
-		</div>
-
-		<div id="footer" class="container prepend-top">
-			Copyright &copy; Tribal Hero <?php echo date("Y");?>. All Rights Reserved.
-		</div>
-	</div>
+	<?php echo $content_for_layout; ?>
 </body>
 </html>

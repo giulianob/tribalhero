@@ -124,7 +124,7 @@
 		public function createRegionPart(tileset:TileSet, x: int, y:int):void
 		{
 			var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionBitmapW + Constants.tileW / 2, Constants.regionBitmapH / 2 + Constants.tileH / 2, true, 0));
-
+			
 			for (var bY:int = 1; bY <= Constants.regionBitmapTileH; bY++)
 			{
 				for (var aX:int = 1; aX <= Constants.regionBitmapTileW; aX++)

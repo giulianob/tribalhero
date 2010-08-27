@@ -44,15 +44,10 @@
 
 			objContainer = new ObjectContainer(false);
 
-			var tilesW: int = Constants.screenW / Constants.tileW;
-			var tilesH: int = Constants.screenH / Constants.tileH;
-
-			this.screenRect = new Sprite();
-			screenRect.graphics.lineStyle(1, 0xFFFFFF);
-			screenRect.graphics.drawRect(0, 0, tilesW * Constants.miniMapTileW, tilesH * Constants.miniMapTileH);
-
 			mapHolder = new Sprite();
 
+			screenRect = new Sprite();
+			
 			mapHolder.addChild(screenRect);
 			mapHolder.addChild(regionSpace);
 			mapHolder.addChild(objContainer);
@@ -69,7 +64,18 @@
 
 			mask = mapMask;
 
+			redraw();
 			resize(width, height);
+		}
+
+		public function redraw() : void {
+			// Redraw screen rectangle
+			var tilesW: int = Constants.screenW / Constants.tileW;
+			var tilesH: int = Constants.screenH / Constants.tileH;
+
+			screenRect.graphics.clear();
+			screenRect.graphics.lineStyle(1, 0xFFFFFF);
+			screenRect.graphics.drawRect(0, 0, tilesW * Constants.miniMapTileW, tilesH * Constants.miniMapTileH);
 		}
 
 		private function onNavigate(e: MouseEvent) : void {

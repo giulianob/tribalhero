@@ -1159,7 +1159,8 @@ package src.UI.LookAndFeel
 			"Frame.opaque", true,
 			"Frame.icon", GameFrameIcon,
 			"Frame.bg", SkinFrameBackground, //this will use Frame.activeBG and Frame.inactiveBG
-			"Frame.border", new SkinEmptyBorder(-3, 4, 5, 4), //modify this to fit the frame bg image
+			"Frame.border", new SkinEmptyBorder( -3, 4, 5, 4), //modify this to fit the frame bg image
+			"Frame.borderWithoutPaper", new SkinEmptyBorder(20, 10, 10, 10),
 			"Frame.activeBG", Frame_activeBG,
 			"Frame.inactiveBG", Frame_activeBG, // use same img as active for now
 

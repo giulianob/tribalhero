@@ -1,6 +1,16 @@
-<?
+<?php
 	$javascript->link('swfobject/swfobject', false);
 ?>
+
+<style type="text/css">
+<!--
+body, html {
+height: 100%;
+width: 100%;
+margin: 0;
+}
+-->
+</style>
 
 <? if (isset($lsessid)) : ?>
 <script type="text/javascript">

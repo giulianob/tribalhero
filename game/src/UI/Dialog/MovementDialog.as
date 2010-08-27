@@ -21,6 +21,7 @@
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import src.UI.GameJImagePanelBackground;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.UI.Tooltips.Tooltip;
@@ -32,6 +33,7 @@
 	{
 		private var city: City;
 
+		private var pnlContainer: JPanel;
 		private var localTroopIcon: AssetPane;
 		private var stationedHere: TroopStubGridList;
 		private var stationedAway: TroopStubGridList;
@@ -39,7 +41,6 @@
 		private var myStubs: TroopStubGridList;
 		private var btnAttack: JButton;
 		private var btnDefend: JButton;
-		private var btnClose: JButton;
 		private var lblCityName: JLabel;
 
 		private var tooltip: Tooltip;
@@ -54,7 +55,6 @@
 
 			btnAttack.addActionListener(onClickAttack);
 			btnDefend.addActionListener(onClickReinforce);
-			btnClose.addActionListener(onClickClose);
 
 			//Tooltip for local troop. Need to do it here since this guy is just a regular icon.
 			//The other tooltips are handled by the grid lists
@@ -85,11 +85,6 @@
 			for each (var troop: TroopStub in city.troops.each()) {
 				addTroop(troop);
 			}
-		}
-
-		public function onClickClose(event: AWEvent):void
-		{
-			getFrame().dispose();
 		}
 
 		public function onClickAttack(event: AWEvent):void
@@ -189,7 +184,7 @@
 				city.troops.removeEventListener(BinaryListEvent.UPDATED, onTroopUpdated);
 			});
 
-			frame.setClosable(false);
+			frame.setClosable(true);
 			frame.setDragable(false);
 
 			Global.gameContainer.showFrame(frame);
@@ -200,23 +195,29 @@
 		private function createUI() : void {
 			title = "Unit Movement";
 
-			var layout: EmptyLayout = new EmptyLayout();
-			setLayout(layout);
-			setSize(new IntDimension(Constants.screenW, Constants.screenH));
+			setLayout(new EmptyLayout());
 			setBorder(new EmptyBorder());
+
+			setSize(new IntDimension(Math.min(976, Constants.screenW), Math.min(640, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
+
+			pnlContainer = new JPanel(new EmptyLayout());			
+			pnlContainer.setSize(new IntDimension(976, 640));
+			pnlContainer.scaleX = getSize().width / 976;
+			pnlContainer.scaleY = getSize().height / 640;
+			append(pnlContainer);
 
 			lblCityName = new JLabel(city.name, null, AsWingConstants.LEFT);
 			lblCityName.setLocation(new IntPoint(20, 450));
 			lblCityName.setSize(new IntDimension(140, 40));
 			GameLookAndFeel.changeClass(lblCityName, "darkHeader");
-			append(lblCityName);
+			pnlContainer.append(lblCityName);
 
 			localTroopIcon = new AssetPane(TroopFactory.getStateSprite(city.troops.getDefaultTroop().state, Formula.movementIconTroopSize(city.troops.getDefaultTroop())));
 			localTroopIcon.buttonMode = true;
 			localTroopIcon.setBorder(null);
 			localTroopIcon.pack();
 			localTroopIcon.setLocation(new IntPoint(150, 420));
-			append(localTroopIcon);
+			pnlContainer.append(localTroopIcon);
 
 			myStubs = new TroopStubGridList(city);
 			myStubs.setBorder(null);
@@ -227,7 +228,7 @@
 			var scrollMyStubs: JScrollPane = new JScrollPane(myStubs);
 			scrollMyStubs.setLocation(new IntPoint(500, 480));
 			scrollMyStubs.setSize(new IntDimension(350, 150));
-			append(scrollMyStubs);
+			pnlContainer.append(scrollMyStubs);
 
 			stationedHere = new TroopStubGridList(city);
 			stationedHere.setBorder(null);
@@ -239,7 +240,7 @@
 			var scrollStationedHere: JScrollPane = new JScrollPane(stationedHere);
 			scrollStationedHere.setLocation(new IntPoint(5, 480));
 			scrollStationedHere.setSize(new IntDimension(350, 150));
-			append(scrollStationedHere);
+			pnlContainer.append(scrollStationedHere);
 
 			stationedAway = new TroopStubGridList(city);
 			stationedAway.setBorder(null);
@@ -250,7 +251,7 @@
 			var scrollStationedAway: JScrollPane = new JScrollPane(stationedAway);
 			scrollStationedAway.setLocation(new IntPoint(570, 215));
 			scrollStationedAway.setSize(new IntDimension(350, 150));
-			append(scrollStationedAway);
+			pnlContainer.append(scrollStationedAway);
 
 			gridNotifications = new NotificationGridList(this.city);
 			gridNotifications.setBorder(null);
@@ -261,22 +262,17 @@
 			var scrollNotifications: JScrollPane = new JScrollPane(gridNotifications);
 			scrollNotifications.setLocation(new IntPoint(120, 6));
 			scrollNotifications.setSize(new IntDimension(510, 85));
-			append(scrollNotifications);
+			pnlContainer.append(scrollNotifications);
 
 			btnAttack = new JButton("Send Attack");
 			btnAttack.setLocation(new IntPoint(10, 0));
 			btnAttack.setSize(new IntDimension(100, 25));
-			append(btnAttack);
+			pnlContainer.append(btnAttack);
 
 			btnDefend = new JButton("Send Defense");
 			btnDefend.setLocation(new IntPoint(10, 30));
 			btnDefend.setSize(new IntDimension(100, 25));
-			append(btnDefend);
-
-			btnClose = new JButton("Close");
-			btnClose.setSize(new IntDimension(70, 25));
-			btnClose.setLocation(new IntPoint(getWidth() - btnClose.getWidth() - 5, 0));
-			append(btnClose);
+			pnlContainer.append(btnDefend);
 		}
 	}
 }

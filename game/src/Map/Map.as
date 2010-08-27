@@ -32,7 +32,7 @@
 		public var camera: Camera;
 		private var lastParseRegionLoc: Point = new Point();
 		private var lastQueryTime: int = 0;
-		private var pendingRegions: Array;
+		public var pendingRegions: Array;
 
 		public var selectViewable: Object;
 		public var selectedObject: GameObject;
@@ -170,10 +170,12 @@
 			return newRegion;
 		}
 
-		public function parseRegions():void
+		public function parseRegions(force: Boolean = false):void
 		{
-			if (Constants.debug >= 4)
-			trace("on move: " + camera.x + "," + camera.y);
+			if (Constants.debug >= 3) trace("On move: " + camera.x + "," + camera.y);
+
+			// Don't parse every single pixel we move
+			if (!force && !Math.abs(lastParseRegionLoc.x - camera.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.y) > 10) return;
 
 			//calculate which regions we need to render
 			var requiredRegions: Array = new Array();
@@ -231,36 +233,25 @@
 					regionSpace.removeChild(region);
 					regions.removeByIndex(i);
 
-					if (Constants.debug >= 4)
-					trace("Discarded: " + i);
+					if (Constants.debug >= 3)  trace("Discarded: " + i);
 				}
 			}
+
+			if (Constants.debug >= 3) trace("Required before pending removal:" + requiredRegions);
 
 			//remove any pending regions from the required regions list we need
 			//and add any regions we are going to be asking the server to the pending regions list
 			for (i = requiredRegions.length - 1; i >= 0; i--)
 			{
-				if (pendingRegions.indexOf(requiredRegions[i]) > -1)
-				{
-					requiredRegions.splice(i, 1);
-				}
-				else
-				{
-					pendingRegions.push(requiredRegions[i]);
-				}
+				if (pendingRegions.indexOf(requiredRegions[i]) > -1) requiredRegions.splice(i, 1);
+				else pendingRegions.push(requiredRegions[i]);
 			}
 
 			//regions that we still need, query server
 			if (requiredRegions.length > 0 || outdatedRegions.length > 0)
 			{
-				if (Constants.debug >= 3)
-				trace("Required:" + requiredRegions);
-
-				// Don't parse every single pixel we move
-				if (Math.abs(lastParseRegionLoc.x - camera.x) > 10 || Math.abs(lastParseRegionLoc.y - camera.y) > 10) {
-					lastParseRegionLoc = new Point(camera.x, camera.y);
-					Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
-				}
+				if (Constants.debug >= 3) trace("Required:" + requiredRegions);
+				Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
 			}
 
 			region = null;
@@ -454,37 +445,39 @@
 			camera.Move(dx, dy);
 		}
 
-		public function onStageResized(e: Event) : void {
-			onMove();
-		}
-
 		public function eventAddedToStage(event: Event):void
 		{
 			addEventListener(MouseEvent.CLICK, eventMouseClick);
 			disableMouse(false);
-
-			stage.addEventListener(Event.RESIZE, onStageResized);
 		}
 
 		public function eventRemovedFromStage(event: Event):void
 		{
-			stage.removeEventListener(Event.RESIZE, onStageResized);
 			removeEventListener(MouseEvent.CLICK, eventMouseClick);
 			disableMouse(true);
 		}
 
-		public function onMove(event: Event = null):void
-		{
+		private function move(forceParse: Boolean = false) : void {
 			var pt: Point = MapUtil.getMapCoord(camera.x + Constants.screenW / 2, camera.y + Constants.screenH / 2);
 			Global.gameContainer.minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
 
 			if (!disabledMapQueries) {
-				parseRegions();
+				parseRegions(forceParse);
 				objContainer.moveWithCamera(camera.x, camera.y);
 			}
 
 			Global.gameContainer.miniMap.parseRegions();
 			Global.gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
+		}
+
+		public function onResize(event: Event = null): void {
+			Global.gameContainer.miniMap.redraw();
+			move(true);
+		}
+
+		public function onMove(event: Event = null) : void
+		{
+			move();
 		}
 	}
 }

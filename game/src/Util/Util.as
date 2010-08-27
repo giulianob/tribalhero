@@ -198,6 +198,16 @@ package src.Util {
 				obj.filters = [];
 			}
 		}
+		
+		public static function implode(glue: String, arr: Array) : String {
+			var s: String = new String();
+			for (var i: int = 0; i < arr.length; i++) {
+				s += arr[i];
+				if ( i != arr.length - 1 ) s += glue;
+			}
+			
+			return s;
+		}
 
 	}
 

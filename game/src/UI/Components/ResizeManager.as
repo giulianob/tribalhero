@@ -3,6 +3,8 @@ package src.UI.Components
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import org.aswing.geom.IntDimension;
@@ -13,9 +15,10 @@ package src.UI.Components
 	 * ...
 	 * @author Giuliano Barberi
 	 */
-	public class ResizeManager
+	public class ResizeManager implements IEventDispatcher
 	{
-
+		private var dispatcher: EventDispatcher;
+		
 		private var objects: Array = new Array();
 
 		private var stage: Stage;
@@ -31,6 +34,7 @@ package src.UI.Components
 
 		public function ResizeManager(stage: Stage)
 		{
+			this.dispatcher = new EventDispatcher(this);
 			this.stage = stage;
 
 			resizeDelay.addEventListener(TimerEvent.TIMER, onResize);
@@ -89,6 +93,8 @@ package src.UI.Components
 			}
 
 			lastSize = new IntDimension(stage.stageWidth, stage.stageHeight);
+
+			dispatchEvent(new Event(Event.RESIZE));
 		}
 
 		public function addObject(obj: DisplayObject, anchors: int) : void {
@@ -112,6 +118,25 @@ package src.UI.Components
 			onResize();
 		}
 
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void{
+			dispatcher.addEventListener(type, listener, useCapture, priority);
+		}
+
+		public function dispatchEvent(evt: Event):Boolean{
+			return dispatcher.dispatchEvent(evt);
+		}
+
+		public function hasEventListener(type:String):Boolean{
+			return dispatcher.hasEventListener(type);
+		}
+
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void{
+			dispatcher.removeEventListener(type, listener, useCapture);
+		}
+
+		public function willTrigger(type:String):Boolean {
+			return dispatcher.willTrigger(type);
+		}
 	}
 
 }

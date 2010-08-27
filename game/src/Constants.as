@@ -85,22 +85,22 @@ package src
 		public static const miniMapScreenW: int = 288;
 		public static const miniMapScreenH: int = 138;
 
-		public static const miniMapScreenX: Function = function() : int {
+		public static const miniMapScreenX: Function = function(width: int) : int {
 			return 6;
 		}
-		public static const miniMapScreenY: Function = function() : int {
-			return screenH - miniMapScreenH - 6;
+		public static const miniMapScreenY: Function = function(height: int) : int {
+			return screenH - height - 6;
 		}
 
 		// Expanded mini map constants
 		public static const miniMapLargeScreenW: int = 800;
 		public static const miniMapLargeScreenH: int = 550;
 
-		public static const miniMapLargeScreenX: Function = function() : int {
-			return (screenW / 2) - (miniMapLargeScreenW / 2);
+		public static const miniMapLargeScreenX: Function = function(width: int) : int {
+			return (screenW / 2) - (width / 2);
 		}
-		public static const miniMapLargeScreenY: Function = function() : int {
-			return (screenH / 2) - (miniMapLargeScreenH / 2) + 30;
+		public static const miniMapLargeScreenY: Function = function(height: int) : int {
+			return (screenH / 2) - (height / 2) + 30;
 		}
 
 		/* GAME DATA */

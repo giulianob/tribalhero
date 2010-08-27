@@ -74,7 +74,7 @@
 		private var barBg: DisplayObject;
 
 		public function GameContainer()
-		{				
+		{
 			// Create and position the city list
 			lstCities = new JComboBox();
 			lstCities.setModel(new VectorListModel());
@@ -145,7 +145,7 @@
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event = null): void {
 				if (!resizeManager) {
 					// Set up auto resizer
-					resizeManager = new ResizeManager(stage);					
+					resizeManager = new ResizeManager(stage);
 				}
 			});
 
@@ -226,19 +226,24 @@
 
 		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
 			if (zoom) {
-				miniMap.resize(Constants.miniMapLargeScreenW, Constants.miniMapLargeScreenH);
-				miniMap.x = Constants.miniMapLargeScreenX();
-				miniMap.y = Constants.miniMapLargeScreenY();
-				minimapZoomTooltip.setText("Map view");
+				screenMessage.setVisible(false);
+				// We leave a bit of border incase the screen is smaller than the map size
+				var width: int = Math.min(Constants.screenW - 60, Constants.miniMapLargeScreenW);
+				var height: int = Math.min(Constants.screenH - 75, Constants.miniMapLargeScreenH);
+				miniMap.resize(width, height);
+				miniMap.x = Constants.miniMapLargeScreenX(width);
+				miniMap.y = Constants.miniMapLargeScreenY(height);
+				minimapZoomTooltip.setText("Minimize map");
 				miniMap.setScreenRectHidden(true);
 				setSidebar(null);
 				map.disableMapQueries(true);
 				map.scrollRate = 4;
 			}
 			else {
+				screenMessage.setVisible(true);
 				miniMap.resize(Constants.miniMapScreenW, Constants.miniMapScreenH);
-				miniMap.x = Constants.miniMapScreenX();
-				miniMap.y = Constants.miniMapScreenY();
+				miniMap.x = Constants.miniMapScreenX(Constants.miniMapScreenW);
+				miniMap.y = Constants.miniMapScreenY(Constants.miniMapScreenH);
 				minimapZoomTooltip.setText("World view");
 				miniMap.setScreenRectHidden(false);
 				map.disableMapQueries(false);
@@ -277,12 +282,10 @@
 
 			this.mapOverlay = new MovieClip();
 			this.mapOverlay.graphics.beginFill(0xCCFF00);
-			this.mapOverlay.graphics.drawRect(0, 0, mapHolder.width, mapHolder.height);
+			this.mapOverlay.graphics.drawRect(0, 0, Constants.screenW, Constants.screenH);
 			this.mapOverlay.visible = false;
 			this.mapOverlay.mouseEnabled = false;
 			this.mapOverlay.name = "Overlay";
-			this.mapOverlay.x = mapHolder.x;
-			this.mapOverlay.y = mapHolder.y;
 			addChild(this.mapOverlay);
 
 			for each (var city: City in map.cities.each()) {
@@ -314,7 +317,10 @@
 			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
-			
+
+			resizeManager.addEventListener(Event.RESIZE, map.onResize);
+			resizeManager.addEventListener(Event.RESIZE, message.onResize);
+
 			resizeManager.forceMove();
 
 			//Set minimap position and initial state
@@ -369,13 +375,15 @@
 			setSidebar(null);
 
 			if (map) {
+				resizeManager.removeEventListener(Event.RESIZE, map.onResize);
+				resizeManager.removeEventListener(Event.RESIZE, message.onResize);
+				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
+
 				map.dispose();
 				mapHolder.removeChild(map);
 				removeChild(mapOverlay);
 				removeChild(miniMap);
 				removeChild(minimapTools);
-
-				miniMap.removeEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 
 				map = null;
 				miniMap = null;

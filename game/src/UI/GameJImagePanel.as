@@ -27,7 +27,7 @@
 
 		public function showSelf(owner: * = null, modal: Boolean = true, onClose: Function = null, onDispose: Function = null) : JFrame {
 			frame = new GameJFrame(owner, title, modal, onDispose);
-
+			
 			frame.setBackgroundDecorator(new GameJImagePanelBackground(imageBackground));
 
 			frame.setContentPane(this);

@@ -24,6 +24,15 @@ namespace GraphGenerator
 
         static List<List<string>> ranks = new List<List<string>>();
 
+        const string template = @"digraph g {	
+    graph [fontsize=32 labelloc=""t"" label=""TribalHero Tree"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
+    node [shape=none, fontsize=12];			
+    edge [fontsize=12];
+
+    %content%
+
+}";
+
         enum Result
         {
             OK,
@@ -43,9 +52,15 @@ namespace GraphGenerator
             ProcessStructure(StructureFactory.GetBaseStats(MAIN_BUILDING, 1), false);
 
             using (StreamWriter output = new StreamWriter(File.Create("output.txt"))) {
-                output.Write(nodeConnections.ToString());
-                WriteDefinitions(output);                
-                WriteRankings(output);
+                using (StringWriter b = new StringWriter(new StringBuilder())) {
+                    WriteDefinitions(b);
+                    b.Write(nodeConnections.ToString());
+                    WriteRankings(b);
+
+                    string outStr = template.Replace("%content%", b.ToString());
+
+                    output.Write(outStr);
+                }
             }
 
 
@@ -73,14 +88,15 @@ namespace GraphGenerator
             }
         }
 
-        private static void WriteDefinitions(StreamWriter output) {
+        private static void WriteDefinitions(TextWriter output) {
             foreach (var kvp in nodeDefintions)
             {
                 output.WriteLine("{0} {1}", kvp.Key, kvp.Value);
             }            
         }
 
-        private static void WriteRankings(StreamWriter output) {
+        private static void WriteRankings(TextWriter output)
+        {
             foreach (List<String> ranking in ranks) {
                 output.Write("{ rank=\"same\"; ");
                 foreach (string str in ranking)
@@ -106,6 +122,9 @@ namespace GraphGenerator
 
             bool hadConnection = false;
 
+            if (structureBaseStats.Lvl == 1)
+                CreateDefinition(structureBaseStats);
+
             // First pass
             foreach (ActionRequirement action in record.list)
             {
@@ -120,7 +139,7 @@ namespace GraphGenerator
                             if (action.type == ActionType.STRUCTURE_BUILD)
                                 WriteNode(structureBaseStats, building);
                             else if (action.type == ActionType.STRUCTURE_CHANGE)
-                                WriteNode(structureBaseStats, building, "dashed");
+                                WriteNode(structureBaseStats, building, "dashed", "Converts To");
 
                             hadConnection = true;
                         }
@@ -162,8 +181,7 @@ namespace GraphGenerator
                                                        {
                                                            GetKey(from)
                                                        };
-
-                            CreateDefinition(from);
+                            
                             for (int i = from.Lvl; i < maxLvl; i++)
                             {
                                 StructureBaseStats to = StructureFactory.GetBaseStats(from.Type, (byte)(i + 1));
@@ -220,11 +238,11 @@ namespace GraphGenerator
             nodeConnections.WriteLine("{0} -> {1};", GetKey(from), GetKey(to));
         }
 
-        private static void WriteNode(StructureBaseStats from, StructureBaseStats to, string style)
+        private static void WriteNode(StructureBaseStats from, StructureBaseStats to, string style, string label)
         {
             // Causes graphviz to freak out and draw a lot of edge intersections
             //nodeConnections.WriteLine("{0} -> {1} [ label = \"{2}\" ];", GetKey(from), GetKey(to), label);
-            nodeConnections.WriteLine("{0} -> {1} [style={2}];", GetKey(from), GetKey(to), style);
+            nodeConnections.WriteLine("{0} -> {1} [style={2} label=\"{3}\"];", GetKey(from), GetKey(to), style, label);
         }
 
         private static void WriteNode(StructureBaseStats from, BaseUnitStats to)

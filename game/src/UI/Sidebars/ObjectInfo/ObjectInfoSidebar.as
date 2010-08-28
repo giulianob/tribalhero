@@ -16,6 +16,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.UI.*;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
+	import src.UI.Components.StarRating;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
 	import src.Util.BinaryList.*;
 	import src.Util.Util;
@@ -116,9 +117,9 @@ package src.UI.Sidebars.ObjectInfo {
 				// Only show stats if obj is attackable
 				if (!ObjectFactory.isType("Unattackable", structPrototype.type)) {
 					addStatRow("HP", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
-					addStatRow("Attack", structPrototype.defense.toString());
-					addStatRow("Range", structPrototype.range.toString());
-					addStatRow("Stealth", structPrototype.stealth.toString());
+					addStatStarRow("Defense", structPrototype.defense, Constants.structureStatRanges.defense.min, Constants.structureStatRanges.defense.max);
+					addStatStarRow("Range", structPrototype.range, Constants.structureStatRanges.range.min, Constants.structureStatRanges.range.max);
+					addStatStarRow("Stealth", structPrototype.stealth, Constants.structureStatRanges.stealth.min, Constants.structureStatRanges.stealth.max);
 				}
 
 				if (structPrototype.maxlabor > 0) {
@@ -209,6 +210,16 @@ package src.UI.Sidebars.ObjectInfo {
 
 			t.addEventListener(TimerEvent.TIMER, onUpdateTimer);
 			t.start();
+		}
+
+		private function addStatStarRow(title: String, value: int, min: int, max: int) : void {
+			var rowTitle: JLabel = new JLabel(title);
+			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
+			rowTitle.setName("title");
+
+			var rowValue: StarRating = new StarRating(min, max, value, 5);
+
+			pnlStats.addRow(rowTitle, rowValue);
 		}
 
 		private function addStatRow(title: String, value: String, icon: Icon = null) : JLabel {

@@ -65,19 +65,16 @@
 
 		public function getMode(): int
 		{
-			if (rdAssault.isSelected())
-			return 1;
-			else if (rdRaid.isSelected())
-			return 0;
-			else if (rdSlaughter.isSelected())
-			return 2;
-			else
-			return -1;
+			if (rdAssault.isSelected()) return 1;
+			else if (rdRaid.isSelected()) return 0;
+			else if (rdSlaughter.isSelected()) return 2;
+			else return -1;
 		}
 
 		public function getTroop(): TroopStub
 		{
 			var newTroop: TroopStub = new TroopStub();
+			newTroop.cityId = city.id;
 
 			for (var i: int = 0; i < attackTilelists.length; i++)
 			{
@@ -129,10 +126,10 @@
 			rdSlaughter.setText("Slaughter");
 			new SimpleTooltip(rdSlaughter, "Fight until death");
 
-			pnlLocal = new JTabbedPane();			
+			pnlLocal = new JTabbedPane();
 			pnlLocal.setSize(new IntDimension(389, 35));
 
-			pnlAttack = new JTabbedPane();			
+			pnlAttack = new JTabbedPane();
 			pnlAttack.setSize(new IntDimension(389, 35));
 
 			panel9 = new JPanel();
@@ -147,12 +144,12 @@
 			btnOk.setSize(new IntDimension(22, 22));
 			btnOk.setText("Ok");
 
-			//component layoution			
+			//component layoution
 			append(panel2);
 			append(new JLabel("Hint: Drag units to assign to the different troops", null, AsWingConstants.LEFT));
 			append(pnlLocal);
 			append(pnlAttack);
-			append(panel9);			
+			append(panel9);
 
 			panel2.append(lblAttackStrength);
 
@@ -162,7 +159,7 @@
 			radioGroup.append(rdSlaughter);
 
 			panel2.append(rdRaid);
-			panel2.append(rdAssault);			
+			panel2.append(rdAssault);
 			panel2.append(rdSlaughter);
 
 			panel9.append(btnOk);

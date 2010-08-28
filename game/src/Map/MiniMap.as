@@ -3,6 +3,7 @@
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import mx.messaging.ConsumerMessageDispatcher;
 	import org.aswing.ASColor;
 	import org.aswing.graphics.Graphics2D;
 	import org.aswing.graphics.SolidBrush;
@@ -70,12 +71,14 @@
 
 		public function redraw() : void {
 			// Redraw screen rectangle
-			var tilesW: int = Constants.screenW / Constants.tileW;
-			var tilesH: int = Constants.screenH / Constants.tileH;
+			var tilesW: Number = Constants.screenW / Constants.tileW + 0.5;
+			var tilesH: Number = Constants.screenH / Constants.tileH + 0.5;
 
 			screenRect.graphics.clear();
 			screenRect.graphics.lineStyle(1, 0xFFFFFF);
 			screenRect.graphics.drawRect(0, 0, tilesW * Constants.miniMapTileW, tilesH * Constants.miniMapTileH);
+			
+			resize(this.miniMapWidth, this.miniMapHeight);
 		}
 
 		private function onNavigate(e: MouseEvent) : void {
@@ -107,7 +110,7 @@
 			this.miniMapWidth = width;
 			this.miniMapHeight = height;
 
-			mapHolder.x = (width / 2) - (screenRect.width/2);
+			mapHolder.x = (width / 2) - (screenRect.width / 2);
 			mapHolder.y = (height / 2) - (screenRect.height / 2);
 
 			bg.graphics.clear();

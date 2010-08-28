@@ -1,6 +1,5 @@
 ﻿package src.UI.LookAndFeel
 {
-	import flash.text.Font;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.geom.*;
@@ -48,8 +47,8 @@
 		}
 
 		override protected function initComponentDefaults(table:UIDefaults):void{
-			super.initComponentDefaults(table);		
-			
+			super.initComponentDefaults(table);
+
 			var comDefaults:Array = [
 
 			/* DEFAULT COMPONENTS */
@@ -62,6 +61,11 @@
 
 			"Class.darkHeader", [
 			"Label.font", new ASFontUIResource("Arial", 13, true),
+			"Label.foreground", new ASColorUIResource(0x000000)
+			],
+
+			"Class.darkLargeText", [
+			"Label.font", new ASFontUIResource("Arial", 13, false),
 			"Label.foreground", new ASColorUIResource(0x000000)
 			],
 
@@ -80,13 +84,13 @@
 			"Textfield.font", new ASFontUIResource("Arial", 12, true),
 			"Textfield.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, true),
-			"Label.foreground", new ASColorUIResource(0x000000)			
+			"Label.foreground", new ASColorUIResource(0x000000)
 			],
 			"Class.Message.read", [
 			"Textfield.font", new ASFontUIResource("Arial", 12, false),
 			"Textfield.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, false),
-			"Label.foreground", new ASColorUIResource(0x000000)			
+			"Label.foreground", new ASColorUIResource(0x000000)
 			],
 
 			"Class.Label.small", [

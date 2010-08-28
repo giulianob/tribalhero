@@ -14,8 +14,9 @@
 		public static const STATIONED: int = 2;
 		public static const BATTLE_STATIONED: int = 3;
 		public static const MOVING: int = 4;
+		public static const RETURNING_HOME: int = 5;
 
-		public static const STATE_NAMES: Array = ["IDLE", "BATTLE", "STATIONED", "BATTLE_STATIONED", "MOVING"];
+		public static const STATE_NAMES: Array = ["IDLE", "BATTLE", "STATIONED", "BATTLE_STATIONED", "MOVING", "RETURNING_HOME"];
 
 		public var id: int;
 		public var state: int = 0;
@@ -85,13 +86,13 @@
 			return total;
 		}
 
-		public function getUpkeep(): int
+		public function getUpkeep(forceUsingCityTemplate: Boolean = false): int
 		{
 			var total: int = 0;
 			var useTemplate: * ;
 			
 			// If this is local troop, then use city's template, otherwise use troop stub template
-			if (id == 1) {
+			if (id == 1 || forceUsingCityTemplate) {
 				var city: City = Global.map.cities.get(cityId);
 				useTemplate = city.template;
 			} else {		
@@ -101,7 +102,7 @@
 			for each (var formation: Formation in each())
 			{
 				// InBattle formation always uses the troop's template
-				total += formation.getUpkeep(formation.type == Formation.InBattle ? template : useTemplate);
+				total += formation.getUpkeep(formation.type == Formation.InBattle && !forceUsingCityTemplate ? template : useTemplate);
 			}
 
 			return total;

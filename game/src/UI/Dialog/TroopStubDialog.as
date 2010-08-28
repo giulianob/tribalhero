@@ -3,6 +3,7 @@ package src.UI.Dialog {
 	import org.aswing.AsWingConstants;
 	import org.aswing.BorderLayout;
 	import org.aswing.event.AWEvent;
+	import org.aswing.FlowLayout;
 	import org.aswing.JButton;
 	import org.aswing.JFrame;
 	import org.aswing.JLabel;
@@ -86,6 +87,7 @@ package src.UI.Dialog {
 					buttons.push(btnLocate);
 				break;
 				case TroopStub.MOVING:
+				case TroopStub.RETURNING_HOME:
 					buttons.push(btnLocate);
 				break;
 				case TroopStub.STATIONED:
@@ -175,12 +177,17 @@ package src.UI.Dialog {
 
 			pnlButtons = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			pnlButtons.setConstraints("East");
-
+		
 			lblStatus = new JLabel(troop.getStateName());
 			lblStatus.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblStatus, "darkHeader");
+			
+			var pnlStatus: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
+			pnlStatus.append(new JLabel("This troop is currently ", null, AsWingConstants.LEFT));
+			GameLookAndFeel.changeClass(pnlStatus.getComponent(0), "darkLargeText");
+			pnlStatus.append(lblStatus);
 
-			pnlHeaderWest.append(lblStatus);
+			pnlHeaderWest.append(pnlStatus);
 
 			pnlHeader.append(pnlHeaderWest);
 			pnlHeader.append(pnlButtons);

@@ -125,8 +125,8 @@
 			if (troop.getIndividualUnitCount() == 0)
 			{
 				return;
-			}
-
+			}			
+			
 			var cursor: GroundAttackCursor = new GroundAttackCursor();
 
 			cursor.init(troop, dialog.getMode(), city.id);

@@ -38,6 +38,7 @@
 			switch (troop.state)
 			{
 				case TroopStub.MOVING:
+				case TroopStub.RETURNING_HOME:
 				case TroopStub.BATTLE:
 				case TroopStub.BATTLE_STATIONED:
 				case TroopStub.STATIONED:

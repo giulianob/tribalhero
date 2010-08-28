@@ -20,13 +20,15 @@ namespace Game.Logic.Actions
         private int distanceRemaining;
         private uint x, nextX;
         private uint y, nextY;
+        private Boolean isReturningHome;
 
-        public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y)
+        public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.x = x;
             this.y = y;
+            this.isReturningHome = isReturningHome;
         }
 
         public TroopMoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
@@ -40,6 +42,7 @@ namespace Game.Logic.Actions
             nextX = uint.Parse(properties["next_x"]);
             nextY = uint.Parse(properties["next_y"]);
             distanceRemaining = int.Parse(properties["distance_remaining"]);
+            isReturningHome = Boolean.Parse(properties["returning_home"]);
         }
 
         public override Error Validate(string[] parms)
@@ -113,7 +116,7 @@ namespace Game.Logic.Actions
             beginTime = DateTime.UtcNow;
 
             troopObj.Stub.BeginUpdate();
-            troopObj.Stub.State = TroopState.MOVING;
+            troopObj.Stub.State = !isReturningHome ? TroopState.MOVING : TroopState.RETURNING_HOME;
 
             if (!CalculateNext(troopObj))
             {
@@ -195,7 +198,8 @@ namespace Game.Logic.Actions
                                                                 new XMLKVPair("city_id", cityId), new XMLKVPair("troop_id", troopObjectId),
                                                                 new XMLKVPair("x", x), new XMLKVPair("y", y),
                                                                 new XMLKVPair("next_x", nextX), new XMLKVPair("next_y", nextY),
-                                                                new XMLKVPair("distance_remaining", distanceRemaining)
+                                                                new XMLKVPair("distance_remaining", distanceRemaining),
+                                                                new XMLKVPair("returning_home", isReturningHome)
                                                             });
             }
         }

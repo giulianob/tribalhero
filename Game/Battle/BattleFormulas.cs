@@ -125,9 +125,9 @@ namespace Game.Battle
         {
             int totalCarry = attacker.BaseStats.Carry * attacker.Count;
             int count = Math.Max(1, attacker.BaseStats.Carry * attacker.Count * Config.battle_loot_per_round / 100);
-            Resource empty = new Resource(totalCarry, totalCarry, totalCarry, totalCarry, 0);
-            empty.Subtract(((AttackCombatUnit)attacker).Loot);
-            return new Resource(Math.Min(count, empty.Crop), Math.Min(count, empty.Gold / 2), Math.Min(count, empty.Iron), Math.Min(count, empty.Wood), 0);
+            Resource spaceLeft = new Resource(totalCarry, totalCarry, totalCarry, totalCarry, 0);
+            spaceLeft.Subtract(((AttackCombatUnit)attacker).Loot);
+            return new Resource(Math.Min(count, spaceLeft.Crop), Math.Min(count, spaceLeft.Gold / 2), Math.Min(count, spaceLeft.Iron), Math.Min(count, spaceLeft.Wood), 0);
         }
 
         internal static ushort GetStamina(City city)

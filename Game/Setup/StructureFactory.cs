@@ -126,7 +126,7 @@ namespace Game.Setup {
                 }
 
                 byte newLabor = oldStats.Labor;
-                if (newLabor > baseStats.MaxLabor) {
+                if (baseStats.MaxLabor > 0 && newLabor > baseStats.MaxLabor) {
                     newLabor = baseStats.MaxLabor;
                 }
 

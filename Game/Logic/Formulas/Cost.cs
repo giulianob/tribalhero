@@ -118,7 +118,7 @@ namespace Game.Logic
 
         public static Resource HiddenResource(City city)
         {
-            int maxbonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SELF_ALL).Max(x => (int)x.value[0]);
+            int maxbonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SELF_ALL).DefaultIfEmpty(new Effect() { value = new object[] { 0 } }).Max(x => (int)x.value[0]);
             Resource resource = new Resource();
             foreach (Structure structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
             {
@@ -126,7 +126,6 @@ namespace Game.Logic
             }
             return resource * maxbonus / 100;
         }
-
 
         internal static Resource GetActionCancelResource(DateTime beginTime, Resource cost) {
             if (DateTime.UtcNow.Subtract(beginTime).Seconds <= Config.actions_free_cancel_interval_in_sec) {

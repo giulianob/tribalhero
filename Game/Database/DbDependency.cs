@@ -1,27 +1,15 @@
 namespace Game.Database {
     public class DbDependency {
-        private string propertyName;
+        public string Property { get; private set; }
 
-        public string Property {
-            get { return propertyName; }
-        }
+        public bool AutoSave { get; private set; }
 
-        private bool autoSave = false;
-
-        public bool AutoSave {
-            get { return autoSave; }
-        }
-
-        private bool autoDelete = false;
-
-        public bool AutoDelete {
-            get { return autoSave; }
-        }
+        public bool AutoDelete { get; private set; }
 
         public DbDependency(string propertyName, bool autoSave, bool autoDelete) {
-            this.propertyName = propertyName;
-            this.autoSave = autoSave;
-            this.autoDelete = autoDelete;
+            Property = propertyName;
+            AutoSave = autoSave;
+            AutoDelete = autoDelete;
         }
     }
 }

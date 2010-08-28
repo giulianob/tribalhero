@@ -41,7 +41,7 @@ namespace Game.Logic.Actions {
             stub.City.Worker.Notifications.Add(stub.TroopObject, this);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X,
-                                                      stub.City.MainBuilding.Y);
+                                                      stub.City.MainBuilding.Y, true);
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
             return Error.OK;

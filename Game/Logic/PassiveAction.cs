@@ -34,6 +34,8 @@ namespace Game.Logic {
             set { isChain = value; }
         }
 
+        public bool isCancellable { get; protected set; }
+
         public override DbColumn[] DbColumns {
             get {
                 return new[] {

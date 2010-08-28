@@ -131,6 +131,7 @@
     <Compile Include="Data\Resource.cs" />
     <Compile Include="Data\Structure.cs" />
     <Compile Include="Data\Technology.cs" />
+    <Compile Include="Data\TechnologyManager.cs" />
     <Compile Include="Data\Troop\Formation.cs" />
     <Compile Include="Data\Troop\TroopManager.cs" />
     <Compile Include="Data\Troop\UnitTemplate.cs" />

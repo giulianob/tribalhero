@@ -16,12 +16,14 @@ namespace Game.Logic.Actions {
         private uint forestId;
 
         public ForestCampHarvestAction(uint cityId, uint forestId) {
+            isCancellable = true;
             this.forestId = forestId;
             this.cityId = cityId;
         }
 
         public ForestCampHarvestAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, isVisible) {
+            isCancellable = true;
             forestId = uint.Parse(properties["forest_id"]);
             cityId = uint.Parse(properties["city_id"]);
         }

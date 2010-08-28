@@ -55,7 +55,7 @@ namespace Game.Logic.Actions {
             city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetCity.MainBuilding.X,
-                                                      targetCity.MainBuilding.Y);
+                                                      targetCity.MainBuilding.Y, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 

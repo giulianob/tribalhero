@@ -209,6 +209,7 @@ namespace Game.Comm {
             //Add state specific variables
             switch (stub.State) {
                 case TroopState.MOVING:
+                case TroopState.RETURNING_HOME:
                     packet.AddUInt32(stub.TroopObject.ObjectId);
                     packet.AddUInt32(stub.TroopObject.X);
                     packet.AddUInt32(stub.TroopObject.Y);

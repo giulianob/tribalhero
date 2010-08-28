@@ -21,6 +21,10 @@
 		public static const RESOURCE_CHUNK: int = 100;
 		public static const RESOURCE_MAX_TRADE: int = 1500;
 
+		public static function troopRadius(troop: TroopStub) : int {
+			return Math.min(Math.ceil(troop.getUpkeep(true) / 100.0), 5);
+		}
+
 		public static function trainTime(parentObj: GameObject, baseValue: int, techManager: TechnologyManager): int
 		{
 			var discount: Array = [ 0, 0, 0, 0, 0, 5, 10, 15, 20, 30, 40 ];

@@ -58,7 +58,7 @@
 			Global.map.selectObject(null);
 			Global.map.objContainer.resetObjects();
 
-			var size: int = Math.max(1, int(troop.getIndividualUnitCount() / 25));
+			var size: int = Formula.troopRadius(troop);
 
 			cursor = new GroundCircle(size);
 			cursor.alpha = 0.6;

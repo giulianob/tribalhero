@@ -37,7 +37,7 @@ namespace Game.Logic {
         }
 
         public static int BuildTime(int baseValue, int mainBuildingLvl, TechnologyManager em) {
-            int buildtime = (baseValue * (100 - TimeDiscount(mainBuildingLvl)) / 100) - em.Sum(EffectCode.BuildTimeMultiplier, EffectInheritance.SELF);
+            int buildtime = (baseValue * (100 - TimeDiscount(mainBuildingLvl)) / 100);
             return (int) (buildtime*Config.seconds_per_unit);
         }
 

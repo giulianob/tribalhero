@@ -9,7 +9,6 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Fighting;
-using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using Game.Logic;
@@ -629,6 +628,7 @@ namespace Game.Battle {
                 // This will finalize any reports already started.
                 report.WriteReport(ReportState.STAYING);
 
+                #region Battle Start
                 if (!battleStarted) {
                     RefreshBattleOrder();
 
@@ -642,7 +642,9 @@ namespace Game.Battle {
                     report.CreateBattleReport();
                     EventEnterBattle(attackers, defenders);
                 }
+                #endregion
 
+                #region Find Attacker 
                 CombatObject attacker;
 
                 if (!battleOrder.NextObject(out attacker)) {
@@ -657,6 +659,7 @@ namespace Game.Battle {
                     BattleEnded(true);
                     return false;
                 }
+                #endregion
 
                 #region Find Target
 
@@ -723,8 +726,10 @@ namespace Game.Battle {
                         city.DefensePoint += attackPoints;
 
                         // Give anyone stationed defense points as well
+                        // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
                         List<City> uniqueCities = new List<City>();
-                        foreach (CombatObject co in defenders.Where(co => co.City != city && !uniqueCities.Contains(co.City))) {
+                        foreach (CombatObject co in defenders) {
+                            if (co.City == city || uniqueCities.Contains(co.City)) continue;
                             co.City.BeginUpdate();
                             co.City.DefensePoint += attackPoints;
                             co.City.EndUpdate();
@@ -765,24 +770,21 @@ namespace Game.Battle {
 
                 #endregion
 
-                EventActionAttacked(attacker, defender, actualDmg);
-
-                attacker.ParticipatedInRound();
-
-                EventExitTurn(Attacker, Defender, (int) turn++);
+                attacker.ParticipatedInRound();                
 
                 Global.DbManager.Save(attacker);
 
+                EventActionAttacked(attacker, defender, actualDmg);
+
+                EventExitTurn(Attacker, Defender, (int)turn++);
+
+                // Send back any attacker that has no targets left
                 if (isDefenderDead && defender.CombatList == defenders) {
-                    bool done;
+                    AttackCombatUnit co;
                     do {
-                        done = true;
-                        foreach (AttackCombatUnit co in attackers.OfType<AttackCombatUnit>().Where(co => !defenders.HasInRange(co))) {
-                            RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);
-                            done = false;
-                            break;
-                        }
-                    } while (!done);
+                        co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
+                        if (co != null) RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);                        
+                    } while (co != null);
                 }
 
                 if (!BattleIsValid()) {

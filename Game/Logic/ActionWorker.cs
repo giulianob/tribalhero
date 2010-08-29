@@ -468,7 +468,11 @@ namespace Game.Logic {
 
             PassiveAction passiveAction;
             if (PassiveActions.TryGetValue(id, out passiveAction) && !passiveAction.isDone) {
-                return Error.ACTION_UNCANCELABLE;
+                if (!passiveAction.isCancellable)
+                    return Error.ACTION_UNCANCELABLE;
+
+                ThreadPool.QueueUserWorkItem(PassiveCancelCallback, passiveAction);
+                return Error.OK;
             }
 
             return Error.ACTION_NOT_FOUND;

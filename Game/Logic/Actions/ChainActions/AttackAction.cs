@@ -82,7 +82,7 @@ namespace Game.Logic.Actions {
             city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X,
-                                                      targetStructure.Y);
+                                                      targetStructure.Y, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
@@ -102,7 +102,7 @@ namespace Game.Logic.Actions {
                     //If the target is missing, walk back
                     using (new MultiObjectLock(city)) {
                         TroopStub stub = city.Troops[stubId];
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y);
+                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
                     }
@@ -148,7 +148,7 @@ namespace Game.Logic.Actions {
 
                         // Send troop back home
                         TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId,
-                                                                  city.MainBuilding.X, city.MainBuilding.Y);
+                                                                  city.MainBuilding.X, city.MainBuilding.Y, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                     } else {
                         targetCity.BeginUpdate();

@@ -335,7 +335,10 @@ namespace Game.Data {
                 if (obj == MainBuilding)
                     throw new Exception("Trying to remove main building");
 
+                obj.Technologies.BeginUpdate();
                 obj.Technologies.Clear();
+                obj.Technologies.EndUpdate();
+
                 structures.Remove(obj.ObjectId);
 
                 obj.Technologies.TechnologyAdded -= Technologies_TechnologyAdded;

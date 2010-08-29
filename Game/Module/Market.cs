@@ -102,10 +102,12 @@ namespace Game.Module {
             lock (this) {
                 using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                     int flow = outgoing - incoming;
-                    price += (flow/(quantityPerChangePerPlayer*Global.Players.Count));
-                    if (price < MinPrice) price = MinPrice;
-                    if (price > MaxPrice) price = MaxPrice;
-                    outgoing = incoming = 0;
+                    if (Global.Players.Count > 0) {
+                        price += (flow / (quantityPerChangePerPlayer * Global.Players.Count));
+                        if (price < MinPrice) price = MinPrice;
+                        if (price > MaxPrice) price = MaxPrice;
+                        outgoing = incoming = 0;
+                    }
                     time = DateTime.UtcNow.AddSeconds(UpdateIntervalInSecond * Config.seconds_per_unit);
                     Global.DbManager.Save(this);
                     Global.Scheduler.Put(this);

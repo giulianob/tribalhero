@@ -85,7 +85,7 @@ namespace Game.Logic
         public static int GetLaborRate(int laborTotal)
         {
             if (laborTotal < 140) laborTotal = 140;
-            return (int)(86400 / (-6.845 * Math.Log(laborTotal) + 55));
+            return (int)(86400 / (-6.845 * Math.Log(laborTotal) + 55))/2;  // Labor time cut in half after first tested.
         }
 
         public static ushort LaborMoveMax(Structure structure)
@@ -118,7 +118,9 @@ namespace Game.Logic
 
         public static Resource HiddenResource(City city)
         {
-            int maxbonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SELF_ALL).Max(x => (int)x.value[0]);
+            Effect def = new Effect();
+            def.value[0] = 100;
+            int maxbonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SELF_ALL).DefaultIfEmpty(def).Max(x => (int)x.value[0]);
             Resource resource = new Resource();
             foreach (Structure structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
             {

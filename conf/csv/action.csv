@@ -20,7 +20,7 @@ Type,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 20003,0,1,,,,,,,,,
 20003,1,1,,structure_Build,2106,TileCrop,,,,210601,SELF
 20003,2,1,,structure_Build,2107,TileTree,,,,210701,SELF
-20003,3,1,,structure_Build,2204,,,,,,
+20003,3,1,,structure_Build,2201,,,,,,
 20003,4,1,,structure_Build,2301,,,,,20002,SELF
 20003,5,1,,structure_Upgrade,10,,,,,,
 20003,6,1,,road_Build,,,,,,,

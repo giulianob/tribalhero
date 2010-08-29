@@ -120,7 +120,7 @@ namespace Game.Logic.Actions {
                 structure.BeginUpdate();
                 StructureFactory.GetUpgradedStructure(structure, (ushort) type, lvl);
                 structure.Technologies.Parent = structure.City.Technologies;
-                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                InitFactory.InitGameObject(InitCondition.ON_CONVERT, structure, structure.Type, structure.Lvl);
                 structure.IsBlocked = false;
                 structure.EndUpdate();
 

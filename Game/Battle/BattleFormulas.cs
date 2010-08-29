@@ -156,7 +156,7 @@ namespace Game.Battle
 
         internal static bool IsAttackMissed(byte stealth)
         {
-            return 100 - stealth > Config.Random.Next(0, 100);
+            return 100 - stealth < Config.Random.Next(0, 100);
         }
 
         internal static bool UnitStatModCheck(BaseBattleStats stats, object comparison, object value)

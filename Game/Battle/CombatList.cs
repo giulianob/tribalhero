@@ -46,17 +46,10 @@ namespace Game.Battle {
                 int score = 0;
 
                 //have to compare armor and weapon type here to give some sort of score
-                score += ((int)BattleFormulas.GetArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor) * 10);
-                score += ((int)BattleFormulas.GetArmorClassModifier(attacker.BaseStats.WeaponClass, obj.BaseStats.ArmorClass) * 20);
-                /*     if (obj.Stats.Armor == ArmorType.HEAVY && attacker.Stats.Weapon == WeaponType.HEAVY)
-                    score += 10;
-                else if (obj.Stats.ArmorType == Stats.Armor.LIGHT && attacker.Stats.WeaponType == Stats.Weapon.LIGHT)
-                    score += 10;
-                if (obj.Stats.ArmorType == Stats.Armor.STRUCTURE && attacker.Stats.WeaponType == Stats.Weapon.STRUCTURE)
-                    score += 10;*/
+                score += ((int)(BattleFormulas.GetArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor) * 10));
+                score += ((int)(BattleFormulas.GetArmorClassModifier(attacker.BaseStats.WeaponClass, obj.BaseStats.ArmorClass) * 10));
 
-                if (obj.Stats.Def < obj.Stats.Atk)
-                    score += 5;
+                score += obj.DmgDealt % 5;  // just add some randomness
 
                 if (bestTarget == null || score > bestTargetScore) {
                     bestTarget = obj;

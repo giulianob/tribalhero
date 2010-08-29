@@ -12,7 +12,10 @@ using Game.Util;
 namespace Game.Setup {
     enum InitCondition : byte {
         ON_INIT = 1,
-        ON_DOWNGRADE = 2
+        ON_DOWNGRADE = 2,
+        ON_UPGRADE = 3,
+        ON_DESTROY = 4,
+        ON_CONVERT
     }
 
     class InitRecord {

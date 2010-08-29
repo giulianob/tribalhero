@@ -27,6 +27,7 @@ namespace Game.Logic {
         PROPERTY_CREATE = 105,
         LABOR_MOVE = 106,
         STRUCTURE_USERDOWNGRADE = 107,
+        STRUCTURE_SELF_DESTROY = 108,
 
         TROOP_MOVE = 201,
         TROOP_CREATE = 202,

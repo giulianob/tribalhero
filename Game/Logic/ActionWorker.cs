@@ -459,7 +459,7 @@ namespace Game.Logic {
         public Error Cancel(ushort id) {
             ActiveAction activeAction;
             if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.isDone) {
-                if ((ActionFactory.GetActionRequirementRecord(activeAction.WorkerType).list[activeAction.WorkerIndex].option & ActionOption.UNCANCELABLE) == ActionOption.UNCANCELABLE) {
+                if ((ActionFactory.GetActionRequirementRecord(activeAction.WorkerType).list[activeAction.WorkerIndex-1].option & ActionOption.UNCANCELABLE) == ActionOption.UNCANCELABLE) {
                     return Error.ACTION_UNCANCELABLE;
                 }
                 ThreadPool.QueueUserWorkItem(ActiveCancelCallback, activeAction);

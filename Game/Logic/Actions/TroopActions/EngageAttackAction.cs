@@ -169,16 +169,21 @@ namespace Game.Logic.Actions {
         }
 
         private void SetLootedResources(BattleManager battle, TroopStub stub) {
+            if (!battle.BattleStarted) return;
+
             // Calculate bonus
             Resource resource = BattleFormulas.GetBonusResources(stub.TroopObject);
+
+            // Copy looted resources since we'll be modifying the troop's loot variable
+            Resource looted = new Resource(stub.TroopObject.Stats.Loot);
 
             // Add bonus to troop object            
             Resource returning;
             Resource actual;
             stub.TroopObject.Stats.Loot.Add(resource, stub.Carry, out actual, out returning);            
-
-            // Update battle report view with actual received bonus
-            battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, stub.TroopObject.Stats.Loot, actual);
+            
+            // Update battle report view with actual received bonus            
+            battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, looted, actual);
         }
 
         private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {

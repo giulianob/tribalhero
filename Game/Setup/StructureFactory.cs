@@ -61,6 +61,7 @@ namespace Game.Setup {
                                                                                        ushort.Parse(toks[col["Hp"]])),0);
 
                     StructureBaseStats basestats = new StructureBaseStats(toks[col["Name"]],
+                                                                          toks[col["SpriteClass"]],
                                                                           ushort.Parse(toks[col["Type"]]),
                                                                           byte.Parse(toks[col["Lvl"]]),
                                                                           byte.Parse(toks[col["Radius"]]),
@@ -88,7 +89,7 @@ namespace Game.Setup {
             return dict.TryGetValue(type*100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
         }
 
-        internal static int GetTime(ushort type, byte lvl) {
+        public static int GetTime(ushort type, byte lvl) {
             if (dict == null)
                 return -1;
             StructureBaseStats tmp;
@@ -125,7 +126,7 @@ namespace Game.Setup {
                 }
 
                 byte newLabor = oldStats.Labor;
-                if (newLabor > baseStats.MaxLabor) {
+                if (baseStats.MaxLabor > 0 && newLabor > baseStats.MaxLabor) {
                     newLabor = baseStats.MaxLabor;
                 }
 
@@ -136,18 +137,27 @@ namespace Game.Setup {
             return;
         }
 
-        internal static int GetActionWorkerType(Structure structure) {
+        public static int GetActionWorkerType(Structure structure) {
             if (dict == null)
                 return 0;
             StructureBaseStats tmp;
             return dict.TryGetValue(structure.Type*100 + structure.Lvl, out tmp) ? tmp.WorkerId : 0;
         }
 
-        internal static string GetName(Structure structure) {
+        public static string GetName(Structure structure)
+        {
             if (dict == null)
                 return null;
             StructureBaseStats tmp;
             return dict.TryGetValue(structure.Type*100 + structure.Lvl, out tmp) ? tmp.Name : null;
+        }
+
+        public static StructureBaseStats GetBaseStats(ushort type, byte lvl)
+        {
+            if (dict == null)
+                return null;
+            StructureBaseStats tmp;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }
     }
 }

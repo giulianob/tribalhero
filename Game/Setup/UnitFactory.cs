@@ -64,7 +64,7 @@ namespace Game.Setup {
                                                                                        ushort.Parse(toks[col["Hp"]])),
                                                                 ushort.Parse(toks[col["Carry"]]));
 
-                    BaseUnitStats basestats = new BaseUnitStats(toks[col["Name"]], ushort.Parse(toks[col["Type"]]),
+                    BaseUnitStats basestats = new BaseUnitStats(toks[col["Name"]], toks[col["SpriteClass"]], ushort.Parse(toks[col["Type"]]),
                                                                 byte.Parse(toks[col["Lvl"]]), resource, upgradeResource,
                                                                 stats, int.Parse(toks[col["Time"]]),
                                                                 int.Parse(toks[col["UpgrdTime"]]),

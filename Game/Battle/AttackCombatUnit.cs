@@ -173,7 +173,7 @@ namespace Game.Battle {
         }
 
         public override void ReceiveReward(int attackPoint, Resource resource) {
-            loot.Add(resource);            
+            loot.Add(resource);
 
             TroopStub.TroopObject.BeginUpdate();
             TroopStub.TroopObject.Stats.AttackPoint += attackPoint;

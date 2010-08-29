@@ -39,7 +39,7 @@ namespace Game.Setup
                 byte action_index;
                 ActionRecord record;
                 ActionRequirement actionReq;
-
+    
                 Dictionary<string, int> col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
                     col.Add(reader.Columns[i], i);
@@ -55,6 +55,7 @@ namespace Game.Setup
                         record = new ActionRecord { list = new List<ActionRequirement>() };
                         dict[index] = record;
                     }
+
                     if ((action_index = byte.Parse(toks[col["Index"]])) == 0)
                         record.max = byte.Parse(toks[col["Max"]]);
                     else

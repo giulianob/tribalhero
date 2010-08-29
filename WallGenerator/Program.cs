@@ -36,11 +36,10 @@ namespace WallGenerator
 
             output.WriteLine("[");
 
-            for (int mapCnt = 1; File.Exists(string.Format("map/wall{0}.tmx", mapCnt)); mapCnt++)
-            {
+            foreach (string file in Directory.GetFiles("map", "wall*", SearchOption.TopDirectoryOnly)) {
                 XmlReaderSettings settings = new XmlReaderSettings {ProhibitDtd = false, XmlResolver = null};
 
-                using (XmlReader str = XmlReader.Create(File.OpenRead(string.Format("map/wall{0}.tmx", mapCnt)), settings))
+                using (XmlReader str = XmlReader.Create(File.OpenRead(file), settings))
                 {
                     XPathDocument reader = new XPathDocument(str);
                     XPathNavigator nav = reader.CreateNavigator();

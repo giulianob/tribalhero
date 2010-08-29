@@ -17,7 +17,8 @@ namespace Game.Data.Troop {
         BATTLE = 1,
         STATIONED = 2,
         BATTLE_STATIONED = 3,
-        MOVING = 4
+        MOVING = 4,
+        RETURNING_HOME = 5
     }
 
     public enum TroopBattleGroup {

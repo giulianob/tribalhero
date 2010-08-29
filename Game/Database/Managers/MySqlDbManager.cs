@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -181,10 +180,8 @@ namespace Game.Database {
                         PropertyInfo propInfo = objType.GetProperty(dependency.Property);
                         IPersistable persistable = propInfo.GetValue(obj, null) as IPersistable;
                         if (persistable != null) {
-                            if (!Save(persistable))
-                                return false;
-                        } else
-                            return false;
+                            Save(persistable);
+                        }
                     }
                 }
             }
@@ -410,10 +407,8 @@ namespace Game.Database {
                         PropertyInfo propInfo = objType.GetProperty(dependency.Property);
                         IPersistable persistable = propInfo.GetValue(obj, null) as IPersistable;
                         if (persistable != null) {
-                            if (!Delete(persistable))
-                                return false;
-                        } else
-                            return false;
+                            Delete(persistable);
+                        }
                     }
                 }
             }

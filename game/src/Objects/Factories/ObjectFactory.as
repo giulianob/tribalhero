@@ -161,17 +161,23 @@
 
 			if (addShadow) {
 				var shadow: DisplayObjectContainer = new objRef() as DisplayObjectContainer;
-				shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
-				shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
-				shadow.alpha = 0.4;
-				shadow.filters = [new BlurFilter(5, 5)];
-				shadow.mouseEnabled = false;
+				makeIntoShadow(shadow);
 				obj.addChild(shadow);
 			}
 
 			obj.addChild(new objRef() as DisplayObject);
 
 			return obj;
+		}
+
+		public static function makeIntoShadow(shadow: DisplayObjectContainer) : DisplayObjectContainer {
+			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
+			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
+			shadow.alpha = 0.4;
+			shadow.filters = [new BlurFilter(5, 5)];
+			shadow.mouseEnabled = false;
+
+			return shadow;
 		}
 	}
 

@@ -40,6 +40,12 @@
 
 		public function Main()
 		{
+			addEventListener(Event.ADDED_TO_STAGE, init);
+		}
+
+		public function init(e: Event = null) : void {
+			removeEventListener(Event.ADDED_TO_STAGE, init);
+
 			//Init ASWING
 			AsWingManager.initAsStandard(stage);
 			UIManager.setLookAndFeel(new GameLookAndFeel());
@@ -57,10 +63,10 @@
 				var dump:ContextMenuItem = new ContextMenuItem("Dump stage");
 				dump.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { Util.dumpDisplayObject(stage); } );
 				var dumpRegionQueryInfo:ContextMenuItem = new ContextMenuItem("Dump region query info");
-				dumpRegionQueryInfo.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void { 
+				dumpRegionQueryInfo.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void {
 					if (!Global.map) return;
 					trace("Pending regions:" + Util.implode(',', Global.map.pendingRegions));
-					} );				
+				} );
 				fm_menu.customItems.push(dump);
 				fm_menu.customItems.push(dumpRegionQueryInfo);
 				contextMenu = fm_menu;

@@ -9,7 +9,7 @@
     <movie width="976" />
     <movie height="640" />
     <movie version="10" />
-    <movie background="#672608" />
+    <movie background="#E8E2BE" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -38,7 +38,7 @@
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />
-    <option additional="" />
+    <option additional="-frame start src.Main" />
     <option compilerConstants="" />
     <option customSDK="" />
   </build>

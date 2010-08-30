@@ -1,6 +1,5 @@
 ﻿package src.Objects.Factories {
 
-	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.utils.getDefinitionByName;
 	import src.Objects.Troop.TroopObject;
@@ -55,10 +54,14 @@
 
 		public static function getInstance(): Object
 		{
-			var obj:Object = getSprite();
+			var obj: DisplayObjectContainer = getSprite();
+
+			var shadow: DisplayObjectContainer = getSprite();
+			ObjectFactory.makeIntoShadow(shadow);
 
 			var troopObject: TroopObject = new TroopObject();
-			troopObject.addChild(obj as DisplayObject);
+			troopObject.addChild(shadow);
+			troopObject.addChild(obj);
 
 			return troopObject;
 		}

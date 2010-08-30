@@ -173,7 +173,7 @@
 		{
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
 
-			return "Built a " + structPrototype.getName() + " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";
+			return "Built a " + structPrototype.getName() + " (Lvl " + minlevel.toString() + (minlevel != maxlevel || minlevel > 1 ? "-" + maxlevel.toString() : "") + ")";
 		}
 
 		/*HAVE NO STRUCTURE*/

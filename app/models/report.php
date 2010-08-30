@@ -21,11 +21,15 @@ class Report extends AppModel {
 
         $remoteUnread = $Battle->BattleReportView->find('count', array(
                 'link' => array(
-                        'City' => array('type' => 'inner')
+                        'City' => array('type' => 'inner'),
+						'Battle' => array('type' => 'inner')
                 ),
                 'conditions' => array(
                         'City.player_id' => $playerId,
-                        'BattleReportView.read' => false
+                        'BattleReportView.read' => false,
+						'NOT' => array(
+							'Battle.ended' => null
+						)
                 )
         ));
 

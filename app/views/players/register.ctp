@@ -1,25 +1,27 @@
-<script>
-	var RecaptchaOptions = {
-   		theme : 'white'
-	};
-</script>
+<?php 
+ // Hides weird iframe in Chrome/Safari which breaks layout 
+?>
+<style type="text/css">
+	iframe { display: none; }
+	div.input iframe { display: block; }
+</style>
 
-<div class="span-12">
+<div class="span-10">
 	<h2>Join the battle today!</h2>
-	<?=$form->create('Player', array('action' => 'register'));?>
-	<?=$form->input('name', array('label' => 'Choose a player name'))?>
-	<?=$form->input('email_address', array('label' => 'Email address (has to be valid)'))?>
-	<?=$form->input('password_once', array('label' => 'Choose a password', 'type' => 'password'))?>
-	<?=$form->input('password_twice', array('label' => 'Retype password', 'type' => 'password'))?>
+	<?php echo $form->create('Player', array('action' => 'register'));?>
+	<?php echo $form->input('name', array('label' => 'Choose a player name'))?>
+	<?php echo $form->input('email_address', array('label' => 'Email address (has to be valid)'))?>
+	<?php echo $form->input('password_once', array('label' => 'Choose a password', 'type' => 'password'))?>
+	<?php echo $form->input('password_twice', array('label' => 'Retype password', 'type' => 'password'))?>
 	
 	<div class="input text">		
-	<?=recaptcha_get_html($recaptchaPublicKey, isset($error) ? $error : null)?>
+		<?php echo recaptcha_get_html($recaptchaPublicKey, isset($error) ? $error : null)?>
 	</div>
-	<?=$form->input('tos', array('label' => 'I accept the Terms of Service and the game rules', 'type' => 'checkbox'))?>
-	<?=$form->end('Register');?>
+	<?php echo $form->input('tos', array('label' => 'I accept the Terms of Service and the game rules', 'type' => 'checkbox'))?>
+	<?php echo $form->end('Register');?>
 </div>
-<div class="span-12 last">
-	<div class="round-box float-right">
+<div class="span-10 last">
+	<div class="round-box">
 		<h2>Why join our world?</h2>
 		<p>Tribal Hero features an immense persistent world where you can<p>
 		<ul>
@@ -29,6 +31,6 @@
 		</ul>
 		<p>Best of all, it's completely free to play and there are no downloads required!</p>
 		<h2>Still not convinced?</h2>
-		<p>Take the <?=$html->link('tour', '/tour')?> to learn more about Tribal Hero.</p>
+		<p>Take the <?php echo $html->link('tour', '/tour')?> to learn more about Tribal Hero.</p>
 	</div>
 </div>

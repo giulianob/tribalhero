@@ -1,4 +1,4 @@
-<div class="span-24 last">
+<div class="span-20 last">
 	<div class="span-10">
 		<h2>Welcome</h2>
 		<p>
@@ -15,18 +15,13 @@
 		</p>
 	</div>
 	
-	<div class="span-8">
+	<div class="span-10 last">
 		<h2>Screenshots</h2>	
 		<p style="height: 100px; width: 130px; border: solid 1px #3A261B;">Screenshot 1</p>		
 	</div>
-	
-	<div class="span-6 last"">
-		<p><?=$html->link($html->image('buttons/register-button.gif'), '/players/register', array('escape' => false))?></p>
-		<p><?=$html->link($html->image('buttons/invite-button.gif'), '/players/invite', array('escape' => false))?></p>
-	</div>
 </div>
 
-<div class="span-24 last">
+<div class="span-20 last">
 	<div class="span-10">
 		<h2>Features</h2>
 		<ul>
@@ -38,7 +33,7 @@
 		<ul>
 	</div>
 	
-	<div class="span-14 last">
+	<div class="span-10 last">
 		<h2>News</h2>
 		<ul>
 			<li></li>

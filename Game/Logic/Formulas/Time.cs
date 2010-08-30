@@ -42,6 +42,7 @@ namespace Game.Logic {
         }
 
         internal static int MoveTime(byte speed) {
+            if (Config.battle_instant_move) return 0;
             return 3600 / (speed * 10);
         }
     }

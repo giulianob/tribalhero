@@ -47,6 +47,7 @@ namespace Game.Battle
         {
             const double nodamage = 0.1;
             const double weakest = 0.2;
+            const double weaker = 0.4;
             const double weak = 0.7;
             const double good = 1;
             const double strong = 1.5;
@@ -64,7 +65,7 @@ namespace Game.Battle
                         case ArmorType.MACHINE:
                             return strong;
                         case ArmorType.BUILDING:
-                            return good;
+                            return weaker;
                     }
                     break;
                 case WeaponType.PIKE:
@@ -77,7 +78,7 @@ namespace Game.Battle
                         case ArmorType.MACHINE:
                             return weak;
                         case ArmorType.BUILDING:
-                            return good;
+                            return weaker;
                     }
                     break;
                 case WeaponType.BOW:
@@ -90,7 +91,7 @@ namespace Game.Battle
                         case ArmorType.MACHINE:
                             return weakest;
                         case ArmorType.BUILDING:
-                            return weakest;
+                            return nodamage;
                     }
                     break;
                 case WeaponType.BALL:
@@ -104,6 +105,19 @@ namespace Game.Battle
                             return good;
                         case ArmorType.BUILDING:
                             return strongest;
+                    }
+                    break;
+                case WeaponType.BARRICADE:
+                    switch (armor)
+                    {
+                        case ArmorType.GROUND:
+                            return weaker;
+                        case ArmorType.MOUNT:
+                            return weaker;
+                        case ArmorType.MACHINE:
+                            return weaker;
+                        case ArmorType.BUILDING:
+                            return weaker;
                     }
                     break;
             }

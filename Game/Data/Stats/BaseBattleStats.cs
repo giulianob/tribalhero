@@ -17,7 +17,8 @@ namespace Game.Data {
         SWORD = 0,
         PIKE = 1,
         BOW = 2,
-        BALL = 3
+        BALL = 3,
+        BARRICADE =4
     }
 
     public enum WeaponClass {

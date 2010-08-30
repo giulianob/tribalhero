@@ -3,19 +3,17 @@
 class PagesController extends AppController {
     var $uses = array();
 
-    var $allowedFromGame = array('unread');
-
     var $cacheAction = array(
             'index/' => '1 month'
     );
 
     function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow(array('display', 'facebook'));
+        $this->Auth->allow(array('display', 'facebook', 'index'));
     }
 
     function index() {
-        $this->pageTitle = 'Tribal Hero - a free browser game';
+        $this->set('title_for_layout', 'Tribal Hero - a free browser game');
     }
 
     function display() {

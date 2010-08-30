@@ -13,6 +13,8 @@ class PlayersController extends AppController {
     }
 
     function register() {
+		$this->set('title_for_layout', 'Register New Account');
+	
         App::import('Vendor', 'Recaptcha', array('file' => 'recaptcha'.DS.'recaptchalib.php'));
         $this->set('recaptchaPublicKey', $this->recaptchaPublicKey);
 
@@ -44,13 +46,15 @@ class PlayersController extends AppController {
     }
 
     function login() {
+		$this->set('title_for_layout', 'Login');
+	
         if (!empty($this->data)) {
             if ($this->Auth->login($this->data['Player'])) {
                 $url = $this->Auth->redirect();
                 $redirect = Router::parse($url);
 
                 if ($redirect['controller'] == 'players' && ($redirect['action'] == 'login' || $redirect['action'] == 'register'))
-                    $this->redirect('/');
+                    $this->redirect('/play');
                 else
                     $this->redirect($url);
             }

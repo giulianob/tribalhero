@@ -1,10 +1,10 @@
-<div class="span-12">
+<div class="span-10">
 	<h2>Login</h2>			
 		<?php
 			if ($session->check('Message.auth')) :
 		?>
 			<div class="error">		 		
-					<?php $session->flash('auth'); ?>
+					<?php echo $session->flash('auth'); ?>
 			</div>
 		<?php
 			endif;
@@ -17,9 +17,9 @@
 	
 	</div>
 	
-	<?=$form->end('Login');?>
+	<?=$form->end('Log In');?>
 </div>
-<div class="span-12 last">
+<div class="span-10 last">
 	<div class="float-right round-box">
 		<h2>Not a member yet?</h2>
 		<p><?=$html->link('Join','register')?> now, it's 100% free!</p>

@@ -1,17 +1,19 @@
-@CHARSET "ISO-8859-1";
-
 /* BODY */
-body 
-{
-	background: url("../img/background/container-shadow.png") repeat-y center #3A261B;	
+
+* {
+	margin: 0;
+}
+
+body {
+	background: url("../img/background/top.png") no-repeat top center #e8e2be;
 	font-family: Tahoma, Geneva, sans-serif;
 	color: #ffffff;
 	font-size: 9pt;
+	height: 100%;
 }
 
 html 
-{
-	overflow-y: scroll;
+{	
 	height: 100%;
 }
 
@@ -21,6 +23,18 @@ div
 	color: #000;
 	font-size: 9pt;	
 }
+
+.wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -4em;
+}
+
+.push {
+	height: 10em;
+}
+
 /* LINKS */
 
 a:visited, a:active, a:link
@@ -42,18 +56,7 @@ a:hover
 	padding: 0.2em 0 0 17px;
 }
 
-/* HEADER & FOOTER*/
-#header
-{
-	
-}
-
-#logo
-{
-	font-size: 32pt;
-	color: #672608;
-}
-
+/* Top */
 #top-bar
 {
 	float: right;
@@ -81,43 +84,41 @@ a:hover
 
 /* CONTAINER */
 
-.container
-{
-	background-color: #FFF;
+#login , #login div{ 
+	color: #fff;
 }
 
-#content
-{
+#login a {
+	color: #fff;
 }
 
-#game-container
-{
-	width: 976px;
-	margin: 0 auto;
-}
-
-#game-content
-{
-	width: 100%;
+#header {
+	height: 170px;
 }
 
 #footer
 {
 	text-align: center;
 	font-size: 9pt;
-	color: #B0B0B0;		
+	color: #a7a182;		
+	margin-top: -181px;
+	height: 181px;
+	background: url("../img/background/bottom.png") no-repeat bottom center;	
+}
+
+#game-box {
+	height: 100%;
 }
 
 /* MAIN NAV */
 
-#main-nav {
-	float: right;
-	width: 502px;
-	height: 56px;
-	background: url("../img/nav/main-nav.gif");
-	padding: 0;
+#main-nav {	
+	width: 151px;
+	height: 273px;
+	background: url("../img/nav/nav.png");
+	padding: 0;			
+	margin: 0;
 	position: relative;
-	margin-top: 45px;
 }
 
 #main-nav li {
@@ -130,29 +131,35 @@ a:hover
 }
 
 #main-nav li, #main-nav a {
-	height: 56px; 
+	width: 135px;
+	height: 30px; 
 	display: block;
 }
 
-#main-nav #home {left: 0; width: 112px;}
-#main-nav #tour {left: 112px; width: 106px;}
-#main-nav #help {left: 217px; width: 105px;}
-#main-nav #community {left: 321px; width: 176px;}
+#main-nav #home {top: 25px;}
+#main-nav #help {top: 70px;}
+#main-nav #forums {top: 115px;}
+#main-nav #blog {top: 158px;}
+#main-nav #register {top: 211px;}
 
 #main-nav #home a:hover {
-    background: url("../img/nav/main-nav.gif") 0 -56px no-repeat;
-}
-  
-#main-nav #tour a:hover {
-    background: url("../img/nav/main-nav.gif") -112px -56px no-repeat;
+    background: url("../img/nav/nav.png") -151px -25px no-repeat;
 }
   
 #main-nav #help a:hover {
-    background: url("../img/nav/main-nav.gif") -217px -56px no-repeat;
+    background: url("../img/nav/nav.png") -151px -70px no-repeat;
+}
+  
+#main-nav #forums a:hover {
+    background: url("../img/nav/nav.png") -151px -115px no-repeat;
 }
 
-#main-nav #community a:hover {
-    background: url("../img/nav/main-nav.gif") -321px -56px no-repeat;
+#main-nav #blog a:hover {
+    background: url("../img/nav/nav.png") -151px -158px no-repeat;
+}
+
+#main-nav #register a:hover {
+    background: url("../img/nav/nav.png") -151px -211px no-repeat;
 }
 
 /* FORMS */		
@@ -167,9 +174,29 @@ form.small
 	font-size: 8pt;
 }
 
+form.small div.input, form.small div.submit  {
+	margin: 0 0 5px 0;
+}
+
+form.small input[type=text], form.small input[type=password] {
+	width: 145px;
+	min-width: 100px;
+}
+
+form.small input[type=submit] {
+	float: right;
+}
+
+form.white-label label {
+	color: #fff;
+}
+
 form.small label
 {
-	margin-right: 3px;	
+	width: 75px;
+	padding: 0;
+	margin-bottom: 3px;
+	float: left;
 	display: inline;
 }
 
@@ -177,28 +204,16 @@ input[type=text], input[type=password]
 {
 	background: url("../img/forms/field-fade.gif") repeat-x scroll center top #FFFFFF;
 	border: 1px solid #CCCCCC;
-	min-width: 150px;
+	min-width: 100px;
+	vertical-align: middle;
+	margin: 0;
 	height: 17px;
 	padding: 1px 3px 1px 3px;	
 }
 
-form.small input[type=text], form.small input[type=password]
-{
-	min-width: 100px;
-	height: 17px;
-	padding: 1px 3px 1px 3px
-}
-
 input[type=submit]
-{
-	border-style: solid;
-	border-color: #b7ac9d #51493c #51493c #b7ac9d;
-	border-width: 1px;
-	background: #b3d14b;	
-	height: 20px;
-	padding: 1px 8px 3px 8px;
+{	
 	vertical-align: middle;
-	font-weight: bold;
 }
 
 label
@@ -393,7 +408,7 @@ div.round-box
 	-moz-border-radius-bottomright:4px;
 	-moz-border-radius-topleft:4px;
 	-moz-border-radius-topright:4px;
-	background:#f0f0f0 none repeat scroll 0 0;
+	background:#dfd9b8 none repeat scroll 0 0;
 	border: 1px solid #DFDBD2;
 }
 

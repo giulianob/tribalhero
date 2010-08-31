@@ -41,14 +41,16 @@ namespace Game.Setup {
         public static readonly uint city_region_height = 56;
         public static readonly int city_region_column = (int) (map_width/city_region_width);
         public static readonly int city_region_row = (int) (map_height/city_region_height);
+        
+        public static readonly double seconds_per_unit = 1.0; //dont make it zero!
 
-        public static readonly double seconds_per_unit = 1.0; //dont make it zero
+        public static readonly bool battle_instant_watch = false;
         public static readonly int battle_turn_interval = 60;
         public static readonly int battle_min_rounds = 5;
         public static readonly int battle_loot_per_round = 10;  // percentage of total carry
         public static readonly int battle_stamina_initial = 20;
-        public static readonly ushort battle_stamina_destroyed_deduction = 5;
-        public static readonly bool battle_instant_move = false;
+		public static readonly ushort battle_stamina_destroyed_deduction = 5;
+		public static readonly bool battle_instant_move = false;
         public static readonly bool resource_upkeep = true;
         public static readonly bool resource_cap = true;
         public static readonly bool resource_fast_income = true;

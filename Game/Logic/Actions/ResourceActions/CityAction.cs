@@ -13,8 +13,7 @@ namespace Game.Logic.Actions
     class CityAction : ScheduledPassiveAction
     {
         private const int INTERVAL = 1800;
-        private readonly uint cityId;
-        private int laborRoundBeforeIncrements;
+        private readonly uint cityId;        
         private int laborTimeRemains;
 
         public CityAction(uint cityId)
@@ -27,7 +26,7 @@ namespace Game.Logic.Actions
             : base(id, beginTime, nextTime, endTime, isVisible)
         {
             cityId = uint.Parse(properties["city_id"]);
-            laborRoundBeforeIncrements = int.Parse(properties["labor_round_before_increments"]);
+            laborTimeRemains = int.Parse(properties["labor_time_remains"]);
         }
 
         public override Error Validate(string[] parms)
@@ -136,7 +135,7 @@ namespace Game.Logic.Actions
                 #endregion
 
                 #region Labor
-                if (DateTime.Now.Subtract(city.Owner.LastLogin).Days <= 2) {
+                if (city.Owner.Session != null || DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays <= 2) {
                     laborTimeRemains += INTERVAL;
                     int laborRate = Formula.GetLaborRate(laborTotal);
                     int laborProduction = laborTimeRemains/laborRate;
@@ -212,7 +211,7 @@ namespace Game.Logic.Actions
                 return
                     XMLSerializer.Serialize(new[] {
                                                                 new XMLKVPair("city_id", cityId),
-                                                                new XMLKVPair("labor_round_before_increments", laborRoundBeforeIncrements)
+                                                                new XMLKVPair("labor_time_remains", laborTimeRemains)
                                                             });
             }
         }

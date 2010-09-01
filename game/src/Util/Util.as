@@ -137,10 +137,14 @@ package src.Util {
 			return (hours <= 9 ? "0" + hours : hours) + ":" + (minutes <= 9 ? "0" + minutes : minutes) + ":" + (seconds <= 9 ? "0" + seconds : seconds);
 		}
 
-		public static function niceTime(time: int): String
+		public static function niceTime(time: int, conj: Boolean = true): String
 		{
-			if (time < 60)
-			return "less than a minute";
+			if (time < 60) {
+				if (conj) 				
+				return "less than a minute";
+				else
+				return "minute";
+			}
 
 			var hours: int = int(time / (60 * 60));
 			time -= hours * 60 * 60;
@@ -157,7 +161,7 @@ package src.Util {
 				if (hours > 1)
 				nice += hours + " hours";
 				else
-				nice += "an hour";
+				nice += (conj ? "an " : "1 ") + "hour";
 
 				if (minutes > 0)
 				nice += " and ";
@@ -166,7 +170,7 @@ package src.Util {
 			if (minutes > 1)
 			nice += minutes + " minutes";
 			else if (minutes == 1)
-			nice += "a minute";
+			nice += (conj ? "a " : "1 ") + "minute";
 
 			return nice;
 		}

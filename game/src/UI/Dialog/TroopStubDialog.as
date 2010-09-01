@@ -135,7 +135,7 @@ package src.UI.Dialog {
 
 		public function onClickLocate(event: AWEvent):void
 		{
-			if (troop.objectId > 0) {
+			if (troop.state == TroopStub.MOVING || troop.state == TroopStub.RETURNING_HOME) {
 				Global.map.selectWhenViewable(troop.cityId, troop.objectId);
 			}
 

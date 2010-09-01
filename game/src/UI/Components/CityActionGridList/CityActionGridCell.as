@@ -39,8 +39,8 @@
 				{
 					var cityObj: CityObject = value.cityObj;
 					var pt: Point = MapUtil.getScreenCoord(cityObj.x, cityObj.y);
-					Global.map.camera.ScrollToCenter(pt.x, pt.y);
 					Global.map.selectWhenViewable(cityObj.city.id, cityObj.objectId);
+					Global.map.camera.ScrollToCenter(pt.x, pt.y);					
 					Util.getFrame(getParent()).dispose();
 				}
 			});

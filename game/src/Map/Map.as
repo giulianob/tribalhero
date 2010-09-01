@@ -264,7 +264,7 @@
 			selectObject(null);
 
 			selectViewable = null;
-			for each(var gameObject: GameObject in objContainer.objects) {
+			for each(var gameObject: GameObject in objContainer.objects.each()) {
 				if (SimpleGameObject.compareCityIdAndObjId(gameObject, [cityId, objectId]) == 0) {
 					selectObject(gameObject, true, false);
 					return;

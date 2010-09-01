@@ -33,7 +33,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onClickEvent(e: MouseEvent):void
 		{
-			InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\nYou will only receive 1/2 of the resource cost if cancelling after 60 seconds.", function(result: int) : void {
+			InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\nYou will only receive half of the action cost if cancelling after 60 seconds.", function(result: int) : void {
 				if (result == JOptionPane.YES) {
 					Global.mapComm.Object.cancelAction(parentObj.cityId, parentObj.objectId, id);
 				}

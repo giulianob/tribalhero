@@ -25,7 +25,7 @@
 
 		public function ToSprite(): Object
 		{
-			return ForestFactory.getSprite();
+			return ForestFactory.getSprite(level);
 		}
 	}
 

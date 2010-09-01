@@ -58,8 +58,8 @@
 
 			var notification: Notification = value.notification as Notification;
 
-			Global.mapComm.City.gotoNotificationLocation(value.cityId, notification.cityId, notification.actionId);
 			Global.map.selectWhenViewable(notification.cityId, notification.objectId);
+			Global.mapComm.City.gotoNotificationLocation(value.cityId, notification.cityId, notification.actionId);			
 			Util.getFrame(getParent()).dispose();
 		}
 

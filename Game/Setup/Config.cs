@@ -44,16 +44,16 @@ namespace Game.Setup {
         
         public static readonly double seconds_per_unit = 1.0; //dont make it zero!
 
-        public static readonly bool battle_instant_watch = false;
+        public static readonly bool battle_instant_watch;
         public static readonly int battle_turn_interval = 60;
         public static readonly int battle_min_rounds = 5;
         public static readonly int battle_loot_per_round = 10;  // percentage of total carry
         public static readonly int battle_stamina_initial = 20;
 		public static readonly ushort battle_stamina_destroyed_deduction = 5;
-		public static readonly bool battle_instant_move = false;
+		public static readonly bool battle_instant_move;
         public static readonly bool resource_upkeep = true;
         public static readonly bool resource_cap = true;
-        public static readonly bool resource_fast_income = true;
+        public static readonly bool resource_fast_income;
 
         public static readonly byte minimum_distance_apart = 8;
         public static readonly int height_margin = 10;

@@ -89,13 +89,13 @@
 			}
 
 			var grid: CombatObjectGridList = CombatObjectGridList.getGridList([combatObj]);
-			var tab: JPanel = new JPanel(new BorderLayout());
+			var tab: JScrollPane = new JScrollPane(grid);
 
 			obj = { "cityId": combatObj.cityId, "troopStubId": combatObj.troopStubId, "defense": defense, "tab" : tab, "grid": grid };
 
 			combat.push(obj);
 
-			tab.append(grid);
+			//tab.append(grid);
 
 			if (defense)
 			tabDefensive.appendTab(tab, combatObj.cityId + "(" + combatObj.troopStubId + ")");
@@ -276,51 +276,34 @@
 			layout0.setGap(5);
 			setLayout(layout0);
 			setBorder(null);
-			setPreferredSize(new IntDimension(965, 405));
+			setPreferredSize(new IntDimension(650, 600));
 
-			var pnlBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0));
+			var pnlBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			pnlBody.setBorder(null);
 
 			lblStamina = new JLabel("", null, AsWingConstants.RIGHT);
 
 			tabDefensive = new JTabbedPane();
-			tabDefensive.setPreferredSize(new IntDimension(280, 350));
+			tabDefensive.setPreferredHeight(150);
 
-			var border1:TitledBorder = new TitledBorder();
-			border1.setColor(new ASColor(0x0, 1));
-			border1.setTitle("Defender");
-			border1.setPosition(1);
-			border1.setAlign(AsWingConstants.LEFT);
-			border1.setBeveled(true);
-			border1.setRound(5);
+			var border1:SimpleTitledBorder = new SimpleTitledBorder(null, "Defender", AsWingConstants.TOP, AsWingConstants.LEFT);
 			tabDefensive.setBorder(border1);
 
 			txtLog = new JTextArea("You have started watching this battle");
-			txtLog.setPreferredSize(new IntDimension(375, 350));
 			txtLog.setBorder(new EmptyBorder());
 			txtLog.setWordWrap(true);
 			txtLog.setEditable(false);
 			txtLog.setMaxChars(2000);
 
-			var border2:TitledBorder = new TitledBorder();
-			border2.setColor(new ASColor(0x0, 1));
-			border2.setTitle("Battle Log");
-			border2.setPosition(1);
-			border2.setBeveled(true);
-			border2.setRound(5);
+			var border2:SimpleTitledBorder = new SimpleTitledBorder(null, "Battle Log", AsWingConstants.TOP, AsWingConstants.LEFT);
 			lstLogScroll = new JScrollPane(txtLog);
+			lstLogScroll.setPreferredHeight(200);
 			lstLogScroll.setBorder(border2);
 
 			tabOffensive = new JTabbedPane();
-			tabOffensive.setPreferredSize(new IntDimension(280, 350));
+			tabOffensive.setPreferredHeight(150);
 
-			var border3:TitledBorder = new TitledBorder();
-			border3.setColor(new ASColor(0x0, 1));
-			border3.setTitle("Attacker");
-			border3.setPosition(1);
-			border3.setAlign(AsWingConstants.RIGHT);
-			border3.setBeveled(true);
-			border3.setRound(5);
+			var border3: SimpleTitledBorder = new SimpleTitledBorder(null, "Attacker", AsWingConstants.TOP, AsWingConstants.LEFT);
 			tabOffensive.setBorder(border3);
 
 			//component layoution

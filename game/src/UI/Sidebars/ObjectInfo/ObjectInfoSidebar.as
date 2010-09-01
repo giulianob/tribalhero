@@ -117,9 +117,6 @@ package src.UI.Sidebars.ObjectInfo {
 				// Only show stats if obj is attackable
 				if (!ObjectFactory.isType("Unattackable", structPrototype.type)) {
 					addStatRow("HP", gameObject.hp.toString() + "/" + structPrototype.hp.toString());
-					addStatStarRow("Defense", structPrototype.defense, Constants.structureStatRanges.defense.min, Constants.structureStatRanges.defense.max);
-					addStatStarRow("Range", structPrototype.range, Constants.structureStatRanges.range.min, Constants.structureStatRanges.range.max);
-					addStatStarRow("Stealth", structPrototype.stealth, Constants.structureStatRanges.stealth.min, Constants.structureStatRanges.stealth.max);
 				}
 
 				if (structPrototype.maxlabor > 0) {

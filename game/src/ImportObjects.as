@@ -62,7 +62,10 @@
 			WALL_O4;
 			
 			//Forest
-			DEFAULT_FOREST;
+			FOREST_LVL_1;
+			FOREST_LVL_2;
+			FOREST_LVL_3;
+			FOREST_LVL_4;
 			
 			//Troops
 			DEFAULT_TROOP;			

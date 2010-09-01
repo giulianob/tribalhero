@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog{
 
+	import fl.lang.Locale;
 	import flash.events.Event;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -10,11 +11,13 @@
 	import src.Global;
 	import src.Map.City;
 	import src.Map.Username;
+	import src.Objects.Effects.Formula;
 	import src.Objects.LazyValue;
 	import src.UI.Components.CityActionGridList.CityActionGridList;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import src.Util.StringHelper;
+	import src.Util.Util;
 
 	/**
 	 * CityEventDialog
@@ -135,14 +138,17 @@
 			pnlLocalEvents.setPreferredSize(new IntDimension(540, 200));
 			pnlLocalEvents.appendTab(new JScrollPane(gridLocalActions), "Local Events");
 
-			lblGold = resourceLabelMaker("Gold", new AssetIcon(new ICON_GOLD()));
-			lblWood = resourceLabelMaker("Wood", new AssetIcon(new ICON_WOOD()));
-			lblCrop = resourceLabelMaker("Crop", new AssetIcon(new ICON_CROP()));
-			lblIron = resourceLabelMaker("Iron", new AssetIcon(new ICON_IRON()));
-			lblLabor = simpleLabelMaker("Laborer", new AssetIcon(new ICON_LABOR()));
-			lblUpkeep = simpleLabelMaker("Troop Upkeep", new AssetIcon(new ICON_CROP()));
-			lblDefensePoints = simpleLabelMaker("Defense Points", new AssetIcon(new ICON_SHIELD()));
-			lblAttackPoints = simpleLabelMaker("Attack Points", new AssetIcon(new ICON_BATTLE()));
+			lblGold = resourceLabelMaker("Gold\n\n" + Locale.loadString("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));
+			lblWood = resourceLabelMaker("Wood\n\n" + Locale.loadString("WOOD_DESC"), new AssetIcon(new ICON_WOOD()));
+			lblCrop = resourceLabelMaker("Crop\n\n" + Locale.loadString("CROP_DESC"), new AssetIcon(new ICON_CROP()));
+			lblIron = resourceLabelMaker("Iron\n\n" + Locale.loadString("IRON_DESC"), new AssetIcon(new ICON_IRON()));
+
+			var laborTime: String = "Currently receiving 1 labor every " + Util.niceTime(Formula.laborRate(city), false);
+			lblLabor = simpleLabelMaker("Laborer\n\n" + Locale.loadString("LABOR_DESC") + "\n\n" + laborTime, new AssetIcon(new ICON_LABOR()));
+
+			lblUpkeep = simpleLabelMaker("Troop Upkeep\n\n" + Locale.loadString("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
+			lblDefensePoints = simpleLabelMaker("Defense Points\n\n" + Locale.loadString("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
+			lblAttackPoints = simpleLabelMaker("Attack Points\n\n" + Locale.loadString("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
 
 			lblUpkeepMsg = new JLabel("Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.", new AssetIcon(new ICON_ALERT()));
 			lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));

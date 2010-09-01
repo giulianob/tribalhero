@@ -93,7 +93,7 @@
 			else if (classType == TYPE_TROOP_OBJ)
 			return TroopFactory.getInstance() as SimpleObject;
 			else if (classType == TYPE_FOREST)
-			return ForestFactory.getInstance() as SimpleObject;
+			return ForestFactory.getInstance(level) as SimpleObject;
 			else
 			return null;
 		}
@@ -131,7 +131,7 @@
 			} else if (obj is TroopObject) {
 				sprite = TroopFactory.getSprite(centered);
 			} else if (obj is Forest) {
-				sprite = ForestFactory.getSprite(centered);
+				sprite = ForestFactory.getSprite(obj.level, centered);
 			} else {
 				return null;
 			}

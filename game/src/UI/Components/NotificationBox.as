@@ -44,8 +44,8 @@
 			if (!tooltipMode) {
 				icon.buttonMode = true;
 				icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent):void {
-					Global.mapComm.City.gotoNotificationLocation(Global.gameContainer.selectedCity.id, notification.cityId, notification.actionId);
 					Global.map.selectWhenViewable(notification.cityId, notification.objectId);
+					Global.mapComm.City.gotoNotificationLocation(Global.gameContainer.selectedCity.id, notification.cityId, notification.actionId);					
 					Util.getFrame(getParent()).dispose();
 				});
 				new SimpleTooltip(icon, "Go to event");

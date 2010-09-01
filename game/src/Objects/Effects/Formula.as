@@ -113,6 +113,12 @@
 			var upkeep: int = troopStub.getUpkeep();
 			return Math.min(4, upkeep / 100);
 		}
+
+		public static function laborRate(city: City) : int {
+			var laborTotal: int = city.getBusyLaborCount() + city.resources.labor.getValue();
+			if (laborTotal < 140) laborTotal = 140;
+			return (86400 / (-6.845 * Math.log(laborTotal) + 55)) / 2;
+		}
 	}
 }
 

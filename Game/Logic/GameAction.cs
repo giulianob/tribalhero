@@ -50,6 +50,7 @@ namespace Game.Logic {
         
         CITY_LABOR = 501,
         CITY = 502,
+        CITY_RADIUS_CHANGE = 503,
         ROAD_BUILD = 510,
         ROAD_DESTROY = 511,
 

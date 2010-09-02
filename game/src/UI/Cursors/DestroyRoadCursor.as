@@ -153,7 +153,7 @@ package src.UI.Cursors {
 				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
 				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
 
-				if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, false)) {
+				if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
 					breaksPath = true;
 					break;
 				}
@@ -168,10 +168,9 @@ package src.UI.Cursors {
 				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
 
 				if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
-5
-				if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {
-					var allowPassThroughNeighborStructures: Boolean = !city.hasStructureAt(new Point(x1, y1));
-					if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, allowPassThroughNeighborStructures)) {
+				
+				if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {					
+					if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
 						allNeighborsHaveOtherPaths = false;
 						return false;
 					}

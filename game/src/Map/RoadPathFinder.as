@@ -23,7 +23,7 @@ package src.Map
 			return tileId >= Constants.road_start_tile_id && tileId <= Constants.road_end_tile_id;
 		}
 
-		public static function hasPath(start: Point, end: Point, city: City, excludedPoint: Point, passthroughNeighborStructures: Boolean) : Boolean {
+		public static function hasPath(start: Point, end: Point, city: City, excludedPoint: Point) : Boolean {
 			var visited: Array = new Array();
 
 			visited.push(start);
@@ -51,10 +51,12 @@ package src.Map
 					);
 				}
 
-				for each (var location: Point in possibleNeighbors) {
-					if (!passthroughNeighborStructures && node.x == start.x && node.y == start.y && MapUtil.radiusDistance(location.x, location.y, start.x, start.y) == 1 && city.hasStructureAt(new Point(location.x, location.y))) continue;
-					if (!isRoadByMapPosition(location.x, location.y)) continue;
-					if (MapUtil.distance(location.x, location.y, city.MainBuilding.x, city.MainBuilding.y) > city.radius) continue;
+				for each (var location: Point in possibleNeighbors) {			
+					if (location.x != end.x || location.y != end.y) {
+						if (city.hasStructureAt(location)) continue;
+						if (!isRoadByMapPosition(location.x, location.y)) continue;
+						if (MapUtil.distance(location.x, location.y, city.MainBuilding.x, city.MainBuilding.y) > city.radius) continue;
+					}
 
 					neighbors.push(location);
 				}

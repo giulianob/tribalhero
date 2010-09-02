@@ -187,8 +187,8 @@ package src.UI.Cursors {
 
 			var requiredRoad: Boolean = !ObjectFactory.isType("NoRoadRequired", type);
 
-			// Set flag so that buildings that dont require roads dont screw up the on screen msg 
-			if (!requiredRoad) this.hasRoadNearby = true;			
+			// Set flag so that buildings that dont require roads dont screw up the on screen msg
+			if (!requiredRoad) this.hasRoadNearby = true;
 
 			// Validate any layouts
 			var builder: CityObject = city.objects.get(parentObj.objectId);
@@ -218,18 +218,38 @@ package src.UI.Cursors {
 				var breaksPath: Boolean = false;
 				for each(var cityObject: CityObject in city.objects.each()) {
 					if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
+					if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
 
-					if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, false)) {
+					if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
 						breaksPath = true;
 						break;
 					}
 				}
 
 				if (breaksPath) return false;
+
+				// Make sure all neighbors have a different path
+				var allNeighborsHaveOtherPaths: Boolean = true;
+				MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
+				{
+					if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
+
+					if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
+
+					if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {
+						if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
+							allNeighborsHaveOtherPaths = false;
+							return false;
+						}
+					}
+
+					return true;
+				}, false, null);
+
+				if (!allNeighborsHaveOtherPaths) return false;
 			}
 
 			var hasRoad: Boolean = false;
-			var breaksRoad: Boolean = false;
 
 			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
 			{
@@ -242,7 +262,7 @@ package src.UI.Cursors {
 				// Make sure we have a road around this building
 				if (!hasRoad && !hasStructure && RoadPathFinder.isRoadByMapPosition(x1, y1)) {
 					// If we are building on road, we need to check that all neighbor tiles have another connection to the main building
-					if (!buildingOnRoad || RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos, true)) {
+					if (!buildingOnRoad || RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
 						hasRoad = true;
 					}
 				}
@@ -254,7 +274,6 @@ package src.UI.Cursors {
 			if (hasRoad) this.hasRoadNearby = true;
 
 			if (!hasRoad) return false
-			if (breaksRoad) return false;
 
 			//Set other global variable to identify we have a buildable spot.
 			hasBuildableArea = true;

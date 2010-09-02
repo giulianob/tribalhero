@@ -57,8 +57,6 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 						laborDialog.show();
 					});
 
-					var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
-					Global.gameContainer.setSidebar(sidebar);
 				}
 			}
 

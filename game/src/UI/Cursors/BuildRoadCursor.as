@@ -155,9 +155,9 @@ package src.UI.Cursors {
 			var hasRoad: Boolean = false;
 			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
 			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
+				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;							
 
-				if (RoadPathFinder.isRoadByMapPosition(x1, y1))
+				if (RoadPathFinder.isRoadByMapPosition(x1, y1) && !city.hasStructureAt(new Point(x1, y1)))
 				{
 					hasRoad = true;
 					return false;

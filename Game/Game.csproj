@@ -185,6 +185,7 @@
     <Compile Include="Logic\Actions\ChainActions\AttackAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMoveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangeAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureSelfDestroyAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureBuildAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureChangeAction.cs" />

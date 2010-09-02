@@ -2,3 +2,5 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5
 ,,,,,,,,
 2204,1,ON_CONVERT,TechnologyDeleteAction,techid=0,techlvl=0,time=0,,
 3001,1,ON_INIT,StructureSelfDestroyAction,time=300,,,,
+2000,5,ON_UPGRADE,CityRadiusChangeAction,radius=5,,,,
+2000,10,ON_UPGRADE,CityRadiusChangeAction,radius=6,,,,

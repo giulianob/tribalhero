@@ -72,7 +72,7 @@ namespace Game.Comm
                 {
                     if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1) return true;
 
-                    if (RoadManager.IsRoad(x1, y1))
+                    if (RoadManager.IsRoad(x1, y1) && !Global.World[x1, y1].Exists(s => s is Structure))
                     {
                         hasRoad = true;
                         return false;
@@ -174,6 +174,7 @@ namespace Game.Comm
                     return;
                 }
 
+                // Make sure all neighboring roads have a diff path
                 bool allNeighborsHaveOtherPaths = true;
                 RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom)
                 {
@@ -183,8 +184,7 @@ namespace Game.Comm
 
                     if (RoadManager.IsRoad(x1, y1))
                     {
-                        bool allowPassThroughNeighborStructures = !Global.World[x1, y1].Exists(s => s is Structure);
-                        if (!RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(origX, origY), allowPassThroughNeighborStructures))
+                        if (!RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(origX, origY)))
                         {
                             allNeighborsHaveOtherPaths = false;
                             return false;

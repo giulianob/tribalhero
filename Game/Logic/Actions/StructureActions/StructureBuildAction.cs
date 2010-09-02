@@ -81,14 +81,18 @@ namespace Game.Logic.Actions
             }
 
             // check for road requirements       
-            bool roadRequired = !ObjectTypeFactory.IsStructureType("NoRoadRequired", type);
-            bool breaksRoad = false;
+            bool roadRequired = !ObjectTypeFactory.IsStructureType("NoRoadRequired", type);            
             bool buildingOnRoad = RoadManager.IsRoad(x, y);
 
             if (roadRequired) {
                 if (buildingOnRoad) {
+                    bool breaksRoad = false;
+
                     foreach (Structure str in city) {
                         if (str == city.MainBuilding)
+                            continue;
+
+                        if (ObjectTypeFactory.IsStructureType("NoRoadRequired", str.Type)) 
                             continue;
 
                         if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(x, y))) {
@@ -96,11 +100,38 @@ namespace Game.Logic.Actions
                             break;
                         }
                     }
-                }
 
-                if (breaksRoad) {
-                    Global.World.UnlockRegion(x, y);
-                    return Error.ROAD_DESTROY_UNIQUE_PATH;
+                    if (breaksRoad)
+                    {
+                        Global.World.UnlockRegion(x, y);
+                        return Error.ROAD_DESTROY_UNIQUE_PATH;
+                    }
+
+                    // Make sure all neighboring roads have a diff path
+                    bool allNeighborsHaveOtherPaths = true;
+                    RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom)
+                    {
+                        if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1) return true;
+
+                        if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1) return true;
+
+                        if (RoadManager.IsRoad(x1, y1))
+                        {
+                            if (!RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(origX, origY)))
+                            {
+                                allNeighborsHaveOtherPaths = false;
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }, null);
+
+                    if (!allNeighborsHaveOtherPaths)
+                    {
+                        Global.World.UnlockRegion(x, y);
+                        return Error.ROAD_DESTROY_UNIQUE_PATH;
+                    }
                 }
 
                 bool hasRoad = false;
@@ -118,7 +149,7 @@ namespace Game.Logic.Actions
                                                                  if (!hasRoad && !hasStructure && RoadManager.IsRoad(x1, y1)) {
                                                                      if (!buildingOnRoad ||
                                                                          RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city,
-                                                                                                new Location(origX, origY), true))
+                                                                                                new Location(origX, origY)))
                                                                          hasRoad = true;
                                                                  }
 

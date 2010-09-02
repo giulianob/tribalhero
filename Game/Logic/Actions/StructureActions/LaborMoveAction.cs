@@ -58,7 +58,12 @@ namespace Game.Logic.Actions {
 
             // add to queue for completion
             beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
+
+            if (cityToStructure) {
+                endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
+            } else {
+                endTime = DateTime.UtcNow.AddSeconds(60);
+            }
 
             return Error.OK;
         }

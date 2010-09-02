@@ -82,6 +82,11 @@ namespace Game.Logic
             return new Resource(0, 0, 0, lumber, 0);
         }
 
+        /// <summary>
+        /// Returns number of seconds it takes to get 1 labor
+        /// </summary>
+        /// <param name="laborTotal"></param>
+        /// <returns></returns>
         public static int GetLaborRate(int laborTotal)
         {
             if (laborTotal < 140) laborTotal = 140;

@@ -503,13 +503,9 @@ namespace Game.Map
 
     public class RoadPathFinder
     {
-        delegate List<Location> GetNeighbors(Location node);
-        
-        public static bool HasPath(Location start, Location end, City city, Location excludedPoint) {
-            return HasPath(start, end, city, excludedPoint, false);
-        }
+        delegate List<Location> GetNeighbors(Location node);        
 
-        public static bool HasPath(Location start, Location end, City city, Location excludedPoint, bool allowPassthroughNeighborStructures)
+        public static bool HasPath(Location start, Location end, City city, Location excludedPoint)
         {
             return BreadthFirst(new Location(end.x, end.y), new List<Location> { new Location(start.x, start.y) }, excludedPoint, delegate(Location node)
             {
@@ -534,8 +530,8 @@ namespace Game.Map
 
                 neighbors.AddRange(
                     possibleNeighbors.Where(
-                        location =>
-                        !(!allowPassthroughNeighborStructures && node.Equals(start) && SimpleGameObject.RadiusDistance(location.x, location.y, start.x, start.y) == 1 && Global.World[location.x, location.y].Exists(s => s is Structure)) && RoadManager.IsRoad(location.x, location.y) && SimpleGameObject.TileDistance(location.x, location.y, city.MainBuilding.X, city.MainBuilding.Y) <= city.Radius));
+                        location => 
+                         location.Equals(end) || (!Global.World[location.x, location.y].Exists(s => s is Structure) && RoadManager.IsRoad(location.x, location.y) && SimpleGameObject.TileDistance(location.x, location.y, city.MainBuilding.X, city.MainBuilding.Y) <= city.Radius)));
 
                 return neighbors;
             });

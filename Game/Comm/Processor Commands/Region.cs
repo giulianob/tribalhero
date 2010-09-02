@@ -72,6 +72,11 @@ namespace Game.Comm
                 {
                     if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1) return true;
 
+                    if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1) {
+                        hasRoad = true;
+                        return false;
+                    }
+
                     if (RoadManager.IsRoad(x1, y1) && !Global.World[x1, y1].Exists(s => s is Structure))
                     {
                         hasRoad = true;

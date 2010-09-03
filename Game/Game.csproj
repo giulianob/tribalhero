@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Game</RootNamespace>
+    <AssemblyName>Game</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'LauncherService %28Check Locks%29|AnyCPU' ">
+    <OutputPath>bin\LauncherService %28Check Locks%29\</OutputPath>
+    <DefineConstants>TRACE;CHECK_LOCKS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Game.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Game.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LauncherService %28Check Locks%29|x86'">
+    <OutputPath>bin\x86\LauncherService %28Check Locks%29\</OutputPath>
+    <DefineConstants>TRACE;CHECK_LOCKS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\LauncherService (Check Locks)\Game.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSScriptLibrary, Version=2.6.0.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\CSScriptLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data, Version=5.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\zlib.net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Battle\BattleFormulas.cs" />
+    <Compile Include="Battle\BattleManager.cs" />
+    <Compile Include="Battle\BattleOrder.cs" />
+    <Compile Include="Battle\BattleViewer.cs" />
+    <Compile Include="Battle\CombatList.cs" />
+    <Compile Include="Battle\CombatObject.cs" />
+    <Compile Include="Battle\CombatStructure.cs" />
+    <Compile Include="Battle\AttackCombatUnit.cs" />
+    <Compile Include="Battle\CombatUnitFactory.cs" />
+    <Compile Include="Comm\Commands.cs" />
+    <Compile Include="Comm\Packet.cs" />
+    <Compile Include="Comm\PacketHelper.cs" />
+    <Compile Include="Comm\Parameter.cs" />
+    <Compile Include="Comm\Processor Commands\Battle.cs" />
+    <Compile Include="Comm\Processor Commands\Events.cs" />
+    <Compile Include="Comm\Processor Commands\Login.cs" />
+    <Compile Include="Comm\Processor Commands\Player.cs" />
+    <Compile Include="Comm\Processor Commands\Region.cs" />
+    <Compile Include="Comm\Processor Commands\Structure.cs" />
+    <Compile Include="Comm\Processor Commands\Troop.cs" />
+    <Compile Include="Comm\Session.cs" />
+    <Compile Include="Comm\SocketSession.cs" />
+    <Compile Include="Comm\TcpServer.cs" />
+    <Compile Include="Comm\TcpWorker.cs" />
+    <Compile Include="Database\DbColumn.cs" />
+    <Compile Include="Database\DbDependency.cs" />
+    <Compile Include="Database\DbTransaction.cs" />
+    <Compile Include="Database\IDbManager.cs" />
+    <Compile Include="Database\IPersistable.cs" />
+    <Compile Include="Database\Managers\MySqlDbManager.cs" />
+    <Compile Include="Database\Managers\MySqlDbTransaction.cs" />
+    <Compile Include="Data\City.cs" />
+    <Compile Include="Comm\Processor.cs" />
+    <Compile Include="Data\Stats\TroopStats.cs" />
+    <Compile Include="Data\Effect.cs" />
+    <Compile Include="Data\Global.cs" />
+    <Compile Include="Data\Player.cs" />
+    <Compile Include="Data\Resource.cs" />
+    <Compile Include="Data\Structure.cs" />
+    <Compile Include="Data\Technology.cs" />
+    <Compile Include="Data\TechnologyManager.cs" />
+    <Compile Include="Data\Troop\Formation.cs" />
+    <Compile Include="Data\Troop\TroopManager.cs" />
+    <Compile Include="Data\Troop\UnitTemplate.cs" />
+    <Compile Include="Data\Troop\TroopObject.cs" />
+    <Compile Include="Data\Troop\TroopStub.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="Data\SimpleGameObject.cs" />
+    <Compile Include="Logic\Actions\ChainActions\AttackAction.cs" />
+    <Compile Include="Logic\Actions\ChainAction.cs" />
+    <Compile Include="Logic\Actions\MovementActions\TroopMoveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangeAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureSelfDestroyAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureBuildAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureChangeAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\TechDeleteAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\TechCreateAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\TechUpgradeAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\TechUpgradeOtherAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\BattleAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\EngageAttackAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\UnitTrainAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\UnitUpgradeAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureUpgradeAction.cs" />
+    <Compile Include="Logic\ActionWorker.cs" />
+    <Compile Include="Logic\GameAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logic\ActiveAction.cs" />
+    <Compile Include="Logic\IActionTime.cs" />
+    <Compile Include="Logic\PassiveAction.cs" />
+    <Compile Include="Logic\Requirements\EffectRequirement.cs" />
+    <Compile Include="Logic\Formulas\Formula.cs" />
+    <Compile Include="Logic\ICanDo.cs" />
+    <Compile Include="Logic\Actions\IScriptable.cs" />
+    <Compile Include="Logic\IHasEffect.cs" />
+    <Compile Include="Logic\ISchedule.cs" />
+    <Compile Include="Logic\Procedures\Procedure.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectCreate.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectDelete.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\LayoutRequirement.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\SimpleLayout.cs" />
+    <Compile Include="Logic\Requirements\RequirementFormula.cs" />
+    <Compile Include="Logic\ScheduledActiveAction.cs" />
+    <Compile Include="Logic\ScheduledPassiveAction.cs" />
+    <Compile Include="Logic\Scheduler.cs" />
+    <Compile Include="Map\MapMath.cs" />
+    <Compile Include="Map\ObjectLink.cs" />
+    <Compile Include="Map\ObjectList.cs" />
+    <Compile Include="Module\Market.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Map\Region.cs" />
+    <Compile Include="Map\World.cs" />
+    <Compile Include="Setup\ActionFactory.cs" />
+    <Compile Include="Setup\UnitFactory.cs" />
+    <Compile Include="Setup\EffectRequirementFactory.cs" />
+    <Compile Include="Setup\Error.cs" />
+    <Compile Include="Setup\InitFactory.cs" />
+    <Compile Include="Setup\StructureFactory.cs" />
+    <Compile Include="Setup\Config.cs" />
+    <Compile Include="Setup\Factory.cs" />
+    <Compile Include="Setup\Loader.cs" />
+    <Compile Include="Setup\PropertyFactory.cs" />
+    <Compile Include="Setup\ReqirementFactory.cs" />
+    <Compile Include="Setup\TechnologyFactory.cs" />
+    <Compile Include="Util\Channel.cs" />
+    <Compile Include="Util\CSVReader.cs" />
+    <Compile Include="Util\HexDump.cs" />
+    <Compile Include="Util\IChannel.cs" />
+    <Compile Include="Util\IdGenerator.cs" />
+    <Compile Include="Util\MathParser.cs" />
+    <Compile Include="Util\MultiObjectLock.cs" />
+    <Compile Include="Util\Shuffle.cs" />
+    <Compile Include="Util\Splitter.cs" />
+    <Compile Include="Util\UnixDateTime.cs" />
+    <Compile Include="Util\XMLSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <Compile Include="Battle\BattleReport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Battle\StatsModCalculator.cs" />
+    <Compile Include="Battle\ICombatUnit.cs" />
+    <Compile Include="Battle\DefenseCombatUnit.cs" />
+    <Compile Include="Battle\ReportedObjects.cs" />
+    <Compile Include="Comm\Processor Commands\Market.cs" />
+    <Compile Include="Database\DbLoader.cs" />
+    <Compile Include="Database\PersistableList.cs" />
+    <Compile Include="Data\GameObject.cs" />
+    <Compile Include="Data\ForestManager.cs" />
+    <Compile Include="Data\GameObjectState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\GlobalListLock.cs" />
+    <Compile Include="Data\LazyResource.cs" />
+    <Compile Include="Data\Stats\BaseBattleStats.cs" />
+    <Compile Include="Data\Stats\BaseStats.cs" />
+    <Compile Include="Data\Stats\BattleStats.cs" />
+    <Compile Include="Data\Stats\StructureBaseStats.cs" />
+    <Compile Include="Data\Stats\StructureStats.cs" />
+    <Compile Include="Data\Stats\UnitStats.cs" />
+    <Compile Include="Data\StructureProperties.cs" />
+    <Compile Include="Data\Forest.cs" />
+    <Compile Include="Data\Troop\TroopTemplate.cs" />
+    <Compile Include="Logic\ActionDispatcher.cs" />
+    <Compile Include="Logic\Actions\ChainActions\DefenseAction.cs" />
+    <Compile Include="Logic\Actions\ChainActions\RetreatAction.cs" />
+    <Compile Include="Logic\Actions\ChainExecuter.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\ObjectRemoveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\CityAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceSendAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCreatorAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampHarvestAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestDepleteAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceSellAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceBuyAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampBuildAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureUserDowngradeAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureDowngradeAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\LaborMoveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\PropertyCreateAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\StarveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\EngageDefenseAction.cs" />
+    <Compile Include="Logic\Formulas\Forest.cs" />
+    <Compile Include="Logic\Formulas\Ranking.cs" />
+    <Compile Include="Logic\Conditons\IBaseBattleStatsCondition.cs" />
+    <Compile Include="Logic\Conditons\ICombatObject.cs" />
+    <Compile Include="Logic\Conditons\ICityCondition.cs" />
+    <Compile Include="Logic\Conditons\IICombatUnitCondition.cs" />
+    <Compile Include="Logic\Conditons\IStructureCondition.cs" />
+    <Compile Include="Logic\Formulas\Cost.cs" />
+    <Compile Include="Logic\Formulas\Troop.cs" />
+    <Compile Include="Logic\Formulas\Time.cs" />
+    <Compile Include="Logic\NotificationManager.cs" />
+    <Compile Include="Logic\Procedures\BattleProcedures.cs" />
+    <Compile Include="Logic\Procedures\Ranking.cs" />
+    <Compile Include="Logic\Procedures\OnActionCallback.cs" />
+    <Compile Include="Logic\Procedures\RandomizeResource.cs" />
+    <Compile Include="Logic\Procedures\ResourceCap.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectCreateFromStation.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectStation.cs" />
+    <Compile Include="Logic\ReferenceManager.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />
+    <Compile Include="Logic\SystemVariablesUpdater.cs" />
+    <Compile Include="Map\CityRegion.cs" />
+    <Compile Include="Map\RoadManager.cs" />
+    <Compile Include="Module\Npc.cs" />
+    <Compile Include="Logic\Randomizer.cs" />
+    <Compile Include="Setup\ASCIIStream.cs" />
+    <Compile Include="Setup\ConditionFactory.cs" />
+    <Compile Include="Setup\ForestFactory.cs" />
+    <Compile Include="Setup\MapFactory.cs" />
+    <Compile Include="Setup\ObjectTypeFactory.cs" />
+    <Compile Include="Setup\SystemVariable.cs" />
+    <Compile Include="Util\DataTypeSerializer.cs" />
+    <Compile Include="Util\LargeIdGenerator.cs" />
+    <Compile Include="Util\ListDictionary.cs" />
+    <Compile Include="Util\SmallIdGenerator.cs" />
+    <Compile Include="Util\SystemClock.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="log4net.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logic\Requirements\RequirementFormulas\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"
+
+if exist "$(TargetPath)" if not exist "$(TargetPath).locked" move "$(TargetPath)" "$(TargetPath).locked"</PreBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -105,10 +105,6 @@ namespace Game.Setup {
 
                 settingsFile = Path.GetFullPath(settingsFile);
 
-                if (!File.Exists(settingsFile)) {
-                    return;
-                }
-
                 using (StreamReader file = new StreamReader(File.Open(settingsFile, FileMode.Open))) {
                     string line;
                     while ((line = file.ReadLine()) != null) {
@@ -144,8 +140,6 @@ namespace Game.Setup {
                                 field.SetValue(null, value);
                                 break;
                         }
-
-                        Global.Logger.Info(key + "=" + value);
                     }
                 }
             }

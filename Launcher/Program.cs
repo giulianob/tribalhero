@@ -2,12 +2,14 @@
 
 using System;
 using Game.Setup;
+using log4net.Config;
 
 #endregion
 
 namespace Launcher {
     public class Program {
         public static void Main(string[] args) {
+            XmlConfigurator.Configure();
             Factory.CompileConfigFiles();
             CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 

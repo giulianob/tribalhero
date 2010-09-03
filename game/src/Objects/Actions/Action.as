@@ -13,11 +13,11 @@ package src.Objects.Actions {
 	public class Action {
 		
 		public static const groups: Object = [
-			{ name: "Build", actions: [ BuildButton ] },
-			{ name: "Train", actions: [ TrainButton] },
-			{ name: "Upgrade", actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
-			{ name: "Research", actions: [ TechnologyButton ] },			
-			{ name: "Other", actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton ] },
+			{ name: "Build", icon: ICON_HAMMER, actions: [ BuildButton ] },
+			{ name: "Train", icon: ICON_SINGLE_SWORD, actions: [ TrainButton] },
+			{ name: "Upgrade", icon: ICON_UPGRADE, actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
+			{ name: "Research", icon: ICON_BOOK, actions: [ TechnologyButton ] },			
+			{ name: "Other", icon: ICON_QUESTION, actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton ] },
 		];
 		
 		public static const OPTION_UNCANCELABLE: int = 1;

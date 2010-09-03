@@ -29,7 +29,7 @@
 			frame = new GameJFrame(owner, "", false, onDispose);
 			GameLookAndFeel.changeClass(frame, "Sidebar.frame");
 			frame.setContentPane(this);
-			setBorder(new EmptyBorder(getBorder(), new Insets(15, 22, 35, 25)));
+			setBorder(new EmptyBorder(getBorder(), new Insets(0, 8, 5, 8)));
 
 			var self: JPanel = this;
 

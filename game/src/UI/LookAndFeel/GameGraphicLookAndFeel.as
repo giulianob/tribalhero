@@ -1149,6 +1149,7 @@ package src.UI.LookAndFeel
 			"Class.Sidebar.frame", [
 			"Frame.activeBG", Sidebar_frame_activeBG,
 			"Frame.inactiveBG", Sidebar_frame_activeBG, // use same img as active for now
+			"Frame.border", new SkinEmptyBorder(-3, 5, 5, 5)
 			]
 			];
 			table.putDefaults(comDefaults);
@@ -1295,7 +1296,7 @@ package src.UI.LookAndFeel
 			"TabbedPane.arrowRight.disabledImage", TabbedPane_arrowRight_disabledImage,
 			"TabbedPane.arrowRight.rolloverImage", TabbedPane_arrowRight_rolloverImage,
 
-			"TabbedPane.contentMargin", new InsetsUIResource(20, 20, 20, 20), //modify this to fit TabbedPane_contentRoundImage
+			"TabbedPane.contentMargin", new InsetsUIResource(5, 15, 20, 15), //modify this to fit TabbedPane_contentRoundImage
 			"TabbedPane.top.contentRoundImage", TabbedPane_top_contentRoundImage,
 			"TabbedPane.bottom.contentRoundImage", TabbedPane_bottom_contentRoundImage,
 			"TabbedPane.left.contentRoundImage", TabbedPane_left_contentRoundImage,

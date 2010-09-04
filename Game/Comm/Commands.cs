@@ -82,6 +82,7 @@ namespace Game.Comm {
         TECH_UPGRADE = 312,
         TECH_REMOVED = 313,
         TECH_UPGRADED = 314,
+        TECH_CLEARED = 315,
 
         #endregion
 

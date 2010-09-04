@@ -18,7 +18,9 @@ namespace Game.Logic.Actions {
             if (obj == null)
                 return Error.OBJECT_NOT_FOUND;
 
+            obj.Technologies.BeginUpdate();
             obj.Technologies.Clear();
+            obj.Technologies.EndUpdate();
 
             StateChange(ActionState.COMPLETED);
 

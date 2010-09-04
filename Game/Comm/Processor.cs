@@ -95,7 +95,9 @@ namespace Game.Comm {
         }
 
         public virtual void Execute(Session session, Packet packet) {
+#if DEBUG || CHECK_LOCKS
             Global.Logger.Info(packet.ToString(32));
+#endif
 
             lock (session) {
                 ProcessorCommand command;
@@ -107,7 +109,10 @@ namespace Game.Comm {
         }
 
         public virtual void ExecuteEvent(Session session, Packet packet) {
+#if DEBUG || CHECK_LOCKS
             Global.Logger.Info("Event: " + packet.ToString(32));
+#endif
+
             lock (session) {
                 events[packet.Cmd].function(session, packet);
             }

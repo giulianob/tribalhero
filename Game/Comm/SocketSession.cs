@@ -19,7 +19,10 @@ namespace Game.Comm {
         }
 
         public override bool Write(Packet packet) {
+#if DEBUG || CHECK_LOCKS
             Global.Logger.Info("Sending: " + packet.ToString(32));
+#endif
+
             byte[] packetBytes = packet.GetBytes();
             int ret;
             if (socket == null)

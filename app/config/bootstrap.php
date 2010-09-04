@@ -42,6 +42,8 @@
  */
 //EOF
 
+Configure::write('Client.version', '1.0');
+
 date_default_timezone_set('UTC');
 	
 define('TROOP_STATE_ENTERING', 0);

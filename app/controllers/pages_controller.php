@@ -88,14 +88,19 @@ class PagesController extends AppController {
         header("Cache-Control: no-cache, must-revalidate");
         header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
-        $this->pageTitle = 'Play';
+		$this->set('title_for_layout', 'Play');
+		
         $this->layout = 'game';
 
         $loginKey = sha1($this->Auth->user('id') + '.' + time() + '.' + rand(0,1000));
 
         $player =& ClassRegistry::init('Player');
 
-        if (!$player->save(array(
+		$playerInfo = $player->findById($this->Auth->user('id'));
+		
+		if (!empty($playerInfo['Player']['login_key']) && time() - strtotime($playerInfo['Player']['login_key_date']) < 300) {
+			$loginKey = $playerInfo['Player']['login_key'];
+		} else if (!$player->save(array(
         'id' => $this->Auth->user('id'),
         'login_key_date' => date('Y-m-d H:i:s'),
         'login_key' => $loginKey
@@ -103,9 +108,8 @@ class PagesController extends AppController {
             $this->Session->setFlash('We were unable to log you into the world. Refresh this page to try again, if the problem persists, contact us.');
             $this->redirect('/');
         }
-        else {
-            $this->set('lsessid', $loginKey);
-        }
+        
+        $this->set('lsessid', $loginKey);        
     }
 
     function game_popup() {

@@ -162,7 +162,7 @@
 							bytes.writeByte(parameters[i].obj);
 							
 						else if (parameters[i].destType == Parameter.INT2)
-							bytes.writeInt(parameters[i].obj);						
+							bytes.writeShort(parameters[i].obj);						
 							
 						else if (parameters[i].destType == Parameter.UINT2)
 							bytes.writeShort(parameters[i].obj);						

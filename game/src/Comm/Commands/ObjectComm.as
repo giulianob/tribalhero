@@ -225,7 +225,7 @@
 		}
 
 		public function onReceiveForestInfo(packet: Packet, custom: * ) : void {
-			if (mapComm.tryShowError(packet)) return;
+			if (MapComm.tryShowError(packet)) return;
 
 			var forest: Forest = custom as Forest;
 
@@ -272,7 +272,7 @@
 
 		public function onReceiveStructureInfo(packet: Packet, custom: *):void
 		{
-			if (mapComm.tryShowError(packet)) return;
+			if (MapComm.tryShowError(packet)) return;
 
 			var obj:StructureObject = custom as StructureObject;
 

@@ -56,7 +56,7 @@ package src.Objects.Prototypes {
 		{
 			loadPrototype();
 
-			var desc: String = "At least " + mindist.toString() + " from all " + structPrototype.getName();
+			var desc: String = "At least " + mindist.toString() + " radius from all " + structPrototype.getName();
 			
 			if (minlevel > 1) {
 				 desc += " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")";

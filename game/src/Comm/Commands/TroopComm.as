@@ -156,7 +156,7 @@
 
 		public function onReceiveTroopInfo(packet: Packet, custom: * ):void
 		{
-			if (mapComm.tryShowError(packet)) return;
+			if (MapComm.tryShowError(packet)) return;
 
 			var obj: TroopObject = custom as TroopObject;
 			obj.troop = new TroopStub();

@@ -142,13 +142,6 @@
 			sidebarHolder.y = 60;
 			addChildAt(sidebarHolder, 1);
 
-			addEventListener(Event.ADDED_TO_STAGE, function(e: Event = null): void {
-				if (!resizeManager) {
-					// Set up auto resizer
-					resizeManager = new ResizeManager(stage);
-				}
-			});
-
 			//Set up resources timer
 			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);
 			resourcesTimer.start();
@@ -295,8 +288,6 @@
 			if (lstCities.getItemCount() > 0) { //set a default city selection
 				lstCities.setSelectedIndex(0);
 				selectedCity = lstCities.getSelectedItem().city;
-				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
-				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
 			}
 			else {
 				map.onMove();
@@ -310,6 +301,8 @@
 			addChild(minimapTools);
 
 			// Add objects to resize manager
+			resizeManager = new ResizeManager(stage);
+
 			resizeManager.addObject(this.mapOverlay, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
@@ -322,6 +315,12 @@
 			resizeManager.addEventListener(Event.RESIZE, message.onResize);
 
 			resizeManager.forceMove();
+
+			// Scroll to city center
+			if (selectedCity) {
+				var pt: Point = MapUtil.getScreenCoord(selectedCity.MainBuilding.x, selectedCity.MainBuilding.y);
+				src.Global.gameContainer.camera.ScrollToCenter(pt.x, pt.y);
+			}
 
 			//Set minimap position and initial state
 			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
@@ -388,6 +387,8 @@
 				map = null;
 				miniMap = null;
 			}
+
+			resizeManager = null;
 		}
 
 		private function alignMinimapTools() : void {

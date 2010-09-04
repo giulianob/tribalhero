@@ -49,6 +49,9 @@
 				case Commands.NOTIFICATION_REMOVE:
 					onReceiveRemoveNotification(e.packet);
 				break;
+				case Commands.TECHNOLOGY_CLEARED:
+					onReceiveTechnologyCleared(e.packet);
+				break;
 				case Commands.TECHNOLOGY_ADDED:
 				case Commands.TECHNOLOGY_REMOVED:
 				case Commands.TECHNOLOGY_UPGRADED:
@@ -200,6 +203,44 @@
 			}
 
 			city.objects.remove(objId);
+		}
+		
+		public function onReceiveTechnologyCleared(packet: Packet):void {
+			var cityId: int = packet.readUInt();
+			var ownerId: int = packet.readUInt();
+			
+			var ownerLocation: int = EffectPrototype.LOCATION_OBJECT;
+
+			if (ownerId == 0)
+			{
+				ownerId = cityId;
+				ownerLocation = EffectPrototype.LOCATION_CITY;
+			}
+
+			var city: City = Global.map.cities.get(cityId);
+
+			if (city == null) {
+				trace("Received technology notification for unknown city");
+				return;
+			}
+
+			if (ownerLocation == EffectPrototype.LOCATION_OBJECT)
+			{
+				var cityObj: CityObject = city.objects.get(ownerId);
+
+				if (cityObj == null) {
+					trace("Received technology notification for unknown city object");
+					return;
+				}
+
+				cityObj.techManager.clear();
+			}
+			else if (ownerLocation == EffectPrototype.LOCATION_CITY)
+			{
+				city.techManager.clear();
+			}
+
+			if (Global.map.selectedObject != null) Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));			
 		}
 
 		public function onReceiveTechnologyChanged(packet: Packet):void
@@ -358,7 +399,7 @@
 		}		
 
 		public function onReceiveCityLocation(packet: Packet, custom: * ): void {
-			if (mapComm.tryShowError(packet)) return;			
+			if (MapComm.tryShowError(packet)) return;			
 			var pt: Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}

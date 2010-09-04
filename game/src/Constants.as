@@ -2,6 +2,9 @@ package src
 {
 	public class Constants
 	{
+		public static var version: int = 1;
+		public static var revision: int = 0;
+		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";
 		public static var hostname: String = "local.tribalhero.com";

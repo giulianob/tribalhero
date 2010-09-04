@@ -111,7 +111,7 @@
 
 		public static function movementIconTroopSize(troopStub: TroopStub) : int {
 			var upkeep: int = troopStub.getUpkeep();
-			return Math.min(4, upkeep / 100);
+			return Math.min(4, upkeep / 60);
 		}
 
 		public static function laborRate(city: City) : int {

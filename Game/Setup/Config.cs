@@ -12,6 +12,9 @@ namespace Game.Setup {
 
     public class Config {
 
+        public static readonly int client_min_version = 1;
+        public static readonly int client_min_revision = 0;
+
         public static readonly int server_port = 48888;
         public static readonly string server_listen_address = "0.0.0.0";
 

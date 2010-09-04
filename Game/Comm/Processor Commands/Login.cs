@@ -32,6 +32,8 @@ namespace Game.Comm {
             Packet reply = new Packet(packet);
             reply.Option |= (ushort)Packet.Options.COMPRESSED;
 
+            short clientVersion;
+            short clientRevision;
             byte loginMode;
             string loginKey = string.Empty;
             string playerName = string.Empty;
@@ -40,6 +42,8 @@ namespace Game.Comm {
             uint playerId;
 
             try {
+                clientVersion = packet.GetInt16();
+                clientRevision = packet.GetInt16();
                 loginMode = packet.GetByte();
                 if (loginMode == 0)
                     loginKey = packet.GetString();
@@ -52,6 +56,11 @@ namespace Game.Comm {
                 ReplyError(session, packet, Error.UNEXPECTED);
                 session.CloseSession();
                 return;
+            }
+
+            if (clientVersion < Config.client_min_version || clientRevision < Config.client_min_revision) {
+                ReplyError(session, packet, Error.CLIENT_OLD_VERSION);                
+                session.CloseSession();
             }
 
             if (Config.database_load_players) {
@@ -79,7 +88,7 @@ namespace Game.Comm {
                 }
 
                 if (!reader.HasRows) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.INVALID_LOGIN);
                     session.CloseSession();
                     return;
                 }

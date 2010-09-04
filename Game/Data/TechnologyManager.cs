@@ -10,24 +10,29 @@ using Game.Util;
 namespace Game.Data {
     public class TechnologyManager : IHasEffect, IEnumerable<Technology>, IPersistableList {
         private readonly List<Technology> technologies = new List<Technology>();
-        private readonly EffectLocation ownerLocation;
-        private uint ownerId;
-        private readonly object owner;
+
+        public EffectLocation OwnerLocation { get; private set; }
+
+        public uint OwnerId { get; private set; }
+
+        public object Owner { get; private set; }
 
         #region Events
 
         public delegate void TechnologyUpdatedCallback(Technology tech);
+        public delegate void TechnologyClearedCallback(TechnologyManager manager);
 
         public event TechnologyUpdatedCallback TechnologyAdded;
         public event TechnologyUpdatedCallback TechnologyRemoved;
         public event TechnologyUpdatedCallback TechnologyUpgraded;
+        public event TechnologyClearedCallback TechnologyCleared;
 
         #endregion
 
         public TechnologyManager(EffectLocation location, object owner, uint ownerId) {
-            ownerLocation = location;
-            this.owner = owner;
-            this.ownerId = ownerId;
+            OwnerLocation = location;
+            Owner = owner;
+            OwnerId = ownerId;
         }
 
         public int TechnologyCount {
@@ -36,22 +41,22 @@ namespace Game.Data {
 
         public int OwnedTechnologyCount {
             get {
-                return technologies.Count(tech => tech.ownerLocation == ownerLocation);
+                return technologies.Count(tech => tech.ownerLocation == OwnerLocation);
             }
         }
 
         public TechnologyManager Parent { get; set; }
 
         public uint Id {
-            get { return ownerId; }
-            set { ownerId = value; }
+            get { return OwnerId; }
+            set { OwnerId = value; }
         }
 
         #region Add/Remove
 
         private void AddChildCopy(Technology tech) {
             //only add tech if it applies to this tech manager
-            if (!tech.Effects.Exists(effect => effect.location == ownerLocation))
+            if (!tech.Effects.Exists(effect => effect.location == OwnerLocation))
                 return;
 
             technologies.Add(tech);
@@ -67,11 +72,11 @@ namespace Game.Data {
         public bool Add(Technology tech, bool notify) {
             CheckUpdateMode();
             
-            if (technologies.Exists(technology => technology.Type == tech.Type && technology.ownerLocation == ownerLocation && technology.ownerId == ownerId))
+            if (technologies.Exists(technology => technology.Type == tech.Type && technology.ownerLocation == OwnerLocation && technology.ownerId == OwnerId))
                 return false;
 
-            tech.ownerId = ownerId;
-            tech.ownerLocation = ownerLocation;
+            tech.ownerId = OwnerId;
+            tech.ownerLocation = OwnerLocation;
             technologies.Add(tech);
 
             if (Parent != null)
@@ -103,17 +108,20 @@ namespace Game.Data {
 
             for (int i = technologies.Count - 1; i >= 0; i--) {
                 Technology tech = technologies[i];
-                if (tech.ownerId != ownerId || tech.ownerLocation != ownerLocation)
+                if (tech.ownerId != OwnerId || tech.ownerLocation != OwnerLocation)
                     continue;
 
                 technologies.RemoveAt(i);
                 if (Parent != null)
                     Parent.RemoveChildCopy(tech, false);
             }
+
+            if (TechnologyCleared != null)
+                TechnologyCleared(this);
         }
 
         private bool Remove(uint techType, bool notify) {
-            Technology tech = technologies.Find(technology => technology.Type == techType && technology.ownerId == ownerId && technology.ownerLocation == ownerLocation);
+            Technology tech = technologies.Find(technology => technology.Type == techType && technology.ownerId == OwnerId && technology.ownerLocation == OwnerLocation);
 
             if (tech == null)
                 return false;
@@ -145,7 +153,7 @@ namespace Game.Data {
         public List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit) {
             List<Effect> list = new List<Effect>();
             foreach (Technology tech in technologies)
-                list.AddRange(tech.GetEffects(effectCode, inherit, ownerLocation));
+                list.AddRange(tech.GetEffects(effectCode, inherit, OwnerLocation));
             if ((inherit & EffectInheritance.UPWARD) == EffectInheritance.UPWARD) {
                 if (Parent != null)
                     list.AddRange(Parent.GetEffects(effectCode, EffectInheritance.UPWARD | EffectInheritance.SELF));
@@ -188,15 +196,15 @@ namespace Game.Data {
             if (!updating)
                 throw new Exception("Changed state outside of begin/end update block");
 
-            switch (ownerLocation) {
+            switch (OwnerLocation) {
                 case EffectLocation.CITY:
-                    MultiObjectLock.ThrowExceptionIfNotLocked((City) owner);
+                    MultiObjectLock.ThrowExceptionIfNotLocked((City) Owner);
                     break;
                 case EffectLocation.OBJECT:
-                    MultiObjectLock.ThrowExceptionIfNotLocked(((Structure) owner).City);
+                    MultiObjectLock.ThrowExceptionIfNotLocked(((Structure) Owner).City);
                     break;
                 case EffectLocation.PLAYER:
-                    MultiObjectLock.ThrowExceptionIfNotLocked((Player) owner);
+                    MultiObjectLock.ThrowExceptionIfNotLocked((Player) Owner);
                     break;
             }
         }
@@ -219,13 +227,13 @@ namespace Game.Data {
         #endregion
 
         public void Print() {
-            Global.Logger.Info("Printing TechnologyManager Location:" + ownerLocation);
+            Global.Logger.Info("Printing TechnologyManager Location:" + OwnerLocation);
             foreach (Technology tech in technologies)
                 tech.Print();
         }
 
         public bool TryGetTechnology(uint techType, out Technology technology) {
-            technology = technologies.Find(tech => tech.Type == techType && tech.ownerId == ownerId && tech.ownerLocation == ownerLocation);
+            technology = technologies.Find(tech => tech.Type == techType && tech.ownerId == OwnerId && tech.ownerLocation == OwnerLocation);
 
             return technology != null;
         }
@@ -251,7 +259,7 @@ namespace Game.Data {
         public IEnumerable<Effect> GetAllEffects(EffectInheritance inherit) {
             List<Effect> list = new List<Effect>();
             foreach (Technology tech in technologies)
-                list.AddRange(tech.GetAllEffects(inherit, ownerLocation));
+                list.AddRange(tech.GetAllEffects(inherit, OwnerLocation));
             if ((inherit & EffectInheritance.UPWARD) == EffectInheritance.UPWARD) {
                 if (Parent != null)
                     list.AddRange(Parent.GetAllEffects(EffectInheritance.UPWARD | EffectInheritance.SELF));
@@ -272,9 +280,9 @@ namespace Game.Data {
         public DbColumn[] DbPrimaryKey {
             get {
                 return new[] {
-                                 new DbColumn("city_id", owner is Structure ? (owner as Structure).City.Id : (owner is City ? (owner as City).Id : 0), DbType.UInt32),
-                                 new DbColumn("owner_id", ownerId, DbType.UInt32), 
-                                 new DbColumn("owner_location", (byte) ownerLocation, DbType.Byte)
+                                 new DbColumn("city_id", Owner is Structure ? (Owner as Structure).City.Id : (Owner is City ? (Owner as City).Id : 0), DbType.UInt32),
+                                 new DbColumn("owner_id", OwnerId, DbType.UInt32), 
+                                 new DbColumn("owner_location", (byte) OwnerLocation, DbType.Byte)
                              };
             }
         }
@@ -299,7 +307,7 @@ namespace Game.Data {
 
         IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
             foreach (Technology tech in technologies) {
-                if (tech.ownerLocation != ownerLocation || tech.ownerId != ownerId)
+                if (tech.ownerLocation != OwnerLocation || tech.ownerId != OwnerId)
                     continue;
 
                 yield return new[] {new DbColumn("type", tech.Type, DbType.UInt16), new DbColumn("level", tech.Level, DbType.Byte)};

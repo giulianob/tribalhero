@@ -33,6 +33,7 @@
 		private var session:TcpSession;
 		private var password: String;
 		private var parms: Object;
+		private var hadLoginError: Boolean;
 
 		private var loginDialog: LoginDialog;
 
@@ -134,8 +135,8 @@
 		{
 			session = new TcpSession();
 			session.setConnect(onConnected);
-			session.setDisconnect(onDisconnected);
 			session.setLogin(onLogin);
+			session.setDisconnect(onDisconnected);
 			session.setSecurityErrorCallback(onSecurityError);
 			session.connect(Constants.hostname);
 		}
@@ -163,7 +164,7 @@
 			if (Constants.debug > 0) InfoDialog.showMessageDialog("Security Error", event.toString());
 		}
 
-		public function onDisconnected(event: Event):void
+		public function onDisconnected(event: Event = null):void
 		{
 			gameContainer.dispose();
 
@@ -171,14 +172,12 @@
 			Global.map = null;
 			session = null;
 
-			if (parms.hostname)
-			{
-				InfoDialog.showMessageDialog("Connection Lost", "Connection to Server Lost. Refresh the page to rejoin the battle.", null, null, true, false);
+			if (!hadLoginError) {
+				if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", "Connection to Server Lost. Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
+				else InfoDialog.showMessageDialog("Connection Lost", "Connection to server lost", function(result: int):void { if (!parms.hostname) showLoginDialog(); }, null, true, false, 1, true);
 			}
-			else
-			{
-				InfoDialog.showMessageDialog("Connection Lost", "Connection to server lost", function(result: int):void { if (!parms.hostname) showLoginDialog(); } );
-			}
+			
+			hadLoginError = false;
 		}
 
 		public function onConnected(event: Event, connected: Boolean):void
@@ -206,12 +205,12 @@
 
 		public function onLogin(packet: Packet):void
 		{
-			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
-			{
-				password = '';
-				InfoDialog.showMessageDialog("Error", "Username or password was incorrect");
+			if (MapComm.tryShowError(packet, function(result: int) : void { hadLoginError = false; onDisconnected(); } , true)) {
+				hadLoginError = true;
 				return;
 			}
+
+			session.setLoginSuccess(true);
 
 			if (loginDialog != null) loginDialog.getFrame().dispose();
 

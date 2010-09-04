@@ -95,7 +95,7 @@ package src.Objects {
 
 					var objectSelection: ObjectSelectDialog = new ObjectSelectDialog(multiObjects,
 					function(sender: ObjectSelectDialog):void {
-						Global.map.selectObject((sender as ObjectSelectDialog).selectedObject);
+						Global.map.selectObject((sender as ObjectSelectDialog).selectedObject, true, true);
 						sender.getFrame().dispose();
 					}
 					);
@@ -104,7 +104,7 @@ package src.Objects {
 				}
 				else
 				{
-					Global.map.selectObject(highlightedObject);
+					Global.map.selectObject(highlightedObject, true, true);
 				}
 				resetHighlightedObject();
 				e.stopImmediatePropagation();

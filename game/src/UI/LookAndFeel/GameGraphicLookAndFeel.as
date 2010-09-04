@@ -1149,7 +1149,7 @@ package src.UI.LookAndFeel
 			"Class.Sidebar.frame", [
 			"Frame.activeBG", Sidebar_frame_activeBG,
 			"Frame.inactiveBG", Sidebar_frame_activeBG, // use same img as active for now
-			"Frame.border", new SkinEmptyBorder(-3, 5, 5, 5)
+			"Frame.border", new SkinEmptyBorder(-3, 5, 10, 5)
 			]
 			];
 			table.putDefaults(comDefaults);

@@ -26,5 +26,9 @@
 		function removeEventListener(type:String, listener:Function, useCapture:Boolean = false): void;
 		
 		function willTrigger(type:String): Boolean;
+		
+		function hasLoginSuccess() : Boolean;
+		
+		function setLoginSuccess(bool: Boolean): void;
 	}
 }

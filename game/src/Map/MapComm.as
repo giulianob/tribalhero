@@ -35,12 +35,12 @@
 			Messaging = new MessagingComm(this);
 		}
 
-		public function tryShowError(packet: Packet) : Boolean {
+		public static function tryShowError(packet: Packet, callback: Function = null, showDirectlyToStage: Boolean = false) : Boolean {
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{
 				var err: int = packet.readUInt();
 
-				GameError.showMessage(err);
+				GameError.showMessage(err, callback, showDirectlyToStage);
 				return true;
 			}
 

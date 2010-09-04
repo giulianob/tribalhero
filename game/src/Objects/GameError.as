@@ -16,9 +16,9 @@
 			return "An unexpected error occurred. [" + errorCode + "]";
 		}
 
-		public static function showMessage(errorCode: int, callback: Function = null) : void
+		public static function showMessage(errorCode: int, callback: Function = null, showDirectlyToStage: Boolean = false) : void
 		{
-			InfoDialog.showMessageDialog("Error", getMessage(errorCode), callback);
+			InfoDialog.showMessageDialog("Error", getMessage(errorCode), callback, null, true, true, 1, showDirectlyToStage);
 		}
 
 	}

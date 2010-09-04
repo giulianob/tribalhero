@@ -25,7 +25,8 @@
 				id: "7d9c5048045d1086",
 				clip: _clip,
 				ad_finished: startup,
-				res:"976x640"
+				res:"976x640",
+				no_bg:true
 			} );
 		}
 

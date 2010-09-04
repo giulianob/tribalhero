@@ -24,6 +24,8 @@
 		private var streamingPacket: ByteArray;
 		private var headerPacket: Packet;
 		
+		private var loginSuccess: Boolean;
+		
 		//Events
 		private var onConnectCallback: Function;
 		private var onDisconnectCallback: Function;
@@ -49,6 +51,14 @@
 			socket.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
 			socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,securityErrorHandler);
 			socket.addEventListener(ProgressEvent.SOCKET_DATA, socketDataHandler);
+		}
+		
+		public function hasLoginSuccess() : Boolean {
+			return loginSuccess;
+		}
+		
+		public function setLoginSuccess(bool: Boolean): void {
+			loginSuccess = bool;
 		}
 		
 		public function setReceive(callback: Function): void
@@ -80,6 +90,10 @@
 		{			
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.LOGIN;			
+			
+			packet.writeShort(Constants.version);
+			packet.writeShort(Constants.revision);
+			
 			if (passwd == null)
 			{
 				packet.writeUByte(0);

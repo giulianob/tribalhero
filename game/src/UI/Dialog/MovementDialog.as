@@ -125,8 +125,8 @@
 			if (troop.getIndividualUnitCount() == 0)
 			{
 				return;
-			}			
-			
+			}
+
 			var cursor: GroundAttackCursor = new GroundAttackCursor();
 
 			cursor.init(troop, dialog.getMode(), city.id);
@@ -200,7 +200,7 @@
 
 			setSize(new IntDimension(Math.min(976, Constants.screenW), Math.min(640, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
 
-			pnlContainer = new JPanel(new EmptyLayout());			
+			pnlContainer = new JPanel(new EmptyLayout());
 			pnlContainer.setSize(new IntDimension(976, 640));
 			pnlContainer.scaleX = getSize().width / 976;
 			pnlContainer.scaleY = getSize().height / 640;
@@ -216,7 +216,7 @@
 			localTroopIcon.buttonMode = true;
 			localTroopIcon.setBorder(null);
 			localTroopIcon.pack();
-			localTroopIcon.setLocation(new IntPoint(150, 420));
+			localTroopIcon.setLocation(new IntPoint(190, 420));
 			pnlContainer.append(localTroopIcon);
 
 			myStubs = new TroopStubGridList(city);
@@ -226,7 +226,7 @@
 			myStubs.setRows(0);
 
 			var scrollMyStubs: JScrollPane = new JScrollPane(myStubs);
-			scrollMyStubs.setLocation(new IntPoint(500, 480));
+			scrollMyStubs.setLocation(new IntPoint(560, 480));
 			scrollMyStubs.setSize(new IntDimension(350, 150));
 			pnlContainer.append(scrollMyStubs);
 
@@ -249,7 +249,7 @@
 			stationedAway.setRows(0);
 
 			var scrollStationedAway: JScrollPane = new JScrollPane(stationedAway);
-			scrollStationedAway.setLocation(new IntPoint(570, 215));
+			scrollStationedAway.setLocation(new IntPoint(555, 215));
 			scrollStationedAway.setSize(new IntDimension(350, 150));
 			pnlContainer.append(scrollStationedAway);
 

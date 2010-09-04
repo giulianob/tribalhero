@@ -5,7 +5,6 @@ package src.UI.Sidebars.ObjectInfo {
 	import flash.events.*;
 	import flash.geom.Point;
 	import flash.text.*;
-	import flash.text.engine.GroupElement;
 	import flash.utils.Timer;
 	import src.Constants;
 	import src.Global;
@@ -17,7 +16,6 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.UI.*;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
-	import src.UI.Components.SimpleTooltip;
 	import src.UI.Components.StarRating;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
 	import src.Util.BinaryList.*;
@@ -199,8 +197,10 @@ package src.UI.Sidebars.ObjectInfo {
 					pnlGroup.append(groupButton);
 				}
 
-				pnlGroups.appendTab(pnlGroup, "", new AssetIcon(new group.icon()));				
+				pnlGroups.appendTab(pnlGroup, "", new AssetIcon(new group.icon()));
 			}
+
+			pnlGroups.setVisible(pnlGroups.getTabCount() > 0);
 
 			if (city == null) return;
 
@@ -381,14 +381,11 @@ package src.UI.Sidebars.ObjectInfo {
 			pnlStats = new Form();
 
 			pnlGroups = new JTabbedPane();
-			//pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			//pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));
-
+			
 			pnlActions = new JPanel();
 			pnlActions.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 
 			//component layoution
-			//append(lblName);
 			append(pnlStats);
 			append(pnlGroups);
 			append(pnlActions);

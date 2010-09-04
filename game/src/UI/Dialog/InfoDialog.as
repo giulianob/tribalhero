@@ -93,7 +93,7 @@ public class InfoDialog extends GameJPanel {
 		button.addActionListener(function():void{ f.tryToClose(); });
 	}
 	
-	public static function showMessageDialog(title:String, msg:String, finishHandler:Function=null, parentComponent:Component=null, modal:Boolean=true, closable:Boolean=true, buttons:int=1):InfoDialog{		
+	public static function showMessageDialog(title:String, msg:String, finishHandler:Function=null, parentComponent:Component=null, modal:Boolean=true, closable:Boolean=true, buttons:int=1, showDirectlyToStage: Boolean = false):InfoDialog{		
 		var pane:InfoDialog = new InfoDialog();
 		pane.getInputText().setVisible(false);
 		pane.setMessage(msg);				
@@ -149,7 +149,12 @@ public class InfoDialog extends GameJPanel {
 		pane.frame.setClosable(closable);		
 		pane.frame.pack();
 		
-		Global.gameContainer.showFrame(pane.frame);
+		if (!showDirectlyToStage) {
+			Global.gameContainer.showFrame(pane.frame);
+		} else {
+			pane.frame.show();
+		}
+				
 		return pane;
 	}
 	

@@ -48,6 +48,7 @@ package src.Comm {
 		public static const TECHNOLOGY_UPGRADE: int = 312;
 		public static const TECHNOLOGY_REMOVED: int = 313;
 		public static const TECHNOLOGY_UPGRADED: int = 314;
+		public static const TECHNOLOGY_CLEARED: int = 315;
 		
         public static const CITY_OBJECT_ADD: int  = 451;
         public static const CITY_OBJECT_UPDATE: int  = 452;

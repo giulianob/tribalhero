@@ -23,7 +23,7 @@ background-image: none;
 	var attributes = {
             id: "Game"
         };
-	swfobject.embedSWF("files/Game.swf?mtime=<?php echo filemtime("files/Game.swf") ?> ", "flash-content", "100%", "100%", "10.0.0", "files/expressInstall.swf", flashvars, params, attributes);
+	swfobject.embedSWF("files/Game.swf?version=<?php echo Configure::read('Client.version'); ?> ", "flash-content", "100%", "100%", "10.0.0", "files/expressInstall.swf", flashvars, params, attributes);
 </script>
 		
 <div id="game-box">

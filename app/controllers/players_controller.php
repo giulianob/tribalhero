@@ -30,6 +30,7 @@ class PlayersController extends AppController {
                     if (!empty($this->data['Player']['password_once']))
                         $this->data['Player']['password'] = $this->Auth->password($this->data['Player']['password_once']);
 
+					$this->data['Player']['last_login'] = date("Y-m-d H:i:s");
                     if ($this->Player->save($this->data, false)) {
                         $this->Session->setFlash('Your account has been created! Check your e-mail for the activation code. Remember to check your spam folder if you don\'t see an e-mail from us.');
                         $this->redirect($this->Auth->logout(array('controller' => 'players', 'action' => 'login')));

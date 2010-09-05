@@ -27,4 +27,4 @@ foreach ($data as $rank) {
     }
 }
 
-echo $javascript->object($results);
+echo $this->Js->object($results);

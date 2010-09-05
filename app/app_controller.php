@@ -2,7 +2,7 @@
 
 class AppController extends Controller {
     var $components = array('Auth', 'Security', 'Session', 'DebugKit.Toolbar');
-    var $helpers = array('Html', 'Javascript', 'Form', 'Session');
+    var $helpers = array('Html', 'Js', 'Form', 'Session');
 
     var $recaptchaPrivateKey = '6LdYFgYAAAAAAMrRHyqHasNnktIyoTh1fwPKV0Jy';
     var $recaptchaPublicKey = '6LdYFgYAAAAAAEJVxFq049CUy9ml57Ds9hSRlw41';

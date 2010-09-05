@@ -4,15 +4,16 @@
 	<?php echo $html->charset(); ?>
 	<title>
 		<?php echo $title_for_layout; ?> - Tribal Hero
-	</title> 
+	</title>
 	<?php
-		echo $html->meta('icon');
+		//echo $html->meta('icon');
 		echo $html->css('blueprint/screen', null, array("media" => "screen, projection"));
 		echo $html->css('blueprint/forms', null, array("media" => "screen, projection"));
 		echo $html->css('blueprint/print', null, array("media" => "print"));
 	?>
 	<!--[if lt IE 8]><?php echo $html->css('blueprint/ie', null, array("media" => "screen, projection"));?><![endif]-->	
-	<?php
+	<?php			
+		
 		echo $html->css('style.main');
 		echo $scripts_for_layout;
 	?>	
@@ -59,5 +60,7 @@
 		<div class="push"></div>		
 	</div>
 	<div id="footer">&nbsp;</div>
+	
+	<?php echo $js->writeBuffer(); ?>
 </body>
 </html>

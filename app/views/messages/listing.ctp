@@ -25,4 +25,4 @@ foreach ($messages as $message) {
 
 $results = array('pages' => $paging['pageCount'], 'page' => $paging['page'], 'messages' => $data);
 
-echo $javascript->object($results);
+echo $this->Js->object($results);

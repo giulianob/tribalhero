@@ -487,6 +487,11 @@ table
 	font-size: 9pt;
 }
 
+/* Gallery */
+div.gallery img { 
+	margin-right: 5px; 
+	border: solid 1px #5f1e00; 
+}
 
 /* LISTS */
 li, ul.list li
@@ -494,7 +499,7 @@ li, ul.list li
 	list-style-position: outside;
 	font-size: 9pt;	
 	list-style-type: circle;
-	margin: 0 0 0.5em 15px;	
+	margin: 0 0 0.5em 0;	
 	
 }
 

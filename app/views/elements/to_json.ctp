@@ -1,2 +1,2 @@
 <?php
-	echo $javascript->object($data);
+	echo $this->Js->object($data);

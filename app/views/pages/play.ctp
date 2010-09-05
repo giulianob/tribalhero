@@ -1,5 +1,5 @@
 <?php
-	$javascript->link('swfobject/swfobject', false);
+	$this->Html->script('swfobject/swfobject', array('inline' => false));
 ?>
 
 <style type="text/css">

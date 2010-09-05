@@ -15,4 +15,4 @@ $data = array('message' => array(
         'refreshOnClose' => $refreshOnClose
 );
 
-echo $javascript->object($data);
+echo $this->Js->object($data);

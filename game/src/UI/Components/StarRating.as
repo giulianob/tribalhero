@@ -38,8 +38,8 @@ package src.UI.Components
 			var adjustedMax: int = max - min;
 			var adjustedValue: int = value - min;
 
-			var percentage: int = Math.max(0, (adjustedValue / adjustedMax) * 100);
-			var fullStarPercent: int = Math.round(100 / numberOfStars);
+			var percentage: int = Math.max(0, Math.min(100, (adjustedValue / adjustedMax) * 100));
+			var fullStarPercent: int = Math.round(100 / numberOfStars);			
 
 			var fullStars: int = Math.floor(percentage / fullStarPercent);
 			var halfStars: int = fullStars == 0 ? 1 : Math.floor((percentage - (fullStars * fullStarPercent)) / (fullStarPercent / 2));

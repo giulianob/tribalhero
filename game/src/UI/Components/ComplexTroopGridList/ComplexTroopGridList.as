@@ -168,7 +168,6 @@
 			{
 				if (tooltipMode) {
 					ts.setBorder(new SimpleTitledBorder(null, Formation.TypeStrings[ts.getFormation().type], AsWingConstants.TOP, AsWingConstants.LEFT, 0, GameLookAndFeel.getClassAttribute("Tooltip.text", "Label.font"), GameLookAndFeel.getClassAttribute("Tooltip.text", "Label.foreground")));
-					ts.setPreferredWidth(250);
 					panel.append(ts);
 				}
 				else {

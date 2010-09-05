@@ -13,6 +13,8 @@
 	public dynamic class Preloader extends MovieClip
 	{
 
+		private static var GAME_ID: String = "7d9c5048045d1086";
+		
 		private var _clip:MovieClip;
 
 		public function Preloader()
@@ -22,12 +24,16 @@
 			addChild(_clip);
 
 			MochiAd.showPreGameAd( {
-				id: "7d9c5048045d1086",
+				id: GAME_ID,
 				clip: _clip,
 				ad_finished: startup,
 				res:"976x640",
 				no_bg:true
 			} );
+			
+			MochiServices.connect(GAME_ID, _clip, function(status: String) : void { } );
+			
+			MochiEvents.startPlay();			
 		}
 
 		private function checkFrame(e:Event):void

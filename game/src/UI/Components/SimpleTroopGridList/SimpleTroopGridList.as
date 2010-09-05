@@ -9,6 +9,7 @@
 	import org.aswing.geom.IntDimension;
 	import org.aswing.Insets;
 	import org.aswing.JPanel;
+	import org.aswing.JScrollPane;
 	import org.aswing.JTabbedPane;
 	import org.aswing.SoftBoxLayout;
 	import org.aswing.VectorListModel;
@@ -196,11 +197,11 @@
 			{
 				if (includeFormationName) {
 					var tabHolder: JTabbedPane = new JTabbedPane();
-					tabHolder.appendTab(ts, Formation.TypeStrings[ts.getFormation().type]);
+					tabHolder.appendTab(new JScrollPane(ts, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER), Formation.TypeStrings[ts.getFormation().type]);
 					panel.append(tabHolder);
 				} else {
 					ts.setBorder(new EmptyBorder());
-					panel.append(ts);
+					panel.append(new JScrollPane(ts, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER));
 				}
 
 				ts.setPreferredSize(new IntDimension(300, 100));

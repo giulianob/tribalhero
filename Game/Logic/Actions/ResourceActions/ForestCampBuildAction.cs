@@ -77,8 +77,8 @@ namespace Game.Logic.Actions {
                 return Error.RESOURCE_NOT_ENOUGH;
             }
 
-            // Make sure we can fit this many laborers in the forest
-            if (labors + forest.Labor > forest.MaxLabor) {
+            // Make sure we can fit this many laborers in the forest and that this user isn't trying to insert more into forest than he can
+            if (labors + forest.Labor > forest.MaxLabor || labors > Formula.GetForestMaxLaborPerUser(forest)) {
                 return Error.FOREST_FULL;
             }
 

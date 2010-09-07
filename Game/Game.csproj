@@ -134,6 +134,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Battle\BattleBase.cs" />
+    <Compile Include="Battle\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />
     <Compile Include="Battle\BattleOrder.cs" />

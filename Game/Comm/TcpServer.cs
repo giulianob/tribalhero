@@ -76,7 +76,8 @@ namespace Game.Comm {
                     continue;
                 }
 
-                if (len == 23) {
+                if (len == 23 && Encoding.ASCII.GetString(buffer, 0, len - 1) == "<policy-file-request/>")
+                {                    
                     s.NoDelay = true;
                     s.LingerState = new LingerOption(true, 3);
 

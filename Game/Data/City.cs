@@ -235,9 +235,11 @@ namespace Game.Data {
                 if (troopobjects.ContainsKey(objId))
                     return false;
 
-                troop.Stub.BeginUpdate();
-                troop.Stub.TroopObject = troop;
-                troop.Stub.EndUpdate();
+                if (troop.Stub != null) {
+                    troop.Stub.BeginUpdate();
+                    troop.Stub.TroopObject = troop;
+                    troop.Stub.EndUpdate();
+                }
 
                 troop.City = this;
 
@@ -365,9 +367,12 @@ namespace Game.Data {
                 Global.DbManager.Delete(obj);
 
                 obj.City = null;
-                obj.Stub.BeginUpdate();
-                obj.Stub.TroopObject = null;
-                obj.Stub.EndUpdate();
+
+                if (obj.Stub != null) {
+                    obj.Stub.BeginUpdate();
+                    obj.Stub.TroopObject = null;
+                    obj.Stub.EndUpdate();
+                }
 
                 ObjRemoveEvent(obj);
             }

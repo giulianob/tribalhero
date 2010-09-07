@@ -39,7 +39,11 @@ namespace Game.Logic {
         /// <param name="level"></param>
         /// <returns></returns>
         public static ushort GetForestMaxLabor(byte level) {
-            return (ushort)(level * 80);
+            return (ushort)(level * 240);
+        }
+
+        public static ushort GetForestMaxLaborPerUser(Forest forest) {
+            return (ushort)(GetForestMaxLabor(forest.Lvl) / 3);
         }
 
         /// <summary>

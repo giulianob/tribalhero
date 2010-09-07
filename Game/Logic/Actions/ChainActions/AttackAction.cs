@@ -54,12 +54,12 @@ namespace Game.Logic.Actions {
                 !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.OBJECT_NOT_FOUND;
 
-            if (city.Troops.Size > 12)
+            if (city.Troops.Size >= 12)
                 return Error.TOO_MANY_TROOPS;
 
             // Can't attack if target is under newbie protection
 #if !DEBUG
-            if (SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
+            if (targetCity.AttackPoint == 0 && SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
                 return Error.PLAYER_NEWBIE_PROTECTION;
 #endif
 

@@ -201,13 +201,19 @@ namespace Game.Logic {
         }
 
         public void DbLoaderDoPassive(PassiveAction action) {
-            //this should only be used by the db loader
-            if (action is ScheduledPassiveAction)
-                Schedule(action as ScheduledPassiveAction);
 
-            action.OnNotify += NotifyPassive;
-            actionIdGen.Set(action.ActionId);
-            passive.Add(action.ActionId, action);
+            if (action.IsChain) {
+                actionIdGen.Set(action.ActionId);
+            }
+            else {
+                //this should only be used by the db loader
+                if (action is ScheduledPassiveAction)
+                    Schedule(action as ScheduledPassiveAction);
+
+                action.OnNotify += NotifyPassive;
+                actionIdGen.Set(action.ActionId);
+                passive.Add(action.ActionId, action);
+            }
         }
 
         #endregion

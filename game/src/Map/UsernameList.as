@@ -24,36 +24,37 @@
 
 			if (!username)
 			{
-				var pass: Object = new Object();
-				pass.callback = callback;
-				pass.custom = custom;
+				if (callback != null) {
+					var pass: Object = new Object();
+					pass.callback = callback;
+					pass.custom = custom;
 
-				var found: Boolean = false;
-				for (var i: int = 0; i < pending.length; i++) {
-					if (pending[i].id == id) {
-						(pending[i].callbacks as Array).push(pass);
-						found = true;
-						break;
+					var found: Boolean = false;
+					for (var i: int = 0; i < pending.length; i++) {
+						if (pending[i].id == id) {
+							(pending[i].callbacks as Array).push(pass);
+							found = true;
+							break;
+						}
 					}
-				}
 
-				if (!found) {
-					var pendingObj: Object = new Object();
-					pendingObj.id = id;
-					pendingObj.callbacks = new Array();
-					(pendingObj.callbacks as Array).push(pass);
+					if (!found) {
+						var pendingObj: Object = new Object();
+						pendingObj.id = id;
+						pendingObj.callbacks = new Array();
+						(pendingObj.callbacks as Array).push(pass);
 
-					pending.push(pendingObj);
+						pending.push(pendingObj);
 
-					commGetUsername(id, setUsername);
+						commGetUsername(id, setUsername);
+					}
 				}
 
 				return null;
 			}
 			else
 			{
-				if (callback != null)
-				callback(username, custom);
+				if (callback != null) callback(username, custom);
 
 				return username;
 			}
@@ -101,3 +102,4 @@
 	}
 
 }
+

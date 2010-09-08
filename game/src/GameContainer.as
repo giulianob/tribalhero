@@ -16,6 +16,7 @@
 	import src.UI.Dialog.*;
 	import src.UI.*;
 	import flash.ui.*;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -73,6 +74,9 @@
 		// Game bar bg. Can't be in Flash because of scale9 issue
 		private var barBg: DisplayObject;
 
+		// Username + logout link
+		private var userPnl: JPanel;
+
 		public function GameContainer()
 		{
 			// Create and position the city list
@@ -82,6 +86,12 @@
 			lstCities.setSize(new IntDimension(128, 22));
 			lstCities.setLocation(new IntPoint(37, 12));
 			addChild(lstCities);
+			
+			// Create and position the username panel
+			userPnl = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
+			userPnl.setPreferredSize(new IntDimension(200, 22));
+			userPnl.setLocation(new IntPoint(480, 12));
+			addChild(userPnl);			
 
 			// Create barBg
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
@@ -127,7 +137,7 @@
 			new SimpleTooltip(btnMessages, "View messages");
 			btnMessages.addEventListener(MouseEvent.CLICK, onViewMessages);
 
-			new SimpleTooltip(btnRanking, "View ranking");
+			new SimpleTooltip(btnRanking, "View world ranking");
 			btnRanking.addEventListener(MouseEvent.CLICK, onViewRanking);
 
 			new SimpleTooltip(btnCityInfo, "View city details");
@@ -269,10 +279,28 @@
 		{
 			this.map = map;
 			this.miniMap = miniMap;
+
+			// Populate user panel
+			/*
+			userPnl.removeAll();
+			var userLblMaker: Function = function(txt: String) : JLabel { 							
+				var lbl: JLabel = new JLabel(txt);
+				GameLookAndFeel.changeClass(lbl, "Tooltip.text Label.small");
+				lbl.pack();
+				return lbl;
+			}
+			userPnl.append(userLblMaker(map.usernames.players.get(Constants.playerId).name + "("));
+			userPnl.append(userLblMaker(")"));
+			userPnl.pack();
+			*/
+
+			// Clear current city list
 			(lstCities.getModel() as VectorListModel).clear();
 
+			// Add map
 			mapHolder.addChild(map);
 
+			// Create map overlay
 			this.mapOverlay = new MovieClip();
 			this.mapOverlay.graphics.beginFill(0xCCFF00);
 			this.mapOverlay.graphics.drawRect(0, 0, Constants.screenW, Constants.screenH);
@@ -281,11 +309,13 @@
 			this.mapOverlay.name = "Overlay";
 			addChild(this.mapOverlay);
 
+			// Populate city list
 			for each (var city: City in map.cities.each()) {
 				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return city.name; } } );
 			}
 
-			if (lstCities.getItemCount() > 0) { //set a default city selection
+			// Set a default city selection
+			if (lstCities.getItemCount() > 0) {
 				lstCities.setSelectedIndex(0);
 				selectedCity = lstCities.getSelectedItem().city;
 			}
@@ -310,6 +340,7 @@
 			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			resizeManager.addObject(userPnl, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 
 			resizeManager.addEventListener(Event.RESIZE, map.onResize);
 			resizeManager.addEventListener(Event.RESIZE, message.onResize);

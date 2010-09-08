@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog {
 
+	import flash.display.DisplayObjectContainer;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.event.PopupEvent;
@@ -8,15 +9,17 @@
 	import org.aswing.ext.*;
 	import src.Global;
 	import src.Map.Username;
+	import src.Objects.Factories.ObjectFactory;
 	import src.UI.Components.CombatObjectGridList.CombatObjectGridList;
 	import src.UI.GameJPanel;
 	import src.Objects.Battle.*;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.StringHelper;
 
 	public class BattleViewer extends GameJPanel {
 
 		private var tabDefensive:JTabbedPane;
-		private var txtLog: JTextArea;
+		private var pnlLog: JPanel;
 		private var tabOffensive:JTabbedPane;
 		private var lstLogScroll:JScrollPane;
 		private var lblStamina: JLabel;
@@ -41,6 +44,7 @@
 			battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 			battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 			battle.addEventListener(BattleManager.END, onEnd);
+			battle.addEventListener(BattleManager.NEW_ROUND, onNewRound);
 
 			// Every command sends the stamina so we update it with every action.
 			battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
@@ -63,6 +67,7 @@
 				battle.removeEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
 				battle.removeEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 				battle.removeEventListener(BattleManager.END, onEnd);
+				battle.removeEventListener(BattleManager.NEW_ROUND, onNewRound);
 
 				battle.removeEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
 				battle.removeEventListener(BattleManager.OBJECT_REMOVED_ATTACK, updateStamina);
@@ -74,6 +79,11 @@
 
 				Global.mapComm.Battle.battleUnsubscribe(battleCityId);
 			}
+		}
+
+		private function onNewRound(e: BattleRoundEvent = null) : void {
+			log(new JSeparator());
+			logStr("Round " + e.round, null, true);
 		}
 
 		private function updateStamina(e: BattleEvent = null) : void {
@@ -159,7 +169,7 @@
 			tabOffensive.removeAll();
 			tabDefensive.removeAll();
 
-			log("Battle has ended");
+			logStr("Battle has ended");
 
 			getFrame().dispose();
 		}
@@ -210,7 +220,13 @@
 
 			var srcCityName: Username = Global.map.usernames.cities.getUsername(e.combatObj.cityId);
 
-			log((srcCityName != null ? srcCityName.name + "(" + e.combatObj.troopStubId  + ")'s " : "") + attackObj.data.name + " couldn't hit anyone.");
+			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
+			pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
+			var lbl: JLabel = new JLabel("couldn't reach anyone", new AssetIcon(!srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
+			pnl.append(lbl);
+
+			log(pnl);
 		}
 
 		public function onAttack(e: BattleEvent):void
@@ -242,22 +258,63 @@
 			var srcCityName: Username = Global.map.usernames.cities.getUsername(e.combatObj.cityId);
 			var destCityName: Username = Global.map.usernames.cities.getUsername(e.destCombatObj.cityId);
 
-			log((srcCityName != null ? srcCityName.name + "(" + e.combatObj.troopStubId  + ")'s " : "") + attackObj.data.name + " hit " + (destCityName != null ? destCityName.name + "(" + e.destCombatObj.troopStubId  + ")'s " : "") + defenseObj.data.name + " for " + e.dmg + " dmg");
+			var dmgPnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
+			dmgPnl.append(new JLabel(e.dmg.toString() + " dmg", new AssetIcon(!srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD)));
+			var arrowPnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
+			arrowPnl.append(new AssetPane(srcObj.defense ? new ICON_ARROW_LEFT : new ICON_ARROW_RIGHT));
+			dmgPnl.append(arrowPnl);
+
+			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 7, 0, false));
+			if (srcObj.defense) {
+				pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
+				pnl.append(dmgPnl);
+				pnl.append(getCombatObjectPanel(destCityName, e.destCombatObj));
+			} else {
+				pnl.append(getCombatObjectPanel(destCityName, e.destCombatObj));
+				pnl.append(dmgPnl);
+				pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
+			}
+
+			log(pnl);
 
 			if (defenseObj.data.hp <= 0) {
-				log(defenseObj.data.name + " has been defeated");
+				pnl = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
+				pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
+				var defeatLbl: JLabel = new JLabel("has been defeated", new AssetIcon(!srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+				defeatLbl.setHorizontalTextPosition(AsWingConstants.LEFT);
+				pnl.append(defeatLbl);
+				log(pnl);
 			}
 
 			destObj.grid.getModel().valueChanged(defenseObj);
 		}
 
-		private function log(str: String) : void {
-			txtLog.appendText("\n" + str);
+		private function getCombatObjectPanel(cityName: Username, combatObj: CombatObject) : Component {
+			var name: String = "";
+			if (cityName != null) name += cityName.name;
+			name += "(" + combatObj.troopStubId + ")'s " + combatObj.name;
 
-			if (txtLog.getLength() > 1024)
-			txtLog.replaceText(0, txtLog.getLength() - 1024, "");
+			var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level);
 
-			lstLogScroll.getVerticalScrollBar().setValue(lstLogScroll.getVerticalScrollBar().getMaximum(), true);
+			var lbl: JLabel = new JLabel(name, (icon != null ? new AssetIcon(icon) : null));
+
+			return lbl;
+		}
+
+		private function logStr(string: String, icon: Icon = null, header: Boolean = false) : void {
+			var txt: JLabel = new JLabel(string, icon);
+			if (header) GameLookAndFeel.changeClass(txt, "darkHeader");
+			log(txt);
+		}
+
+		private function log(item: Component) : void {
+			pnlLog.insert(0, item);
+
+			if (pnlLog.getComponentCount() > 100) {
+				pnlLog.removeAt(pnlLog.getComponentCount() - 1);
+			}
+
+			pnlLog.pack();
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
@@ -284,31 +341,30 @@
 			lblStamina = new JLabel("", null, AsWingConstants.RIGHT);
 
 			tabDefensive = new JTabbedPane();
-			tabDefensive.setPreferredHeight(150);
+			tabDefensive.setPreferredHeight(175);
 
 			var border1:SimpleTitledBorder = new SimpleTitledBorder(null, "Defender", AsWingConstants.TOP, AsWingConstants.LEFT);
 			tabDefensive.setBorder(border1);
 
-			txtLog = new JTextArea("You have started watching this battle");
-			txtLog.setBorder(new EmptyBorder());
-			txtLog.setWordWrap(true);
-			txtLog.setEditable(false);
-			txtLog.setMaxChars(2000);
+			pnlLog = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 8, AsWingConstants.CENTER));
+			pnlLog.setBorder(new EmptyBorder(null, new Insets(10, 0, 5, 0)));
 
-			var border2:SimpleTitledBorder = new SimpleTitledBorder(null, "Battle Log", AsWingConstants.TOP, AsWingConstants.LEFT);
-			lstLogScroll = new JScrollPane(txtLog);
-			lstLogScroll.setPreferredHeight(200);
-			lstLogScroll.setBorder(border2);
+			lstLogScroll = new JScrollPane(pnlLog);
+			lstLogScroll.setBorder(new EmptyBorder(null, new Insets()));
+
+			var tabLog: JTabbedPane = new JTabbedPane();
+			tabLog.appendTab(lstLogScroll, "Battle Log");
+			tabLog.setPreferredHeight(150);
 
 			tabOffensive = new JTabbedPane();
-			tabOffensive.setPreferredHeight(150);
+			tabOffensive.setPreferredHeight(175);
 
 			var border3: SimpleTitledBorder = new SimpleTitledBorder(null, "Attacker", AsWingConstants.TOP, AsWingConstants.LEFT);
 			tabOffensive.setBorder(border3);
 
 			//component layoution
 			pnlBody.append(tabDefensive);
-			pnlBody.append(lstLogScroll);
+			pnlBody.append(tabLog);
 			pnlBody.append(tabOffensive);
 
 			append(lblStamina);

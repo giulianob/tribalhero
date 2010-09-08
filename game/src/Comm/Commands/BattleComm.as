@@ -34,7 +34,10 @@
 					onReceiveBattleEnded(e.packet);
 				break;
 				case Commands.BATTLE_SKIPPED:
-					onReceiveBattleSkipped(e.packet);
+					onReceiveBattleSkipped(e.packet);					
+				break;
+				case Commands.BATTLE_NEW_ROUND:
+					onReceiveNewRound(e.packet);
 				break;
 			}
 		}
@@ -185,6 +188,13 @@
 			battle.attack(attackerObjId, defenderObjId, dmg);
 		}
 
+		public function onReceiveNewRound(packet: Packet):void
+		{
+			if (battle == null) return;		
+			
+			battle.newRound(packet.readUInt());
+		}
+	
 		public function onReceiveBattleSkipped(packet: Packet):void
 		{
 			if (battle == null) return;

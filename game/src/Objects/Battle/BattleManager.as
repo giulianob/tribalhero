@@ -16,6 +16,7 @@
 		public static const OBJECT_ATTACKED: String = "BATTLE_OBJECT_ATTACKED";
 		public static const OBJECT_SKIPPED: String = "BATTLE_OBJECT_SKIPPED";
 		public static const END: String = "BATTLE_ENDED";		
+		public static const NEW_ROUND: String = "BATTLE_NEW_ROUND";		
 		
 		public static const STRUCTURE: int = 0;
 		public static const UNIT: int = 1;
@@ -66,6 +67,10 @@
 			all.add(combatObj);
 			
 			return combatObj;
+		}
+		
+		public function newRound(round: int): void {
+			dispatchEvent(new BattleRoundEvent(NEW_ROUND, round));
 		}
 		
 		public function skipped(attackerCombatId: int):void

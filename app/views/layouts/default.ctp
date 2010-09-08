@@ -37,18 +37,20 @@
 					</cake:nocache>				
 			</div>							
 		</div>
-		<div id="content" class="container prepend-top">			
-			<?php if ($session->check('Message.flash')) : ?>
+		<div id="content" class="container prepend-top">				
+			<cake:nocache>
+			<?php if ($session->check('Message.flash')) : ?>				
 				<div class="success">
 					<?php echo $session->flash(); ?>
-				</div>
+				</div>				
 			<?php endif; ?>
+			</cake:nocache>
 			
 			<div class="span-4">
 				<ul id="main-nav">
 					<li id="home"><?php echo $html->link('', '/');?></li>					
 					<li id="help"><a href="#"></a></li>
-					<li id="forums"><a href="#"></a></li>
+					<li id="forums"><a href="http://forums.tribalhero.com"></a></li>
 					<li id="blog"><a href="#"></a></li>
 					<li id="register"><?php echo $html->link('', '/players/register');?></li>
 				</ul>
@@ -62,5 +64,18 @@
 	<div id="footer">&nbsp;</div>
 	
 	<?php echo $js->writeBuffer(); ?>
+	
+	<script type="text/javascript">
+		google_analytics_uacct = "UA-17369212-2";
+		google_analytics_domain_name = "tribalhero.com";
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-17369212-2'],['_setDomainName', 'tribalhero.com'],['_trackPageview']);
+		(function() {var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+		ga.src = 'http://www.google-analytics.com/ga.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+		})();
+	</script>		
 </body>
 </html>

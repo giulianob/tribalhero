@@ -30,7 +30,5 @@
 			<li>Wage wars against others or help protect them against other threats</li>
 		</ul>
 		<p>Best of all, it's completely free to play and there are no downloads required!</p>
-		<h2>Still not convinced?</h2>
-		<p>Take the <?php echo $html->link('tour', '/tour')?> to learn more about Tribal Hero.</p>
 	</div>
 </div>

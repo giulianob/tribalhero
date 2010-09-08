@@ -9,15 +9,17 @@
 <div class="span-10">
 	<h2>Join the battle today!</h2>
 	<?php echo $form->create('Player', array('action' => 'register'));?>
-	<?php echo $form->input('name', array('label' => 'Choose a player name'))?>
-	<?php echo $form->input('email_address', array('label' => 'Email address (has to be valid)'))?>
+	<?php echo $form->input('name', array('label' => 'Choose a player name (numbers and letters only, no spaces)'))?>
+	<?php echo $form->input('email_address', array('label' => 'Email address (no spam, we promise)'))?>
 	<?php echo $form->input('password_once', array('label' => 'Choose a password', 'type' => 'password'))?>
 	<?php echo $form->input('password_twice', array('label' => 'Retype password', 'type' => 'password'))?>
 	
 	<div class="input text">		
 		<?php echo recaptcha_get_html($recaptchaPublicKey, isset($error) ? $error : null)?>
 	</div>
-	<?php echo $form->input('tos', array('label' => 'I accept the Terms of Service and the game rules', 'type' => 'checkbox'))?>
+	<div class="input text">
+		<strong>By registering, you agree to the Terms of Service and game rules.</strong>
+	</div>
 	<?php echo $form->end('Register');?>
 </div>
 <div class="span-10 last">
@@ -30,7 +32,5 @@
 			<li>Wage wars against your foes or protect your friends from their enemies.</li>
 		</ul>
 		<p>Best of all, it's completely free to play and there are no downloads required!</p>
-		<h2>Still not convinced?</h2>
-		<p>Take the <?php echo $html->link('tour', '/tour')?> to learn more about Tribal Hero.</p>
 	</div>
 </div>

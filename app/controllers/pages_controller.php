@@ -4,7 +4,7 @@ class PagesController extends AppController {
     var $uses = array();
 
     var $cacheAction = array(
-            'index/' => '1 month'
+            'index' => '1 month'
     );
 
     function beforeFilter() {
@@ -85,8 +85,7 @@ class PagesController extends AppController {
 
     function play() {
         // Prevent caching
-        header("Cache-Control: no-cache, must-revalidate");
-        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+        $this->disableCache();
 
 		$this->set('title_for_layout', 'Play');
 		
@@ -110,10 +109,5 @@ class PagesController extends AppController {
         }
         
         $this->set('lsessid', $loginKey);        
-    }
-
-    function game_popup() {
-        Configure::write('debug', 0);
-        $this->layout = 'popup';
     }
 }

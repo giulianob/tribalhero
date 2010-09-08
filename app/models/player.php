@@ -9,12 +9,16 @@ class Player extends AppModel {
 		'name' => array(
 			'between' => array(
 				'rule' => array('between', 5, 32),
-				'message' => 'Must be between 5 and 32 characters long',
+				'message' => 'Name must be between 5 and 32 characters in length',
 				'required' => true
+			),
+			'alphanumeric' => array(
+				'rule' => 'alphaNumeric',
+				'message' => 'Player name must only contain letters and numbers'
 			),
 			'unique' => array(
 				'rule' => 'isUnique',
-				'message' => 'A user with this name already exists'
+				'message' => 'A player with this name already exists'
 			)
 		), 
 		'email_address' => array(
@@ -51,10 +55,6 @@ class Player extends AppModel {
 				'required' => false,
 				'allowEmpty' => true
 			)			
-		),
-		'tos' => array(
-			'rule' => array('equalTo', '1'),
-			'message' => 'You must agree to the Terms of Service and the game rules to join'
 		)
 	);		
 			

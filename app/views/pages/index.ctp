@@ -46,8 +46,8 @@ $this->Js->buffer($code);
 		</div>		
 		<div class="span-10 last prepend-top gallery">
 			<?php echo $html->link($html->image('screenshots/military-overview-thumb.png'), '/img/screenshots/military-overview.png', array('escape' => false, 'title' => 'Various types of units can be trained and used to defend or attack other players', 'rel' => 'gallery')); ?>
+			<?php echo $html->link($html->image('screenshots/battle-viewer-thumb.png'), '/img/screenshots/battle-viewer.png', array('escape' => false, 'title' => 'Watch battles as they unfold real time', 'rel' => 'gallery')); ?>
 			<?php echo $html->link($html->image('screenshots/simple-battle-report-thumb.png'), '/img/screenshots/simple-battle-report.png', array('escape' => false, 'title' => 'A battle report will let you know the outcome of battles', 'rel' => 'gallery')); ?>
-			<?php echo $html->link($html->image('screenshots/unit-description-thumb.png'), '/img/screenshots/unit-description.png', array('escape' => false, 'title' => 'Each unit provides unique advantages during a battle', 'rel' => 'gallery')); ?>
 		</div>		
 	</div>
 </div>

@@ -64,7 +64,7 @@ package src.Util {
 		public static function centerFrame(frame: JFrame ):void {
 			var location:IntPoint = AsWingUtils.getScreenCenterPosition();
 			location.x = Math.round(location.x - frame.getWidth()/2);
-			location.y = Math.round(location.y - frame.getHeight()/2);
+			location.y = Math.max(0, Math.round(location.y - frame.getHeight()/2));
 			frame.setLocation(location);
 		}
 
@@ -140,7 +140,7 @@ package src.Util {
 		public static function niceTime(time: int, conj: Boolean = true): String
 		{
 			if (time < 60) {
-				if (conj) 				
+				if (conj)
 				return "less than a minute";
 				else
 				return "minute";
@@ -202,14 +202,14 @@ package src.Util {
 				obj.filters = [];
 			}
 		}
-		
+
 		public static function implode(glue: String, arr: Array) : String {
 			var s: String = new String();
 			for (var i: int = 0; i < arr.length; i++) {
 				s += arr[i];
 				if ( i != arr.length - 1 ) s += glue;
 			}
-			
+
 			return s;
 		}
 

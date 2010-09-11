@@ -85,8 +85,11 @@ ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
 ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 50%
 ,
 TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
-TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receives 2 units for every unit that is be trained
+TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receives 2 units for every unit that is being trained
 FOUR_FOR_ONE_TECHNOLOGY_NAME,Four For One
-FOUR_FOR_ONE_TECHNOLOGY_LVL_1,Receives 4 units for every unit that is be trained
+FOUR_FOR_ONE_TECHNOLOGY_LVL_1,Receives 4 units for every unit that is being trained
 EIGHT_FOR_ONE_TECHNOLOGY_NAME,Eight For One
-EIGHT_FOR_ONE_TECHNOLOGY_LVL_1,Receives 8 units for every unit that is be trained
+EIGHT_FOR_ONE_TECHNOLOGY_LVL_1,Receives 8 units for every unit that is being trained
+,
+HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
+HAPPYHOUR_TECHNOLOGY_LVL_1,Villagers are so drunk....  Thus increases the production rate of the laborers by up to 30%.

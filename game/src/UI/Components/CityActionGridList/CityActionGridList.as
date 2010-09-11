@@ -1,6 +1,7 @@
 ﻿package src.UI.Components.CityActionGridList 
 {
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -72,12 +73,8 @@
 				var cityObj: CityObject = city.objects.get(currentAction.workerId);
 				
 				var prototype: * = ObjectFactory.getPrototype(cityObj.type, cityObj.level);
-				var icon: DisplayObject = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level, true);
-				if (prototype is StructurePrototype)
-				{
-					icon.scaleX = 0.50;
-					icon.scaleY = 0.50;
-				}
+				var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(cityObj.type, cityObj.level, true);
+				if (prototype is StructurePrototype) icon = ObjectFactory.makeSpriteSmall(icon);
 				
 				(getModel() as VectorListModel).append( { 'cityObj': cityObj, 'source': icon, 'cityId': city.id , 'prototype': prototype, 'currentAction': currentAction } );
 			}

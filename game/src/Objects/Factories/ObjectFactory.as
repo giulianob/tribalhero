@@ -1,4 +1,5 @@
 ﻿package src.Objects.Factories {
+	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -106,6 +107,13 @@
 			return TroopFactory.getSprite(centered);
 			else
 			return UnitFactory.getSprite(type, level);
+		}
+		
+		public static function makeSpriteSmall(obj: DisplayObjectContainer, scale: Number = 0.5) : DisplayObjectContainer {
+			obj.scaleX = 0.5;
+			obj.scaleY = 0.5;
+
+			return obj;
 		}
 
 		public static function getIcon(name: String) : DisplayObjectContainer

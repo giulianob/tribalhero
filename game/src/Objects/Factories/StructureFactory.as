@@ -56,7 +56,7 @@
 				strctObj.stealth = structNode.@stealth;
 				strctObj.range = structNode.@range;
 				strctObj.speed = structNode.@speed;
-				strctObj.buildResources = new Resources(structNode.@crop, structNode.@gold, structNode.@iron, structNode.@wood, 0);
+				strctObj.buildResources = new Resources(structNode.@crop, structNode.@gold, structNode.@iron, structNode.@wood, structNode.@labor);
 				strctObj.buildTime = structNode.@time;
 				strctObj.weapon = structNode.@weapon;
 				strctObj.workerid = structNode.@workerid;

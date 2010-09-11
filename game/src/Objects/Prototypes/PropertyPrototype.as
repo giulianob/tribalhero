@@ -21,14 +21,16 @@ package src.Objects.Prototypes {
 		public var visibility: int;
 		public var perHour: Boolean;
 		public var icon: String;
+		public var tooltip: String;
 
-		public function PropertyPrototype(index: int, type: int, name: String, datatype: String, visibility: int, perHour: Boolean, icon: String) {
+		public function PropertyPrototype(index: int, type: int, name: String, datatype: String, visibility: int, perHour: Boolean, icon: String, tooltip: String) {
 			this.type = type;
 			this.name = name;
 			this.datatype = datatype;
 			this.visibility = visibility;
 			this.perHour = perHour;
 			this.icon = icon;
+			this.tooltip = tooltip;
 		}
 
 		public static function sortOnType(a:PropertyPrototype, b:PropertyPrototype):Number {
@@ -77,8 +79,8 @@ package src.Objects.Prototypes {
 		}
 		
 		public function toString(value: *): String
-		{			
-			return (perHour && value >0 ? "+" : "") + value.toString() + (perHour ? "/hour" : "");
+		{					
+			return (perHour && value > 0 ? "+" : "") + (value is Number ? value.toFixed(2) : value.toString()) + (perHour ? "/hour" : "");
 		}
 	}
 

@@ -8,7 +8,7 @@
 	public class Forest extends GameObject {
 
 		public var wood: AggressiveLazyValue;
-		public var rate: int;
+		public var rate: Number;
 		public var labor: int;
 		public var depleteTime: int;
 		

@@ -34,7 +34,7 @@
 			createUI();
 
 			icon.buttonMode = true;
-			icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent):void {
+			addEventListener(MouseEvent.CLICK, function(e: MouseEvent):void {
 				if (value != null)
 				{
 					var cityObj: CityObject = value.cityObj;
@@ -115,7 +115,7 @@
 
 			icon = new JPanel();
 			icon.setPreferredWidth(50);
-			new SimpleTooltip(icon, "Go to event");
+			new SimpleTooltip(this, "Click to go to event");
 
 			panel6 = new JPanel();
 			panel6.setPreferredSize(new IntDimension(175, 50));

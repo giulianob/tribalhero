@@ -51,6 +51,10 @@ package src.UI.Components
 			for (i = 0; i < halfStars; i++) {
 				append(new AssetPane(new ICON_HALF_STAR));
 			}
+			
+			for (i = 0; i < numberOfStars - (fullStars + halfStars); i++) {
+				append(new AssetPane(new ICON_EMPTY_STAR));
+			}
 		}
 
 		public function setValue(newValue: int) : void {

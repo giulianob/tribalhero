@@ -113,6 +113,8 @@
 
 			(getModel() as VectorListModel).append( { source: icon, name: (unitPrototype != null ? unitPrototype.getName() : unit.type), data: unit, level: level } );
 
+			pack();
+
 			return getCellByIndex(getModel().getSize() - 1) as SimpleTroopGridCell;
 		}
 

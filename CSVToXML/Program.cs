@@ -185,8 +185,8 @@ namespace CSVToXML {
                         writer.WriteAttributeString("gold", obj[13]);
                         writer.WriteAttributeString("crop", obj[14]);
                         writer.WriteAttributeString("wood", obj[15]);
-                        writer.WriteAttributeString("labor", obj[16]);
-                        writer.WriteAttributeString("iron", obj[17]);
+                        writer.WriteAttributeString("iron", obj[16]);
+                        writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
                         writer.WriteAttributeString("workerid", obj[19]);
                         writer.WriteAttributeString("weapon", obj[20]);
@@ -422,11 +422,7 @@ namespace CSVToXML {
                     default:
                         writer.WriteStartElement("MISSING_WORKER_ACTION");
                         writer.WriteAttributeString("name", workerAction.action);
-                        writer.WriteAttributeString("param1", workerAction.param1);
-                        writer.WriteAttributeString("param2", workerAction.param2);
-                        writer.WriteAttributeString("param3", workerAction.param3);
-                        writer.WriteAttributeString("param4", workerAction.param4);
-                        writer.WriteAttributeString("param5", workerAction.param5);
+                        writer.WriteAttributeString("command", workerAction.param1);
                         break;
                 }
 

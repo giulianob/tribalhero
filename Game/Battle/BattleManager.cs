@@ -779,7 +779,7 @@ namespace Game.Battle {
                 EventExitTurn(Attacker, Defender, (int)turn++);
 
                 // Send back any attacker that has no targets left
-                if (isDefenderDead && defender.CombatList == defenders) {
+                if (isDefenderDead && defender.CombatList == defenders && defenders.Count > 0) {
                     AttackCombatUnit co;
                     do {
                         co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));

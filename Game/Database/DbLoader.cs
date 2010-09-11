@@ -193,7 +193,7 @@ namespace Game.Database {
             Global.Logger.Info("Loading forests...");
             using (var reader = dbManager.Select(Forest.DB_TABLE)) {
                 while (reader.Read()) {
-                    Forest forest = new Forest((byte)reader["level"], (int)reader["capacity"], (int)reader["rate"]) {
+                    Forest forest = new Forest((byte)reader["level"], (int)reader["capacity"], (float)reader["rate"]) {
                         DbPersisted = true,
                         X = (uint)reader["x"],
                         Y = (uint)reader["y"],

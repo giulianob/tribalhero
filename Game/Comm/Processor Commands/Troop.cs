@@ -33,7 +33,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(cityId, objectId, out city, out troop)) {
-                if (city == null || troop == null) {
+                if (city == null || troop == null || troop.Stub == null) {
                     ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
                     return;
                 }

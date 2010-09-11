@@ -174,6 +174,12 @@ namespace Game.Comm {
             return str;
         }
 
+        public float GetFloat() {
+            float tmp = BitConverter.ToSingle(bytes, offset);
+            offset += sizeof(float);
+            return tmp;
+        }
+
         #endregion
 
         #region Parameter Adds
@@ -211,6 +217,10 @@ namespace Game.Comm {
         }
 
         public void AddString(string value) {
+            parameters.Add(new Parameter(value));
+        }
+
+        public void AddFloat(float value) {
             parameters.Add(new Parameter(value));
         }
 

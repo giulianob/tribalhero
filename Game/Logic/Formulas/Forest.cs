@@ -14,23 +14,16 @@ namespace Game.Logic {
         /// </summary>
         /// <param name="level"></param>
         public static int GetMaxForestCount(byte level) {
-            if (level < 2)
+            if (level <= 2)
                 return 1;
 
-            if (level < 4)
+            if (level <= 5)
                 return 2;
 
-            if (level < 6)
+            if (level <= 8)
                 return 3;
 
-            if (level < 8)
-                return 4;
-
-            if (level == 8) return 5;
-            
-            if (level == 9) return 6;
-            
-            return 7;
+            return 4;
         }
 
         /// <summary>
@@ -43,7 +36,7 @@ namespace Game.Logic {
         }
 
         public static ushort GetForestMaxLaborPerUser(Forest forest) {
-            return (ushort)(GetForestMaxLabor(forest.Lvl) / 3);
+            return (ushort)(GetForestMaxLabor(forest.Lvl) / 6);
         }
 
         /// <summary>
@@ -55,10 +48,10 @@ namespace Game.Logic {
             if (level <= 2)
                 return 1;
 
-            if (level <= 4)
+            if (level <= 5)
                 return 2;
 
-            if (level <= 6)
+            if (level <= 8)
                 return 3;
             
             return 4;
@@ -78,8 +71,8 @@ namespace Game.Logic {
         /// </summary>
         /// <param name="level"></param>
         /// <returns></returns>
-        public static int GetMaxForestRate(byte level) {
-            return 1;
+        public static double GetMaxForestRate(byte level) {
+            return 0.75 + (level - 1) * 0.25;
         }
     }
 }

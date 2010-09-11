@@ -116,6 +116,16 @@ namespace Game.Logic {
         public abstract ActionType Type { get; }
 
         protected bool IsValid() {
+            try
+            {                
+                if (WorkerObject.City == null)
+                    throw new NullReferenceException();
+            }
+            catch
+            {
+                return false; //structure is dead
+            }
+
             return !isDone;
         }
 

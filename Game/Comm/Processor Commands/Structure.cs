@@ -58,6 +58,9 @@ namespace Game.Comm {
                             case DataType.INT:
                                 reply.AddInt32((int) prop.GetValue(structure));
                                 break;
+                            case DataType.FLOAT:
+                                reply.AddFloat((float)prop.GetValue(structure));
+                                break;
                         }
                     }
 
@@ -81,6 +84,9 @@ namespace Game.Comm {
                                 break;
                             case DataType.INT:
                                 reply.AddInt32((int)prop.GetValue(structure));
+                                break;
+                            case DataType.FLOAT:
+                                reply.AddFloat((float)prop.GetValue(structure));
                                 break;
                         }
                     }                    
@@ -110,7 +116,7 @@ namespace Game.Comm {
                     return;
                 }
                 
-                reply.AddInt32((int)(forest.Rate / Config.seconds_per_unit));
+                reply.AddFloat((float)(forest.Rate / Config.seconds_per_unit));
                 reply.AddInt32(forest.Labor);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(forest.DepleteTime.ToUniversalTime()));
                 PacketHelper.AddToPacket(forest.Wood, reply);                
@@ -483,7 +489,7 @@ namespace Game.Comm {
                 // Get the lumbermill
                 Structure lumbermill = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("Wood", structure));
                 
-                if (lumbermill == null) {
+                if (lumbermill == null || lumbermill.Lvl == 0) {
                     ReplyError(session, packet, Error.LUMBERMILL_UNAVAILABLE);
                     return;
                 }

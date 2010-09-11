@@ -11,6 +11,8 @@ using Game.Setup;
 
 namespace Game.Module {
     public class Market : ISchedule, IPersistableObject {
+        private readonly object marketLock = new object();
+
         private const int UpdateIntervalInSecond = 3600;
 
         private const int MinPrice = 5;
@@ -75,7 +77,7 @@ namespace Game.Module {
         }
 
         public bool Buy(int quantity, int price) {
-            lock (this) {
+            lock (marketLock) {
                 if (price != Price)
                     return false;
                 outgoing += quantity;
@@ -84,7 +86,7 @@ namespace Game.Module {
         }
 
         public bool Sell(int quantity, int price) {
-            lock (this) {
+            lock (marketLock) {
                 if (price != Price)
                     return false;
                 incoming += quantity;
@@ -94,12 +96,14 @@ namespace Game.Module {
 
         #region ISchedule Members
 
+        public bool IsScheduled { get; set; }
+
         public DateTime Time {
             get { return time; }
         }
 
         public void Callback(object custom) {
-            lock (this) {
+            lock (marketLock) {
                 using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                     int flow = outgoing - incoming;
                     if (Global.Players.Count > 0) {
@@ -118,13 +122,13 @@ namespace Game.Module {
         #endregion
 
         public void Supply(ushort quantity) {
-            lock (this) {
+            lock (marketLock) {
                 incoming += quantity;
             }
         }
 
         public void Consume(ushort quantity) {
-            lock (this) {
+            lock (marketLock) {
                 outgoing += quantity;
             }
         }

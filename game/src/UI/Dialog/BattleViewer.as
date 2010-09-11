@@ -294,7 +294,8 @@
 			if (cityName != null) name += cityName.name;
 			name += "(" + combatObj.troopStubId + ")'s " + combatObj.name;
 
-			var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level);
+			var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level, true);
+			if (ObjectFactory.getClassType(combatObj.type) == ObjectFactory.TYPE_STRUCTURE) icon = ObjectFactory.makeSpriteSmall(icon);
 
 			var lbl: JLabel = new JLabel(name, (icon != null ? new AssetIcon(icon) : null));
 

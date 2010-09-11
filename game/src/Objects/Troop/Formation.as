@@ -22,7 +22,7 @@ package src.Objects.Troop {
 		public static const Wounded: int = 12;
 		public static const Killed: int = 13;
 
-		public static const TypeStrings: Array = ["", "Normal", "Attack", "Defense", "Scout", "Garrison", "Structure", "In Battle", "", "", "", "", "Captured", "Wounded", "Killed"];
+		public static const TypeStrings: Array = ["", "Normal", "Attack", "Defense", "Scout", "Hiding", "Structure", "In Battle", "", "", "", "", "Captured", "Wounded", "Killed"];
 
 		public var type: int;
 

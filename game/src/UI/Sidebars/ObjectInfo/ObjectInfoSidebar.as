@@ -16,6 +16,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.UI.*;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.Components.StarRating;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
 	import src.Util.BinaryList.*;
@@ -33,7 +34,7 @@ package src.UI.Sidebars.ObjectInfo {
 		private var lblName:JLabel;
 		private var pnlStats:Form;
 		private var pnlUpgrades:JPanel;
-		private var pnlGroups:JTabbedPane;
+		private var pnlGroups:JPanel;
 		private var pnlActions:JPanel;
 
 		private var gameObject: StructureObject;
@@ -130,7 +131,8 @@ package src.UI.Sidebars.ObjectInfo {
 				if (structureObject != null)
 				{
 					for (var i: int = 0; i < propPrototype.length; i++) {
-						addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+						var lbl: JLabel = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
 
 					buttons = buttons.concat(StructureFactory.getButtons(structureObject)).concat(StructureFactory.getTechButtons(structureObject));
@@ -142,7 +144,8 @@ package src.UI.Sidebars.ObjectInfo {
 				if (structureObject != null)
 				{
 					for (i = 0; i < propPrototype.length; i++) {
-						addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+						lbl = addStatRow(propPrototype[i].name, propPrototype[i].toString(structureObject.properties[i]), propPrototype[i].getIcon());
+						if (propPrototype[i].tooltip != "") new SimpleTooltip(lbl, propPrototype[i].tooltip);
 					}
 				}
 			}
@@ -189,7 +192,7 @@ package src.UI.Sidebars.ObjectInfo {
 				if (groupedButtons.length == 0) continue;
 
 				var pnlGroup: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 3));
-				pnlGroup.setBorder(new SimpleTitledBorder(new EmptyBorder(null, new Insets()), group.name, AsWingConstants.TOP, AsWingConstants.LEFT));
+				pnlGroup.setBorder(new TitledBorder(null, group.name, AsWingConstants.TOP, AsWingConstants.CENTER, 0, 10));
 
 				for each(var groupButton: ActionButton in groupedButtons) {
 					if (groupButton.parentAction == null) continue;
@@ -197,10 +200,8 @@ package src.UI.Sidebars.ObjectInfo {
 					pnlGroup.append(groupButton);
 				}
 
-				pnlGroups.appendTab(pnlGroup, "", new AssetIcon(new group.icon()));
+				pnlGroups.append(pnlGroup);
 			}
-
-			pnlGroups.setVisible(pnlGroups.getTabCount() > 0);
 
 			if (city == null) return;
 
@@ -380,8 +381,10 @@ package src.UI.Sidebars.ObjectInfo {
 
 			pnlStats = new Form();
 
-			pnlGroups = new JTabbedPane();
-			
+			pnlGroups = new JPanel();
+			pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));
+
 			pnlActions = new JPanel();
 			pnlActions.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 

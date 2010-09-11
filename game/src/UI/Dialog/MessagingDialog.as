@@ -302,7 +302,7 @@ package src.UI.Dialog{
 			messageTable.setRowSelectionAllowed(false);
 			messageTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			messageTable.setDefaultEditor("", null);
-			messageTable.setPreferredSize(new IntDimension(700, 350));
+			messageTable.setPreferredSize(new IntDimension(700, 300));
 
 			messageTable.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(CheckboxTextCell));
 			messageTable.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(PreviewTextCell));
@@ -354,8 +354,12 @@ package src.UI.Dialog{
 
 			// Tabs
 			tabs = new JTabbedPane();
-			tabs.appendTab(pnlInbox, "Inbox");
-			tabs.appendTab(pnlSent, "Sent");
+			
+			var scrollInbox: JScrollPane = new JScrollPane(pnlInbox);
+			tabs.appendTab(scrollInbox, "Inbox");
+			
+			var scrollSent: JScrollPane = new JScrollPane(pnlSent);
+			tabs.appendTab(scrollSent, "Sent");
 
 			//component layoution
 			pnlPaging.append(btnFirst);

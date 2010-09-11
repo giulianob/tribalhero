@@ -161,7 +161,7 @@
 		{
 			//if (pnlLoading) pnlLoading.getFrame().dispose();
 
-			if (Constants.debug > 0) InfoDialog.showMessageDialog("Security Error", event.toString());
+			InfoDialog.showMessageDialog("Security Error", event.toString());
 		}
 
 		public function onDisconnected(event: Event = null):void
@@ -176,7 +176,7 @@
 				if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", "Connection to Server Lost. Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
 				else InfoDialog.showMessageDialog("Connection Lost", "Connection to server lost", function(result: int):void { if (!parms.hostname) showLoginDialog(); }, null, true, false, 1, true);
 			}
-			
+
 			hadLoginError = false;
 		}
 

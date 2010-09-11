@@ -59,6 +59,10 @@
 				if (onDelete != null) onDelete(self);
 			});
 
+			if (message.senderId == null) {
+				btnReply.setVisible(false);
+			}
+			
 			btnReply.addActionListener(function(e: Event) : void {
 				var newMessageDialog : MessageCreateDialog = new MessageCreateDialog(function(dlg: MessageCreateDialog) : void {
 					dlg.getFrame().dispose();

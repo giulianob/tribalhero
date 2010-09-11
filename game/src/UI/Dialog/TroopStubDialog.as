@@ -195,7 +195,7 @@ package src.UI.Dialog {
 			btnLocate = new JButton("Locate");
 			btnRetreat = new JButton("Retreat");
 			btnManage = new JButton("Manage");
-			new SimpleTooltip(btnManage, "Move units between normal and garrison formations.\n\nUnits in the normal formation will defend your city if it is attacked. Units in garrison will hide while your city is being attacked.");
+			new SimpleTooltip(btnManage, "Move units between normal and hiding formations.\n\nUnits in the normal formation will defend your city if it is attacked. Units in hiding will not defend your city when attacked.");
 
 			append(pnlHeader);
 		}

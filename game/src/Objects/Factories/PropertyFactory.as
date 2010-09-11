@@ -26,7 +26,8 @@
 				propNode.@datatype,
 				propNode.@visibility == "PUBLIC" ? 1 : 0,
 				propNode.@perhour.toUpperCase() == "TRUE" ? true : false,
-				propNode.@icon
+				propNode.@icon,
+				propNode.@tooltip
 				);
 				properties.add(propPrototype, false);
 			}

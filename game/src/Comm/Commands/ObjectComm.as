@@ -229,7 +229,7 @@
 
 			var forest: Forest = custom as Forest;
 
-			forest.rate = packet.readInt();
+			forest.rate = packet.readFloat();
 			forest.labor = packet.readInt();
 			forest.depleteTime = packet.readUInt();
 			forest.wood = new AggressiveLazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt());
@@ -339,6 +339,8 @@
 						case "INT":
 							obj.addProperty(packet.readInt());
 						break;
+						case "FLOAT":
+							obj.addProperty(packet.readFloat());
 						default:
 							trace("Unknown datatype " + prop.datatype + " in object type " + obj.type);
 						break;

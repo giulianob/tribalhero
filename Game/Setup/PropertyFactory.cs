@@ -19,6 +19,7 @@ namespace Game.Setup {
         USHORT = 1,
         UINT = 2,
         INT = 3,
+        FLOAT = 4,
         STRING = 10
     }
 
@@ -67,6 +68,8 @@ namespace Game.Setup {
                     return "N/A";
                 case DataType.INT:
                     return Int16.MaxValue;
+                case DataType.FLOAT:
+                    return float.MaxValue;
             }
 
             return null;

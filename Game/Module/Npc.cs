@@ -36,6 +36,8 @@ namespace Game.Module {
         }
 
         #region ISchedule Members
+        
+        public bool IsScheduled { get; set; }
 
         public DateTime Time {
             get { return time; }

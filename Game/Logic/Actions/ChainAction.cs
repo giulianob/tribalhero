@@ -54,9 +54,9 @@ namespace Game.Logic.Actions {
                 case ActionState.RESCHEDULED:
                     Global.DbManager.Save(action);
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Put(new ActionDispatcher(action as ScheduledPassiveAction));
+                        Global.Scheduler.Put((ScheduledPassiveAction)action);
                     else if (action is ScheduledActiveAction)
-                        Global.Scheduler.Put(new ActionDispatcher(action as ScheduledActiveAction));
+                        Global.Scheduler.Put((ScheduledActiveAction)action);
 
                     Global.DbManager.Save(this);
 
@@ -118,7 +118,7 @@ namespace Game.Logic.Actions {
                     current.OnNotify += ChainNotify;
 
                     if (current is ScheduledPassiveAction)
-                        Global.Scheduler.Put(new ActionDispatcher(current as ScheduledPassiveAction));
+                        Global.Scheduler.Put((ScheduledPassiveAction)current);
                     break;
             }
         }

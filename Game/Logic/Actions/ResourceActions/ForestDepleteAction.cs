@@ -11,6 +11,7 @@ namespace Game.Logic.Actions.ResourceActions {
 
         public Forest Forest { get; private set; }
         public DateTime Time { get; private set; }
+        public bool IsScheduled { get; set; }
 
         public ForestDepleteAction(Forest forest, DateTime time) {
             Forest = forest;
@@ -21,7 +22,7 @@ namespace Game.Logic.Actions.ResourceActions {
             
             using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { Forest.ObjectId }, Global.Forests)) {
                 
-                Global.Logger.Info(string.Format("Destroying forest[{0}]", Forest.ObjectId));
+                Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
 
                 List<Structure> camps = new List<Structure>(Forest);
 
@@ -29,6 +30,8 @@ namespace Game.Logic.Actions.ResourceActions {
                     Forest.BeginUpdate();
                     Forest.RemoveLumberjack(obj);
                     Forest.EndUpdate();
+
+                    obj.City.Owner.SendSystemMessage(null, "Forest depleted", "One of your lumbermill outposts have finished gathering wood from a forest. All laborers have returned to your city and are now idle.");
 
                     // Remove structure from city
                     obj.BeginUpdate();

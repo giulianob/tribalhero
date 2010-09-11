@@ -44,6 +44,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,6 +55,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'LauncherService %28Check Locks%29|AnyCPU' ">
     <OutputPath>bin\LauncherService %28Check Locks%29\</OutputPath>
@@ -63,6 +65,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -281,7 +284,6 @@
     <Compile Include="Data\StructureProperties.cs" />
     <Compile Include="Data\Forest.cs" />
     <Compile Include="Data\Troop\TroopTemplate.cs" />
-    <Compile Include="Logic\ActionDispatcher.cs" />
     <Compile Include="Logic\Actions\ChainActions\DefenseAction.cs" />
     <Compile Include="Logic\Actions\ChainActions\RetreatAction.cs" />
     <Compile Include="Logic\Actions\ChainExecuter.cs" />

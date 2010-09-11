@@ -23,6 +23,7 @@ namespace Game.Logic {
     }
 
     public interface ISchedule {
+        bool IsScheduled { get; set; }
         DateTime Time { get; }
         void Callback(object custom);
     }

@@ -549,6 +549,7 @@ namespace CSVToXML {
                     writer.WriteAttributeString("visibility", obj[4].ToUpper());
                     writer.WriteAttributeString("perhour", obj[5]);
                     writer.WriteAttributeString("icon", obj[6]);
+                    writer.WriteAttributeString("tooltip", obj[7]);
                     writer.WriteEndElement();
                 }
             }

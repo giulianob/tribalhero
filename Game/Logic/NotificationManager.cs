@@ -8,6 +8,7 @@ using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
+using Game.Setup;
 
 #endregion
 
@@ -150,12 +151,14 @@ namespace Game.Logic {
 
                 notifications.Add(notification);
 
-                //send add
-                Packet packet = new Packet(Command.NOTIFICATION_ADD);
-                packet.AddUInt32(actionWorker.City.Id);
-                PacketHelper.AddToPacket(notification, packet);
+                if (Global.FireEvents) {
+                    //send add
+                    Packet packet = new Packet(Command.NOTIFICATION_ADD);
+                    packet.AddUInt32(actionWorker.City.Id);
+                    PacketHelper.AddToPacket(notification, packet);
 
-                Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+                    Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+                }
             }
         }
 
@@ -167,22 +170,26 @@ namespace Game.Logic {
                         continue;
                     notifications.RemoveAt(i);
 
-                    //send removal
-                    Packet packet = new Packet(Command.NOTIFICATION_REMOVE);
-                    packet.AddUInt32(actionWorker.City.Id);
-                    packet.AddUInt32(notification.Action.WorkerObject.City.Id);
-                    packet.AddUInt32(notification.Action.ActionId);
+                    if (Global.FireEvents) {
+                        //send removal
+                        Packet packet = new Packet(Command.NOTIFICATION_REMOVE);
+                        packet.AddUInt32(actionWorker.City.Id);
+                        packet.AddUInt32(notification.Action.WorkerObject.City.Id);
+                        packet.AddUInt32(notification.Action.ActionId);
 
-                    Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+                        Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+                    }
                 }
             }
         }
 
         private void UpdateNotification(Notification notification) {
-            Packet packet = new Packet(Command.NOTIFICATION_UPDATE);
-            packet.AddUInt32(actionWorker.City.Id);
-            PacketHelper.AddToPacket(notification, packet);
-            Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+            if (Global.FireEvents) {
+                Packet packet = new Packet(Command.NOTIFICATION_UPDATE);
+                packet.AddUInt32(actionWorker.City.Id);
+                PacketHelper.AddToPacket(notification, packet);
+                Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+            }
         }
 
         private void WorkerActionRescheduled(GameAction action, ActionState state) {

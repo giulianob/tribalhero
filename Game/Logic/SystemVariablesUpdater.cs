@@ -49,8 +49,9 @@ namespace Game.Logic {
                     int schedulerDelta;
                     int actionsFired;
                     DateTime lastProbe;
+                    DateTime nextFire;
 
-                    Global.Scheduler.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta);
+                    Global.Scheduler.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
 
                     int workerThreads;
                     int completionThreads;
@@ -69,6 +70,7 @@ namespace Game.Logic {
                         new SystemVariable("Scheduler.size", schedulerSize),
                         new SystemVariable("Scheduler.size_change", schedulerDelta),
                         new SystemVariable("Scheduler.actions_per_second", (int)(actionsFired / now.Subtract(lastProbe).TotalSeconds)),
+                        new SystemVariable("Scheduler.next_fire", nextFire),
                         
                         new SystemVariable("ThreadPool.max_worker", workerThreads),
                         new SystemVariable("ThreadPool.max_completion", completionThreads),

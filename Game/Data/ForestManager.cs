@@ -28,11 +28,11 @@ namespace Game.Data {
             forests.Add(forest.ObjectId, forest);
         }
 
-        public void CreateForest(byte lvl, int capacity, int rate) {
+        public void CreateForest(byte lvl, int capacity, double rate) {
             CreateForestAt(lvl, capacity, rate, 0, 0);
         }
 
-        public void CreateForestAt(byte lvl, int capacity, int rate, uint x, uint y) {
+        public void CreateForestAt(byte lvl, int capacity, double rate, uint x, uint y) {
             Forest forest = new Forest(lvl, capacity, rate);
 
             if (x == 0 || y == 0) {

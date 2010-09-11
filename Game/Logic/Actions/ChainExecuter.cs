@@ -16,6 +16,8 @@ namespace Game.Logic.Actions {
 
         #region ISchedule Members
 
+        public bool IsScheduled { get; set; }
+
         public DateTime Time {
             get { return DateTime.UtcNow; }
         }

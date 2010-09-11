@@ -21,7 +21,7 @@ GLADIATOR_UNIT,Gladiator
 0_FIGHTER_UNIT,Fighter
 0_FIGHTER_UNIT_DESC,A unit that can perform well when either attacking or defending. The Swordsman is strong against ground and machine units but can quickly fall to bow units.  It is also very affordable.
 0_BOWMAN_UNIT,Bowman
-0_BOWMAN_UNIT_DESC," A defensive range unit who is strong against ground units and good against mounted units, but it does very little damage to machine units and structures.  It kills enemies without being seen, sometimes."
+0_BOWMAN_UNIT_DESC," A defensive range unit who is strong against ground units and good against mounted units, but it does very little damage to machine units and structures.  Due to their high vision, bowman will generally attack other units first."
 1_SWORDSMAN_UNIT,Swordsman
 1_SWORDSMAN_UNIT_DESC,A unit that can perform well when either attacking or defending. The Swordsman is strong against ground and machine units but can quickly fall to bow units.  It is also very affordable.
 1_ARCHER_UNIT,Archer

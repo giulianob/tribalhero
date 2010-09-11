@@ -8,8 +8,6 @@
 	<?php
 		//echo $html->meta('icon');
 		echo $html->css('blueprint/screen', null, array("media" => "screen, projection"));
-		echo $html->css('blueprint/forms', null, array("media" => "screen, projection"));
-		echo $html->css('blueprint/print', null, array("media" => "print"));
 	?>
 	<!--[if lt IE 8]><?php echo $html->css('blueprint/ie', null, array("media" => "screen, projection"));?><![endif]-->	
 	<?php			
@@ -49,7 +47,7 @@
 			<div class="span-4">
 				<ul id="main-nav">
 					<li id="home"><?php echo $html->link('', '/');?></li>					
-					<li id="help"><a href="#"></a></li>
+					<li id="help"><?php echo $html->link('', '/pages/help');?></li>
 					<li id="forums"><a href="http://forums.tribalhero.com"></a></li>
 					<li id="blog"><a href="#"></a></li>
 					<li id="register"><?php echo $html->link('', '/players/register');?></li>

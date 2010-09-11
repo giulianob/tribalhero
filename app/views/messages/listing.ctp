@@ -12,6 +12,10 @@ foreach ($messages as $message) {
     $isRecipient = $playerId == $message['Message']['recipient_player_id'];    
     $messageAllowedLength = 75 - strlen($message['Message']['subject']);   
 
+	if ($message['Sender']['id'] == 0) {
+		$message['Sender']['name'] = 'System';
+	}
+	
     $data[] = array(
             'name' => $isRecipient ?  $message['Sender']['name'] : $message['Recipient']['name'],
             'isRecipient' => $isRecipient,

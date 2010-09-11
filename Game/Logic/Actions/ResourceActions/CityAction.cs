@@ -137,7 +137,7 @@ namespace Game.Logic.Actions
                 #region Labor
                 if (city.Owner.Session != null || DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays <= 2) {
                     laborTimeRemains += INTERVAL;
-                    int laborRate = Formula.GetLaborRate(laborTotal);
+                    int laborRate = Formula.GetLaborRate(laborTotal,city);
                     int laborProduction = laborTimeRemains/laborRate;
                     if (laborProduction > 0) {
                         laborTimeRemains -= laborProduction*laborRate;

@@ -33,8 +33,8 @@ Id,Method,P1,P2,P3,P4,P5,Description,Comment
 ,,,,,,,,
 //foundry,,,,,,,,
 21101,UniqueTechnology,id=21101,,,,,,
-21102,HaveNoStructure,2109,minlvl=0,maxlvl=10,,,,1 Refinery per city
 ,,,,,,,,
+20002,HaveNoStructure,2301,minlvl=0,maxlvl=10,,,,1 University per city
 //basement,,,,,,,,
 21111,HaveTechnology,21102,lvl=3,count=1,,,,Require Tunnel Excavation Technology 
 ,,,,,,,,
@@ -48,5 +48,5 @@ Id,Method,P1,P2,P3,P4,P5,Description,Comment
 230171,HaveStructure,id=2302,minlvl=3,maxlvl=10,,,,Require Armory level 3.
 230171,HaveStructure,id=2303,minlvl=3,maxlvl=10,,,,Require Blacksmith level 3.
 ,,,,,,,,
-//lumbermill,,,,,,,,
-21071,HaveStructure,id=2111,minlvl=10,maxlvl=10,,,,Require Basement level 10.
+//tribal festival,,,,,,,,
+21031,HaveNoStructure,3002,minlvl=0,maxlvl=10,,,,1 festival per city

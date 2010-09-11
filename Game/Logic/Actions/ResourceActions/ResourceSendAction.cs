@@ -64,8 +64,6 @@ namespace Game.Logic.Actions {
             endTime = SystemClock.Now.AddSeconds(Config.actions_instant_time ? 3 : Formula.SendTime(structure.TileDistance(targetCity.MainBuilding)));
             beginTime = SystemClock.Now;
 
-         //   targetCity.Worker.References.Add(targetCity.MainBuilding, this);
-            //targetCity.Worker.Notifications.Add(
             return Error.OK;
         }
 

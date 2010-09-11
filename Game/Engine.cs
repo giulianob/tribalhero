@@ -31,9 +31,7 @@ namespace Game {
             if (State != EngineState.STOPPED)
                 throw new Exception("Server is not stopped");
 
-            State = EngineState.STARTING;
-
-            XmlConfigurator.Configure();
+            State = EngineState.STARTING;            
 
             // Initialize all of the factories
             Factory.InitAll();

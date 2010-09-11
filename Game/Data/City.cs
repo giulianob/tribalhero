@@ -235,9 +235,11 @@ namespace Game.Data {
                 if (troopobjects.ContainsKey(objId))
                     return false;
 
-                troop.Stub.BeginUpdate();
-                troop.Stub.TroopObject = troop;
-                troop.Stub.EndUpdate();
+                if (troop.Stub != null) {
+                    troop.Stub.BeginUpdate();
+                    troop.Stub.TroopObject = troop;
+                    troop.Stub.EndUpdate();
+                }
 
                 troop.City = this;
 
@@ -278,6 +280,7 @@ namespace Game.Data {
                 if (save)
                     Global.DbManager.Save(structure);
 
+                structure.Technologies.TechnologyCleared += Technologies_TechnologyCleared;
                 structure.Technologies.TechnologyAdded += Technologies_TechnologyAdded;
                 structure.Technologies.TechnologyRemoved += Technologies_TechnologyRemoved;
                 structure.Technologies.TechnologyUpgraded += Technologies_TechnologyUpgraded;
@@ -341,6 +344,7 @@ namespace Game.Data {
 
                 structures.Remove(obj.ObjectId);
 
+                obj.Technologies.TechnologyCleared -= Technologies_TechnologyCleared;
                 obj.Technologies.TechnologyAdded -= Technologies_TechnologyAdded;
                 obj.Technologies.TechnologyRemoved -= Technologies_TechnologyRemoved;
                 obj.Technologies.TechnologyUpgraded -= Technologies_TechnologyUpgraded;
@@ -363,9 +367,12 @@ namespace Game.Data {
                 Global.DbManager.Delete(obj);
 
                 obj.City = null;
-                obj.Stub.BeginUpdate();
-                obj.Stub.TroopObject = null;
-                obj.Stub.EndUpdate();
+
+                if (obj.Stub != null) {
+                    obj.Stub.BeginUpdate();
+                    obj.Stub.TroopObject = null;
+                    obj.Stub.EndUpdate();
+                }
 
                 ObjRemoveEvent(obj);
             }
@@ -550,6 +557,17 @@ namespace Game.Data {
                 packet.AddUInt32(tech.ownerId);
             packet.AddUInt32(tech.Type);
             packet.AddByte(tech.Level);
+
+            Global.Channel.Post("/CITY/" + id, packet);
+        }
+
+        private void Technologies_TechnologyCleared(TechnologyManager manager) {
+            Packet packet = new Packet(Command.TECH_CLEARED);
+            packet.AddUInt32(Id);
+            if (manager.OwnerLocation == EffectLocation.CITY)
+                packet.AddUInt32(0); 
+            else
+                packet.AddUInt32(manager.OwnerId);
 
             Global.Channel.Post("/CITY/" + id, packet);
         }

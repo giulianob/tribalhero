@@ -13,7 +13,7 @@ using Game.Util;
 namespace Game.Data {
     public class TroopObject : GameObject, IPersistableObject {
 
-        public TroopStub Stub { get; private set; }
+        public TroopStub Stub { get; set; }
 
         TroopStats stats = new TroopStats(0, 0);
         public TroopStats Stats {
@@ -95,7 +95,7 @@ namespace Game.Data {
             get {
                 return new[] {
                                 new DbColumn("is_blocked", IsBlocked, DbType.Boolean),
-                                new DbColumn("troop_stub_id", Stub.TroopId, DbType.Byte),
+                                new DbColumn("troop_stub_id", Stub != null ? Stub.TroopId : 0, DbType.Byte),
                                 new DbColumn("gold", Stats.Loot.Gold, DbType.Int32),
                                 new DbColumn("crop", Stats.Loot.Crop, DbType.Int32),
                                 new DbColumn("wood", Stats.Loot.Wood, DbType.Int32),

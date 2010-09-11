@@ -208,7 +208,7 @@ namespace Game.Database {
                             Limit = (int)reader["capacity"]
                         },
                         DepleteTime = DateTime.SpecifyKind((DateTime)reader["deplete_time"], DateTimeKind.Utc).Add(downTime),
-                        InWorld = true
+                        InWorld = (bool)reader["in_world"]
                     };
 
                     foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
@@ -227,11 +227,12 @@ namespace Game.Database {
                         forest.AddLumberjack(structure);
                     }
 
-                    // Create deplete time
-                    Global.Scheduler.Put(new ForestDepleteAction(forest, forest.DepleteTime));
-
-                    Global.World.DbLoaderAdd(forest);
-                    Global.Forests.DbLoaderAdd(forest);
+                    if (forest.InWorld) {
+                        // Create deplete time
+                        Global.Scheduler.Put(new ForestDepleteAction(forest, forest.DepleteTime));
+                        Global.World.DbLoaderAdd(forest);
+                        Global.Forests.DbLoaderAdd(forest);
+                    }
 
                     // Resave to include new time
                     Global.DbManager.Save(forest);
@@ -421,7 +422,7 @@ namespace Game.Database {
                 while (reader.Read()) {
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
-                    TroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
+                    TroopStub stub = (byte)reader["troop_stub_id"] != 0 ? city.Troops[(byte)reader["troop_stub_id"]] : null;
                     TroopObject obj = new TroopObject(stub) {
                         X = (uint)reader["x"],
                         Y = (uint)reader["y"],
@@ -680,6 +681,9 @@ namespace Game.Database {
                         }
 
                         action.IsChain = true;
+                        
+                        city.Worker.DbLoaderDoPassive(action);
+                        
                         chainList.Add(action);
                     }
 

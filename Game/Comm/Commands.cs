@@ -82,6 +82,7 @@ namespace Game.Comm {
         TECH_UPGRADE = 312,
         TECH_REMOVED = 313,
         TECH_UPGRADED = 314,
+        TECH_CLEARED = 315,
 
         #endregion
 
@@ -147,6 +148,7 @@ namespace Game.Comm {
         BATTLE_REINFORCE_DEFENDER = 704,
         BATTLE_ENDED = 705,
         BATTLE_SKIPPED = 706,
+        BATTLE_NEW_ROUND = 707
 
         #endregion        
     }

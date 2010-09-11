@@ -43,7 +43,7 @@ namespace Game.Data {
         /// <summary>
         /// The structures currently getting wood from this forest
         /// </summary>
-        List<Structure> structures = new List<Structure>();       
+        readonly List<Structure> structures = new List<Structure>();       
 
         /// <summary>
         /// Maximum laborers allowed in this forest
@@ -258,7 +258,8 @@ namespace Game.Data {
                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),
                                 new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), DbType.String),
                                 new DbColumn("deplete_time", DepleteTime, DbType.DateTime),
-                                new DbColumn("structures", XMLSerializer.SerializeComplexList(structuresEnum), DbType.String)
+                                new DbColumn("structures", XMLSerializer.SerializeComplexList(structuresEnum), DbType.String),
+                                new DbColumn("in_world", InWorld, DbType.Boolean)
                 };
             }
         }

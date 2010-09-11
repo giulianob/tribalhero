@@ -25,9 +25,10 @@ namespace Game.Logic.Procedures {
 
             troop.City.Troops.Remove(troop.Stub.TroopId);
 
-            troop.BeginUpdate();
-            Global.World.Remove(troop);
+            troop.BeginUpdate();            
+            Global.World.Remove(troop);            
             troop.City.ScheduleRemove(troop, false);
+            troop.Stub = null;
             troop.EndUpdate();
 
             return true;

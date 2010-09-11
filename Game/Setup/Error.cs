@@ -4,6 +4,9 @@ namespace Game.Setup {
 
         UNEXPECTED = -1,
         OK = 0,
+
+        CLIENT_OLD_VERSION = 5,
+        INVALID_LOGIN = 6,
         #endregion
 
         #region Action Errors

@@ -11,6 +11,7 @@ namespace Game.Logic.Actions.ResourceActions {
     public class ForestCreatorAction : ISchedule {
 
         public DateTime Time { get; private set; }
+        public bool IsScheduled { get; set; }
 
         public ForestCreatorAction() {
             Time = SystemClock.Now;

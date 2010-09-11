@@ -51,15 +51,15 @@ FARM_STRUCTURE_LVL_10,Increases the farm to support a maximum of 240 laborers.
 LUMBERMILL_STRUCTURE_NAME,Lumbermill
 LUMBERMILL_STRUCTURE_DESCRIPTION,Use the city's laborers to produce wood and develop underground storage to protect resources.
 LUMBERMILL_STRUCTURE_LVL_1,Allows gathering wood from level 1 forests.
-LUMBERMILL_STRUCTURE_LVL_2,Allows gathering from 2 forests simultaneously.  Ability to build basement to hide resources.
+LUMBERMILL_STRUCTURE_LVL_2,Ability to build basement to protect resources.
 LUMBERMILL_STRUCTURE_LVL_3,Allows gathering wood from level 2 forests.
-LUMBERMILL_STRUCTURE_LVL_4,Allows gathering from 3 forests simultaneously.
-LUMBERMILL_STRUCTURE_LVL_5,Allows gathering wood from level 3 forests.
-LUMBERMILL_STRUCTURE_LVL_6,Allows gathering from 4 forests simultaneously.
-LUMBERMILL_STRUCTURE_LVL_7,Allows gathering wood from level 4 forests.
-LUMBERMILL_STRUCTURE_LVL_8,Allows gathering from 5 forests simultaneously.
-LUMBERMILL_STRUCTURE_LVL_9,Allows gathering from 6 forests simultaneously.
-LUMBERMILL_STRUCTURE_LVL_10,Allows gathering from 7 forests simultaneously.
+LUMBERMILL_STRUCTURE_LVL_4,Allows gathering wood from 2 forests simultaneously.
+LUMBERMILL_STRUCTURE_LVL_5,
+LUMBERMILL_STRUCTURE_LVL_6,Allows gathering wood from level 3 forests..
+LUMBERMILL_STRUCTURE_LVL_7,Allows gathering from 3 forests simultaneously.
+LUMBERMILL_STRUCTURE_LVL_8,
+LUMBERMILL_STRUCTURE_LVL_9,Allows gathering from level 4 forests.
+LUMBERMILL_STRUCTURE_LVL_10,Allows gathering from 4 forests simultaneously.
 REFINERY_STRUCTURE_NAME,Refinery
 REFINERY_STRUCTURE_DESCRIPTION,Use the city's laborers to produce iron.
 REFINERY_STRUCTURE_LVL_1,Allows a maximum of 100 laborers to work in the refinery. Produce 1 Iron per hour for every 7 Workers.

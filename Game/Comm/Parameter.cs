@@ -39,6 +39,12 @@ namespace Game.Comm {
             bytes = new[] {value};
         }
 
+        public Parameter(float value) {
+            Value = value;
+            Length = sizeof(float);
+            bytes = BitConverter.GetBytes(value);
+        }
+
         public Parameter(string value) {
             Value = value;
             Length = sizeof (ushort) + value.Length;

@@ -35,20 +35,23 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             // add to queue for completion
-            endTime = forest.DepleteTime;
+            endTime = forest.DepleteTime.AddSeconds(30);
             beginTime = DateTime.UtcNow;
 
             return Error.OK;
         }
 
-        public void Reschedule() {
+        public void Reschedule() {            
+            MultiObjectLock.ThrowExceptionIfNotLocked(WorkerObject.City);
+
             Forest forest;
             if (!Global.Forests.TryGetValue(forestId, out forest)) {
                 throw new Exception("Forest is missing");
             }
+            
+            Global.Scheduler.Remove(this);
 
-            Global.Scheduler.Del(this);
-            endTime = forest.DepleteTime;            
+            endTime = forest.DepleteTime.AddSeconds(30);
             StateChange(ActionState.RESCHEDULED);
         }
 

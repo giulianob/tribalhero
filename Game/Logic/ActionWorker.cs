@@ -99,7 +99,7 @@ namespace Game.Logic {
                         ActionRemoved(actionStub, state);
 
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Del(action as ScheduledPassiveAction);
+                        Global.Scheduler.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
                         Global.DbManager.Delete(actionStub);
@@ -119,7 +119,7 @@ namespace Game.Logic {
                         ActionRemoved(actionStub, state);
 
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Del(action as ScheduledPassiveAction);
+                        Global.Scheduler.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
                         Global.DbManager.Delete(actionStub);                                            
@@ -159,10 +159,10 @@ namespace Game.Logic {
 
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub, state);
-
+                    
                     if (action is ScheduledActiveAction) {
                         Global.DbManager.Delete(actionStub);
-                        Global.Scheduler.Del(action as ISchedule);
+                        Global.Scheduler.Remove(action as ISchedule);
                     }
                     break;
                 case ActionState.FIRED:
@@ -179,8 +179,8 @@ namespace Game.Logic {
                         ActionRemoved(actionStub, state);
 
                     if (action is ScheduledActiveAction) {
-                        Global.DbManager.Delete(actionStub);
-                        Global.Scheduler.Del(action as ISchedule);
+                        Global.DbManager.Delete(actionStub);                        
+                        Global.Scheduler.Remove(action as ISchedule);
                     }
                     break;
             }
@@ -351,12 +351,6 @@ namespace Game.Logic {
             return false;
         }
 
-        public void FireCallback(ISchedule action) {
-            if (!((GameAction)action).IsDone) {
-                action.Callback(null);
-            }
-        }
-
         internal IEnumerable<GameAction> GetVisibleActions() {
             foreach (KeyValuePair<uint, ActiveAction> kvp in active)
                 yield return kvp.Value;
@@ -379,14 +373,12 @@ namespace Game.Logic {
             actionIdGen.Release(actionId);
         }
 
-        private static void Schedule(ScheduledActiveAction action) {
-            ActionDispatcher dispatcher = new ActionDispatcher(action);
-            Global.Scheduler.Put(dispatcher);
+        private static void Schedule(ScheduledActiveAction action) {            
+            Global.Scheduler.Put(action);
         }
 
-        private static void Schedule(ScheduledPassiveAction action) {
-            ActionDispatcher dispatcher = new ActionDispatcher(action);
-            Global.Scheduler.Put(dispatcher);
+        private static void Schedule(ScheduledPassiveAction action) {            
+            Global.Scheduler.Put(action);
         }
 
         #endregion

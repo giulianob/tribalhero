@@ -17,7 +17,7 @@ namespace Game.Logic {
         /// <param name="unitsKilled">Value of units in the troop killed</param>
         /// <returns></returns>
         public static int GetAttackPoint(int enemiesKilled, int unitsKilled) {
-            return Math.Max(0, enemiesKilled * 2 - unitsKilled);
+            return Math.Max(0, unitsKilled);
         }
 
         /// <summary>

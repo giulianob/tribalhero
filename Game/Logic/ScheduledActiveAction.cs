@@ -12,6 +12,8 @@ namespace Game.Logic {
 
         #region IActionTime Members
 
+        public bool IsScheduled { get; set; }
+
         protected DateTime beginTime = DateTime.MinValue;
 
         public DateTime BeginTime {
@@ -23,7 +25,10 @@ namespace Game.Logic {
 
         public DateTime EndTime {
             get { return endTime; }
-            set { endTime = value; }
+            set {
+                if (IsScheduled) throw new Exception("Trying to change scheduled time while action is in scheduler");
+                endTime = value;
+            }
         }
 
         protected DateTime nextTime = DateTime.MinValue;
@@ -33,6 +38,7 @@ namespace Game.Logic {
                 return nextTime == DateTime.MinValue ? endTime : nextTime;
             }
             set {
+                if (IsScheduled) throw new Exception("Trying to change scheduled time while action is in scheduler");
                 nextTime = value;
                 // Cap the end time so it can never be less than the next time
                 if (endTime < nextTime) endTime = nextTime;

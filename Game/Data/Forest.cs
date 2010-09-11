@@ -5,8 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Game.Data.Stats;
-using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -68,7 +66,7 @@ namespace Game.Data {
         /// <summary>
         /// Base rate at which this forest gives out resources.
         /// </summary>
-        public int Rate { get; private set; }
+        public double Rate { get; private set; }
 
         /// <summary>
         /// Time until forest is depleted
@@ -78,7 +76,7 @@ namespace Game.Data {
 
         #region Constructors
 
-        public Forest(byte lvl, int capacity, int rate) {
+        public Forest(byte lvl, int capacity, double rate) {
             this.lvl = lvl;
 
             Wood = new AggressiveLazyValue(capacity) {
@@ -125,7 +123,7 @@ namespace Game.Data {
             double laborEfficiency = (double)totalLabor / MaxLabor;
             double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency)) * (structures.Count * 0.125);
 
-            int totalRate = 0;
+            float totalRate = 0;
             // Set the appropriate rates
             foreach (Structure obj in this) {
 
@@ -135,7 +133,7 @@ namespace Game.Data {
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 int oldRate = (int)obj["Rate"];
 
-                int newRate = (int)((double)obj.Stats.Labor * Rate * (1d + efficiency));
+                int newRate = (int)(obj.Stats.Labor * Rate * (1d + efficiency));
 
                 if (newRate != oldRate) {
                     // Save the rate in the obj. This is needed so later we can look up how much this object is actually giving.
@@ -145,7 +143,7 @@ namespace Game.Data {
 
                     // Update the cities rate
                     obj.City.BeginUpdate();
-                    obj.City.Resource.Wood.Rate += (newRate - oldRate);
+                    obj.City.Resource.Wood.Rate += newRate - oldRate;
                     obj.City.EndUpdate();
                 }
 
@@ -153,7 +151,7 @@ namespace Game.Data {
             }
 
             // Set the forests upkeep
-            Wood.Upkeep = totalRate;
+            Wood.Upkeep = (int)totalRate;
 
             // Set the forests total labor
             Labor = totalLabor;
@@ -161,8 +159,7 @@ namespace Game.Data {
             SetDepleteAction();
 
             //Reset the harvest actions
-            foreach (Structure obj in this.Where(obj => obj.Lvl > 0)) {
-                // Remove the harvesting action
+            foreach (Structure obj in this.Where(obj => obj.Lvl > 0)) {                
                 ForestCampHarvestAction action = (ForestCampHarvestAction)obj.City.Worker.FindAction(obj, typeof(ForestCampHarvestAction));
                 if (action != null) {
                     action.Reschedule();
@@ -180,14 +177,14 @@ namespace Game.Data {
         /// </summary>
         private void SetDepleteAction() {            
             if (DepleteAction != null)
-                Global.Scheduler.Del(DepleteAction);
+                Global.Scheduler.Remove(DepleteAction);
 
             double hours = 2 * 24 + Config.Random.NextDouble() * 5;
             
             if (Wood.Upkeep != 0)
                 hours = Wood.Value / (Wood.Upkeep / Config.seconds_per_unit);
 
-            Global.Logger.Info(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]", hours, Wood.Upkeep, Wood.Value));
+            Global.Logger.Debug(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]", hours, Wood.Upkeep, Wood.Value));
 
             DepleteTime = DateTime.UtcNow.AddHours(hours);
 
@@ -250,7 +247,7 @@ namespace Game.Data {
                                 new DbColumn("x", X, DbType.UInt32), 
                                 new DbColumn("y", Y, DbType.Int32),            
                                 new DbColumn("level", Lvl, DbType.Byte),    
-                                new DbColumn("rate", Rate, DbType.UInt32), 
+                                new DbColumn("rate", Rate, DbType.Single), 
                                 new DbColumn("capacity", Wood.Limit, DbType.Int32), 
                                 new DbColumn("last_realize_time", Wood.LastRealizeTime, DbType.DateTime),
                                 new DbColumn("lumber", Wood.RawValue, DbType.Int32),

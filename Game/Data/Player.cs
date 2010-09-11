@@ -50,8 +50,8 @@ namespace Game {
         }
 
         public void SendSystemMessage(Player from, String subject, String message) {
-            subject = String.Format("(System) {0}", subject);            
-            Global.DbManager.Query(string.Format("INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', UTC_TIMESTAMP())", from.PlayerId, PlayerId, subject, message, 2, 0));
+            subject = String.Format("(System) {0}", subject);
+            Global.DbManager.Query(string.Format("INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', UTC_TIMESTAMP())", from == null ? 0 : from.PlayerId, PlayerId, subject, message, 2, 0));
         }
 
         #region ILockable Members

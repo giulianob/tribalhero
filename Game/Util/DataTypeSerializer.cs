@@ -23,6 +23,8 @@ namespace Game.Util {
                 return 7;
             if (value is long)
                 return 8;
+            if (value is float)
+                return 9;
 
             throw new Exception("Unknown data type");
         }
@@ -45,6 +47,8 @@ namespace Game.Util {
                     return DateTime.SpecifyKind(DateTime.Parse(value), DateTimeKind.Utc);
                 case 8:
                     return long.Parse(value);
+                case 9:
+                    return float.Parse(value);
                 default:
                     throw new Exception("Unknown data type");
             }

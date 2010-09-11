@@ -19,6 +19,10 @@ class Player extends AppModel {
 			'unique' => array(
 				'rule' => 'isUnique',
 				'message' => 'A player with this name already exists'
+			),
+			'notSystem' => array(
+				'rule' => '/^((?!system).)*$/i',
+				'message' => 'Illegal player name. Player names cannot contain the word "System"'
 			)
 		), 
 		'email_address' => array(

@@ -5,7 +5,6 @@
 	<title>
 		<?php echo $title_for_layout; ?> - Tribal Hero
 	</title> 
-	<!--[if lt IE 8]><?php echo $html->css('blueprint/ie', null, array("media" => "screen, projection"));?><![endif]-->	
 	<?php
 		echo $html->css('style.main');
 		echo $scripts_for_layout;

@@ -18,7 +18,7 @@ $this->Js->buffer($code);
 		<div class="span-10 last">
 			<h2>Welcome</h2>
 			<p>
-				Tribal Hero is an online multiplayer game which allows you to build your own empire. You will be able to compete against thousands of players in an engaging environment. Best of all, Tribal Hero can be fully enjoyed without having to spend your entire day infront of the computer.
+				Tribal Hero is an online multiplayer game which allows you to build your own empire. You will be able to compete against thousands of players in an engaging environment. Best of all, Tribal Hero can be fully enjoyed without having to spend your entire day in front of the computer.
 			</p>
 			<p>
 				Just <?php echo $html->link('sign up', '/players/register');?> and try it!

@@ -137,7 +137,7 @@ class Message extends AppModel {
     }
 
     function getMessageForPlayer($playerId, $messageId) {
-        return $this->find('first', array(
+        $message = $this->find('first', array(
                 'contain' => array(
                         'Recipient' => array('fields' => array('id', 'name')),
                         'Sender' => array('fields' => array('id', 'name'))
@@ -156,6 +156,12 @@ class Message extends AppModel {
                         )
                 )
         ));
+		
+		if ($message['Sender']['id'] == null) {
+			$message['Sender']['name'] = 'System';
+		}
+		
+		return $message;
     }
 
     function getUnreadCount($playerId) {

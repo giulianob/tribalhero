@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 15, 2010 at 06:29 PM
+-- Generation Time: Sep 11, 2010 at 03:41 PM
 -- Server version: 5.1.37
 -- PHP Version: 5.3.0
 
@@ -58,7 +58,7 @@ CREATE TABLE `battles` (
   KEY `ended` (`ended`),
   KEY `created` (`created`),
   KEY `city_id` (`city_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -97,7 +97,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -120,7 +120,7 @@ CREATE TABLE `battle_report_objects` (
   `hits_received` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -144,7 +144,7 @@ CREATE TABLE `battle_report_troops` (
   PRIMARY KEY (`id`),
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -174,7 +174,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -317,7 +317,7 @@ CREATE TABLE `forests` (
   `y` int(10) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
   `labor` smallint(5) unsigned NOT NULL,
-  `rate` int(11) NOT NULL,
+  `rate` float NOT NULL,
   `capacity` int(10) NOT NULL,
   `state` tinyint(3) unsigned NOT NULL,
   `state_parameters` text NOT NULL,
@@ -325,6 +325,7 @@ CREATE TABLE `forests` (
   `lumber` int(11) NOT NULL,
   `upkeep` int(11) NOT NULL,
   `deplete_time` datetime NOT NULL,
+  `in_world` tinyint(1) NOT NULL,
   `structures` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -437,6 +438,7 @@ CREATE TABLE `players` (
   `created` datetime NOT NULL,
   `last_login` datetime NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
+  `admin` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
   KEY `login_key` (`login_key`),

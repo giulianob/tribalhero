@@ -2,10 +2,12 @@
 	import src.Global;
 	import src.Map.City;
 	import src.Map.Username;
+	import src.Objects.Actions.CurrentActionReference;
 	import src.Objects.Actions.Notification;
 	import src.Objects.Troop.*;
 	import src.UI.Components.ComplexTroopGridList.ComplexTroopGridList;
 	import src.UI.Components.NotificationBox;
+	import src.UI.Components.ReferenceBox;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	import org.aswing.*;

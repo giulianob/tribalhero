@@ -20,7 +20,7 @@
 			
 			createUI();
 			
-			lblName.setText(unitPrototype.getName());
+			lblName.setText(unitPrototype.getName(count));
 			lblLevel.setText("Level " + unitPrototype.level.toString());
 			if (count > -1)
 				lblCount.setText(count.toString());

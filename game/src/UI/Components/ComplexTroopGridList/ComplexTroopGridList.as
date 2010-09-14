@@ -48,7 +48,7 @@
 			this.formationType = formationType;
 
 			setTileWidth(55);
-			setTileHeight(32);
+			setTileHeight(32);			
 
 			if (!tooltipMode) {
 				addEventListener(GridListItemEvent.ITEM_ROLL_OVER, onItemRollOver);
@@ -160,7 +160,10 @@
 
 			var layout0: SoftBoxLayout = new SoftBoxLayout();
 			layout0.setAxis(AsWingConstants.VERTICAL);
-			layout0.setGap(10);
+			
+			if (!tooltipMode) {
+				layout0.setGap(10);
+			}
 
 			panel.setLayout(layout0);
 
@@ -168,7 +171,7 @@
 			{
 				if (tooltipMode) {
 					ts.setBorder(new SimpleTitledBorder(null, Formation.TypeStrings[ts.getFormation().type], AsWingConstants.TOP, AsWingConstants.LEFT, 0, GameLookAndFeel.getClassAttribute("Tooltip.text", "Label.font"), GameLookAndFeel.getClassAttribute("Tooltip.text", "Label.foreground")));
-					panel.append(ts);
+					panel.append(ts);					
 				}
 				else {
 					var tabHolder: JTabbedPane = new JTabbedPane();

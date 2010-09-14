@@ -197,8 +197,9 @@
 			if (city == null) return;
 
 			var actions: Array = city.currentActions.getObjectActions(troopObj.objectId);
-			for each (var actionReference: CurrentActionReference in troopObj.actionReferences.each())
-			actions.push(actionReference);
+			for each (var actionReference: CurrentActionReference in city.references.getByObject(troopObj.objectId)) {
+				actions.push(actionReference);
+			}
 
 			for (var i: int = 0; i < actions.length; i++)
 			{
@@ -206,8 +207,10 @@
 
 				var actionDescription: String = currentAction.toString(troopObj);
 
-				if (currentAction is CurrentActionReference)
-				currentAction = currentAction.getAction(troopObj);
+				if (currentAction is CurrentActionReference) {					
+					currentAction = currentAction.getAction(troopObj);
+					if (!currentAction) continue;
+				}
 
 				var cancelButton: CancelActionButton = new CancelActionButton(troopObj, currentAction.id);
 

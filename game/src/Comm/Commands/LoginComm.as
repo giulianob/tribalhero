@@ -92,8 +92,10 @@
 				var defensePoint: int = packet.readInt();
 
 				var inBattle: Boolean = packet.readByte() == 1;
+				
+				var hideNewUnits: Boolean = packet.readByte() == 1;
 
-				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, inBattle);
+				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, inBattle, hideNewUnits);
 
 				// Show under attack message if city in battle
 				BuiltInMessages.showInBattle(city);
@@ -125,6 +127,14 @@
 					city.notifications.add(notification, false);
 				}
 				city.notifications.sort();
+				
+				//References
+				var referencesCnt: int = packet.readUShort();
+				for (k = 0; k < referencesCnt; k++) {
+					var reference: CurrentActionReference = new CurrentActionReference(packet.readUShort(), packet.readUInt(), packet.readUInt());
+					city.references.add(reference, false);
+				}
+				city.references.sort();
 
 				//Structures
 				var structCnt: int = packet.readUShort();
@@ -138,12 +148,9 @@
 					var objPlayerId: int = packet.readUInt();
 					var objCityId: int = packet.readUInt();
 					var objId: int = packet.readUInt();
-					var objHpPercent: int = 100;
 					var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
 					var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-					var objLabor: int = 0;
-					if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
-					objLabor = packet.readUByte();
+					var objLabor: int = packet.readUByte();
 
 					var cityObj: CityObject = new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);
 
@@ -154,22 +161,42 @@
 					city.objects.add(cityObj, false);
 				}
 
-				var troopCnt: int = packet.readUByte();
+				// Troop objects
+				var troopCnt: int = packet.readUShort();
+
+				for (j = 0; j < troopCnt; j++)
+				{
+					regionId = packet.readUShort();
+
+					objLvl = packet.readUByte();
+					objType = packet.readUShort();
+					objPlayerId = packet.readUInt();
+					objCityId = packet.readUInt();
+					objId = packet.readUInt();
+					objX = packet.readUShort() + MapUtil.regionXOffset(regionId);
+					objY = packet.readUShort() + MapUtil.regionYOffset(regionId);
+
+					cityObj = new CityObject(city, objId, objType, objLvl, objX, objY, 0);
+					
+					city.objects.add(cityObj, false);
+				}
+				city.objects.sort();
+				
+				// Troop stubs
+				troopCnt = packet.readUByte();
 				for (var troopI: int = 0; troopI < troopCnt; troopI++)
 				{
-					var troop: TroopStub = mapComm.Troop.readTroop(packet)
+					var troop: TroopStub = mapComm.Troop.readTroop(packet);
 					city.troops.add(troop, false);
 				}
-				city.troops.sort();
+				city.troops.sort();				
 
-				city.objects.sort();
-
+				// Troop template
 				var templateCount: int = packet.readUShort();
-				for (j = 0; j < templateCount; j++)
-				city.template.add(new UnitTemplate(packet.readUShort(), packet.readUByte()));
-
+				for (j = 0; j < templateCount; j++) city.template.add(new UnitTemplate(packet.readUShort(), packet.readUByte()));
 				city.template.sort();
 
+				// Add city to player's cities
 				Global.map.cities.add(city);
 			}
 		}

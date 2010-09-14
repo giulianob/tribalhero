@@ -80,7 +80,7 @@ package src.Objects.Prototypes {
 		
 		public function toString(value: *): String
 		{					
-			return (perHour && value > 0 ? "+" : "") + (value is Number ? value.toFixed(2) : value.toString()) + (perHour ? "/hour" : "");
+			return (perHour && value > 0 ? "+" : "") + (int(value) != value ? value.toFixed(2) : value.toString()) + (perHour ? "/hour" : "");
 		}
 	}
 

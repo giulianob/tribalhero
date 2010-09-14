@@ -307,10 +307,10 @@
 			var total: int = city.troops.getIndividualUnitCount(type);
 
 			if (comparison == "lt")
-			return "Trained less than " + count + " " + unit.getName() + (total >= count ? ". You currently have " + total + " " + unit.getName() + ".": "");
+			return "Trained less than " + count + " " + unit.getName(count).toLowerCase() + (total >= count ? ". You currently have " + total + " " + unit.getName(total).toLowerCase() + ".": "");
 
 			if (comparison == "gt")
-			return "Trained at least " + (count+1) + " " + unit.getName() + (total <= count ? ". You currently have " + total + " " + unit.getName() + ".": "");
+			return "Trained at least " + (count+1) + " " + unit.getName(count+1).toLowerCase() + (total <= count ? ". You currently have " + total + " " + unit.getName(total).toLowerCase() + ".": "");
 
 			return "";
 		}

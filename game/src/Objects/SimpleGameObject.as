@@ -41,7 +41,6 @@ package src.Objects {
 		private var radius: int = 0;
 		private var circle: GroundCircle;
 
-		public var actionReferences: CurrentActionManager = new CurrentActionManager();
 		public var wall: WallManager;
 
 		public function SimpleGameObject()
@@ -197,8 +196,7 @@ package src.Objects {
 		}
 
 		public function copy(obj: SimpleGameObject):void
-		{
-			obj.actionReferences = actionReferences;
+		{			
 		}
 
 		public function distance(x_1: int, y_1: int): int

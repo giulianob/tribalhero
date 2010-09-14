@@ -52,10 +52,10 @@ package src.UI.Sidebars.ObjectInfo {
 			{
 				city.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
 				city.currentActions.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
+				city.references.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 			}
 
-			gameObject.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
-			gameObject.actionReferences.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
+			gameObject.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);			
 
 			createUI();
 			update();
@@ -258,7 +258,7 @@ package src.UI.Sidebars.ObjectInfo {
 			if (city == null) return;
 
 			var actions: Array = city.currentActions.getObjectActions(gameObject.objectId);
-			for each (var actionReference: CurrentActionReference in gameObject.actionReferences.each()) {
+			for each (var actionReference: CurrentActionReference in city.references.getByObject(gameObject.objectId)) {
 				actions.push(actionReference);
 			}
 
@@ -320,12 +320,10 @@ package src.UI.Sidebars.ObjectInfo {
 				{
 					city.removeEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
 					city.currentActions.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
-				}
+					city.references.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
+				}				
 
-				gameObject.removeEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
-				gameObject.actionReferences.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
-
-				gameObject.actionReferences.clear();
+				gameObject.removeEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);				
 			}
 		}
 

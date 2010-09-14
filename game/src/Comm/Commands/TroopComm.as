@@ -189,12 +189,6 @@
 					var unitLevel: int = packet.readUByte();
 					obj.template.add(new UnitTemplate(unitType, unitLevel));
 				}
-
-				obj.actionReferences.clear();
-				var currentActionCount: int = packet.readUByte();
-
-				for (i = 0; i < currentActionCount; i++)
-				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUShort()));
 			}
 
 			Global.map.selectObject(obj, false);
@@ -281,11 +275,13 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function moveUnit(cityId: int, troop: TroopStub):void
+		public function moveUnitAndSetHideNewUnits(cityId: int, troop: TroopStub, hideNewUnits: Boolean):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.LOCAL_TROOP_MOVE;
 			packet.writeUInt(cityId);
+			
+			packet.writeByte(hideNewUnits ? 1 : 0);
 
 			packet.writeUByte(troop.size());
 			for each(var formation: Formation in troop.each())

@@ -309,13 +309,6 @@
 						break;
 					}
 				}
-
-				obj.actionReferences.clear();
-
-				var currentActionCount: int = packet.readUByte();
-
-				for (var i: int = 0; i < currentActionCount; i++)
-				obj.actionReferences.add(new CurrentActionReference(packet.readUInt(), packet.readUInt()));
 			}
 			else {
 				propPrototype = PropertyFactory.getProperties(obj.type, PropertyPrototype.VISIBILITY_PUBLIC);

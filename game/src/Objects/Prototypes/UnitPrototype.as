@@ -36,9 +36,9 @@ package src.Objects.Prototypes {
 
 		}
 
-		public function getName(): String
+		public function getName(count: int = 1): String
 		{
-			var str: String = Locale.loadString(nlsname + "_UNIT");
+			var str: String = Locale.loadString(nlsname + (count != 1 && count >= 0 ? "_PLURAL" : "") + "_UNIT");
 			if (str && str != "")
 			return str;
 

@@ -13,10 +13,12 @@ package src.UI.Dialog {
 	import src.Global;
 	import src.Map.*;
 	import src.Objects.*;
+	import src.Objects.Actions.CurrentActionReference;
 	import src.Objects.Actions.Notification;
 	import src.Objects.Troop.*;
 	import src.UI.Components.ComplexTroopGridList.*;
 	import src.UI.Components.NotificationBox;
+	import src.UI.Components.ReferenceBox;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import src.UI.LookAndFeel.GameLookAndFeel;
@@ -96,14 +98,12 @@ package src.UI.Dialog {
 				break;
 			}
 
-			for each (var button: JButton in buttons)
-			pnlButtons.append(button);
+			for each (var button: JButton in buttons) pnlButtons.append(button);
 
-			//Notifications
 			var notifications: Array = Global.gameContainer.selectedCity.notifications.getByObject(troop.cityId, troop.objectId);
 			for each (var notification: Notification in notifications) {
 				pnlHeaderWest.append(new NotificationBox(notification));
-			}
+			}			
 
 			//Formations
 			var tilelists: Array = ComplexTroopGridList.getGridList(troop);
@@ -157,12 +157,8 @@ package src.UI.Dialog {
 		public function onManage(dialog: UnitMoveDialog):void
 		{
 			dialog.getFrame().dispose();
-
-			var troop: TroopStub = dialog.getTroop();
-			if (troop.getIndividualUnitCount() == 0)
-			return;
-
-			Global.mapComm.Troop.moveUnit(city.id, troop);
+			
+			Global.mapComm.Troop.moveUnitAndSetHideNewUnits(city.id, dialog.getTroop(), dialog.getHideNewUnits());
 		}
 
 		private function createUI() : void {
@@ -177,11 +173,11 @@ package src.UI.Dialog {
 
 			pnlButtons = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			pnlButtons.setConstraints("East");
-		
+
 			lblStatus = new JLabel(troop.getStateName());
 			lblStatus.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblStatus, "darkHeader");
-			
+
 			var pnlStatus: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
 			pnlStatus.append(new JLabel("This troop is currently ", null, AsWingConstants.LEFT));
 			GameLookAndFeel.changeClass(pnlStatus.getComponent(0), "darkLargeText");

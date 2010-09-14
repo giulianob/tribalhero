@@ -161,7 +161,7 @@
 		{
 			//if (pnlLoading) pnlLoading.getFrame().dispose();
 
-			InfoDialog.showMessageDialog("Security Error", event.toString());
+			//InfoDialog.showMessageDialog("Security Error", event.toString());
 		}
 
 		public function onDisconnected(event: Event = null):void

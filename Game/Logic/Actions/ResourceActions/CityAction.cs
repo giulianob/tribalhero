@@ -137,7 +137,7 @@ namespace Game.Logic.Actions
                 #region Labor
                 if (city.Owner.Session != null || DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays <= 2) {
                     laborTimeRemains += INTERVAL;
-                    int laborRate = Formula.GetLaborRate(laborTotal);
+                    int laborRate = Formula.GetLaborRate(laborTotal,city);
                     int laborProduction = laborTimeRemains/laborRate;
                     if (laborProduction > 0) {
                         laborTimeRemains -= laborProduction*laborRate;
@@ -149,25 +149,13 @@ namespace Game.Logic.Actions
 
                 /********************************** Pre Loop2 ****************************************/
 
-                #region Repair
-
-                Resource repairCost = null;
-                bool isRepaired = false, canRepair = false;
-                if (repairPower > 0)
-                {
-                    repairCost = Formula.RepairCost(city, repairPower);
-                    if (city.Resource.HasEnough(repairCost))
-                        canRepair = true;
-                }
-
-                #endregion
 
                 /*********************************** Loop2 *******************************************/
                 foreach (Structure structure in city)
                 {
                     #region Repair
 
-                    if (canRepair)
+                    if (repairPower>0)
                     {
                         if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp &&
                             !ObjectTypeFactory.IsStructureType("NonRepairable", structure) &&
@@ -177,20 +165,12 @@ namespace Game.Logic.Actions
                             if ((structure.Stats.Hp += repairPower) > structure.Stats.Base.Battle.MaxHp)
                                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                             structure.EndUpdate();
-                            isRepaired = true;
                         }
                     }
 
                     #endregion
                 }
                 /********************************* Post Loop2 ****************************************/
-
-                #region Repair
-
-                if (isRepaired)
-                    city.Resource.Subtract(repairCost);
-
-                #endregion
 
                 city.EndUpdate();
 

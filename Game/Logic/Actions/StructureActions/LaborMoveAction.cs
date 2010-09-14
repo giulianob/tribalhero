@@ -62,7 +62,7 @@ namespace Game.Logic.Actions {
             if (cityToStructure) {
                 endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
             } else {
-                endTime = DateTime.UtcNow.AddSeconds(60);
+                endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)/20);
             }
 
             return Error.OK;

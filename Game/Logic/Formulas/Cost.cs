@@ -87,10 +87,19 @@ namespace Game.Logic
         /// </summary>
         /// <param name="laborTotal"></param>
         /// <returns></returns>
-        public static int GetLaborRate(int laborTotal)
+        public static int GetLaborRate(int laborTotal, City city)
         {
             if (laborTotal < 140) laborTotal = 140;
-            return (int)(86400 / (-6.845 * Math.Log(laborTotal) + 55))/2;  // Labor time cut in half after first tested.
+            Effect effect = city.Technologies.GetEffects(EffectCode.CountEffect, EffectInheritance.SELF_ALL).Find(x=>(int)x.value[0]==30021);
+            if (effect == null) {
+                return (int)(86400 / (-6.845 * Math.Log(laborTotal) + 55)) / 2;  // Labor time cut in half after first tested.
+            } else {
+                int percent = 100 - (50 * (int)effect.value[1] / city.MainBuilding.Lvl); // originally 30
+                if (percent < 50) { //originally 70
+                    percent = 50;
+                }
+                return (int)(43200 / (-6.845 * Math.Log(laborTotal) + 55)) * percent / 100;       
+            }
         }
 
         public static ushort LaborMoveMax(Structure structure)

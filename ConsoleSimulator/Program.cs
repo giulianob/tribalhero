@@ -15,6 +15,10 @@ using Game.Data.Stats;
 namespace ConsoleSimulator {
     class Program {
         static void Main(string[] args) {
+            bool sameLevelOnly = true;
+            List<byte> lvlFilter = new List<byte> { 1, 10 };
+
+
             Factory.CompileConfigFiles();
             // CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
             Factory.InitAll();
@@ -40,13 +44,17 @@ namespace ConsoleSimulator {
             ILog logger = LogManager.GetLogger(typeof(Program));
 
       //      BattleReport.WriterInit();
-            File.Delete("swordsman.csv");
+
+
+            Array.ForEach(Directory.GetFiles(Directory.GetCurrentDirectory(), "Simulation*.csv"), delegate(string path) { File.Delete(path); });
+
             Simulation sim;
             foreach( KeyValuePair<int,BaseUnitStats> kvp in UnitFactory.dict ) {
-                sim = new Simulation((ushort)(kvp.Key/100), kvp.Value.Lvl, 1, Simulation.QuantityUnit.GroupSize,false);
-                sim.RunDef("swordsman.csv");
-                sim = new Simulation((ushort)(kvp.Key / 100), kvp.Value.Lvl, 1, Simulation.QuantityUnit.GroupSize, false);
-                sim.RunAtk("swordsman.csv");
+                if (!lvlFilter.Any(x => x == kvp.Value.Lvl)) continue;
+                sim = new Simulation((ushort)(kvp.Key / 100), kvp.Value.Lvl, 1, Simulation.QuantityUnit.GroupSize, sameLevelOnly);
+                sim.RunDef("Simulation "+kvp.Value.Lvl+".csv");
+                sim = new Simulation((ushort)(kvp.Key / 100), kvp.Value.Lvl, 1, Simulation.QuantityUnit.GroupSize, sameLevelOnly);
+                sim.RunAtk("Simulation " + kvp.Value.Lvl + ".csv");
             }
         }
 

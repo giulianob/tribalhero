@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using Game.Comm;
 using Game.Data;
 using Game.Database;
 using Game.Util;
@@ -59,11 +60,15 @@ namespace Game.Logic {
         #endregion
     }
 
-    public class ReferenceManager {
+    public class ReferenceManager : IEnumerable<ReferenceStub> {
         private readonly List<ReferenceStub> reference = new List<ReferenceStub>();
         private readonly LargeIdGenerator referenceIdGen = new LargeIdGenerator(ushort.MaxValue);
 
         private readonly ActionWorker actionWorker;
+
+        public ushort Count {
+            get { return (ushort)reference.Count; }
+        }
 
         public ReferenceManager(ActionWorker actionWorker) {
             this.actionWorker = actionWorker;
@@ -72,6 +77,34 @@ namespace Game.Logic {
         public void DbLoaderAdd(ReferenceStub referenceObject) {
             referenceIdGen.Set(referenceObject.ReferenceId);
             reference.Add(referenceObject);
+        }
+
+        private void SendAddReference(ReferenceStub referenceObject) {
+
+            if (Global.FireEvents)
+            {
+                //send removal
+                Packet packet = new Packet(Command.REFERENCE_ADD);
+                packet.AddUInt32(actionWorker.City.Id);
+                packet.AddUInt16(referenceObject.ReferenceId);
+                packet.AddUInt32(referenceObject.WorkerObject.WorkerId);
+                packet.AddUInt32(referenceObject.Action.ActionId);
+
+                Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+            }
+        }
+
+        private void SendRemoveReference(ReferenceStub referenceObject)
+        {
+            if (Global.FireEvents)
+            {
+                //send removal
+                Packet packet = new Packet(Command.REFERENCE_REMOVE);
+                packet.AddUInt32(actionWorker.City.Id);
+                packet.AddUInt16(referenceObject.ReferenceId);
+
+                Global.Channel.Post("/CITY/" + actionWorker.City.Id, packet);
+            }
         }
 
         public void Add(GameObject referenceObject, PassiveAction action) {
@@ -83,6 +116,8 @@ namespace Game.Logic {
             ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
             Global.DbManager.Save(newReference);
+
+            SendAddReference(newReference);
         }    
 
         public void Add(GameObject referenceObject, ActiveAction action) {
@@ -93,14 +128,19 @@ namespace Game.Logic {
             ReferenceStub newReference = new ReferenceStub((ushort) referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
             Global.DbManager.Save(newReference);
+
+            SendAddReference(newReference);
         }
 
         public void Remove(GameObject referenceObject, GameAction action) {
             reference.RemoveAll(referenceStub => {
                 bool ret = (referenceObject == referenceStub.WorkerObject && referenceStub.Action == action);
 
-                if (ret)
+                if (ret) {
                     Global.DbManager.Delete(referenceStub);
+
+                    SendRemoveReference(referenceStub);
+                }
 
                 return ret;
             });
@@ -110,8 +150,11 @@ namespace Game.Logic {
             reference.RemoveAll(referenceStub => {
                 bool ret = (referenceObject == referenceStub.WorkerObject);
 
-                if (ret)
+                if (ret) {
                     Global.DbManager.Delete(referenceStub);
+                    
+                    SendRemoveReference(referenceStub);
+                }
 
                 return ret;
             });
@@ -120,5 +163,23 @@ namespace Game.Logic {
         public IEnumerable<ReferenceStub> GetReferences(ICanDo worker) {
             return reference.FindAll(stub => stub.WorkerObject.WorkerId == worker.WorkerId);
         }
+
+        #region IEnumerable<ReferenceStub> Members
+
+        public IEnumerator<ReferenceStub> GetEnumerator()
+        {
+            return reference.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return reference.GetEnumerator();
+        }
+
+        #endregion
     }
 }

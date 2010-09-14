@@ -211,7 +211,7 @@ namespace Game.Logic {
         }
 
         public void Remove(PassiveAction action) {
-            lock (objLock) {
+            lock (objLock) {                
                 Notification notification =
                     notifications.Find(other => other.Equals(action));
 

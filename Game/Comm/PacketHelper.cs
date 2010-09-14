@@ -137,14 +137,6 @@ namespace Game.Comm {
             packet.AddUInt32(UnixDateTime.DateTimeToUnix(resource.Wood.LastRealizeTime.ToUniversalTime()));
         }
 
-        public static void AddToPacket(List<ReferenceStub> references, Packet packet) {
-            packet.AddByte((byte) references.Count);
-            foreach (ReferenceStub reference in references) {
-                packet.AddUInt32(reference.Action.WorkerObject.WorkerId);
-                packet.AddUInt32(reference.Action.ActionId);
-            }
-        }
-
         public static void AddToPacket(List<GameAction> actions, Packet packet, bool includeWorkerId) {
             packet.AddByte((byte) actions.Count);
             foreach (GameAction actionStub in actions)
@@ -275,6 +267,7 @@ namespace Game.Comm {
                 packet.AddInt32(city.AttackPoint);
                 packet.AddInt32(city.DefensePoint);
                 packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
+                packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
 
                 //City Actions
                 AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
@@ -283,6 +276,14 @@ namespace Game.Comm {
                 packet.AddUInt16(city.Worker.Notifications.Count);
                 foreach (NotificationManager.Notification notification in city.Worker.Notifications)
                     AddToPacket(notification, packet);
+
+                //References
+                packet.AddUInt16(city.Worker.References.Count);
+                foreach (ReferenceStub reference in city.Worker.References) {
+                    packet.AddUInt16(reference.ReferenceId);
+                    packet.AddUInt32(reference.WorkerObject.WorkerId);
+                    packet.AddUInt32(reference.Action.ActionId);
+                }
 
                 //Structures
                 List<Structure> structs = new List<Structure>(city);
@@ -298,6 +299,14 @@ namespace Game.Comm {
                         packet.AddUInt32(tech.Type);
                         packet.AddByte(tech.Level);
                     }
+                }
+
+                //Troop objects
+                List<TroopObject> troops = new List<TroopObject>(city.TroopObjects);
+                packet.AddUInt16((ushort)troops.Count);
+                foreach (TroopObject troop in troops) {
+                    packet.AddUInt16(Region.GetRegionIndex(troop));
+                    AddToPacket(troop, packet, false);
                 }
 
                 //City Troops

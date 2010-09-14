@@ -64,8 +64,6 @@ namespace Game.Comm {
                         }
                     }
 
-                    PacketHelper.AddToPacket(
-                        new List<ReferenceStub>(structure.City.Worker.References.GetReferences(structure)), reply);
                 }
                 else {
                     foreach (Property prop in PropertyFactory.GetProperties(structure.Type, Visibility.PUBLIC)) {

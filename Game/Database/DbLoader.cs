@@ -159,7 +159,8 @@ namespace Game.Database {
                         DbPersisted = true,
                         LootStolen = (uint)reader["loot_stolen"],
                         AttackPoint = (int)reader["attack_point"],
-                        DefensePoint = (int)reader["defense_point"]
+                        DefensePoint = (int)reader["defense_point"],
+                        HideNewUnits = (bool)reader["hide_new_units"]
                     };
 
                     Global.World.DbLoaderAdd((uint)reader["id"], city);

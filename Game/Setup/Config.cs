@@ -12,13 +12,13 @@ namespace Game.Setup {
 
     public class Config {
 
-        public static readonly int client_min_version = 1;
-        public static readonly int client_min_revision = 2;
+        public static readonly int client_min_version = 0;
+        public static readonly int client_min_revision = 3;
 
         public static readonly int server_port = 48888;
         public static readonly string server_listen_address = "0.0.0.0";
 
-        public static readonly string flash_domain = "*";
+        public static readonly string flash_domain = "*.tribalhero.com";
 
         public static readonly string csv_folder = "conf/csv/";
         public static readonly string csv_compiled_folder = "conf/csv/compiled/";
@@ -32,9 +32,9 @@ namespace Game.Setup {
         public static readonly uint region_width = 34;
         public static readonly uint region_height = 62;
 
-        public static readonly int road_set_count;
-        public static readonly int road_start_tile_id;
-        public static readonly int road_end_tile_id;
+        public static readonly int road_set_count = 1;
+        public static readonly int road_start_tile_id = 224;
+        public static readonly int road_end_tile_id = 255;
 
         public static readonly int column = (int) (map_width/region_width);
         public static readonly int row = (int) (map_height/region_height);

@@ -11,30 +11,18 @@ using Game.Setup;
 #endregion
 
 namespace Game.Comm {
-    public class TcpServer {
+    public class PolicyServer {
         private readonly Thread listeningThread;
 
         private readonly TcpListener listener;
-        private readonly int port = Config.server_port;
         private bool isStopped = true;
-        private readonly Processor processor;
 
-        public TcpServer() {
+        public PolicyServer() {
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
             if (localAddr == null)
                 throw new Exception("Could not bind to listen address");
 
-            listener = new TcpListener(localAddr, port);
-            listeningThread = new Thread(ListenerHandler);
-        }
-
-        public TcpServer(Processor processor) {
-            this.processor = processor;
-            IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
-            if (localAddr == null)
-                throw new Exception("Could not bind to listen address");
-
-            listener = new TcpListener(localAddr, port);
+            listener = new TcpListener(localAddr, 843);
             listeningThread = new Thread(ListenerHandler);
         }
 
@@ -49,7 +37,14 @@ namespace Game.Comm {
         public void ListenerHandler() {
             listener.Start();
 
-           
+            string policy = "<?xml version=\"1.0\"?>" +
+                            "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">" +
+                            "<cross-domain-policy>" + "<site-control permitted-cross-domain-policies=\"master-only\"/>" +
+                            "<allow-access-from domain=\"" + Config.flash_domain + "\" to-ports=\"" + Config.server_port +
+                            "\" />" + "</cross-domain-policy>";
+
+            Global.Logger.Info("Ready to serve policy file: " + policy);
+            
             Socket s;            
             while (!isStopped) {
                 try {
@@ -58,13 +53,23 @@ namespace Game.Comm {
                 catch (Exception) {                    
                     continue;
                 }
+                byte[] buffer = new byte[128];
 
-                if (s.LocalEndPoint == null)
+                try {
+                    s.Receive(buffer, 23, SocketFlags.None);
+                }
+                catch (Exception) {
                     continue;
+                }
+                 
+                s.NoDelay = true;
 
-                SocketSession session = new SocketSession(s.LocalEndPoint.ToString(), s, processor);
+                byte[] xml = Encoding.UTF8.GetBytes(policy);
+                s.Send(xml);                
 
-                ThreadPool.QueueUserWorkItem(TcpWorker.Add, session);
+                Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
+
+                s.Close();
             }
 
             listener.Stop();
@@ -76,8 +81,7 @@ namespace Game.Comm {
             
             isStopped = true;
             listener.Stop();
-            listeningThread.Join();
-            TcpWorker.DeleteAll();                  
+            listeningThread.Join();        
             return true;
         }
     }

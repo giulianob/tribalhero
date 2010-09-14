@@ -65,9 +65,6 @@ namespace Game.Comm {
                         reply.AddUInt16(kvp.Key);
                         reply.AddByte(kvp.Value.Lvl);
                     }
-
-                    PacketHelper.AddToPacket(
-                        new List<ReferenceStub>(troop.City.Worker.References.GetReferences(troop)), reply);
                 }
 
                 session.Write(reply);
@@ -77,9 +74,11 @@ namespace Game.Comm {
         public void CmdLocalTroopSet(Session session, Packet packet) {
             uint cityId;
             byte formationCount;
+            bool hideNewUnits;
             try {
                 cityId = packet.GetUInt32();
-                formationCount = packet.GetByte();
+                hideNewUnits = packet.GetByte() == 1;
+                formationCount = packet.GetByte();                
             }
             catch (Exception) {
                 ReplyError(session, packet, Error.UNEXPECTED);
@@ -94,6 +93,12 @@ namespace Game.Comm {
                     return;
                 }
 
+                // Set where new units should be sent to
+                city.BeginUpdate();
+                city.HideNewUnits = hideNewUnits;
+                city.EndUpdate();
+
+                // Validate troop stub sent from player
                 TroopStub stub = new TroopStub();
 
                 if (formationCount != 2) {
@@ -139,16 +144,19 @@ namespace Game.Comm {
                         stub.AddUnit(formationType, type, count);
                     }
                 }
-                stub.TroopId = 1;
-                if (!stub.Equal(city.DefaultTroop)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
-                    return;
-                }
 
-                city.DefaultTroop.BeginUpdate();
-                city.DefaultTroop.RemoveAllUnits();
-                city.DefaultTroop.Add(stub);
-                city.DefaultTroop.EndUpdate();
+                if (stub.TotalCount > 0) {
+                    stub.TroopId = 1;
+                    if (!stub.Equal(city.DefaultTroop)) {
+                        ReplyError(session, packet, Error.UNEXPECTED);
+                        return;
+                    }
+
+                    city.DefaultTroop.BeginUpdate();
+                    city.DefaultTroop.RemoveAllUnits();
+                    city.DefaultTroop.Add(stub);
+                    city.DefaultTroop.EndUpdate();
+                }
 
                 ReplySuccess(session, packet);
             }

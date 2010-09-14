@@ -621,7 +621,7 @@ namespace Game.Battle {
 
                 EventExitTurn(Attacker, Defender, (int)turn++);
 
-                // Send back any attacker that has no targets left
+                // Send back any attackers that have no targets left
                 if (isDefenderDead && defender.CombatList == defenders) {
                     AttackCombatUnit co;
                     do {

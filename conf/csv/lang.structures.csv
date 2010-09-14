@@ -14,8 +14,8 @@ TOWNCENTER_STRUCTURE_LVL_10,"Increases the maximum resources to 30000 crop, 3000
 BARRACK_STRUCTURE_NAME,Barrack
 BARRACK_STRUCTURE_DESCRIPTION,Enables the ability to train advanced military units without requiring laborers.
 BARRACK_STRUCTURE_LVL_1,Allows training swordsmen and archers.
-BARRACK_STRUCTURE_LVL_2,Allows training pikemen.
-BARRACK_STRUCTURE_LVL_3,"Enables upgrading fighters, pikemen, and bowmen"
+BARRACK_STRUCTURE_LVL_2,Allows training hoplite
+BARRACK_STRUCTURE_LVL_3,"Enables upgrading fighters, hoplite and bowmen"
 BARRACK_STRUCTURE_LVL_4,Improves barrack strength.
 BARRACK_STRUCTURE_LVL_5,Decreases training time by 5%.
 BARRACK_STRUCTURE_LVL_6,Decreases training time by 10%.

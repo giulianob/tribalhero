@@ -84,7 +84,7 @@ namespace Game.Logic.Actions {
             City city;
             Structure structure;
 
-            endTime = SystemClock.Now.AddSeconds(Config.actions_instant_time ? 3 : ts.TotalSeconds);
+            endTime = SystemClock.Now.AddSeconds(ts.TotalSeconds);
             beginTime = SystemClock.Now;
             
             if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))

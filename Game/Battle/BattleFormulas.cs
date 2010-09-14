@@ -51,6 +51,7 @@ namespace Game.Battle
             const double weak = 0.7;
             const double good = 1;
             const double strong = 1.5;
+            const double stronger = 2.2;
             const double strongest = 3;
 
             switch (weapon)
@@ -74,7 +75,7 @@ namespace Game.Battle
                         case ArmorType.GROUND:
                             return weak;
                         case ArmorType.MOUNT:
-                            return strongest;
+                            return stronger;
                         case ArmorType.MACHINE:
                             return weak;
                         case ArmorType.BUILDING:

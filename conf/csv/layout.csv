@@ -13,3 +13,9 @@ Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
 ,,,,,,,,
 //Building Tower @training ground away from Tower,,,,,,,,
 2402,1,AwayFrom,2402,1,20,3,255,255
+,,,,,,,,
+//Build Corn field @farm,,,,,,,,
+3001,1,Simple,2106,1,20,0,1,1
+,,,,,,,,
+//Build tribal festival @farm,,,,,,,,
+3002,1,Simple,2000,1,20,0,2,1

@@ -54,6 +54,9 @@ namespace Game.Logic.Actions {
                 case DataType.USHORT:
                     value = ushort.Parse(parms[2]);
                     break;
+                case DataType.INT:
+                    value = int.Parse(parms[2]);
+                    break;
                 case DataType.UINT:
                     value = uint.Parse(parms[2]);
                     break;
@@ -68,7 +71,12 @@ namespace Game.Logic.Actions {
         #endregion
 
         public override string Properties {
-            get { return string.Empty; }
+            get {
+                return XMLSerializer.Serialize(new[] {
+                                                        new XMLKVPair("value", (uint)value),
+
+                    });
+            }
         }
     }
 }

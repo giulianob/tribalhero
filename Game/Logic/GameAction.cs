@@ -47,7 +47,8 @@ namespace Game.Logic {
         FOREST_CAMP_BUILD = 308,
         FOREST_CAMP_REMOVE = 309,
         FOREST_CAMP_HARVEST = 310,
-        
+        RESOURCE_GATHER = 311,
+
         CITY_LABOR = 501,
         CITY = 502,
         CITY_RADIUS_CHANGE = 503,

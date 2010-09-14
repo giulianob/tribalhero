@@ -48,7 +48,7 @@
 				unitPrototype = UnitFactory.getPrototype(troopTemplate.type, troopTemplate.level);
 			}
 
-			lblName.setText(unit.count + " " + unitPrototype.getName());
+			lblName.setText(unit.count + " " + unitPrototype.getName(unit.count));
 			lblUpkeep.setText("-" + unitPrototype.upkeep * unit.count);
 			lblLevel.setText("Level " + unitPrototype.level);
 			lblInfo.setText("Stats for a single " + unitPrototype.getName().toLowerCase());

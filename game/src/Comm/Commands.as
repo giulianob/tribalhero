@@ -26,6 +26,9 @@ package src.Comm {
         public static const NOTIFICATION_UPDATE: int = 63;		
 		public static const NOTIFICATION_LOCATE: int = 64;
 		
+		public static const REFERENCE_ADD: int = 71;
+		public static const REFERENCE_REMOVE: int = 72;
+		
 		public static const REGION_ROAD_DESTROY: int = 102;
 		public static const REGION_ROAD_BUILD: int = 103;
 		public static const REGION_SET_TILE: int = 104;
@@ -60,6 +63,7 @@ package src.Comm {
 		public static const CITY_RADIUS_UPDATE: int = 465;
 		public static const CITY_LOCATE: int = 466;
 		public static const CITY_ATTACK_DEFENSE_POINT_UPDATE: int = 467;
+		public static const CITY_HIDE_NEW_UNITS_UPDATE: int = 468;
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;
 		public static const CITY_CREATE_INITIAL: int = 499;

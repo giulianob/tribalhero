@@ -2,8 +2,8 @@ package src
 {
 	public class Constants
 	{
-		public static var version: int = 1;
-		public static var revision: int = 2;
+		public static var version: int = 0;
+		public static var revision: int = 3;
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";
@@ -26,7 +26,7 @@ package src
 
 		/* ROAD CONSTANTS */
 		public static const road_start_tile_id: int = 224;
-		public static const road_end_tile_id: int = 250;
+		public static const road_end_tile_id: int = 255;
 
 		/* MAP CONSTANTS */
 		public static const tileW:int = 108;

@@ -170,8 +170,6 @@
 			tabDefensive.removeAll();
 
 			logStr("Battle has ended");
-
-			getFrame().dispose();
 		}
 
 		public function onAddedAttack(e: BattleEvent):void
@@ -222,7 +220,7 @@
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
 			pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
-			var lbl: JLabel = new JLabel("couldn't reach anyone", new AssetIcon(!srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
+			var lbl: JLabel = new JLabel("couldn't reach anyone", new AssetIcon(srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
 			lbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 			pnl.append(lbl);
 

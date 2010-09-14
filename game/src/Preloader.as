@@ -29,7 +29,7 @@
 			loadText.x = stage.stageWidth / 2 - loadText.textWidth / 2;
 			loadText.y = stage.stageHeight / 2 - loadText.textHeight / 2;
 
-			addChild(loadText);
+			_clip.addChild(loadText);
 
 			addEventListener(Event.ENTER_FRAME, checkFrame);
 		}

@@ -1,5 +1,6 @@
 package src.UI.Dialog{
 
+	import com.adobe.serialization.json.JSONParseError;
 	import flash.events.Event;
 	import org.aswing.event.AWEvent;
 	import org.aswing.event.TableCellEditEvent;
@@ -41,12 +42,17 @@ package src.UI.Dialog{
 		private var tabs: JTabbedPane;
 
 		private var pnlInbox: JPanel;
-		private var pnlTrash: JPanel;
 		private var pnlSent: JPanel;
-
-		private var btnNewMessage: JButton;
 		
+		private var btnNewMessage: JButton;
+
 		private var refreshOnClose: Boolean = false;
+		
+		private var scrollInbox: JScrollPane;
+		private var scrollSent: JScrollPane;	
+		
+		private var dummyInboxViewport: JPanel;
+		private var dummySentViewport: JPanel;
 
 		public function MessagingDialog() {
 			loader = new GameURLLoader();
@@ -89,7 +95,7 @@ package src.UI.Dialog{
 		public function getRefreshOnClose() : Boolean {
 			return refreshOnClose;
 		}
-		
+
 		private function onNewMessage(e: Event = null) : void {
 			var newMessageDialog: MessageCreateDialog = new MessageCreateDialog(onNewMessageSend);
 			newMessageDialog.show();
@@ -196,9 +202,14 @@ package src.UI.Dialog{
 		}
 
 		private function onTabChanged(e: AWEvent) : void {
-			messageTable.getParent().remove(messageTable);
-			(tabs.getSelectedComponent() as Container).append(messageTable);
-			(tabs.getSelectedComponent() as Container).pack();
+			if (tabs.getSelectedIndex() == 0) {
+				scrollSent.setView(dummySentViewport);
+				scrollInbox.setView(messageTable);
+			} else {
+				scrollInbox.setView(dummyInboxViewport);
+				scrollSent.setView(messageTable);
+			}
+			
 			loadPage(1);
 		}
 
@@ -317,13 +328,20 @@ package src.UI.Dialog{
 			// Inbox buttons
 			btnInboxMarkAsRead = new JButton("Mark as Read");
 			btnInboxDelete = new JButton("Delete");
-
+					
+			// Scroll panes
+			dummyInboxViewport = new JPanel();
+			dummySentViewport = new JPanel();
+			
+			scrollInbox = new JScrollPane(messageTable, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
+			scrollSent = new JScrollPane(dummySentViewport, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
+			
 			pnlInbox = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			var pnlInboxButtons: JPanel = new JPanel();
 			pnlInboxButtons.append(btnInboxMarkAsRead);
 			pnlInboxButtons.append(btnInboxDelete);
 			pnlInbox.append(pnlInboxButtons);
-			pnlInbox.append(messageTable);
+			pnlInbox.append(scrollInbox);
 
 			// Sent buttons
 			btnSentDelete = new JButton("Delete");
@@ -332,6 +350,7 @@ package src.UI.Dialog{
 			var pnlSentButtons: JPanel = new JPanel();
 			pnlSentButtons.append(btnSentDelete);
 			pnlSent.append(pnlSentButtons);
+			pnlSent.append(scrollSent);
 
 			// Bottom bar
 			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));
@@ -354,12 +373,8 @@ package src.UI.Dialog{
 
 			// Tabs
 			tabs = new JTabbedPane();
-			
-			var scrollInbox: JScrollPane = new JScrollPane(pnlInbox);
-			tabs.appendTab(scrollInbox, "Inbox");
-			
-			var scrollSent: JScrollPane = new JScrollPane(pnlSent);
-			tabs.appendTab(scrollSent, "Sent");
+			tabs.appendTab(pnlInbox, "Inbox");
+			tabs.appendTab(pnlSent, "Sent");
 
 			//component layoution
 			pnlPaging.append(btnFirst);

@@ -25,7 +25,6 @@
 	{
 
 		private var pnlText:JPanel;
-		private var icon:JPanel;
 		private var lblAction:JLabel;
 		private var lblTime:JLabel;
 
@@ -41,24 +40,12 @@
 
 			createUI();
 
-			if (!tooltipMode) {
-				icon.buttonMode = true;
-				icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent):void {
-					Global.map.selectWhenViewable(notification.cityId, notification.objectId);
-					Global.mapComm.City.gotoNotificationLocation(Global.gameContainer.selectedCity.id, notification.cityId, notification.actionId);					
-					Util.getFrame(getParent()).dispose();
-				});
-				new SimpleTooltip(icon, "Go to event");
-			}
-			else {
+			if (tooltipMode) {
 				GameLookAndFeel.changeClass(lblAction, "Tooltip.text");
 				GameLookAndFeel.changeClass(lblTime, "Tooltip.text");
 			}
 
 			var actionDescription: String = PassiveAction.toString(notification.type);
-
-			var passiveIcon: DisplayObjectContainer = PassiveAction.getIcon(notification.type);
-			icon.append(new AssetPane(passiveIcon));
 
 			lblAction.setText(actionDescription);
 			lblAction.setToolTipText(lblAction.getText());
@@ -92,8 +79,6 @@
 
 			pnlText = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
 
-			icon = new JPanel();
-
 			lblAction = new JLabel();
 			lblAction.setHorizontalAlignment(AsWingConstants.LEFT);
 
@@ -103,9 +88,6 @@
 			//component layout
 			pnlText.append(lblAction);
 			pnlText.append(lblTime);
-
-			if (!tooltipMode)
-			append(icon);
 
 			append(pnlText);
 		}

@@ -5,6 +5,7 @@
 	import src.Map.*;
 	import src.Objects.*;
 	import flash.events.Event;
+	import src.Objects.Actions.CurrentActionReference;
 	import src.Objects.Actions.Notification;
 	import src.Objects.Prototypes.*;
 	import src.Objects.Effects.*;
@@ -42,12 +43,23 @@
 				case Commands.CITY_RADIUS_UPDATE:
 					onCityRadiusUpdate(e.packet);
 				break;
+				case Commands.REFERENCE_ADD:
+					onReceiveReferenceAdd(e.packet);
+				break;
+				case Commands.REFERENCE_REMOVE:
+					onReceiveReferenceRemove(e.packet);
+				break;
 				case Commands.NOTIFICATION_ADD:
+					onReceiveAddNotification(e.packet);
+				break;
 				case Commands.NOTIFICATION_UPDATE:
 					onReceiveUpdateNotification(e.packet);
 				break;
 				case Commands.NOTIFICATION_REMOVE:
 					onReceiveRemoveNotification(e.packet);
+				break;
+				case Commands.CITY_HIDE_NEW_UNITS_UPDATE:
+					onReceiveHideNewUnits(e.packet);
 				break;
 				case Commands.TECHNOLOGY_CLEARED:
 					onReceiveTechnologyCleared(e.packet);
@@ -89,6 +101,16 @@
 				city.inBattle = packet.cmd == Commands.CITY_BATTLE_STARTED;
 
 				BuiltInMessages.showInBattle(city);
+			}
+		}
+
+		public function onReceiveHideNewUnits(packet: Packet): void {
+			var cityId: int = packet.readUInt();
+
+			var city: City = Global.map.cities.get(cityId);
+
+			if (city != null) {
+				city.hideNewUnits = packet.readByte() == 1;
 			}
 		}
 
@@ -204,11 +226,11 @@
 
 			city.objects.remove(objId);
 		}
-		
+
 		public function onReceiveTechnologyCleared(packet: Packet):void {
 			var cityId: int = packet.readUInt();
 			var ownerId: int = packet.readUInt();
-			
+
 			var ownerLocation: int = EffectPrototype.LOCATION_OBJECT;
 
 			if (ownerId == 0)
@@ -240,7 +262,7 @@
 				city.techManager.clear();
 			}
 
-			if (Global.map.selectedObject != null) Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));			
+			if (Global.map.selectedObject != null) Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 		}
 
 		public function onReceiveTechnologyChanged(packet: Packet):void
@@ -335,7 +357,27 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function onReceiveUpdateNotification(packet: Packet):void
+		public function onReceiveReferenceAdd(packet: Packet): void {
+			var cityId: int = packet.readUInt();
+
+			var reference: CurrentActionReference = new CurrentActionReference(packet.readUShort(), packet.readUInt(), packet.readUInt());
+			var city: City = Global.map.cities.get(cityId);
+			if (city == null) return;
+			city.references.add(reference);
+		}
+
+		public function onReceiveReferenceRemove(packet: Packet): void {
+			var cityId: int = packet.readUInt();
+
+			var id: int = packet.readUShort();
+
+			var city: City = Global.map.cities.get(cityId);
+			if (city == null) return;
+
+			city.references.remove(id);
+		}
+
+		public function onReceiveAddNotification(packet: Packet):void
 		{
 			var cityId: int = packet.readUInt();
 
@@ -345,11 +387,35 @@
 			if (city == null)
 			return;
 
-			if (packet.cmd == Commands.NOTIFICATION_UPDATE) {
-				city.notifications.remove( [ notification.cityId, notification.actionId ] );
-			}
-
 			city.notifications.add(notification);
+
+			BuiltInMessages.showIncomingAttack(city);
+		}
+
+		public function onReceiveUpdateNotification(packet: Packet):void
+		{
+			var cityId: int = packet.readUInt();
+
+			var notificationCityId: int = packet.readUInt();
+			var notificationObjId: int = packet.readUInt();
+			var notificationActionId: int = packet.readUInt();
+			var notificationType: int = packet.readUShort();
+			var notificationStartTime: int = packet.readUInt();
+			var notificationEndTime: int = packet.readUInt();
+
+			var city: City = Global.map.cities.get(cityId);
+			if (city == null) return;
+
+			var notification: Notification = city.notifications.get([ notificationCityId, notificationActionId ]);
+
+			if (!notification) {
+				notification = new Notification(notificationCityId, notificationObjId, notificationActionId, notificationType, notificationStartTime, notificationEndTime);
+				city.notifications.add(notification);
+			} else {
+				notification.type = notificationType;
+				notification.startTime = notificationStartTime;
+				notification.endTime = notificationEndTime;
+			}
 
 			BuiltInMessages.showIncomingAttack(city);
 		}
@@ -389,17 +455,17 @@
 
 			session.write(packet, onReceiveCityLocation);
 		}
-		
+
 		public function gotoCityLocationByName(cityName: String) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.CITY_LOCATE_BY_NAME;
 			packet.writeString(cityName);
 
 			session.write(packet, onReceiveCityLocation);
-		}		
+		}
 
 		public function onReceiveCityLocation(packet: Packet, custom: * ): void {
-			if (MapComm.tryShowError(packet)) return;			
+			if (MapComm.tryShowError(packet)) return;
 			var pt: Point = MapUtil.getScreenCoord(packet.readUInt(), packet.readUInt());
 			Global.map.camera.ScrollToCenter(pt.x, pt.y);
 		}

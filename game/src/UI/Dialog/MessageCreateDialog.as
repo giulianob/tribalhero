@@ -50,8 +50,8 @@
 					return;
 				}
 
-				if (txtSubject.getLength() < 3) {
-					InfoDialog.showMessageDialog("Error", "Subject must be at least 3 characters long.");
+				if (txtSubject.getLength() == 0) {
+					InfoDialog.showMessageDialog("Error", "Please enter a subject.");
 					return;
 				}
 
@@ -173,7 +173,7 @@
 
 			txtMessage = new JTextArea();
 			txtMessage.setWordWrap(true);
-			txtMessage.setMaxChars(950);
+			txtMessage.setMaxChars(2995);
 
 			pnlFooter = new JPanel();
 			var layout4:FlowLayout = new FlowLayout();

@@ -94,9 +94,9 @@ namespace Game.Logic
             if (effect == null) {
                 return (int)(86400 / (-6.845 * Math.Log(laborTotal) + 55)) / 2;  // Labor time cut in half after first tested.
             } else {
-                int percent = 100 - (30 * (int)effect.value[1] / city.MainBuilding.Lvl);
-                if (percent < 70) {
-                    percent = 70;
+                int percent = 100 - (50 * (int)effect.value[1] / city.MainBuilding.Lvl); // originally 30
+                if (percent < 50) { //originally 70
+                    percent = 50;
                 }
                 return (int)(43200 / (-6.845 * Math.Log(laborTotal) + 55)) * percent / 100;       
             }

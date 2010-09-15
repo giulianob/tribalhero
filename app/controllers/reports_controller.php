@@ -157,8 +157,8 @@ class ReportsController extends AppController {
                     }
 
                     if ($foundExit) {
-                        // If player died or didn't last for more than the min rounds then he can only see the outcome report
-                        if ($state == TROOP_STATE_DYING || $round - $enterRound < BATTLE_VIEW_MIN_ROUNDS) {
+                        // If player didn't last for more than the min rounds then he can only see the outcome report
+                        if ($round - $enterRound < BATTLE_VIEW_MIN_ROUNDS) {
                             // Put the start and exit snapshot of their own troops since that's all they can see.
                             $renderOnlySnapshot = array(
                                     array('BattleReport' => $enterReport, 'snapshot' => $enterSnapshot),

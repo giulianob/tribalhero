@@ -16,7 +16,7 @@ class Message extends AppModel {
     var $validate = array(
             'message' => array(
                             'maxLength' => array(
-                                            'rule' => array('maxLength', 1000),
+                                            'rule' => array('maxLength', 3000),
                                             'message' => 'Message is too long. Shorten the message and try again.',
                                             'required' => true,
                                             'allowEmpty' => false

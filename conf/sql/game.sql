@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.0.1
+-- version 3.2.4
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 11, 2010 at 03:41 PM
--- Server version: 5.1.37
--- PHP Version: 5.3.0
+-- Generation Time: Sep 14, 2010 at 08:36 PM
+-- Server version: 5.1.41
+-- PHP Version: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -58,7 +58,7 @@ CREATE TABLE `battles` (
   KEY `ended` (`ended`),
   KEY `created` (`created`),
   KEY `city_id` (`city_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -97,7 +97,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -120,7 +120,7 @@ CREATE TABLE `battle_report_objects` (
   `hits_received` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -144,7 +144,7 @@ CREATE TABLE `battle_report_troops` (
   PRIMARY KEY (`id`),
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -174,7 +174,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -210,6 +210,7 @@ CREATE TABLE `cities` (
   `x` int(10) unsigned NOT NULL,
   `y` int(10) unsigned NOT NULL,
   `radius` tinyint(3) unsigned NOT NULL,
+  `hide_new_units` tinyint(1) NOT NULL,
   `loot_stolen` int(10) unsigned NOT NULL,
   `attack_point` int(10) NOT NULL,
   `defense_point` int(11) NOT NULL,
@@ -366,7 +367,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

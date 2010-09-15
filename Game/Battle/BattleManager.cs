@@ -544,6 +544,10 @@ namespace Game.Battle {
                 defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
                 ++defender.HitRecv;
 
+                Global.Logger.Debug(string.Format("{0}[{1}] hit {2}[{3}] for {4} damage", attacker.ClassType, attacker.Type, defender.ClassType, defender.Type, dmg));
+                if (lostResource != null && lostResource.Total > 0) Global.Logger.Debug(string.Format("Defender lost {0} resources", lostResource));
+                if (attackPoints > 0) Global.Logger.Debug(string.Format("Attacker gained {0} attack points", attackPoints));
+
                 #endregion                
 
                 #region Loot and Attack Points
@@ -557,8 +561,8 @@ namespace Game.Battle {
                 } else {                    
                     // Give back any lost resources if the attacker dropped them
                     if (lostResource != null && !lostResource.Empty) {
-                        city.BeginUpdate();                    
-                        city.Resource.Add(lostResource);                        
+                        city.BeginUpdate();
+                        city.Resource.Add(lostResource);
                     }
                     
                     // If the defender killed someone then give the city defense points
@@ -592,12 +596,15 @@ namespace Game.Battle {
                 bool isDefenderDead = defender.IsDead;
                 if (isDefenderDead)
                 {
+                    Global.Logger.Debug("Defender has died");
+
                     EventUnitRemoved(defender);
                     battleOrder.Remove(defender);
 
                     if (attacker.CombatList == attackers) {
-                        if (defender.ClassType == BattleClass.STRUCTURE)
-                            stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
+                        
+                        if (defender.ClassType == BattleClass.STRUCTURE) stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
+
                         defenders.Remove(defender);
                         report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);
                     } else if (attacker.CombatList == defenders) {

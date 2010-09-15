@@ -200,7 +200,14 @@ namespace Game.Battle {
 
         internal void SnapTroopState(TroopStub stub, ReportState state) {
             uint id = ReportedTroops[stub];
-            Global.DbManager.Query(string.Format("UPDATE {0} SET `state` = '{1}' WHERE `id` = '{2}' LIMIT 1", BATTLE_REPORT_TROOPS_DB, (byte) state, id));
+
+            // If there's a troop object we also want to update its loot
+            if (stub.TroopObject == null)
+                Global.DbManager.Query(string.Format("UPDATE {0} SET `state` = '{1}' WHERE `id` = '{2}' LIMIT 1", BATTLE_REPORT_TROOPS_DB, (byte)state, id));
+            else {
+                Resource loot = stub.TroopObject.Stats.Loot;
+                Global.DbManager.Query(string.Format("UPDATE {0} SET `state` = '{1}', `gold` = '{2}', `crop` = '{3}', `iron` = '{4}', `wood` = '{5}' WHERE `id` = '{6}' LIMIT 1", BATTLE_REPORT_TROOPS_DB, (byte) state, loot.Gold, loot.Crop, loot.Iron, loot.Wood, id));
+            }
         }
 
         internal void SnapTroop(ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, out uint battleTroopId, Resource loot) {

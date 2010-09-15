@@ -14,7 +14,7 @@ namespace Game.Logic {
 
         internal static double TradeTime(Structure structure, int quantity)
         {
-            return quantity * 30;
+            return quantity * 15;
         }
 
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {

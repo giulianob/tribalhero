@@ -257,9 +257,9 @@
 			var destCityName: Username = Global.map.usernames.cities.getUsername(e.destCombatObj.cityId);
 
 			var dmgPnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
-			dmgPnl.append(new JLabel(e.dmg.toString() + " dmg", new AssetIcon(!srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD)));
+			dmgPnl.append(new JLabel(e.dmg.toString() + " dmg", new AssetIcon(srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD)));
 			var arrowPnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
-			arrowPnl.append(new AssetPane(srcObj.defense ? new ICON_ARROW_LEFT : new ICON_ARROW_RIGHT));
+			arrowPnl.append(new AssetPane(srcObj.defense ? new ICON_ARROW_RIGHT : new ICON_ARROW_LEFT));
 			dmgPnl.append(arrowPnl);
 
 			var pnl: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 7, 0, false));
@@ -277,7 +277,7 @@
 
 			if (defenseObj.data.hp <= 0) {
 				pnl = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0, 0, false));
-				pnl.append(getCombatObjectPanel(srcCityName, e.combatObj));
+				pnl.append(getCombatObjectPanel(destCityName, e.destCombatObj));
 				var defeatLbl: JLabel = new JLabel("has been defeated", new AssetIcon(!srcObj.defense ? new ICON_SHIELD : new ICON_SINGLE_SWORD));
 				defeatLbl.setHorizontalTextPosition(AsWingConstants.LEFT);
 				pnl.append(defeatLbl);

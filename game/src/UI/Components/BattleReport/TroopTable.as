@@ -46,7 +46,7 @@
 				
 				new SimpleTooltip(icon, prototype.getName());
 				
-				unitList.append({icon: icon, level: unit.level, count: unit.count, hp: unit.hp, hitsTaken: unit.hitsTaken, dmgTaken: unit.dmgTaken, hitsDealt: unit.hitsDealt, dmgDealt: unit.dmgDealt});			
+				unitList.append({type: unit.type, icon: icon, level: unit.level, count: unit.count, hp: unit.hp, hitsTaken: unit.hitsTaken, dmgTaken: unit.dmgTaken, hitsDealt: unit.hitsDealt, dmgDealt: unit.dmgDealt});			
 			}
 			
 			if (troop.resources != null) {
@@ -66,8 +66,8 @@
 			
 			unitList = new VectorListModel();
 			tableModel = new PropertyTableModel(unitList,
-				["Type", "Level", "Count", "HP", "Hits\nTaken", "Damage\nTaken", "Hits\nDealt", "Damage\nDealt"],
-				["icon", "level", "count", "hp", "hitsTaken", 	"dmgTaken", 	 "hitsDealt", 	"dmgDealt"],
+				["Type", "Level", "HP", "Hits\nTaken", "Damage\nTaken", "Hits\nDealt", "Damage\nDealt"],
+				[".", "level", "hp", "hitsTaken", 	"dmgTaken", 	 "hitsDealt", 	"dmgDealt"],
 				[null, null, null, null, null, null]
 			);			
 			

@@ -1,26 +1,27 @@
-﻿package src.UI.Components.BattleReport 
+﻿package src.UI.Components.BattleReport
 {
-	import flash.display.DisplayObject;
-    import org.aswing.*;
-    import org.aswing.table.*;
+	import org.aswing.*;
+	import org.aswing.table.*;
 	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	
+
 	public class UnitIconCell extends DefaultTextCell
 	{
-		
-		public function UnitIconCell() 
+
+		public function UnitIconCell()
 		{
-			
-		}
-	
-        override public function setCellValue(param1: *) : void
-        {
-            setText("");		
-			
+			setHorizontalTextPosition(AsWingConstants.LEFT);
+			setIconTextGap(0);
 			setHorizontalAlignment(AsWingConstants.CENTER);
-            setIcon(new AssetIcon(param1));
-        }		
+		}
+
+		override public function setCellValue(param1: *) : void
+		{
+			if (ObjectFactory.getClassType(param1.type) == ObjectFactory.TYPE_UNIT) setText(param1.count);
+			else setText("");
+
+			setIcon(new AssetIcon(param1.icon));
+		}
 	}
 
 }
+

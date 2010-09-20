@@ -12,14 +12,18 @@ package src.UI.Components.ScreenMessages
 	public class BuiltInMessages
 	{
 
+		public static function processAll(city: City) : void {
+			showInBattle(city);
+			showTroopsStarving(city);
+			showIncomingAttack(city);			
+		}
+		
 		public static function showInBattle(city: City) : void {
 			if (city.inBattle) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/BATTLECOST/" + city.id, city.name + ": All costs raised by 50% while city is in battle", new AssetIcon(new ICON_GOLD)));
 				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/BATTLE/" + city.id, city.name + " is under attack", new AssetIcon(new ICON_BATTLE)));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/BATTLE/" + city.id);
-				Global.gameContainer.screenMessage.removeMessage("/BATTLECOST/" + city.id);
 			}
 		}
 

@@ -83,7 +83,7 @@
 
 		private function onNewRound(e: BattleRoundEvent = null) : void {
 			log(new JSeparator());
-			logStr("Round " + e.round, null, true);
+			logStr("Round " + (e.round + 1), null, true);
 		}
 
 		private function updateStamina(e: BattleEvent = null) : void {

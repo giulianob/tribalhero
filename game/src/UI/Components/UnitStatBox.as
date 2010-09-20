@@ -28,6 +28,7 @@
 		private var lblArmor: JLabel;
 		private var lblWeapon: JLabel;
 		private var lblHp: JLabel;
+		private var lblCarry: JLabel;
 		private var lblUnitClass: JLabel;
 		private var lblWeaponClass: JLabel;
 		private var lblAttack: StarRating;
@@ -40,6 +41,7 @@
 		private var lblArmorTitle: JLabel;
 		private var lblWeaponTitle: JLabel;
 		private var lblHpTitle: JLabel;
+		private var lblCarryTitle: JLabel;
 		private var lblUnitClassTitle: JLabel;
 		private var lblWeaponClassTitle: JLabel;
 		private var lblAttackTitle: JLabel;
@@ -65,7 +67,7 @@
 
 			var statBox: UnitStatBox = new UnitStatBox();
 
-			statBox.init(unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, unitPrototype.hp, unitPrototype.upkeep, unitPrototype.attack, unitPrototype.defense, unitPrototype.stealth, unitPrototype.range, unitPrototype.speed);
+			statBox.init(unitPrototype.carry, unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, unitPrototype.hp, unitPrototype.upkeep, unitPrototype.attack, unitPrototype.defense, unitPrototype.stealth, unitPrototype.range, unitPrototype.speed);
 
 			return statBox;			
 		}
@@ -76,7 +78,7 @@
 
 			var statBox: UnitStatBox = new UnitStatBox();
 
-			statBox.init(unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, troopTemplate.maxHp, unitPrototype.upkeep, troopTemplate.attack, troopTemplate.defense, troopTemplate.stealth, troopTemplate.range, troopTemplate.speed);
+			statBox.init(unitPrototype.carry, unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, troopTemplate.maxHp, unitPrototype.upkeep, troopTemplate.attack, troopTemplate.defense, troopTemplate.stealth, troopTemplate.range, troopTemplate.speed);
 
 			return statBox;
 		}
@@ -86,9 +88,10 @@
 			createUI();
 		}
 
-		private function init(armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, defense: int, stealth: int, range: int, speed: int) : void {
-			lblAttack.setValue(attack);
-			lblDefense.setValue(defense);
+		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, defense: int, stealth: int, range: int, speed: int) : void {
+			lblAttack.setValue(attack / upkeep);
+			lblCarry.setText(carry.toString());
+			lblDefense.setValue(defense / upkeep);
 			lblSpeed.setValue(speed);
 			lblRange.setValue(range);
 			lblStealth.setValue(stealth);
@@ -104,6 +107,7 @@
 		{
 			setLayout(new GridLayout(6, 4, 3, 0));
 
+			lblCarryTitle = titleLabelMaker("Carry");
 			lblArmorTitle = titleLabelMaker("Armor");
 			lblWeaponTitle = titleLabelMaker("Weapon");
 			lblHpTitle = titleLabelMaker("HP");
@@ -116,6 +120,7 @@
 			lblSpeedTitle = titleLabelMaker("Speed");
 			lblUpkeepTitle = titleLabelMaker("Upkeep");
 
+			lblCarry = valueLabelMaker();
 			lblArmor = valueLabelMaker();
 			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
@@ -128,7 +133,7 @@
 			lblSpeed = new StarRating(Constants.unitStatRanges.speed.min, Constants.unitStatRanges.speed.max, 0, 5);
 			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
 
-			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());			
+			appendAll(lblHpTitle, lblHp, lblCarryTitle, lblCarry);
 			appendAll(lblArmorTitle, lblArmor, lblUnitClassTitle, lblUnitClass);
 			appendAll(lblWeaponTitle, lblWeapon, lblWeaponClassTitle, lblWeaponClass);
 			appendAll(lblAttackTitle, lblAttack, lblDefenseTitle, lblDefense);

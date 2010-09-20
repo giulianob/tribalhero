@@ -21,6 +21,11 @@
 		public static const RESOURCE_CHUNK: int = 100;
 		public static const RESOURCE_MAX_TRADE: int = 1500;
 
+		public static function unitsPerStructure(level: int) : int {
+			var discount: Array = [ 20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144 ];
+			return discount[level];
+		}
+
 		public static function troopRadius(troop: TroopStub) : int {
 			return Math.min(Math.ceil(troop.getUpkeep(true) / 100.0), 5);
 		}
@@ -108,7 +113,7 @@
 		public static function maxForestLabor(level: int) : int {
 			return level * 240;
 		}
-		
+
 		public static function maxForestLaborPerUser(level: int) : int {
 			return Formula.maxForestLabor(level) / 6;
 		}

@@ -42,6 +42,7 @@
 				unitObj.weaponClass = unitNode.@weaponclass;
 				unitObj.armor = unitNode.@armor;
 				unitObj.upkeep = unitNode.@upkeep;
+				unitObj.carry = unitNode.@carry;
 
 				unitPrototypes.add(unitObj, false);
 			}

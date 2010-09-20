@@ -49,7 +49,7 @@
 		}
 
 		private function createUI(): void {
-			setPreferredWidth(530);
+			setPreferredWidth(800);
 			border = new SimpleTitledBorder(null, "", AsWingConstants.TOP, AsWingConstants.LEFT, 0, new ASFont("Arial", 13, true));
 			setBorder(border);
 
@@ -66,7 +66,7 @@
 			pnlEvents.setLayout(layout2);
 
 			pnlTroops = new JPanel();
-			pnlTroops.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.CENTER));
+			pnlTroops.setLayout(new GridLayout(1, 2, 0, 0));
 
 			pnlDefense = new JTabbedPane();
 			pnlDefense.setBorder(new SimpleTitledBorder(null, "Defense", AsWingConstants.TOP, AsWingConstants.LEFT));

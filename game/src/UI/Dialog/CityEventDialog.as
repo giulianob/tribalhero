@@ -135,7 +135,7 @@
 			pnlResources = new JPanel(new GridLayout(4, 2, 20, 10));
 
 			pnlLocalEvents = new JTabbedPane();
-			pnlLocalEvents.setPreferredSize(new IntDimension(540, 200));
+			pnlLocalEvents.setPreferredSize(new IntDimension(540, 235));
 			pnlLocalEvents.appendTab(new JScrollPane(gridLocalActions), "Local Events");
 
 			lblGold = resourceLabelMaker("Gold\n\n" + Locale.loadString("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));

@@ -97,12 +97,6 @@
 
 				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, inBattle, hideNewUnits);
 
-				// Show under attack message if city in battle
-				BuiltInMessages.showInBattle(city);
-				
-				// Show starving message if needed
-				BuiltInMessages.showTroopsStarving(city);
-
 				// Add the name of this city to the list of city names
 				Global.map.usernames.cities.add(new Username(id, name));
 
@@ -198,6 +192,9 @@
 
 				// Add city to player's cities
 				Global.map.cities.add(city);
+				
+				// Show any messages
+				BuiltInMessages.processAll(city);
 			}
 		}
 	}

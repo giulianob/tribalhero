@@ -7,6 +7,7 @@
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 	import src.Constants;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.UI.LookAndFeel.GameLookAndFeel;

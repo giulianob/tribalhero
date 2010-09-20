@@ -27,6 +27,8 @@ package src.Map
 			var visited: Array = new Array();
 
 			visited.push(start);
+			
+			var fromStructure: Boolean = city.hasStructureAt(start);
 
 			return breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
 			{
@@ -51,11 +53,13 @@ package src.Map
 					);
 				}
 
-				for each (var location: Point in possibleNeighbors) {			
-					if (location.x != end.x || location.y != end.y) {
+				for each (var location: Point in possibleNeighbors) {									
+					if ((location.x != end.x || location.y != end.y)) {
 						if (city.hasStructureAt(location)) continue;
 						if (!isRoadByMapPosition(location.x, location.y)) continue;
 						if (MapUtil.distance(location.x, location.y, city.MainBuilding.x, city.MainBuilding.y) > city.radius) continue;
+					} else if (fromStructure && node.x == start.x && node.y == start.y) {
+						continue;
 					}
 
 					neighbors.push(location);

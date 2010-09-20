@@ -40,14 +40,30 @@ $this->Js->buffer($code);
 	<div class="span-10 last">
 		<h2>Screenshots</h2>	
 		<div class="span-10 last gallery">			
-			<?php echo $html->link($html->image('screenshots/advanced-city-thumb.png'), '/img/screenshots/advanced-city.png', array('escape' => false, 'title' => 'An advanced military city', 'rel' => 'gallery')); ?>
-			<?php echo $html->link($html->image('screenshots/building-tower-thumb.png'), '/img/screenshots/building-tower.png', array('escape' => false, 'title' => 'Build towers around weaker structures to protect them when attacked', 'rel' => 'gallery')); ?>
-			<?php echo $html->link($html->image('screenshots/city-overview-thumb.png'), '/img/screenshots/city-overview.png', array('escape' => false, 'title' => 'The overview screen quickly informs you about your city status', 'rel' => 'gallery')); ?>
+			<?php 
+			$desc = 'An advanced military city';
+			echo $html->link($html->image('screenshots/advanced-city-thumb.png', array('alt' => $desc)), '/img/screenshots/advanced-city.png', array('escape' => false, 'title' => $desc, 'rel' => 'gallery')); ?>
+			
+			<?php 
+			$desc = 'Build towers around weaker structures to protect them when attacked';
+			echo $html->link($html->image('screenshots/building-tower-thumb.png', array('alt' => $desc)), '/img/screenshots/building-tower.png', array('escape' => false, 'title' => $desc, 'rel' => 'gallery')); ?>
+			
+			<?php 
+			$desc = 'The overview screen quickly informs you about your city status';
+			echo $html->link($html->image('screenshots/city-overview-thumb.png', array('alt' => $desc)), '/img/screenshots/city-overview.png', array('escape' => false, 'title' => $desc, 'rel' => 'gallery')); ?>
 		</div>		
 		<div class="span-10 last prepend-top gallery">
-			<?php echo $html->link($html->image('screenshots/military-overview-thumb.png'), '/img/screenshots/military-overview.png', array('escape' => false, 'title' => 'Various types of units can be trained and used to defend or attack other players', 'rel' => 'gallery')); ?>
-			<?php echo $html->link($html->image('screenshots/battle-viewer-thumb.png'), '/img/screenshots/battle-viewer.png', array('escape' => false, 'title' => 'Watch battles as they unfold real time', 'rel' => 'gallery')); ?>
-			<?php echo $html->link($html->image('screenshots/simple-battle-report-thumb.png'), '/img/screenshots/simple-battle-report.png', array('escape' => false, 'title' => 'A battle report will let you know the outcome of battles', 'rel' => 'gallery')); ?>
+			<?php 
+			$desc = 'Various types of units can be trained and used to defend or attack other players';
+			echo $html->link($html->image('screenshots/military-overview-thumb.png', array('alt' => $desc)), '/img/screenshots/military-overview.png', array('escape' => false, 'title' => $desc, 'rel' => 'gallery')); ?>
+			
+			<?php 
+			$desc = 'Watch battles as they unfold real time';
+			echo $html->link($html->image('screenshots/battle-viewer-thumb.png', array('alt' => $desc)), '/img/screenshots/battle-viewer.png', array('escape' => false, 'title' => $desc, 'rel' => 'gallery')); ?>
+			
+			<?php 
+			$desc = 'A battle report will let you know the outcome of battles';
+			echo $html->link($html->image('screenshots/simple-battle-report-thumb.png', array('alt' => $desc)), '/img/screenshots/simple-battle-report.png', array('escape' => false, 'title' => $desc, 'rel' => 'gallery')); ?>
 		</div>		
 	</div>
 </div>

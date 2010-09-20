@@ -253,6 +253,16 @@ form div.error-message
 	display: none;
 }
 
+.center-block {
+	display:block;
+	margin:auto;
+}
+
+.text-center
+{
+	text-align: center;
+}
+
 .text-right 
 {
 	text-align: right;

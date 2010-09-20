@@ -14,7 +14,7 @@ namespace Game.Logic {
         /// </summary>
         /// <param name="level"></param>
         public static int GetMaxForestCount(byte level) {
-            if (level <= 2)
+            if (level <= 3)
                 return 1;
 
             if (level <= 5)

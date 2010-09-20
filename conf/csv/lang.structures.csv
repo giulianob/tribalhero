@@ -12,7 +12,7 @@ TOWNCENTER_STRUCTURE_LVL_8,"Increases the maximum resources to 7000 crop, 7000 w
 TOWNCENTER_STRUCTURE_LVL_9,"Increases the maximum resources to 10000 crop, 10000 wood, and 750 iron."
 TOWNCENTER_STRUCTURE_LVL_10,"Increases the maximum resources to 20000 crop, 20000 wood, and 1100 iron."
 BARRACK_STRUCTURE_NAME,Barrack
-BARRACK_STRUCTURE_DESCRIPTION,Enables the ability to train advanced military units without requiring laborers.
+BARRACK_STRUCTURE_DESCRIPTION,Trains advanced military units without requiring laborers.
 BARRACK_STRUCTURE_LVL_1,Allows training swordsmen and archers.
 BARRACK_STRUCTURE_LVL_2,Allows training hoplite
 BARRACK_STRUCTURE_LVL_3,"Enables upgrading fighters, hoplite and bowmen"
@@ -24,7 +24,7 @@ BARRACK_STRUCTURE_LVL_8,Decreases training time by 20%.
 BARRACK_STRUCTURE_LVL_9,Decreases training time by 30%.
 BARRACK_STRUCTURE_LVL_10,Decreases training time by 40%.
 TRAINING_GROUND_STRUCTURE_NAME,Training Ground
-TRAINING_GROUND_STRUCTURE_DESCRIPTION,Enables the ability to train your laborers into military units and provides defensive structures.
+TRAINING_GROUND_STRUCTURE_DESCRIPTION,Trains laborers into military units and provides defensive structures.
 TRAINING_GROUND_STRUCTURE_LVL_1,Allows training fighters and bowmen.
 TRAINING_GROUND_STRUCTURE_LVL_2,Allows building defensive towers.
 TRAINING_GROUND_STRUCTURE_LVL_3,Enables upgrading fighters and bowmen.

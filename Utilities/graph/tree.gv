@@ -1,0 +1,192 @@
+digraph g {	
+    graph [size="34" fontsize=32 labelloc="t" bgcolor="transparent" splines=true overlap=false rankdir="LR" ranksep="equally"];
+    node [shape=none, fontsize=12];			
+    edge [fontsize=12];
+
+    STRUCTURE_200001 [label="Town Center (Level 1)", labelloc="b", height=1, shape=none, image="TOWNCENTER_STRUCTURE.png"]
+STRUCTURE_210601 [label="Farm (Level 1)", labelloc="b", height=1, shape=none, image="FARM_STRUCTURE.png"]
+STRUCTURE_220201 [label="Stable (Level 1)", labelloc="b", height=1, shape=none, image="STABLE_STRUCTURE.png"]
+UNIT_10501 [label="Cavalry", labelloc="b", height=1, shape=none, image="CAVALRY_UNIT.png"]
+UNIT_10601 [label="Knight", labelloc="b", height=1, shape=none, image="HEAVY_CAVALRY_UNIT.png"]
+TECH_2202201 [label="Double Time", shape=box]
+STRUCTURE_220203 [label="Stable (Level 3)", labelloc="b", height=1, shape=none, image="STABLE_STRUCTURE.png"]
+STRUCTURE_220210 [label="Stable (Level 10)", labelloc="b", height=1, shape=none, image="STABLE_STRUCTURE.png"]
+STRUCTURE_210605 [label="Farm (Level 5)", labelloc="b", height=1, shape=none, image="FARM_STRUCTURE.png"]
+STRUCTURE_210610 [label="Farm (Level 10)", labelloc="b", height=1, shape=none, image="FARM_STRUCTURE.png"]
+STRUCTURE_210701 [label="Lumbermill (Level 1)", labelloc="b", height=1, shape=none, image="LUMBERMILL_STRUCTURE.png"]
+STRUCTURE_211101 [label="Basement (Level 1)", labelloc="b", height=1, shape=none, image="BASEMENT_STRUCTURE.png"]
+STRUCTURE_211103 [label="Basement (Level 3)", labelloc="b", height=1, shape=none, image="BASEMENT_STRUCTURE.png"]
+STRUCTURE_210702 [label="Lumbermill (Level 2)", labelloc="b", height=1, shape=none, image="LUMBERMILL_STRUCTURE.png"]
+TECH_2107101 [label="Attic Storage", shape=box]
+STRUCTURE_210705 [label="Lumbermill (Level 5)", labelloc="b", height=1, shape=none, image="LUMBERMILL_STRUCTURE.png"]
+STRUCTURE_210710 [label="Lumbermill (Level 10)", labelloc="b", height=1, shape=none, image="LUMBERMILL_STRUCTURE.png"]
+STRUCTURE_220101 [label="Training Ground (Level 1)", labelloc="b", height=1, shape=none, image="TRAINING_GROUND_STRUCTURE.png"]
+UNIT_1101 [label="Fighter", labelloc="b", height=1, shape=none, image="FIGHTER_UNIT.png"]
+UNIT_1201 [label="Bowman", labelloc="b", height=1, shape=none, image="BOWMAN_UNIT.png"]
+STRUCTURE_240201 [label="Tower (Level 1)", labelloc="b", height=1, shape=none, image="TOWER_STRUCTURE.png"]
+STRUCTURE_240301 [label="Cannon Tower (Level 1)", labelloc="b", height=1, shape=none, image="CANNON_TOWER_STRUCTURE.png"]
+STRUCTURE_240310 [label="Cannon Tower (Level 10)", labelloc="b", height=1, shape=none, image="CANNON_TOWER_STRUCTURE.png"]
+STRUCTURE_240205 [label="Tower (Level 5)", labelloc="b", height=1, shape=none, image="TOWER_STRUCTURE.png"]
+STRUCTURE_240210 [label="Tower (Level 10)", labelloc="b", height=1, shape=none, image="TOWER_STRUCTURE.png"]
+STRUCTURE_220102 [label="Training Ground (Level 2)", labelloc="b", height=1, shape=none, image="TRAINING_GROUND_STRUCTURE.png"]
+TECH_2201101 [label="Two For One", shape=box]
+STRUCTURE_220104 [label="Training Ground (Level 4)", labelloc="b", height=1, shape=none, image="TRAINING_GROUND_STRUCTURE.png"]
+STRUCTURE_220401 [label="Barrack (Level 1)", labelloc="b", height=1, shape=none, image="BARRACK_STRUCTURE.png"]
+UNIT_10101 [label="Swordsman", labelloc="b", height=1, shape=none, image="SWORDSMAN_UNIT.png"]
+UNIT_10201 [label="Archer", labelloc="b", height=1, shape=none, image="ARCHER_UNIT.png"]
+UNIT_10301 [label="Hoplite", labelloc="b", height=1, shape=none, image="PIKEMAN_UNIT.png"]
+STRUCTURE_220402 [label="Barrack (Level 2)", labelloc="b", height=1, shape=none, image="BARRACK_STRUCTURE.png"]
+UNIT_10401 [label="Gladiator", labelloc="b", height=1, shape=none, image="HEAVY_SWORDSMAN_UNIT.png"]
+STRUCTURE_220403 [label="Barrack (Level 3)", labelloc="b", height=1, shape=none, image="BARRACK_STRUCTURE.png"]
+STRUCTURE_220410 [label="Barrack (Level 10)", labelloc="b", height=1, shape=none, image="BARRACK_STRUCTURE.png"]
+STRUCTURE_220105 [label="Training Ground (Level 5)", labelloc="b", height=1, shape=none, image="TRAINING_GROUND_STRUCTURE.png"]
+TECH_2201201 [label="Four For One", shape=box]
+STRUCTURE_220107 [label="Training Ground (Level 7)", labelloc="b", height=1, shape=none, image="TRAINING_GROUND_STRUCTURE.png"]
+TECH_2201301 [label="Eight For One", shape=box]
+STRUCTURE_220110 [label="Training Ground (Level 10)", labelloc="b", height=1, shape=none, image="TRAINING_GROUND_STRUCTURE.png"]
+STRUCTURE_200002 [label="Town Center (Level 2)", labelloc="b", height=1, shape=none, image="TOWNCENTER_STRUCTURE.png"]
+STRUCTURE_230101 [label="University (Level 1)", labelloc="b", height=1, shape=none, image="UNIVERSITY_STRUCTURE.png"]
+STRUCTURE_211001 [label="Foundry (Level 1)", labelloc="b", height=1, shape=none, image="FOUNDRY_STRUCTURE.png"]
+TECH_2110101 [label="A Call To Arms", shape=box]
+STRUCTURE_211002 [label="Foundry (Level 2)", labelloc="b", height=1, shape=none, image="FOUNDRY_STRUCTURE.png"]
+TECH_2110201 [label="Tunnel Excavation Research", shape=box]
+STRUCTURE_211003 [label="Foundry (Level 3)", labelloc="b", height=1, shape=none, image="FOUNDRY_STRUCTURE.png"]
+STRUCTURE_210901 [label="Refinery (Level 1)", labelloc="b", height=1, shape=none, image="REFINERY_STRUCTURE.png"]
+STRUCTURE_210910 [label="Refinery (Level 10)", labelloc="b", height=1, shape=none, image="REFINERY_STRUCTURE.png"]
+STRUCTURE_211005 [label="Foundry (Level 5)", labelloc="b", height=1, shape=none, image="FOUNDRY_STRUCTURE.png"]
+TECH_2301101 [label="Archery Research", shape=box]
+TECH_2301301 [label="Hanzo Sword", shape=box]
+STRUCTURE_230102 [label="University (Level 2)", labelloc="b", height=1, shape=none, image="UNIVERSITY_STRUCTURE.png"]
+STRUCTURE_230201 [label="Armory (Level 1)", labelloc="b", height=1, shape=none, image="ARMORY_STRUCTURE.png"]
+TECH_2302101 [label="Ground Unit Defence", shape=box]
+TECH_2302201 [label="Mounted Unit Defence", shape=box]
+TECH_2302301 [label="Machinery Unit Defence", shape=box]
+TECH_2302401 [label="Structure Defence", shape=box]
+STRUCTURE_230210 [label="Armory (Level 10)", labelloc="b", height=1, shape=none, image="ARMORY_STRUCTURE.png"]
+STRUCTURE_230103 [label="University (Level 3)", labelloc="b", height=1, shape=none, image="UNIVERSITY_STRUCTURE.png"]
+TECH_2301401 [label="New Bow Research", shape=box]
+STRUCTURE_230104 [label="University (Level 4)", labelloc="b", height=1, shape=none, image="UNIVERSITY_STRUCTURE.png"]
+STRUCTURE_230301 [label="Blacksmith (Level 1)", labelloc="b", height=1, shape=none, image="BLACKSMITH_STRUCTURE.png"]
+TECH_2303101 [label="Sword Damage Boost", shape=box]
+TECH_2303201 [label="Pike Damage Boost", shape=box]
+TECH_2303301 [label="Bow Damage Boost", shape=box]
+TECH_2303401 [label="Ballistic Damage Boost", shape=box]
+STRUCTURE_230310 [label="Blacksmith (Level 10)", labelloc="b", height=1, shape=none, image="BLACKSMITH_STRUCTURE.png"]
+STRUCTURE_220301 [label="Workshop (Level 1)", labelloc="b", height=1, shape=none, image="WORKSHOP_STRUCTURE.png"]
+UNIT_10701 [label="Helepolis", labelloc="b", height=1, shape=none, image="HELEPOLIS_UNIT.png"]
+UNIT_10801 [label="Catapult", labelloc="b", height=1, shape=none, image="CATAPULT_UNIT.png"]
+STRUCTURE_220305 [label="Workshop (Level 5)", labelloc="b", height=1, shape=none, image="WORKSHOP_STRUCTURE.png"]
+STRUCTURE_230105 [label="University (Level 5)", labelloc="b", height=1, shape=none, image="UNIVERSITY_STRUCTURE.png"]
+STRUCTURE_230110 [label="University (Level 10)", labelloc="b", height=1, shape=none, image="UNIVERSITY_STRUCTURE.png"]
+STRUCTURE_200003 [label="Town Center (Level 3)", labelloc="b", height=1, shape=none, image="TOWNCENTER_STRUCTURE.png"]
+STRUCTURE_250101 [label="Trading Post (Level 1)", labelloc="b", height=1, shape=none, image="TRADING_POST_STRUCTURE.png"]
+STRUCTURE_250201 [label="Market (Level 1)", labelloc="b", height=1, shape=none, image="MARKET_STRUCTURE.png"]
+STRUCTURE_250205 [label="Market (Level 5)", labelloc="b", height=1, shape=none, image="MARKET_STRUCTURE.png"]
+UNIT_40101 [label="Ox Wagon", labelloc="b", height=1, shape=none, image="WAGON_UNIT.png"]
+STRUCTURE_250103 [label="Trading Post (Level 3)", labelloc="b", height=1, shape=none, image="TRADING_POST_STRUCTURE.png"]
+STRUCTURE_250105 [label="Trading Post (Level 5)", labelloc="b", height=1, shape=none, image="TRADING_POST_STRUCTURE.png"]
+STRUCTURE_200005 [label="Town Center (Level 5)", labelloc="b", height=1, shape=none, image="TOWNCENTER_STRUCTURE.png"]
+STRUCTURE_200010 [label="Town Center (Level 10)", labelloc="b", height=1, shape=none, image="TOWNCENTER_STRUCTURE.png"]
+STRUCTURE_220201 -> UNIT_10501;
+STRUCTURE_220203 -> UNIT_10601;
+STRUCTURE_220203 -> TECH_2202201;
+STRUCTURE_220201 -> STRUCTURE_220203;
+STRUCTURE_220203 -> STRUCTURE_220210;
+STRUCTURE_210605 -> STRUCTURE_220201;
+STRUCTURE_210601 -> STRUCTURE_210605;
+STRUCTURE_210605 -> STRUCTURE_210610;
+STRUCTURE_200001 -> STRUCTURE_210601;
+STRUCTURE_211101 -> STRUCTURE_211103;
+STRUCTURE_210702 -> STRUCTURE_211101;
+STRUCTURE_210701 -> STRUCTURE_210702;
+STRUCTURE_210705 -> TECH_2107101;
+STRUCTURE_210702 -> STRUCTURE_210705;
+STRUCTURE_210705 -> STRUCTURE_210710;
+STRUCTURE_200001 -> STRUCTURE_210701;
+STRUCTURE_220101 -> UNIT_1101;
+STRUCTURE_220101 -> UNIT_1201;
+STRUCTURE_240301 -> STRUCTURE_240310;
+STRUCTURE_240205 -> STRUCTURE_240301 [style=dashed label="Converts To"];
+STRUCTURE_240201 -> STRUCTURE_240205;
+STRUCTURE_240205 -> STRUCTURE_240210;
+STRUCTURE_220102 -> STRUCTURE_240201;
+STRUCTURE_220101 -> STRUCTURE_220102;
+STRUCTURE_220104 -> TECH_2201101;
+STRUCTURE_220102 -> STRUCTURE_220104;
+STRUCTURE_220401 -> UNIT_10101;
+STRUCTURE_220401 -> UNIT_10201;
+STRUCTURE_220402 -> UNIT_10301;
+STRUCTURE_220401 -> STRUCTURE_220402;
+STRUCTURE_220403 -> UNIT_10401;
+STRUCTURE_220402 -> STRUCTURE_220403;
+STRUCTURE_220403 -> STRUCTURE_220410;
+STRUCTURE_220105 -> STRUCTURE_220401 [style=dashed label="Converts To"];
+STRUCTURE_220104 -> STRUCTURE_220105;
+STRUCTURE_220107 -> TECH_2201201;
+STRUCTURE_220105 -> STRUCTURE_220107;
+STRUCTURE_220110 -> TECH_2201301;
+STRUCTURE_220107 -> STRUCTURE_220110;
+STRUCTURE_200002 -> STRUCTURE_220101;
+STRUCTURE_200001 -> STRUCTURE_200002;
+STRUCTURE_211002 -> TECH_2110101;
+STRUCTURE_211001 -> STRUCTURE_211002;
+STRUCTURE_211003 -> TECH_2110201;
+STRUCTURE_211002 -> STRUCTURE_211003;
+STRUCTURE_210901 -> STRUCTURE_210910;
+STRUCTURE_211005 -> STRUCTURE_210901;
+STRUCTURE_211003 -> STRUCTURE_211005;
+STRUCTURE_230101 -> STRUCTURE_211001;
+STRUCTURE_230101 -> TECH_2301101;
+STRUCTURE_230102 -> TECH_2301301;
+STRUCTURE_230101 -> STRUCTURE_230102;
+STRUCTURE_230201 -> TECH_2302101;
+STRUCTURE_230201 -> TECH_2302201;
+STRUCTURE_230201 -> TECH_2302301;
+STRUCTURE_230201 -> TECH_2302401;
+STRUCTURE_230201 -> STRUCTURE_230210;
+STRUCTURE_230103 -> STRUCTURE_230201;
+STRUCTURE_230102 -> STRUCTURE_230103;
+STRUCTURE_230104 -> TECH_2301401;
+STRUCTURE_230103 -> STRUCTURE_230104;
+STRUCTURE_230301 -> TECH_2303101;
+STRUCTURE_230301 -> TECH_2303201;
+STRUCTURE_230301 -> TECH_2303301;
+STRUCTURE_230301 -> TECH_2303401;
+STRUCTURE_230301 -> STRUCTURE_230310;
+STRUCTURE_230105 -> STRUCTURE_230301;
+STRUCTURE_220301 -> UNIT_10701;
+STRUCTURE_220301 -> UNIT_10801;
+STRUCTURE_220301 -> STRUCTURE_220305;
+STRUCTURE_230105 -> STRUCTURE_220301;
+STRUCTURE_230104 -> STRUCTURE_230105;
+STRUCTURE_230105 -> STRUCTURE_230110;
+STRUCTURE_200003 -> STRUCTURE_230101;
+STRUCTURE_200002 -> STRUCTURE_200003;
+STRUCTURE_250201 -> STRUCTURE_250205;
+STRUCTURE_250101 -> STRUCTURE_250201;
+STRUCTURE_250103 -> UNIT_40101;
+STRUCTURE_250101 -> STRUCTURE_250103;
+STRUCTURE_250103 -> STRUCTURE_250105;
+STRUCTURE_200005 -> STRUCTURE_250101;
+STRUCTURE_200003 -> STRUCTURE_200005;
+STRUCTURE_200005 -> STRUCTURE_200010;
+{ rank="same"; STRUCTURE_220201; STRUCTURE_220203; STRUCTURE_220210; }
+{ rank="same"; STRUCTURE_210601; STRUCTURE_210605; STRUCTURE_210610; }
+{ rank="same"; STRUCTURE_211101; STRUCTURE_211103; }
+{ rank="same"; STRUCTURE_210701; STRUCTURE_210702; STRUCTURE_210705; STRUCTURE_210710; }
+{ rank="same"; STRUCTURE_240301; STRUCTURE_240310; }
+{ rank="same"; STRUCTURE_240201; STRUCTURE_240205; STRUCTURE_240210; }
+{ rank="same"; STRUCTURE_220401; STRUCTURE_220402; STRUCTURE_220403; STRUCTURE_220410; }
+{ rank="same"; STRUCTURE_220101; STRUCTURE_220102; STRUCTURE_220104; STRUCTURE_220105; STRUCTURE_220107; STRUCTURE_220110; }
+{ rank="same"; STRUCTURE_210901; STRUCTURE_210910; }
+{ rank="same"; STRUCTURE_211001; STRUCTURE_211002; STRUCTURE_211003; STRUCTURE_211005; }
+{ rank="same"; STRUCTURE_230201; STRUCTURE_230210; }
+{ rank="same"; STRUCTURE_230301; STRUCTURE_230310; }
+{ rank="same"; STRUCTURE_220301; STRUCTURE_220305; }
+{ rank="same"; STRUCTURE_230101; STRUCTURE_230102; STRUCTURE_230103; STRUCTURE_230104; STRUCTURE_230105; STRUCTURE_230110; }
+{ rank="same"; STRUCTURE_250201; STRUCTURE_250205; }
+{ rank="same"; STRUCTURE_250101; STRUCTURE_250103; STRUCTURE_250105; }
+{ rank="same"; STRUCTURE_200001; STRUCTURE_200002; STRUCTURE_200003; STRUCTURE_200005; STRUCTURE_200010; }
+
+
+}

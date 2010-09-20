@@ -147,13 +147,13 @@ namespace Game.Comm {
 
                 if (stub.TotalCount > 0) {
                     stub.TroopId = 1;
-                    if (!stub.Equal(city.DefaultTroop)) {
+                    if (!stub.Equal(city.DefaultTroop, FormationType.IN_BATTLE)) {
                         ReplyError(session, packet, Error.UNEXPECTED);
                         return;
                     }
 
                     city.DefaultTroop.BeginUpdate();
-                    city.DefaultTroop.RemoveAllUnits();
+                    city.DefaultTroop.RemoveAllUnits(FormationType.NORMAL, FormationType.GARRISON);
                     city.DefaultTroop.Add(stub);
                     city.DefaultTroop.EndUpdate();
                 }

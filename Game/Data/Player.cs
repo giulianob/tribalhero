@@ -80,7 +80,8 @@ namespace Game {
                                   new DbColumn("name", Name, DbType.String, 32),
                                   new DbColumn("created", Created, DbType.DateTime),
                                   new DbColumn("last_login", LastLogin, DbType.DateTime),
-                                  new DbColumn("session_id", SessionId, DbType.String, 128)
+                                  new DbColumn("session_id", SessionId, DbType.String, 128),
+                                  new DbColumn("online", Session != null, DbType.Boolean)
                               };
             }
         }

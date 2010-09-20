@@ -214,6 +214,31 @@ namespace Game.Data.Troop {
             }
         }
 
+        public bool Equal(TroopStub troopStub, params FormationType[] ignoreFormations) {
+            lock (objLock)
+            {
+                Dictionary<ushort, int> dict = TotalUnitByType();
+                foreach (Formation formation in troopStub.data.Values)
+                {
+                    if (ignoreFormations.Contains(formation.Type)) continue;
+
+                    foreach (KeyValuePair<ushort, ushort> kvp in formation)
+                    {                        
+                        if (!dict.ContainsKey(kvp.Key))
+                            return false;
+
+                        if ((dict[kvp.Key] -= kvp.Value) < 0)
+                            return false;
+
+                        if (dict[kvp.Key] == 0)
+                            dict.Remove(kvp.Key);
+                    }
+                }
+
+                return dict.Count == 0;
+            }            
+        }
+
         public bool Equal(TroopStub troopStub) {
             lock (objLock) {
                 Dictionary<ushort, int> dict = TotalUnitByType();
@@ -381,6 +406,22 @@ namespace Game.Data.Troop {
 
                 foreach (Formation formation in data.Values)
                     formation.Clear();
+
+                FireUpdated();
+            }
+        }
+
+        public void RemoveAllUnits(params FormationType[] formations)
+        {
+            lock (objLock)
+            {
+                CheckUpdateMode();
+
+                foreach (Formation formation in data.Values) {
+                    if (!formations.Contains(formation.Type)) continue;
+
+                    formation.Clear();
+                }
 
                 FireUpdated();
             }

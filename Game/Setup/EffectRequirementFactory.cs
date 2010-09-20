@@ -9,7 +9,7 @@ using Game.Util;
 #endregion
 
 namespace Game.Setup {
-    class EffectRequirementFactory {
+    public class EffectRequirementFactory {
         private static Dictionary<uint, EffectRequirementContainer> dict;
 
         public static void init(string filename) {
@@ -51,6 +51,7 @@ namespace Game.Setup {
                     }
                     req.parms = parms;
                     req.method = type.GetMethod(toks[col["Method"]]);
+                    req.description = toks[col["Description"]];
                     container.add(req);
                 }
             }

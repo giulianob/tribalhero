@@ -262,6 +262,7 @@ namespace CSVToXML {
                         writer.WriteAttributeString("upgradetime", obj[28]);
                         writer.WriteAttributeString("groupsize", obj[29]);
                         writer.WriteAttributeString("upkeep", obj[30]);
+                        writer.WriteAttributeString("carry", obj[31]);
 
                         writer.WriteEndElement();
                     } else

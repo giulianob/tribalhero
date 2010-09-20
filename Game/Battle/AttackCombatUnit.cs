@@ -241,6 +241,7 @@ namespace Game.Battle {
                                   new DbColumn("damage_received", DmgRecv, DbType.Int32),
 
                                   new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                                  new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
                                   new DbColumn("hits_received", HitRecv, DbType.UInt16),                                                                                                 
 
                                   new DbColumn("loot_crop", loot.Crop, DbType.UInt32),

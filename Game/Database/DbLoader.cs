@@ -30,6 +30,9 @@ namespace Game.Database {
 
             DateTime now = DateTime.UtcNow;
 
+            // Set all players to offline
+            Global.DbManager.Query("UPDATE `players` SET online = '0'");
+
             using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                 try {
 
@@ -527,6 +530,7 @@ namespace Game.Database {
                             combatObj.MinDmgRecv = (ushort)listReader["damage_min_received"];
                             combatObj.MinDmgDealt = (ushort)listReader["damage_max_received"];
                             combatObj.HitDealt = (ushort)listReader["hits_dealt"];
+                            combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                             combatObj.HitRecv = (ushort)listReader["hits_received"];
                             combatObj.GroupId = (uint)listReader["group_id"];
                             combatObj.DmgDealt = (int)listReader["damage_dealt"];

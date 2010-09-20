@@ -45,31 +45,42 @@ namespace Game.Comm {
 
             Global.Logger.Info("Ready to serve policy file: " + policy);
             
-            Socket s;            
-            while (!isStopped) {
+            Socket newSocket;
+            while (!isStopped) {                
                 try {
-                    s = listener.AcceptSocket();
+                    newSocket = listener.AcceptSocket();
                 }
                 catch (Exception) {                    
                     continue;
                 }
-                byte[] buffer = new byte[128];
 
-                try {
-                    s.Receive(buffer, 23, SocketFlags.None);
-                }
-                catch (Exception) {
-                    continue;
-                }
-                 
-                s.NoDelay = true;
+                ThreadPool.QueueUserWorkItem(delegate(object state)
+                {
+                    Socket s = (Socket)state;
 
-                byte[] xml = Encoding.UTF8.GetBytes(policy);
-                s.Send(xml);                
+                    s.ReceiveTimeout = 1500;
 
-                Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
+                    byte[] buffer = new byte[128];
 
-                s.Close();
+                    try
+                    {
+                        s.Receive(buffer, 23, SocketFlags.None);
+                    }
+                    catch (Exception)
+                    {
+                        if (s.Connected) s.Close();
+                        return;
+                    }
+
+                    s.NoDelay = true;
+
+                    byte[] xml = Encoding.UTF8.GetBytes(policy);
+                    s.Send(xml);
+
+                    Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
+
+                    s.Close();
+                }, newSocket);
             }
 
             listener.Stop();

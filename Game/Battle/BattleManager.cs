@@ -538,6 +538,7 @@ namespace Game.Battle {
                 attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
                 attacker.MinDmgDealt = Math.Min(attacker.MinDmgDealt, actualDmg);
                 ++attacker.HitDealt;
+                attacker.HitDealtByUnit += attacker.Count;
 
                 defender.DmgRecv += actualDmg;
                 defender.MaxDmgRecv = Math.Max(defender.MaxDmgRecv, actualDmg);

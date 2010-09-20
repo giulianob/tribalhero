@@ -13,6 +13,14 @@ class SystemsController extends AppController {
 		
 		$variables = $SystemVariable->find('all');
 		
+		$Player =& ClassRegistry::init('Player');
+		
+		$onlinePlayers = $Player->find('all', array(
+			'contains' => array(),
+			'conditions' => array('Player.online' => true)
+		));
+		
+		$this->set('onlinePlayers', $onlinePlayers);
 		$this->set('variables', $variables);
 	}
 	

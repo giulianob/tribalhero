@@ -16,3 +16,14 @@ $class = ' class="altrow"'; ?>
 		
     </dl>
 </div>
+
+<div class="span-20 last prepend-top">
+	Online Players: 
+	<?php
+	$f = 0;	
+	foreach ($onlinePlayers as $player) {
+		echo ($f != 0 ? ', ' : '') . $player['Player']['name'];
+		$f = 1;
+	}
+	?>
+</div>

@@ -3,10 +3,10 @@
 <head>
 	<?php echo $html->charset(); ?>
 	<title>
-		<?php echo $title_for_layout; ?> - Tribal Hero
+		<?php echo $title_for_layout . ($this->name == 'Pages' && $this->action == 'index' ? '' : ' - Tribal Hero'); ?>
 	</title>
 	<?php
-		//echo $html->meta('icon');
+		echo $html->meta('description', 'Tribal Hero is a free multiplayer game which allows you to build your own empire.');
 		echo $html->css('blueprint/screen', null, array("media" => "screen, projection"));
 	?>
 	<!--[if lt IE 8]><?php echo $html->css('blueprint/ie', null, array("media" => "screen, projection"));?><![endif]-->	

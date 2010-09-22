@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 14, 2010 at 08:36 PM
+-- Generation Time: Sep 21, 2010 at 09:43 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -117,6 +117,7 @@ CREATE TABLE `battle_report_objects` (
   `damage_dealt` int(10) unsigned NOT NULL,
   `formation_type` tinyint(3) unsigned NOT NULL,
   `hits_dealt` smallint(5) unsigned NOT NULL,
+  `hits_dealt_by_unit` int(10) unsigned NOT NULL,
   `hits_received` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`)
@@ -252,6 +253,7 @@ CREATE TABLE `combat_structures` (
   `damage_dealt` int(11) NOT NULL,
   `damage_received` int(11) NOT NULL,
   `hits_dealt` smallint(6) unsigned NOT NULL,
+  `hits_dealt_by_unit` int(10) unsigned NOT NULL,
   `hits_received` smallint(6) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `structure_city_id` int(10) unsigned NOT NULL,
@@ -296,6 +298,7 @@ CREATE TABLE `combat_units` (
   `damage_min_received` smallint(5) unsigned NOT NULL,
   `damage_max_received` smallint(5) unsigned NOT NULL,
   `hits_dealt` smallint(5) unsigned NOT NULL,
+  `hits_dealt_by_unit` int(10) unsigned NOT NULL,
   `hits_received` smallint(5) unsigned NOT NULL,
   `loot_crop` int(11) NOT NULL DEFAULT '0',
   `loot_wood` int(11) NOT NULL DEFAULT '0',
@@ -440,6 +443,7 @@ CREATE TABLE `players` (
   `last_login` datetime NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
   `admin` tinyint(1) NOT NULL,
+  `online` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
   KEY `login_key` (`login_key`),

@@ -196,8 +196,8 @@ MARKET_STRUCTURE_LVL_3,Tax-Free!
 MARKET_STRUCTURE_LVL_4,Tax-Free! Trading at 5% discount rate.
 MARKET_STRUCTURE_LVL_5,Tax-Free! Trading at 10% discount rate.
 FORESTCAMP_STRUCTURE_NAME,Lumbering Camp
-FORESTCAMP_STRUCTURE_DESCRIPTION,Lumbering Camp
-FORESTCAMP_STRUCTURE_LVL_1,Lumbering Camp
+FORESTCAMP_STRUCTURE_DESCRIPTION,The camp is used by laborers to collect wood from forests.
+FORESTCAMP_STRUCTURE_LVL_1,
 TRIBAL_FESTIVAL_STRUCTURE_NAME,Tribal Festival
 TRIBAL_FESTIVAL_STRUCTURE_DESCRIPTION,"A temporary tent where tribesmen hang out,  get drunk and have a great time!"
 TRIBAL_FESTIVAL_STRUCTURE_LVL_1,Shorten time required to produce new labors by up to 50%.

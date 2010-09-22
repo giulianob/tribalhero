@@ -14,6 +14,7 @@ namespace Game.Logic {
         public string[] parms;
         public MethodInfo method;
         public string description;
+        public string websiteDescription;
     }
 
     public class EffectRequirementContainer : IEnumerable<EffectRequirement> {

@@ -524,6 +524,21 @@ namespace Game.Battle {
 
                 #endregion
 
+                #region Miss Chance
+                int missChance = BattleFormulas.MissChance(attacker.CombatList == attackers, defenders.Count, attackers.Count);
+                if (missChance > 0)
+                {
+                    int rand = (int)(Config.Random.NextDouble() * 100);
+
+                    if (rand <= missChance) {
+                        attacker.ParticipatedInRound();
+                        Global.DbManager.Save(attacker);
+                        EventSkippedAttacker(attacker);
+                        return true;
+                    }
+                }
+                #endregion
+
                 #region Damage
 
                 ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);

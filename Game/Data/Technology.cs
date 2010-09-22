@@ -19,27 +19,28 @@ namespace Game.Data {
         }
     }
 
-    public class Technology {
-        private readonly TechnologyBase techBase;
+    public class Technology {        
         public EffectLocation ownerLocation;
         public uint ownerId;
 
         public Technology(TechnologyBase techBase) {
-            this.techBase = techBase;
+            TechBase = techBase;
         }
 
+        public TechnologyBase TechBase { get; private set; }
+
         public uint Type {
-            get { return techBase.techtype; }
-            set { techBase.techtype = value; }
+            get { return TechBase.techtype; }
+            set { TechBase.techtype = value; }
         }
 
         public byte Level {
-            get { return techBase.level; }
-            set { techBase.level = value; }
+            get { return TechBase.level; }
+            set { TechBase.level = value; }
         }
 
         public List<Effect> Effects {
-            get { return techBase.effects; }
+            get { return TechBase.effects; }
         }
 
         public static bool CheckLocation(EffectLocation technologyLocation, EffectLocation effectPath,
@@ -53,7 +54,7 @@ namespace Game.Data {
             bool isSelf = (inherit & EffectInheritance.SELF) == EffectInheritance.SELF;
             bool isInvisible = (inherit & EffectInheritance.INVISIBLE) == EffectInheritance.INVISIBLE;
 
-            foreach (Effect effect in techBase.effects) {
+            foreach (Effect effect in TechBase.effects) {
                 if (effect.id != effectCode)
                     continue;
                 if (!CheckLocation(ownerLocation, effect.location, targetLocation))
@@ -79,7 +80,7 @@ namespace Game.Data {
             bool isSelf = (inherit & EffectInheritance.SELF) == EffectInheritance.SELF;
             bool isInvisible = (inherit & EffectInheritance.INVISIBLE) == EffectInheritance.INVISIBLE;
 
-            foreach (Effect effect in techBase.effects) {
+            foreach (Effect effect in TechBase.effects) {
                 if (!CheckLocation(ownerLocation, effect.location, targetLocation))
                     continue;
 
@@ -98,9 +99,9 @@ namespace Game.Data {
         }
 
         public void Print() {
-            Global.Logger.Info(string.Format("Technology type[{0}] lvl[{1}] Location[{2}]", techBase.techtype,
-                                             techBase.level, ownerLocation));
-            foreach (Effect effect in techBase.effects)
+            Global.Logger.Info(string.Format("Technology type[{0}] lvl[{1}] Location[{2}]", TechBase.techtype,
+                                             TechBase.level, ownerLocation));
+            foreach (Effect effect in TechBase.effects)
                 effect.Print();
         }
     }

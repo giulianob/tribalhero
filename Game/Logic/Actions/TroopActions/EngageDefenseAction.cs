@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 
@@ -65,6 +66,9 @@ namespace Game.Logic.Actions {
             stub.TroopObject.Stub.BeginUpdate();
             stub.TroopObject.Stub.State = TroopState.BATTLE;
             stub.TroopObject.Stub.EndUpdate();
+
+            // Add any units in local troop to battle
+            Procedure.AddLocalToBattle(city.Battle, city, ReportState.REINFORCED);
 
             return Error.OK;
         }

@@ -12,6 +12,12 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
+        public static int MissChance(bool isAttacker, int numberOfDefenders, int numberOfAttackers) {
+            int delta = isAttacker ? Math.Max(0, numberOfAttackers - numberOfDefenders) : Math.Max(0, numberOfDefenders - numberOfAttackers);
+
+            return Math.Min(delta * 3, 50);
+        }
+
         public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)
         {
             switch (weapon)

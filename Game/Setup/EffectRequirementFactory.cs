@@ -51,7 +51,8 @@ namespace Game.Setup {
                     }
                     req.parms = parms;
                     req.method = type.GetMethod(toks[col["Method"]]);
-                    req.description = toks[col["Description"]];
+                    req.description = toks[col["Description"]].Trim();
+                    req.websiteDescription = toks[col["Website Description"]].Trim();
                     container.add(req);
                 }
             }

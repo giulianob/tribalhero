@@ -16,6 +16,8 @@ namespace Game.Logic.Procedures {
         }
 
         public static void AddLocalToBattle(BattleManager bm, City city, ReportState state) {
+            if (city.DefaultTroop[FormationType.NORMAL].Count == 0) return;
+
             List<TroopStub> list = new List<TroopStub>(1) {city.DefaultTroop};           
 
             city.DefaultTroop.BeginUpdate();

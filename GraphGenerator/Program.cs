@@ -55,7 +55,7 @@ namespace GraphGenerator
             
             ProcessStructure(StructureFactory.GetBaseStats(MAIN_BUILDING, 1), false);
 
-            using (StreamWriter output = new StreamWriter(File.Create("output.txt"))) {
+            using (StreamWriter output = new StreamWriter(File.Create("tree.gv"))) {
                 using (StringWriter b = new StringWriter(new StringBuilder())) {
                     WriteDefinitions(b);
                     b.Write(nodeConnections.ToString());
@@ -128,6 +128,9 @@ namespace GraphGenerator
 
             if (structureBaseStats.Lvl == 1)
                 CreateDefinition(structureBaseStats);
+
+            if (record == null)
+                return Result.EMPTY;
 
             // First pass
             foreach (ActionRequirement action in record.list)

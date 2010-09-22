@@ -1,5 +1,5 @@
 <?php
-	include 'structure_listing.inc.php';
+	include 'generated/structure_listing.inc.php';
 	$this->set('title_for_layout', $structureName);
 	$this->Html->css('style.database.css', null, array('inline' => false));
 ?>
@@ -20,7 +20,7 @@
 		<?php elseif ($converted) : ?>
 		<p>Converted from <?php echo $this->Html->link($builtBy['name'] . ' (Level ' . $builtBy['level'] . ')', array('action' => 'view', $builtBy['key'], '#LEVEL_' . $builtBy['level']));?></p>
 		<?php else : ?>
-		<p>Built by <?php echo $this->Html->link($builtBy['name'] . ' (Level ' . $builtBy['level'] . ')', array('action' => 'view', 'TOWNCENTER_STRUCTURE', '#LEVEL_' . $builtBy['level']));?></p>
+		<p>Built by <?php echo $this->Html->link($builtBy['name'] . ' (Level ' . $builtBy['level'] . ')', array('action' => 'view', $builtBy['key'], '#LEVEL_' . $builtBy['level']));?></p>
 		<?php endif; ?>
 	</div>
 	

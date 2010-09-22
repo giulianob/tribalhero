@@ -1,5 +1,5 @@
 <?php
-	include 'unit_listing.inc.php';
+	include 'generated/unit_listing.inc.php';
 	$this->set('title_for_layout', $unitName);
 	$this->Html->css('style.database.css', null, array('inline' => false));
 ?>
@@ -15,7 +15,7 @@
 	
 	<div class="span-20 last">	
 		<p><?php echo $description; ?></p>	
-		<p>Trained by <?php echo $this->Html->link($trainedBy['name'] . ' (Level ' . $trainedBy['level'] . ')', array('action' => 'view', 'TOWNCENTER_STRUCTURE', '#LEVEL_' . $trainedBy['level']));?></p>
+		<p>Trained by <?php echo $this->Html->link($trainedBy['name'] . ' (Level ' . $trainedBy['level'] . ')', array('action' => 'view', $trainedBy['key'], '#LEVEL_' . $trainedBy['level']));?></p>
 	</div>
 	
 	<?php 
@@ -68,12 +68,12 @@
 			<div class="span-2">Attack</div>
 			<div class="span-3">
 				<?php echo $this->element('star_ratings', array('min' => $unitStatRanges['attack']['min'], 'max' => $unitStatRanges['attack']['max'], 'value' => $info['attack'] , 'numberOfStars' => 5)); ?>
-				<span class="small">(<?php echo $info['attack'];?>)</span>			
+				<span class="small">(<?php echo ($info['attack'] / $info['upkeep']);?>)</span>			
 			</div>
 			<div class="span-2">Defense</div>
 			<div class="span-13 last">
 				<?php echo $this->element('star_ratings', array('min' => $unitStatRanges['defense']['min'], 'max' => $unitStatRanges['defense']['max'], 'value' => $info['defense'] , 'numberOfStars' => 5)); ?>
-				<span class="small">(<?php echo $info['defense'];?>)</span>
+				<span class="small">(<?php echo ($info['defense'] / $info['upkeep']);?>)</span>
 			</div>
 		</div>		
 		<div class="span-20 last">

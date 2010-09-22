@@ -47,7 +47,7 @@ class DatabaseController extends AppController {
 		if (!preg_match("/^[a-zA-Z0-9_]*$/", $key)) {
 			$this->render(false);
 		} else {
-			$this->render(strtolower($key));
+			$this->render('generated/' . strtolower($key));
 		}
 	}
 }

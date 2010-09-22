@@ -17,4 +17,8 @@
 'CANNON_TOWER_STRUCTURE' => array('name' => 'Cannon Tower', 'sprite' => 'CANNON_TOWER_STRUCTURE'),
 'TRADING_POST_STRUCTURE' => array('name' => 'Trading Post', 'sprite' => 'TRADING_POST_STRUCTURE'),
 'MARKET_STRUCTURE' => array('name' => 'Market', 'sprite' => 'MARKET_STRUCTURE'),
+'TRIBAL_GATHERING_STRUCTURE' => array('name' => 'Tribal Gathering', 'sprite' => 'MARKET_STRUCTURE'),
+'TRIBAL_FAIR_STRUCTURE' => array('name' => 'Tribal Fair', 'sprite' => 'MARKET_STRUCTURE'),
+'TRIBAL_CARNIVAL_STRUCTURE' => array('name' => 'Tribal Carnival', 'sprite' => 'MARKET_STRUCTURE'),
+'TRIBAL_FESTIVAL_STRUCTURE' => array('name' => 'Tribal Festival', 'sprite' => 'MARKET_STRUCTURE'),
 );

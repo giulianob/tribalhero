@@ -115,7 +115,7 @@ namespace Game.Logic {
         public bool Remove(ISchedule schedule) {
             lock (schedulesLock) {
                 if (!schedule.IsScheduled) {
-                    Global.Logger.Warn("Attempting to remove unscheduled action");
+                    Global.Logger.Debug("Attempting to remove unscheduled action");
                     return false;
                 }
 
@@ -125,6 +125,8 @@ namespace Game.Logic {
                     SetNextActionTime();
                     return true;
                 }
+
+                Global.Logger.Debug("Action was said to be scheduled but was not found in scheduler during a remove");
 
                 return false;
             }

@@ -143,10 +143,12 @@ namespace Game.Comm {
 
             using (new MultiObjectLock(player)) {
                 if (!newPlayer) {
+                    // If someone is already connected as this player, kick them off
                     if (player.Session != null) {
                         player.Session.CloseSession();
                         player.Session = null;
                     }
+
                     player.Session = session;
                     Global.DbManager.Save(player);
                 } else {

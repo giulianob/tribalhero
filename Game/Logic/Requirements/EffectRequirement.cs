@@ -1,5 +1,7 @@
 #region
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Game.Data;
@@ -11,9 +13,10 @@ namespace Game.Logic {
     public class EffectRequirement {
         public string[] parms;
         public MethodInfo method;
+        public string description;
     }
 
-    public class EffectRequirementContainer {
+    public class EffectRequirementContainer : IEnumerable<EffectRequirement> {
         private List<EffectRequirement> list = new List<EffectRequirement>();
         public uint ID { get; set; }
 
@@ -29,6 +32,15 @@ namespace Game.Logic {
 
         public void add(EffectRequirement req) {
             list.Add(req);
+        }
+
+
+        public IEnumerator<EffectRequirement> GetEnumerator() {
+            return list.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
     }
 }

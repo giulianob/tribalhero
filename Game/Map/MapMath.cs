@@ -507,6 +507,8 @@ namespace Game.Map
 
         public static bool HasPath(Location start, Location end, City city, Location excludedPoint)
         {
+            bool fromStructure = Global.World[start.x, start.y].Exists(s => s is Structure);
+
             return BreadthFirst(new Location(end.x, end.y), new List<Location> { new Location(start.x, start.y) }, excludedPoint, delegate(Location node)
             {
                 List<Location> neighbors = new List<Location>(4);
@@ -530,8 +532,17 @@ namespace Game.Map
 
                 neighbors.AddRange(
                     possibleNeighbors.Where(
-                        location => 
-                         location.Equals(end) || (!Global.World[location.x, location.y].Exists(s => s is Structure) && RoadManager.IsRoad(location.x, location.y) && SimpleGameObject.TileDistance(location.x, location.y, city.MainBuilding.X, city.MainBuilding.Y) <= city.Radius)));
+                        delegate(Location location) {
+                            if (!location.Equals(end)) {
+                                if (Global.World[location.x, location.y].Exists(s => s is Structure)) return false;
+                                if (!RoadManager.IsRoad(location.x, location.y)) return false;
+                                if (SimpleGameObject.TileDistance(location.x, location.y, city.MainBuilding.X, city.MainBuilding.Y) > city.Radius) return false;
+                            } else if (fromStructure && node.Equals(start)) {
+                                return false;
+                            }
+
+                            return true;
+                        }));
 
                 return neighbors;
             });

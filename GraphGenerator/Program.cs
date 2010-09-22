@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generates a graphviz file of the game's tree
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;

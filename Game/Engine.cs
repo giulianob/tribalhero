@@ -23,6 +23,9 @@ namespace Game {
 
     public class Engine {
         static TcpServer server;
+
+        static PolicyServer policyServer;
+
         public static EngineState State { get; private set; }
 
         public static bool Start() {            
@@ -78,6 +81,10 @@ namespace Game {
             server = new TcpServer(processor);
             server.Start();
 
+            // Initialize policy server
+            policyServer = new PolicyServer();
+            policyServer.Start();
+
             State = EngineState.STARTED;
 
             return true;
@@ -95,8 +102,10 @@ namespace Game {
             State = EngineState.STOPPING;
 
             SystemVariablesUpdater.Pause();
-            Global.Logger.Info("Stopping TCP Server...");
+            Global.Logger.Info("Stopping TCP server...");
             server.Stop();
+            Global.Logger.Info("Stopping policy server...");
+            policyServer.Stop();
             Global.Logger.Info("Waiting for scheduler to end...");
             Global.Scheduler.Pause();
             Global.World.Unload();

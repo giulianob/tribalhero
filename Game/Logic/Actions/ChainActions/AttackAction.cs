@@ -69,7 +69,7 @@ namespace Game.Logic.Actions {
 
             // Can't attack "Undestroyable" Objects if they're level 1
             if (targetStructure.Lvl <= 1 && ObjectTypeFactory.IsStructureType("Undestroyable", targetStructure))
-                return Error.OBJECT_NOT_ATTACKABLE;          
+                return Error.STRUCTURE_UNDESTROYABLE;          
 
             //Load the units stats into the stub
             stub.BeginUpdate();
@@ -150,6 +150,9 @@ namespace Game.Logic.Actions {
                         TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId,
                                                                   city.MainBuilding.X, city.MainBuilding.Y, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
+
+                        // Add notification just to the main city
+                        stub.City.Worker.Notifications.Add(stub.TroopObject, this);
                     } else {
                         targetCity.BeginUpdate();
                         city.BeginUpdate();
@@ -179,8 +182,12 @@ namespace Game.Logic.Actions {
                     TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
-                        throw new Exception("Stub should still exist");                    
+                        throw new Exception("Stub should still exist");
 
+                    // Remove notification
+                    stub.City.Worker.Notifications.Remove(this);
+
+                    // If city is not in battle then add back to city otherwise join local battle
                     if (city.Battle == null) {
                         city.Worker.References.Remove(stub.TroopObject, this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);

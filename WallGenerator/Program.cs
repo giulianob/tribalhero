@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Generates the wall arrays used in the client's wall manager file
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;

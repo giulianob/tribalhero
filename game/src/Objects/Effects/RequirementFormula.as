@@ -194,7 +194,7 @@
 		{
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
 
-			return "Does not already have a " + structPrototype.getName() + (minlevel > 0 ? " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")" : "");
+			return "You can only have one " + structPrototype.getName() + (minlevel > 0 ? " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")" : "");
 		}
 
 		/*COUNT LESS THAN*/

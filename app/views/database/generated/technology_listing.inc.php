@@ -15,8 +15,7 @@
 'A_CALL_TO_ARMS_TECHNOLOGY' => array('name' => 'A Call To Arms'),
 'TUNNEL_EXCAVATION_TECHNOLOGY' => array('name' => 'Tunnel Excavation Research'),
 'ATTIC_STORAGE_TECHNOLOGY' => array('name' => 'Attic Storage'),
-'TWO_FOR_ONE_TECHNOLOGY' => array('name' => 'Two For One'),
-'FOUR_FOR_ONE_TECHNOLOGY' => array('name' => 'Four For One'),
-'EIGHT_FOR_ONE_TECHNOLOGY' => array('name' => 'Eight For One'),
-'HAPPYHOUR_TECHNOLOGY' => array('name' => 'Happy Hour'),
+'FIVE_FOR_FOUR_TECHNOLOGY' => array('name' => 'Five For Four'),
+'FOUR_FOR_THREE_TECHNOLOGY' => array('name' => 'Four For Three'),
+'THREE_FOR_TWO_TECHNOLOGY' => array('name' => 'Three For Two'),
 );

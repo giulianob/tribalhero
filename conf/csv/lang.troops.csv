@@ -31,9 +31,9 @@ GLADIATOR_UNIT,Gladiator
 1_GLADIATOR_UNIT,Gladiator
 1_GLADIATOR_UNIT_DESC,A unit that can perform well when either attacking or defending. The Swordsman is strong against ground and machine units but can quickly fall to bow units.  The unit is armored with platemail that provides additional protection against light weapons and it uses heavy weapon that is made for destroying metalic armors.
 1_CAVALRY_UNIT,Cavalry
-1_CAVALRY_UNIT_DESC,A superb offensive unit who is very strong aginst mounted units but can quickly fall to pike units.  Cavalry's high speed gives them the ability to get close to the bow units quickly despite of their high stealth.  It uses heavy weapon that is made for destroying platemail.
+1_CAVALRY_UNIT_DESC,A superb offensive unit who is very strong against ground units but can quickly fall to pike units.  Cavalry's high speed gives them the ability to get close to the bow units quickly despite of their high stealth.  The unit is iron plated that provides additional protection against light weapons.
 1_HEAVY_CAVALRY_UNIT,Knight
-1_HEAVY_CAVALRY_UNIT_DESC,An all-around unit who is strong against ground and machine units but can quickly fall to bow units.  This unit is armored with platemail that provides additional protection against light weapons.
+1_HEAVY_CAVALRY_UNIT_DESC,An all-around unit who is strong against mounted units but can quickly fall to bow units.  It uses heavy weapon that is made for destroying metalic armors.
 1_HELEPOLIS_UNIT,Helepolis
 1_HELEPOLIS_UNIT_DESC,"The only ranged offensive unit who is strong against ground units and good against mounted units, but it can fall quickly to swords and ballistic units.  The unit is iron plated that provides additional protection against light weapons."
 1_CATAPULT_UNIT,Catapult

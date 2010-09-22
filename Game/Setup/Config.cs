@@ -54,6 +54,7 @@ namespace Game.Setup {
         public static readonly int battle_stamina_initial = 20;
 		public static readonly ushort battle_stamina_destroyed_deduction = 5;
 		public static readonly bool battle_instant_move;
+        public static readonly double battle_cost_penalty = 1;
         public static readonly bool resource_upkeep = true;
         public static readonly bool resource_cap = true;
         public static readonly bool resource_fast_income;

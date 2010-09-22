@@ -32,7 +32,7 @@ namespace Game.Logic {
         /// <param name="lvl"></param>
         /// <returns></returns>
         public static int ResourceCropCap(byte lvl) {
-            int[] cap = { 700, 700, 900, 1300, 1800, 2600, 3600, 5000, 7000, 10000, 20000 };
+            int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
             return cap[lvl];
         }
         
@@ -42,7 +42,7 @@ namespace Game.Logic {
         /// <param name="lvl"></param>
         /// <returns></returns>
         public static int ResourceWoodCap(byte lvl) {
-            int[] cap = { 700, 700, 900, 1300, 1800, 2600, 3600, 5000, 7000, 10000, 20000 };
+            int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
             return cap[lvl];
         }
 
@@ -52,7 +52,7 @@ namespace Game.Logic {
         /// <param name="lvl"></param>
         /// <returns></returns>
         public static int ResourceIronCap(byte lvl) {
-            int[] cap = { 200, 200, 200, 200, 200, 200, 280, 390, 540, 750, 1100 };
+            int[] cap = { 200, 200, 300, 500, 800, 1200, 1800, 2800, 4400, 6800, 10000 };
             return cap[lvl];
         }
 
@@ -61,7 +61,7 @@ namespace Game.Logic {
             return structure.Stats.Labor * 10 / multiplier[structure.Lvl];
         }
         public static int GetXForOneCount(TechnologyManager tech) {
-            int ret = tech.GetEffects(EffectCode.XFor1, EffectInheritance.INVISIBLE).DefaultIfEmpty(new Effect()).Max(x => x.value[0]==null?1:(int)x.value[0]);
+            int ret = tech.GetEffects(EffectCode.XFor1, EffectInheritance.INVISIBLE).DefaultIfEmpty(new Effect()).Min(x => x.value[0]==null?ushort.MaxValue:(int)x.value[0]);
             return ret;
         }
     }

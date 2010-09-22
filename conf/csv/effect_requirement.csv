@@ -40,8 +40,8 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 ,,,,,,,,,
 //training ground,,,,,,,,,
-22011,HaveTechnology,22011,lvl=1,count=1,,,,Requires Two for One Research.,Require 2 for price of 1
-22012,HaveTechnology,22012,lvl=1,count=1,,,,Requires Four for One Research.,Require 4 for price of 1
+22011,HaveTechnology,22011,lvl=1,count=1,,,,Require 2 for price of 1
+22012,HaveTechnology,22012,lvl=1,count=1,,,,Require 4 for price of 1
 ,,,,,,,,,
 ,,,,,,,,,
 //university,,,,,,,,,
@@ -50,3 +50,6 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 //tribal festival,,,,,,,,,
 21031,HaveNoStructure,3002,minlvl=0,maxlvl=10,,,,,1 festival per city
+,,,,,,,,
+//lumbermill,,,,,,,,
+210711,HaveNoStructure,2111,minlvl=0,maxlvl=3,,,,All basements need to be upgraded to Level 4.

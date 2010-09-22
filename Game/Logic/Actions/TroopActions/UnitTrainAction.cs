@@ -15,12 +15,13 @@ namespace Game.Logic.Actions {
         private uint cityId;
         private uint structureId;
         private Resource cost;
+        private ushort count;
 
         public UnitTrainAction(uint cityId, uint structureId, ushort type, ushort count) {
             this.cityId = cityId;
             this.structureId = structureId;
             this.type = type;
-            ActionCount = count;
+            this.count = count;
         }
 
         public UnitTrainAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
@@ -30,6 +31,7 @@ namespace Game.Logic.Actions {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             cost = new Resource(int.Parse(properties["crop"]), int.Parse(properties["gold"]), int.Parse(properties["iron"]), int.Parse(properties["wood"]), int.Parse(properties["labor"]));
+            count = ushort.Parse(properties["count"]);
         }
 
         #region IAction Members
@@ -45,7 +47,9 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_STRUCTURE_NOT_FOUND;
 
             cost = Formula.UnitTrainCost(structure.City, type, structure.City.Template[type].Lvl);
-            Resource totalCost = cost*ActionCount;
+            Resource totalCost = cost * count;
+            ActionCount = (ushort)(count + count / Formula.GetXForOneCount(structure.Technologies));
+
             if (!structure.City.Resource.HasEnough(totalCost))
                 return Error.RESOURCE_NOT_ENOUGH;
 
@@ -87,7 +91,7 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.City.DefaultTroop.BeginUpdate();
-                structure.City.DefaultTroop.AddUnit(city.HideNewUnits ? FormationType.GARRISON : FormationType.NORMAL, type, (ushort)Formula.GetXForOneCount(structure.Technologies));
+                structure.City.DefaultTroop.AddUnit(city.HideNewUnits ? FormationType.GARRISON : FormationType.NORMAL, type, 1);
                 structure.City.DefaultTroop.EndUpdate();
 
                 --ActionCount;
@@ -117,7 +121,9 @@ namespace Game.Logic.Actions {
                 }
 
                 if (!wasKilled) {
-                    Resource totalCost = cost*ActionCount;
+                    int totalcount = count-((count + count / Formula.GetXForOneCount(structure.Technologies))-ActionCount);
+                    Resource totalCost = cost * totalcount;
+
                     structure.City.BeginUpdate();
                     structure.City.Resource.Add(Formula.GetActionCancelResource(BeginTime,totalCost));
                     structure.City.EndUpdate();
@@ -150,6 +156,7 @@ namespace Game.Logic.Actions {
                                                         new XMLKVPair("iron", cost.Iron),
                                                         new XMLKVPair("gold", cost.Gold),
                                                         new XMLKVPair("labor", cost.Labor),
+                                                        new XMLKVPair("count",count),
                     });
             }
         }

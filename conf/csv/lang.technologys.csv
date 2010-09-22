@@ -82,14 +82,16 @@ BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use ballisti
 BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use ballistic weapons by 25%.
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
-ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 50%
+ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 15%
+ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the basements by 30%
+ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the basements by 50%
 ,
-TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
-TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receives 2 units for every unit that is being trained
-FOUR_FOR_ONE_TECHNOLOGY_NAME,Four For One
-FOUR_FOR_ONE_TECHNOLOGY_LVL_1,Receives 4 units for every unit that is being trained
-EIGHT_FOR_ONE_TECHNOLOGY_NAME,Eight For One
-EIGHT_FOR_ONE_TECHNOLOGY_LVL_1,Receives 8 units for every unit that is being trained
+FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
+FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receives the 5th unit free for every 4 units that are being trained
+FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
+FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receives the 4th unit free for every 3 units that are being trained
+THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
+THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receives the 3th unit free for every 2 units that are being trained
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
 HAPPYHOUR_TECHNOLOGY_LVL_1,Villagers are so drunk....  Thus increases the production rate of the laborers by up to 30%.

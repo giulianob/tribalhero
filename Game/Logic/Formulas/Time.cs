@@ -9,7 +9,7 @@ using Game.Setup;
 namespace Game.Logic {
     public partial class Formula {
         internal static double SendTime(int distance) {
-            return MoveTime(8) * distance;
+            return MoveTime(11) * distance;
         }
 
         internal static double TradeTime(Structure structure, int quantity)
@@ -43,7 +43,7 @@ namespace Game.Logic {
 
         internal static int MoveTime(byte speed) {
             if (Config.battle_instant_move) return 0;
-            return 3600 / (speed * 10);
+            return 80 * (100 - ((speed - 11) * 5)) / 100;
         }
     }
 }

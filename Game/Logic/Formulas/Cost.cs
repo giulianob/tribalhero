@@ -25,7 +25,7 @@ namespace Game.Logic
             if (city.Battle == null)
                 return StructureFactory.GetCost((int)type, lvl);
 
-            return StructureFactory.GetCost((int)type, lvl) * 1.5;
+            return StructureFactory.GetCost((int)type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Game.Logic
             if (city.Battle == null)
                 return UnitFactory.GetCost(type, lvl);
 
-            return UnitFactory.GetCost(type, lvl) * 1.5;
+            return UnitFactory.GetCost(type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Game.Logic
             if (city.Battle == null)
                 return UnitFactory.GetUpgradeCost(type, lvl);
 
-            return UnitFactory.GetUpgradeCost(type, lvl) * 1.5;
+            return UnitFactory.GetUpgradeCost(type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Game.Logic
         /// <returns></returns>
         public static ushort RepairRate(Structure structure)
         {
-            return (ushort)(structure.Stats.Labor * 10);
+            return (ushort)(structure.Stats.Labor * 5);
         }
 
         /// <summary>

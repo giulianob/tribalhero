@@ -47,7 +47,7 @@
 			<div class="span-4">
 				<ul id="main-nav">
 					<li id="home"><?php echo $html->link('', '/');?></li>					
-					<li id="help"><?php echo $html->link('', '/pages/help');?></li>
+					<li id="help"><?php echo $html->link('', '/database/');?></li>
 					<li id="forums"><a href="http://forums.tribalhero.com"></a></li>
 					<li id="blog"><a href="#"></a></li>
 					<li id="register"><?php echo $html->link('', '/players/register');?></li>

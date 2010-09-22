@@ -13,8 +13,8 @@ namespace DatabaseGenerator
 {
     class Program
     {
-        static readonly ushort[] StructureTypes = new ushort[] { 2000, 2106, 2107, 2110, 2109, 2111, 2201, 2204, 2202, 2203, 2301, 2302, 2303, 2402, 2403, 2501, 2502 };
-        static readonly ushort[] TechnologyTypes = new ushort[] { 23011, 23013, 23014, 23021, 23022, 23023, 23024, 23031, 23032, 23033, 23034, 22022, 21101, 21102, 21071, 22011, 22012, 22013, 30021 };
+        static readonly ushort[] StructureTypes = new ushort[] { 2000, 2106, 2107, 2110, 2109, 2111, 2201, 2204, 2202, 2203, 2301, 2302, 2303, 2402, 2403, 2501, 2502, 3002, 3003, 3004, 3005 };
+        static readonly ushort[] TechnologyTypes = new ushort[] { 23011, 23013, 23014, 23021, 23022, 23023, 23024, 23031, 23032, 23033, 23034, 22022, 21101, 21102, 21071, 22011, 22012, 22013 };
         static readonly ushort[] UnitTypes = new ushort[] { 11, 12, 101, 102, 103, 104, 105, 106, 107, 108, 401 };
 
         static readonly Dictionary<string, string> Lang = new Dictionary<string, string>();

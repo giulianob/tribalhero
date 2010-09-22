@@ -149,6 +149,7 @@
     <Compile Include="Battle\AttackCombatUnit.cs" />
     <Compile Include="Battle\CombatUnitFactory.cs" />
     <Compile Include="Comm\Commands.cs" />
+    <Compile Include="Comm\PolicyServer.cs" />
     <Compile Include="Comm\Packet.cs" />
     <Compile Include="Comm\PacketHelper.cs" />
     <Compile Include="Comm\Parameter.cs" />
@@ -257,7 +258,6 @@
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <Compile Include="Battle\BattleReport.cs">
       <SubType>Code</SubType>
     </Compile>

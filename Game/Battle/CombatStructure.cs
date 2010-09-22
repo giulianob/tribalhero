@@ -48,23 +48,19 @@ namespace Game.Battle {
         }
 
         public override bool InRange(CombatObject obj) {
-            int dist;
+            if (obj is AttackCombatUnit)
+                return true;            
 
-            if (obj is AttackCombatUnit) {
-                //building can attack anyone who can attack them
-                dist = obj.TileDistance(Structure.X, Structure.Y);
-                if (dist <= (obj as AttackCombatUnit).TroopStub.TroopObject.Stats.AttackRadius)
-                    return true;
-            } else if (obj is DefenseCombatUnit)
+            if (obj is DefenseCombatUnit)
                 return true;
 
-            dist = obj.TileDistance(Structure.X, Structure.Y);
+            int dist = obj.TileDistance(Structure.X, Structure.Y);
 
             return dist <= Stats.Rng;
         }
 
         public override int TileDistance(uint x, uint y) {
-            return GameObject.TileDistance(x, y, Structure.X, Structure.Y);
+            return SimpleGameObject.TileDistance(x, y, Structure.X, Structure.Y);
         }
 
         public override uint Visibility {
@@ -205,6 +201,7 @@ namespace Game.Battle {
                                             new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte),
                                             new DbColumn("speed", stats.Spd, DbType.Byte),
                                             new DbColumn("hits_dealt", HitDealt, DbType.UInt16),
+                                            new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
                                             new DbColumn("hits_received", HitRecv, DbType.UInt16),       
                                       };
             }

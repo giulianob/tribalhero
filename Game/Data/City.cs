@@ -26,6 +26,9 @@ namespace Game.Data {
         private byte radius = 4;
         private int attackPoint;
         private int defensePoint;
+        private bool hideNewUnits;
+
+        private BattleManager battle;
 
         private readonly object objLock = new object();
 
@@ -34,10 +37,16 @@ namespace Game.Data {
 
         #region Properties
 
+        /// <summary>
+        /// Enumerates only through structures in this city
+        /// </summary>
         public Dictionary<uint, Structure>.Enumerator Structures {
             get { return structures.GetEnumerator(); }
         }
 
+        /// <summary>
+        /// Radius of city. This affects city wall and where user can build.
+        /// </summary>
         public byte Radius {
             get { return radius; }
             set {
@@ -48,24 +57,35 @@ namespace Game.Data {
                 RadiusUpdateEvent();
             }
         }
-
+        
+        /// <summary>
+        /// Returns the town center
+        /// </summary>
         public Structure MainBuilding {
             get { return structures[1]; }
         }
 
+        /// <summary>
+        /// Returns the city's center point which is the town centers position
+        /// </summary>
         public uint X {
             get {
                 return MainBuilding.X;
             }     
         }
 
+        /// <summary>
+        /// Returns the city's center point which is the town centers position
+        /// </summary>
         public uint Y {
             get {
                 return MainBuilding.Y;
             }
         }
-
-        private BattleManager battle;
+        
+        /// <summary>
+        /// City's battle manager. Maybe null if city is not in battle.
+        /// </summary>
         public BattleManager Battle {
             get {
                 return battle;   
@@ -81,21 +101,52 @@ namespace Game.Data {
             }
         }
 
+        /// <summary>
+        /// Enumerates through all troop objects in this city
+        /// </summary>
+        public IEnumerable<TroopObject> TroopObjects
+        {
+            get {
+                return troopobjects.Values;
+            }
+        }
+
+        /// <summary>
+        /// Troop manager which manages all troop stubs in city
+        /// </summary>
         public TroopManager Troops { get; private set; }
 
+        /// <summary>
+        /// Technology manager for city
+        /// </summary>
         public TechnologyManager Technologies { get; private set; }
 
+        /// <summary>
+        /// Returns the local troop 
+        /// </summary>
         public TroopStub DefaultTroop {
             get { return Troops[1]; }
             set { Troops[1] = value; }
         }
 
+        /// <summary>
+        /// Returns unit template. Unit template holds levels for all units in the city.
+        /// </summary>
         public UnitTemplate Template { get; private set; }
 
+        /// <summary>
+        /// Resource available in the city
+        /// </summary>
         public LazyResource Resource { get; private set; }
 
+        /// <summary>
+        /// Amount of loot this city has stolen from other players
+        /// </summary>
         public uint LootStolen { get; set; }        
 
+        /// <summary>
+        /// Unique city id
+        /// </summary>
         public uint Id {
             get { return id; }
             set {
@@ -104,6 +155,9 @@ namespace Game.Data {
             }
         }
 
+        /// <summary>
+        /// City name
+        /// </summary>
         public string Name {
             get { return name; }
             set {
@@ -112,8 +166,16 @@ namespace Game.Data {
             }
         }
 
+        /// <summary>
+        /// Player that owns this city
+        /// </summary>
         public Player Owner { get; private set; }
 
+        /// <summary>
+        /// Enumerates through all structures and troops in this city
+        /// </summary>
+        /// <param name="objectId"></param>
+        /// <returns></returns>
         public GameObject this[uint objectId] {
             get {
                 Structure structure;
@@ -128,6 +190,22 @@ namespace Game.Data {
             }
         }
 
+        /// <summary>
+        /// Whether to send new units to hiding or not
+        /// </summary>
+        public bool HideNewUnits
+        {
+            get
+            {
+                return hideNewUnits;
+            }
+            set
+            {
+                CheckUpdateMode();
+                hideNewUnits = value;
+                HideNewUnitsUpdate();
+            }
+        }
         /// <summary>
         /// Attack points earned by this city
         /// </summary>        
@@ -474,6 +552,18 @@ namespace Game.Data {
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
+        public void HideNewUnitsUpdate() {
+            if (!Global.FireEvents)
+                return;
+
+            Packet packet = new Packet(Command.CITY_HIDE_NEW_UNITS_UPDATE);
+
+            packet.AddUInt32(Id);
+            packet.AddByte(hideNewUnits ? (byte)1 : (byte)0);
+
+            Global.Channel.Post("/CITY/" + id, packet);
+        }
+
         public void ObjAddEvent(GameObject obj) {
             if (!Global.FireEvents)
                 return;
@@ -657,7 +747,7 @@ namespace Game.Data {
             return ((IEnumerable<Structure>)structures.Values).GetEnumerator();
         }
 
-        #endregion
+        #endregion     
 
         #region ICanDo Members
 
@@ -679,7 +769,8 @@ namespace Game.Data {
                                 new DbColumn("player_id", Owner.PlayerId, DbType.UInt32),
                                 new DbColumn("name", Name, DbType.String, 32), 
                                 new DbColumn("radius", Radius, DbType.Byte),
-                                new DbColumn("loot_stolen", LootStolen, DbType.UInt32),
+                                new DbColumn("hide_new_units", HideNewUnits, DbType.Boolean),
+                                new DbColumn("loot_stolen", LootStolen, DbType.UInt32),                                
                                 new DbColumn("attack_point", AttackPoint, DbType.Int32),
                                 new DbColumn("defense_point", DefensePoint, DbType.Int32),
                                 new DbColumn("gold", Resource.Gold.RawValue, DbType.Int32),

@@ -22,6 +22,7 @@ namespace Game.Battle {
 
         public ushort HitRecv { get; set; }
         public ushort HitDealt { get; set; }
+        public uint HitDealtByUnit { get; set; }
 
         public int DmgRecv { get; set; }
         public int DmgDealt { get; set; }

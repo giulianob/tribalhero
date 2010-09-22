@@ -44,6 +44,13 @@ namespace Game.Comm {
 
         #endregion
 
+        #region Reference
+
+        REFERENCE_ADD = 71,
+        REFERENCE_REMOVE = 72,
+
+        #endregion
+
         #region Region
 
         REGION_ROAD_DESTROY = 102,
@@ -105,6 +112,7 @@ namespace Game.Comm {
         CITY_RADIUS_UPDATE = 465,
         CITY_LOCATE = 466,
         CITY_ATTACK_DEFENSE_POINT_UPDATE = 467,
+        CITY_HIDE_NEW_UNITS_UPDATE = 468,
 
         CITY_BATTLE_STARTED = 490,
         CITY_BATTLE_ENDED = 491,

@@ -27,6 +27,7 @@ namespace Game.Logic.Actions {
                                  byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
             : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
             cityId = uint.Parse(properties["city_id"]);
+            targetCityId = uint.Parse(properties["target_city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             resource = new Resource(int.Parse(properties["crop"]), int.Parse(properties["gold"]), int.Parse(properties["iron"]), int.Parse(properties["wood"]), int.Parse(properties["labor"]));
         }

@@ -37,12 +37,12 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            stub.City.Worker.References.Add(stub.TroopObject, this);
-            stub.City.Worker.Notifications.Add(stub.TroopObject, this);
-
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X,
                                                       stub.City.MainBuilding.Y, true);
             ExecuteChainAndWait(tma, AfterTroopMoved);
+
+            stub.City.Worker.References.Add(stub.TroopObject, this);
+            stub.City.Worker.Notifications.Add(stub.TroopObject, this);
 
             return Error.OK;
         }
@@ -57,8 +57,8 @@ namespace Game.Logic.Actions {
                         throw new Exception();
 
                     if (stub.City.Battle == null) {
-                        stub.City.Worker.References.Remove(stub.TroopObject, this);
                         stub.City.Worker.Notifications.Remove(this);
+                        stub.City.Worker.References.Remove(stub.TroopObject, this);                        
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
                         StateChange(ActionState.COMPLETED);
                     } else {

@@ -49,45 +49,13 @@ namespace Game.Comm {
         public void ListenerHandler() {
             listener.Start();
 
-            string policy = "<?xml version=\"1.0\"?>" +
-                            "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">" +
-                            "<cross-domain-policy>" + "<site-control permitted-cross-domain-policies=\"all\"/>" +
-                            "<allow-access-from domain=\"" + Config.flash_domain + "\" to-ports=\"" + Config.server_port +
-                            "\" />" + "</cross-domain-policy>";
-
-            Global.Logger.Info("Ready to serve policy file: " + policy);
-            
+           
             Socket s;            
             while (!isStopped) {
                 try {
                     s = listener.AcceptSocket();
                 }
                 catch (Exception) {                    
-                    continue;
-                }
-                byte[] buffer = new byte[128];
-
-                int len;
-
-                try {
-                    len = s.Receive(buffer, SocketFlags.Peek);
-                }
-                catch (Exception) {
-                    continue;
-                }
-
-                if (len == 23 && Encoding.ASCII.GetString(buffer, 0, len - 1) == "<policy-file-request/>")
-                {                    
-                    s.NoDelay = true;
-                    s.LingerState = new LingerOption(true, 3);
-
-                    byte[] xml = Encoding.UTF8.GetBytes(policy);
-                    s.Send(xml);
-
-                    Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
-
-                    s.Close();
-
                     continue;
                 }
 

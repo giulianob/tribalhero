@@ -58,7 +58,7 @@ Type,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 // Farm,,,,,,,,,,,
 21031,0,1,,,,,,,,,
 21031,1,1,,labor_move,,,,,,,
-21031,2,1,,structure_Upgrade,,,,,,,
+21031,2,1,,structure_Upgrade,10,,,,,,
 21031,3,1,,structure_build,3002,,,,,21031,SELF
 //21031,4,1,,structure_Build,3001,,,,,,
 21032,0,1,,,,,,,,,

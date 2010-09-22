@@ -91,7 +91,7 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.City.DefaultTroop.BeginUpdate();
-                structure.City.DefaultTroop.AddUnit(FormationType.NORMAL, type, 1);
+                structure.City.DefaultTroop.AddUnit(city.HideNewUnits ? FormationType.GARRISON : FormationType.NORMAL, type, 1);
                 structure.City.DefaultTroop.EndUpdate();
 
                 --ActionCount;

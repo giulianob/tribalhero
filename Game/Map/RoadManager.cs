@@ -152,11 +152,11 @@ namespace Game.Map {
 
             // Select appropriate tile based on the neighbors around this tile
             uint roadType = 0;
-            if (neighbors.SequenceEqual(new byte[] { 0, 0, 0, 0 })) roadType = 0;
-            else if (neighbors.SequenceEqual(new byte[] { 1, 0, 0, 0 })) roadType = 0;
-            else if (neighbors.SequenceEqual(new byte[] { 0, 1, 0, 0 })) roadType = 1;
-            else if (neighbors.SequenceEqual(new byte[] { 0, 0, 1, 0 })) roadType = 1;
-            else if (neighbors.SequenceEqual(new byte[] { 0, 0, 0, 1 })) roadType = 0;
+            if (neighbors.SequenceEqual(new byte[] { 0, 0, 0, 0 })) roadType = 15;
+            else if (neighbors.SequenceEqual(new byte[] { 1, 0, 0, 0 })) roadType = 11;
+            else if (neighbors.SequenceEqual(new byte[] { 0, 1, 0, 0 })) roadType = 14;
+            else if (neighbors.SequenceEqual(new byte[] { 0, 0, 1, 0 })) roadType = 13;
+            else if (neighbors.SequenceEqual(new byte[] { 0, 0, 0, 1 })) roadType = 12;
             else if (neighbors.SequenceEqual(new byte[] { 1, 1, 0, 0 })) roadType = 7;
             else if (neighbors.SequenceEqual(new byte[] { 0, 0, 1, 1 })) roadType = 8;
             else if (neighbors.SequenceEqual(new byte[] { 1, 0, 1, 0 })) roadType = 9;

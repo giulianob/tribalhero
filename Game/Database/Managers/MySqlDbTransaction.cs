@@ -16,7 +16,7 @@ namespace Game.Database.Managers {
             base.Rollback();
 
             if (ReferenceCount > 0 || transaction == null)
-                return;            
+                return;
 
             ((MySqlTransaction)transaction).Rollback();
         }

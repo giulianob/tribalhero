@@ -121,7 +121,7 @@ namespace Game.Logic.Actions {
                 }
 
                 if (!wasKilled) {
-                    int totalcount = count-((count + count / Formula.GetXForOneCount(structure.Technologies))-ActionCount);
+                    int totalcount = Math.Max(0, count-((count + count / Formula.GetXForOneCount(structure.Technologies))-ActionCount));
                     Resource totalCost = cost * totalcount;
 
                     structure.City.BeginUpdate();

@@ -43,7 +43,9 @@ namespace Game.Comm {
 
                 if (city.Owner == session.Player) {
                     reply.AddByte(troop.Stats.AttackRadius);
-                    reply.AddByte(troop.Stats.Speed);                    
+                    reply.AddByte(troop.Stats.Speed);
+                    reply.AddUInt32(troop.TargetX);
+                    reply.AddUInt32(troop.TargetY);
 
                     UnitTemplate template = new UnitTemplate(city);
 

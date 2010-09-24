@@ -165,6 +165,8 @@
 			if (obj.playerId == Constants.playerId) {
 				obj.attackRadius = packet.readUByte();
 				obj.speed = packet.readUByte();				
+				obj.targetX = packet.readUInt();
+				obj.targetY = packet.readUInt();
 
 				var formationCnt: int = packet.readUByte();
 				var unitType: int;

@@ -11,6 +11,8 @@
 		public var speed: int;
 		public var attackRadius: int;
 		public var stubId: int;
+		public var targetX: int;
+		public var targetY: int;
 
 		public var troop: TroopStub;
 

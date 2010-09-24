@@ -98,6 +98,8 @@
 			if (city != null) {
 				addStatRow("Radius", troopObj.attackRadius.toString());
 				addStatRow("Speed", troopObj.speed.toString());
+				
+				buttons.push(new ViewDestinationButton(troopObj, new Point(troopObj.targetX, troopObj.targetY)));
 			}
 
 			//Special Case Buttons
@@ -106,10 +108,7 @@
 				case SimpleGameObject.STATE_BATTLE:
 					buttons.push(new ViewBattleButton(troopObj));
 				break;
-				case SimpleGameObject.STATE_MOVING:
-					buttons.push(new ViewDestinationButton(troopObj));
-				break;				
-			}
+			}		
 
 			//Add buttons to UI
 			for each(var group: Object in Action.groups) {

@@ -36,7 +36,7 @@ namespace Game.Logic.Actions.ResourceActions {
                     // Remove structure from city
                     obj.BeginUpdate();
                     Global.World.Remove(obj);
-                    obj.City.ScheduleRemove(obj, false);
+                    obj.City.ScheduleRemove(obj, false, true);
                     obj.EndUpdate();
                 }
 

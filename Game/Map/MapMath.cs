@@ -560,33 +560,9 @@ namespace Game.Map
                 visited.Add(node);
                 if (BreadthFirst(end, visited, excludedPoint, getNeighbors))
                     return true;
-
-                visited.RemoveAt(visited.Count - 1);
             }
 
             return false;
         }
-
-        /*
-         * This is the normal breadth first in case we need it one day
-        private static void BreadthFirst(Location end, List<Location> visited, List<List<Location>> paths, GetNeighbors getNeighbors)
-        {
-            List<Location> nodes = getNeighbors(visited.Last());
-            // Examine adjacent nodes for end goal
-            foreach (Location node in nodes.Where(node => node.Equals(end) && !visited.Contains(node))) {
-                visited.Add(node);
-                paths.Add(new List<Location>(visited));
-                visited.RemoveAt(visited.Count - 1);
-                break;
-            }
-
-            // in breadth-first, recursion needs to come after visiting adjacent nodes
-            foreach (Location node in nodes.Where(node => !node.Equals(end) && !visited.Contains(node))) {
-                visited.Add(node);
-                BreadthFirst(end, visited, paths, getNeighbors);
-                visited.RemoveAt(visited.Count - 1);
-            }
-        }
-         */
     }
 }

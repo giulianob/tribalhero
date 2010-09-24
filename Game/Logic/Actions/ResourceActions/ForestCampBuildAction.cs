@@ -164,10 +164,13 @@ namespace Game.Logic.Actions {
             using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
                 if (!IsValid()) return;
 
-                Forest forest;
-
                 Structure structure;
                 if (!city.TryGetStructure(campId, out structure)) {
+                    // Give back the labors to the city
+                    city.BeginUpdate();
+                    city.Resource.Labor.Add(labors);
+                    city.EndUpdate();                
+
                     StateChange(ActionState.FAILED);
                     return;
                 }
@@ -175,11 +178,12 @@ namespace Game.Logic.Actions {
                 city.Worker.References.Remove(structure, this);
 
                 // Get forest. If it doesn't exist, we need to delete the structure.
+                Forest forest;
                 if (!Global.Forests.TryGetValue(forestId, out forest)) {
                     // Give back the labors to the city
                     city.BeginUpdate();
-                    city.Resource.Labor.Add(structure.Stats.Labor);
-                    city.EndUpdate();
+                    city.Resource.Labor.Add(labors);
+                    city.EndUpdate();                
 
                     // Remove the camp
                     structure.BeginUpdate();
@@ -219,7 +223,7 @@ namespace Game.Logic.Actions {
             return Error.ACTION_INVALID;
         }
 
-        private void InterruptCatchAll(bool wasKilled) {
+        private void InterruptCatchAll(bool workerRemoved) {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city)) {
                 throw new Exception("City is missing");
@@ -229,21 +233,20 @@ namespace Game.Logic.Actions {
                 if (!IsValid())
                     return;
 
+                // Give laborers back
+                city.BeginUpdate();
+                city.Resource.Labor.Add(labors);
+                city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Formula.StructureCost(city, campType, 1)));
+                city.EndUpdate();                
+
                 // Get camp
                 Structure structure;
                 if (!city.TryGetStructure(campId, out structure)) {
-                    throw new Exception("Camp structure not found");
+                    StateChange(ActionState.FAILED);
+                    return;
                 }
 
                 city.Worker.References.Remove(structure, this);
-
-                // If action was cancelled, give back the labor and cost to the city
-                if (!wasKilled) {
-                    city.BeginUpdate();
-                    city.Resource.Labor.Add(labors);
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Formula.StructureCost(city, campType, 1)));
-                    city.EndUpdate();
-                }
 
                 // Remove camp from forest and recalculate forest
                 Forest forest;
@@ -269,7 +272,7 @@ namespace Game.Logic.Actions {
         }
 
         public override void WorkerRemoved(bool wasKilled) {
-            InterruptCatchAll(wasKilled);
+            InterruptCatchAll(true);
         }
 
         #region IPersistable

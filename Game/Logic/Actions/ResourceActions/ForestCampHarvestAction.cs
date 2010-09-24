@@ -86,7 +86,7 @@ namespace Game.Logic.Actions {
             using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
                 if (!IsValid())
                     return;
-
+                
                 Structure structure = (Structure)WorkerObject;                
 
                 Forest forest;

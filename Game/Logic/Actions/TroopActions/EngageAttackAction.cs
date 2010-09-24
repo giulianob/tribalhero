@@ -19,8 +19,8 @@ namespace Game.Logic.Actions {
         private readonly byte stubId;
         private readonly uint targetCityId;
         private readonly AttackMode mode;
-        private int originalHp;
-        private int remainingHp;
+        private int originalUnitCount;
+        private int remainingUnitCount;
         private Resource bonus;
 
         public EngageAttackAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode) {
@@ -37,8 +37,7 @@ namespace Game.Logic.Actions {
             stubId = byte.Parse(properties["troop_id"]);
 
             mode = (AttackMode)(byte.Parse(properties["mode"]));
-            originalHp = int.Parse(properties["original_hp"]);
-            remainingHp = int.Parse(properties["remaining_hp"]);
+            originalUnitCount = int.Parse(properties["original_count"]);
 
             targetCityId = uint.Parse(properties["target_city_id"]);
 
@@ -115,7 +114,7 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             List<TroopStub> list = new List<TroopStub> { stub };
-            originalHp = remainingHp = stub.TotalHp;
+            originalUnitCount = stub.TotalCount;
 
             if (targetCity.Battle != null) {                
                 RegisterBattleListeners(targetCity);
@@ -209,8 +208,8 @@ namespace Game.Logic.Actions {
                 // if our troop knocked down a building, we get the bonus.
                 if ((source as AttackCombatUnit).TroopStub == stub && target.ClassType == BattleClass.STRUCTURE && target.IsDead) {
                     bonus.Add(StructureFactory.GetCost(target.Type, target.Lvl) / 2);
+                    Global.DbManager.Save(this);
                 }
-                Global.DbManager.Save(this);
                 return;
             }
 
@@ -218,18 +217,16 @@ namespace Game.Logic.Actions {
                 return;
 
             // Check to see if player should retreat
-            remainingHp -= damage;
-            if (unit.RoundsParticipated < Config.battle_min_rounds || remainingHp > Formula.GetAttackModeTolerance(originalHp, mode)) {
-                Global.DbManager.Save(this);
+            remainingUnitCount = stub.TotalCount;
+
+            if (unit.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount > Formula.GetAttackModeTolerance(originalUnitCount, mode)) {
                 return;
             }
 
             List<TroopStub> list = new List<TroopStub> {
                                                            stub
                                                        };
-            targetCity.Battle.RemoveFromAttack(list, remainingHp == 0 ? ReportState.DYING : ReportState.RETREATING);
-
-            Global.DbManager.Save(this);
+            targetCity.Battle.RemoveFromAttack(list, remainingUnitCount == 0 ? ReportState.DYING : ReportState.RETREATING);
         }
 
         private void Battle_ExitBattle(CombatList atk, CombatList def) {
@@ -273,8 +270,7 @@ namespace Game.Logic.Actions {
                                                                 new XMLKVPair("target_city_id", targetCityId),
                                                                 new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
                                                                 new XMLKVPair("mode", (byte) mode),
-                                                                new XMLKVPair("original_hp", originalHp),
-                                                                new XMLKVPair("remaining_hp", remainingHp),
+                                                                new XMLKVPair("original_count", originalUnitCount),
                                                                 new XMLKVPair("crop",bonus.Crop),
                                                                 new XMLKVPair("gold",bonus.Gold),
                                                                 new XMLKVPair("iron",bonus.Iron),

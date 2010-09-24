@@ -1,0 +1,53 @@
+Key,EN
+TROOP_STATE_IDLE,Idle
+TROOP_STATE_BATTLE,In Battle
+TROOP_STATE_STATIONED,Stationed
+TROOP_STATE_BATTLE_STATIONED,In Battle
+TROOP_STATE_MOVING,On the Move
+TROOP_STATE_RETURNING_HOME,Returning Home
+,
+SWORDSMAN_UNIT,Swordsman
+HEAVY_SWORDSMAN_UNIT,Heavy Swordsman
+PIKEMAN_UNIT,Pikeman
+ARCHER_UNIT,Archer
+CAVALRY_UNIT,Cavalry
+HEAVY_CAVALRY_UNIT,Heavy Cavalry
+HELEPOLIS_UNIT,Helepolis
+CATAPULT_UNIT,Catapult
+FIGHTER_UNIT,Fighter
+BOWMAN_UNIT,Bowman
+GLADIATOR_UNIT,Gladiator
+,
+0_FIGHTER_UNIT,Fighter
+0_FIGHTER_PLURAL_UNIT,Fighters
+0_FIGHTER_UNIT_DESC,A unit that can perform well when either attacking or defending. The Swordsman is strong against ground and machine units but can quickly fall to bow units.
+0_BOWMAN_UNIT,Bowman
+0_BOWMAN_PLURAL_UNIT,Bowmen
+0_BOWMAN_UNIT_DESC,"A defensive ranged unit who is strong against ground units and good against mounted units, but does very little damage to machine units and structures.  Due to their high vision, Bowman will generally attack other units first."
+1_SWORDSMAN_UNIT,Swordsman
+1_SWORDSMAN_PLURAL_UNIT,Swordsmen
+1_SWORDSMAN_UNIT_DESC,A unit that can perform well when either attacking or defending. The Swordsman is strong against ground and machine units but can quickly fall to bow units.
+1_ARCHER_UNIT,Archer
+1_ARCHER_PLURAL_UNIT,Archers
+1_ARCHER_UNIT_DESC,"A defensive ranged unit who is strong against ground units and good against mounted units, but  does very little damage to machine units and structures.  The Archer's high vision allows them to hit enemies various times before being attacked."
+1_PIKEMAN_UNIT,Hoplite
+1_PIKEMAN_PLURAL_UNIT,Hoplites
+1_PIKEMAN_UNIT_DESC, A  superb defensive unit who is very strong against mounted units.  The Hoplite can quickly fall to bow yielding units.  
+1_GLADIATOR_UNIT,Gladiator
+1_GLADIATOR_PLURAL_UNIT,Gladiators
+1_GLADIATOR_UNIT_DESC,A unit that can perform well when either attacking or defending. The Swordsman is strong against ground and machine units but can quickly fall to bow units.  The unit is armored with platemail that provides additional protection against light weapons. It uses a heavy weapon that is made for destroying metallic armor.
+1_CAVALRY_UNIT,Cavalry
+1_CAVALRY_PLURAL_UNIT,Cavalries
+1_CAVALRY_UNIT_DESC,A superb offensive unit who is very strong against ground units but can quickly fall to pike units.  Cavalry's high speed gives them the ability to get close to the bow units quickly despite of their high stealth.  It uses a heavy weapon that is made for destroying platemail.
+1_HEAVY_CAVALRY_UNIT,Knight
+1_HEAVY_CAVALRY_PLURAL_UNIT,Knights
+1_HEAVY_CAVALRY_UNIT_DESC,An all-around unit who is strong against mounted units but can quickly fall to bow units.  This unit is armored with platemail that provides additional protection against light weapons.
+1_HELEPOLIS_UNIT,Helepolis
+1_HELEPOLIS_PLURAL_UNIT,Helepolises
+1_HELEPOLIS_UNIT_DESC,"The only ranged offensive unit who is strong against ground units and good against mounted units, but it can fall quickly to swords and ballistic units.  The unit is iron plated that provides additional protection against light weapons."
+1_CATAPULT_UNIT,Catapult
+1_CATAPULT_PLURAL_UNIT,Catapults
+1_CATAPULT_UNIT_DESC,A ranged offensive unit who is strong against structures and good against machines but can fall quickly to swords and ballistic units.  It uses heavy weapon that is made for destroying metallic armor.
+1_OXWAGON_UNIT,Ox Wagon
+1_OXWAGON_PLURAL_UNIT,Ox Wagons
+1_OXWAGON_UNIT_DESC,A non-combat unit used to carry loot.  The oxen are fed with beer; its fat is thick so it takes enemies a long while to kill them.

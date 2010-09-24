@@ -21,12 +21,14 @@ namespace Game.Logic.Actions {
         private readonly AttackMode mode;
         private int originalHp;
         private int remainingHp;
+        private Resource bonus;
 
         public EngageAttackAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode) {
             this.cityId = cityId;
             this.stubId = stubId;
             this.targetCityId = targetCityId;
             this.mode = mode;
+            bonus = new Resource();
         }
 
         public EngageAttackAction(uint id, bool isVisible, IDictionary<string, string> properties)
@@ -40,6 +42,11 @@ namespace Game.Logic.Actions {
 
             targetCityId = uint.Parse(properties["target_city_id"]);
 
+            bonus = new Resource(   int.Parse(properties["crop"]),
+                                    int.Parse(properties["gold"]),
+                                    int.Parse(properties["iron"]),
+                                    int.Parse(properties["wood"]),
+                                    int.Parse(properties["labor"]));
             City targetCity;
             Global.World.TryGetObjects(targetCityId, out targetCity);
             RegisterBattleListeners(targetCity);
@@ -48,7 +55,7 @@ namespace Game.Logic.Actions {
         private void RegisterBattleListeners(City targetCity) {
             targetCity.Battle.ActionAttacked += Battle_ActionAttacked;
             targetCity.Battle.ExitBattle += Battle_ExitBattle;
-            targetCity.Battle.WithdrawAttacker += Battle_WithdrawAttacker;            
+            targetCity.Battle.WithdrawAttacker += Battle_WithdrawAttacker;
         }
 
         private void DeregisterBattleListeners(City targetCity) {
@@ -174,6 +181,9 @@ namespace Game.Logic.Actions {
             // Calculate bonus
             Resource resource = BattleFormulas.GetBonusResources(stub.TroopObject);
 
+            // Destroyed Structure bonus
+            resource.Add(bonus);
+
             // Copy looted resources since we'll be modifying the troop's loot variable
             Resource looted = new Resource(stub.TroopObject.Stats.Loot);
 
@@ -187,10 +197,6 @@ namespace Game.Logic.Actions {
         }
 
         private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
-            AttackCombatUnit unit = target as AttackCombatUnit;
-            if (unit == null)
-                return;
-
             City city;
             City targetCity;
             TroopStub stub;
@@ -198,18 +204,32 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
+            AttackCombatUnit unit = target as AttackCombatUnit;
+            if (unit == null) {
+                // if our troop knocked down a building, we get the bonus.
+                if ((source as AttackCombatUnit).TroopStub == stub && target.ClassType == BattleClass.STRUCTURE && target.IsDead) {
+                    bonus.Add(StructureFactory.GetCost(target.Type, target.Lvl) / 2);
+                }
+                Global.DbManager.Save(this);
+                return;
+            }
+
             if (unit.TroopStub != stub || unit.TroopStub.TroopObject != stub.TroopObject)
                 return;
 
             // Check to see if player should retreat
             remainingHp -= damage;
-            if (unit.RoundsParticipated < Config.battle_min_rounds || remainingHp > Formula.GetAttackModeTolerance(originalHp, mode))
+            if (unit.RoundsParticipated < Config.battle_min_rounds || remainingHp > Formula.GetAttackModeTolerance(originalHp, mode)) {
+                Global.DbManager.Save(this);
                 return;
+            }
 
             List<TroopStub> list = new List<TroopStub> {
                                                            stub
                                                        };
             targetCity.Battle.RemoveFromAttack(list, remainingHp == 0 ? ReportState.DYING : ReportState.RETREATING);
+
+            Global.DbManager.Save(this);
         }
 
         private void Battle_ExitBattle(CombatList atk, CombatList def) {
@@ -254,7 +274,12 @@ namespace Game.Logic.Actions {
                                                                 new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
                                                                 new XMLKVPair("mode", (byte) mode),
                                                                 new XMLKVPair("original_hp", originalHp),
-                                                                new XMLKVPair("remaining_hp", remainingHp)
+                                                                new XMLKVPair("remaining_hp", remainingHp),
+                                                                new XMLKVPair("crop",bonus.Crop),
+                                                                new XMLKVPair("gold",bonus.Gold),
+                                                                new XMLKVPair("iron",bonus.Iron),
+                                                                new XMLKVPair("wood",bonus.Wood),
+                                                                new XMLKVPair("labor",bonus.Labor),
                                                             });
             }
         }

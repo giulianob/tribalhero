@@ -39,6 +39,8 @@
 
 		private var pnlLoading: InfoDialog;
 
+		private var siteVersion: String;
+
 		public function Main()
 		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
@@ -90,6 +92,7 @@
 			//Define login type and perform login action
 			if (parms.hostname)
 			{
+				siteVersion = parms.siteVersion;
 				Constants.loginKey = parms.lsessid;
 				Constants.hostname = parms.hostname;
 				loadLanguages(Constants.hostname);
@@ -106,11 +109,11 @@
 
 			if (Constants.webVersion)
 			{
-				Locale.addXMLPath(Constants.defLang, "http://"+Constants.hostname+":8085/Game_" + Constants.defLang + ".xml");
+				Locale.addXMLPath(Constants.defLang, "http://"+Constants.hostname+":8085/Game_" + Constants.defLang + ".xml?" + siteVersion);
 			}
 			else
 			{
-				Locale.addXMLPath(Constants.defLang, "en/Game_" + Constants.defLang + ".xml");
+				Locale.addXMLPath(Constants.defLang, "en/Game_" + Constants.defLang + ".xml?" + siteVersion);
 			}
 
 			Locale.setDefaultLang(Constants.defLang);
@@ -125,10 +128,11 @@
 			{
 				var loader: URLLoader = new URLLoader();
 				loader.addEventListener(Event.COMPLETE, onReceiveXML);
-				loader.load(new URLRequest("http://"+Constants.hostname+":8085/data.xml"));
+				loader.load(new URLRequest("http://"+Constants.hostname+":8085/data.xml?" + siteVersion));
 			}
-			else
-			doConnect();
+			else {
+				doConnect();
+			}
 		}
 
 		public function doConnect():void

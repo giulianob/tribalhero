@@ -67,8 +67,8 @@
 					if (obj) obj.State = new BattleState(battleCityId);
 				break;
 				case SimpleGameObject.STATE_MOVING:
-					var destX: int = packet.readUInt();
-					var destY: int = packet.readUInt();
+					var destX: int = 0;
+					var destY: int = 0;
 					if (obj) obj.State = new MovingState(destX, destY);
 				break;
 				default:

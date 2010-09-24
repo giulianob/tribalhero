@@ -16,11 +16,15 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{
 		private var tooltip: TextTooltip;
 
-		public function ViewDestinationButton(parentObj: GameObject)
+		private var mapDestinationPos: Point;
+
+		public function ViewDestinationButton(parentObj: GameObject, mapDestinationPos: Point)
 		{
 			super(parentObj, "View Destination");
 
 			tooltip = new TextTooltip("View Destination");
+
+			this.mapDestinationPos = mapDestinationPos;
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
@@ -47,11 +51,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				if (parentObj.State is MovingState) {
-					var movingState: MovingState = parentObj.State as MovingState;
-					var pt: Point = MapUtil.getScreenCoord(movingState.destX, movingState.destY);
-					Global.map.camera.ScrollToCenter(pt.x, pt.y);
-				}
+				var pt: Point = MapUtil.getScreenCoord(mapDestinationPos.x, mapDestinationPos.y);
+				Global.map.camera.ScrollToCenter(pt.x, pt.y);
 			}
 
 			event.stopImmediatePropagation();

@@ -55,7 +55,7 @@ package src.UI.Sidebars.ObjectInfo {
 				city.references.addEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 			}
 
-			gameObject.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);			
+			gameObject.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
 
 			createUI();
 			update();
@@ -155,9 +155,6 @@ package src.UI.Sidebars.ObjectInfo {
 			{
 				case SimpleGameObject.STATE_BATTLE:
 					buttons.push(new ViewBattleButton(structureObject));
-				break;
-				case SimpleGameObject.STATE_MOVING:
-					buttons.push(new ViewDestinationButton(structureObject));
 				break;
 			}
 
@@ -321,9 +318,9 @@ package src.UI.Sidebars.ObjectInfo {
 					city.removeEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
 					city.currentActions.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
 					city.references.removeEventListener(BinaryListEvent.CHANGED, onObjectUpdate);
-				}				
+				}
 
-				gameObject.removeEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);				
+				gameObject.removeEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
 			}
 		}
 

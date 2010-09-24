@@ -430,6 +430,8 @@ namespace Game.Database {
                     TroopObject obj = new TroopObject(stub) {
                         X = (uint)reader["x"],
                         Y = (uint)reader["y"],
+                        TargetX = (uint)reader["target_x"],
+                        TargetY = (uint)reader["target_y"],
                         ObjectId = (uint)reader["id"],
                         DbPersisted = true,
                         State = {

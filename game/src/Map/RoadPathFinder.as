@@ -24,15 +24,24 @@ package src.Map
 		}
 
 		public static function hasPath(start: Point, end: Point, city: City, excludedPoint: Point) : Boolean {
+
+			if (start.x == end.x && start.y == end.y) return true;
+
 			var visited: Array = new Array();
 
 			visited.push(start);
-			
+
 			var fromStructure: Boolean = city.hasStructureAt(start);
 
+			trace("========");
+			trace("FromStructure: " + (fromStructure ? "true": "false"));
+			
+			trace("From: " + start.toString());
+			trace("End: " + end.toString());
+			
 			return breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
 			{
-				var neighbors: Array = new Array(4);
+				var neighbors: Array = new Array();
 				var possibleNeighbors: Array;
 				if (node.y % 2 == 0)
 				{
@@ -53,7 +62,7 @@ package src.Map
 					);
 				}
 
-				for each (var location: Point in possibleNeighbors) {									
+				for each (var location: Point in possibleNeighbors) {
 					if ((location.x != end.x || location.y != end.y)) {
 						if (city.hasStructureAt(location)) continue;
 						if (!isRoadByMapPosition(location.x, location.y)) continue;
@@ -71,21 +80,23 @@ package src.Map
 
 		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Point, i: int = 0) : Boolean
 		{
+			//trace("Checking " + visited[visited.length - 1].toString());
+			
 			var nodes: Array = getNeighbors(visited[visited.length - 1]);
 
 			// Examine adjacent nodes for end goal
 			for each (var node: Point in nodes) {
 				if ((node.x == end.x && node.y == end.y)) {
+					trace("Found goal");
 					return true;
 				}
-			}
+			}		
 
 			// Search nodes for goal
 			for each (node in nodes) {
 				if (!(node.x == end.x && node.y == end.y) && !(node.x == excludedPoint.x && node.y == excludedPoint.y) && !hasPoint(visited, node)) {
 					visited.push(node);
 					if (breadthFirst(end, visited, getNeighbors, excludedPoint, i)) return true;
-					visited.pop();
 				}
 			}
 

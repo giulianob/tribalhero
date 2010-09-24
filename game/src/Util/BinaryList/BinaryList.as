@@ -18,6 +18,10 @@
 			this.compareFunc = compareFunc;
 		}
 
+		public function setArray(arr: Array) : void {
+			list = arr;
+		}
+		
 		public function toArray(): Array
 		{
 			return list;

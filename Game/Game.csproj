@@ -148,6 +148,8 @@
     <Compile Include="Battle\CombatStructure.cs" />
     <Compile Include="Battle\AttackCombatUnit.cs" />
     <Compile Include="Battle\CombatUnitFactory.cs" />
+    <Compile Include="Comm\CmdLineCommands.cs" />
+    <Compile Include="Comm\CommandLineProcessor.cs" />
     <Compile Include="Comm\Commands.cs" />
     <Compile Include="Comm\PolicyServer.cs" />
     <Compile Include="Comm\Packet.cs" />
@@ -343,6 +345,7 @@
     <Content Include="log4net.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Comm\CmdLine Commands\" />
     <Folder Include="Logic\Requirements\RequirementFormulas\" />
   </ItemGroup>
   <ItemGroup>

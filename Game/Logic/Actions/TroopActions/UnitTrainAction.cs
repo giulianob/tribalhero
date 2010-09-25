@@ -121,8 +121,12 @@ namespace Game.Logic.Actions {
                 }
 
                 if (!wasKilled) {
-                    int totalcount = Math.Max(0, count-((count + count / Formula.GetXForOneCount(structure.Technologies))-ActionCount));
-                    Resource totalCost = cost * totalcount;
+                    int xfor1 = Formula.GetXForOneCount(structure.Technologies);
+                    int totalordered = count + count / xfor1;
+                    int totaltrained = totalordered - ActionCount;
+                    int totalpaidunit = totaltrained - (totaltrained-1) / xfor1;
+                    int totalrefund = count - totalpaidunit;
+                    Resource totalCost = cost * totalrefund;
 
                     structure.City.BeginUpdate();
                     structure.City.Resource.Add(Formula.GetActionCancelResource(BeginTime,totalCost));

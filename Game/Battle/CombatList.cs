@@ -49,7 +49,7 @@ namespace Game.Battle {
                 score += ((int)(BattleFormulas.GetArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor) * 10));
                 score += ((int)(BattleFormulas.GetArmorClassModifier(attacker.BaseStats.WeaponClass, obj.BaseStats.ArmorClass) * 10));
 
-                score += obj.DmgDealt % 5;  // just add some randomness
+                score +=  Config.Random.Next(5);  // just add some randomness
 
                 if (bestTarget == null || score > bestTargetScore) {
                     bestTarget = obj;

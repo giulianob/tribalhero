@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Database;
+using Game.Setup;
 
 #endregion
 
@@ -123,13 +124,30 @@ namespace Game.Battle {
         }
 
         public bool CanSee(CombatObject obj) {
+            int totalVision = (int)Visibility;
             switch(obj.BaseStats.Weapon) {
                 case WeaponType.BOW:
-                    return Visibility + (RoundsParticipated * BaseStats.Spd / 15) >= obj.Stats.Stl;
+                    totalVision += (RoundsParticipated * BaseStats.Spd / 15);
+                    break;
                 default:
-                    return Visibility >= obj.Stats.Stl;
-
-            }      
+                    break;
+            }
+            if (totalVision >= obj.Stats.Stl) {
+                return true;
+            } else {
+                // if vision < stealth by 1, u have 33% chance 
+                // if vision < stealth by 2, u have 25% chance 
+                // if vision < stealth by 3, u have 20% chance 
+                // if vision < stealth by 4, u have 16% chance 
+                // if vision < stealth by 5, u have 14% chance 
+                // if vision < stealth by 6, u have 12% chance 
+                // if vision < stealth by 7, u have 14% chance 
+                // if vision < stealth by 8, u have 10% chance 
+                // if vision < stealth by 9, u have 9% chance 
+                if (Config.Random.Next(obj.Stats.Stl - totalVision + 1) == 0)  
+                    return true;
+            }
+            return false;
         }
 
         public void ParticipatedInRound() {

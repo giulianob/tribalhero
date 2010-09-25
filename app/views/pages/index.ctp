@@ -1,6 +1,5 @@
 <?php
 $this->Html->css('colorbox/colorbox', null, array('inline' => false));		
-$this->Html->script('jquery/jquery-1.4.2.min', array('inline' => false));		
 $this->Html->script('colorbox/jquery.colorbox-min', array('inline' => false));	
 
 $code = <<<JS

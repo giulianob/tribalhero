@@ -114,18 +114,18 @@ package src
 
 		/* STAT RANGES */
 		public static const unitStatRanges: * = {
-			"attack": { min: 1, max: 110 },
-			"defense": { min: 0, max: 84 },
+			"attack": { min: 5, max: 100 },
+			"defense": { min: 5, max: 84 },
 			"stealth": { min: 0, max: 14 },
 			"range": { min: 0, max: 19 },
 			"speed": { min: 2, max: 22 },
-			"carry": { min: 0, max: 246 }
+			"carry": { min: 0, max: 352 }
 		};
 
 		public static const structureStatRanges: * = {
-			"defense": { min: 0, max: 12500 },
-			"stealth": { min: 0, max: 20 },
-			"range": { min: 0, max: 15 }
+			"defense": { min: 0, max: 5520 },
+			"stealth": { min: 0, max: 17 },
+			"range": { min: 0, max: 11 }
 		};
 
 		public static var objData: XML = <Data></Data>;

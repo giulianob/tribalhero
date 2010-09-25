@@ -66,7 +66,7 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(type, 1).Validate(WorkerObject as Structure, type, x, y)) {            
+            if (!RequirementFactory.GetLayoutRequirement(type, 1).Validate(WorkerObject as Structure, type, x, y)) {            
                 Global.World.UnlockRegion(x, y);
                 return Error.LAYOUT_NOT_FULLFILLED;
             }

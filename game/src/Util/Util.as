@@ -88,7 +88,7 @@ package src.Util {
 				return mid;
 			}
 
-			return -1;
+			return ~low;
 		}
 
 		public static function binarySearchRange(array: Array, compare: Function, value: *): Array
@@ -97,8 +97,7 @@ package src.Util {
 
 			var ret: Array = new Array();
 
-			if (idx == -1)
-			return ret;
+			if (idx <= -1) return ret;
 
 			ret.push(idx);
 

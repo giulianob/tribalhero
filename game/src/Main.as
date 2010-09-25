@@ -11,6 +11,8 @@
 	import flash.ui.ContextMenuItem;
 	import org.aswing.skinbuilder.orange.*;
 	import src.Map.*;
+	import src.Objects.Actions.CurrentAction;
+	import src.Objects.Actions.CurrentActionReference;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.InitialCityDialog;
 	import src.UI.Dialog.LoginDialog;
@@ -19,6 +21,7 @@
 	import src.Comm.*;
 	import src.Objects.Factories.*;
 	import org.aswing.*;
+	import src.Util.BinaryList.BinaryList;
 
 	public class Main extends MovieClip
 	{
@@ -47,6 +50,7 @@
 		}
 
 		public function init(e: Event = null) : void {
+
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 
 			//Init ASWING

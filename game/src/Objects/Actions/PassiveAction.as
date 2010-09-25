@@ -52,7 +52,7 @@
 		{
 			var idx: int = getActionIndex(actionType);
 			
-			if (idx == -1)
+			if (idx <= -1)
 				return "Unknown Action";
 			
 			return actionLookup[idx].description;
@@ -62,7 +62,7 @@
 		{
 			var idx: int = getActionIndex(actionType);
 			
-			if (idx == -1)
+			if (idx <= -1)
 				return new Sprite();
 			
 			return ObjectFactory.getIcon(actionLookup[idx].icon);

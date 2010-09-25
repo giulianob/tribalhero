@@ -85,14 +85,24 @@
 
 		public function onUpdateNotifications(e: BinaryListEvent): void {
 			(getModel() as VectorListModel).clear();
+			
+			var notifications: BinaryList = new BinaryList(function(a:Notification, b:Notification):Number {
+				return a.endTime - b.endTime;
+			}, function(a: Notification, value: int):int {
+				return a.endTime - value;
+			});
 
 			for each(var notification: Notification in city.notifications.each()) {
-
-				var local: Boolean = notification.cityId == city.id;
 				// Don't show notifications from ourselves
-				if (local) continue;
-
-				(getModel() as VectorListModel).append( {'cityId': city.id, 'notification': notification, 'local': local} );
+				if (notification.cityId == city.id) continue;
+				
+				notifications.add(notification);
+			}
+			
+			notifications.sort();
+			
+			for each (notification in notifications.each()) {
+				(getModel() as VectorListModel).append( {'cityId': city.id, 'notification': notification, 'local': notification.cityId == city.id} );
 			}
 		}
 	}

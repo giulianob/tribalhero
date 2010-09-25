@@ -1,10 +1,7 @@
 ﻿package src.UI.Dialog
 {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetPane;
-	import org.aswing.EmptyLayout;
-	import org.aswing.event.AWEvent;
+	import flash.events.*;
+	import org.aswing.event.*;
 	import org.aswing.geom.IntDimension;
 	import src.Constants;
 	import src.Global;
@@ -13,19 +10,16 @@
 	import src.Objects.Factories.*;
 	import src.UI.Components.NotificationGridList.NotificationGridList;
 	import src.UI.Components.TroopStubGridList.TroopStubGridList;
-	import src.UI.Cursors.GroundAttackCursor;
-	import src.UI.Cursors.GroundReinforceCursor;
-	import src.UI.GameJImagePanel;
+	import src.UI.Cursors.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
-	import src.UI.GameJImagePanelBackground;
+	import src.UI.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Tooltips.Tooltip;
-	import src.UI.Tooltips.TroopStubTooltip;
+	import src.UI.Tooltips.*;
 	import src.Util.BinaryList.BinaryListEvent;
 	import src.Objects.Troop.*;
 

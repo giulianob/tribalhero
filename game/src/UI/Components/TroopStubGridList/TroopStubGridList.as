@@ -89,7 +89,7 @@
 
 			var icon: DisplayObject = TroopFactory.getStateSprite(troop.state, Formula.movementIconTroopSize(troop));
 
-			model.append( { source: icon, troop: troop } );
+			model.append( { source: icon, troop: troop, id: troop.id, cityId: troop.cityId } );
 
 			model.sortOn(["cityId", "id"], Array.NUMERIC);
 

@@ -54,7 +54,9 @@ namespace Game.Logic
 
         public static ushort GetRewardPoint(Resource resource, ushort hp)
         {
-            ushort total = (ushort)(resource.Crop + resource.Gold + resource.Wood + resource.Iron * 2);
+            if (hp == 0) return 1;
+
+            ushort total = (ushort)(resource.Crop + resource.Gold + resource.Wood + resource.Iron * 2);            
             return (ushort)Math.Max(total / hp, 1);
         }
     }

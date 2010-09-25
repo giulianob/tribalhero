@@ -11,57 +11,67 @@ using Game.Data;
 #endregion
 
 namespace Game.Comm {
-    class TcpWorker {
+    class TcpWorker {       
         private readonly ArrayList sockList = new ArrayList();
         private readonly object sockListLock = new object();
         private readonly Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
-        private bool isStopped = false;
-        private bool isFull = false;
+        private bool isStopped;        
         private Thread workerThread;
+        private bool isFull;
+
         private readonly EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
 
+        private static readonly object workerLock = new object();
         private static readonly List<TcpWorker> WorkerList = new List<TcpWorker>();
 
         public static int GetSessionCount() {
-            return WorkerList.Sum(x => x.sessions.Count);
+            lock (workerLock) {
+                return WorkerList.Sum(x => x.sessions.Count);
+            }
         }
 
         public static void Add(object sessionObject) {
-            SocketSession session = (SocketSession) sessionObject;
+            lock (workerLock) {
+                SocketSession session = (SocketSession) sessionObject;
 
-            bool needNewWorker = true;
-            foreach (TcpWorker worker in WorkerList) {
-                lock (worker.sockListLock) {
-                    if (worker.isFull)
-                        continue;
+                bool needNewWorker = true;
+                foreach (TcpWorker worker in WorkerList) {
+                    lock (worker.sockListLock) {
+                        if (worker.isFull)
+                            continue;
 
-                    worker.Put(session);
+                        worker.Put(session);
+                    }
+
+                    needNewWorker = false;
+                    break;
                 }
-                
-                needNewWorker = false;
-                break;
-            }
 
-            if (needNewWorker) {
-                TcpWorker newWorker = new TcpWorker();
-                WorkerList.Add(newWorker);
-                newWorker.Put(session);
-                newWorker.Start();
-            }
+                if (needNewWorker) {
+                    TcpWorker newWorker = new TcpWorker();
+                    WorkerList.Add(newWorker);
+                    newWorker.Put(session);
+                    newWorker.Start();
+                }
 
-            Packet packet = new Packet(Command.ON_CONNECT);
-            ThreadPool.QueueUserWorkItem(session.ProcessEvent, packet);
+                Packet packet = new Packet(Command.ON_CONNECT);
+                ThreadPool.QueueUserWorkItem(session.ProcessEvent, packet);
+            }
         }
 
         public static void DeleteAll() {
-            foreach (TcpWorker worker in WorkerList)
-                worker.Stop();
+            lock (workerLock) {
+                foreach (TcpWorker worker in WorkerList)
+                    worker.Stop();
+            }
         }
 
         public static void Delete(SocketSession session) {
-            foreach (TcpWorker worker in WorkerList) {
-                if (worker.sockList.Contains(session.socket))
-                    worker.sockList.Remove(session.socket);
+            lock (workerLock) {
+                foreach (TcpWorker worker in WorkerList) {
+                    if (worker.sockList.Contains(session.socket))
+                        worker.sockList.Remove(session.socket);
+                }
             }
         }
 
@@ -92,6 +102,17 @@ namespace Game.Comm {
             workerThread.Join();
         }
 
+        private void SocketDisconnect(Socket s) {
+            //create disconnect packet to send to processor
+            SocketSession dcSession = sessions[s];
+
+            sessions.Remove(s);
+            sockList.Remove(s);
+
+            var packet = new Packet(Command.ON_DISCONNECT);
+            ThreadPool.QueueUserWorkItem(dcSession.ProcessEvent, packet);
+        }
+
         private void SocketHandler() {
             try {
                 while (!isStopped) {
@@ -117,14 +138,7 @@ namespace Game.Comm {
                             Packet packet;
                             try {
                                 if (!s.Connected) {
-                                    //create disconnect packet to send to processor
-                                    SocketSession dcSession = sessions[s];
-
-                                    sessions.Remove(s);
-                                    sockList.Remove(s);
-
-                                    packet = new Packet(Command.ON_DISCONNECT);
-                                    ThreadPool.QueueUserWorkItem(dcSession.ProcessEvent, packet);
+                                    SocketDisconnect(s);
                                     continue;
                                 }
 
@@ -133,36 +147,20 @@ namespace Game.Comm {
                                 int len = s.Receive(data);
 
                                 if (len == 0) {
-                                    //create disconnect packet to send to processor
-                                    SocketSession dcSession = sessions[s];
-                                    sessions.Remove(s);
-                                    sockList.Remove(s);
+                                    SocketDisconnect(s);
+                                    continue;
+                                }
 
-                                    //If the player is null it means the player failed to authenticate or had some connection issue
-                                    //in that case we don't want to create any events since he never really connected
-                                    if (dcSession.Player != null) {
-                                        dcSession.Player.Session = null;
-                                        packet = new Packet(Command.ON_DISCONNECT);
-                                        ThreadPool.QueueUserWorkItem(dcSession.ProcessEvent, packet);
-                                    }
-                                } else {
-                                    Global.Logger.Info("[" + sessions[s].name + "]: " + data.Length);
-                                    //Global.Logger.Info(Convert.ToString(data));
-                                    sessions[s].AppendBytes(data);
-                                    while ((packet = (sessions[s]).GetNextPacket()) != null)
-                                        ThreadPool.QueueUserWorkItem(sessions[s].Process, packet);
+                                Global.Logger.Info("[" + sessions[s].name + "]: " + data.Length);     
+                               
+                                sessions[s].AppendBytes(data);
+                                while ((packet = (sessions[s]).GetNextPacket()) != null) {
+                                    ThreadPool.QueueUserWorkItem(sessions[s].Process, packet);
                                 }
                             }
                             catch (SocketException) {
                                 lock (sockListLock) {
-                                    //create disconnect packet to send to processor
-                                    SocketSession dcSession = sessions[s];
-
-                                    sessions.Remove(s);
-                                    sockList.Remove(s);
-
-                                    packet = new Packet(Command.ON_DISCONNECT);
-                                    ThreadPool.QueueUserWorkItem(dcSession.ProcessEvent, packet);
+                                    SocketDisconnect(s);
                                 }
                             }
                         }

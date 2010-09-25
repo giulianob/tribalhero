@@ -333,8 +333,7 @@ package src.UI.Sidebars.ObjectInfo {
 		{
 			update();
 
-			if (getFrame() != null)
-			getFrame().pack();
+			if (getFrame() != null) getFrame().pack();
 		}
 
 		public function validateButtons():void

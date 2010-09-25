@@ -3,12 +3,15 @@ package src.Map
 	import flash.geom.Point;
 	import src.Constants;
 	import src.Global;
-	import src.Util.BinaryList.BinaryList;
 
 	public class RoadPathFinder
 	{
 		private static function hasPoint(arr: Array, point: Point) : Boolean {
-			for each (var item: Point in arr) {
+
+			var cnt: int = arr.length;
+
+			for (var i: int = 0; i < cnt; i++) {
+				var item: Point = arr[i];
 				if (item.x == point.x && item.y == point.y) return true;
 			}
 
@@ -33,12 +36,6 @@ package src.Map
 
 			var fromStructure: Boolean = city.hasStructureAt(start);
 
-			trace("========");
-			trace("FromStructure: " + (fromStructure ? "true": "false"));
-			
-			trace("From: " + start.toString());
-			trace("End: " + end.toString());
-			
 			return breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
 			{
 				var neighbors: Array = new Array();
@@ -64,8 +61,9 @@ package src.Map
 
 				for each (var location: Point in possibleNeighbors) {
 					if ((location.x != end.x || location.y != end.y)) {
-						if (city.hasStructureAt(location)) continue;
+						if (hasPoint(visited, location)) continue;
 						if (!isRoadByMapPosition(location.x, location.y)) continue;
+						if (city.hasStructureAt(location)) continue;
 						if (MapUtil.distance(location.x, location.y, city.MainBuilding.x, city.MainBuilding.y) > city.radius) continue;
 					} else if (fromStructure && node.x == start.x && node.y == start.y) {
 						continue;
@@ -81,20 +79,30 @@ package src.Map
 		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Point, i: int = 0) : Boolean
 		{
 			//trace("Checking " + visited[visited.length - 1].toString());
-			
+
 			var nodes: Array = getNeighbors(visited[visited.length - 1]);
 
 			// Examine adjacent nodes for end goal
 			for each (var node: Point in nodes) {
 				if ((node.x == end.x && node.y == end.y)) {
-					trace("Found goal");
 					return true;
 				}
-			}		
+			}
+
+			// Sort neighbors by distance. Helps out a bit.
+			nodes.sort(function (a:Point, b:Point):Number {
+				var aDist: Number = MapUtil.distance(a.x, a.y, end.x, end.y);
+				var bDist: Number = MapUtil.distance(b.x, b.y, end.x, end.y);
+
+				if(aDist > bDist) return 1;
+				if (aDist < bDist) return -1;
+
+				return 0;
+			});
 
 			// Search nodes for goal
 			for each (node in nodes) {
-				if (!(node.x == end.x && node.y == end.y) && !(node.x == excludedPoint.x && node.y == excludedPoint.y) && !hasPoint(visited, node)) {
+				if (!(node.x == excludedPoint.x && node.y == excludedPoint.y)) {
 					visited.push(node);
 					if (breadthFirst(end, visited, getNeighbors, excludedPoint, i)) return true;
 				}

@@ -21,7 +21,7 @@
 		public function setArray(arr: Array) : void {
 			list = arr;
 		}
-		
+
 		public function toArray(): Array
 		{
 			return list;
@@ -38,13 +38,20 @@
 			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 
-		public function add(obj: *, resort: Boolean = true):void
+		public function add(obj: *, sorted: Boolean = true):void
 		{
-			list.push(obj);
+			if (!sorted) {
+				list.push(obj);
+			}
+			else {
+				var idx: int = Util.binarySearch(list, sortFunc, obj);
+				if (idx > -1) list.splice(idx, 0, obj);
+				else {
+					list.splice(~idx, 0, obj);
+				}
+			}
 
-			if (resort)
-			sort();
-
+			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED, obj));
 			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.ADDED, obj));
 		}
 
@@ -53,8 +60,7 @@
 			//find the index and change it
 			var idx: int = Util.binarySearch(list, compareFunc, val);
 
-			if (idx == -1)
-			return;
+			if (idx <= -1) return;
 
 			list[idx] = obj;
 
@@ -66,8 +72,7 @@
 		{
 			var idx: int = Util.binarySearch(list, compareFunc, val);
 
-			if (idx == -1)
-			return null;
+			if (idx <= -1) return null;
 
 			return removeByIndex(idx);
 		}
@@ -105,17 +110,15 @@
 		{
 			var idx: int = Util.binarySearch(list, compareFunc, val);
 
-			if (idx == -1)
-			return null;
+			if (idx <= -1) return null;
 
 			return list[idx];
 		}
-		
 
 		public function getIdx(val: *): int
 		{
 			return Util.binarySearch(list, compareFunc, val);
-		}		
+		}
 
 		public function getRange(val: * ): *
 		{
@@ -131,3 +134,4 @@
 	}
 
 }
+

@@ -53,7 +53,7 @@
 		{
 			var idx: int = getMethodIndex(effectReq);
 
-			if (idx == -1) {
+			if (idx <= -1) {
 				trace("Missing effect requirement formula for effect " + effectReq.method);
 				return true;
 			}
@@ -69,7 +69,7 @@
 
 			var idx: int = getMethodIndex(effectReq);
 
-			if (idx == -1) {
+			if (idx <= -1) {
 				return effectReq.method;
 			}
 

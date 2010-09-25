@@ -110,14 +110,12 @@
 					var objY: int = packet.readUShort() + int(id / Constants.mapRegionW) * Constants.regionTileH;
 					var objState: int = packet.readUByte();
 
-					var obj:SimpleGameObject = newRegion.addObject(objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY, false);
+					var obj:SimpleGameObject = newRegion.addObject(objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
 
 					mapComm.Object.readState(obj, packet, objState);
 
 					mapComm.Object.readWall(obj, packet);
 				}
-
-				newRegion.sortObjects();
 			}
 
 			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.x, Global.gameContainer.camera.y);

@@ -270,8 +270,7 @@ package src.Objects {
 
 			if (layer == 0 && obj is SimpleGameObject)
 			{
-				objects.add(obj, false);
-				resortObjects();
+				objects.add(obj);				
 				showBestObject(obj.getX(), obj.getY());
 			}
 		}
@@ -337,12 +336,7 @@ package src.Objects {
 				currObj.visible = (SimpleGameObject.compareCityIdAndObjId(bestObj, [currObj.cityId, currObj.objectId]) == 0);
 			}
 		}
-
-		private function resortObjects():void
-		{
-			objects.sort();
-		}
-
+		
 		public function moveWithCamera(x: int, y: int):void
 		{
 			var camera: Camera = new Camera(x, y);
@@ -386,7 +380,15 @@ package src.Objects {
 
 			return low;
 		}
-
+		
+		public function hasStructureAt(x: int, y: int) : Boolean {
+			var objs: Array = objects.getRange([x, y]);
+			for each (var obj: SimpleGameObject in objs) {
+				if (obj is StructureObject) return true;
+			}
+			
+			return false;
+		}
 	}
 
 }

@@ -45,7 +45,9 @@ package src.UI.Cursors {
 
 			cursor = new GroundCircle(0);
 			cursor.alpha = 0.7;
-			destroyableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);
+
+			destroyableArea = new GroundCallbackCircle(city.radius - 1, validateTileCallback);						
+			
 			destroyableArea.alpha = 0.3;
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 			destroyableArea.setX(point.x); destroyableArea.setY(point.y);
@@ -147,7 +149,7 @@ package src.UI.Cursors {
 
 			if (Global.map.regions.getObjectsAt(screenPos.x, screenPos.y, StructureObject).length > 0) return false;
 
-			// Make sure that buildings have a path back to the city without this point
+			// Make sure that buildings have a path back to the city without this point				
 			var breaksPath: Boolean = false;
 			for each(var cityObject: CityObject in city.objects.each()) {
 				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
@@ -180,7 +182,7 @@ package src.UI.Cursors {
 			}, false, null);
 
 			if (!allNeighborsHaveOtherPaths) return false;
-
+			
 			return true;
 		}
 

@@ -5,6 +5,7 @@
 </div>
 
 <div class="span-20 last prepend-top">
-	<h2>Building Tree</h2>
+	<h2>Building Tree</h2>		
+	<?php echo $this->Html->link('View large', '/img/tree/game-tree-large.png', array('class' => 'small', 'target' => '_blank')); ?>
 	<?php echo $this->Html->image('tree/game-tree.png', array('alt' => 'TribalHero Tree')); ?>
 </div>

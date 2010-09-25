@@ -14,6 +14,7 @@ class PagesController extends AppController {
 
     function index() {
         $this->set('title_for_layout', 'Tribal Hero - a free browser game');
+		$this->set('use_jquery', true);
     }
 
     function display() {

@@ -5,25 +5,25 @@ class DatabaseController extends AppController {
 	
 	var $uses = array();
 	
-	var $structureStatRanges = array(
-			"defense" => array('min' => 0, 'max' => 12500),
-			"stealth" => array('min' => 0, 'max' => 20),
-			"range" => array('min' => 0, 'max' => 15)
-	);	
-	
 	var $unitStatRanges = array(
-			"attack" => array('min' => 1, 'max' => 110),
-			"defense" => array('min' => 0, 'max' => 84),
+			"attack" => array('min' => 5, 'max' => 100),
+			"defense" => array('min' => 5, 'max' => 84),
 			"stealth" => array('min' => 0, 'max' => 14),
 			"range" => array('min' => 0, 'max' => 19),
 			"speed" => array('min' => 2, 'max' => 22),
-			"carry" => array('min' => 0, 'max' => 246)
+			"carry" => array('min' => 0, 'max' => 352)
 	);
+	
+	var $structureStatRanges = array(
+			"defense" => array('min' => 0, 'max' => 5520),
+			"stealth" => array('min' => 0, 'max' => 20),
+			"range" => array('min' => 0, 'max' => 15)
+	);		
 	
 	var $cacheAction = array(
 		'index' => '1 month',
 		'tree' => '1 month',
-		'view/' => '1 month'
+		'view' => '1 month'
 	);
 	
 	function beforeFilter() {

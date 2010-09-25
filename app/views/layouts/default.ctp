@@ -2,9 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<?php echo $html->charset(); ?>
-	<title>
-		<?php echo $title_for_layout . ($this->name == 'Pages' && $this->action == 'index' ? '' : ' - Tribal Hero'); ?>
-	</title>
+	<title><?php echo $title_for_layout . ($this->name == 'Pages' && $this->action == 'index' ? '' : ' - Tribal Hero'); ?></title>
 	<?php
 		echo $html->meta('description', 'Tribal Hero is a free multiplayer game which allows you to build your own empire.');
 		echo $html->css('blueprint/screen', null, array("media" => "screen, projection"));
@@ -13,10 +11,12 @@
 	<?php			
 		
 		echo $html->css('style.main');
-		echo $scripts_for_layout;
 	?>	
 </head>
 <body>
+	
+
+		
 	<div class="wrapper">
 		<div id="header" class="container prepend-top">
 			<div id="login" class="push-18 span-6 last">				
@@ -60,8 +60,28 @@
 		<div class="push"></div>		
 	</div>
 	<div id="footer">&nbsp;</div>
+
+	<?php
+		if (isset($use_jquery) && $use_jquery == true) :
+	?>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script>!window.jQuery && document.write('<script src="<?php echo $this->Html->url('/js/jquery-1.4.2.min.js');?>"><\/script>')</script>	
+	<? endif; ?>
 	
-	<?php echo $js->writeBuffer(); ?>
+	<?php 
+		echo $scripts_for_layout;
+		echo $js->writeBuffer(); 
+	?>
+	
+	<!--[if IE 6]>
+	<script type="text/javascript"> 
+		/*Load jQuery if not already loaded*/ if(typeof jQuery == 'undefined'){ document.write("<script type=\"text/javascript\"   src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js\"></"+"script>"); var __noconflict = true; } 
+		var IE6UPDATE_OPTIONS = {
+			icons_path: "<?php echo $this->Html->url('/js/ie6update/images/'); ?>"
+		}
+	</script>
+		<?php echo $this->Html->script('ie6update/ie6update.js'); ?>
+	<![endif]-->
 	
 	<script type="text/javascript">
 		google_analytics_uacct = "UA-17369212-2";

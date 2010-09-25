@@ -112,7 +112,7 @@ namespace Game.Data.Troop {
 
                 lock (objLock) {
                     foreach (Formation formation in data.Values)
-                        count += (ushort)formation.Count;
+                        count += (ushort)formation.Sum(x=>x.Value);
                 }
 
                 return count;

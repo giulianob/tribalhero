@@ -51,13 +51,5 @@ namespace Game.Logic
             }
             return 0;
         }
-
-        public static ushort GetRewardPoint(Resource resource, ushort hp)
-        {
-            if (hp == 0) return 1;
-
-            ushort total = (ushort)(resource.Crop + resource.Gold + resource.Wood + resource.Iron * 2);            
-            return (ushort)Math.Max(total / hp, 1);
-        }
     }
 }

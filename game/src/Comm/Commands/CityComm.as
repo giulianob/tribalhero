@@ -159,12 +159,10 @@
 			var objPlayerId: int = packet.readUInt();
 			var objCityId: int = packet.readUInt();
 			var objId: int = packet.readUInt();
-			var objHpPercent: int = 100;
 			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
 			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
 			var objLabor: int = 0;
-			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
-			objLabor = packet.readUByte();
+			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE) objLabor = packet.readUByte();
 
 			var city: City = Global.map.cities.get(objCityId);
 
@@ -176,9 +174,9 @@
 
 			var obj: CityObject = city.objects.get(objId);
 
-			if (obj == null)
-			return;
+			if (obj == null) return;
 
+			obj.type = objType;
 			obj.labor = objLabor;
 			obj.level = objLvl;
 			obj.x = objX;

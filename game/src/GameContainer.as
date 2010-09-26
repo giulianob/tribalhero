@@ -238,7 +238,6 @@
 				miniMap.y = Constants.miniMapLargeScreenY(height);
 				minimapZoomTooltip.setText("Minimize map");
 				miniMap.setScreenRectHidden(true);
-				setSidebar(null);
 				map.disableMapQueries(true);
 				map.scrollRate = 4;
 			}

@@ -126,7 +126,13 @@
 		public static function laborRate(city: City) : int {
 			var laborTotal: int = city.getBusyLaborCount() + city.resources.labor.getValue();
 			if (laborTotal < 140) laborTotal = 140;
-			return (86400 / (-6.845 * Math.log(laborTotal) + 55)) / 2;
+			
+			var effects: Array = city.techManager.getEffects(EffectPrototype.EFFECT_COUNT_LESS_THAN, EffectPrototype.INHERIT_SELF_ALL);
+			for each (var effect: EffectPrototype in effects) {
+				if (effect.param1 == 30021) return (43200 / (-6.845 * Math.log(laborTotal) + 55)) * 0.7;
+			}
+			
+			return (43200 / (-6.845 * Math.log(laborTotal) + 55));
 		}
 	}
 }

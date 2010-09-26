@@ -36,7 +36,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ACTION_INVALID;
 
-            if (ushort.Parse(parms[0]) != UnitType && byte.Parse(parms[1]) < structure.Lvl + 1)
+            if (ushort.Parse(parms[0]) != UnitType || byte.Parse(parms[1]) < structure.Lvl + 1)
                 return Error.ACTION_INVALID;
 
             return Error.OK;

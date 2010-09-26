@@ -221,9 +221,7 @@ namespace Game.Comm {
                         return;
                     }
 
-                    Resource res = new Resource(500, 0, 0, 500, 20);
-
-                    city = new City(session.Player, cityName, res, mainBuilding);
+                    city = new City(session.Player, cityName, Formula.GetInitialCityResources(), mainBuilding);
 
                     Global.World.Add(city);
                     mainBuilding.BeginUpdate();

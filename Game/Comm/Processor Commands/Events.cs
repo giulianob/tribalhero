@@ -16,6 +16,9 @@ namespace Game.Comm {
 
             using (new MultiObjectLock(session.Player)) {
                 Global.Channel.Unsubscribe(session);
+                
+                if (session.Player.Session == session) session.Player.Session = null;
+
                 Global.DbManager.Save(session.Player);
             }
         }

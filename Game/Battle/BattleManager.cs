@@ -472,6 +472,7 @@ namespace Game.Battle {
                 report.WriteReport(ReportState.STAYING);
 
                 #region Battle Start
+                bool battleJustStarted = !battleStarted;
                 if (!battleStarted) {
                     RefreshBattleOrder();
 
@@ -490,7 +491,7 @@ namespace Game.Battle {
                 #region Find Attacker 
                 CombatObject attacker;
 
-                if (!battleOrder.NextObject(out attacker)) {
+                if (!battleOrder.NextObject(out attacker) && !battleJustStarted) {
                     ++round;
                     stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
                     battleOrder.ParticipatedInRound();

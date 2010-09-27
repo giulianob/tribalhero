@@ -73,22 +73,16 @@
 
 		public static function buildCost(city: City, prototype: StructurePrototype) : Resources
 		{
-			if (city.inBattle) return prototype.buildResources.multiplyByUnit(1.5);
-
 			return prototype.buildResources;
 		}
 
 		public static function unitTrainCost(city: City, prototype: UnitPrototype) : Resources
 		{
-			if (city.inBattle) return prototype.trainResources.multiplyByUnit(1.5);
-
 			return prototype.trainResources;
 		}
 
 		public static function unitUpgradeCost(city: City, prototype: UnitPrototype) : Resources
 		{
-			if (city.inBattle) return prototype.upgradeResources.multiplyByUnit(1.5);
-
 			return prototype.upgradeResources;
 		}
 

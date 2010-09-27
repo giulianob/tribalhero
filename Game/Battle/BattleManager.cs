@@ -620,7 +620,14 @@ namespace Game.Battle {
 
                     if (attacker.CombatList == attackers) {
                         
-                        if (defender.ClassType == BattleClass.STRUCTURE) stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
+                        switch (defender.ClassType) {
+                            case BattleClass.STRUCTURE:
+                                stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
+                                break;
+                            case BattleClass.UNIT:
+                                stamina = BattleFormulas.GetStaminaDefenseCombatObject(city, stamina, round);
+                                break;
+                        }
 
                         defenders.Remove(defender);
                         report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);

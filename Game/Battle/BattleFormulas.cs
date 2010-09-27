@@ -175,6 +175,13 @@ namespace Game.Battle
             return (ushort)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
+        internal static ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round) {
+            if (stamina == 0)
+                return 0;
+
+            return --stamina;
+        }
+
         internal static bool IsAttackMissed(byte stealth)
         {
             return 100 - stealth < Config.Random.Next(0, 100);

@@ -73,22 +73,24 @@
 			"Label.font", new ASFontUIResource("Arial", 13, false),
 			"Label.foreground", new ASColorUIResource(0xFFFFFF),
 			"TextArea.font", new ASFontUIResource("Arial", 13, false),
-			"TextArea.foreground", new ASColorUIResource(0xFFFFFF)
+			"TextArea.foreground", new ASColorUIResource(0xFFFFFF),
+			"TextField.font", new ASFontUIResource("Arial", 13, false),
+			"TextField.foreground", new ASColorUIResource(0xFFFFFF)
 			],
 
 			"Class.Message.preview", [
-			"Textfield.foreground", new ASColorUIResource(0x707070),
+			"TextField.foreground", new ASColorUIResource(0x707070),
 			"Label.foreground", new ASColorUIResource(0x707070),
 			],
 			"Class.Message.unread", [
-			"Textfield.font", new ASFontUIResource("Arial", 12, true),
-			"Textfield.foreground", new ASColorUIResource(0x000000),
+			"TextField.font", new ASFontUIResource("Arial", 12, true),
+			"TextField.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, true),
 			"Label.foreground", new ASColorUIResource(0x000000)
 			],
 			"Class.Message.read", [
-			"Textfield.font", new ASFontUIResource("Arial", 12, false),
-			"Textfield.foreground", new ASColorUIResource(0x000000),
+			"TextField.font", new ASFontUIResource("Arial", 12, false),
+			"TextField.foreground", new ASColorUIResource(0x000000),
 			"Label.font", new ASFontUIResource("Arial", 12, false),
 			"Label.foreground", new ASColorUIResource(0x000000)
 			],

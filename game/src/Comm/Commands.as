@@ -11,6 +11,8 @@ package src.Comm {
 		
 		public static const INVALID: int = 1;
 		
+		public static const CMD_LINE: int = 7;
+		
 		public static const LOGIN: int = 10;
 		public static const QUERY_XML: int = 11;
 		public static const PLAYER_USERNAME_GET: int = 12;

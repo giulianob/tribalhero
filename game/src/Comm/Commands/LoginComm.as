@@ -54,7 +54,8 @@
 		public function onLogin(packet: Packet): Boolean
 		{
 			Constants.playerId = packet.readUInt();
-			Constants.sessionId = packet.readString();
+			Constants.admin = packet.readByte() == 1;
+			Constants.sessionId = packet.readString();			
 			Global.map.usernames.players.add(new Username(Constants.playerId, packet.readString()));
 
 			var now: Date = new Date();
@@ -197,6 +198,25 @@
 				BuiltInMessages.processAll(city);
 			}
 		}
+		
+		public function sendCommand(command: String, callback: Function) : void {			
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.CMD_LINE;
+			packet.writeString(command);
+
+			session.write(packet, onReceiveCommandResponse, [callback]);
+		}
+
+		private function onReceiveCommandResponse(packet: Packet, custom: *) : void {
+			var callback: Function = custom[0];
+
+			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
+				callback(GameError.getMessage(packet.readUInt()));				
+				return;
+			}
+
+			callback(packet.readString());
+		}		
 	}
 }
 

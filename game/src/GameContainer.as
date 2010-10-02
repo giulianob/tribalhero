@@ -16,7 +16,6 @@
 	import src.UI.Dialog.*;
 	import src.UI.*;
 	import flash.ui.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -77,6 +76,9 @@
 		// Username + logout link
 		private var userPnl: JPanel;
 
+		// Command line
+		private var cmdLine: CmdLineViewer;
+
 		public function GameContainer()
 		{
 			// Create and position the city list
@@ -86,12 +88,12 @@
 			lstCities.setSize(new IntDimension(128, 22));
 			lstCities.setLocation(new IntPoint(37, 12));
 			addChild(lstCities);
-			
+
 			// Create and position the username panel
 			userPnl = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			userPnl.setPreferredSize(new IntDimension(200, 22));
 			userPnl.setLocation(new IntPoint(480, 12));
-			addChild(userPnl);			
+			addChild(userPnl);
 
 			// Create barBg
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
@@ -282,11 +284,11 @@
 			// Populate user panel
 			/*
 			userPnl.removeAll();
-			var userLblMaker: Function = function(txt: String) : JLabel { 							
-				var lbl: JLabel = new JLabel(txt);
-				GameLookAndFeel.changeClass(lbl, "Tooltip.text Label.small");
-				lbl.pack();
-				return lbl;
+			var userLblMaker: Function = function(txt: String) : JLabel {
+			var lbl: JLabel = new JLabel(txt);
+			GameLookAndFeel.changeClass(lbl, "Tooltip.text Label.small");
+			lbl.pack();
+			return lbl;
 			}
 			userPnl.append(userLblMaker(map.usernames.players.get(Constants.playerId).name + "("));
 			userPnl.append(userLblMaker(")"));
@@ -329,6 +331,14 @@
 			//Add minimap tools
 			addChild(minimapTools);
 
+			// Create and position command line if admin
+			if (Constants.admin) {
+				cmdLine = new CmdLineViewer();
+				cmdLine.show();
+				cmdLine.getFrame().hide();
+				cmdLine.getFrame().setLocationXY(300, Constants.screenH - 292);
+			}
+
 			// Add objects to resize manager
 			resizeManager = new ResizeManager(stage);
 
@@ -340,6 +350,7 @@
 			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			resizeManager.addObject(userPnl, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
+			if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
 
 			resizeManager.addEventListener(Event.RESIZE, map.onResize);
 			resizeManager.addEventListener(Event.RESIZE, message.onResize);
@@ -384,6 +395,10 @@
 
 			if (resizeManager) {
 				resizeManager.removeAllObjects();
+			}
+
+			if (cmdLine) {
+				cmdLine.getFrame().dispose();
 			}
 
 			message.hide();

@@ -245,7 +245,7 @@ namespace Game.Module {
 
                 uint idx = 500000 + i;
 
-                Player npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i);
+                Player npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, false);
                 Intelligence intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()), Math.Max(0.5, rand.NextDouble()));
 
                 using (new MultiObjectLock(npc)) {

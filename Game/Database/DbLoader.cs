@@ -16,6 +16,7 @@ using Game.Logic.Actions.ResourceActions;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using MySql.Data.MySqlClient;
 
 #endregion
 
@@ -31,7 +32,9 @@ namespace Game.Database {
             DateTime now = DateTime.UtcNow;
 
             // Set all players to offline
-            Global.DbManager.Query("UPDATE `players` SET online = '0'");
+            Global.DbManager.Query("UPDATE `players` SET online = @online", new[] {
+                new DbColumn("online", false, DbType.Boolean)
+            });
 
             using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                 try {
@@ -131,7 +134,7 @@ namespace Game.Database {
             Global.Logger.Info("Loading players...");
             using (var reader = dbManager.Select(Player.DB_TABLE)) {
                 while (reader.Read()) {
-                    Player player = new Player((uint)reader["id"], DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc), DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc), (string)reader["name"]) {
+                    Player player = new Player((uint)reader["id"], DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc), DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc), (string)reader["name"], (bool)reader["admin"]) {
                         DbPersisted = true
                     };
                     Global.Players.Add(player.PlayerId, player);

@@ -46,7 +46,7 @@ namespace Game.Battle {
         protected ModCalculator() {
             SetParameters();
         }
-        public void AddMod(String parameter, int value) {
+        public void AddMod(string parameter, int value) {
             parameters[parameter].AddValue(value);
         }
         public abstract T GetResult();

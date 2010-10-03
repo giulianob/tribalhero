@@ -134,10 +134,10 @@ namespace Game.Database {
             Global.Logger.Info("Loading players...");
             using (var reader = dbManager.Select(Player.DB_TABLE)) {
                 while (reader.Read()) {
-                    Player player = new Player((uint)reader["id"], DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc), DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc), (string)reader["name"], (bool)reader["admin"]) {
+                    Player player = new Player((uint)reader["id"], DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc), DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc), (string)reader["name"], (bool)reader["admin"], (bool)reader["banned"]) {
                         DbPersisted = true
                     };
-                    Global.Players.Add(player.PlayerId, player);
+                    Global.World.Players.Add(player.PlayerId, player);
                 }
             }
 
@@ -160,7 +160,7 @@ namespace Game.Database {
                                                              goldRealizeTime, (int)reader["gold_production_rate"], (int)reader["iron"], ironRealizeTime, (int)reader["iron_production_rate"],
                                                              (int)reader["wood"], woodRealizeTime, (int)reader["wood_production_rate"], (int)reader["labor"], laborRealizeTime,
                                                              (int)reader["labor_production_rate"]);
-                    City city = new City(Global.Players[(uint)reader["player_id"]], (string)reader["name"], resource, null) {
+                    City city = new City(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], resource, null) {
                         Radius = (byte)reader["radius"],
                         DbPersisted = true,
                         LootStolen = (uint)reader["loot_stolen"],
@@ -238,7 +238,7 @@ namespace Game.Database {
                         // Create deplete time
                         Global.Scheduler.Put(new ForestDepleteAction(forest, forest.DepleteTime));
                         Global.World.DbLoaderAdd(forest);
-                        Global.Forests.DbLoaderAdd(forest);
+                        Global.World.Forests.DbLoaderAdd(forest);
                     }
 
                     // Resave to include new time

@@ -31,7 +31,7 @@ namespace Game.Logic.Actions {
         public override Error Execute() {
             Forest forest;
 
-            if (!Global.Forests.TryGetValue(forestId, out forest))
+            if (!Global.World.Forests.TryGetValue(forestId, out forest))
                 return Error.OBJECT_NOT_FOUND;
 
             // add to queue for completion
@@ -45,7 +45,7 @@ namespace Game.Logic.Actions {
             MultiObjectLock.ThrowExceptionIfNotLocked(WorkerObject.City);
 
             Forest forest;
-            if (!Global.Forests.TryGetValue(forestId, out forest)) {
+            if (!Global.World.Forests.TryGetValue(forestId, out forest)) {
                 throw new Exception("Forest is missing");
             }
             
@@ -61,7 +61,7 @@ namespace Game.Logic.Actions {
                 throw new Exception("City is missing");
             }
 
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.World.Forests)) {
                 if (!IsValid()) return;
 
                 endTime = DateTime.UtcNow.AddSeconds(30);
@@ -83,14 +83,14 @@ namespace Game.Logic.Actions {
                 throw new Exception("City is missing");
             }
 
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.World.Forests)) {
                 if (!IsValid())
                     return;
                 
                 Structure structure = (Structure)WorkerObject;                
 
                 Forest forest;
-                if (Global.Forests.TryGetValue(forestId, out forest)) {
+                if (Global.World.Forests.TryGetValue(forestId, out forest)) {
                     // Recalculate the forest
                     forest.BeginUpdate();
                     forest.RemoveLumberjack(structure);
@@ -120,14 +120,14 @@ namespace Game.Logic.Actions {
                 throw new Exception("City is missing");
             }
 
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.World.Forests)) {
                 if (!IsValid())
                     return;                
 
                 Structure structure = (Structure)WorkerObject;
 
                 Forest forest;
-                if (Global.Forests.TryGetValue(forestId, out forest)) {
+                if (Global.World.Forests.TryGetValue(forestId, out forest)) {
                     // Recalculate the forest
                     forest.BeginUpdate();
                     forest.RemoveLumberjack(structure);

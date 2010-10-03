@@ -31,10 +31,6 @@ namespace Game.Data {
         public static readonly Scheduler Scheduler = new Scheduler();
         public static readonly Channel Channel = new Channel();
 
-        public static Dictionary<uint, Player> Players { get; private set; }
-
-        public static ForestManager Forests { get; private set; }
-
         public static World World { get; private set; }
 
         public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
@@ -45,8 +41,6 @@ namespace Game.Data {
             FireEvents = true;
             SystemVariables = new Dictionary<string, SystemVariable>();
             World = new World();
-            Players = new Dictionary<uint, Player>();
-            Forests = new ForestManager();
         }
     }
 }

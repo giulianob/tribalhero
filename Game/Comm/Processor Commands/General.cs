@@ -42,7 +42,7 @@ namespace Game.Comm {
 
             string parms = cmdParts.Length == 2 ? cmdParts[1] : string.Empty;
 
-            string output = cmdLineProcessor.Execute(cmdParts[0], parms);
+            string output = cmdLineProcessor.Execute(cmdParts[0].Trim(), parms);
 
             reply.AddString(output);
             session.Write(reply);

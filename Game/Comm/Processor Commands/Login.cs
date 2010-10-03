@@ -27,7 +27,7 @@ namespace Game.Comm
         public void CmdQueryXml(Session session, Packet packet)
         {
             Packet reply = new Packet(packet);
-            reply.AddString(File.ReadAllText("C:\\source\\GameServer\\Game\\Setup\\CSV\\data.xml"));
+            reply.AddString(File.ReadAllText(Path.Combine(Config.data_folder, "data.xml")));
             session.Write(reply);
         }
 
@@ -46,6 +46,7 @@ namespace Game.Comm
             string playerPassword = string.Empty;
             uint playerId;
             bool admin;
+            bool banned = false;
 
             try
             {
@@ -115,14 +116,24 @@ namespace Game.Comm
                 playerId = (uint)reader["id"];
                 playerName = (string)reader["name"];
                 playerCreated = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
+                banned = (bool)reader["banned"];
                 // ReSharper disable RedundantAssignment
                 admin = (bool)reader["admin"];
                 // ReSharper restore RedundantAssignment
 
                 reader.Close();
 
-                Global.DbManager.Query(string.Format("UPDATE `{0}` SET login_key = null WHERE id = @id LIMIT 1",
+                // Reset login key back to null
+                Global.DbManager.Query(string.Format("UPDATE `{0}` SET `login_key` = null WHERE `id` = @id LIMIT 1",
                                                      Player.DB_TABLE), new[] { new DbColumn("id", playerId, System.Data.DbType.UInt32) });
+
+                // If player was banned then kick his ass out
+                if (banned)
+                {
+                    ReplyError(session, packet, Error.BANNED);
+                    session.CloseSession();
+                    return;
+                }
             }
             else
             {
@@ -151,7 +162,7 @@ namespace Game.Comm
             bool newPlayer;
             lock (loginLock)
             {
-                newPlayer = !Global.Players.TryGetValue(playerId, out player);
+                newPlayer = !Global.World.Players.TryGetValue(playerId, out player);
 
                 //If it's a new player then add him to our session
                 if (newPlayer)
@@ -159,10 +170,10 @@ namespace Game.Comm
                     Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
 
                     // ReSharper disable ConditionIsAlwaysTrueOrFalse
-                    player = new Player(playerId, playerCreated, SystemClock.Now, playerName, admin, sessionId);
+                    player = new Player(playerId, playerCreated, SystemClock.Now, playerName, admin, banned, sessionId);
                     // ReSharper restore ConditionIsAlwaysTrueOrFalse
 
-                    Global.Players.Add(player.PlayerId, player);
+                    Global.World.Players.Add(player.PlayerId, player);
                 }
                 else
                 {
@@ -261,7 +272,7 @@ namespace Game.Comm
 
                     if (!Randomizer.MainBuilding(out mainBuilding))
                     {
-                        Global.Players.Remove(session.Player.PlayerId);
+                        Global.World.Players.Remove(session.Player.PlayerId);
                         Global.DbManager.Rollback();
                         // If this happens I'll be a very happy game developer
                         ReplyError(session, packet, Error.MAP_FULL);

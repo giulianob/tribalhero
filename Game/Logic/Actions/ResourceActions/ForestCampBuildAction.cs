@@ -43,7 +43,7 @@ namespace Game.Logic.Actions {
             Structure lumbermill;
             Forest forest;
 
-            if (!Global.World.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !Global.Forests.TryGetValue(forestId, out forest))
+            if (!Global.World.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !Global.World.Forests.TryGetValue(forestId, out forest))
                 return Error.OBJECT_NOT_FOUND;
 
             // Count number of camps and verify there's enough space left                
@@ -161,7 +161,8 @@ namespace Game.Logic.Actions {
                 return;
             }
 
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.World.Forests))
+            {
                 if (!IsValid()) return;
 
                 Structure structure;
@@ -179,7 +180,8 @@ namespace Game.Logic.Actions {
 
                 // Get forest. If it doesn't exist, we need to delete the structure.
                 Forest forest;
-                if (!Global.Forests.TryGetValue(forestId, out forest)) {
+                if (!Global.World.Forests.TryGetValue(forestId, out forest))
+                {
                     // Give back the labors to the city
                     city.BeginUpdate();
                     city.Resource.Labor.Add(labors);
@@ -229,7 +231,7 @@ namespace Game.Logic.Actions {
                 throw new Exception("City is missing");
             }
 
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.World.Forests)) {
                 if (!IsValid())
                     return;
 
@@ -250,7 +252,7 @@ namespace Game.Logic.Actions {
 
                 // Remove camp from forest and recalculate forest
                 Forest forest;
-                if (Global.Forests.TryGetValue(forestId, out forest)) {
+                if (Global.World.Forests.TryGetValue(forestId, out forest)) {
                     forest.BeginUpdate();
                     forest.RemoveLumberjack(structure);
                     forest.RecalculateForest();

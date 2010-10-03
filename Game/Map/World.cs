@@ -9,7 +9,6 @@ using Game.Comm;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
-using Game.Logic;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
@@ -28,36 +27,33 @@ namespace Game.Map
 
         public uint WorldHeight { get; private set; }
 
-        public object Lock { get; private set; }
-
-        public LargeIdGenerator ObjectIdGenerator { get; private set; }
+        public object Lock { get; private set; }        
 
         public Dictionary<uint, Player> Players { get; private set; }
 
         public ForestManager Forests { get; private set; }
 
-        public int CityCount
-        {
-            get { return cities.Count; }
-        }
+        private Dictionary<uint, City> Cities { get; set; }
 
         private Region[] regions;
         private CityRegion[] cityRegions;
-        private readonly Dictionary<uint, City> cities = new Dictionary<uint, City>();
         private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
+        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(int.MaxValue);
 
         private int RegionsCount { get; set; }
         private uint RegionSize { get; set; }
         private Stream RegionChanges { get; set; }
         private byte[] MapData { get; set; }
 
+        public int CityCount { get { return Cities.Count; } }
+
         #endregion
 
         public World()
         {
+            Cities = new Dictionary<uint, City>();
             RoadManager = new RoadManager();
-            Lock = new object();
-            ObjectIdGenerator = new LargeIdGenerator(int.MaxValue);
+            Lock = new object();            
             Players = new Dictionary<uint, Player>();
             Forests = new ForestManager();
         }
@@ -66,7 +62,7 @@ namespace Game.Map
 
         public bool TryGetObjects(uint cityId, out City city)
         {
-            return cities.TryGetValue(cityId, out city);
+            return Cities.TryGetValue(cityId, out city);
         }
 
         public bool TryGetObjects(uint playerId, out Player player)
@@ -78,21 +74,21 @@ namespace Game.Map
         {
             troopStub = null;
 
-            return cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
+            return Cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
         }
 
         public bool TryGetObjects(uint cityId, uint structureId, out City city, out Structure structure)
         {
             structure = null;
 
-            return cities.TryGetValue(cityId, out city) && city.TryGetStructure(structureId, out structure);
+            return Cities.TryGetValue(cityId, out city) && city.TryGetStructure(structureId, out structure);
         }
 
         public bool TryGetObjects(uint cityId, uint troopObjectId, out City city, out TroopObject troopObject)
         {
             troopObject = null;
 
-            return cities.TryGetValue(cityId, out city) && city.TryGetTroop(troopObjectId, out troopObject);
+            return Cities.TryGetValue(cityId, out city) && city.TryGetTroop(troopObjectId, out troopObject);
         }
 
         #endregion
@@ -186,7 +182,7 @@ namespace Game.Map
                 city.BeginUpdate();
                 city.Id = (uint)cityIdGen.GetNext();
                 city.EndUpdate();
-                cities[city.Id] = city;
+                Cities[city.Id] = city;
 
                 //Initial save of these objects
                 Global.DbManager.Save(city.MainBuilding);
@@ -201,13 +197,13 @@ namespace Game.Map
         public void DbLoaderAdd(uint id, City city)
         {
             city.Id = id;
-            cities[city.Id] = city;
+            Cities[city.Id] = city;
             cityIdGen.Set((int)id);
         }
 
         public void AfterDbLoaded()
         {
-            IEnumerator<City> iter = cities.Values.GetEnumerator();
+            IEnumerator<City> iter = Cities.Values.GetEnumerator();
             while (iter.MoveNext())
             {
 
@@ -233,7 +229,7 @@ namespace Game.Map
         {
             lock (Lock)
             {
-                cities[city.Id] = null;
+                Cities[city.Id] = null;
                 cityIdGen.Release((int)city.Id);
                 CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
 
@@ -259,7 +255,7 @@ namespace Game.Map
                 // If simple object, we must assign an id
                 if (!(obj is GameObject))
                 {
-                    obj.ObjectId = (uint)ObjectIdGenerator.GetNext();
+                    obj.ObjectId = (uint)objectIdGenerator.GetNext();
                 }
                 else if (obj is Structure && !(ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)obj)))
                 {
@@ -296,7 +292,7 @@ namespace Game.Map
             // Set id in use
             if (!(obj is GameObject))
             {
-                ObjectIdGenerator.Set((int)obj.ObjectId);
+                objectIdGenerator.Set((int)obj.ObjectId);
             }
         }
 
@@ -321,7 +317,7 @@ namespace Game.Map
             // Free object id if this is SimpleGameObject
             if (!(obj is GameObject))
             {
-                ObjectIdGenerator.Release((int)obj.ObjectId);
+                objectIdGenerator.Release((int)obj.ObjectId);
             }
 
             // Send remove update

@@ -7,19 +7,19 @@ using NDesk.Options;
 namespace Game.Comm
 {
     public partial class CmdLineProcessor
-    {
-
+    {        
         public string CmdSendResources(string[] parms)
         {
             Resource resource = new Resource();
             string cityName = string.Empty;
             bool help = false;
+
             try
             {
                 var p = new OptionSet
                             {
-                                { "?|help", v => help = true }, 
-                                { "city=", v => cityName = v.TrimMatchingQuotes('"') }, 
+                                { "?|help|h", v => help = true }, 
+                                { "city=", v => cityName = v.TrimMatchingQuotes() }, 
                                 { "crop=", v => resource.Crop = int.Parse(v) },
                                 { "wood=", v => resource.Wood = int.Parse(v) },
                                 { "labor=", v => resource.Labor = int.Parse(v) },
@@ -34,7 +34,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(cityName))
-                return "send_resource --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###]";
+                return "send_resources --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###]";
 
             uint cityId;
             if (!Global.World.FindCityId(cityName, out cityId))

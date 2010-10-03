@@ -32,6 +32,10 @@ namespace Game.Map
 
         public LargeIdGenerator ObjectIdGenerator { get; private set; }
 
+        public Dictionary<uint, Player> Players { get; private set; }
+
+        public ForestManager Forests { get; private set; }
+
         public int CityCount
         {
             get { return cities.Count; }
@@ -54,6 +58,8 @@ namespace Game.Map
             RoadManager = new RoadManager();
             Lock = new object();
             ObjectIdGenerator = new LargeIdGenerator(int.MaxValue);
+            Players = new Dictionary<uint, Player>();
+            Forests = new ForestManager();
         }
 
         #region Object Getters
@@ -61,6 +67,11 @@ namespace Game.Map
         public bool TryGetObjects(uint cityId, out City city)
         {
             return cities.TryGetValue(cityId, out city);
+        }
+
+        public bool TryGetObjects(uint playerId, out Player player)
+        {
+            return Players.TryGetValue(playerId, out player);
         }
 
         public bool TryGetObjects(uint cityId, byte troopStubId, out City city, out TroopStub troopStub)
@@ -215,7 +226,7 @@ namespace Game.Map
             }
 
             // Launch forest creator
-            Global.Forests.StartForestCreator();
+            Global.World.Forests.StartForestCreator();
         }
 
         public void Remove(City city)
@@ -552,6 +563,18 @@ namespace Game.Map
             }
         }
         #endregion
+
+        public bool FindPlayerId(string name, out uint playerId)
+        {
+            playerId = ushort.MaxValue;
+            using (DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE), new[] { new DbColumn("name", name, System.Data.DbType.String) }))
+            {
+                if (!reader.HasRows) return false;
+                reader.Read();
+                playerId = (uint)reader[0];
+                return true;
+            }
+        }
 
         public bool FindCityId(string name, out uint cityId)
         {

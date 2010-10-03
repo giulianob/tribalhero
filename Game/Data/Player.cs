@@ -30,9 +30,11 @@ namespace Game
 
         public bool Admin { get; set; }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin) : this(playerid, created, lastLogin, name, admin, string.Empty) { }
+        public bool Banned { get; set; }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, string sessionId)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, bool banned) : this(playerid, created, lastLogin, name, admin, banned, string.Empty) { }
+
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, bool banned, string sessionId)
         {
             PlayerId = playerid;
             LastLogin = lastLogin;
@@ -103,7 +105,8 @@ namespace Game
                                   new DbColumn("last_login", LastLogin, DbType.DateTime),
                                   new DbColumn("session_id", SessionId, DbType.String, 128),
                                   new DbColumn("online", Session != null, DbType.Boolean),
-                                  new DbColumn("admin", Admin, DbType.Boolean)
+                                  new DbColumn("admin", Admin, DbType.Boolean),
+                                  new DbColumn("banned", Banned, DbType.Boolean)
                               };
             }
         }

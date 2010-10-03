@@ -21,7 +21,7 @@ namespace ConsoleSimulator {
         TroopStub attack;
 
         public Group() {
-            player = new Player(player_id, DateTime.MinValue, SystemClock.Now, "player " + player_id, false);
+            player = new Player(player_id, DateTime.MinValue, SystemClock.Now, "player " + player_id, false, false);
             player_id++;
             Structure main = new Structure(new StructureStats(new StructureBaseStats("MainBuilding", "", 2000, 1, 0, null, new BaseBattleStats(2000, 1, WeaponType.SWORD, WeaponClass.ELEMENTAL, ArmorType.BUILDING, ArmorClass.STONE, 500, 0, 0, 0, 0, 0, 1, 0), 0, 0, 0, ClassId.STRUCTURE)));
             city = new City(player, "city " + city_id, new Resource(), main);

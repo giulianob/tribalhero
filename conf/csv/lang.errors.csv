@@ -27,6 +27,7 @@ ERROR_301,An invalid quantity was specified
 ERROR_400,The selected object no longer exists
 ERROR_401,The specified structure does not exist
 ERROR_402,The specified player does not exist
+ERROR_403,The specified city was not found
 ERROR_410,The map is full!
 ERROR_411,Unable to build on the specified tile
 ERROR_412,A structure already exists there.

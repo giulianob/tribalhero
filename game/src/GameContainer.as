@@ -336,7 +336,7 @@
 				cmdLine = new CmdLineViewer();
 				cmdLine.show();
 				cmdLine.getFrame().hide();
-				cmdLine.getFrame().setLocationXY(300, Constants.screenH - 292);
+				cmdLine.getFrame().setLocationXY(300, Constants.screenH - cmdLine.getFrame().getHeight() + 22);
 			}
 
 			// Add objects to resize manager

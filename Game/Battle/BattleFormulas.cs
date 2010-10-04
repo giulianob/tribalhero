@@ -15,7 +15,7 @@ namespace Game.Battle
         public static int MissChance(bool isAttacker, int numberOfDefenders, int numberOfAttackers) {
             int delta = isAttacker ? Math.Max(0, numberOfAttackers - numberOfDefenders) : Math.Max(0, numberOfDefenders - numberOfAttackers);
 
-            return Math.Min(delta * 3, 40);
+            return Math.Min(delta * 2, 25);
         }
 
         public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)

@@ -65,7 +65,7 @@ package src.UI.Dialog
 						case "clr":
 						case "clear":
 						case "cls":
-							txtCommand.setText("");
+							txtConsole.setText("");
 						break;
 						default:
 							if (txtCommand.getText().length > 0) {
@@ -122,19 +122,22 @@ package src.UI.Dialog
 		private function log(str: String, isCommand: Boolean = false) : void {
 			if (isCommand) {
 				txtConsole.appendText("\n>" + str);
-				if (!inCmd()) cmdHistory.push(str);
+				if (!inCmd()) { 
+					cmdHistory.push(str);
+					cmdIndex = cmdHistory.length - 1;
+				}
 			} else {
 				txtConsole.appendText("\n" + str);
 			}
 		}
 
 		private function createUI() : void {
-			setPreferredWidth(500);
+			setPreferredWidth(650);
 			setBorder(new EmptyBorder(null, new Insets(5, 5, 5, 5)));
 
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 
-			txtConsole = new JTextArea(">Tribal Hero v" + Constants.version + "." + Constants.revision, 15, 0);
+			txtConsole = new JTextArea("Tribal Hero v" + Constants.version + "." + Constants.revision, 15, 0);
 			txtConsole.setWordWrap(true);
 			txtConsole.setBackgroundDecorator(null);
 			txtConsole.setEditable(false);
@@ -145,8 +148,8 @@ package src.UI.Dialog
 
 			scrollConsole = new JScrollPane(txtConsole);
 
-			GameLookAndFeel.changeClass(txtCommand, "Tooltip.text");
-			GameLookAndFeel.changeClass(txtConsole, "Tooltip.text");
+			GameLookAndFeel.changeClass(txtCommand, "Console.text");
+			GameLookAndFeel.changeClass(txtConsole, "Console.text");
 
 			append(scrollConsole);
 			append(txtCommand);

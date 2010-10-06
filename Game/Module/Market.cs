@@ -17,7 +17,7 @@ namespace Game.Module {
 
         private const int MinPrice = 5;
         private const int DefaulPrice = 50;
-        private const int MaxPrice = 500;
+        private const int MaxPrice = 1000;
 
         private const int QuantityPerChangePerPlayer = 200;
 
@@ -26,7 +26,7 @@ namespace Game.Module {
                 crop = new Market(ResourceType.CROP, DefaulPrice, QuantityPerChangePerPlayer);
 
             if (iron == null)
-                iron = new Market(ResourceType.IRON, DefaulPrice, QuantityPerChangePerPlayer);
+                iron = new Market(ResourceType.IRON, DefaulPrice * 10, QuantityPerChangePerPlayer);
 
             if (wood == null)
                 wood = new Market(ResourceType.WOOD, DefaulPrice, QuantityPerChangePerPlayer);

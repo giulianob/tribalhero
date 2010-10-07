@@ -47,7 +47,7 @@ namespace Game.Battle {
 
                 //have to compare armor and weapon type here to give some sort of score
                 score += ((int)(BattleFormulas.GetArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor) * 10));
-                score += ((int)(BattleFormulas.GetArmorClassModifier(attacker.BaseStats.WeaponClass, obj.BaseStats.ArmorClass) * 10));
+                score += ((int)(BattleFormulas.GetArmorClassModifier(attacker.BaseStats.WeaponClass, obj.BaseStats.ArmorClass) * 5));
 
                 score +=  Config.Random.Next(5);  // just add some randomness
 

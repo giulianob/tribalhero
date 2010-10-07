@@ -11,13 +11,14 @@
 		?>
 	<?php echo $form->create('Player', array('action' => 'login'));?>
 	<?php echo $form->input('name', array('label' => 'Enter Your Username'))?>
-	<?php echo $form->input('password', array('label' => 'Enter Your Password', 'type' => 'password'))?>		
-	
-	<div class="input text">		
-	
+	<div class="input password">
+		<?php echo $form->input('password', array('label' => 'Enter Your Password', 'type' => 'password', 'div' => false))?>		
+		<div><?php echo $this->Html->link('Forgot Password?', array('action' => 'forgot'), array('class' => 'small')); ?></div>
 	</div>
-	
-	<?php echo $form->end('Log In');?>
+	<div class="buttons">
+		<?php echo $form->button('Log In', array('alt' => 'Login', 'type' => 'submit', 'div' => false));?>	
+	</div>
+	<?php echo $form->end();?>
 </div>
 <div class="span-10 last">
 	<div class="float-right round-box">

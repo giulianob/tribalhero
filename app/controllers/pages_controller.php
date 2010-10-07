@@ -105,7 +105,7 @@ class PagesController extends AppController {
         'login_key_date' => date('Y-m-d H:i:s'),
         'login_key' => $loginKey
         ), false)) {
-            $this->Session->setFlash('We were unable to log you into the world. Refresh this page to try again, if the problem persists, contact us.');
+            $this->Session->setFlash('We were unable to log you into the world. Refresh this page to try again, if the problem persists, contact us.', 'default', array('class' => 'error'));
             $this->redirect('/');
         }
         

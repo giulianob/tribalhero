@@ -10,7 +10,8 @@ class Player extends AppModel {
 			'between' => array(
 				'rule' => array('between', 5, 32),
 				'message' => 'Name must be between 5 and 32 characters in length',
-				'required' => true
+				'required' => true,
+				'on' => 'create'
 			),
 			'alphanumeric' => array(
 				'rule' => 'alphaNumeric',
@@ -30,7 +31,7 @@ class Player extends AppModel {
 				'rule' => 'isUnique',
 				'message' => 'This email address has already been registered',
 				'required' => true,
-				'allowEmpty' => false
+				'on' => 'create'
 			),
 			'between' => array(
 				'rule' => array('between', 5, 256),
@@ -52,13 +53,12 @@ class Player extends AppModel {
 				'on' => 'create',
 				'required' => true
 			),
-			'betweenUpdt' => array(
+			'betweenUpd' => array(
 				'rule' => array('between', 5, 32),
 				'message' => 'Must be between 5 and 32 characters long',
 				'on' => 'update',
-				'required' => false,
-				'allowEmpty' => true
-			)			
+				'required' => false
+			)
 		)
 	);		
 			

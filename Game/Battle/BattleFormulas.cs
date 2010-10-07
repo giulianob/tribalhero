@@ -41,7 +41,7 @@ namespace Game.Battle
                             return 0.75;
                         case ArmorClass.METAL:
                         case ArmorClass.STONE:
-                            return 2;
+                            return 1.25;
                     }
                     break;
             }

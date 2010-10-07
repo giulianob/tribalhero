@@ -19,14 +19,14 @@ namespace Game.Logic.Actions.ResourceActions {
 
         public void Callback(object custom) {
             
-            using (new MultiObjectLock(Global.Forests)) {
+            using (new MultiObjectLock(Global.World.Forests)) {
                 
                 for (byte i = 0; i < Config.forest_count.Length; i++) {
                     byte lvl = (byte)(i + 1);
-                    int delta = Config.forest_count[i] - Global.Forests.ForestCount[i];
+                    int delta = Config.forest_count[i] - Global.World.Forests.ForestCount[i];
                     
                     for (int j = 0; j < delta; j++)
-                        Global.Forests.CreateForest(lvl, Formula.GetMaxForestCapacity(lvl), Formula.GetMaxForestRate(lvl));
+                        Global.World.Forests.CreateForest(lvl, Formula.GetMaxForestCapacity(lvl), Formula.GetMaxForestRate(lvl));
                 }
 
                 // Reschedule ourselves

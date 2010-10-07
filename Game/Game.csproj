@@ -113,17 +113,22 @@
   <ItemGroup>
     <Reference Include="CSScriptLibrary, Version=2.6.0.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\CSScriptLibrary.dll</HintPath>
+      <HintPath>..\Lib\CSScriptLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL" />
-    <Reference Include="MySql.Data, Version=5.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\MySql.Data.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\Lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="mysql.data, Version=6.3.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\mysql.data.dll</HintPath>
+    </Reference>
+    <Reference Include="NDesk.Options">
+      <HintPath>..\Lib\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -133,7 +138,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\zlib.net.dll</HintPath>
+      <HintPath>..\Lib\zlib.net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -148,14 +153,17 @@
     <Compile Include="Battle\CombatStructure.cs" />
     <Compile Include="Battle\AttackCombatUnit.cs" />
     <Compile Include="Battle\CombatUnitFactory.cs" />
+    <Compile Include="Comm\CmdLine Commands\Player.cs" />
+    <Compile Include="Comm\CmdLine Commands\Resources.cs" />
     <Compile Include="Comm\CmdLineCommands.cs" />
-    <Compile Include="Comm\CommandLineProcessor.cs" />
+    <Compile Include="Comm\CmdLineProcessor.cs" />
     <Compile Include="Comm\Commands.cs" />
     <Compile Include="Comm\PolicyServer.cs" />
     <Compile Include="Comm\Packet.cs" />
     <Compile Include="Comm\PacketHelper.cs" />
     <Compile Include="Comm\Parameter.cs" />
     <Compile Include="Comm\Processor Commands\Battle.cs" />
+    <Compile Include="Comm\Processor Commands\General.cs" />
     <Compile Include="Comm\Processor Commands\Events.cs" />
     <Compile Include="Comm\Processor Commands\Login.cs" />
     <Compile Include="Comm\Processor Commands\Player.cs" />
@@ -249,6 +257,7 @@
     <Compile Include="Setup\RequirementFactory.cs" />
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
+    <Compile Include="Util\CmdParserExtension.cs" />
     <Compile Include="Util\CSVReader.cs" />
     <Compile Include="Util\HexDump.cs" />
     <Compile Include="Util\IChannel.cs" />
@@ -343,10 +352,6 @@
     <Compile Include="Util\SystemClock.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="log4net.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Comm\CmdLine Commands\" />
     <Folder Include="Logic\Requirements\RequirementFormulas\" />
   </ItemGroup>
   <ItemGroup>

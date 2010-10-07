@@ -145,9 +145,13 @@ namespace Game.Battle {
         }
 
         public bool CanWatchBattle(Player player) {
-            if (player == city.Owner) return true;
-        
-            return defenders.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds) || attackers.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds);
+            lock (battleLock) {
+                if (player == city.Owner)
+                    return true;
+
+                return defenders.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds) ||
+                       attackers.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds);
+            }
         }
 
         #region Database Loader
@@ -472,6 +476,7 @@ namespace Game.Battle {
                 report.WriteReport(ReportState.STAYING);
 
                 #region Battle Start
+                bool battleJustStarted = !battleStarted;
                 if (!battleStarted) {
                     RefreshBattleOrder();
 
@@ -490,7 +495,7 @@ namespace Game.Battle {
                 #region Find Attacker 
                 CombatObject attacker;
 
-                if (!battleOrder.NextObject(out attacker)) {
+                if (!battleOrder.NextObject(out attacker) && !battleJustStarted) {
                     ++round;
                     stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
                     battleOrder.ParticipatedInRound();
@@ -619,7 +624,14 @@ namespace Game.Battle {
 
                     if (attacker.CombatList == attackers) {
                         
-                        if (defender.ClassType == BattleClass.STRUCTURE) stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
+                        switch (defender.ClassType) {
+                            case BattleClass.STRUCTURE:
+                                stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
+                                break;
+                            case BattleClass.UNIT:
+                                stamina = BattleFormulas.GetStaminaDefenseCombatObject(city, stamina, round);
+                                break;
+                        }
 
                         defenders.Remove(defender);
                         report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);

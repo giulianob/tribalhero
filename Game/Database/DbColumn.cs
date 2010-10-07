@@ -6,43 +6,29 @@ using System.Data;
 
 namespace Game.Database {
     public class DbColumn {
-        private string column;
+        public string Column { get; private set; }
 
-        public string Column {
-            get { return column; }
-        }
+        public object Value { get; private set; }
 
-        private object value;
+        public DbType Type { get; private set; }
 
-        public object Value {
-            get { return value; }
-        }
-
-        private DbType type;
-
-        public DbType Type {
-            get { return type; }
-        }
-
-        private int size = 0;
-
-        public int Size {
-            get { return size; }
-        }
+        public int Size { get; private set; }
 
         public DbColumn(string column, DbType type) {
-            this.column = column;
-            this.type = type;
+            Size = 0;
+            Column = column;
+            Type = type;
         }
 
         public DbColumn(string column, object value, DbType type) {
-            this.column = column;
-            this.value = value;
-            this.type = type;
+            Size = 0;
+            Column = column;
+            Value = value;
+            Type = type;
         }
 
         public DbColumn(string column, object value, DbType type, int size) : this(column, value, type) {
-            this.size = size;
+            Size = size;
         }
     }
 }

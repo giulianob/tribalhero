@@ -10,8 +10,10 @@ using Game.Util;
 
 #endregion
 
-namespace Game {
-    public class Player : ILockable, IPersistableObject {
+namespace Game
+{
+    public class Player : ILockable, IPersistableObject
+    {
         private readonly List<City> list = new List<City>();
 
         public Session Session { get; set; }
@@ -26,41 +28,59 @@ namespace Game {
 
         public string SessionId { get; set; }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name) : this(playerid, created, lastLogin, name, string.Empty) {}
+        public bool Admin { get; set; }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string sessionId)
+        public bool Banned { get; set; }
+
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, bool banned) : this(playerid, created, lastLogin, name, admin, banned, string.Empty) { }
+
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, bool banned, string sessionId)
         {
             PlayerId = playerid;
             LastLogin = lastLogin;
             Created = created;
             Name = name;
             SessionId = sessionId;
+            Admin = admin;
         }
 
-        public void Add(City city) {
+        public void Add(City city)
+        {
             list.Add(city);
         }
 
-        internal List<City> GetCityList() {
+        internal List<City> GetCityList()
+        {
             return list;
         }
 
-        internal City GetCity(uint id) {
+        internal City GetCity(uint id)
+        {
             return list.Find(city => city.Id == id);
         }
 
-        public void SendSystemMessage(Player from, String subject, String message) {
+        public void SendSystemMessage(Player from, String subject, String message)
+        {
             subject = String.Format("(System) {0}", subject);
-            Global.DbManager.Query(string.Format("INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', UTC_TIMESTAMP())", from == null ? 0 : from.PlayerId, PlayerId, subject, message, 2, 0));
+            Global.DbManager.Query(
+                "INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES (@sender_player_id, @recipient_player_id, @subject, @message, @sender_state, @recipient_state, UTC_TIMESTAMP())",
+                new[]
+                    {
+                        new DbColumn("sender_player_id", from == null ? 0 : from.PlayerId, DbType.UInt32), new DbColumn("recipient_player_id", PlayerId, DbType.UInt32),
+                        new DbColumn("subject", subject, DbType.String), new DbColumn("message", subject, DbType.String), new DbColumn("sender_state", 2, DbType.Int16),
+                        new DbColumn("recipient_state", 0, DbType.Int16),
+                    });
         }
 
         #region ILockable Members
 
-        public int Hash {
-            get { return unchecked((int) PlayerId); }
+        public int Hash
+        {
+            get { return unchecked((int)PlayerId); }
         }
 
-        public object Lock {
+        public object Lock
+        {
             get { return this; }
         }
 
@@ -70,28 +90,35 @@ namespace Game {
 
         public const string DB_TABLE = "players";
 
-        public string DbTable {
+        public string DbTable
+        {
             get { return DB_TABLE; }
         }
 
-        public DbColumn[] DbColumns {
-            get {
+        public DbColumn[] DbColumns
+        {
+            get
+            {
                 return new[] {
                                   new DbColumn("name", Name, DbType.String, 32),
                                   new DbColumn("created", Created, DbType.DateTime),
                                   new DbColumn("last_login", LastLogin, DbType.DateTime),
                                   new DbColumn("session_id", SessionId, DbType.String, 128),
-                                  new DbColumn("online", Session != null, DbType.Boolean)
+                                  new DbColumn("online", Session != null, DbType.Boolean),
+                                  new DbColumn("admin", Admin, DbType.Boolean),
+                                  new DbColumn("banned", Banned, DbType.Boolean)
                               };
             }
         }
 
-        public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("id", PlayerId, DbType.UInt32)}; }
+        public DbColumn[] DbPrimaryKey
+        {
+            get { return new[] { new DbColumn("id", PlayerId, DbType.UInt32) }; }
         }
 
-        public DbDependency[] DbDependencies {
-            get { return new DbDependency[] {}; }
+        public DbDependency[] DbDependencies
+        {
+            get { return new DbDependency[] { }; }
         }
 
         public bool DbPersisted { get; set; }

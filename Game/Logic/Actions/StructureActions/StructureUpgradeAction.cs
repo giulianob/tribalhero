@@ -38,7 +38,7 @@ namespace Game.Logic.Actions {
                 return Error.OBJECT_NOT_FOUND;
 
             // layout requirement
-            if (!ReqirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure, structure.Type, structure.X, structure.Y))
+            if (!RequirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure, structure.Type, structure.X, structure.Y))
                 return Error.LAYOUT_NOT_FULLFILLED;
 
             cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));

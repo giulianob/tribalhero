@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using CSVToXML;
@@ -18,7 +19,17 @@ namespace GraphGenerator
     {
         private const ushort MAIN_BUILDING = 2000;
 
-        static StringWriter nodeConnections;                
+        static StringWriter nodeConnections;
+
+        static string[] imageDirectories = new[]
+                                               {
+                                                   @"c:\source\game\graphics\buildings",
+                                                   @"c:\source\game\graphics\units"
+                                                   
+                                               };
+
+        static string gvPath = @"C:\Program Files (x86)\Graphviz2.26.3\bin\dot.exe";
+        static string gvArgs = @"-Tpng -o..\{0} {1}";
 
         static List<int> processedStructures = new List<int>();
         static List<int> processedUnits = new List<int>();
@@ -28,10 +39,19 @@ namespace GraphGenerator
 
         static List<List<string>> ranks = new List<List<string>>();
 
-        const string template = @"digraph g {	
-    graph [fontsize=32 labelloc=""t"" label=""TribalHero Tree"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
+        const string TEMPLATE_LARGE = @"digraph g {	
+    graph [fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
     node [shape=none, fontsize=12];			
     edge [fontsize=12];
+
+    %content%
+
+}";
+
+        const string TEMPLATE = @"digraph g {	
+    graph [size=34 fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
+    node [shape=none, fontsize=15];			
+    edge [fontsize=15];
 
     %content%
 
@@ -44,31 +64,73 @@ namespace GraphGenerator
             ALREADY_PROCESSED
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Factory.CompileConfigFiles();
             Factory.InitAll();
 
             LoadLanguages();
 
+            // Delete output folder
+            if (Directory.Exists("output")) Directory.Delete("output", true);
+
+            // Create output folders
+            Directory.CreateDirectory("output");
+
+            var rawPath = Path.Combine(Path.GetFullPath("output"), "raw");
+            Directory.CreateDirectory(rawPath);            
+
+            //Copy all images from image folders to output
+            foreach (string directory in imageDirectories) {
+                foreach (string file in Directory.GetFiles(directory, "*.png")) {                                        
+                    File.Copy(file, Path.Combine(rawPath, Path.GetFileName(file)), true);
+                }
+            }
+
+            // Process
             nodeConnections = new StringWriter(new StringBuilder());            
             
             ProcessStructure(StructureFactory.GetBaseStats(MAIN_BUILDING, 1), false);
 
-            using (StreamWriter output = new StreamWriter(File.Create("tree.gv"))) {
-                using (StringWriter b = new StringWriter(new StringBuilder())) {
-                    WriteDefinitions(b);
-                    b.Write(nodeConnections.ToString());
-                    WriteRankings(b);
+            using (StringWriter b = new StringWriter(new StringBuilder())) {
+                WriteDefinitions(b);
+                b.Write(nodeConnections.ToString());
+                WriteRankings(b);
 
-                    string outStr = template.Replace("%content%", b.ToString());
+                // Write small
+                using (StreamWriter output = new StreamWriter(File.Create(Path.Combine(rawPath, "tree.gv"))))
+                {
+                    string outStr = TEMPLATE.Replace("%content%", b.ToString());
 
                     output.Write(outStr);
                 }
+
+                RunGv("game-tree.png", "tree.gv");
+                
+                // Write large                
+                using (StreamWriter output = new StreamWriter(File.Create(Path.Combine(rawPath, "tree-large.gv"))))
+                {
+                    string outStr = TEMPLATE_LARGE.Replace("%content%", b.ToString());
+
+                    output.Write(outStr);
+                }
+
+                RunGv("game-tree-large.png", "tree-large.gv");
             }
 
 
             nodeConnections.Close();
+        }
+
+        private static void RunGv(string output, string gvFile) {
+            ProcessStartInfo info = new ProcessStartInfo {
+                                            FileName = gvPath,
+                                            Arguments = string.Format(gvArgs, output, gvFile),
+                                            WorkingDirectory = Path.Combine(Path.GetFullPath("output"), "raw"),
+                                            CreateNoWindow = true,                                            
+                                        };         
+            Process proc = Process.Start(info);
+            proc.WaitForExit();
         }
 
         private static void LoadLanguages() {

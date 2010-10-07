@@ -11,13 +11,14 @@ namespace Game.Comm {
         public void EventOnConnect(Session session, Packet packet) {}
 
         public void EventOnDisconnect(Session session, Packet packet) {
-            if (session.Player == null)
+            if (session == null || session.Player == null)
                 return;
 
-            using (new MultiObjectLock(session.Player))
+            using (new MultiObjectLock(session.Player)) {
                 Global.Channel.Unsubscribe(session);
+                
+                if (session.Player.Session == session) session.Player.Session = null;
 
-            using (DbTransaction transaction =  Global.DbManager.GetThreadTransaction()) {
                 Global.DbManager.Save(session.Player);
             }
         }

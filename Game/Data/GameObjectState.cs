@@ -33,8 +33,8 @@ namespace Game.Data {
             return new GameObjectState(ObjectState.BATTLE, cityid);
         }
 
-        public static GameObjectState Movingstate(uint x, uint y) {
-            return new GameObjectState(ObjectState.MOVING, x, y);
+        public static GameObjectState MovingState(uint x, uint y) {
+            return new GameObjectState(ObjectState.MOVING);
         }
     }
 }

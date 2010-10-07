@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 21, 2010 at 09:43 PM
+-- Generation Time: Sep 23, 2010 at 09:43 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -649,6 +649,8 @@ CREATE TABLE `troops` (
   `troop_stub_id` tinyint(3) unsigned NOT NULL,
   `x` int(10) unsigned NOT NULL,
   `y` int(10) unsigned NOT NULL,
+  `target_x` int(10) unsigned NOT NULL,
+  `target_y` int(10) unsigned NOT NULL,
   `state` tinyint(3) unsigned NOT NULL,
   `state_parameters` text NOT NULL,
   `gold` int(11) NOT NULL,

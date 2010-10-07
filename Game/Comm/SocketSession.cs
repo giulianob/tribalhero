@@ -15,7 +15,12 @@ namespace Game.Comm {
         }
 
         protected override void Close() {
-            socket.Disconnect(false);
+            try {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+            } catch (Exception e) {
+                Global.Logger.Warn(e);
+            }
         }
 
         public override bool Write(Packet packet) {

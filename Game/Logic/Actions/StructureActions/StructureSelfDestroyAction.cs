@@ -5,7 +5,6 @@ using System.Text;
 using Game.Util;
 using Game.Data;
 using Game.Setup;
-using Game.Logic.Procedures;
 
 namespace Game.Logic.Actions {
     public class StructureSelfDestroyAction: ScheduledPassiveAction,IScriptable {
@@ -25,7 +24,7 @@ namespace Game.Logic.Actions {
 
         #region IScriptable Members
 
-        public void ScriptInit(Data.GameObject obj, string[] parms) {
+        public void ScriptInit(GameObject obj, string[] parms) {
             City city;
             Structure structure;
 
@@ -76,11 +75,11 @@ namespace Game.Logic.Actions {
             }
         }
 
-        public override Setup.Error Validate(string[] parms) {
+        public override Error Validate(string[] parms) {
             return Error.OK;
         }
 
-        public override Setup.Error Execute() {
+        public override Error Execute() {
             City city;
             Structure structure;
 

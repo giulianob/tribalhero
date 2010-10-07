@@ -119,7 +119,7 @@ namespace Game.Logic.Actions {
         }
 
         public override ActionType Type {
-            get { return ActionType.RESOURCE_BUY; }
+            get { return ActionType.RESOURCE_SELL; }
         }
 
         public override Error Validate(string[] parms) {

@@ -11,11 +11,14 @@ namespace Game.Logic.Actions {
         uint cityId;
         uint objectId;
         bool wasKilled;
+        List<uint> cancelActions;
 
-        public ObjectRemoveAction(uint cityId, uint objectId, bool wasKilled) {
+        public ObjectRemoveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions)
+        {
             this.cityId = cityId;
             this.objectId = objectId;
             this.wasKilled = wasKilled;
+            this.cancelActions = cancelActions;
         }
 
         public ObjectRemoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
@@ -24,6 +27,10 @@ namespace Game.Logic.Actions {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             wasKilled = bool.Parse(properties["was_killed"]);
+
+            cancelActions = new List<uint>();
+            foreach (string actionId in properties["cancel_references"].Split(',')) 
+                cancelActions.Add(uint.Parse(actionId));            
         }
 
         public override Error Validate(string[] parms) {
@@ -84,9 +91,25 @@ namespace Game.Logic.Actions {
                 action.WorkerRemoved(wasKilled);
             }
 
+            // Cancel all references
+            foreach (uint actionId in cancelActions) {
+                GameAction action;
+                using (new MultiObjectLock(cityId, out city)) {
+                    if (city == null)
+                        throw new Exception("City is missing");
+
+                    GameObject obj1 = obj;
+                    uint actionId1 = actionId;
+                    action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.ActionId == actionId1);
+                    if (action == null) continue;
+                }
+
+                action.WorkerRemoved(wasKilled);
+            }
+
             using (new MultiObjectLock(cityId, out city)) {
                 if (city == null)
-                    throw new Exception("City is missing");                    
+                    throw new Exception("City is missing");         
                 
                 if (!city.TryGetObject(objectId, out obj))
                     throw new Exception("Obj is missing");
@@ -116,12 +139,14 @@ namespace Game.Logic.Actions {
         }
 
         public override string Properties {
-            get {
+            get {                
+                
                 return
                     XMLSerializer.Serialize(new[] {
                                                       new XMLKVPair("city_id", cityId),
                                                       new XMLKVPair("object_id", objectId),
                                                       new XMLKVPair("was_killed", wasKilled),
+                                                      new XMLKVPair("cancel_references", string.Join(",", cancelActions.ConvertAll<string>(t => t.ToString()).ToArray())),
                                                   });
             }
         }

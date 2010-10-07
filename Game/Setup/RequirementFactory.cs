@@ -10,7 +10,7 @@ using Game.Util;
 #endregion
 
 namespace Game.Setup {
-    class ReqirementFactory {
+    class RequirementFactory {
         private static Dictionary<int, LayoutRequirement> dict;
 
         public static void Init(string filename) {

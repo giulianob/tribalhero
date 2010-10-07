@@ -128,7 +128,9 @@ namespace Game.Logic.Actions
             troopObj.Stub.EndUpdate();
 
             troopObj.BeginUpdate();
-            troopObj.State = GameObjectState.Movingstate(x, y);
+            troopObj.TargetX = x;
+            troopObj.TargetY = y;
+            troopObj.State = GameObjectState.MovingState(x, y);
             troopObj.EndUpdate();
 
             return Error.OK;

@@ -1,10 +1,11 @@
 <?php
-$this->Html->css('colorbox/colorbox', null, array('inline' => false));		
-$this->Html->script('colorbox/jquery.colorbox-min', array('inline' => false));	
+$this->Html->css('colorbox/colorbox', null, array('inline' => false));
+$this->Html->script('colorbox/jquery.colorbox-min', array('inline' => false));
 
 $code = <<<JS
-$(document).ready(function(){			
-	$("a[rel='gallery']").colorbox({transition:"fade",width:"80%"});
+$(document).ready(function(){		
+	// Gallery viewer
+	$("a[rel='gallery']").colorbox({transition:"fade",width:"80%"});	
 });
 JS;
 

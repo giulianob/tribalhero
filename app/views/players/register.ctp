@@ -14,13 +14,18 @@
 	<?php echo $form->input('password_once', array('label' => 'Choose a password', 'type' => 'password'))?>
 	<?php echo $form->input('password_twice', array('label' => 'Retype password', 'type' => 'password'))?>
 	
+	<?php if ($this->Session->read('verified_captcha') !== TRUE) : ?>
 	<div class="input text">		
 		<?php echo recaptcha_get_html($recaptchaPublicKey, isset($error) ? $error : null)?>
 	</div>
+	<?php endif; ?>
 	<div class="input text">
 		<strong>By registering, you agree to the Terms of Service and game rules.</strong>
 	</div>
-	<?php echo $form->end('Register');?>
+	<div class="buttons">
+		<?php echo $form->button('Register', array('alt' => 'Register', 'type' => 'submit', 'div' => false));?>	
+	</div>	
+	<?php echo $form->end();?>
 </div>
 <div class="span-10 last">
 	<div class="round-box">

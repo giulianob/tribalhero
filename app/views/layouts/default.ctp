@@ -1,44 +1,52 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<?php echo $html->charset(); ?>
+	<?php echo $this->Html->charset(); ?>
 	<title><?php echo $title_for_layout . ($this->name == 'Pages' && $this->action == 'index' ? '' : ' - Tribal Hero'); ?></title>
 	<?php
-		echo $html->meta('description', 'Tribal Hero is a free multiplayer game which allows you to build your own empire.');
-		echo $html->css('blueprint/screen', null, array("media" => "screen, projection"));
+		echo $this->Html->meta('description', 'Tribal Hero is a free multiplayer stategy game. Build your own empire, unite with other players, and wage wars.');
+		echo $this->Html->meta('keywords', 'tribalhero, tribal hero, strategy game, play free, online game, online strategy game, browser game, flash game, game');
+		
+		echo $this->Html->css('blueprint/screen', null, array("media" => "screen, projection"));		
 	?>
-	<!--[if lt IE 8]><?php echo $html->css('blueprint/ie', null, array("media" => "screen, projection"));?><![endif]-->	
+	<!--[if lt IE 8]><?php echo $this->Html->css('blueprint/ie', null, array("media" => "screen, projection"));?><![endif]-->	
 	<?php			
 		
-		echo $html->css('style.main');
+		echo $this->Html->css('style.main');
 	?>	
 </head>
-<body>
-	
-
-		
+<body>			
 	<div class="wrapper">
-		<div id="header" class="container prepend-top">
+		<div id="header" class="container">
 			<div id="login" class="push-18 span-6 last">				
-					<cake:nocache>
+					
 					<? if ($session->check('Auth.Player.id')) : ?>
 						<div>Hello, <strong><?php echo $session->read('Auth.Player.name')?></strong>.</div>
-						<?php echo $html->link('Play', '/play')?> |	<?php echo $html->link('Logout', '/players/logout')?>		
+						<?php echo $this->Html->link('Play', '/play')?> |	<?php echo $this->Html->link('Logout', '/players/logout')?>		
 					<? else: ?>
-						<?php echo $form->create('Player', array('class' => 'small white-label', 'action' => 'login'));?>
-						<?php echo $form->input('Player.name', array('error' => false))?>
-						<?php echo $form->input('Player.password', array('error' => false))?>
-						<span class="float-left">Not a member? <?php echo $this->Html->link("Register now!", array('controller' => 'players', 'action' => 'register'));?></span>
-						<?php echo $form->submit('Log In', array('alt' => 'Log In'));?>
+						<?php echo $form->create('Player', array('class' => 'small no-label', 'action' => 'login', 'div' => false));?>
+						<div class="last input text">						
+							<?php echo $form->input('Player.name', array('rel' => 'Username', 'label' => false, 'class' => 'default', 'error' => false))?>
+						</div>
+						<div class="last input password">
+							<?php echo $form->input('Player.password', array('rel' => 'Password', 'label' => false, 'error' => false, 'class' => 'default', 'div' => false))?>
+							<span><?php echo $this->Html->link("Forgot?", array('controller' => 'players', 'action' => 'forgot'));?></span>
+						</div>						
+						<div class="last input">
+							<div class="float-left buttons">
+								<?php echo $form->button('Login', array('alt' => 'Login', 'type' => 'submit', 'class' => 'small', 'div' => false));?>
+							</div>
+							<div class="">Not a member? <?php echo $this->Html->link("Register Here", array('controller' => 'players', 'action' => 'register'));?></div>
+						</div>
 						<?php echo $form->end();?>
 					<? endif; ?>
-					</cake:nocache>				
+						
 			</div>							
 		</div>
 		<div id="content" class="container prepend-top">				
 			<cake:nocache>
 			<?php if ($session->check('Message.flash')) : ?>				
-				<div class="success">
+				<div>
 					<?php echo $session->flash(); ?>
 				</div>				
 			<?php endif; ?>
@@ -46,11 +54,11 @@
 			
 			<div class="span-4">
 				<ul id="main-nav">
-					<li id="home"><?php echo $html->link('', '/');?></li>					
-					<li id="help"><?php echo $html->link('', '/database/');?></li>
+					<li id="home"><?php echo $this->Html->link('', '/');?></li>					
+					<li id="help"><?php echo $this->Html->link('', '/database/');?></li>
 					<li id="forums"><a href="http://forums.tribalhero.com"></a></li>
 					<li id="blog"><a href="#"></a></li>
-					<li id="register"><?php echo $html->link('', '/players/register');?></li>
+					<li id="register"><?php echo $this->Html->link('', '/players/register');?></li>
 				</ul>
 			</div>
 			<div class="span-20 last">
@@ -62,17 +70,31 @@
 	<div id="footer">&nbsp;</div>
 
 	<?php
-		if (isset($use_jquery) && $use_jquery == true) :
+		if (!isset($use_jquery) || $use_jquery === TRUE) :
 	?>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 		<script>!window.jQuery && document.write('<script src="<?php echo $this->Html->url('/js/jquery-1.4.2.min.js');?>"><\/script>')</script>	
-	<? endif; ?>
-	
-	<?php 
-		echo $scripts_for_layout;
-		echo $js->writeBuffer(); 
+	<?php
+		echo $this->Html->script('jquery/jquery.defaultvalue');
+	?>
+		<script type="text/javascript">			
+			$(document).ready(function(){			
+				$('input.default').defaultValue();
+			});	
+		</script>		
+	<?php
+		endif; 
 	?>
 	
+	<?php 			
+		echo $scripts_for_layout;
+		echo $js->writeBuffer(); 
+	?>	
+	
+	<?php
+	// Only show IE6 bar on main page
+	if ($this->name == 'Pages' && $this->action == 'index') : 
+	?>
 	<!--[if IE 6]>
 	<script type="text/javascript"> 
 		/*Load jQuery if not already loaded*/ if(typeof jQuery == 'undefined'){ document.write("<script type=\"text/javascript\"   src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js\"></"+"script>"); var __noconflict = true; } 
@@ -82,7 +104,8 @@
 	</script>
 		<?php echo $this->Html->script('ie6update/ie6update.js'); ?>
 	<![endif]-->
-	
+	<?php endif; ?>
+		
 	<script type="text/javascript">
 		google_analytics_uacct = "UA-17369212-2";
 		google_analytics_domain_name = "tribalhero.com";
@@ -94,6 +117,6 @@
 		ga.src = 'http://www.google-analytics.com/ga.js';
 		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
 		})();
-	</script>		
+	</script>	
 </body>
 </html>

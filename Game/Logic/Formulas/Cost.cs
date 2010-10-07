@@ -79,6 +79,7 @@ namespace Game.Logic
             int lumber = repairPower;
             foreach (Effect effect in city.Technologies.GetEffects(EffectCode.RepairSaving, EffectInheritance.ALL))
                 lumber -= repairPower * (int)effect.value[0] / 100;
+
             return new Resource(0, 0, 0, lumber, 0);
         }
 
@@ -86,22 +87,33 @@ namespace Game.Logic
         /// Returns number of seconds it takes to get 1 labor
         /// </summary>
         /// <param name="laborTotal"></param>
+        /// <param name="city"></param>
         /// <returns></returns>
-        public static int GetLaborRate(int laborTotal, City city)
-        {
-            if (laborTotal < 140) laborTotal = 140;
-            if(city.Technologies.GetEffects(EffectCode.CountEffect, EffectInheritance.SELF_ALL).Any(x=>(int)x.value[0]==30021)) {
-                return (int)(43200 / (-6.845 * Math.Log(laborTotal) + 55)) * 30 / 100;
-            } else {
-                return (int)(43200 / (-6.845 * Math.Log(laborTotal) + 55));
-            }
+        public static int GetLaborRate(int laborTotal, City city) {
+            if (laborTotal < 140)
+                laborTotal = 140;
+
+            if (city.Technologies.GetEffects(EffectCode.CountEffect, EffectInheritance.SELF_ALL).Any(x => (int) x.value[0] == 30021))
+                return (int)((43200 / (-6.845 * Math.Log(laborTotal) + 55)) * 0.7);           
+
+            return (int)(43200 / (-6.845 * Math.Log(laborTotal) + 55));
         }
 
+        /// <summary>
+        /// Maximum amount of laborers that can be assigned at once
+        /// </summary>
+        /// <param name="structure"></param>
+        /// <returns></returns>
         public static ushort LaborMoveMax(Structure structure)
         {
             return (ushort)Math.Max(5, Math.Ceiling(structure.Stats.Base.MaxLabor / 10.0f));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structure"></param>
+        /// <returns></returns>
         public static double MarketTax(Structure structure)
         {
             switch (structure.Lvl)
@@ -120,22 +132,33 @@ namespace Game.Logic
             throw new Exception(string.Format("MarketTax was not expecting a market at level {0}", structure.Lvl));
         }
 
-        static readonly int[] RateCrop = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
-        static readonly int[] RateWood = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
-        static readonly int[] RateGold = { 0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740 };
-        static readonly int[] RateIron = { 0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660 };
-
+        /// <summary>
+        /// Gets amount of resources that are hidden
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
         public static Resource HiddenResource(City city)
         {
-            int maxbonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SELF_ALL).DefaultIfEmpty(new Effect() { value = new object[] { 100 } }).Max(x => (int)x.value[0]);
+            int[] rateCrop = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
+            int[] rateWood = { 0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100 };
+            int[] rateGold = { 0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740 };
+            int[] rateIron = { 0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660 };
+
+            int maxbonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SELF_ALL).DefaultIfEmpty(new Effect { value = new object[] { 100 } }).Max(x => (int)x.value[0]);
             Resource resource = new Resource();
             foreach (Structure structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
             {
-                resource.Add(RateCrop[structure.Lvl], RateGold[structure.Lvl], RateIron[structure.Lvl], RateWood[structure.Lvl], 0);
+                resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
             }
             return resource * maxbonus / 100;
         }
 
+        /// <summary>
+        /// Returns the amount of resources the user will get back when cancelling an action
+        /// </summary>
+        /// <param name="beginTime"></param>
+        /// <param name="cost"></param>
+        /// <returns></returns>
         internal static Resource GetActionCancelResource(DateTime beginTime, Resource cost) {
             if (DateTime.UtcNow.Subtract(beginTime).Seconds <= Config.actions_free_cancel_interval_in_sec) {
                 return cost;
@@ -143,8 +166,13 @@ namespace Game.Logic
             return new Resource(cost / 2);
         }
         
+        /// <summary>
+        /// Maximum amount of resources that can be sent from the specified structure
+        /// </summary>
+        /// <param name="structure"></param>
+        /// <returns></returns>
         internal static Resource GetSendCapacity(Structure structure) {
-            int rate = structure.Lvl*200;
+            int rate = structure.Lvl * 200;
             return new Resource(rate, rate, rate, rate, rate);
         }
     }

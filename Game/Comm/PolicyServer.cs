@@ -68,7 +68,10 @@ namespace Game.Comm {
                     }
                     catch (Exception)
                     {
-                        if (s.Connected) s.Close();
+                        if (s.Connected) {
+                            s.Shutdown(SocketShutdown.Both);
+                            s.Close();
+                        }
                         return;
                     }
 
@@ -79,6 +82,7 @@ namespace Game.Comm {
 
                     Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
 
+                    s.Shutdown(SocketShutdown.Both);
                     s.Close();
                 }, newSocket);
             }

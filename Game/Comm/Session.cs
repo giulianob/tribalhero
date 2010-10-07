@@ -17,6 +17,7 @@ namespace Game.Comm {
         public Packet GetNextPacket() {
             if (ms.Position < Packet.HEADER_SIZE)
                 return null;
+
             int payloadLen = BitConverter.ToUInt16(ms.GetBuffer(), Packet.LENGTH_OFFSET);
             if (payloadLen > (ms.Position - Packet.HEADER_SIZE))
                 return null;
@@ -24,7 +25,15 @@ namespace Game.Comm {
             MemoryStream newMs = new MemoryStream();
             int packetLen = Packet.HEADER_SIZE + payloadLen;
             newMs.Write(ms.GetBuffer(), packetLen, (int) ms.Position - packetLen);
-            Packet packet = new Packet(ms.GetBuffer(), 0, packetLen);
+
+            Packet packet;
+            try {                
+                packet = new Packet(ms.GetBuffer(), 0, packetLen);
+            }
+            catch (Exception) {
+                packet = null;
+            }
+
             ms = newMs;
             return packet;
         }
@@ -37,8 +46,6 @@ namespace Game.Comm {
         private readonly PacketMaker packetMaker;
 
         public delegate void CloseCallback();
-
-        public event CloseCallback OnClose;
 
         protected Session(string name, Processor processor) {
             this.name = name;
@@ -58,8 +65,6 @@ namespace Game.Comm {
         public abstract bool Write(Packet packet);
 
         public void CloseSession() {
-            if (OnClose != null)
-                OnClose();
             Close();
         }
 

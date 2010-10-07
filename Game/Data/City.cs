@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Linq;
 using Game.Battle;
 using Game.Comm;
 using Game.Data.Troop;
@@ -387,12 +388,16 @@ namespace Game.Data {
 
                 obj.IsBlocked = true;
 
-                ObjectRemoveAction removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled);
+                ObjectRemoveAction removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
                 return Worker.DoPassive(this, removeAction, false) == Setup.Error.OK;
             }
         }
 
         public bool ScheduleRemove(Structure obj, bool wasKilled) {
+            return ScheduleRemove(obj, wasKilled, false);
+        }
+        
+        public bool ScheduleRemove(Structure obj, bool wasKilled, bool cancelReferences) {
             lock (objLock) {
                 if (obj == MainBuilding)
                     throw new Exception("Trying to remove main building");
@@ -400,9 +405,19 @@ namespace Game.Data {
                 if (!structures.ContainsKey(obj.ObjectId))
                     return false;
 
+                if (obj.IsBlocked) 
+                    return false;
+
                 obj.IsBlocked = true;
 
-                ObjectRemoveAction removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled);
+                List<uint> actions = new List<uint>();
+                if (cancelReferences) {
+                    actions = (from reference in Worker.References where reference.WorkerObject == obj select reference.Action.ActionId).ToList();
+                }
+                
+                Worker.References.Remove(obj);             
+
+                ObjectRemoveAction removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled, actions);
                 return Worker.DoPassive(this, removeAction, false) == Setup.Error.OK;
             }
         }

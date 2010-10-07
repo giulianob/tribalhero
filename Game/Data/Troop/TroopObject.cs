@@ -15,6 +15,31 @@ namespace Game.Data {
 
         public TroopStub Stub { get; set; }
 
+        uint targetX;
+        public uint TargetX {
+            get {
+                return targetX;
+            }
+            set {
+                CheckUpdateMode();
+                targetX = value;
+            }
+        }
+
+        uint targetY;
+        public uint TargetY
+        {
+            get
+            {
+                return targetY;
+            }
+            set
+            {
+                CheckUpdateMode();
+                targetY = value;
+            }
+        }
+
         TroopStats stats = new TroopStats(0, 0);
         public TroopStats Stats {
             get {
@@ -104,7 +129,9 @@ namespace Game.Data {
                                 new DbColumn("attack_radius", Stats.AttackRadius, DbType.Byte),
                                 new DbColumn("speed", Stats.Speed, DbType.Byte),
                                 new DbColumn("x", X, DbType.UInt32), 
-                                new DbColumn("y", Y, DbType.Int32),
+                                new DbColumn("y", Y, DbType.UInt32),
+                                new DbColumn("target_x", TargetX, DbType.UInt32),
+                                new DbColumn("target_y", TargetY, DbType.UInt32),
                                 new DbColumn("in_world", InWorld, DbType.Boolean),
                                 new DbColumn("state", (byte) State.Type, DbType.Boolean),
                                 new DbColumn("state_parameters", XMLSerializer.SerializeList(State.Parameters.ToArray()), DbType.String)

@@ -56,13 +56,29 @@ namespace Game.Logic {
             return cap[lvl];
         }
 
+        /// <summary>
+        /// Returns the amount of iron the user will get from the specified structure
+        /// </summary>
+        /// <param name="structure"></param>
+        /// <returns></returns>
         public static int GetIronRate(Structure structure) {
             int[] multiplier = { int.MaxValue, 70, 66, 63, 60, 56, 53, 5, 46, 43, 40 };
             return structure.Stats.Labor * 10 / multiplier[structure.Lvl];
         }
+
+        /// <summary>
+        /// Returns the highest X for 1 count available or 0 if none is found
+        /// </summary>
+        /// <param name="tech"></param>
+        /// <returns></returns>
         public static int GetXForOneCount(TechnologyManager tech) {
-            int ret = tech.GetEffects(EffectCode.XFor1, EffectInheritance.INVISIBLE).DefaultIfEmpty(new Effect()).Min(x => x.value[0]==null?ushort.MaxValue:(int)x.value[0]);
+            int ret = tech.GetEffects(EffectCode.XFor1, EffectInheritance.INVISIBLE).DefaultIfEmpty(new Effect()).Min(x => x.value[0] == null ? ushort.MaxValue : (int)x.value[0]);
             return ret;
+        }
+
+
+        public static Resource GetInitialCityResources() {
+            return new Resource(500, 0, 0, 500, 20);
         }
     }
 }

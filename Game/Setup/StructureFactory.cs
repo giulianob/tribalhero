@@ -56,9 +56,9 @@ namespace Game.Setup {
                                                                 ushort.Parse(toks[col["Def"]]),
                                                                 byte.Parse(toks[col["Rng"]]),
                                                                 byte.Parse(toks[col["Stl"]]),
-                                                                byte.Parse(toks[col["Spd"]]), 0,
-                                                                Formula.GetRewardPoint(resource,
-                                                                                       ushort.Parse(toks[col["Hp"]])),0);
+                                                                byte.Parse(toks[col["Spd"]]), 
+                                                                0,
+                                                                0);
 
                     StructureBaseStats basestats = new StructureBaseStats(toks[col["Name"]],
                                                                           toks[col["SpriteClass"]],

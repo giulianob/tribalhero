@@ -24,8 +24,8 @@ namespace Game.Database {
         DbDataReader SelectList(IPersistableList obj);
         DbDataReader SelectList(string table, params DbColumn[] primaryKeyValues);
 
-        int Query(string query);
-        DbDataReader ReaderQuery(string query);
+        int Query(string query, DbColumn[] parms);
+        DbDataReader ReaderQuery(string query, DbColumn[] parms);
         uint LastInsertId();
 
         void EmptyDatabase();

@@ -15,7 +15,7 @@ namespace Game.Battle
         public static int MissChance(bool isAttacker, int numberOfDefenders, int numberOfAttackers) {
             int delta = isAttacker ? Math.Max(0, numberOfAttackers - numberOfDefenders) : Math.Max(0, numberOfDefenders - numberOfAttackers);
 
-            return Math.Min(delta * 3, 40);
+            return Math.Min(delta * 2, 25);
         }
 
         public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)
@@ -173,6 +173,13 @@ namespace Game.Battle
             if (stamina < Config.battle_stamina_destroyed_deduction)
                 return 0;
             return (ushort)(stamina - Config.battle_stamina_destroyed_deduction);
+        }
+
+        internal static ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round) {
+            if (stamina == 0)
+                return 0;
+
+            return --stamina;
         }
 
         internal static bool IsAttackMissed(byte stealth)

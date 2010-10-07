@@ -488,9 +488,13 @@ namespace Game.Database {
         private void AddParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion) {
             MySqlParameter parameter = command.CreateParameter();
             parameter.ParameterName = "@" + column.Column;
-            parameter.DbType = column.Type;
+            
+            if (column.Type != DbType.Object)
+                parameter.DbType = column.Type;
+
             if (column.Size > 0)
                 parameter.Size = column.Size;
+
             parameter.SourceVersion = sourceVersion;
             parameter.Value = column.Value;
 
@@ -561,18 +565,21 @@ namespace Game.Database {
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public DbDataReader ReaderQuery(string query) {
+        public DbDataReader ReaderQuery(string query, DbColumn[] parms) {
             MySqlConnection connection = GetConnection();
 
             MySqlCommand command = connection.CreateCommand();
 
             command.Connection = connection;
             command.CommandText = query;
+            foreach (DbColumn parm in parms)
+                AddParameter(command, parm);
 
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public int Query(string query) {
+        public int Query(string query, DbColumn[] parms)
+        {
             if (paused)
                 return 0;
 
@@ -595,6 +602,8 @@ namespace Game.Database {
             command.Transaction = (transaction.transaction as MySqlTransaction);
 
             command.CommandText = query;
+            foreach (DbColumn parm in parms)
+                AddParameter(command, parm);
 
             int affected = ExecuteNonQuery(command);
 

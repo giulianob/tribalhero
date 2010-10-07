@@ -24,6 +24,7 @@ namespace Game.Comm {
 
         public Processor() {
             RegisterCommand(Command.LOGIN, CmdLogin);
+            RegisterCommand(Command.CMD_LINE, CmdLineCommand);
             RegisterCommand(Command.CITY_CREATE_INITIAL, CmdCreateInitialCity);
             RegisterCommand(Command.QUERY_XML, CmdQueryXml);
             RegisterCommand(Command.REGION_GET, CmdGetRegion);

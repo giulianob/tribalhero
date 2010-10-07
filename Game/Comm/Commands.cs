@@ -2,6 +2,8 @@ namespace Game.Comm {
     public enum Command : ushort {
         INVALID = 1,
 
+        CMD_LINE = 7,
+
         #region Internal Messages
 
         ON_CONNECT = 10001,

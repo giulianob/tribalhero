@@ -13,7 +13,7 @@ namespace Game.Logic.Actions
     class CityAction : ScheduledPassiveAction
     {
         private const int INTERVAL = 1800;
-        private readonly uint cityId;        
+        private readonly uint cityId;
         private int laborTimeRemains;
 
         public CityAction(uint cityId)
@@ -135,12 +135,14 @@ namespace Game.Logic.Actions
                 #endregion
 
                 #region Labor
-                if (city.Owner.Session != null || DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays <= 2) {
+                if (city.Owner.Session != null || DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays <= 2)
+                {
                     laborTimeRemains += INTERVAL;
-                    int laborRate = Formula.GetLaborRate(laborTotal,city);
-                    int laborProduction = laborTimeRemains/laborRate;
-                    if (laborProduction > 0) {
-                        laborTimeRemains -= laborProduction*laborRate;
+                    int laborRate = Formula.GetLaborRate(laborTotal, city);
+                    int laborProduction = laborTimeRemains / laborRate;
+                    if (laborProduction > 0)
+                    {
+                        laborTimeRemains -= laborProduction * laborRate;
                         city.Resource.Labor.Add(laborProduction);
                     }
                 }
@@ -155,15 +157,12 @@ namespace Game.Logic.Actions
                 {
                     #region Repair
 
-                    if (repairPower>0)
+                    if (repairPower > 0)
                     {
-                        if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp &&
-                            !ObjectTypeFactory.IsStructureType("NonRepairable", structure) &&
-                            structure.State.Type != ObjectState.BATTLE)
+                        if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp && !ObjectTypeFactory.IsStructureType("NonRepairable", structure) && structure.State.Type != ObjectState.BATTLE)
                         {
                             structure.BeginUpdate();
-                            if ((structure.Stats.Hp += repairPower) > structure.Stats.Base.Battle.MaxHp)
-                                structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
+                            structure.Stats.Hp = (ushort)Math.Min(structure.Stats.Hp + repairPower, structure.Stats.Base.Battle.MaxHp);
                             structure.EndUpdate();
                         }
                     }

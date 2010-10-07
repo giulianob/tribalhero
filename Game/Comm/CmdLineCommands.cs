@@ -5,7 +5,10 @@ using System.Text;
 
 namespace Game.Comm
 {
-    class CmdLineCommands
+    public enum CmdLineCommand
     {
+        SEND_RESOURCES = 100,
+        BAN = 110,
+        UNBAN = 111,
     }
 }

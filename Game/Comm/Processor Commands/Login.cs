@@ -45,7 +45,7 @@ namespace Game.Comm
             DateTime playerCreated = DateTime.MinValue;
             string playerPassword = string.Empty;
             uint playerId;
-            bool admin;
+            bool admin = false;
             bool banned = false;
 
             try

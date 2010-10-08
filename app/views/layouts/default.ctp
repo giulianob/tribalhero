@@ -19,7 +19,7 @@
 	<div class="wrapper">
 		<div id="header" class="container">
 			<div id="login" class="push-18 span-6 last">				
-					
+				<cake:nocache>
 					<? if ($session->check('Auth.Player.id')) : ?>
 						<div>Hello, <strong><?php echo $session->read('Auth.Player.name')?></strong>.</div>
 						<?php echo $this->Html->link('Play', '/play')?> |	<?php echo $this->Html->link('Logout', '/players/logout')?>		
@@ -40,7 +40,7 @@
 						</div>
 						<?php echo $form->end();?>
 					<? endif; ?>
-						
+				</cake:nocache>
 			</div>							
 		</div>
 		<div id="content" class="container prepend-top">				

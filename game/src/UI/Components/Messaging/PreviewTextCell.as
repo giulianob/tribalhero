@@ -36,7 +36,7 @@
 
 			preview = new JTextField();
 			preview.setBackgroundDecorator(new TextComponentBackBround());
-			preview.setForeground(GameLookAndFeel.getClassAttribute("Message.preview", "Textfield.foreground"));
+			preview.setForeground(GameLookAndFeel.getClassAttribute("Message.preview", "TextField.foreground"));
 			preview.getTextField().mouseEnabled = false;
 			preview.getTextField().selectable = false;
 			preview.setEditable(false);
@@ -54,11 +54,11 @@
 			super.setCellValue(value);
 
 			if (value.unread) {
-				subject.setFont(GameLookAndFeel.getClassAttribute("Message.unread", "Textfield.font"));
-				subject.setForeground(GameLookAndFeel.getClassAttribute("Message.unread", "Textfield.foreground"));
+				subject.setFont(GameLookAndFeel.getClassAttribute("Message.unread", "TextField.font"));
+				subject.setForeground(GameLookAndFeel.getClassAttribute("Message.unread", "TextField.foreground"));
 			} else {
-				subject.setFont(GameLookAndFeel.getClassAttribute("Message.read", "Textfield.font"));
-				subject.setForeground(GameLookAndFeel.getClassAttribute("Message.read", "Textfield.foreground"));
+				subject.setFont(GameLookAndFeel.getClassAttribute("Message.read", "TextField.font"));
+				subject.setForeground(GameLookAndFeel.getClassAttribute("Message.read", "TextField.foreground"));
 			}
 
 			subject.setText(value.subject);

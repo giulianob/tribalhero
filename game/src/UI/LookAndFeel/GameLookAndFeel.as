@@ -104,6 +104,10 @@
 			"Label.foreground", new ASColorUIResource(0x000000)
 			],
 
+			"Class.Label.very_small", [
+			"Label.font", new ASFontUIResource("Arial", 9, false),
+			"TextArea.font", new ASFontUIResource("Arial", 9, false),
+			],
 			"Class.Label.small", [
 			"Label.font", new ASFontUIResource("Arial", 11, false),
 			"TextArea.font", new ASFontUIResource("Arial", 11, false),

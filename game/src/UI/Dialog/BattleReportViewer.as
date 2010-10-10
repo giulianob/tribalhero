@@ -60,26 +60,83 @@
 			try
 			{
 				data = loader.getDataAsObject();
-				refreshOnClose = data.refreshOnClose;
-				renderSnapshots();
-				chkViewAll.setVisible(!data.outcomeOnly);
-				chkViewAll.setEnabled(!data.outcomeOnly);
-
-				// Show resources gained if applicable
-				if (data.loot) {
-					var loot: Resources = new Resources(data.loot.crop, data.loot.gold, data.loot.iron, data.loot.wood, 0);
-					var bonus: Resources = new Resources(data.bonus.crop, data.bonus.gold, data.bonus.iron, data.bonus.wood, 0);
-					var total: Resources = Resources.sum(loot, bonus);
-					pnlResources.append(new ResourcesPanel(total, null, false, false));
-					pnlFooter.append(pnlResources);
-					new BattleLootTooltip(pnlResources, loot, bonus);
-				}
-				pack();
 			}
 			catch (e: Error) {
 				InfoDialog.showMessageDialog("Error", "Unable to query report. Refresh the page if this problem persists");
 				return;
 			}
+
+			calculateCountDeltas();
+			refreshOnClose = data.refreshOnClose;
+			renderSnapshots();
+			chkViewAll.setVisible(!data.outcomeOnly);
+			chkViewAll.setEnabled(!data.outcomeOnly);
+
+			// Show resources gained if applicable
+			if (data.loot) {
+				var loot: Resources = new Resources(data.loot.crop, data.loot.gold, data.loot.iron, data.loot.wood, 0);
+				var bonus: Resources = new Resources(data.bonus.crop, data.bonus.gold, data.bonus.iron, data.bonus.wood, 0);
+				var total: Resources = Resources.sum(loot, bonus);
+				pnlResources.append(new ResourcesPanel(total, null, false, false));
+				pnlFooter.append(pnlResources);
+				new BattleLootTooltip(pnlResources, loot, bonus);
+			}
+			pack();
+		}
+
+		private function calculateCountDeltas() : void {
+			var cache: Array = new Array();
+			for (var i: int = 0; i < data.snapshots.length; i++) {
+				for (var j: int = 0; j < data.snapshots[i].attackers.length; j++) setTroopDeltas(cache, data.snapshots[i].attackers[j], true);				
+				for (j = 0; j < data.snapshots[i].defenders.length; j++) setTroopDeltas(cache, data.snapshots[i].defenders[j], false);
+			}
+		}
+
+		private function setTroopDeltas(cache: Array, troopSnapshot: *, isAttack: Boolean) : void {
+			var troop: *;
+			for (var k: int = 0; k < cache.length; k++) {
+				if (cache[k].groupId == troopSnapshot.groupId) {
+					troop = cache[k];
+					break;
+				}
+			}
+			
+			if (!troop) {
+				troop = findInitialTroop(isAttack, troopSnapshot.groupId);
+				if (troop == null) return;
+				cache.push(troop);
+			}
+
+			setDeltas(troop.units, troopSnapshot.units);
+		}
+
+		private function setDeltas(initial: * , ending: *) : void {
+			for (var i: int = 0; i < ending.length; i++) {
+				if (ending[i].id == 0) continue;
+
+				for (var j: int = 0; j < initial.length; j++) {
+					if (ending[i].id != initial[j].id) continue;
+
+					ending[i].delta = ending[i].count - initial[j].count;
+					break;
+				}
+			}
+		}
+
+		private function findInitialTroop(isAttack: Boolean, groupId: int) : * {
+			for (var i: int = 0; i < data.snapshots.length; i++) {
+				if (isAttack) {
+					for (var j: int = 0; j < data.snapshots[i].attackers.length; j++) {
+						if (data.snapshots[i].attackers[j].groupId == groupId) return data.snapshots[i].attackers[j];
+					}
+				} else {
+					for (j = 0; j < data.snapshots[i].defenders.length; j++) {
+						if (data.snapshots[i].defenders[j].groupId == groupId) return data.snapshots[i].defenders[j];
+					}
+				}
+			}
+
+			return null;
 		}
 
 		private function canSeeSnapshot(snapshot: Object) : Boolean {

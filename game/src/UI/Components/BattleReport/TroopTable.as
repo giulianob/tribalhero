@@ -46,9 +46,9 @@
 				
 				new SimpleTooltip(icon, prototype.getName());
 				
-				unitList.append({type: unit.type, icon: icon, level: unit.level, count: unit.count, hp: unit.hp, hitsTaken: unit.hitsTaken, dmgTaken: unit.dmgTaken, hitsDealt: unit.hitsDealt, dmgDealt: unit.dmgDealt});			
+				unitList.append({type: unit.type, icon: icon, delta: unit.delta, level: unit.level, count: unit.count, hp: unit.hp, hitsTaken: unit.hitsTaken, dmgTaken: unit.dmgTaken, hitsDealt: unit.hitsDealt, dmgDealt: unit.dmgDealt});			
 			}
-			
+					
 			if (troop.resources != null) {
 				pnlResources.append(resourceLabelMaker(troop.resources.gold, "Gold", new AssetIcon(new ICON_GOLD())));
 				pnlResources.append(resourceLabelMaker(troop.resources.wood, "Wood", new AssetIcon(new ICON_WOOD())));
@@ -66,15 +66,17 @@
 			
 			unitList = new VectorListModel();
 			tableModel = new PropertyTableModel(unitList,
-				["Type", "Level", "HP", "Hits\nTaken", "Damage\nTaken", "Hits\nDealt", "Damage\nDealt"],
+				["Unit", "Lvl", "HP", "Hits\nTaken", "Damage\nTaken", "Hits\nDealt", "Damage\nDealt"],
 				[".", "level", "hp", "hitsTaken", 	"dmgTaken", 	 "hitsDealt", 	"dmgDealt"],
 				[null, null, null, null, null, null]
 			);			
 			
 			tblUnits = new JTable(tableModel);
-			tblUnits.setRowSelectionAllowed(false);
+			tblUnits.setRowSelectionAllowed(false);			
 			tblUnits.setRowHeight(42);			
-			tblUnits.getColumn("Type").setCellFactory(new GeneralTableCellFactory(UnitIconCell));
+			tblUnits.getColumn("Unit").setCellFactory(new GeneralTableCellFactory(UnitIconCell));		
+			tblUnits.getColumn("Unit").setPreferredWidth(82);
+			tblUnits.getColumn("Lvl").setPreferredWidth(34);
 			
 			pnlResources = new JPanel(new FlowLayout(AsWingConstants.LEFT, 12, 5, false));			
 		}	

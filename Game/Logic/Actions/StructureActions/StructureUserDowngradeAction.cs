@@ -85,9 +85,12 @@ namespace Game.Logic.Actions {
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
+                // We need to unblock the structure here because the ScheduleRemove won't work if it's already blocked. Sort of a hack.
+                structure.IsBlocked = false;
+
                 // If structure is level 0 then we don't even try to give any laborers back or anything, just remove it
                 if (structure.Lvl == 0) {
-                    Global.World.Remove(structure);
+                    Global.World.Remove(structure);                    
                     city.ScheduleRemove(structure, false);
                 } else {
                     byte oldLabor = structure.Stats.Labor;
@@ -101,8 +104,7 @@ namespace Game.Logic.Actions {
                     Procedure.SetResourceCap(structure.City);
 
                     if (structure.Lvl > 0) {
-                        InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);
-                        structure.IsBlocked = false;
+                        InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);                        
                     } else {
                         Global.World.Remove(structure);
                         city.ScheduleRemove(structure, false);

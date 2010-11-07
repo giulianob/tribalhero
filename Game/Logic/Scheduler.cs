@@ -51,7 +51,7 @@ namespace Game.Logic {
             }
         }
 
-        private void SetTimer(int ms) {
+        private void SetTimer(long ms) {
             if (ms == Timeout.Infinite)
             {
                 Global.Logger.Debug(string.Format("Timer sleeping"));
@@ -193,7 +193,7 @@ namespace Game.Logic {
             }
 
             TimeSpan ts = schedules[0].Time.Subtract(DateTime.UtcNow);
-            int ms = Math.Max(0, (int)ts.TotalMilliseconds);
+            long ms = Math.Max(0, (long)ts.TotalMilliseconds);
             SetTimer(ms);            
         }
     }

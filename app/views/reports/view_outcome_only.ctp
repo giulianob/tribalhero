@@ -32,7 +32,7 @@ foreach($battle_reports as $battle_report) {
     $snapshot['events'][] = $battle_troop['City']['name'].'('.($battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']).') has '.$troop_states_pst[$battle_troop['state']];
 
     //Save the main troop info
-    $troop = array('cityId' => $battle_troop['City']['id'], 'name' => $battle_troop['City']['name'].'('.($battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']).')', 'units' => array());
+    $troop = array('cityId' => $battle_troop['City']['id'], 'groupId' => $battle_troop['group_id'], 'name' => $battle_troop['City']['name'].'('.($battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']).')', 'units' => array());
 
     //Only attackers have resources
     if ($battle_troop['is_attacker'])
@@ -41,6 +41,7 @@ foreach($battle_reports as $battle_report) {
     //Gather all the unit info
     foreach($battle_troop['BattleReportObject'] as $battle_object) {
         $troop['units'][] = array(
+				'id' => $battle_object['object_id'],
                 'type' => $battle_object['type'],
                 'level' => $battle_object['level'],
                 'count' => $battle_object['count'],

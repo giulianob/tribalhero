@@ -217,9 +217,7 @@ public function createUI(): void {
 	lblTitle1.setHorizontalAlignment(AsWingConstants.LEFT);
 
 	pnlResourcePrices = new JPanel();
-	pnlResourcePrices.setLocation(new IntPoint(36, 8));
-	pnlResourcePrices.setSize(new IntDimension(200, 75));
-	pnlResourcePrices.setPreferredSize(new IntDimension(200, 75));
+	pnlResourcePrices.setPreferredSize(new IntDimension(250, 75));
 	var layout2:FlowWrapLayout = new FlowWrapLayout();
 	layout2.setAlignment(AsWingConstants.LEFT);
 	layout2.setHgap(15);

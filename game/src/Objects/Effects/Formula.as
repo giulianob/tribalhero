@@ -22,8 +22,8 @@
 		public static const RESOURCE_MAX_TRADE: int = 1500;
 
 		public static function unitsPerStructure(level: int) : int {
-			var discount: Array = [ 20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144 ];
-			return discount[level];
+			var units: Array = [ 20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144 ];
+			return units[level];
 		}
 
 		public static function troopRadius(troop: TroopStub) : int {

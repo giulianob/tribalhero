@@ -209,18 +209,18 @@ namespace Game.Battle
             reportFlag = false;
         }
 
-        internal static void SnapBattle(out uint battleId, uint cityId)
+        static void SnapBattle(out uint battleId, uint cityId)
         {
             Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', @city_id, NOW(), NULL, '0')", BATTLE_DB), new[] { new DbColumn("city_id", cityId, DbType.UInt32) });
             battleId = Global.DbManager.LastInsertId();
         }
 
-        internal static void SnapBattleEnd(uint battleId)
+        static void SnapBattleEnd(uint battleId)
         {
             Global.DbManager.Query(string.Format("UPDATE `{0}` SET `ended` = NOW() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB), new[] { new DbColumn("battle_id", battleId, DbType.UInt32) });
         }
 
-        internal static void SnapReport(out uint reportId, uint battleId)
+        static void SnapReport(out uint reportId, uint battleId)
         {
             Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', NOW(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB), new[] { new DbColumn("battle_id", battleId, DbType.UInt32) });
             reportId = Global.DbManager.LastInsertId();
@@ -237,7 +237,7 @@ namespace Game.Battle
                                        });
         }
 
-        internal void SnapTroopState(TroopStub stub, ReportState state)
+        void SnapTroopState(TroopStub stub, ReportState state)
         {
             uint id = ReportedTroops[stub];
 
@@ -260,7 +260,7 @@ namespace Game.Battle
             }
         }
 
-        internal void SnapTroop(ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, out uint battleTroopId, Resource loot)
+        void SnapTroop(ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, out uint battleTroopId, Resource loot)
         {
             Global.DbManager.Query(
                 string.Format("INSERT INTO `{0}` VALUES ('', @report_id, @city_id, @object_id, @troop_id, @state, @is_attacker, @gold, @crop, @iron, @wood)", BATTLE_REPORT_TROOPS_DB),
@@ -289,16 +289,16 @@ namespace Game.Battle
             }
         }
 
-        internal void SnapCombatObject(uint troopId, CombatObject co)
+        void SnapCombatObject(uint troopId, CombatObject co)
         {
             ICombatUnit unit = co as ICombatUnit;
 
             Global.DbManager.Query(
-                string.Format("INSERT INTO `{0}` VALUES ('', @troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @formation, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
+                string.Format("INSERT INTO `{0}` VALUES ('', @object_id, @troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @formation, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
                               BATTLE_REPORT_OBJECTS_DB),
                 new[]
                     {
-                        new DbColumn("troop_id", troopId, DbType.UInt32), new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte), new DbColumn("hp", co.Hp, DbType.UInt32),
+                        new DbColumn("object_id", co.Id, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.UInt32), new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte), new DbColumn("hp", co.Hp, DbType.UInt32),
                         new DbColumn("count", co.Count, DbType.UInt16), new DbColumn("dmg_recv", co.DmgRecv, DbType.Int32), new DbColumn("dmg_dealt", co.DmgDealt, DbType.Int32),
                         new DbColumn("formation", (byte) (unit == null ? FormationType.STRUCTURE : unit.Formation), DbType.Byte), new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16),
                         new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32), new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),

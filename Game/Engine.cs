@@ -9,7 +9,9 @@ using Game.Database;
 using Game.Logic;
 using Game.Module;
 using Game.Setup;
+using log4net;
 using log4net.Config;
+using log4net.Repository.Hierarchy;
 
 #endregion
 
@@ -30,6 +32,27 @@ namespace Game {
 
         public static bool Start() {            
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            ILog logger = LogManager.GetLogger(typeof(Engine));
+            logger.Info(@"
+_________ _______ _________ ______   _______  _       
+\__   __/(  ____ )\__   __/(  ___ \ (  ___  )( \      
+   ) (   | (    )|   ) (   | (   ) )| (   ) || (      
+   | |   | (____)|   | |   | (__/ / | (___) || |      
+   | |   |     __)   | |   |  __ (  |  ___  || |      
+   | |   | (\ (      | |   | (  \ \ | (   ) || |      
+   | |   | ) \ \_____) (___| )___) )| )   ( || (____/\
+   )_(   |/   \__/\_______/|/ \___/ |/     \|(_______/
+                                                      
+          _______  _______  _______ 
+|\     /|(  ____ \(  ____ )(  ___  )
+| )   ( || (    \/| (    )|| (   ) |
+| (___) || (__    | (____)|| |   | |
+|  ___  ||  __)   |     __)| |   | |
+| (   ) || (      | (\ (   | |   | |
+| )   ( || (____/\| ) \ \__| (___) |
+|/     \|(_______/|/   \__/(_______)");
+
 
             if (State != EngineState.STOPPED)
                 throw new Exception("Server is not stopped");

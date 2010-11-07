@@ -39,7 +39,11 @@ namespace Game.Util
             yield return str.Substring(nextPiece);
         }
 
-        public static string TrimMatchingQuotes(this string input, char quote = '"')
+        public static string TrimMatchingQuotes(this string input) {
+            return TrimMatchingQuotes(input, '"');    
+        }
+
+        public static string TrimMatchingQuotes(this string input, char quote)
         {
             if ((input.Length >= 2) &&
                 (input[0] == quote) && (input[input.Length - 1] == quote))

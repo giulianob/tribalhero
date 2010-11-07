@@ -28,6 +28,8 @@ namespace Game.Battle {
         public int DmgRecv { get; set; }
         public int DmgDealt { get; set; }
 
+        public abstract int Upkeep { get; }
+
         public CombatList CombatList { get; set; }
 
         public int RoundsParticipated { get; set; }
@@ -134,19 +136,18 @@ namespace Game.Battle {
             }
             if (totalVision >= obj.Stats.Stl) {
                 return true;
-            } else {
-                // if vision < stealth by 1, u have 33% chance 
-                // if vision < stealth by 2, u have 25% chance 
-                // if vision < stealth by 3, u have 20% chance 
-                // if vision < stealth by 4, u have 16% chance 
-                // if vision < stealth by 5, u have 14% chance 
-                // if vision < stealth by 6, u have 12% chance 
-                // if vision < stealth by 7, u have 14% chance 
-                // if vision < stealth by 8, u have 10% chance 
-                // if vision < stealth by 9, u have 9% chance 
-                if (Config.Random.Next(obj.Stats.Stl - totalVision + 1) == 0)  
-                    return true;
             }
+            // if vision < stealth by 1, u have 33% chance 
+            // if vision < stealth by 2, u have 25% chance 
+            // if vision < stealth by 3, u have 20% chance 
+            // if vision < stealth by 4, u have 16% chance 
+            // if vision < stealth by 5, u have 14% chance 
+            // if vision < stealth by 6, u have 12% chance 
+            // if vision < stealth by 7, u have 14% chance 
+            // if vision < stealth by 8, u have 10% chance 
+            // if vision < stealth by 9, u have 9% chance 
+            if (Config.Random.Next(obj.Stats.Stl - totalVision + 1) == 0)  
+                return true;
             return false;
         }
 

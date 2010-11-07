@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
@@ -45,15 +46,13 @@ namespace Game.Logic.Actions {
                 throw new Exception("City is missing");                
             }
 
-            CallbackLock.CallbackLockHandler lockHandler = delegate {                
+            CallbackLock.CallbackLockHandler lockHandler = delegate
+            {
                 List<ILockable> toBeLocked = new List<ILockable>();
                 toBeLocked.AddRange(city.Battle.LockList);
-
-                foreach (TroopStub stub in city.Troops.StationedHere())
-                    toBeLocked.Add(stub.City);
-
+                toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City).Cast<ILockable>());
                 return toBeLocked.ToArray();
-            };            
+            };          
 
             using (new CallbackLock(lockHandler, null, city)) {
                 if (!city.Battle.ExecuteTurn()) {

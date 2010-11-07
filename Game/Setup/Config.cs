@@ -4,6 +4,9 @@ using System;
 using System.IO;
 using System.Reflection;
 using Game.Data;
+using log4net;
+using log4net.Config;
+using NDesk.Options;
 using Newtonsoft.Json;
 
 #endregion
@@ -87,29 +90,41 @@ namespace Game.Setup {
         public static Random Random { get; private set; }
 
         static Config() {
+            XmlConfigurator.Configure();
+            ILog logger = LogManager.GetLogger(typeof(Config));
+
             Random = new Random();
 
             string key = string.Empty;
             
             try {
                 string settingsFile = "settings.ini";
+                bool help = false;
 
-                // Set the settings INI file location if specified
-                string[] args = Environment.GetCommandLineArgs();
-                foreach (string arg in args) {
-                    string[] parts = arg.Split('=');
-                    if (parts.Length != 2) continue;
-
-                    switch (parts[0]) {
-                        case "-settings":
-                            settingsFile = parts[1];
-                            break;
-                    }
+                try
+                {                    
+                    var p = new OptionSet
+                            {
+                                { "?|help|h", v => help = true }, 
+                                { "settings=", v => settingsFile = v }, 
+                            };
+                    p.Parse(Environment.GetCommandLineArgs());
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e);
+                    Environment.Exit(0);
                 }
 
+                if (help) {
+                    logger.Info("[--settings=settings.ini]");
+                    Environment.Exit(0);
+                }
+                
                 settingsFile = Path.GetFullPath(settingsFile);
-
-                using (StreamReader file = new StreamReader(File.Open(settingsFile, FileMode.Open))) {
+                logger.InfoFormat("Loading settings from {0}", settingsFile);
+                
+                using (StreamReader file = new StreamReader(File.Open(settingsFile, FileMode.Open, FileAccess.Read))) {
                     string line;
                     while ((line = file.ReadLine()) != null) {
                         line = line.Trim();
@@ -144,11 +159,13 @@ namespace Game.Setup {
                                 field.SetValue(null, value);
                                 break;
                         }
+
+                        logger.InfoFormat("{0}={1}", key, value);
                     }
                 }
             }
             catch (Exception e) {
-                Global.Logger.Error("Error loading settings file at " + key, e);
+                logger.Error("Error loading settings file at " + key, e);
             }
         }
     }

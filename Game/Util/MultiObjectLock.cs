@@ -233,11 +233,12 @@ namespace Game.Util {
                     continue;
                 }
 
-                if (newToBeLocked.Where((t, i) => t.Hash != toBeLocked[i].Hash).Any()) {
-                    currentLock.Dispose();
-                    currentLock = null;
-                    Thread.Sleep(0);
-                }
+                if (!newToBeLocked.Where((t, i) => t.Hash != toBeLocked[i].Hash).Any())
+                    continue;
+
+                currentLock.Dispose();
+                currentLock = null;
+                Thread.Sleep(0);
             }
         }
 

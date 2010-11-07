@@ -137,7 +137,8 @@ namespace GraphGenerator
             string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
             foreach (string file in files)
             {
-                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open))))
+                string fullFilename = Path.Combine(Config.csv_folder, file);
+                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(fullFilename, FileMode.Open))))
                 {
                     while (true)
                     {

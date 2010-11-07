@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.Common;
 using Game.Data;
@@ -39,6 +40,14 @@ namespace Game.Comm
             if (!Global.World.IsValidXandY(x, y))
             {
                 ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            // Make sure there is no structure at this point that has no road requirement
+            if (Global.World[x, y].Any(s => s is Structure && ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure) s)))
+            {
+                Global.World.UnlockRegion(x, y);
+                ReplyError(session, packet, Error.STRUCTURE_EXISTS);
                 return;
             }
 

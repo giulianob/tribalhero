@@ -104,9 +104,7 @@ namespace Game.Battle {
                 foreach (CombatObject co in defenders)
                     cities[co.City.Id] = co.City;
 
-                City[] citiesArr = new City[cities.Values.Count];
-                cities.Values.CopyTo(citiesArr, 0);
-                return citiesArr;
+                return cities.Values.ToArray();
             }
         }
 
@@ -144,13 +142,32 @@ namespace Game.Battle {
             return null;
         }
 
-        public bool CanWatchBattle(Player player) {
+        public bool CanWatchBattle(Player player, out int roundsLeft) {
+            roundsLeft = 0;
+
             lock (battleLock) {
                 if (player == city.Owner)
                     return true;
 
-                return defenders.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds) ||
-                       attackers.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds);
+                int defendersRoundsLeft = int.MaxValue;
+                int attackersRoundsLeft = int.MaxValue;
+
+                if (defenders.Count > 0) {
+                    defendersRoundsLeft = defenders.Min(co => co.City.Owner == player ? Math.Max(0, Config.battle_min_rounds - co.RoundsParticipated) : int.MaxValue);
+                    if (defendersRoundsLeft == 0)
+                        return true;
+                }
+
+                if (attackers.Count > 0) {
+                    attackersRoundsLeft = attackers.Min(co => co.City.Owner == player ? Math.Max(0, Config.battle_min_rounds - co.RoundsParticipated) : int.MaxValue);
+                    if (attackersRoundsLeft == 0)
+                        return true;
+                }
+
+                roundsLeft = Math.Min(attackersRoundsLeft, defendersRoundsLeft);
+                if (roundsLeft == int.MaxValue) roundsLeft = 0;
+                
+                return false;
             }
         }
 

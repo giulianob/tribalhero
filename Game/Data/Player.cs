@@ -67,7 +67,7 @@ namespace Game
                 new[]
                     {
                         new DbColumn("sender_player_id", from == null ? 0 : from.PlayerId, DbType.UInt32), new DbColumn("recipient_player_id", PlayerId, DbType.UInt32),
-                        new DbColumn("subject", subject, DbType.String), new DbColumn("message", subject, DbType.String), new DbColumn("sender_state", 2, DbType.Int16),
+                        new DbColumn("subject", subject, DbType.String), new DbColumn("message", message, DbType.String), new DbColumn("sender_state", 2, DbType.Int16),
                         new DbColumn("recipient_state", 0, DbType.Int16),
                     });
         }

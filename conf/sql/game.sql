@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 23, 2010 at 09:43 PM
+-- Generation Time: Nov 07, 2010 at 12:37 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -108,6 +108,7 @@ CREATE TABLE `battle_reports` (
 DROP TABLE IF EXISTS `battle_report_objects`;
 CREATE TABLE `battle_report_objects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `object_id` int(10) unsigned NOT NULL,
   `battle_report_troop_id` int(10) unsigned NOT NULL,
   `type` smallint(5) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
@@ -120,7 +121,8 @@ CREATE TABLE `battle_report_objects` (
   `hits_dealt_by_unit` int(10) unsigned NOT NULL,
   `hits_received` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `battle_report_troop_id` (`battle_report_troop_id`)
+  KEY `battle_report_troop_id` (`battle_report_troop_id`),
+  KEY `object_id` (`object_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -442,8 +444,11 @@ CREATE TABLE `players` (
   `created` datetime NOT NULL,
   `last_login` datetime NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
+  `banned` tinyint(1) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `online` tinyint(1) NOT NULL,
+  `reset_key` varchar(64) DEFAULT NULL,
+  `reset_key_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
   KEY `login_key` (`login_key`),

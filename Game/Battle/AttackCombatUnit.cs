@@ -45,6 +45,11 @@ namespace Game.Battle {
             get { return type; }
         }
 
+        public override int Upkeep
+        {
+            get { return UnitFactory.GetUnitStats(type, lvl).Upkeep * count; }
+        }
+
         public override BaseBattleStats BaseStats {
             get { return UnitFactory.GetBattleStats(type, lvl); }
         }

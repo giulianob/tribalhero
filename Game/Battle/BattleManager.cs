@@ -530,7 +530,7 @@ namespace Game.Battle {
                 #endregion
 
                 #region Miss Chance
-                int missChance = BattleFormulas.MissChance(attacker.CombatList == attackers, defenders.Count, attackers.Count);
+                int missChance = BattleFormulas.MissChance(attacker.CombatList == attackers, defenders, attackers);
                 if (missChance > 0)
                 {
                     int rand = (int)(Config.Random.NextDouble() * 100);

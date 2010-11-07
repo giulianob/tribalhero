@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
@@ -12,10 +13,19 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
-        public static int MissChance(bool isAttacker, int numberOfDefenders, int numberOfAttackers) {
-            int delta = isAttacker ? Math.Max(0, numberOfAttackers - numberOfDefenders) : Math.Max(0, numberOfDefenders - numberOfAttackers);
+        public static int MissChance(bool isAttacker, CombatList defenders, CombatList attackers) {
+
+            int defendersUpkeep = defenders.Sum(x => x.Upkeep);
+            int attackersUpkeep = attackers.Sum(x => x.Upkeep);
+
+            int delta = isAttacker ? Math.Max(0, attackersUpkeep - defendersUpkeep) : Math.Max(0, defendersUpkeep - attackersUpkeep);
 
             return Math.Min(delta * 2, 25);
+        }
+
+        public static int GetUnitsPerStructure(Structure structure) {
+            int[] units = new[] { 20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144 };
+            return units[structure.Lvl];
         }
 
         public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)
@@ -134,8 +144,7 @@ namespace Game.Battle
         public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
             ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
-            int rawDmg = atk * attacker.Count;
-            rawDmg /= 10;
+            int rawDmg = (atk * attacker.Count) / 10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
             rawDmg = (int)(typeModifier * classModifier * rawDmg);

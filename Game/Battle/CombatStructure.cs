@@ -99,6 +99,10 @@ namespace Game.Battle {
             get { return hp; }
         }
 
+        public override int Upkeep {
+            get { return BattleFormulas.GetUnitsPerStructure(Structure); }
+        }
+
         public override void CalculateDamage(ushort dmg, out ushort actualDmg) {
             actualDmg = (ushort)Math.Min(Hp,dmg);
         }

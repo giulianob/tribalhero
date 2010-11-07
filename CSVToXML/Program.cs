@@ -606,7 +606,8 @@ namespace CSVToXML {
 
             string[] files = Directory.GetFiles(langDataFolder, "lang.*", SearchOption.TopDirectoryOnly);
             foreach (string file in files) {
-                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open)))) {
+                String fullFilename = Path.Combine(langDataFolder, file);
+                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(fullFilename, FileMode.Open)))) {
                     while (true) {
                         string[] obj = langReader.ReadRow();
                         if (obj == null)

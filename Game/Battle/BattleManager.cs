@@ -203,11 +203,13 @@ namespace Game.Battle {
 
         #region Adding/Removing from Battle
 
-        public void AddToLocal(List<TroopStub> objects, ReportState state) {
+        public void AddToLocal(IEnumerable<TroopStub> objects, ReportState state)
+        {
             AddToCombatList(objects, defenders, true, state);
         }
 
-        public void AddToLocal(List<Structure> objects) {
+        public void AddToLocal(IEnumerable<Structure> objects)
+        {
             lock (battleLock) {
                 List<CombatObject> list = new List<CombatObject>();
 
@@ -251,19 +253,21 @@ namespace Game.Battle {
             AddToAttack(list);
         }
 
-        public void AddToAttack(List<TroopStub> objects) {
+        public void AddToAttack(IEnumerable<TroopStub> objects) {
             AddToCombatList(objects, attackers, false, ReportState.ENTERING);
         }
 
-        public void AddToDefense(List<TroopStub> objects) {
+        public void AddToDefense(IEnumerable<TroopStub> objects)
+        {
             AddToCombatList(objects, defenders, false, ReportState.ENTERING);
         }
 
-        public void RemoveFromAttack(List<TroopStub> objects, ReportState state) {
+        public void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state)
+        {
             RemoveFromCombatList(objects, attackers, state);
         }
 
-        public void RemoveFromLocal(List<Structure> objects) {
+        public void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state) {
             lock (battleLock)
             {
                 List<CombatObject> list = new List<CombatObject>();
@@ -279,14 +283,15 @@ namespace Game.Battle {
                 defenders.RemoveAll(list.Contains);
 
                 if (battleStarted) {
-                    report.WriteReportObjects(list, false, ReportState.EXITING);
+                    report.WriteReportObjects(list, false, state);
                     EventWithdrawDefender(list);
                     RefreshBattleOrder();
                 }
             }
         }
 
-        public void RemoveFromDefense(List<TroopStub> objects, ReportState state) {
+        public void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state)
+        {
             RemoveFromCombatList(objects, defenders, state);
         }
 
@@ -348,7 +353,8 @@ namespace Game.Battle {
             }
         }
 
-        private void RemoveFromCombatList(List<TroopStub> objects, CombatList combatList, ReportState state) {
+        private void RemoveFromCombatList(IEnumerable<TroopStub> objects, CombatList combatList, ReportState state)
+        {
             lock (battleLock)
             {
                 List<CombatObject> list = new List<CombatObject>();
@@ -674,12 +680,24 @@ namespace Game.Battle {
                 EventExitTurn(Attacker, Defender, (int)turn++);
 
                 // Send back any attackers that have no targets left
-                if (isDefenderDead && defender.CombatList == defenders && defenders.Count > 0) {
-                    AttackCombatUnit co;
-                    do {
-                        co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
-                        if (co != null) RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);                        
-                    } while (co != null);
+                if (isDefenderDead) {
+                    if (defender.CombatList == defenders && defenders.Count > 0) {
+                        //Since the list of attackers will be changing, we need to keep reiterating through it until there are no more to remove
+                        AttackCombatUnit co;
+                        do {
+                            co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
+                            if (co != null)
+                                RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);
+                        } while (co != null);
+                    } else if (defender.CombatList == attackers && defenders.Count > 0) {                        
+                        // For defenders we only send back structures
+                        List<Structure> structs = (from s in attackers.OfType<CombatStructure>()
+                                                  where !defenders.HasInRange(s)
+                                                  select s.Structure).ToList();
+                        
+                        if (structs.Count > 0) 
+                            RemoveFromLocal(structs, ReportState.EXITING);
+                    }
                 }
 
                 if (!BattleIsValid()) {

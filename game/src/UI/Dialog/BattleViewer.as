@@ -22,7 +22,6 @@
 		private var pnlLog: JPanel;
 		private var tabOffensive:JTabbedPane;
 		private var lstLogScroll:JScrollPane;
-		private var lblStamina: JLabel;
 
 		private var battle: BattleManager;
 		private var battleCityId: int;
@@ -45,15 +44,6 @@
 			battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
 			battle.addEventListener(BattleManager.END, onEnd);
 			battle.addEventListener(BattleManager.NEW_ROUND, onNewRound);
-
-			// Every command sends the stamina so we update it with every action.
-			battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
-			battle.addEventListener(BattleManager.OBJECT_REMOVED_ATTACK, updateStamina);
-			battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, updateStamina);
-			battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, updateStamina);
-			battle.addEventListener(BattleManager.OBJECT_ATTACKED, updateStamina);
-			battle.addEventListener(BattleManager.OBJECT_SKIPPED, updateStamina);
-			battle.addEventListener(BattleManager.END, updateStamina);
 		}
 
 		public function onClosed(e: *):void
@@ -69,14 +59,6 @@
 				battle.removeEventListener(BattleManager.END, onEnd);
 				battle.removeEventListener(BattleManager.NEW_ROUND, onNewRound);
 
-				battle.removeEventListener(BattleManager.OBJECT_ADDED_ATTACK, updateStamina);
-				battle.removeEventListener(BattleManager.OBJECT_REMOVED_ATTACK, updateStamina);
-				battle.removeEventListener(BattleManager.OBJECT_ADDED_DEFENSE, updateStamina);
-				battle.removeEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, updateStamina);
-				battle.removeEventListener(BattleManager.OBJECT_ATTACKED, updateStamina);
-				battle.removeEventListener(BattleManager.OBJECT_SKIPPED, updateStamina);
-				battle.removeEventListener(BattleManager.END, updateStamina);
-
 				Global.mapComm.Battle.battleUnsubscribe(battleCityId);
 			}
 		}
@@ -84,10 +66,6 @@
 		private function onNewRound(e: BattleRoundEvent = null) : void {
 			log(new JSeparator());
 			logStr("Round " + (e.round + 1), null, true);
-		}
-
-		private function updateStamina(e: BattleEvent = null) : void {
-			lblStamina.setText(StringHelper.makePlural(battle.attackers.size(), "Attacker", "Attackers") + " will run out of stamina in " + battle.stamina + " " + StringHelper.makePlural(battle.stamina, "round", "rounds") + ".");
 		}
 
 		private function addTab(combatObj: CombatObject, defense: Boolean) : Object {
@@ -337,8 +315,6 @@
 			var pnlBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			pnlBody.setBorder(null);
 
-			lblStamina = new JLabel("", null, AsWingConstants.RIGHT);
-
 			tabDefensive = new JTabbedPane();
 			tabDefensive.setPreferredHeight(175);
 
@@ -366,7 +342,6 @@
 			pnlBody.append(tabLog);
 			pnlBody.append(tabOffensive);
 
-			append(lblStamina);
 			append(pnlBody);
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿package src.Comm.Commands {
 
 	import src.Comm.*;
+	import src.Global;
 	import src.Map.MapComm;
 	import src.Objects.Battle.BattleManager;
 	import src.Objects.GameError;
@@ -75,9 +76,10 @@
 				return;
 			}
 
+			// Hide the sidebar from the selected troop
+			Global.gameContainer.setSidebar(null);
+			
 			var subscribeCityId: int = custom;
-
-			battle.stamina = packet.readUShort();
 
 			var playerId: int;
 			var cityId: int;
@@ -129,8 +131,6 @@
 		{
 			if (battle == null) return;
 
-			battle.stamina = packet.readUShort();
-
 			var playerId: int;
 			var cityId: int;
 			var combatObjId: int;
@@ -179,8 +179,6 @@
 		{
 			if (battle == null) return;
 
-			battle.stamina = packet.readUShort();
-
 			var attackerObjId: int = packet.readUInt();
 			var defenderObjId: int = packet.readUInt();
 			var dmg: int = packet.readUShort();
@@ -197,9 +195,7 @@
 	
 		public function onReceiveBattleSkipped(packet: Packet):void
 		{
-			if (battle == null) return;
-
-			battle.stamina = packet.readUShort();
+			if (battle == null) return;		
 
 			var attackerObjId: int = packet.readUInt();
 

@@ -51,7 +51,6 @@ namespace Game.Comm {
                 }
 
                 Packet reply = new Packet(packet);
-                reply.AddUInt16(city.Battle.Stamina);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.Subscribe(session);

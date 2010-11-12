@@ -7,7 +7,7 @@ namespace Game.Battle {
         public event OnBattle EnterBattle;
         public event OnBattle ExitBattle;
 
-        public delegate void OnRound(CombatList atk, CombatList def, uint round, int stamina);
+        public delegate void OnRound(CombatList atk, CombatList def, uint round);
 
         public event OnRound EnterRound;
 
@@ -45,9 +45,9 @@ namespace Game.Battle {
                 ExitBattle(atk, def);
         }
 
-        public void EventEnterRound(CombatList atk, CombatList def, uint round, int stamina) {
+        public void EventEnterRound(CombatList atk, CombatList def, uint round) {
             if (EnterRound != null)
-                EnterRound(atk, def, round, stamina);
+                EnterRound(atk, def, round);
         }
 
         public void EventEnterTurn(CombatList atk, CombatList def, int turn) {

@@ -440,9 +440,9 @@ namespace Game.Database {
                         State = {
                             Type = (ObjectState)((byte)reader["state"])
                         },                        
-                        Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"], new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0)),
+                        Stats = new TroopStats((int)reader["attack_point"], (byte)reader["attack_radius"], (byte)reader["speed"], (short)reader["stamina"], new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0)),
                         IsBlocked = (bool)reader["is_blocked"],
-                        InWorld = (bool)reader["in_world"]
+                        InWorld = (bool)reader["in_world"],                        
                     };
 
                     foreach (object variable in XMLSerializer.DeserializeList((string)reader["state_parameters"]))
@@ -474,7 +474,6 @@ namespace Game.Database {
                     bm.BattleStarted = (bool)reader["battle_started"];
                     bm.Round = (uint)reader["round"];
                     bm.Turn = (uint)reader["round"];
-                    bm.Stamina = (ushort)reader["stamina"];
 
                     bm.BattleReport.ReportFlag = (bool)reader["report_flag"];
                     bm.BattleReport.ReportStarted = (bool)reader["report_started"];

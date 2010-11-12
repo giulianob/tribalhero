@@ -60,13 +60,6 @@ namespace Game.Battle {
             set { turn = value; }
         }
 
-        private ushort stamina;
-
-        public ushort Stamina {
-            get { return stamina; }
-            set { stamina = value; }
-        }
-
         private City city;
 
         public City City {
@@ -112,7 +105,6 @@ namespace Game.Battle {
 
         public BattleManager(City owner) {
             city = owner;
-            stamina = BattleFormulas.GetStamina(city);
             report = new BattleReport(this);
             Channel = new BattleChannel(this, "/BATTLE/" + city.Id);
             groupIdGen.Set(1);
@@ -240,7 +232,6 @@ namespace Game.Battle {
                 }
 
                 if (battleStarted && added) {
-                    stamina = BattleFormulas.GetStaminaReinforced(city, stamina, round);
                     report.WriteReportObjects(list, false, ReportState.STAYING);
                     EventReinforceDefender(list);
                     RefreshBattleOrder();
@@ -339,7 +330,6 @@ namespace Game.Battle {
                 }
 
                 if (battleStarted && added) {
-                    stamina = BattleFormulas.GetStaminaReinforced(city, stamina, round);
                     if (combatList == Attacker) {
                         report.WriteReportObjects(list, true, state);
                         EventReinforceAttacker(list);
@@ -435,7 +425,7 @@ namespace Game.Battle {
         }
 
         private bool BattleIsValid() {
-            if (attackers.Count == 0 || defenders.Count == 0 || Stamina == 0)
+            if (attackers.Count == 0 || defenders.Count == 0)
                 return false;
 
             //Check to see if there are still units in the local troop
@@ -464,7 +454,7 @@ namespace Game.Battle {
         private void BattleEnded(bool writeReport) {
             if (writeReport) {
                 report.WriteBeginReport();
-                report.CompleteReport(Stamina == 0 ? ReportState.OUT_OF_STAMINA : ReportState.EXITING);
+                report.CompleteReport(ReportState.EXITING);
                 report.CompleteBattle();
             }
 
@@ -524,13 +514,12 @@ namespace Game.Battle {
 
                     if (!battleOrder.NextObject(out attacker) && !battleJustStarted) {
                         ++round;
-                        stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
                         battleOrder.ParticipatedInRound();
                         turn = 0;
-                        EventEnterRound(Attacker, Defender, round, stamina);
+                        EventEnterRound(Attacker, Defender, round);
                     }
 
-                    if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
+                    if (attacker == null || defenders.Count == 0 || attackers.Count == 0) {
                         BattleEnded(true);
                         return false;
                     }
@@ -661,16 +650,6 @@ namespace Game.Battle {
                     battleOrder.Remove(defender);
 
                     if (attacker.CombatList == attackers) {
-                        
-                        switch (defender.ClassType) {
-                            case BattleClass.STRUCTURE:
-                                stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
-                                break;
-                            case BattleClass.UNIT:
-                                stamina = BattleFormulas.GetStaminaDefenseCombatObject(city, stamina, round);
-                                break;
-                        }
-
                         defenders.Remove(defender);
                         report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);
                     } else if (attacker.CombatList == defenders) {
@@ -741,7 +720,7 @@ namespace Game.Battle {
                 return new[] {
                                           new DbColumn("battle_id", battleId, DbType.UInt32),
                                           new DbColumn("battle_started", battleStarted, DbType.Boolean),
-                                          new DbColumn("stamina", stamina, DbType.UInt16), new DbColumn("round", round, DbType.UInt32),
+                                          new DbColumn("round", round, DbType.UInt32),
                                           new DbColumn("turn", turn, DbType.UInt32),
                                           new DbColumn("report_flag", report.ReportFlag, DbType.Boolean),
                                           new DbColumn("report_started", report.ReportStarted, DbType.Boolean),

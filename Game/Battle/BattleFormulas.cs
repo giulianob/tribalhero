@@ -160,9 +160,9 @@ namespace Game.Battle
             return new Resource(Math.Min(count, spaceLeft.Crop), Math.Min(count, spaceLeft.Gold / 2), Math.Min(count, spaceLeft.Iron), Math.Min(count, spaceLeft.Wood), 0);
         }
 
-        internal static ushort GetStamina(City city)
+        internal static short GetStamina(TroopStub stub, City city)
         {
-            return (ushort)(Config.battle_stamina_initial);
+            return (short) Config.battle_stamina_initial;
         }
 
         internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round)
@@ -177,11 +177,12 @@ namespace Game.Battle
             return --stamina;
         }
 
-        internal static ushort GetStaminaStructureDestroyed(City city, ushort stamina, uint round)
+        internal static short GetStaminaStructureDestroyed(short stamina)
         {
             if (stamina < Config.battle_stamina_destroyed_deduction)
                 return 0;
-            return (ushort)(stamina - Config.battle_stamina_destroyed_deduction);
+
+            return (short)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
         internal static ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round) {

@@ -126,17 +126,22 @@ namespace Game.Battle {
         }
 
         public bool CanSee(CombatObject obj) {
-            int totalVision = (int)Visibility;
+            // In order to implement visibility as discussed in http://trac.tribalhero.com/game/wiki/Discussion%2011/08/10
+            // we always take the lowest RoundsParticipated of the two objects.
+            int minRoundsParticipated = Math.Min(RoundsParticipated, obj.RoundsParticipated);
+            int totalVision = (int) (Visibility + minRoundsParticipated);        
             switch(obj.BaseStats.Weapon) {
                 case WeaponType.BOW:
-                    totalVision += (RoundsParticipated * BaseStats.Spd / 15);
+                    totalVision += (minRoundsParticipated * BaseStats.Spd / 15);
                     break;
                 default:
                     break;
             }
+            
             if (totalVision >= obj.Stats.Stl) {
                 return true;
             }
+
             // if vision < stealth by 1, u have 33% chance 
             // if vision < stealth by 2, u have 25% chance 
             // if vision < stealth by 3, u have 20% chance 

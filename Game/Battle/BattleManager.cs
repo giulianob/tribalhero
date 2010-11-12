@@ -515,42 +515,57 @@ namespace Game.Battle {
                 }
                 #endregion
 
-                #region Find Attacker 
+                #region Targeting
                 CombatObject attacker;
-
-                if (!battleOrder.NextObject(out attacker) && !battleJustStarted) {
-                    ++round;
-                    stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
-                    battleOrder.ParticipatedInRound();
-                    turn = 0;
-                    EventEnterRound(Attacker, Defender, round, stamina);
-                }
-
-                if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
-                    BattleEnded(true);
-                    return false;
-                }
-                #endregion
-
-                #region Find Target
-
                 CombatObject defender;
 
-                if (attacker.CombatList == attackers) {
-                    defenders.GetBestTarget(attacker, out defender);
-                } else if (attacker.CombatList == defenders)
-                    attackers.GetBestTarget(attacker, out defender);
-                else
-                    throw new Exception("How can this happen");
+                do {
+                    #region Find Attacker                    
 
-                if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && attacker.Stats.Def == 0)) {
-                    attacker.ParticipatedInRound();
-                    Global.DbManager.Save(attacker);
-                    EventSkippedAttacker(attacker);
-                    return true;
-                }
+                    if (!battleOrder.NextObject(out attacker) && !battleJustStarted) {
+                        ++round;
+                        stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
+                        battleOrder.ParticipatedInRound();
+                        turn = 0;
+                        EventEnterRound(Attacker, Defender, round, stamina);
+                    }
 
-                #endregion
+                    if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
+                        BattleEnded(true);
+                        return false;
+                    }
+
+                    #endregion
+
+                    #region Find Target
+                    
+                    CombatList.BestTargetResult targetResult;
+
+                    if (attacker.CombatList == attackers) {
+                        targetResult = defenders.GetBestTarget(attacker, out defender);
+                    } else if (attacker.CombatList == defenders)
+                        targetResult = attackers.GetBestTarget(attacker, out defender);
+                    else
+                        throw new Exception("How can this happen");
+
+                    if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && attacker.Stats.Def == 0)) {
+                        attacker.ParticipatedInRound();
+                        Global.DbManager.Save(attacker);
+                        EventSkippedAttacker(attacker);
+
+                        // If the attacker can't attack because it has no one in range, then we skip him and find another target right away.
+                        if (targetResult == CombatList.BestTargetResult.NONE_IN_RANGE)
+                            continue;
+
+                        return true;
+                    }
+
+                    #endregion
+
+                    break;
+                } while (true);
+
+                #endregion  
 
                 #region Miss Chance
                 int missChance = BattleFormulas.MissChance(attacker.CombatList == attackers, defenders, attackers);
@@ -671,7 +686,7 @@ namespace Game.Battle {
 
                 #endregion
 
-                attacker.ParticipatedInRound();                
+                attacker.ParticipatedInRound();
 
                 Global.DbManager.Save(attacker);
 
@@ -689,14 +704,6 @@ namespace Game.Battle {
                             if (co != null)
                                 RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);
                         } while (co != null);
-                    } else if (defender.CombatList == attackers && defenders.Count > 0) {                        
-                        // For defenders we only send back structures
-                        List<Structure> structs = (from s in attackers.OfType<CombatStructure>()
-                                                  where !defenders.HasInRange(s)
-                                                  select s.Structure).ToList();
-                        
-                        if (structs.Count > 0) 
-                            RemoveFromLocal(structs, ReportState.EXITING);
                     }
                 }
 

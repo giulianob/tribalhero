@@ -125,6 +125,10 @@ namespace Game.Battle {
             get { throw new Exception("NOT IMPLEMENTED"); }
         }
 
+        public virtual short Stamina {
+            get { throw new Exception("NOT IMPLEMENTED"); }            
+        }
+
         public bool CanSee(CombatObject obj) {
             // In order to implement visibility as discussed in http://trac.tribalhero.com/game/wiki/Discussion%2011/08/10
             // we always take the lowest RoundsParticipated of the two objects.
@@ -151,9 +155,7 @@ namespace Game.Battle {
             // if vision < stealth by 7, u have 14% chance 
             // if vision < stealth by 8, u have 10% chance 
             // if vision < stealth by 9, u have 9% chance 
-            if (Config.Random.Next(obj.Stats.Stl - totalVision + 1) == 0)  
-                return true;
-            return false;
+            return Config.Random.Next(obj.Stats.Stl - totalVision + 1) == 0;
         }
 
         public void ParticipatedInRound() {

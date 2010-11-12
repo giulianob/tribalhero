@@ -77,9 +77,9 @@ namespace ConsoleSimulator {
                         attacker.AttackStub.EndUpdate();
                     }
                     bm.AddToAttack(attacker.AttackStub);
-                    bm.Stamina = ushort.MaxValue;
+                    
                     using (new MultiObjectLock(attacker.AttackStub, defender.Local)) {
-                        while (bm.ExecuteTurn());
+                        while (bm.ExecuteTurn()) {}
                     }
                     bm.ExitBattle -= new BattleBase.OnBattle(bm_ExitBattle);
                     bm.UnitRemoved -= new BattleBase.OnUnitUpdate(bm_UnitRemoved);
@@ -134,9 +134,9 @@ namespace ConsoleSimulator {
                         attacker.AttackStub.EndUpdate();
                     }
                     bm.AddToAttack(attacker.AttackStub);
-                    bm.Stamina = ushort.MaxValue;
+                    
                     using (new MultiObjectLock(attacker.AttackStub, defender.Local)) {
-                        while (bm.ExecuteTurn());
+                        while (bm.ExecuteTurn()) {}
                     }
 
                     bm.ExitBattle -= new BattleBase.OnBattle(bm_ExitBattle2);

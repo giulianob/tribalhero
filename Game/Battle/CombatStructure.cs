@@ -103,8 +103,13 @@ namespace Game.Battle {
             get { return BattleFormulas.GetUnitsPerStructure(Structure); }
         }
 
+        public override short Stamina
+        {
+            get { return -1; }
+        }
+        
         public override void CalculateDamage(ushort dmg, out ushort actualDmg) {
-            actualDmg = (ushort)Math.Min(Hp,dmg);
+            actualDmg = (ushort) Math.Min(Hp, dmg);
         }
 
         public override void TakeDamage(int dmg, out Resource returning, out int attackPoints) {

@@ -62,6 +62,11 @@ namespace Game.Battle {
             get { return UnitFactory.GetUnitStats(type, lvl).Upkeep * count; }
         }
 
+        public override short Stamina
+        {
+            get { return -1; }
+        }
+
         public DefenseCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl,
                                  ushort count) {
             TroopStub = stub;

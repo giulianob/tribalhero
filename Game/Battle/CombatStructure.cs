@@ -64,7 +64,7 @@ namespace Game.Battle {
         }
 
         public override uint Visibility {
-            get { return (uint) (RoundsParticipated + Stats.Rng); }
+            get { return Stats.Rng); }
         }
 
         public override uint PlayerId {

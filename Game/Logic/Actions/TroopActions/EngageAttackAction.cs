@@ -76,48 +76,9 @@ namespace Game.Logic.Actions
             return Error.OK;
         }
 
-        private static List<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject obj)
+        private static IEnumerable<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject obj)
         {
-            List<Structure> listStruct = new List<Structure>();
-            foreach (Structure structure in structures)
-            {
-                if (structure.RadiusDistance(obj) <= obj.Stats.AttackRadius ||
-                    structure.RadiusDistance(obj) <= structure.Stats.Base.Radius)
-                    listStruct.Add(structure);
-            }
-
-            return listStruct;
-        }
-
-        private static IEnumerable<Structure> GetProtectingStructures(IEnumerable<Structure> city, IEnumerable<Structure> structuresBeingAttacked, TroopObject attacker)
-        {
-            List<Structure> protectingStructures = new List<Structure>();
-            foreach (Structure structure in city)
-            {
-                if (structure.Stats.Base.Radius == 0)
-                    continue;
-
-                bool found = false;
-
-                foreach (Structure structureBeingAttacked in structuresBeingAttacked)
-                {
-                    if (structureBeingAttacked == structure)
-                    {
-                        found = false;
-                        break;
-                    }
-
-                    if (structure.RadiusDistance(structureBeingAttacked) <= structure.Stats.Base.Radius)
-                    {
-                        found = true;
-                    }
-                }
-
-                if (found)
-                    protectingStructures.Add(structure);
-            }
-
-            return protectingStructures;
+            return structures.Where(structure => structure.RadiusDistance(obj) <= obj.Stats.AttackRadius + structure.Stats.Base.Radius);
         }
 
         public override Error Execute()
@@ -139,9 +100,7 @@ namespace Game.Logic.Actions
 
                 Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.REINFORCED);
 
-                List<Structure> defenders = GetStructuresInRadius(targetCity, stub.TroopObject);
-                defenders.AddRange(GetProtectingStructures(targetCity, defenders, stub.TroopObject));
-                targetCity.Battle.AddToLocal(defenders);
+                targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 
                 targetCity.Battle.AddToAttack(list);
             }
@@ -153,9 +112,7 @@ namespace Game.Logic.Actions
 
                 BattleAction ba = new BattleAction(targetCityId);
 
-                List<Structure> defenders = GetStructuresInRadius(targetCity, stub.TroopObject);
-                defenders.AddRange(GetProtectingStructures(targetCity, defenders, stub.TroopObject));
-                targetCity.Battle.AddToLocal(defenders);
+                targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 
                 targetCity.Battle.AddToAttack(list);
                 targetCity.Worker.DoPassive(targetCity, ba, false);

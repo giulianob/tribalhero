@@ -61,11 +61,9 @@ namespace Game.Logic.Actions
 
         #region ISchedule Members
 
-        public override void Callback(object custom)
-        {
+        public override void Callback(object custom) {
             City city;
-            using (new MultiObjectLock(cityId, out city))
-            {
+            using (new MultiObjectLock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
@@ -85,8 +83,7 @@ namespace Game.Logic.Actions
                 #endregion
 
                 /*********************************** Loop1 *******************************************/
-                foreach (Structure structure in city)
-                {
+                foreach (Structure structure in city) {
 
                     #region Repair
 
@@ -107,14 +104,11 @@ namespace Game.Logic.Actions
 
                 #region Upkeep
 
-                if (Config.resource_upkeep)
-                {
-                    if (city.Resource.Crop.Upkeep > city.Resource.Crop.Rate)
-                    {
-                        int upkeepCost = Math.Max(1, (int)((INTERVAL / 3600f) / Config.seconds_per_unit) * (city.Resource.Crop.Upkeep - city.Resource.Crop.Rate));
+                if (Config.resource_upkeep) {
+                    if (city.Resource.Crop.Upkeep > city.Resource.Crop.Rate) {
+                        int upkeepCost = Math.Max(1, (int) ((INTERVAL/3600f)/Config.seconds_per_unit)*(city.Resource.Crop.Upkeep - city.Resource.Crop.Rate));
 
-                        if (city.Resource.Crop.Value < upkeepCost)
-                        {
+                        if (city.Resource.Crop.Value < upkeepCost) {
                             city.Worker.DoPassive(city, new StarveAction(city.Id), false);
                         }
 
@@ -126,8 +120,7 @@ namespace Game.Logic.Actions
 
                 #region Resource: Fast Income
 
-                if (Config.resource_fast_income)
-                {
+                if (Config.resource_fast_income) {
                     Resource resource = new Resource(15000, city.Resource.Gold.Value < 99500 ? 250 : 0, 15000, 15000, 0);
                     city.Resource.Add(resource);
                 }
@@ -135,14 +128,13 @@ namespace Game.Logic.Actions
                 #endregion
 
                 #region Labor
-                if (city.Owner.Session != null || DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays <= 2)
-                {
+
+                if (city.Owner.Session != null || DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays <= 2) {
                     laborTimeRemains += INTERVAL;
                     int laborRate = Formula.GetLaborRate(laborTotal, city);
-                    int laborProduction = laborTimeRemains / laborRate;
-                    if (laborProduction > 0)
-                    {
-                        laborTimeRemains -= laborProduction * laborRate;
+                    int laborProduction = laborTimeRemains/laborRate;
+                    if (laborProduction > 0) {
+                        laborTimeRemains -= laborProduction*laborRate;
                         city.Resource.Labor.Add(laborProduction);
                     }
                 }
@@ -153,16 +145,13 @@ namespace Game.Logic.Actions
 
 
                 /*********************************** Loop2 *******************************************/
-                foreach (Structure structure in city)
-                {
+                foreach (Structure structure in city) {
                     #region Repair
 
-                    if (repairPower > 0)
-                    {
-                        if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp && !ObjectTypeFactory.IsStructureType("NonRepairable", structure) && structure.State.Type != ObjectState.BATTLE)
-                        {
+                    if (repairPower > 0) {
+                        if (structure.Stats.Base.Battle.MaxHp > structure.Stats.Hp && !ObjectTypeFactory.IsStructureType("NonRepairable", structure) && structure.State.Type != ObjectState.BATTLE) {
                             structure.BeginUpdate();
-                            structure.Stats.Hp = (ushort)Math.Min(structure.Stats.Hp + repairPower, structure.Stats.Base.Battle.MaxHp);
+                            structure.Stats.Hp = (ushort) Math.Min(structure.Stats.Hp + repairPower, structure.Stats.Base.Battle.MaxHp);
                             structure.EndUpdate();
                         }
                     }
@@ -173,9 +162,14 @@ namespace Game.Logic.Actions
 
                 city.EndUpdate();
 
-                beginTime = DateTime.UtcNow;
-                endTime = DateTime.UtcNow.AddSeconds(INTERVAL * Config.seconds_per_unit);
-                StateChange(ActionState.FIRED);
+                // Stop city action if player has not login for more than a week
+                if (city.Owner.Session != null && DateTime.UtcNow.Subtract(city.Owner.LastLogin).TotalDays > 7) {
+                    StateChange(ActionState.COMPLETED);
+                } else {
+                    beginTime = DateTime.UtcNow;
+                    endTime = DateTime.UtcNow.AddSeconds(INTERVAL*Config.seconds_per_unit);
+                    StateChange(ActionState.FIRED);
+                }
             }
         }
 

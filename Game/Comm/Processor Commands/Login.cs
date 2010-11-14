@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -233,6 +234,11 @@ namespace Game.Comm
                 }
 
                 session.Write(reply);
+
+                //Restart any city actions that may have been stopped due to inactivity
+                foreach (City city in player.GetCityList().Where(city => !city.Worker.PassiveActions.Exists(x => x.Type == ActionType.CITY))) {
+                    city.Worker.DoPassive(city, new CityAction(city.Id), false);
+                }
             }
         }
 

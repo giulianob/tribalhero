@@ -119,6 +119,8 @@ package src.UI.Dialog{
 
 			pnlLoading = InfoDialog.showMessageDialog("Deleting", "Deleting messages...", null, null, true, false, 0);
 			Global.mapComm.Messaging.del(actionLoader, ids);
+			
+			refreshOnClose = true;
 		}
 
 		private function deleteMessage(id: int) : void {
@@ -126,6 +128,8 @@ package src.UI.Dialog{
 			var ids: Array = new Array();
 			ids.push(id);
 			Global.mapComm.Messaging.del(actionLoader, ids);
+			
+			refreshOnClose = true;
 		}
 
 		private function markAsRead(e: Event = null) : void {

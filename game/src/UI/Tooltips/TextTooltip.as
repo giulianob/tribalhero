@@ -8,8 +8,12 @@
 
 	public class TextTooltip extends Tooltip {
 
+		private var text: String = "";
+		
 		public function TextTooltip(text: String) {
 			var label: Component;
+			
+			this.text = text;
 
 			if (text.length < 30) {
 				label = new JLabel(text);
@@ -25,6 +29,10 @@
 			ui.setLayout(layout0);
 
 			ui.append(label);
+		}
+		
+		public function getText(): String {
+			return text;
 		}
 	}
 

@@ -1,10 +1,12 @@
 ﻿package src.UI.Cursors {
+	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import src.Global;
 	import src.Map.City;
+	import src.Map.Username;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
@@ -14,7 +16,7 @@
 	import src.Objects.Troop.*;
 	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCircle;
-	import src.UI.Tooltips.Tooltip;
+	import src.UI.Tooltips.TextTooltip;
 	import src.Util.Util;
 
 	/**
@@ -39,7 +41,7 @@
 
 		private var highlightedObj: GameObject;
 
-		private var tooltip: Tooltip = new Tooltip();
+		private var tooltip: TextTooltip;
 
 		public function GroundAttackCursor() {
 
@@ -88,6 +90,8 @@
 				cursor.dispose();
 			}
 
+			if (tooltip) tooltip.hide();
+			
 			Global.gameContainer.message.hide();
 
 			if (highlightedObj)
@@ -169,11 +173,16 @@
 			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
 
 			if (objects.length == 0) {
+				if (tooltip) tooltip.hide();
+				tooltip = null;
 				Global.gameContainer.message.showMessage("Choose target to attack");
 				return;
 			}
-
+			
 			var gameObj: SimpleGameObject = objects[0];
+		
+			// Return if we are already highlighting this object
+			if (highlightedObj == gameObj) return;
 
 			var structObj: StructureObject = gameObj as StructureObject;
 			structObj.setHighlighted(true);
@@ -183,7 +192,16 @@
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance);
 
+			var username: Username = Global.map.usernames.cities.getUsername(structObj.cityId, showTooltip, structObj);
+			if (username) showTooltip(username, structObj);
+
 			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to attack.");
+		}
+
+		private function showTooltip(username: Username, custom: * = null) : void {
+			if (tooltip) tooltip.hide();
+			tooltip = new TextTooltip(username.name);
+			tooltip.show(custom as DisplayObject);
 		}
 	}
 

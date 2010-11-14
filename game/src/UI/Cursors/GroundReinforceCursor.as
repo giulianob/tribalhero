@@ -1,10 +1,12 @@
 ﻿package src.UI.Cursors {
+	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import src.Global;
 	import src.Map.City;
+	import src.Map.Username;
 	import src.Objects.Effects.Formula;
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
@@ -13,6 +15,7 @@
 	import src.Objects.IDisposable;
 	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCircle;
+	import src.UI.Tooltips.TextTooltip;
 	import src.Util.Util;
 	import src.Objects.Troop.*;
 
@@ -33,6 +36,8 @@
 		private var troopSpeed: int;
 
 		private var highlightedObj: GameObject;
+
+		private var tooltip: TextTooltip;
 
 		public function GroundReinforceCursor() {
 
@@ -79,6 +84,8 @@
 				Global.map.objContainer.removeObject(cursor, ObjectContainer.LOWER);
 				cursor.dispose();
 			}
+
+			if (tooltip) tooltip.hide();
 
 			Global.gameContainer.message.hide();
 
@@ -164,10 +171,14 @@
 
 			if (objects.length == 0 || objects[0].objectId != 1) {
 				Global.gameContainer.message.showMessage("Choose a town center to defend");
+				if (tooltip) tooltip.hide();
+				tooltip = null;
 				return;
 			}
 
 			var gameObj: SimpleGameObject = objects[0];
+			
+			if (highlightedObj == gameObj) return;
 
 			var structObj: StructureObject = gameObj as StructureObject;
 			structObj.setHighlighted(true);
@@ -177,7 +188,16 @@
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance);
 
+			var username: Username = Global.map.usernames.cities.getUsername(structObj.cityId, showTooltip, structObj);
+			if (username) showTooltip(username, structObj);
+
 			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
+		}
+
+		private function showTooltip(username: Username, custom: * = null) : void {
+			if (tooltip) tooltip.hide();
+			tooltip = new TextTooltip(username.name);
+			tooltip.show(custom as DisplayObject);
 		}
 	}
 

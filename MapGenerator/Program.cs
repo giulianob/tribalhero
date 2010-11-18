@@ -27,9 +27,9 @@ namespace MapGenerator {
         static int region_row = height / region_height;
         static int numberOfTiles = 10;
         static int numberOfFarm = 2;
-        static int numberOfWoodland = 1;
+        static int numberOfWoodland = 2;
 
-        const ushort FARM_TILE = 208;
+        const ushort FARM_TILE = 209;
         const ushort WOODLAND_TILE = 209;
         const ushort CITY_TILE = 209;
         const byte radius = 3;

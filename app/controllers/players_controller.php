@@ -182,6 +182,12 @@ class PlayersController extends AppController {
 
     function logout() {
         $this->Session->setFlash("You have been logged out", 'default', array('class' => 'success'));
+		if (array_key_exists('sessionId', $this->params['named'])) {
+			$this->Player->save(array(
+				'login_key' => NULL
+			));
+		}
+		
         $this->redirect($this->Auth->logout());
     }
 }

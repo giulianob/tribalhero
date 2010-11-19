@@ -9,6 +9,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.MouseEvent;
 	import org.aswing.JOptionPane;
 	import src.Global;
+	import src.Map.City;
+	import src.Objects.Actions.Action;
+	import src.Objects.Actions.CurrentAction;
 	import src.Objects.SimpleGameObject;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Dialog.InfoDialog;
@@ -33,7 +36,17 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onClickEvent(e: MouseEvent):void
 		{
-			InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\nYou will only receive half of the action cost if cancelling after 60 seconds.", function(result: int) : void {
+			var city: City = Global.map.cities.get(parentObj.cityId);
+			
+			if (city == null) return;
+			
+			var currentAction: CurrentAction = city.currentActions.get(id);
+			
+			if (currentAction == null) return;
+			
+			var actionType: int = currentAction.getType(parentObj);		
+			
+			InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\n" + (Action.costsToCancelActions.indexOf(actionType) >= 0 ? "You will only receive half of the action cost if cancelling after 60 seconds." : ""), function(result: int) : void {
 				if (result == JOptionPane.YES) {
 					Global.mapComm.Object.cancelAction(parentObj.cityId, parentObj.objectId, id);
 				}

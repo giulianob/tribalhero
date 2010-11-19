@@ -969,8 +969,8 @@ package src.UI.LookAndFeel
 		//not specified a image, so it will be solid bg, however, you can add the image
 		//[Embed(source="assets/MenuBar_bgImage.png")]
 		private var MenuBar_bgImage:Class;
-		[Embed(source="assets/PopupMenu_bgImage.png", scaleGridTop="3", scaleGridBottom="277",
-		scaleGridLeft="3", scaleGridRight="172")]
+		[Embed(source="assets/PopupMenu_bgImage.png", scaleGridTop="6", scaleGridBottom="274",
+		scaleGridLeft="6", scaleGridRight="169")]
 		private var PopupMenu_bgImage:Class;
 
 		//----------------------------------------------------------------------

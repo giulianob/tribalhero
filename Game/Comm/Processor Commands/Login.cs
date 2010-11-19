@@ -85,7 +85,7 @@ namespace Game.Comm
                         reader =
                             Global.DbManager.ReaderQuery(
                                 string.Format(
-                                    "SELECT * FROM `{0}` WHERE login_key IS NOT NULL AND login_key = @login_key AND TIMEDIFF(NOW(), login_key_date) < '00:10:00.000000' LIMIT 1",
+                                    "SELECT * FROM `{0}` WHERE `login_key` IS NOT NULL AND `login_key` = @login_key AND TIMEDIFF(NOW(), `login_key_date`) < '00:10:00.000000' LIMIT 1",
                                     Player.DB_TABLE), new[] { new DbColumn("login_key", loginKey, System.Data.DbType.String) });
                     }
                     else
@@ -93,7 +93,7 @@ namespace Game.Comm
                         reader =
                             Global.DbManager.ReaderQuery(
                                 string.Format(
-                                    "SELECT * FROM `{0}` WHERE name = @name AND password = SHA1(@password) LIMIT 1",
+                                    "SELECT * FROM `{0}` WHERE `name` = @name AND `password` = SHA1(@password) LIMIT 1",
                                     Player.DB_TABLE), new[] { new DbColumn("name", playerName, System.Data.DbType.String), new DbColumn("password", Config.database_salt + playerPassword, System.Data.DbType.String) });
                     }
                 }

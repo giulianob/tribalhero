@@ -2,44 +2,55 @@
 {
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.Factories.WorkerFactory;
-	import src.Objects.GameObject;
 	import src.Objects.IObject;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.Worker;
-	import src.Objects.StructureObject;
 
 	public class CurrentActiveAction extends CurrentAction
 	{
 		public var index: int;
 		public var count: int;
-		
-		public function CurrentActiveAction(workerId: int, id: int, index: int, count: int, startTime: int, endTime: int) 
+
+		public function CurrentActiveAction(workerId: int, id: int, index: int, count: int, startTime: int, endTime: int)
 		{
 			super(workerId, id, startTime, endTime);
 			this.index = index;
 			this.count = count;
 		}
-		
-		public override function toString(gameObject: IObject) : String {		
+
+		public override function toString(gameObject: IObject) : String {
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.getType(), gameObject.getLevel());
-			
+
 			var workerPrototype: Worker;
-			
-			if (structPrototype)
-				workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);			
-			else
-				return "[" + index + "]";
-				
+
+			if (structPrototype) workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
+			else return "[" + index + "]";
+
 			var action: IAction = workerPrototype.getAction(index);
-				
-			if (action == null) 
-				return "Action";
-				
-			if (workerPrototype)
-				return action.toString() + (count > 0 ? "(" + count + ")" : "");
+
+			if (action == null) return "Action";
+
+			if (workerPrototype) return action.toString() + (count > 0 ? "(" + count + ")" : "");
+
+			return "[" + index + "]";
+		}
+
+		public override function getType(gameObject: IObject):int
+		{
+			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.getType(), gameObject.getLevel());
+
+			var workerPrototype: Worker;
+
+			if (structPrototype) workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
+			else return 0;
+
+			var action: * = workerPrototype.getAction(index);
+
+			if (action == null) return 0;
 			
-			return "[" + index + "]";	
+			return action.actionType;
 		}
 	}
-	
+
 }
+

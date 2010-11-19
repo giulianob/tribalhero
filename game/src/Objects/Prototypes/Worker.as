@@ -32,7 +32,7 @@ package src.Objects.Prototypes {
 			techUpgradeActions.push(action);
 		}
 
-		public function getAction(index: int): IAction
+		public function getAction(index: int): *
 		{
 			return actions[index - 1];
 		}

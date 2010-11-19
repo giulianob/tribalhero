@@ -18,6 +18,14 @@
 			
 		}
 		
+		public static function asMessage(message: String) : EffectReqPrototype {
+			var req: EffectReqPrototype = new EffectReqPrototype();
+			req.method = "Message";
+			req.param1 = message;
+			
+			return req;
+		}
+		
 		public static function sortOnMethod(a:EffectReqPrototype, b:EffectReqPrototype):Number {
 			var aType:String = a.method;
 			var bType:String = b.method;

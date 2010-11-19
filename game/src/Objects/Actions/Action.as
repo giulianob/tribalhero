@@ -60,8 +60,7 @@ package src.Objects.Actions {
 		
 		public function validate(parentObj: GameObject, effects: Array): Array
 		{
-			if (effectReq == null)
-				return null;
+			if (effectReq == null) return new Array();
 				
 			return effectReq.validate(parentObj, effects);
 		}

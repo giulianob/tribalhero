@@ -27,10 +27,7 @@
 				}
 			}
 
-			if (invalidEffects.length > 0)
 			return invalidEffects;
-			else
-			return null;
 		}
 
 		public static function sortOnId(a:EffectReqManager, b:EffectReqManager):Number {

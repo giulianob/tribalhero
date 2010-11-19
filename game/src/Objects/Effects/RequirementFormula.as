@@ -15,6 +15,7 @@
 	public class RequirementFormula {
 
 		private static var methodLookup: Array = new Array(
+		{name: "Message", method: custom, message: customMsg},
 		{name: "CanBuild", method: canBuild, message: canBuildMsg},
 		{name: "HaveTechnology", method: haveTechnology, message: haveTechnologyMsg },
 		{name: "HaveStructure", method: haveStructure, message: haveStructureMsg },
@@ -30,12 +31,9 @@
 
 		public static function methodCompare(data: Object, value: String): int
 		{
-			if (data.name > value)
-			return 1;
-			else if (data.name < value)
-			return -1;
-			else
-			return 0;
+			if (data.name > value) return 1;
+			else if (data.name < value) return -1;
+			else return 0;
 		}
 
 		private static function getMethodIndex(effectReq: EffectReqPrototype): int
@@ -63,7 +61,7 @@
 
 		public static function getMessage(parentObj: GameObject, effectReq: EffectReqPrototype): String
 		{
-			if (effectReq.description != "") {
+			if (effectReq.description != "" && effectReq.description != null) {
 				return effectReq.description;
 			}
 
@@ -93,6 +91,17 @@
 			return ret;
 		}
 
+		/*CUSTOM*/
+		private static function custom(parentObj: GameObject, effects: Array, message: String, param2: String, param3: String, param4: String, param5: String): Boolean
+		{
+			return false;
+		}
+
+		private static function customMsg(parentObj: GameObject, message: String, param2: String, param3: String, param4: String, param5: String): String
+		{		
+			return message;
+		}		
+		
 		/*CAN BUILD*/
 		private static function canBuild(parentObj: GameObject, effects: Array, structId: int, param2: int, param3: int, param4: int, param5: int): Boolean
 		{

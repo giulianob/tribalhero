@@ -18,6 +18,11 @@
 		{
 			return PassiveAction.toString(type);
 		}
+		
+		public override function getType(gameObject: IObject):int 
+		{
+			return type;
+		}
 	}
 	
 }

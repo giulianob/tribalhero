@@ -6,10 +6,12 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.Actions.Action;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.Prototypes.EffectReqPrototype;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.StructureObject;
 	import src.UI.Cursors.*;
@@ -75,6 +77,11 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
+
+			// Enforce only one upgrade at a time
+			if (city.currentActions.hasAction(Action.STRUCTURE_UPGRADE, parentObj)) {
+				missingReqs.push(EffectReqPrototype.asMessage("You can only upgrade one structure at a time"));
+			}
 
 			upgradeToolTip.missingRequirements = missingReqs;
 			upgradeToolTip.draw(currentCount, parentAction.maxCount);

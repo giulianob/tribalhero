@@ -5,11 +5,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.Actions.Action;
 	import src.Objects.Actions.BuildAction;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.*;
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.Prototypes.EffectReqPrototype;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.UI.Cursors.*;
 	import src.UI.Tooltips.StructureBuildTooltip;
@@ -76,6 +78,11 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
+			
+			// Enforce only one building at a time
+			if (city.currentActions.hasAction(Action.STRUCTURE_BUILD, parentObj)) {
+				missingReqs.push(EffectReqPrototype.asMessage("You can only build one structure at a time"));
+			}
 
 			buildToolTip.missingRequirements = missingReqs;
 			buildToolTip.draw(currentCount, parentAction.maxCount);

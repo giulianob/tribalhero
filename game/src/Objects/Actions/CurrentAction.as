@@ -51,6 +51,11 @@ package src.Objects.Actions {
 		{
 			return "";
 		}
+		
+		public function getType(gameObject: IObject) : int 
+		{
+			return 0;
+		}
 	}
 	
 }

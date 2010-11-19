@@ -2,6 +2,8 @@
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
+	import flash.net.navigateToURL;
+	import flash.net.URLRequest;
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import org.aswing.event.AWEvent;
@@ -24,6 +26,10 @@
 	import org.aswing.ext.*;
 
 	public class GameContainer extends GameContainer_base {
+
+		//Popup menu
+		private var menu: JPopupMenu;
+		private var menuDummyOverlay: Component;
 
 		//City list
 		private var lstCities: JComboBox;
@@ -73,27 +79,23 @@
 		// Game bar bg. Can't be in Flash because of scale9 issue
 		private var barBg: DisplayObject;
 
-		// Username + logout link
-		private var userPnl: JPanel;
-
 		// Command line
 		private var cmdLine: CmdLineViewer;
 
 		public function GameContainer()
 		{
+			// Here we create a dummy ASWing component and stick it over the menu button because the popup requires it
+			menuDummyOverlay = new Component();
+			menuDummyOverlay.setLocationXY(btnMenu.x, btnMenu.y);
+			addChild(menuDummyOverlay);
+			
 			// Create and position the city list
 			lstCities = new JComboBox();
 			lstCities.setModel(new VectorListModel());
 			lstCities.addActionListener(onChangeCitySelection);
 			lstCities.setSize(new IntDimension(128, 22));
-			lstCities.setLocation(new IntPoint(37, 12));
+			lstCities.setLocation(new IntPoint(40, 12));
 			addChild(lstCities);
-
-			// Create and position the username panel
-			userPnl = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
-			userPnl.setPreferredSize(new IntDimension(200, 22));
-			userPnl.setLocation(new IntPoint(480, 12));
-			addChild(userPnl);
 
 			// Create barBg
 			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
@@ -148,6 +150,8 @@
 			new SimpleTooltip(btnCityTroops, "View unit movement");
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
 
+			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);
+
 			// Set up sidebar holder
 			sidebarHolder = new Sprite();
 			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
@@ -158,6 +162,28 @@
 			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);
 			resourcesTimer.start();
 		}
+
+		public function onMenuClick(e: MouseEvent): void
+		{
+			if (!menu) return;
+
+			menu.show(menuDummyOverlay, 0, btnMenu.height);
+		}
+
+		public function onLogoutClick(e: Event): void
+		{
+			navigateToURL(new URLRequest("http://" + Constants.hostname + "/players/logout/session:" + Constants.sessionId), null);
+		}
+		
+		public function onHelpClick(e: Event): void
+		{
+			navigateToURL(new URLRequest("http://" + Constants.hostname + "/database"), "_blank");
+		}
+		
+		public function onForumsClick(e: Event): void
+		{
+			navigateToURL(new URLRequest("http://forums.tribalhero.com"), "_blank");
+		}		
 
 		public function onViewCityTroops(e: MouseEvent) :void
 		{
@@ -281,20 +307,6 @@
 			this.map = map;
 			this.miniMap = miniMap;
 
-			// Populate user panel
-			/*
-			userPnl.removeAll();
-			var userLblMaker: Function = function(txt: String) : JLabel {
-			var lbl: JLabel = new JLabel(txt);
-			GameLookAndFeel.changeClass(lbl, "Tooltip.text Label.small");
-			lbl.pack();
-			return lbl;
-			}
-			userPnl.append(userLblMaker(map.usernames.players.get(Constants.playerId).name + "("));
-			userPnl.append(userLblMaker(")"));
-			userPnl.pack();
-			*/
-
 			// Clear current city list
 			(lstCities.getModel() as VectorListModel).clear();
 
@@ -349,7 +361,6 @@
 			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
-			resizeManager.addObject(userPnl, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
 
 			resizeManager.addEventListener(Event.RESIZE, map.onResize);
@@ -370,6 +381,13 @@
 		}
 
 		public function show() : void {
+			// Create popup menu now that we have all the player info
+			menu = new JPopupMenu();
+			menu.addMenuItem("Logged in as " + Constants.username);
+			menu.addMenuItem("Forums").addActionListener(onForumsClick);
+			menu.addMenuItem("Help").addActionListener(onHelpClick);
+			menu.addMenuItem("Logout").addActionListener(onLogoutClick);
+
 			// Reset camera pos
 			camera.reset();
 
@@ -388,6 +406,11 @@
 		}
 
 		public function dispose() : void {
+			if (menu) {
+				menu.dispose();
+				menu = null;
+			}
+
 			if (messageTimer) {
 				messageTimer.stop();
 				messageTimer = null;
@@ -453,6 +476,7 @@
 			if (sidebar != null) {
 				chains.visible = true;
 				sidebar.show(sidebarHolder);
+				FocusManager.getManager(stage).focusPrevious();
 			}
 
 			stage.focus = null;

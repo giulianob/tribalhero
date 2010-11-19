@@ -89,7 +89,7 @@ package src.UI.Dialog{
 				loadPage(page - 1);
 			});
 
-			tabs.addStateListener(onTabChanged);
+			tabs.addStateListener(onTabChanged);			
 		}
 
 		public function getRefreshOnClose() : Boolean {

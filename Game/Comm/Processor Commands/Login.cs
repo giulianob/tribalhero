@@ -107,6 +107,7 @@ namespace Game.Comm
 
                 if (!reader.HasRows)
                 {
+                    if (!reader.IsClosed) reader.Close();
                     ReplyError(session, packet, Error.INVALID_LOGIN);
                     session.CloseSession();
                     return;
@@ -127,6 +128,14 @@ namespace Game.Comm
                 // Reset login key back to null
                 Global.DbManager.Query(string.Format("UPDATE `{0}` SET `login_key` = null WHERE `id` = @id LIMIT 1",
                                                      Player.DB_TABLE), new[] { new DbColumn("id", playerId, System.Data.DbType.UInt32) });
+
+                // If we are under admin only mode then kick out non admin
+                if (Config.server_admin_only && !admin)
+                {
+                    ReplyError(session, packet, Error.UNDER_MAINTENANCE);
+                    session.CloseSession();
+                    return;
+                }
 
                 // If player was banned then kick his ass out
                 if (banned)

@@ -19,8 +19,8 @@ namespace MapGenerator {
         static Random random = new Random();
         static StreamWriter sw;
 
-        static int width = 1904;
-        static int height = 3472;
+        static int width = 3400;
+        static int height = 6200;
         static int region_width = 34;
         static int region_height = 62;
         static int region_column = width / region_width;

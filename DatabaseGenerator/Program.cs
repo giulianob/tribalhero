@@ -25,6 +25,7 @@ namespace DatabaseGenerator
 
             LoadLanguages();
 
+            Directory.CreateDirectory("output");
 
             // Process structures
             using (StreamWriter writer = new StreamWriter(File.Create("output/structure_listing.inc.php"))) {

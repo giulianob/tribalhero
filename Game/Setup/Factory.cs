@@ -20,7 +20,7 @@ namespace Game.Setup
             using (StreamWriter sw = new StreamWriter(outputFile)) {
                 bool headerWritten = false;
                 foreach (string filename in Directory.GetFiles(dir, pattern, SearchOption.TopDirectoryOnly)) {
-                    string fullFilename = Path.Combine(dir, filename);
+                    string fullFilename = filename;
                     using (StreamReader sr = new StreamReader(new FileStream(fullFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                     {
                         string header = sr.ReadLine();

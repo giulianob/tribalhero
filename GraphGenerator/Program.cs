@@ -12,6 +12,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
 using Game.Setup;
+using NDesk.Options;
 
 namespace GraphGenerator
 {
@@ -64,8 +65,24 @@ namespace GraphGenerator
             ALREADY_PROCESSED
         }
 
+        static void ParseArgs() {
+            List<string> imgDirList = new List<string>();
+
+            var p = new OptionSet
+                        {
+                            {"img=", v => imgDirList.Add(v)},
+                            {"gv-path=", v => gvPath = v },                            
+                        };
+
+            p.Parse(Environment.GetCommandLineArgs());
+
+            if (imgDirList.Count > 0)
+                imageDirectories = imgDirList.ToArray();
+        }
+
         static void Main()
         {
+            ParseArgs();
             Factory.CompileConfigFiles();
             Factory.InitAll();
 

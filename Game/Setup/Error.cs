@@ -8,6 +8,7 @@ namespace Game.Setup {
         CLIENT_OLD_VERSION = 5,
         INVALID_LOGIN = 6,
         BANNED = 7,
+        UNDER_MAINTENANCE = 8,
         #endregion
 
         #region Action Errors

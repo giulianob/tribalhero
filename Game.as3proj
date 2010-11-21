@@ -15,7 +15,6 @@
   <classpaths>
     <class path="lib\src" />
     <class path="game" />
-    <class path="C:\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -48,10 +47,9 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <element path="..\..\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs\flash.swc" />
     <element path="lib\swc\Game\Game.swc" />
     <element path="lib\swc\as3corelib\as3corelib.swc" />
-    <element path="C:\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs\flash.swc" />
+    <element path="lib\swc\flash\flash.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

@@ -30,7 +30,9 @@ namespace GraphGenerator
                                                };
 
         static string gvPath = @"C:\Program Files (x86)\Graphviz2.26.3\bin\dot.exe";
-        static string gvArgs = @"-Tpng -o..\{0} {1}";
+        static string gvArgs = @"-Tpng -o{0} {1}";
+
+        static string output = "output";
 
         static List<int> processedStructures = new List<int>();
         static List<int> processedUnits = new List<int>();
@@ -71,7 +73,8 @@ namespace GraphGenerator
             var p = new OptionSet
                         {
                             {"img=", v => imgDirList.Add(v)},
-                            {"gv-path=", v => gvPath = v },                            
+                            {"gv-path=", v => gvPath = v },     
+                            {"output=", v => output = v },
                         };
 
             p.Parse(Environment.GetCommandLineArgs());
@@ -88,13 +91,7 @@ namespace GraphGenerator
 
             LoadLanguages();
 
-            // Delete output folder
-            if (Directory.Exists("output")) Directory.Delete("output", true);
-
-            // Create output folders
-            Directory.CreateDirectory("output");
-
-            var rawPath = Path.Combine(Path.GetFullPath("output"), "raw");
+            var rawPath = Path.Combine(Path.GetFullPath(output), "raw");
             Directory.CreateDirectory(rawPath);            
 
             //Copy all images from image folders to output
@@ -115,35 +112,35 @@ namespace GraphGenerator
                 WriteRankings(b);
 
                 // Write small
-                using (StreamWriter output = new StreamWriter(File.Create(Path.Combine(rawPath, "tree.gv"))))
+                using (StreamWriter outStream = new StreamWriter(File.Create(Path.Combine(rawPath, "tree.gv"))))
                 {
                     string outStr = TEMPLATE.Replace("%content%", b.ToString());
 
-                    output.Write(outStr);
+                    outStream.Write(outStr);
                 }
 
-                RunGv("game-tree.png", "tree.gv");
+                RunGv(Path.Combine(output, "game-tree.png"), "tree.gv");
                 
                 // Write large                
-                using (StreamWriter output = new StreamWriter(File.Create(Path.Combine(rawPath, "tree-large.gv"))))
+                using (StreamWriter outStream = new StreamWriter(File.Create(Path.Combine(rawPath, "tree-large.gv"))))
                 {
                     string outStr = TEMPLATE_LARGE.Replace("%content%", b.ToString());
 
-                    output.Write(outStr);
+                    outStream.Write(outStr);
                 }
 
-                RunGv("game-tree-large.png", "tree-large.gv");
+                RunGv(Path.Combine(output, "game-tree-large.png"), "tree-large.gv");
             }
 
 
             nodeConnections.Close();
         }
 
-        private static void RunGv(string output, string gvFile) {
+        private static void RunGv(string outImg, string gvFile) {
             ProcessStartInfo info = new ProcessStartInfo {
                                             FileName = gvPath,
-                                            Arguments = string.Format(gvArgs, output, gvFile),
-                                            WorkingDirectory = Path.Combine(Path.GetFullPath("output"), "raw"),
+                                            Arguments = string.Format(gvArgs, outImg, gvFile),
+                                            WorkingDirectory = Path.Combine(Path.GetFullPath(output), "raw"),
                                             CreateNoWindow = true,                                            
                                         };         
             Process proc = Process.Start(info);
@@ -172,20 +169,20 @@ namespace GraphGenerator
             }
         }
 
-        private static void WriteDefinitions(TextWriter output) {
+        private static void WriteDefinitions(TextWriter outStream) {
             foreach (var kvp in nodeDefintions)
             {
-                output.WriteLine("{0} {1}", kvp.Key, kvp.Value);
+                outStream.WriteLine("{0} {1}", kvp.Key, kvp.Value);
             }            
         }
 
-        private static void WriteRankings(TextWriter output)
+        private static void WriteRankings(TextWriter outStream)
         {
             foreach (List<String> ranking in ranks) {
-                output.Write("{ rank=\"same\"; ");
+                outStream.Write("{ rank=\"same\"; ");
                 foreach (string str in ranking)
-                    output.Write("{0}; ", str);
-                output.WriteLine("}");
+                    outStream.Write("{0}; ", str);
+                outStream.WriteLine("}");
             }
         }
 

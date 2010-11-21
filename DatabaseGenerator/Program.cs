@@ -8,6 +8,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
 using Game.Setup;
+using NDesk.Options;
 
 namespace DatabaseGenerator
 {
@@ -19,16 +20,27 @@ namespace DatabaseGenerator
 
         static readonly Dictionary<string, string> Lang = new Dictionary<string, string>();
 
+        static string output = "output";
+
         static void Main(string[] args) {
             Factory.CompileConfigFiles();
             Factory.InitAll();
 
             LoadLanguages();
 
-            Directory.CreateDirectory("output");
+            try
+            {
+                var p = new OptionSet
+                            {                                
+                                { "output=", v => output = v }, 
+                            };
+
+                p.Parse(Environment.GetCommandLineArgs());
+            }
+            catch (Exception e) {}
 
             // Process structures
-            using (StreamWriter writer = new StreamWriter(File.Create("output/structure_listing.inc.php"))) {
+            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "structure_listing.inc.php")))) {
 
                 writer.Write(@"<?php
                     $structures = array(
@@ -45,7 +57,7 @@ namespace DatabaseGenerator
             }
 
             // Process units
-            using (StreamWriter writer = new StreamWriter(File.Create("output/unit_listing.inc.php"))) {
+            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "unit_listing.inc.php")))) {
 
                 writer.Write(@"<?php
                     $units = array(
@@ -61,7 +73,7 @@ namespace DatabaseGenerator
 
             // Process technologies
             // Process units
-            using (StreamWriter writer = new StreamWriter(File.Create("output/technology_listing.inc.php")))
+            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "technology_listing.inc.php"))))
             {
 
                 writer.Write(@"<?php
@@ -149,7 +161,7 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
-            using (StreamWriter writer = new StreamWriter(File.Create(string.Format("output/{0}_TECHNOLOGY.ctp", tech.name))))
+            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, string.Format("{0}_TECHNOLOGY.ctp", tech.name)))))
             {
                 writer.Write(generalTemplate);
             }
@@ -292,7 +304,7 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
-            using (StreamWriter writer = new StreamWriter(File.Create(string.Format("output/{0}_UNIT.ctp", stats.Name))))
+            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, string.Format("{0}_UNIT.ctp", stats.Name)))))
             {
                 writer.Write(generalTemplate);
             }
@@ -430,7 +442,7 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
-            using (StreamWriter writer = new StreamWriter(File.Create(string.Format("output/{0}_STRUCTURE.ctp", stats.Name)))) {
+            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, string.Format("{0}_STRUCTURE.ctp", stats.Name))))) {
                 writer.Write(generalTemplate);
             }
         }

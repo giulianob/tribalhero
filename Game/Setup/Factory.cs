@@ -36,6 +36,8 @@ namespace Game.Setup
 
         public static void CompileConfigFiles()
         {
+            Directory.CreateDirectory(Config.csv_compiled_folder);
+
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "structure.csv"), Config.csv_folder, "*structure.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "action.csv"), Config.csv_folder, "*action.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"), Config.csv_folder, "*effect_requirement.csv");

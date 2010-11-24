@@ -8,41 +8,35 @@
 
 	public class CurrentActiveAction extends CurrentAction
 	{
+		public var workerType: int;
 		public var index: int;
 		public var count: int;
 
-		public function CurrentActiveAction(workerId: int, id: int, index: int, count: int, startTime: int, endTime: int)
+		public function CurrentActiveAction(workerId: int, id: int, workerType: int, index: int, count: int, startTime: int, endTime: int) 
 		{
 			super(workerId, id, startTime, endTime);
+			this.workerType = workerType;
 			this.index = index;
 			this.count = count;
 		}
 
-		public override function toString(gameObject: IObject) : String {
-			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.getType(), gameObject.getLevel());
+		public override function toString() : String 
+		{
+			var workerPrototype: Worker = WorkerFactory.getPrototype(workerType);
 
-			var workerPrototype: Worker;
-
-			if (structPrototype) workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
-			else return "[" + index + "]";
-
+			if (workerPrototype == null) return "[" + index + "]";
+			
 			var action: IAction = workerPrototype.getAction(index);
 
 			if (action == null) return "Action";
-
-			if (workerPrototype) return action.toString() + (count > 0 ? "(" + count + ")" : "");
+			else return action.toString() + (count > 0 ? "(" + count + ")" : "");
 
 			return "[" + index + "]";
 		}
 
-		public override function getType(gameObject: IObject):int
+		public override function getType():int
 		{
-			var structPrototype: StructurePrototype = StructureFactory.getPrototype(gameObject.getType(), gameObject.getLevel());
-
-			var workerPrototype: Worker;
-
-			if (structPrototype) workerPrototype = WorkerFactory.getPrototype(structPrototype.workerid);
-			else return 0;
+			var workerPrototype: Worker = WorkerFactory.getPrototype(workerType);
 
 			var action: * = workerPrototype.getAction(index);
 

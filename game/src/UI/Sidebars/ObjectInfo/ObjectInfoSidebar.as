@@ -263,10 +263,10 @@ package src.UI.Sidebars.ObjectInfo {
 			{
 				var currentAction: * = actions[i];
 
-				var actionDescription: String = currentAction.toString(gameObject);
+				var actionDescription: String = currentAction.toString();
 
 				if (currentAction is CurrentActionReference) {
-					currentAction = currentAction.getAction(gameObject);
+					currentAction = currentAction.getAction();
 					if (!currentAction) continue;
 				}
 

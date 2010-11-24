@@ -204,10 +204,10 @@
 			{
 				var currentAction: * = actions[i];
 
-				var actionDescription: String = currentAction.toString(troopObj);
+				var actionDescription: String = currentAction.toString();
 
 				if (currentAction is CurrentActionReference) {					
-					currentAction = currentAction.getAction(troopObj);
+					currentAction = currentAction.getAction();
 					if (!currentAction) continue;
 				}
 

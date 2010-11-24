@@ -58,8 +58,7 @@ package src.Objects.Actions {
 
 		public function countCurrentActions(): Boolean
 		{
-			if (!parentAction)
-			return true;
+			if (!parentAction) return true;
 
 			currentCount = 0;
 
@@ -72,21 +71,14 @@ package src.Objects.Actions {
 			{
 				var action: CurrentAction;
 
-				if (currentAction is CurrentActionReference)
-				continue;
-				else
-				action = currentAction;
+				if (currentAction is CurrentActionReference) continue;
+				else action = currentAction;
 
-				if (!(action is CurrentActiveAction))
-				continue;
+				if (!(action is CurrentActiveAction)) continue;
 
-				if (action.endTime -  Global.map.getServerTime() <= 0)
-				continue;
+				if (action.endTime -  Global.map.getServerTime() <= 0) continue;
 
-				if ((action as CurrentActiveAction).index == parentAction.index)
-				{
-					currentCount++;
-				}
+				if ((action as CurrentActiveAction).index == parentAction.index) currentCount++;
 			}
 
 			return currentCount < parentAction.maxCount;

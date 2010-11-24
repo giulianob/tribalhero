@@ -434,10 +434,9 @@
 			var objId: int = packet.readUInt();
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0)
-			currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
-			else
-			currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 			return;
@@ -485,7 +484,7 @@
 			var currentAction: CurrentAction;
 
 			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
-			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null) return;
@@ -495,7 +494,7 @@
 				var obj: CityObject = city.objects.get(objId);
 				if (obj) {
 					var strPrototype: StructurePrototype = StructureFactory.getPrototype(obj.getType(), obj.getLevel());
-					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": Action has completed", new AssetIcon(new ICON_CLOCK), 2000));
+					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": " + currentAction.toString() + " has completed", new AssetIcon(new ICON_CLOCK), 2000));
 				}
 			}
 

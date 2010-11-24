@@ -44,7 +44,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			
 			if (currentAction == null) return;
 			
-			var actionType: int = currentAction.getType(parentObj);		
+			var actionType: int = currentAction.getType();		
 			
 			InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\n" + (Action.costsToCancelActions.indexOf(actionType) >= 0 ? "You will only receive half of the action cost if cancelling after 60 seconds." : ""), function(result: int) : void {
 				if (result == JOptionPane.YES) {

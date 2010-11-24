@@ -107,10 +107,8 @@
 
 					var workerId: int = packet.readUInt();
 
-					if (packet.readUByte() == 0)
-					city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
-					else
-					city.currentActions.add(new CurrentActiveAction(workerId, packet.readUInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
+					if (packet.readUByte() == 0) city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
+					else city.currentActions.add(new CurrentActiveAction(workerId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
 				}
 				city.currentActions.sort();
 
@@ -126,7 +124,7 @@
 				//References
 				var referencesCnt: int = packet.readUShort();
 				for (k = 0; k < referencesCnt; k++) {
-					var reference: CurrentActionReference = new CurrentActionReference(packet.readUShort(), packet.readUInt(), packet.readUInt());
+					var reference: CurrentActionReference = new CurrentActionReference(id, packet.readUShort(), packet.readUInt(), packet.readUInt());
 					city.references.add(reference, false);
 				}
 				city.references.sort();

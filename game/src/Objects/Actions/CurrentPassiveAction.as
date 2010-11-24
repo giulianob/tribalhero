@@ -14,12 +14,12 @@
 			this.type = type;
 		}
 		
-		public override function toString(gameObject: IObject) : String 
+		public override function toString() : String 
 		{
 			return PassiveAction.toString(type);
 		}
 		
-		public override function getType(gameObject: IObject):int 
+		public override function getType():int 
 		{
 			return type;
 		}

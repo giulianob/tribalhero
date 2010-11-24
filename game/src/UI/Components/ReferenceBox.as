@@ -53,9 +53,9 @@
 			
 			var gameObj: CityObject = city.objects.get(reference.objectId);
 			
-			action = reference.getAction(gameObj);
+			action = reference.getAction();
 
-			var actionDescription: String = reference.toString(gameObj);
+			var actionDescription: String = reference.toString();
 
 			lblAction.setText(actionDescription);
 			lblAction.setToolTipText(lblAction.getText());

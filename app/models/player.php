@@ -33,6 +33,12 @@ class Player extends AppModel {
 				'required' => true,
 				'on' => 'create'
 			),
+			'unique' => array(
+				'rule' => 'isUnique',
+				'message' => 'This email address has already been registered',
+				'required' => false,
+				'on' => 'update'
+			),			
 			'between' => array(
 				'rule' => array('between', 5, 256),
 				'message' => 'Must be between 5 and 256 characters long'

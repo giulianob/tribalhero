@@ -27,6 +27,47 @@ class PlayersController extends AppController {
         $this->Security->disabledFields = array('recaptcha_challenge_field', 'recaptcha_response_field');
     }
 
+	function account() {
+		$this->set('title_for_layout', 'Account Options');
+		
+		$fields = array('name', 'password_once', 'password_twice', 'email_address');
+		
+		if (!empty($this->data)) {
+			
+			$this->Player->id = $this->Auth->user('id');
+			
+			if ($this->Player->find('count', array('contain' => array(), 'conditions' => array(
+					'password' => $this->Auth->password($this->data['Player']['current_password']),
+					'id' => $this->Auth->user('id')
+				))) == 0
+			) {
+				$this->Player->invalidate('current_password', 'Invalid password');
+			} else {			
+				if (empty($this->data['Player']['password_once'])) 
+					unset($this->data['Player']['password_once']);
+				
+				$this->Player->set($this->data);
+				
+				if ($this->Player->validates(array('fieldList' => $fields))) {			
+					if (!empty($this->data['Player']['password_once']))
+						$this->data['Player']['password'] = $this->Auth->password($this->data['Player']['password_once']);
+					
+					if ($this->Player->save($this->data, false, am($fields, array('password')))) {
+						$this->Session->setFlash('Your account information has been updated. If you changed your password, make sure to remember it for the next time you log in.', 'default', array('class' => 'success'));
+						$this->redirect(array('controller' => 'players', 'action' => 'account'));
+					}
+				}
+			}
+		}
+		else {
+			$this->data = $this->Player->read(null, $this->Auth->user('id'));			
+		}
+				
+		unset($this->data['Player']['current_password']);
+		unset($this->data['Player']['password_once']);
+		unset($this->data['Player']['password_twice']);		
+	}
+	
     function register() {
 		$this->set('title_for_layout', 'Register New Account');
 	
@@ -49,13 +90,13 @@ class PlayersController extends AppController {
 			$this->data['Player']['last_login'] = date("Y-m-d H:i:s");
 			
 			if ($verifiedCaptcha || $resp->is_valid) {
-				if ($this->Player->validates(array('fieldList' => $fields))) {    
+				if ($this->Player->validates(array('fieldList' => $fields))) {
 					$this->Session->delete('verified_captcha');
 				
                     if (!empty($this->data['Player']['password_once']))
                         $this->data['Player']['password'] = $this->Auth->password($this->data['Player']['password_once']);
 					
-                    if ($this->Player->save($this->data, false, $fields)) {
+                    if ($this->Player->save($this->data, false, am(array('password'), $fields))) {
                         $this->Session->setFlash('Your account has been created! Login below to start playing.', 'default', array('class' => 'success'));
                         $this->redirect($this->Auth->logout(array('controller' => 'players', 'action' => 'login')));
                     }
@@ -159,8 +200,8 @@ class PlayersController extends AppController {
                 $url = $this->Auth->redirect();
                 $redirect = Router::parse($url);
 
-                if ($redirect['controller'] == 'players' && ($redirect['action'] == 'login' || $redirect['action'] == 'register'))
-                    $this->redirect('/play');
+                if ($redirect['controller'] == 'players' && in_array($redirect['action'], array('login', 'logout', 'register')))
+                    $this->redirect('/');
                 else
                     $this->redirect($url);
             }

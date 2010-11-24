@@ -22,7 +22,7 @@
 				<cake:nocache>
 					<? if ($session->check('Auth.Player.id')) : ?>
 						<div>Hello, <strong><?php echo $session->read('Auth.Player.name')?></strong>.</div>
-						<?php echo $this->Html->link('Play', '/play')?> |	<?php echo $this->Html->link('Logout', '/players/logout')?>		
+						<?php echo $this->Html->link('Play', '/play')?> | <?php echo $this->Html->link('Account', '/players/account')?> | <?php echo $this->Html->link('Logout', '/players/logout')?>
 					<? else: ?>
 						<?php echo $form->create('Player', array('class' => 'small no-label', 'action' => 'login', 'div' => false));?>
 						<div class="last input text">						

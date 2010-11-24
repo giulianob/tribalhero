@@ -1,0 +1,664 @@
+/* BODY */
+
+* {
+	margin: 0;
+}
+
+body {
+	background: url("../img/background/top.png") no-repeat top center #e8e2be;
+	font-family: Tahoma, Geneva, sans-serif;
+	color: #ffffff;
+	font-size: 9pt;
+	height: 100%;
+}
+
+html 
+{	
+	height: 100%;
+}
+
+div
+{
+	font-family: Tahoma, Geneva, sans-serif;
+	color: #000;
+	font-size: 9pt;	
+}
+
+.wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -4em;
+}
+
+.push {
+	height: 10em;
+}
+
+/* LINKS */
+
+a:visited, a:active, a:link
+{
+	color: #3A261B;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a:hover
+{
+	text-decoration: none;
+}
+	
+.bullet-link
+{
+	float: right;
+	background: url("../img/icons/bullet-green-arrow.gif") no-repeat;
+	padding: 0.2em 0 0 17px;
+}
+
+/* Top */
+#top-bar
+{
+	float: right;
+	padding-top: 10px;
+	height: 60px;
+}
+
+#game-top-bar
+{		
+	padding-top: 10px;
+	height: 60px;	
+	float: right;	
+}
+
+#game-top-bar a:visited, #game-top-bar a:active, #game-top-bar a:link
+{
+	color: #ffffff;
+	text-decoration: none;
+}
+
+#game-top-bar a:hover
+{
+	text-decoration: underline;
+}
+
+/* CONTAINER */
+
+#login , #login div{ 
+	color: #fff;
+}
+
+#login a {
+	color: #fff;
+}
+
+#header {
+	height: 180px;
+	margin-top: 10px;
+}
+
+#footer
+{
+	text-align: center;
+	font-size: 9pt;
+	color: #a7a182;		
+	margin-top: -181px;
+	height: 181px;
+	background: url("../img/background/bottom.png") no-repeat bottom center;	
+}
+
+#game-box {
+	height: 100%;
+}
+
+/* MAIN NAV */
+
+#main-nav {	
+	width: 151px;
+	height: 273px;
+	background: url("../img/nav/nav.png");
+	padding: 0;			
+	margin: 0;
+	position: relative;
+}
+
+#main-nav li {
+	margin: 0; 
+	padding: 0; 
+	list-style: none;
+	background: none;
+    position: absolute; 
+    top: 0;
+}
+
+#main-nav li, #main-nav a {
+	width: 135px;
+	height: 30px; 
+	display: block;
+}
+
+#main-nav #home {top: 25px;}
+#main-nav #help {top: 70px;}
+#main-nav #forums {top: 115px;}
+#main-nav #blog {top: 158px;}
+#main-nav #register {top: 211px;}
+
+#main-nav #home a:hover {
+    background: url("../img/nav/nav.png") -151px -25px no-repeat;
+}
+  
+#main-nav #help a:hover {
+    background: url("../img/nav/nav.png") -151px -70px no-repeat;
+}
+  
+#main-nav #forums a:hover {
+    background: url("../img/nav/nav.png") -151px -115px no-repeat;
+}
+
+#main-nav #blog a:hover {
+    background: url("../img/nav/nav.png") -151px -158px no-repeat;
+}
+
+#main-nav #register a:hover {
+    background: url("../img/nav/nav.png") -151px -211px no-repeat;
+}
+
+/* FORMS */		
+form.inline div.input
+{
+	display: inline;
+	margin-right: 7px;
+}
+
+form.small
+{
+	font-size: 8pt;
+}
+
+form.small div.input, form.small div.submit  {
+	margin: 0 0 5px 0;
+}
+
+form.small input[type=text], form.small input[type=password] {
+	width: 145px;
+	min-width: 100px;
+}
+
+form.small input[type=submit] {
+	float: right;
+}
+
+form.white-label label {
+	color: #fff;
+}
+
+form input.empty { color: #aaa; }
+
+form.no-label input[type=password], form.no-label input[type=text] {
+	width: 160px;
+}
+
+form.small label
+{
+	width: 75px;
+	padding: 0;
+	margin-bottom: 3px;
+	float: left;
+	display: inline;
+}
+
+input[type=text], input[type=password]
+{
+	background: url("../img/forms/field-fade.gif") repeat-x scroll center top #FFFFFF;
+	border: 1px solid #CCCCCC;
+	min-width: 100px;
+	vertical-align: middle;
+	margin: 0;
+	height: 17px;
+	padding: 1px 3px 1px 3px;	
+}
+
+input[type=submit]
+{	
+	vertical-align: middle;
+}
+
+label
+{
+	display: block;
+	color: #000;
+}
+
+div.input
+{
+	margin-bottom: 15px;
+}
+
+div.checkbox label
+{
+	display: inline;
+	padding-left: 5px;
+}
+
+div.submit
+{
+	margin-top: 10px;
+}
+
+/* BUTTONS */
+
+.buttons a, .buttons button{
+    display:block;
+    float:left;
+    margin:0 7px 0 0;
+    background-color:#f5f5f5;
+    border:1px solid #dedede;
+    border-top:1px solid #eee;
+    border-left:1px solid #eee;
+
+    font-family:Tahoma, Arial, Verdana, sans-serif;
+    font-size:100%;
+    line-height:130%;
+    text-decoration:none;
+    font-weight:bold;
+    color:#363636;
+    cursor:pointer;
+    padding:5px 10px 6px 7px; /* Links */
+}
+.buttons button.small{
+    width:auto;
+    overflow:visible;
+    padding:1px 5px 0px 2px; /* IE6 */
+}
+.buttons button[type].small{
+    padding:2px 5px 2px 3px; /* Firefox */
+    line-height:14px; /* Safari */
+}
+*:first-child+html button[type].small{
+    padding:1px 5px 0px 2px; /* IE7 */
+}
+.buttons button{
+    width:auto;
+    overflow:visible;
+    padding:4px 10px 3px 7px; /* IE6 */
+}
+.buttons button[type]{
+    padding:5px 10px 5px 8px; /* Firefox */
+    line-height:17px; /* Safari */
+}
+*:first-child+html button[type]{
+    padding:4px 10px 3px 7px; /* IE7 */
+}
+.buttons button img, .buttons a img{
+    margin:0 3px -3px 0 !important;
+    padding:0;
+    border:none;
+    width:16px;
+    height:16px;
+}
+
+/* BUTTON STYLES */
+button:hover, .buttons a:hover{
+    background-color:#dff4ff;
+    border:1px solid #c2e1ef;
+    color:#336699;
+}
+.buttons a:active{
+    background-color:#6299c5;
+    border:1px solid #6299c5;
+    color:#fff;
+}
+
+/* POSITIVE */
+
+button.positive, .buttons a.positive{
+    color:#529214;
+}
+.buttons a.positive:hover, button.positive:hover{
+    background-color:#E6EFC2;
+    border:1px solid #C6D880;
+    color:#529214;
+}
+.buttons a.positive:active{
+    background-color:#529214;
+    border:1px solid #529214;
+    color:#fff;
+}
+
+/* NEGATIVE */
+
+.buttons a.negative, button.negative{
+    color:#d12f19;
+}
+.buttons a.negative:hover, button.negative:hover{
+    background:#fbe3e4;
+    border:1px solid #fbc2c4;
+    color:#d12f19;
+}
+.buttons a.negative:active{
+    background-color:#d12f19;
+    border:1px solid #d12f19;
+    color:#fff;
+}
+
+/* WRAPPERS */
+
+.no-margin {
+	margin: 0;
+}
+
+.hidden
+{
+	display: none;
+}
+
+.center-block {
+	display:block;
+	margin:auto;
+}
+
+.text-center
+{
+	text-align: center;
+}
+
+.text-right 
+{
+	text-align: right;
+}
+
+.float-right
+{
+	float: right;
+}
+
+.float-left
+{
+	float: left;
+}
+
+strong
+{
+	font-weight: bold;
+}
+
+.inline
+{
+	display: inline;
+}
+
+.padding-top4
+{
+	padding-top: 20px
+}
+
+.padding-top3
+{
+	padding-top: 15px
+}
+
+.padding-top2
+{
+	padding-top: 10px
+}
+
+.padding-top1
+{
+	padding-top: 5px
+}
+
+/* PAGINATION */
+	
+div.pagination
+{
+	width: 100%;
+}
+
+div.pagination div
+{
+	display: inline;
+}
+
+/* BOXES */
+.dialog {
+	position: relative;
+	/* margin: 0px auto; */
+	min-width: 8em;
+	max-width: 550px;
+	z-index:1;
+	margin-left:12px;
+	/* margin-bottom:0.5em; */
+}
+
+.dialog .header
+{
+	padding-top: 8px;
+	padding-left: 9px;
+	height: 25px;	
+	color: #fff;
+	font-size: 14pt;
+	font-weight: bold;
+}
+
+.dialog .content,
+.dialog .t,
+.dialog .b,
+.dialog .b div {
+	background:transparent url("../img/content-box/box.png") no-repeat top right;
+}
+
+.dialog .content {
+	position:relative;
+	zoom:1;
+	padding: 0px 12px 0px 0px;
+	 _overflow-y:hidden;	
+}
+
+.dialog .b {
+	position:relative;
+	width:100%;
+	padding: 0;
+}
+
+.dialog .b,
+.dialog .b div {
+	height:30px;
+	font-size:1px;
+	background-position:bottom right;
+}
+
+.dialog .b {
+ background-position:bottom right;
+}
+
+.dialog .b div {
+ position:relative;
+ width:12px;
+ margin-left:-12px;
+ background-position:bottom left;
+}
+
+.dialog .t {
+ position:absolute;
+ left:0px;
+ top:0px;
+ width:12px;
+ margin-left:-12px;
+ height:1600px;
+ background-position:top left;
+}
+
+.dialog p, .dialog div {
+	padding-left: 9px;
+	font-size: 9pt;
+	background: transparent;
+}
+
+h2
+{
+	display: block;
+	color: #3A261B;
+	font-size: 175%;
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+div.box p
+{
+	font-size: 9pt;
+	text-align: justify;
+	margin-bottom: 10px;
+}
+
+div.round-box
+{
+	padding: 10px;
+	-moz-border-radius-bottomleft:4px;
+	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-topleft:4px;
+	-moz-border-radius-topright:4px;
+	background:#dfd9b8 none repeat scroll 0 0;
+	border: 1px solid #DFDBD2;
+}
+
+div.flash-error
+{
+	padding: 10px;
+	-moz-border-radius-bottomleft:4px;
+	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-topleft:4px;
+	-moz-border-radius-topright:4px;
+	background:#f0f0f0 none repeat scroll 0 0;
+	border: 1px solid #DFDBD2;
+	color: #B50B04;
+	font-weight: bold;
+	text-align: center;	
+	margin-bottom: 10px;
+}
+
+div.report-box
+{
+	margin-bottom: 10px;
+	padding: 10px;
+	-moz-border-radius-bottomleft:4px;
+	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-topleft:4px;
+	-moz-border-radius-topright:4px;
+	background:#f0f0f0 none repeat scroll 0 0;
+	border: 1px solid #DFDBD2;
+}
+
+/* Tabs */
+
+.ui-tabs-nav li
+{
+	list-style-type: none;
+}
+
+/* Tables */
+th
+{
+	font-weight: bold;	
+	border: 1px solid #ccc;
+	border-right: 0;
+	border-top: 0;
+	padding: 4px;
+}
+
+td.header
+{
+	background: #F0F0F0;
+}
+
+table.borderless, table.borderless td, table.borderless tr, table.borderless th
+{
+	border: 0;
+}
+
+table td
+{
+	background: #fff;
+	border-right: 1px solid #ccc;
+	padding: 4px;
+	text-align: left;
+	vertical-align: top;
+}
+
+table
+{
+	width: 100%;
+	border: 1px solid #ccc;
+	color: #000;
+	background: #f4f4f4;	
+	font-family: Tahoma, Geneva, sans-serif;
+	margin-bottom: 5px;
+	clear: both;
+	font-size: 9pt;
+}
+
+/* Gallery */
+div.gallery img { 
+	margin-right: 5px; 
+	border: solid 1px #5f1e00; 
+}
+
+/* LISTS */
+li, ul.list li
+{	
+	list-style-position: outside;
+	font-size: 9pt;	
+	list-style-type: circle;
+	margin: 0 0 0.5em 0;	
+	
+}
+
+dl {
+	line-height: 2em;
+	margin: 0em 0em;
+	width: 60%;
+}
+dl .altrow {
+	background: #f4f4f4;
+}
+dt {
+	font-weight: bold;
+	padding-left: 4px;
+	vertical-align: top;
+}
+dd {
+	margin-left: 20em;
+	margin-top: -2em;
+	vertical-align: top;
+}
+
+
+/* Debug */
+pre.cake-debug {
+	color: #000;
+	padding: 1em;		
+	background: #ffcc00;
+	font-size: 120%;
+	line-height: 140%;
+	margin-top: 1em;
+	overflow: auto;
+	position: relative;
+}
+
+table.cake-sql-log
+{
+	background: #fff;
+	border:1px solid #ccc;
+	border-right:0;
+	clear: both;
+	color: #333;
+	margin-bottom: 10px;
+	width: 100%;	
+	background: #f4f4f4;	
+}
+.cake-sql-log td {
+	padding: 4px 8px;
+	text-align: left;
+	background: #fff;
+	border-right: 1px solid #ccc;		
+	vertical-align: top;	
+}

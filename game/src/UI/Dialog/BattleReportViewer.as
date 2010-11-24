@@ -3,6 +3,7 @@
 	import flash.events.Event;
 	import src.Comm.GameURLLoader;
 	import src.Objects.Resources;
+	import src.Objects.Troop.TroopStub;
 	import src.UI.Components.BattleReport.OutcomeSnapshot;
 	import src.UI.Components.BattleReport.Snapshot;
 	import src.UI.Components.ResourcesPanel;
@@ -59,6 +60,7 @@
 		private function onLoaded(e: Event) : void {
 			try
 			{
+				trace(loader.getData());
 				data = loader.getDataAsObject();
 			}
 			catch (e: Error) {
@@ -140,14 +142,9 @@
 		}
 
 		private function canSeeSnapshot(snapshot: Object) : Boolean {
-			// Look for our player in the defense
-			for each (var defense: Object in snapshot.defenders) {
-				if (Global.map.cities.get(defense.cityId) != null) return true;
-			}
-
-			// Look for our player in the attack
-			for each (var attack: Object in snapshot.attackers) {
-				if (Global.map.cities.get(attack.cityId) != null) return true;
+			
+			for each (var event: * in snapshot.eventsRaw) {
+				if (event.type != TroopStub.REPORT_STATE_STAYING && event.groupId == data.groupId) return true;
 			}
 
 			return false;

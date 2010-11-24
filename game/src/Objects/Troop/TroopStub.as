@@ -15,6 +15,14 @@
 		public static const BATTLE_STATIONED: int = 3;
 		public static const MOVING: int = 4;
 		public static const RETURNING_HOME: int = 5;
+		
+		public static const REPORT_STATE_ENTERING: int = 0;
+		public static const REPORT_STATE_STAYING: int = 1;
+		public static const REPORT_STATE_EXITING: int = 2;
+		public static const REPORT_STATE_DYING: int = 3;
+		public static const REPORT_STATE_RETREATING: int = 4;
+		public static const REPORT_STATE_REINFORCED: int = 5;
+		public static const REPORT_STATE_OUT_OF_STAMINA: int = 6;
 
 		public static const STATE_NAMES: Array = ["IDLE", "BATTLE", "STATIONED", "BATTLE_STATIONED", "MOVING", "RETURNING_HOME"];
 

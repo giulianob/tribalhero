@@ -495,7 +495,7 @@
 				var obj: CityObject = city.objects.get(objId);
 				if (obj) {
 					var strPrototype: StructurePrototype = StructureFactory.getPrototype(obj.getType(), obj.getLevel());
-					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": " + currentAction.toString(obj) + " has completed", new AssetIcon(new ICON_CLOCK), 2000));
+					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": Action has completed", new AssetIcon(new ICON_CLOCK), 2000));
 				}
 			}
 

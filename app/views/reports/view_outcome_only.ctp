@@ -1,6 +1,6 @@
 <?php
 
-$results = array('refreshOnClose' => $refresh_on_close, 'outcomeOnly' => true, 'snapshots' => array());
+$results = array('refreshOnClose' => $refresh_on_close, 'outcomeOnly' => true, 'snapshots' => array(), 'groupId' => $main_report['BattleReportView']['group_id']);
 
 // Set resources gained if available
 if (array_key_exists('BattleReportView', $main_report)) {
@@ -30,7 +30,8 @@ foreach($battle_reports as $battle_report) {
     $battle_troop = $battle_report['snapshot'];
 
     $snapshot['events'][] = $battle_troop['City']['name'].'('.($battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']).') has '.$troop_states_pst[$battle_troop['state']];
-
+	$snapshot['eventsRaw'][] = array('groupId' => $battle_troop['group_id'], 'type' => $battle_troop['state']);
+	
     //Save the main troop info
     $troop = array('cityId' => $battle_troop['City']['id'], 'groupId' => $battle_troop['group_id'], 'name' => $battle_troop['City']['name'].'('.($battle_troop['troop_stub_id']==1?'Local':$battle_troop['troop_stub_id']).')', 'units' => array());
 

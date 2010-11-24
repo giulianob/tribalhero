@@ -79,7 +79,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
 
 			// Enforce only one upgrade at a time
-			if (city.currentActions.hasAction(Action.STRUCTURE_UPGRADE, parentObj)) {
+			if (city.currentActions.hasAction(Action.STRUCTURE_UPGRADE)) {
 				missingReqs.push(EffectReqPrototype.asMessage("You can only upgrade one structure at a time"));
 			}
 

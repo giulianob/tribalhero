@@ -13,11 +13,11 @@
 			super(CurrentAction.sortOnId, CurrentAction.compareId);
 		}
 
-		public function hasAction(type: int, gameObject: IObject): Boolean {
+		public function hasAction(type: int): Boolean {
 			for each(var currentAction: CurrentAction in each()) {
 				if (currentAction is CurrentActionReference) continue;		
 				
-				if (currentAction.getType(gameObject) == type) return true;
+				if (currentAction.getType() == type) return true;
 			}
 
 			return false;

@@ -358,7 +358,8 @@
 		public function onReceiveReferenceAdd(packet: Packet): void {
 			var cityId: int = packet.readUInt();
 
-			var reference: CurrentActionReference = new CurrentActionReference(packet.readUShort(), packet.readUInt(), packet.readUInt());
+			var reference: CurrentActionReference = new CurrentActionReference(cityId, packet.readUShort(), packet.readUInt(), packet.readUInt());
+			
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null) return;
 			city.references.add(reference);

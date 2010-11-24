@@ -47,12 +47,12 @@ package src.Objects.Actions {
 			return a.endTime - value;
 		}	
 		
-		public function toString(gameObject: IObject) : String
+		public function toString() : String
 		{
 			return "";
 		}
 		
-		public function getType(gameObject: IObject) : int 
+		public function getType() : int 
 		{
 			return 0;
 		}

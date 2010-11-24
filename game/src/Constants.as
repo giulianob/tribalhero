@@ -39,8 +39,8 @@ package src
 		public static const tileSetTileW:int = tileSetW / tileW;
 		public static const tileSetTileH:int = tileSetH / tileH;
 
-		public static const mapW:int = 1904 * tileW;
-		public static const mapH:int = 3472 * tileH;
+		public static const mapW:int = 3400 * tileW;
+		public static const mapH:int = 6200 * tileH;
 
 		public static const mapTileW:int = mapW / tileW;
 		public static const mapTileH:int = mapH / tileH;
@@ -70,8 +70,8 @@ package src
 		public static const miniMapTileW: int = 6;
 		public static const miniMapTileH: int = 3;
 
-		public static const cityRegionW: int = 56 * miniMapTileW;
-		public static const cityRegionH: int = 56 * miniMapTileH;
+		public static const cityRegionW: int = 100 * miniMapTileW;
+		public static const cityRegionH: int = 100 * miniMapTileH;
 
 		public static const cityRegionTileW: int = cityRegionW / miniMapTileW;
 		public static const cityRegionTileH: int = cityRegionH / miniMapTileH;

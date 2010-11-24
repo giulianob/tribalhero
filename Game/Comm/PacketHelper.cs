@@ -154,8 +154,9 @@ namespace Game.Comm {
             } else {
                 packet.AddByte(1);
                 packet.AddUInt32(actionStub.ActionId);
-                packet.AddByte(((ActiveAction) actionStub).WorkerIndex);
-                packet.AddUInt16(((ActiveAction) actionStub).ActionCount);
+                packet.AddInt32(((ActiveAction)actionStub).WorkerType);
+                packet.AddByte(((ActiveAction)actionStub).WorkerIndex);
+                packet.AddUInt16(((ActiveAction)actionStub).ActionCount);
             }
 
             if (actionStub is IActionTime) {

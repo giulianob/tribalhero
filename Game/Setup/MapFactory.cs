@@ -76,10 +76,8 @@ namespace Game.Setup
             List<Point> list;
             do
             {
-                if (!dict.TryGetValue(region_index, out list))
-                {
-                    return false;
-                }
+                if (!dict.TryGetValue(region_index, out list))                
+                    return false;                
 
                 do
                 {

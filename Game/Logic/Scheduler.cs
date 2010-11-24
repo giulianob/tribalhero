@@ -71,7 +71,7 @@ namespace Game.Logic {
 
             lock (schedulesLock) {
                 Paused = true;
-                Global.Logger.Debug("Scheduler paused.");
+                Global.Logger.Info("Scheduler paused");
                 SetTimer(Timeout.Infinite);
                 events = new ManualResetEvent[doneEvents.Count];
                 doneEvents.Values.CopyTo(events, 0);
@@ -85,6 +85,7 @@ namespace Game.Logic {
         public void Resume() {
             lock (schedulesLock) {
                 Paused = false;
+                Global.Logger.Info("Scheduler resumed");
                 SetNextActionTime();
             }
         }

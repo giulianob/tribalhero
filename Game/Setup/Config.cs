@@ -31,8 +31,8 @@ namespace Game.Setup {
         public static readonly string data_folder = "conf/data/";
         public static readonly string regions_folder = "conf/regions/";
 
-        public static readonly uint map_width = 1904;
-        public static readonly uint map_height = 3472;
+        public static readonly uint map_width = 3400;
+        public static readonly uint map_height = 6200;
         public static readonly uint region_width = 34;
         public static readonly uint region_height = 62;
 
@@ -44,8 +44,8 @@ namespace Game.Setup {
         public static readonly int row = (int) (map_height/region_height);
         public static readonly int regions_count = column*row;
 
-        public static readonly uint city_region_width = 56;
-        public static readonly uint city_region_height = 56;
+        public static readonly uint city_region_width = 100;
+        public static readonly uint city_region_height = 100;
         public static readonly int city_region_column = (int) (map_width/city_region_width);
         public static readonly int city_region_row = (int) (map_height/city_region_height);
         

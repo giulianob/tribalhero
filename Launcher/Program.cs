@@ -13,12 +13,14 @@ namespace Launcher {
             Factory.CompileConfigFiles();
             CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
+#if DEBUG
             if (Config.database_empty) {
                 Console.Out.Write("Are you sure you want to empty the database?(Y/N):");
                 if (!Console.ReadKey().Key.ToString().ToLower().Equals("y")) {
                     return;
                 }
             }
+#endif
 
             if (!Game.Engine.Start()) {
                 throw new Exception("Failed to load server");

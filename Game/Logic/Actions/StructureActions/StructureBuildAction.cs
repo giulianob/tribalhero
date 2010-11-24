@@ -197,7 +197,7 @@ namespace Game.Logic.Actions
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(type, 1), city.MainBuilding.Lvl, city.Technologies));
+            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(type, 1), city, city.Technologies));
             beginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);

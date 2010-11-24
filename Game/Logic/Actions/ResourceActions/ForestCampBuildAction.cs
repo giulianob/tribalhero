@@ -145,7 +145,7 @@ namespace Game.Logic.Actions {
             endTime =
                 DateTime.UtcNow.AddSeconds(Config.actions_instant_time
                                                ? 3
-                                               : (Formula.BuildTime(StructureFactory.GetTime(campType, 1), city.MainBuilding.Lvl, city.Technologies) + lumbermill.RadiusDistance(forest)));
+                                               : (Formula.BuildTime(StructureFactory.GetTime(campType, 1), city, city.Technologies) + lumbermill.RadiusDistance(forest)));
             beginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);

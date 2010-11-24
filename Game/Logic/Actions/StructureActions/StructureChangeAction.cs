@@ -56,7 +56,7 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(Formula.BuildTime(StructureFactory.GetTime((ushort)type, lvl), city.MainBuilding.Lvl, structure.Technologies));
+            endTime = DateTime.UtcNow.AddSeconds(Formula.BuildTime(StructureFactory.GetTime((ushort)type, lvl), city, structure.Technologies));
             beginTime = DateTime.UtcNow;
 
             return Error.OK;

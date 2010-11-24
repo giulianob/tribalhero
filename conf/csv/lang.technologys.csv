@@ -26,60 +26,60 @@ BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increase
 BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases bow range by 9.
 ,
 GROUND_ARMOR_RESEARCH_TECHNOLOGY_NAME,Ground Unit Defence
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all ground units by 5%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all ground units by 10%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all ground units by 15%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all ground units by 20%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all ground units by 25%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all ground units by 3%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all ground units by 6%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all ground units by 9%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all ground units by 12%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all ground units by 15%.
 ,
 MOUNT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Mounted Unit Defence
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all mounted units by 5%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all mounted units by 10%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all mounted units by 15%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all mounted units by 20%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all mounted units by 25%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all mounted units by 3%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all mounted units by 6%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all mounted units by 9%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all mounted units by 12%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all mounted units by 15%.
 ,
 MACHINE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Machinery Unit Defence
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all machinery units by 5%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all machinery units by 10%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all machinery units by 15%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all machinery units by 20%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all machinery units by 25%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all machinery units by 3%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all machinery units by 6%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all machinery units by 9%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all machinery units by 12%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all machinery units by 15%.
 ,
 STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defence
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all structures by 5%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all structures by 10%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all structures by 15%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all structures by 20%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all structures by 25%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all structures by 3%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all structures by 6%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all structures by 9%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all structures by 12%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all structures by 15%.
 ,
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Damage Boost
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use swords by 5%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use swords by 10%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use swords by 15%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use swords by 20%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use swords by 25%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use swords by 3%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use swords by 6%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use swords by 9%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use swords by 12%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use swords by 15%.
 ,
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Damage Boost
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use pikes by 5%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use pikes by 10%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use pikes by 15%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use pikes by 20%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use pikes by 25%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use pikes by 3%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use pikes by 6%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use pikes by 9%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use pikes by 12%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use pikes by 15%.
 ,
 BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Bow Damage Boost
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use bows by 5%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use bows by 10%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use bows by 15%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use bows by 20%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use bows by 25%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use bows by 3%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use bows by 6%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use bows by 9%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use bows by 12%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use bows by 15%.
 ,
 BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Ballistic Damage Boost
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use ballistic weapons by 5%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use ballistic weapons by 10%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use ballistic weapons by 15%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use ballistic weapons by 20%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use ballistic weapons by 25%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use ballistic weapons by 3%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use ballistic weapons by 6%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use ballistic weapons by 9%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use ballistic weapons by 12%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use ballistic weapons by 15%.
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
 ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 15%.

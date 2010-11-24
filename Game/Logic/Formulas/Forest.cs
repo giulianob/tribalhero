@@ -17,10 +17,10 @@ namespace Game.Logic {
             if (level <= 3)
                 return 1;
 
-            if (level <= 5)
+            if (level <= 8)
                 return 2;
 
-            if (level <= 8)
+            if (level <= 14)
                 return 3;
 
             return 4;
@@ -48,10 +48,10 @@ namespace Game.Logic {
             if (level <= 2)
                 return 1;
 
-            if (level <= 5)
+            if (level <= 7)
                 return 2;
 
-            if (level <= 8)
+            if (level <= 12)
                 return 3;
             
             return 4;

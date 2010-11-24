@@ -36,7 +36,7 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ACTION_INVALID;
 
-            if (ushort.Parse(parms[0]) != UnitType || byte.Parse(parms[1]) < structure.Lvl + 1)
+            if (ushort.Parse(parms[0]) != UnitType || byte.Parse(parms[1]) <= city.Template[UnitType].Lvl)
                 return Error.ACTION_INVALID;
 
             return Error.OK;
@@ -64,7 +64,7 @@ namespace Game.Logic.Actions {
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(UnitFactory.GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)),city.MainBuilding.Lvl, structure.Technologies));
+            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(UnitFactory.GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)),city, structure.Technologies));
             beginTime = DateTime.UtcNow;
 
             return Error.OK;

@@ -377,14 +377,16 @@ namespace Game.Battle {
 
             bool atkDone = false;
             bool defDone = false;
-
+            bool lastUnitAtk = true;
             while (!atkDone || !defDone) {
-                if (!defDone) {
+                if (!defDone && (lastUnitAtk==true||atkDone)) {
                     while (true) {
                         if (defIter.MoveNext()) {
                             if (defIter.Current.IsDead)
                                 continue;
                             battleOrder.Add(defIter.Current);
+                            lastUnitAtk = false;
+                            break;
                         } else {
                             defDone = true;
                             break;
@@ -392,12 +394,14 @@ namespace Game.Battle {
                     }
                 }
 
-                if (!atkDone) {
+                if (!atkDone && (lastUnitAtk == false || defDone)) {
                     while (true) {
                         if (atkIter.MoveNext()) {
                             if (atkIter.Current.IsDead)
                                 continue;
                             battleOrder.Add(atkIter.Current);
+                            lastUnitAtk = true;
+                            break;
                         } else {
                             atkDone = true;
                             break;

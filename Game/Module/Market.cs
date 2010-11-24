@@ -16,20 +16,19 @@ namespace Game.Module {
         private const int UpdateIntervalInSecond = 3600;
 
         private const int MinPrice = 5;
-        private const int DefaulPrice = 50;
         private const int MaxPrice = 1000;
 
         private const int QuantityPerChangePerPlayer = 200;
 
         public static void Init() {
             if (crop == null)
-                crop = new Market(ResourceType.CROP, DefaulPrice, QuantityPerChangePerPlayer);
+                crop = new Market(ResourceType.CROP, 50, QuantityPerChangePerPlayer);
 
             if (iron == null)
-                iron = new Market(ResourceType.IRON, DefaulPrice * 10, QuantityPerChangePerPlayer);
+                iron = new Market(ResourceType.IRON, 500, QuantityPerChangePerPlayer);
 
             if (wood == null)
-                wood = new Market(ResourceType.WOOD, DefaulPrice, QuantityPerChangePerPlayer);
+                wood = new Market(ResourceType.WOOD, 50, QuantityPerChangePerPlayer);
         }
 
         private static Market crop;

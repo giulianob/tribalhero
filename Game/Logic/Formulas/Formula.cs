@@ -32,7 +32,7 @@ namespace Game.Logic {
         /// <param name="lvl"></param>
         /// <returns></returns>
         public static int ResourceCropCap(byte lvl) {
-            int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
+            int[] cap = { 700, 700, 880, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000 };
             return cap[lvl];
         }
         
@@ -42,7 +42,7 @@ namespace Game.Logic {
         /// <param name="lvl"></param>
         /// <returns></returns>
         public static int ResourceWoodCap(byte lvl) {
-            int[] cap = { 700, 700, 1100, 1600, 2500, 3800, 5700, 8700, 13200, 20100, 30000 };
+            int[] cap = { 700, 700, 880, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000 };
             return cap[lvl];
         }
 
@@ -52,7 +52,7 @@ namespace Game.Logic {
         /// <param name="lvl"></param>
         /// <returns></returns>
         public static int ResourceIronCap(byte lvl) {
-            int[] cap = { 200, 200, 300, 500, 800, 1200, 1800, 2800, 4400, 6800, 10000 };
+            int[] cap = { 0, 0, 0, 0, 0, 0, 170, 380, 620, 900, 1240, 1630, 2090, 2620, 3260, 4000 };
             return cap[lvl];
         }
 
@@ -62,7 +62,7 @@ namespace Game.Logic {
         /// <param name="structure"></param>
         /// <returns></returns>
         public static int GetIronRate(Structure structure) {
-            int[] multiplier = { int.MaxValue, 70, 66, 63, 60, 56, 53, 5, 46, 43, 40 };
+            int[] multiplier = { int.MaxValue, 70, 68, 66, 64, 62, 60, 58, 56, 54, 52, 50, 48, 45, 42, 40 };
             return structure.Stats.Labor * 10 / multiplier[structure.Lvl];
         }
 

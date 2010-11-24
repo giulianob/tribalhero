@@ -116,20 +116,8 @@ namespace Game.Logic
         /// <returns></returns>
         public static double MarketTax(Structure structure)
         {
-            switch (structure.Lvl)
-            {
-                case 1:
-                    return .10;
-                case 2:
-                    return .05;
-                case 3:
-                    return 0;
-                case 4:
-                    return -.05;
-                case 5:
-                    return -.10;
-            }
-            throw new Exception(string.Format("MarketTax was not expecting a market at level {0}", structure.Lvl));
+            double[] rate = { 0, .15, .12, .09, .06, .03, 0, 0.03, .06, .09 };
+            return rate[structure.Lvl];
         }
 
         /// <summary>
@@ -171,9 +159,14 @@ namespace Game.Logic
         /// </summary>
         /// <param name="structure"></param>
         /// <returns></returns>
+        static int[] sendRate = { 0, 200, 200, 400, 400, 600, 600, 800, 1000, 1200, 1200, 1400, 1600, 1800, 1800, 2000 };
         internal static Resource GetSendCapacity(Structure structure) {
-            int rate = structure.Lvl * 200;
-            return new Resource(rate, rate, rate, rate, rate);
+            return new Resource(sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl]);
+        }
+
+        internal static int GetCropRate(City city) {
+            double[] lvlBonus = { 1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5 };
+            return (int)city.Sum(x => ObjectTypeFactory.IsStructureType("Crop", x) ? x.Stats.Labor * lvlBonus[x.Lvl] : 0);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Game.Logic.Procedures {
     public partial class Procedure {
         public static void AdjustCityResourceRates(Structure structure, int laborDelta) {
             if (ObjectTypeFactory.IsStructureType("Crop", structure)) {
-                structure.City.Resource.Crop.Rate += laborDelta;
+                structure.City.Resource.Crop.Rate = Formula.GetCropRate(structure.City);
             } else if (ObjectTypeFactory.IsStructureType("Iron", structure)) {
                 structure.City.Resource.Iron.Rate = Formula.GetIronRate(structure);
             }

@@ -38,10 +38,10 @@ namespace Game.Battle
                     {
                         case ArmorClass.LEATHER:
                         case ArmorClass.WOODEN:
-                            return 0.75;
+                            return 0.7;
                         case ArmorClass.METAL:
                         case ArmorClass.STONE:
-                            return 1.25;
+                            return 1.4;
                     }
                     break;
             }
@@ -56,9 +56,9 @@ namespace Game.Battle
             const double weaker = 0.4;
             const double weak = 0.7;
             const double good = 1;
-            const double strong = 1.5;
-            const double stronger = 2.2;
-            const double strongest = 3;
+            const double strong = 1.4;
+            const double stronger = 1.7;
+            const double strongest = 2;
 
             switch (weapon)
             {
@@ -72,7 +72,7 @@ namespace Game.Battle
                         case ArmorType.MACHINE:
                             return strong;
                         case ArmorType.BUILDING:
-                            return weaker;
+                            return weakest;
                     }
                     break;
                 case WeaponType.PIKE:
@@ -85,7 +85,7 @@ namespace Game.Battle
                         case ArmorType.MACHINE:
                             return weak;
                         case ArmorType.BUILDING:
-                            return weaker;
+                            return weakest;
                     }
                     break;
                 case WeaponType.BOW:
@@ -109,7 +109,7 @@ namespace Game.Battle
                         case ArmorType.MOUNT:
                             return nodamage;
                         case ArmorType.MACHINE:
-                            return good;
+                            return weak;
                         case ArmorType.BUILDING:
                             return strongest;
                     }

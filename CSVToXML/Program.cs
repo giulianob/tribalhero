@@ -100,13 +100,13 @@ namespace CSVToXML {
             return split[split.Length - 1].Trim();
         }
 
-        public static void Go(string _dataOutputFolder, string _csvDataFolder, string _langDataFolder) {
-            dataOutputFolder = _dataOutputFolder;
-            csvDataFolder = _csvDataFolder;
-            langDataFolder = _langDataFolder;
+        public static void Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn) {
+            dataOutputFolder = dataOutputFolderIn;
+            csvDataFolder = csvDataFolderIn;
+            langDataFolder = langDataFolderIn;
 
             #region Data XML
-            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "data.xml", FileMode.Create))) {
+            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolderIn + "data.xml", FileMode.Create))) {
                                                                                                                         Formatting = Formatting.None                                                                                                                        
                                                                                                                     };
             writer.WriteStartElement("Data");
@@ -606,7 +606,8 @@ namespace CSVToXML {
 
             string[] files = Directory.GetFiles(langDataFolder, "lang.*", SearchOption.TopDirectoryOnly);
             foreach (string file in files) {
-                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(file,FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                String fullFilename = Path.Combine(langDataFolder, file);
+                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(fullFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
                     while (true) {
                         string[] obj = langReader.ReadRow();
                         if (obj == null)

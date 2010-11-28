@@ -17,29 +17,25 @@ namespace Game.Comm {
         private readonly Dictionary<Socket, SocketSession> sessions = new Dictionary<Socket, SocketSession>();
         private bool isStopped;        
         private Thread workerThread;
-        private bool isFull;
 
         private readonly EventWaitHandle socketAvailable = new EventWaitHandle(false, EventResetMode.AutoReset);
 
-        private static readonly object workerLock = new object();
+        private static readonly object WorkerLock = new object();
         private static readonly List<TcpWorker> WorkerList = new List<TcpWorker>();
 
         public static int GetSessionCount() {
-            lock (workerLock) {
+            lock (WorkerLock) {
                 return WorkerList.Sum(x => x.sessions.Count);
             }
         }
 
         public static void Add(object sessionObject) {
-            lock (workerLock) {
+            lock (WorkerLock) {
                 SocketSession session = (SocketSession) sessionObject;
 
                 bool needNewWorker = true;
                 foreach (TcpWorker worker in WorkerList) {
                     lock (worker.sockListLock) {
-                        if (worker.isFull)
-                            continue;
-
                         worker.Put(session);
                     }
 
@@ -60,14 +56,14 @@ namespace Game.Comm {
         }
 
         public static void DeleteAll() {
-            lock (workerLock) {
+            lock (WorkerLock) {
                 foreach (TcpWorker worker in WorkerList)
                     worker.Stop();
             }
         }
 
         public static void Delete(SocketSession session) {
-            lock (workerLock) {
+            lock (WorkerLock) {
                 foreach (TcpWorker worker in WorkerList) {
                     if (worker.sockList.Contains(session.socket))
                         worker.sockList.Remove(session.socket);

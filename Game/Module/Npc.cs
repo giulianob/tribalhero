@@ -243,18 +243,18 @@ namespace Game.Module {
                 if (i%100 == 0)
                     Global.Logger.Info(String.Format("Creating NPC {0}/{1}...", i, Config.ai_count));
 
-                uint idx = 500000 + i;
+                uint idx = 50000 + i;
 
-                Player npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i);
+                Player npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, false, false);
                 Intelligence intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()), Math.Max(0.5, rand.NextDouble()));
 
                 using (new MultiObjectLock(npc)) {
-                    if (!Global.Players.ContainsKey(idx)) {
-                        Global.Players.Add(idx, npc);
+                    if (!Global.World.Players.ContainsKey(idx)) {
+                        Global.World.Players.Add(idx, npc);
                         Global.DbManager.Save(npc);
                         Global.Ai.playerList.Add(intelligence);
                     } else {
-                        intelligence.player = Global.Players[idx];
+                        intelligence.player = Global.World.Players[idx];
                         Global.Ai.playerList.Add(intelligence);
                         continue;
                     }

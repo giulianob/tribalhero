@@ -42,15 +42,15 @@ namespace Game.Comm {
                     return;
                 }
 
-                if (!Config.battle_instant_watch && !city.Battle.CanWatchBattle(session.Player)) {
+                int roundsLeft;
+                if (!Config.battle_instant_watch && !city.Battle.CanWatchBattle(session.Player, out roundsLeft)) {
                     packet = ReplyError(session, packet, Error.BATTLE_NOT_VIEWABLE, false);
-                    packet.AddInt32((int)(Config.battle_min_rounds - city.Battle.Round));
+                    packet.AddInt32(roundsLeft);
                     session.Write(packet);
                     return;
                 }
 
                 Packet reply = new Packet(packet);
-                reply.AddUInt16(city.Battle.Stamina);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.Subscribe(session);

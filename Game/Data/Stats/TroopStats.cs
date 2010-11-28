@@ -22,12 +22,22 @@ namespace Game.Data.Stats {
             }
         }
 
-        private int attackPoint;
+        private int attackPoint;        
 
         public int AttackPoint {
             get { return attackPoint; }
             set {
                 attackPoint = value;
+                FireStatsUpdate();
+            }
+        }
+
+        private short stamina;
+
+        public short Stamina {
+            get { return stamina; }
+            set {
+                stamina = value;
                 FireStatsUpdate();
             }
         }
@@ -39,11 +49,12 @@ namespace Game.Data.Stats {
         #region Constructors
 
         public TroopStats(byte attackRadius, byte speed) :
-            this(0, attackRadius, speed, new Resource()) {}
+            this(0, attackRadius, speed, 0, new Resource()) {}
 
-        public TroopStats(int attackPoint, byte attackRadius, byte speed, Resource loot) {
+        public TroopStats(int attackPoint, byte attackRadius, byte speed, short stamina, Resource loot) {
             AttackPoint = attackPoint;
             Loot = loot;
+            Stamina = stamina;
             this.attackRadius = attackRadius;
             this.speed = speed;
 

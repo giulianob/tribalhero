@@ -19,7 +19,7 @@ namespace Game.Battle {
             battle.EnterRound += BattleEnterRound;
         }
 
-        private void BattleEnterRound(CombatList atk, CombatList def, uint round, int stamina) {
+        private void BattleEnterRound(CombatList atk, CombatList def, uint round) {
             Packet packet = new Packet(Command.BATTLE_NEW_ROUND);
             packet.AddUInt32(round);
             Global.Channel.Post(channelName, packet);
@@ -33,7 +33,6 @@ namespace Game.Battle {
         private void BattleReinforceDefender(IEnumerable<CombatObject> list) {
             List<CombatObject> combatObjectList = new List<CombatObject>(list);
             Packet packet = new Packet(Command.BATTLE_REINFORCE_DEFENDER);
-            packet.AddUInt16(battle.Stamina);
             PacketHelper.AddToPacket(combatObjectList, packet);
             Global.Channel.Post(channelName, packet);
         }
@@ -41,21 +40,18 @@ namespace Game.Battle {
         private void BattleReinforceAttacker(IEnumerable<CombatObject> list) {
             List<CombatObject> combatObjectList = new List<CombatObject>(list);
             Packet packet = new Packet(Command.BATTLE_REINFORCE_ATTACKER);
-            packet.AddUInt16(battle.Stamina);
             PacketHelper.AddToPacket(combatObjectList, packet);
             Global.Channel.Post(channelName, packet);
         }
 
         private void BattleSkippedAttacker(CombatObject source) {
             Packet packet = new Packet(Command.BATTLE_SKIPPED);
-            packet.AddUInt16(battle.Stamina);
             packet.AddUInt32(source.Id);
             Global.Channel.Post(channelName, packet);
         }
 
         private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage) {
             Packet packet = new Packet(Command.BATTLE_ATTACK);
-            packet.AddUInt16(battle.Stamina);
             packet.AddUInt32(source.Id);
             packet.AddUInt32(target.Id);
             packet.AddUInt16(damage);

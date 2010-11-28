@@ -108,8 +108,10 @@ namespace Game.Comm {
                 return;
             }
 
-            using (new MultiObjectLock(Global.Forests)) {
-                if (!Global.Forests.TryGetValue(forestId, out forest)) {
+            using (new MultiObjectLock(Global.World.Forests))
+            {
+                if (!Global.World.Forests.TryGetValue(forestId, out forest))
+                {
                     ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
                     return;
                 }
@@ -482,7 +484,7 @@ namespace Game.Comm {
                 return;
             }
 
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.Forests)) {
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.World.Forests)) {
                 
                 // Get the lumbermill
                 Structure lumbermill = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("Wood", structure));

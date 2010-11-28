@@ -19,6 +19,8 @@ namespace Game.Comm {
                 
                 if (session.Player.Session == session) session.Player.Session = null;
 
+                session.Player.SessionId = string.Empty;
+
                 Global.DbManager.Save(session.Player);
             }
         }

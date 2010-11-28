@@ -11,3 +11,5 @@ glob:TestResults/*
 glob:conf/regions/region_changes.dat
 glob:conf/conf.rar
 glob:conf/settings.ini
+glob:*.pidb
+glob:output/

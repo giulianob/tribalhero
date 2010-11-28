@@ -20,6 +20,10 @@
 
 		public static const RESOURCE_CHUNK: int = 100;
 		public static const RESOURCE_MAX_TRADE: int = 1500;
+		
+		public static function sendCapacity(level: int) : int {
+			return level * 200;
+		}
 
 		public static function unitsPerStructure(level: int) : int {
 			var units: Array = [ 20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144 ];

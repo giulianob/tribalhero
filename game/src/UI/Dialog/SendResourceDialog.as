@@ -6,6 +6,7 @@
 	import src.Global;
 	import src.Map.City;
 	import src.Map.Username;
+	import src.Objects.Effects.Formula;
 	import src.Objects.GameError;
 	import src.Objects.GameObject;
 	import src.Objects.Resources;
@@ -47,13 +48,16 @@
 		private var onAccept: Function;
 		private var loadingDlg: InfoDialog;
 		
+		private var parentObj: GameObject;
+		
 		public function SendResourceDialog(parentObj: GameObject, onAccept: Function):void
 		{
+			this.onAccept = onAccept;
+			this.parentObj = parentObj;
+			
 			createUI();
 
-			title = "Send Resources";
-			
-			this.onAccept = onAccept;
+			title = "Send Resources";			
 			
 			btnOk.addActionListener(requestUsername);
 
@@ -107,10 +111,13 @@
 		}
 
 		private function onResourceChange(e: Event = null) : void {
-			lblWoodAmount.setMaximum(city.resources.wood.getValue());
-			lblCropAmount.setMaximum(city.resources.crop.getValue());
-			lblGoldAmount.setMaximum(city.resources.gold.getValue());
-			lblIronAmount.setMaximum(city.resources.iron.getValue());
+			
+			var sendCapacity: int = Formula.sendCapacity(parentObj.level);
+			
+			lblWoodAmount.setMaximum(Math.min(sendCapacity, city.resources.wood.getValue()));
+			lblCropAmount.setMaximum(Math.min(sendCapacity, city.resources.crop.getValue()));
+			lblGoldAmount.setMaximum(Math.min(sendCapacity, city.resources.gold.getValue()));
+			lblIronAmount.setMaximum(Math.min(sendCapacity, city.resources.iron.getValue()));
 		}
 
 		public function cityName(): String {

@@ -47,6 +47,7 @@ namespace Game.Comm {
             RegisterCommand(Command.TROOP_RETREAT, CmdTroopRetreat);
             RegisterCommand(Command.TROOP_LOCAL_SET, CmdLocalTroopSet);
             RegisterCommand(Command.PLAYER_USERNAME_GET, CmdGetUsername);
+            RegisterCommand(Command.PLAYER_NAME_FROM_CITY_NAME, CmdGetCityOwnerName);
             RegisterCommand(Command.CITY_USERNAME_GET, CmdGetCityUsername);
             RegisterCommand(Command.BATTLE_SUBSCRIBE, CmdBattleSubscribe);
             RegisterCommand(Command.BATTLE_UNSUBSCRIBE, CmdBattleUnsubscribe);

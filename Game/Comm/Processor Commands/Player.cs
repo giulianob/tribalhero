@@ -43,17 +43,43 @@ namespace Game.Comm {
             session.Write(reply);
         }
 
+        public void CmdGetCityOwnerName(Session session, Packet packet) {
+            Packet reply = new Packet(packet);
+
+            string cityName;
+            try {
+                cityName = packet.GetString();
+            }
+            catch (Exception) {
+                ReplyError(session, packet, Error.UNEXPECTED);
+                return;
+            }
+
+            uint cityId;
+            if (!Global.World.FindCityId(cityName, out cityId)) {
+                ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                return;
+            }
+
+            City city;
+            using (new MultiObjectLock(cityId, out city)) {
+                reply.AddString(city.Owner.Name);
+            }
+
+            session.Write(reply);
+        }
+
         public void CmdSendResources(Session session, Packet packet) {
             uint cityId;
             uint objectId;
-            uint targetCityId;
+            string targetCityName;
             Resource resource;
 
             try
             {                
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
-                targetCityId = packet.GetUInt32();
+                targetCityName = packet.GetString();
                 resource = new Resource(packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), 0);
             }
             catch (Exception)
@@ -61,6 +87,13 @@ namespace Game.Comm {
                 ReplyError(session, packet, Error.UNEXPECTED);
                 return;
             }
+
+            uint targetCityId;
+            if (!Global.World.FindCityId(targetCityName, out targetCityId)) {
+                ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                return;
+            }
+
 
             if (cityId == targetCityId)
             {

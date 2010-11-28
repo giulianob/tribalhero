@@ -25,6 +25,7 @@ namespace Game.Comm {
         QUERY_XML = 11,
         PLAYER_USERNAME_GET = 12,
         CITY_USERNAME_GET = 13,
+        PLAYER_NAME_FROM_CITY_NAME = 14,
 
         #endregion
 

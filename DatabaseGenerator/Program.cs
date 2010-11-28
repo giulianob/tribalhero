@@ -37,7 +37,7 @@ namespace DatabaseGenerator
 
                 p.Parse(Environment.GetCommandLineArgs());
             }
-            catch (Exception e) {}
+            catch (Exception) {}
 
             // Process structures
             using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "structure_listing.inc.php")))) {

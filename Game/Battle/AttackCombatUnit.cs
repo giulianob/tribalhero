@@ -45,6 +45,11 @@ namespace Game.Battle {
             get { return type; }
         }
 
+        public override int Upkeep
+        {
+            get { return UnitFactory.GetUnitStats(type, lvl).Upkeep * count; }
+        }
+
         public override BaseBattleStats BaseStats {
             get { return UnitFactory.GetBattleStats(type, lvl); }
         }
@@ -55,6 +60,11 @@ namespace Game.Battle {
 
         public FormationType Formation {
             get { return formation; }
+        }
+
+        public override short Stamina
+        {
+            get { return TroopStub.TroopObject.Stats.Stamina; }
         }
 
         public AttackCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl,
@@ -83,9 +93,12 @@ namespace Game.Battle {
             if (obj is AttackCombatUnit || obj is DefenseCombatUnit) //all units can attack other units
                 return true;
 
-            int dist = obj.TileDistance(TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
+            if (obj is CombatStructure) {
+                Structure structure = (obj as CombatStructure).Structure;
+                return TroopStub.TroopObject.RadiusDistance(structure) <= structure.Stats.Base.Radius + TroopStub.TroopObject.Stats.AttackRadius;
+            }
 
-            return dist <= TroopStub.TroopObject.Stats.AttackRadius;
+            throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
         public override int TileDistance(uint x, uint y) {
@@ -94,7 +107,7 @@ namespace Game.Battle {
 
         public override uint Visibility {
             get {              
-                return (uint) (RoundsParticipated + Stats.Rng);
+                return Stats.Rng;
             }
         }
 

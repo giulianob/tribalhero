@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -17,36 +18,14 @@ namespace Game.Battle {
         }
 
         public bool NextObject(out CombatObject outObj) {
-            outObj = null;
-
-            bool hasMoreInCurrentRound = false;
-
-            foreach (CombatObject obj in this) {
-                if (outObj == null && obj.LastRound == round) {
-                    outObj = obj;
-                    continue;
-                }
-
-                if (obj.LastRound != round)
-                    continue;
-
-                if (outObj != null)
-                    return true;
-                    
-                hasMoreInCurrentRound = true;
+            if (Count == 0) {
+                outObj = null;
+                return true;
             }
 
-            if (outObj == null) {
-                foreach (CombatObject obj in this) {
-                    if (obj.LastRound != (round + 1))
-                        continue;
-                    
-                    outObj = obj;
-                    break;
-                }
-            }
+            outObj = this.FirstOrDefault(obj => obj.LastRound == round) ?? this.FirstOrDefault(obj => obj.LastRound == round + 1);
 
-            return hasMoreInCurrentRound;
+            return !TrueForAll(t => t.LastRound == round + 1);
         }
     }
 }

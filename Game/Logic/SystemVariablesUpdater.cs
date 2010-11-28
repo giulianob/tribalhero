@@ -83,12 +83,12 @@ namespace Game.Logic {
                      
                         new SystemVariable("Database.queries_per_second", (int)(queriesRan / now.Subtract(lastDbProbe).TotalSeconds)),
 
-                        new SystemVariable("Players.count", Global.Players.Count),
+                        new SystemVariable("Players.count", Global.World.Players.Count),
                         new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
                         new SystemVariable("Cities.count", Global.World.CityCount),                        
                     };
                     
-                    variables.AddRange(Global.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));
+                    variables.AddRange(Global.World.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));
 
                     // Forest cnt
 

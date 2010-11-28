@@ -63,7 +63,7 @@ namespace Testing.Database {
 
         [TestInitialize]
         public void TestInitialize() {
-            dbManager.Query("TRUNCATE `simple_objects`");
+            dbManager.Query("TRUNCATE `simple_objects`", new DbColumn[] {});
         }
 
         [TestCleanup]

@@ -109,7 +109,7 @@ namespace Game.Data {
         }
 
         public ILockable[] GetListOfLocks(uint forestId) {
-            MultiObjectLock.ThrowExceptionIfNotLocked(Global.Forests);
+            MultiObjectLock.ThrowExceptionIfNotLocked(Global.World.Forests);
 
             Forest forest;
 

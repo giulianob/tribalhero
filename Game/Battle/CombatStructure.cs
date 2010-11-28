@@ -48,15 +48,12 @@ namespace Game.Battle {
         }
 
         public override bool InRange(CombatObject obj) {
-            if (obj is AttackCombatUnit)
-                return true;            
+            if (obj is AttackCombatUnit) {
+                TroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
+                return troop.RadiusDistance(Structure) <= Structure.Stats.Base.Radius + troop.Stats.AttackRadius;
+            }
 
-            if (obj is DefenseCombatUnit)
-                return true;
-
-            int dist = obj.TileDistance(Structure.X, Structure.Y);
-
-            return dist <= Stats.Rng;
+            throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
         public override int TileDistance(uint x, uint y) {
@@ -64,7 +61,7 @@ namespace Game.Battle {
         }
 
         public override uint Visibility {
-            get { return (uint) (RoundsParticipated + Stats.Rng); }
+            get { return Stats.Rng; }
         }
 
         public override uint PlayerId {
@@ -99,8 +96,17 @@ namespace Game.Battle {
             get { return hp; }
         }
 
+        public override int Upkeep {
+            get { return BattleFormulas.GetUnitsPerStructure(Structure); }
+        }
+
+        public override short Stamina
+        {
+            get { return -1; }
+        }
+        
         public override void CalculateDamage(ushort dmg, out ushort actualDmg) {
-            actualDmg = (ushort)Math.Min(Hp,dmg);
+            actualDmg = (ushort) Math.Min(Hp, dmg);
         }
 
         public override void TakeDamage(int dmg, out Resource returning, out int attackPoints) {

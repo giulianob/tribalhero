@@ -19,8 +19,9 @@ namespace Game.Logic.Actions.ResourceActions {
         }
 
         public void Callback(object custom) {
-            
-            using (new CallbackLock(Global.Forests.CallbackLockHandler, new object[] { Forest.ObjectId }, Global.Forests)) {
+
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { Forest.ObjectId }, Global.World.Forests))
+            {
                 
                 Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
 
@@ -40,7 +41,7 @@ namespace Game.Logic.Actions.ResourceActions {
                     obj.EndUpdate();
                 }
 
-                Global.Forests.RemoveForest(Forest);
+                Global.World.Forests.RemoveForest(Forest);
             }
 
         }

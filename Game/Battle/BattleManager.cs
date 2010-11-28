@@ -60,13 +60,6 @@ namespace Game.Battle {
             set { turn = value; }
         }
 
-        private ushort stamina;
-
-        public ushort Stamina {
-            get { return stamina; }
-            set { stamina = value; }
-        }
-
         private City city;
 
         public City City {
@@ -104,9 +97,7 @@ namespace Game.Battle {
                 foreach (CombatObject co in defenders)
                     cities[co.City.Id] = co.City;
 
-                City[] citiesArr = new City[cities.Values.Count];
-                cities.Values.CopyTo(citiesArr, 0);
-                return citiesArr;
+                return cities.Values.ToArray();
             }
         }
 
@@ -114,7 +105,6 @@ namespace Game.Battle {
 
         public BattleManager(City owner) {
             city = owner;
-            stamina = BattleFormulas.GetStamina(city);
             report = new BattleReport(this);
             Channel = new BattleChannel(this, "/BATTLE/" + city.Id);
             groupIdGen.Set(1);
@@ -144,10 +134,33 @@ namespace Game.Battle {
             return null;
         }
 
-        public bool CanWatchBattle(Player player) {
-            if (player == city.Owner) return true;
-        
-            return defenders.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds) || attackers.Any(co => co.City.Owner == player && co.RoundsParticipated >= Config.battle_min_rounds);
+        public bool CanWatchBattle(Player player, out int roundsLeft) {
+            roundsLeft = 0;
+
+            lock (battleLock) {
+                if (player == city.Owner)
+                    return true;
+
+                int defendersRoundsLeft = int.MaxValue;
+                int attackersRoundsLeft = int.MaxValue;
+
+                if (defenders.Count > 0) {
+                    defendersRoundsLeft = defenders.Min(co => co.City.Owner == player ? Math.Max(0, Config.battle_min_rounds - co.RoundsParticipated) : int.MaxValue);
+                    if (defendersRoundsLeft == 0)
+                        return true;
+                }
+
+                if (attackers.Count > 0) {
+                    attackersRoundsLeft = attackers.Min(co => co.City.Owner == player ? Math.Max(0, Config.battle_min_rounds - co.RoundsParticipated) : int.MaxValue);
+                    if (attackersRoundsLeft == 0)
+                        return true;
+                }
+
+                roundsLeft = Math.Min(attackersRoundsLeft, defendersRoundsLeft);
+                if (roundsLeft == int.MaxValue) roundsLeft = 0;
+                
+                return false;
+            }
         }
 
         #region Database Loader
@@ -182,11 +195,13 @@ namespace Game.Battle {
 
         #region Adding/Removing from Battle
 
-        public void AddToLocal(List<TroopStub> objects, ReportState state) {
+        public void AddToLocal(IEnumerable<TroopStub> objects, ReportState state)
+        {
             AddToCombatList(objects, defenders, true, state);
         }
 
-        public void AddToLocal(List<Structure> objects) {
+        public void AddToLocal(IEnumerable<Structure> objects)
+        {
             lock (battleLock) {
                 List<CombatObject> list = new List<CombatObject>();
 
@@ -217,7 +232,6 @@ namespace Game.Battle {
                 }
 
                 if (battleStarted && added) {
-                    stamina = BattleFormulas.GetStaminaReinforced(city, stamina, round);
                     report.WriteReportObjects(list, false, ReportState.STAYING);
                     EventReinforceDefender(list);
                     RefreshBattleOrder();
@@ -230,19 +244,21 @@ namespace Game.Battle {
             AddToAttack(list);
         }
 
-        public void AddToAttack(List<TroopStub> objects) {
+        public void AddToAttack(IEnumerable<TroopStub> objects) {
             AddToCombatList(objects, attackers, false, ReportState.ENTERING);
         }
 
-        public void AddToDefense(List<TroopStub> objects) {
+        public void AddToDefense(IEnumerable<TroopStub> objects)
+        {
             AddToCombatList(objects, defenders, false, ReportState.ENTERING);
         }
 
-        public void RemoveFromAttack(List<TroopStub> objects, ReportState state) {
+        public void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state)
+        {
             RemoveFromCombatList(objects, attackers, state);
         }
 
-        public void RemoveFromLocal(List<Structure> objects) {
+        public void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state) {
             lock (battleLock)
             {
                 List<CombatObject> list = new List<CombatObject>();
@@ -258,14 +274,15 @@ namespace Game.Battle {
                 defenders.RemoveAll(list.Contains);
 
                 if (battleStarted) {
-                    report.WriteReportObjects(list, false, ReportState.EXITING);
+                    report.WriteReportObjects(list, false, state);
                     EventWithdrawDefender(list);
                     RefreshBattleOrder();
                 }
             }
         }
 
-        public void RemoveFromDefense(List<TroopStub> objects, ReportState state) {
+        public void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state)
+        {
             RemoveFromCombatList(objects, defenders, state);
         }
 
@@ -313,7 +330,6 @@ namespace Game.Battle {
                 }
 
                 if (battleStarted && added) {
-                    stamina = BattleFormulas.GetStaminaReinforced(city, stamina, round);
                     if (combatList == Attacker) {
                         report.WriteReportObjects(list, true, state);
                         EventReinforceAttacker(list);
@@ -327,7 +343,8 @@ namespace Game.Battle {
             }
         }
 
-        private void RemoveFromCombatList(List<TroopStub> objects, CombatList combatList, ReportState state) {
+        private void RemoveFromCombatList(IEnumerable<TroopStub> objects, CombatList combatList, ReportState state)
+        {
             lock (battleLock)
             {
                 List<CombatObject> list = new List<CombatObject>();
@@ -412,7 +429,7 @@ namespace Game.Battle {
         }
 
         private bool BattleIsValid() {
-            if (attackers.Count == 0 || defenders.Count == 0 || Stamina == 0)
+            if (attackers.Count == 0 || defenders.Count == 0)
                 return false;
 
             //Check to see if there are still units in the local troop
@@ -441,7 +458,7 @@ namespace Game.Battle {
         private void BattleEnded(bool writeReport) {
             if (writeReport) {
                 report.WriteBeginReport();
-                report.CompleteReport(Stamina == 0 ? ReportState.OUT_OF_STAMINA : ReportState.EXITING);
+                report.CompleteReport(ReportState.EXITING);
                 report.CompleteBattle();
             }
 
@@ -476,6 +493,7 @@ namespace Game.Battle {
                 report.WriteReport(ReportState.STAYING);
 
                 #region Battle Start
+                bool battleJustStarted = !battleStarted;
                 if (!battleStarted) {
                     RefreshBattleOrder();
 
@@ -491,45 +509,59 @@ namespace Game.Battle {
                 }
                 #endregion
 
-                #region Find Attacker 
+                #region Targeting
                 CombatObject attacker;
-
-                if (!battleOrder.NextObject(out attacker)) {
-                    ++round;
-                    stamina = BattleFormulas.GetStaminaRoundEnded(city, stamina, turn);
-                    battleOrder.ParticipatedInRound();
-                    turn = 0;
-                    EventEnterRound(Attacker, Defender, round, stamina);
-                }
-
-                if (attacker == null || defenders.Count == 0 || attackers.Count == 0 || stamina <= 0) {
-                    BattleEnded(true);
-                    return false;
-                }
-                #endregion
-
-                #region Find Target
-
                 CombatObject defender;
 
-                if (attacker.CombatList == attackers) {
-                    defenders.GetBestTarget(attacker, out defender);
-                } else if (attacker.CombatList == defenders)
-                    attackers.GetBestTarget(attacker, out defender);
-                else
-                    throw new Exception("How can this happen");
+                do {
+                    #region Find Attacker                    
 
-                if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && attacker.Stats.Def == 0)) {
-                    attacker.ParticipatedInRound();
-                    Global.DbManager.Save(attacker);
-                    EventSkippedAttacker(attacker);
-                    return true;
-                }
+                    if (!battleOrder.NextObject(out attacker) && !battleJustStarted) {
+                        ++round;
+                        battleOrder.ParticipatedInRound();
+                        turn = 0;
+                        EventEnterRound(Attacker, Defender, round);
+                    }
 
-                #endregion
+                    if (attacker == null || defenders.Count == 0 || attackers.Count == 0) {
+                        BattleEnded(true);
+                        return false;
+                    }
+
+                    #endregion
+
+                    #region Find Target
+                    
+                    CombatList.BestTargetResult targetResult;
+
+                    if (attacker.CombatList == attackers) {
+                        targetResult = defenders.GetBestTarget(attacker, out defender);
+                    } else if (attacker.CombatList == defenders)
+                        targetResult = attackers.GetBestTarget(attacker, out defender);
+                    else
+                        throw new Exception("How can this happen");
+
+                    if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && attacker.Stats.Def == 0)) {
+                        attacker.ParticipatedInRound();
+                        Global.DbManager.Save(attacker);
+                        EventSkippedAttacker(attacker);
+
+                        // If the attacker can't attack because it has no one in range, then we skip him and find another target right away.
+                        if (targetResult == CombatList.BestTargetResult.NONE_IN_RANGE)
+                            continue;
+
+                        return true;
+                    }
+
+                    #endregion
+
+                    break;
+                } while (true);
+
+                #endregion  
 
                 #region Miss Chance
-                int missChance = BattleFormulas.MissChance(attacker.CombatList == attackers, defenders.Count, attackers.Count);
+                int missChance = BattleFormulas.MissChance(attacker.CombatList == attackers, defenders, attackers);
                 if (missChance > 0)
                 {
                     int rand = (int)(Config.Random.NextDouble() * 100);
@@ -622,9 +654,6 @@ namespace Game.Battle {
                     battleOrder.Remove(defender);
 
                     if (attacker.CombatList == attackers) {
-                        
-                        if (defender.ClassType == BattleClass.STRUCTURE) stamina = BattleFormulas.GetStaminaStructureDestroyed(city, stamina, round);
-
                         defenders.Remove(defender);
                         report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);
                     } else if (attacker.CombatList == defenders) {
@@ -640,7 +669,7 @@ namespace Game.Battle {
 
                 #endregion
 
-                attacker.ParticipatedInRound();                
+                attacker.ParticipatedInRound();
 
                 Global.DbManager.Save(attacker);
 
@@ -649,12 +678,16 @@ namespace Game.Battle {
                 EventExitTurn(Attacker, Defender, (int)turn++);
 
                 // Send back any attackers that have no targets left
-                if (isDefenderDead && defender.CombatList == defenders && defenders.Count > 0) {
-                    AttackCombatUnit co;
-                    do {
-                        co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
-                        if (co != null) RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);                        
-                    } while (co != null);
+                if (isDefenderDead) {
+                    if (defender.CombatList == defenders && defenders.Count > 0) {
+                        //Since the list of attackers will be changing, we need to keep reiterating through it until there are no more to remove
+                        AttackCombatUnit co;
+                        do {
+                            co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
+                            if (co != null)
+                                RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.EXITING);
+                        } while (co != null);
+                    }
                 }
 
                 if (!BattleIsValid()) {
@@ -691,7 +724,7 @@ namespace Game.Battle {
                 return new[] {
                                           new DbColumn("battle_id", battleId, DbType.UInt32),
                                           new DbColumn("battle_started", battleStarted, DbType.Boolean),
-                                          new DbColumn("stamina", stamina, DbType.UInt16), new DbColumn("round", round, DbType.UInt32),
+                                          new DbColumn("round", round, DbType.UInt32),
                                           new DbColumn("turn", turn, DbType.UInt32),
                                           new DbColumn("report_flag", report.ReportFlag, DbType.Boolean),
                                           new DbColumn("report_started", report.ReportStarted, DbType.Boolean),

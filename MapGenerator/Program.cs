@@ -19,17 +19,17 @@ namespace MapGenerator {
         static Random random = new Random();
         static StreamWriter sw;
 
-        static int width = 1904;
-        static int height = 3472;
+        static int width = 3400;
+        static int height = 6200;
         static int region_width = 34;
         static int region_height = 62;
         static int region_column = width / region_width;
         static int region_row = height / region_height;
         static int numberOfTiles = 10;
         static int numberOfFarm = 2;
-        static int numberOfWoodland = 1;
+        static int numberOfWoodland = 2;
 
-        const ushort FARM_TILE = 208;
+        const ushort FARM_TILE = 209;
         const ushort WOODLAND_TILE = 209;
         const ushort CITY_TILE = 209;
         const byte radius = 3;

@@ -101,6 +101,11 @@ namespace Game.Util {
             Lock(cities);
         }
 
+        public MultiObjectLock(uint playerId, out Player player)
+        {
+            TryGetPlayer(playerId, out player);
+        }
+
         public MultiObjectLock(uint cityId, out City city) {
             TryGetCity(cityId, out city);
         }
@@ -125,6 +130,28 @@ namespace Game.Util {
             }
             catch (Exception) {
                 city = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool TryGetPlayer(uint playerId, out Player player)
+        {
+            if (!Global.World.TryGetObjects(playerId, out player))
+                return false;
+
+            try
+            {
+                Lock(player);
+            }
+            catch (LockException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                player = null;
                 return false;
             }
 
@@ -206,11 +233,12 @@ namespace Game.Util {
                     continue;
                 }
 
-                if (newToBeLocked.Where((t, i) => t.Hash != toBeLocked[i].Hash).Any()) {
-                    currentLock.Dispose();
-                    currentLock = null;
-                    Thread.Sleep(0);
-                }
+                if (!newToBeLocked.Where((t, i) => t.Hash != toBeLocked[i].Hash).Any())
+                    continue;
+
+                currentLock.Dispose();
+                currentLock = null;
+                Thread.Sleep(0);
             }
         }
 

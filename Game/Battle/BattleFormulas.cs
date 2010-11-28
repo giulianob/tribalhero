@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Setup;
@@ -12,10 +13,19 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
-        public static int MissChance(bool isAttacker, int numberOfDefenders, int numberOfAttackers) {
-            int delta = isAttacker ? Math.Max(0, numberOfAttackers - numberOfDefenders) : Math.Max(0, numberOfDefenders - numberOfAttackers);
+        public static int MissChance(bool isAttacker, CombatList defenders, CombatList attackers) {
 
-            return Math.Min(delta * 3, 40);
+            int defendersUpkeep = defenders.Sum(x => x.Upkeep);
+            int attackersUpkeep = attackers.Sum(x => x.Upkeep);
+
+            int delta = isAttacker ? Math.Max(0, attackersUpkeep - defendersUpkeep) : Math.Max(0, defendersUpkeep - attackersUpkeep);
+
+            return Math.Min(delta * 2, 25);
+        }
+
+        public static int GetUnitsPerStructure(Structure structure) {
+            int[] units = new[] { 20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144 };
+            return units[structure.Lvl];
         }
 
         public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)
@@ -134,8 +144,7 @@ namespace Game.Battle
         public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
             ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
-            int rawDmg = atk * attacker.Count;
-            rawDmg /= 10;
+            int rawDmg = (atk * attacker.Count) / 10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
             rawDmg = (int)(typeModifier * classModifier * rawDmg);
@@ -151,9 +160,9 @@ namespace Game.Battle
             return new Resource(Math.Min(count, spaceLeft.Crop), Math.Min(count, spaceLeft.Gold / 2), Math.Min(count, spaceLeft.Iron), Math.Min(count, spaceLeft.Wood), 0);
         }
 
-        internal static ushort GetStamina(City city)
+        internal static short GetStamina(TroopStub stub, City city)
         {
-            return (ushort)(Config.battle_stamina_initial);
+            return (short) Config.battle_stamina_initial;
         }
 
         internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round)
@@ -168,11 +177,19 @@ namespace Game.Battle
             return --stamina;
         }
 
-        internal static ushort GetStaminaStructureDestroyed(City city, ushort stamina, uint round)
+        internal static short GetStaminaStructureDestroyed(short stamina)
         {
             if (stamina < Config.battle_stamina_destroyed_deduction)
                 return 0;
-            return (ushort)(stamina - Config.battle_stamina_destroyed_deduction);
+
+            return (short)(stamina - Config.battle_stamina_destroyed_deduction);
+        }
+
+        internal static ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round) {
+            if (stamina == 0)
+                return 0;
+
+            return --stamina;
         }
 
         internal static bool IsAttackMissed(byte stealth)

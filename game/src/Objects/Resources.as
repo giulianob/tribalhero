@@ -36,6 +36,16 @@
 			return "Gold: " + gold.toString() + " Wood:" + wood.toString() + " Iron:" + iron.toString() + " Crop:" + crop.toString() + " Labor:" + labor.toString();
 		}
 		
+		public function toNiceString() : String {
+            var parts: Array = new Array();
+            if (wood > 0) parts.push(wood + " wood");
+            if (crop > 0) parts.push(crop + " crop");
+            if (iron > 0) parts.push(iron + " iron");
+            if (gold > 0) parts.push(gold + " gold");
+            if (labor > 0) parts.push(labor + " labor");
+
+            return parts.join(",");
+        }		
 	}
 
 }

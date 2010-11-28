@@ -329,13 +329,13 @@
 			Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 		}
 
-		public function sendResources(resources: Resources, cityId: int, objId: int, targetCityId: int):void
+		public function sendResources(resources: Resources, cityId: int, objId: int, targetCityName: String):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.CITY_RESOURCES_SEND;
 			packet.writeUInt(cityId);
 			packet.writeUInt(objId);
-			packet.writeUInt(targetCityId);
+			packet.writeString(targetCityName);
 			packet.writeInt(resources.crop);
 			packet.writeInt(resources.gold);
 			packet.writeInt(resources.iron);

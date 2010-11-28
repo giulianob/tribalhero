@@ -4,11 +4,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import src.Global;
+	import src.Map.City;
 	import src.Objects.Factories.*;
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Cursors.*;
+	import src.UI.Dialog.SendResourceDialog;
 
 	public class SendResourcesButton extends ActionButton
 	{
@@ -24,9 +26,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		public function onMouseClick(MouseEvent: Event):void
 		{
 			if (isEnabled())
-			{
-				var cursor: SendResourcesCursor = new SendResourcesCursor();
-				cursor.init(parentObj.cityId, parentObj as StructureObject);
+			{						
+				var picker: SendResourceDialog = new SendResourceDialog(parentObj, function(dlg: SendResourceDialog) : void {
+					Global.mapComm.City.sendResources(dlg.amount(), parentObj.cityId, parentObj != null ? parentObj.objectId : 0, dlg.cityName());
+					dlg.getFrame().dispose();
+				});
+				
+				picker.show();
 			}
 		}
 

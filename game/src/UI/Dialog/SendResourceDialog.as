@@ -2,8 +2,11 @@
 {
 	import flash.events.Event;
 	import org.aswing.event.PopupEvent;
+	import src.Comm.Packet;
 	import src.Global;
 	import src.Map.City;
+	import src.Map.Username;
+	import src.Objects.GameError;
 	import src.Objects.GameObject;
 	import src.Objects.Resources;
 	import src.UI.Components.SimpleTooltip;
@@ -15,9 +18,12 @@
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class ResourcePickerDialog extends GameJPanel
+	public class SendResourceDialog extends GameJPanel
 	{
 		private var lblTitle1:JLabel;
+		private var lblCityTitle: JLabel;
+		
+		private var txtCityName: JTextField;
 
 		private var pnlResources:JPanel;
 
@@ -37,19 +43,52 @@
 		private var btnOk:JButton;
 
 		public var city: City;
-
-		public function ResourcePickerDialog(parentObj: GameObject, onAccept: Function):void
+		
+		private var onAccept: Function;
+		private var loadingDlg: InfoDialog;
+		
+		public function SendResourceDialog(parentObj: GameObject, onAccept: Function):void
 		{
 			createUI();
 
 			title = "Send Resources";
-
-			var self: ResourcePickerDialog = this;
-			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); });
+			
+			this.onAccept = onAccept;
+			
+			btnOk.addActionListener(requestUsername);
 
 			city = Global.map.cities.get(parentObj.cityId);
 
 			onResourceChange();
+		}
+		
+		public function requestUsername(e: Event) : void {						
+			loadingDlg = InfoDialog.showMessageDialog("Send Resources", "Validating...", null, null, true, false, 0);		
+			
+			Global.mapComm.Object.getPlayerUsernameFromCityName(txtCityName.getText(), onReceiveUsername);			
+		}
+		
+		public function onReceiveUsername(packet: Packet, custom: * = null) : void {
+			
+			if (loadingDlg) loadingDlg.getFrame().dispose();
+			
+			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
+			{
+				var err: int = packet.readUInt();
+				GameError.showMessage(err);
+				return;
+			}
+			
+			var playerName: String = packet.readString();
+			
+			InfoDialog.showMessageDialog("Confirm", "You have chosen to send " + amount().toNiceString() + " to " + playerName + "'s " + txtCityName.getText() + "\n\nAre you sure?", onUserConfirms, null, true, false, JOptionPane.YES | JOptionPane.NO);
+		}
+		
+		public function onUserConfirms(option: int): void {
+			if (option == JOptionPane.YES) {			
+				var self: SendResourceDialog = this;
+				if (onAccept != null) onAccept(self);
+			}
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
@@ -74,6 +113,10 @@
 			lblIronAmount.setMaximum(city.resources.iron.getValue());
 		}
 
+		public function cityName(): String {
+			return txtCityName.getText();
+		}
+		
 		public function amount(): Resources {
 			return new Resources(lblCropAmount.getValue(), lblGoldAmount.getValue(), lblIronAmount.getValue(), lblWoodAmount.getValue(), 0);
 		}
@@ -81,6 +124,15 @@
 		public function createUI(): void {
 			setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.TOP));
 
+			var pnlCity: JPanel = new JPanel(new SoftBoxLayout(AsWingConstants.HORIZONTAL, 5));
+			
+			lblCityTitle = new JLabel("Recipient City:");
+			
+			txtCityName = new JTextField("", 10);
+			
+			pnlCity.append(lblCityTitle);
+			pnlCity.append(txtCityName);
+			
 			lblTitle1 = new JLabel();
 			lblTitle1.setSize(new IntDimension(200, 17));
 			lblTitle1.setText("Choose amount of resources to send");
@@ -124,6 +176,8 @@
 			btnOk = new JButton("Send");
 
 			//component layoution
+			append(pnlCity);
+			append(new JLabel(" ")); //separator
 			append(lblTitle1);
 			append(pnlResources);
 			append(pnlBottom);

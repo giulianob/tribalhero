@@ -167,6 +167,14 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
+		public function getPlayerUsernameFromCityName(cityName: String, callback: Function) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.PLAYER_NAME_FROM_CITY_NAME;
+			packet.writeString(cityName);
+			
+			session.write(packet, callback);
+		}
+		
 		public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
 		{
 			var packet: Packet = new Packet();

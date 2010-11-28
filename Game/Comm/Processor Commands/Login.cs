@@ -4,11 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Fighting;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -17,17 +19,21 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Comm {
-    public partial class Processor {
+namespace Game.Comm
+{
+    public partial class Processor
+    {
         readonly object loginLock = new object();
 
-        public void CmdQueryXml(Session session, Packet packet) {
+        public void CmdQueryXml(Session session, Packet packet)
+        {
             Packet reply = new Packet(packet);
-            reply.AddString(File.ReadAllText("C:\\source\\GameServer\\Game\\Setup\\CSV\\data.xml"));
+            reply.AddString(File.ReadAllText(Path.Combine(Config.data_folder, "data.xml")));
             session.Write(reply);
         }
 
-        public void CmdLogin(Session session, Packet packet) {
+        public void CmdLogin(Session session, Packet packet)
+        {
             Player player;
             Packet reply = new Packet(packet);
             reply.Option |= (ushort)Packet.Options.COMPRESSED;
@@ -40,54 +46,68 @@ namespace Game.Comm {
             DateTime playerCreated = DateTime.MinValue;
             string playerPassword = string.Empty;
             uint playerId;
+            bool admin = false;
+            bool banned = false;
 
-            try {
+            try
+            {
                 clientVersion = packet.GetInt16();
                 clientRevision = packet.GetInt16();
                 loginMode = packet.GetByte();
                 if (loginMode == 0)
                     loginKey = packet.GetString();
-                else {
+                else
+                {
                     playerName = packet.GetString();
                     playerPassword = packet.GetString();
                 }
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 ReplyError(session, packet, Error.UNEXPECTED);
                 session.CloseSession();
                 return;
             }
 
-            if (clientVersion < Config.client_min_version || clientRevision < Config.client_min_revision) {
-                ReplyError(session, packet, Error.CLIENT_OLD_VERSION);                
+            if (clientVersion < Config.client_min_version || clientRevision < Config.client_min_revision)
+            {
+                ReplyError(session, packet, Error.CLIENT_OLD_VERSION);
                 session.CloseSession();
             }
 
-            if (Config.database_load_players) {
+            if (Config.database_load_players)
+            {
                 DbDataReader reader;
-                try {
-                    if (loginMode == 0) {
+                try
+                {
+                    if (loginMode == 0)
+                    {
                         reader =
                             Global.DbManager.ReaderQuery(
                                 string.Format(
-                                    "SELECT * FROM `{0}` WHERE login_key IS NOT NULL AND login_key = '{1}' AND TIMEDIFF(NOW(), login_key_date) < '00:10:00.000000' LIMIT 1",
-                                    Player.DB_TABLE, loginKey));
-                    } else {
+                                    "SELECT * FROM `{0}` WHERE `login_key` IS NOT NULL AND `login_key` = @login_key AND TIMEDIFF(NOW(), `login_key_date`) < '00:10:00.000000' LIMIT 1",
+                                    Player.DB_TABLE), new[] { new DbColumn("login_key", loginKey, System.Data.DbType.String) });
+                    }
+                    else
+                    {
                         reader =
                             Global.DbManager.ReaderQuery(
                                 string.Format(
-                                    "SELECT * FROM `{0}` WHERE name = '{1}' AND password = SHA1('{2}{3}') LIMIT 1",
-                                    Player.DB_TABLE, playerName, Config.database_salt, playerPassword));
+                                    "SELECT * FROM `{0}` WHERE `name` = @name AND `password` = SHA1(@password) LIMIT 1",
+                                    Player.DB_TABLE), new[] { new DbColumn("name", playerName, System.Data.DbType.String), new DbColumn("password", Config.database_salt + playerPassword, System.Data.DbType.String) });
                     }
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     Global.Logger.Error("Error loading player", e);
                     ReplyError(session, packet, Error.UNEXPECTED);
                     session.CloseSession();
                     return;
                 }
 
-                if (!reader.HasRows) {
+                if (!reader.HasRows)
+                {
+                    if (!reader.IsClosed) reader.Close();
                     ReplyError(session, packet, Error.INVALID_LOGIN);
                     session.CloseSession();
                     return;
@@ -95,16 +115,40 @@ namespace Game.Comm {
 
                 reader.Read();
 
-                playerId = (uint) reader["id"];
-                playerName = (string) reader["name"];
+                playerId = (uint)reader["id"];
+                playerName = (string)reader["name"];
                 playerCreated = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
+                banned = (bool)reader["banned"];
+                // ReSharper disable RedundantAssignment
+                admin = (bool)reader["admin"];
+                // ReSharper restore RedundantAssignment
 
                 reader.Close();
 
-                Global.DbManager.Query(string.Format("UPDATE `{0}` SET login_key = null WHERE id = '{1}' LIMIT 1",
-                                                     Player.DB_TABLE, playerId));
-            } else {
-                if (!uint.TryParse(playerName, out playerId)) {
+                // Reset login key back to null
+                Global.DbManager.Query(string.Format("UPDATE `{0}` SET `login_key` = null WHERE `id` = @id LIMIT 1",
+                                                     Player.DB_TABLE), new[] { new DbColumn("id", playerId, System.Data.DbType.UInt32) });
+
+                // If we are under admin only mode then kick out non admin
+                if (Config.server_admin_only && !admin)
+                {
+                    ReplyError(session, packet, Error.UNDER_MAINTENANCE);
+                    session.CloseSession();
+                    return;
+                }
+
+                // If player was banned then kick his ass out
+                if (banned)
+                {
+                    ReplyError(session, packet, Error.BANNED);
+                    session.CloseSession();
+                    return;
+                }
+            }
+            else
+            {
+                if (!uint.TryParse(playerName, out playerId))
+                {
                     ReplyError(session, packet, Error.PLAYER_NOT_FOUND);
                     session.CloseSession();
                     return;
@@ -116,6 +160,7 @@ namespace Game.Comm {
             //Create the session id that will be used for the calls to the web server                        
 #if DEBUG
             string sessionId = playerId.ToString();
+            admin = true;
 #else
             SHA1 sha = new SHA1CryptoServiceProvider();
 
@@ -125,33 +170,45 @@ namespace Game.Comm {
 #endif
 
             bool newPlayer;
-            lock (loginLock) {
-                newPlayer = !Global.Players.TryGetValue(playerId, out player);
+            lock (loginLock)
+            {
+                newPlayer = !Global.World.Players.TryGetValue(playerId, out player);
 
                 //If it's a new player then add him to our session
-                if (newPlayer) {
-                    Global.Logger.Info(String.Format("Creating new player {0}({1})", playerName, playerId));
-                    player = new Player(playerId, playerCreated, SystemClock.Now, playerName, sessionId);
-                    Global.Players.Add(player.PlayerId, player);
+                if (newPlayer)
+                {
+                    Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
+
+                    // ReSharper disable ConditionIsAlwaysTrueOrFalse
+                    player = new Player(playerId, playerCreated, SystemClock.Now, playerName, admin, banned, sessionId);
+                    // ReSharper restore ConditionIsAlwaysTrueOrFalse
+
+                    Global.World.Players.Add(player.PlayerId, player);
                 }
-                else {
-                    Global.Logger.Info(String.Format("Player login in {0}({1})", player.Name, player.PlayerId));
+                else
+                {
+                    Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
                     player.SessionId = sessionId;
                     player.LastLogin = SystemClock.Now;
                 }
             }
 
-            using (new MultiObjectLock(player)) {
-                if (!newPlayer) {
+            using (new MultiObjectLock(player))
+            {
+                if (!newPlayer)
+                {
                     // If someone is already connected as this player, kick them off
-                    if (player.Session != null) {
+                    if (player.Session != null)
+                    {
                         player.Session.CloseSession();
                         player.Session = null;
                     }
 
                     player.Session = session;
                     Global.DbManager.Save(player);
-                } else {
+                }
+                else
+                {
                     player.DbPersisted = Config.database_load_players;
 
                     Global.DbManager.Save(player);
@@ -160,9 +217,10 @@ namespace Game.Comm {
                 //User session
                 session.Player = player;
                 player.Session = session;
-                
+
                 //Player Id
                 reply.AddUInt32(player.PlayerId);
+                reply.AddByte((byte)(player.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
 
@@ -174,47 +232,62 @@ namespace Game.Comm {
 
                 // If it's a new player we send simply a 1 which means the client will need to send back a city name
                 // Otherwise, we just send the whole login info
-                if (player.GetCityList().Count == 0) {
+                if (player.GetCityList().Count == 0)
+                {
                     reply.AddByte(1);
                 }
-                else {                    
+                else
+                {
                     reply.AddByte(0);
                     PacketHelper.AddLoginToPacket(session, reply);
                 }
 
                 session.Write(reply);
+
+                //Restart any city actions that may have been stopped due to inactivity
+                foreach (City city in player.GetCityList().Where(city => !city.Worker.PassiveActions.Exists(x => x.Type == ActionType.CITY))) {
+                    city.Worker.DoPassive(city, new CityAction(city.Id), false);
+                }
             }
         }
 
-        public void CmdCreateInitialCity(Session session, Packet packet) {
-            using (new MultiObjectLock(session.Player)) {
+        public void CmdCreateInitialCity(Session session, Packet packet)
+        {
+            using (new MultiObjectLock(session.Player))
+            {
                 string cityName;
-                try {
+                try
+                {
                     cityName = packet.GetString().Trim();
                 }
-                catch (Exception) {
+                catch (Exception)
+                {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }
 
                 // Verify city name is valid
-                if (!City.IsNameValid(cityName)) {
+                if (!City.IsNameValid(cityName))
+                {
                     ReplyError(session, packet, Error.CITY_NAME_INVALID);
                     return;
                 }
 
                 City city;
-                Structure mainBuilding;                                    
+                Structure mainBuilding;
 
-                lock (Global.World.Lock) {
+                lock (Global.World.Lock)
+                {
                     // Verify city name is unique
-                    if (Global.World.CityNameTaken(cityName)) {
+                    if (Global.World.CityNameTaken(cityName))
+                    {
                         ReplyError(session, packet, Error.CITY_NAME_TAKEN);
-                        return;                        
+                        return;
                     }
-                    
-                    if (!Randomizer.MainBuilding(out mainBuilding)) {
-                        Global.Players.Remove(session.Player.PlayerId);
+
+                    if (!Randomizer.MainBuilding(out mainBuilding))
+                    {
+                        Global.World.Players.Remove(session.Player.PlayerId);
                         Global.DbManager.Rollback();
                         // If this happens I'll be a very happy game developer
                         ReplyError(session, packet, Error.MAP_FULL);

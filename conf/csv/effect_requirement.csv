@@ -52,4 +52,4 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 21031,HaveNoStructure,3002,minlvl=0,maxlvl=10,,,,,1 festival per city
 ,,,,,,,,,
 //lumbermill,,,,,,,,,
-210711,HaveNoStructure,2111,minlvl=0,maxlvl=3,,,,All basements need to be upgraded to Level 4.,
+210711,HaveNoStructure,2111,minlvl=0,maxlvl=3,,,All other basements need to be at least level 4 before you can build a new basement.,All other basements need to be upgraded level 4.,

@@ -127,6 +127,7 @@ namespace Game.Data {
                                 new DbColumn("iron", Stats.Loot.Iron, DbType.Int32),
                                 new DbColumn("attack_point", Stats.AttackPoint, DbType.Int32),
                                 new DbColumn("attack_radius", Stats.AttackRadius, DbType.Byte),
+                                new DbColumn("stamina", Stats.Stamina, DbType.Int16),
                                 new DbColumn("speed", Stats.Speed, DbType.Byte),
                                 new DbColumn("x", X, DbType.UInt32), 
                                 new DbColumn("y", Y, DbType.UInt32),

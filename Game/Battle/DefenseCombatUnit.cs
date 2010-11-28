@@ -57,6 +57,16 @@ namespace Game.Battle {
             get { return new Resource(); }
         }
 
+        public override int Upkeep
+        {
+            get { return UnitFactory.GetUnitStats(type, lvl).Upkeep * count; }
+        }
+
+        public override short Stamina
+        {
+            get { return -1; }
+        }
+
         public DefenseCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl,
                                  ushort count) {
             TroopStub = stub;
@@ -86,7 +96,7 @@ namespace Game.Battle {
 
         public override uint Visibility {
             get {                
-                return (uint) (RoundsParticipated + Stats.Rng);
+                return Stats.Rng;
             }
         }
 

@@ -105,8 +105,8 @@ namespace Game.Module {
             lock (marketLock) {
                 using (DbTransaction transaction = Global.DbManager.GetThreadTransaction()) {
                     int flow = outgoing - incoming;
-                    if (Global.Players.Count > 0) {
-                        price += (flow / (quantityPerChangePerPlayer * Global.Players.Count));
+                    if (Global.World.Players.Count > 0) {
+                        price += (flow / (quantityPerChangePerPlayer * Global.World.Players.Count));
                         if (price < MinPrice) price = MinPrice;
                         if (price > MaxPrice) price = MaxPrice;
                         outgoing = incoming = 0;

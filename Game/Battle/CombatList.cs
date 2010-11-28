@@ -23,6 +23,12 @@ namespace Game.Battle {
 
         public int Id { get; set; }
 
+        public int Upkeep {
+            get {
+                return this.Sum(obj => obj.Upkeep);
+            }
+        }
+
         public bool HasInRange(CombatObject attacker) {
             return this.Any(obj => (obj.InRange(attacker) && attacker.InRange(obj)) && !obj.IsDead);
         }

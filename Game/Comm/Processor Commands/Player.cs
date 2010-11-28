@@ -30,7 +30,8 @@ namespace Game.Comm {
             reply.AddByte(count);
             foreach (uint playerId in playerIds) {
                 Player player;
-                if (!Global.Players.TryGetValue(playerId, out player)) {
+                if (!Global.World.Players.TryGetValue(playerId, out player))
+                {
                     ReplyError(session, packet, Error.UNEXPECTED);
                     return;
                 }

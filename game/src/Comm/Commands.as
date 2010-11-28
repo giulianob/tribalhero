@@ -17,6 +17,7 @@ package src.Comm {
 		public static const QUERY_XML: int = 11;
 		public static const PLAYER_USERNAME_GET: int = 12;
 		public static const CITY_USERNAME_GET: int = 13;
+		public static const PLAYER_NAME_FROM_CITY_NAME: int = 14;
 		
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;

@@ -63,10 +63,7 @@ namespace Game.Logic.Actions {
                     break;
             }
 
-            Resource cost = new Resource(0,
-                                         (int)
-                                         Math.Round(price*(quantity/TRADE_SIZE)*(1.0 + Formula.MarketTax(structure))), 0,
-                                         0, 0);
+            Resource cost = new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.MarketTax(structure))), 0, 0, 0);
             if (!structure.City.Resource.HasEnough(cost)) {
                 Market.Crop.Supply(quantity);
                 return Error.RESOURCE_NOT_ENOUGH;

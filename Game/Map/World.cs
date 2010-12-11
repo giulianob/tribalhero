@@ -122,19 +122,23 @@ namespace Game.Map
             if (regionChangesStream == null)
                 throw new Exception("Missing region changes");
             
-            if (inWorldWidth % regionWidth != 0 || inWorldHeight % regionHeight != 0 || regionWidth == 0 || regionHeight == 0)
+            if (regionWidth == 0 || regionHeight == 0 || inWorldWidth % regionWidth != 0 || inWorldHeight % regionHeight != 0)
                 throw new Exception("Invalid region size configured");
 
-            if (inWorldWidth % cityRegionWidth != 0 || inWorldHeight % cityRegionHeight != 0 || cityRegionWidth == 0 || cityRegionHeight == 0)
+            if (cityRegionWidth == 0 || cityRegionHeight == 0 || inWorldWidth % cityRegionWidth != 0 || inWorldHeight % cityRegionHeight != 0)
                 throw new Exception("Invalid city region size configured");
 
             WorldWidth = inWorldWidth;
             WorldHeight = inWorldHeight;
 
-            // creating regions;            
+            // creating regions;                    
+            //Global.Logger.InfoFormat("Region width[{0}] Region height[{1}] City region width[{2}] City region height[{3}]", regionWidth, regionHeight, cityRegionWidth, cityRegionHeight);            
+
             RegionSize = regionWidth * regionHeight;            
+            
             int column = (int)(inWorldWidth / regionWidth);
             int row = (int)(inWorldHeight / regionHeight);
+            
             RegionsCount = column * row;
             MapData = new byte[RegionSize * Region.TILE_SIZE * RegionsCount];
 

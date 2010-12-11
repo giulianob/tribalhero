@@ -19,7 +19,6 @@ namespace Game.Logic {
         }
 
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {
-          //  int[] discount = { 0, 2, 4, 6, 8, 10, 15, 20, 30, 50, 80 };
             int[] discount = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             foreach( Structure obj in structure.City ) {
                 if( ObjectTypeFactory.IsStructureType("University",obj) ) {
@@ -40,8 +39,8 @@ namespace Game.Logic {
 
         public static int BuildTime(int baseValue, City city, TechnologyManager em) {
             Structure univeristy = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
-            int buildtime = (int)(baseValue * (100 - (univeristy==null?0:univeristy.Stats.Labor)*0.25) / 100);
-            return (int) (buildtime*Config.seconds_per_unit);
+            int buildtime = (int)(baseValue * (100 - (univeristy == null ? 0 : univeristy.Stats.Labor) * 0.25) / 100);
+            return (int)(buildtime * Config.seconds_per_unit);
         }
 
         internal static int MoveTime(byte speed) {

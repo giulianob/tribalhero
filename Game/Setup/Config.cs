@@ -23,6 +23,7 @@ namespace Game.Setup {
         public static readonly bool server_admin_only;
 
         public static readonly string flash_domain = "*.tribalhero.com";
+        public static readonly string flash_ports = server_port + ",8085,843";
 
         public static readonly string csv_folder = "conf/csv/";
         public static readonly string csv_compiled_folder = "conf/csv/compiled/";

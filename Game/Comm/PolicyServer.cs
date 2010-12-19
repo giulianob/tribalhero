@@ -1,10 +1,12 @@
 #region
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using Game.Data;
 using Game.Setup;
 
@@ -34,19 +36,18 @@ namespace Game.Comm {
             return true;
         }
 
-        public void ListenerHandler() {
-            listener.Start();
-
-            string policy = "<?xml version=\"1.0\"?>" +
-                            "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">" +
-                            "<cross-domain-policy>" + "<site-control permitted-cross-domain-policies=\"master-only\"/>" +
-                            "<allow-access-from domain=\"" + Config.flash_domain + "\" to-ports=\"" + Config.server_port +
-                            "\" />" + "</cross-domain-policy>";
+        public void ListenerHandler() {            
+            string policy = @"<?xml version=""1.0""?><!DOCTYPE cross-domain-policy SYSTEM ""/xml/dtds/cross-domain-policy.dtd""><cross-domain-policy><site-control permitted-cross-domain-policies=""master-only""/><allow-access-from domain=""" + Config.flash_domain + @""" to-ports=""" + Config.server_port + @""" /></cross-domain-policy>";
+            
+            // Write policy to data folder
+            File.WriteAllText(Path.Combine(Config.data_folder, "crossdomain.xml"), policy);
 
             Global.Logger.Info("Ready to serve policy file: " + policy);
-            
-            Socket newSocket;
-            while (!isStopped) {                
+
+            listener.Start();
+
+            while (!isStopped) {
+                Socket newSocket;
                 try {
                     newSocket = listener.AcceptSocket();
                 }

@@ -42,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'LauncherService %28Check Locks%29|AnyCPU' ">
     <OutputPath>bin\LauncherService %28Check Locks%29\</OutputPath>
@@ -63,54 +63,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Debug\Game.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Game.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LauncherService %28Check Locks%29|x86'">
-    <OutputPath>bin\x86\LauncherService %28Check Locks%29\</OutputPath>
-    <DefineConstants>TRACE;CHECK_LOCKS</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>bin\LauncherService (Check Locks)\Game.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>

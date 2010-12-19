@@ -21,6 +21,10 @@ namespace Game.Setup
                 bool headerWritten = false;
                 foreach (string filename in Directory.GetFiles(dir, pattern, SearchOption.TopDirectoryOnly)) {
                     string fullFilename = filename;
+
+                    if (Global.IsRunningOnMono())
+                        fullFilename = Path.Combine(dir, filename);                    
+
                     using (StreamReader sr = new StreamReader(new FileStream(fullFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                     {
                         string header = sr.ReadLine();

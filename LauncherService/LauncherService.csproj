@@ -41,7 +41,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,7 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'LauncherService %28Check Locks%29|AnyCPU' ">
     <OutputPath>bin\LauncherService %28Check Locks%29\</OutputPath>
@@ -61,7 +61,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>

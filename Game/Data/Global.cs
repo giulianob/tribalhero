@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using Game.Database;
 using Game.Logic;
@@ -41,6 +42,11 @@ namespace Game.Data {
             FireEvents = true;
             SystemVariables = new Dictionary<string, SystemVariable>();
             World = new World();
+        }
+
+        public static bool IsRunningOnMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
         }
     }
 }

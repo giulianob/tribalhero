@@ -205,7 +205,7 @@ namespace Game.Util {
                     Global.Logger.Info(string.Format("CallbackLock has iterated {0} times from {1}", count, Environment.StackTrace));
                 }
 
-                if (count >= 1000) {
+                if (count >= 10000) {
                     throw new LockException("Callback lock exceeded maximum count");
                 }
 

@@ -572,7 +572,7 @@ Type,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 ,,,,,,,,,,,
 //Market,,,,,,,,,,,
 2502,0,1,,,,,,,,,
-2502,1,1,,structure_Upgrade,5,,,,,,
+2502,1,1,,structure_Upgrade,10,,,,,,
 2502,2,1,Uncancelable,resource_buy,,,,,,,
 2502,3,1,Uncancelable,resource_sell,,,,,,,
 ,,,,,,,,,,,

@@ -40,6 +40,7 @@ namespace DatabaseGenerator
             catch (Exception) {}
 
             // Process structures
+            Directory.CreateDirectory(output);
             using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "structure_listing.inc.php")))) {
 
                 writer.Write(@"<?php

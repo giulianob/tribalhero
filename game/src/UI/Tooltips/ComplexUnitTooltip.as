@@ -55,6 +55,7 @@
 		}
 
 		private function createUI() : void {
+			ui.setMinimumWidth(125);
 			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 15));
 			pnlHeader = new JPanel(new BorderLayout(20, 0));
 			pnlFooter = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL, 0));

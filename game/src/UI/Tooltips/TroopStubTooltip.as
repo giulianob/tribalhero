@@ -56,7 +56,7 @@
 
 		private function createUI() : void {
 			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));
-			ui.setMinimumWidth(125);
+			ui.setMinimumWidth(150);
 
 			pnlTop = new JPanel(new BorderLayout(20));
 

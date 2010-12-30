@@ -86,8 +86,7 @@
 		{
 			// Here we create a dummy ASWing component and stick it over the menu button because the popup requires it
 			menuDummyOverlay = new Component();
-			menuDummyOverlay.setLocationXY(btnMenu.x, btnMenu.y);
-			addChild(menuDummyOverlay);
+			menuDummyOverlay.setLocationXY(btnMenu.x, btnMenu.y);			
 			
 			// Create and position the city list
 			lstCities = new JComboBox();
@@ -166,7 +165,7 @@
 		public function onMenuClick(e: MouseEvent): void
 		{
 			if (!menu) return;
-
+			
 			menu.show(menuDummyOverlay, 0, btnMenu.height);
 		}
 
@@ -398,7 +397,10 @@
 			visible = true;
 
 			// Create on screen message component, it'll auto show itself
-			screenMessage = new ScreenMessagePanel();
+			screenMessage = new ScreenMessagePanel(this);
+			
+			// Add menu overlay
+			addChild(menuDummyOverlay);
 
 			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
@@ -409,6 +411,7 @@
 			if (menu) {
 				menu.dispose();
 				menu = null;
+				removeChild(menuDummyOverlay);
 			}
 
 			if (messageTimer) {

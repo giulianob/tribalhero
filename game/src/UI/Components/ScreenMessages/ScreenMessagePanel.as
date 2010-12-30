@@ -1,5 +1,6 @@
 package src.UI.Components.ScreenMessages
 {
+	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -21,7 +22,7 @@ package src.UI.Components.ScreenMessages
 		private var timer: Timer = new Timer(100, 0);
 		private var frame: JFrame;
 
-		public function ScreenMessagePanel()
+		public function ScreenMessagePanel(owner: DisplayObjectContainer)
 		{
 			mouseEnabled = false;
 			mouseChildren = false;
@@ -35,7 +36,7 @@ package src.UI.Components.ScreenMessages
 
 			if (!frame)
 			{
-				frame = new JFrame(null, "", false);						
+				frame = new JFrame(owner, "", false);						
 				frame.setContentPane(this);
 				frame.setBorder(new EmptyBorder(null, new Insets(0, 0, 0, 0)));
 				frame.setBackgroundDecorator(null);

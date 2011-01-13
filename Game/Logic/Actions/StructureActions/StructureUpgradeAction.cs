@@ -37,6 +37,9 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.OBJECT_NOT_FOUND;
 
+            if (city.Worker.Contains(ActionType.STRUCTURE_UPGRADE, ActionId))
+                return Error.ACTION_ALREADY_IN_PROGRESS;
+
             // layout requirement
             if (!RequirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure, structure.Type, structure.X, structure.Y))
                 return Error.LAYOUT_NOT_FULLFILLED;

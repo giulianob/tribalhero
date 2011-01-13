@@ -48,6 +48,9 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.OBJECT_NOT_FOUND;
 
+            if (city.Worker.Contains(ActionType.STRUCTURE_BUILD, ActionId))
+                return Error.ACTION_ALREADY_IN_PROGRESS;
+
             Global.World.LockRegion(x, y);
 
             // cost requirement

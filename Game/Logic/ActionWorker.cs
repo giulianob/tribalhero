@@ -351,6 +351,17 @@ namespace Game.Logic {
             return false;
         }
 
+        public bool Contains(ActionType type, uint ignoreId)
+        {
+            if (ActiveActions.Values.Any(x => x.Type == type && x.ActionId != ignoreId)) 
+                return true;
+
+            if (PassiveActions.Values.Any(x => x.Type == type && x.ActionId != ignoreId))
+                return true;
+
+            return false;
+        }
+
         internal IEnumerable<GameAction> GetVisibleActions() {
             foreach (KeyValuePair<uint, ActiveAction> kvp in active)
                 yield return kvp.Value;

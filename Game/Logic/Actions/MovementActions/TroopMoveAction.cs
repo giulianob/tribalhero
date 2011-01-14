@@ -92,10 +92,10 @@ namespace Game.Logic.Actions
             int mod = Math.Max(50, obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int) effect.value[0]));
             int moveTime = Formula.MoveTime(obj.Stats.Speed);
 
-            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100));
+            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime * Config.seconds_per_unit * mod / 100));
 
             distanceRemaining = obj.TileDistance(x, y);
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100)*distanceRemaining);
+            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime * Config.seconds_per_unit * mod / 100) * distanceRemaining);
             return true;
         }
 
@@ -110,9 +110,7 @@ namespace Game.Logic.Actions
             int mod = Math.Max(50, city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int)effect.value[0]));
 
             distanceRemaining = troopObj.TileDistance(x, y);
-            endTime =
-                DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * mod / 100) *
-                                        distanceRemaining);
+            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * mod / 100) * distanceRemaining);
             beginTime = DateTime.UtcNow;
 
             troopObj.Stub.BeginUpdate();

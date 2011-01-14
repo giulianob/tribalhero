@@ -62,7 +62,7 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(resource);
             structure.City.EndUpdate();
 
-            endTime = SystemClock.Now.AddSeconds(Config.actions_instant_time ? 3 : (Formula.SendTime(structure.TileDistance(targetCity.MainBuilding)) * Config.seconds_per_unit));
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(Formula.SendTime(structure.TileDistance(targetCity.MainBuilding))));
             beginTime = SystemClock.Now;
 
             return Error.OK;

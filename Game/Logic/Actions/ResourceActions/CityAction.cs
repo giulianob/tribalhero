@@ -37,7 +37,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(INTERVAL * Config.seconds_per_unit);
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(INTERVAL));
             return Error.OK;
         }
 
@@ -106,7 +106,7 @@ namespace Game.Logic.Actions
 
                 if (Config.resource_upkeep) {
                     if (city.Resource.Crop.Upkeep > city.Resource.Crop.Rate) {
-                        int upkeepCost = Math.Max(1, (int) ((INTERVAL/3600f)/Config.seconds_per_unit)*(city.Resource.Crop.Upkeep - city.Resource.Crop.Rate));
+                        int upkeepCost = Math.Max(1, (int)((INTERVAL / 3600f) / Config.seconds_per_unit) * (city.Resource.Crop.Upkeep - city.Resource.Crop.Rate));
 
                         if (city.Resource.Crop.Value < upkeepCost) {
                             city.Worker.DoPassive(city, new StarveAction(city.Id), false);
@@ -167,7 +167,7 @@ namespace Game.Logic.Actions
                     StateChange(ActionState.COMPLETED);
                 } else {
                     beginTime = DateTime.UtcNow;
-                    endTime = DateTime.UtcNow.AddSeconds(INTERVAL*Config.seconds_per_unit);
+                    endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : INTERVAL * Config.seconds_per_unit);
                     StateChange(ActionState.FIRED);
                 }
             }

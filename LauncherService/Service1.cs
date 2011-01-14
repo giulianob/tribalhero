@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceProcess;
 using Game.Setup;
+using log4net;
 using log4net.Config;
 
 namespace LauncherService {
@@ -11,6 +12,10 @@ namespace LauncherService {
         
         protected override void OnStart(string[] args) {
             XmlConfigurator.Configure();
+
+            ILog logger = LogManager.GetLogger(typeof(Program));
+            logger.Info("#######################################");
+
             Factory.CompileConfigFiles();
             CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 

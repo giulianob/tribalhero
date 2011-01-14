@@ -116,7 +116,7 @@ namespace Game.Logic
         /// <returns></returns>
         public static double MarketTax(Structure structure)
         {
-            double[] rate = { -0.15, -0.15, -0.12, -0.09, -0.06, -0.03, 0, 0.03, 0.06, 0.09, 0.12 };
+            double[] rate = { 0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12 };
             return rate[structure.Lvl];
         }
 

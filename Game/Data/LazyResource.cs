@@ -144,6 +144,10 @@ namespace Game.Data {
             if (value < 0) {
                 value = 0;
             }
+
+            // Cap to just limit something really bad from happening
+            if (value > 99999)
+                value = 99999;
         }
 
         protected virtual int GetCalculatedRate() {

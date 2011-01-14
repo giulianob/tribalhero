@@ -62,7 +62,7 @@ namespace Game.Logic.Actions {
             // add to queue for completion
             nextTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 0.1 : buildtime);
             beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 * ActionCount : (double) buildtime * ActionCount);
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(buildtime * ActionCount));
 
             return Error.OK;
         }

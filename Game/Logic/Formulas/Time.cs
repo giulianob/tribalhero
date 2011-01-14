@@ -9,11 +9,11 @@ using System.Linq;
 
 namespace Game.Logic {
     public partial class Formula {
-        internal static double SendTime(int distance) {
+        internal static int SendTime(int distance) {
             return MoveTime(11) * distance;
         }
 
-        internal static double TradeTime(Structure structure, int quantity)
+        internal static int TradeTime(Structure structure, int quantity)
         {
             return quantity * 15;
         }

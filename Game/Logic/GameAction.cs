@@ -131,6 +131,12 @@ namespace Game.Logic {
             return !isDone;
         }
 
+        protected double CalculateTime(int seconds, bool instantAction = true) {
+            if (!instantAction) return seconds * Config.seconds_per_unit;
+
+            return Config.actions_instant_time ? 2 : seconds * Config.seconds_per_unit;
+        }
+
         #region IPersistable Members
 
         public abstract string DbTable { get; }

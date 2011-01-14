@@ -95,7 +95,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
 
                 beginTime = DateTime.UtcNow;
-                endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : techBase.time * Config.seconds_per_unit);
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime((int)techBase.time));
             }
 
             return Error.OK;

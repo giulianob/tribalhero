@@ -1,0 +1,97 @@
+Key,EN
+A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide a little more help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide a lot more help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide great help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide superb help defending when the town is under attack. 
+TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation Research
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Reduces distance requirement by 1 for underground structures.
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Reduces distance requirement by 2 for underground structures.
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Reduces distance requirement by 3 for underground structures.
+,
+DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases travel speed of troops by 5%. (Stackable up to 50%)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases travel speed of troops by 10%. (Stackable up to 50%)
+,
+ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
+ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
+HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Sword
+HANZO_SWORD_TECHNOLOGY_LVL_1,Increases damage of sword yielding units by 10%
+HANZO_SWORD_TECHNOLOGY_LVL_2,Increases damage of sword yielding units by 20%
+HANZO_SWORD_TECHNOLOGY_LVL_3,Increases damage of sword yielding units by 25%
+BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
+BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases bow range by 3.
+BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases bow range by 6.
+BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases bow range by 9.
+,
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_NAME,Ground Unit Defence
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all ground units by 3%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all ground units by 6%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all ground units by 9%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all ground units by 12%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all ground units by 15%.
+,
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Mounted Unit Defence
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all mounted units by 3%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all mounted units by 6%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all mounted units by 9%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all mounted units by 12%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all mounted units by 15%.
+,
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Machinery Unit Defence
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all machinery units by 3%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all machinery units by 6%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all machinery units by 9%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all machinery units by 12%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all machinery units by 15%.
+,
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defence
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all structures by 3%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all structures by 6%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all structures by 9%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all structures by 12%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all structures by 15%.
+,
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Damage Boost
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use swords by 3%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use swords by 6%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use swords by 9%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use swords by 12%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use swords by 15%.
+,
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Damage Boost
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use pikes by 3%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use pikes by 6%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use pikes by 9%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use pikes by 12%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use pikes by 15%.
+,
+BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Bow Damage Boost
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use bows by 3%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use bows by 6%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use bows by 9%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use bows by 12%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use bows by 15%.
+,
+BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Ballistic Damage Boost
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use ballistic weapons by 3%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use ballistic weapons by 6%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use ballistic weapons by 9%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use ballistic weapons by 12%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use ballistic weapons by 15%.
+,
+ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
+ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 15%.
+ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the basements by 30%.
+ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the basements by 50%.
+,
+FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
+FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained.
+FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
+FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained.
+THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
+THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3th unit free for every 2 units that are trained.
+,
+HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
+HAPPYHOUR_TECHNOLOGY_LVL_1,Villagers are so drunk... thus increasing the laborer production rate by 30%.

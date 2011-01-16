@@ -36,6 +36,8 @@ namespace Game.Comm {
                 bool needNewWorker = true;
                 foreach (TcpWorker worker in WorkerList) {
                     lock (worker.sockListLock) {
+                        if (worker.sessions.Count > 250) continue;
+
                         worker.Put(session);
                     }
 
@@ -131,7 +133,6 @@ namespace Game.Comm {
 
                     foreach (Socket s in copyList) {
                         lock (s) {
-                            Packet packet;
                             try {
                                 if (!s.Connected) {
                                     SocketDisconnect(s);
@@ -141,18 +142,21 @@ namespace Game.Comm {
                                 byte[] data = new byte[s.Available];
 
                                 int len = s.Receive(data);
-
+                                
                                 if (len == 0) {
                                     SocketDisconnect(s);
                                     continue;
                                 }
 
                                 Global.Logger.Info("[" + sessions[s].name + "]: " + data.Length);     
-                               
+                                
                                 sessions[s].AppendBytes(data);
-                                while ((packet = (sessions[s]).GetNextPacket()) != null) {
-                                    ThreadPool.QueueUserWorkItem(sessions[s].Process, packet);
-                                }
+                                
+                                Packet packet = sessions[s].GetNextPacket();
+                                
+                                if (packet == null) continue;
+
+                                ThreadPool.QueueUserWorkItem(sessions[s].Process, packet);                                
                             }
                             catch (SocketException) {
                                 lock (sockListLock) {

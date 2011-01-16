@@ -1,6 +1,6 @@
 Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
 //Building Market @ Trading post,,,,,,,,
-2502,1,Simple,2501,1,5,0,3,1
+2502,1,Simple,2501,1,15,0,3,1
 ,,,,,,,,
 //Building Armory @ Univeristy,,,,,,,,
 2302,1,Simple,2301,1,20,0,3,1

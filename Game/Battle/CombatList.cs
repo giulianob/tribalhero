@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
@@ -15,6 +16,11 @@ namespace Game.Battle {
             NONE_IN_RANGE,
             NONE_VISIBLE,
             OK
+        }
+
+        public class CombatScoreItem {
+            public int Score { get; set; }
+            public CombatObject CombatObject { get; set; }
         }
 
         public class NoneInRange : Exception {}
@@ -33,12 +39,14 @@ namespace Game.Battle {
             return this.Any(obj => (obj.InRange(attacker) && attacker.InRange(obj)) && !obj.IsDead);
         }
 
-        public BestTargetResult GetBestTarget(CombatObject attacker, out CombatObject result) {
+        public BestTargetResult GetBestTargets(CombatObject attacker, out List<CombatObject> result, int maxCount) {
             result = null;
             CombatObject bestTarget = null;
             int bestTargetScore = 0;
 
             bool hasInRange = false;
+
+            List<CombatScoreItem> objectsByScore = new List<CombatScoreItem>(Count);
 
             foreach (CombatObject obj in this) {
                 if (!obj.InRange(attacker) || !attacker.InRange(obj) || obj.IsDead)
@@ -61,18 +69,30 @@ namespace Game.Battle {
                     bestTarget = obj;
                     bestTargetScore = score;
                 }
-            }
 
+                objectsByScore.Add(new CombatScoreItem {
+                                           CombatObject = obj,
+                                           Score = score
+                                       });
+            }
+            
             if (bestTarget == null) {
                 return !hasInRange ? BestTargetResult.NONE_IN_RANGE : BestTargetResult.NONE_VISIBLE;
             }
 
             if (BattleFormulas.IsAttackMissed(bestTarget.Stats.Stl)) {
-                result = this[Config.Random.Next(Count)];
-                return BestTargetResult.OK;
+                if (objectsByScore.Count == 1)
+                    return BestTargetResult.OK;
+
+                objectsByScore.RemoveAt(0);
             }
-            
-            result = bestTarget;
+
+            // Sort by score descending
+            objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score) * -1);
+
+            // Get top results specified by the maxCount param
+            result = objectsByScore.GetRange(0, Math.Min(maxCount, objectsByScore.Count)).Select(x => x.CombatObject).ToList();
+
             return BestTargetResult.OK;
         }
 

@@ -130,7 +130,7 @@ namespace Game.Battle {
         }
 
         public bool CanSee(CombatObject obj) {
-            // In order to implement visibility as discussed in http://trac.tribalhero.com/game/wiki/Discussion%2011/08/10
+            // In order to implement visibility as discussed in http://trac.tribalhero.com/wiki/Discussion%2011/08/10
             // we always take the lowest RoundsParticipated of the two objects.
             int minRoundsParticipated = Math.Min(RoundsParticipated, obj.RoundsParticipated);
             int totalVision = (int) (Visibility + minRoundsParticipated);        

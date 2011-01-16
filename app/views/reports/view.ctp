@@ -1,6 +1,6 @@
 <?php
 
-$results = array('refreshOnClose' => $refresh_on_close, 'outcomeOnly' => false, 'snapshots' => array(), 'groupId' => $main_report['BattleReportView']['group_id']);
+$results = array('refreshOnClose' => $refresh_on_close, 'outcomeOnly' => false, 'snapshots' => array(), 'groupId' => (array_key_exists('BattleReportView', $main_report) ? $main_report['BattleReportView']['group_id'] : 1));
 
 // Set resources gained if available
 if (array_key_exists('BattleReportView', $main_report)) {

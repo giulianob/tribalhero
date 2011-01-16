@@ -12,7 +12,7 @@ package src
 		public static var admin: Boolean;
 		public static var loginKey: String;
 		public static var playerId: int;
-		fdfdf
+		fdfdfa
 		/* APP CONSTANTS */
 		public static const debug:int = 0;
 		public static const defLang:String = "en";

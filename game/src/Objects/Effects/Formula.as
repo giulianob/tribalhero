@@ -100,7 +100,7 @@
 
 		public static function marketTax(structure: StructureObject): Number
 		{
-			var rate: Array = [ -0.15, -0.15, -0.12, -0.09, -0.06, -0.03, 0, 0.03, 0.06, 0.09, 0.12 ];			
+			var rate: Array = [ 0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12 ];			
 			return rate[structure.level];
 		}
 

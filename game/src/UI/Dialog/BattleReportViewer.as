@@ -68,7 +68,8 @@
 				return;
 			}
 
-			calculateCountDeltas();
+			if (data.outcomeOnly == false) calculateCountDeltas();
+			
 			refreshOnClose = data.refreshOnClose;
 			renderSnapshots();
 			chkViewAll.setVisible(!data.outcomeOnly);

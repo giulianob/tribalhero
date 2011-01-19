@@ -18,6 +18,7 @@ package src.Objects.Prototypes {
 		public var carry: int;
 		public var hp: int;
 		public var attack: int;
+		public var splash: int;
 		public var defense: int;
 		public var vision: int;
 		public var stealth: int;

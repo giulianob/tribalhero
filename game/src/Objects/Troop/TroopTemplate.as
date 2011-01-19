@@ -12,17 +12,19 @@
 		public var level: int;
 		public var maxHp: int;
 		public var attack: int;
+		public var splash: int;
 		public var defense: int;
 		public var range: int;
 		public var speed: int;
 		public var stealth: int;
 
-		public function TroopTemplate(type: int, level: int, maxHp: int, attack: int, defense: int, range: int, speed: int, stealth: int)
+		public function TroopTemplate(type: int, level: int, maxHp: int, attack: int, splash: int, defense: int, range: int, speed: int, stealth: int)
 		{
 			this.type = type;
 			this.level = level;
 			this.maxHp = maxHp;
 			this.attack = attack;
+			this.splash = splash;
 			this.defense = defense;
 			this.range = range;
 			this.speed = speed;

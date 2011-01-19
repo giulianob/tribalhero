@@ -67,7 +67,7 @@
 
 			var statBox: UnitStatBox = new UnitStatBox();
 
-			statBox.init(unitPrototype.carry, unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, unitPrototype.hp, unitPrototype.upkeep, unitPrototype.attack, unitPrototype.defense, unitPrototype.stealth, unitPrototype.range, unitPrototype.speed);
+			statBox.init(unitPrototype.carry, unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, unitPrototype.hp, unitPrototype.upkeep, unitPrototype.attack, unitPrototype.splash, unitPrototype.defense, unitPrototype.stealth, unitPrototype.range, unitPrototype.speed);
 
 			return statBox;			
 		}
@@ -78,7 +78,7 @@
 
 			var statBox: UnitStatBox = new UnitStatBox();
 
-			statBox.init(unitPrototype.carry, unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, troopTemplate.maxHp, unitPrototype.upkeep, troopTemplate.attack, troopTemplate.defense, troopTemplate.stealth, troopTemplate.range, troopTemplate.speed);
+			statBox.init(unitPrototype.carry, unitPrototype.armor, unitPrototype.weapon, unitPrototype.weaponClass, unitPrototype.unitClass, troopTemplate.maxHp, unitPrototype.upkeep, troopTemplate.attack, troopTemplate.splash, troopTemplate.defense, troopTemplate.stealth, troopTemplate.range, troopTemplate.speed);
 
 			return statBox;
 		}
@@ -88,7 +88,7 @@
 			createUI();
 		}
 
-		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, defense: int, stealth: int, range: int, speed: int) : void {
+		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, splash: int, defense: int, stealth: int, range: int, speed: int) : void {
 			lblAttack.setValue(attack / upkeep);
 			lblCarry.setText(carry.toString());
 			lblDefense.setValue(defense / upkeep);
@@ -138,6 +138,7 @@
 			appendAll(lblWeaponTitle, lblWeapon, lblWeaponClassTitle, lblWeaponClass);
 			appendAll(lblAttackTitle, lblAttack, lblDefenseTitle, lblDefense);
 			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
+			appendAll(lblSpeedTitle, lblSpeed, lblUpkeepTitle, lblUpkeep);
 			appendAll(lblSpeedTitle, lblSpeed, lblUpkeepTitle, lblUpkeep);
 		}
 

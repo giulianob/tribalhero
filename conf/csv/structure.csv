@@ -1,4 +1,4 @@
-Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
+Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Splash,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
 ,,,,,,,,,,,,,,,,,,,,,,,,
 //,,Building Template,,,,,,,,,,,,,,,,,,,,,,
 //,,Military,,Highdef,50,0,0,15,0,5,5,0,,,,,,,,,,,,
@@ -29,7 +29,7 @@ Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Radius,Stl,Rng,Spd,Gold,Crop,Woo
 //,,,,,,,,,,14,186.17,186,190,3:10,,,,,,,,,,
 //,,,,,,,,,,15,200.83,201,200,3:20,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,
-//Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
+//Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Splash,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
 ,,,,,,,,,,,,,,,,,,,,,,,,
 //,Max Level,15,,,,,,,,Exp rate,Init Value,Final Value,Init Time,Final Time,,,,,,,,,,
 //,Start Level,1,,,,,Gold,,,0.4,-5,8000,,,,,,,,,,,,

@@ -82,13 +82,15 @@ namespace Game.Data.Troop {
         }
 
         public DbColumn[] DbListColumns {
-            get {
+            get
+            {
                 return new[] {
                                           new DbColumn("type", DbType.UInt16), new DbColumn("level", DbType.Byte),
-                                          new DbColumn("max_hp", DbType.UInt16), new DbColumn("attack", DbType.Byte),
-                                          new DbColumn("defense", DbType.Byte), new DbColumn("range", DbType.Byte),
+                                          new DbColumn("max_hp", DbType.UInt16), new DbColumn("attack", DbType.UInt16),
+                                          new DbColumn("splash", DbType.Byte), 
+                                          new DbColumn("defense", DbType.UInt16), new DbColumn("range", DbType.Byte),
                                           new DbColumn("stealth", DbType.Byte), new DbColumn("speed", DbType.Byte)
-                                      };
+                };
             }
         }
 
@@ -104,6 +106,7 @@ namespace Game.Data.Troop {
                                        new DbColumn("level", battleStats.Base.Lvl, DbType.Byte),
                                        new DbColumn("max_hp", battleStats.MaxHp, DbType.UInt16),
                                        new DbColumn("attack", battleStats.Atk, DbType.UInt16),
+                                       new DbColumn("splash", battleStats.Splash, DbType.Byte),
                                        new DbColumn("defense", battleStats.Def, DbType.UInt16),
                                        new DbColumn("range", battleStats.Rng, DbType.Byte),
                                        new DbColumn("stealth", battleStats.Stl, DbType.Byte),

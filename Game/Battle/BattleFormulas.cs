@@ -234,6 +234,9 @@ namespace Game.Battle
                             case "Atk":
                                 calculator.Atk.AddMod((string)effect.value[1], (int)effect.value[2]);
                                 break;
+                            case "Splash":
+                                calculator.Splash.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                break;
                             case "Def":
                                 calculator.Def.AddMod((string)effect.value[1], (int)effect.value[2]);
                                 break;
@@ -263,6 +266,10 @@ namespace Game.Battle
             Resource bonus = new Resource(troop.Stats.Loot);
             bonus *= (Config.Random.NextDouble() + 1.0);
             return bonus;
+        }
+
+        public static int GetNumberOfHits(CombatObject currentAttacker) {
+            return currentAttacker.BaseStats.Splash + 1;
         }
     }
 }

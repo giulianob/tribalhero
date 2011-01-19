@@ -29,6 +29,7 @@
 				unitObj.hp = unitNode.@hp;
 				unitObj.attack = unitNode.@attack;
 				unitObj.defense = unitNode.@defense;
+				unitObj.splash = unitNode.@splash;
 				unitObj.vision = unitNode.@vision;
 				unitObj.stealth = unitNode.@stealth;
 				unitObj.range = unitNode.@range;

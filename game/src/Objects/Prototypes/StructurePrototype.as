@@ -21,6 +21,7 @@ package src.Objects.Prototypes {
 		public var spriteClass: String;
 		public var hp: int;
 		public var attack: int;
+		public var splash: int;
 		public var defense: int;
 		public var radius: int;
 		public var stealth: int;

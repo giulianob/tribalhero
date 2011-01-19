@@ -193,6 +193,7 @@ namespace Game.Comm {
 
                 packet.AddUInt16(stats.Value.MaxHp);
                 packet.AddUInt16(stats.Value.Atk);
+                packet.AddByte(stats.Value.Splash);
                 packet.AddUInt16(stats.Value.Def);
                 packet.AddByte(stats.Value.Rng);
                 packet.AddByte(stats.Value.Spd);

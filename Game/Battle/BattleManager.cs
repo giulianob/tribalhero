@@ -515,9 +515,9 @@ namespace Game.Battle {
                     CombatList.BestTargetResult targetResult;
 
                     if (currentAttacker.CombatList == attackers) {
-                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfTargets(currentAttacker));
+                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
                     } else if (currentAttacker.CombatList == defenders)
-                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfTargets(currentAttacker));
+                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
                     else
                         throw new Exception("How can this happen");
 

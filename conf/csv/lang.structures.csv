@@ -7,7 +7,7 @@ TOWNCENTER_STRUCTURE_LVL_3,"Allows building University. Increases the maximum re
 TOWNCENTER_STRUCTURE_LVL_4,"Ability to build another Farm. Increases the maximum resources to 1450 crop, 1790 wood, and 0 iron.",
 TOWNCENTER_STRUCTURE_LVL_5,"Allows building Trading Posts. Increases the maximum resources to 1880 crop, 2320 wood, and 0 iron.",
 TOWNCENTER_STRUCTURE_LVL_6,"Increases the maximum resources to 2440 crop, 2960 wood, and 170 iron.",
-TOWNCENTER_STRUCTURE_LVL_7,"Increases the maximum resources to 3200 crop, 3740 wood, and 380 iron.",
+TOWNCENTER_STRUCTURE_LVL_7,"Increases the maximum resources to 3200 crop, 3740 wood, and 380 iron.  Ability to research Overtime.",
 TOWNCENTER_STRUCTURE_LVL_8,"Increases the maximum resources to 4200 crop, 4680 wood, and 620 iron.",
 TOWNCENTER_STRUCTURE_LVL_9,"Increases the maximum resources to 5500 crop, 20100 wood, and 900 iron.",
 TOWNCENTER_STRUCTURE_LVL_10,"Increases the maximum resources to 7200 crop, 7210 wood, and 1240 iron.",

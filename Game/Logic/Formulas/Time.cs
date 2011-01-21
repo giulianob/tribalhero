@@ -19,13 +19,8 @@ namespace Game.Logic {
         }
 
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {
-            int[] discount = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            foreach( Structure obj in structure.City ) {
-                if( ObjectTypeFactory.IsStructureType("University",obj) ) {
-                    return (int)((100 - discount[obj.Lvl]) * count * 300 * Config.seconds_per_unit / 100);
-                }
-            }
-            return (int)(count * 300 * Config.seconds_per_unit);
+            int overtime = structure.City.Technologies.GetEffects(EffectCode.HaveTechnology, EffectInheritance.ALL).DefaultIfEmpty(new Effect { value = new object[] { 20001, 0 } }).Max(x => (int)x.value[0] == 20001 ? (int)x.value[1] : 0);
+            return (int)((100 - overtime*10) * count * 300 * Config.seconds_per_unit / 100);
         }
 
         private static int TimeDiscount(int lvl) {

@@ -73,7 +73,7 @@ namespace Game.Logic.Actions {
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.TradeTime(structure, quantity));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.TradeTime(structure, quantity)));
             beginTime = DateTime.UtcNow;
 
             return Error.OK;

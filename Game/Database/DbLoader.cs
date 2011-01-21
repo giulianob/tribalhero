@@ -406,6 +406,7 @@ namespace Game.Database {
                             BattleStats battleStats = new BattleStats(UnitFactory.GetBattleStats((ushort)listReader["type"], (byte)listReader["level"])) {
                                 MaxHp = (ushort)listReader["max_hp"],
                                 Atk = (ushort)listReader["attack"],
+                                Splash = (byte)listReader["splash"],
                                 Def = (ushort)listReader["defense"],
                                 Rng = (byte)listReader["range"],
                                 Stl = (byte)listReader["stealth"],
@@ -491,6 +492,7 @@ namespace Game.Database {
                             BattleStats battleStats = new BattleStats(structure.Stats.Base.Battle) {
                                 MaxHp = (ushort)listReader["max_hp"],
                                 Atk = (ushort)listReader["attack"],
+                                Splash = (byte)listReader["splash"],
                                 Def = (ushort)listReader["defense"],
                                 Rng = (byte)listReader["range"],
                                 Stl = (byte)listReader["stealth"],

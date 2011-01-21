@@ -38,7 +38,7 @@ namespace Game.Logic.Actions {
             if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
                 return Error.STRUCTURE_UNDESTROYABLE;
 
-            endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies)));
             beginTime = DateTime.UtcNow;
 
             if (WorkerObject.WorkerId != structureId)

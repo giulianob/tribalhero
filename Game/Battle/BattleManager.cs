@@ -394,37 +394,17 @@ namespace Game.Battle {
 
             bool atkDone = false;
             bool defDone = false;
-            bool lastUnitAtk = true;
-            while (!atkDone || !defDone) {
-                if (!defDone && (lastUnitAtk==true||atkDone)) {
-                    while (true) {
-                        if (defIter.MoveNext()) {
-                            if (defIter.Current.IsDead)
-                                continue;
-                            battleOrder.Add(defIter.Current);
-                            lastUnitAtk = false;
-                            break;
-                        } else {
-                            defDone = true;
-                            break;
-                        }
-                    }
-                }
 
-                if (!atkDone && (lastUnitAtk == false || defDone)) {
-                    while (true) {
-                        if (atkIter.MoveNext()) {
-                            if (atkIter.Current.IsDead)
-                                continue;
-                            battleOrder.Add(atkIter.Current);
-                            lastUnitAtk = true;
-                            break;
-                        } else {
-                            atkDone = true;
-                            break;
-                        }
-                    }
-                }
+            while (!atkDone || !defDone) {
+                if (!defDone && defIter.MoveNext())
+                    battleOrder.Add(defIter.Current);
+                else
+                    defDone = true;
+
+                if (!atkDone && atkIter.MoveNext())
+                    battleOrder.Add(atkIter.Current);
+                else
+                    atkDone = true;
             }
         }
 
@@ -510,41 +490,42 @@ namespace Game.Battle {
                 #endregion
 
                 #region Targeting
-                CombatObject attacker;
-                CombatObject defender;
+                CombatObject currentAttacker;
+                List<CombatObject> currentDefenders;
 
                 do {
                     #region Find Attacker                    
 
-                    if (!battleOrder.NextObject(out attacker) && !battleJustStarted) {
+                    if (!battleOrder.NextObject(out currentAttacker) && !battleJustStarted) {
                         ++round;
                         battleOrder.ParticipatedInRound();
                         turn = 0;
                         EventEnterRound(Attacker, Defender, round);
                     }
 
-                    if (attacker == null || defenders.Count == 0 || attackers.Count == 0) {
+                    if (currentAttacker == null || defenders.Count == 0 || attackers.Count == 0) {
                         BattleEnded(true);
                         return false;
                     }
 
                     #endregion
 
-                    #region Find Target
+                    #region Find Target(s)
                     
                     CombatList.BestTargetResult targetResult;
 
-                    if (attacker.CombatList == attackers) {
-                        targetResult = defenders.GetBestTarget(attacker, out defender);
-                    } else if (attacker.CombatList == defenders)
-                        targetResult = attackers.GetBestTarget(attacker, out defender);
+                    if (currentAttacker.CombatList == attackers) {
+                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
+                    } else if (currentAttacker.CombatList == defenders)
+                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
                     else
                         throw new Exception("How can this happen");
 
-                    if (defender == null || (attacker.CombatList == attackers && attacker.Stats.Atk == 0) || (attacker.CombatList == defenders && attacker.Stats.Def == 0)) {
-                        attacker.ParticipatedInRound();
-                        Global.DbManager.Save(attacker);
-                        EventSkippedAttacker(attacker);
+                    if (currentDefenders == null || currentDefenders.Count == 0 || (currentAttacker.CombatList == attackers && currentAttacker.Stats.Atk == 0) || (currentAttacker.CombatList == defenders && currentAttacker.Stats.Def == 0))
+                    {
+                        currentAttacker.ParticipatedInRound();
+                        Global.DbManager.Save(currentAttacker);
+                        EventSkippedAttacker(currentAttacker);
 
                         // If the attacker can't attack because it has no one in range, then we skip him and find another target right away.
                         if (targetResult == CombatList.BestTargetResult.NONE_IN_RANGE)
@@ -561,125 +542,38 @@ namespace Game.Battle {
                 #endregion  
 
                 #region Miss Chance
-                int missChance = BattleFormulas.MissChance(attacker.CombatList == attackers, defenders, attackers);
+                int missChance = BattleFormulas.MissChance(currentAttacker.CombatList == attackers, defenders, attackers);
                 if (missChance > 0)
                 {
                     int rand = (int)(Config.Random.NextDouble() * 100);
 
                     if (rand <= missChance) {
-                        attacker.ParticipatedInRound();
-                        Global.DbManager.Save(attacker);
-                        EventSkippedAttacker(attacker);
+                        currentAttacker.ParticipatedInRound();
+                        Global.DbManager.Save(currentAttacker);
+                        EventSkippedAttacker(currentAttacker);
                         return true;
                     }
                 }
                 #endregion
 
-                #region Damage
+                bool killedADefender = false;
 
-                ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
-                ushort actualDmg;
-                Resource lostResource;
-                int attackPoints;
+                int attackIndex = 0;
+                foreach (CombatObject defender in currentDefenders) {
+                    if (AttackTarget(currentAttacker, defender, attackIndex)) killedADefender = true;
+                    attackIndex++;
+                }                
 
-                defender.CalculateDamage(dmg, out actualDmg);
-                defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
+                currentAttacker.ParticipatedInRound();
 
-                attacker.DmgDealt += actualDmg;
-                attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
-                attacker.MinDmgDealt = Math.Min(attacker.MinDmgDealt, actualDmg);
-                ++attacker.HitDealt;
-                attacker.HitDealtByUnit += attacker.Count;
-
-                defender.DmgRecv += actualDmg;
-                defender.MaxDmgRecv = Math.Max(defender.MaxDmgRecv, actualDmg);
-                defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
-                ++defender.HitRecv;
-
-                Global.Logger.Debug(string.Format("{0}[{1}] hit {2}[{3}] for {4} damage", attacker.ClassType, attacker.Type, defender.ClassType, defender.Type, dmg));
-                if (lostResource != null && lostResource.Total > 0) Global.Logger.Debug(string.Format("Defender lost {0} resources", lostResource));
-                if (attackPoints > 0) Global.Logger.Debug(string.Format("Attacker gained {0} attack points", attackPoints));
-
-                #endregion                
-
-                #region Loot and Attack Points
-
-                if (attacker.CombatList == Attacker) {
-                    Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
-                    city.BeginUpdate();
-                    city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
-                    attacker.ReceiveReward(attackPoints, loot);
-                    city.EndUpdate();
-                } else {                    
-                    // Give back any lost resources if the attacker dropped them
-                    if (lostResource != null && !lostResource.Empty) {
-                        city.BeginUpdate();
-                        city.Resource.Add(lostResource);
-                    }
-                    
-                    // If the defender killed someone then give the city defense points
-                    if (attackPoints > 0) {
-                        if (!city.IsUpdating)
-                            city.BeginUpdate();                    
-
-                        city.DefensePoint += attackPoints;
-
-                        // Give anyone stationed defense points as well
-                        // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
-                        List<City> uniqueCities = new List<City>();
-                        foreach (CombatObject co in defenders) {
-                            if (co.City == city || uniqueCities.Contains(co.City)) continue;
-                            co.City.BeginUpdate();
-                            co.City.DefensePoint += attackPoints;
-                            co.City.EndUpdate();
-
-                            uniqueCities.Add(co.City);
-                        }
-                    }
-
-                    if (city.IsUpdating)
-                        city.EndUpdate();
-                }
-
-                #endregion
-
-                #region Object removal
-
-                bool isDefenderDead = defender.IsDead;
-                if (isDefenderDead)
-                {
-                    Global.Logger.Debug("Defender has died");
-
-                    EventUnitRemoved(defender);
-                    battleOrder.Remove(defender);
-
-                    if (attacker.CombatList == attackers) {
-                        defenders.Remove(defender);
-                        report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);
-                    } else if (attacker.CombatList == defenders) {
-                        attackers.Remove(defender);
-                        report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.DYING : ReportState.STAYING);
-                    }
-
-                    defender.CleanUp();                    
-                }
-                else {
-                    Global.DbManager.Save(defender);
-                }
-
-                #endregion
-
-                attacker.ParticipatedInRound();
-
-                Global.DbManager.Save(attacker);
-
-                EventActionAttacked(attacker, defender, actualDmg);
+                Global.DbManager.Save(currentAttacker);                
 
                 EventExitTurn(Attacker, Defender, (int)turn++);
 
                 // Send back any attackers that have no targets left
-                if (isDefenderDead) {
-                    if (defender.CombatList == defenders && defenders.Count > 0) {
+                if (killedADefender)
+                {
+                    if (currentAttacker.CombatList == attackers && defenders.Count > 0) {
                         //Since the list of attackers will be changing, we need to keep reiterating through it until there are no more to remove
                         AttackCombatUnit co;
                         do {
@@ -697,6 +591,117 @@ namespace Game.Battle {
 
                 return true;
             }
+        }
+
+        private bool AttackTarget(CombatObject attacker, CombatObject defender, int attackIndex) {
+            #region Damage
+
+            ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
+            ushort actualDmg;
+            Resource lostResource;
+            int attackPoints;
+
+            defender.CalculateDamage(dmg, out actualDmg);
+            defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
+
+            attacker.DmgDealt += actualDmg;
+            attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
+            attacker.MinDmgDealt = Math.Min(attacker.MinDmgDealt, actualDmg);
+            ++attacker.HitDealt;
+            attacker.HitDealtByUnit += attacker.Count;
+
+            defender.DmgRecv += actualDmg;
+            defender.MaxDmgRecv = Math.Max(defender.MaxDmgRecv, actualDmg);
+            defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
+            ++defender.HitRecv;
+
+            Global.Logger.Debug(string.Format("{0}[{1}] hit {2}[{3}] for {4} damage", attacker.ClassType, attacker.Type, defender.ClassType, defender.Type, dmg));
+            if (lostResource != null && lostResource.Total > 0) Global.Logger.Debug(string.Format("Defender lost {0} resources", lostResource));
+            if (attackPoints > 0) Global.Logger.Debug(string.Format("Attacker gained {0} attack points", attackPoints));
+
+            #endregion
+
+            #region Loot and Attack Points
+
+            if (attacker.CombatList == Attacker)
+            {
+                // Only give loot if we are attacking the first target in the list
+                if (attackIndex == 0) {
+                    Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                    city.BeginUpdate();
+                    city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
+                    attacker.ReceiveReward(attackPoints, loot);
+                    city.EndUpdate();
+                }
+            }
+            else
+            {
+                // Give back any lost resources if the attacker dropped them
+                if (lostResource != null && !lostResource.Empty)
+                {
+                    city.BeginUpdate();
+                    city.Resource.Add(lostResource);
+                }
+
+                // If the defender killed someone then give the city defense points
+                if (attackPoints > 0)
+                {
+                    if (!city.IsUpdating)
+                        city.BeginUpdate();
+
+                    city.DefensePoint += attackPoints;
+
+                    // Give anyone stationed defense points as well
+                    // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
+                    List<City> uniqueCities = new List<City>();
+                    foreach (CombatObject co in defenders)
+                    {
+                        if (co.City == city || uniqueCities.Contains(co.City)) continue;
+                        co.City.BeginUpdate();
+                        co.City.DefensePoint += attackPoints;
+                        co.City.EndUpdate();
+
+                        uniqueCities.Add(co.City);
+                    }
+                }
+
+                if (city.IsUpdating)
+                    city.EndUpdate();
+            }
+
+            #endregion
+
+            #region Object removal
+
+            bool isDefenderDead = defender.IsDead;
+            if (isDefenderDead)
+            {
+                Global.Logger.Debug("Defender has died");
+
+                EventUnitRemoved(defender);
+                battleOrder.Remove(defender);
+
+                if (attacker.CombatList == attackers)
+                {
+                    defenders.Remove(defender);
+                    report.WriteReportObject(defender, false, GroupIsDead(defender, defenders) ? ReportState.DYING : ReportState.STAYING);
+                }
+                else if (attacker.CombatList == defenders)
+                {
+                    attackers.Remove(defender);
+                    report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.DYING : ReportState.STAYING);
+                }
+
+                defender.CleanUp();
+            }
+            else
+                Global.DbManager.Save(defender);
+
+            #endregion
+
+            EventActionAttacked(attacker, defender, actualDmg);
+
+            return defender.IsDead;
         }
 
         #endregion

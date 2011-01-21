@@ -168,7 +168,7 @@ namespace CSVToXML {
                             continue;
 
                         writer.WriteStartElement("Structure");
-                        //Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Vsn,Stl,Rng,Spd,Crop,Gold,Iron,Wood,Labor,Time,WorkerId
+                        
                         writer.WriteAttributeString("name", obj[0]);
                         writer.WriteAttributeString("type", obj[1]);
                         writer.WriteAttributeString("level", obj[2]);
@@ -176,7 +176,7 @@ namespace CSVToXML {
                         writer.WriteAttributeString("spriteclass", obj[4]);
                         writer.WriteAttributeString("hp", obj[5]);
                         writer.WriteAttributeString("attack", obj[6]);
-                        writer.WriteAttributeString("maxattack", obj[7]);
+                        writer.WriteAttributeString("splash", obj[7]);
                         writer.WriteAttributeString("defense", obj[8]);
                         writer.WriteAttributeString("radius", obj[9]);
                         writer.WriteAttributeString("stealth", obj[10]);
@@ -230,7 +230,7 @@ namespace CSVToXML {
                             continue;
 
                         writer.WriteStartElement("Unit");
-                        //Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Vsn,Stl,Rng,Spd,Crop,Gold,Iron,Wood,Labor,Time,UpgrdCrop,UpgrdGold,UpgrdIron,UpgrdWood,UpgrdLabor,UpgrdTime
+                        
                         writer.WriteAttributeString("name", obj[0]);
                         writer.WriteAttributeString("type", obj[1]);
                         writer.WriteAttributeString("level", obj[2]);
@@ -242,7 +242,7 @@ namespace CSVToXML {
                         writer.WriteAttributeString("spriteclass", obj[8]);
                         writer.WriteAttributeString("hp", obj[9]);
                         writer.WriteAttributeString("attack", obj[10]);
-                        writer.WriteAttributeString("maxattack", obj[11]);
+                        writer.WriteAttributeString("splash", obj[11]);
                         writer.WriteAttributeString("defense", obj[12]);
                         writer.WriteAttributeString("vision", obj[13]);
                         writer.WriteAttributeString("stealth", obj[14]);

@@ -55,6 +55,7 @@ namespace Game.Setup {
                                                                 Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToUpper()),
                                                                 ushort.Parse(toks[col["Hp"]]),
                                                                 ushort.Parse(toks[col["Atk"]]),
+                                                                byte.Parse(toks[col["Splash"]]),
                                                                 ushort.Parse(toks[col["Def"]]),
                                                                 byte.Parse(toks[col["Rng"]]),
                                                                 byte.Parse(toks[col["Stl"]]),

@@ -16,6 +16,7 @@ using Game.Util;
 namespace Game.Logic.Actions {
     class BattleAction : ScheduledPassiveAction {
         private uint cityId;
+        private uint destroyedHp;
 
         public BattleAction(uint cityId) {
             this.cityId = cityId;
@@ -30,13 +31,17 @@ namespace Game.Logic.Actions {
         public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
                             IDictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible) {
             cityId = uint.Parse(properties["city_id"]);
+            destroyedHp = uint.Parse(properties["destroyed_hp"]);
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += Battle_ActionAttacked;
+            city.Battle.UnitRemoved += Battle_UnitRemoved;
         }
+
+
 
         #region ISchedule Members
 
@@ -90,7 +95,9 @@ namespace Game.Logic.Actions {
                         }
                         stub.EndUpdate();
                     }
-
+                    if(destroyedHp>0) {
+                        Procedure.SenseOfUrgency(city,destroyedHp);
+                    }
                     StateChange(ActionState.COMPLETED);
                 }
                 else {
@@ -156,6 +163,19 @@ namespace Game.Logic.Actions {
             }
         }
 
+        private void Battle_UnitRemoved(CombatObject obj) {
+            CombatStructure cs = obj as CombatStructure;
+            if (cs == null)
+                return;
+
+            City city;
+            if (!Global.World.TryGetObjects(cityId, out city))
+                return;
+            if (cs.City == city) {
+                destroyedHp += cs.Stats.MaxHp;
+            }
+        }
+
         public override void UserCancelled() {            
         }
 
@@ -170,7 +190,8 @@ namespace Game.Logic.Actions {
         #region IPersistable Members
 
         public override string Properties {
-            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId)}); }
+            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId),
+                                                        new XMLKVPair("destroyed_hp", destroyedHp)}); }
         }
 
         #endregion

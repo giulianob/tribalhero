@@ -11,8 +11,7 @@ namespace Launcher {
         public static void Main(string[] args) {
             XmlConfigurator.Configure();                        
             Factory.CompileConfigFiles();
-            CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
-
+ 
 #if DEBUG
             if (Config.database_empty) {
                 Console.Out.Write("Are you sure you want to empty the database?(Y/N):");
@@ -24,7 +23,8 @@ namespace Launcher {
 
             if (!Game.Engine.Start()) {
                 throw new Exception("Failed to load server");
-            }           
+            }
+            CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
             while (true) {
                 ConsoleKeyInfo key = Console.ReadKey();

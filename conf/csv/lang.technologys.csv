@@ -1,4 +1,11 @@
 Key,EN
+OVERTIME_TECHNOLOGY_NAME,Overtime
+OVERTIME_TECHNOLOGY_LVL_1,Decrease laborer assigning time by 10%
+OVERTIME_TECHNOLOGY_LVL_2,Decrease laborer assigning time by 20%
+OVERTIME_TECHNOLOGY_LVL_3,Decrease laborer assigning time by 30%
+OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%
+OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%
+,
 A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. 
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide a little more help defending when the town is under attack. 
@@ -128,26 +135,50 @@ HAPPYHOUR_TECHNOLOGY_LVL_1,Villagers are so drunk... thus increasing the laborer
 ,
 SUNDANCE_TECHNOLOGY_NAME,Sun Dance
 SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 120%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 140%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 160%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 180%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 200%
+SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus to 140%
+SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus to 160%
+SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus to 180%
+SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus to 200%
 ,
+GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to  load up loot bonus by 1%
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Increase efficiency to  load up loot bonus by 2%
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Increase efficiency to  load up loot bonus by 3%
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to  load up loot bonus by 4%
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to  load up loot bonus by 5%
 ,
-SUNDANCE_TECHNOLOGY_LVL_1,Increase minimum loot bonus to 20%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 40%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 60%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 80%
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 100%
+COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,"Defensive reinforcements gain 1 vision when joining the battle, only if they have Coordinated Defense."
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,"Defensive reinforcements gain 2 vision when joining the battle, only if they have Coordinated Defense.(Take the lower level of two forces)"
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,"Defensive reinforcements gain 3 vision when joining the battle, only if they have Coordinated Defense.(Take the lower level of two forces)"
 ,
-,When destroying a Structure…
-,When destroying a Structure…
-,When destroying a Structure…
-,When destroying a Structure…
-,When destroying a Structure…
+COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,"Offensive reinforcements gain 1 vision when joining the battle, only if they have Coordinated Attack."
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,"Offensive reinforcements gain 2 vision when joining the battle, only if they have Coordinated Attack.(Take the lower level of two forces)"
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,"Offensive reinforcements gain 3 vision when joining the battle, only if they have Coordinated Attack.(Take the lower level of two forces)"
 ,
-,"When a structre is destroyed, your defense  is increased for 2% *  Level for  1 day"
-,"When a structre is destroyed, your defense  is increased for 4% *  Level for  1 day"
-,"When a structre is destroyed, your defense  is increased for 6% *  Level for  1 day"
-,"When a structre is destroyed, your defense  is increased for 8% *  Level for  1 day"
-,"When a structre is destroyed, your defense  is increased for 10% *  Level for  1 day"
+SENSE OF URGENCY_TECHNOLOGY_NAME,Sense of Urgency
+SENSE OF URGENCY_TECHNOLOGY_LVL_1,"If any structre is destroyed in battle, all buildings are repaired by 5% HP."
+SENSE OF URGENCY_TECHNOLOGY_LVL_2,"If any structre is destroyed in battle, all buildings are repaired by 10% HP."
+SENSE OF URGENCY_TECHNOLOGY_LVL_3,"If any structre is destroyed in battle, all buildings are repaired by 15% HP."
+SENSE OF URGENCY_TECHNOLOGY_LVL_4,"If any structre is destroyed in battle, all buildings are repaired by 20% HP."
+SENSE OF URGENCY_TECHNOLOGY_LVL_4,"If any structre is destroyed in battle, all buildings are repaired by 25% HP."
+,
+REINVENT_WHEEL_TECHNOLOGY_NAME,Reinventing the Wheel
+REINVENT_WHEEL_TECHNOLOGY_LVL_1,increase send/trade resource speed by 4%
+REINVENT_WHEEL_TECHNOLOGY_LVL_2,increase send/trade resource speed by 8%
+REINVENT_WHEEL_TECHNOLOGY_LVL_3,increase send/trade resource speed by 12%
+REINVENT_WHEEL_TECHNOLOGY_LVL_4,increase send/trade resource speed by 16%
+REINVENT_WHEEL_TECHNOLOGY_LVL_5,increase send/trade resource speed by 20%
+,
+WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
+WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 5 Labor in Foundry produces 1 gold per hour
+WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 4 Labor in Foundry produces 1 gold per hour
+WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 3 Labor in Foundry produces 1 gold per hour
+WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 2 Labor in Foundry produces 1 gold per hour
+WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every Labor in Foundry produces 1 gold per hour
+,
+SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
+SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash target to 4.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash target to 5.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash target to 6.

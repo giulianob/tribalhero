@@ -143,9 +143,7 @@ namespace Game.Logic.Actions {
 
             // add to queue for completion
             endTime =
-                DateTime.UtcNow.AddSeconds(Config.actions_instant_time
-                                               ? 3
-                                               : (Formula.BuildTime(StructureFactory.GetTime(campType, 1), city, city.Technologies) + lumbermill.RadiusDistance(forest)));
+                DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(StructureFactory.GetTime(campType, 1), city, city.Technologies) + lumbermill.RadiusDistance(forest)));
             beginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);

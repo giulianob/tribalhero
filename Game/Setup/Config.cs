@@ -161,8 +161,6 @@ namespace Game.Setup {
                                 field.SetValue(null, value);
                                 break;
                         }
-
-                        logger.InfoFormat("{0}={1}", key, value);
                     }
                 }
             }

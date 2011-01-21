@@ -1,4 +1,4 @@
-Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
+Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Splash,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
 ,,,,,,,,,,,,,,,,,,,,,,,,
 //,,Building Template,,,,,,,,,,,,,,,,,,,,,,
 //,,Military,,Highdef,50,0,0,15,0,5,5,0,,,,,,,,,,,,
@@ -29,7 +29,7 @@ Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Radius,Stl,Rng,Spd,Gold,Crop,Woo
 //,,,,,,,,,,14,186.17,186,190,3:10,,,,,,,,,,
 //,,,,,,,,,,15,200.83,201,200,3:20,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,
-//Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Matk,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
+//Name,Type,Lvl,Class,SpriteClass,Hp,Atk,Splash,Def,Radius,Stl,Rng,Spd,Gold,Crop,Wood,Iron,Labor,Time,Worker,Weapon,WpnClass,Armor,ArmrClass,MaxLabor
 ,,,,,,,,,,,,,,,,,,,,,,,,
 //,Max Level,15,,,,,,,,Exp rate,Init Value,Final Value,Init Time,Final Time,,,,,,,,,,
 //,Start Level,1,,,,,Gold,,,0.4,-5,8000,,,,,,,,,,,,
@@ -433,13 +433,13 @@ MARKET,2502,10,STRUCTURE,MARKET_STRUCTURE,5500,0,0,770,0,8,8,0,830,2610,3760,480
 CORN_FIELD,3001,0,STRUCTURE,DEFAULT_BUILDING_ANIM,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Machine,Stone,0
 CORN_FIELD,3001,1,STRUCTURE,BASEMENT_STRUCTURE,500,0,0,100,0,0,0,0,0,0,0,0,15,24300,3001,Barricade,Basic,Machine,Stone,0
 TRIBAL_GATHERING,3002,0,STRUCTURE,DEFAULT_BUILDING_ANIM,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Machine,Stone,0
-TRIBAL_GATHERING,3002,1,STRUCTURE,MARKET_STRUCTURE,800,0,0,100,0,5,5,0,0,200,200,0,0,14400,0,Barricade,Basic,Machine,Stone,0
+TRIBAL_GATHERING,3002,1,STRUCTURE,TRIBAL_GATHERING_STRUCTURE,800,0,0,100,0,5,5,0,0,200,200,0,0,14400,0,Barricade,Basic,Machine,Stone,0
 TRIBAL_FAIR,3003,0,STRUCTURE,DEFAULT_BUILDING_ANIM,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Machine,Stone,0
-TRIBAL_FAIR,3003,1,STRUCTURE,MARKET_STRUCTURE,1560,0,0,195,0,5,5,0,0,800,800,0,0,28800,0,Barricade,Basic,Machine,Stone,0
+TRIBAL_FAIR,3003,1,STRUCTURE,TRIBAL_FAIR_STRUCTURE,1560,0,0,195,0,5,5,0,0,800,800,0,0,28800,0,Barricade,Basic,Machine,Stone,0
 TRIBAL_CARNIVAL,3004,0,STRUCTURE,DEFAULT_BUILDING_ANIM,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Machine,Stone,0
-TRIBAL_CARNIVAL,3004,1,STRUCTURE,MARKET_STRUCTURE,3000,0,0,375,0,5,5,0,400,2400,2400,0,0,43200,0,Barricade,Basic,Machine,Stone,0
+TRIBAL_CARNIVAL,3004,1,STRUCTURE,TRIBAL_CARNIVAL_STRUCTURE,3000,0,0,375,0,5,5,0,400,2400,2400,0,0,43200,0,Barricade,Basic,Machine,Stone,0
 TRIBAL_FESTIVAL,3005,0,STRUCTURE,DEFAULT_BUILDING_ANIM,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Barricade,Basic,Machine,Stone,0
-TRIBAL_FESTIVAL,3005,1,STRUCTURE,MARKET_STRUCTURE,5760,0,0,720,0,5,5,0,1600,9600,9600,0,0,86400,0,Barricade,Basic,Machine,Stone,0
+TRIBAL_FESTIVAL,3005,1,STRUCTURE,TRIBAL_FESTIVAL_STRUCTURE,5760,0,0,720,0,5,5,0,1600,9600,9600,0,0,86400,0,Barricade,Basic,Machine,Stone,0
 ,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,

@@ -46,10 +46,13 @@ namespace Game.Battle {
         protected ModCalculator() {
             SetParameters();
         }
+
         public void AddMod(string parameter, int value) {
             parameters[parameter].AddValue(value);
         }
+        
         public abstract T GetResult();
+        
         protected abstract void SetParameters();
     }
 
@@ -71,16 +74,18 @@ namespace Game.Battle {
 
     public class  BattleStatsModCalculator {
         BaseBattleStats baseStats;
-        public IntStatsModCalculator MaxHp;
-        public IntStatsModCalculator Atk;
-        public IntStatsModCalculator Def;
-        public IntStatsModCalculator Rng;
-        public IntStatsModCalculator Stl;
-        public IntStatsModCalculator Spd;
+        public IntStatsModCalculator MaxHp { get; private set; }
+        public IntStatsModCalculator Atk { get; private set; }
+        public IntStatsModCalculator Splash { get; private set; }
+        public IntStatsModCalculator Def { get; private set; }
+        public IntStatsModCalculator Rng { get; private set; }
+        public IntStatsModCalculator Stl { get; private set; }
+        public IntStatsModCalculator Spd { get; private set; }
 
         public BattleStatsModCalculator(BaseBattleStats baseStats) {
             MaxHp = new IntStatsModCalculator(baseStats.MaxHp);
             Atk = new IntStatsModCalculator(baseStats.Atk);
+            Splash = new IntStatsModCalculator(baseStats.Splash);
             Def = new IntStatsModCalculator(baseStats.Def);
             Rng = new IntStatsModCalculator(baseStats.Rng);
             Stl = new IntStatsModCalculator(baseStats.Stl);
@@ -92,15 +97,28 @@ namespace Game.Battle {
             Atk.AddMod(paramter, value);
         }
 
+        public void AddDefParameter(string paramter, int value)
+        {
+            Def.AddMod(paramter, value);
+        }
+
+        public void AddSplashParameter(string paramter, int value)
+        {
+            Splash.AddMod(paramter, value);
+        }
+
         public void AddRngParameter(string paramter, int value) {
             Rng.AddMod(paramter, value);
         }
+        
         public void AddStlParameter(string paramter, int value) {
             Stl.AddMod(paramter, value);
         }
+        
         public void AddSpdParameter(string paramter, int value) {
             Spd.AddMod(paramter, value);
         }
+        
         public void AddMaxHpParameter(string paramter, int value) {
             MaxHp.AddMod(paramter, value);
         }
@@ -109,6 +127,7 @@ namespace Game.Battle {
             BattleStats stats= new BattleStats(baseStats)
                                    {
                                        Atk = (ushort) Atk.GetResult(),
+                                       Splash = (byte) Splash.GetResult(),
                                        Def = (ushort) Def.GetResult(),
                                        Rng = (byte) Rng.GetResult(),
                                        Spd = (byte) Spd.GetResult(),

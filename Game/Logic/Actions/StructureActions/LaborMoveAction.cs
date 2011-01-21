@@ -60,9 +60,9 @@ namespace Game.Logic.Actions {
             beginTime = DateTime.UtcNow;
 
             if (cityToStructure) {
-                endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies));
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.LaborMoveTime(structure, (byte) ActionCount, structure.Technologies)));
             } else {
-                endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : Formula.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)/20);
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)/20));
             }
 
             return Error.OK;

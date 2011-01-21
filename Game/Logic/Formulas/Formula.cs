@@ -52,7 +52,7 @@ namespace Game.Logic {
         /// <param name="lvl"></param>
         /// <returns></returns>
         public static int ResourceIronCap(byte lvl) {
-            int[] cap = { 0, 0, 0, 0, 0, 0, 170, 380, 620, 900, 1240, 1630, 2090, 2620, 3260, 4000 };
+            int[] cap = { 100, 100, 100, 100, 100, 100, 170, 380, 620, 900, 1240, 1630, 2090, 2620, 3260, 4000 };
             return cap[lvl];
         }
 

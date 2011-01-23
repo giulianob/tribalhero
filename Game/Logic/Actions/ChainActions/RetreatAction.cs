@@ -38,7 +38,7 @@ namespace Game.Logic.Actions {
                 throw new Exception();
 
             TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X,
-                                                      stub.City.MainBuilding.Y, true);
+                                                      stub.City.MainBuilding.Y, true, false);
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
             stub.City.Worker.References.Add(stub.TroopObject, this);

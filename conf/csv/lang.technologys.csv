@@ -26,34 +26,42 @@ SENSE OF URGENCY_TECHNOLOGY_LVL_3,"If any structre is destroyed in battle, all b
 SENSE OF URGENCY_TECHNOLOGY_LVL_4,"If any structre is destroyed in battle, all buildings are repaired by 16% HP of the destroyed buildings.(Stackable up to 100%)"
 SENSE OF URGENCY_TECHNOLOGY_LVL_5,"If any structre is destroyed in battle, all buildings are repaired by 20% HP of the destroyed buildings.(Stackable up to 100%)"
 ,
-RUSH_ATTACK_TECHNOLOGY_NAME,Double Time
-RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 5% on an attack mission. (Stackable up to 100%)
-RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 10% on an attack mission. (Stackable up to  100%)
-RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 15% on an attack mission. (Stackable up to 100%)
-RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 20% on an attack mission. (Stackable up to 100%)
-RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 25% on an attack mission. (Stackable up to 100%)
+LAST_STAND_TECHNOLOGY_NAME,Last Stand
+LAST_STAND_TECHNOLOGY_LVL_1,15% chance completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_2,30% chance completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_3,45% chance completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_4,60% chance completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_5,75% chance completely ignore the attack when team is about to die.
 ,
-RUSH_DEFENSE_TECHNOLOGY_NAME,Double Time
-RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases travel speed of troops by 5% on an defense mission. (Stackable up to 100%)
-RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases travel speed of troops by 10% on an defense mission. (Stackable up to100%)
-RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases travel speed of troops by 15% on an defense mission. (Stackable up to 100%)
-RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases travel speed of troops by 20% on an defense mission. (Stackable up to 100%)
-RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases travel speed of troops by 25% on an defense mission. (Stackable up to 100%)
+,
+RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack
+RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an attack mission. (Stackable)
+RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an attack mission. (Stackable)
+RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an attack mission. (Stackable)
+RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attack mission. (Stackable)
+RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stackable)
+,
+RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an defense mission. (Stackable)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
-DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases travel speed of troops by 5% when distance is greather than 50. (Stackable up to 100%)
-DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases travel speed of troops by 10% when distance is greather than 50. (Stackable up to 100%)
-DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases travel speed of troops by 15% when distance is greather than 50. (Stackable up to 100%)
-DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases travel speed of troops by 20% when distance is greather than 50. (Stackable up to 100%)
-DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases travel speed of troops by 25% when distance is greather than 50. (Stackable up to 100%)
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% when distance is greather than 50. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% when distance is greather than 50. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% when distance is greather than 50. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% when distance is greather than 50. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% when distance is greather than 50. (Stackable)
 ,
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 ,
-LAST_STAND_TECHNOLOGY_NAME,Last Stand
-LAST_STAND_TECHNOLOGY_LVL_1,30% chance completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_2,50% chance completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_3,70% chance completely ignore the attack when team is about to die.
+,
+,
+,
+,
 ,
 BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
 BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash target to 4.
@@ -134,7 +142,7 @@ FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
 FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained.
 THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
 THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3th unit free for every 2 units that are trained.
-TWO_FOR_ONE_TECHNOLOGY_NAME,Three For Two
+TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
 TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2th unit free for every 1 unit that is trained.
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour

@@ -15,7 +15,19 @@ namespace Game.Setup
         private static bool initc;
 
         private static readonly Dictionary<uint, TechnologyBase> technologies = new Dictionary<uint, TechnologyBase>();
-
+		
+        private static Resource GetResource(int lvl, int buildType, int buildLvl) {
+            if (lvl == 0) return new Resource();
+            Resource ret = StructureFactory.GetCost(buildType, buildLvl + lvl-1) / 3;
+            ret /= 10;
+            return ret * 10;
+        }
+        
+		private static int GetTime(int lvl, int buildType, int buildLvl) {
+            if (lvl == 0) return 0;
+            return (int)(StructureFactory.GetTime((ushort)buildType, (byte)(buildLvl + lvl - 1)) / 2);
+        }
+		
         public static void Init(string technologyFilename, string technologyEffectsFilename)
         {
             if (initc)
@@ -41,13 +53,8 @@ namespace Game.Setup
                                        Techtype = uint.Parse(toks[col["TechType"]]),
                                        Name = toks[col["Name"]],
                                        Level = byte.Parse(toks[col["Lvl"]]),
-                                       Time = uint.Parse(toks[col["Time"]]),
-                                       Resources =
-                                               new Resource(int.Parse(toks[col["Crop"]]),
-                                                            int.Parse(toks[col["Gold"]]),
-                                                            int.Parse(toks[col["Iron"]]),
-                                                            int.Parse(toks[col["Wood"]]),
-                                                            int.Parse(toks[col["Labor"]])),
+                                                                 Time = (uint)(GetTime(byte.Parse(toks[col["Lvl"]]),int.Parse(toks[col["BuildType"]]),int.Parse(toks[col["BuildLvl"]]))),
+                                                                 Resources = GetResource( byte.Parse(toks[col["Lvl"]]),int.Parse(toks[col["BuildType"]]),int.Parse(toks[col["BuildLvl"]])),
                                        Effects = new List<Effect>()
                                };
 

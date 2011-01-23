@@ -108,7 +108,7 @@ namespace Game.Logic.Actions
             city.Worker.References.Add(stub.TroopObject, this);
             city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
-            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X, targetStructure.Y, false);
+            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X, targetStructure.Y, false, true);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
@@ -131,7 +131,7 @@ namespace Game.Logic.Actions
                     using (new MultiObjectLock(city))
                     {
                         TroopStub stub = city.Troops[stubId];
-                        var tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true);
+                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
                     }
@@ -181,7 +181,7 @@ namespace Game.Logic.Actions
                         city.EndUpdate();
 
                         // Send troop back home
-                        var tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true);
+                        var tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
 
                         // Add notification just to the main city

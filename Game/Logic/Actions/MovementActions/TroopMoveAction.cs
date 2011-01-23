@@ -24,14 +24,19 @@ namespace Game.Logic.Actions
         private int distanceRemaining;
         private uint nextX;
         private uint nextY;
+        private double speedMod;
 
-        public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome)
+        // non-persist variable
+        private Boolean isAttacking;
+
+        public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.x = x;
             this.y = y;
             this.isReturningHome = isReturningHome;
+            this.isAttacking = isAttacking;
         }
 
         public TroopMoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
@@ -45,6 +50,7 @@ namespace Game.Logic.Actions
             nextY = uint.Parse(properties["next_y"]);
             distanceRemaining = int.Parse(properties["distance_remaining"]);
             isReturningHome = Boolean.Parse(properties["returning_home"]);
+            speedMod = double.Parse(properties["speed_mod"]);
         }
 
         public override ActionType Type
@@ -64,7 +70,8 @@ namespace Game.Logic.Actions
                                                 {
                                                         new XmlKvPair("city_id", cityId), new XmlKvPair("troop_id", troopObjectId), new XmlKvPair("x", x),
                                                         new XmlKvPair("y", y), new XmlKvPair("next_x", nextX), new XmlKvPair("next_y", nextY),
-                                                        new XmlKvPair("distance_remaining", distanceRemaining), new XmlKvPair("returning_home", isReturningHome)
+                                                        new XmlKvPair("distance_remaining", distanceRemaining), new XmlKvPair("returning_home", isReturningHome),
+                                                        new XMLKVPair("speed_mod", speedMod)
                                                 });
             }
         }
@@ -127,13 +134,12 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.ObjectNotFound;
 
-            int mod = Math.Max(50,
-                               city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All).Aggregate(100,
-                                                                                                                       (current, effect) =>
-                                                                                                                       current - (int)effect.Value[0]));
 
             distanceRemaining = troopObj.TileDistance(x, y);
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed)*Config.seconds_per_unit*mod/100)*distanceRemaining);
+
+            speedMod = Formula.MoveTimeMod(city, distanceRemaining, isAttacking);
+
+            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * speedMod / 100) * distanceRemaining);
             beginTime = DateTime.UtcNow;
 
             troopObj.Stub.BeginUpdate();
@@ -209,7 +215,7 @@ namespace Game.Logic.Actions
             public int ShortestDistance { get; set; }
             public uint X { get; set; }
             public uint Y { get; set; }
-        }
+     }
 
         #endregion
     }

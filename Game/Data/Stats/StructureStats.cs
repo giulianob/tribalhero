@@ -1,3 +1,4 @@
+using System;
 namespace Game.Data.Stats
 {
     public class StructureStats : BaseStats
@@ -21,7 +22,7 @@ namespace Game.Data.Stats
             }
             set
             {
-                hp = value;
+                hp = Math.Min(value,Base.Battle.MaxHp);
                 FireStatsUpdate();
             }
         }

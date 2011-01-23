@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml;
 using Game.Data;
 using Game.Logic;
-
+using Game.Setup;
 #endregion
 
 namespace CSVToXML
@@ -589,16 +589,18 @@ namespace CSVToXML
 
                     writer.WriteStartElement("Tech");
 
+                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(uint.Parse(obj[0]), byte.Parse(obj[3]));
+
                     writer.WriteAttributeString("techtype", obj[0]);
                     writer.WriteAttributeString("name", obj[1]);
                     writer.WriteAttributeString("spriteclass", obj[2]);
                     writer.WriteAttributeString("level", obj[3]);
-                    writer.WriteAttributeString("crop", obj[4]);
-                    writer.WriteAttributeString("gold", obj[5]);
-                    writer.WriteAttributeString("iron", obj[6]);
-                    writer.WriteAttributeString("wood", obj[7]);
-                    writer.WriteAttributeString("labor", obj[8]);
-                    writer.WriteAttributeString("time", obj[9]);
+                    writer.WriteAttributeString("crop", techBase.resources.Crop.ToString());
+                    writer.WriteAttributeString("gold", techBase.resources.Gold.ToString());
+                    writer.WriteAttributeString("iron", techBase.resources.Iron.ToString());
+                    writer.WriteAttributeString("wood", techBase.resources.Wood.ToString());
+                    writer.WriteAttributeString("labor", techBase.resources.Labor.ToString());
+                    writer.WriteAttributeString("time", techBase.time.ToString());
 
                     IEnumerable<TechnologyEffects> effects = FindAllTechEffects(techEffects,
                                                                                 Int32.Parse(obj[0]),

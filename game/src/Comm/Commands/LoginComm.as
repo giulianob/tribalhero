@@ -22,6 +22,9 @@
 			this.mapComm = mapComm;
 			this.session = mapComm.session;
 		}
+		
+		public function dispose() : void {
+		}
 
 		public function queryXML(callback: Function, custom: * ):void
 		{
@@ -56,7 +59,7 @@
 			Constants.playerId = packet.readUInt();
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			
-			Global.map.usernames.players.add(new Username(Constants.playerId, packet.readString()));
+			Constants.playerName = packet.readString();			
 
 			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();
@@ -66,7 +69,7 @@
 			trace("Server Time is " + new Date(serverTime * 1000));
 			var timeDelta: int = serverTime - int(now.time / 1000);
 			trace("Delta is " + timeDelta);
-			Global.map.setTimeDelta(timeDelta);
+			Constants.timeDelta = timeDelta;			
 
 			// return whether it's a new player or not, which if it is we show the new city panel
 			return packet.readByte() == 1;

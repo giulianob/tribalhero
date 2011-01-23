@@ -9,6 +9,8 @@ package src
 		public static var username: String = "1234";
 		public static var hostname: String = "local.tribalhero.com";
 		public static var sessionId: String;
+		public static var playerName: String;
+		public static var timeDelta: int;
 		public static var admin: Boolean;
 		public static var loginKey: String;
 		public static var playerId: int;

@@ -2,93 +2,129 @@
 
 using System;
 using System.IO;
+using Game.Data;
 using Game.Util;
 
 #endregion
 
-namespace Game.Comm {
-    class PacketMaker {
+namespace Game.Comm
+{
+    class PacketMaker
+    {
         private MemoryStream ms = new MemoryStream();
 
-        public void Append(byte[] data) {
+        public void Append(byte[] data)
+        {
             ms.Write(data, 0, data.Length);
         }
 
-        public Packet GetNextPacket() {
-            if (ms.Position < Packet.HEADER_SIZE)
+        public Packet GetNextPacket()
+        {
+            if (ms.Length < Packet.HEADER_SIZE)
                 return null;
 
-            int payloadLen = BitConverter.ToUInt16(ms.GetBuffer(), Packet.LENGTH_OFFSET);
-            if (payloadLen > (ms.Position - Packet.HEADER_SIZE))
-                return null;
+            byte[] payloadLengthBytes = new byte[sizeof(ushort)];
+            ms.Position = Packet.LENGTH_OFFSET;
+            ms.Read(payloadLengthBytes, 0, sizeof(ushort));
+            ms.Position = ms.Length - 1;
 
-            MemoryStream newMs = new MemoryStream();
+            int payloadLen = BitConverter.ToUInt16(payloadLengthBytes, 0);
+            if (payloadLen > (ms.Length - Packet.HEADER_SIZE))
+                return null;
+            
             int packetLen = Packet.HEADER_SIZE + payloadLen;
-            newMs.Write(ms.GetBuffer(), packetLen, (int) ms.Position - packetLen);
+            byte[] msBytes = ms.ToArray();
+
+            var newMs = new MemoryStream();
+            newMs.Write(msBytes, packetLen, msBytes.Length - packetLen);
+            ms = newMs;
 
             Packet packet;
-            try {                
-                packet = new Packet(ms.GetBuffer(), 0, packetLen);
+            try
+            {
+                packet = new Packet(msBytes, 0, packetLen);
             }
-            catch (Exception) {
+            catch(Exception)
+            {
                 packet = null;
             }
-
-            ms = newMs;
+            
             return packet;
         }
     }
 
-    public abstract class Session : IChannel {
-        public string name;
-        private Player player;
-        protected Processor processor;
-        private readonly PacketMaker packetMaker;
+    public abstract class Session : IChannel
+    {
+        #region Delegates
 
         public delegate void CloseCallback();
 
-        protected Session(string name, Processor processor) {
-            this.name = name;
+        #endregion
+
+        private readonly PacketMaker packetMaker;
+
+        protected Processor processor;
+
+        protected Session(string name, Processor processor)
+        {
+            Name = name;
             this.processor = processor;
             packetMaker = new PacketMaker();
         }
 
-        public bool IsLoggedIn {
-            get { return player != null; }
+        public string Name { get; private set; }
+
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return Player != null;
+            }
         }
 
-        public Player Player {
-            get { return player; }
-            set { player = value; }
+        public Player Player { get; set; }
+
+        #region IChannel Members
+
+        public void OnPost(object message)
+        {
+            Write(message as Packet);
         }
+
+        #endregion
 
         public abstract bool Write(Packet packet);
 
-        public void CloseSession() {
+        public void CloseSession()
+        {
             Close();
         }
 
         protected abstract void Close();
 
-        public void AppendBytes(byte[] data) {
+        public void AppendBytes(byte[] data)
+        {
             packetMaker.Append(data);
         }
 
-        public Packet GetNextPacket() {
+        public Packet GetNextPacket()
+        {
             return packetMaker.GetNextPacket();
         }
 
-        public void Process(object obj) {
-            Packet p = (Packet) obj;
+        public void Process(object obj)
+        {
+            var p = (Packet)obj;
 
-            if (!IsLoggedIn && p.Cmd != Command.LOGIN)
+            if (!IsLoggedIn && p.Cmd != Command.Login)
                 return;
 
-            if (IsLoggedIn) {
-                if (p.Cmd == Command.LOGIN)
+            if (IsLoggedIn)
+            {
+                if (p.Cmd == Command.Login)
                     return;
 
-                if (player.GetCityList().Count == 0 && p.Cmd != Command.CITY_CREATE_INITIAL)
+                if (Player.GetCityList().Count == 0 && p.Cmd != Command.CityCreateInitial)
                     return;
             }
 
@@ -96,17 +132,10 @@ namespace Game.Comm {
                 processor.Execute(this, p);
         }
 
-        public void ProcessEvent(object obj) {
+        public void ProcessEvent(object obj)
+        {
             if (processor != null)
-                processor.ExecuteEvent(this, (Packet) obj);
+                processor.ExecuteEvent(this, (Packet)obj);
         }
-
-        #region IChannel Members
-
-        public void OnPost(object message) {
-            Write(message as Packet);
-        }
-
-        #endregion
     }
 }

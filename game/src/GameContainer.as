@@ -253,6 +253,7 @@
 			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
 			map.scrollRate = 1 * camera.getZoomFactorOverOne();
 			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
+			miniMap.redraw();
 			map.parseRegions();
 		}		
 		
@@ -260,6 +261,7 @@
 			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
 			map.scrollRate = 1 * camera.getZoomFactorOverOne();
 			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
+			miniMap.redraw();
 			map.parseRegions();
 		}			
 

@@ -65,7 +65,6 @@
 
 			mask = mapMask;
 
-			redraw();
 			resize(width, height);
 		}
 
@@ -74,11 +73,24 @@
 			var tilesW: Number = (Constants.screenW * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileW + 0.5;
 			var tilesH: Number = (Constants.screenH * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileH + 0.5;
 
-			screenRect.graphics.clear();
-			screenRect.graphics.lineStyle(1, 0xFFFFFF);
-			screenRect.graphics.drawRect(0, 0, tilesW * Constants.miniMapTileW, tilesH * Constants.miniMapTileH);
-			
-			resize(this.miniMapWidth, this.miniMapHeight);
+			if (tilesW * Constants.miniMapTileW < this.miniMapWidth && tilesH * Constants.miniMapTileH < this.miniMapHeight) {			
+				screenRect.graphics.clear();
+				screenRect.graphics.lineStyle(1, 0xFFFFFF);
+				screenRect.graphics.drawRect(0, 0, tilesW * Constants.miniMapTileW, tilesH * Constants.miniMapTileH);
+			}
+
+			// Resize map
+			mapHolder.x = (this.miniMapWidth / 2) - (screenRect.width / 2);
+			mapHolder.y = (this.miniMapHeight / 2) - (screenRect.height / 2);
+
+			bg.graphics.clear();
+			var g: Graphics2D = new Graphics2D(bg.graphics);
+			bg.alpha = 0.6;
+			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);
+
+			mapMask.graphics.clear();
+			g = new Graphics2D(mapMask.graphics);
+			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);			
 		}
 
 		private function onNavigate(e: MouseEvent) : void {
@@ -109,18 +121,8 @@
 		public function resize(width: int, height: int) : void {
 			this.miniMapWidth = width;
 			this.miniMapHeight = height;
-
-			mapHolder.x = (width / 2) - (screenRect.width / 2);
-			mapHolder.y = (height / 2) - (screenRect.height / 2);
-
-			bg.graphics.clear();
-			var g: Graphics2D = new Graphics2D(bg.graphics);
-			bg.alpha = 0.6;
-			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, width, height, 10);
-
-			mapMask.graphics.clear();
-			g = new Graphics2D(mapMask.graphics);
-			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, width, height, 10);
+			
+			redraw();
 		}
 
 		public function setScreenRectHidden(hidden: Boolean) : void {

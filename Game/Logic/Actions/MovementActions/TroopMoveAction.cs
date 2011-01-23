@@ -95,13 +95,9 @@ namespace Game.Logic.Actions
             nextX = recordForeach.x;
             nextY = recordForeach.y;
 
-            int mod = Math.Max(50, obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int) effect.value[0]));
-            int moveTime = Formula.MoveTime(obj.Stats.Speed);
+            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Config.seconds_per_unit * speedMod / 100));
 
-            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime * Config.seconds_per_unit * mod / 100));
-
-            distanceRemaining = obj.TileDistance(x, y);
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime * Config.seconds_per_unit * mod / 100) * distanceRemaining);
+            --distanceRemaining;
             return true;
         }
 

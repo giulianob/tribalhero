@@ -12,6 +12,10 @@
 			this.mapComm = mapComm;
 			this.session = mapComm.session;
 		}
+		
+		public function dispose() : void {
+			
+		}
 
 		public function list(loader: GameURLLoader, folder: String, page: int) : void {
 			loader.load("/messages/listing", [ { key: "folder", value: folder }, { key: "page", value: page } ]);

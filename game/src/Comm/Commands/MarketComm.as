@@ -16,7 +16,11 @@
 			this.mapComm = mapComm;			
 			this.session = mapComm.session;
 		}
-				
+		
+		public function dispose() : void {
+			
+		}		
+		
 		public function getResourcePrices(callback: Function):void
 		{
 			var packet: Packet = new Packet();

@@ -14,6 +14,10 @@
 			this.session = mapComm.session;
 		}
 		
+		public function dispose() : void {
+		
+		}
+		
 		public function listLocal(loader: GameURLLoader, page: int) : void {
 			loader.load("/reports/index_local", [ { key: "page", value: page } ]);
 		}

@@ -27,6 +27,10 @@
 
 			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
 		}
+		
+		public function dispose() : void {
+			session.removeEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
+		}
 
 		public function onChannelReceive(e: PacketEvent):void
 		{

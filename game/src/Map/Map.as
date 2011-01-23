@@ -276,18 +276,15 @@
 			if (selectedObject != null && obj != null && selectedObject.cityId == obj.cityId && selectedObject.objectId == obj.objectId)
 			{
 				//If we are, then deselect it if we have the deselectIfSelected option
-				if (deselectIfSelected)
-				obj = null;
-				else
-				reselecting = true;
+				if (deselectIfSelected) obj = null;
+				else reselecting = true;
 			}
 
 			//If the reselecting bit is on, then we dont want to refresh the whole UI. This just makes a better user experience.
 			if (!reselecting) {
 				Global.gameContainer.setSidebar(null);
 
-				if (selectedObject != null)
-				selectedObject.setSelected(false);
+				if (selectedObject != null) selectedObject.setSelected(false);
 
 				selectedObject = obj;
 			}

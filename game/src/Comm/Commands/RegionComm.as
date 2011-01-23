@@ -17,7 +17,12 @@
 		public function RegionComm(mapComm: MapComm) {
 			this.mapComm = mapComm;
 			this.session = mapComm.session;
+
 			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
+		}
+		
+		public function dispose() : void {
+			session.removeEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
 		}
 
 		public function onChannelReceive(e: PacketEvent):void

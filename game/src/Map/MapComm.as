@@ -35,6 +35,21 @@
 			Messaging = new MessagingComm(this);
 		}
 
+		public function dispose() : void {
+			if (this.session) {
+				Battle.dispose();
+				City.dispose();
+				Login.dispose();
+				Object.dispose();
+				Region.dispose();
+				Troop.dispose();
+				Market.dispose();
+				BattleReport.dispose();
+				Ranking.dispose();
+				Messaging.dispose();
+			}
+		}
+		
 		public static function tryShowError(packet: Packet, callback: Function = null, showDirectlyToStage: Boolean = false) : Boolean {
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{

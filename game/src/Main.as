@@ -176,9 +176,10 @@
 		{
 			gameContainer.dispose();
 
+			if (Global.mapComm) Global.mapComm.dispose();
 			Global.mapComm = null;
-			Global.map = null;
-			session = null;
+			Global.map = null;			
+			session = null;			
 
 			if (!hadLoginError) {
 				if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", "Connection to Server Lost. Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
@@ -199,8 +200,6 @@
 			else
 			{
 				Global.mapComm = new MapComm(session);
-				Global.map = map = new Map();
-				miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
 
 				if (Constants.loginKey) session.login(Constants.loginKey);
 				else session.login(Constants.username, password);
@@ -211,7 +210,7 @@
 
 		public function onLogin(packet: Packet):void
 		{
-			if (MapComm.tryShowError(packet, function(result: int) : void { hadLoginError = false; onDisconnected(); } , true)) {
+			if (MapComm.tryShowError(packet, function(result: int) : void { hadLoginError = false; onDisconnected(); } , true)) {			
 				hadLoginError = true;
 				return;
 			}
@@ -246,6 +245,12 @@
 
 		public function completeLogin(packet: Packet):void
 		{
+			Global.map = map = new Map();
+			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
+			
+			map.usernames.players.add(new Username(Constants.playerId, Constants.playerName));
+			map.setTimeDelta(Constants.timeDelta);		
+			
 			EffectReqFactory.init(map, Constants.objData);
 			PropertyFactory.init(map, Constants.objData);
 			StructureFactory.init(map, Constants.objData);

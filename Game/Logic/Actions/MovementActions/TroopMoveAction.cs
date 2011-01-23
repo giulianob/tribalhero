@@ -108,10 +108,10 @@ namespace Game.Logic.Actions
             int distance = obj.TileDistance(x, y);
             if (distance == 0)
                 return false;
-            RecordForeach recordForeach = new RecordForeach {shortestDistance = int.MaxValue, isShortestDistanceDiagonal = false};
-            TileLocator.foreach_object(obj.X, obj.Y, 1, false, Work, recordForeach);
-            nextX = recordForeach.x;
-            nextY = recordForeach.y;
+            RecordForeach recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
+            TileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
+            nextX = recordForeach.X;
+            nextY = recordForeach.Y;
             nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Config.seconds_per_unit * speedMod / 100));
 
             --distanceRemaining;

@@ -21,14 +21,19 @@ namespace Game.Logic.Actions
         private uint x, nextX;
         private uint y, nextY;
         private Boolean isReturningHome;
+        private double speedMod;
 
-        public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome)
+        // non-persist variable
+        private Boolean isAttacking;
+
+        public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
             this.x = x;
             this.y = y;
             this.isReturningHome = isReturningHome;
+            this.isAttacking = isAttacking;
         }
 
         public TroopMoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
@@ -43,6 +48,7 @@ namespace Game.Logic.Actions
             nextY = uint.Parse(properties["next_y"]);
             distanceRemaining = int.Parse(properties["distance_remaining"]);
             isReturningHome = Boolean.Parse(properties["returning_home"]);
+            speedMod = double.Parse(properties["speed_mod"]);
         }
 
         public override Error Validate(string[] parms)
@@ -107,10 +113,12 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.OBJECT_NOT_FOUND;
 
-            int mod = Math.Max(50, city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int)effect.value[0]));
 
             distanceRemaining = troopObj.TileDistance(x, y);
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * mod / 100) * distanceRemaining);
+
+            speedMod = Formula.MoveTimeMod(city, distanceRemaining, isAttacking);
+
+            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * speedMod / 100) * distanceRemaining);
             beginTime = DateTime.UtcNow;
 
             troopObj.Stub.BeginUpdate();
@@ -199,7 +207,8 @@ namespace Game.Logic.Actions
                                                                 new XMLKVPair("x", x), new XMLKVPair("y", y),
                                                                 new XMLKVPair("next_x", nextX), new XMLKVPair("next_y", nextY),
                                                                 new XMLKVPair("distance_remaining", distanceRemaining),
-                                                                new XMLKVPair("returning_home", isReturningHome)
+                                                                new XMLKVPair("returning_home", isReturningHome),
+                                                                new XMLKVPair("speed_mod", speedMod)
                                                             });
             }
         }

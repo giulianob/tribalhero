@@ -38,6 +38,22 @@ namespace Game.Logic {
             return (int)(buildtime * Config.seconds_per_unit);
         }
 
+
+        internal static double MoveTimeMod(City city, int distance, bool isAttacking) {
+            int mod=0;
+            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL)) {
+                if ((((string)effect.value[1]).StartsWith("ATTACK", StringComparison.CurrentCultureIgnoreCase) && isAttacking) ||
+                    (((string)effect.value[1]).StartsWith("DEFENSE", StringComparison.CurrentCultureIgnoreCase) && !isAttacking)) {
+                    mod += (int)effect.value[0];
+                } else if (((string)effect.value[1]).StartsWith("DISTANCE", StringComparison.CurrentCultureIgnoreCase)) {
+                    if (distance > (int)effect.value[2]) {
+                        mod += (int)effect.value[0];
+                    }
+                }
+            }
+            return (double)100 / (mod + 100);
+        }
+
         internal static int MoveTime(byte speed) {
             if (Config.battle_instant_move) return 0;
             return 80 * (100 - ((speed - 11) * 5)) / 100;

@@ -3,23 +3,23 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using Game.Data;
 using Game.Setup;
 
 #endregion
 
-namespace Game.Comm {
-    public class TcpServer {
-        private readonly Thread listeningThread;
-
+namespace Game.Comm
+{
+    public class TcpServer
+    {
         private readonly TcpListener listener;
+        private readonly Thread listeningThread;
         private readonly int port = Config.server_port;
-        private bool isStopped = true;
         private readonly Processor processor;
+        private bool isStopped = true;
 
-        public TcpServer() {
+        public TcpServer()
+        {
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
             if (localAddr == null)
                 throw new Exception("Could not bind to listen address");
@@ -28,7 +28,8 @@ namespace Game.Comm {
             listeningThread = new Thread(ListenerHandler);
         }
 
-        public TcpServer(Processor processor) {
+        public TcpServer(Processor processor)
+        {
             this.processor = processor;
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
             if (localAddr == null)
@@ -38,7 +39,8 @@ namespace Game.Comm {
             listeningThread = new Thread(ListenerHandler);
         }
 
-        public bool Start() {
+        public bool Start()
+        {
             if (!isStopped)
                 return false;
             isStopped = false;
@@ -46,38 +48,44 @@ namespace Game.Comm {
             return true;
         }
 
-        public void ListenerHandler() {
+        public void ListenerHandler()
+        {
             listener.Start();
 
-           
-            Socket s;            
-            while (!isStopped) {
-                try {
+            Socket s;
+            while (!isStopped)
+            {
+                try
+                {
                     s = listener.AcceptSocket();
                 }
-                catch (Exception) {                    
+                catch(Exception)
+                {
                     continue;
                 }
 
                 if (s.LocalEndPoint == null)
                     continue;
 
-                SocketSession session = new SocketSession(s.LocalEndPoint.ToString(), s, processor);
+                s.Blocking = false;
 
-                ThreadPool.QueueUserWorkItem(TcpWorker.Add, session);
+                var session = new SocketSession(s.LocalEndPoint.ToString(), s, processor);
+
+                TcpWorker.Add(session);                
             }
 
             listener.Stop();
         }
 
-        public bool Stop() {
+        public bool Stop()
+        {
             if (isStopped)
                 return false;
-            
+
             isStopped = true;
             listener.Stop();
             listeningThread.Join();
-            TcpWorker.DeleteAll();                  
+            TcpWorker.DeleteAll();
             return true;
         }
     }

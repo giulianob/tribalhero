@@ -6,6 +6,7 @@ package src.Objects {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import src.Constants;
 	import src.Global;
 	import src.Map.Camera;
 	import src.Map.MapUtil;
@@ -141,9 +142,10 @@ package src.Objects {
 
 			var tilePos: Point = MapUtil.getActualCoord(e.stageX * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.x, e.stageY * Global.gameContainer.camera.getZoomFactorOverOne() + Global.gameContainer.camera.y);
 
-			if (tilePos.x < 0 || tilePos.y < 0)
-			return;
+			if (tilePos.x < 0 || tilePos.y < 0) return;
 
+			tilePos = MapUtil.getMapCoord(tilePos.x, tilePos.y);
+			
 			resetDimmedObjects();
 			resetHighlightedObject();
 
@@ -160,11 +162,16 @@ package src.Objects {
 
 				if (!obj || !obj.visible) continue;
 
-				if (obj is GameObject && (obj as GameObject).getX() == tilePos.x && (obj as GameObject).getY() == tilePos.y)
+				if (obj is GameObject) 
 				{
-					highestObj = obj as GameObject;
-					found = true;
-					break;
+					// If mouse is over this object's tile then it automatically gets chosen as the best object
+					var objMapPos: Point = MapUtil.getMapCoord((obj as GameObject).getX(), (obj as GameObject).getY());
+					if (objMapPos.x == tilePos.x && objMapPos.y == tilePos.y)
+					{					
+						highestObj = obj as GameObject;
+						found = true;
+						break;
+					}
 				}
 
 				if (obj.hitTestPoint(e.stageX, e.stageY, true))
@@ -182,24 +189,28 @@ package src.Objects {
 				found = true;
 			}
 
-			if (!found && !highestObj)
-			{
-				return;
-			}
+			if (!found && !highestObj) return;			
 
+			var highestObjMapPos: Point = MapUtil.getMapCoord(highestObj.getX(), highestObj.getY());
+			
+			// Apply dimming to objects that might be over the one currently moused over
 			for (i = 0; i < objSpace.numChildren; i++)
 			{
 				obj = objSpace.getChildAt(i) as SimpleObject;
 
 				if (!obj.visible) continue;
 
-				if (obj == highestObj || obj.getY() < highestObj.getY())
-				continue;
-
-				if (obj.hitTestObject(highestObj))
+				if (obj == highestObj || obj.getY() <= highestObj.getY()) continue;
+				
+				if (Math.abs(highestObj.getX() - obj.getX()) < Constants.tileW)
 				{
-					dimmedObjects.push(obj);
-					obj.alpha = 0.25;
+					// Split this into 2 ifs for performance
+					objMapPos = MapUtil.getMapCoord(obj.getX(), obj.getY());				
+					if (MapUtil.distance(highestObjMapPos.x, highestObjMapPos.y, objMapPos.x, objMapPos.y) == 1)
+					{
+						dimmedObjects.push(obj);
+						obj.alpha = 0.25;
+					}
 				}
 			}
 

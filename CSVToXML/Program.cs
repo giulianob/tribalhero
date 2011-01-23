@@ -21,16 +21,9 @@ namespace CSVToXML
 
         #region Layout
 
-        private static List<Layout> FindAllLayout(List<Layout> layouts, int type, int level)
+        private static IEnumerable<Layout> FindAllLayout(IEnumerable<Layout> layouts, int type, int level)
         {
-            var ret = new List<Layout>();
-            foreach (var layout in layouts)
-            {
-                if (Int32.Parse(layout.type) == type && Int32.Parse(layout.level) == level)
-                    ret.Add(layout);
-            }
-
-            return ret;
+            return layouts.Where(layout => Int32.Parse(layout.type) == type && Int32.Parse(layout.level) == level).ToList();
         }
 
         private class Layout
@@ -232,7 +225,7 @@ namespace CSVToXML
 
                         writer.WriteStartElement("Layout");
 
-                        List<Layout> objLayouts = FindAllLayout(layouts, Int32.Parse(obj[1]), Int32.Parse(obj[2]));
+                        IEnumerable<Layout> objLayouts = FindAllLayout(layouts, Int32.Parse(obj[1]), Int32.Parse(obj[2]));
                         foreach (var layout in objLayouts)
                         {
                             writer.WriteStartElement(layout.layout);
@@ -595,12 +588,12 @@ namespace CSVToXML
                     writer.WriteAttributeString("name", obj[1]);
                     writer.WriteAttributeString("spriteclass", obj[2]);
                     writer.WriteAttributeString("level", obj[3]);
-                    writer.WriteAttributeString("crop", techBase.resources.Crop.ToString());
-                    writer.WriteAttributeString("gold", techBase.resources.Gold.ToString());
-                    writer.WriteAttributeString("iron", techBase.resources.Iron.ToString());
-                    writer.WriteAttributeString("wood", techBase.resources.Wood.ToString());
-                    writer.WriteAttributeString("labor", techBase.resources.Labor.ToString());
-                    writer.WriteAttributeString("time", techBase.time.ToString());
+                    writer.WriteAttributeString("crop", techBase.Resources.Crop.ToString());
+                    writer.WriteAttributeString("gold", techBase.Resources.Gold.ToString());
+                    writer.WriteAttributeString("iron", techBase.Resources.Iron.ToString());
+                    writer.WriteAttributeString("wood", techBase.Resources.Wood.ToString());
+                    writer.WriteAttributeString("labor", techBase.Resources.Labor.ToString());
+                    writer.WriteAttributeString("time", techBase.Time.ToString());
 
                     IEnumerable<TechnologyEffects> effects = FindAllTechEffects(techEffects,
                                                                                 Int32.Parse(obj[0]),

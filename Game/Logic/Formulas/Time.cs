@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
@@ -21,7 +22,7 @@ namespace Game.Logic.Formulas
         }
 
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {
-            int overtime = structure.City.Technologies.GetEffects(EffectCode.HaveTechnology, EffectInheritance.ALL).DefaultIfEmpty(new Effect { value = new object[] { 20001, 0 } }).Max(x => (int)x.value[0] == 20001 ? (int)x.value[1] : 0);
+            int overtime = structure.City.Technologies.GetEffects(EffectCode.HaveTechnology, EffectInheritance.All).DefaultIfEmpty(new Effect { Value = new object[] { 20001, 0 } }).Max(x => (int)x.Value[0] == 20001 ? (int)x.Value[1] : 0);
             return (int)((100 - overtime*10) * count * 300 * Config.seconds_per_unit / 100);
         }
 
@@ -46,13 +47,13 @@ namespace Game.Logic.Formulas
 
         internal static double MoveTimeMod(City city, int distance, bool isAttacking) {
             int mod=0;
-            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL)) {
-                if ((((string)effect.value[1]).StartsWith("ATTACK", StringComparison.CurrentCultureIgnoreCase) && isAttacking) ||
-                    (((string)effect.value[1]).StartsWith("DEFENSE", StringComparison.CurrentCultureIgnoreCase) && !isAttacking)) {
-                    mod += (int)effect.value[0];
-                } else if (((string)effect.value[1]).StartsWith("DISTANCE", StringComparison.CurrentCultureIgnoreCase)) {
-                    if (distance > (int)effect.value[2]) {
-                        mod += (int)effect.value[0];
+            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All)) {
+                if ((((string)effect.Value[1]).StartsWith("ATTACK", StringComparison.CurrentCultureIgnoreCase) && isAttacking) ||
+                    (((string)effect.Value[1]).StartsWith("DEFENSE", StringComparison.CurrentCultureIgnoreCase) && !isAttacking)) {
+                    mod += (int)effect.Value[0];
+                } else if (((string)effect.Value[1]).StartsWith("DISTANCE", StringComparison.CurrentCultureIgnoreCase)) {
+                    if (distance > (int)effect.Value[2]) {
+                        mod += (int)effect.Value[0];
                     }
                 }
             }

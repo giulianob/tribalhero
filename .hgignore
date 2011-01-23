@@ -12,3 +12,5 @@ glob:app/config/core.php
 glob:app/config/database.php
 glob:app/views/database/generated/*.ctp
 glob:app/views/database/generated/*.php
+glob:app/webroot/img/tree/game-tree.png
+glob:app/webroot/img/tree/game-tree-large.png

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 
@@ -13,12 +14,13 @@ namespace Game.Logic.Actions
     class TechnologyUpgradeAction : ScheduledActiveAction, IScriptable
     {
         private uint cityId;
+        private bool isSelfInit;
         private uint structureId;
         private uint techId;
 
-        private bool isSelfInit;
-
-        public TechnologyUpgradeAction() { }
+        public TechnologyUpgradeAction()
+        {
+        }
 
         public TechnologyUpgradeAction(uint cityId, uint structureId, uint techId)
         {
@@ -27,193 +29,29 @@ namespace Game.Logic.Actions
             this.techId = techId;
         }
 
-        public TechnologyUpgradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime,
-                                       int workerType, byte workerIndex, ushort actionCount,
-                                       Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        public TechnologyUpgradeAction(uint id,
+                                       DateTime beginTime,
+                                       DateTime nextTime,
+                                       DateTime endTime,
+                                       int workerType,
+                                       byte workerIndex,
+                                       ushort actionCount,
+                                       Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
             techId = uint.Parse(properties["tech_id"]);
         }
 
-        public override Error Validate(string[] parms)
-        {
-            byte maxLevel = byte.Parse(parms[1]);
-
-            if (uint.Parse(parms[0]) != techId)
-                return Error.ACTION_INVALID;
-
-            City city;
-            Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
-                return Error.OBJECT_NOT_FOUND;
-
-            Technology tech;
-            if (!structure.Technologies.TryGetTechnology(techId, out tech))
-                return Error.OK;
-
-            if (tech.Level >= maxLevel)
-                return Error.TECHNOLOGY_MAX_LEVEL_REACHED;
-
-            return Error.OK;
-        }
-
-        public override Error Execute()
-        {
-            City city;
-            Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
-                return Error.OBJECT_NOT_FOUND;
-
-            Technology tech;
-            TechnologyBase techBase;
-            if (structure.Technologies.TryGetTechnology(techId, out tech))
-            {
-                techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
-            }
-            else
-            {
-                techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
-            }
-
-            if (techBase == null)
-                return Error.OBJECT_NOT_FOUND;
-
-            if (isSelfInit)
-            {
-                beginTime = DateTime.UtcNow;
-                endTime = DateTime.UtcNow;
-            }
-            else
-            {
-                if (!city.Resource.HasEnough(techBase.resources))
-                    return Error.RESOURCE_NOT_ENOUGH;
-
-                city.BeginUpdate();
-                city.Resource.Subtract(techBase.resources);
-                city.EndUpdate();
-
-                beginTime = DateTime.UtcNow;
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime((int)techBase.time));
-            }
-
-            return Error.OK;
-        }
-
-        private void InterruptCatchAll(bool wasKilled)
-        {
-            City city;
-            using (new MultiObjectLock(cityId, out city))
-            {
-                if (!IsValid())
-                    return;
-
-                Technology tech;
-                TechnologyBase techBase;
-                if (city.Technologies.TryGetTechnology(techId, out tech))
-                    techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
-                else
-                    techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
-
-                if (techBase == null)
-                {
-                    StateChange(ActionState.FAILED);
-                    return;
-                }
-
-                if (!wasKilled)
-                {
-                    city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, techBase.resources));
-                    city.EndUpdate();
-                }
-
-                StateChange(ActionState.FAILED);
-            }
-        }
-
-        public override void UserCancelled()
-        {
-            InterruptCatchAll(false);
-        }
-
-        public override void WorkerRemoved(bool wasKilled)
-        {
-            InterruptCatchAll(wasKilled);
-        }
-
         public override ActionType Type
         {
-            get { return ActionType.TECHNOLOGY_UPGRADE; }
-        }
-
-        #region ISchedule Members
-
-        public override void Callback(object custom)
-        {
-            City city;
-            Structure structure;
-            using (new MultiObjectLock(cityId, out city))
+            get
             {
-                if (!IsValid())
-                    return;
-
-                if (!city.TryGetStructure(structureId, out structure))
-                {
-                    StateChange(ActionState.FAILED);
-                    return;
-                }
-
-                Technology tech;
-                if (structure.Technologies.TryGetTechnology(techId, out tech))
-                {
-                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
-
-                    if (techBase == null)
-                    {
-                        StateChange(ActionState.FAILED);
-                        return;
-                    }
-
-                    structure.Technologies.BeginUpdate();
-                    if (!structure.Technologies.Upgrade(new Technology(techBase)))
-                    {
-                        structure.EndUpdate();
-                        StateChange(ActionState.FAILED);
-                        return;
-                    }
-
-                    structure.Technologies.EndUpdate();
-                }
-                else
-                {
-                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
-
-                    if (techBase == null)
-                    {
-                        StateChange(ActionState.FAILED);
-                        return;
-                    }
-
-                    structure.Technologies.BeginUpdate();
-                    if (!structure.Technologies.Add(new Technology(techBase)))
-                    {
-                        structure.EndUpdate();
-                        StateChange(ActionState.FAILED);
-                        return;
-                    }
-
-                    structure.Technologies.EndUpdate();
-                }
-
-                StateChange(ActionState.COMPLETED);
+                return ActionType.TechnologyUpgrade;
             }
         }
 
-        #endregion
-
-        #region ICanInit Members
+        #region IScriptable Members
 
         public void ScriptInit(GameObject obj, string[] parms)
         {
@@ -239,13 +77,173 @@ namespace Game.Logic.Actions
             get
             {
                 return
-                    XMLSerializer.Serialize(new[] {
-                                                                new XMLKVPair("tech_id", techId), new XMLKVPair("city_id", cityId),
-                                                                new XMLKVPair("structure_id", structureId)
-                                                            });
+                        XmlSerializer.Serialize(new[] { new XmlKvPair("tech_id", techId), new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId) });
             }
         }
 
         #endregion
+
+        public override Error Validate(string[] parms)
+        {
+            byte maxLevel = byte.Parse(parms[1]);
+
+            if (uint.Parse(parms[0]) != techId)
+                return Error.ActionInvalid;
+
+            City city;
+            Structure structure;
+            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+                return Error.ObjectNotFound;
+
+            Technology tech;
+            if (!structure.Technologies.TryGetTechnology(techId, out tech))
+                return Error.Ok;
+
+            if (tech.Level >= maxLevel)
+                return Error.TechnologyMaxLevelReached;
+
+            return Error.Ok;
+        }
+
+        public override Error Execute()
+        {
+            City city;
+            Structure structure;
+            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+                return Error.ObjectNotFound;
+
+            Technology tech;
+            TechnologyBase techBase;
+            if (structure.Technologies.TryGetTechnology(techId, out tech))
+                techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+            else
+                techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
+
+            if (techBase == null)
+                return Error.ObjectNotFound;
+
+            if (isSelfInit)
+            {
+                BeginTime = DateTime.UtcNow;
+                endTime = DateTime.UtcNow;
+            }
+            else
+            {
+                if (!city.Resource.HasEnough(techBase.Resources))
+                    return Error.ResourceNotEnough;
+
+                city.BeginUpdate();
+                city.Resource.Subtract(techBase.Resources);
+                city.EndUpdate();
+
+                BeginTime = DateTime.UtcNow;
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime((int)techBase.Time));
+            }
+
+            return Error.Ok;
+        }
+
+        private void InterruptCatchAll(bool wasKilled)
+        {
+            City city;
+            using (new MultiObjectLock(cityId, out city))
+            {
+                if (!IsValid())
+                    return;
+
+                Technology tech;
+                TechnologyBase techBase;
+                if (city.Technologies.TryGetTechnology(techId, out tech))
+                    techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                else
+                    techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
+
+                if (techBase == null)
+                {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
+                if (!wasKilled)
+                {
+                    city.BeginUpdate();
+                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, techBase.Resources));
+                    city.EndUpdate();
+                }
+
+                StateChange(ActionState.Failed);
+            }
+        }
+
+        public override void UserCancelled()
+        {
+            InterruptCatchAll(false);
+        }
+
+        public override void WorkerRemoved(bool wasKilled)
+        {
+            InterruptCatchAll(wasKilled);
+        }
+
+        public override void Callback(object custom)
+        {
+            City city;
+            Structure structure;
+            using (new MultiObjectLock(cityId, out city))
+            {
+                if (!IsValid())
+                    return;
+
+                if (!city.TryGetStructure(structureId, out structure))
+                {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
+                Technology tech;
+                if (structure.Technologies.TryGetTechnology(techId, out tech))
+                {
+                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+
+                    if (techBase == null)
+                    {
+                        StateChange(ActionState.Failed);
+                        return;
+                    }
+
+                    structure.Technologies.BeginUpdate();
+                    if (!structure.Technologies.Upgrade(new Technology(techBase)))
+                    {
+                        structure.EndUpdate();
+                        StateChange(ActionState.Failed);
+                        return;
+                    }
+
+                    structure.Technologies.EndUpdate();
+                }
+                else
+                {
+                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
+
+                    if (techBase == null)
+                    {
+                        StateChange(ActionState.Failed);
+                        return;
+                    }
+
+                    structure.Technologies.BeginUpdate();
+                    if (!structure.Technologies.Add(new Technology(techBase)))
+                    {
+                        structure.EndUpdate();
+                        StateChange(ActionState.Failed);
+                        return;
+                    }
+
+                    structure.Technologies.EndUpdate();
+                }
+
+                StateChange(ActionState.Completed);
+            }
+        }
     }
 }

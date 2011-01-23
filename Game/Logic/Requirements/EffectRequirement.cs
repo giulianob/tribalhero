@@ -1,6 +1,5 @@
 #region
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,39 +8,50 @@ using Game.Setup;
 
 #endregion
 
-namespace Game.Logic {
-    public class EffectRequirement {
-        public string[] parms;
-        public MethodInfo method;
-        public string description;
-        public string websiteDescription;
+namespace Game.Logic
+{
+    public class EffectRequirement
+    {
+        public string Description { get; set; }
+        public MethodInfo Method { get; set; }
+        public string[] Parms { get; set; }
+        public string WebsiteDescription { get; set; }
     }
 
-    public class EffectRequirementContainer : IEnumerable<EffectRequirement> {
-        private List<EffectRequirement> list = new List<EffectRequirement>();
-        public uint ID { get; set; }
+    public class EffectRequirementContainer : IEnumerable<EffectRequirement>
+    {
+        private readonly List<EffectRequirement> list = new List<EffectRequirement>();
+        public uint Id { get; set; }
 
-        public Error validate(GameObject obj, IEnumerable<Effect> effects) {
-            Error error;
-            foreach (EffectRequirement req in list) {
-                object[] parms = new object[] {obj, effects, req.parms, ID};
-                if ((error = (Error) req.method.Invoke(null, parms)) != Error.OK)
-                    return error;
-            }
-            return Error.OK;
-        }
+        #region IEnumerable<EffectRequirement> Members
 
-        public void add(EffectRequirement req) {
-            list.Add(req);
-        }
-
-
-        public IEnumerator<EffectRequirement> GetEnumerator() {
+        public IEnumerator<EffectRequirement> GetEnumerator()
+        {
             return list.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return GetEnumerator();
+        }
+
+        #endregion
+
+        public Error Validate(GameObject obj, IEnumerable<Effect> effects)
+        {
+            foreach (var req in list)
+            {
+                var parms = new object[] {obj, effects, req.Parms, Id};
+                Error error;
+                if ((error = (Error)req.Method.Invoke(null, parms)) != Error.Ok)
+                    return error;
+            }
+            return Error.Ok;
+        }
+
+        public void Add(EffectRequirement req)
+        {
+            list.Add(req);
         }
     }
 }

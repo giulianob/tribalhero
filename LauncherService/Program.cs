@@ -1,16 +1,20 @@
-﻿using System.ServiceProcess;
+﻿#region
 
-namespace LauncherService {
-    static class Program {
+using System.ServiceProcess;
+
+#endregion
+
+namespace LauncherService
+{
+    static class Program
+    {
         /// <summary>
-        /// The main entry point for the application.
+        ///   The main entry point for the application.
         /// </summary>
-        static void Main() {
+        private static void Main()
+        {
             ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-			{ 
-				new Service1() 
-			};
+            ServicesToRun = new ServiceBase[] {new Service1()};
             ServiceBase.Run(ServicesToRun);
         }
     }

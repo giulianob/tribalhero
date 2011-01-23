@@ -3,142 +3,174 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class StructureUpgradeAction : ScheduledActiveAction {
+namespace Game.Logic.Actions
+{
+    class StructureUpgradeAction : ScheduledActiveAction
+    {
         private readonly uint cityId;
         private readonly uint structureId;
         private Resource cost;
 
-        public StructureUpgradeAction(uint cityId, uint structureId) {
+        public StructureUpgradeAction(uint cityId, uint structureId)
+        {
             this.cityId = cityId;
             this.structureId = structureId;
         }
 
-        public StructureUpgradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
-                                      byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
+        public StructureUpgradeAction(uint id,
+                                      DateTime beginTime,
+                                      DateTime nextTime,
+                                      DateTime endTime,
+                                      int workerType,
+                                      byte workerIndex,
+                                      ushort actionCount,
+                                      Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
-            cost = new Resource(int.Parse(properties["crop"]), int.Parse(properties["gold"]), int.Parse(properties["iron"]), int.Parse(properties["wood"]), int.Parse(properties["labor"]));
+            cost = new Resource(int.Parse(properties["crop"]),
+                                int.Parse(properties["gold"]),
+                                int.Parse(properties["iron"]),
+                                int.Parse(properties["wood"]),
+                                int.Parse(properties["labor"]));
         }
 
-        #region IAction Members
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.StructureUpgrade;
+            }
+        }
 
-        public override Error Execute() {
+        public override Error Execute()
+        {
             City city;
             Structure structure;
 
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
-                return Error.OBJECT_NOT_FOUND;
+                return Error.ObjectNotFound;
 
-            if (city.Worker.Contains(ActionType.STRUCTURE_UPGRADE, ActionId))
-                return Error.ACTION_ALREADY_IN_PROGRESS;
+            if (city.Worker.Contains(ActionType.StructureUpgrade, ActionId))
+                return Error.ActionAlreadyInProgress;
 
             // layout requirement
-            if (!RequirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure, structure.Type, structure.X, structure.Y))
-                return Error.LAYOUT_NOT_FULLFILLED;
+            if (
+                    !RequirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure,
+                                                                                                                 structure.Type,
+                                                                                                                 structure.X,
+                                                                                                                 structure.Y))
+                return Error.LayoutNotFullfilled;
 
             cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
 
             if (cost == null)
-                return Error.OBJECT_STRUCTURE_NOT_FOUND;
+                return Error.ObjectStructureNotFound;
 
             if (!structure.City.Resource.HasEnough(cost))
-                return Error.RESOURCE_NOT_ENOUGH;
+                return Error.ResourceNotEnough;
 
             structure.City.BeginUpdate();
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies)));
-            beginTime = DateTime.UtcNow;
+            endTime =
+                    DateTime.UtcNow.AddSeconds(
+                                               CalculateTime(Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                                                               city,
+                                                                               structure.Technologies)));
+            BeginTime = DateTime.UtcNow;
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        public override void Callback(object custom) {
+        public override void Callback(object custom)
+        {
             City city;
             Structure structure;
-            using (new MultiObjectLock(cityId, out city)) {
+            using (new MultiObjectLock(cityId, out city))
+            {
                 if (!IsValid())
                     return;
 
-                if (!city.TryGetStructure(structureId, out structure)) {
-                    StateChange(ActionState.FAILED);
+                if (!city.TryGetStructure(structureId, out structure))
+                {
+                    StateChange(ActionState.Failed);
                     return;
                 }
 
                 structure.BeginUpdate();
                 StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                InitFactory.InitGameObject(InitCondition.ON_UPGRADE, structure, structure.Type, structure.Lvl);
+                InitFactory.InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 Procedure.OnStructureUpgrade(structure);
 
-                StateChange(ActionState.COMPLETED);
+                StateChange(ActionState.Completed);
             }
         }
 
-        public override ActionType Type {
-            get { return ActionType.STRUCTURE_UPGRADE; }
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
         }
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
-        }
-
-        #endregion
-
-        private void InterruptCatchAll(bool wasKilled) {
+        private void InterruptCatchAll(bool wasKilled)
+        {
             City city;
             Structure structure;
-            using (new MultiObjectLock(cityId, out city)) {
+            using (new MultiObjectLock(cityId, out city))
+            {
                 if (!IsValid())
                     return;
 
-                if (!city.TryGetStructure(structureId, out structure)) {                    
-                    StateChange(ActionState.FAILED);
+                if (!city.TryGetStructure(structureId, out structure))
+                {
+                    StateChange(ActionState.Failed);
                     return;
                 }
 
-                if (!wasKilled) {                    
+                if (!wasKilled)
+                {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(beginTime,cost));
+                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 
-                StateChange(ActionState.FAILED);                                        
+                StateChange(ActionState.Failed);
             }
         }
 
-        public override void UserCancelled() {
+        public override void UserCancelled()
+        {
             InterruptCatchAll(false);
         }
 
-        public override void WorkerRemoved(bool wasKilled) {
+        public override void WorkerRemoved(bool wasKilled)
+        {
             InterruptCatchAll(wasKilled);
         }
 
         #region IPersistable
 
-        public override string Properties {
-            get {
+        public override string Properties
+        {
+            get
+            {
                 return
-                    XMLSerializer.Serialize(new[] {
-                                                        new XMLKVPair("city_id", cityId),
-                                                        new XMLKVPair("structure_id", structureId),
-                                                        new XMLKVPair("wood", cost.Wood),
-                                                        new XMLKVPair("crop", cost.Crop),
-                                                        new XMLKVPair("iron", cost.Iron),
-                                                        new XMLKVPair("gold", cost.Gold),
-                                                        new XMLKVPair("labor", cost.Labor),
-                                                  });
+                        XmlSerializer.Serialize(new[]
+                                                {
+                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId), new XmlKvPair("wood", cost.Wood),
+                                                        new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold),
+                                                        new XmlKvPair("labor", cost.Labor),
+                                                });
             }
         }
 

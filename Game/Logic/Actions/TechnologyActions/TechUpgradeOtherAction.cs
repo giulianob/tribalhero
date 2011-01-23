@@ -1,3 +1,6 @@
-namespace Game.Logic.Actions {
-    class TechnologyUpgradeOtherAction {}
+namespace Game.Logic.Actions
+{
+    class TechnologyUpgradeOtherAction
+    {
+    }
 }

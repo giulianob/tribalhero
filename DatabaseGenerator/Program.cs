@@ -1,7 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using CSVToXML;
 using Game.Data;
@@ -10,19 +11,34 @@ using Game.Logic;
 using Game.Setup;
 using NDesk.Options;
 
+#endregion
+
 namespace DatabaseGenerator
 {
     class Program
     {
-        static readonly ushort[] StructureTypes = new ushort[] { 2000, 2106, 2107, 2110, 2109, 2111, 2201, 2204, 2202, 2203, 2301, 2302, 2303, 2402, 2403, 2501, 2502, 3002, 3003, 3004, 3005 };
-        static readonly ushort[] TechnologyTypes = new ushort[] { 23011, 23013, 23014, 23021, 23022, 23023, 23024, 23031, 23032, 23033, 23034, 22022, 21101, 21102, 21071, 22011, 22012, 22013 };
-        static readonly ushort[] UnitTypes = new ushort[] { 11, 12, 101, 102, 103, 104, 105, 106, 107, 108, 401 };
+        private static readonly ushort[] StructureTypes = new ushort[]
+                                                          {
+                                                                  2000, 2106, 2107, 2110, 2109, 2111, 2201, 2204, 2202, 2203,
+                                                                  2301, 2302, 2303, 2402, 2403, 2501, 2502, 3002, 3003, 3004,
+                                                                  3005
+                                                          };
 
-        static readonly Dictionary<string, string> Lang = new Dictionary<string, string>();
+        private static readonly ushort[] TechnologyTypes = new ushort[]
+                                                           {
+                                                                   23011, 23013, 23014, 23021, 23022, 23023, 23024, 23031,
+                                                                   23032, 23033, 23034, 22022, 21101, 21102, 21071, 22011,
+                                                                   22012, 22013
+                                                           };
 
-        static string output = "output";
+        private static readonly ushort[] UnitTypes = new ushort[] {11, 12, 101, 102, 103, 104, 105, 106, 107, 108, 401};
 
-        static void Main(string[] args) {
+        private static readonly Dictionary<string, string> Lang = new Dictionary<string, string>();
+
+        private static string output = "output";
+
+        private static void Main(string[] args)
+        {
             Factory.CompileConfigFiles();
             Factory.InitAll();
 
@@ -30,62 +46,70 @@ namespace DatabaseGenerator
 
             try
             {
-                var p = new OptionSet
-                            {                                
-                                { "output=", v => output = v }, 
-                            };
+                var p = new OptionSet {{"output=", v => output = v},};
 
                 p.Parse(Environment.GetCommandLineArgs());
             }
-            catch (Exception) {}
+            catch(Exception)
+            {
+            }
 
             // Process structures
             Directory.CreateDirectory(output);
-            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "structure_listing.inc.php")))) {
-
+            using (var writer = new StreamWriter(File.Create(Path.Combine(output, "structure_listing.inc.php"))))
+            {
                 writer.Write(@"<?php
                     $structures = array(
                 ");
 
-                foreach (ushort type in StructureTypes) {
+                foreach (var type in StructureTypes)
+                {
                     ProcessStructure(type);
 
                     StructureBaseStats stats = StructureFactory.GetBaseStats(type, 1);
-                    writer.WriteLine("'{2}_STRUCTURE' => array('name' => '{1}', 'sprite' => '{0}'),", stats.SpriteClass, Lang[stats.Name + "_STRUCTURE_NAME"], stats.Name);
+                    writer.WriteLine("'{2}_STRUCTURE' => array('name' => '{1}', 'sprite' => '{0}'),",
+                                     stats.SpriteClass,
+                                     Lang[stats.Name + "_STRUCTURE_NAME"],
+                                     stats.Name);
                 }
 
                 writer.Write(@");");
             }
 
             // Process units
-            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "unit_listing.inc.php")))) {
-
+            using (var writer = new StreamWriter(File.Create(Path.Combine(output, "unit_listing.inc.php"))))
+            {
                 writer.Write(@"<?php
                     $units = array(
                 ");
-                foreach (ushort type in UnitTypes) {
+                foreach (var type in UnitTypes)
+                {
                     ProcessUnit(type);
 
                     BaseUnitStats stats = UnitFactory.GetUnitStats(type, 1);
-                    writer.WriteLine("'{2}_UNIT' => array('name' => '{1}', 'sprite' => '{0}'),", stats.SpriteClass, Lang[stats.Name + "_UNIT"], stats.Name);
+                    writer.WriteLine("'{2}_UNIT' => array('name' => '{1}', 'sprite' => '{0}'),",
+                                     stats.SpriteClass,
+                                     Lang[stats.Name + "_UNIT"],
+                                     stats.Name);
                 }
                 writer.Write(@");");
             }
 
             // Process technologies
             // Process units
-            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, "technology_listing.inc.php"))))
+            using (var writer = new StreamWriter(File.Create(Path.Combine(output, "technology_listing.inc.php"))))
             {
-
                 writer.Write(@"<?php
                     $technologies = array(
                 ");
-                foreach (ushort type in TechnologyTypes)
+                foreach (var type in TechnologyTypes)
                 {
                     ProcessTechnology(type);
 
                     TechnologyBase stats = TechnologyFactory.GetTechnologyBase(type, 1);
-                    writer.WriteLine("'{0}_TECHNOLOGY' => array('name' => '{1}'),", stats.name, Lang[stats.name + "_TECHNOLOGY_NAME"]);
+                    writer.WriteLine("'{0}_TECHNOLOGY' => array('name' => '{1}'),",
+                                     stats.Name,
+                                     Lang[stats.Name + "_TECHNOLOGY_NAME"]);
                 }
                 writer.Write(@");");
             }
@@ -94,7 +118,8 @@ namespace DatabaseGenerator
         // Technologies        
         private static void ProcessTechnology(ushort type)
         {
-            string generalTemplate = @"<?php
+            string generalTemplate =
+                    @"<?php
                 // Generated by DatabaseGenerator program on #DATE#
 	            $techKey = '#TECH#';
 	            $techName = '#TECH_NAME#';
@@ -109,7 +134,8 @@ namespace DatabaseGenerator
                 include '/../technology_view.ctp';
             ";
 
-            const string levelTemplate = @"array('description' => '#DESCRIPTION#', 'time' => '#TIME#', 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'requirements' => array(#REQUIREMENTS#)),";
+            const string levelTemplate =
+                    @"array('description' => '#DESCRIPTION#', 'time' => '#TIME#', 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'requirements' => array(#REQUIREMENTS#)),";
 
             string requirementTemplate = @"'#REQUIREMENT#',";
 
@@ -117,39 +143,41 @@ namespace DatabaseGenerator
             TechnologyBase tech = TechnologyFactory.GetTechnologyBase(type, 1);
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
-            generalTemplate = generalTemplate.Replace("#TECH#", tech.name + "_TECHNOLOGY");
-            generalTemplate = generalTemplate.Replace("#TECH_NAME#", Lang[tech.name + "_TECHNOLOGY_NAME"]);
+            generalTemplate = generalTemplate.Replace("#TECH#", tech.Name + "_TECHNOLOGY");
+            generalTemplate = generalTemplate.Replace("#TECH_NAME#", Lang[tech.Name + "_TECHNOLOGY_NAME"]);
 
             // Builder info
             StructureBaseStats trainer;
             FindTechnologyTrainer(type, out trainer);
-            generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#", trainer != null ? Lang[trainer.Name + "_STRUCTURE_NAME"] : "");
+            generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#",
+                                                      trainer != null ? Lang[trainer.Name + "_STRUCTURE_NAME"] : "");
             generalTemplate = generalTemplate.Replace("#TRAINED_BY#", trainer != null ? trainer.Name + "_STRUCTURE" : "");
-            generalTemplate = generalTemplate.Replace("#TRAINED_BY_LEVEL#", trainer != null ? trainer.Lvl.ToString() : "");
+            generalTemplate = generalTemplate.Replace("#TRAINED_BY_LEVEL#",
+                                                      trainer != null ? trainer.Lvl.ToString() : "");
 
             // Level info
             byte level = 1;
-            StringWriter levelsWriter = new StringWriter(new StringBuilder());
+            var levelsWriter = new StringWriter(new StringBuilder());
             TechnologyBase currentStats = tech;
             do
             {
-                string currentLevel = levelTemplate.Replace("#DESCRIPTION#", Lang[currentStats.name + "_TECHNOLOGY_LVL_" + level].Replace("'", "\\'"));
-                currentLevel = currentLevel.Replace("#TIME#", currentStats.time.ToString());
-                currentLevel = currentLevel.Replace("#GOLD#", currentStats.resources.Gold.ToString());
-                currentLevel = currentLevel.Replace("#CROP#", currentStats.resources.Crop.ToString());
-                currentLevel = currentLevel.Replace("#IRON#", currentStats.resources.Iron.ToString());
-                currentLevel = currentLevel.Replace("#LABOR#", currentStats.resources.Labor.ToString());
-                currentLevel = currentLevel.Replace("#WOOD#", currentStats.resources.Wood.ToString());
+                string currentLevel = levelTemplate.Replace("#DESCRIPTION#",
+                                                            Lang[currentStats.Name + "_TECHNOLOGY_LVL_" + level].Replace
+                                                                    ("'", "\\'"));
+                currentLevel = currentLevel.Replace("#TIME#", currentStats.Time.ToString());
+                currentLevel = currentLevel.Replace("#GOLD#", currentStats.Resources.Gold.ToString());
+                currentLevel = currentLevel.Replace("#CROP#", currentStats.Resources.Crop.ToString());
+                currentLevel = currentLevel.Replace("#IRON#", currentStats.Resources.Iron.ToString());
+                currentLevel = currentLevel.Replace("#LABOR#", currentStats.Resources.Labor.ToString());
+                currentLevel = currentLevel.Replace("#WOOD#", currentStats.Resources.Wood.ToString());
 
                 // Get requirements
-                StringWriter requirementsWriter = new StringWriter(new StringBuilder());
+                var requirementsWriter = new StringWriter(new StringBuilder());
 
                 if (trainer != null)
                 {
-                    foreach (string requirement in GetTechnologyRequirements(type, level, trainer))
-                    {
+                    foreach (var requirement in GetTechnologyRequirements(type, level, trainer))
                         requirementsWriter.WriteLine(requirementTemplate.Replace("#REQUIREMENT#", requirement));
-                    }
                 }
 
                 currentLevel = currentLevel.Replace("#REQUIREMENTS#", requirementsWriter.ToString());
@@ -162,7 +190,10 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
-            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, string.Format("{0}_TECHNOLOGY.ctp", tech.name)))))
+            using (
+                    var writer =
+                            new StreamWriter(
+                                    File.Create(Path.Combine(output, string.Format("{0}_TECHNOLOGY.ctp", tech.Name)))))
             {
                 writer.Write(generalTemplate);
             }
@@ -170,7 +201,7 @@ namespace DatabaseGenerator
 
         private static void FindTechnologyTrainer(ushort type, out StructureBaseStats trainer)
         {
-            foreach (ushort builderType in StructureTypes)
+            foreach (var builderType in StructureTypes)
             {
                 byte level = 1;
                 StructureBaseStats stats;
@@ -184,9 +215,9 @@ namespace DatabaseGenerator
                     if (record == null)
                         continue;
 
-                    foreach (ActionRequirement action in record.list)
+                    foreach (var action in record.List)
                     {
-                        if (action.type == ActionType.TECHNOLOGY_UPGRADE && ushort.Parse(action.parms[0]) == type)
+                        if (action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type)
                         {
                             trainer = stats;
                             return;
@@ -203,9 +234,10 @@ namespace DatabaseGenerator
             ActionRecord record = ActionFactory.GetActionRequirementRecord(trainer.WorkerId);
 
             ActionRequirement foundAction = null;
-            foreach (ActionRequirement action in record.list)
+            foreach (var action in record.List)
             {
-                if (action.type == ActionType.TECHNOLOGY_UPGRADE && ushort.Parse(action.parms[0]) == type && ushort.Parse(action.parms[1]) >= level)
+                if (action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type &&
+                    ushort.Parse(action.Parms[1]) >= level)
                 {
                     foundAction = action;
                     break;
@@ -214,17 +246,20 @@ namespace DatabaseGenerator
 
             if (foundAction != null)
             {
-                var requirements = EffectRequirementFactory.getEffectRequirementContainer(foundAction.effectReqId);
+                var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
                 foreach (var requirement in requirements)
                 {
-                    if (requirement.websiteDescription != string.Empty) yield return requirement.websiteDescription;
+                    if (requirement.WebsiteDescription != string.Empty)
+                        yield return requirement.WebsiteDescription;
                 }
             }
-        }        
-        
+        }
+
         // Units
-        private static void ProcessUnit(ushort type) {
-            string generalTemplate = @"<?php
+        private static void ProcessUnit(ushort type)
+        {
+            string generalTemplate =
+                    @"<?php
                 // Generated by DatabaseGenerator program on #DATE#
 	            $unitKey = '#UNIT#';
 	            $unitName = '#UNIT_NAME#';
@@ -240,7 +275,8 @@ namespace DatabaseGenerator
                 include '/../unit_view.ctp';
             ";
 
-            const string levelTemplate = @"array('time' => #TIME#, 'carry' => #CARRY#, 'speed' => #SPEED#, 'upkeep' => #UPKEEP#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'defense' => #DEFENSE#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'armor' => '#ARMOR#', 'weapon' => '#WEAPON#', 'weaponClass' => '#WEAPONCLASS#', 'unitClass' => '#UNITCLASS#', 'requirements' => array(#REQUIREMENTS#)),";
+            const string levelTemplate =
+                    @"array('time' => #TIME#, 'carry' => #CARRY#, 'speed' => #SPEED#, 'upkeep' => #UPKEEP#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'defense' => #DEFENSE#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'armor' => '#ARMOR#', 'weapon' => '#WEAPON#', 'weaponClass' => '#WEAPONCLASS#', 'unitClass' => '#UNITCLASS#', 'requirements' => array(#REQUIREMENTS#)),";
 
             string requirementTemplate = @"'#REQUIREMENT#',";
 
@@ -250,18 +286,21 @@ namespace DatabaseGenerator
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#UNIT#", stats.Name + "_UNIT");
             generalTemplate = generalTemplate.Replace("#UNIT_NAME#", Lang[stats.Name + "_UNIT"]);
-            generalTemplate = generalTemplate.Replace("#DESCRIPTION#", Lang[stats.Name + "_UNIT_DESC"].Replace("'", "\\'"));
+            generalTemplate = generalTemplate.Replace("#DESCRIPTION#",
+                                                      Lang[stats.Name + "_UNIT_DESC"].Replace("'", "\\'"));
 
             // Builder info
-            StructureBaseStats trainer;            
+            StructureBaseStats trainer;
             FindUnitTrainer(type, out trainer);
-            generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#", trainer != null ? Lang[trainer.Name + "_STRUCTURE_NAME"] : "");
+            generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#",
+                                                      trainer != null ? Lang[trainer.Name + "_STRUCTURE_NAME"] : "");
             generalTemplate = generalTemplate.Replace("#TRAINED_BY#", trainer != null ? trainer.Name + "_STRUCTURE" : "");
-            generalTemplate = generalTemplate.Replace("#TRAINED_BY_LEVEL#", trainer != null ? trainer.Lvl.ToString() : "");
+            generalTemplate = generalTemplate.Replace("#TRAINED_BY_LEVEL#",
+                                                      trainer != null ? trainer.Lvl.ToString() : "");
 
             // Level info
             byte level = 1;
-            StringWriter levelsWriter = new StringWriter(new StringBuilder());
+            var levelsWriter = new StringWriter(new StringBuilder());
             BaseUnitStats currentStats = stats;
             do
             {
@@ -285,14 +324,12 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#UPKEEP#", currentStats.Upkeep.ToString());
 
                 // Get requirements
-                StringWriter requirementsWriter = new StringWriter(new StringBuilder());
+                var requirementsWriter = new StringWriter(new StringBuilder());
 
                 if (trainer != null)
                 {
-                    foreach (string requirement in GetUnitRequirements(type, level, trainer))
-                    {
+                    foreach (var requirement in GetUnitRequirements(type, level, trainer))
                         requirementsWriter.WriteLine(requirementTemplate.Replace("#REQUIREMENT#", requirement));
-                    }
                 }
 
                 currentLevel = currentLevel.Replace("#REQUIREMENTS#", requirementsWriter.ToString());
@@ -305,7 +342,10 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
-            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, string.Format("{0}_UNIT.ctp", stats.Name)))))
+            using (
+                    var writer =
+                            new StreamWriter(File.Create(Path.Combine(output, string.Format("{0}_UNIT.ctp", stats.Name))))
+                    )
             {
                 writer.Write(generalTemplate);
             }
@@ -313,7 +353,7 @@ namespace DatabaseGenerator
 
         private static void FindUnitTrainer(ushort type, out StructureBaseStats trainer)
         {
-            foreach (ushort builderType in StructureTypes)
+            foreach (var builderType in StructureTypes)
             {
                 byte level = 1;
                 StructureBaseStats stats;
@@ -327,9 +367,9 @@ namespace DatabaseGenerator
                     if (record == null)
                         continue;
 
-                    foreach (ActionRequirement action in record.list)
+                    foreach (var action in record.List)
                     {
-                        if (action.type == ActionType.UNIT_TRAIN && ushort.Parse(action.parms[0]) == type)
+                        if (action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type)
                         {
                             trainer = stats;
                             return;
@@ -346,9 +386,9 @@ namespace DatabaseGenerator
             ActionRecord record = ActionFactory.GetActionRequirementRecord(trainer.WorkerId);
 
             ActionRequirement foundAction = null;
-            foreach (ActionRequirement action in record.list)
+            foreach (var action in record.List)
             {
-                if (action.type == ActionType.UNIT_TRAIN && ushort.Parse(action.parms[0]) == type)
+                if (action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type)
                 {
                     foundAction = action;
                     break;
@@ -357,17 +397,20 @@ namespace DatabaseGenerator
 
             if (foundAction != null)
             {
-                var requirements = EffectRequirementFactory.getEffectRequirementContainer(foundAction.effectReqId);
+                var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
                 foreach (var requirement in requirements)
                 {
-                    if (requirement.websiteDescription != string.Empty) yield return requirement.websiteDescription;
+                    if (requirement.WebsiteDescription != string.Empty)
+                        yield return requirement.WebsiteDescription;
                 }
             }
         }
 
         // Structure Database
-        private static void ProcessStructure(ushort type) {
-            string generalTemplate = @"<?php
+        private static void ProcessStructure(ushort type)
+        {
+            string generalTemplate =
+                    @"<?php
                 // Generated by DatabaseGenerator program on #DATE#
 	            $structureKey = '#STRUCTURE#';
 	            $structureName = '#STRUCTURE_NAME#';
@@ -384,7 +427,8 @@ namespace DatabaseGenerator
                 include '/../structure_view.ctp';
             ";
 
-            const string levelTemplate = @"array('description' => '#DESCRIPTION#', 'time' => #TIME#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'defense' => #DEFENSE#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'weapon' => '#WEAPON#', 'maxLabor' => #MAXLABOR#, 'requirements' => array(#REQUIREMENTS#)),";
+            const string levelTemplate =
+                    @"array('description' => '#DESCRIPTION#', 'time' => #TIME#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'defense' => #DEFENSE#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'weapon' => '#WEAPON#', 'maxLabor' => #MAXLABOR#, 'requirements' => array(#REQUIREMENTS#)),";
 
             string requirementTemplate = @"'#REQUIREMENT#',";
 
@@ -394,23 +438,29 @@ namespace DatabaseGenerator
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#STRUCTURE#", stats.Name + "_STRUCTURE");
             generalTemplate = generalTemplate.Replace("#STRUCTURE_NAME#", Lang[stats.Name + "_STRUCTURE_NAME"]);
-            generalTemplate = generalTemplate.Replace("#DESCRIPTION#", Lang[stats.Name + "_STRUCTURE_DESCRIPTION"].Replace("'", "\\'"));
+            generalTemplate = generalTemplate.Replace("#DESCRIPTION#",
+                                                      Lang[stats.Name + "_STRUCTURE_DESCRIPTION"].Replace("'", "\\'"));
 
             // Builder info
             StructureBaseStats builder;
             bool converted;
             FindStructureBuilder(type, out builder, out converted);
             generalTemplate = generalTemplate.Replace("#CONVERTED#", converted ? "1" : "0");
-            generalTemplate = generalTemplate.Replace("#BUILT_BY_NAME#", builder != null ? Lang[builder.Name + "_STRUCTURE_NAME"] : "");
+            generalTemplate = generalTemplate.Replace("#BUILT_BY_NAME#",
+                                                      builder != null ? Lang[builder.Name + "_STRUCTURE_NAME"] : "");
             generalTemplate = generalTemplate.Replace("#BUILT_BY#", builder != null ? builder.Name + "_STRUCTURE" : "");
             generalTemplate = generalTemplate.Replace("#BUILT_BY_LEVEL#", builder != null ? builder.Lvl.ToString() : "");
 
             // Level info
             byte level = 1;
-            StringWriter levelsWriter = new StringWriter(new StringBuilder());
+            var levelsWriter = new StringWriter(new StringBuilder());
             StructureBaseStats currentStats = stats;
-            do {
-                string currentLevel = levelTemplate.Replace("#DESCRIPTION#", Lang[currentStats.Name + "_STRUCTURE_LVL_" + level].Replace("'", "\\'"));
+            do
+            {
+                string currentLevel = levelTemplate.Replace("#DESCRIPTION#",
+                                                            Lang[currentStats.Name + "_STRUCTURE_LVL_" + level].Replace(
+                                                                                                                        "'",
+                                                                                                                        "\\'"));
                 currentLevel = currentLevel.Replace("#TIME#", currentStats.BuildTime.ToString());
                 currentLevel = currentLevel.Replace("#GOLD#", currentStats.Cost.Gold.ToString());
                 currentLevel = currentLevel.Replace("#CROP#", currentStats.Cost.Crop.ToString());
@@ -425,12 +475,12 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#MAXLABOR#", currentStats.MaxLabor.ToString());
 
                 // Get requirements
-                StringWriter requirementsWriter = new StringWriter(new StringBuilder());
+                var requirementsWriter = new StringWriter(new StringBuilder());
 
-                if (builder != null) {
-                    foreach (string requirement in GetStructureRequirements(type, level, builder)) {
+                if (builder != null)
+                {
+                    foreach (var requirement in GetStructureRequirements(type, level, builder))
                         requirementsWriter.WriteLine(requirementTemplate.Replace("#REQUIREMENT#", requirement));
-                    }
                 }
 
                 currentLevel = currentLevel.Replace("#REQUIREMENTS#", requirementsWriter.ToString());
@@ -443,52 +493,64 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
-            using (StreamWriter writer = new StreamWriter(File.Create(Path.Combine(output, string.Format("{0}_STRUCTURE.ctp", stats.Name))))) {
+            using (
+                    var writer =
+                            new StreamWriter(
+                                    File.Create(Path.Combine(output, string.Format("{0}_STRUCTURE.ctp", stats.Name)))))
+            {
                 writer.Write(generalTemplate);
             }
         }
 
-        private static IEnumerable<string> GetStructureRequirements(ushort type, byte level, StructureBaseStats builder) {           
+        private static IEnumerable<string> GetStructureRequirements(ushort type, byte level, StructureBaseStats builder)
+        {
             ActionRecord record = ActionFactory.GetActionRequirementRecord(builder.WorkerId);
 
             ActionRequirement foundAction = null;
-            foreach (ActionRequirement action in record.list)
-            {                
-                if (level == 1 && action.type == ActionType.STRUCTURE_BUILD && ushort.Parse(action.parms[0]) == type)
+            foreach (var action in record.List)
+            {
+                if (level == 1 && action.Type == ActionType.StructureBuild && ushort.Parse(action.Parms[0]) == type)
                 {
                     foundAction = action;
                     break;
                 }
 
-                if (level == 1 && action.type == ActionType.STRUCTURE_CHANGE && ushort.Parse(action.parms[0]) == type) {
+                if (level == 1 && action.Type == ActionType.StructureChange && ushort.Parse(action.Parms[0]) == type)
+                {
                     foundAction = action;
                     break;
                 }
 
-                if (action.type == ActionType.STRUCTURE_UPGRADE && byte.Parse(action.parms[0]) < level)
+                if (action.Type == ActionType.StructureUpgrade && byte.Parse(action.Parms[0]) < level)
                 {
                     foundAction = action;
                     break;
                 }
             }
 
-            if (foundAction != null) {
-                var requirements = EffectRequirementFactory.getEffectRequirementContainer(foundAction.effectReqId);
-                foreach (var requirement in requirements) {
-                    if (requirement.websiteDescription != string.Empty) yield return requirement.websiteDescription;
+            if (foundAction != null)
+            {
+                var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
+                foreach (var requirement in requirements)
+                {
+                    if (requirement.WebsiteDescription != string.Empty)
+                        yield return requirement.WebsiteDescription;
                 }
             }
         }
 
-        private static void FindStructureBuilder(ushort type, out StructureBaseStats builder, out bool convert) {
-            foreach (ushort builderType in StructureTypes) {
+        private static void FindStructureBuilder(ushort type, out StructureBaseStats builder, out bool convert)
+        {
+            foreach (var builderType in StructureTypes)
+            {
                 if (builderType == type)
                     continue;
 
                 byte level = 1;
                 StructureBaseStats stats;
 
-                while ((stats = StructureFactory.GetBaseStats(builderType, level)) != null) {
+                while ((stats = StructureFactory.GetBaseStats(builderType, level)) != null)
+                {
                     level++;
 
                     ActionRecord record = ActionFactory.GetActionRequirementRecord(stats.WorkerId);
@@ -496,14 +558,17 @@ namespace DatabaseGenerator
                     if (record == null)
                         continue;
 
-                    foreach (ActionRequirement action in record.list) {
-                        if (action.type == ActionType.STRUCTURE_BUILD && ushort.Parse(action.parms[0]) == type) {
+                    foreach (var action in record.List)
+                    {
+                        if (action.Type == ActionType.StructureBuild && ushort.Parse(action.Parms[0]) == type)
+                        {
                             builder = stats;
                             convert = false;
                             return;
                         }
 
-                        if (action.type == ActionType.STRUCTURE_CHANGE && ushort.Parse(action.parms[0]) == type) {
+                        if (action.Type == ActionType.StructureChange && ushort.Parse(action.Parms[0]) == type)
+                        {
                             builder = stats;
                             convert = true;
                             return;
@@ -513,15 +578,15 @@ namespace DatabaseGenerator
             }
 
             builder = null;
-            convert = false;            
+            convert = false;
         }
 
         private static void LoadLanguages()
         {
             string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
-            foreach (string file in files)
+            foreach (var file in files)
             {
-                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open))))
+                using (var langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open))))
                 {
                     while (true)
                     {

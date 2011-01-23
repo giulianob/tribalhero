@@ -7,130 +7,139 @@ using System.Xml;
 
 #endregion
 
-namespace Game.Util {
-    public class XMLKVPair {
-        private string key;
+namespace Game.Util
+{
+    public class XmlKvPair
+    {
+        public string Key { get; set; }
 
-        public string Key {
-            get { return key; }
-            set { key = value; }
-        }
-
-        private string value;
-
-        public string Value {
-            get { return value; }
-            set { this.value = value; }
-        }
+        public string Value { get; set; }
 
         #region Constructors
 
-        public XMLKVPair(string key, string value) {
-            this.key = key;
-            this.value = value;
+        public XmlKvPair(string key, string value)
+        {
+            Key = key;
+            Value = value;
         }
 
-        public XMLKVPair(string key, bool value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, bool value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, byte value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, byte value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, char value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, char value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, DateTime value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value, XmlDateTimeSerializationMode.Utc);
+        public XmlKvPair(string key, DateTime value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value, XmlDateTimeSerializationMode.Utc);
         }
 
-        public XMLKVPair(string key, decimal value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, decimal value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, double value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, double value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, float value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, float value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, Guid value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, Guid value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, int value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, int value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, long value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, long value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, sbyte value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, sbyte value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, short value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, short value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, TimeSpan value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, TimeSpan value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, uint value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, uint value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, ulong value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, ulong value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
-        public XMLKVPair(string key, ushort value) {
-            this.key = key;
-            this.value = XmlConvert.ToString(value);
+        public XmlKvPair(string key, ushort value)
+        {
+            Key = key;
+            Value = XmlConvert.ToString(value);
         }
 
         #endregion
     }
 
-    public class XMLSerializer {       
+    public class XmlSerializer
+    {
+        public static String SerializeComplexList(IEnumerable<object[]> list)
+        {
+            var writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
 
-        public static String SerializeComplexList(IEnumerable<object[]> list) {
-            XmlWriterSettings writerSettings = new XmlWriterSettings {
-                OmitXmlDeclaration = true,
-                Indent = false,
-                NewLineOnAttributes = false
-            };
-
-            using (StringWriter sw = new StringWriter()) {
-                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings)) {
-
+            using (var sw = new StringWriter())
+            {
+                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings))
+                {
                     writer.WriteStartElement("List");
 
-                    foreach (object[] variables in list) {
+                    foreach (var variables in list)
+                    {
                         writer.WriteStartElement("Properties");
 
-                        foreach (object variable in variables) {
+                        foreach (var variable in variables)
+                        {
                             if (variable is byte)
                                 writer.WriteStartElement("Byte");
                             else if (variable is short)
@@ -138,9 +147,9 @@ namespace Game.Util {
                             else if (variable is int)
                                 writer.WriteStartElement("Int");
                             else if (variable is ushort)
-                                writer.WriteStartElement("Ushort");
+                                writer.WriteStartElement("UShort");
                             else if (variable is uint)
-                                writer.WriteStartElement("Uint");
+                                writer.WriteStartElement("UInt");
                             else if (variable is string)
                                 writer.WriteStartElement("String");
                             else
@@ -161,15 +170,18 @@ namespace Game.Util {
             }
         }
 
-        public static String SerializeList(params object[] variables) {
-            XmlWriterSettings writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
+        public static String SerializeList(params object[] variables)
+        {
+            var writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
 
-            using (StringWriter sw = new StringWriter()) {
-                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings)) {
-
+            using (var sw = new StringWriter())
+            {
+                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings))
+                {
                     writer.WriteStartElement("Properties");
 
-                    foreach (object variable in variables) {
+                    foreach (var variable in variables)
+                    {
                         if (variable is byte)
                             writer.WriteStartElement("Byte");
                         else if (variable is short)
@@ -177,9 +189,9 @@ namespace Game.Util {
                         else if (variable is int)
                             writer.WriteStartElement("Int");
                         else if (variable is ushort)
-                            writer.WriteStartElement("Ushort");
+                            writer.WriteStartElement("UShort");
                         else if (variable is uint)
-                            writer.WriteStartElement("Uint");
+                            writer.WriteStartElement("UInt");
                         else if (variable is string)
                             writer.WriteStartElement("String");
                         else
@@ -197,19 +209,18 @@ namespace Game.Util {
             }
         }
 
-        public static String Serialize(params XMLKVPair[] variables) {
-            XmlWriterSettings writerSettings = new XmlWriterSettings {
-                                                                         OmitXmlDeclaration = true,
-                                                                         Indent = false,
-                                                                         NewLineOnAttributes = false
-                                                                     };
+        public static String Serialize(params XmlKvPair[] variables)
+        {
+            var writerSettings = new XmlWriterSettings {OmitXmlDeclaration = true, Indent = false, NewLineOnAttributes = false};
 
-            using (StringWriter sw = new StringWriter()) {
-                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings)) {
-
+            using (var sw = new StringWriter())
+            {
+                using (XmlWriter writer = XmlWriter.Create(sw, writerSettings))
+                {
                     writer.WriteStartElement("Properties");
 
-                    foreach (XMLKVPair variable in variables) {
+                    foreach (var variable in variables)
+                    {
                         writer.WriteStartElement("Property");
                         writer.WriteAttributeString("name", variable.Key);
                         writer.WriteAttributeString("value", variable.Value);
@@ -224,40 +235,45 @@ namespace Game.Util {
             }
         }
 
-        public static List<object[]> DeserializeComplexList(String xml) {
-            List<object[]> ret = new List<object[]>();
+        public static List<object[]> DeserializeComplexList(String xml)
+        {
+            var ret = new List<object[]>();
 
-            using (StringReader stringReader = new StringReader(xml)) {
-                using (XmlReader reader = XmlReader.Create(stringReader)) {
-
+            using (var stringReader = new StringReader(xml))
+            {
+                using (XmlReader reader = XmlReader.Create(stringReader))
+                {
                     List<object> properties = null;
 
-                    while (reader.Read()) {
-                        if (reader.NodeType == XmlNodeType.Element) {
-                            switch (reader.Name) {
-                                case "List":
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType == XmlNodeType.Element)
+                        {
+                            switch(reader.Name.ToLower())
+                            {
+                                case "list":
                                     continue;
-                                case "Properties":
+                                case "properties":
                                     if (properties != null)
                                         ret.Add(properties.ToArray());
                                     properties = new List<object>();
                                     break;
-                                case "String":
+                                case "string":
                                     properties.Add(reader["value"]);
                                     break;
-                                case "Short":
+                                case "short":
                                     properties.Add(short.Parse(reader["value"]));
                                     break;
-                                case "Int":
+                                case "int":
                                     properties.Add(int.Parse(reader["value"]));
                                     break;
-                                case "Ushort":
+                                case "ushort":
                                     properties.Add(ushort.Parse(reader["value"]));
                                     break;
-                                case "Uint":
+                                case "uint":
                                     properties.Add(uint.Parse(reader["value"]));
                                     break;
-                                case "Byte":
+                                case "byte":
                                     properties.Add(byte.Parse(reader["value"]));
                                     break;
                                 default:
@@ -274,15 +290,20 @@ namespace Game.Util {
             }
         }
 
-        public static List<object> DeserializeList(String xml) {
-            List<object> ret = new List<object>();
+        public static List<object> DeserializeList(String xml)
+        {
+            var ret = new List<object>();
 
-            using (StringReader stringReader = new StringReader(xml)) {
-                using (XmlReader reader = XmlReader.Create(stringReader)) {
-
-                    while (reader.Read()) {
-                        if (reader.NodeType == XmlNodeType.Element) {
-                            switch (reader.Name) {
+            using (var stringReader = new StringReader(xml))
+            {
+                using (XmlReader reader = XmlReader.Create(stringReader))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType == XmlNodeType.Element)
+                        {
+                            switch(reader.Name)
+                            {
                                 case "Properties":
                                     continue;
                                 case "String":
@@ -294,10 +315,10 @@ namespace Game.Util {
                                 case "Int":
                                     ret.Add(int.Parse(reader["value"]));
                                     break;
-                                case "Ushort":
+                                case "UShort":
                                     ret.Add(ushort.Parse(reader["value"]));
                                     break;
-                                case "Uint":
+                                case "UInt":
                                     ret.Add(uint.Parse(reader["value"]));
                                     break;
                                 case "Byte":
@@ -314,18 +335,24 @@ namespace Game.Util {
             }
         }
 
-        public static Dictionary<String, String> Deserialize(String xml) {
-            Dictionary<String, String> ret = new Dictionary<string, string>();
+        public static Dictionary<String, String> Deserialize(String xml)
+        {
+            var ret = new Dictionary<string, string>();
 
-            using (StringReader stringReader = new StringReader(xml)) {
-                using (XmlReader reader = XmlReader.Create(stringReader)) {
-
-                    while (reader.Read()) {
+            using (var stringReader = new StringReader(xml))
+            {
+                using (XmlReader reader = XmlReader.Create(stringReader))
+                {
+                    while (reader.Read())
+                    {
                         string key = string.Empty;
                         string value = string.Empty;
-                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "Property") {
-                            while (reader.MoveToNextAttribute()) {
-                                switch (reader.Name) {
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "Property")
+                        {
+                            while (reader.MoveToNextAttribute())
+                            {
+                                switch(reader.Name)
+                                {
                                     case "name":
                                         key = reader.Value;
                                         break;

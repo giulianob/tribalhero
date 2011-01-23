@@ -1,6 +1,4 @@
-﻿/*
- * Generates a graphviz file of the game's tree
- */
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -14,35 +12,16 @@ using Game.Logic;
 using Game.Setup;
 using NDesk.Options;
 
+#endregion
+
 namespace GraphGenerator
 {
     class Program
     {
         private const ushort MAIN_BUILDING = 2000;
 
-        static StringWriter nodeConnections;
-
-        static string[] imageDirectories = new[]
-                                               {
-                                                   @"c:\source\game\graphics\buildings",
-                                                   @"c:\source\game\graphics\units"
-                                                   
-                                               };
-
-        static string gvPath = @"C:\Program Files (x86)\Graphviz2.26.3\bin\dot.exe";
-        static string gvArgs = @"-Tpng -o{0} {1}";
-
-        static string output = "output";
-
-        static List<int> processedStructures = new List<int>();
-        static List<int> processedUnits = new List<int>();
-        static List<int> processedTechnologies = new List<int>();
-        static Dictionary<string, string> nodeDefintions = new Dictionary<string, string>();
-        static Dictionary<string, string> lang = new Dictionary<string, string>();
-
-        static List<List<string>> ranks = new List<List<string>>();
-
-        const string TEMPLATE_LARGE = @"digraph g {	
+        private const string TEMPLATE_LARGE =
+                @"digraph g {	
     graph [fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
     node [shape=none, fontsize=12];			
     edge [fontsize=12];
@@ -51,7 +30,8 @@ namespace GraphGenerator
 
 }";
 
-        const string TEMPLATE = @"digraph g {	
+        private const string TEMPLATE =
+                @"digraph g {	
     graph [size=34 fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
     node [shape=none, fontsize=15];			
     edge [fontsize=15];
@@ -60,22 +40,33 @@ namespace GraphGenerator
 
 }";
 
-        enum Result
-        {
-            OK,
-            EMPTY,
-            ALREADY_PROCESSED
-        }
+        private static StringWriter nodeConnections;
 
-        static void ParseArgs() {
-            List<string> imgDirList = new List<string>();
+        private static string[] imageDirectories = new[]
+                                                   {
+                                                           @"c:\source\game\graphics\buildings",
+                                                           @"c:\source\game\graphics\units"
+                                                   };
+
+        private static string gvPath = @"C:\Program Files (x86)\Graphviz2.26.3\bin\dot.exe";
+        private static string gvArgs = @"-Tpng -o{0} {1}";
+
+        private static string output = "output";
+
+        private static readonly List<int> processedStructures = new List<int>();
+        private static readonly List<int> processedUnits = new List<int>();
+        private static readonly List<int> processedTechnologies = new List<int>();
+        private static readonly Dictionary<string, string> nodeDefintions = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> lang = new Dictionary<string, string>();
+
+        private static readonly List<List<string>> ranks = new List<List<string>>();
+
+        private static void ParseArgs()
+        {
+            var imgDirList = new List<string>();
 
             var p = new OptionSet
-                        {
-                            {"img=", v => imgDirList.Add(v)},
-                            {"gv-path=", v => gvPath = v },     
-                            {"output=", v => output = v },
-                        };
+                    {{"img=", v => imgDirList.Add(v)}, {"gv-path=", v => gvPath = v}, {"output=", v => output = v},};
 
             p.Parse(Environment.GetCommandLineArgs());
 
@@ -83,7 +74,7 @@ namespace GraphGenerator
                 imageDirectories = imgDirList.ToArray();
         }
 
-        static void Main()
+        private static void Main()
         {
             ParseArgs();
             Factory.CompileConfigFiles();
@@ -92,67 +83,78 @@ namespace GraphGenerator
             LoadLanguages();
 
             var rawPath = Path.Combine(Path.GetFullPath(output), "raw");
-            Directory.CreateDirectory(rawPath);            
+            Directory.CreateDirectory(rawPath);
 
             //Copy all images from image folders to output
-            foreach (string directory in imageDirectories) {
-                foreach (string file in Directory.GetFiles(directory, "*.png")) {                                        
+            foreach (var directory in imageDirectories)
+            {
+                foreach (var file in Directory.GetFiles(directory, "*.png"))
                     File.Copy(file, Path.Combine(rawPath, Path.GetFileName(file)), true);
-                }
             }
 
             // Process
-            nodeConnections = new StringWriter(new StringBuilder());            
-            
+            nodeConnections = new StringWriter(new StringBuilder());
+
             ProcessStructure(StructureFactory.GetBaseStats(MAIN_BUILDING, 1), false);
 
-            using (StringWriter b = new StringWriter(new StringBuilder())) {
+            using (var b = new StringWriter(new StringBuilder()))
+            {
                 WriteDefinitions(b);
                 b.Write(nodeConnections.ToString());
                 WriteRankings(b);
 
                 // Write small
-                using (StreamWriter outStream = new StreamWriter(File.Create(Path.Combine(rawPath, "tree.gv"))))
+                using (var outStream = new StreamWriter(File.Create(Path.Combine(rawPath, "tree.gv"))))
                 {
                     string outStr = TEMPLATE.Replace("%content%", b.ToString());
 
                     outStream.Write(outStr);
                 }
 
-                RunGv(Path.Combine(output, "game-tree.png"), "tree.gv");
-                
+                RunGv(Path.GetFullPath(Path.Combine(output, "game-tree.png")), "tree.gv");
+
                 // Write large                
-                using (StreamWriter outStream = new StreamWriter(File.Create(Path.Combine(rawPath, "tree-large.gv"))))
+                using (var outStream = new StreamWriter(File.Create(Path.Combine(rawPath, "tree-large.gv"))))
                 {
                     string outStr = TEMPLATE_LARGE.Replace("%content%", b.ToString());
 
                     outStream.Write(outStr);
                 }
 
-                RunGv(Path.Combine(output, "game-tree-large.png"), "tree-large.gv");
+                RunGv(Path.GetFullPath(Path.Combine(output, "game-tree-large.png")), "tree-large.gv");
             }
-
 
             nodeConnections.Close();
         }
 
-        private static void RunGv(string outImg, string gvFile) {
-            ProcessStartInfo info = new ProcessStartInfo {
-                                            FileName = gvPath,
-                                            Arguments = string.Format(gvArgs, outImg, gvFile),
-                                            WorkingDirectory = Path.Combine(Path.GetFullPath(output), "raw"),
-                                            CreateNoWindow = true,                                            
-                                        };         
-            Process proc = Process.Start(info);
-            proc.WaitForExit();
+        private static void RunGv(string outImg, string gvFile)
+        {
+            var info = new ProcessStartInfo
+                       {
+                               FileName = gvPath,
+                               Arguments = string.Format(gvArgs, outImg, gvFile),
+                               WorkingDirectory = Path.Combine(Path.GetFullPath(output), "raw"),
+                               CreateNoWindow = true,
+                               RedirectStandardError = true,
+                               RedirectStandardOutput = true,
+                               UseShellExecute = false
+                       };
+            Process proc = Process.Start(info);            
+            proc.WaitForExit();            
+            if (proc.ExitCode != 0)
+            {
+                Console.Out.WriteLine(proc.StandardError.ReadToEnd());
+                Environment.Exit(-1);
+            }
         }
 
-        private static void LoadLanguages() {
+        private static void LoadLanguages()
+        {
             string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
-            foreach (string file in files)
+            foreach (var file in files)
             {
                 string fullFilename = file;
-                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open(fullFilename, FileMode.Open))))
+                using (var langReader = new CsvReader(new StreamReader(File.Open(fullFilename, FileMode.Open))))
                 {
                     while (true)
                     {
@@ -169,18 +171,18 @@ namespace GraphGenerator
             }
         }
 
-        private static void WriteDefinitions(TextWriter outStream) {
+        private static void WriteDefinitions(TextWriter outStream)
+        {
             foreach (var kvp in nodeDefintions)
-            {
                 outStream.WriteLine("{0} {1}", kvp.Key, kvp.Value);
-            }            
         }
 
         private static void WriteRankings(TextWriter outStream)
         {
-            foreach (List<String> ranking in ranks) {
+            foreach (var ranking in ranks)
+            {
                 outStream.Write("{ rank=\"same\"; ");
-                foreach (string str in ranking)
+                foreach (var str in ranking)
                     outStream.Write("{0}; ", str);
                 outStream.WriteLine("}");
             }
@@ -188,18 +190,15 @@ namespace GraphGenerator
 
         private static Result ProcessStructure(StructureBaseStats structureBaseStats, bool skipUpgrades)
         {
-
-            int hash = structureBaseStats.Type * 100 + structureBaseStats.Lvl;
+            int hash = structureBaseStats.Type*100 + structureBaseStats.Lvl;
             if (processedStructures.Contains(hash))
-            {
                 return Result.ALREADY_PROCESSED;
-            }
 
             Console.Out.WriteLine("Parsing " + structureBaseStats.Name + " " + structureBaseStats.Lvl);
 
             ActionRecord record = ActionFactory.GetActionRequirementRecord(structureBaseStats.WorkerId);
 
-            processedStructures.Add(hash);            
+            processedStructures.Add(hash);
 
             bool hadConnection = false;
 
@@ -210,26 +209,26 @@ namespace GraphGenerator
                 return Result.EMPTY;
 
             // First pass
-            foreach (ActionRequirement action in record.list)
+            foreach (var action in record.List)
             {
-                switch (action.type)
+                switch(action.Type)
                 {
-                    case ActionType.STRUCTURE_BUILD:
-                    case ActionType.STRUCTURE_CHANGE:
-                        StructureBaseStats building = StructureFactory.GetBaseStats(ushort.Parse(action.parms[0]), 1);
+                    case ActionType.StructureBuild:
+                    case ActionType.StructureChange:
+                        StructureBaseStats building = StructureFactory.GetBaseStats(ushort.Parse(action.Parms[0]), 1);
                         Result result = ProcessStructure(building, false);
                         if (result != Result.ALREADY_PROCESSED)
                         {
-                            if (action.type == ActionType.STRUCTURE_BUILD)
+                            if (action.Type == ActionType.StructureBuild)
                                 WriteNode(structureBaseStats, building);
-                            else if (action.type == ActionType.STRUCTURE_CHANGE)
+                            else if (action.Type == ActionType.StructureChange)
                                 WriteNode(structureBaseStats, building, "dashed", "Converts To");
 
                             hadConnection = true;
                         }
                         break;
-                    case ActionType.UNIT_TRAIN:
-                        BaseUnitStats training = UnitFactory.GetUnitStats(ushort.Parse(action.parms[0]), 1);
+                    case ActionType.UnitTrain:
+                        BaseUnitStats training = UnitFactory.GetUnitStats(ushort.Parse(action.Parms[0]), 1);
                         if (!processedUnits.Contains(training.UnitHash))
                         {
                             WriteNode(structureBaseStats, training);
@@ -238,8 +237,8 @@ namespace GraphGenerator
                             processedUnits.Add(training.UnitHash);
                         }
                         break;
-                    case ActionType.TECHNOLOGY_UPGRADE:
-                        TechnologyBase tech = TechnologyFactory.GetTechnologyBase(ushort.Parse(action.parms[0]), 1);
+                    case ActionType.TechnologyUpgrade:
+                        TechnologyBase tech = TechnologyFactory.GetTechnologyBase(ushort.Parse(action.Parms[0]), 1);
                         if (!processedTechnologies.Contains(tech.TechnologyHash))
                         {
                             WriteNode(structureBaseStats, tech);
@@ -252,20 +251,17 @@ namespace GraphGenerator
             }
 
             // Second pass
-            foreach (ActionRequirement action in record.list)
+            foreach (var action in record.List)
             {
-                switch (action.type)
+                switch(action.Type)
                 {
-                    case ActionType.STRUCTURE_UPGRADE:
+                    case ActionType.StructureUpgrade:
                         if (!skipUpgrades)
                         {
-                            byte maxLvl = byte.Parse(action.parms[0]);
+                            byte maxLvl = byte.Parse(action.Parms[0]);
                             StructureBaseStats from = structureBaseStats;
-                            List<string> newRank = new List<String>
-                                                       {
-                                                           GetKey(from)
-                                                       };
-                            
+                            var newRank = new List<String> {GetKey(from)};
+
                             for (int i = from.Lvl; i < maxLvl; i++)
                             {
                                 StructureBaseStats to = StructureFactory.GetBaseStats(from.Type, (byte)(i + 1));
@@ -280,7 +276,8 @@ namespace GraphGenerator
                                 }
                             }
 
-                            if (newRank.Count > 1) ranks.Add(newRank);
+                            if (newRank.Count > 1)
+                                ranks.Add(newRank);
                         }
                         break;
                 }
@@ -289,7 +286,8 @@ namespace GraphGenerator
             return hadConnection ? Result.OK : Result.EMPTY;
         }
 
-        private static string GetKey(StructureBaseStats stats) {
+        private static string GetKey(StructureBaseStats stats)
+        {
             return "STRUCTURE_" + stats.StructureHash;
         }
 
@@ -303,18 +301,28 @@ namespace GraphGenerator
             return "TECH_" + tech.TechnologyHash;
         }
 
-        private static void CreateDefinition(StructureBaseStats stats) {
-            nodeDefintions[GetKey(stats)] = string.Format("[label=\"{0} (Level {1})\", labelloc=\"b\", height=1, shape=none, image=\"{2}.png\"]", lang[stats.Name + "_STRUCTURE_NAME"], stats.Lvl, stats.SpriteClass);
+        private static void CreateDefinition(StructureBaseStats stats)
+        {
+            nodeDefintions[GetKey(stats)] =
+                    string.Format(
+                                  "[label=\"{0} (Level {1})\", labelloc=\"b\", height=1, shape=none, image=\"{2}.png\"]",
+                                  lang[stats.Name + "_STRUCTURE_NAME"],
+                                  stats.Lvl,
+                                  stats.SpriteClass);
         }
 
         private static void CreateDefinition(BaseUnitStats stats)
         {
-            nodeDefintions[GetKey(stats)] = string.Format("[label=\"{0}\", labelloc=\"b\", height=1, shape=none, image=\"{1}.png\"]", lang[stats.Name + "_UNIT"], stats.SpriteClass);
+            nodeDefintions[GetKey(stats)] =
+                    string.Format("[label=\"{0}\", labelloc=\"b\", height=1, shape=none, image=\"{1}.png\"]",
+                                  lang[stats.Name + "_UNIT"],
+                                  stats.SpriteClass);
         }
 
         private static void CreateDefinition(TechnologyBase tech)
         {
-            nodeDefintions[GetKey(tech)] = string.Format("[label=\"{0}\", shape=box]", lang[tech.name + "_TECHNOLOGY_NAME"]);
+            nodeDefintions[GetKey(tech)] = string.Format("[label=\"{0}\", shape=box]",
+                                                         lang[tech.Name + "_TECHNOLOGY_NAME"]);
         }
 
         private static void WriteNode(StructureBaseStats from, StructureBaseStats to)
@@ -338,5 +346,16 @@ namespace GraphGenerator
         {
             nodeConnections.WriteLine("{0} -> {1};", GetKey(from), GetKey(to));
         }
+
+        #region Nested type: Result
+
+        private enum Result
+        {
+            OK,
+            EMPTY,
+            ALREADY_PROCESSED
+        }
+
+        #endregion
     }
 }

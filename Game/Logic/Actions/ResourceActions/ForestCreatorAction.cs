@@ -1,30 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region
+
+using System;
 using Game.Data;
-using Game.Logic.Procedures;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 
-namespace Game.Logic.Actions.ResourceActions {
-    public class ForestCreatorAction : ISchedule {
+#endregion
+
+namespace Game.Logic.Actions.ResourceActions
+{
+    public class ForestCreatorAction : ISchedule
+    {
+        public ForestCreatorAction()
+        {
+            Time = SystemClock.Now;
+        }
+
+        #region ISchedule Members
 
         public DateTime Time { get; private set; }
         public bool IsScheduled { get; set; }
 
-        public ForestCreatorAction() {
-            Time = SystemClock.Now;
-        }
-
-        public void Callback(object custom) {
-            
-            using (new MultiObjectLock(Global.World.Forests)) {
-                
-                for (byte i = 0; i < Config.forest_count.Length; i++) {
-                    byte lvl = (byte)(i + 1);
+        public void Callback(object custom)
+        {
+            using (new MultiObjectLock(Global.World.Forests))
+            {
+                for (byte i = 0; i < Config.forest_count.Length; i++)
+                {
+                    var lvl = (byte)(i + 1);
                     int delta = Config.forest_count[i] - Global.World.Forests.ForestCount[i];
-                    
+
                     for (int j = 0; j < delta; j++)
                         Global.World.Forests.CreateForest(lvl, Formula.GetMaxForestCapacity(lvl), Formula.GetMaxForestRate(lvl));
                 }
@@ -34,5 +40,7 @@ namespace Game.Logic.Actions.ResourceActions {
                 Global.Scheduler.Put(this);
             }
         }
+
+        #endregion
     }
 }

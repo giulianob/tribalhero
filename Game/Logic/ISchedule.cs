@@ -5,11 +5,14 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Game.Logic {
-    class ScheduleComparer : IComparer<ISchedule> {
+namespace Game.Logic
+{
+    class ScheduleComparer : IComparer<ISchedule>
+    {
         #region IComparer<ISchedule> Members
 
-        public int Compare(ISchedule x, ISchedule y) {
+        public int Compare(ISchedule x, ISchedule y)
+        {
             if (x.Time.Kind != DateTimeKind.Utc)
                 throw new Exception(string.Format("Time is not UTC for schedule {0}", x));
 
@@ -22,7 +25,8 @@ namespace Game.Logic {
         #endregion
     }
 
-    public interface ISchedule {
+    public interface ISchedule
+    {
         bool IsScheduled { get; set; }
         DateTime Time { get; }
         void Callback(object custom);

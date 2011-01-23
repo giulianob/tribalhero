@@ -1,34 +1,41 @@
-﻿using System;
+﻿#region
+
 using Game.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace Testing.Channel {
-    /// <summary>
-    /// Summary description for ChannelTest
-    /// </summary>
-    
-    [TestClass]
-    public class ChannelTest {
+#endregion
 
-        Game.Util.Channel channel;
-        Mock<IChannel> session1;
-        Mock<IChannel> session2;
-        readonly object msg1 = new object();
-        readonly object msg2 = new object();
+namespace Testing.Channel
+{
+    /// <summary>
+    ///   Summary description for ChannelTest
+    /// </summary>
+    [TestClass]
+    public class ChannelTest
+    {
+        private readonly object msg1 = new object();
+        private readonly object msg2 = new object();
+        private Game.Util.Channel channel;
+        private Mock<IChannel> session1;
+        private Mock<IChannel> session2;
 
         [TestInitialize]
-        public void TestInitialize() {
+        public void TestInitialize()
+        {
             channel = new Game.Util.Channel();
             session1 = new Mock<IChannel>();
             session2 = new Mock<IChannel>();
         }
-        
+
         [TestCleanup]
-        public void TestCleanup() { }        
+        public void TestCleanup()
+        {
+        }
 
         [TestMethod]
-        public void TestSinglePost() {
+        public void TestSinglePost()
+        {
             var session = new Mock<IChannel>();
 
             channel.Subscribe(session.Object, "Channel1");
@@ -38,17 +45,19 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestPostingToProperChannel() {
+        public void TestPostingToProperChannel()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session1.Object, "Channel2");
 
             channel.Post("Channel1", msg1);
 
-            session1.Verify(foo => foo.OnPost(msg1), Times.Once());            
+            session1.Verify(foo => foo.OnPost(msg1), Times.Once());
         }
 
         [TestMethod]
-        public void TestPostingToProperChannel2() {
+        public void TestPostingToProperChannel2()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session1.Object, "Channel2");
 
@@ -60,7 +69,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestPostingToProperSession() {
+        public void TestPostingToProperSession()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session2.Object, "Channel2");
 
@@ -71,7 +81,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestPostingToMultipleSessions() {
+        public void TestPostingToMultipleSessions()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session2.Object, "Channel1");
 
@@ -82,7 +93,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestPostingToProperSessionAndChannel() {
+        public void TestPostingToProperSessionAndChannel()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session2.Object, "Channel2");
 
@@ -97,7 +109,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestUnsubscribingSingleSessionFromChannel() {
+        public void TestUnsubscribingSingleSessionFromChannel()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Unsubscribe(session1.Object, "Channel1");
 
@@ -107,7 +120,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestUnsubscribingProperSessionFromChannel() {
+        public void TestUnsubscribingProperSessionFromChannel()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session2.Object, "Channel1");
 
@@ -120,7 +134,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestUnsubscribingSingleSessionFromAllChannel() {
+        public void TestUnsubscribingSingleSessionFromAllChannel()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Unsubscribe(session1.Object);
 
@@ -130,7 +145,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestUnsubscribingProperSessionFromAllChannel() {
+        public void TestUnsubscribingProperSessionFromAllChannel()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session2.Object, "Channel1");
 
@@ -144,8 +160,8 @@ namespace Testing.Channel {
 
         // The channel class deletes the subscriber list if the channel becomes empty so we want to make sure it works
         [TestMethod]
-        public void TestRecreateChannel() {            
-
+        public void TestRecreateChannel()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Unsubscribe(session1.Object, "Channel1");
             channel.Subscribe(session1.Object, "Channel1");
@@ -157,19 +173,24 @@ namespace Testing.Channel {
 
         [TestMethod]
         [ExpectedException(typeof(DuplicateSubscriptionException))]
-        public void TestSubscribingDuplicates() {
+        public void TestSubscribingDuplicates()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session1.Object, "Channel1");
         }
 
-        [TestMethod]        
-        public void TestSubscribingDuplicatesThenPosting() {
+        [TestMethod]
+        public void TestSubscribingDuplicatesThenPosting()
+        {
             channel.Subscribe(session1.Object, "Channel1");
 
-            try {
+            try
+            {
                 channel.Subscribe(session1.Object, "Channel1");
             }
-            catch (DuplicateSubscriptionException) {}
+            catch(DuplicateSubscriptionException)
+            {
+            }
 
             channel.Post("Channel1", msg1);
 
@@ -177,7 +198,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestUnsubscribingDuplicates() {
+        public void TestUnsubscribingDuplicates()
+        {
             channel.Subscribe(session1.Object, "Channel1");
 
             channel.Unsubscribe(session1.Object, "Channel1");
@@ -189,7 +211,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestSubscribingToMultipleChannels() {
+        public void TestSubscribingToMultipleChannels()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session1.Object, "Channel2");
 
@@ -199,7 +222,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestSubscribingMultipleSessionsToMultipleChannels() {
+        public void TestSubscribingMultipleSessionsToMultipleChannels()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session1.Object, "Channel2");
 
@@ -214,7 +238,8 @@ namespace Testing.Channel {
         }
 
         [TestMethod]
-        public void TestSubscribingMultipleSessionsToMultipleChannels2() {
+        public void TestSubscribingMultipleSessionsToMultipleChannels2()
+        {
             channel.Subscribe(session1.Object, "Channel1");
             channel.Subscribe(session1.Object, "Channel2");
 

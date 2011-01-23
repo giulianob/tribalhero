@@ -8,26 +8,39 @@ using Game.Setup;
 
 #endregion
 
-namespace Game.Logic {
-    public class Randomizer {
-        public static Random random = Config.Random;
+namespace Game.Logic
+{
+    public class Randomizer
+    {
+        public static Random Random = Config.Random;
 
-        public static uint MapX {
-            get { return (uint) random.Next(Config.width_margin, /*Config.map_width*/50 - Config.width_margin); }
+        public static uint MapX
+        {
+            get
+            {
+                return (uint)Random.Next(Config.width_margin, 50 - Config.width_margin);
+            }
         }
 
-        public static uint MapY {
-            get { return (uint) random.Next(Config.height_margin, /*Config.map_height*/50 - Config.height_margin); }
+        public static uint MapY
+        {
+            get
+            {
+                return (uint)Random.Next(Config.height_margin, 50 - Config.height_margin);
+            }
         }
 
-        public static bool MainBuilding(out Structure structure) {
+        public static bool MainBuilding(out Structure structure)
+        {
             return MainBuilding(out structure, 1);
         }
 
-        public static bool MainBuilding(out Structure structure, byte lvl) {
+        public static bool MainBuilding(out Structure structure, byte lvl)
+        {
             structure = StructureFactory.GetNewStructure(2000, lvl);
             uint x, y;
-            if (!MapFactory.NextLocation(out x, out y)) {
+            if (!MapFactory.NextLocation(out x, out y))
+            {
                 structure = null;
                 return false;
             }
@@ -36,19 +49,11 @@ namespace Game.Logic {
             return true;
         }
 
-        private class Random_foreach {
-            public DbTransaction transaction;
-            public City city;
-
-            public Random_foreach(DbTransaction transaction, City city) {
-                this.transaction = transaction;
-                this.city = city;
-            }
-        }
-
-        private static bool RandomizeNpcResourceWork(uint ox, uint oy, uint x, uint y, object custom) {
-            Random_foreach feObj = (Random_foreach) custom;
-            if (Config.Random.Next()%4 == 0) {
+        private static bool RandomizeNpcResourceWork(uint ox, uint oy, uint x, uint y, object custom)
+        {
+            var feObj = (RandomForeach)custom;
+            if (Config.Random.Next()%4 == 0)
+            {
                 Structure structure;
                 Global.World.LockRegion(x, y);
                 if (Config.Random.Next()%2 == 0)
@@ -57,22 +62,36 @@ namespace Game.Logic {
                     structure = StructureFactory.GetNewStructure(2402, 1);
                 structure.X = x;
                 structure.Y = y;
-                feObj.city.Add(structure);
+                feObj.City.Add(structure);
                 if (!Global.World.Add(structure))
-                    feObj.city.ScheduleRemove(structure, false);
-                InitFactory.InitGameObject(InitCondition.ON_INIT, structure, structure.Type, structure.Lvl);
+                    feObj.City.ScheduleRemove(structure, false);
+                InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 Global.DbManager.Save(structure);
                 Global.World.UnlockRegion(x, y);
             }
             return true;
         }
 
-        public static void RandomizeNpcResource(City city, DbTransaction transaction) {
+        public static void RandomizeNpcResource(City city, DbTransaction transaction)
+        {
             byte radius = city.Radius;
             Structure structure = city.MainBuilding;
-            Random_foreach feObject = new Random_foreach(transaction, city);
-            TileLocator.foreach_object(structure.X, structure.Y, (byte) Math.Max(radius - 1, 0), false,
-                                         RandomizeNpcResourceWork, feObject);
+            var feObject = new RandomForeach(city);
+            TileLocator.ForeachObject(structure.X, structure.Y, (byte)Math.Max(radius - 1, 0), false, RandomizeNpcResourceWork, feObject);
         }
+
+        #region Nested type: RandomForeach
+
+        private class RandomForeach
+        {
+            public RandomForeach(City city)
+            {
+                City = city;
+            }
+
+            public City City { get; private set; }
+        }
+
+        #endregion
     }
 }

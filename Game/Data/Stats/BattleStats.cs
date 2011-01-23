@@ -1,5 +1,7 @@
-namespace Game.Data.Stats {
-    public class BattleStats : BaseStats {
+namespace Game.Data.Stats
+{
+    public class BattleStats : BaseStats
+    {
         #region Base Stats
 
         public ushort MaxHp { get; set; }
@@ -22,7 +24,8 @@ namespace Game.Data.Stats {
 
         #region Constructors
 
-        public BattleStats(BaseBattleStats baseStats) {
+        public BattleStats(BaseBattleStats baseStats)
+        {
             Base = baseStats;
             MaxHp = baseStats.MaxHp;
             Atk = baseStats.Atk;
@@ -30,7 +33,7 @@ namespace Game.Data.Stats {
             Def = baseStats.Def;
             Rng = baseStats.Rng;
             Stl = baseStats.Stl;
-            Spd = baseStats.Spd;            
+            Spd = baseStats.Spd;
         }
 
         #endregion

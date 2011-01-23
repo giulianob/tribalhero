@@ -3,74 +3,101 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class StructureUserDowngradeAction : ScheduledActiveAction {
+namespace Game.Logic.Actions
+{
+    class StructureUserDowngradeAction : ScheduledActiveAction
+    {
         private readonly uint cityId;
         private readonly uint structureId;
 
-        public StructureUserDowngradeAction(uint cityId, uint structureId) {
+        public StructureUserDowngradeAction(uint cityId, uint structureId)
+        {
             this.cityId = cityId;
             this.structureId = structureId;
         }
 
-        public StructureUserDowngradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, int workerType,
-                                      byte workerIndex, ushort actionCount, Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount) {
+        public StructureUserDowngradeAction(uint id,
+                                            DateTime beginTime,
+                                            DateTime nextTime,
+                                            DateTime endTime,
+                                            int workerType,
+                                            byte workerIndex,
+                                            ushort actionCount,
+                                            Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+        {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }
 
-        #region IAction Members
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.StructureUserdowngrade;
+            }
+        }
 
-        public override Error Execute() {
+        public override Error Execute()
+        {
             City city;
             Structure structure;
 
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
-                return Error.OBJECT_NOT_FOUND;
+                return Error.ObjectNotFound;
 
             if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
-                return Error.STRUCTURE_UNDESTROYABLE;
+                return Error.StructureUndestroyable;
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)), city, structure.Technologies)));
-            beginTime = DateTime.UtcNow;
+            endTime =
+                    DateTime.UtcNow.AddSeconds(
+                                               CalculateTime(Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                                                               city,
+                                                                               structure.Technologies)));
+            BeginTime = DateTime.UtcNow;
 
             if (WorkerObject.WorkerId != structureId)
                 city.Worker.References.Add(structure, this);
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        public override void Callback(object custom) {
+        public override void Callback(object custom)
+        {
             City city;
             Structure structure;
 
             // Block structure
-            using (new MultiObjectLock(cityId, structureId, out city, out structure)) {
+            using (new MultiObjectLock(cityId, structureId, out city, out structure))
+            {
                 if (!IsValid())
                     return;
 
                 if (WorkerObject.WorkerId != structureId)
                     city.Worker.References.Remove(structure, this);
 
-                if (structure == null) {
-                    StateChange(ActionState.COMPLETED);
+                if (structure == null)
+                {
+                    StateChange(ActionState.Completed);
                     return;
                 }
 
-                if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1) {
-                    StateChange(ActionState.FAILED);
+                if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
+                {
+                    StateChange(ActionState.Failed);
                     return;
                 }
 
-                if (structure.State.Type == ObjectState.BATTLE && structure.Lvl <= 1) {
-                    StateChange(ActionState.FAILED);
+                if (structure.State.Type == ObjectState.Battle && structure.Lvl <= 1)
+                {
+                    StateChange(ActionState.Failed);
                     return;
                 }
 
@@ -79,9 +106,10 @@ namespace Game.Logic.Actions {
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure, ActionInterrupt.CANCEL, new GameAction[] {this});
+            structure.City.Worker.Remove(structure, ActionInterrupt.Cancel, new GameAction[] {this});
 
-            using (new MultiObjectLock(cityId, structureId, out city, out structure)) {
+            using (new MultiObjectLock(cityId, structureId, out city, out structure))
+            {
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
@@ -89,12 +117,15 @@ namespace Game.Logic.Actions {
                 structure.IsBlocked = false;
 
                 // If structure is level 0 then we don't even try to give any laborers back or anything, just remove it
-                if (structure.Lvl == 0) {
-                    Global.World.Remove(structure);                    
+                if (structure.Lvl == 0)
+                {
+                    Global.World.Remove(structure);
                     city.ScheduleRemove(structure, false);
-                } else {
+                }
+                else
+                {
                     byte oldLabor = structure.Stats.Labor;
-                    StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte) (structure.Lvl - 1));
+                    StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                     structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                     structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
                     Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
@@ -103,9 +134,10 @@ namespace Game.Logic.Actions {
 
                     Procedure.SetResourceCap(structure.City);
 
-                    if (structure.Lvl > 0) {
-                        InitFactory.InitGameObject(InitCondition.ON_DOWNGRADE, structure, structure.Type, structure.Lvl);                        
-                    } else {
+                    if (structure.Lvl > 0)
+                        InitFactory.InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
+                    else
+                    {
                         Global.World.Remove(structure);
                         city.ScheduleRemove(structure, false);
                     }
@@ -114,52 +146,48 @@ namespace Game.Logic.Actions {
                 structure.EndUpdate();
                 city.EndUpdate();
 
-                StateChange(ActionState.COMPLETED);
+                StateChange(ActionState.Completed);
             }
         }
 
-        public override ActionType Type {
-            get { return ActionType.STRUCTURE_USERDOWNGRADE; }
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
         }
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
-        }
-
-        #endregion
-
-        private void InterruptCatchAll(bool wasKilled) {
+        private void InterruptCatchAll(bool wasKilled)
+        {
             City city;
-            using (new MultiObjectLock(cityId, out city)) {
+            using (new MultiObjectLock(cityId, out city))
+            {
                 if (!IsValid())
                     return;
 
                 Structure structure;
-                if (WorkerObject.WorkerId != structureId && city.TryGetStructure(structureId, out structure)) {
+                if (WorkerObject.WorkerId != structureId && city.TryGetStructure(structureId, out structure))
                     city.Worker.References.Remove(structure, this);
-                }
 
-                StateChange(ActionState.FAILED);
+                StateChange(ActionState.Failed);
             }
         }
 
-        public override void UserCancelled() {
+        public override void UserCancelled()
+        {
             InterruptCatchAll(false);
         }
 
-        public override void WorkerRemoved(bool wasKilled) {
+        public override void WorkerRemoved(bool wasKilled)
+        {
             InterruptCatchAll(wasKilled);
         }
 
         #region IPersistable
 
-        public override string Properties {
-            get {
-                return
-                    XMLSerializer.Serialize(new[] {
-                                                      new XMLKVPair("city_id", cityId),
-                                                      new XMLKVPair("structure_id", structureId)
-                                                  });
+        public override string Properties
+        {
+            get
+            {
+                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId)});
             }
         }
 

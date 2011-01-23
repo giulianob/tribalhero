@@ -6,55 +6,78 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Setup {
-    public class SystemVariable : IPersistableObject {
-        public SystemVariable(string key, object value) {
+namespace Game.Setup
+{
+    public class SystemVariable : IPersistableObject
+    {
+        public const string DB_TABLE = "system_variables";
+        private string key = string.Empty;
+
+        private object value;
+
+        public SystemVariable(string key, object value)
+        {
             this.key = key;
             this.value = value;
         }
 
-        private string key = string.Empty;
-
-        public string Key {
-            get { return key; }
-            set { key = value; }
+        public string Key
+        {
+            get
+            {
+                return key;
+            }
+            set
+            {
+                key = value;
+            }
         }
 
-        private object value;
-
-        public object Value {
-            get { return value; }
-            set { this.value = value; }
+        public object Value
+        {
+            get
+            {
+                return value;
+            }
+            set
+            {
+                this.value = value;
+            }
         }
 
         #region IPersistableObject Members
 
         public bool DbPersisted { get; set; }
 
-        #endregion
-
-        #region IPersistable Members
-
-        public const string DB_TABLE = "system_variables";
-
-        public string DbTable {
-            get { return DB_TABLE; }
+        public string DbTable
+        {
+            get
+            {
+                return DB_TABLE;
+            }
         }
 
-        public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("name", key, DbType.String)}; }
+        public DbColumn[] DbPrimaryKey
+        {
+            get
+            {
+                return new[] {new DbColumn("name", key, DbType.String)};
+            }
         }
 
-        public DbDependency[] DbDependencies {
-            get { return new DbDependency[] {}; }
+        public DbDependency[] DbDependencies
+        {
+            get
+            {
+                return new DbDependency[] {};
+            }
         }
 
-        public DbColumn[] DbColumns {
-            get {
-                return new[] {
-                                          new DbColumn("value", value, DbType.String),
-                                          new DbColumn("datatype", DataTypeSerializer.Serialize(value), DbType.Byte)
-                                      };
+        public DbColumn[] DbColumns
+        {
+            get
+            {
+                return new[] {new DbColumn("value", value, DbType.String), new DbColumn("datatype", DataTypeSerializer.Serialize(value), DbType.Byte)};
             }
         }
 

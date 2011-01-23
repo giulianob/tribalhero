@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region
+
 using Game.Data;
 
-namespace Game.Logic.Conditons {
-    public interface IBaseBattleStatsCondition {
+#endregion
+
+namespace Game.Logic.Conditons
+{
+    public interface IBaseBattleStatsCondition
+    {
         bool Check(BaseBattleStats obj);
     }
 }

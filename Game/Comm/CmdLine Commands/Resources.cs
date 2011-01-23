@@ -1,34 +1,37 @@
-﻿using System;
+﻿#region
+
+using System;
 using Game.Data;
-using Game.Setup;
 using Game.Util;
 using NDesk.Options;
+
+#endregion
 
 namespace Game.Comm
 {
     public partial class CmdLineProcessor
-    {        
+    {
         public string CmdSendResources(string[] parms)
         {
-            Resource resource = new Resource();
+            var resource = new Resource();
             string cityName = string.Empty;
             bool help = false;
 
             try
             {
                 var p = new OptionSet
-                            {
-                                { "?|help|h", v => help = true }, 
-                                { "city=", v => cityName = v.TrimMatchingQuotes() }, 
-                                { "crop=", v => resource.Crop = int.Parse(v) },
-                                { "wood=", v => resource.Wood = int.Parse(v) },
-                                { "labor=", v => resource.Labor = int.Parse(v) },
-                                { "iron=", v => resource.Iron = int.Parse(v) },
-                                { "gold=", v => resource.Gold = int.Parse(v) },
-                            };
+                        {
+                                {"?|help|h", v => help = true},
+                                {"city=", v => cityName = v.TrimMatchingQuotes()},
+                                {"crop=", v => resource.Crop = int.Parse(v)},
+                                {"wood=", v => resource.Wood = int.Parse(v)},
+                                {"labor=", v => resource.Labor = int.Parse(v)},
+                                {"iron=", v => resource.Iron = int.Parse(v)},
+                                {"gold=", v => resource.Gold = int.Parse(v)},
+                        };
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
-using Game.Data.Stats;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
@@ -17,11 +17,11 @@ namespace Game.Logic.Actions
 {
     class EngageAttackAction : PassiveAction
     {
+        private readonly Resource bonus;
         private readonly uint cityId;
+        private readonly AttackMode mode;
         private readonly byte stubId;
         private readonly uint targetCityId;
-        private readonly Resource bonus;
-        private readonly AttackMode mode;
         private int originalUnitCount;
         private int remainingUnitCount;
 
@@ -34,8 +34,7 @@ namespace Game.Logic.Actions
             bonus = new Resource();
         }
 
-        public EngageAttackAction(uint id, bool isVisible, IDictionary<string, string> properties)
-            : base(id, isVisible)
+        public EngageAttackAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
         {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
@@ -46,13 +45,37 @@ namespace Game.Logic.Actions
             targetCityId = uint.Parse(properties["target_city_id"]);
 
             bonus = new Resource(int.Parse(properties["crop"]),
-                                    int.Parse(properties["gold"]),
-                                    int.Parse(properties["iron"]),
-                                    int.Parse(properties["wood"]),
-                                    int.Parse(properties["labor"]));
+                                 int.Parse(properties["gold"]),
+                                 int.Parse(properties["iron"]),
+                                 int.Parse(properties["wood"]),
+                                 int.Parse(properties["labor"]));
             City targetCity;
             Global.World.TryGetObjects(targetCityId, out targetCity);
             RegisterBattleListeners(targetCity);
+        }
+
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.EngageAttack;
+            }
+        }
+
+        public override string Properties
+        {
+            get
+            {
+                return
+                        XmlSerializer.Serialize(new[]
+                                                {
+                                                        new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("troop_city_id", cityId),
+                                                        new XmlKvPair("troop_id", stubId), new XmlKvPair("mode", (byte)mode),
+                                                        new XmlKvPair("original_count", originalUnitCount), new XmlKvPair("crop", bonus.Crop),
+                                                        new XmlKvPair("gold", bonus.Gold), new XmlKvPair("iron", bonus.Iron), new XmlKvPair("wood", bonus.Wood),
+                                                        new XmlKvPair("labor", bonus.Labor),
+                                                });
+            }
         }
 
         private void RegisterBattleListeners(City targetCity)
@@ -73,7 +96,7 @@ namespace Game.Logic.Actions
 
         public override Error Validate(string[] parms)
         {
-            return Error.OK;
+            return Error.Ok;
         }
 
         private static IEnumerable<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject obj)
@@ -87,18 +110,17 @@ namespace Game.Logic.Actions
             City targetCity;
             TroopStub stub;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
-                !Global.World.TryGetObjects(targetCityId, out targetCity))
-                return Error.OBJECT_NOT_FOUND;
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+                return Error.ObjectNotFound;
 
-            List<TroopStub> list = new List<TroopStub> { stub };
+            var list = new List<TroopStub> {stub};
             originalUnitCount = stub.TotalCount;
 
             if (targetCity.Battle != null)
             {
                 RegisterBattleListeners(targetCity);
 
-                Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.REINFORCED);
+                Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.Reinforced);
 
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 
@@ -110,7 +132,7 @@ namespace Game.Logic.Actions
 
                 RegisterBattleListeners(targetCity);
 
-                BattleAction ba = new BattleAction(targetCityId);
+                var ba = new BattleAction(targetCityId);
 
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 
@@ -124,10 +146,10 @@ namespace Game.Logic.Actions
             stub.TroopObject.EndUpdate();
 
             stub.TroopObject.Stub.BeginUpdate();
-            stub.TroopObject.Stub.State = TroopState.BATTLE;
+            stub.TroopObject.Stub.State = TroopState.Battle;
             stub.TroopObject.Stub.EndUpdate();
 
-            return Error.OK;
+            return Error.Ok;
         }
 
         private void BattleWithdrawAttacker(IEnumerable<CombatObject> list)
@@ -140,7 +162,8 @@ namespace Game.Logic.Actions
 
             bool retreat = list.Any(co => co is AttackCombatUnit && ((AttackCombatUnit)co).TroopStub == stub);
 
-            if (!retreat) return;
+            if (!retreat)
+                return;
 
             DeregisterBattleListeners(targetCity);
 
@@ -149,12 +172,13 @@ namespace Game.Logic.Actions
             SetLootedResources(targetCity.Battle, stub);
             stub.TroopObject.EndUpdate();
 
-            StateChange(ActionState.COMPLETED);
+            StateChange(ActionState.Completed);
         }
 
         private void SetLootedResources(BattleManager battle, TroopStub stub)
         {
-            if (!battle.BattleStarted) return;
+            if (!battle.BattleStarted)
+                return;
 
             // Calculate bonus
             Resource resource = BattleFormulas.GetBonusResources(stub.TroopObject);
@@ -163,7 +187,7 @@ namespace Game.Logic.Actions
             resource.Add(bonus);
 
             // Copy looted resources since we'll be modifying the troop's loot variable
-            Resource looted = new Resource(stub.TroopObject.Stats.Loot);
+            var looted = new Resource(stub.TroopObject.Stats.Loot);
 
             // Add bonus to troop object            
             Resource returning;
@@ -183,14 +207,15 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
-            AttackCombatUnit unit = target as AttackCombatUnit;
+            var unit = target as AttackCombatUnit;
             if (unit == null)
-            {                
-                if (target.ClassType == BattleClass.STRUCTURE && target.IsDead)
+            {
+                if (target.ClassType == BattleClass.Structure && target.IsDead)
                 {
                     // if our troop knocked down a building, we get the bonus.
-                    if (((AttackCombatUnit)source).TroopStub == stub) {
-                        bonus.Add(StructureFactory.GetCost(target.Type, target.Lvl) / 2);
+                    if (((AttackCombatUnit)source).TroopStub == stub)
+                    {
+                        bonus.Add(StructureFactory.GetCost(target.Type, target.Lvl)/2);
                         Global.DbManager.Save(this);
                     }
 
@@ -201,7 +226,8 @@ namespace Game.Logic.Actions
             }
 
             // Check if this troop belongs to us
-            if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject) {
+            if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject)
+            {
                 // Check to see if player should retreat
                 remainingUnitCount = stub.TotalCount;
 
@@ -209,7 +235,7 @@ namespace Game.Logic.Actions
                 if (unit.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount > Formula.GetAttackModeTolerance(originalUnitCount, mode))
                     return;
 
-                targetCity.Battle.RemoveFromAttack(new List<TroopStub> { stub }, remainingUnitCount == 0 ? ReportState.DYING : ReportState.RETREATING);
+                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, remainingUnitCount == 0 ? ReportState.Dying : ReportState.Retreating);
             }
         }
 
@@ -219,8 +245,7 @@ namespace Game.Logic.Actions
             City targetCity;
             TroopStub stub;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
-                !Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
             DeregisterBattleListeners(targetCity);
@@ -229,11 +254,11 @@ namespace Game.Logic.Actions
             SetLootedResources(targetCity.Battle, stub);
             stub.TroopObject.Stub.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
-            stub.TroopObject.Stub.State = TroopState.IDLE;
+            stub.TroopObject.Stub.State = TroopState.Idle;
             stub.TroopObject.Stub.EndUpdate();
             stub.TroopObject.EndUpdate();
 
-            StateChange(ActionState.COMPLETED);
+            StateChange(ActionState.Completed);
         }
 
         private void BattleEnterRound(CombatList atk, CombatList def, uint round)
@@ -242,20 +267,20 @@ namespace Game.Logic.Actions
             TroopStub stub;
             City targetCity;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
-                !Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
-            ReduceStamina(targetCity, stub, (short) (stub.TroopObject.Stats.Stamina - 1));
+            ReduceStamina(targetCity, stub, (short)(stub.TroopObject.Stats.Stamina - 1));
         }
 
-        private void ReduceStamina(City targetCity, TroopStub stub, short stamina) {
+        private void ReduceStamina(City targetCity, TroopStub stub, short stamina)
+        {
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.Stats.Stamina = stamina;
             stub.TroopObject.EndUpdate();
 
             if (stub.TroopObject.Stats.Stamina == 0)
-                targetCity.Battle.RemoveFromAttack(new List<TroopStub> { stub }, ReportState.OUT_OF_STAMINA);
+                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, ReportState.OutOfStamina);
         }
 
         public override void UserCancelled()
@@ -265,33 +290,5 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
         }
-
-        public override ActionType Type
-        {
-            get { return ActionType.ENGAGE_ATTACK; }
-        }
-
-        #region IPersistable Members
-
-        public override string Properties
-        {
-            get
-            {
-                return
-                    XMLSerializer.Serialize(new[] {
-                                                                new XMLKVPair("target_city_id", targetCityId),
-                                                                new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
-                                                                new XMLKVPair("mode", (byte) mode),
-                                                                new XMLKVPair("original_count", originalUnitCount),
-                                                                new XMLKVPair("crop",bonus.Crop),
-                                                                new XMLKVPair("gold",bonus.Gold),
-                                                                new XMLKVPair("iron",bonus.Iron),
-                                                                new XMLKVPair("wood",bonus.Wood),
-                                                                new XMLKVPair("labor",bonus.Labor),
-                                                            });
-            }
-        }
-
-        #endregion
     }
 }

@@ -6,51 +6,35 @@ using Game.Setup;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class TechnologyCreateAction : PassiveAction, IScriptable {
+namespace Game.Logic.Actions
+{
+    class TechnologyCreateAction : PassiveAction, IScriptable
+    {
+        private byte lvl;
         private Structure obj;
         private uint techId;
-        private byte lvl;
         private TimeSpan ts;
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
-        }
-
-        public override Error Execute() {
-            if (obj == null)
-                return Error.OBJECT_NOT_FOUND;
-
-            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, lvl);
-            if (techBase == null)
-                return Error.OBJECT_NOT_FOUND;
-
-            Technology tech;
-            if (!obj.Technologies.TryGetTechnology(techBase.techtype, out tech)) {
-                tech = new Technology(techBase);
-                obj.Technologies.BeginUpdate();
-                obj.Technologies.Add(tech);
-                obj.Technologies.EndUpdate();
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.TechCreate;
             }
-
-            StateChange(ActionState.COMPLETED);
-
-            return Error.OK;
         }
 
-        public override void WorkerRemoved(bool wasKilled) {            
+        public override string Properties
+        {
+            get
+            {
+                return string.Empty;
+            }
         }
 
-        public override void UserCancelled() {            
-        }
+        #region IScriptable Members
 
-        public override ActionType Type {
-            get { return ActionType.TECH_CREATE; }
-        }
-
-        #region ICanInit Members
-
-        public void ScriptInit(GameObject obj, string[] parms) {
+        public void ScriptInit(GameObject obj, string[] parms)
+        {
             if ((this.obj = obj as Structure) == null)
                 throw new Exception();
             techId = uint.Parse(parms[0]);
@@ -61,8 +45,40 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override string Properties {
-            get { return string.Empty; }
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
+        }
+
+        public override Error Execute()
+        {
+            if (obj == null)
+                return Error.ObjectNotFound;
+
+            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, lvl);
+            if (techBase == null)
+                return Error.ObjectNotFound;
+
+            Technology tech;
+            if (!obj.Technologies.TryGetTechnology(techBase.Techtype, out tech))
+            {
+                tech = new Technology(techBase);
+                obj.Technologies.BeginUpdate();
+                obj.Technologies.Add(tech);
+                obj.Technologies.EndUpdate();
+            }
+
+            StateChange(ActionState.Completed);
+
+            return Error.Ok;
+        }
+
+        public override void WorkerRemoved(bool wasKilled)
+        {
+        }
+
+        public override void UserCancelled()
+        {
         }
     }
 }

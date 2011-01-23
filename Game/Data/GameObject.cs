@@ -1,35 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region
+
+using System;
 using Game.Logic;
 using Game.Util;
 
-namespace Game.Data {
-    public abstract class GameObject : SimpleGameObject, ICanDo {
+#endregion
 
-        bool isBlocked;
-        public bool IsBlocked {
-            get { return isBlocked; }
-            set {
+namespace Game.Data
+{
+    public abstract class GameObject : SimpleGameObject, ICanDo
+    {
+        private bool isBlocked;
+
+        public bool IsBlocked
+        {
+            get
+            {
+                return isBlocked;
+            }
+            set
+            {
                 CheckUpdateMode();
                 isBlocked = value;
             }
         }
-        
-        public City City { get; set; }
 
         #region ICanDo Members
 
-        public uint WorkerId {
-            get { return objectId; }
+        public City City { get; set; }
+
+        public uint WorkerId
+        {
+            get
+            {
+                return objectId;
+            }
         }
 
         #endregion
 
         #region Update Events
 
-        public override void CheckUpdateMode() {
+        public override void CheckUpdateMode()
+        {
             //If city is null then we dont care about being inside of a begin/end update block
             if (!Global.FireEvents || City == null)
                 return;
@@ -40,16 +53,18 @@ namespace Game.Data {
             MultiObjectLock.ThrowExceptionIfNotLocked(City);
         }
 
-        public new void BeginUpdate() {
+        public new void BeginUpdate()
+        {
             if (updating)
                 throw new Exception("Nesting beginupdate");
             updating = true;
 
             origX = x;
             origY = y;
-        }        
+        }
 
-        protected new void Update() {
+        protected new void Update()
+        {
             if (!Global.FireEvents)
                 return;
 

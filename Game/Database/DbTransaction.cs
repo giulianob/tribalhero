@@ -4,70 +4,87 @@ using System;
 
 #endregion
 
-namespace Game.Database {
-    public abstract class DbTransaction : IDisposable {
-        public enum DbTransactionState {
-            IN_PROGRESS,
-            COMMITTED,
-            ROLLEDBACK,  
-            DISPOSED
+namespace Game.Database
+{
+    public abstract class DbTransaction : IDisposable
+    {
+        #region DbTransactionState enum
+
+        public enum DbTransactionState
+        {
+            InProgress,
+            Committed,
+            Rolledback,
+            Disposed
         }
 
-        internal object transaction;
+        #endregion
+
+        internal object Transaction;
+
         protected IDbManager manager;
 
-        private DbTransactionState state = DbTransactionState.IN_PROGRESS;
-
         private int referenceCount;
+        private DbTransactionState state = DbTransactionState.InProgress;
 
-        public int ReferenceCount {
-            get { return referenceCount; }
-            set {
+        internal DbTransaction(IDbManager manager, object transaction)
+        {
+            this.manager = manager;
+            Transaction = transaction;
+        }
+
+        public int ReferenceCount
+        {
+            get
+            {
+                return referenceCount;
+            }
+            set
+            {
                 referenceCount = value;
                 if (value > 1)
                     throw new Exception("Only 1 transaction reference is allowed");
             }
         }
 
-        internal DbTransaction(IDbManager manager, object transaction) {
-            this.manager = manager;
-            this.transaction = transaction;
-        }
-
-        protected virtual void Commit() {
-            state = DbTransactionState.COMMITTED;
-
-            if (referenceCount == 0)
-                state = DbTransactionState.DISPOSED;
-        }
-
-        public virtual void Rollback() {
-            state = DbTransactionState.ROLLEDBACK;
-
-            if (referenceCount == 0)
-                state = DbTransactionState.DISPOSED;
-        }
-
         #region IDisposable Members
 
-        public void Dispose() {
+        public void Dispose()
+        {
             referenceCount--;
 
             if (referenceCount != 0)
                 return;
 
-            switch (state) {
-                case DbTransactionState.ROLLEDBACK:
+            switch(state)
+            {
+                case DbTransactionState.Rolledback:
                     Rollback();
                     break;
-                case DbTransactionState.IN_PROGRESS:
+                case DbTransactionState.InProgress:
                     Commit();
                     break;
-            }            
+            }
 
             manager.ClearThreadTransaction();
         }
 
         #endregion
+
+        protected virtual void Commit()
+        {
+            state = DbTransactionState.Committed;
+
+            if (referenceCount == 0)
+                state = DbTransactionState.Disposed;
+        }
+
+        public virtual void Rollback()
+        {
+            state = DbTransactionState.Rolledback;
+
+            if (referenceCount == 0)
+                state = DbTransactionState.Disposed;
+        }
     }
 }

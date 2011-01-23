@@ -11,38 +11,25 @@ namespace Game.Setup
 {
     public class MapFactory
     {
-
-        class Point
-        {
-            public uint X { get; set; }
-            public uint Y { get; set; }
-            public Point(uint x, uint y)
-            {
-                X = x;
-                Y = y;
-            }
-        }
-
-        private static Dictionary<int, List<Point>> dict = new Dictionary<int, List<Point>>();
+        private static readonly Dictionary<int, List<Point>> dict = new Dictionary<int, List<Point>>();
         private static int index;
-        private static int region_index;
-        private static uint region_width = Config.region_width * 2;
-        private static uint region_height = Config.region_height * 3;
-        private static int region_col = (int)(Config.map_width / region_width);
-        private static int region_row = (int)(Config.map_height / region_height);
-        private static int region_count = region_col * region_row;
+        private static int regionIndex;
+        private static readonly uint regionWidth = Config.region_width*2;
+        private static readonly uint regionHeight = Config.region_height*3;
+        private static readonly int regionCol = (int)(Config.map_width/regionWidth);
+        private static readonly int regionRow = (int)(Config.map_height/regionHeight);
+        private static int regionCount = regionCol*regionRow;
 
         private static int GetRegion(uint x, uint y)
         {
-            return (int)(x / region_width + (y / region_height) * region_col);
+            return (int)(x/regionWidth + (y/regionHeight)*regionCol);
         }
 
-        public static void init(string filename)
+        public static void Init(string filename)
         {
-            //     if (Config.map_width % region_width != 0 || Config.map_height % region_height != 0) throw new Exception();
-            for (int i = 0; i < region_count; ++i)
+            for (int i = 0; i < regionCount; ++i)
                 dict[i] = new List<Point>();
-            using (StreamReader reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (var reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
                 String line;
                 while ((line = reader.ReadLine()) != null)
@@ -55,12 +42,12 @@ namespace Game.Setup
                     List<Point> list;
                     if (!dict.TryGetValue(region, out list))
                     {
-                        for (int i = region_count; i <= region; ++i)
+                        for (int i = regionCount; i <= region; ++i)
                         {
                             list = new List<Point>();
                             dict[i] = list;
                         }
-                        region_count = region + 1;
+                        regionCount = region + 1;
                     }
 
                     list.Add(new Point(x, y));
@@ -76,15 +63,15 @@ namespace Game.Setup
             List<Point> list;
             do
             {
-                if (!dict.TryGetValue(region_index, out list))                
-                    return false;                
+                if (!dict.TryGetValue(regionIndex, out list))
+                    return false;
 
                 do
                 {
                     if (index >= list.Count)
                     {
                         index = 0;
-                        ++region_index;
+                        ++regionIndex;
                         break;
                     }
 
@@ -94,14 +81,30 @@ namespace Game.Setup
                     if (objects == null)
                         continue;
 
-                    if (objects.Count == 0) {
+                    if (objects.Count == 0)
+                    {
                         x = point.X;
                         y = point.Y;
                         return true;
                     }
-
                 } while (true);
             } while (true);
         }
+
+        #region Nested type: Point
+
+        private class Point
+        {
+            public Point(uint x, uint y)
+            {
+                X = x;
+                Y = y;
+            }
+
+            public uint X { get; private set; }
+            public uint Y { get; private set; }
+        }
+
+        #endregion
     }
 }

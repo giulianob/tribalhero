@@ -9,119 +9,132 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Comm {
-    public partial class Processor {
-        public void CmdMarketGetPrices(Session session, Packet packet) {
-            Packet reply = new Packet(packet);
-            reply.AddUInt16((ushort) Market.Crop.Price);
-            reply.AddUInt16((ushort) Market.Wood.Price);
-            reply.AddUInt16((ushort) Market.Iron.Price);
+namespace Game.Comm
+{
+    public partial class Processor
+    {
+        public void CmdMarketGetPrices(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+            reply.AddUInt16((ushort)Market.Crop.Price);
+            reply.AddUInt16((ushort)Market.Wood.Price);
+            reply.AddUInt16((ushort)Market.Iron.Price);
             session.Write(reply);
         }
 
-        public void CmdMarketBuy(Session session, Packet packet) {
+        public void CmdMarketBuy(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             ResourceType type;
             ushort quantity;
             ushort price;
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
-                type = (ResourceType) packet.GetByte();
+                type = (ResourceType)packet.GetByte();
                 quantity = packet.GetUInt16();
                 price = packet.GetUInt16();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            if (type == ResourceType.GOLD) {
-                ReplyError(session, packet, Error.RESOURCE_NOT_TRADABLE);
+            if (type == ResourceType.Gold)
+            {
+                ReplyError(session, packet, Error.ResourceNotTradable);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
-                if (city == null) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                if (obj != null) {
+                if (obj != null)
+                {
                     Error ret;
-                    ResourceBuyAction rba = new ResourceBuyAction(cityId, objectId, price, quantity, type);
-                    if (
-                        (ret =
-                         city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rba, obj.Technologies)) ==
-                        0)
+                    var rba = new ResourceBuyAction(cityId, objectId, price, quantity, type);
+                    if ((ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rba, obj.Technologies)) == 0)
                         ReplySuccess(session, packet);
                     else
                         ReplyError(session, packet, ret);
                     return;
                 }
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
             }
         }
 
-        public void CmdMarketSell(Session session, Packet packet) {
+        public void CmdMarketSell(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             ResourceType type;
             ushort quantity;
             ushort price;
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
-                type = (ResourceType) packet.GetByte();
+                type = (ResourceType)packet.GetByte();
                 quantity = packet.GetUInt16();
                 price = packet.GetUInt16();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            if (type == ResourceType.GOLD) {
-                ReplyError(session, packet, Error.RESOURCE_NOT_TRADABLE);
+            if (type == ResourceType.Gold)
+            {
+                ReplyError(session, packet, Error.ResourceNotTradable);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
-                if (city == null) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                if (obj != null) {
+                if (obj != null)
+                {
                     Error ret;
-                    ResourceSellAction rsa = new ResourceSellAction(cityId, objectId, price, quantity, type);
-                    if (
-                        (ret =
-                         city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rsa, obj.Technologies)) ==
-                        0)
+                    var rsa = new ResourceSellAction(cityId, objectId, price, quantity, type);
+                    if ((ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rsa, obj.Technologies)) == 0)
                         ReplySuccess(session, packet);
                     else
                         ReplyError(session, packet, ret);
                     return;
                 }
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
             }
         }
     }

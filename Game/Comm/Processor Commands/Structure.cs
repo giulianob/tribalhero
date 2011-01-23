@@ -6,105 +6,118 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
-using System.Collections.Generic;
-using Game.Logic;
 
 #endregion
 
-namespace Game.Comm {
-    public partial class Processor {
-        public void CmdGetStructureInfo(Session session, Packet packet) {
+namespace Game.Comm
+{
+    public partial class Processor
+    {
+        public void CmdGetStructureInfo(Session session, Packet packet)
+        {
             City city;
-            Structure structure;           
+            Structure structure;
 
             uint cityId;
             uint objectId;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(cityId, objectId, out city, out structure)) {
-                if (city == null || structure == null) {
-                    ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
+            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            {
+                if (city == null || structure == null)
+                {
+                    ReplyError(session, packet, Error.ObjectNotFound);
                     return;
                 }
 
-                Packet reply = new Packet(packet);
+                var reply = new Packet(packet);
                 reply.AddByte(structure.Stats.Base.Lvl);
-                if (session.Player == structure.City.Owner) {
+                if (session.Player == structure.City.Owner)
+                {
                     reply.AddByte(structure.Stats.Labor);
                     reply.AddUInt16(structure.Stats.Hp);
 
-                    foreach (Property prop in PropertyFactory.GetProperties(structure.Type)) {
-                        switch (prop.Type) {
-                            case DataType.BYTE:
-                                reply.AddByte((byte) prop.GetValue(structure));
+                    foreach (var prop in PropertyFactory.GetProperties(structure.Type))
+                    {
+                        switch(prop.Type)
+                        {
+                            case DataType.Byte:
+                                reply.AddByte((byte)prop.GetValue(structure));
                                 break;
-                            case DataType.USHORT:
-                                reply.AddUInt16((ushort) prop.GetValue(structure));
+                            case DataType.UShort:
+                                reply.AddUInt16((ushort)prop.GetValue(structure));
                                 break;
-                            case DataType.UINT:
-                                reply.AddUInt32((uint) prop.GetValue(structure));
+                            case DataType.UInt:
+                                reply.AddUInt32((uint)prop.GetValue(structure));
                                 break;
-                            case DataType.STRING:
-                                reply.AddString((string) prop.GetValue(structure));
+                            case DataType.String:
+                                reply.AddString((string)prop.GetValue(structure));
                                 break;
-                            case DataType.INT:
-                                reply.AddInt32((int) prop.GetValue(structure));
+                            case DataType.Int:
+                                reply.AddInt32((int)prop.GetValue(structure));
                                 break;
-                            case DataType.FLOAT:
+                            case DataType.Float:
                                 reply.AddFloat((float)prop.GetValue(structure));
                                 break;
                         }
                     }
-
                 }
-                else {
-                    foreach (Property prop in PropertyFactory.GetProperties(structure.Type, Visibility.PUBLIC)) {
-                        switch (prop.Type) {
-                            case DataType.BYTE:
+                else
+                {
+                    foreach (var prop in PropertyFactory.GetProperties(structure.Type, Visibility.Public))
+                    {
+                        switch(prop.Type)
+                        {
+                            case DataType.Byte:
                                 reply.AddByte((byte)prop.GetValue(structure));
                                 break;
-                            case DataType.USHORT:
+                            case DataType.UShort:
                                 reply.AddUInt16((ushort)prop.GetValue(structure));
                                 break;
-                            case DataType.UINT:
+                            case DataType.UInt:
                                 reply.AddUInt32((uint)prop.GetValue(structure));
                                 break;
-                            case DataType.STRING:
+                            case DataType.String:
                                 reply.AddString((string)prop.GetValue(structure));
                                 break;
-                            case DataType.INT:
+                            case DataType.Int:
                                 reply.AddInt32((int)prop.GetValue(structure));
                                 break;
-                            case DataType.FLOAT:
+                            case DataType.Float:
                                 reply.AddFloat((float)prop.GetValue(structure));
                                 break;
                         }
-                    }                    
+                    }
                 }
 
                 session.Write(reply);
             }
         }
 
-        public void CmdGetForestInfo(Session session, Packet packet) {
-            Packet reply = new Packet(packet);
+        public void CmdGetForestInfo(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
             Forest forest;
 
-            uint forestId;            
+            uint forestId;
 
-            try {
-                forestId = packet.GetUInt32();                
+            try
+            {
+                forestId = packet.GetUInt32();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
@@ -112,42 +125,47 @@ namespace Game.Comm {
             {
                 if (!Global.World.Forests.TryGetValue(forestId, out forest))
                 {
-                    ReplyError(session, packet, Error.OBJECT_NOT_FOUND);
+                    ReplyError(session, packet, Error.ObjectNotFound);
                     return;
                 }
-                
-                reply.AddFloat((float)(forest.Rate / Config.seconds_per_unit));
+
+                reply.AddFloat((float)(forest.Rate/Config.seconds_per_unit));
                 reply.AddInt32(forest.Labor);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(forest.DepleteTime.ToUniversalTime()));
-                PacketHelper.AddToPacket(forest.Wood, reply);                
+                PacketHelper.AddToPacket(forest.Wood, reply);
             }
 
             session.Write(reply);
         }
 
-        public void CmdGetCityUsername(Session session, Packet packet) {
-            Packet reply = new Packet(packet);
+        public void CmdGetCityUsername(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
 
             byte count;
             uint[] cityIds;
-            try {
+            try
+            {
                 count = packet.GetByte();
                 cityIds = new uint[count];
                 for (int i = 0; i < count; i++)
                     cityIds[i] = packet.GetUInt32();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             reply.AddByte(count);
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++)
+            {
                 uint cityId = cityIds[i];
                 City city;
 
-                if (!Global.World.TryGetObjects(cityId, out city)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (!Global.World.TryGetObjects(cityId, out city))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
@@ -158,54 +176,66 @@ namespace Game.Comm {
             session.Write(reply);
         }
 
-        public void CmdLaborMove(Session session, Packet packet) {
+        public void CmdLaborMove(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             byte count;
             Structure obj;
             City city;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
                 count = packet.GetByte();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 city = session.Player.GetCity(cityId);
 
-                if (city == null || !city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null || !city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 LaborMoveAction lma;
-                if (obj.Stats.Labor < count) {
+                if (obj.Stats.Labor < count)
+                {
                     //move from city to obj
-                    count = (byte) (count - obj.Stats.Labor);
+                    count = (byte)(count - obj.Stats.Labor);
 
-                    if (city.Resource.Labor.Value < count) {
+                    if (city.Resource.Labor.Value < count)
+                    {
                         //not enough available in city
-                        ReplyError(session, packet, Error.LABOR_NOT_ENOUGH);
+                        ReplyError(session, packet, Error.LaborNotEnough);
                         return;
                     }
- 
-                    if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor) {
+
+                    if (obj.Stats.Labor + count > obj.Stats.Base.MaxLabor)
+                    {
                         //adding too much to obj
-                        ReplyError(session, packet, Error.LABOR_OVERFLOW);
+                        ReplyError(session, packet, Error.LaborOverflow);
                         return;
                     }
-                    
+
                     lma = new LaborMoveAction(cityId, objectId, true, count);
-                } else if (obj.Stats.Labor > count) {
+                }
+                else if (obj.Stats.Labor > count)
+                {
                     //move from obj to city
-                    count = (byte) (obj.Stats.Labor - count);
+                    count = (byte)(obj.Stats.Labor - count);
                     lma = new LaborMoveAction(cityId, objectId, false, count);
-                } else {
+                }
+                else
+                {
                     ReplySuccess(session, packet);
                     return;
                 }
@@ -219,34 +249,38 @@ namespace Game.Comm {
             }
         }
 
-        public void CmdTechnologyUpgrade(Session session, Packet packet) {
+        public void CmdTechnologyUpgrade(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             uint techId;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
                 techId = packet.GetUInt32();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
                 Structure obj;
 
-                if (city == null || !city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null || !city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                TechnologyUpgradeAction upgradeAction = new TechnologyUpgradeAction(cityId, objectId, techId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction,
-                                                 obj.Technologies);
+                var upgradeAction = new TechnologyUpgradeAction(cityId, objectId, techId);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -254,73 +288,84 @@ namespace Game.Comm {
             }
         }
 
-        public void CmdCancelAction(Session session, Packet packet) {
+        public void CmdCancelAction(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             ushort actionId;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
                 actionId = packet.GetUInt16();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
-                if (city == null) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.ACTION_UNCANCELABLE);
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.ActionUncancelable);
                     return;
                 }
 
                 Error ret;
-                if ((ret = city.Worker.Cancel(actionId)) != Error.OK)
+                if ((ret = city.Worker.Cancel(actionId)) != Error.Ok)
                     ReplyError(session, packet, ret);
                 else
                     ReplySuccess(session, packet);
             }
         }
 
-        public void CmdUpgradeStructure(Session session, Packet packet) {
+        public void CmdUpgradeStructure(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
-                if (city == null) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                StructureUpgradeAction upgradeAction = new StructureUpgradeAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction,
-                                                 obj.Technologies);
+                var upgradeAction = new StructureUpgradeAction(cityId, objectId);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -330,37 +375,43 @@ namespace Game.Comm {
             }
         }
 
-        public void CmdDowngradeStructure(Session session, Packet packet) {
+        public void CmdDowngradeStructure(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             uint targetId;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
                 targetId = packet.GetUInt32();
-            } catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
-                if (city == null) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                StructureUserDowngradeAction downgradeAction = new StructureUserDowngradeAction(cityId, targetId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, downgradeAction,
-                                                 obj.Technologies);
+                var downgradeAction = new StructureUserDowngradeAction(cityId, targetId);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, downgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -370,48 +421,53 @@ namespace Game.Comm {
             }
         }
 
-        public void CmdCreateStructure(Session session, Packet packet) {
+        public void CmdCreateStructure(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             uint x;
             uint y;
             ushort type;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
                 x = packet.GetUInt32();
                 y = packet.GetUInt32();
                 type = packet.GetUInt16();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             if (!Global.World.IsValidXandY(x, y))
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
-                if (city == null) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                StructureBuildAction buildaction = new StructureBuildAction(cityId, type, x, y);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, buildaction,
-                                                 obj.Technologies);
+                var buildaction = new StructureBuildAction(cityId, type, x, y);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, buildaction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -420,38 +476,44 @@ namespace Game.Comm {
             }
         }
 
-        public void CmdChangeStructure(Session session, Packet packet) {
+        public void CmdChangeStructure(Session session, Packet packet)
+        {
             uint cityId;
             uint objectId;
             ushort structureType;
             byte structureLvl;
 
-            try {
+            try
+            {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
                 structureType = packet.GetUInt16();
                 structureLvl = packet.GetByte();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (new MultiObjectLock(session.Player))
+            {
                 City city = session.Player.GetCity(cityId);
 
-                if (city == null) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
-                StructureChangeAction changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl);
+                var changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, changeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -461,48 +523,52 @@ namespace Game.Comm {
             }
         }
 
-        public void CmdCreateForestCamp(Session session, Packet packet) {
-            uint cityId;            
+        public void CmdCreateForestCamp(Session session, Packet packet)
+        {
+            uint cityId;
             uint forestId;
             ushort type;
             byte labor;
 
-            try {
-                cityId = packet.GetUInt32();                
+            try
+            {
+                cityId = packet.GetUInt32();
                 forestId = packet.GetUInt32();
                 type = packet.GetUInt16();
                 labor = packet.GetByte();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             City city = session.Player.GetCity(cityId);
-            if (city == null) {
-                ReplyError(session, packet, Error.CITY_NOT_FOUND);
+            if (city == null)
+            {
+                ReplyError(session, packet, Error.CityNotFound);
                 return;
             }
 
-            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] { forestId }, city, Global.World.Forests)) {
-                
+            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            {
                 // Get the lumbermill
                 Structure lumbermill = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("Wood", structure));
-                
-                if (lumbermill == null || lumbermill.Lvl == 0) {
-                    ReplyError(session, packet, Error.LUMBERMILL_UNAVAILABLE);
+
+                if (lumbermill == null || lumbermill.Lvl == 0)
+                {
+                    ReplyError(session, packet, Error.LumbermillUnavailable);
                     return;
                 }
 
-                ForestCampBuildAction buildaction = new ForestCampBuildAction(cityId, lumbermill.ObjectId, forestId, type, labor);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(lumbermill), lumbermill, buildaction,
-                                                 lumbermill.Technologies);
+                var buildaction = new ForestCampBuildAction(cityId, lumbermill.ObjectId, forestId, type, labor);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(lumbermill), lumbermill, buildaction, lumbermill.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
                     ReplySuccess(session, packet);
                 return;
             }
-        }    
+        }
     }
 }

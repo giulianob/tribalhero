@@ -5,20 +5,26 @@ using System.Linq;
 
 #endregion
 
-namespace Game.Battle {
-    class BattleOrder : List<CombatObject> {
+namespace Game.Battle
+{
+    class BattleOrder : List<CombatObject>
+    {
         private uint round;
 
-        public BattleOrder(uint round) {
+        public BattleOrder(uint round)
+        {
             this.round = round;
         }
 
-        public void ParticipatedInRound() {
+        public void ParticipatedInRound()
+        {
             round++;
         }
 
-        public bool NextObject(out CombatObject outObj) {
-            if (Count == 0) {
+        public bool NextObject(out CombatObject outObj)
+        {
+            if (Count == 0)
+            {
                 outObj = null;
                 return true;
             }

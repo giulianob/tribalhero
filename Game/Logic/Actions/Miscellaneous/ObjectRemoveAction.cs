@@ -1,17 +1,23 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Setup;
 using Game.Util;
 
-namespace Game.Logic.Actions {
-    class ObjectRemoveAction : ScheduledPassiveAction {
+#endregion
 
-        uint cityId;
-        uint objectId;
-        bool wasKilled;
-        List<uint> cancelActions;
+namespace Game.Logic.Actions
+{
+    class ObjectRemoveAction : ScheduledPassiveAction
+    {
+        private readonly List<uint> cancelActions;
+        private readonly uint cityId;
+        private readonly uint objectId;
+        private readonly bool wasKilled;
 
         public ObjectRemoveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions)
         {
@@ -21,96 +27,129 @@ namespace Game.Logic.Actions {
             this.cancelActions = cancelActions;
         }
 
-        public ObjectRemoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
-                          Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, isVisible) {
+        public ObjectRemoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible)
+        {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
             wasKilled = bool.Parse(properties["was_killed"]);
 
             cancelActions = new List<uint>();
-            foreach (string actionId in properties["cancel_references"].Split(',')) 
-                cancelActions.Add(uint.Parse(actionId));            
+            foreach (var actionId in properties["cancel_references"].Split(','))
+                cancelActions.Add(uint.Parse(actionId));
         }
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.ObjectRemove;
+            }
         }
 
-        public override Error Execute() {
-            beginTime = DateTime.UtcNow;
+        public override string Properties
+        {
+            get
+            {
+                return
+                        XmlSerializer.Serialize(new[]
+                                                {
+                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId), new XmlKvPair("was_killed", wasKilled),
+                                                        new XmlKvPair("cancel_references", string.Join(",", cancelActions.ConvertAll(t => t.ToString()).ToArray())),
+                                                });
+            }
+        }
+
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
+        }
+
+        public override Error Execute()
+        {
+            BeginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow;
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        public override void Callback(object custom) {
+        public override void Callback(object custom)
+        {
             City city;
             GameObject obj;
-            
-            using (new MultiObjectLock(cityId, out city)) {
+
+            using (new MultiObjectLock(cityId, out city))
+            {
                 if (city == null)
                     throw new Exception("City is missing");
 
-                if (!city.TryGetObject(objectId, out obj)) {
+                if (!city.TryGetObject(objectId, out obj))
                     throw new Exception("Obj is missing");
-                }   
             }
 
             // Cancel all active actions
-            while (true) {
+            while (true)
+            {
                 GameAction action;
 
-                using (new MultiObjectLock(cityId, out city)) {
+                using (new MultiObjectLock(cityId, out city))
+                {
                     if (city == null)
                         throw new Exception("City is missing");
 
                     GameObject obj1 = obj;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
-                    if (action == null) break;
+                    if (action == null)
+                        break;
                 }
 
                 action.WorkerRemoved(wasKilled);
             }
 
             // Cancel all passive actions
-            while (true) {
+            while (true)
+            {
                 GameAction action;
 
-                using (new MultiObjectLock(cityId, out city)) {
+                using (new MultiObjectLock(cityId, out city))
+                {
                     if (city == null)
                         throw new Exception("City is missing");
 
                     GameObject obj1 = obj;
                     action = city.Worker.PassiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
-                    if (action == null) break;
+                    if (action == null)
+                        break;
                 }
 
                 action.WorkerRemoved(wasKilled);
             }
 
             // Cancel all references
-            foreach (uint actionId in cancelActions) {
+            foreach (var actionId in cancelActions)
+            {
                 GameAction action;
-                using (new MultiObjectLock(cityId, out city)) {
+                using (new MultiObjectLock(cityId, out city))
+                {
                     if (city == null)
                         throw new Exception("City is missing");
 
-                    GameObject obj1 = obj;
                     uint actionId1 = actionId;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.ActionId == actionId1);
-                    if (action == null) continue;
+                    if (action == null)
+                        continue;
                 }
 
                 action.WorkerRemoved(wasKilled);
             }
 
-            using (new MultiObjectLock(cityId, out city)) {
+            using (new MultiObjectLock(cityId, out city))
+            {
                 if (city == null)
-                    throw new Exception("City is missing");         
-                
+                    throw new Exception("City is missing");
+
                 if (!city.TryGetObject(objectId, out obj))
                     throw new Exception("Obj is missing");
 
@@ -123,32 +162,17 @@ namespace Game.Logic.Actions {
                 else if (obj is Structure)
                     city.DoRemove(obj as Structure);
 
-                StateChange(ActionState.COMPLETED);
+                StateChange(ActionState.Completed);
             }
         }
 
-        public override void UserCancelled() {            
+        public override void UserCancelled()
+        {
         }
 
-        public override void WorkerRemoved(bool wasKilled) {
+        public override void WorkerRemoved(bool wasKilled)
+        {
             throw new Exception("City was destroyed?");
-        }
-
-        public override ActionType Type {
-            get { return ActionType.OBJECT_REMOVE; }
-        }
-
-        public override string Properties {
-            get {                
-                
-                return
-                    XMLSerializer.Serialize(new[] {
-                                                      new XMLKVPair("city_id", cityId),
-                                                      new XMLKVPair("object_id", objectId),
-                                                      new XMLKVPair("was_killed", wasKilled),
-                                                      new XMLKVPair("cancel_references", string.Join(",", cancelActions.ConvertAll<string>(t => t.ToString()).ToArray())),
-                                                  });
-            }
         }
     }
 }

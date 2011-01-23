@@ -3,31 +3,42 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
-using Game.Data.Troop;
-using Game.Map;
 using Game.Setup;
 using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class StarveAction : ScheduledPassiveAction {        
+namespace Game.Logic.Actions
+{
+    class StarveAction : ScheduledPassiveAction
+    {
         private readonly uint cityId;
 
-        public StarveAction(uint cityId) {
+        public StarveAction(uint cityId)
+        {
             this.cityId = cityId;
         }
 
-        public StarveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
-                          Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, isVisible) {
+        public StarveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible)
+        {
             cityId = uint.Parse(properties["city_id"]);
         }
 
-        ILockable[] GetTroopLockList(object[] custom) {
-            List<ILockable> toBeLocked = new List<ILockable>();
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.Starve;
+            }
+        }
 
-            foreach (TroopStub stub in ((City)custom[0]).Troops) {
+        private ILockable[] GetTroopLockList(object[] custom)
+        {
+            var toBeLocked = new List<ILockable>();
+
+            foreach (var stub in ((City)custom[0]).Troops)
+            {
                 if (stub.StationedCity != null)
                     toBeLocked.Add(stub.StationedCity);
             }
@@ -35,55 +46,52 @@ namespace Game.Logic.Actions {
             return toBeLocked.ToArray();
         }
 
-        #region IAction Members
-
-        public override ActionType Type {
-            get { return ActionType.STARVE; }
-        }
-
-        public override Error Execute() {
-            beginTime = DateTime.UtcNow;
+        public override Error Execute()
+        {
+            BeginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow.AddSeconds(1);
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
         }
 
-        #endregion
-
-        #region ISchedule Members
-
-        public override void Callback(object custom) {
+        public override void Callback(object custom)
+        {
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city)) {
+            if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
-            }
 
-            using (new CallbackLock(GetTroopLockList, new[] { city }, city)) {
+            using (new CallbackLock(GetTroopLockList, new[] {city}, city))
+            {
                 if (!IsValid())
                     return;
 
                 city.Troops.Starve();
 
-                StateChange(ActionState.COMPLETED);
+                StateChange(ActionState.Completed);
             }
         }
 
-        #endregion
-
-        public override void UserCancelled() {            
+        public override void UserCancelled()
+        {
         }
 
-        public override void WorkerRemoved(bool wasKilled) {           
+        public override void WorkerRemoved(bool wasKilled)
+        {
         }
 
         #region IPersistable
 
-        public override string Properties {
-            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId)}); }
+        public override string Properties
+        {
+            get
+            {
+                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId)});
+            }
         }
 
         #endregion

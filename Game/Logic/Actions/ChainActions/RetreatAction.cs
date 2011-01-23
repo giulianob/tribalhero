@@ -10,69 +10,98 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    public class RetreatAction : ChainAction {
-        private uint cityId;
-        private byte stubId;
+namespace Game.Logic.Actions
+{
+    public class RetreatAction : ChainAction
+    {
+        private readonly uint cityId;
+        private readonly byte stubId;
 
-        public RetreatAction(uint cityId, byte stubId) {
+        public RetreatAction(uint cityId, byte stubId)
+        {
             this.cityId = cityId;
             this.stubId = stubId;
         }
 
-        public RetreatAction(uint id, string chainCallback, PassiveAction current, ActionState chainState,
-                             bool isVisible, Dictionary<string, string> properties)
-            : base(id, chainCallback, current, chainState, isVisible) {
+        public RetreatAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+                : base(id, chainCallback, current, chainState, isVisible)
+        {
             cityId = uint.Parse(properties["city_id"]);
             stubId = byte.Parse(properties["troop_stub_id"]);
         }
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.Retreat;
+            }
         }
 
-        public override Error Execute() {
+        public override string Properties
+        {
+            get
+            {
+                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId), new XmlKvPair("troop_stub_id", stubId)});
+            }
+        }
+
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
+        }
+
+        public override Error Execute()
+        {
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X,
-                                                      stub.City.MainBuilding.Y, true);
+            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X, stub.City.MainBuilding.Y, true);
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
             stub.City.Worker.References.Add(stub.TroopObject, this);
             stub.City.Worker.Notifications.Add(stub.TroopObject, this);
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        private void AfterTroopMoved(ActionState state) {
-            if (state == ActionState.COMPLETED) {
+        private void AfterTroopMoved(ActionState state)
+        {
+            if (state == ActionState.Completed)
+            {
                 City city;
-                using (new MultiObjectLock(cityId, out city)) {
+                using (new MultiObjectLock(cityId, out city))
+                {
                     TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();
 
-                    if (stub.City.Battle == null) {
+                    if (stub.City.Battle == null)
+                    {
                         stub.City.Worker.Notifications.Remove(this);
-                        stub.City.Worker.References.Remove(stub.TroopObject, this);                        
+                        stub.City.Worker.References.Remove(stub.TroopObject, this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                        StateChange(ActionState.COMPLETED);
-                    } else {
-                        EngageDefenseAction eda = new EngageDefenseAction(cityId, stubId);
+                        StateChange(ActionState.Completed);
+                    }
+                    else
+                    {
+                        var eda = new EngageDefenseAction(cityId, stubId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }
             }
         }
 
-        private void AfterEngageDefense(ActionState state) {
-            if (state == ActionState.COMPLETED) {
+        private void AfterEngageDefense(ActionState state)
+        {
+            if (state == ActionState.Completed)
+            {
                 City city;
-                using (new MultiObjectLock(cityId, out city)) {
+                using (new MultiObjectLock(cityId, out city))
+                {
                     TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
@@ -84,17 +113,9 @@ namespace Game.Logic.Actions {
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
                     else
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                    StateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.Completed);
                 }
             }
-        }
-
-        public override ActionType Type {
-            get { return ActionType.RETREAT; }
-        }
-
-        public override string Properties {
-            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId), new XMLKVPair("troop_stub_id", stubId)}); }
         }
     }
 }

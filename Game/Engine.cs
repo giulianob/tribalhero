@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using Game.Battle;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
@@ -10,31 +9,34 @@ using Game.Logic;
 using Game.Module;
 using Game.Setup;
 using log4net;
-using log4net.Config;
-using log4net.Repository.Hierarchy;
 
 #endregion
 
-namespace Game {            
-    public enum EngineState {
-            STOPPED,
-            STOPPING,
-            STARTED, 
-            STARTING
-        }
+namespace Game
+{
+    public enum EngineState
+    {
+        Stopped,
+        Stopping,
+        Started,
+        Starting
+    }
 
-    public class Engine {
-        static TcpServer server;
+    public class Engine
+    {
+        private static TcpServer server;
 
-        static PolicyServer policyServer;
+        private static PolicyServer policyServer;
 
         public static EngineState State { get; private set; }
 
-        public static bool Start() {            
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        public static bool Start()
+        {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
 
             ILog logger = LogManager.GetLogger(typeof(Engine));
-            logger.Info(@"
+            logger.Info(
+                        @"
 _________ _______ _________ ______   _______  _       
 \__   __/(  ____ )\__   __/(  ___ \ (  ___  )( \      
    ) (   | (    )|   ) (   | (   ) )| (   ) || (      
@@ -53,20 +55,19 @@ _________ _______ _________ ______   _______  _
 | )   ( || (____/\| ) \ \__| (___) |
 |/     \|(_______/|/   \__/(_______)");
 
-
-            if (State != EngineState.STOPPED)
+            if (State != EngineState.Stopped)
                 throw new Exception("Server is not stopped");
 
-            State = EngineState.STARTING;            
+            State = EngineState.Starting;
 
             // Initialize all of the factories
             Factory.InitAll();
 
             // Load map
-            using (FileStream map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open)) {
-
+            using (var map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open))
+            {
                 // Create region changes file or open it depending on config settings
-                string regionChangesPath = Config.regions_folder + "region_changes.dat";                
+                string regionChangesPath = Config.regions_folder + "region_changes.dat";
 #if DEBUG
                 bool createRegionChanges = Config.database_empty || !File.Exists(regionChangesPath);
 #else
@@ -75,15 +76,21 @@ _________ _______ _________ ______   _______  _
                 FileStream regionChanges = File.Open(regionChangesPath, createRegionChanges ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite);
 
                 // Load map
-                Global.World.Load(map, regionChanges, createRegionChanges, Config.map_width, Config.map_height, Config.region_width, Config.region_height,
-                                  Config.city_region_width, Config.city_region_height);
+                Global.World.Load(map,
+                                  regionChanges,
+                                  createRegionChanges,
+                                  Config.map_width,
+                                  Config.map_height,
+                                  Config.region_width,
+                                  Config.region_height,
+                                  Config.city_region_width,
+                                  Config.city_region_height);
             }
 
             // Empty database if specified
 #if DEBUG
-            if (Config.database_empty) {
+            if (Config.database_empty)
                 Global.DbManager.EmptyDatabase();
-            }
 #endif
 
             // Load database
@@ -95,10 +102,10 @@ _________ _______ _________ ______   _______  _
 
             // Create NPC if specified
             if (Config.ai_enabled)
-                AI.Init();
+                Ai.Init();
 
             // Initialize command processor
-            Processor processor = new Processor();
+            var processor = new Processor();
 
             // Start accepting connections
             server = new TcpServer(processor);
@@ -108,21 +115,23 @@ _________ _______ _________ ______   _______  _
             policyServer = new PolicyServer();
             policyServer.Start();
 
-            State = EngineState.STARTED;
+            State = EngineState.Started;
 
             return true;
         }
 
-        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {            
-            Exception ex = (Exception)e.ExceptionObject;
+        private static void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = (Exception)e.ExceptionObject;
             Global.Logger.Error("Unhandled Exception", ex);
         }
 
-        public static void Stop() {
-            if (State != EngineState.STARTED)
+        public static void Stop()
+        {
+            if (State != EngineState.Started)
                 throw new Exception("Server is not started");
 
-            State = EngineState.STOPPING;
+            State = EngineState.Stopping;
 
             SystemVariablesUpdater.Pause();
             Global.Logger.Info("Stopping TCP server...");
@@ -134,7 +143,7 @@ _________ _______ _________ ______   _______  _
             Global.World.Unload();
             Global.Logger.Info("Goodbye!");
 
-            State = EngineState.STOPPED;
+            State = EngineState.Stopped;
         }
     }
 }

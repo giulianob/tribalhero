@@ -6,127 +6,150 @@ using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Fighting;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class BattleAction : ScheduledPassiveAction {
-        private uint cityId;
+namespace Game.Logic.Actions
+{
+    class BattleAction : ScheduledPassiveAction
+    {
+        private readonly uint cityId;
 
-        public BattleAction(uint cityId) {
+        public BattleAction(uint cityId)
+        {
             this.cityId = cityId;
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
-            city.Battle.ActionAttacked += Battle_ActionAttacked;
+            city.Battle.ActionAttacked += BattleActionAttacked;
         }
 
-        public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
-                            IDictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible) {
+        public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, IDictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible)
+        {
             cityId = uint.Parse(properties["city_id"]);
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
-            city.Battle.ActionAttacked += Battle_ActionAttacked;
+            city.Battle.ActionAttacked += BattleActionAttacked;
         }
 
-        #region ISchedule Members
-
-        public override void Callback(object custom) {
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city)) {
-                throw new Exception("City is missing");                
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.Battle;
             }
+        }
+
+        public override string Properties
+        {
+            get
+            {
+                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId)});
+            }
+        }
+
+        public override void Callback(object custom)
+        {
+            City city;
+            if (!Global.World.TryGetObjects(cityId, out city))
+                throw new Exception("City is missing");
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
-            {
-                List<ILockable> toBeLocked = new List<ILockable>();
-                toBeLocked.AddRange(city.Battle.LockList);
-                toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City).Cast<ILockable>());
-                return toBeLocked.ToArray();
-            };          
+                {
+                    var toBeLocked = new List<ILockable>();
+                    toBeLocked.AddRange(city.Battle.LockList);
+                    toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City).Cast<ILockable>());
+                    return toBeLocked.ToArray();
+                };
 
-            using (new CallbackLock(lockHandler, null, city)) {
-                if (!city.Battle.ExecuteTurn()) {
-                    city.Battle.ActionAttacked -= Battle_ActionAttacked;
+            using (new CallbackLock(lockHandler, null, city))
+            {
+                if (!city.Battle.ExecuteTurn())
+                {
+                    city.Battle.ActionAttacked -= BattleActionAttacked;
                     Global.DbManager.Delete(city.Battle);
                     city.Battle = null;
 
                     city.DefaultTroop.BeginUpdate();
                     city.DefaultTroop.Template.ClearStats();
-                    Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.IN_BATTLE, FormationType.NORMAL);
+                    Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                     city.DefaultTroop.EndUpdate();
 
                     //Copy troop stubs from city since the foreach loop below will modify it during the loop
-                    List<TroopStub> stubsCopy = new List<TroopStub>(city.Troops);
+                    var stubsCopy = new List<TroopStub>(city.Troops);
 
-                    foreach (TroopStub stub in stubsCopy) {
+                    foreach (var stub in stubsCopy)
+                    {
                         //only set back the state to the local troop or the ones stationed in this city
                         if (stub != city.DefaultTroop && stub.StationedCity != city)
                             continue;
 
-                        if (stub.StationedCity == city && stub.TotalCount == 0) {
+                        if (stub.StationedCity == city && stub.TotalCount == 0)
+                        {
                             city.Troops.RemoveStationed(stub.StationedTroopId);
                             stub.City.Troops.Remove(stub.TroopId);
                             continue;
                         }
 
                         stub.BeginUpdate();
-                        switch (stub.State) {
-                            case TroopState.BATTLE_STATIONED:
-                                stub.State = TroopState.STATIONED;
+                        switch(stub.State)
+                        {
+                            case TroopState.BattleStationed:
+                                stub.State = TroopState.Stationed;
                                 break;
-                            case TroopState.BATTLE:
-                                stub.State = TroopState.IDLE;
+                            case TroopState.Battle:
+                                stub.State = TroopState.Idle;
                                 break;
                         }
                         stub.EndUpdate();
                     }
 
-                    StateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.Completed);
                 }
-                else {
+                else
+                {
                     Global.DbManager.Save(city.Battle);
                     endTime = DateTime.UtcNow.AddSeconds(Config.battle_turn_interval);
-                    StateChange(ActionState.FIRED);
+                    StateChange(ActionState.Fired);
                 }
             }
         }
 
-        #endregion
-
-        public override Error Validate(string[] parms) {
-            return Error.OK;
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
         }
 
-        public override Error Execute() {
+        public override Error Execute()
+        {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
-                return Error.OBJECT_NOT_FOUND;
+                return Error.ObjectNotFound;
 
             Global.DbManager.Save(city.Battle);
 
             //Add local troop
-            Procedure.AddLocalToBattle(city.Battle, city, ReportState.ENTERING);
+            Procedure.AddLocalToBattle(city.Battle, city, ReportState.Entering);
 
-            List<TroopStub> list = new List<TroopStub>();
+            var list = new List<TroopStub>();
 
             //Add reinforcement
-            foreach (TroopStub stub in city.Troops) {
-                if (stub == city.DefaultTroop || stub.State != TroopState.STATIONED ||
-                    stub.StationedCity != city)
+            foreach (var stub in city.Troops)
+            {
+                if (stub == city.DefaultTroop || stub.State != TroopState.Stationed || stub.StationedCity != city)
                     continue; //skip if troop is the default troop or isn't stationed here
 
                 stub.BeginUpdate();
-                stub.State = TroopState.BATTLE_STATIONED;
+                stub.State = TroopState.BattleStationed;
                 stub.EndUpdate();
 
                 list.Add(stub);
@@ -136,11 +159,12 @@ namespace Game.Logic.Actions {
             beginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow.AddSeconds(Config.battle_turn_interval);
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
-            DefenseCombatUnit cu = target as DefenseCombatUnit;
+        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        {
+            var cu = target as DefenseCombatUnit;
 
             if (cu == null)
                 return;
@@ -149,30 +173,21 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 return;
 
-            if (cu.TroopStub.StationedCity == city && cu.TroopStub.TotalCount == 0) {
+            if (cu.TroopStub.StationedCity == city && cu.TroopStub.TotalCount == 0)
+            {
                 //takes care of killing out stationed troops
-                List<TroopStub> list = new List<TroopStub>(1) {cu.TroopStub};
-                city.Battle.RemoveFromDefense(list, ReportState.DYING);
+                var list = new List<TroopStub>(1) {cu.TroopStub};
+                city.Battle.RemoveFromDefense(list, ReportState.Dying);
             }
         }
 
-        public override void UserCancelled() {            
+        public override void UserCancelled()
+        {
         }
 
-        public override void WorkerRemoved(bool wasKilled) {
+        public override void WorkerRemoved(bool wasKilled)
+        {
             throw new Exception("City removed during battle?");
         }
-
-        public override ActionType Type {
-            get { return ActionType.BATTLE; }
-        }
-
-        #region IPersistable Members
-
-        public override string Properties {
-            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId)}); }
-        }
-
-        #endregion
     }
 }

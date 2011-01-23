@@ -1,43 +1,48 @@
 #region
 
 using System;
+using CSVToXML;
+using Game;
 using Game.Setup;
 using log4net;
 using log4net.Config;
 
 #endregion
 
-namespace Launcher {
-    public class Program {
-        public static void Main(string[] args) {
+namespace Launcher
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
             XmlConfigurator.Configure();
 
             ILog logger = LogManager.GetLogger(typeof(Program));
             logger.Info("#######################################");
 
             Factory.CompileConfigFiles();
-            CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
 #if DEBUG
-            if (Config.database_empty) {
+            if (Config.database_empty)
+            {
                 Console.Out.Write("Are you sure you want to empty the database?(Y/N):");
-                if (!Console.ReadKey().Key.ToString().ToLower().Equals("y")) {
+                if (!Console.ReadKey().Key.ToString().ToLower().Equals("y"))
                     return;
-                }
             }
 #endif
 
-            if (!Game.Engine.Start()) {
+            if (!Engine.Start())
                 throw new Exception("Failed to load server");
-            }           
 
-            while (true) {
+            while (true)
+            {
                 ConsoleKeyInfo key = Console.ReadKey();
 
                 if (key.Key != ConsoleKey.Q || key.Modifiers != ConsoleModifiers.Alt)
                     continue;
 
-                Game.Engine.Stop();
+                Engine.Stop();
                 return;
             }
         }

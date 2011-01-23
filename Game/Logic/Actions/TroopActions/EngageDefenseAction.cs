@@ -11,20 +11,23 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class EngageDefenseAction : PassiveAction {
-        private readonly byte stubId;
+namespace Game.Logic.Actions
+{
+    class EngageDefenseAction : PassiveAction
+    {
         private readonly uint cityId;
+        private readonly byte stubId;
         private int originalHp;
         private int remainingHp;
 
-        public EngageDefenseAction(uint cityId, byte stubId) {
+        public EngageDefenseAction(uint cityId, byte stubId)
+        {
             this.cityId = cityId;
             this.stubId = stubId;
         }
 
-        public EngageDefenseAction(uint id, bool isVisible, IDictionary<string, string> properties)
-            : base(id, isVisible) {
+        public EngageDefenseAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
+        {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
             originalHp = int.Parse(properties["original_hp"]);
@@ -34,50 +37,75 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
-            city.Battle.ActionAttacked += Battle_ActionAttacked;
-            city.Battle.ExitBattle += Battle_ExitBattle;
+            city.Battle.ActionAttacked += BattleActionAttacked;
+            city.Battle.ExitBattle += BattleExitBattle;
         }
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.EngageDefense;
+            }
         }
 
-        public override Error Execute() {
+        public override string Properties
+        {
+            get
+            {
+                return
+                        XmlSerializer.Serialize(new[]
+                                                {
+                                                        new XmlKvPair("troop_city_id", cityId), new XmlKvPair("troop_id", stubId),
+                                                        new XmlKvPair("original_hp", originalHp), new XmlKvPair("remaining_hp", remainingHp)
+                                                });
+            }
+        }
+
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
+        }
+
+        public override Error Execute()
+        {
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
-                return Error.OBJECT_NOT_FOUND;
+                return Error.ObjectNotFound;
 
-            if (city.Battle == null) {
-                StateChange(ActionState.COMPLETED);
-                return Error.OK;
+            if (city.Battle == null)
+            {
+                StateChange(ActionState.Completed);
+                return Error.Ok;
             }
 
-            List<TroopStub> list = new List<TroopStub> {stub};
+            var list = new List<TroopStub> {stub};
             originalHp = remainingHp = stub.TotalHp;
 
-            city.Battle.ActionAttacked += Battle_ActionAttacked;
-            city.Battle.ExitBattle += Battle_ExitBattle;
+            city.Battle.ActionAttacked += BattleActionAttacked;
+            city.Battle.ExitBattle += BattleExitBattle;
             city.Battle.AddToDefense(list);
 
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.BattleState(cityId);
             stub.TroopObject.EndUpdate();
             stub.TroopObject.Stub.BeginUpdate();
-            stub.TroopObject.Stub.State = TroopState.BATTLE;
+            stub.TroopObject.Stub.State = TroopState.Battle;
             stub.TroopObject.Stub.EndUpdate();
 
             // Add any units in local troop to battle
-            Procedure.AddLocalToBattle(city.Battle, city, ReportState.REINFORCED);
+            Procedure.AddLocalToBattle(city.Battle, city, ReportState.Reinforced);
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        private void Battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
+        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        {
             if (target.City.Id != cityId)
                 return;
 
-            AttackCombatUnit unit = target as AttackCombatUnit;
+            var unit = target as AttackCombatUnit;
             if (unit == null)
                 return;
 
@@ -93,60 +121,44 @@ namespace Game.Logic.Actions {
             if (remainingHp > 0)
                 return;
 
-            List<TroopStub> list = new List<TroopStub> {stub};
-            city.Battle.RemoveFromAttack(list, ReportState.DYING);
-            city.Battle.ActionAttacked -= Battle_ActionAttacked;
-            city.Battle.ExitBattle -= Battle_ExitBattle;
+            var list = new List<TroopStub> {stub};
+            city.Battle.RemoveFromAttack(list, ReportState.Dying);
+            city.Battle.ActionAttacked -= BattleActionAttacked;
+            city.Battle.ExitBattle -= BattleExitBattle;
 
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
-            stub.TroopObject.Stub.State = TroopState.IDLE;
+            stub.TroopObject.Stub.State = TroopState.Idle;
             stub.TroopObject.EndUpdate();
-            StateChange(ActionState.COMPLETED);
+            StateChange(ActionState.Completed);
         }
 
-        private void Battle_ExitBattle(CombatList atk, CombatList def) {
+        private void BattleExitBattle(CombatList atk, CombatList def)
+        {
             City city;
             TroopStub stub;
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            city.Battle.ActionAttacked -= Battle_ActionAttacked;
-            city.Battle.ExitBattle -= Battle_ExitBattle;
+            city.Battle.ActionAttacked -= BattleActionAttacked;
+            city.Battle.ExitBattle -= BattleExitBattle;
 
             stub.TroopObject.BeginUpdate();
             stub.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
-            stub.State = TroopState.IDLE;
+            stub.State = TroopState.Idle;
             stub.EndUpdate();
             stub.TroopObject.EndUpdate();
 
-            StateChange(ActionState.COMPLETED);
+            StateChange(ActionState.Completed);
         }
 
-        public override void WorkerRemoved(bool wasKilled) {            
+        public override void WorkerRemoved(bool wasKilled)
+        {
         }
 
-        public override void UserCancelled() {            
+        public override void UserCancelled()
+        {
         }
-
-        public override ActionType Type {
-            get { return ActionType.ENGAGE_DEFENSE; }
-        }
-
-        #region IPersistable Members
-
-        public override string Properties {
-            get {
-                return
-                    XMLSerializer.Serialize(new[] {
-                                                new XMLKVPair("troop_city_id", cityId), new XMLKVPair("troop_id", stubId),
-                                                new XMLKVPair("original_hp", originalHp),
-                                                new XMLKVPair("remaining_hp", remainingHp)
-                    });
-            }
-        }
-
-        #endregion
     }
 }

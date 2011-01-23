@@ -26,6 +26,7 @@ namespace Game.Logic.Actions {
                 throw new Exception();
 
             city.Battle.ActionAttacked += Battle_ActionAttacked;
+            city.Battle.UnitRemoved += Battle_UnitRemoved;
         }
 
         public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
@@ -62,6 +63,7 @@ namespace Game.Logic.Actions {
             using (new CallbackLock(lockHandler, null, city)) {
                 if (!city.Battle.ExecuteTurn()) {
                     city.Battle.ActionAttacked -= Battle_ActionAttacked;
+                    city.Battle.UnitRemoved -= Battle_UnitRemoved;
                     Global.DbManager.Delete(city.Battle);
                     city.Battle = null;
 

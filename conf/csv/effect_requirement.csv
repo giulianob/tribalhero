@@ -24,11 +24,10 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 23029,CountLessThan,id=2302,count=9,,,,You can upgrade once per level.,,
 23030,CountLessThan,id=2302,count=10,,,,You can upgrade once per level.,,
 ,,,,,,,,,
-//traning ground,,,,,,,,,
-22013,HaveTechnology,id=23011,minlvl=1,count=1,,,,Requires Archery Research.,Require Archery Class level 1.
 ,,,,,,,,,
 //stable,,,,,,,,,
-22022,HaveStructure,id=2501,minlvl=3,maxlvl=10,,,,Requires Trading Post (Level 3).,Require Trading Post level 3.
+22021,HaveStructure,id=2501,minlvl=3,maxlvl=10,,,,Requires Trading Post (Level 3).,Require Trading Post level 3.
+22022,HaveStructure,id=2501,minlvl=7,maxlvl=10,,,,Requires Trading Post (Level 7).,Require Trading Post level 7.
 22023,HaveStructure,id=2302,minlvl=3,maxlvl=10,,,,Requires Armory (Level 3).,Require Armory level 3.
 ,,,,,,,,,
 //foundry,,,,,,,,,
@@ -42,7 +41,8 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 //training ground,,,,,,,,,
 22011,HaveTechnology,22011,lvl=1,count=1,,,,Requires 5 for Price of 4 Technology.,Require 5 for price of 4
 22012,HaveTechnology,22012,lvl=1,count=1,,,,Requires 4 for Price of 3 Technology.,
-,,,,,,,,,
+22013,HaveTechnology,22013,lvl=1,count=1,,,,Requires 3 for Price of 2 Technology.,
+22014,HaveTechnology,id=23011,minlvl=1,count=1,,,,Requires Archery Research.,Require Archery Class level 1.
 ,,,,,,,,,
 //university,,,,,,,,,
 230171,HaveStructure,id=2302,minlvl=3,maxlvl=10,,,,Requires Armory (Level 3).,Require Armory level 3.

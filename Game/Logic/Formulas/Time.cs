@@ -20,15 +20,9 @@ namespace Game.Logic.Formulas
             return quantity*15;
         }
 
-        internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager)
-        {
-            int[] discount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            foreach (var obj in structure.City)
-            {
-                if (ObjectTypeFactory.IsStructureType("University", obj))
-                    return (int)((100 - discount[obj.Lvl])*count*300*Config.seconds_per_unit/100);
-            }
-            return (int)(count*300*Config.seconds_per_unit);
+        internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {
+            int overtime = structure.City.Technologies.GetEffects(EffectCode.HaveTechnology, EffectInheritance.ALL).DefaultIfEmpty(new Effect { value = new object[] { 20001, 0 } }).Max(x => (int)x.value[0] == 20001 ? (int)x.value[1] : 0);
+            return (int)((100 - overtime*10) * count * 300 * Config.seconds_per_unit / 100);
         }
 
         private static int TimeDiscount(int lvl)
@@ -49,11 +43,25 @@ namespace Game.Logic.Formulas
             return (int)(buildtime*Config.seconds_per_unit);
         }
 
-        internal static int MoveTime(byte speed)
-        {
-            if (Config.battle_instant_move)
-                return 0;
-            return 80*(100 - ((speed - 11)*5))/100;
+
+        internal static double MoveTimeMod(City city, int distance, bool isAttacking) {
+            int mod=0;
+            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL)) {
+                if ((((string)effect.value[1]).StartsWith("ATTACK", StringComparison.CurrentCultureIgnoreCase) && isAttacking) ||
+                    (((string)effect.value[1]).StartsWith("DEFENSE", StringComparison.CurrentCultureIgnoreCase) && !isAttacking)) {
+                    mod += (int)effect.value[0];
+                } else if (((string)effect.value[1]).StartsWith("DISTANCE", StringComparison.CurrentCultureIgnoreCase)) {
+                    if (distance > (int)effect.value[2]) {
+                        mod += (int)effect.value[0];
+                    }
+                }
+            }
+            return (double)100 / (mod + 100);
+        }
+
+        internal static int MoveTime(byte speed) {
+            if (Config.battle_instant_move) return 0;
+            return 80 * (100 - ((speed - 11) * 5)) / 100;
         }
     }
 }

@@ -58,7 +58,8 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X, stub.City.MainBuilding.Y, true);
+            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X, stub.City.MainBuilding.Y, true, false);
+
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
             stub.City.Worker.References.Add(stub.TroopObject, this);

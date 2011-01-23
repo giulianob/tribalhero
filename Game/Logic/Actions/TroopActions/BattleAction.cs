@@ -17,6 +17,7 @@ namespace Game.Logic.Actions
     class BattleAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
+        private uint destroyedHp;
 
         public BattleAction(uint cityId)
         {
@@ -27,19 +28,24 @@ namespace Game.Logic.Actions
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
+            city.Battle.UnitRemoved += Battle_UnitRemoved;
         }
 
         public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, IDictionary<string, string> properties)
                 : base(id, beginTime, nextTime, endTime, isVisible)
         {
             cityId = uint.Parse(properties["city_id"]);
+            destroyedHp = uint.Parse(properties["destroyed_hp"]);
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
+            city.Battle.UnitRemoved += Battle_UnitRemoved;
         }
+
+
 
         public override ActionType Type
         {
@@ -51,11 +57,11 @@ namespace Game.Logic.Actions
 
         public override string Properties
         {
-            get
-            {
-                return XmlSerializer.Serialize(new[] {new XmlKvPair("city_id", cityId)});
-            }
-        }
+            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId)}); }
+                                                        new XMLKVPair("destroyed_hp", destroyedHp)}); 
+			}      
+		}
+	
 
         public override void Callback(object custom)
         {
@@ -76,6 +82,7 @@ namespace Game.Logic.Actions
                 if (!city.Battle.ExecuteTurn())
                 {
                     city.Battle.ActionAttacked -= BattleActionAttacked;
+                    city.Battle.UnitRemoved -= Battle_UnitRemoved;
                     Global.DbManager.Delete(city.Battle);
                     city.Battle = null;
 
@@ -112,7 +119,12 @@ namespace Game.Logic.Actions
                         }
                         stub.EndUpdate();
                     }
-
+					
+                    if(destroyedHp>0) 
+					{
+                        Procedure.SenseOfUrgency(city,destroyedHp);
+                    }
+					
                     StateChange(ActionState.Completed);
                 }
                 else
@@ -181,6 +193,19 @@ namespace Game.Logic.Actions
             }
         }
 
+        private void Battle_UnitRemoved(CombatObject obj) {
+            CombatStructure cs = obj as CombatStructure;
+            if (cs == null)
+                return;
+
+            City city;
+            if (!Global.World.TryGetObjects(cityId, out city))
+                return;
+            if (cs.City == city) {
+                destroyedHp += cs.Stats.MaxHp;
+            }
+        }
+
         public override void UserCancelled()
         {
         }
@@ -189,5 +214,6 @@ namespace Game.Logic.Actions
         {
             throw new Exception("City removed during battle?");
         }
+
     }
 }

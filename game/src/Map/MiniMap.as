@@ -71,8 +71,8 @@
 
 		public function redraw() : void {
 			// Redraw screen rectangle
-			var tilesW: Number = Constants.screenW / Constants.tileW + 0.5;
-			var tilesH: Number = Constants.screenH / Constants.tileH + 0.5;
+			var tilesW: Number = (Constants.screenW * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileW + 0.5;
+			var tilesH: Number = (Constants.screenH * Global.gameContainer.camera.getZoomFactorOverOne()) / Constants.tileH + 0.5;
 
 			screenRect.graphics.clear();
 			screenRect.graphics.lineStyle(1, 0xFFFFFF);

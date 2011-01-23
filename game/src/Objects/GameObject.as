@@ -30,7 +30,7 @@ package src.Objects {
 			}
 			else
 			{
-				filters = [new GlowFilter(0xFFFFFF)];
+				filters = [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
 			}
 
 			selected = bool;
@@ -47,7 +47,7 @@ package src.Objects {
 			}
 			else
 			{
-				filters = [new GlowFilter(0xFF3300)];
+				filters = [new GlowFilter(0xFFDD00, 0.5, 16, 16, 3)];
 			}
 		}
 	}

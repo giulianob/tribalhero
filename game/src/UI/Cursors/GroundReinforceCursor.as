@@ -103,8 +103,7 @@
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) > 4)
-			return;
+			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > 4) return;
 
 			event.stopImmediatePropagation();
 
@@ -125,7 +124,7 @@
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = new Point(event.stageX, event.stageY);
+			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent):void
@@ -134,7 +133,8 @@
 				return;
 			}
 
-			moveTo(event.stageX, event.stageY);
+			var mousePos: Point = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
+			moveTo(mousePos.x, mousePos.y);
 		}
 
 		public function moveTo(x: int, y: int):void

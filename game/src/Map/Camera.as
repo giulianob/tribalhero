@@ -18,6 +18,10 @@
 		//Allows us to cue a position and return to it later
 		private var cueX: int;
 		private var cueY: int;
+		
+		//Zooming factor
+		private var zoomFactor: Number = 1;
+		private var zoomFactorOverOne: Number = (1.0 / zoomFactor);
 
 		public function beginMove(): void {
 			if (updating) return;
@@ -172,6 +176,20 @@
 
 			fireOnMove();
 		}
+		
+		public function setZoomFactor(factor: Number): void {
+			zoomFactor = factor;
+			zoomFactorOverOne = (1.0 / factor);
+		}
+		
+		public function getZoomFactorOverOne(): Number {
+			return zoomFactorOverOne;
+		}
+		
+		public function getZoomFactor(): Number {
+			return zoomFactor;
+		}
+		
 	}
 }
 

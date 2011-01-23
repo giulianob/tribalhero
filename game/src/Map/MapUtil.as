@@ -9,6 +9,7 @@ package src.Map {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import src.Constants;
+	import src.Global;
 
 	public class MapUtil {
 
@@ -112,6 +113,11 @@ package src.Map {
 			x = int((x + ( y % 2 == 0 ? Constants.tileW / 2 : 0)) / Constants.tileW);
 
 			return getScreenCoord(x, y);
+		}
+		
+		public static function getPointWithZoomFactor(x: int, y: int): Point //takes in coords (usually the stageX/stageY which are mouse coords and returns with zoom factor calculated)
+		{
+			return new Point(x * Global.gameContainer.camera.getZoomFactorOverOne(), y * Global.gameContainer.camera.getZoomFactorOverOne());
 		}
 
 		public static function regionXOffset(regionId: int): int

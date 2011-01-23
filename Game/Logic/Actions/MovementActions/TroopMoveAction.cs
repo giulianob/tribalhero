@@ -108,21 +108,13 @@ namespace Game.Logic.Actions
             int distance = obj.TileDistance(x, y);
             if (distance == 0)
                 return false;
-            var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
-            TileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
-            nextX = recordForeach.X;
-            nextY = recordForeach.Y;
+            RecordForeach recordForeach = new RecordForeach {shortestDistance = int.MaxValue, isShortestDistanceDiagonal = false};
+            TileLocator.foreach_object(obj.X, obj.Y, 1, false, Work, recordForeach);
+            nextX = recordForeach.x;
+            nextY = recordForeach.y;
+            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Config.seconds_per_unit * speedMod / 100));
 
-            int mod = Math.Max(50,
-                               obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All).Aggregate(100,
-                                                                                                                           (current, effect) =>
-                                                                                                                           current - (int)effect.Value[0]));
-            int moveTime = Formula.MoveTime(obj.Stats.Speed);
-
-            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100));
-
-            distanceRemaining = obj.TileDistance(x, y);
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100)*distanceRemaining);
+            --distanceRemaining;
             return true;
         }
 

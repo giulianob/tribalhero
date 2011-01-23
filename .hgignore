@@ -10,3 +10,5 @@ glob:app/webroot/files/Game.swf
 glob:app/config/bootstrap.php
 glob:app/config/core.php
 glob:app/config/database.php
+glob:app/views/database/generated/*.ctp
+glob:app/views/database/generated/*.php

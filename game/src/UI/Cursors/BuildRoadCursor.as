@@ -106,8 +106,7 @@ package src.UI.Cursors {
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) > city.radius)
-			return;
+			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
 
 			event.stopImmediatePropagation();
 
@@ -117,15 +116,15 @@ package src.UI.Cursors {
 
 		public function onMouseDown(event: MouseEvent):void
 		{
-			originPoint = new Point(event.stageX, event.stageY);
+			originPoint = MapUtil.getPointWithZoomFactor(event.stageX, event.stageY);
 		}
 
 		public function onMouseMove(event: MouseEvent) : void
 		{
-			if (event.buttonDown)
-			return;
-
-			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + Math.max(event.stageX, 0), src.Global.gameContainer.camera.y + Math.max(event.stageY, 0));
+			if (event.buttonDown) return;
+			
+			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
+			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
 
 			if (pos.x != objX || pos.y != objY)
 			{

@@ -83,7 +83,7 @@
 		private var cmdLine: CmdLineViewer;
 
 		public function GameContainer()
-		{
+		{							
 			// Here we create a dummy ASWing component and stick it over the menu button because the popup requires it
 			menuDummyOverlay = new Component();
 			menuDummyOverlay.setLocationXY(btnMenu.x, btnMenu.y);			
@@ -130,6 +130,12 @@
 
 			new SimpleTooltip(minimapTools.btnGoToCoords, "Go to...");
 			minimapTools.btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
+			
+			new SimpleTooltip(minimapTools.btnZoomIn, "Zoom In");
+			minimapTools.btnZoomIn.addEventListener(MouseEvent.CLICK, onZoomIn);
+			
+			new SimpleTooltip(minimapTools.btnZoomOut, "Zoom Out");
+			minimapTools.btnZoomOut.addEventListener(MouseEvent.CLICK, onZoomOut);
 
 			new SimpleTooltip(btnGoToCity, "Go to city");
 			btnGoToCity.addEventListener(MouseEvent.CLICK, onGoToCity);
@@ -148,8 +154,8 @@
 
 			new SimpleTooltip(btnCityTroops, "View unit movement");
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
-
-			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);
+			
+			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
 			// Set up sidebar holder
 			sidebarHolder = new Sprite();
@@ -242,6 +248,20 @@
 			var goToDialog: GoToDialog = new GoToDialog();
 			goToDialog.show();
 		}
+		
+		public function onZoomIn(e: Event) : void {
+			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
+			map.scrollRate = 1 * camera.getZoomFactorOverOne();
+			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
+			map.parseRegions();
+		}		
+		
+		public function onZoomOut(e: Event) : void {
+			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
+			map.scrollRate = 1 * camera.getZoomFactorOverOne();
+			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
+			map.parseRegions();
+		}			
 
 		public function onZoomIntoMinimap(e: Event):void {
 			if (minimapZoomed == false) {
@@ -276,7 +296,7 @@
 				minimapZoomTooltip.setText("World view");
 				miniMap.setScreenRectHidden(false);
 				map.disableMapQueries(false);
-				map.scrollRate = 1;
+				map.scrollRate = 1 * camera.getZoomFactorOverOne();
 			}
 
 			minimapZoomed = zoom;

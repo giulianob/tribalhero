@@ -6,6 +6,7 @@
 
 package src.Objects {
 
+	import flash.display.Bitmap;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -19,6 +20,8 @@ package src.Objects {
 		
 		public var objX: int;
 		public var objY: int;
+		
+		public var bmpSprite: Bitmap;
 		
 		public function SimpleObject() {
 			

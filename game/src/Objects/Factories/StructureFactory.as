@@ -1,4 +1,6 @@
 ﻿package src.Objects.Factories {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.SimpleButton;
@@ -131,7 +133,7 @@
 				}
 			}
 
-			var sprite: DisplayObjectContainer = new objRef();
+			var sprite: DisplayObjectContainer = new objRef();		
 
 			if (centered)
 			{

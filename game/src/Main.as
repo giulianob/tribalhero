@@ -61,7 +61,7 @@
 			stage.stageFocusRect = false;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-
+			
 			Global.main = this;
 
 			//Init right context menu for debugging

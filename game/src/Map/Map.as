@@ -135,14 +135,6 @@
 		public function disableMapQueries(disabled: Boolean) : void {
 			objContainer.disableMouse(disabled);
 			disabledMapQueries = disabled;
-
-			/* Disabled due to crazy memory usage by blur filter
-			if (!disabled) {
-			filters = [];
-			} else {
-			filters = [new BlurFilter(10, 10)];
-			}
-			*/
 		}
 
 		//###################################################################
@@ -184,9 +176,9 @@
 			// Get list of required regions
 			const offset:int = 200;
 
-			var screenRect: Rectangle = new Rectangle(camera.x - offset, camera.y - offset, Constants.screenW + offset * 2, Constants.screenH + offset * 2);
-			for (var reqX: int = -1; reqX <= Math.ceil(Constants.screenW / Constants.regionW); reqX++) {
-				for (var reqY: int = -1; reqY <= Math.ceil(Constants.screenH / (Constants.regionH / 2)); reqY++) {
+			var screenRect: Rectangle = new Rectangle(camera.x - offset, camera.y - offset, Constants.screenW * camera.getZoomFactorOverOne() + offset * 2.0, Constants.screenH * camera.getZoomFactorOverOne() + offset * 2.0);
+			for (var reqX: int = -1; reqX <= Math.ceil((Constants.screenW * camera.getZoomFactorOverOne()) / Constants.regionW); reqX++) {
+				for (var reqY: int = -1; reqY <= Math.ceil((Constants.screenH * camera.getZoomFactorOverOne()) / (Constants.regionH / 2)); reqY++) {
 					var curX: int = camera.x + (Constants.regionW * reqX);
 					var curY: int = camera.y + (Constants.regionH / 2 * reqY);
 					var requiredId: int = MapUtil.getRegionId(curX, curY);
@@ -458,7 +450,7 @@
 		}
 
 		private function move(forceParse: Boolean = false) : void {
-			var pt: Point = MapUtil.getMapCoord(camera.x + Constants.screenW / 2, camera.y + Constants.screenH / 2);
+			var pt: Point = MapUtil.getMapCoord(camera.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2, camera.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2);
 			Global.gameContainer.minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
 
 			if (!disabledMapQueries) {

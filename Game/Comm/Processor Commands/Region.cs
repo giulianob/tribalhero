@@ -1,11 +1,9 @@
 #region
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Data.Common;
+using System.Linq;
 using Game.Data;
-using Game.Database;
 using Game.Logic;
 using Game.Map;
 using Game.Setup;
@@ -19,7 +17,7 @@ namespace Game.Comm
     {
         public void CmdRoadCreate(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
 
             uint x;
             uint y;
@@ -31,23 +29,23 @@ namespace Game.Comm
                 x = packet.GetUInt32();
                 y = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             if (!Global.World.IsValidXandY(x, y))
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             // Make sure there is no structure at this point that has no road requirement
-            if (Global.World[x, y].Any(s => s is Structure && ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure) s)))
+            if (Global.World[x, y].Any(s => s is Structure && ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)s)))
             {
                 Global.World.UnlockRegion(x, y);
-                ReplyError(session, packet, Error.STRUCTURE_EXISTS);
+                ReplyError(session, packet, Error.StructureExists);
                 return;
             }
 
@@ -56,14 +54,14 @@ namespace Game.Comm
             {
                 if (city == null)
                 {
-                    ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                    ReplyError(session, packet, Error.CityNotFound);
                     return;
                 }
 
                 // Make sure user is building road within city walls
                 if (city.MainBuilding.TileDistance(x, y) > city.Radius)
                 {
-                    ReplyError(session, packet, Error.NOT_WITHIN_WALLS);
+                    ReplyError(session, packet, Error.NotWithinWalls);
                     return;
                 }
 
@@ -73,42 +71,48 @@ namespace Game.Comm
                 if (RoadManager.IsRoad(x, y))
                 {
                     Global.World.UnlockRegion(x, y);
-                    ReplyError(session, packet, Error.ROAD_ALREADY_EXISTS);
+                    ReplyError(session, packet, Error.RoadAlreadyExists);
                     return;
                 }
 
                 // Make sure there is a road next to this tile
                 bool hasRoad = false;
-                RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom)
-                {
-                    if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1) return true;
+                RadiusLocator.ForeachObject(x,
+                                            y,
+                                            1,
+                                            false,
+                                            delegate(uint origX, uint origY, uint x1, uint y1, object custom)
+                                                {
+                                                    if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                        return true;
 
-                    if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1)
-                    {
-                        hasRoad = true;
-                        return false;
-                    }
+                                                    if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1)
+                                                    {
+                                                        hasRoad = true;
+                                                        return false;
+                                                    }
 
-                    if (RoadManager.IsRoad(x1, y1) && !Global.World[x1, y1].Exists(s => s is Structure))
-                    {
-                        hasRoad = true;
-                        return false;
-                    }
+                                                    if (RoadManager.IsRoad(x1, y1) && !Global.World[x1, y1].Exists(s => s is Structure))
+                                                    {
+                                                        hasRoad = true;
+                                                        return false;
+                                                    }
 
-                    return true;
-                }, null);
+                                                    return true;
+                                                },
+                                            null);
 
                 if (!hasRoad)
                 {
                     Global.World.UnlockRegion(x, y);
-                    ReplyError(session, packet, Error.ROAD_NOT_AROUND);
+                    ReplyError(session, packet, Error.RoadNotAround);
                     return;
                 }
 
                 if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
                 {
                     Global.World.UnlockRegion(x, y);
-                    ReplyError(session, packet, Error.TILE_MISMATCH);
+                    ReplyError(session, packet, Error.TileMismatch);
                     return;
                 }
 
@@ -122,7 +126,7 @@ namespace Game.Comm
 
         public void CmdRoadDestroy(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
 
             uint x;
             uint y;
@@ -134,15 +138,15 @@ namespace Game.Comm
                 x = packet.GetUInt32();
                 y = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             if (!Global.World.IsValidXandY(x, y))
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
@@ -151,14 +155,14 @@ namespace Game.Comm
             {
                 if (city == null)
                 {
-                    ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                    ReplyError(session, packet, Error.CityNotFound);
                     return;
                 }
 
                 // Make sure user is building road within city walls
                 if (city.MainBuilding.TileDistance(x, y) > city.Radius)
                 {
-                    ReplyError(session, packet, Error.NOT_WITHIN_WALLS);
+                    ReplyError(session, packet, Error.NotWithinWalls);
                     return;
                 }
 
@@ -168,7 +172,7 @@ namespace Game.Comm
                 if (!RoadManager.IsRoad(x, y))
                 {
                     Global.World.UnlockRegion(x, y);
-                    ReplyError(session, packet, Error.TILE_MISMATCH);
+                    ReplyError(session, packet, Error.TileMismatch);
                     return;
                 }
 
@@ -176,14 +180,14 @@ namespace Game.Comm
                 if (Global.World[x, y].Exists(s => s is Structure))
                 {
                     Global.World.UnlockRegion(x, y);
-                    ReplyError(session, packet, Error.STRUCTURE_EXISTS);
+                    ReplyError(session, packet, Error.StructureExists);
                     return;
                 }
 
                 // Make sure there is a road next to this tile
                 bool breaksRoad = false;
 
-                foreach (Structure str in city)
+                foreach (var str in city)
                 {
                     if (str == city.MainBuilding || ObjectTypeFactory.IsStructureType("NoRoadRequired", str))
                         continue;
@@ -198,34 +202,45 @@ namespace Game.Comm
                 if (breaksRoad)
                 {
                     Global.World.UnlockRegion(x, y);
-                    ReplyError(session, packet, Error.ROAD_DESTROY_UNIQUE_PATH);
+                    ReplyError(session, packet, Error.RoadDestroyUniquePath);
                     return;
                 }
 
                 // Make sure all neighboring roads have a diff path
                 bool allNeighborsHaveOtherPaths = true;
-                RadiusLocator.foreach_object(x, y, 1, false, delegate(uint origX, uint origY, uint x1, uint y1, object custom)
-                {
-                    if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1) return true;
+                RadiusLocator.ForeachObject(x,
+                                            y,
+                                            1,
+                                            false,
+                                            delegate(uint origX, uint origY, uint x1, uint y1, object custom)
+                                                {
+                                                    if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
+                                                        return true;
 
-                    if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1) return true;
+                                                    if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1)
+                                                        return true;
 
-                    if (RoadManager.IsRoad(x1, y1))
-                    {
-                        if (!RoadPathFinder.HasPath(new Location(x1, y1), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(origX, origY)))
-                        {
-                            allNeighborsHaveOtherPaths = false;
-                            return false;
-                        }
-                    }
+                                                    if (RoadManager.IsRoad(x1, y1))
+                                                    {
+                                                        if (
+                                                                !RoadPathFinder.HasPath(new Location(x1, y1),
+                                                                                        new Location(city.MainBuilding.X, city.MainBuilding.Y),
+                                                                                        city,
+                                                                                        new Location(origX, origY)))
+                                                        {
+                                                            allNeighborsHaveOtherPaths = false;
+                                                            return false;
+                                                        }
+                                                    }
 
-                    return true;
-                }, null);
+                                                    return true;
+                                                },
+                                            null);
 
                 if (!allNeighborsHaveOtherPaths)
                 {
                     Global.World.UnlockRegion(x, y);
-                    ReplyError(session, packet, Error.ROAD_DESTROY_UNIQUE_PATH);
+                    ReplyError(session, packet, Error.RoadDestroyUniquePath);
                     return;
                 }
 
@@ -238,7 +253,7 @@ namespace Game.Comm
 
         public void CmdCityLocate(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
 
             uint cityId;
 
@@ -246,9 +261,9 @@ namespace Game.Comm
             {
                 cityId = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
@@ -257,7 +272,7 @@ namespace Game.Comm
             {
                 if (city == null)
                 {
-                    ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                    ReplyError(session, packet, Error.CityNotFound);
                     return;
                 }
 
@@ -270,7 +285,7 @@ namespace Game.Comm
 
         public void CmdCityLocateByName(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
 
             string cityName;
 
@@ -278,15 +293,16 @@ namespace Game.Comm
             {
                 cityName = packet.GetString();
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId)) {
-                ReplyError(session, packet, Error.CITY_NOT_FOUND);
+            if (!Global.World.FindCityId(cityName, out cityId))
+            {
+                ReplyError(session, packet, Error.CityNotFound);
                 return;
             }
 
@@ -295,7 +311,7 @@ namespace Game.Comm
             {
                 if (city == null)
                 {
-                    ReplyError(session, packet, Error.CITY_NOT_FOUND);
+                    ReplyError(session, packet, Error.CityNotFound);
                     return;
                 }
 
@@ -308,7 +324,7 @@ namespace Game.Comm
 
         public void CmdNotificationLocate(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
 
             uint srcCityId;
             uint cityId;
@@ -320,9 +336,9 @@ namespace Game.Comm
                 cityId = packet.GetUInt32();
                 actionId = packet.GetUInt16();
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
@@ -331,7 +347,7 @@ namespace Game.Comm
             {
                 if (session.Player.GetCity(cityId) == null && session.Player.GetCity(srcCityId) == null)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
             }
@@ -341,7 +357,7 @@ namespace Game.Comm
             {
                 if (cities == null)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
@@ -351,7 +367,7 @@ namespace Game.Comm
                 NotificationManager.Notification notification;
                 if (!srcCity.Worker.Notifications.TryGetValue(city, actionId, out notification))
                 {
-                    ReplyError(session, packet, Error.ACTION_NOT_FOUND);
+                    ReplyError(session, packet, Error.ActionNotFound);
                     return;
                 }
 
@@ -364,8 +380,8 @@ namespace Game.Comm
 
         public void CmdGetRegion(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
-            reply.Option |= (ushort)Packet.Options.COMPRESSED;
+            var reply = new Packet(packet);
+            reply.Option |= (ushort)Packet.Options.Compressed;
 
             ushort regionId;
 
@@ -374,11 +390,12 @@ namespace Game.Comm
             {
                 regionSubscribeCount = packet.GetByte();
 
-                if (regionSubscribeCount > 15) throw new Exception("Too many regions requested");
+                if (regionSubscribeCount > 15)
+                    throw new Exception("Too many regions requested");
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
@@ -390,15 +407,15 @@ namespace Game.Comm
                 {
                     regionId = packet.GetUInt16();
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 if (regionId >= Config.regions_count)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
@@ -413,11 +430,12 @@ namespace Game.Comm
             {
                 regionUnsubscribeCount = packet.GetByte();
 
-                if (regionUnsubscribeCount > 15) throw new Exception("Too many unsubscribe regions");
+                if (regionUnsubscribeCount > 15)
+                    throw new Exception("Too many unsubscribe regions");
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
@@ -427,9 +445,9 @@ namespace Game.Comm
                 {
                     regionId = packet.GetUInt16();
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
@@ -437,15 +455,14 @@ namespace Game.Comm
             }
 
             if (Global.Channel.SubscriptionCount(session) > 30)
-            {
                 session.CloseSession();
-            }
-            else session.Write(reply);
+            else
+                session.Write(reply);
         }
 
         public void CmdGetCityRegion(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
 
             ushort regionId;
 
@@ -454,9 +471,9 @@ namespace Game.Comm
             {
                 regionSubscribeCount = packet.GetByte();
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
@@ -468,15 +485,15 @@ namespace Game.Comm
                 {
                     regionId = packet.GetUInt16();
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 if (regionId >= Config.regions_count)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 

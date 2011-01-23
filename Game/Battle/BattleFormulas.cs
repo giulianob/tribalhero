@@ -4,8 +4,8 @@ using System;
 using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
-using Game.Setup;
 using Game.Data.Troop;
+using Game.Setup;
 
 #endregion
 
@@ -13,44 +13,45 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
-        public static int MissChance(bool isAttacker, CombatList defenders, CombatList attackers) {
-
+        public static int MissChance(bool isAttacker, CombatList defenders, CombatList attackers)
+        {
             int defendersUpkeep = defenders.Sum(x => x.Upkeep);
             int attackersUpkeep = attackers.Sum(x => x.Upkeep);
 
             int delta = isAttacker ? Math.Max(0, attackersUpkeep - defendersUpkeep) : Math.Max(0, defendersUpkeep - attackersUpkeep);
 
-            return Math.Min(delta * 2, 25);
+            return Math.Min(delta*2, 25);
         }
 
-        public static int GetUnitsPerStructure(Structure structure) {
-            int[] units = new[] { 20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144 };
+        public static int GetUnitsPerStructure(Structure structure)
+        {
+            var units = new[] {20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144};
             return units[structure.Lvl];
         }
 
         public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)
         {
-            switch (weapon)
+            switch(weapon)
             {
-                case WeaponClass.BASIC:
-                    switch (armor)
+                case WeaponClass.Basic:
+                    switch(armor)
                     {
-                        case ArmorClass.LEATHER:
-                        case ArmorClass.WOODEN:
+                        case ArmorClass.Leather:
+                        case ArmorClass.Wooden:
                             return 1;
-                        case ArmorClass.METAL:
-                        case ArmorClass.STONE:
+                        case ArmorClass.Metal:
+                        case ArmorClass.Stone:
                             return 0.6;
                     }
                     break;
-                case WeaponClass.ELEMENTAL:
-                    switch (armor)
+                case WeaponClass.Elemental:
+                    switch(armor)
                     {
-                        case ArmorClass.LEATHER:
-                        case ArmorClass.WOODEN:
+                        case ArmorClass.Leather:
+                        case ArmorClass.Wooden:
                             return 0.7;
-                        case ArmorClass.METAL:
-                        case ArmorClass.STONE:
+                        case ArmorClass.Metal:
+                        case ArmorClass.Stone:
                             return 1.4;
                     }
                     break;
@@ -70,70 +71,70 @@ namespace Game.Battle
             const double stronger = 1.7;
             const double strongest = 2;
 
-            switch (weapon)
+            switch(weapon)
             {
-                case WeaponType.SWORD:
-                    switch (armor)
+                case WeaponType.Sword:
+                    switch(armor)
                     {
-                        case ArmorType.GROUND:
+                        case ArmorType.Ground:
                             return strong;
-                        case ArmorType.MOUNT:
+                        case ArmorType.Mount:
                             return weak;
-                        case ArmorType.MACHINE:
+                        case ArmorType.Machine:
                             return strong;
-                        case ArmorType.BUILDING:
+                        case ArmorType.Building:
                             return weakest;
                     }
                     break;
-                case WeaponType.PIKE:
-                    switch (armor)
+                case WeaponType.Pike:
+                    switch(armor)
                     {
-                        case ArmorType.GROUND:
+                        case ArmorType.Ground:
                             return weak;
-                        case ArmorType.MOUNT:
+                        case ArmorType.Mount:
                             return stronger;
-                        case ArmorType.MACHINE:
+                        case ArmorType.Machine:
                             return weak;
-                        case ArmorType.BUILDING:
+                        case ArmorType.Building:
                             return weakest;
                     }
                     break;
-                case WeaponType.BOW:
-                    switch (armor)
+                case WeaponType.Bow:
+                    switch(armor)
                     {
-                        case ArmorType.GROUND:
+                        case ArmorType.Ground:
                             return strong;
-                        case ArmorType.MOUNT:
+                        case ArmorType.Mount:
                             return good;
-                        case ArmorType.MACHINE:
+                        case ArmorType.Machine:
                             return weakest;
-                        case ArmorType.BUILDING:
+                        case ArmorType.Building:
                             return nodamage;
                     }
                     break;
-                case WeaponType.BALL:
-                    switch (armor)
+                case WeaponType.Ball:
+                    switch(armor)
                     {
-                        case ArmorType.GROUND:
+                        case ArmorType.Ground:
                             return nodamage;
-                        case ArmorType.MOUNT:
+                        case ArmorType.Mount:
                             return nodamage;
-                        case ArmorType.MACHINE:
+                        case ArmorType.Machine:
                             return weak;
-                        case ArmorType.BUILDING:
+                        case ArmorType.Building:
                             return strongest;
                     }
                     break;
-                case WeaponType.BARRICADE:
-                    switch (armor)
+                case WeaponType.Barricade:
+                    switch(armor)
                     {
-                        case ArmorType.GROUND:
+                        case ArmorType.Ground:
                             return weaker;
-                        case ArmorType.MOUNT:
+                        case ArmorType.Mount:
                             return weaker;
-                        case ArmorType.MACHINE:
+                        case ArmorType.Machine:
                             return weaker;
-                        case ArmorType.BUILDING:
+                        case ArmorType.Building:
                             return weaker;
                     }
                     break;
@@ -144,25 +145,29 @@ namespace Game.Battle
         public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
             ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
-            int rawDmg = (atk * attacker.Count) / 10;
+            int rawDmg = (atk*attacker.Count)/10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
-            rawDmg = (int)(typeModifier * classModifier * rawDmg);
+            rawDmg = (int)(typeModifier*classModifier*rawDmg);
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
         }
 
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
         {
-            int totalCarry = attacker.BaseStats.Carry * attacker.Count;
-            int count = Math.Max(1, attacker.BaseStats.Carry * attacker.Count * Config.battle_loot_per_round / 100);
-            Resource spaceLeft = new Resource(totalCarry, totalCarry, totalCarry, totalCarry, 0);
+            int totalCarry = attacker.BaseStats.Carry*attacker.Count;
+            int count = Math.Max(1, attacker.BaseStats.Carry*attacker.Count*Config.battle_loot_per_round/100);
+            var spaceLeft = new Resource(totalCarry, totalCarry, totalCarry, totalCarry, 0);
             spaceLeft.Subtract(((AttackCombatUnit)attacker).Loot);
-            return new Resource(Math.Min(count, spaceLeft.Crop), Math.Min(count, spaceLeft.Gold / 2), Math.Min(count, spaceLeft.Iron), Math.Min(count, spaceLeft.Wood), 0);
+            return new Resource(Math.Min(count, spaceLeft.Crop),
+                                Math.Min(count, spaceLeft.Gold/2),
+                                Math.Min(count, spaceLeft.Iron),
+                                Math.Min(count, spaceLeft.Wood),
+                                0);
         }
 
         internal static short GetStamina(TroopStub stub, City city)
         {
-            return (short) Config.battle_stamina_initial;
+            return (short)Config.battle_stamina_initial;
         }
 
         internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round)
@@ -185,7 +190,8 @@ namespace Game.Battle
             return (short)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
-        internal static ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round) {
+        internal static ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round)
+        {
             if (stamina == 0)
                 return 0;
 
@@ -199,7 +205,7 @@ namespace Game.Battle
 
         internal static bool UnitStatModCheck(BaseBattleStats stats, object comparison, object value)
         {
-            switch ((string)comparison)
+            switch((string)comparison)
             {
                 case "ArmorEqual":
                     return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)value, true);
@@ -221,54 +227,55 @@ namespace Game.Battle
         internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
         {
             BaseBattleStats stats = UnitFactory.GetUnitStats(type, lvl).Battle;
-            BattleStatsModCalculator calculator = new BattleStatsModCalculator(stats);
+            var calculator = new BattleStatsModCalculator(stats);
 
-            foreach (Effect effect in city.Technologies.GetAllEffects(EffectInheritance.ALL))
+            foreach (var effect in city.Technologies.GetAllEffects(EffectInheritance.All))
             {
-                if (effect.id == EffectCode.UnitStatMod)
+                if (effect.Id == EffectCode.UnitStatMod)
                 {
-                    if (UnitStatModCheck(stats, effect.value[3], effect.value[4]))
+                    if (UnitStatModCheck(stats, effect.Value[3], effect.Value[4]))
                     {
-                        switch ((string)effect.value[0])
+                        switch((string)effect.Value[0])
                         {
                             case "Atk":
-                                calculator.Atk.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                calculator.Atk.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                             case "Splash":
-                                calculator.Splash.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                calculator.Splash.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                             case "Def":
-                                calculator.Def.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                calculator.Def.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                             case "Spd":
-                                calculator.Spd.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                calculator.Spd.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                             case "Stl":
-                                calculator.Stl.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                calculator.Stl.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                             case "Rng":
-                                calculator.Rng.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                calculator.Rng.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                             case "MaxHp":
-                                calculator.MaxHp.AddMod((string)effect.value[1], (int)effect.value[2]);
+                                calculator.MaxHp.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                         }
                     }
                 }
-                else if (effect.id == EffectCode.ACallToArmMod && group == TroopBattleGroup.LOCAL)
-                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.value[0] * city.Resource.Labor.Value) / (city.MainBuilding.Lvl * 100)));
+                else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
+                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0]*city.Resource.Labor.Value)/(city.MainBuilding.Lvl*100)));
             }
             return calculator.GetStats();
         }
 
         public static Resource GetBonusResources(TroopObject troop)
         {
-            Resource bonus = new Resource(troop.Stats.Loot);
+            var bonus = new Resource(troop.Stats.Loot);
             bonus *= (Config.Random.NextDouble() + 1.0);
             return bonus;
         }
 
-        public static int GetNumberOfHits(CombatObject currentAttacker) {
+        public static int GetNumberOfHits(CombatObject currentAttacker)
+        {
             return currentAttacker.BaseStats.Splash + 1;
         }
     }

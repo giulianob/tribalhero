@@ -5,17 +5,21 @@ using Game.Data;
 
 #endregion
 
-namespace Game.Logic {
-    enum LayoutComparison : byte {
-        NOT_CONTAINS = 0,
-        CONTAINS = 1
+namespace Game.Logic.Requirements.LayoutRequirements
+{
+    enum LayoutComparison : byte
+    {
+        NotContains = 0,
+        Contains = 1
     }
 
-    public abstract class LayoutRequirement {
-        protected List<Reqirement> requirements = new List<Reqirement>();
+    public abstract class LayoutRequirement
+    {
+        protected List<Requirement> requirements = new List<Requirement>();
         public abstract bool Validate(Structure builder, ushort type, uint x, uint y);
 
-        public void Add(Reqirement req) {
+        public void Add(Requirement req)
+        {
             requirements.Add(req);
         }
     }

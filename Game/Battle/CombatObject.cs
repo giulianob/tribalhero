@@ -8,13 +8,24 @@ using Game.Setup;
 
 #endregion
 
-namespace Game.Battle {
-    public enum BattleClass : byte {
-        STRUCTURE = 0,
-        UNIT = 1
+namespace Game.Battle
+{
+    public enum BattleClass : byte
+    {
+        Structure = 0,
+        Unit = 1
     }
 
-    public abstract class CombatObject : IComparable<object>, IPersistableObject {
+    public abstract class CombatObject : IComparable<object>, IPersistableObject
+    {
+        protected BattleManager battleManager;
+
+        protected CombatObject()
+        {
+            MinDmgDealt = ushort.MaxValue;
+            MinDmgRecv = ushort.MaxValue;
+        }
+
         public ushort MaxDmgRecv { get; set; }
         public ushort MinDmgRecv { get; set; }
 
@@ -40,111 +51,217 @@ namespace Game.Battle {
 
         public uint GroupId { get; set; }
 
-        protected BattleManager battleManager;
-
-        protected CombatObject() {
-            MinDmgDealt = ushort.MaxValue;
-            MinDmgRecv = ushort.MaxValue;
+        public BattleManager Battle
+        {
+            get
+            {
+                return battleManager;
+            }
         }
 
-        public BattleManager Battle {
-            get { return battleManager; }
+        public virtual bool IsDead
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
         }
 
-        public virtual void CleanUp() {
+        public virtual BaseBattleStats BaseStats
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+            set
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual BattleStats Stats
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+            set
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual ushort Type
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual BattleClass ClassType
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual ushort Count
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual uint Hp
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual uint Visibility
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual uint PlayerId
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual City City
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual byte Lvl
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        public virtual short Stamina
+        {
+            get
+            {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+        }
+
+        #region IComparable<object> Members
+
+        public virtual int CompareTo(object other)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IPersistableObject Members
+
+        public bool DbPersisted { get; set; }
+
+        public virtual string DbTable
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public virtual DbColumn[] DbPrimaryKey
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public virtual DbDependency[] DbDependencies
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public virtual DbColumn[] DbColumns
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        #endregion
+
+        public virtual void CleanUp()
+        {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void ExitBattle() {
+        public virtual void ExitBattle()
+        {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void TakeDamage(int dmg, out Resource returning, out int attackPoints) {
+        public virtual void TakeDamage(int dmg, out Resource returning, out int attackPoints)
+        {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void CalculateDamage(ushort dmg, out ushort actualDmg) {
+        public virtual void CalculateDamage(ushort dmg, out ushort actualDmg)
+        {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual bool InRange(CombatObject obj) {
+        public virtual bool InRange(CombatObject obj)
+        {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual int TileDistance(uint x, uint y) {
+        public virtual int TileDistance(uint x, uint y)
+        {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void ReceiveReward(int reward, Resource resource) {
+        public virtual void ReceiveReward(int reward, Resource resource)
+        {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual bool IsDead {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual BaseBattleStats BaseStats {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-            set { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual BattleStats Stats {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-            set { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual ushort Type {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual BattleClass ClassType {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual ushort Count {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual uint Hp {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual uint Visibility {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual uint PlayerId {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual City City {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual byte Lvl {
-            get { throw new Exception("NOT IMPLEMENTED"); }
-        }
-
-        public virtual short Stamina {
-            get { throw new Exception("NOT IMPLEMENTED"); }            
-        }
-
-        public bool CanSee(CombatObject obj) {
+        public bool CanSee(CombatObject obj)
+        {
             // In order to implement visibility as discussed in http://trac.tribalhero.com/wiki/Discussion%2011/08/10
             // we always take the lowest RoundsParticipated of the two objects.
             int minRoundsParticipated = Math.Min(RoundsParticipated, obj.RoundsParticipated);
-            int totalVision = (int) (Visibility + minRoundsParticipated);        
-            switch(obj.BaseStats.Weapon) {
-                case WeaponType.BOW:
-                    totalVision += (minRoundsParticipated * BaseStats.Spd / 15);
+            var totalVision = (int)(Visibility + minRoundsParticipated);
+            switch(obj.BaseStats.Weapon)
+            {
+                case WeaponType.Bow:
+                    totalVision += (minRoundsParticipated*BaseStats.Spd/15);
                     break;
                 default:
                     break;
             }
-            
-            if (totalVision >= obj.Stats.Stl) {
+
+            if (totalVision >= obj.Stats.Stl)
                 return true;
-            }
 
             // if vision < stealth by 1, u have 33% chance 
             // if vision < stealth by 2, u have 25% chance 
@@ -158,48 +275,15 @@ namespace Game.Battle {
             return Config.Random.Next(obj.Stats.Stl - totalVision + 1) == 0;
         }
 
-        public void ParticipatedInRound() {
+        public void ParticipatedInRound()
+        {
             LastRound++;
-            RoundsParticipated++;            
+            RoundsParticipated++;
         }
 
-        #region IComparable<GameObject> Members
-
-        public virtual int CompareTo(object other) {
-            throw new Exception("The method or operation is not implemented.");
-        }
-
-        #endregion
-
-        #region IPersistableObject Members
-
-        public bool DbPersisted { get; set; }
-
-        #endregion
-
-        #region IPersistable Members
-
-        public virtual string DbTable {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
-
-        public virtual DbColumn[] DbPrimaryKey {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
-
-        public virtual DbDependency[] DbDependencies {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
-
-        public virtual DbColumn[] DbColumns {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
-
-        #endregion
-
-
-        public void Print() {
-          //  throw new NotImplementedException();
+        public void Print()
+        {
+            //  throw new NotImplementedException();
         }
     }
 }

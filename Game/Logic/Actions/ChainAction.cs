@@ -5,53 +5,148 @@ using System.Data;
 using Game.Data;
 using Game.Database;
 using Game.Setup;
-using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    public abstract class ChainAction : PassiveAction, IActionTime {
-        private PassiveAction current;
-        protected PassiveAction Current {
-            get { return current; }
-        }
-
-        private ActionState chainState = ActionState.STARTED;
-        public ActionState ChainState {
-            get { return chainState; }
-        }
-
-        private ChainCallback chainCallback;
+namespace Game.Logic.Actions
+{
+    public abstract class ChainAction : PassiveAction, IActionTime
+    {
+        #region Delegates
 
         public delegate void ChainCallback(ActionState state);
 
-        protected ChainAction() {}
+        #endregion
 
-        protected void ExecuteChainAndWait(PassiveAction chainable, ChainCallback routeCallback) {
+        public new const string DB_TABLE = "chain_actions";
+        private ChainCallback chainCallback;
+        private ActionState chainState = ActionState.Started;
+
+        protected ChainAction()
+        {
+        }
+
+        protected ChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible)
+        {
+            ActionId = id;
+            this.chainState = chainState;
+            Current = current;
+            IsVisible = isVisible;
+
+            //set the chain callback through reflection. The chain callback method should always exist in this class
+            if (chainCallback != string.Empty)
+                this.chainCallback = (ChainCallback)Delegate.CreateDelegate(typeof(ChainCallback), this, chainCallback, true);
+
+            switch(chainState)
+            {
+                case ActionState.Completed:
+                case ActionState.Failed:
+                    Global.Scheduler.Put(new ChainExecuter(this.chainCallback, chainState));
+                    break;
+                default:
+                    current.IsChain = true;
+                    current.OnNotify += ChainNotify;
+
+                    if (current is ScheduledPassiveAction)
+                        Global.Scheduler.Put((ScheduledPassiveAction)current);
+                    break;
+            }
+        }
+
+        protected PassiveAction Current { get; private set; }
+
+        public ActionState ChainState
+        {
+            get
+            {
+                return chainState;
+            }
+        }
+
+        public override string DbTable
+        {
+            get
+            {
+                return DB_TABLE;
+            }
+        }
+
+        public override DbColumn[] DbColumns
+        {
+            get
+            {
+                return new[]
+                       {
+                               new DbColumn("type", Type, DbType.UInt32), new DbColumn("is_visible", IsVisible, DbType.Boolean),
+                               new DbColumn("current_action_id", Current != null ? (object)Current.ActionId : null, DbType.UInt32),
+                               new DbColumn("chain_callback", chainCallback != null ? chainCallback.Method.Name : null, DbType.String),
+                               new DbColumn("chain_state", (byte)chainState, DbType.Byte), new DbColumn("properties", Properties, DbType.String)
+                       };
+            }
+        }
+
+        #region IActionTime Members
+
+        public DateTime BeginTime
+        {
+            get
+            {
+                if (Current == null || !(Current is IActionTime))
+                    return DateTime.MinValue;
+
+                return (Current as IActionTime).BeginTime;
+            }
+        }
+
+        public DateTime EndTime
+        {
+            get
+            {
+                if (Current == null || !(Current is IActionTime))
+                    return DateTime.MinValue;
+
+                return (Current as IActionTime).EndTime;
+            }
+        }
+
+        public DateTime NextTime
+        {
+            get
+            {
+                if (Current == null || !(Current is IActionTime))
+                    return DateTime.MinValue;
+
+                return (Current as IActionTime).NextTime;
+            }
+        }
+
+        #endregion
+
+        protected void ExecuteChainAndWait(PassiveAction chainable, ChainCallback routeCallback)
+        {
             chainable.IsChain = true;
             chainable.OnNotify += ChainNotify;
             chainCallback = routeCallback;
 
-            current = chainable;
-            current.WorkerObject = WorkerObject;
-            current.ActionId = (uint) WorkerObject.City.Worker.GetId();
+            Current = chainable;
+            Current.WorkerObject = WorkerObject;
+            Current.ActionId = (uint)WorkerObject.City.Worker.GetId();
 
             Global.DbManager.Save(this);
-            if (chainable.Execute() == Error.OK)
-                chainable.StateChange(ActionState.STARTED);
-            else
-                chainable.StateChange(ActionState.FAILED);
+            chainable.StateChange(chainable.Execute() == Error.Ok ? ActionState.Started : ActionState.Failed);
 
-            StateChange(ActionState.RESCHEDULED);
+            StateChange(ActionState.Rescheduled);
         }
 
-        private void ChainNotify(GameAction action, ActionState state) {
+        private void ChainNotify(GameAction action, ActionState state)
+        {
             chainState = state;
 
-            switch (state) {
-                case ActionState.FIRED:
-                case ActionState.STARTED:
-                case ActionState.RESCHEDULED:
+            switch(state)
+            {
+                case ActionState.Fired:
+                case ActionState.Started:
+                case ActionState.Rescheduled:
                     Global.DbManager.Save(action);
                     if (action is ScheduledPassiveAction)
                         Global.Scheduler.Put((ScheduledPassiveAction)action);
@@ -61,8 +156,8 @@ namespace Game.Logic.Actions {
                     Global.DbManager.Save(this);
 
                     return;
-                case ActionState.COMPLETED:                
-                case ActionState.FAILED:
+                case ActionState.Completed:
+                case ActionState.Failed:
                     WorkerObject.City.Worker.ReleaseId(action.ActionId);
                     Global.DbManager.Delete(action);
                     break;
@@ -80,94 +175,14 @@ namespace Game.Logic.Actions {
             Global.Scheduler.Put(new ChainExecuter(currentChain, state));
         }
 
-        public override void UserCancelled() {
-            current.UserCancelled();
+        public override void UserCancelled()
+        {
+            Current.UserCancelled();
         }
 
-        public override void WorkerRemoved(bool wasKilled) {
+        public override void WorkerRemoved(bool wasKilled)
+        {
             throw new Exception("Unsupported at the moment");
         }
-
-        #region IPersistable Members
-
-        public new const string DB_TABLE = "chain_actions";
-
-        public override string DbTable {
-            get { return DB_TABLE; }
-        }
-
-        protected ChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState,
-                           bool isVisible) {
-            ActionId = id;
-            this.chainState = chainState;
-            this.current = current;
-            IsVisible = isVisible;
-
-            //set the chain callback through reflection. The chain callback method should always exist in this class
-            if (chainCallback != string.Empty)
-                this.chainCallback =
-                    (ChainCallback) Delegate.CreateDelegate(typeof (ChainCallback), this, chainCallback, true);
-
-            switch (chainState) {
-                case ActionState.COMPLETED:
-                case ActionState.FAILED:                
-                    Global.Scheduler.Put(new ChainExecuter(this.chainCallback, chainState));
-                    break;
-                default:
-                    current.IsChain = true;
-                    current.OnNotify += ChainNotify;
-
-                    if (current is ScheduledPassiveAction)
-                        Global.Scheduler.Put((ScheduledPassiveAction)current);
-                    break;
-            }
-        }
-
-        public override DbColumn[] DbColumns {
-            get {
-                return new[] {
-                                          new DbColumn("type", Type, DbType.UInt32), new DbColumn("is_visible", IsVisible, DbType.Boolean)
-                                          ,
-                                          new DbColumn("current_action_id", current != null ? (object) current.ActionId : null,
-                                                       DbType.UInt32),
-                                          new DbColumn("chain_callback", chainCallback != null ? chainCallback.Method.Name : null,
-                                                       DbType.String), new DbColumn("chain_state", (byte) chainState, DbType.Byte),
-                                          new DbColumn("properties", Properties, DbType.String)
-                                      };
-            }
-        }
-
-        #endregion
-
-        #region IActionTime Members
-
-        public DateTime BeginTime {
-            get {
-                if (current == null || !(current is IActionTime))
-                    return DateTime.MinValue;
-                
-                return (current as IActionTime).BeginTime;
-            }
-        }
-
-        public DateTime EndTime {
-            get {
-                if (current == null || !(current is IActionTime))
-                    return DateTime.MinValue;
-                                
-                return (current as IActionTime).EndTime;
-            }
-        }
-
-        public DateTime NextTime {
-            get {
-                if (current == null || !(current is IActionTime))
-                    return DateTime.MinValue;
-                
-                return (current as IActionTime).NextTime;
-            }
-        }
-
-        #endregion
     }
 }

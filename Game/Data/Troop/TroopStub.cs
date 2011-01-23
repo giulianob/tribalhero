@@ -6,127 +6,159 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Database;
-using Game.Fighting;
 using Game.Util;
 
 #endregion
 
-namespace Game.Data.Troop {
-    public enum TroopState {
-        IDLE = 0,
-        BATTLE = 1,
-        STATIONED = 2,
-        BATTLE_STATIONED = 3,
-        MOVING = 4,
-        RETURNING_HOME = 5
+namespace Game.Data.Troop
+{
+    public enum TroopState
+    {
+        Idle = 0,
+        Battle = 1,
+        Stationed = 2,
+        BattleStationed = 3,
+        Moving = 4,
+        ReturningHome = 5
     }
 
-    public enum TroopBattleGroup {
-        LOCAL = 0,
-        ATTACK = 1,
-        DEFENSE = 2,
+    public enum TroopBattleGroup
+    {
+        Local = 0,
+        Attack = 1,
+        Defense = 2,
     }
 
-    public class TroopStub : IEnumerable<Formation>,
-                             IPersistableList, ILockable {
-
-
-        protected Dictionary<FormationType, Formation> data = new Dictionary<FormationType, Formation>();
-        private bool isUpdating;
-        private bool isDirty;
-
+    public class TroopStub : IEnumerable<Formation>, IPersistableList, ILockable
+    {
+        public const string DB_TABLE = "troop_stubs";
         private readonly object objLock = new object();
+        protected Dictionary<FormationType, Formation> data = new Dictionary<FormationType, Formation>();
+        private bool isDirty;
+        private bool isUpdating;
 
         #region Properties
 
+        private TroopState state = TroopState.Idle;
+        private City stationedCity;
+        private byte troopId;
+        private TroopObject troopObject;
         public TroopTemplate Template { get; private set; }
 
         public TroopManager TroopManager { get; set; }
 
-        public Formation this[FormationType type] {
-            get { return data[type]; }
-            set {
+        public Formation this[FormationType type]
+        {
+            get
+            {
+                return data[type];
+            }
+            set
+            {
                 CheckUpdateMode();
                 data[type] = value;
             }
         }
 
-        private TroopState state = TroopState.IDLE;
-
-        public TroopState State {
-            get { return state; }
-            set {
+        public TroopState State
+        {
+            get
+            {
+                return state;
+            }
+            set
+            {
                 CheckUpdateMode();
                 state = value;
                 isDirty = true;
             }
         }
 
-        public City City {
-            get { return TroopManager == null ? null : TroopManager.City; }
+        public City City
+        {
+            get
+            {
+                return TroopManager == null ? null : TroopManager.City;
+            }
         }
 
         public byte StationedTroopId { get; set; }
 
-        private City stationedCity;
-
-        public City StationedCity {
-            get { return stationedCity; }
-            set {
+        public City StationedCity
+        {
+            get
+            {
+                return stationedCity;
+            }
+            set
+            {
                 CheckUpdateMode();
                 stationedCity = value;
             }
         }
 
-        private TroopObject troopObject;
-
-        public TroopObject TroopObject {
-            get { return troopObject; }
-            set {
+        public TroopObject TroopObject
+        {
+            get
+            {
+                return troopObject;
+            }
+            set
+            {
                 CheckUpdateMode(false);
                 troopObject = value;
             }
         }
 
-        private byte troopId;
-
-        public byte TroopId {
-            get { return troopId; }
-            set {
+        public byte TroopId
+        {
+            get
+            {
+                return troopId;
+            }
+            set
+            {
                 CheckUpdateMode();
                 troopId = value;
             }
         }
 
-        public byte FormationCount {
-            get { return (byte)data.Count; }
+        public byte FormationCount
+        {
+            get
+            {
+                return (byte)data.Count;
+            }
         }
 
-        public bool IsDefault() {
-            return TroopId == 1;
-        }
-
-        public ushort TotalCount {
-            get {
+        public ushort TotalCount
+        {
+            get
+            {
                 ushort count = 0;
 
-                lock (objLock) {
-                    foreach (Formation formation in data.Values)
-                        count += (ushort)formation.Sum(x=>x.Value);
+                lock (objLock)
+                {
+                    foreach (var formation in data.Values)
+                        count += (ushort)formation.Sum(x => x.Value);
                 }
 
                 return count;
             }
         }
 
-        public int TotalHp {
-            get {
+        public int TotalHp
+        {
+            get
+            {
                 int count = 0;
 
-                lock (objLock) {
-                    foreach (Formation formation in data.Values) {
-                        foreach (KeyValuePair<ushort, ushort> kvp in formation)
-                            count += (kvp.Value * City.Template[kvp.Key].Battle.MaxHp);
+                lock (objLock)
+                {
+                    foreach (var formation in data.Values)
+                    {
+                        foreach (var kvp in formation)
+                            count += (kvp.Value*City.Template[kvp.Key].Battle.MaxHp);
                     }
                 }
 
@@ -135,15 +167,35 @@ namespace Game.Data.Troop {
         }
 
         /// <summary>
-        /// Returns the sum of the upkeep for all units in troop stub
+        ///   Returns the sum of the upkeep for all units in troop stub
         /// </summary>
-        public int Value {
-            get {
+        public int Value
+        {
+            get
+            {
                 int count = 0;
 
-                lock (objLock) {
-                    foreach (Formation formation in data.Values) {
-                        count += formation.Sum(kvp => City.Template[kvp.Key].Upkeep * kvp.Value);
+                lock (objLock)
+                {
+                    foreach (var formation in data.Values)
+                        count += formation.Sum(kvp => City.Template[kvp.Key].Upkeep*kvp.Value);
+                }
+
+                return count;
+            }
+        }
+
+        public int Upkeep
+        {
+            get
+            {
+                int count = 0;
+                lock (objLock)
+                {
+                    foreach (var formation in data.Values)
+                    {
+                        foreach (var kvp in formation)
+                            count += (kvp.Value*City.Template[kvp.Key].Upkeep);
                     }
                 }
 
@@ -151,13 +203,17 @@ namespace Game.Data.Troop {
             }
         }
 
-        public int Upkeep {
-            get {
+        public int Carry
+        {
+            get
+            {
                 int count = 0;
-                lock (objLock) {
-                    foreach (Formation formation in data.Values) {
-                        foreach (KeyValuePair<ushort, ushort> kvp in formation)
-                            count += (kvp.Value * City.Template[kvp.Key].Upkeep);
+                lock (objLock)
+                {
+                    foreach (var formation in data.Values)
+                    {
+                        foreach (var kvp in formation)
+                            count += (kvp.Value*City.Template[kvp.Key].Battle.Carry);
                     }
                 }
 
@@ -165,27 +221,22 @@ namespace Game.Data.Troop {
             }
         }
 
-        public int Carry {                    
-            get {
-                int count = 0;
-                lock (objLock) {
-                    foreach (Formation formation in data.Values) {
-                        foreach (KeyValuePair<ushort, ushort> kvp in formation)
-                            count += (kvp.Value * City.Template[kvp.Key].Battle.Carry);
-                    }
-                }
+        public bool IsDefault()
+        {
+            return TroopId == 1;
+        }
 
-                return count;
-            }
-        }        
-
-        public void Starve() {
-            lock (objLock) {
+        public void Starve()
+        {
+            lock (objLock)
+            {
                 CheckUpdateMode();
 
-                foreach (Formation formation in data.Values) {
-                    foreach (KeyValuePair<ushort, ushort> kvp in new Dictionary<ushort, ushort>(formation)) {
-                        ushort newCount = (ushort)(kvp.Value * 95 / 100);
+                foreach (var formation in data.Values)
+                {
+                    foreach (var kvp in new Dictionary<ushort, ushort>(formation))
+                    {
+                        var newCount = (ushort)(kvp.Value*95/100);
 
                         if (newCount == 0)
                             formation.Remove(kvp.Key);
@@ -198,11 +249,15 @@ namespace Game.Data.Troop {
             }
         }
 
-        public Dictionary<ushort, int> TotalUnitByType() {
-            lock (objLock) {
-                Dictionary<ushort, int> dict = new Dictionary<ushort, int>();
-                foreach (Formation formation in data.Values) {
-                    foreach (KeyValuePair<ushort, ushort> kvp in formation) {
+        public Dictionary<ushort, int> TotalUnitByType()
+        {
+            lock (objLock)
+            {
+                var dict = new Dictionary<ushort, int>();
+                foreach (var formation in data.Values)
+                {
+                    foreach (var kvp in formation)
+                    {
                         if (dict.ContainsKey(kvp.Key))
                             dict[kvp.Key] += kvp.Value;
                         else
@@ -214,16 +269,18 @@ namespace Game.Data.Troop {
             }
         }
 
-        public bool Equal(TroopStub troopStub, params FormationType[] ignoreFormations) {
+        public bool Equal(TroopStub troopStub, params FormationType[] ignoreFormations)
+        {
             lock (objLock)
             {
                 Dictionary<ushort, int> dict = TotalUnitByType();
-                foreach (Formation formation in troopStub.data.Values)
+                foreach (var formation in troopStub.data.Values)
                 {
-                    if (ignoreFormations.Contains(formation.Type)) continue;
+                    if (ignoreFormations.Contains(formation.Type))
+                        continue;
 
-                    foreach (KeyValuePair<ushort, ushort> kvp in formation)
-                    {                        
+                    foreach (var kvp in formation)
+                    {
                         if (!dict.ContainsKey(kvp.Key))
                             return false;
 
@@ -236,14 +293,18 @@ namespace Game.Data.Troop {
                 }
 
                 return dict.Count == 0;
-            }            
+            }
         }
 
-        public bool Equal(TroopStub troopStub) {
-            lock (objLock) {
+        public bool Equal(TroopStub troopStub)
+        {
+            lock (objLock)
+            {
                 Dictionary<ushort, int> dict = TotalUnitByType();
-                foreach (Formation formation in troopStub.data.Values) {
-                    foreach (KeyValuePair<ushort, ushort> kvp in formation) {
+                foreach (var formation in troopStub.data.Values)
+                {
+                    foreach (var kvp in formation)
+                    {
                         if (!dict.ContainsKey(kvp.Key))
                             return false;
 
@@ -263,17 +324,128 @@ namespace Game.Data.Troop {
 
         #region Events
 
+        #region Delegates
+
         public delegate void OnUnitUpdate(TroopStub stub);
+
+        #endregion
 
         public event OnUnitUpdate UnitUpdate;
 
         #endregion
 
-        public TroopStub() {
+        public TroopStub()
+        {
             Template = new TroopTemplate(this);
         }
 
-        public void FireUpdated() {
+        #region IEnumerable<Formation> Members
+
+        public IEnumerator<Formation> GetEnumerator()
+        {
+            return data.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return data.GetEnumerator();
+        }
+
+        #endregion
+
+        #region ILockable Members
+
+        public int Hash
+        {
+            get
+            {
+                return unchecked((int)City.Owner.PlayerId);
+            }
+        }
+
+        public object Lock
+        {
+            get
+            {
+                return City.Lock;
+            }
+        }
+
+        #endregion
+
+        #region IPersistableList Members
+
+        public string DbTable
+        {
+            get
+            {
+                return DB_TABLE;
+            }
+        }
+
+        public DbColumn[] DbPrimaryKey
+        {
+            get
+            {
+                return new[] {new DbColumn("id", troopId, DbType.UInt32), new DbColumn("city_id", TroopManager.City.Id, DbType.UInt32)};
+            }
+        }
+
+        public DbDependency[] DbDependencies
+        {
+            get
+            {
+                return new[] {new DbDependency("Template", true, true)};
+            }
+        }
+
+        public DbColumn[] DbColumns
+        {
+            get
+            {
+                return new[]
+                       {
+                               new DbColumn("stationed_city_id", stationedCity != null ? stationedCity.Id : 0, DbType.UInt32),
+                               new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("formations", GetFormationBits(), DbType.UInt16)
+                       };
+            }
+        }
+
+        public DbColumn[] DbListColumns
+        {
+            get
+            {
+                return new[] {new DbColumn("formation_type", DbType.Byte), new DbColumn("type", DbType.UInt16), new DbColumn("count", DbType.UInt16)};
+            }
+        }
+
+        public bool DbPersisted { get; set; }
+
+        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        {
+            lock (objLock)
+            {
+                Dictionary<FormationType, Formation>.Enumerator itr = data.GetEnumerator();
+                while (itr.MoveNext())
+                {
+                    Dictionary<ushort, ushort>.Enumerator itr2 = itr.Current.Value.GetEnumerator();
+                    while (itr2.MoveNext())
+                    {
+                        yield return
+                                new[]
+                                {
+                                        new DbColumn("formation_type", (int)itr.Current.Key, DbType.Byte), new DbColumn("type", itr2.Current.Key, DbType.UInt16),
+                                        new DbColumn("count", itr2.Current.Value, DbType.UInt16)
+                                };
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        public void FireUpdated()
+        {
             if (!Global.FireEvents)
                 return;
 
@@ -282,11 +454,8 @@ namespace Game.Data.Troop {
             isDirty = true;
         }
 
-        private void CheckUpdateMode() {
-            CheckUpdateMode(true);
-        }
-
-        private void CheckUpdateMode(bool checkStationedCity) {
+        private void CheckUpdateMode(bool checkStationedCity = true)
+        {
             if (!Global.FireEvents || City == null)
                 return;
 
@@ -299,7 +468,8 @@ namespace Game.Data.Troop {
                 MultiObjectLock.ThrowExceptionIfNotLocked(stationedCity);
         }
 
-        public void BeginUpdate() {
+        public void BeginUpdate()
+        {
             if (isUpdating)
                 throw new Exception("Nesting beginupdates");
 
@@ -307,15 +477,18 @@ namespace Game.Data.Troop {
             isDirty = false;
         }
 
-        public void EndUpdate() {
+        public void EndUpdate()
+        {
             isUpdating = false;
 
             if (isDirty)
                 UnitUpdate(this);
         }
 
-        public bool AddFormation(FormationType type) {
-            lock (objLock) {
+        public bool AddFormation(FormationType type)
+        {
+            lock (objLock)
+            {
                 CheckUpdateMode();
                 if (data.ContainsKey(type))
                     return false;
@@ -327,13 +500,17 @@ namespace Game.Data.Troop {
             return true;
         }
 
-        public bool Add(TroopStub stub) {
-            lock (objLock) {
+        public bool Add(TroopStub stub)
+        {
+            lock (objLock)
+            {
                 CheckUpdateMode();
 
-                foreach (Formation stubFormation in stub) {
+                foreach (var stubFormation in stub)
+                {
                     Formation targetFormation;
-                    if (!data.TryGetValue(stubFormation.Type, out targetFormation)) {
+                    if (!data.TryGetValue(stubFormation.Type, out targetFormation))
+                    {
                         targetFormation = new Formation(stubFormation.Type, this);
                         data.Add(stubFormation.Type, targetFormation);
                     }
@@ -347,10 +524,13 @@ namespace Game.Data.Troop {
             return true;
         }
 
-        public bool AddUnit(FormationType formationType, ushort type, ushort count) {
-            lock (objLock) {
+        public bool AddUnit(FormationType formationType, ushort type, ushort count)
+        {
+            lock (objLock)
+            {
                 Formation formation;
-                if (data.TryGetValue(formationType, out formation)) {
+                if (data.TryGetValue(formationType, out formation))
+                {
                     formation.Add(type, count);
                     return true;
                 }
@@ -361,19 +541,22 @@ namespace Game.Data.Troop {
             return false;
         }
 
-        public bool Remove(TroopStub troop) {
-            lock (objLock) {
+        public bool Remove(TroopStub troop)
+        {
+            lock (objLock)
+            {
                 CheckUpdateMode();
 
                 if (!HasEnough(troop))
                     return false;
 
-                foreach (Formation formation in troop) {
+                foreach (var formation in troop)
+                {
                     Formation targetFormation;
                     if (!data.TryGetValue(formation.Type, out targetFormation))
                         return false;
 
-                    foreach (KeyValuePair<ushort, ushort> unit in formation)
+                    foreach (var unit in formation)
                         targetFormation.Remove(unit.Key, unit.Value);
                 }
 
@@ -383,14 +566,18 @@ namespace Game.Data.Troop {
             return true;
         }
 
-        public ushort RemoveUnit(FormationType formationType, ushort type, ushort count) {
-            lock (objLock) {
+        public ushort RemoveUnit(FormationType formationType, ushort type, ushort count)
+        {
+            lock (objLock)
+            {
                 CheckUpdateMode();
 
                 Formation formation;
-                if (data.TryGetValue(formationType, out formation)) {
+                if (data.TryGetValue(formationType, out formation))
+                {
                     ushort removed = formation.Remove(type, count);
-                    if (removed > 0) {
+                    if (removed > 0)
+                    {
                         FireUpdated();
                         return removed;
                     }
@@ -400,11 +587,13 @@ namespace Game.Data.Troop {
             }
         }
 
-        public void RemoveAllUnits() {
-            lock (objLock) {
+        public void RemoveAllUnits()
+        {
+            lock (objLock)
+            {
                 CheckUpdateMode();
 
-                foreach (Formation formation in data.Values)
+                foreach (var formation in data.Values)
                     formation.Clear();
 
                 FireUpdated();
@@ -417,8 +606,10 @@ namespace Game.Data.Troop {
             {
                 CheckUpdateMode();
 
-                foreach (Formation formation in data.Values) {
-                    if (!formations.Contains(formation.Type)) continue;
+                foreach (var formation in data.Values)
+                {
+                    if (!formations.Contains(formation.Type))
+                        continue;
 
                     formation.Clear();
                 }
@@ -427,14 +618,18 @@ namespace Game.Data.Troop {
             }
         }
 
-        public bool HasEnough(TroopStub troop) {
-            lock (objLock) {
-                foreach (Formation formation in troop) {
+        public bool HasEnough(TroopStub troop)
+        {
+            lock (objLock)
+            {
+                foreach (var formation in troop)
+                {
                     Formation targetFormation;
                     if (!data.TryGetValue(formation.Type, out targetFormation))
                         return false;
 
-                    foreach (KeyValuePair<ushort, ushort> unit in formation) {
+                    foreach (var unit in formation)
+                    {
                         ushort count;
 
                         if (!targetFormation.TryGetValue(unit.Key, out count) || count < unit.Value)
@@ -445,116 +640,29 @@ namespace Game.Data.Troop {
             return true;
         }
 
-        public void Print() {
+        public void Print()
+        {
             Dictionary<FormationType, Formation>.Enumerator itr = data.GetEnumerator();
-            while (itr.MoveNext()) {
-                Global.Logger.Info(
-                    string.Format("Formation type: " + Enum.GetName(typeof(FormationType), itr.Current.Key)));
+            while (itr.MoveNext())
+            {
+                Global.Logger.Info(string.Format("Formation type: " + Enum.GetName(typeof(FormationType), itr.Current.Key)));
                 Dictionary<ushort, ushort>.Enumerator itr2 = itr.Current.Value.GetEnumerator();
                 while (itr2.MoveNext())
                     Global.Logger.Error(string.Format("\t\tType[{0}] : Count[{1}]", itr2.Current.Key, itr2.Current.Value));
             }
         }
 
-        public bool TryGetValue(FormationType formationType, out Formation formation) {
+        public bool TryGetValue(FormationType formationType, out Formation formation)
+        {
             return data.TryGetValue(formationType, out formation);
         }
 
-        #region IEnumerable<PaperFormation> Members
-
-        public IEnumerator<Formation> GetEnumerator() {
-            return data.Values.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            return data.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IPersistable Members
-
-        public ushort GetFormationBits() {
+        public ushort GetFormationBits()
+        {
             ushort mask = 0;
-            foreach (FormationType type in data.Keys)
+            foreach (var type in data.Keys)
                 mask += (ushort)Math.Pow(2, (double)type);
             return mask;
         }
-
-        public const string DB_TABLE = "troop_stubs";
-
-        public string DbTable {
-            get { return DB_TABLE; }
-        }
-
-        public DbColumn[] DbPrimaryKey {
-            get {
-                return new[] {
-                                          new DbColumn("id", troopId, DbType.UInt32),
-                                          new DbColumn("city_id", TroopManager.City.Id, DbType.UInt32)
-                                      };
-            }
-        }
-
-        public DbDependency[] DbDependencies {
-            get { return new[] { new DbDependency("Template", true, true) }; }
-        }
-
-        public DbColumn[] DbColumns {
-            get {
-                return new[] {
-                                          new DbColumn("stationed_city_id", stationedCity != null ? stationedCity.Id : 0,
-                                                       DbType.UInt32), new DbColumn("state", (byte) state, DbType.Byte),
-                                          new DbColumn("formations", GetFormationBits(), DbType.UInt16)
-                                      };
-            }
-        }
-
-        public DbColumn[] DbListColumns {
-            get {
-                return new[] {
-                                          new DbColumn("formation_type", DbType.Byte), new DbColumn("type", DbType.UInt16),
-                                          new DbColumn("count", DbType.UInt16)
-                                      };
-            }
-        }
-
-        public bool DbPersisted { get; set; }
-
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator() {
-            lock (objLock) {
-                Dictionary<FormationType, Formation>.Enumerator itr = data.GetEnumerator();
-                while (itr.MoveNext()) {
-                    Dictionary<ushort, ushort>.Enumerator itr2 = itr.Current.Value.GetEnumerator();
-                    while (itr2.MoveNext()) {
-                        yield return
-                            new[] {
-                                               new DbColumn("formation_type", (int) itr.Current.Key, DbType.Byte),
-                                               new DbColumn("type", itr2.Current.Key, DbType.UInt16),
-                                               new DbColumn("count", itr2.Current.Value, DbType.UInt16)
-                                           };
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region ILockable Members
-
-        public int Hash {
-            get { return unchecked((int)City.Owner.PlayerId); }
-        }
-
-        public object Lock {
-            get { return City.Lock; }
-        }
-
-        #endregion
-
     }
 }

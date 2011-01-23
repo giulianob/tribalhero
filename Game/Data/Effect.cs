@@ -4,34 +4,40 @@ using System;
 
 #endregion
 
-namespace Game.Data {
-    public class Effect {
-        public EffectCode id;
-        public bool isPrivate;
-        public object[] value = new object[5];
-        public EffectLocation location;
+namespace Game.Data
+{
+    public class Effect
+    {
+        public object[] Value = new object[5];
+        public EffectCode Id { get; set; }
+        public bool IsPrivate { get; set; }
+        public EffectLocation Location { get; set; }
 
-        public void Print() {
-            Global.Logger.Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", id, isPrivate, location));
+        public void Print()
+        {
+            Global.Logger.Info(string.Format("Effect[{0} isPrivate[{1}] Location[{2}]", Id, IsPrivate, Location));
         }
     }
 
-    public enum EffectLocation {
-        OBJECT = 0,
-        CITY = 1,
-        PLAYER = 2
+    public enum EffectLocation
+    {
+        Object = 0,
+        City = 1,
+        Player = 2
     }
 
     [Flags]
-    public enum EffectInheritance {
-        INVISIBLE = 1,
-        SELF = 2,
-        SELF_ALL = 3,
-        UPWARD = 4,
-        ALL = 7
+    public enum EffectInheritance
+    {
+        Invisible = 1,
+        Self = 2,
+        SelfAll = 3,
+        Upward = 4,
+        All = 7
     }
 
-    public enum EffectCode {
+    public enum EffectCode
+    {
         BuildTimeMultiplier = 0,
         ResourceRate = 1,
         BuildHeavyTank = 2,
@@ -49,7 +55,7 @@ namespace Game.Data {
         AwayFromStructureMod = 14,
         ACallToArmMod = 15,
         AtticStorageMod = 16,
-        XFor1 =17,
+        XFor1 = 17,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

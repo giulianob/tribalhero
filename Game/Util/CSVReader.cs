@@ -5,24 +5,43 @@ using System.IO;
 
 #endregion
 
-namespace Game.Util {
-    public class CSVReader : IDisposable {
-        private string[] columns;
-        private StreamReader sr = null;
+namespace Game.Util
+{
+    public class CsvReader : IDisposable
+    {
+        private readonly string[] columns;
+        private readonly StreamReader sr;
 
-        public string[] Columns {
-            get { return columns; }
-        }
-
-        public CSVReader(StreamReader sr) {
+        public CsvReader(StreamReader sr)
+        {
             this.sr = sr;
 
             columns = TokenizeCSVLine(sr.ReadLine());
         }
 
-        public string[] ReadRow() {
-            string line = string.Empty;
-            while (true) {
+        public string[] Columns
+        {
+            get
+            {
+                return columns;
+            }
+        }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            if (sr != null)
+                sr.Close();
+        }
+
+        #endregion
+
+        public string[] ReadRow()
+        {
+            string line;
+            while (true)
+            {
                 line = sr.ReadLine();
 
                 if (line == null)
@@ -37,11 +56,13 @@ namespace Game.Util {
             return TokenizeCSVLine(line);
         }
 
-        private string[] TokenizeCSVLine(string line) {
+        private string[] TokenizeCSVLine(string line)
+        {
             string[] cells = line.Split(',');
 
-            string[] result = new string[cells.Length];
-            for (int i = 0; i < cells.Length; i++) {
+            var result = new string[cells.Length];
+            for (int i = 0; i < cells.Length; i++)
+            {
                 string cell = cells[i].Trim();
                 if (cell.StartsWith("\""))
                     result[i] = cell.Replace("\"\"", "\"").Trim('"');
@@ -51,14 +72,5 @@ namespace Game.Util {
 
             return result;
         }
-
-        #region IDisposable Members
-
-        public void Dispose() {
-            if (sr != null)
-                sr.Close();
-        }
-
-        #endregion
     }
 }

@@ -1,12 +1,38 @@
 ﻿#region
 
-using System;
 using Game.Setup;
 
 #endregion
 
-namespace Game.Data.Stats {
-    public class StructureBaseStats {
+namespace Game.Data.Stats
+{
+    public class StructureBaseStats
+    {
+        public StructureBaseStats(string name,
+                                  string spriteClass,
+                                  ushort type,
+                                  byte lvl,
+                                  byte radius,
+                                  Resource cost,
+                                  BaseBattleStats baseBattleStats,
+                                  byte maxLabor,
+                                  int buildTime,
+                                  int workerId,
+                                  ClassId baseClass)
+        {
+            Name = name;
+            SpriteClass = spriteClass;
+            Radius = radius;
+            Type = type;
+            Lvl = lvl;
+            Cost = cost;
+            Battle = baseBattleStats;
+            MaxLabor = maxLabor;
+            BuildTime = buildTime;
+            BaseClass = baseClass;
+            WorkerId = workerId;
+        }
+
         public string Name { get; private set; }
 
         public string SpriteClass { get; private set; }
@@ -29,23 +55,12 @@ namespace Game.Data.Stats {
 
         public BaseBattleStats Battle { get; private set; }
 
-        public int StructureHash {
-            get { return Type * 100 + Lvl; }            
-        }
-
-        public StructureBaseStats(string name, string spriteClass, ushort type, byte lvl, byte radius, Resource cost, BaseBattleStats baseBattleStats,
-                                  byte maxLabor, int buildTime, int workerId, ClassId baseClass) {
-            Name = name;
-            SpriteClass = spriteClass;
-            Radius = radius;
-            Type = type;
-            Lvl = lvl;
-            Cost = cost;
-            Battle = baseBattleStats;
-            MaxLabor = maxLabor;
-            BuildTime = buildTime;
-            BaseClass = baseClass;
-            WorkerId = workerId;
+        public int StructureHash
+        {
+            get
+            {
+                return Type*100 + Lvl;
+            }
         }
     }
 }

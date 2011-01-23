@@ -1,73 +1,85 @@
 #region
 
-using System;
 using Game.Data;
 using Game.Setup;
 
 #endregion
 
-namespace Game.Battle {
-    class BattleViewer {
+namespace Game.Battle
+{
+    class BattleViewer
+    {
         private BattleManager battle;
 
-        protected virtual void Append(string str) {
+        public BattleViewer(BattleManager battle)
+        {
+            this.battle = battle;
+            battle.EnterBattle += BattleEnterBattle;
+            battle.ExitBattle += BattleExitBattle;
+            battle.EnterTurn += BattleEnterTurn;
+            battle.ExitTurn += BattleExitTurn;
+            battle.UnitRemoved += BattleUnitRemoved;
+            battle.ActionAttacked += BattleActionAttacked;
+        }
+
+        protected virtual void Append(string str)
+        {
             Global.Logger.Info(str);
         }
 
-        public BattleViewer(BattleManager battle) {
-            this.battle = battle;
-            battle.EnterBattle += new BattleBase.OnBattle(battle_EnterBattle);
-            battle.ExitBattle += new BattleBase.OnBattle(battle_ExitBattle);
-            battle.EnterTurn += new BattleBase.OnTurn(battle_EnterTurn);
-            battle.ExitTurn += new BattleBase.OnTurn(battle_ExitTurn);
-            battle.UnitRemoved += new BattleBase.OnUnitUpdate(battle_UnitRemoved);
-            battle.ActionAttacked += new BattleBase.OnAttack(battle_ActionAttacked);
-        }
-
-        private void print_combatobject(CombatObject co) {
-            if (co is AttackCombatUnit) {
-                AttackCombatUnit unit = co as AttackCombatUnit;
-                Append("List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" +
-                       UnitFactory.GetName(unit.Type, 1) + "] HP[" + unit.Hp + "]");
-            } else if (co is CombatStructure) {
-                CombatStructure cs = co as CombatStructure;
-                Append("List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" +
-                       StructureFactory.GetName(cs.Structure) + "] HP[" + cs.Hp + "]");
+        private void PrintCombatobject(CombatObject co)
+        {
+            if (co is AttackCombatUnit)
+            {
+                var unit = co as AttackCombatUnit;
+                Append("List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + UnitFactory.GetName(unit.Type, 1) +
+                       "] HP[" + unit.Hp + "]");
+            }
+            else if (co is CombatStructure)
+            {
+                var cs = co as CombatStructure;
+                Append("List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + StructureFactory.GetName(cs.Structure) + "] HP[" + cs.Hp + "]");
             }
         }
 
-        private void battle_ActionAttacked(CombatObject source, CombatObject target, ushort damage) {
+        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        {
             Append("**************************************");
             Append("Attacker: ");
-            print_combatobject(source);
+            PrintCombatobject(source);
             Append("\n");
             Append("Defender: ");
-            print_combatobject(target);
+            PrintCombatobject(target);
             Append("\n");
             Append("**************************************\n");
         }
 
-        private void battle_UnitRemoved(CombatObject obj) {
+        private void BattleUnitRemoved(CombatObject obj)
+        {
             Append("**************************************");
             Append("Removing: ");
-            print_combatobject(obj);
+            PrintCombatobject(obj);
             Append("\n");
             Append("**************************************\n");
         }
 
-        private void battle_ExitTurn(CombatList atk, CombatList def, int turn) {
+        private void BattleExitTurn(CombatList atk, CombatList def, int turn)
+        {
             Append("Turn[" + turn + "] Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void battle_EnterTurn(CombatList atk, CombatList def, int turn) {
+        private void BattleEnterTurn(CombatList atk, CombatList def, int turn)
+        {
             Append("Turn[" + turn + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void battle_ExitBattle(CombatList atk, CombatList def) {
+        private void BattleExitBattle(CombatList atk, CombatList def)
+        {
             Append("Battle Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void battle_EnterBattle(CombatList atk, CombatList def) {
+        private void BattleEnterBattle(CombatList atk, CombatList def)
+        {
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
     }

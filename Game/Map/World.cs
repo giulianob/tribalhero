@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Threading;
@@ -21,13 +22,17 @@ namespace Game.Map
     {
         #region Members
 
+        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
+        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(int.MaxValue);
+        private CityRegion[] cityRegions;
+        private Region[] regions;
         public RoadManager RoadManager { get; private set; }
 
         public uint WorldWidth { get; private set; }
 
         public uint WorldHeight { get; private set; }
 
-        public object Lock { get; private set; }        
+        public object Lock { get; private set; }
 
         public Dictionary<uint, Player> Players { get; private set; }
 
@@ -35,17 +40,18 @@ namespace Game.Map
 
         private Dictionary<uint, City> Cities { get; set; }
 
-        private Region[] regions;
-        private CityRegion[] cityRegions;
-        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
-        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(int.MaxValue);
-
         private int RegionsCount { get; set; }
         private uint RegionSize { get; set; }
         private Stream RegionChanges { get; set; }
         private byte[] MapData { get; set; }
 
-        public int CityCount { get { return Cities.Count; } }
+        public int CityCount
+        {
+            get
+            {
+                return Cities.Count;
+            }
+        }
 
         #endregion
 
@@ -53,7 +59,7 @@ namespace Game.Map
         {
             Cities = new Dictionary<uint, City>();
             RoadManager = new RoadManager();
-            Lock = new object();            
+            Lock = new object();
             Players = new Dictionary<uint, Player>();
             Forests = new ForestManager();
         }
@@ -113,19 +119,26 @@ namespace Game.Map
             RegionChanges.Close();
         }
 
-        public void Load(Stream mapStream, Stream regionChangesStream, bool createRegionChanges, uint inWorldWidth, uint inWorldHeight, uint regionWidth, uint regionHeight,
-                         uint cityRegionWidth, uint cityRegionHeight)
+        public void Load(Stream mapStream,
+                         Stream regionChangesStream,
+                         bool createRegionChanges,
+                         uint inWorldWidth,
+                         uint inWorldHeight,
+                         uint regionWidth,
+                         uint regionHeight,
+                         uint cityRegionWidth,
+                         uint cityRegionHeight)
         {
             if (mapStream == null)
                 throw new Exception("Missing map");
 
             if (regionChangesStream == null)
                 throw new Exception("Missing region changes");
-            
-            if (regionWidth == 0 || regionHeight == 0 || inWorldWidth % regionWidth != 0 || inWorldHeight % regionHeight != 0)
+
+            if (regionWidth == 0 || regionHeight == 0 || inWorldWidth%regionWidth != 0 || inWorldHeight%regionHeight != 0)
                 throw new Exception("Invalid region size configured");
 
-            if (cityRegionWidth == 0 || cityRegionHeight == 0 || inWorldWidth % cityRegionWidth != 0 || inWorldHeight % cityRegionHeight != 0)
+            if (cityRegionWidth == 0 || cityRegionHeight == 0 || inWorldWidth%cityRegionWidth != 0 || inWorldHeight%cityRegionHeight != 0)
                 throw new Exception("Invalid city region size configured");
 
             WorldWidth = inWorldWidth;
@@ -134,25 +147,24 @@ namespace Game.Map
             // creating regions;                    
             //Global.Logger.InfoFormat("Region width[{0}] Region height[{1}] City region width[{2}] City region height[{3}]", regionWidth, regionHeight, cityRegionWidth, cityRegionHeight);            
 
-            RegionSize = regionWidth * regionHeight;            
-            
-            int column = (int)(inWorldWidth / regionWidth);
-            int row = (int)(inWorldHeight / regionHeight);
-            
-            RegionsCount = column * row;
-            MapData = new byte[RegionSize * Region.TILE_SIZE * RegionsCount];
+            RegionSize = regionWidth*regionHeight;
+
+            var column = (int)(inWorldWidth/regionWidth);
+            var row = (int)(inWorldHeight/regionHeight);
+
+            RegionsCount = column*row;
+            MapData = new byte[RegionSize*Region.TILE_SIZE*RegionsCount];
 
             RegionChanges = regionChangesStream;
 
             regions = new Region[RegionsCount];
             for (int regionId = 0; regionId < RegionsCount; ++regionId)
             {
+                var data = new byte[RegionSize*Region.TILE_SIZE]; // 1 tile is 2 bytes
 
-                byte[] data = new byte[RegionSize * Region.TILE_SIZE]; // 1 tile is 2 bytes
+                var mapDataOffset = (int)(RegionSize*Region.TILE_SIZE*regionId);
 
-                int mapDataOffset = (int)(RegionSize * Region.TILE_SIZE * regionId);
-
-                if (mapStream.Read(MapData, mapDataOffset, (int)(RegionSize * Region.TILE_SIZE)) != RegionSize * Region.TILE_SIZE)
+                if (mapStream.Read(MapData, mapDataOffset, (int)(RegionSize*Region.TILE_SIZE)) != RegionSize*Region.TILE_SIZE)
                     throw new Exception("Not enough map data");
 
                 if (createRegionChanges)
@@ -162,7 +174,7 @@ namespace Game.Map
                 }
                 else
                 {
-                    if (RegionChanges.Read(data, 0, (int)(RegionSize * Region.TILE_SIZE)) != RegionSize * Region.TILE_SIZE)
+                    if (RegionChanges.Read(data, 0, (int)(RegionSize*Region.TILE_SIZE)) != RegionSize*Region.TILE_SIZE)
                         throw new Exception("Not enough region change map data");
                 }
 
@@ -173,9 +185,9 @@ namespace Game.Map
             Global.Logger.Info(regions.Length + " created.");
 
             // creating city regions;
-            column = (int)(inWorldWidth / cityRegionWidth);
-            row = (int)(inWorldHeight / cityRegionHeight);
-            int cityRegionsCount = column * row;
+            column = (int)(inWorldWidth/cityRegionWidth);
+            row = (int)(inWorldHeight/cityRegionHeight);
+            int cityRegionsCount = column*row;
 
             cityRegions = new CityRegion[cityRegionsCount];
             for (int regionId = 0; regionId < cityRegionsCount; ++regionId)
@@ -193,7 +205,7 @@ namespace Game.Map
 
                 //Initial save of these objects
                 Global.DbManager.Save(city.MainBuilding);
-                foreach (TroopStub stub in city.Troops)
+                foreach (var stub in city.Troops)
                     Global.DbManager.Save(stub);
 
                 CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
@@ -213,7 +225,6 @@ namespace Game.Map
             IEnumerator<City> iter = Cities.Values.GetEnumerator();
             while (iter.MoveNext())
             {
-
                 // Resave city to update times
                 Global.DbManager.Save(iter.Current);
 
@@ -255,26 +266,21 @@ namespace Game.Map
 
             if (region.Add(obj))
             {
-
                 // Keeps track of objects that exist in the map
                 obj.InWorld = true;
 
                 // If simple object, we must assign an id
                 if (!(obj is GameObject))
-                {
                     obj.ObjectId = (uint)objectIdGenerator.GetNext();
-                }
                 else if (obj is Structure && !(ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)obj)))
-                {
                     RoadManager.CreateRoad(obj.X, obj.Y);
-                }
 
                 // Send obj add event
                 if (Global.FireEvents)
                 {
                     ushort regionId = Region.GetRegionIndex(obj);
 
-                    Packet packet = new Packet(Command.OBJECT_ADD);
+                    var packet = new Packet(Command.ObjectAdd);
                     packet.AddUInt16(regionId);
                     PacketHelper.AddToPacket(obj, packet, true);
 
@@ -298,9 +304,7 @@ namespace Game.Map
 
             // Set id in use
             if (!(obj is GameObject))
-            {
                 objectIdGenerator.Set((int)obj.ObjectId);
-            }
         }
 
         public void Remove(SimpleGameObject obj)
@@ -323,14 +327,12 @@ namespace Game.Map
 
             // Free object id if this is SimpleGameObject
             if (!(obj is GameObject))
-            {
                 objectIdGenerator.Release((int)obj.ObjectId);
-            }
 
             // Send remove update
             if (Global.FireEvents)
             {
-                Packet packet = new Packet(Command.OBJECT_REMOVE);
+                var packet = new Packet(Command.ObjectRemove);
                 packet.AddUInt16(regionId);
                 if (obj is GameObject)
                     packet.AddUInt32(((GameObject)obj).City.Id);
@@ -365,7 +367,7 @@ namespace Game.Map
                 if (oldRegionId == newRegionId)
                 {
                     regions[newRegionId].Update(sender, origX, origY);
-                    Packet packet = new Packet(Command.OBJECT_UPDATE);
+                    var packet = new Packet(Command.ObjectUpdate);
                     packet.AddUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
@@ -374,13 +376,13 @@ namespace Game.Map
                 {
                     regions[oldRegionId].Remove(sender, origX, origY);
                     regions[newRegionId].Add(sender);
-                    Packet packet = new Packet(Command.OBJECT_MOVE);
+                    var packet = new Packet(Command.ObjectMove);
                     packet.AddUInt16(oldRegionId);
                     packet.AddUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + oldRegionId, packet);
 
-                    packet = new Packet(Command.OBJECT_ADD);
+                    packet = new Packet(Command.ObjectAdd);
                     packet.AddUInt16(newRegionId);
                     PacketHelper.AddToPacket(sender, packet, true);
                     Global.Channel.Post("/WORLD/" + newRegionId, packet);
@@ -390,14 +392,14 @@ namespace Game.Map
             {
                 ushort regionId = Region.GetRegionIndex(sender);
                 regions[regionId].Update(sender, sender.X, sender.Y);
-                Packet packet = new Packet(Command.OBJECT_UPDATE);
+                var packet = new Packet(Command.ObjectUpdate);
                 packet.AddUInt16(regionId);
                 PacketHelper.AddToPacket(sender, packet, true);
                 Global.Channel.Post("/WORLD/" + regionId, packet);
             }
 
             //Handles updating city region information
-            Structure structObject = sender as Structure;
+            var structObject = sender as Structure;
             if (structObject == null || structObject.City.MainBuilding != structObject)
                 return;
 
@@ -427,7 +429,8 @@ namespace Game.Map
 
         public Region GetRegion(ushort id)
         {
-            if (id >= regions.Length) return null;
+            if (id >= regions.Length)
+                return null;
             return regions[id];
         }
 
@@ -451,7 +454,9 @@ namespace Game.Map
             {
                 Global.Channel.Subscribe(session, "/WORLD/" + id);
             }
-            catch (DuplicateSubscriptionException) { }
+            catch(DuplicateSubscriptionException)
+            {
+            }
         }
 
         internal void UnsubscribeRegion(Session session, ushort id)
@@ -480,8 +485,8 @@ namespace Game.Map
 
         public List<SimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius)
         {
-            List<SimpleGameObject> list = new List<SimpleGameObject>();
-            TileLocator.foreach_object(x, y, radius, false, GetObjectsForeach, list);
+            var list = new List<SimpleGameObject>();
+            TileLocator.ForeachObject(x, y, radius, false, GetObjectsForeach, list);
             return list;
         }
 
@@ -494,12 +499,53 @@ namespace Game.Map
 
         public List<ushort> GetTilesWithin(uint x, uint y, byte radius)
         {
-            List<ushort> list = new List<ushort>();
-            TileLocator.foreach_object(x, y, radius, false, GetTilesForeach, list);
+            var list = new List<ushort>();
+            TileLocator.ForeachObject(x, y, radius, false, GetTilesForeach, list);
             return list;
         }
 
+        public bool FindPlayerId(string name, out uint playerId)
+        {
+            playerId = ushort.MaxValue;
+            using (
+                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE),
+                                                                       new[] {new DbColumn("name", name, DbType.String)}))
+            {
+                if (!reader.HasRows)
+                    return false;
+                reader.Read();
+                playerId = (uint)reader[0];
+                return true;
+            }
+        }
+
+        public bool FindCityId(string name, out uint cityId)
+        {
+            cityId = ushort.MaxValue;
+            using (
+                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
+                                                                       new[] {new DbColumn("name", name, DbType.String)}))
+            {
+                if (!reader.HasRows)
+                    return false;
+                reader.Read();
+                cityId = (uint)reader[0];
+                return true;
+            }
+        }
+
+        public bool CityNameTaken(string name)
+        {
+            using (
+                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
+                                                                       new[] {new DbColumn("name", name, DbType.String)}))
+            {
+                return reader.HasRows;
+            }
+        }
+
         #region Map Region Methods
+
         public ushort GetTileType(uint x, uint y)
         {
             Region region = GetRegion(x, y);
@@ -515,7 +561,7 @@ namespace Game.Map
             {
                 Region region = GetRegion(x, y);
 
-                long idx = (Region.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
+                long idx = (Region.GetTileIndex(x, y)*Region.TILE_SIZE) + (Region.TILE_SIZE*RegionSize*regionId);
                 tileType = MapData[idx];
                 RegionChanges.Seek(idx, SeekOrigin.Begin);
                 RegionChanges.Write(BitConverter.GetBytes(tileType), 0, 2);
@@ -526,7 +572,7 @@ namespace Game.Map
 
             if (sendEvent && Global.FireEvents)
             {
-                Packet packet = new Packet(Command.REGION_SET_TILE);
+                var packet = new Packet(Command.RegionSetTile);
                 packet.AddUInt16(1);
                 packet.AddUInt32(x);
                 packet.AddUInt32(y);
@@ -546,7 +592,7 @@ namespace Game.Map
             {
                 Region region = GetRegion(x, y);
 
-                long idx = (Region.GetTileIndex(x, y) * Region.TILE_SIZE) + (Region.TILE_SIZE * RegionSize * regionId);
+                long idx = (Region.GetTileIndex(x, y)*Region.TILE_SIZE) + (Region.TILE_SIZE*RegionSize*regionId);
                 RegionChanges.Seek(idx, SeekOrigin.Begin);
                 RegionChanges.Write(BitConverter.GetBytes(tileType), 0, 2);
                 RegionChanges.Flush();
@@ -556,7 +602,7 @@ namespace Game.Map
 
             if (sendEvent && Global.FireEvents)
             {
-                Packet packet = new Packet(Command.REGION_SET_TILE);
+                var packet = new Packet(Command.RegionSetTile);
                 packet.AddUInt16(1);
                 packet.AddUInt32(x);
                 packet.AddUInt32(y);
@@ -565,38 +611,7 @@ namespace Game.Map
                 Global.Channel.Post("/WORLD/" + regionId, packet);
             }
         }
+
         #endregion
-
-        public bool FindPlayerId(string name, out uint playerId)
-        {
-            playerId = ushort.MaxValue;
-            using (DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE), new[] { new DbColumn("name", name, System.Data.DbType.String) }))
-            {
-                if (!reader.HasRows) return false;
-                reader.Read();
-                playerId = (uint)reader[0];
-                return true;
-            }
-        }
-
-        public bool FindCityId(string name, out uint cityId)
-        {
-            cityId = ushort.MaxValue;
-            using (DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE), new[] { new DbColumn("name", name, System.Data.DbType.String) }))
-            {
-                if (!reader.HasRows) return false;
-                reader.Read();
-                cityId = (uint)reader[0];
-                return true;
-            }
-        }
-
-        public bool CityNameTaken(string name)
-        {
-            using (DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE), new[] { new DbColumn("name", name, System.Data.DbType.String) }))
-            {
-                return reader.HasRows;
-            }
-        }
     }
 }

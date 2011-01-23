@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region
+
 using Game.Battle;
 
-namespace Game.Logic.Conditons {
-    public interface ICombatObjectCondition {
+#endregion
+
+namespace Game.Logic.Conditons
+{
+    public interface ICombatObjectCondition
+    {
         bool Check(CombatObject obj);
     }
 }

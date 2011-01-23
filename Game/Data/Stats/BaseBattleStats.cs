@@ -1,32 +1,38 @@
-namespace Game.Data {
-    public enum ArmorType {
-        GROUND = 0,
-        MOUNT = 1,
-        MACHINE = 2,
-        BUILDING = 3
+namespace Game.Data
+{
+    public enum ArmorType
+    {
+        Ground = 0,
+        Mount = 1,
+        Machine = 2,
+        Building = 3
     }
 
-    public enum ArmorClass {
-        LEATHER = 0,
-        METAL = 1,
-        WOODEN = 2,
-        STONE = 3
+    public enum ArmorClass
+    {
+        Leather = 0,
+        Metal = 1,
+        Wooden = 2,
+        Stone = 3
     }
 
-    public enum WeaponType {
-        SWORD = 0,
-        PIKE = 1,
-        BOW = 2,
-        BALL = 3,
-        BARRICADE =4
+    public enum WeaponType
+    {
+        Sword = 0,
+        Pike = 1,
+        Bow = 2,
+        Ball = 3,
+        Barricade = 4
     }
 
-    public enum WeaponClass {
-        BASIC = 0,
-        ELEMENTAL = 1
+    public enum WeaponClass
+    {
+        Basic = 0,
+        Elemental = 1
     }
 
-    public class BaseBattleStats {
+    public class BaseBattleStats
+    {
         #region Base Stats
 
         public ushort Type { get; private set; }
@@ -55,7 +61,7 @@ namespace Game.Data {
 
         public byte Stl { get; private set; }
 
-        public byte Spd { get; private set; }        
+        public byte Spd { get; private set; }
 
         public ushort Carry { get; private set; }
 
@@ -63,22 +69,36 @@ namespace Game.Data {
 
         #region Constructors
 
-        public BaseBattleStats(ushort type, byte lvl, WeaponType weapon, WeaponClass wpnClass, ArmorType armor, ArmorClass armrClass, ushort maxHp, ushort atk, byte splash,
-                               ushort def, byte range, byte stealth, byte speed, ushort groupSize, ushort carry) {
+        public BaseBattleStats(ushort type,
+                               byte lvl,
+                               WeaponType weapon,
+                               WeaponClass wpnClass,
+                               ArmorType armor,
+                               ArmorClass armrClass,
+                               ushort maxHp,
+                               ushort atk,
+                               byte splash,
+                               ushort def,
+                               byte range,
+                               byte stealth,
+                               byte speed,
+                               ushort groupSize,
+                               ushort carry)
+        {
             Type = type;
             Lvl = lvl;
             Weapon = weapon;
             WeaponClass = wpnClass;
             Armor = armor;
             ArmorClass = armrClass;
-            MaxHp = maxHp;            
+            MaxHp = maxHp;
             Atk = atk;
             Splash = splash;
             Def = def;
             Rng = range;
             Stl = stealth;
             Spd = speed;
-            GroupSize = groupSize;            
+            GroupSize = groupSize;
             Carry = carry;
         }
 

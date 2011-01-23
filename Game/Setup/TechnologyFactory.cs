@@ -8,91 +8,104 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Setup {
-    public class TechnologyFactory {
+namespace Game.Setup
+{
+    public class TechnologyFactory
+    {
         private static bool initc;
 
-        private static Dictionary<uint, TechnologyBase> technologies = new Dictionary<uint, TechnologyBase>();
+        private static readonly Dictionary<uint, TechnologyBase> technologies = new Dictionary<uint, TechnologyBase>();
 
-        public static void Init(string technologyFilename, string technologyEffectsFilename) {
+        public static void Init(string technologyFilename, string technologyEffectsFilename)
+        {
             if (initc)
                 return;
 
             initc = true;
 
-            using (CSVReader reader = new CSVReader(new StreamReader(new FileStream(technologyFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
-                Dictionary<string, int> col = new Dictionary<string, int>();
+            using (var reader = new CsvReader(new StreamReader(new FileStream(technologyFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+            {
+                var col = new Dictionary<string, int>();
                 String[] toks;
 
                 for (int i = 0; i < reader.Columns.Length; ++i)
                     col.Add(reader.Columns[i], i);
 
-                while ((toks = reader.ReadRow()) != null) {
+                while ((toks = reader.ReadRow()) != null)
+                {
                     if (toks[0].Length <= 0)
                         continue;
 
-                    TechnologyBase tech = new TechnologyBase {
-                                                                 techtype = uint.Parse(toks[col["TechType"]]),
-                                                                 name = toks[col["Name"]],
-                                                                 level = byte.Parse(toks[col["Lvl"]]),
-                                                                 time = uint.Parse(toks[col["Time"]]),
-                                                                 resources =
-                                                                     new Resource(int.Parse(toks[col["Crop"]]), int.Parse(toks[col["Gold"]]), int.Parse(toks[col["Iron"]]), int.Parse(toks[col["Wood"]]),
-                                                                                  int.Parse(toks[col["Labor"]])),
-                                                                 effects = new List<Effect>()
-                                                             };
+                    var tech = new TechnologyBase
+                               {
+                                       Techtype = uint.Parse(toks[col["TechType"]]),
+                                       Name = toks[col["Name"]],
+                                       Level = byte.Parse(toks[col["Lvl"]]),
+                                       Time = uint.Parse(toks[col["Time"]]),
+                                       Resources =
+                                               new Resource(int.Parse(toks[col["Crop"]]),
+                                                            int.Parse(toks[col["Gold"]]),
+                                                            int.Parse(toks[col["Iron"]]),
+                                                            int.Parse(toks[col["Wood"]]),
+                                                            int.Parse(toks[col["Labor"]])),
+                                       Effects = new List<Effect>()
+                               };
 
-                    technologies[tech.techtype*100 + tech.level] = tech;
+                    technologies[tech.Techtype*100 + tech.Level] = tech;
                 }
             }
 
-            using (CSVReader reader = new CSVReader(new StreamReader(new FileStream(technologyEffectsFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
-                Dictionary<string, int> col = new Dictionary<string, int>();
+            using (var reader = new CsvReader(new StreamReader(new FileStream(technologyEffectsFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
+            {
+                var col = new Dictionary<string, int>();
                 String[] toks;
                 TechnologyBase tech;
                 for (int i = 0; i < reader.Columns.Length; ++i)
                     col.Add(reader.Columns[i], i);
 
-                while ((toks = reader.ReadRow()) != null) {
+                while ((toks = reader.ReadRow()) != null)
+                {
                     if (toks[0].Length <= 0)
                         continue;
 
                     if (!technologies.TryGetValue(uint.Parse(toks[col["TechType"]])*100 + byte.Parse(toks[col["Lvl"]]), out tech))
                         continue;
 
-                    Effect effect = new Effect {id = (EffectCode) Enum.Parse(typeof (EffectCode), toks[col["Effect"]], true), isPrivate = bool.Parse(toks[col["IsPrivate"]])};
-                    for (int i = 0; i < 5; ++i) {
+                    var effect = new Effect
+                                 {Id = (EffectCode)Enum.Parse(typeof(EffectCode), toks[col["Effect"]], true), IsPrivate = bool.Parse(toks[col["IsPrivate"]])};
+
+                    for (int i = 0; i < 5; ++i)
+                    {
                         string str = toks[col[string.Format("P{0}", i + 1)]];
                         int tmp;
-                        if (str.StartsWith("{")) {
-                            string name = str.Substring(1, str.IndexOf(':')-1);
-                            string condition = str.Substring(str.IndexOf(':') + 1);
-                            condition = condition.Remove(condition.LastIndexOf('}'));
-                            // effect.value[i] = ConditionFactory.CreateICondition(name, condition);
-                        } else if (int.TryParse(str, out tmp)) {
-                            effect.value[i] = tmp;
-                        } else {
-                            effect.value[i] = str;
+                        if (str.StartsWith("{"))
+                        {
                         }
+                        else if (int.TryParse(str, out tmp))
+                            effect.Value[i] = tmp;
+                        else
+                            effect.Value[i] = str;
                     }
 
-                    effect.location = (EffectLocation) Enum.Parse(typeof (EffectLocation), toks[col["Location"]], true);
-                    tech.effects.Add(effect);
+                    effect.Location = (EffectLocation)Enum.Parse(typeof(EffectLocation), toks[col["Location"]], true);
+                    tech.Effects.Add(effect);
                 }
             }
         }
 
-        public static TechnologyBase GetTechnologyBase(uint type, byte level) {
+        public static TechnologyBase GetTechnologyBase(uint type, byte level)
+        {
             TechnologyBase ret;
             technologies.TryGetValue(type*100 + level, out ret);
             return ret;
         }
 
-        public static Technology GetTechnology(uint type, byte level) {
+        public static Technology GetTechnology(uint type, byte level)
+        {
             TechnologyBase tbase = GetTechnologyBase(type, level);
             if (tbase == null)
                 return null;
-            Technology t = new Technology(tbase);
+            var t = new Technology(tbase);
             return t;
         }
     }

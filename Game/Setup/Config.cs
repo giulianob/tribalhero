@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Game.Data;
 using log4net;
 using log4net.Config;
 using NDesk.Options;
@@ -11,11 +10,12 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace Game.Setup {
-
-    public class Config {
-
-        public static readonly int client_min_version = 0;
+namespace Game.Setup
+{
+    public class Config
+    {
+        // ReSharper disable InconsistentNaming
+        public static readonly int client_min_version;
         public static readonly int client_min_revision = 6;
 
         public static readonly int server_port = 48888;
@@ -41,24 +41,24 @@ namespace Game.Setup {
         public static readonly int road_start_tile_id = 224;
         public static readonly int road_end_tile_id = 255;
 
-        public static readonly int column = (int) (map_width/region_width);
-        public static readonly int row = (int) (map_height/region_height);
+        public static readonly int column = (int)(map_width/region_width);
+        public static readonly int row = (int)(map_height/region_height);
         public static readonly int regions_count = column*row;
 
         public static readonly uint city_region_width = 100;
         public static readonly uint city_region_height = 100;
-        public static readonly int city_region_column = (int) (map_width/city_region_width);
-        public static readonly int city_region_row = (int) (map_height/city_region_height);
-        
+        public static readonly int city_region_column = (int)(map_width/city_region_width);
+        public static readonly int city_region_row = (int)(map_height/city_region_height);
+
         public static readonly double seconds_per_unit = 1.0; //dont make it zero!
 
         public static readonly bool battle_instant_watch;
         public static readonly int battle_turn_interval = 15;
         public static readonly int battle_min_rounds = 5;
-        public static readonly int battle_loot_per_round = 10;  // percentage of total carry
+        public static readonly int battle_loot_per_round = 10; // percentage of total carry
         public static readonly int battle_stamina_initial = 20;
-		public static readonly ushort battle_stamina_destroyed_deduction = 5;
-		public static readonly bool battle_instant_move;
+        public static readonly ushort battle_stamina_destroyed_deduction = 5;
+        public static readonly bool battle_instant_move;
         public static readonly double battle_cost_penalty = 1;
         public static readonly bool resource_upkeep = true;
         public static readonly bool resource_cap = true;
@@ -68,7 +68,7 @@ namespace Game.Setup {
         public static readonly int height_margin = 10;
         public static readonly int width_margin = 10;
 
-        public static readonly int[] forest_count = new[] { 100, 100, 100, 100 };
+        public static readonly int[] forest_count = new[] {100, 100, 100, 100};
 
         public static readonly int newbie_protection = 259200; // Number of seconds for newbie protection
 
@@ -88,47 +88,47 @@ namespace Game.Setup {
 
         public static readonly bool actions_instant_time;
         public static readonly int actions_free_cancel_interval_in_sec = 60;
-        
-        public static Random Random { get; private set; }
+        // ReSharper restore InconsistentNaming
 
-        static Config() {
+        static Config()
+        {
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Config));
 
             Random = new Random();
 
             string key = string.Empty;
-            
-            try {
+
+            try
+            {
                 string settingsFile = "settings.ini";
                 bool help = false;
 
                 try
-                {                    
-                    var p = new OptionSet
-                            {
-                                { "?|help|h", v => help = true }, 
-                                { "settings=", v => settingsFile = v }, 
-                            };
+                {
+                    var p = new OptionSet {{"?|help|h", v => help = true}, {"settings=", v => settingsFile = v},};
                     p.Parse(Environment.GetCommandLineArgs());
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
                     logger.Error(e);
                     Environment.Exit(0);
                 }
 
-                if (help) {
+                if (help)
+                {
                     logger.Info("[--settings=settings.ini]");
                     Environment.Exit(0);
                 }
-                
+
                 settingsFile = Path.GetFullPath(settingsFile);
                 logger.InfoFormat("Loading settings from {0}", settingsFile);
-                
-                using (StreamReader file = new StreamReader(File.Open(settingsFile, FileMode.Open, FileAccess.Read))) {
+
+                using (var file = new StreamReader(File.Open(settingsFile, FileMode.Open, FileAccess.Read)))
+                {
                     string line;
-                    while ((line = file.ReadLine()) != null) {
+                    while ((line = file.ReadLine()) != null)
+                    {
                         line = line.Trim();
 
                         if (line == string.Empty || line.StartsWith("#") || line.StartsWith(";") || line.StartsWith("\\\\"))
@@ -141,7 +141,8 @@ namespace Game.Setup {
 
                         Type type = Type.GetType("Game.Setup.Config");
                         FieldInfo field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);
-                        switch (field.FieldType.FullName) {
+                        switch(field.FieldType.FullName)
+                        {
                             case "System.Boolean":
                                 field.SetValue(null, Boolean.Parse(value));
                                 break;
@@ -164,9 +165,12 @@ namespace Game.Setup {
                     }
                 }
             }
-            catch (Exception e) {
+            catch(Exception e)
+            {
                 logger.Error("Error loading settings file at " + key, e);
             }
         }
+
+        public static Random Random { get; private set; }
     }
 }

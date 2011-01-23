@@ -8,47 +8,58 @@ using MySql.Data.MySqlClient;
 
 #endregion
 
-namespace Game.Database.Managers {
-    class MySqlDbTransaction : DbTransaction {
-        internal MySqlDbTransaction(MySqlDbManager manager, MySqlTransaction transaction) : base(manager, transaction) {}
-
-        public override void Rollback() {
-            base.Rollback();
-
-            if (ReferenceCount > 0 || transaction == null)
-                return;
-
-            ((MySqlTransaction)transaction).Rollback();
+namespace Game.Database.Managers
+{
+    class MySqlDbTransaction : DbTransaction
+    {
+        internal MySqlDbTransaction(MySqlDbManager manager, MySqlTransaction transaction) : base(manager, transaction)
+        {
         }
 
-        protected override void Commit() {
+        public override void Rollback()
+        {
+            base.Rollback();
+
+            if (ReferenceCount > 0 || Transaction == null)
+                return;
+
+            ((MySqlTransaction)Transaction).Rollback();
+        }
+
+        protected override void Commit()
+        {
             base.Commit();
 
             if (ReferenceCount > 0)
                 return;
 
-            if (transaction == null) //no queries ran
+            if (Transaction == null) //no queries ran
                 return;
 
-            try {
-                ((MySqlTransaction)transaction).Commit();
+            try
+            {
+                ((MySqlTransaction)Transaction).Commit();
 
                 if (Config.database_verbose)
                     Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction committed");
             }
-            catch (Exception e) {
+            catch(Exception e)
+            {
                 Global.Logger.Error(e.Message + " " + e.StackTrace);
-                try {
-                    ((MySqlTransaction)transaction).Rollback();
-                    manager.Close(((MySqlTransaction)transaction).Connection);
+                try
+                {
+                    ((MySqlTransaction)Transaction).Rollback();
+                    manager.Close(((MySqlTransaction)Transaction).Connection);
                 }
-                catch {}
+                catch
+                {
+                }
 
                 MySqlDbManager.HandleGeneralException(e, null);
                 throw;
             }
 
-            manager.Close(((MySqlTransaction)transaction).Connection);
+            manager.Close(((MySqlTransaction)Transaction).Connection);
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+#endregion
 
 namespace Game.Util
 {
@@ -12,18 +15,15 @@ namespace Game.Util
             bool inQuotes = false;
 
             return commandLine.Split(c =>
-            {
-                if (c == '\"')
-                    inQuotes = !inQuotes;
+                {
+                    if (c == '\"')
+                        inQuotes = !inQuotes;
 
-                return !inQuotes && c == ' ';
-            })
-                              .Select(arg => arg.Trim().TrimMatchingQuotes('\"'))
-                              .Where(arg => !string.IsNullOrEmpty(arg));
+                    return !inQuotes && c == ' ';
+                }).Select(arg => arg.Trim().TrimMatchingQuotes('\"')).Where(arg => !string.IsNullOrEmpty(arg));
         }
 
-        public static IEnumerable<string> Split(this string str,
-                                            Func<char, bool> controller)
+        public static IEnumerable<string> Split(this string str, Func<char, bool> controller)
         {
             int nextPiece = 0;
 
@@ -39,14 +39,14 @@ namespace Game.Util
             yield return str.Substring(nextPiece);
         }
 
-        public static string TrimMatchingQuotes(this string input) {
-            return TrimMatchingQuotes(input, '"');    
+        public static string TrimMatchingQuotes(this string input)
+        {
+            return TrimMatchingQuotes(input, '"');
         }
 
         public static string TrimMatchingQuotes(this string input, char quote)
         {
-            if ((input.Length >= 2) &&
-                (input[0] == quote) && (input[input.Length - 1] == quote))
+            if ((input.Length >= 2) && (input[0] == quote) && (input[input.Length - 1] == quote))
                 return input.Substring(1, input.Length - 2);
 
             return input;

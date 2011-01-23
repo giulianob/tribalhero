@@ -10,22 +10,26 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    public enum AttackMode {
-        WEAK = 0,
-        NORMAL = 1,
-        STRONG = 2
+namespace Game.Logic.Actions
+{
+    public enum AttackMode
+    {
+        Weak = 0,
+        Normal = 1,
+        Strong = 2
     }
 
-    class AttackAction : ChainAction {
+    class AttackAction : ChainAction
+    {
         private readonly uint cityId;
+        private readonly AttackMode mode;
         private readonly byte stubId;
         private readonly uint targetCityId;
         private readonly uint targetStructureId;
-        private readonly AttackMode mode;
         private int initialTroopValue;
 
-        public AttackAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode) {
+        public AttackAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode)
+        {
             this.cityId = cityId;
             this.targetCityId = targetCityId;
             this.targetStructureId = targetStructureId;
@@ -33,18 +37,41 @@ namespace Game.Logic.Actions {
             this.mode = mode;
         }
 
-        public AttackAction(uint id, string chainCallback, PassiveAction current, ActionState chainState,
-                            bool isVisible, IDictionary<string, string> properties)
-            : base(id, chainCallback, current, chainState, isVisible) {
+        public AttackAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, IDictionary<string, string> properties)
+                : base(id, chainCallback, current, chainState, isVisible)
+        {
             cityId = uint.Parse(properties["city_id"]);
             stubId = byte.Parse(properties["stub_id"]);
-            mode = (AttackMode) uint.Parse(properties["mode"]);
+            mode = (AttackMode)uint.Parse(properties["mode"]);
             targetCityId = uint.Parse(properties["target_city_id"]);
             targetStructureId = uint.Parse(properties["target_object_id"]);
             initialTroopValue = int.Parse(properties["initial_troop_value"]);
         }
 
-        public override Error Execute() {
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.Attack;
+            }
+        }
+
+        public override string Properties
+        {
+            get
+            {
+                return
+                        XmlSerializer.Serialize(new[]
+                                                {
+                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("stub_id", stubId),
+                                                        new XmlKvPair("target_city_id", targetCityId), new XmlKvPair("target_object_id", targetStructureId),
+                                                        new XmlKvPair("mode", (byte)mode), new XmlKvPair("initial_troop_value", initialTroopValue)
+                                                });
+            }
+        }
+
+        public override Error Execute()
+        {
             City city;
             TroopStub stub;
             City targetCity;
@@ -52,10 +79,10 @@ namespace Game.Logic.Actions {
 
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
                 !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
-                return Error.OBJECT_NOT_FOUND;
+                return Error.ObjectNotFound;
 
             if (city.Troops.Size >= 12)
-                return Error.TOO_MANY_TROOPS;
+                return Error.TooManyTroops;
 
             // Can't attack if target is under newbie protection
 #if !DEBUG
@@ -65,15 +92,15 @@ namespace Game.Logic.Actions {
 
             // Can't attack "Unattackable" Objects
             if (ObjectTypeFactory.IsStructureType("Unattackable", targetStructure))
-                return Error.OBJECT_NOT_ATTACKABLE;
+                return Error.ObjectNotAttackable;
 
             // Can't attack "Undestroyable" Objects if they're level 1
             if (targetStructure.Lvl <= 1 && ObjectTypeFactory.IsStructureType("Undestroyable", targetStructure))
-                return Error.STRUCTURE_UNDESTROYABLE;          
+                return Error.StructureUndestroyable;
 
             //Load the units stats into the stub
             stub.BeginUpdate();
-            stub.Template.LoadStats(TroopBattleGroup.ATTACK);
+            stub.Template.LoadStats(TroopBattleGroup.Attack);
             stub.EndUpdate();
 
             initialTroopValue = stub.Value;
@@ -81,54 +108,60 @@ namespace Game.Logic.Actions {
             city.Worker.References.Add(stub.TroopObject, this);
             city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
-            TroopMoveAction tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X,
-                                                      targetStructure.Y, false);
+            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X, targetStructure.Y, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
-            return Error.OK;
+            return Error.Ok;
         }
 
-        private void AfterTroopMoved(ActionState state) {
-            if (state == ActionState.COMPLETED) {
+        private void AfterTroopMoved(ActionState state)
+        {
+            if (state == ActionState.Completed)
+            {
                 City city;
                 City targetCity;
 
-                if (!Global.World.TryGetObjects(cityId, out city)) {
+                if (!Global.World.TryGetObjects(cityId, out city))
                     throw new Exception("City is missing");
-                }
 
-                if (!Global.World.TryGetObjects(targetCityId, out targetCity)) {
+                if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+                {
                     //If the target is missing, walk back
-                    using (new MultiObjectLock(city)) {
+                    using (new MultiObjectLock(city))
+                    {
                         TroopStub stub = city.Troops[stubId];
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true);
+                        var tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
                     }
                 }
 
                 // Get all of the stationed city id's from the target city since they will be used by the engage attack action
-                CallbackLock.CallbackLockHandler lockAllStationed = delegate {
-                    List<ILockable> toBeLocked = new List<ILockable>();
-                    foreach (TroopStub stationedStub in targetCity.Troops.StationedHere()) {
-                        toBeLocked.Add(stationedStub.City);
-                    }
+                CallbackLock.CallbackLockHandler lockAllStationed = delegate
+                    {
+                        var toBeLocked = new List<ILockable>();
+                        foreach (var stationedStub in targetCity.Troops.StationedHere())
+                            toBeLocked.Add(stationedStub.City);
 
-                    return toBeLocked.ToArray();
-                };
-                                
-                using (new CallbackLock(lockAllStationed, null, city, targetCity)) {
-                    EngageAttackAction bea = new EngageAttackAction(cityId, stubId, targetCityId, mode);
+                        return toBeLocked.ToArray();
+                    };
+
+                using (new CallbackLock(lockAllStationed, null, city, targetCity))
+                {
+                    var bea = new EngageAttackAction(cityId, stubId, targetCityId, mode);
                     ExecuteChainAndWait(bea, AfterBattle);
                 }
             }
         }
 
-        private void AfterBattle(ActionState state) {
-            if (state == ActionState.COMPLETED) {
+        private void AfterBattle(ActionState state)
+        {
+            if (state == ActionState.Completed)
+            {
                 Dictionary<uint, City> cities;
-                using (new MultiObjectLock(out cities, cityId, targetCityId)) {
+                using (new MultiObjectLock(out cities, cityId, targetCityId))
+                {
                     City city = cities[cityId];
                     TroopStub stub;
                     City targetCity = cities[targetCityId];
@@ -140,45 +173,50 @@ namespace Game.Logic.Actions {
                         throw new Exception("Stub should still exist");
 
                     // Check if troop is still alive
-                    if (stub.TotalCount > 0) {
+                    if (stub.TotalCount > 0)
+                    {
                         // Calculate how many attack points to give to the city
                         city.BeginUpdate();
                         Procedure.GiveAttackPoints(city, stub.TroopObject.Stats.AttackPoint, initialTroopValue, stub.Value);
                         city.EndUpdate();
 
                         // Send troop back home
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId,
-                                                                  city.MainBuilding.X, city.MainBuilding.Y, true);
+                        var tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
 
                         // Add notification just to the main city
                         stub.City.Worker.Notifications.Add(stub.TroopObject, this);
-                    } else {
+                    }
+                    else
+                    {
                         targetCity.BeginUpdate();
                         city.BeginUpdate();
-                        
+
                         // Give back the loot to the target city
                         targetCity.Resource.Add(stub.TroopObject.Stats.Loot);
 
                         // Remove this actions reference from the troop
                         city.Worker.References.Remove(stub.TroopObject, this);
-                        
+
                         // Remove troop since he's dead
                         Procedure.TroopObjectDelete(stub.TroopObject, false);
 
                         targetCity.EndUpdate();
                         city.EndUpdate();
 
-                        StateChange(ActionState.COMPLETED);
+                        StateChange(ActionState.Completed);
                     }
                 }
             }
         }
 
-        private void AfterTroopMovedHome(ActionState state) {
-            if (state == ActionState.COMPLETED) {
+        private void AfterTroopMovedHome(ActionState state)
+        {
+            if (state == ActionState.Completed)
+            {
                 City city;
-                using (new MultiObjectLock(cityId, out city)) {
+                using (new MultiObjectLock(cityId, out city))
+                {
                     TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
@@ -188,22 +226,28 @@ namespace Game.Logic.Actions {
                     stub.City.Worker.Notifications.Remove(this);
 
                     // If city is not in battle then add back to city otherwise join local battle
-                    if (city.Battle == null) {
+                    if (city.Battle == null)
+                    {
                         city.Worker.References.Remove(stub.TroopObject, this);
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
-                        StateChange(ActionState.COMPLETED);
-                    } else {
-                        EngageDefenseAction eda = new EngageDefenseAction(cityId, stubId);
+                        StateChange(ActionState.Completed);
+                    }
+                    else
+                    {
+                        var eda = new EngageDefenseAction(cityId, stubId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }
             }
         }
 
-        private void AfterEngageDefense(ActionState state) {
-            if (state == ActionState.COMPLETED) {
+        private void AfterEngageDefense(ActionState state)
+        {
+            if (state == ActionState.Completed)
+            {
                 City city;
-                using (new MultiObjectLock(cityId, out city)) {
+                using (new MultiObjectLock(cityId, out city))
+                {
                     TroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
@@ -216,34 +260,14 @@ namespace Game.Logic.Actions {
                     else
                         Procedure.TroopObjectDelete(stub.TroopObject, true);
 
-                    StateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.Completed);
                 }
             }
         }
 
-        public override ActionType Type {
-            get { return ActionType.ATTACK; }
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
         }
-
-        public override Error Validate(string[] parms) {
-            return Error.OK;
-        }
-
-        #region IPersistable Members
-
-        public override string Properties {
-            get {
-                return
-                    XMLSerializer.Serialize(new[] {
-                                                new XMLKVPair("city_id", cityId), new XMLKVPair("stub_id", stubId),
-                                                new XMLKVPair("target_city_id", targetCityId),
-                                                new XMLKVPair("target_object_id", targetStructureId),
-                                                new XMLKVPair("mode", (byte) mode),
-                                                new XMLKVPair("initial_troop_value", initialTroopValue)
-                    });
-            }
-        }
-
-        #endregion
     }
 }

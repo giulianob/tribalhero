@@ -1,3 +1,6 @@
-namespace Game.Logic.Procedures {
-    public partial class Procedure {}
+namespace Game.Logic.Procedures
+{
+    public partial class Procedure
+    {
+    }
 }

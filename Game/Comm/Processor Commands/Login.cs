@@ -1,19 +1,16 @@
 #region
 
 using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
-using Game.Fighting;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 
@@ -23,11 +20,11 @@ namespace Game.Comm
 {
     public partial class Processor
     {
-        readonly object loginLock = new object();
+        private readonly object loginLock = new object();
 
         public void CmdQueryXml(Session session, Packet packet)
         {
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
             reply.AddString(File.ReadAllText(Path.Combine(Config.data_folder, "data.xml")));
             session.Write(reply);
         }
@@ -35,8 +32,8 @@ namespace Game.Comm
         public void CmdLogin(Session session, Packet packet)
         {
             Player player;
-            Packet reply = new Packet(packet);
-            reply.Option |= (ushort)Packet.Options.COMPRESSED;
+            var reply = new Packet(packet);
+            reply.Option |= (ushort)Packet.Options.Compressed;
 
             short clientVersion;
             short clientRevision;
@@ -62,16 +59,16 @@ namespace Game.Comm
                     playerPassword = packet.GetString();
                 }
             }
-            catch (Exception)
+            catch(Exception)
             {
-                ReplyError(session, packet, Error.UNEXPECTED);
+                ReplyError(session, packet, Error.Unexpected);
                 session.CloseSession();
                 return;
             }
 
             if (clientVersion < Config.client_min_version || clientRevision < Config.client_min_revision)
             {
-                ReplyError(session, packet, Error.CLIENT_OLD_VERSION);
+                ReplyError(session, packet, Error.ClientOldVersion);
                 session.CloseSession();
             }
 
@@ -83,32 +80,38 @@ namespace Game.Comm
                     if (loginMode == 0)
                     {
                         reader =
-                            Global.DbManager.ReaderQuery(
-                                string.Format(
-                                    "SELECT * FROM `{0}` WHERE `login_key` IS NOT NULL AND `login_key` = @login_key AND TIMEDIFF(NOW(), `login_key_date`) < '00:10:00.000000' LIMIT 1",
-                                    Player.DB_TABLE), new[] { new DbColumn("login_key", loginKey, System.Data.DbType.String) });
+                                Global.DbManager.ReaderQuery(
+                                                             string.Format(
+                                                                           "SELECT * FROM `{0}` WHERE `login_key` IS NOT NULL AND `login_key` = @login_key AND TIMEDIFF(NOW(), `login_key_date`) < '00:10:00.000000' LIMIT 1",
+                                                                           Player.DB_TABLE),
+                                                             new[] {new DbColumn("login_key", loginKey, DbType.String)});
                     }
                     else
                     {
                         reader =
-                            Global.DbManager.ReaderQuery(
-                                string.Format(
-                                    "SELECT * FROM `{0}` WHERE `name` = @name AND `password` = SHA1(@password) LIMIT 1",
-                                    Player.DB_TABLE), new[] { new DbColumn("name", playerName, System.Data.DbType.String), new DbColumn("password", Config.database_salt + playerPassword, System.Data.DbType.String) });
+                                Global.DbManager.ReaderQuery(
+                                                             string.Format("SELECT * FROM `{0}` WHERE `name` = @name AND `password` = SHA1(@password) LIMIT 1",
+                                                                           Player.DB_TABLE),
+                                                             new[]
+                                                             {
+                                                                     new DbColumn("name", playerName, DbType.String),
+                                                                     new DbColumn("password", Config.database_salt + playerPassword, DbType.String)
+                                                             });
                     }
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
                     Global.Logger.Error("Error loading player", e);
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     session.CloseSession();
                     return;
                 }
 
                 if (!reader.HasRows)
                 {
-                    if (!reader.IsClosed) reader.Close();
-                    ReplyError(session, packet, Error.INVALID_LOGIN);
+                    if (!reader.IsClosed)
+                        reader.Close();
+                    ReplyError(session, packet, Error.InvalidLogin);
                     session.CloseSession();
                     return;
                 }
@@ -126,13 +129,13 @@ namespace Game.Comm
                 reader.Close();
 
                 // Reset login key back to null
-                Global.DbManager.Query(string.Format("UPDATE `{0}` SET `login_key` = null WHERE `id` = @id LIMIT 1",
-                                                     Player.DB_TABLE), new[] { new DbColumn("id", playerId, System.Data.DbType.UInt32) });
+                Global.DbManager.Query(string.Format("UPDATE `{0}` SET `login_key` = null WHERE `id` = @id LIMIT 1", Player.DB_TABLE),
+                                       new[] {new DbColumn("id", playerId, DbType.UInt32)});
 
                 // If we are under admin only mode then kick out non admin
                 if (Config.server_admin_only && !admin)
                 {
-                    ReplyError(session, packet, Error.UNDER_MAINTENANCE);
+                    ReplyError(session, packet, Error.UnderMaintenance);
                     session.CloseSession();
                     return;
                 }
@@ -140,7 +143,7 @@ namespace Game.Comm
                 // If player was banned then kick his ass out
                 if (banned)
                 {
-                    ReplyError(session, packet, Error.BANNED);
+                    ReplyError(session, packet, Error.Banned);
                     session.CloseSession();
                     return;
                 }
@@ -149,7 +152,7 @@ namespace Game.Comm
             {
                 if (!uint.TryParse(playerName, out playerId))
                 {
-                    ReplyError(session, packet, Error.PLAYER_NOT_FOUND);
+                    ReplyError(session, packet, Error.PlayerNotFound);
                     session.CloseSession();
                     return;
                 }
@@ -233,9 +236,7 @@ namespace Game.Comm
                 // If it's a new player we send simply a 1 which means the client will need to send back a city name
                 // Otherwise, we just send the whole login info
                 if (player.GetCityList().Count == 0)
-                {
                     reply.AddByte(1);
-                }
                 else
                 {
                     reply.AddByte(0);
@@ -245,9 +246,9 @@ namespace Game.Comm
                 session.Write(reply);
 
                 //Restart any city actions that may have been stopped due to inactivity
-                foreach (City city in player.GetCityList().Where(city => !city.Worker.PassiveActions.Exists(x => x.Type == ActionType.CITY))) {
+                foreach (var city in
+                        player.GetCityList().Where(city => !city.Worker.PassiveActions.Exists(x => x.Type == ActionType.City)))
                     city.Worker.DoPassive(city, new CityAction(city.Id), false);
-                }
             }
         }
 
@@ -260,16 +261,16 @@ namespace Game.Comm
                 {
                     cityName = packet.GetString().Trim();
                 }
-                catch (Exception)
+                catch(Exception)
                 {
-                    ReplyError(session, packet, Error.UNEXPECTED);
+                    ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 // Verify city name is valid
                 if (!City.IsNameValid(cityName))
                 {
-                    ReplyError(session, packet, Error.CITY_NAME_INVALID);
+                    ReplyError(session, packet, Error.CityNameInvalid);
                     return;
                 }
 
@@ -281,7 +282,7 @@ namespace Game.Comm
                     // Verify city name is unique
                     if (Global.World.CityNameTaken(cityName))
                     {
-                        ReplyError(session, packet, Error.CITY_NAME_TAKEN);
+                        ReplyError(session, packet, Error.CityNameTaken);
                         return;
                     }
 
@@ -290,7 +291,7 @@ namespace Game.Comm
                         Global.World.Players.Remove(session.Player.PlayerId);
                         Global.DbManager.Rollback();
                         // If this happens I'll be a very happy game developer
-                        ReplyError(session, packet, Error.MAP_FULL);
+                        ReplyError(session, packet, Error.MapFull);
                         return;
                     }
 
@@ -301,21 +302,21 @@ namespace Game.Comm
                     Global.World.Add(mainBuilding);
                     mainBuilding.EndUpdate();
 
-                    TroopStub defaultTroop = new TroopStub();
+                    var defaultTroop = new TroopStub();
                     defaultTroop.BeginUpdate();
-                    defaultTroop.AddFormation(FormationType.NORMAL);
-                    defaultTroop.AddFormation(FormationType.GARRISON);
-                    defaultTroop.AddFormation(FormationType.IN_BATTLE);
+                    defaultTroop.AddFormation(FormationType.Normal);
+                    defaultTroop.AddFormation(FormationType.Garrison);
+                    defaultTroop.AddFormation(FormationType.InBattle);
                     city.Troops.Add(defaultTroop);
                     defaultTroop.EndUpdate();
                 }
 
-                InitFactory.InitGameObject(InitCondition.ON_INIT, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+                InitFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, new CityAction(city.Id), false);
 
-                Packet reply = new Packet(packet);
-                reply.Option |= (ushort)Packet.Options.COMPRESSED;
+                var reply = new Packet(packet);
+                reply.Option |= (ushort)Packet.Options.Compressed;
                 PacketHelper.AddLoginToPacket(session, reply);
                 session.Write(reply);
             }

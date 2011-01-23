@@ -5,14 +5,18 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Game.Util {
-    public class ListDictionary<TKey, TValue> : Dictionary<TKey, TValue> {
-        public List<TValue> FindAll(Predicate<TValue> match) {
-            List<TValue> matches = new List<TValue>();
+namespace Game.Util
+{
+    public class ListDictionary<TKey, TValue> : Dictionary<TKey, TValue>
+    {
+        public List<TValue> FindAll(Predicate<TValue> match)
+        {
+            var matches = new List<TValue>();
 
             ValueCollection.Enumerator ite = Values.GetEnumerator();
 
-            while (ite.MoveNext()) {
+            while (ite.MoveNext())
+            {
                 if (match(ite.Current))
                     matches.Add(ite.Current);
             }
@@ -20,10 +24,12 @@ namespace Game.Util {
             return matches;
         }
 
-        public bool Exists(Predicate<TValue> match) {
+        public bool Exists(Predicate<TValue> match)
+        {
             ValueCollection.Enumerator ite = Values.GetEnumerator();
 
-            while (ite.MoveNext()) {
+            while (ite.MoveNext())
+            {
                 if (match(ite.Current))
                     return true;
             }

@@ -1,58 +1,66 @@
 #region
 
 using System.Collections.Generic;
-using Game.Data.Troop;
 
 #endregion
 
-namespace Game.Fighting {
-    public enum FormationType : byte {
-        NORMAL = 1,
-        ATTACK = 2,
-        DEFENSE = 3,
-        SCOUT = 4,
-        GARRISON = 5,
-        STRUCTURE = 6,
-        IN_BATTLE = 7,
-        CAPTURED = 11,
-        WOUNDED = 12,
-        KILLED = 13
+namespace Game.Data.Troop
+{
+    public enum FormationType : byte
+    {
+        Normal = 1,
+        Attack = 2,
+        Defense = 3,
+        Scout = 4,
+        Garrison = 5,
+        Structure = 6,
+        InBattle = 7,
+        Captured = 11,
+        Wounded = 12,
+        Killed = 13
     }
 
-    public class Formation : Dictionary<ushort, ushort> {
+    public class Formation : Dictionary<ushort, ushort>
+    {
         private readonly TroopStub parent;
 
-        public FormationType Type { get; set; }
-
-        public Formation(FormationType type, TroopStub parent) {
+        public Formation(FormationType type, TroopStub parent)
+        {
             Type = type;
             this.parent = parent;
         }
 
-        public void FireUpdated() {
+        public FormationType Type { get; set; }
+
+        public void FireUpdated()
+        {
             parent.FireUpdated();
         }
-        
-        public new void Add(ushort type, ushort count) {
+
+        public new void Add(ushort type, ushort count)
+        {
             ushort currentCount;
             if (TryGetValue(type, out currentCount))
-                this[type] = (ushort) (currentCount + count);
+                this[type] = (ushort)(currentCount + count);
             else
                 this[type] = count;
 
             FireUpdated();
         }
 
-        public ushort Remove(ushort type, ushort count) {
+        public ushort Remove(ushort type, ushort count)
+        {
             ushort currentCount;
-            if (TryGetValue(type, out currentCount)) {
-                if (currentCount <= count) {
+            if (TryGetValue(type, out currentCount))
+            {
+                if (currentCount <= count)
+                {
                     Remove(type);
                     FireUpdated();
                     return currentCount;
                 }
 
-                ushort remaining = (ushort) (currentCount - count);
+                var remaining = (ushort)(currentCount - count);
                 this[type] = remaining;
                 FireUpdated();
                 return count;
@@ -60,8 +68,9 @@ namespace Game.Fighting {
             return 0;
         }
 
-        internal void Add(Formation formation) {
-            foreach (KeyValuePair<ushort, ushort> kvp in formation)
+        internal void Add(Formation formation)
+        {
+            foreach (var kvp in formation)
                 Add(kvp.Key, kvp.Value);
             FireUpdated();
         }

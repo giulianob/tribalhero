@@ -17,18 +17,21 @@ namespace Game.Setup
             if (File.Exists(outputFile))
                 File.Delete(outputFile);
 
-            using (StreamWriter sw = new StreamWriter(outputFile)) {
+            using (var sw = new StreamWriter(outputFile))
+            {
                 bool headerWritten = false;
-                foreach (string filename in Directory.GetFiles(dir, pattern, SearchOption.TopDirectoryOnly)) {
+                foreach (var filename in Directory.GetFiles(dir, pattern, SearchOption.TopDirectoryOnly))
+                {
                     string fullFilename = filename;
 
                     if (Global.IsRunningOnMono())
-                        fullFilename = Path.Combine(dir, filename);                    
+                        fullFilename = Path.Combine(dir, filename);
 
-                    using (StreamReader sr = new StreamReader(new FileStream(fullFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                    using (var sr = new StreamReader(new FileStream(fullFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                     {
                         string header = sr.ReadLine();
-                        if (!headerWritten) {
+                        if (!headerWritten)
+                        {
                             sw.WriteLine(header);
                             headerWritten = true;
                         }
@@ -58,14 +61,14 @@ namespace Game.Setup
         {
             StructureFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
             ActionFactory.Init(Path.Combine(Config.csv_compiled_folder, "action.csv"));
-            EffectRequirementFactory.init(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"));
+            EffectRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"));
             InitFactory.Init(Path.Combine(Config.csv_compiled_folder, "init.csv"));
             PropertyFactory.Init(Path.Combine(Config.csv_compiled_folder, "property.csv"));
             RequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "layout.csv"));
             TechnologyFactory.Init(Path.Combine(Config.csv_compiled_folder, "technology.csv"), Path.Combine(Config.csv_folder, "technology_effects.csv"));
             UnitFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit.csv"));
-            ObjectTypeFactory.init(Path.Combine(Config.csv_compiled_folder, "object_type.csv"));
-            MapFactory.init(Path.Combine(Config.maps_folder, "CityLocations.txt"));
+            ObjectTypeFactory.Init(Path.Combine(Config.csv_compiled_folder, "object_type.csv"));
+            MapFactory.Init(Path.Combine(Config.maps_folder, "CityLocations.txt"));
         }
     }
 }

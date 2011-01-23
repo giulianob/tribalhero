@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿#region
+
 using System.ComponentModel;
 using System.Configuration.Install;
-using System.Linq;
 
+#endregion
 
-namespace LauncherService {
+namespace LauncherService
+{
     [RunInstaller(true)]
-    public partial class ProjectInstaller : Installer {
-        public ProjectInstaller() {
+    public partial class ProjectInstaller : Installer
+    {
+        public ProjectInstaller()
+        {
             InitializeComponent();
         }
     }

@@ -7,115 +7,155 @@ using Game.Database;
 
 #endregion
 
-namespace Game.Battle {
-    public class ReportedTroops : Dictionary<TroopStub, uint>, IPersistableList {
+namespace Game.Battle
+{
+    public class ReportedTroops : Dictionary<TroopStub, uint>, IPersistableList
+    {
+        public const string DB_TABLE = "reported_troops";
         private readonly BattleManager battle;
 
-        public ReportedTroops(BattleManager battle) {
+        public ReportedTroops(BattleManager battle)
+        {
             this.battle = battle;
         }
 
-        #region IPersistableObject Members
+        #region IPersistableList Members
 
         public bool DbPersisted { get; set; }
 
-        #endregion
-
-        #region IPersistable Members
-
-        public const string DB_TABLE = "reported_troops";
-
-        public string DbTable {
-            get { return DB_TABLE; }
-        }
-
-        public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)}; }
-        }
-
-        public DbDependency[] DbDependencies {
-            get { return new DbDependency[] {}; }
-        }
-
-        public DbColumn[] DbColumns {
-            get { return new DbColumn[] {}; }
-        }
-
-        public DbColumn[] DbListColumns {
-            get {
-                return new[] {
-                                          new DbColumn("combat_troop_id", DbType.UInt32),
-                                          new DbColumn("troop_stub_city_id", DbType.UInt32), new DbColumn("troop_stub_id", DbType.Byte)
-                                      };
+        public string DbTable
+        {
+            get
+            {
+                return DB_TABLE;
             }
         }
 
-        #endregion
+        public DbColumn[] DbPrimaryKey
+        {
+            get
+            {
+                return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)};
+            }
+        }
 
-        #region IEnumerable<DbColumn[]> Members
+        public DbDependency[] DbDependencies
+        {
+            get
+            {
+                return new DbDependency[] {};
+            }
+        }
 
-        public new IEnumerator<DbColumn[]> GetEnumerator() {
-            Enumerator itr = base.GetEnumerator();
-            while (itr.MoveNext()) {
+        public DbColumn[] DbColumns
+        {
+            get
+            {
+                return new DbColumn[] {};
+            }
+        }
+
+        public DbColumn[] DbListColumns
+        {
+            get
+            {
+                return new[]
+                       {
+                               new DbColumn("combat_troop_id", DbType.UInt32), new DbColumn("troop_stub_city_id", DbType.UInt32),
+                               new DbColumn("troop_stub_id", DbType.Byte)
+                       };
+            }
+        }
+
+        public new IEnumerator<DbColumn[]> GetEnumerator()
+        {
+            Enumerator itr = GetBaseEnumerator();
+            while (itr.MoveNext())
+            {
                 yield return
-                    new[] {
-                                       new DbColumn("combat_troop_id", itr.Current.Value, DbType.UInt32),
-                                       new DbColumn("troop_stub_city_id", itr.Current.Key.City.Id, DbType.UInt32),
-                                       new DbColumn("troop_stub_id", itr.Current.Key.TroopId, DbType.Byte)
-                                   };
+                        new[]
+                        {
+                                new DbColumn("combat_troop_id", itr.Current.Value, DbType.UInt32),
+                                new DbColumn("troop_stub_city_id", itr.Current.Key.City.Id, DbType.UInt32),
+                                new DbColumn("troop_stub_id", itr.Current.Key.TroopId, DbType.Byte)
+                        };
             }
         }
 
         #endregion
+
+        private Enumerator GetBaseEnumerator()
+        {
+            return base.GetEnumerator();
+        }
     }
 
-    public class ReportedObjects : List<CombatObject>, IPersistableList {
+    public class ReportedObjects : List<CombatObject>, IPersistableList
+    {
+        public const string DB_TABLE = "reported_objects";
         private readonly BattleManager battle;
 
-        public ReportedObjects(BattleManager battle) {
+        public ReportedObjects(BattleManager battle)
+        {
             this.battle = battle;
         }
 
-        #region IPersistableObject Members
+        #region IPersistableList Members
 
         public bool DbPersisted { get; set; }
 
-        #endregion
-
-        #region IPersistable Members
-
-        public const string DB_TABLE = "reported_objects";
-
-        public string DbTable {
-            get { return DB_TABLE; }
+        public string DbTable
+        {
+            get
+            {
+                return DB_TABLE;
+            }
         }
 
-        public DbColumn[] DbPrimaryKey {
-            get { return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)}; }
+        public DbColumn[] DbPrimaryKey
+        {
+            get
+            {
+                return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)};
+            }
         }
 
-        public DbDependency[] DbDependencies {
-            get { return new DbDependency[] {}; }
+        public DbDependency[] DbDependencies
+        {
+            get
+            {
+                return new DbDependency[] {};
+            }
         }
 
-        public DbColumn[] DbColumns {
-            get { return new DbColumn[] {}; }
+        public DbColumn[] DbColumns
+        {
+            get
+            {
+                return new DbColumn[] {};
+            }
         }
 
-        public DbColumn[] DbListColumns {
-            get { return new[] {new DbColumn("combat_object_id", DbType.UInt32)}; }
+        public DbColumn[] DbListColumns
+        {
+            get
+            {
+                return new[] {new DbColumn("combat_object_id", DbType.UInt32)};
+            }
         }
 
-        #endregion
-
-        #region IEnumerable<DbColumn[]> Members
-
-        public new IEnumerator<DbColumn[]> GetEnumerator() {
-            Enumerator itr = base.GetEnumerator();
+        public new IEnumerator<DbColumn[]> GetEnumerator()
+        {
+            Enumerator itr = GetBaseEnumerator();
             while (itr.MoveNext())
                 yield return new[] {new DbColumn("combat_object_id", itr.Current.Id, DbType.UInt32)};
         }
 
         #endregion
+
+        private Enumerator GetBaseEnumerator()
+        {
+            return base.GetEnumerator();
+        }
     }
 }

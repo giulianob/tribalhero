@@ -4,23 +4,31 @@ using System.Collections;
 
 #endregion
 
-namespace Game.Util {
-    public class IdGenerator {
-        private BitArray bitarray;
+namespace Game.Util
+{
+    public class IdGenerator
+    {
+        private readonly BitArray bitarray;
+        private readonly bool fetchLowest;
         private int start = 1;
-        private bool fetchLowest;
 
-        public IdGenerator(int max) : this(max, false) {}
+        public IdGenerator(int max) : this(max, false)
+        {
+        }
 
-        public IdGenerator(int max, bool fetchLowest) {
+        public IdGenerator(int max, bool fetchLowest)
+        {
             this.fetchLowest = fetchLowest;
             bitarray = new BitArray(max, false);
         }
 
-        public int getNext() {
-            lock (bitarray) {
+        public int GetNext()
+        {
+            lock (bitarray)
+            {
                 int size = bitarray.Length;
-                for (int i = 0; i < size; ++i) {
+                for (int i = 0; i < size; ++i)
+                {
                     int idx;
                     if (fetchLowest)
                         idx = i;
@@ -30,7 +38,8 @@ namespace Game.Util {
                     if (idx == 0)
                         continue;
 
-                    if (bitarray.Get(idx) == false) {
+                    if (bitarray.Get(idx) == false)
+                    {
                         bitarray.Set(idx, true);
                         start = idx;
                         return idx;
@@ -41,14 +50,18 @@ namespace Game.Util {
             return -1;
         }
 
-        public void set(int id) {
-            lock (bitarray) {
+        public void Set(int id)
+        {
+            lock (bitarray)
+            {
                 bitarray.Set(id, true);
             }
         }
 
-        public void release(int id) {
-            lock (bitarray) {
+        public void Release(int id)
+        {
+            lock (bitarray)
+            {
                 bitarray.Set(id, false);
             }
         }

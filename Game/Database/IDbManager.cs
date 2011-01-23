@@ -5,8 +5,10 @@ using System.Data.Common;
 
 #endregion
 
-namespace Game.Database {
-    public interface IDbManager {
+namespace Game.Database
+{
+    public interface IDbManager
+    {
         void Pause();
         void Resume();
 

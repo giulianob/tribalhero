@@ -4,9 +4,12 @@ using System;
 
 #endregion
 
-namespace Game.Util {
-    class DataTypeSerializer {
-        public static byte Serialize(object value) {
+namespace Game.Util
+{
+    class DataTypeSerializer
+    {
+        public static byte Serialize(object value)
+        {
             if (value is uint)
                 return 1;
             if (value is ushort)
@@ -29,8 +32,10 @@ namespace Game.Util {
             throw new Exception("Unknown data type");
         }
 
-        public static object Deserialize(string value, byte datatype) {
-            switch (datatype) {
+        public static object Deserialize(string value, byte datatype)
+        {
+            switch(datatype)
+            {
                 case 1:
                     return uint.Parse(value);
                 case 2:

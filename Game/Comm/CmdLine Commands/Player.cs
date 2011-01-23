@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region
+
+using System;
 using Game.Data;
 using Game.Util;
 using NDesk.Options;
+
+#endregion
 
 namespace Game.Comm
 {
@@ -17,14 +18,10 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet
-                            {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() }
-                            };
+                var p = new OptionSet {{"?|help|h", v => help = true}, {"player=", v => playerName = v.TrimMatchingQuotes()}};
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
@@ -56,14 +53,10 @@ namespace Game.Comm
 
             try
             {
-                var p = new OptionSet
-                            {
-                                { "?|help|h", v => help = true }, 
-                                { "player=", v => playerName = v.TrimMatchingQuotes() }
-                            };
+                var p = new OptionSet {{"?|help|h", v => help = true}, {"player=", v => playerName = v.TrimMatchingQuotes()}};
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }

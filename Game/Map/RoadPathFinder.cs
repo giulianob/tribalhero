@@ -1,52 +1,63 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+
+#endregion
 
 namespace Game.Map
 {
     public class RoadPathFinder
     {
-        delegate List<Location> GetNeighbors(Location node);
-
         public static bool HasPath(Location start, Location end, City city, Location excludedPoint)
         {
-            bool fromStructure = Global.World[start.x, start.y].Exists(s => s is Structure);
+            bool fromStructure = Global.World[start.X, start.Y].Exists(s => s is Structure);
 
-            return BreadthFirst(new Location(end.x, end.y), new List<Location> { new Location(start.x, start.y) }, excludedPoint,
-                delegate(Location node)
-                {
-                    List<Location> neighbors = new List<Location>(4);
-                    Location[] possibleNeighbors;
-                    if (node.y % 2 == 0)
-                    {
-                        possibleNeighbors = new[] { new Location(node.x, node.y - 1), new Location(node.x, node.y + 1), new Location(node.x - 1, node.y - 1), new Location(node.x - 1, node.y + 1) };
-                    }
-                    else
-                    {
-                        possibleNeighbors = new[] { new Location(node.x + 1, node.y - 1), new Location(node.x + 1, node.y + 1), new Location(node.x, node.y - 1), new Location(node.x, node.y + 1) };
-                    }
+            return BreadthFirst(new Location(end.X, end.Y),
+                                new List<Location> {new Location(start.X, start.Y)},
+                                excludedPoint,
+                                delegate(Location node)
+                                    {
+                                        var neighbors = new List<Location>(4);
+                                        Location[] possibleNeighbors;
+                                        if (node.Y%2 == 0)
+                                        {
+                                            possibleNeighbors = new[]
+                                                                {
+                                                                        new Location(node.X, node.Y - 1), new Location(node.X, node.Y + 1),
+                                                                        new Location(node.X - 1, node.Y - 1), new Location(node.X - 1, node.Y + 1)
+                                                                };
+                                        }
+                                        else
+                                        {
+                                            possibleNeighbors = new[]
+                                                                {
+                                                                        new Location(node.X + 1, node.Y - 1), new Location(node.X + 1, node.Y + 1),
+                                                                        new Location(node.X, node.Y - 1), new Location(node.X, node.Y + 1)
+                                                                };
+                                        }
 
-                    neighbors.AddRange(possibleNeighbors.Where(delegate(Location location)
-                    {
-                        if (!location.Equals(end))
-                        {
-                            if (Global.World[location.x, location.y].Exists(s => s is Structure))
-                                return false;
-                            if (!RoadManager.IsRoad(location.x, location.y))
-                                return false;
-                            if (SimpleGameObject.TileDistance(location.x, location.y, city.MainBuilding.X, city.MainBuilding.Y) > city.Radius)
-                                return false;
-                        }
-                        else if (fromStructure && node.Equals(start))
-                        {
-                            return false;
-                        }
+                                        neighbors.AddRange(possibleNeighbors.Where(delegate(Location location)
+                                            {
+                                                if (!location.Equals(end))
+                                                {
+                                                    if (Global.World[location.X, location.Y].Exists(s => s is Structure))
+                                                        return false;
+                                                    if (!RoadManager.IsRoad(location.X, location.Y))
+                                                        return false;
+                                                    if (SimpleGameObject.TileDistance(location.X, location.Y, city.MainBuilding.X, city.MainBuilding.Y) >
+                                                        city.Radius)
+                                                        return false;
+                                                }
+                                                else if (fromStructure && node.Equals(start))
+                                                    return false;
 
-                        return true;
-                    }));
+                                                return true;
+                                            }));
 
-                    return neighbors;
-                });
+                                        return neighbors;
+                                    });
         }
 
         private static bool BreadthFirst(Location end, List<Location> visited, Location excludedPoint, GetNeighbors getNeighbors)
@@ -58,7 +69,8 @@ namespace Game.Map
                 return true;
 
             // in breadth-first, recursion needs to come after visiting adjacent nodes
-            foreach (Location node in nodes.Where(node => !node.Equals(end) && !node.Equals(excludedPoint) && !visited.Contains(node)))
+            foreach (var node in
+                    nodes.Where(node => !node.Equals(end) && !node.Equals(excludedPoint) && !visited.Contains(node)))
             {
                 visited.Add(node);
                 if (BreadthFirst(end, visited, excludedPoint, getNeighbors))
@@ -67,5 +79,11 @@ namespace Game.Map
 
             return false;
         }
+
+        #region Nested type: GetNeighbors
+
+        private delegate List<Location> GetNeighbors(Location node);
+
+        #endregion
     }
 }

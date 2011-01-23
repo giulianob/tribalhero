@@ -6,40 +6,32 @@ using Game.Setup;
 
 #endregion
 
-namespace Game.Logic.Actions {
-    class TechnologyDeleteAction : PassiveAction, IScriptable {
+namespace Game.Logic.Actions
+{
+    class TechnologyDeleteAction : PassiveAction, IScriptable
+    {
         private Structure obj;
 
-        public override Error Validate(string[] parms) {
-            return Error.OK;
+        public override ActionType Type
+        {
+            get
+            {
+                return ActionType.TechCreate;
+            }
         }
 
-        public override Error Execute() {
-            if (obj == null)
-                return Error.OBJECT_NOT_FOUND;
-
-            obj.Technologies.BeginUpdate();
-            obj.Technologies.Clear();
-            obj.Technologies.EndUpdate();
-
-            StateChange(ActionState.COMPLETED);
-
-            return Error.OK;
+        public override string Properties
+        {
+            get
+            {
+                return string.Empty;
+            }
         }
 
-        public override void WorkerRemoved(bool wasKilled) {            
-        }
+        #region IScriptable Members
 
-        public override void UserCancelled() {            
-        }
-
-        public override ActionType Type {
-            get { return ActionType.TECH_CREATE; }
-        }
-
-        #region ICanInit Members
-
-        public void ScriptInit(GameObject obj, string[] parms) {
+        public void ScriptInit(GameObject obj, string[] parms)
+        {
             if ((this.obj = obj as Structure) == null)
                 throw new Exception();
             Execute();
@@ -47,8 +39,31 @@ namespace Game.Logic.Actions {
 
         #endregion
 
-        public override string Properties {
-            get { return string.Empty; }
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
+        }
+
+        public override Error Execute()
+        {
+            if (obj == null)
+                return Error.ObjectNotFound;
+
+            obj.Technologies.BeginUpdate();
+            obj.Technologies.Clear();
+            obj.Technologies.EndUpdate();
+
+            StateChange(ActionState.Completed);
+
+            return Error.Ok;
+        }
+
+        public override void WorkerRemoved(bool wasKilled)
+        {
+        }
+
+        public override void UserCancelled()
+        {
         }
     }
 }

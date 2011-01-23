@@ -6,53 +6,80 @@ using Game.Util;
 
 #endregion
 
-namespace Game.Data {
-    public class LazyValue {
+namespace Game.Data
+{
+    public class LazyValue
+    {
+        #region Delegates
+
         public delegate void OnResourcesUpdate();
 
-        public event OnResourcesUpdate ResourcesUpdate;
+        #endregion
+
+        private int limit;
+        private int rate;
+        private int upkeep;
+
+        public LazyValue(int val)
+        {
+            RawValue = val;
+            LastRealizeTime = SystemClock.Now;
+        }
+
+        public LazyValue(int val, DateTime lastRealizeTime, int rate, int upkeep)
+        {
+            RawValue = val;
+            LastRealizeTime = lastRealizeTime;
+            this.rate = rate;
+            this.upkeep = upkeep;
+        }
 
         public DateTime LastRealizeTime { get; private set; }
 
-        private int limit;
-
-        public int Limit {
-            get { return limit; }
-            set {
+        public int Limit
+        {
+            get
+            {
+                return limit;
+            }
+            set
+            {
                 limit = value;
                 CheckLimit();
                 Update();
             }
         }
 
-        private int value;
-
-        public int Value {
-            get {
+        public int Value
+        {
+            get
+            {
                 int delta = 0;
                 int calculatedRate = GetCalculatedRate();
 
-                if (calculatedRate != 0) {
+                if (calculatedRate != 0)
+                {
                     int elapsed = Math.Max(0, (int)SystemClock.Now.Subtract(LastRealizeTime).TotalMilliseconds);
-                    delta = elapsed / calculatedRate;
+                    delta = elapsed/calculatedRate;
                 }
 
-                if (limit > 0 && (value + delta) > limit)
+                if (limit > 0 && (RawValue + delta) > limit)
                     return limit;
 
-                return Math.Max(0, value + delta);
+                return Math.Max(0, RawValue + delta);
             }
         }
 
-        public int RawValue {
-            get { return value; }
-        }
+        public int RawValue { get; private set; }
 
-        private int rate;
-
-        public int Rate {
-            get { return rate; }
-            set {
+        public int Rate
+        {
+            get
+            {
+                return rate;
+            }
+            set
+            {
                 Realize();
                 if (value < 0)
                     throw new Exception("Rate can not be negative");
@@ -61,133 +88,140 @@ namespace Game.Data {
             }
         }
 
-        private int upkeep;
-
-        public int Upkeep {
-            get { return upkeep; }
-            set {
+        public int Upkeep
+        {
+            get
+            {
+                return upkeep;
+            }
+            set
+            {
                 Realize();
                 if (value < 0)
                     throw new Exception("Upkeep can not be negative");
-                
+
                 upkeep = value;
                 Update();
             }
         }
 
-        public LazyValue(int val) {
-            value = val;
-            LastRealizeTime = SystemClock.Now;
-        }
+        public event OnResourcesUpdate ResourcesUpdate;
 
-        public LazyValue(int val, DateTime lastRealizeTime, int rate, int upkeep) {
-            value = val;
-            LastRealizeTime = lastRealizeTime;
-            this.rate = rate;
-            this.upkeep = upkeep;
-        }
-
-        private void Update() {
+        private void Update()
+        {
             if (ResourcesUpdate != null)
                 ResourcesUpdate();
         }
 
-        public void Add(int val) {
+        public void Add(int val)
+        {
             if (val == 0)
                 return;
             Realize();
-            value += val;
+            RawValue += val;
             CheckLimit();
             Update();
         }
 
-        public void Subtract(int val) {
+        public void Subtract(int val)
+        {
             if (val == 0)
                 return;
             Realize();
-            value -= val;
+            RawValue -= val;
             CheckLimit();
             Update();
         }
 
-        private void Realize() {
+        private void Realize()
+        {
             int calculatedRate = GetCalculatedRate();
 
-            if (calculatedRate != 0) {
+            if (calculatedRate != 0)
+            {
                 DateTime now = SystemClock.Now;
                 int elapsed = Math.Max(0, (int)now.Subtract(LastRealizeTime).TotalMilliseconds);
-                int delta = elapsed / calculatedRate;
+                int delta = elapsed/calculatedRate;
 
                 // Little ugly but just a check to make sure nothing bad is happening.
-                if (!(this is AggressiveLazyValue) && delta < 0) {
+                if (!(this is AggressiveLazyValue) && delta < 0)
                     throw new Exception(string.Format("Delta is negative! elapsed[{0}] calculatedRate[{1}]", elapsed, calculatedRate));
-                }
 
-                value += delta;
+                RawValue += delta;
 
-                int leftOver = elapsed % calculatedRate;
+                int leftOver = elapsed%calculatedRate;
 
                 LastRealizeTime = now.Subtract(new TimeSpan(0, 0, 0, 0, leftOver));
 
                 CheckLimit();
             }
-            else {
+            else
                 LastRealizeTime = SystemClock.Now;
-            }
         }
 
-        private void CheckLimit() {
-            if (limit > 0 && value > limit) {
-                value = limit;
-            }
+        private void CheckLimit()
+        {
+            if (limit > 0 && RawValue > limit)
+                RawValue = limit;
 
-            if (value < 0) {
-                value = 0;
-            }
+            if (RawValue < 0)
+                RawValue = 0;
 
             // Cap to just limit something really bad from happening
-            if (value > 99999)
-                value = 99999;
+            if (RawValue > 99999)
+                RawValue = 99999;
         }
 
-        protected virtual int GetCalculatedRate() {
+        protected virtual int GetCalculatedRate()
+        {
             int deltaRate = rate - upkeep;
-            if (deltaRate == 0) return 0;
-            return Math.Max(0, (int)((3600000f / deltaRate) * Config.seconds_per_unit));
+            if (deltaRate == 0)
+                return 0;
+            return Math.Max(0, (int)((3600000f/deltaRate)*Config.seconds_per_unit));
         }
     }
 
-    public class AggressiveLazyValue : LazyValue {
-        public AggressiveLazyValue(int val) : base(val) { }
-
-        public AggressiveLazyValue(int val, DateTime lastRealizeTime, int rate, int upkeep)
-            : base(val, lastRealizeTime, rate, upkeep) {
+    public class AggressiveLazyValue : LazyValue
+    {
+        public AggressiveLazyValue(int val) : base(val)
+        {
         }
 
-        protected override int GetCalculatedRate() {
+        public AggressiveLazyValue(int val, DateTime lastRealizeTime, int rate, int upkeep) : base(val, lastRealizeTime, rate, upkeep)
+        {
+        }
+
+        protected override int GetCalculatedRate()
+        {
             int deltaRate = Rate - Upkeep;
-            if (deltaRate == 0) return 0;
-            return (int)((3600000f / deltaRate) * Config.seconds_per_unit);
+            if (deltaRate == 0)
+                return 0;
+            return (int)((3600000f/deltaRate)*Config.seconds_per_unit);
         }
     }
 
-    public class LazyResource {
-        public event LazyValue.OnResourcesUpdate ResourcesUpdate;
-
-        private bool isUpdating;
+    public class LazyResource
+    {
         private bool isDirty;
+        private bool isUpdating;
 
-        public LazyValue Crop { get; private set; }
-        public LazyValue Wood { get; private set; }
-        public LazyValue Iron { get; private set; }
-        public LazyValue Gold { get; private set; }
-        public LazyValue Labor { get; private set; }
-
-        public LazyResource(int crop, DateTime cropRealizeTime, int cropRate, int cropUpkeep,
-                            int gold, DateTime goldRealizeTime, int goldRate,
-                            int iron, DateTime ironRealizeTime, int ironRate,
-                            int wood, DateTime woodRealizeTime, int woodRate,
-                            int labor, DateTime laborRealizeTime, int laborRate) {
+        public LazyResource(int crop,
+                            DateTime cropRealizeTime,
+                            int cropRate,
+                            int cropUpkeep,
+                            int gold,
+                            DateTime goldRealizeTime,
+                            int goldRate,
+                            int iron,
+                            DateTime ironRealizeTime,
+                            int ironRate,
+                            int wood,
+                            DateTime woodRealizeTime,
+                            int woodRate,
+                            int labor,
+                            DateTime laborRealizeTime,
+                            int laborRate)
+        {
             Crop = new LazyValue(crop, cropRealizeTime, cropRate, cropUpkeep);
             Gold = new LazyValue(gold, goldRealizeTime, goldRate, 0);
             Iron = new LazyValue(iron, ironRealizeTime, ironRate, 0);
@@ -196,7 +230,8 @@ namespace Game.Data {
             SetEvents();
         }
 
-        public LazyResource(int crop, int gold, int iron, int wood, int labor) {
+        public LazyResource(int crop, int gold, int iron, int wood, int labor)
+        {
             Crop = new LazyValue(crop);
             Gold = new LazyValue(gold);
             Iron = new LazyValue(iron);
@@ -205,7 +240,15 @@ namespace Game.Data {
             SetEvents();
         }
 
-        private void SetEvents() {
+        public LazyValue Crop { get; private set; }
+        public LazyValue Wood { get; private set; }
+        public LazyValue Iron { get; private set; }
+        public LazyValue Gold { get; private set; }
+        public LazyValue Labor { get; private set; }
+        public event LazyValue.OnResourcesUpdate ResourcesUpdate;
+
+        private void SetEvents()
+        {
             Crop.ResourcesUpdate += Update;
             Gold.ResourcesUpdate += Update;
             Wood.ResourcesUpdate += Update;
@@ -213,7 +256,8 @@ namespace Game.Data {
             Labor.ResourcesUpdate += Update;
         }
 
-        public void SetLimits(int cropLimit, int goldLimit, int ironLimit, int woodLimit, int laborLimit) {
+        public void SetLimits(int cropLimit, int goldLimit, int ironLimit, int woodLimit, int laborLimit)
+        {
             BeginUpdate();
             Crop.Limit = cropLimit;
             Gold.Limit = goldLimit;
@@ -223,45 +267,48 @@ namespace Game.Data {
             EndUpdate();
         }
 
-        public int FindMaxAffordable(Resource costPerUnit) {
+        public int FindMaxAffordable(Resource costPerUnit)
+        {
             int cropDelta;
             if (costPerUnit.Crop == 0)
                 cropDelta = int.MaxValue;
             else
-                cropDelta = Crop.Value / costPerUnit.Crop;
+                cropDelta = Crop.Value/costPerUnit.Crop;
 
             int goldDelta;
             if (costPerUnit.Gold == 0)
                 goldDelta = int.MaxValue;
             else
-                goldDelta = Gold.Value / costPerUnit.Gold;
+                goldDelta = Gold.Value/costPerUnit.Gold;
 
             int ironDelta;
             if (costPerUnit.Iron == 0)
                 ironDelta = int.MaxValue;
             else
-                ironDelta = Iron.Value / costPerUnit.Iron;
+                ironDelta = Iron.Value/costPerUnit.Iron;
 
             int woodDelta;
             if (costPerUnit.Wood == 0)
                 woodDelta = int.MaxValue;
             else
-                woodDelta = Wood.Value / costPerUnit.Wood;
+                woodDelta = Wood.Value/costPerUnit.Wood;
 
             int laborDelta;
             if (costPerUnit.Labor == 0)
                 laborDelta = int.MaxValue;
             else
-                laborDelta = Labor.Value / costPerUnit.Labor;
+                laborDelta = Labor.Value/costPerUnit.Labor;
 
             return Math.Min(cropDelta, Math.Min(goldDelta, Math.Min(laborDelta, Math.Min(woodDelta, ironDelta))));
         }
 
-        public bool HasEnough(Resource cost) {
+        public bool HasEnough(Resource cost)
+        {
             return Crop.Value >= cost.Crop && Gold.Value >= cost.Gold && Wood.Value >= cost.Wood && Iron.Value >= cost.Iron && Labor.Value >= cost.Labor;
         }
 
-        public void Subtract(Resource resource) {
+        public void Subtract(Resource resource)
+        {
             BeginUpdate();
 
             if (resource.Crop > 0)
@@ -282,7 +329,8 @@ namespace Game.Data {
             EndUpdate();
         }
 
-        public void Subtract(Resource cost, out Resource actual) {
+        public void Subtract(Resource cost, out Resource actual)
+        {
             BeginUpdate();
             actual = new Resource();
             Crop.Subtract((actual.Crop = (Crop.Value > cost.Crop ? cost.Crop : Crop.Value)));
@@ -293,7 +341,8 @@ namespace Game.Data {
             EndUpdate();
         }
 
-        public void Subtract(Resource cost, Resource hidden, out Resource actual) {
+        public void Subtract(Resource cost, Resource hidden, out Resource actual)
+        {
             BeginUpdate();
             actual = new Resource();
             Crop.Subtract((actual.Crop = (Crop.Value - hidden.Crop > cost.Crop ? cost.Crop : Math.Max(0, Crop.Value - hidden.Crop))));
@@ -304,12 +353,14 @@ namespace Game.Data {
             EndUpdate();
         }
 
-        public void Add(Resource resource) {
+        public void Add(Resource resource)
+        {
             Add(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor);
             Update();
         }
 
-        public void Add(int crop, int gold, int iron, int wood, int labor) {
+        public void Add(int crop, int gold, int iron, int wood, int labor)
+        {
             BeginUpdate();
             Crop.Add(crop);
             Gold.Add(gold);
@@ -319,18 +370,21 @@ namespace Game.Data {
             EndUpdate();
         }
 
-        public Resource GetResource() {
+        public Resource GetResource()
+        {
             return new Resource(Crop.Value, Gold.Value, Iron.Value, Wood.Value, Labor.Value);
         }
 
-        public void BeginUpdate() {
+        public void BeginUpdate()
+        {
             if (isUpdating)
                 throw new Exception("Nesting beginupdate");
 
             isUpdating = true;
         }
 
-        public void EndUpdate() {
+        public void EndUpdate()
+        {
             if (!isUpdating)
                 return;
 
@@ -342,8 +396,10 @@ namespace Game.Data {
             isDirty = false;
         }
 
-        private void Update() {
-            if (!isUpdating) {
+        private void Update()
+        {
+            if (!isUpdating)
+            {
                 if (ResourcesUpdate != null)
                     ResourcesUpdate();
             }
@@ -351,13 +407,12 @@ namespace Game.Data {
                 isDirty = true;
         }
 
-        public override string ToString() {
-            return "Gold " + Gold.Value + "/" + Gold.RawValue + "/" + Gold.Rate + Gold.LastRealizeTime +
-                   Environment.NewLine + " Wood " + Wood.Value + "/" + Wood.RawValue + "/" + Wood.Rate +
-                   Wood.LastRealizeTime + Environment.NewLine + " Iron " + Iron.Value + "/" + Iron.RawValue + "/" +
-                   Iron.Rate + Iron.LastRealizeTime + Environment.NewLine + " Crop " + Crop.Value + "/" + Crop.RawValue +
-                   "/" + Crop.Rate + Crop.LastRealizeTime + Environment.NewLine + " Labor " + Labor.Value + "/" +
-                   Labor.RawValue + "/" + Labor.Rate + Labor.LastRealizeTime + Environment.NewLine;
+        public override string ToString()
+        {
+            return "Gold " + Gold.Value + "/" + Gold.RawValue + "/" + Gold.Rate + Gold.LastRealizeTime + Environment.NewLine + " Wood " + Wood.Value + "/" +
+                   Wood.RawValue + "/" + Wood.Rate + Wood.LastRealizeTime + Environment.NewLine + " Iron " + Iron.Value + "/" + Iron.RawValue + "/" + Iron.Rate +
+                   Iron.LastRealizeTime + Environment.NewLine + " Crop " + Crop.Value + "/" + Crop.RawValue + "/" + Crop.Rate + Crop.LastRealizeTime +
+                   Environment.NewLine + " Labor " + Labor.Value + "/" + Labor.RawValue + "/" + Labor.Rate + Labor.LastRealizeTime + Environment.NewLine;
         }
     }
 }

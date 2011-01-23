@@ -6,16 +6,22 @@ using System.Text;
 
 #endregion
 
-namespace Game.Util {
-    public class ExpressionParser {
-        private Hashtable ops, trees, htbl, spconst;
-        private int maxoplength;
-        private int sb_init;
+namespace Game.Util
+{
+    public class ExpressionParser
+    {
+        private readonly int maxoplength;
+        private readonly Hashtable ops;
+        private readonly Hashtable spconst;
+        private readonly Hashtable trees;
+        private Hashtable htbl;
+        private int sbInit;
 
         /// <summary>
-        /// Default constructor, creates an ExpressionParser object
+        ///   Default constructor, creates an ExpressionParser object
         /// </summary>
-        public ExpressionParser() {
+        public ExpressionParser()
+        {
             ops = new Hashtable(52); // Holds operators
             spconst = new Hashtable(12); // Holds constants
             trees = new Hashtable(101); // Holds Node tree datastructures
@@ -85,19 +91,23 @@ namespace Game.Util {
 
             // init all StringBuilders with this value.
             // this will be set to the length of the expression being evaluated by Parse.
-            sb_init = 50;
+            sbInit = 50;
         }
 
-        /// <summary>Matches all paranthesis and returns true if they all match or false if they do not.</summary>
-        /// <param name="exp">expression to check, infix notation</param>
+        /// <summary>
+        ///   Matches all paranthesis and returns true if they all match or false if they do not.
+        /// </summary>
+        /// <param name = "exp">expression to check, infix notation</param>
         /// <returns>true if ok false otherwise</returns>
-        private bool matchParant(String exp) {
+        private static bool MatchParant(String exp)
+        {
             int count = 0;
-            int i = 0;
+            int i;
 
             int l = exp.Length;
 
-            for (i = 0; i < l; i++) {
+            for (i = 0; i < l; i++)
+            {
                 if (exp[i] == '(')
                     count++;
                 else if (exp[i] == ')')
@@ -107,47 +117,62 @@ namespace Game.Util {
             return (count == 0);
         }
 
-        /// <summary>Checks if the character is alphabetic.</summary>
-        /// <param name="ch">Character to check</param>
+        /// <summary>
+        ///   Checks if the character is alphabetic.
+        /// </summary>
+        /// <param name = "ch">Character to check</param>
         /// <returns>true or false</returns>
-        private bool isAlpha(char ch) {
+        private static bool IsAlpha(char ch)
+        {
             return ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
         }
 
-        /// <summary>Checks if the string can be considered to be a valid variable name.</summary>
-        /// <param name="str">The String to check</param>
+        /// <summary>
+        ///   Checks if the string can be considered to be a valid variable name.
+        /// </summary>
+        /// <param name = "str">The String to check</param>
         /// <returns>true or false</returns>
-        private bool isVariable(String str) {
+        private bool IsVariable(String str)
+        {
             int i = 0;
             int len = str.Length;
 
             if (isAllNumbers(str))
                 return false;
 
-            for (i = 0; i < len; i++) {
-                if (getOp(str, i) != null || isAllowedSym(str[i]))
+            for (i = 0; i < len; i++)
+            {
+                if (GetOp(str, i) != null || IsAllowedSym(str[i]))
                     return false;
             }
 
             return true;
         }
 
-        /// <summary>Checks if the character is a digit</summary>
-        /// <param name="ch">Character to check</param>
+        /// <summary>
+        ///   Checks if the character is a digit
+        /// </summary>
+        /// <param name = "ch">Character to check</param>
         /// <returns>true or false</returns>
-        private bool isConstant(char ch) {
+        private bool isConstant(char ch)
+        {
             return (Char.IsDigit(ch));
         }
 
-        /// <summary>Checks to se if a string is numeric</summary>
-        /// <param name="exp">String to check</param>
+        /// <summary>
+        ///   Checks to se if a string is numeric
+        /// </summary>
+        /// <param name = "exp">String to check</param>
         /// <returns>true if the string was numeric, false otherwise</returns>
-        private bool isConstant(String exp) {
-            try {
+        private bool isConstant(String exp)
+        {
+            try
+            {
                 if (Double.IsNaN(Double.Parse(exp)))
                     return false;
             }
-            catch {
+            catch
+            {
                 return false;
             }
 
@@ -155,16 +180,17 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Checks to see if this String consists of only digits and punctuation.
+        ///   Checks to see if this String consists of only digits and punctuation.
         /// </summary>
         /// <remarks>
-        /// NOTE: needed in .NET at all ? This is a legacy from the Java version
-        /// where it was needed because some older JVM's accepted strings that started
-        /// with digits as numeric when the isConstant method was used.
+        ///   NOTE: needed in .NET at all ? This is a legacy from the Java version
+        ///   where it was needed because some older JVM's accepted strings that started
+        ///   with digits as numeric when the isConstant method was used.
         /// </remarks>
-        /// <param name="str">The string to check</param>
+        /// <param name = "str">The string to check</param>
         /// <returns>true if the string was numeric, false otherwise.</returns>
-        private bool isAllNumbers(String str) {
+        private bool isAllNumbers(String str)
+        {
             char ch;
             int i = 0, l = 0;
             bool dot = false;
@@ -176,7 +202,8 @@ namespace Game.Util {
 
             l = str.Length;
 
-            while (i < l) {
+            while (i < l)
+            {
                 ch = str[i];
 
                 if (!(Char.IsDigit(ch) || ((ch == '.' || ch == ',') && !dot)))
@@ -191,95 +218,107 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Checks to see if the string is the name of a acceptable operator.
+        ///   Checks to see if the string is the name of a acceptable operator.
         /// </summary>
-        /// <param name="str">The string to check</param>
+        /// <param name = "str">The string to check</param>
         /// <returns>true if it is an acceptable operator, false otherwise.</returns>
-        private bool isOperator(String str) {
+        private bool IsOperator(String str)
+        {
             return (ops.ContainsKey(str));
         }
 
         /// <summary>
-        /// Checks to see if the operator name represented by str takes two arguments.
+        ///   Checks to see if the operator name represented by str takes two arguments.
         /// </summary>
-        /// <param name="str">The string to check</param>
+        /// <param name = "str">The string to check</param>
         /// <returns>true if the operator takes two arguments, false otherwise.</returns>
-        private bool isTwoArgOp(String str) {
+        private bool IsTwoArgOp(String str)
+        {
             if (str == null)
                 return false;
             Object o = ops[str];
             if (o == null)
                 return false;
-            return (((Operator) o).arguments() == 2);
+            return (((Operator)o).arguments() == 2);
         }
 
         /// <summary>
-        /// Checks to see if the double value a can be considered to be a mathematical integer.</summary>
+        ///   Checks to see if the double value a can be considered to be a mathematical integer.
+        /// </summary>
         /// <remarks>
-        /// This method is only used by the fac and sfac methods and not the parser itself, it should
-        /// really leave this class since they have nothing to do with the parser.
+        ///   This method is only used by the fac and sfac methods and not the parser itself, it should
+        ///   really leave this class since they have nothing to do with the parser.
         /// </remarks>
-        /// <param name="a">the double value to check</param>
+        /// <param name = "a">the double value to check</param>
         /// <returns>true if the double value is an integer, false otherwise.</returns>
-        private bool isInteger(double a) {
-            return ((a - (int) a) == 0.0);
+        private static bool IsInteger(double a)
+        {
+            return ((a - (int)a) == 0.0);
         }
 
         /// <summary>
-        /// Checks to see if the int value a can be considered to be even. </summary>
+        ///   Checks to see if the int value a can be considered to be even.
+        /// </summary>
         /// <remarks>
-        /// This method is only used by the fac and sfac methods and not the parser itself, it should
-        /// really leave this class since they have nothing to do with the parser.
+        ///   This method is only used by the fac and sfac methods and not the parser itself, it should
+        ///   really leave this class since they have nothing to do with the parser.
         /// </remarks>
-        /// <param name="a">the int value to check</param>
+        /// <param name = "a">the int value to check</param>
         /// <returns>true if the int value is even, false otherwise.</returns>
-        private bool isEven(int a) {
-            return (isInteger(a/2));
+        private bool IsEven(int a)
+        {
+            return a % 2 == 0;
         }
 
         /// <summary>
-        /// Checks to see if the character is a valid symbol for this parser.
+        ///   Checks to see if the character is a valid symbol for this parser.
         /// </summary>
-        /// <param name="s">the character to check</param>
+        /// <param name = "s">the character to check</param>
         /// <returns>true if the char is valid, false otherwise.</returns>
-        private bool isAllowedSym(char s) {
-            return (s == ',' || s == '.' || s == ')' || s == '(' || s == '>' || s == '<' || s == '&' || s == '=' ||
-                    s == '|');
+        private static bool IsAllowedSym(char s)
+        {
+            return (s == ',' || s == '.' || s == ')' || s == '(' || s == '>' || s == '<' || s == '&' || s == '=' || s == '|');
         }
 
-        /// <summary>
-        /// Checks the String expression to see if the syntax is valid.
-        /// this method doesn't return anything, instead it throws an Exception
-        /// if the syntax is invalid.
+        ///<summary>
+        ///  Checks the String expression to see if the syntax is valid.
+        ///  this method doesn't return anything, instead it throws an Exception
+        ///  if the syntax is invalid.
         ///	
-        /// Examples of invalid syntax can be non matching paranthesis, non valid symbols appearing
-        /// or a variable or operator name is invalid in the expression.
-        /// </summary>
-        /// <param name="exp">the string expression to check, infix notation.</param>
-        private void Syntax(String exp) {
+        ///  Examples of invalid syntax can be non matching paranthesis, non valid symbols appearing
+        ///  or a variable or operator name is invalid in the expression.
+        ///</summary>
+        ///<param name = "exp">the string expression to check, infix notation.</param>
+        private void Syntax(String exp)
+        {
             int i = 0, oplen = 0;
             String op = null;
             String nop = null;
 
-            if (!matchParant(exp))
+            if (!MatchParant(exp))
                 throw new Exception("Non matching paranthesis");
 
             int l = exp.Length;
 
-            while (i < l) {
-                try {
-                    if ((op = getOp(exp, i)) != null) {
+            while (i < l)
+            {
+                try
+                {
+                    if ((op = GetOp(exp, i)) != null)
+                    {
                         oplen = op.Length;
                         i += oplen;
-                        nop = getOp(exp, i);
-                        if (nop != null && isTwoArgOp(nop) && !(nop.Equals("+") || nop.Equals("-")))
+                        nop = GetOp(exp, i);
+                        if (nop != null && IsTwoArgOp(nop) && !(nop.Equals("+") || nop.Equals("-")))
                             throw new Exception("Syntax error near -> " + exp.Substring(i - oplen));
-                    } else if (!isAlpha(exp[i]) && !isConstant(exp[i]) && !isAllowedSym(exp[i]))
+                    }
+                    else if (!IsAlpha(exp[i]) && !isConstant(exp[i]) && !IsAllowedSym(exp[i]))
                         throw new Exception("Syntax error near -> " + exp.Substring(i));
                     else
                         i++;
                 }
-                catch (IndexOutOfRangeException) {
+                catch(IndexOutOfRangeException)
+                {
                     i++;
                 }
             }
@@ -287,65 +326,79 @@ namespace Game.Util {
             return;
         }
 
-        /// <summary>
-        /// Inserts the multiplication operator where needed.
-        /// This method adds limited juxtapositioning support.
-        /// </summary>
-        /// <remarks>	
-        /// Juxtaposition is supported in these type cases:
+        ///<summary>
+        ///  Inserts the multiplication operator where needed.
+        ///  This method adds limited juxtapositioning support.
+        ///</summary>
+        ///<remarks>
+        ///  Juxtaposition is supported in these type cases:
         ///
-        /// case: variable jp one-arg-op , xcos(x)
-        /// case: const jp variable or one-arg-op, 2x, 2tan(x)
-        /// case: "const jp ( expr )" , 2(3+x)
-        /// case: ( expr ) jp variable or one-arg-op , (2-x)x , (2-x)sin(x)
-        /// case: var jp  ( expr ) , x(x+1) , x(1-sin(x))
+        ///  case: variable jp one-arg-op , xcos(x)
+        ///  case: const jp variable or one-arg-op, 2x, 2tan(x)
+        ///  case: "const jp ( expr )" , 2(3+x)
+        ///  case: ( expr ) jp variable or one-arg-op , (2-x)x , (2-x)sin(x)
+        ///  case: var jp  ( expr ) , x(x+1) , x(1-sin(x))
         ///
-        /// Note that this also puts extra limitations on variable names, they cannot
-        /// contain digits within them or at the beginning, only at the end.
-        /// </remarks>
-        /// <param name="exp">the infix string expression to process</param>
-        /// <returns>the processed infix expression</returns>
-        private String putMult(String exp) {
+        ///  Note that this also puts extra limitations on variable names, they cannot
+        ///  contain digits within them or at the beginning, only at the end.
+        ///</remarks>
+        ///<param name = "exp">the infix string expression to process</param>
+        ///<returns>the processed infix expression</returns>
+        private String PutMult(String exp)
+        {
             int i = 0, p = 0;
             String tmp = null;
-            StringBuilder str = new StringBuilder(exp);
+            var str = new StringBuilder(exp);
 
             int l = exp.Length;
 
-            while (i < l) {
-                try {
-                    if ((tmp = getOp(exp, i)) != null && !isTwoArgOp(tmp) && isAlpha(exp[i - 1])) {
+            while (i < l)
+            {
+                try
+                {
+                    if ((tmp = GetOp(exp, i)) != null && !IsTwoArgOp(tmp) && IsAlpha(exp[i - 1]))
+                    {
                         // case: variable jp one-arg-op , xcos(x)
                         str.Insert(i + p, "*");
                         p++;
-                    } else if (isAlpha(exp[i]) && isConstant(exp[i - 1]) && (tmp == null || !tmp.Equals("log")))
-                        // tmp was set by previous test
+                    }
+                    else if (IsAlpha(exp[i]) && isConstant(exp[i - 1]) && (tmp == null || !tmp.Equals("log")))
+                            // tmp was set by previous test
                     {
                         // case: const jp variable or one-arg-op, 2x, 2tan(x)
                         // note that "log" is treated specially
                         str.Insert(i + p, "*");
                         p++;
-                    } else if (exp[i] == '(' && isConstant(exp[i - 1])) {
+                    }
+                    else if (exp[i] == '(' && isConstant(exp[i - 1]))
+                    {
                         // case: "const jp ( expr )" , 2(3+x)
                         str.Insert(i + p, "*");
                         p++;
-                    } else if (isAlpha(exp[i]) && exp[i - 1] == ')' && (tmp == null || !tmp.Equals("log")))
-                        // tmp was set by previous test
+                    }
+                    else if (IsAlpha(exp[i]) && exp[i - 1] == ')' && (tmp == null || !tmp.Equals("log")))
+                            // tmp was set by previous test
                     {
                         // case: ( expr ) jp variable or one-arg-op , (2-x)x , (2-x)sin(x)
                         str.Insert(i + p, "*");
                         p++;
-                    } else if (exp[i] == '(' && exp[i - 1] == ')') {
+                    }
+                    else if (exp[i] == '(' && exp[i - 1] == ')')
+                    {
                         // case: ( expr ) jp  ( expr ) , (2-x)(x+1) , sin(x)(2-x) 
                         str.Insert(i + p, "*");
                         p++;
-                    } else if (exp[i] == '(' && isAlpha(exp[i - 1]) && backTrack(exp.Substring(0, i)) == null) {
+                    }
+                    else if (exp[i] == '(' && IsAlpha(exp[i - 1]) && BackTrack(exp.Substring(0, i)) == null)
+                    {
                         // case: var jp  ( expr ) , x(x+1) , x(1-sin(x))
                         str.Insert(i + p, "*");
                         p++;
                     }
                 }
-                catch {}
+                catch
+                {
+                }
 
                 if (tmp != null)
                     i += tmp.Length;
@@ -359,27 +412,31 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Adds support for "scientific notation" by replacing the E operator with *10^
+        ///   Adds support for "scientific notation" by replacing the E operator with *10^
         /// </summary>
         /// <remarks>
-        /// For example the value 1E-3 would be changed to 1*10^-3 which the parser will treat
-        /// as a normal expression.
+        ///   For example the value 1E-3 would be changed to 1*10^-3 which the parser will treat
+        ///   as a normal expression.
         /// </remarks>
-        /// <param name="exp">the infix string expression to process</param>
+        /// <param name = "exp">the infix string expression to process</param>
         /// <returns>the processed infix expression</returns>
-        private String parseE(String exp) {
-            int i, p, len;
+        private static String ParseE(String exp)
+        {
+            int p;
 
-            StringBuilder newstr = new StringBuilder(exp);
+            var newstr = new StringBuilder(exp);
 
-            i = p = 0;
-            len = exp.Length;
+            int i = p = 0;
+            int len = exp.Length;
 
-            while (i < len) {
-                try {
-                    if (exp[i] == 'e' && Char.IsDigit(exp[i - 1])) {
-                        if (Char.IsDigit(exp[i + 1]) ||
-                            ((exp[i + 1] == '-' || exp[i + 1] == '+') && Char.IsDigit(exp[i + 2]))) {
+            while (i < len)
+            {
+                try
+                {
+                    if (exp[i] == 'e' && Char.IsDigit(exp[i - 1]))
+                    {
+                        if (Char.IsDigit(exp[i + 1]) || ((exp[i + 1] == '-' || exp[i + 1] == '+') && Char.IsDigit(exp[i + 2])))
+                        {
                             // replace the 'e'
                             newstr[i + p] = '*';
                             // insert the rest
@@ -388,7 +445,9 @@ namespace Game.Util {
                         }
                     }
                 }
-                catch {}
+                catch
+                {
+                }
                 i++;
             }
 
@@ -396,16 +455,18 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Parses out spaces from a string
+        ///   Parses out spaces from a string
         /// </summary>
-        /// <param name="str">The string to process</param>
+        /// <param name = "str">The string to process</param>
         /// <returns>A copy of the string stripped of all spaces</returns>
-        private String skipSpaces(String str) {
+        private String skipSpaces(String str)
+        {
             int i = 0;
             int len = str.Length;
-            StringBuilder nstr = new StringBuilder(len);
+            var nstr = new StringBuilder(len);
 
-            while (i < len) {
+            while (i < len)
+            {
                 if (str[i] != ' ')
                     nstr.Append(str[i]);
                 i++;
@@ -415,17 +476,19 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Matches an opening left paranthesis.
+        ///   Matches an opening left paranthesis.
         /// </summary>
-        /// <param name="exp">the string to search in</param>
-        /// <param name="index">the index of the opening left paranthesis</param>
+        /// <param name = "exp">the string to search in</param>
+        /// <param name = "index">the index of the opening left paranthesis</param>
         /// <returns>the index of the matching closing right paranthesis</returns>
-        private int match(String exp, int index) {
+        private int match(String exp, int index)
+        {
             int len = exp.Length;
             int i = index;
             int count = 0;
 
-            while (i < len) {
+            while (i < len)
+            {
                 if (exp[i] == '(')
                     count++;
                 else if (exp[i] == ')')
@@ -441,20 +504,23 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Parses out an operator from an infix string expression.
+        ///   Parses out an operator from an infix string expression.
         /// </summary>
-        /// <param name="exp">the infix string expression to look in</param>
-        /// <param name="index">the index to start searching from</param>
+        /// <param name = "exp">the infix string expression to look in</param>
+        /// <param name = "index">the index to start searching from</param>
         /// <returns>the operator if any or null.</returns>
-        private String getOp(String exp, int index) {
+        private String GetOp(String exp, int index)
+        {
             String tmp;
             int i = 0;
             int len = exp.Length;
 
-            for (i = 0; i < maxoplength; i++) {
-                if (index >= 0 && (index + maxoplength - i) <= len) {
+            for (i = 0; i < maxoplength; i++)
+            {
+                if (index >= 0 && (index + maxoplength - i) <= len)
+                {
                     tmp = exp.Substring(index, maxoplength - i);
-                    if (isOperator(tmp))
+                    if (IsOperator(tmp))
                         return (tmp);
                 }
             }
@@ -462,81 +528,95 @@ namespace Game.Util {
             return null;
         }
 
-        /// <summary>
-        /// Parses an infix String expression and creates a parse tree of Node's.
-        /// </summary>
-        /// <remarks>
-        /// This is the heart of the parser, it takes a normal expression and creates
-        /// a datastructure we can easily recurse when evaluating.
+        ///<summary>
+        ///  Parses an infix String expression and creates a parse tree of Node's.
+        ///</summary>
+        ///<remarks>
+        ///  This is the heart of the parser, it takes a normal expression and creates
+        ///  a datastructure we can easily recurse when evaluating.
         ///
-        /// The datastructure is then evaluated by the toValue method.
-        /// </remarks>
-        /// <param name="exp">the infix string expression to process</param>
-        /// <returns>A tree datastructure of Node objects representing the expression</returns>
-        private Node parse(String exp) {
-            int i, ma, len;
+        ///  The datastructure is then evaluated by the toValue method.
+        ///</remarks>
+        ///<param name = "exp">the infix string expression to process</param>
+        ///<returns>A tree datastructure of Node objects representing the expression</returns>
+        private Node Parse(String exp)
+        {
+            int i;
             String farg, sarg, fop;
             Node tree = null;
 
             farg = sarg = fop = "";
-            ma = i = 0;
+            int ma = i = 0;
 
-            len = exp.Length;
+            int len = exp.Length;
 
             if (len == 0)
                 throw new Exception("Wrong number of arguments to operator");
-            else if (exp[0] == '(' && ((ma = match(exp, 0)) == (len - 1)))
-                return (parse(exp.Substring(1, ma - 1)));
-            else if (isVariable(exp))
+            if (exp[0] == '(' && ((ma = match(exp, 0)) == (len - 1)))
+                return (Parse(exp.Substring(1, ma - 1)));
+            if (IsVariable(exp))
                 return (new Node(exp));
-            else if (isAllNumbers(exp)) // this is really the only place where isAllNumbers matters. 
+            if (isAllNumbers(exp)) // this is really the only place where isAllNumbers matters. 
             {
-                try {
+                try
+                {
                     return (new Node(Double.Parse(exp)));
                 }
-                catch (FormatException) {
+                catch(FormatException)
+                {
                     throw new Exception("Syntax error-> " + exp + " (not using regional decimal separator?)");
                 }
             }
 
-            while (i < len) {
-                if ((fop = getOp(exp, i)) == null) {
-                    farg = arg(null, exp, i);
-                    fop = getOp(exp, i + farg.Length);
+            while (i < len)
+            {
+                if ((fop = GetOp(exp, i)) == null)
+                {
+                    farg = Arg(null, exp, i);
+                    fop = GetOp(exp, i + farg.Length);
 
                     if (fop == null)
                         throw new Exception("Missing operator");
 
-                    if (isTwoArgOp(fop)) {
-                        sarg = arg(fop, exp, i + farg.Length + fop.Length);
+                    if (IsTwoArgOp(fop))
+                    {
+                        sarg = Arg(fop, exp, i + farg.Length + fop.Length);
                         if (sarg.Equals(""))
                             throw new Exception("Wrong number of arguments to operator " + fop);
-                        tree = new Node(fop, parse(farg), parse(sarg));
+                        tree = new Node(fop, Parse(farg), Parse(sarg));
                         i += farg.Length + fop.Length + sarg.Length;
-                    } else {
+                    }
+                    else
+                    {
                         if (farg.Equals(""))
                             throw new Exception("Wrong number of arguments to operator " + fop);
-                        tree = new Node(fop, parse(farg));
+                        tree = new Node(fop, Parse(farg));
                         i += farg.Length + fop.Length;
                     }
-                } else {
-                    if (isTwoArgOp(fop)) {
-                        farg = arg(fop, exp, i + fop.Length);
+                }
+                else
+                {
+                    if (IsTwoArgOp(fop))
+                    {
+                        farg = Arg(fop, exp, i + fop.Length);
                         if (farg.Equals(""))
                             throw new Exception("Wrong number of arguments to operator " + fop);
-                        if (tree == null) {
+                        if (tree == null)
+                        {
                             if (fop.Equals("+") || fop.Equals("-"))
                                 tree = new Node(0D);
                             else
                                 throw new Exception("Wrong number of arguments to operator " + fop);
                         }
-                        tree = new Node(fop, tree, parse(farg));
+                        tree = new Node(fop, tree, Parse(farg));
                         i += farg.Length + fop.Length;
-                    } else {
-                        farg = arg(fop, exp, i + fop.Length);
+                    }
+                    else
+                    {
+                        farg = Arg(fop, exp, i + fop.Length);
                         if (farg.Equals(""))
                             throw new Exception("Wrong number of arguments to operator " + fop);
-                        tree = new Node(fop, parse(farg));
+                        tree = new Node(fop, Parse(farg));
                         i += farg.Length + fop.Length;
                     }
                 }
@@ -546,40 +626,46 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Parses the infix expression for arguments to the specified operator.
+        ///   Parses the infix expression for arguments to the specified operator.
         /// </summary>
-        /// <param name="_operator">the operator we are interested in</param>
-        /// <param name="exp">the infix string expression</param>
-        /// <param name="index">the index to start the search from</param>
+        /// <param name = "iOperator">the operator we are interested in</param>
+        /// <param name = "exp">the infix string expression</param>
+        /// <param name = "index">the index to start the search from</param>
         /// <returns>the argument to the operator</returns>
-        private String arg(String _operator, String exp, int index) {
+        private String Arg(String iOperator, String exp, int index)
+        {
             int ma, i, prec = -1;
             int len = exp.Length;
             String op = null;
 
-            StringBuilder str = new StringBuilder(sb_init);
+            var str = new StringBuilder(sbInit);
 
             i = index;
             ma = 0;
 
-            if (_operator == null)
+            if (iOperator == null)
                 prec = -1;
             else
-                prec = ((Operator) ops[_operator]).precedence();
+                prec = ((Operator)ops[iOperator]).precedence();
 
-            while (i < len) {
-                if (exp[i] == '(') {
+            while (i < len)
+            {
+                if (exp[i] == '(')
+                {
                     ma = match(exp, i);
                     str.Append(exp.Substring(i, ma + 1 - i));
                     i = ma + 1;
-                } else if ((op = getOp(exp, i)) != null) {
-                    // (_operator != null && _operator.Equals("&&") && op.Equals("||") ) || 
-                    if (str.Length != 0 && !isTwoArgOp(backTrack(str.ToString())) &&
-                        ((Operator) ops[op]).precedence() >= prec)
+                }
+                else if ((op = GetOp(exp, i)) != null)
+                {
+                    // (iOperator != null && iOperator.Equals("&&") && op.Equals("||") ) || 
+                    if (str.Length != 0 && !IsTwoArgOp(BackTrack(str.ToString())) && ((Operator)ops[op]).precedence() >= prec)
                         return str.ToString();
                     str.Append(op);
                     i += op.Length;
-                } else {
+                }
+                else
+                {
                     str.Append(exp[i]);
                     i++;
                 }
@@ -589,121 +675,131 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Returns an operator at the end of the String str if present.
+        ///   Returns an operator at the end of the String str if present.
         /// </summary>
         /// <remarks>
-        /// Used when parsing for arguments, the purpose is to recognize
-        /// expressions like for example 10^-1
+        ///   Used when parsing for arguments, the purpose is to recognize
+        ///   expressions like for example 10^-1
         /// </remarks>
-        /// <param name="str">part of infix string expression to search</param>
+        /// <param name = "str">part of infix string expression to search</param>
         /// <returns>the operator if found or null otherwise</returns>
-        private String backTrack(String str) {
+        private String BackTrack(String str)
+        {
             int i = 0;
             int len = str.Length;
             String op = null;
 
-            try {
-                for (i = 0; i <= maxoplength; i++) {
-                    if ((op = getOp(str, (len - 1 - maxoplength + i))) != null &&
-                        (len - maxoplength - 1 + i + op.Length) == len)
+            try
+            {
+                for (i = 0; i <= maxoplength; i++)
+                {
+                    if ((op = GetOp(str, (len - 1 - maxoplength + i))) != null && (len - maxoplength - 1 + i + op.Length) == len)
                         return op;
                 }
             }
-            catch {}
+            catch
+            {
+            }
 
             return null;
         }
 
         /// <summary>
-        /// Calculates the faculty.
+        ///   Calculates the faculty.
         /// </summary>
         /// <remarks>
-        /// This method should move out of this class since it has nothing to do with the parser.
-        /// it's here because the language math functions do not include faculty calculations.
+        ///   This method should move out of this class since it has nothing to do with the parser.
+        ///   it's here because the language math functions do not include faculty calculations.
         /// </remarks>
-        /// <param name="val">the value to calcualte the faculty of</param>
+        /// <param name = "val">the value to calcualte the faculty of</param>
         /// <returns>the faculty</returns>
-        private double fac(double val) {
-            if (!isInteger(val))
+        private static double Fac(double val)
+        {
+            if (!IsInteger(val))
                 return Double.NaN;
             else if (val < 0)
                 return Double.NaN;
             else if (val <= 1)
                 return 1;
 
-            return (val*fac(val - 1));
+            return (val*Fac(val - 1));
         }
 
         /// <summary>
-        /// Calculates the semi faculty.
+        ///   Calculates the semi faculty.
         /// </summary>
         /// <remarks>
-        /// This method should move out of this class since it has nothing to do with the parser.
-        /// it's here because the language math functions do not include semi faculty calculations.
+        ///   This method should move out of this class since it has nothing to do with the parser.
+        ///   it's here because the language math functions do not include semi faculty calculations.
         /// </remarks>
-        /// <param name="val">the value to calcualte the semi faculty of</param>
+        /// <param name = "val">the value to calcualte the semi faculty of</param>
         /// <returns>the semi faculty</returns>
-        private double sfac(double val) {
-            if (!isInteger(val))
+        private static double Sfac(double val)
+        {
+            if (!IsInteger(val))
                 return Double.NaN;
-            else if (val < 0)
+            if (val < 0)
                 return Double.NaN;
-            else if (val <= 1)
+            if (val <= 1)
                 return 1;
 
-            return (val*sfac(val - 2));
+            return (val*Sfac(val - 2));
         }
 
         /// <summary>
-        /// Returns the decimal part of the value
+        ///   Returns the decimal part of the value
         /// </summary>
-        /// <param name="val">the value to calculate the fpart for</param>
+        /// <param name = "val">the value to calculate the fpart for</param>
         /// <returns>the decimal part of the value</returns>
-        private double fpart(double val) {
+        private static double Fpart(double val)
+        {
             if (val >= 0)
                 return (val - Math.Floor(val));
-            else
-                return (val - Math.Ceiling(val));
+            return (val - Math.Ceiling(val));
         }
 
         /// <summary>
-        /// Parses the datastructure created by the parse method.
+        ///   Parses the datastructure created by the parse method.
         /// </summary>
         /// <remarks>
-        /// This is where the actual evaluation of the expression is made,
-        /// the Node tree structure created by the parse method is recursed and evaluated
-        /// to a double value.
+        ///   This is where the actual evaluation of the expression is made,
+        ///   the Node tree structure created by the parse method is recursed and evaluated
+        ///   to a double value.
         /// </remarks>
-        /// <param name="tree">A Node representing a tree datastructure</param>
+        /// <param name = "tree">A Node representing a tree datastructure</param>
         /// <returns>A double value</returns>
-        private double toValue(Node tree) {
+        private double toValue(Node tree)
+        {
             Node arg1, arg2;
             double val;
             String op, tmp;
 
             if (tree.getType() == Node.TYPE_CONSTANT)
                 return (tree.getValue());
-            else if (tree.getType() == Node.TYPE_VARIABLE) {
+            else if (tree.getType() == Node.TYPE_VARIABLE)
+            {
                 tmp = tree.getVariable();
 
                 // check if PI, Euler....etc
                 if (spconst.ContainsKey(tmp))
-                    return ((double) spconst[tmp]);
+                    return ((double)spconst[tmp]);
 
                 // normal variable, get value
                 tmp = get(tmp);
                 if (isConstant(tmp))
                     return (Double.Parse(tmp));
-                else {
+                else
+                {
                     Syntax(tmp);
-                    return (toValue(parse(putMult(parseE(tmp)))));
+                    return (toValue(Parse(PutMult(ParseE(tmp)))));
                 }
             }
 
             op = tree.getOperator();
             arg1 = tree.arg1();
 
-            if (tree.arguments() == 2) {
+            if (tree.arguments() == 2)
+            {
                 arg2 = tree.arg2();
 
                 if (op.Equals("+"))
@@ -736,7 +832,9 @@ namespace Game.Util {
                     return (toValue(arg1) >= toValue(arg2) ? 1.0 : 0.0);
                 else if (op.Equals("<="))
                     return (toValue(arg1) <= toValue(arg2) ? 1.0 : 0.0);
-            } else {
+            }
+            else
+            {
                 if (op.Equals("sqrt"))
                     return (Math.Sqrt(toValue(arg1)));
                 else if (op.Equals("sin"))
@@ -760,29 +858,35 @@ namespace Game.Util {
                 else if (op.Equals("acotan"))
                     return (Math.PI/2 - Math.Atan(toValue(arg1)));
                 else if (op.Equals("ceil"))
-                    return ((double) Math.Ceiling(toValue(arg1)));
+                    return (Math.Ceiling(toValue(arg1)));
                 else if (op.Equals("round"))
-                    return ((double) Math.Round(toValue(arg1)));
+                    return (Math.Round(toValue(arg1)));
                 else if (op.Equals("floor"))
-                    return ((double) Math.Floor(toValue(arg1)));
+                    return (Math.Floor(toValue(arg1)));
                 else if (op.Equals("fac"))
-                    return (fac(toValue(arg1)));
+                    return (Fac(toValue(arg1)));
                 else if (op.Equals("abs"))
                     return (Math.Abs(toValue(arg1)));
                 else if (op.Equals("fpart"))
-                    return (fpart(toValue(arg1)));
+                    return (Fpart(toValue(arg1)));
                 else if (op.Equals("sfac"))
-                    return (sfac(toValue(arg1)));
-                else if (op.Equals("sinh")) {
+                    return (Sfac(toValue(arg1)));
+                else if (op.Equals("sinh"))
+                {
                     val = toValue(arg1);
                     return ((Math.Exp(val) - (1/Math.Exp(val)))/2);
-                } else if (op.Equals("cosh")) {
+                }
+                else if (op.Equals("cosh"))
+                {
                     val = toValue(arg1);
                     return ((Math.Exp(val) + (1/Math.Exp(val)))/2);
-                } else if (op.Equals("tanh")) {
+                }
+                else if (op.Equals("tanh"))
+                {
                     val = toValue(arg1);
                     return (((Math.Exp(val) - (1/Math.Exp(val)))/2)/((Math.Exp(val) + (1/Math.Exp(val)))/2));
-                } else if (op.Equals("!"))
+                }
+                else if (op.Equals("!"))
                     return ((!(toValue(arg1) == 1.0)) ? 1.0 : 0.0);
             }
 
@@ -790,66 +894,69 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Retrieves a value stored in the Hashtable containing all variable = value pairs.
+        ///   Retrieves a value stored in the Hashtable containing all variable = value pairs.
         /// </summary>
         /// <remarks>
-        /// The hashtable used in this method is set by the Parse( String, Hashtable ) method so this method retrives
-        /// values inserted by the user of this class. Please note that no processing has been made
-        /// on these values, they may have incorrect syntax or casing.
+        ///   The hashtable used in this method is set by the Parse( String, Hashtable ) method so this method retrives
+        ///   values inserted by the user of this class. Please note that no processing has been made
+        ///   on these values, they may have incorrect syntax or casing.
         /// </remarks>
-        /// <param name="key">the name of the variable we want the value for</param>
+        /// <param name = "key">the name of the variable we want the value for</param>
         /// <returns>the value stored in the Hashtable or null if none.</returns>
-        private String get(String key) {
+        private String get(String key)
+        {
             Object ob = htbl[key];
             String val = null;
 
             if (ob == null)
                 throw new Exception("No value associated with " + key);
 
-            try {
-                val = (String) ob;
+            try
+            {
+                val = (String)ob;
             }
-            catch {
+            catch
+            {
                 throw new Exception("Wrong type value for " + key + " expected String");
             }
 
             return (val);
         }
 
-        /// <summary>
-        /// Evaluates the infix expression using the values in the Hashtable.
-        /// </summary>
-        /// <remarks>
-        /// This is the only publicly available method of the class, it is the entry point into for the user 
-        /// into the parser.
+        ///<summary>
+        ///  Evaluates the infix expression using the values in the Hashtable.
+        ///</summary>
+        ///<remarks>
+        ///  This is the only publicly available method of the class, it is the entry point into for the user 
+        ///  into the parser.
         ///
-        /// Example usage:
+        ///  Example usage:
         /// 
-        /// using info.lundin.Math;
-        /// using System;
-        /// using System.Collections;
+        ///  using info.lundin.Math;
+        ///  using System;
+        ///  using System.Collections;
         ///
-        /// public class Test 
-        /// {
-        /// 	public static void Main( String[] args )
-        /// 	{
-        /// 		ExpressionParser parser = new ExpressionParser();
-        /// 		Hashtable h = new Hashtable();
+        ///  public class Test 
+        ///  {
+        ///  public static void Main( String[] args )
+        ///  {
+        ///  ExpressionParser parser = new ExpressionParser();
+        ///  Hashtable h = new Hashtable();
         ///
-        /// 		h.Add( "x", 1.ToString() );
-        /// 		h.Add( "y", 2.ToString() );
+        ///  h.Add( "x", 1.ToString() );
+        ///  h.Add( "y", 2.ToString() );
         ///
         ///
-        /// 		double result = parser.Parse( "xcos(y)", h );
-        /// 		Console.WriteLine( “Result: {0}? result );
-        /// 	}
-        /// }
-        ///
-        /// </remarks>
-        /// <param name="exp">the infix string expression to parse and evaluate.</param>
-        /// <param name="tbl">Hashtable with variable value pairs</param>
-        /// <returns>a double value</returns>
-        public double Parse(String exp, Hashtable tbl) {
+        ///  double result = parser.Parse( "xcos(y)", h );
+        ///  Console.WriteLine( “Result: {0}? result );
+        ///  }
+        ///  }
+        ///</remarks>
+        ///<param name = "exp">the infix string expression to parse and evaluate.</param>
+        ///<param name = "tbl">Hashtable with variable value pairs</param>
+        ///<returns>a double value</returns>
+        public double Parse(String exp, Hashtable tbl)
+        {
             double ans = 0D;
             String tmp;
             Node tree;
@@ -861,15 +968,17 @@ namespace Game.Util {
 
             htbl = tbl;
             tmp = skipSpaces(exp.ToLower());
-            sb_init = tmp.Length;
+            sbInit = tmp.Length;
 
-            try {
+            try
+            {
                 if (trees.ContainsKey(tmp))
-                    ans = toValue((Node) trees[tmp]);
-                else {
+                    ans = toValue((Node)trees[tmp]);
+                else
+                {
                     Syntax(tmp);
 
-                    tree = parse(putMult(parseE(tmp)));
+                    tree = Parse(PutMult(ParseE(tmp)));
 
                     ans = toValue(tree);
 
@@ -878,48 +987,63 @@ namespace Game.Util {
 
                 return ans;
             }
-            catch (Exception e) {
+            catch(Exception e)
+            {
                 throw new Exception(e.Message);
             }
         }
-    } // End class ExpressionParse
+    }
+
+    // End class ExpressionParse
 
     /// <summary>
-    /// Class Node, represents a Node in a tree data structure representation
-    /// of a mathematical expression.
+    ///   Class Node, represents a Node in a tree data structure representation
+    ///   of a mathematical expression.
     /// </summary>
-    public class Node {
-        /// <summary>Represents the type variable</summary>
+    public class Node
+    {
+        /// <summary>
+        ///   Represents the type variable
+        /// </summary>
         public static int TYPE_VARIABLE = 1;
 
-        /// <summary>Represents the type constant ( numeric value )</summary>
+        /// <summary>
+        ///   Represents the type constant ( numeric value )
+        /// </summary>
         public static int TYPE_CONSTANT = 2;
 
-        /// <summary>Represents the type expression</summary>
+        /// <summary>
+        ///   Represents the type expression
+        /// </summary>
         public static int TYPE_EXPRESSION = 3;
 
-        /// <summary>Reserved</summary>
+        /// <summary>
+        ///   Reserved
+        /// </summary>
         public static int TYPE_END = 4;
 
-        /// <summary>Used as initial value</summary>
+        /// <summary>
+        ///   Used as initial value
+        /// </summary>
         public static int TYPE_UNDEFINED = -1;
 
-        private String _operator = "";
-        private Node _arg1 = null;
-        private Node _arg2 = null;
-        private int args = 0;
-        private int type = TYPE_UNDEFINED;
-        private double value = Double.NaN;
-        private String variable = "";
+        private readonly Node _arg1;
+        private readonly Node _arg2;
+        private readonly String _operator = "";
+        private readonly int args;
+        private readonly int type = TYPE_UNDEFINED;
+        private readonly double value = Double.NaN;
+        private readonly String variable = "";
 
         /// <summary>
-        /// Creates a Node containing the specified Operator and arguments.
-        /// This will automatically mark this Node as a TYPE_EXPRESSION
+        ///   Creates a Node containing the specified Operator and arguments.
+        ///   This will automatically mark this Node as a TYPE_EXPRESSION
         /// </summary>
-        /// <param name="_operator">the string representing an operator</param>
-        /// <param name="_arg1">the first argument to the specified operator</param>
-        /// <param name="_arg2">the second argument to the specified operator</param>
-        public Node(String _operator, Node _arg1, Node _arg2) {
+        /// <param name = "_operator">the string representing an operator</param>
+        /// <param name = "_arg1">the first argument to the specified operator</param>
+        /// <param name = "_arg2">the second argument to the specified operator</param>
+        public Node(String _operator, Node _arg1, Node _arg2)
+        {
             this._arg1 = _arg1;
             this._arg2 = _arg2;
             this._operator = _operator;
@@ -928,12 +1052,13 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Creates a Node containing the specified Operator and argument.
-        /// This will automatically mark this Node as a TYPE_EXPRESSION
+        ///   Creates a Node containing the specified Operator and argument.
+        ///   This will automatically mark this Node as a TYPE_EXPRESSION
         /// </summary>
-        /// <param name="_operator">the string representing an operator</param>
-        /// <param name="_arg1">the argument to the specified operator</param>
-        public Node(String _operator, Node _arg1) {
+        /// <param name = "_operator">the string representing an operator</param>
+        /// <param name = "_arg1">the argument to the specified operator</param>
+        public Node(String _operator, Node _arg1)
+        {
             this._arg1 = _arg1;
             this._operator = _operator;
             args = 1;
@@ -941,118 +1066,136 @@ namespace Game.Util {
         }
 
         /// <summary>
-        /// Creates a Node containing the specified variable.
-        /// This will automatically mark this Node as a TYPE_VARIABLE
+        ///   Creates a Node containing the specified variable.
+        ///   This will automatically mark this Node as a TYPE_VARIABLE
         /// </summary>
-        /// <param name="variable">the string representing a variable</param>
-        public Node(String variable) {
+        /// <param name = "variable">the string representing a variable</param>
+        public Node(String variable)
+        {
             this.variable = variable;
             type = TYPE_VARIABLE;
         }
 
         /// <summary>
-        /// Creates a Node containing the specified value.
-        /// This will automatically mark this Node as a TYPE_CONSTANT
+        ///   Creates a Node containing the specified value.
+        ///   This will automatically mark this Node as a TYPE_CONSTANT
         /// </summary>
-        /// <param name="value">the value for this Node</param>
-        public Node(double value) {
+        /// <param name = "value">the value for this Node</param>
+        public Node(double value)
+        {
             this.value = value;
             type = TYPE_CONSTANT;
         }
 
         /// <summary>
-        /// Returns the String operator of this Node 
+        ///   Returns the String operator of this Node
         /// </summary>
-        public String getOperator() {
+        public String getOperator()
+        {
             return (_operator);
         }
 
         /// <summary>
-        /// Returns the value of this Node 
+        ///   Returns the value of this Node
         /// </summary>
-        public double getValue() {
+        public double getValue()
+        {
             return (value);
         }
 
         /// <summary>
-        /// Returns the String variable of this Node 
+        ///   Returns the String variable of this Node
         /// </summary>
-        public String getVariable() {
+        public String getVariable()
+        {
             return (variable);
         }
 
         /// <summary>
-        /// Returns the number of arguments this Node has
+        ///   Returns the number of arguments this Node has
         /// </summary>
-        public int arguments() {
+        public int arguments()
+        {
             return (args);
         }
 
-        /// <summary>
-        /// Returns the type of this Node
-        /// </summary>
-        /// <remarks>
-        /// The type can be:
-        ///	Node.TYPE_VARIABLE
-        ///	Node.TYPE_CONSTANT
-        ///	Node.TYPE_EXPRESSION
-        /// </remarks>
-        public int getType() {
+        ///<summary>
+        ///  Returns the type of this Node
+        ///</summary>
+        ///<remarks>
+        ///  The type can be:
+        ///  Node.TYPE_VARIABLE
+        ///  Node.TYPE_CONSTANT
+        ///  Node.TYPE_EXPRESSION
+        ///</remarks>
+        public int getType()
+        {
             return (type);
         }
 
         /// <summary>
-        /// Returns the first argument of this Node
+        ///   Returns the first argument of this Node
         /// </summary>
-        public Node arg1() {
+        public Node arg1()
+        {
             return (_arg1);
         }
 
         /// <summary>
-        /// Returns the second argument of this Node
+        ///   Returns the second argument of this Node
         /// </summary>
-        public Node arg2() {
+        public Node arg2()
+        {
             return (_arg2);
         }
-    } // End class Node
+    }
+
+    // End class Node
 
     /// <summary>
-    /// Class Operator, represents an Operator by holding information about it's symbol
-    /// the number of arguments it takes and the operator precedence.
+    ///   Class Operator, represents an Operator by holding information about it's symbol
+    ///   the number of arguments it takes and the operator precedence.
     /// </summary>
-    public class Operator {
-        private String op = ""; // the string operator 
-        private int args = 0; // the number of arguments this operator takes
-        private int prec = Int32.MaxValue; // the precedence this operator has
+    public class Operator
+    {
+        private readonly int args; // the number of arguments this operator takes
+        private readonly String op = ""; // the string operator 
+        private readonly int prec = Int32.MaxValue; // the precedence this operator has
 
         /// <summary>
-        /// Creates an Operator with the specified String name, arguments and precedence
+        ///   Creates an Operator with the specified String name, arguments and precedence
         /// </summary>
-        public Operator(String _operator, int arguments, int precedence) {
+        public Operator(String _operator, int arguments, int precedence)
+        {
             op = _operator;
             args = arguments;
             prec = precedence;
         }
 
         /// <summary>
-        /// Returns the precedence for this Operator.
+        ///   Returns the precedence for this Operator.
         /// </summary>
-        public int precedence() {
+        public int precedence()
+        {
             return (prec);
         }
 
         /// <summary>
-        /// Returns the String name of this Operator.
+        ///   Returns the String name of this Operator.
         /// </summary>
-        public String getOperator() {
+        public String getOperator()
+        {
             return (op);
         }
 
         /// <summary>
-        /// Returns the number of arguments this Operator can take.
+        ///   Returns the number of arguments this Operator can take.
         /// </summary>
-        public int arguments() {
+        public int arguments()
+        {
             return (args);
         }
-    } // End class Operator
+    }
+
+    // End class Operator
 }

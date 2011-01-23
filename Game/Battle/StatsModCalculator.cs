@@ -1,88 +1,124 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
 
-namespace Game.Battle {
-    public class ModParameter {
-        List<int> list = new List<int>();
+#endregion
 
-        public ModParameter(int defaultValue) {
+namespace Game.Battle
+{
+    public class ModParameter
+    {
+        private readonly List<int> list = new List<int>();
+
+        public ModParameter(int defaultValue)
+        {
             list.Add(defaultValue);
         }
 
-        public void AddValue(int value) {
+        public int Max
+        {
+            get
+            {
+                return list.Max();
+            }
+        }
+
+        public int Avg
+        {
+            get
+            {
+                return (int)list.Average();
+            }
+        }
+
+        public int Min
+        {
+            get
+            {
+                return list.Min();
+            }
+        }
+
+        public int Sum
+        {
+            get
+            {
+                return list.Sum();
+            }
+        }
+
+        public int Product
+        {
+            get
+            {
+                return list.AsQueryable().Aggregate((total, value) => total*value);
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return list.Count;
+            }
+        }
+
+        public void AddValue(int value)
+        {
             list.Add(value);
         }
-
-        public int Max { 
-            get { return list.Max(); }
-        }
-
-        public int Avg {
-            get { return (int)list.Average(); }
-        }
-
-        public int Min {
-            get { return list.Min(); }
-        }
-        
-        public int Sum {
-            get { return list.Sum(); }
-        }
-        
-        public int Product {
-            get { return list.AsQueryable().Aggregate((total, value) => total * value); }
-        }
-
-        public int Count {
-            get { return list.Count; }
-        }
     }
-    public abstract class ModCalculator<T> {
+
+    public abstract class ModCalculator<T>
+    {
         protected Dictionary<string, ModParameter> parameters = new Dictionary<string, ModParameter>();
 
-        protected ModCalculator() {
+        protected ModCalculator()
+        {
             SetParameters();
         }
 
-        public void AddMod(string parameter, int value) {
+        public void AddMod(string parameter, int value)
+        {
             parameters[parameter].AddValue(value);
         }
-        
+
         public abstract T GetResult();
-        
+
         protected abstract void SetParameters();
     }
 
-    public class IntStatsModCalculator : ModCalculator<int> {
-        int baseValue;
-        public IntStatsModCalculator(int baseValue) {
+    public class IntStatsModCalculator : ModCalculator<int>
+    {
+        private readonly int baseValue;
+
+        public IntStatsModCalculator(int baseValue)
+        {
             this.baseValue = baseValue;
         }
 
-        public override int GetResult() {
-            return (int)((baseValue + parameters["RAW_BONUS"].Sum) * parameters["PERCENT_BONUS"].Product / Math.Pow(100, parameters["PERCENT_BONUS"].Count));
+        public override int GetResult()
+        {
+            return (int)((baseValue + parameters["RAW_BONUS"].Sum)*parameters["PERCENT_BONUS"].Product/Math.Pow(100, parameters["PERCENT_BONUS"].Count));
         }
 
-        protected override void SetParameters() {
-            parameters.Add("RAW_BONUS",new ModParameter(0));
+        protected override void SetParameters()
+        {
+            parameters.Add("RAW_BONUS", new ModParameter(0));
             parameters.Add("PERCENT_BONUS", new ModParameter(100));
         }
     }
 
-    public class  BattleStatsModCalculator {
-        BaseBattleStats baseStats;
-        public IntStatsModCalculator MaxHp { get; private set; }
-        public IntStatsModCalculator Atk { get; private set; }
-        public IntStatsModCalculator Splash { get; private set; }
-        public IntStatsModCalculator Def { get; private set; }
-        public IntStatsModCalculator Rng { get; private set; }
-        public IntStatsModCalculator Stl { get; private set; }
-        public IntStatsModCalculator Spd { get; private set; }
+    public class BattleStatsModCalculator
+    {
+        private readonly BaseBattleStats baseStats;
 
-        public BattleStatsModCalculator(BaseBattleStats baseStats) {
+        public BattleStatsModCalculator(BaseBattleStats baseStats)
+        {
             MaxHp = new IntStatsModCalculator(baseStats.MaxHp);
             Atk = new IntStatsModCalculator(baseStats.Atk);
             Splash = new IntStatsModCalculator(baseStats.Splash);
@@ -93,7 +129,16 @@ namespace Game.Battle {
             this.baseStats = baseStats;
         }
 
-        public void AddAtkParameter(string paramter, int value) {
+        public IntStatsModCalculator MaxHp { get; private set; }
+        public IntStatsModCalculator Atk { get; private set; }
+        public IntStatsModCalculator Splash { get; private set; }
+        public IntStatsModCalculator Def { get; private set; }
+        public IntStatsModCalculator Rng { get; private set; }
+        public IntStatsModCalculator Stl { get; private set; }
+        public IntStatsModCalculator Spd { get; private set; }
+
+        public void AddAtkParameter(string paramter, int value)
+        {
             Atk.AddMod(paramter, value);
         }
 
@@ -107,35 +152,39 @@ namespace Game.Battle {
             Splash.AddMod(paramter, value);
         }
 
-        public void AddRngParameter(string paramter, int value) {
+        public void AddRngParameter(string paramter, int value)
+        {
             Rng.AddMod(paramter, value);
         }
-        
-        public void AddStlParameter(string paramter, int value) {
+
+        public void AddStlParameter(string paramter, int value)
+        {
             Stl.AddMod(paramter, value);
         }
-        
-        public void AddSpdParameter(string paramter, int value) {
+
+        public void AddSpdParameter(string paramter, int value)
+        {
             Spd.AddMod(paramter, value);
         }
-        
-        public void AddMaxHpParameter(string paramter, int value) {
+
+        public void AddMaxHpParameter(string paramter, int value)
+        {
             MaxHp.AddMod(paramter, value);
         }
 
-        public BattleStats GetStats() {
-            BattleStats stats= new BattleStats(baseStats)
-                                   {
-                                       Atk = (ushort) Atk.GetResult(),
-                                       Splash = (byte) Splash.GetResult(),
-                                       Def = (ushort) Def.GetResult(),
-                                       Rng = (byte) Rng.GetResult(),
-                                       Spd = (byte) Spd.GetResult(),
-                                       Stl = (byte) Stl.GetResult(),
-                                       MaxHp = (ushort) MaxHp.GetResult()
-                                   };
+        public BattleStats GetStats()
+        {
+            var stats = new BattleStats(baseStats)
+                        {
+                                Atk = (ushort)Atk.GetResult(),
+                                Splash = (byte)Splash.GetResult(),
+                                Def = (ushort)Def.GetResult(),
+                                Rng = (byte)Rng.GetResult(),
+                                Spd = (byte)Spd.GetResult(),
+                                Stl = (byte)Stl.GetResult(),
+                                MaxHp = (ushort)MaxHp.GetResult()
+                        };
             return stats;
         }
     }
-   
 }

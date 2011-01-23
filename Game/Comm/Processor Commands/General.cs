@@ -1,48 +1,52 @@
 #region
 
 using System;
-using Game.Data;
-using Game.Database;
-using Game.Util;
+using Game.Setup;
 
 #endregion
 
-namespace Game.Comm {
-    public partial class Processor {
+namespace Game.Comm
+{
+    public partial class Processor
+    {
+        public CmdLineProcessor CmdLineProcessor = new CmdLineProcessor();
 
-        public CmdLineProcessor cmdLineProcessor = new CmdLineProcessor();
-
-        public void CmdLineCommand(Session session, Packet packet) {
-
-            if (!session.Player.Admin) {
-                ReplyError(session, packet, Setup.Error.UNEXPECTED);
+        public void CmdLineCommand(Session session, Packet packet)
+        {
+            if (!session.Player.Admin)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            Packet reply = new Packet(packet);
+            var reply = new Packet(packet);
 
             string cmd;
 
-            try {                
+            try
+            {
                 cmd = packet.GetString();
 
-                if (string.IsNullOrEmpty(cmd)) throw new Exception();
+                if (string.IsNullOrEmpty(cmd))
+                    throw new Exception();
             }
-            catch (Exception) {
-                ReplyError(session, packet, Setup.Error.UNEXPECTED);
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            string[] cmdParts = cmd.Split(new[] { ' ' }, 2);
+            string[] cmdParts = cmd.Split(new[] {' '}, 2);
 
-            if (cmdParts.Length < 1) {
-                ReplyError(session, packet, Setup.Error.UNEXPECTED);
+            if (cmdParts.Length < 1)
+            {
+                ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
             string parms = cmdParts.Length == 2 ? cmdParts[1] : string.Empty;
 
-            string output = cmdLineProcessor.Execute(cmdParts[0].Trim(), parms);
+            string output = CmdLineProcessor.Execute(cmdParts[0].Trim(), parms);
 
             reply.AddString(output);
             session.Write(reply);

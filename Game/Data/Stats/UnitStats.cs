@@ -1,5 +1,30 @@
-﻿namespace Game.Data.Stats {
-    public class BaseUnitStats {
+﻿namespace Game.Data.Stats
+{
+    public class BaseUnitStats
+    {
+        public BaseUnitStats(string name,
+                             string spriteClass,
+                             ushort type,
+                             byte lvl,
+                             Resource cost,
+                             Resource upgradeCost,
+                             BaseBattleStats battleStats,
+                             int buildTime,
+                             int upgradeTime,
+                             byte upkeep)
+        {
+            Name = name;
+            SpriteClass = spriteClass;
+            Type = type;
+            Lvl = lvl;
+            Cost = cost;
+            UpgradeCost = upgradeCost;
+            Battle = battleStats;
+            BuildTime = buildTime;
+            UpgradeTime = upgradeTime;
+            Upkeep = upkeep;
+        }
+
         public string Name { get; private set; }
 
         public string SpriteClass { get; private set; }
@@ -20,22 +45,12 @@
 
         public byte Upkeep { get; private set; }
 
-        public int UnitHash {
-            get { return Type*100 + Lvl; }
-        }
-
-        public BaseUnitStats(string name, string spriteClass, ushort type, byte lvl, Resource cost, Resource upgradeCost,
-                             BaseBattleStats battleStats, int buildTime, int upgradeTime, byte upkeep) {
-            Name = name;
-            SpriteClass = spriteClass;
-            Type = type;
-            Lvl = lvl;
-            Cost = cost;
-            UpgradeCost = upgradeCost;
-            Battle = battleStats;
-            BuildTime = buildTime;
-            UpgradeTime = upgradeTime;
-            Upkeep = upkeep;
+        public int UnitHash
+        {
+            get
+            {
+                return Type*100 + Lvl;
+            }
         }
     }
 }

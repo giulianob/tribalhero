@@ -11,11 +11,10 @@ using Game.Util;
 
 namespace Game.Setup
 {
-
     public class ActionRecord
     {
-        public byte max;
-        public List<ActionRequirement> list;
+        public List<ActionRequirement> List { get; set; }
+        public byte Max { get; set; }
     }
 
     public class ActionFactory
@@ -29,18 +28,14 @@ namespace Game.Setup
 
             dict = new Dictionary<int, ActionRecord>();
 
-            using (
-                CSVReader reader =
-                    new CSVReader(
-                        new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                )
+            using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
                 byte action_index;
                 ActionRecord record;
                 ActionRequirement actionReq;
-    
-                Dictionary<string, int> col = new Dictionary<string, int>();
+
+                var col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
                     col.Add(reader.Columns[i], i);
 
@@ -52,44 +47,43 @@ namespace Game.Setup
 
                     if (!dict.TryGetValue(index, out record))
                     {
-                        record = new ActionRecord { list = new List<ActionRequirement>() };
+                        record = new ActionRecord {List = new List<ActionRequirement>()};
                         dict[index] = record;
                     }
 
                     if ((action_index = byte.Parse(toks[col["Index"]])) == 0)
-                        record.max = byte.Parse(toks[col["Max"]]);
+                        record.Max = byte.Parse(toks[col["Max"]]);
                     else
                     {
                         // Create action and set basic options
-                        actionReq = new ActionRequirement { index = action_index, type = (ActionType)Enum.Parse(typeof(ActionType), toks[col["Action"]], true), max = byte.Parse(toks[col["Max"]]) };
+                        actionReq = new ActionRequirement
+                                    {
+                                            Index = action_index,
+                                            Type = (ActionType)Enum.Parse(typeof(ActionType), toks[col["Action"]].ToCamelCase(), true),
+                                            Max = byte.Parse(toks[col["Max"]])
+                                    };
 
                         // Set action options
                         if (toks[col["Option"]].Length > 0)
                         {
-                            foreach (string opt in toks[col["Option"]].Split('|'))
-                                actionReq.option |= (ActionOption)Enum.Parse(typeof(ActionOption), opt, true);
+                            foreach (var opt in toks[col["Option"]].Split('|'))
+                                actionReq.Option |= (ActionOption)Enum.Parse(typeof(ActionOption), opt, true);
                         }
 
                         // Set action params
-                        actionReq.parms = new string[5];
+                        actionReq.Parms = new string[5];
                         for (int i = 5; i < 10; ++i)
-                        {
-                            actionReq.parms[i - 5] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
-                        }
+                            actionReq.Parms[i - 5] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
 
                         // Set effect requirements
-                        if (!uint.TryParse(toks[col["EffectReq"]], out actionReq.effectReqId))
-                            actionReq.effectReqId = 0;
+                        uint effectReqId;
+                        actionReq.EffectReqId = uint.TryParse(toks[col["EffectReq"]], out effectReqId) ? effectReqId : 0;
                         if (toks[col["EffectReqInherit"]].Length > 0)
-                        {
-                            actionReq.effectReqInherit = (EffectInheritance)Enum.Parse(typeof(EffectInheritance), toks[col["EffectReqInherit"]], true);
-                        }
+                            actionReq.EffectReqInherit = (EffectInheritance)Enum.Parse(typeof(EffectInheritance), toks[col["EffectReqInherit"]], true);
                         else
-                        {
-                            actionReq.effectReqInherit = EffectInheritance.ALL;
-                        }
+                            actionReq.EffectReqInherit = EffectInheritance.All;
 
-                        record.list.Add(actionReq);
+                        record.List.Add(actionReq);
                     }
                 }
             }

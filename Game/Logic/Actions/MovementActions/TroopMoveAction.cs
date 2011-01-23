@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -15,12 +16,14 @@ namespace Game.Logic.Actions
 {
     class TroopMoveAction : ScheduledPassiveAction
     {
-        private uint cityId;
-        private uint troopObjectId;
+        private readonly uint cityId;
+        private readonly Boolean isReturningHome;
+        private readonly uint troopObjectId;
+        private readonly uint x;
+        private readonly uint y;
         private int distanceRemaining;
-        private uint x, nextX;
-        private uint y, nextY;
-        private Boolean isReturningHome;
+        private uint nextX;
+        private uint nextY;
 
         public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome)
         {
@@ -31,9 +34,8 @@ namespace Game.Logic.Actions
             this.isReturningHome = isReturningHome;
         }
 
-        public TroopMoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible,
-                               Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, isVisible)
+        public TroopMoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible)
         {
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_id"]);
@@ -45,57 +47,75 @@ namespace Game.Logic.Actions
             isReturningHome = Boolean.Parse(properties["returning_home"]);
         }
 
-        public override Error Validate(string[] parms)
+        public override ActionType Type
         {
-            return Error.OK;
+            get
+            {
+                return ActionType.TroopMove;
+            }
         }
 
-        private class RecordForeach
+        public override string Properties
         {
-            public int shortestDistance;
-            public uint x;
-            public uint y;
-            public bool isShortestDistanceDiagonal;
+            get
+            {
+                return
+                        XmlSerializer.Serialize(new[]
+                                                {
+                                                        new XmlKvPair("city_id", cityId), new XmlKvPair("troop_id", troopObjectId), new XmlKvPair("x", x),
+                                                        new XmlKvPair("y", y), new XmlKvPair("next_x", nextX), new XmlKvPair("next_y", nextY),
+                                                        new XmlKvPair("distance_remaining", distanceRemaining), new XmlKvPair("returning_home", isReturningHome)
+                                                });
+            }
+        }
+
+        public override Error Validate(string[] parms)
+        {
+            return Error.Ok;
         }
 
         private bool Work(uint ox, uint oy, uint x, uint y, object custom)
         {
-            RecordForeach recordForeach = (RecordForeach)custom;
+            var recordForeach = (RecordForeach)custom;
             int distance = SimpleGameObject.TileDistance(x, y, this.x, this.y);
 
-            if (distance < recordForeach.shortestDistance)
+            if (distance < recordForeach.ShortestDistance)
             {
-                recordForeach.shortestDistance = distance;
-                recordForeach.x = x;
-                recordForeach.y = y;
-                recordForeach.isShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
+                recordForeach.ShortestDistance = distance;
+                recordForeach.X = x;
+                recordForeach.Y = y;
+                recordForeach.IsShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
             }
-            else if (distance == recordForeach.shortestDistance && !recordForeach.isShortestDistanceDiagonal)
+            else if (distance == recordForeach.ShortestDistance && !recordForeach.IsShortestDistanceDiagonal)
             {
-                recordForeach.shortestDistance = distance;
-                recordForeach.x = x;
-                recordForeach.y = y;
-                recordForeach.isShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
+                recordForeach.ShortestDistance = distance;
+                recordForeach.X = x;
+                recordForeach.Y = y;
+                recordForeach.IsShortestDistanceDiagonal = SimpleGameObject.IsDiagonal(x, y, ox, oy);
             }
             return true;
         }
 
-        private bool CalculateNext(TroopObject obj) {
+        private bool CalculateNext(TroopObject obj)
+        {
             int distance = obj.TileDistance(x, y);
             if (distance == 0)
                 return false;
-            RecordForeach recordForeach = new RecordForeach {shortestDistance = int.MaxValue, isShortestDistanceDiagonal = false};
-            TileLocator.foreach_object(obj.X, obj.Y, 1, false, Work, recordForeach);
-            nextX = recordForeach.x;
-            nextY = recordForeach.y;
+            var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
+            TileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
+            nextX = recordForeach.X;
+            nextY = recordForeach.Y;
 
-            int mod = Math.Max(50, obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int) effect.value[0]));
+            int mod = Math.Max(50,
+                               obj.City.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All).Aggregate(100,
+                                                                                                                           (current, effect) =>
+                                                                                                                           current - (int)effect.Value[0]));
             int moveTime = Formula.MoveTime(obj.Stats.Speed);
 
-            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime * Config.seconds_per_unit * mod / 100));
+            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100));
 
             distanceRemaining = obj.TileDistance(x, y);
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime * Config.seconds_per_unit * mod / 100) * distanceRemaining);
+            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, moveTime*Config.seconds_per_unit*mod/100)*distanceRemaining);
             return true;
         }
 
@@ -105,21 +125,24 @@ namespace Game.Logic.Actions
             TroopObject troopObj;
 
             if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
-                return Error.OBJECT_NOT_FOUND;
+                return Error.ObjectNotFound;
 
-            int mod = Math.Max(50, city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.ALL).Aggregate(100, (current, effect) => current - (int)effect.value[0]));
+            int mod = Math.Max(50,
+                               city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All).Aggregate(100,
+                                                                                                                       (current, effect) =>
+                                                                                                                       current - (int)effect.Value[0]));
 
             distanceRemaining = troopObj.TileDistance(x, y);
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * mod / 100) * distanceRemaining);
+            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed)*Config.seconds_per_unit*mod/100)*distanceRemaining);
             beginTime = DateTime.UtcNow;
 
             troopObj.Stub.BeginUpdate();
-            troopObj.Stub.State = !isReturningHome ? TroopState.MOVING : TroopState.RETURNING_HOME;
+            troopObj.Stub.State = !isReturningHome ? TroopState.Moving : TroopState.ReturningHome;
 
             if (!CalculateNext(troopObj))
             {
-                troopObj.Stub.State = TroopState.IDLE;
-                StateChange(ActionState.COMPLETED);
+                troopObj.Stub.State = TroopState.Idle;
+                StateChange(ActionState.Completed);
                 troopObj.Stub.EndUpdate();
                 return 0;
             }
@@ -131,7 +154,7 @@ namespace Game.Logic.Actions
             troopObj.State = GameObjectState.MovingState(x, y);
             troopObj.EndUpdate();
 
-            return Error.OK;
+            return Error.Ok;
         }
 
         public override void UserCancelled()
@@ -140,15 +163,8 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            StateChange(ActionState.FAILED);
+            StateChange(ActionState.Failed);
         }
-
-        public override ActionType Type
-        {
-            get { return ActionType.TROOP_MOVE; }
-        }
-
-        #region ISchedule Members
 
         public override void Callback(object custom)
         {
@@ -171,37 +187,28 @@ namespace Game.Logic.Actions
                 if (!CalculateNext(troopObj))
                 {
                     troopObj.Stub.BeginUpdate();
-                    troopObj.Stub.State = TroopState.IDLE;
+                    troopObj.Stub.State = TroopState.Idle;
                     troopObj.Stub.EndUpdate();
 
                     troopObj.BeginUpdate();
                     troopObj.State = GameObjectState.NormalState();
                     troopObj.EndUpdate();
-                    StateChange(ActionState.COMPLETED);
+                    StateChange(ActionState.Completed);
                     return;
                 }
 
-                StateChange(ActionState.FIRED);
+                StateChange(ActionState.Fired);
             }
         }
 
-        #endregion
+        #region Nested type: RecordForeach
 
-        #region IPersistable Members
-
-        public override string Properties
+        private class RecordForeach
         {
-            get
-            {
-                return
-                    XMLSerializer.Serialize(new[] {
-                                                                new XMLKVPair("city_id", cityId), new XMLKVPair("troop_id", troopObjectId),
-                                                                new XMLKVPair("x", x), new XMLKVPair("y", y),
-                                                                new XMLKVPair("next_x", nextX), new XMLKVPair("next_y", nextY),
-                                                                new XMLKVPair("distance_remaining", distanceRemaining),
-                                                                new XMLKVPair("returning_home", isReturningHome)
-                                                            });
-            }
+            public bool IsShortestDistanceDiagonal { get; set; }
+            public int ShortestDistance { get; set; }
+            public uint X { get; set; }
+            public uint Y { get; set; }
         }
 
         #endregion

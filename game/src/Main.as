@@ -202,10 +202,8 @@
 				Global.map = map = new Map();
 				miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
 
-				if (Constants.loginKey)
-				session.login(Constants.loginKey);
-				else
-				session.login(Constants.username, password);
+				if (Constants.loginKey) session.login(Constants.loginKey);
+				else session.login(Constants.username, password);
 			}
 
 			password = '';

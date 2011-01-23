@@ -81,6 +81,9 @@
 
 		// Command line
 		private var cmdLine: CmdLineViewer;
+		
+		// Holds currently pressed keys
+		private var pressedKeys:Object = {};
 
 		public function GameContainer()
 		{							
@@ -113,6 +116,7 @@
 			// Add key down listener to stage
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+				stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
 			});
 
 			// Hide game container for now
@@ -289,6 +293,8 @@
 				miniMap.setScreenRectHidden(true);
 				map.disableMapQueries(true);
 				map.scrollRate = 4;
+				minimapTools.btnZoomIn.visible = false;
+				minimapTools.btnZoomOut.visible = false;
 			}
 			else {
 				screenMessage.setVisible(true);
@@ -299,6 +305,8 @@
 				miniMap.setScreenRectHidden(false);
 				map.disableMapQueries(false);
 				map.scrollRate = 1 * camera.getZoomFactorOverOne();
+				minimapTools.btnZoomIn.visible = true;
+				minimapTools.btnZoomOut.visible = true;
 			}
 
 			minimapZoomed = zoom;
@@ -309,18 +317,32 @@
 			alignMinimapTools();
 		}
 
+		public function eventKeyUp(event: KeyboardEvent):void
+		{
+			// clear key press
+			delete pressedKeys[event.keyCode];
+		}		
+		
 		public function eventKeyDown(e: KeyboardEvent):void
 		{
+			// Key down handler
+			
+			// end key down handler
+			
+			// Key Press Handler
+			if(pressedKeys[e.keyCode]) return;
+			pressedKeys[e.keyCode] = 1;
+			
 			if (e.charCode == Keyboard.ESCAPE)
 			{
-				if (map != null) {
-					map.selectObject(null);
-				}
+				if (map != null) 	map.selectObject(null);				
 
-				if (miniMap != null) {
-					zoomIntoMinimap(false);
-				}
+				if (miniMap != null) zoomIntoMinimap(false);				
 			}
+			
+			if (e.charCode == 61 || e.charCode == 43 || e.charCode == Keyboard.NUMPAD_ADD) onZoomIn(e);				
+			
+			if (e.charCode == 45 || e.charCode == 95 || e.charCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void

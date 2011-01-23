@@ -67,8 +67,8 @@ package src
 		public static var screenH:int = origScreenH;
 
 		/* MINI MAP CONSTANTS */
-		public static const miniMapTileW: int = 6;
-		public static const miniMapTileH: int = 3;
+		public static const miniMapTileW: int = 4;
+		public static const miniMapTileH: int = 2;
 
 		public static const cityRegionW: int = 100 * miniMapTileW;
 		public static const cityRegionH: int = 100 * miniMapTileH;

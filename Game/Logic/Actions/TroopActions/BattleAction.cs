@@ -28,7 +28,7 @@ namespace Game.Logic.Actions
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.UnitRemoved += Battle_UnitRemoved;
+            city.Battle.UnitRemoved += BattleUnitRemoved;
         }
 
         public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, IDictionary<string, string> properties)
@@ -42,7 +42,7 @@ namespace Game.Logic.Actions
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
-            city.Battle.UnitRemoved += Battle_UnitRemoved;
+            city.Battle.UnitRemoved += BattleUnitRemoved;
         }
 
 
@@ -57,11 +57,11 @@ namespace Game.Logic.Actions
 
         public override string Properties
         {
-            get { return XMLSerializer.Serialize(new[] {new XMLKVPair("city_id", cityId)}); }
-                                                        new XMLKVPair("destroyed_hp", destroyedHp)}); 
-			}      
-		}
-	
+            get
+            {
+                return XmlSerializer.Serialize(new[] { new XmlKvPair("city_id", cityId), new XmlKvPair("destroyed_hp", destroyedHp) });
+            }
+        }	
 
         public override void Callback(object custom)
         {
@@ -82,7 +82,7 @@ namespace Game.Logic.Actions
                 if (!city.Battle.ExecuteTurn())
                 {
                     city.Battle.ActionAttacked -= BattleActionAttacked;
-                    city.Battle.UnitRemoved -= Battle_UnitRemoved;
+                    city.Battle.UnitRemoved -= BattleUnitRemoved;
                     Global.DbManager.Delete(city.Battle);
                     city.Battle = null;
 
@@ -193,7 +193,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void Battle_UnitRemoved(CombatObject obj) {
+        private void BattleUnitRemoved(CombatObject obj) {
             CombatStructure cs = obj as CombatStructure;
             if (cs == null)
                 return;

@@ -32,8 +32,8 @@ namespace Game.Logic.Procedures
             city.DefaultTroop.EndUpdate();
         }
 
-        internal static void SenseOfUrgency(City city, uint maxHP ) {
-            ushort restore = (ushort)(maxHP * city.Technologies.GetEffects(EffectCode.CountEffect, EffectInheritance.ALL).Sum(x => (int)x.value[0] == 21103 ? (int)x.value[1] : 0) / 100);
+        internal static void SenseOfUrgency(City city, uint maxHp) {
+            ushort restore = (ushort)(maxHp * city.Technologies.GetEffects(EffectCode.CountEffect, EffectInheritance.All).Sum(x => (int)x.Value[0] == 21103 ? (int)x.Value[1] : 0) / 100);
             foreach (Structure structure in city) {
                 structure.BeginUpdate();
                 structure.Stats.Hp += restore;

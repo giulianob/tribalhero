@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
                                                         new XmlKvPair("city_id", cityId), new XmlKvPair("troop_id", troopObjectId), new XmlKvPair("x", x),
                                                         new XmlKvPair("y", y), new XmlKvPair("next_x", nextX), new XmlKvPair("next_y", nextY),
                                                         new XmlKvPair("distance_remaining", distanceRemaining), new XmlKvPair("returning_home", isReturningHome),
-                                                        new XMLKVPair("speed_mod", speedMod)
+                                                        new XmlKvPair("speed_mod", speedMod)
                                                 });
             }
         }

@@ -3,10 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using Game.Data;
 using Game.Logic;
 using Game.Util;
-
+using System.Linq;
 #endregion
 
 namespace Game.Setup
@@ -16,6 +17,7 @@ namespace Game.Setup
     {
         public byte max;
         public List<ActionRequirement> list;
+
     }
 
     public class ActionFactory
@@ -48,11 +50,25 @@ namespace Game.Setup
                 {
                     if (toks[0].Length <= 0)
                         continue;
-                    int index = int.Parse(toks[col["Type"]]);
+                    int lvl = int.Parse(toks[col["Lvl"]]);
+                    int type = int.Parse(toks[col["Type"]]);
+                    int index = type * 100 + lvl;
+                   
+                    if (dict.Any(x => x.Key > index && x.Key < type * 100 + 99)) {
+                        throw new Exception("Action out of sequence, newer lvl is found!");
+                    }
 
-                    if (!dict.TryGetValue(index, out record))
-                    {
+                    int lastLvl = dict.Keys.LastOrDefault(x => x <= index && x > type * 100);
+                    
+                    if (lastLvl == 0) {
                         record = new ActionRecord { list = new List<ActionRequirement>() };
+                        dict[index] = record;
+                    } else if (lastLvl == index) {
+                        record = dict[index];
+                    } else {
+                        ActionRecord lastActionRecord = dict[lastLvl];
+                        record = new ActionRecord{ max=lastActionRecord.max, list = new List<ActionRequirement>()};
+                        record.list.AddRange(lastActionRecord.list);
                         dict[index] = record;
                     }
 
@@ -88,11 +104,21 @@ namespace Game.Setup
                         {
                             actionReq.effectReqInherit = EffectInheritance.ALL;
                         }
-
+                        if (record.list.Any(x => x.index == action_index))
+                        {
+                            throw new Exception("Index already exists!");
+                        }
                         record.list.Add(actionReq);
                     }
                 }
             }
+        }
+        public static ActionRecord GetActionRequirementRecordBestFit(int type, byte lvl) {
+            if (dict == null)
+                return null;
+
+            ActionRecord record;
+            return dict.TryGetValue(lvl, out record) ? record : null;
         }
 
         public static ActionRecord GetActionRequirementRecord(int workerId)

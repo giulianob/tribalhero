@@ -42,10 +42,10 @@
 		private var city: City;
 
 		public function CityEventDialog(city: City) {
-			title = "City Events";
-
 			this.city = city;
 
+			title = "Overview - " + city.name;
+			
 			gridLocalActions = new CityActionGridList(city, 530);
 			createUI();
 		}
@@ -128,9 +128,6 @@
 			layout0.setAxis(AsWingConstants.VERTICAL);
 			layout0.setGap(10);
 			setLayout(layout0);
-
-			var cityName: Username = Global.map.usernames.cities.get(city.id);
-			title = cityName.name + " - Overview";
 
 			pnlResources = new JPanel(new GridLayout(4, 2, 20, 10));
 

@@ -51,9 +51,9 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 				if (forestCampBuildAction == null) {
 					var laborDialog: ForestLaborDialog = new ForestLaborDialog(Global.gameContainer.selectedCity.id, parentObj as Forest, onSetLabor);
 					laborDialog.show();
-				} else {
-					var cursor: GroundForestCursor = new GroundForestCursor(Global.gameContainer.selectedCity.id, function(forest: Forest) : void {
-						var laborDialog: ForestLaborDialog = new ForestLaborDialog(Global.gameContainer.selectedCity.id, forest, onSetLabor);
+				} else {									
+					var cursor: GroundForestCursor = new GroundForestCursor(parentObj.cityId, function(forest: Forest) : void {
+						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.cityId, forest, onSetLabor);
 						laborDialog.show();
 					});
 
@@ -66,8 +66,8 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 		private function onSetLabor(dlg: ForestLaborDialog) : void {
 			// This is kind of a hack since we need to know the campType.
 			var campTypes: Array = ObjectFactory.getList("ForestCamp");
-
-			Global.mapComm.Object.createForestCamp(dlg.getForest().objectId , Global.gameContainer.selectedCity.id, campTypes[0], dlg.getCount());
+			
+			Global.mapComm.Object.createForestCamp(dlg.getForest().objectId , dlg.city.id, campTypes[0], dlg.getCount());
 
 			dlg.getFrame().dispose();
 		}

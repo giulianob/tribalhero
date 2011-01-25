@@ -79,11 +79,8 @@ package src.UI.Sidebars.ObjectInfo {
 			var usernameLabel: JLabel = custom as JLabel;
 
 			usernameLabel.setText(username.name);
-
-			if (username.id != Global.gameContainer.selectedCity.id) {
-				usernameLabel.setIcon(new GoToCityIcon(username.id));
-				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
-			}
+			usernameLabel.setIcon(new GoToCityIcon(username.id));
+			usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);			
 
 			if (getFrame()) getFrame().pack();
 		}

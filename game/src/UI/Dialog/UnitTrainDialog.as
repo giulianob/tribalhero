@@ -49,7 +49,7 @@ package src.UI.Dialog {
 			txtTitle.setText("How many units would you like to train?");
 
 			sldAmount.setMinimum(1);
-			sldAmount.setValues(1, 0, 1, Global.gameContainer.selectedCity.resources.Div(Formula.unitTrainCost(city, unitPrototype)));
+			sldAmount.setValues(1, 0, 1, city.resources.Div(Formula.unitTrainCost(city, unitPrototype)));
 
 			sldAmount.addStateListener(updateResources);
 			sldAmount.addStateListener(updateTime);
@@ -71,7 +71,7 @@ package src.UI.Dialog {
 			var totalUpkeep: int = (unitPrototype.upkeep * sldAmount.getValue());
 			lblUpkeep.setText("-" + totalUpkeep + " per hour");
 
-			var cityResources: LazyResources = Global.gameContainer.selectedCity.resources;
+			var cityResources: LazyResources = city.resources;
 			pnlUpkeepMsg.setVisible((cityResources.crop.getUpkeep() + totalUpkeep) > cityResources.crop.getRate());
 
 			var cost: Resources = Formula.unitTrainCost(city, unitPrototype);

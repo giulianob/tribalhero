@@ -46,6 +46,8 @@
 			this.city = city;
 
 			createUI();
+			
+			title = "Unit Movement - " + city.name;
 
 			btnAttack.addActionListener(onClickAttack);
 			btnDefend.addActionListener(onClickReinforce);
@@ -192,7 +194,11 @@
 			setLayout(new EmptyLayout());
 			setBorder(new EmptyBorder());
 
-			setSize(new IntDimension(Math.min(976, Constants.screenW), Math.min(640, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
+			var calcWidth: int = Math.min(976, Constants.screenW);
+			var calcHeight: int = Math.min(640, Constants.screenH - GameJImagePanelBackground.getFrameHeight());
+			var calcAspectWidth: int = Math.min(calcHeight * 1.525, calcWidth);
+			var calcAspectHeight: int = Math.min(calcHeight, calcWidth * 0.655);
+			setSize(new IntDimension(calcAspectWidth, calcAspectHeight));
 
 			pnlContainer = new JPanel(new EmptyLayout());
 			pnlContainer.setSize(new IntDimension(976, 640));

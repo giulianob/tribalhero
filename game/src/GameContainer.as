@@ -367,7 +367,7 @@
 
 			// Populate city list
 			for each (var city: City in map.cities.each()) {
-				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return city.name; } } );
+				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
 			}
 
 			// Set a default city selection
@@ -600,6 +600,8 @@
 			selectedCity = lstCities.getSelectedItem().city;
 
 			displayResources();
+			
+			onGoToCity(e);
 		}
 
 		private function onMinimapNavigateToPoint(e: MouseEvent) : void {

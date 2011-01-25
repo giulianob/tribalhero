@@ -25,7 +25,7 @@ package src.UI.Dialog{
 		private var btnOk:JButton;
 
 		private var forest: Forest;
-		private var city: City;
+		public var city: City;
 
 		public function ForestLaborDialog(cityId: int, forest: Forest, onAccept: Function) {
 			this.forest = forest;

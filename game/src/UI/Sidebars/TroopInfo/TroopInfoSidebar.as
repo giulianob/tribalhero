@@ -71,10 +71,8 @@
 
 			usernameLabel.setText(username.name + troopObj.getNiceStubId(true));
 
-			if (username.id != Global.gameContainer.selectedCity.id) {
-				usernameLabel.setIcon(new GoToCityIcon(username.id));
-				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
-			}
+			usernameLabel.setIcon(new GoToCityIcon(username.id));
+			usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
 			
 			if (getFrame()) getFrame().pack();
 		}

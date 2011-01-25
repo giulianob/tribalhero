@@ -5,7 +5,7 @@
 :: http://livedocs.adobe.com/flex/3/html/help.html?content=CommandLineTools_5.html#1035959
 
 :: Path to Flex SDK binaries
-set PATH=%PATH%;C:\flex_sdk\3.3.0.4582\bin
+set PATH=%PATH%;C:\Program Files (x86)\FlashDevelop\Tools\flexsdk\bin
 
 :: Signature (see 'CreateCertificate.bat')
 set CERTIFICATE=SelfSigned.pfx
@@ -14,11 +14,11 @@ if not exist %CERTIFICATE% goto certificate
 
 :: Output
 if not exist air md air
-set AIR_FILE=air/GameAdobeAir.air
+set AIR_FILE=../bin/GameAdobeAir.air
 
 :: Input
 set APP_XML=application.xml 
-set FILE_OR_DIR=-C bin .
+set FILE_OR_DIR=-C ../bin .
 
 echo Signing AIR setup using certificate %CERTIFICATE%.
 call adt -package %SIGNING_OPTIONS% %AIR_FILE% %APP_XML% %FILE_OR_DIR%

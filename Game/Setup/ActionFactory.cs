@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
 using Game.Data;
 using Game.Logic;
 using Game.Util;
@@ -14,12 +13,12 @@ namespace Game.Setup
 {
     public class ActionRecord
     {
-        public int id;
+        public int Id { get; set; }
         public List<ActionRequirement> List { get; set; }
         public byte Max { get; set; }
     }
 
-    public class ActionFactory : IEnumerable<ActionRecord> 
+    public class ActionFactory : IEnumerable<ActionRecord>
     {
         private static Dictionary<int, ActionRecord> dict;
 
@@ -28,12 +27,11 @@ namespace Game.Setup
             if (dict != null)
                 return;
 
-            dict = new Dictionary<int, ActionRecord> {{0, new ActionRecord {id = 0, list = new List<ActionRequirement>(), max = 0}}};
+            dict = new Dictionary<int, ActionRecord> {{0, new ActionRecord {Id = 0, List = new List<ActionRequirement>(), Max = 0}}};
 
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
-                byte action_index;
                 ActionRecord record;
                 ActionRequirement actionReq;
 
@@ -47,34 +45,41 @@ namespace Game.Setup
                         continue;
                     int lvl = int.Parse(toks[col["Level"]]);
                     int type = int.Parse(toks[col["Type"]]);
-                    int index = type * 100 + lvl;
-                   
-                    if (dict.Any(x => x.Key > index && x.Key < type * 100 + 99)) {
+                    int index = type*100 + lvl;
+
+                    if (dict.Any(x => x.Key > index && x.Key < type*100 + 99))
+                    {
                         throw new Exception("Action out of sequence, newer lvl is found!");
                     }
 
-                    int lastLvl = dict.Keys.LastOrDefault(x => x <= index && x > type * 100);
-                    
-                    if (lastLvl == 0) {
-                        record = new ActionRecord { list = new List<ActionRequirement>(), id=index };
+                    int lastLvl = dict.Keys.LastOrDefault(x => x <= index && x > type*100);
+
+                    if (lastLvl == 0)
+                    {
+                        record = new ActionRecord {List = new List<ActionRequirement>(), Id = index};
                         dict[index] = record;
-                    } else if (lastLvl == index) {
+                    }
+                    else if (lastLvl == index)
+                    {
                         record = dict[index];
-                    } else {
+                    }
+                    else
+                    {
                         ActionRecord lastActionRecord = dict[lastLvl];
-                        record = new ActionRecord{ max=lastActionRecord.max, list = new List<ActionRequirement>(), id=index };
-                        record.list.AddRange(lastActionRecord.list);
+                        record = new ActionRecord {Max = lastActionRecord.Max, List = new List<ActionRequirement>(), Id = index};
+                        record.List.AddRange(lastActionRecord.List);
                         dict[index] = record;
                     }
 
-                    if ((action_index = byte.Parse(toks[col["Index"]])) == 0)
+                    byte actionIndex;
+                    if ((actionIndex = byte.Parse(toks[col["Index"]])) == 0)
                         record.Max = byte.Parse(toks[col["Max"]]);
                     else
                     {
                         // Create action and set basic options
                         actionReq = new ActionRequirement
                                     {
-                                            Index = action_index,
+                                            Index = actionIndex,
                                             Type = (ActionType)Enum.Parse(typeof(ActionType), toks[col["Action"]].ToCamelCase(), true),
                                             Max = byte.Parse(toks[col["Max"]])
                                     };
@@ -98,9 +103,9 @@ namespace Game.Setup
                             actionReq.EffectReqInherit = (EffectInheritance)Enum.Parse(typeof(EffectInheritance), toks[col["EffectReqInherit"]], true);
                         else
                             actionReq.EffectReqInherit = EffectInheritance.All;
-                        if (record.list.Any(x => x.index == action_index))
+                        if (record.List.Any(x => x.Index == actionIndex))
                         {
-                            record.list.RemoveAll(x => x.index == action_index);
+                            record.List.RemoveAll(x => x.Index == actionIndex);
                         }
                         record.List.Add(actionReq);
                     }
@@ -108,16 +113,16 @@ namespace Game.Setup
             }
         }
 
-        public static ActionRecord GetActionRequirementRecordBestFit(int type, byte lvl) {
+        public static ActionRecord GetActionRequirementRecordBestFit(int type, byte lvl)
+        {
             if (dict == null)
                 return null;
 
-            int index = type * 100 + lvl;
             int lastLvl = dict.Keys.LastOrDefault(x => x <= type * 100 + lvl && x > type * 100);
-                    
-            if (lastLvl == 0) {
-                Global.Logger.InfoFormat("WorkerID not found for [{0}][{1}]",type,lvl);
-            }
+
+            if (lastLvl == 0)
+                Global.Logger.InfoFormat("WorkerID not found for [{0}][{1}]", type, lvl);
+
             return dict[lastLvl];
         }
 

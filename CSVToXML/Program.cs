@@ -20,7 +20,8 @@ namespace CSVToXML {
       
         #region Layout
 
-        private class Layout {
+        private class Layout
+        {
             public string layout;
             public string type;
             public string level;
@@ -158,7 +159,11 @@ namespace CSVToXML {
                         writer.WriteAttributeString("iron", obj[16]);
                         writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
-                        writer.WriteAttributeString("workerid", byte.Parse(obj[2]) == 0 ?"0":ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).id.ToString());
+                        writer.WriteAttributeString("workerid",
+                                                    byte.Parse(obj[2]) == 0
+                                                            ? "0"
+                                                            : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString
+                                                                      ());
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
                         writer.WriteAttributeString("unitclass", obj[22]);
@@ -280,81 +285,81 @@ namespace CSVToXML {
             foreach(ActionRecord record in new ActionFactory())
             {
                     writer.WriteStartElement("Worker");
-                    writer.WriteAttributeString("type", record.id.ToString());
-                    writer.WriteAttributeString("max", record.max.ToString());
-                    foreach(ActionRequirement req in record.list)
+                    writer.WriteAttributeString("type", record.Id.ToString());
+                    writer.WriteAttributeString("max", record.Max.ToString());
+                    foreach(ActionRequirement req in record.List)
                     {
-                        switch (req.type) {
-                            case ActionType.FOREST_CAMP_BUILD:
+                        switch (req.Type) {
+                            case ActionType.ForestCampBuild:
                                 writer.WriteStartElement("ForestCampBuild");
-                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("type", req.Parms[0]);
                                 break;
-                            case ActionType.FOREST_CAMP_REMOVE:
+                            case ActionType.ForestCampRemove:
                                 writer.WriteStartElement("ForestCampRemove");
                                 break;
-                            case ActionType.ROAD_BUILD:
+                            case ActionType.RoadBuild:
                                 writer.WriteStartElement("RoadBuild");
                                 break;
-                            case ActionType.ROAD_DESTROY:
+                            case ActionType.RoadDestroy:
                                 writer.WriteStartElement("RoadDestroy");
                                 break;
-                            case ActionType.STRUCTURE_BUILD:
+                            case ActionType.StructureBuild:
                                 writer.WriteStartElement("StructureBuild");
-                                writer.WriteAttributeString("type", req.parms[0]);
-                                writer.WriteAttributeString("tilerequirement", req.parms[1]);
+                                writer.WriteAttributeString("type", req.Parms[0]);
+                                writer.WriteAttributeString("tilerequirement", req.Parms[1]);
                                 break;
-                            case ActionType.UNIT_TRAIN:
+                            case ActionType.UnitTrain:
                                 writer.WriteStartElement("TrainUnit");
-                                writer.WriteAttributeString("type", req.parms[1]);
+                                writer.WriteAttributeString("type", req.Parms[1]);
                                 break;
-                            case ActionType.STRUCTURE_CHANGE:
+                            case ActionType.StructureChange:
                                 writer.WriteStartElement("StructureChange");
-                                writer.WriteAttributeString("type", req.parms[0]);
-                                writer.WriteAttributeString("level", req.parms[1]);
+                                writer.WriteAttributeString("type", req.Parms[0]);
+                                writer.WriteAttributeString("level", req.Parms[1]);
                                 break;
-                            case ActionType.STRUCTURE_UPGRADE:
+                            case ActionType.StructureUpgrade:
                                 writer.WriteStartElement("StructureUpgrade");
-                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("type", req.Parms[0]);
                                 break;
-                            case ActionType.UNIT_UPGRADE:
+                            case ActionType.UnitUpgrade:
                                 writer.WriteStartElement("UnitUpgrade");
-                                writer.WriteAttributeString("type", req.parms[0]);
-                                writer.WriteAttributeString("maxlevel", req.parms[1]);
+                                writer.WriteAttributeString("type", req.Parms[0]);
+                                writer.WriteAttributeString("maxlevel", req.Parms[1]);
                                 break;
-                            case ActionType.TECHNOLOGY_UPGRADE:
+                            case ActionType.TechnologyUpgrade:
                                 writer.WriteStartElement("TechnologyUpgrade");
-                                writer.WriteAttributeString("type", req.parms[0]);
-                                writer.WriteAttributeString("maxlevel", req.parms[1]);
+                                writer.WriteAttributeString("type", req.Parms[0]);
+                                writer.WriteAttributeString("maxlevel", req.Parms[1]);
                                 break;
-                            case ActionType.RESOURCE_SEND:
+                            case ActionType.ResourceSend:
                                 writer.WriteStartElement("ResourceSend");
                                 break;
-                            case ActionType.RESOURCE_SELL:
+                            case ActionType.ResourceSell:
                                 writer.WriteStartElement("ResourceSell");
                                 break;
-                            case ActionType.RESOURCE_BUY:
+                            case ActionType.ResourceBuy:
                                 writer.WriteStartElement("ResourceBuy");
                                 break;
-                            case ActionType.LABOR_MOVE:
+                            case ActionType.LaborMove:
                                 writer.WriteStartElement("LaborMove");
                                 break;
-                            case ActionType.STRUCTURE_DOWNGRADE:
+                            case ActionType.StructureDowngrade:
                                 writer.WriteStartElement("StructureDowngrade");
                                 break;
                             default:
                                 writer.WriteStartElement("MISSING_WORKER_ACTION");
-                                writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.type));
-                                writer.WriteAttributeString("command", req.parms[0]);
+                                writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.Type));
+                                writer.WriteAttributeString("command", req.Parms[0]);
                                 break;
                         }
 
-                        writer.WriteAttributeString("index", req.index.ToString());
-                        writer.WriteAttributeString("max", req.max.ToString());
-                        writer.WriteAttributeString("option", ((int)req.option).ToString());
+                        writer.WriteAttributeString("index", req.Index.ToString());
+                        writer.WriteAttributeString("max", req.Max.ToString());
+                        writer.WriteAttributeString("option", ((int)req.Option).ToString());
                         
-                        if (req.effectReqId !=0) {
-                            writer.WriteAttributeString("effectreq", req.effectReqId.ToString());
-                            writer.WriteAttributeString("effectreqinherit", req.effectReqInherit.ToString().ToUpper());
+                        if (req.EffectReqId !=0) {
+                            writer.WriteAttributeString("effectreq", req.EffectReqId.ToString());
+                            writer.WriteAttributeString("effectreqinherit", req.EffectReqInherit.ToString().ToUpper());
                         }
                         writer.WriteEndElement();
                     }
@@ -416,12 +421,12 @@ namespace CSVToXML {
                     writer.WriteAttributeString("name", obj[1]);
                     writer.WriteAttributeString("spriteclass", obj[2]);
                     writer.WriteAttributeString("level", obj[3]);
-                    writer.WriteAttributeString("crop", techBase.resources.Crop.ToString());
-                    writer.WriteAttributeString("gold", techBase.resources.Gold.ToString());
-                    writer.WriteAttributeString("iron", techBase.resources.Iron.ToString());
-                    writer.WriteAttributeString("wood", techBase.resources.Wood.ToString());
-                    writer.WriteAttributeString("labor", techBase.resources.Labor.ToString());
-                    writer.WriteAttributeString("time", techBase.time.ToString());
+                    writer.WriteAttributeString("crop", techBase.Resources.Crop.ToString());
+                    writer.WriteAttributeString("gold", techBase.Resources.Gold.ToString());
+                    writer.WriteAttributeString("iron", techBase.Resources.Iron.ToString());
+                    writer.WriteAttributeString("wood", techBase.Resources.Wood.ToString());
+                    writer.WriteAttributeString("labor", techBase.Resources.Labor.ToString());
+                    writer.WriteAttributeString("time", techBase.Time.ToString());
 
                     IEnumerable<TechnologyEffects> effects = FindAllTechEffects(techEffects, Int32.Parse(obj[0]), Int32.Parse(obj[3]));
                     foreach (TechnologyEffects effect in effects) {

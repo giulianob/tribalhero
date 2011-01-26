@@ -60,6 +60,10 @@ namespace Game.Setup
                                                     0,
                                                     0);
 
+                    int workerId = byte.Parse(toks[col["Lvl"]]) == 0
+                                           ? 0
+                                           : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
+
                     var basestats = new StructureBaseStats(toks[col["Name"]],
                                                            toks[col["SpriteClass"]],
                                                            ushort.Parse(toks[col["Type"]]),
@@ -69,7 +73,7 @@ namespace Game.Setup
                                                            stats,
                                                            byte.Parse(toks[col["MaxLabor"]]),
                                                            int.Parse(toks[col["Time"]]),
-                                                                          byte.Parse(toks[col["Lvl"]])==0?0:ActionFactory.GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]),byte.Parse(toks[col["Lvl"]])).id,// int.Parse(toks[col["Worker"]]),
+                                                           workerId,
                                                            (ClassId)Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
 
                     Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
@@ -83,7 +87,7 @@ namespace Game.Setup
             if (dict == null)
                 return null;
             StructureBaseStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
         }
 
         public static int GetTime(ushort type, byte lvl)
@@ -91,7 +95,7 @@ namespace Game.Setup
             if (dict == null)
                 return -1;
             StructureBaseStats tmp;
-            if (dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type * 100 + lvl, out tmp))
                 return tmp.BuildTime;
             return -1;
         }
@@ -102,9 +106,9 @@ namespace Game.Setup
                 return null;
 
             StructureBaseStats baseStats;
-            if (dict.TryGetValue(type*100 + lvl, out baseStats))
+            if (dict.TryGetValue(type * 100 + lvl, out baseStats))
                 return new Structure(new StructureStats(baseStats));
-            
+
             throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
         }
 
@@ -113,7 +117,7 @@ namespace Game.Setup
             if (dict == null)
                 return;
             StructureBaseStats baseStats;
-            if (dict.TryGetValue(type*100 + lvl, out baseStats))
+            if (dict.TryGetValue(type * 100 + lvl, out baseStats))
             {
                 //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
                 StructureStats oldStats = structure.Stats;
@@ -128,7 +132,7 @@ namespace Game.Setup
                 if (baseStats.MaxLabor > 0 && newLabor > baseStats.MaxLabor)
                     newLabor = baseStats.MaxLabor;
 
-                structure.Stats = new StructureStats(baseStats) {Hp = newHp, Labor = newLabor};
+                structure.Stats = new StructureStats(baseStats) { Hp = newHp, Labor = newLabor };
             }
             else
                 throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
@@ -140,7 +144,7 @@ namespace Game.Setup
             if (dict == null)
                 return 0;
             StructureBaseStats tmp;
-            return dict.TryGetValue(structure.Type*100 + structure.Lvl, out tmp) ? tmp.WorkerId : 0;
+            return dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp) ? tmp.WorkerId : 0;
         }
 
         public static string GetName(Structure structure)
@@ -148,7 +152,7 @@ namespace Game.Setup
             if (dict == null)
                 return null;
             StructureBaseStats tmp;
-            return dict.TryGetValue(structure.Type*100 + structure.Lvl, out tmp) ? tmp.Name : null;
+            return dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp) ? tmp.Name : null;
         }
 
         public static StructureBaseStats GetBaseStats(ushort type, byte lvl)
@@ -156,7 +160,7 @@ namespace Game.Setup
             if (dict == null)
                 return null;
             StructureBaseStats tmp;
-            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }
     }
 }

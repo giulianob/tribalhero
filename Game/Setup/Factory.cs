@@ -56,8 +56,8 @@ namespace Game.Setup
 
         public static void InitAll()
         {
-            StructureFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
             ActionFactory.Init(Path.Combine(Config.csv_compiled_folder, "action.csv"));
+            StructureFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
             EffectRequirementFactory.init(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"));
             InitFactory.Init(Path.Combine(Config.csv_compiled_folder, "init.csv"));
             PropertyFactory.Init(Path.Combine(Config.csv_compiled_folder, "property.csv"));

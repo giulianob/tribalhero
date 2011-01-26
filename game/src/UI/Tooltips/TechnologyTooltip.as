@@ -16,7 +16,7 @@ package src.UI.Tooltips {
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class TechnologyTooltip extends Tooltip {
+	public class TechnologyTooltip extends ActionButtonTooltip {
 
 		private var parentObj: StructureObject;
 
@@ -43,12 +43,15 @@ package src.UI.Tooltips {
 			this.parentObj = parentObj;
 			this.techPrototype = techPrototype;
 			this.nextTechPrototype = nextTechPrototype;
-
-			createUI();
 		}
 
-		public function draw(count: int, max: int):void
+		override public function draw(count: int, max: int): void
 		{
+			super.draw(count, max);
+			
+			if (!drawTooltip) return;
+			else if (pnlHeader == null) createUI();
+			
 			lblTitle.setText(techPrototype.getName());
 
 			if (techPrototype.level == 0) {

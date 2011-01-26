@@ -20,7 +20,7 @@ package src.UI.Tooltips {
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class StructureUpgradeTooltip extends Tooltip {
+	public class StructureUpgradeTooltip extends ActionButtonTooltip {
 
 		private var structPrototype: StructurePrototype;
 		private var nextStructPrototype: StructurePrototype;
@@ -50,16 +50,15 @@ package src.UI.Tooltips {
 			this.parentObj = parentObj;
 			this.structPrototype = structPrototype;
 			this.nextStructPrototype = nextStructPrototype;
-
-			createUI();
-
-			lblTitle.setText("Upgrade " + structPrototype.getName());
-			lblLevel.setText("Level " + structPrototype.level.toString());
-			lblLvlDescription.setText(structPrototype.getDescription());
 		}
 
-		public function draw(count: int, max: int):void
+		override public function draw(count: int, max: int): void
 		{
+			super.draw(count, max);
+			
+			if (!drawTooltip) return;
+			else if (pnlHeader == null) createUI();
+			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
 				GameLookAndFeel.changeClass(label, "Tooltip.text");
@@ -190,7 +189,11 @@ package src.UI.Tooltips {
 
 			pnlFooter.append(lblActionCount);
 			pnlFooter.append(pnlResources);
-		}
+			
+			lblTitle.setText("Upgrade " + structPrototype.getName());
+			lblLevel.setText("Level " + structPrototype.level.toString());
+			lblLvlDescription.setText(structPrototype.getDescription());					
+		}	
 	}
 
 }

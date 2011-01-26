@@ -20,7 +20,7 @@ package src.UI.Tooltips {
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class StructureChangeTooltip extends Tooltip {
+	public class StructureChangeTooltip extends ActionButtonTooltip {
 
 		private var nextStructPrototype: StructurePrototype;
 		private var parentObj: StructureObject;
@@ -42,12 +42,15 @@ package src.UI.Tooltips {
 		{
 			this.parentObj = parentObj;
 			this.nextStructPrototype = nextStructPrototype;
-
-			createUI();
 		}
 
-		public function draw(count: int, max: int) :void
+		override public function draw(count: int, max: int) :void
 		{
+			super.draw(count, max);
+			
+			if (!drawTooltip) return;
+			else if (pnlHeader == null) createUI();
+			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
 				GameLookAndFeel.changeClass(label, "Tooltip.text");

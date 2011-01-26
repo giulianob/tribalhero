@@ -15,19 +15,21 @@
 			super();
 		}
 
-		public static function changeClass(obj: Component, classes: String) : void {
+		public static function changeClass(obj: Component, classes: *) : void {
 			var ui: ComponentUI = obj.getUI();
 
-			var keys: Array = classes.split(" ");
+			var keys: Array = (classes is String) ? classes.split(" ") : classes;
 
 			for each(var key: String in keys) {
 				if (key == "") continue;
 
 				var keyValueList: Array = UIManager.getDefaults().get("Class." + key);
+				
 				if (keyValueList == null) return;
 
-				for(var i:Number = 0; i < keyValueList.length; i += 2)
-				ui.putDefault(keyValueList[i], keyValueList[i + 1]);
+				for (var i:int = 0; i < keyValueList.length; i += 2) {
+					ui.putDefault(keyValueList[i], keyValueList[i + 1]);
+				}
 			}
 
 			obj.setUI(ui);

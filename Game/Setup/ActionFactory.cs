@@ -15,12 +15,12 @@ namespace Game.Setup
 
     public class ActionRecord
     {
+        public int id;
         public byte max;
         public List<ActionRequirement> list;
-
     }
 
-    public class ActionFactory
+    public class ActionFactory : IEnumerable<ActionRecord> 
     {
         private static Dictionary<int, ActionRecord> dict;
 
@@ -29,7 +29,7 @@ namespace Game.Setup
             if (dict != null)
                 return;
 
-            dict = new Dictionary<int, ActionRecord>();
+            dict = new Dictionary<int, ActionRecord> {{0, new ActionRecord {id = 0, list = new List<ActionRequirement>(), max = 0}}};
 
             using (
                 CSVReader reader =
@@ -50,7 +50,7 @@ namespace Game.Setup
                 {
                     if (toks[0].Length <= 0)
                         continue;
-                    int lvl = int.Parse(toks[col["Lvl"]]);
+                    int lvl = int.Parse(toks[col["Level"]]);
                     int type = int.Parse(toks[col["Type"]]);
                     int index = type * 100 + lvl;
                    
@@ -61,13 +61,13 @@ namespace Game.Setup
                     int lastLvl = dict.Keys.LastOrDefault(x => x <= index && x > type * 100);
                     
                     if (lastLvl == 0) {
-                        record = new ActionRecord { list = new List<ActionRequirement>() };
+                        record = new ActionRecord { list = new List<ActionRequirement>(), id=index };
                         dict[index] = record;
                     } else if (lastLvl == index) {
                         record = dict[index];
                     } else {
                         ActionRecord lastActionRecord = dict[lastLvl];
-                        record = new ActionRecord{ max=lastActionRecord.max, list = new List<ActionRequirement>()};
+                        record = new ActionRecord{ max=lastActionRecord.max, list = new List<ActionRequirement>(), id=index };
                         record.list.AddRange(lastActionRecord.list);
                         dict[index] = record;
                     }
@@ -106,19 +106,25 @@ namespace Game.Setup
                         }
                         if (record.list.Any(x => x.index == action_index))
                         {
-                            throw new Exception("Index already exists!");
+                            record.list.RemoveAll(x => x.index == action_index);
                         }
                         record.list.Add(actionReq);
                     }
                 }
             }
         }
+
         public static ActionRecord GetActionRequirementRecordBestFit(int type, byte lvl) {
             if (dict == null)
                 return null;
 
-            ActionRecord record;
-            return dict.TryGetValue(lvl, out record) ? record : null;
+            int index = type * 100 + lvl;
+            int lastLvl = dict.Keys.LastOrDefault(x => x <= type * 100 + lvl && x > type * 100);
+                    
+            if (lastLvl == 0) {
+                Global.Logger.InfoFormat("WorkerID not found for [{0}][{1}]",type,lvl);
+            }
+            return dict[lastLvl];
         }
 
         public static ActionRecord GetActionRequirementRecord(int workerId)
@@ -127,7 +133,29 @@ namespace Game.Setup
                 return null;
 
             ActionRecord record;
-            return dict.TryGetValue(workerId, out record) ? record : null;
+            if (!dict.TryGetValue(workerId, out record))
+            {
+                throw new Exception("Action Requirement Not Found!");
+            }
+            return record;
         }
+
+        #region IEnumerable<ActionRecord> Members
+
+        public IEnumerator<ActionRecord> GetEnumerator()
+        {
+            return ((IEnumerable<ActionRecord>)dict.Values).GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return dict.Values.GetEnumerator();
+        }
+
+        #endregion
     }
 }

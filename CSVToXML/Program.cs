@@ -44,36 +44,6 @@ namespace CSVToXML {
 
         #endregion
 
-        #region Worker Actions
-
-        private class WorkerActions : IComparable {
-            public string type;
-            public string option;
-            public string action;
-            public string param1, param2, param3, param4, param5;
-            public string max;
-            public string index;
-            public string effectReq;
-            public string effectReqInherit;
-
-            public int CompareTo(object obj) {
-                if (obj is WorkerActions) {
-                    WorkerActions obj2 = obj as WorkerActions;
-
-                    int typeDelta = Int32.Parse(type) - Int32.Parse(obj2.type);
-                    if (typeDelta != 0)
-                        return typeDelta;
-
-                    int indexDelta = Int32.Parse(index) - Int32.Parse(obj2.index);
-                    return indexDelta;
-                }
-
-                return 1;
-            }
-        }
-
-        #endregion
-
         #region Technology Effects
 
         private class TechnologyEffects {
@@ -188,7 +158,7 @@ namespace CSVToXML {
                         writer.WriteAttributeString("iron", obj[16]);
                         writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
-                        writer.WriteAttributeString("workerid", obj[19]);
+                        writer.WriteAttributeString("workerid", byte.Parse(obj[2]) == 0 ?"0":ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).id.ToString());
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
                         writer.WriteAttributeString("unitclass", obj[22]);
@@ -301,146 +271,95 @@ namespace CSVToXML {
         static void WriteWorkers() {
             writer.WriteStartElement("Workers");
 
-            List<WorkerActions> workerActions = new List<WorkerActions>();
-
-            using (CsvReader actionReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "action.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
-                while (true) {
-                    string[] obj = actionReader.ReadRow();
-                    if (obj != null) {
-                        if (obj[0] == "")
-                            continue;
-
-                        int actionOption = 0;
-                        if (obj[3].Length > 0) {
-                            foreach (string opt in obj[3].Split('|')) {
-                                actionOption += (int) ((ActionOption) Enum.Parse(typeof (ActionOption), opt, true));
-                            }
-                        }
-
-                        WorkerActions workerAction = new WorkerActions {
-                                                                           type = obj[0],
-                                                                           index = obj[1],
-                                                                           max = obj[2],
-                                                                           option = actionOption.ToString(),
-                                                                           action = obj[4],
-                                                                           param1 = CleanCsvParam(obj[5]),
-                                                                           param2 = CleanCsvParam(obj[6]),
-                                                                           param3 = CleanCsvParam(obj[7]),
-                                                                           param4 = CleanCsvParam(obj[8]),
-                                                                           param5 = CleanCsvParam(obj[9]),
-                                                                           effectReq = CleanCsvParam(obj[10]),
-                                                                           effectReqInherit = CleanCsvParam(obj[11]).ToUpper()
-                                                                       };
-
-                        workerActions.Add(workerAction);
-                    } else
-                        break;
-                }
-            }
-
-            workerActions.Sort();
-
             #region write worker XML
-
-            int lastId = Int32.MinValue;
             writer.WriteStartElement("Worker");
             writer.WriteAttributeString("type", "0");
             writer.WriteAttributeString("max", "0");
             writer.WriteEndElement();
-            foreach (WorkerActions workerAction in workerActions) {
-                if (lastId != Int32.Parse(workerAction.type)) {
-                    if (lastId != Int32.MinValue)
-                        writer.WriteEndElement();
 
+            foreach(ActionRecord record in new ActionFactory())
+            {
                     writer.WriteStartElement("Worker");
-                    writer.WriteAttributeString("type", workerAction.type);
-                    writer.WriteAttributeString("max", workerAction.max);
+                    writer.WriteAttributeString("type", record.id.ToString());
+                    writer.WriteAttributeString("max", record.max.ToString());
+                    foreach(ActionRequirement req in record.list)
+                    {
+                        switch (req.type) {
+                            case ActionType.FOREST_CAMP_BUILD:
+                                writer.WriteStartElement("ForestCampBuild");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                break;
+                            case ActionType.FOREST_CAMP_REMOVE:
+                                writer.WriteStartElement("ForestCampRemove");
+                                break;
+                            case ActionType.ROAD_BUILD:
+                                writer.WriteStartElement("RoadBuild");
+                                break;
+                            case ActionType.ROAD_DESTROY:
+                                writer.WriteStartElement("RoadDestroy");
+                                break;
+                            case ActionType.STRUCTURE_BUILD:
+                                writer.WriteStartElement("StructureBuild");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("tilerequirement", req.parms[1]);
+                                break;
+                            case ActionType.UNIT_TRAIN:
+                                writer.WriteStartElement("TrainUnit");
+                                writer.WriteAttributeString("type", req.parms[1]);
+                                break;
+                            case ActionType.STRUCTURE_CHANGE:
+                                writer.WriteStartElement("StructureChange");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("level", req.parms[1]);
+                                break;
+                            case ActionType.STRUCTURE_UPGRADE:
+                                writer.WriteStartElement("StructureUpgrade");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                break;
+                            case ActionType.UNIT_UPGRADE:
+                                writer.WriteStartElement("UnitUpgrade");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("maxlevel", req.parms[1]);
+                                break;
+                            case ActionType.TECHNOLOGY_UPGRADE:
+                                writer.WriteStartElement("TechnologyUpgrade");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("maxlevel", req.parms[1]);
+                                break;
+                            case ActionType.RESOURCE_SEND:
+                                writer.WriteStartElement("ResourceSend");
+                                break;
+                            case ActionType.RESOURCE_SELL:
+                                writer.WriteStartElement("ResourceSell");
+                                break;
+                            case ActionType.RESOURCE_BUY:
+                                writer.WriteStartElement("ResourceBuy");
+                                break;
+                            case ActionType.LABOR_MOVE:
+                                writer.WriteStartElement("LaborMove");
+                                break;
+                            case ActionType.STRUCTURE_DOWNGRADE:
+                                writer.WriteStartElement("StructureDowngrade");
+                                break;
+                            default:
+                                writer.WriteStartElement("MISSING_WORKER_ACTION");
+                                writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.type));
+                                writer.WriteAttributeString("command", req.parms[0]);
+                                break;
+                        }
 
-                    if (Int32.Parse(workerAction.index) != 0)
-                        throw new Exception("Error in actions.csv. Worker index 0 is not the first item in worker: " + workerAction.type);
-
-                    lastId = Int32.Parse(workerAction.type);
-                    continue;
-                }
-
-                switch (workerAction.action.ToLower()) {
-                    case "forest_camp_build":
-                        writer.WriteStartElement("ForestCampBuild");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        break;
-                    case "forest_camp_remove":
-                        writer.WriteStartElement("ForestCampRemove");
-                        break;
-                    case "road_build":
-                        writer.WriteStartElement("RoadBuild");
-                        break;
-                    case "road_destroy":
-                        writer.WriteStartElement("RoadDestroy");
-                        break;
-                    case "structure_build":
-                        writer.WriteStartElement("StructureBuild");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("tilerequirement", workerAction.param2);
-                        break;
-                    case "unit_train":
-                        writer.WriteStartElement("TrainUnit");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        break;
-                    case "structure_change":
-                        writer.WriteStartElement("StructureChange");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("level", workerAction.param2);
-                        break;
-                    case "structure_upgrade":
-                        writer.WriteStartElement("StructureUpgrade");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        break;
-                    case "unit_upgrade":
-                        writer.WriteStartElement("UnitUpgrade");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("maxlevel", workerAction.param2);
-                        break;
-                    case "technology_upgrade":
-                        writer.WriteStartElement("TechnologyUpgrade");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("maxlevel", workerAction.param2);
-                        break;
-                    case "resource_send":
-                        writer.WriteStartElement("ResourceSend");
-                        break;
-                    case "resource_sell":
-                        writer.WriteStartElement("ResourceSell");
-                        break;
-                    case "resource_buy":
-                        writer.WriteStartElement("ResourceBuy");
-                        break;
-                    case "labor_move":
-                        writer.WriteStartElement("LaborMove");
-                        break;
-                    case "structure_userdowngrade":
-                        writer.WriteStartElement("StructureDowngrade");
-                        break;
-                    default:
-                        writer.WriteStartElement("MISSING_WORKER_ACTION");
-                        writer.WriteAttributeString("name", workerAction.action);
-                        writer.WriteAttributeString("command", workerAction.param1);
-                        break;
-                }
-
-                writer.WriteAttributeString("index", workerAction.index);
-                writer.WriteAttributeString("max", workerAction.max);
-                writer.WriteAttributeString("option", workerAction.option);
-
-                if (workerAction.effectReq != "") {
-                    writer.WriteAttributeString("effectreq", workerAction.effectReq);
-                    writer.WriteAttributeString("effectreqinherit", workerAction.effectReqInherit);
-                }
-                writer.WriteEndElement();
+                        writer.WriteAttributeString("index", req.index.ToString());
+                        writer.WriteAttributeString("max", req.max.ToString());
+                        writer.WriteAttributeString("option", ((int)req.option).ToString());
+                        
+                        if (req.effectReqId !=0) {
+                            writer.WriteAttributeString("effectreq", req.effectReqId.ToString());
+                            writer.WriteAttributeString("effectreqinherit", req.effectReqInherit.ToString().ToUpper());
+                        }
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
             }
-
-            if (lastId != Int32.MinValue)
-                writer.WriteEndElement();
-
             #endregion
 
             writer.WriteEndElement();

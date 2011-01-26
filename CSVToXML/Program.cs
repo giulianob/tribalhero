@@ -10,115 +10,75 @@ using Game.Logic;
 using Game.Setup;
 #endregion
 
-namespace CSVToXML
-{
-    public class Converter
-    {
-        private static XmlTextWriter writer;
-        private static String dataOutputFolder;
-        private static String csvDataFolder;
-        private static String langDataFolder;
+namespace CSVToXML {
+    public class Converter {        
 
+        static XmlTextWriter writer;
+        static String dataOutputFolder;
+        static String csvDataFolder;
+        static String langDataFolder;
+      
         #region Layout
 
-        private static IEnumerable<Layout> FindAllLayout(IEnumerable<Layout> layouts, int type, int level)
-        {
-            return layouts.Where(layout => Int32.Parse(layout.type) == type && Int32.Parse(layout.level) == level).ToList();
-        }
-
-        private class Layout
-        {
-            public string compare;
+        private class Layout {
             public string layout;
+            public string type;
             public string level;
-            public string maxdist;
+            public string reqtype;
+            public string minlevel;
             public string maxlevel;
             public string mindist;
-            public string minlevel;
-            public string reqtype;
-            public string type;
+            public string maxdist;
+            public string compare;
         }
 
-        #endregion
-
-        #region Worker Actions
-
-        private class WorkerActions : IComparable
-        {
-            public string action;
-            public string effectReq;
-            public string effectReqInherit;
-            public string index;
-            public string max;
-            public string option;
-            public string param1, param2, param3, param4, param5;
-            public string type;
-
-            #region IComparable Members
-
-            public int CompareTo(object obj)
-            {
-                if (obj is WorkerActions)
-                {
-                    var obj2 = obj as WorkerActions;
-
-                    int typeDelta = Int32.Parse(type) - Int32.Parse(obj2.type);
-                    if (typeDelta != 0)
-                        return typeDelta;
-
-                    int indexDelta = Int32.Parse(index) - Int32.Parse(obj2.index);
-                    return indexDelta;
-                }
-
-                return 1;
+        private static List<Layout> FindAllLayout(List<Layout> layouts, int type, int level) {
+            List<Layout> ret = new List<Layout>();
+            foreach (Layout layout in layouts) {
+                if (Int32.Parse(layout.type) == type && Int32.Parse(layout.level) == level)
+                    ret.Add(layout);
             }
 
-            #endregion
+            return ret;
         }
 
         #endregion
 
         #region Technology Effects
 
-        private static IEnumerable<TechnologyEffects> FindAllTechEffects(IEnumerable<TechnologyEffects> techEffects,
-                                                                         int techid,
-                                                                         int lvl)
-        {
-            return
-                    techEffects.Where(effect => Int32.Parse(effect.techid) == techid && Int32.Parse(effect.lvl) == lvl).
-                            ToList();
+        private class TechnologyEffects {
+            public string techid;
+            public string lvl;
+            public string effect;
+            public string location;
+            public string isprivate;
+            public string param1, param2, param3, param4, param5;
         }
 
-        private class TechnologyEffects
-        {
-            public string effect;
-            public string isprivate;
-            public string location;
-            public string lvl;
-            public string param1, param2, param3, param4, param5;
-            public string techid;
+        private static IEnumerable<TechnologyEffects> FindAllTechEffects(IEnumerable<TechnologyEffects> techEffects, int techid,
+                                                                  int lvl) {
+
+            return techEffects.Where(effect => Int32.Parse(effect.techid) == techid && Int32.Parse(effect.lvl) == lvl).ToList();
         }
 
         #endregion
 
-        public static string CleanCsvParam(string param)
-        {
-            var args = new[] {'='};
+        public static string CleanCsvParam(string param) {
+            char[] args = new[] {'='};
             string[] split = param.Split(args);
 
             return split[split.Length - 1].Trim();
         }
 
-        public static void Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn)
-        {
+        public static void Go(string dataOutputFolderIn, string csvDataFolderIn, string langDataFolderIn) {
             dataOutputFolder = dataOutputFolderIn;
             csvDataFolder = csvDataFolderIn;
             langDataFolder = langDataFolderIn;
 
             #region Data XML
-
-            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolderIn + "data.xml", FileMode.Create)))
-                     {Formatting = Formatting.None};
+            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolderIn + "data.xml", FileMode.Create))) {
+                                                                                                                        Formatting = Formatting.None                                                                                                                        
+                                                                                                                    };
             writer.WriteStartElement("Data");
 
             WriteStructures();
@@ -137,66 +97,48 @@ namespace CSVToXML
             WriteLanguageFile();
         }
 
-        private static void WriteStructures()
-        {
+        static void WriteStructures() {
+
             #region Get Layouts
 
-            var layouts = new List<Layout>();
+            List<Layout> layouts = new List<Layout>();
 
-            using (
-                    var layoutReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "layout.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            using (CsvReader layoutReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "layout.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = layoutReader.ReadRow();
                     if (obj == null)
                         break;
 
                     if (obj[0].Length <= 0)
                         continue;
-                    var layout = new Layout
-                                 {
-                                         type = obj[0],
-                                         level = obj[1],
-                                         layout = obj[2],
-                                         reqtype = obj[3],
-                                         minlevel = obj[4],
-                                         maxlevel = obj[5],
-                                         mindist = obj[6],
-                                         maxdist = obj[7],
-                                         compare = obj[8]
-                                 };
+                    Layout layout = new Layout {
+                                                   type = obj[0],
+                                                   level = obj[1],
+                                                   layout = obj[2],
+                                                   reqtype = obj[3],
+                                                   minlevel = obj[4],
+                                                   maxlevel = obj[5],
+                                                   mindist = obj[6],
+                                                   maxdist = obj[7],
+                                                   compare = obj[8]
+                                               };
 
                     layouts.Add(layout);
                 }
             }
 
             #endregion
-
+            
             writer.WriteStartElement("Structures");
-            using (
-                    var statsReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "structure.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "structure.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = statsReader.ReadRow();
-                    if (obj != null)
-                    {
+                    if (obj != null) {
                         if (obj[0] == "")
                             continue;
 
                         writer.WriteStartElement("Structure");
-
+                        
                         writer.WriteAttributeString("name", obj[0]);
                         writer.WriteAttributeString("type", obj[1]);
                         writer.WriteAttributeString("level", obj[2]);
@@ -216,7 +158,7 @@ namespace CSVToXML
                         writer.WriteAttributeString("iron", obj[16]);
                         writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
-                        writer.WriteAttributeString("workerid", obj[19]);
+                        writer.WriteAttributeString("workerid", byte.Parse(obj[2]) == 0 ?"0":ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).id.ToString());
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
                         writer.WriteAttributeString("unitclass", obj[22]);
@@ -225,9 +167,8 @@ namespace CSVToXML
 
                         writer.WriteStartElement("Layout");
 
-                        IEnumerable<Layout> objLayouts = FindAllLayout(layouts, Int32.Parse(obj[1]), Int32.Parse(obj[2]));
-                        foreach (var layout in objLayouts)
-                        {
+                        List<Layout> objLayouts = FindAllLayout(layouts, Int32.Parse(obj[1]), Int32.Parse(obj[2]));
+                        foreach (Layout layout in objLayouts) {
                             writer.WriteStartElement(layout.layout);
                             //Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
                             writer.WriteAttributeString("type", layout.reqtype);
@@ -242,35 +183,24 @@ namespace CSVToXML
                         writer.WriteEndElement();
 
                         writer.WriteEndElement();
-                    }
-                    else
+                    } else
                         break;
                 }
             }
             writer.WriteEndElement();
         }
 
-        private static void WriteUnits()
-        {
+        static void WriteUnits() {
             writer.WriteStartElement("Units");
-            using (
-                    var statsReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "unit.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "unit.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = statsReader.ReadRow();
-                    if (obj != null)
-                    {
+                    if (obj != null) {
                         if (obj[0] == "")
                             continue;
 
                         writer.WriteStartElement("Unit");
-
+                        
                         writer.WriteAttributeString("name", obj[0]);
                         writer.WriteAttributeString("type", obj[1]);
                         writer.WriteAttributeString("level", obj[2]);
@@ -305,27 +235,17 @@ namespace CSVToXML
                         writer.WriteAttributeString("carry", obj[31]);
 
                         writer.WriteEndElement();
-                    }
-                    else
+                    } else
                         break;
                 }
             }
             writer.WriteEndElement();
         }
 
-        private static void WriteObjectTypes()
-        {
+        static void WriteObjectTypes() {
             writer.WriteStartElement("ObjectTypes");
-            using (
-                    var statsReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "object_type.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            using (CsvReader statsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "object_type.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = statsReader.ReadRow();
                     if (obj == null)
                         break;
@@ -334,8 +254,7 @@ namespace CSVToXML
                         continue;
 
                     string name = obj[0];
-                    for (int i = 1; i < obj.Length; i++)
-                    {
+                    for (int i = 1; i < obj.Length; i++) {
                         if (obj[i] == string.Empty)
                             continue;
 
@@ -349,187 +268,110 @@ namespace CSVToXML
             writer.WriteEndElement();
         }
 
-        private static void WriteWorkers()
-        {
+        static void WriteWorkers() {
             writer.WriteStartElement("Workers");
 
-            var workerActions = new List<WorkerActions>();
-
-            using (
-                    var actionReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "action.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
-                    string[] obj = actionReader.ReadRow();
-                    if (obj != null)
-                    {
-                        if (obj[0] == "")
-                            continue;
-
-                        int actionOption = 0;
-                        if (obj[3].Length > 0)
-                        {
-                            foreach (var opt in obj[3].Split('|'))
-                                actionOption += (int)((ActionOption)Enum.Parse(typeof(ActionOption), opt, true));
-                        }
-
-                        var workerAction = new WorkerActions
-                                           {
-                                                   type = obj[0],
-                                                   index = obj[1],
-                                                   max = obj[2],
-                                                   option = actionOption.ToString(),
-                                                   action = obj[4],
-                                                   param1 = CleanCsvParam(obj[5]),
-                                                   param2 = CleanCsvParam(obj[6]),
-                                                   param3 = CleanCsvParam(obj[7]),
-                                                   param4 = CleanCsvParam(obj[8]),
-                                                   param5 = CleanCsvParam(obj[9]),
-                                                   effectReq = CleanCsvParam(obj[10]),
-                                                   effectReqInherit = CleanCsvParam(obj[11]).ToUpper()
-                                           };
-
-                        workerActions.Add(workerAction);
-                    }
-                    else
-                        break;
-                }
-            }
-
-            workerActions.Sort();
-
             #region write worker XML
-
-            int lastId = Int32.MinValue;
             writer.WriteStartElement("Worker");
             writer.WriteAttributeString("type", "0");
             writer.WriteAttributeString("max", "0");
             writer.WriteEndElement();
-            foreach (var workerAction in workerActions)
+
+            foreach(ActionRecord record in new ActionFactory())
             {
-                if (lastId != Int32.Parse(workerAction.type))
-                {
-                    if (lastId != Int32.MinValue)
-                        writer.WriteEndElement();
-
                     writer.WriteStartElement("Worker");
-                    writer.WriteAttributeString("type", workerAction.type);
-                    writer.WriteAttributeString("max", workerAction.max);
+                    writer.WriteAttributeString("type", record.id.ToString());
+                    writer.WriteAttributeString("max", record.max.ToString());
+                    foreach(ActionRequirement req in record.list)
+                    {
+                        switch (req.type) {
+                            case ActionType.FOREST_CAMP_BUILD:
+                                writer.WriteStartElement("ForestCampBuild");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                break;
+                            case ActionType.FOREST_CAMP_REMOVE:
+                                writer.WriteStartElement("ForestCampRemove");
+                                break;
+                            case ActionType.ROAD_BUILD:
+                                writer.WriteStartElement("RoadBuild");
+                                break;
+                            case ActionType.ROAD_DESTROY:
+                                writer.WriteStartElement("RoadDestroy");
+                                break;
+                            case ActionType.STRUCTURE_BUILD:
+                                writer.WriteStartElement("StructureBuild");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("tilerequirement", req.parms[1]);
+                                break;
+                            case ActionType.UNIT_TRAIN:
+                                writer.WriteStartElement("TrainUnit");
+                                writer.WriteAttributeString("type", req.parms[1]);
+                                break;
+                            case ActionType.STRUCTURE_CHANGE:
+                                writer.WriteStartElement("StructureChange");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("level", req.parms[1]);
+                                break;
+                            case ActionType.STRUCTURE_UPGRADE:
+                                writer.WriteStartElement("StructureUpgrade");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                break;
+                            case ActionType.UNIT_UPGRADE:
+                                writer.WriteStartElement("UnitUpgrade");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("maxlevel", req.parms[1]);
+                                break;
+                            case ActionType.TECHNOLOGY_UPGRADE:
+                                writer.WriteStartElement("TechnologyUpgrade");
+                                writer.WriteAttributeString("type", req.parms[0]);
+                                writer.WriteAttributeString("maxlevel", req.parms[1]);
+                                break;
+                            case ActionType.RESOURCE_SEND:
+                                writer.WriteStartElement("ResourceSend");
+                                break;
+                            case ActionType.RESOURCE_SELL:
+                                writer.WriteStartElement("ResourceSell");
+                                break;
+                            case ActionType.RESOURCE_BUY:
+                                writer.WriteStartElement("ResourceBuy");
+                                break;
+                            case ActionType.LABOR_MOVE:
+                                writer.WriteStartElement("LaborMove");
+                                break;
+                            case ActionType.STRUCTURE_DOWNGRADE:
+                                writer.WriteStartElement("StructureDowngrade");
+                                break;
+                            default:
+                                writer.WriteStartElement("MISSING_WORKER_ACTION");
+                                writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.type));
+                                writer.WriteAttributeString("command", req.parms[0]);
+                                break;
+                        }
 
-                    if (Int32.Parse(workerAction.index) != 0)
-                        throw new Exception("Error in actions.csv. Worker index 0 is not the first item in worker: " +
-                                            workerAction.type);
-
-                    lastId = Int32.Parse(workerAction.type);
-                    continue;
-                }
-
-                switch(workerAction.action.ToLower())
-                {
-                    case "forest_camp_build":
-                        writer.WriteStartElement("ForestCampBuild");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        break;
-                    case "forest_camp_remove":
-                        writer.WriteStartElement("ForestCampRemove");
-                        break;
-                    case "road_build":
-                        writer.WriteStartElement("RoadBuild");
-                        break;
-                    case "road_destroy":
-                        writer.WriteStartElement("RoadDestroy");
-                        break;
-                    case "structure_build":
-                        writer.WriteStartElement("StructureBuild");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("tilerequirement", workerAction.param2);
-                        break;
-                    case "unit_train":
-                        writer.WriteStartElement("TrainUnit");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        break;
-                    case "structure_change":
-                        writer.WriteStartElement("StructureChange");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("level", workerAction.param2);
-                        break;
-                    case "structure_upgrade":
-                        writer.WriteStartElement("StructureUpgrade");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        break;
-                    case "unit_upgrade":
-                        writer.WriteStartElement("UnitUpgrade");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("maxlevel", workerAction.param2);
-                        break;
-                    case "technology_upgrade":
-                        writer.WriteStartElement("TechnologyUpgrade");
-                        writer.WriteAttributeString("type", workerAction.param1);
-                        writer.WriteAttributeString("maxlevel", workerAction.param2);
-                        break;
-                    case "resource_send":
-                        writer.WriteStartElement("ResourceSend");
-                        break;
-                    case "resource_sell":
-                        writer.WriteStartElement("ResourceSell");
-                        break;
-                    case "resource_buy":
-                        writer.WriteStartElement("ResourceBuy");
-                        break;
-                    case "labor_move":
-                        writer.WriteStartElement("LaborMove");
-                        break;
-                    case "structure_userdowngrade":
-                        writer.WriteStartElement("StructureDowngrade");
-                        break;
-                    default:
-                        writer.WriteStartElement("MISSING_WORKER_ACTION");
-                        writer.WriteAttributeString("name", workerAction.action);
-                        writer.WriteAttributeString("command", workerAction.param1);
-                        break;
-                }
-
-                writer.WriteAttributeString("index", workerAction.index);
-                writer.WriteAttributeString("max", workerAction.max);
-                writer.WriteAttributeString("option", workerAction.option);
-
-                if (workerAction.effectReq != "")
-                {
-                    writer.WriteAttributeString("effectreq", workerAction.effectReq);
-                    writer.WriteAttributeString("effectreqinherit", workerAction.effectReqInherit);
-                }
-                writer.WriteEndElement();
+                        writer.WriteAttributeString("index", req.index.ToString());
+                        writer.WriteAttributeString("max", req.max.ToString());
+                        writer.WriteAttributeString("option", ((int)req.option).ToString());
+                        
+                        if (req.effectReqId !=0) {
+                            writer.WriteAttributeString("effectreq", req.effectReqId.ToString());
+                            writer.WriteAttributeString("effectreqinherit", req.effectReqInherit.ToString().ToUpper());
+                        }
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
             }
-
-            if (lastId != Int32.MinValue)
-                writer.WriteEndElement();
-
             #endregion
 
             writer.WriteEndElement();
         }
 
-        private static void WriteTechnologies()
-        {
+        static void WriteTechnologies() {
+
             #region Get Tech Effects
+            List<TechnologyEffects> techEffects = new List<TechnologyEffects>();
 
-            var techEffects = new List<TechnologyEffects>();
-
-            using (
-                    var techEffectsReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "technology_effects.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            using (CsvReader techEffectsReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "technology_effects.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = techEffectsReader.ReadRow();
                     if (obj == null)
                         break;
@@ -537,42 +379,28 @@ namespace CSVToXML
                     if (obj[0].Length <= 0)
                         continue;
 
-                    var techEffect = new TechnologyEffects
-                                     {
-                                             techid = obj[0],
-                                             lvl = obj[1],
-                                             effect =
-                                                     ((int)((EffectCode)Enum.Parse(typeof(EffectCode), obj[2], true))).ToString
-                                                     (),
-                                             location =
-                                                     ((int)((EffectLocation)Enum.Parse(typeof(EffectLocation), obj[3], true))).
-                                                     ToString(),
-                                             isprivate = obj[4],
-                                             param1 = obj[5],
-                                             param2 = obj[6],
-                                             param3 = obj[7],
-                                             param4 = obj[8],
-                                             param5 = obj[9]
-                                     };
+                    TechnologyEffects techEffect = new TechnologyEffects {
+                        techid = obj[0],
+                        lvl = obj[1],
+                        effect = ((int)((EffectCode)Enum.Parse(typeof(EffectCode), obj[2], true))).ToString(),
+                        location = ((int)((EffectLocation)Enum.Parse(typeof(EffectLocation), obj[3], true))).ToString(),
+                        isprivate = obj[4],
+                        param1 = obj[5],
+                        param2 = obj[6],
+                        param3 = obj[7],
+                        param4 = obj[8],
+                        param5 = obj[9]
+                    };
 
                     techEffects.Add(techEffect);
                 }
             }
-
             #endregion
 
             writer.WriteStartElement("Technologies");
 
-            using (
-                    var techReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "technology.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            using (CsvReader techReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "technology.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = techReader.ReadRow();
                     if (obj == null)
                         break;
@@ -588,18 +416,15 @@ namespace CSVToXML
                     writer.WriteAttributeString("name", obj[1]);
                     writer.WriteAttributeString("spriteclass", obj[2]);
                     writer.WriteAttributeString("level", obj[3]);
-                    writer.WriteAttributeString("crop", techBase.Resources.Crop.ToString());
-                    writer.WriteAttributeString("gold", techBase.Resources.Gold.ToString());
-                    writer.WriteAttributeString("iron", techBase.Resources.Iron.ToString());
-                    writer.WriteAttributeString("wood", techBase.Resources.Wood.ToString());
-                    writer.WriteAttributeString("labor", techBase.Resources.Labor.ToString());
-                    writer.WriteAttributeString("time", techBase.Time.ToString());
+                    writer.WriteAttributeString("crop", techBase.resources.Crop.ToString());
+                    writer.WriteAttributeString("gold", techBase.resources.Gold.ToString());
+                    writer.WriteAttributeString("iron", techBase.resources.Iron.ToString());
+                    writer.WriteAttributeString("wood", techBase.resources.Wood.ToString());
+                    writer.WriteAttributeString("labor", techBase.resources.Labor.ToString());
+                    writer.WriteAttributeString("time", techBase.time.ToString());
 
-                    IEnumerable<TechnologyEffects> effects = FindAllTechEffects(techEffects,
-                                                                                Int32.Parse(obj[0]),
-                                                                                Int32.Parse(obj[3]));
-                    foreach (var effect in effects)
-                    {
+                    IEnumerable<TechnologyEffects> effects = FindAllTechEffects(techEffects, Int32.Parse(obj[0]), Int32.Parse(obj[3]));
+                    foreach (TechnologyEffects effect in effects) {
                         //TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5
                         writer.WriteStartElement("Effect");
                         writer.WriteAttributeString("effect", effect.effect);
@@ -618,22 +443,15 @@ namespace CSVToXML
             }
 
             writer.WriteEndElement();
+
         }
 
-        private static void WriteProperties()
-        {
-            writer.WriteStartElement("Property");
+        static void WriteProperties() {
 
-            using (
-                    var propReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "property.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            writer.WriteStartElement("Property");
+            
+            using (CsvReader propReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "property.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = propReader.ReadRow();
                     if (obj == null)
                         break;
@@ -657,20 +475,11 @@ namespace CSVToXML
             writer.WriteEndElement();
         }
 
-        private static void WriteEffectRequirements()
-        {
+        static void WriteEffectRequirements() {
             writer.WriteStartElement("EffectRequirements");
 
-            using (
-                    var effectReqReader =
-                            new CsvReader(
-                                    new StreamReader(File.Open(csvDataFolder + "effect_requirement.csv",
-                                                               FileMode.Open,
-                                                               FileAccess.Read,
-                                                               FileShare.ReadWrite))))
-            {
-                while (true)
-                {
+            using (CsvReader effectReqReader = new CsvReader(new StreamReader(File.Open(csvDataFolder + "effect_requirement.csv", FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))) {
+                while (true) {
                     string[] obj = effectReqReader.ReadRow();
                     if (obj == null)
                         break;
@@ -694,13 +503,13 @@ namespace CSVToXML
             }
 
             writer.WriteEndElement();
+
         }
 
-        private static void WriteLanguageFile()
-        {
+        static void WriteLanguageFile() {
+
             // TODO Hardcoded to just do English for now but later we can do all the languages
-            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "Game_en.xml", FileMode.Create)))
-                     {Formatting = Formatting.Indented};
+            writer = new XmlTextWriter(new StreamWriter(File.Open(dataOutputFolder + "Game_en.xml", FileMode.Create))) { Formatting = Formatting.Indented };
 
             writer.WriteStartElement("xliff");
             writer.WriteAttributeString("version", "1.0");
@@ -717,23 +526,16 @@ namespace CSVToXML
             writer.WriteStartElement("body");
 
             string[] files = Directory.GetFiles(langDataFolder, "lang.*", SearchOption.TopDirectoryOnly);
-            foreach (var file in files)
-            {
+            foreach (string file in files) {
+
                 String fullFilename = file;
 
                 if (Global.IsRunningOnMono())
                     fullFilename = Path.Combine(langDataFolder, file);
 
-                using (
-                        var langReader =
-                                new CsvReader(
-                                        new StreamReader(File.Open((fullFilename),
-                                                                   FileMode.Open,
-                                                                   FileAccess.Read,
-                                                                   FileShare.ReadWrite))))
+                using (CsvReader langReader = new CsvReader(new StreamReader(File.Open((fullFilename), FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
                 {
-                    while (true)
-                    {
+                    while (true) {
                         string[] obj = langReader.ReadRow();
                         if (obj == null)
                             break;
@@ -757,7 +559,7 @@ namespace CSVToXML
 
             writer.WriteEndElement();
 
-            writer.Close();
+            writer.Close();                
         }
     }
 }

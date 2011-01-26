@@ -69,7 +69,7 @@ namespace Game.Setup
                                                            stats,
                                                            byte.Parse(toks[col["MaxLabor"]]),
                                                            int.Parse(toks[col["Time"]]),
-                                                           int.Parse(toks[col["Worker"]]),
+                                                                          byte.Parse(toks[col["Lvl"]])==0?0:ActionFactory.GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]),byte.Parse(toks[col["Lvl"]])).id,// int.Parse(toks[col["Worker"]]),
                                                            (ClassId)Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
 
                     Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));

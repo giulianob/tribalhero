@@ -14,17 +14,17 @@ A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide great help defend
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide superb help defending when the town is under attack. 
 ,
 ,
-TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation Research
+TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Reduces distance requirement by 1 for underground structures.
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Reduces distance requirement by 2 for underground structures.
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Reduces distance requirement by 3 for underground structures.
 ,
-SENSE OF URGENCY_TECHNOLOGY_NAME,Sense of Urgency
-SENSE OF URGENCY_TECHNOLOGY_LVL_1,"If any structre is destroyed in battle, all buildings are repaired by 4% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE OF URGENCY_TECHNOLOGY_LVL_2,"If any structre is destroyed in battle, all buildings are repaired by 8% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE OF URGENCY_TECHNOLOGY_LVL_3,"If any structre is destroyed in battle, all buildings are repaired by 12% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE OF URGENCY_TECHNOLOGY_LVL_4,"If any structre is destroyed in battle, all buildings are repaired by 16% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE OF URGENCY_TECHNOLOGY_LVL_5,"If any structre is destroyed in battle, all buildings are repaired by 20% HP of the destroyed buildings.(Stackable up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structre is destroyed in battle, all buildings are repaired by 4% HP of the destroyed buildings.(Stackable up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structre is destroyed in battle, all buildings are repaired by 8% HP of the destroyed buildings.(Stackable up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structre is destroyed in battle, all buildings are repaired by 12% HP of the destroyed buildings.(Stackable up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structre is destroyed in battle, all buildings are repaired by 16% HP of the destroyed buildings.(Stackable up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structre is destroyed in battle, all buildings are repaired by 20% HP of the destroyed buildings.(Stackable up to 100%)"
 ,
 LAST_STAND_TECHNOLOGY_NAME,Last Stand
 LAST_STAND_TECHNOLOGY_LVL_1,15% chance completely ignore the attack when team is about to die.

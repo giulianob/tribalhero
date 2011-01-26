@@ -182,8 +182,7 @@
 		{
 			var structPrototype: StructurePrototype = getPrototype(parentObj.type, parentObj.level);
 
-			if (structPrototype == null)
-			return null;
+			if (structPrototype == null) return null;
 
 			var worker: Worker = WorkerFactory.getPrototype(structPrototype.workerid);
 
@@ -192,8 +191,7 @@
 				trace("Missing worker type: " + structPrototype.workerid);
 				return null;
 			}
-			else
-			return worker.getButtons(parentObj, structPrototype);
+			else return worker.getButtons(parentObj, structPrototype);
 		}
 
 		private static function getTechButtonInstance(techPrototype: TechnologyPrototype) : SimpleButton {

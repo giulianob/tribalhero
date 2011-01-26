@@ -13,8 +13,8 @@
     <transparent>false</transparent>
     <visible>true</visible>
     <minimizable>true</minimizable>
-    <maximizable>false</maximizable>
-    <resizable>false</resizable>
+    <maximizable>true</maximizable>
+    <resizable>true</resizable>
   </initialWindow>
   <!-- 
 	More options:

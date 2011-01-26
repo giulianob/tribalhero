@@ -164,7 +164,7 @@ namespace Game.Comm
 
                                 var data = new byte[s.Available];
 
-                                int len = s.Receive(data);
+                                int len = s.Receive(data, 0, data.Length, SocketFlags.None);
 
                                 if (len == 0)
                                 {
@@ -172,16 +172,19 @@ namespace Game.Comm
                                     continue;
                                 }
 
-                                Global.Logger.Info("[" + sessions[s].Name + "]: " + data.Length);
+                                Global.Logger.Debug("[" + sessions[s].Name + "]: " + data.Length);
 
                                 sessions[s].AppendBytes(data);
 
-                                Packet packet = sessions[s].GetNextPacket();
+                                do
+                                {
+                                    Packet packet = sessions[s].GetNextPacket();
 
-                                if (packet == null)
-                                    continue;
+                                    if (packet == null)
+                                        break;
 
-                                ThreadPool.QueueUserWorkItem(sessions[s].Process, packet);
+                                    ThreadPool.QueueUserWorkItem(sessions[s].Process, packet);
+                                } while (true);
                             }
                             catch(SocketException)
                             {

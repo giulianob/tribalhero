@@ -38,7 +38,7 @@ namespace Game.Comm
 
             byte[] packetBytes = packet.GetBytes();
             int ret;
-            if (Socket == null)
+            if (Socket == null || !Socket.Connected)
                 return false;
 
             try

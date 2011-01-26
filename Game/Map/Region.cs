@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Game.Data;
 using Game.Setup;
 
@@ -115,64 +116,68 @@ namespace Game.Map
 
         public byte[] GetObjectBytes()
         {
-            lock (objlist)
+            if (isDirty || objects == null)
             {
-                if (isDirty || objects == null)
+                lock (objlist)
                 {
-                    using (var ms = new MemoryStream())
+                    if (isDirty || objects == null)
                     {
-                        var bw = new BinaryWriter(ms);
-                        bw.Write(Count);
-                        foreach (SimpleGameObject obj in objlist)
+                        using (var ms = new MemoryStream())
                         {
-                            bw.Write(obj.Lvl);
-                            bw.Write(obj.Type);
-
-                            if (obj is GameObject)
+                            var bw = new BinaryWriter(ms);
+                            bw.Write(Count);
+                            foreach (SimpleGameObject obj in objlist)
                             {
-                                bw.Write(((GameObject)obj).City.Owner.PlayerId);
-                                bw.Write(((GameObject)obj).City.Id);
-                            }
-                            else
-                            {
-                                bw.Write((uint)0);
-                                bw.Write((uint)0);
+                                bw.Write(obj.Lvl);
+                                bw.Write(obj.Type);
+
+                                if (obj is GameObject)
+                                {
+                                    bw.Write(((GameObject)obj).City.Owner.PlayerId);
+                                    bw.Write(((GameObject)obj).City.Id);
+                                }
+                                else
+                                {
+                                    bw.Write((uint)0);
+                                    bw.Write((uint)0);
+                                }
+
+                                bw.Write(obj.ObjectId);
+                                bw.Write((ushort)(obj.RelX));
+                                bw.Write((ushort)(obj.RelY));
+                                bw.Write((byte)obj.State.Type);
+                                foreach (var parameter in obj.State.Parameters)
+                                {
+                                    if (parameter is byte)
+                                        bw.Write((byte)parameter);
+                                    else if (parameter is short)
+                                        bw.Write((short)parameter);
+                                    else if (parameter is int)
+                                        bw.Write((int)parameter);
+                                    else if (parameter is ushort)
+                                        bw.Write((ushort)parameter);
+                                    else if (parameter is uint)
+                                        bw.Write((uint)parameter);
+                                    else if (parameter is string)
+                                        bw.Write((string)parameter);
+                                }
+
+                                //if this is the main building then include radius
+                                if (obj is GameObject && obj == ((GameObject)obj).City.MainBuilding)
+                                    bw.Write(((GameObject)obj).City.Radius);
                             }
 
-                            bw.Write(obj.ObjectId);
-                            bw.Write((ushort)(obj.RelX));
-                            bw.Write((ushort)(obj.RelY));
-                            bw.Write((byte)obj.State.Type);
-                            foreach (var parameter in obj.State.Parameters)
-                            {
-                                if (parameter is byte)
-                                    bw.Write((byte)parameter);
-                                else if (parameter is short)
-                                    bw.Write((short)parameter);
-                                else if (parameter is int)
-                                    bw.Write((int)parameter);
-                                else if (parameter is ushort)
-                                    bw.Write((ushort)parameter);
-                                else if (parameter is uint)
-                                    bw.Write((uint)parameter);
-                                else if (parameter is string)
-                                    bw.Write((string)parameter);
-                            }
+                            isDirty = false;
 
-                            //if this is the main building then include radius
-                            if (obj is GameObject && obj == ((GameObject)obj).City.MainBuilding)
-                                bw.Write(((GameObject)obj).City.Radius);
+                            ms.Position = 0;
+                            objects = ms.ToArray();
                         }
-
-                        isDirty = false;
-
-                        ms.Position = 0;
-                        objects = ms.ToArray();
                     }
-                }
 
-                return objects;
+                }                
             }
+
+            return objects;
         }
 
         public byte[] GetBytes()

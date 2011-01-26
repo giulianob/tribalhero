@@ -26,13 +26,14 @@ namespace Game.Comm
             byte[] payloadLengthBytes = new byte[sizeof(ushort)];
             ms.Position = Packet.LENGTH_OFFSET;
             ms.Read(payloadLengthBytes, 0, sizeof(ushort));
-            ms.Position = ms.Length - 1;
+            ms.Seek(0, SeekOrigin.End);
 
             int payloadLen = BitConverter.ToUInt16(payloadLengthBytes, 0);
-            if (payloadLen > (ms.Length - Packet.HEADER_SIZE))
-                return null;
-            
             int packetLen = Packet.HEADER_SIZE + payloadLen;
+
+            if (ms.Length < packetLen)
+                return null;            
+            
             byte[] msBytes = ms.ToArray();
 
             var newMs = new MemoryStream();

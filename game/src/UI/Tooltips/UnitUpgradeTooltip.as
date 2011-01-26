@@ -19,7 +19,7 @@ package src.UI.Tooltips {
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class UnitUpgradeTooltip extends Tooltip {
+	public class UnitUpgradeTooltip extends ActionButtonTooltip {
 		private var parentObj: StructureObject;
 		private var unitPrototype: UnitPrototype;
 		private var nextUnitPrototype: UnitPrototype;
@@ -47,24 +47,14 @@ package src.UI.Tooltips {
 			this.parentObj = parentObj;
 			this.unitPrototype = unitPrototype;
 			this.nextUnitPrototype = nextUnitPrototype;
-
-			var city: City = Global.map.cities.get(parentObj.cityId);
-
-			statsBox = UnitStatBox.createFromPrototype(unitPrototype, city);
-
-			if (nextUnitPrototype != null) {
-				nextStatsBox = UnitStatBox.createFromPrototype(nextUnitPrototype, city);
-			}
-
-			createUI();
-
-			lblTitle.setText("Upgrade " + unitPrototype.getName());
-			lblLevel.setText("Level " + unitPrototype.level.toString());
-			lblDescription.setText(unitPrototype.getDescription());
 		}
 
-		public function draw(count: int, max: int):void
+		override public function draw(count: int, max: int): void
 		{
+			super.draw(count, max);
+			
+			if (!drawTooltip) return;
+			else if (pnlHeader == null) createUI();
 
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
@@ -164,6 +154,10 @@ package src.UI.Tooltips {
 			layout4.setAlignment(AsWingConstants.RIGHT);
 			pnlResources.setLayout(layout4);
 
+			var city: City = Global.map.cities.get(parentObj.cityId);
+
+			statsBox = UnitStatBox.createFromPrototype(unitPrototype, city);		
+			
 			//component layoution
 			pnlTitleLvl.appendAll(lblTitle, lblLevel);
 
@@ -172,6 +166,8 @@ package src.UI.Tooltips {
 			ui.append(statsBox);
 
 			if (nextUnitPrototype != null) {
+				nextStatsBox = UnitStatBox.createFromPrototype(nextUnitPrototype, city);
+				
 				ui.append(new JPanel());
 				pnlNextLvl.append(pnlHeader);
 				pnlNextLvl.append(nextStatsBox);
@@ -185,7 +181,11 @@ package src.UI.Tooltips {
 				pnlFooter.append(lblActionCount);
 				pnlFooter.append(pnlResources);
 			}
-		}
+			
+			lblTitle.setText("Upgrade " + unitPrototype.getName());
+			lblLevel.setText("Level " + unitPrototype.level.toString());
+			lblDescription.setText(unitPrototype.getDescription());		
+		}	
 
 	}
 

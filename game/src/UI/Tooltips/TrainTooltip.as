@@ -24,7 +24,7 @@ package src.UI.Tooltips {
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class TrainTooltip extends Tooltip {
+	public class TrainTooltip extends ActionButtonTooltip {
 		private var parentObj: StructureObject;
 		private var unitPrototype: UnitPrototype;
 		public var missingRequirements: Array;
@@ -45,19 +45,15 @@ package src.UI.Tooltips {
 		{
 			this.parentObj = parentObj;
 			this.unitPrototype = unitPrototype;
-
-			var city: City = Global.map.cities.get(parentObj.cityId);
-			statsBox = UnitStatBox.createFromPrototype(unitPrototype, city);
-
-			createUI();
-
-			lblTitle.setText("Train " + unitPrototype.getName());
-			lblLevel.setText("Level " + unitPrototype.level);			
-			lblDescription.setText(unitPrototype.getDescription());
 		}
 
-		public function draw(count: int, max: int) :void
+		override public function draw(count: int, max: int): void
 		{
+			super.draw(count, max);
+			
+			if (!drawTooltip) return;
+			else if (pnlHeader == null) createUI();
+			
 			lblTime.setText(Util.formatTime(Formula.trainTime(parentObj, unitPrototype.trainTime, parentObj.getCorrespondingCityObj().techManager)));
 			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
@@ -160,6 +156,9 @@ package src.UI.Tooltips {
 			layout4.setAlignment(AsWingConstants.RIGHT);
 			pnlResources.setLayout(layout4);
 
+			var city: City = Global.map.cities.get(parentObj.cityId);
+			statsBox = UnitStatBox.createFromPrototype(unitPrototype, city);			
+			
 			//component layoution
 			pnlHeader.append(lblTitle);
 			pnlHeader.append(lblTime);
@@ -174,6 +173,9 @@ package src.UI.Tooltips {
 			ui.append(pnlRequired);
 			ui.append(pnlFooter);
 
+			lblTitle.setText("Train " + unitPrototype.getName());
+			lblLevel.setText("Level " + unitPrototype.level);			
+			lblDescription.setText(unitPrototype.getDescription());			
 		}
 
 	}

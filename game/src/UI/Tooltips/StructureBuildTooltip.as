@@ -20,7 +20,7 @@
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class StructureBuildTooltip extends Tooltip {
+	public class StructureBuildTooltip extends ActionButtonTooltip {
 
 		private var structPrototype: StructurePrototype;
 		private var parentObj: StructureObject;
@@ -46,17 +46,16 @@
 		{
 			this.parentObj = parentObj;
 			this.structPrototype = structPrototype;
-			this.city = Global.map.cities.get(parentObj.cityId);
-
-			createUI();
-
-			lblTitle.setText("Build " + StringHelper.wordsToUpper(structPrototype.getName()));
-			lblDescription.setText(structPrototype.getGeneralDescription());
-			lblLvlDescription.setText(structPrototype.getDescription());
-		}
-
-		public function draw(count: int, max: int) :void
+			this.city = Global.map.cities.get(parentObj.cityId);			
+		}		
+		
+		override public function draw(count: int, max: int): void
 		{
+			super.draw(count, max);
+			
+			if (!drawTooltip) return;
+			else if (pnlHeader == null) createUI();
+			
 			var labelMaker: Function = function(text: String, icon: Icon = null) : JLabel {
 				var label: JLabel = new JLabel(text, icon);
 				GameLookAndFeel.changeClass(label, "Tooltip.text");
@@ -172,6 +171,11 @@
 
 			pnlFooter.append(lblActionCount);
 			pnlFooter.append(pnlResources);
+			
+			// text values
+			lblTitle.setText("Build " + StringHelper.wordsToUpper(structPrototype.getName()));
+			lblDescription.setText(structPrototype.getGeneralDescription());
+			lblLvlDescription.setText(structPrototype.getDescription());			
 		}
 	}
 

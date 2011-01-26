@@ -19,7 +19,7 @@ package src.UI.Tooltips {
 	{
 		protected var ui: GameJBox = new GameJBox();
 
-		private var viewObj: DisplayObject;
+		protected var viewObj: DisplayObject;
 
 		public function Tooltip() {
 			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));

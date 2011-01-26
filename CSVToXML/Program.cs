@@ -310,7 +310,7 @@ namespace CSVToXML {
                                 break;
                             case ActionType.UnitTrain:
                                 writer.WriteStartElement("TrainUnit");
-                                writer.WriteAttributeString("type", req.Parms[1]);
+                                writer.WriteAttributeString("type", req.Parms[0]);
                                 break;
                             case ActionType.StructureChange:
                                 writer.WriteStartElement("StructureChange");

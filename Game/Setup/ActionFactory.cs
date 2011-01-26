@@ -93,8 +93,8 @@ namespace Game.Setup
 
                         // Set action params
                         actionReq.Parms = new string[5];
-                        for (int i = 5; i < 10; ++i)
-                            actionReq.Parms[i - 5] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
+                        for (int i = 6; i < 11; ++i)
+                            actionReq.Parms[i - 6] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
 
                         // Set effect requirements
                         uint effectReqId;

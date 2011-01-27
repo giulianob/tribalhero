@@ -20,18 +20,18 @@ TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Reduces distance requirement by 2 for undergr
 TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Reduces distance requirement by 3 for underground structures.
 ,
 SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structre is destroyed in battle, all buildings are repaired by 4% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structre is destroyed in battle, all buildings are repaired by 8% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structre is destroyed in battle, all buildings are repaired by 12% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structre is destroyed in battle, all buildings are repaired by 16% HP of the destroyed buildings.(Stackable up to 100%)"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structre is destroyed in battle, all buildings are repaired by 20% HP of the destroyed buildings.(Stackable up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP. Stackable up to 100%"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structure is destroyed in battle, all other buildings are repaired by 8% of the destroyed buildings HP. Stackable up to 100%"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structure is destroyed in battle, all other buildings are repaired by 12% of the destroyed buildings HP. Stackable up to 100%"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all other buildings are repaired by 16% of the destroyed buildings HP. Stackable up to 100%"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP. Stackable up to 100%"
 ,
 LAST_STAND_TECHNOLOGY_NAME,Last Stand
-LAST_STAND_TECHNOLOGY_LVL_1,15% chance completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_2,30% chance completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_3,45% chance completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_4,60% chance completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_5,75% chance completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_1,15% chance to completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_2,30% chance to completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_3,45% chance to completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_4,60% chance to completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_5,75% chance to completely ignore the attack when team is about to die.
 ,
 ,
 RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack
@@ -42,18 +42,18 @@ RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attac
 RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stackable)
 ,
 RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
-RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stackable)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
-DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% when distance is greather than 50. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% when distance is greather than 50. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% when distance is greather than 50. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% when distance is greather than 50. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% when distance is greather than 50. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% when distance is greater than 50 tiles. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% when distance is greater than 50 tiles. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 12% when distance is greater than 50 tiles. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance is greater than 50 tiles. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 50 tiles. (Stackable)
 ,
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
@@ -64,9 +64,9 @@ ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 ,
 ,
 BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
-BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash target to 4.
-BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash target to 5.
-BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash target to 6.
+BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash damage to 4.
+BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash damage to 5.
+BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage to 6.
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
 HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15.
@@ -146,7 +146,7 @@ TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
 TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2th unit free for every 1 unit that is trained.
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
-HAPPYHOUR_TECHNOLOGY_LVL_1,Villagers are so drunk... thus increasing the laborer production rate by 30%.
+HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%.
 ,
 SUNDANCE_TECHNOLOGY_NAME,Sun Dance
 SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 120%
@@ -156,38 +156,38 @@ SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus to 180%
 SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus to 200%
 ,
 GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
-GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to  load up loot bonus by 1%
-GREED_IS_GOOD_TECHNOLOGY_LVL_2,Increase efficiency to  load up loot bonus by 2%
-GREED_IS_GOOD_TECHNOLOGY_LVL_3,Increase efficiency to  load up loot bonus by 3%
-GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to  load up loot bonus by 4%
-GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to  load up loot bonus by 5%
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to load up loot bonus by 1%
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Increase efficiency to load up loot bonus by 2%
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Increase efficiency to load up loot bonus by 3%
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to load up loot bonus by 4%
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to load up loot bonus by 5%
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,"Defensive reinforcements gain 1 vision when joining the battle, only if they have Coordinated Defense."
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,"Defensive reinforcements gain 2 vision when joining the battle, only if they have Coordinated Defense.(Take the lower level of two forces)"
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,"Defensive reinforcements gain 3 vision when joining the battle, only if they have Coordinated Defense.(Take the lower level of two forces)"
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,"Defensive reinforcements gain 1 vision when joining the battle, only if other playe ralso has Coordinated Defense."
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,"Defensive reinforcements gain 2 vision when joining the battle, only if other player also has Coordinated Defense. (Takes the lower level of the two forces)"
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,"Defensive reinforcements gain 3 vision when joining the battle, only if other player also has Coordinated Defense. (Takes the lower level of the two forces)"
 ,
 COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
-COORDINATED_ATTACK_TECHNOLOGY_LVL_1,"Offensive reinforcements gain 1 vision when joining the battle, only if they have Coordinated Attack."
-COORDINATED_ATTACK_TECHNOLOGY_LVL_2,"Offensive reinforcements gain 2 vision when joining the battle, only if they have Coordinated Attack.(Take the lower level of two forces)"
-COORDINATED_ATTACK_TECHNOLOGY_LVL_3,"Offensive reinforcements gain 3 vision when joining the battle, only if they have Coordinated Attack.(Take the lower level of two forces)"
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,"Offensive reinforcements gain 1 vision when joining the battle, only if the other player also has Coordinated Attack."
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,"Offensive reinforcements gain 2 vision when joining the battle, only if the other player also has Coordinated Attack.(Takes the lower level of the two forces)"
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,"Offensive reinforcements gain 3 vision when joining the battle, only if the other player also has Coordinated Attack.(Takes the lower level of the two forces)"
 ,
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
-REINVENT_WHEEL_TECHNOLOGY_LVL_1,increase send/trade resource speed by 4%.(stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_2,increase send/trade resource speed by 8%.(stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_3,increase send/trade resource speed by 12%.(stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_4,increase send/trade resource speed by 16%.(stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_5,increase send/trade resource speed by 20%.(stackable)
+REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 4%. (Stackable)
+REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 8%. (Stackable)
+REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 12%. (Stackable)
+REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 16%. (Stackable)
+REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 20%. (Stackable)
 ,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
-WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 5 Labor in Foundry produces 1 gold per hour
-WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 4 Labor in Foundry produces 1 gold per hour
-WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 3 Labor in Foundry produces 1 gold per hour
-WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 2 Labor in Foundry produces 1 gold per hour
-WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every Labor in Foundry produces 1 gold per hour
+WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 5 laborers in the Foundry produces 1 gold per hour.
+WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 4 laborers in the Foundry produces 1 gold per hour.
+WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 3 laborers in the Foundry produces 1 gold per hour.
+WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 2 laborers in the Foundry produces 1 gold per hour.
+WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every single laborer in the Foundry produces 1 gold per hour.
 ,
 SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
-SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash target to 4.
-SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash target to 5.
-SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash target to 6.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage to 4.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage to 5.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage to 6.

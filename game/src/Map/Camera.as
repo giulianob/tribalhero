@@ -157,7 +157,7 @@
 
 		public function ScrollToCenter(x: int, y: int): void
 		{
-			ScrollTo(x - Constants.screenW / 2, y - Constants.screenH / 2);
+			ScrollTo(x - (Constants.screenW * zoomFactorOverOne) / 2, y - (Constants.screenH * zoomFactorOverOne) / 2);
 		}
 
 		public function ScrollTo(x: int, y: int): void
@@ -165,14 +165,9 @@
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
 
-			if (x > Constants.mapW - Constants.screenW - (Constants.tileW / 2))
-			x = Constants.mapW - Constants.screenW - (Constants.tileW / 2);
+			this.x = Math.min(x, Constants.mapW - (Constants.screenW * zoomFactorOverOne) - (Constants.tileW / 2));
 
-			if (y > Constants.mapTileH * int(Constants.tileH / 2) - Constants.screenH - int(Constants.tileH / 2) )
-			y = Constants.mapTileH * int(Constants.tileH / 2) - Constants.screenH - int(Constants.tileH / 2);
-
-			this.x = x;
-			this.y = y;
+			this.y = Math.min(y, Constants.mapTileH * int(Constants.tileH / 2) - (Constants.screenH * zoomFactorOverOne) - int(Constants.tileH / 2));
 
 			fireOnMove();
 		}
@@ -180,6 +175,7 @@
 		public function setZoomFactor(factor: Number): void {
 			zoomFactor = factor;
 			zoomFactorOverOne = (1.0 / factor);
+			ScrollTo(x, y);
 		}
 		
 		public function getZoomFactorOverOne(): Number {

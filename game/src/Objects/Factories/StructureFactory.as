@@ -97,7 +97,11 @@
 
 		public static function getPrototype(type: int, level: int): StructurePrototype
 		{
-			return structurePrototypes.get([type, level]);
+			var structPrototype: StructurePrototype = structurePrototypes.get([type, level]);
+			if (!structPrototype)
+				trace("Did not find structure prototype for type " + type + " level " + level);
+				
+			return structPrototype;
 		}
 
 		public static function getSprite(type: int, level: int, centered: Boolean = false): DisplayObjectContainer

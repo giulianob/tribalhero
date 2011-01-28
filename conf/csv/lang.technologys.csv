@@ -174,11 +174,11 @@ COORDINATED_ATTACK_TECHNOLOGY_LVL_3,"Offensive reinforcements gain 3 vision when
 ,
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
-REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 4%. (Stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 8%. (Stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 12%. (Stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 16%. (Stackable)
-REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 20%. (Stackable)
+REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for the structure.
+REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 16% for the structure.
+REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 24% for the structure.
+REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for the structure.
+REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for the structure.
 ,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
 WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 5 laborers in the Foundry produces 1 gold per hour.

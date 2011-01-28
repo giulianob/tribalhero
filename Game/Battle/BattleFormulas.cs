@@ -25,7 +25,7 @@ namespace Game.Battle
 
         public static int GetUnitsPerStructure(Structure structure)
         {
-            var units = new[] {20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144};
+            var units = new[] {20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144, 179, 219, 263, 315, 370};
             return units[structure.Lvl];
         }
 

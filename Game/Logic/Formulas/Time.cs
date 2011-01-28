@@ -1,6 +1,5 @@
 #region
 
-using System;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
@@ -21,8 +20,13 @@ namespace Game.Logic.Formulas
             return quantity*15;
         }
 
-        internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager) {
-            int overtime = structure.City.Technologies.GetEffects(EffectCode.HaveTechnology, EffectInheritance.All).DefaultIfEmpty(new Effect { Value = new object[] { 20001, 0 } }).Max(x => (int)x.Value[0] == 20001 ? (int)x.Value[1] : 0);
+        internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager)
+        {
+            var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod, EffectInheritance.All);
+            int overtime = 0;
+            if (effects.Count > 0)
+                overtime = effects.Max(x => (int)x.Value[0]);
+
             return (int)((100 - overtime*10) * count * 300 * Config.seconds_per_unit / 100);
         }
 
@@ -39,25 +43,26 @@ namespace Game.Logic.Formulas
 
         public static int BuildTime(int baseValue, City city, TechnologyManager em)
         {
-            Structure univeristy = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
-            var buildtime = (int)(baseValue*(100 - (univeristy == null ? 0 : univeristy.Stats.Labor)*0.25)/100);
+            Structure university = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
+            var buildtime = (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
             return (int)(buildtime*Config.seconds_per_unit);
         }
 
-
-        internal static double MoveTimeMod(City city, int distance, bool isAttacking) {
-            int mod=0;
-            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All)) {
-                if ((((string)effect.Value[1]).StartsWith("ATTACK", StringComparison.CurrentCultureIgnoreCase) && isAttacking) ||
-                    (((string)effect.Value[1]).StartsWith("DEFENSE", StringComparison.CurrentCultureIgnoreCase) && !isAttacking)) {
+        internal static double MoveTimeMod(City city, int distance, bool isAttacking)
+        {
+            int mod = 0;
+            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All))
+            {
+                if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) || (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
+                {
                     mod += (int)effect.Value[0];
-                } else if (((string)effect.Value[1]).StartsWith("DISTANCE", StringComparison.CurrentCultureIgnoreCase)) {
-                    if (distance > (int)effect.Value[2]) {
-                        mod += (int)effect.Value[0];
-                    }
+                }
+                else if (((string)effect.Value[1]).ToUpper() == "DISTANCE" && distance > (int)effect.Value[2])
+                {
+                    mod += (int)effect.Value[0];
                 }
             }
-            return (double)100 / (mod + 100);
+            return (double)100/(mod + 100);
         }
 
         internal static int MoveTime(byte speed) {

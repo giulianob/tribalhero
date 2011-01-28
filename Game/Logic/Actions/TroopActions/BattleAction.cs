@@ -120,10 +120,8 @@ namespace Game.Logic.Actions
                         stub.EndUpdate();
                     }
 					
-                    if(destroyedHp>0) 
-					{
-                        Procedure.SenseOfUrgency(city,destroyedHp);
-                    }
+                    if(destroyedHp>0)                    
+                        Procedure.SenseOfUrgency(city, destroyedHp);                    
 					
                     StateChange(ActionState.Completed);
                 }
@@ -194,15 +192,9 @@ namespace Game.Logic.Actions
         }
 
         private void BattleUnitRemoved(CombatObject obj) {
-            CombatStructure cs = obj as CombatStructure;
-            if (cs == null)
-                return;
-
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
-                return;
-            if (cs.City == city) {
-                destroyedHp += cs.Stats.MaxHp;
+            // Keep track of our buildings destroyed HP
+            if (obj.ClassType == BattleClass.Structure && obj.City.Id == cityId) {
+                destroyedHp += obj.Stats.MaxHp;
             }
         }
 

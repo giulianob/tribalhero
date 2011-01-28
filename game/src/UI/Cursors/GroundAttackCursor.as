@@ -190,7 +190,7 @@
 
 			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
-			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance);
+			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance, true);
 
 			var username: Username = Global.map.usernames.cities.getUsername(structObj.cityId, showTooltip, structObj);
 			if (username) showTooltip(username, structObj);

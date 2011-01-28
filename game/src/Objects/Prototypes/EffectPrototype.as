@@ -36,11 +36,11 @@
 		public var effectCode: int;
 		public var isPrivate: Boolean;
 		public var location: int;
-		public var param1: int;
-		public var param2: int;
-		public var param3: int;
-		public var param4: int;
-		public var param5: int;		
+		public var param1: *;
+		public var param2: *;
+		public var param3: *;
+		public var param4: *;
+		public var param5: *;		
 		
 		public function EffectPrototype() {
 

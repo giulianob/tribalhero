@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
@@ -81,7 +82,7 @@ namespace Game.Logic.Actions
                 !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.ObjectNotFound;
 
-            if (city.Troops.Size >= 12)
+            if (city.Troops.MyStubs().Count() >= 12)
                 return Error.TooManyTroops;
 
             // Can't attack if target is under newbie protection

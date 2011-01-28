@@ -36,9 +36,7 @@ namespace Game.Logic.Procedures
                 foreach (var unit in formation)
                 {
                     ushort count;
-                    if (!source[FormationType.Normal].TryGetValue(unit.Key, out count))
-                        return false;
-                    if (count < unit.Value)
+                    if (!source[FormationType.Normal].TryGetValue(unit.Key, out count) || count < unit.Value)
                         return false;
                 }
             }

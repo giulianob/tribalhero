@@ -288,11 +288,7 @@ namespace Game.Data.Troop
         /// <returns></returns>
         internal IEnumerable<TroopStub> StationedHere()
         {
-            foreach (var stub in this)
-            {
-                if (stub.StationedCity == City)
-                    yield return stub;
-            }
+            return this.Where(stub => stub.StationedCity == City);
         }
 
         /// <summary>

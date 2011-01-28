@@ -18,7 +18,6 @@ namespace Game.Logic.Formulas
 
         internal static int TradeTime(Structure structure, int quantity)
         {
-            int mod = structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
             return quantity * 15 * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 

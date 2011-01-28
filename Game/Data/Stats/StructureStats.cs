@@ -22,7 +22,7 @@ namespace Game.Data.Stats
             }
             set
             {
-                hp = Math.Min(value,Base.Battle.MaxHp);
+                hp = Math.Min(value, Base.Battle.MaxHp);
                 FireStatsUpdate();
             }
         }

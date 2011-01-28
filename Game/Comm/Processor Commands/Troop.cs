@@ -319,12 +319,6 @@ namespace Game.Comm
 
                 City city = cities[cityId];
 
-                if (city.Battle != null)
-                {
-                    ReplyError(session, packet, Error.CityInBattle);
-                    return;
-                }
-
                 City targetCity = cities[targetCityId];
                 Structure targetStructure;
 

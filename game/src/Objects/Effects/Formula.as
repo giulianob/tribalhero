@@ -37,6 +37,17 @@
 			return discount[level];
 		}
 		
+		public static function laborMoveTime(parentObj: GameObject, count: int, techManager: TechnologyManager): int
+		{
+			var overtime: int = 0;
+			for each (var tech: EffectPrototype in techManager.getEffects(EffectPrototype.EFFECT_LABOR_MOVE_TIME_MOD, EffectPrototype.INHERIT_ALL)) {
+				overtime = Math.max(overtime, (int)(tech.param1));
+			}
+			overtime = Math.min(100, overtime);
+			
+            return (int)((100 - overtime*10) * count * 300 * Constants.secondsPerUnit / 100);
+		}
+		
 		public static function trainTime(parentObj: GameObject, baseValue: int, techManager: TechnologyManager): int
 		{			
 			return (baseValue * Constants.secondsPerUnit) * (100 - timeDiscount(parentObj.level)) / 100;

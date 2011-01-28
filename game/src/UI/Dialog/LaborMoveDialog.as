@@ -7,8 +7,10 @@ package src.UI.Dialog{
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import org.aswing.plaf.basic.background.PanelBackground;
 	import src.Global;
 	import src.Map.City;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.LazyResources;
@@ -17,14 +19,17 @@ package src.UI.Dialog{
 	import src.Objects.Resources;
 	import src.Objects.StructureObject;
 	import src.UI.GameJPanel;
+	import src.Util.Util;
 
 	public class LaborMoveDialog extends GameJPanel{
 
 		//members define
 		private var label81:JLabel;
 		private var panel82:JPanel;
+		private var panelTime: JPanel;
 		private var lblCount:JLabel;
 		private var lblRate:JLabel;
+		private var lblTime:JLabel;
 		private var sldCount:JSlider;
 		private var panel86:JPanel;
 		private var btnOk:JButton;
@@ -96,15 +101,19 @@ package src.UI.Dialog{
 
 		private function onSlideChange(e: InteractiveEvent = null):void {
 
+			var laborDelta: int = (sldCount.getValue() - structure.labor);
+			
 			if (resource)
-			{
-				var laborDelta: int = (sldCount.getValue() - structure.labor);
-
+			{				
 				var newRate: int = LazyResources.getHourlyRate(resource, laborDelta);
 
 				lblRate.setText((newRate == 0 ? "0" : "+" + newRate) + " per hour");
 			}
-
+			
+			var moveTime: int = Formula.laborMoveTime(structure, Math.abs(laborDelta), city.techManager);
+			if (laborDelta < 0) moveTime /= 20;
+			
+			lblTime.setText(Util.formatTime(moveTime));
 			lblCount.setText(sldCount.getValue().toString() + " out of " + sldCount.getMaximum().toString());
 
 			if (getFrame() != null) {
@@ -131,9 +140,8 @@ package src.UI.Dialog{
 		private function createUI():void {
 			//component creation
 			title = "Labor Assignment";
-			setSize(new IntDimension(220, 111));
-			var layout0:BorderLayout = new BorderLayout();
-			setLayout(layout0);
+			setSize(new IntDimension(220, 160));
+			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 
 			var topPanel: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
 			topPanel.setConstraints("North");
@@ -181,18 +189,28 @@ package src.UI.Dialog{
 			btnOk.setLocation(new IntPoint(113, 5));
 			btnOk.setSize(new IntDimension(22, 22));
 			btnOk.setText("Ok");
+			
+			panelTime = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 0, AsWingConstants.RIGHT));
+			
+			lblTime = new JLabel("00:00:00", new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT);
 
 			//component layoution
 			topPanel.append(label81);
 			topPanel.append(msg);
 
+			var pnlGrouping: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
+			pnlGrouping.append(panel82);
+			pnlGrouping.append(panelTime);			
+			
 			append(topPanel);
-			append(panel82);
+			append(pnlGrouping);			
 			append(panel86);
 
+			panelTime.append(lblTime);
+			
 			panel82.append(lblCount);
 			panel82.append(lblRate);
-			panel82.append(sldCount);
+			panel82.append(sldCount);						
 
 			panel86.append(btnOk);
 		}

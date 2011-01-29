@@ -18,7 +18,6 @@ package src
 		/* APP CONSTANTS */
 		public static const debug:int = 0;
 		public static const defLang:String = "en";
-		public static const webVersion: Boolean = true;
 		
 		public static const alwaysEnableButtons: Boolean = false;
 

@@ -9,9 +9,17 @@ using Game.Util;
 
 namespace Game.Comm
 {
-    class PacketMaker
+    public class PacketMaker
     {
         private MemoryStream ms = new MemoryStream();
+
+        public long Length
+        {
+            get
+            {
+                return ms.Length;
+            }
+        }
 
         public void Append(byte[] data)
         {
@@ -62,7 +70,7 @@ namespace Game.Comm
 
         #endregion
 
-        private readonly PacketMaker packetMaker;
+        public PacketMaker PacketMaker { get; private set; }
 
         protected Processor processor;
 
@@ -70,7 +78,7 @@ namespace Game.Comm
         {
             Name = name;
             this.processor = processor;
-            packetMaker = new PacketMaker();
+            PacketMaker = new PacketMaker();
         }
 
         public string Name { get; private set; }
@@ -102,16 +110,6 @@ namespace Game.Comm
         }
 
         protected abstract void Close();
-
-        public void AppendBytes(byte[] data)
-        {
-            packetMaker.Append(data);
-        }
-
-        public Packet GetNextPacket()
-        {
-            return packetMaker.GetNextPacket();
-        }
 
         public void Process(object obj)
         {

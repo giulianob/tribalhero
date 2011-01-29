@@ -114,14 +114,17 @@ namespace Game.Comm
 
         private void SocketDisconnect(Socket s)
         {
-            //create disconnect packet to send to processor
-            SocketSession dcSession = sessions[s];
+            lock (sockListLock)
+            {
+                //create disconnect packet to send to processor
+                SocketSession dcSession = sessions[s];
 
-            sessions.Remove(s);
-            sockList.Remove(s);
+                sessions.Remove(s);
+                sockList.Remove(s);
 
-            var packet = new Packet(Command.OnDisconnect);
-            ThreadPool.QueueUserWorkItem(dcSession.ProcessEvent, packet);
+                var packet = new Packet(Command.OnDisconnect);
+                ThreadPool.QueueUserWorkItem(dcSession.ProcessEvent, packet);
+            }
         }
 
         private void SocketHandler()
@@ -172,26 +175,34 @@ namespace Game.Comm
                                     continue;
                                 }
 
-                                Global.Logger.Debug("[" + sessions[s].Name + "]: " + data.Length);
+                                var session = sessions[s];
 
-                                sessions[s].AppendBytes(data);
+#if DEBUG
+                                Global.Logger.Debug("[" + session.Name + "]: " + data.Length);
+#endif
+
+                                session.PacketMaker.Append(data);
 
                                 do
                                 {
-                                    Packet packet = sessions[s].GetNextPacket();
+                                    Packet packet = session.PacketMaker.GetNextPacket();
 
                                     if (packet == null)
-                                        break;
+                                    {
+                                        // Remove the player if after processing packets we still have over 64k of data remaining.
+                                        // This probably means the player is spamming the server with an invalid client that doesn't speak our protocol
+                                        if (session.PacketMaker.Length > 65536)
+                                            SocketDisconnect(s);                                                                                   
 
-                                    ThreadPool.QueueUserWorkItem(sessions[s].Process, packet);
+                                        break;
+                                    }
+
+                                    ThreadPool.QueueUserWorkItem(session.Process, packet);
                                 } while (true);
                             }
-                            catch(SocketException)
+                            catch (SocketException)
                             {
-                                lock (sockListLock)
-                                {
-                                    SocketDisconnect(s);
-                                }
+                                SocketDisconnect(s);
                             }
                         }
                     }

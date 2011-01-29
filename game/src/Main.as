@@ -7,21 +7,19 @@
 	import flash.events.*;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.system.Security;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
+	import org.aswing.*;
 	import org.aswing.skinbuilder.orange.*;
+	import src.Comm.*;
 	import src.Map.*;
-	import src.Objects.Actions.CurrentAction;
-	import src.Objects.Actions.CurrentActionReference;
+	import src.Objects.Factories.*;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.InitialCityDialog;
 	import src.UI.Dialog.LoginDialog;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.Util.*;
-	import src.Comm.*;
-	import src.Objects.Factories.*;
-	import org.aswing.*;
-	import src.Util.BinaryList.BinaryList;
 
 	public class Main extends MovieClip
 	{
@@ -36,7 +34,6 @@
 		private var session:TcpSession;
 		private var password: String;
 		private var parms: Object;
-		private var hadLoginError: Boolean;
 
 		private var loginDialog: LoginDialog;
 
@@ -99,7 +96,7 @@
 				siteVersion = parms.siteVersion;
 				Constants.loginKey = parms.lsessid;
 				Constants.hostname = parms.hostname;
-				loadLanguages(Constants.hostname);
+				loadData();
 			}
 			else
 			{
@@ -107,36 +104,36 @@
 			}
 		}
 
-		private function loadLanguages(domain: String):void
-		{
+		private function loadData(): void 
+		{			
 			pnlLoading = InfoDialog.showMessageDialog("Loading", "Launching the game...", null, null, true, false, 0);
-
-			if (Constants.webVersion)
-			{
-				Locale.addXMLPath(Constants.defLang, "http://"+Constants.hostname+":8085/Game_" + Constants.defLang + ".xml?" + siteVersion);
-			}
-			else
-			{
-				Locale.addXMLPath(Constants.defLang, "en/Game_" + Constants.defLang + ".xml?" + siteVersion);
-			}
-
-			Locale.setDefaultLang(Constants.defLang);
-			Locale.setLoadCallback(langLoaded);
-
-			Locale.loadLanguageXML(Constants.defLang);
-		}
-
-		public function langLoaded(success: Boolean):void
-		{
-			if (Constants.queryData)
-			{
+			
+			Security.loadPolicyFile("http://" + Constants.hostname + ":8085/crossdomain.xml");				
+			
+			if (Constants.queryData) {
 				var loader: URLLoader = new URLLoader();
-				loader.addEventListener(Event.COMPLETE, onReceiveXML);
-				loader.load(new URLRequest("http://"+Constants.hostname+":8085/data.xml?" + siteVersion));
-			}
-			else {
-				doConnect();
-			}
+				loader.addEventListener(Event.COMPLETE, function(e: Event) : void { 
+					Constants.objData = XML(e.target.data);
+					loadLanguages();
+				});
+				loader.addEventListener(IOErrorEvent.IO_ERROR, function(e: Event): void {
+					onDisconnected();
+				});
+				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?" + siteVersion));			
+			} 
+			else
+				loadLanguages();
+		}
+		
+		private function loadLanguages():void
+		{					
+			Locale.setLoadCallback(function(success: Boolean) : void {
+				if (!success) onDisconnected();
+				else doConnect();
+			});
+			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + ":8085/Game_" + Constants.defLang + ".xml?" + siteVersion);
+			Locale.setDefaultLang(Constants.defLang);				
+			Locale.loadLanguageXML(Constants.defLang);
 		}
 
 		public function doConnect():void
@@ -162,7 +159,7 @@
 			password = sender.getTxtPassword().getText();
 			Constants.hostname = sender.getTxtAddress().getText();
 
-			loadLanguages(Constants.hostname);
+			loadData();
 		}
 
 		public function onSecurityError(event: SecurityErrorEvent):void
@@ -174,29 +171,28 @@
 
 		public function onDisconnected(event: Event = null):void
 		{
-			gameContainer.dispose();
-
-			if (Global.mapComm) Global.mapComm.dispose();
+			var wasStillLoading: Boolean = pnlLoading != null;
+			
+			if (pnlLoading)
+				pnlLoading.getFrame().dispose();
+		
+			gameContainer.dispose();			
+			if (Global.mapComm) Global.mapComm.dispose();			
+			
 			Global.mapComm = null;
 			Global.map = null;			
-			session = null;			
+			session = null;
 
-			if (!hadLoginError) {
-				if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", "Connection to Server Lost. Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
-				else InfoDialog.showMessageDialog("Connection Lost", "Connection to server lost", function(result: int):void { if (!parms.hostname) showLoginDialog(); }, null, true, false, 1, true);
-			}
-
-			hadLoginError = false;
+			if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? "Unable to connect to server" : "Connection to Server Lost") + ". Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
+			else InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? "Unable to connect to server." : "Connection to Server Lost."), function(result: int):void { if (!parms.hostname) showLoginDialog(); }, null, true, false, 1, true);
 		}
 
 		public function onConnected(event: Event, connected: Boolean):void
 		{
 			if (pnlLoading) pnlLoading.getFrame().dispose();
 
-			if (!connected)
-			{
-				InfoDialog.showMessageDialog("Error", "Connection failed");
-			}
+			if (!connected) 
+				InfoDialog.showMessageDialog("Error", "Unable to connect to server");			
 			else
 			{
 				Global.mapComm = new MapComm(session);
@@ -210,8 +206,7 @@
 
 		public function onLogin(packet: Packet):void
 		{
-			if (MapComm.tryShowError(packet, function(result: int) : void { hadLoginError = false; onDisconnected(); } , true)) {			
-				hadLoginError = true;
+			if (MapComm.tryShowError(packet, function(result: int) : void { onDisconnected(); } , true)) {
 				return;
 			}
 
@@ -238,7 +233,7 @@
 		{
 			var str: String = e.target.data;
 
-			Constants.objData = XML(str);
+			Constants.objData = XML(e.target.data);
 
 			doConnect();
 		}

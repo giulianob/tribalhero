@@ -56,6 +56,11 @@ package src.Objects.Actions {
 		{
 			return 0;
 		}
+		
+		public function isCancellable() : Boolean 
+		{
+			return true;
+		}
 	}
 	
 }

@@ -21,6 +21,7 @@
 		public static const EFFECT_TROOP_SPEED_MOD: int = 12;
 		public static const EFFECT_AWAY_FROM_STRUCTURE_MOD: int = 14;
         public static const EFFECT_LABOR_MOVE_TIME_MOD: int = 18;
+		public static const EFFECT_LABOR_TRAIN_TIME_MOD: int = 20;
 		
 		public static const LOCATION_OBJECT: int = 0;
 		public static const LOCATION_CITY: int = 1;

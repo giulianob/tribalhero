@@ -193,10 +193,8 @@
 				{
 					socket.readBytes(streamingPacket, streamingPacket.length, Math.min(socket.bytesAvailable, Constants.headerSize - streamingPacket.length));
 					
-					if (streamingPacket.length == Constants.headerSize)
-					{
-						headerPacket = new Packet(streamingPacket);
-					}
+					if (streamingPacket.length == Constants.headerSize)					
+						headerPacket = new Packet(streamingPacket);					
 					else
 						continue;
 					

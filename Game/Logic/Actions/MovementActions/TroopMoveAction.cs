@@ -24,7 +24,7 @@ namespace Game.Logic.Actions
         private int distanceRemaining;
         private uint nextX;
         private uint nextY;
-        private double speedMod;
+        private int moveTime;
 
         // non-persist variable
         private Boolean isAttacking;
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
             nextY = uint.Parse(properties["next_y"]);
             distanceRemaining = int.Parse(properties["distance_remaining"]);
             isReturningHome = Boolean.Parse(properties["returning_home"]);
-            speedMod = double.Parse(properties["speed_mod"]);
+            moveTime = int.Parse(properties["move_time"]);
         }
 
         public override ActionType Type
@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
                                                         new XmlKvPair("city_id", cityId), new XmlKvPair("troop_id", troopObjectId), new XmlKvPair("x", x),
                                                         new XmlKvPair("y", y), new XmlKvPair("next_x", nextX), new XmlKvPair("next_y", nextY),
                                                         new XmlKvPair("distance_remaining", distanceRemaining), new XmlKvPair("returning_home", isReturningHome),
-                                                        new XmlKvPair("speed_mod", speedMod)
+                                                        new XmlKvPair("move_time", moveTime)
                                                 });
             }
         }
@@ -105,16 +105,17 @@ namespace Game.Logic.Actions
 
         private bool CalculateNext(TroopObject obj)
         {
-            int distance = obj.TileDistance(x, y);
-            if (distance == 0)
+            if (distanceRemaining <= 0)
                 return false;
+
             RecordForeach recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
             TileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
             nextX = recordForeach.X;
-            nextY = recordForeach.Y;
-            nextTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(obj.Stats.Speed) * Config.seconds_per_unit * speedMod / 100));
+            nextY = recordForeach.Y;            
 
-            --distanceRemaining;
+            nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime) * distanceRemaining);
+
             return true;
         }
 
@@ -126,12 +127,10 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.ObjectNotFound;
 
-
             distanceRemaining = troopObj.TileDistance(x, y);
 
-            speedMod = Formula.MoveTimeMod(city, distanceRemaining, isAttacking);
-
-            endTime = DateTime.UtcNow.AddSeconds(Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed) * Config.seconds_per_unit * speedMod / 100) * distanceRemaining);
+            moveTime = (int)Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed)*Formula.MoveTimeMod(city, distanceRemaining, isAttacking));
+            
             beginTime = DateTime.UtcNow;
 
             troopObj.Stub.BeginUpdate();
@@ -171,10 +170,11 @@ namespace Game.Logic.Actions
 
             using (new MultiObjectLock(cityId, troopObjectId, out city, out troopObj))
             {
+                --distanceRemaining;
+
                 troopObj.BeginUpdate();
                 troopObj.X = nextX;
-                troopObj.Y = nextY;
-                --distanceRemaining;
+                troopObj.Y = nextY;                
                 troopObj.EndUpdate();
 
                 // Fire updated to force sending new position

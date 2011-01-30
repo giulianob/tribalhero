@@ -28,7 +28,7 @@ namespace Game.Logic.Formulas
             if (effects.Count > 0)
                 overtime = effects.Max(x => (int)x.Value[0]);
 
-            return (int)((100 - overtime*10) * count * 300 * Config.seconds_per_unit / 100);
+            return (100 - overtime*10) * count * 300 / 100;
         }
 
         private static int TimeDiscount(int lvl)
@@ -39,14 +39,13 @@ namespace Game.Logic.Formulas
 
         public static int TrainTime(int baseValue, int structureLvl, TechnologyManager em)
         {
-            return (int)(baseValue*Config.seconds_per_unit*(100 - TimeDiscount(structureLvl))/100);
+            return baseValue*(100 - TimeDiscount(structureLvl))/100;
         }
 
         public static int BuildTime(int baseValue, City city, TechnologyManager em)
         {
             Structure university = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
-            var buildtime = (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
-            return (int)(buildtime*Config.seconds_per_unit);
+            return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
         }
 
         internal static double MoveTimeMod(City city, int distance, bool isAttacking)

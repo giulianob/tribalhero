@@ -35,6 +35,7 @@
 					var effectReqId: int = actionNode.@effectreq;
 					var effectReq: EffectReqManager = null;
 					var effectReqInherit: int = EffectPrototype.INHERIT_UPWARD;
+					var options: int = actionNode.@option;
 
 					var action: Action = null;
 
@@ -116,6 +117,7 @@
 					if (action != null)
 					{
 						action.maxCount = maxCount;
+						action.options = options;
 						action.effectReq = effectReq;
 						action.effectReqInherit = effectReqInherit;
 						action.index = worker.addAction(action as IAction);

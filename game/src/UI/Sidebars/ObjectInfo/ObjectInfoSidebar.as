@@ -258,14 +258,14 @@ package src.UI.Sidebars.ObjectInfo {
 
 			for (var i: int = 0; i < actions.length; i++)
 			{
-				var currentAction: * = actions[i];
-
-				var actionDescription: String = currentAction.toString();
+				var currentAction: * = actions[i];				
 
 				if (currentAction is CurrentActionReference) {
 					currentAction = currentAction.getAction();
 					if (!currentAction) continue;
 				}
+				
+				var actionDescription: String = currentAction.toString();
 
 				var cancelButton: CancelActionButton = new CancelActionButton(gameObject, currentAction.id);
 
@@ -292,7 +292,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 				//component layoution
 				panel.append(lblDescription);
-				panel.append(astCancel);
+				
+				if (currentAction.isCancellable())
+					panel.append(astCancel);
 
 				pnlActionRow.append(panel);
 				pnlActionRow.append(lblTime);

@@ -33,7 +33,7 @@ package src.Objects.Actions {
 			
 			if (!city) return null;			
 			
-			return city.currentActions.get(actionId);									
+			return city.currentActions.get(actionId);
 		}
 		
 		public function toString() : String

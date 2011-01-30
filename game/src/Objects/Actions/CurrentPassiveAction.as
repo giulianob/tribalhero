@@ -23,6 +23,11 @@
 		{
 			return type;
 		}
+		
+		override public function isCancellable():Boolean 
+		{
+			return PassiveAction.isCancellable(type);
+		}
 	}
 	
 }

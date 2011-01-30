@@ -244,7 +244,9 @@
 
 				//component layoution
 				panel.append(lblDescription);
-				panel.append(astCancel);
+
+				if (currentAction.isCancellable())
+					panel.append(astCancel);
 
 				pnlActionRow.append(panel);
 				pnlActionRow.append(lblTime);

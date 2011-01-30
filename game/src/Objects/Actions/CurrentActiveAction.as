@@ -20,25 +20,37 @@
 			this.count = count;
 		}
 
-		public override function toString() : String 
+		private function getAction() : *
 		{
-			var workerPrototype: Worker = WorkerFactory.getPrototype(workerType);
-
-			if (workerPrototype == null) return "[" + index + "]";
+			var workerPrototype: Worker = WorkerFactory.getPrototype(workerType);			
+			var action: * = workerPrototype.getAction(index);
 			
-			var action: IAction = workerPrototype.getAction(index);
+			return action;
+		}
+		
+		override public function isCancellable():Boolean 
+		{
+			var action: Action = getAction();
+			
+			if (action == null) 
+				return true;
+			
+			return !((action.options & Action.OPTION_UNCANCELABLE) == Action.OPTION_UNCANCELABLE);
+		}
+		
+		public override function toString() : String 
+		{		
+			var action: IAction = getAction();
 
-			if (action == null) return "Action";
-			else return action.toString() + (count > 0 ? "(" + count + ")" : "");
-
-			return "[" + index + "]";
+			if (action == null) 
+				return "Missing Action";
+			
+			return action.toString() + (count > 0 ? "(" + count + ")" : "");			
 		}
 
 		public override function getType():int
 		{
-			var workerPrototype: Worker = WorkerFactory.getPrototype(workerType);
-
-			var action: * = workerPrototype.getAction(index);
+			var action: * = getAction();
 
 			if (action == null) return 0;
 			

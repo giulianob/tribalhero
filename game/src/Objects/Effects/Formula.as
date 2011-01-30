@@ -137,12 +137,13 @@
 			var laborTotal: int = city.getBusyLaborCount() + city.resources.labor.getValue();
 			if (laborTotal < 140) laborTotal = 140;
 			
-			var effects: Array = city.techManager.getEffects(EffectPrototype.EFFECT_COUNT_LESS_THAN, EffectPrototype.INHERIT_SELF_ALL);
+			var effects: Array = city.techManager.getEffects(EffectPrototype.EFFECT_LABOR_TRAIN_TIME_MOD, EffectPrototype.INHERIT_SELF_ALL);
+			var rateBonus: Number = 1;
 			for each (var effect: EffectPrototype in effects) {
-				if (effect.param1 == 30021) return (43200 / (-6.845 * Math.log(laborTotal) + 55)) * 0.7;
+				rateBonus = Math.min(rateBonus, (int)(effect.param1) / 10);
 			}
 			
-			return (43200 / (-6.845 * Math.log(laborTotal) + 55));
+			return (43200 / (-6.845 * Math.log(laborTotal) + 55)) * rateBonus;
 		}
 	}
 }

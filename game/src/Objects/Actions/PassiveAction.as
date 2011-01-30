@@ -20,12 +20,12 @@
 		public static const FOREST_CAMP_HARVEST: int = 310;			
 		
 		private static var actionLookup: Array = new Array(
-			{type: ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING" },
-			{type: DEFENSE, description: "Defending", notificationDescription: defenseNotification, icon: "PASSIVE_DEFENDING" },
-			{type: RETREAT, description: "Retreating", notificationDescription: retreatNotification, icon: "PASSIVE_RETREATING" },
-			{type: FOREST_CAMP_HARVEST, description: "Gathering Wood", notificationDescription: retreatNotification, icon: "PASSIVE_DEFENDING" },
-			{type: STRUCTURE_SELF_DESTROY, description: "Time Left", notificationDescription: selfDestroyNotification, icon: "PASSIVE_DEFENDING" }
-		);
+			{type: ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING", cancellable: false },
+			{type: DEFENSE, description: "Defending", notificationDescription: defenseNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
+			{type: RETREAT, description: "Retreating", notificationDescription: retreatNotification, icon: "PASSIVE_RETREATING", cancellable: false },
+			{type: FOREST_CAMP_HARVEST, description: "Gathering Wood", notificationDescription: retreatNotification, icon: "PASSIVE_DEFENDING", cancellable: true },
+			{type: STRUCTURE_SELF_DESTROY, description: "Time Left", notificationDescription: selfDestroyNotification, icon: "PASSIVE_DEFENDING", cancellable: false }
+		);		
 		
 		private static var actionsSorted: Boolean = false;
 		
@@ -38,6 +38,16 @@
 			else
 				return 0;
 		}		
+		
+		public static function isCancellable(actionType: int) : Boolean
+		{
+			var idx: int = getActionIndex(actionType);
+			
+			if (idx <= -1)
+				return true;
+			
+			return actionLookup[idx].cancellable;
+		}
 		
 		private static function getActionIndex(actionType: int): int
 		{

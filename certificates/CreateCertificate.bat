@@ -6,12 +6,12 @@
 :: http://livedocs.adobe.com/flex/3/html/distributing_apps_4.html#1037515
 
 :: Path to Flex SDK binaries
-set PATH=%PATH%;C:\flex_sdk\3.3.0.4582\bin
+set PATH=%PATH%;C:\Program Files (x86)\FlashDevelop\Tools\flexsdk\bin
 
 :: Certificate information
 set NAME=TribalHero
 set PASSWORD=J3nfdAkd031anCzEr1I8
-set CERTIFICATE=SelfSigned.pfx
+set CERTIFICATE=NEW_CERTIFICATE.pfx
 
 call adt -certificate -cn %NAME% 1024-RSA %CERTIFICATE% %PASSWORD%
 if errorlevel 1 goto failed

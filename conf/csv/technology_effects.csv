@@ -149,18 +149,20 @@ TechType,Lvl,Effect,Location,IsPrivate,P1,P2,P3,P4,P5,
 22023,5,TroopSpeedMod,City,FALSE,20,DISTANCE,20,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
-// Academy,,,,,,,,,,
+// University,,,,,,,,,,
 23011,1,HaveTechnology,City,FALSE,23011,1,,,,
-23013,1,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,110,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
-23013,2,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,120,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
-23013,3,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,125,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
-//23013,1,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,110,WeaponEqual,PIKE,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
-//23013,2,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,120,WeaponEqual,PIKE,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
-//23013,3,UnitStatMod,City,FALSE,Atk,PERCENT_BONUS,125,WeaponEqual,PIKE,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
-23014,1,UnitStatMod,City ,FALSE,Rng,RAW_BONUS,3,WeaponEqual,BOW,{BaseBattleStats: obj.Weapon==WeaponType.BOW}
-23014,2,UnitStatMod,City ,FALSE,Rng,RAW_BONUS,6,WeaponEqual,BOW,{BaseBattleStats: obj.Weapon==WeaponType.BOW}
-23014,3,UnitStatMod,City ,FALSE,Rng,RAW_BONUS,9,WeaponEqual,BOW,{BaseBattleStats: obj.Weapon==WeaponType.BOW}
-,,,,,,,,,,
+23012,1,UnitStatMod,City,FALSE,Splash,RAW_BONUS,1,ArmorEqual,BUILDING,
+23012,2,UnitStatMod,City,FALSE,Splash,RAW_BONUS,2,ArmorEqual,BUILDING,
+23012,3,UnitStatMod,City,FALSE,Splash,RAW_BONUS,3,ArmorEqual,BUILDING,
+23013,1,UnitStatMod,City,FALSE,Stl,RAW_BONUS,1,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
+23013,2,UnitStatMod,City,FALSE,Stl,RAW_BONUS,2,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
+23013,3,UnitStatMod,City,FALSE,Stl,RAW_BONUS,3,WeaponEqual,SWORD,{BaseBattleStats: obj.Weapon==WeaponType.SWORD || obj.Weapon==WeaponType.PIKE }
+23014,1,UnitStatMod,City,FALSE,Splash,RAW_BONUS,1,WeaponEqual,BOW,
+23014,2,UnitStatMod,City,FALSE,Splash,RAW_BONUS,2,WeaponEqual,BOW,
+23014,3,UnitStatMod,City,FALSE,Splash,RAW_BONUS,3,WeaponEqual,BOW,
+23015,1,UnitStatMod,City,FALSE,Carry,RAW_BONUS,1,ArmorEqual,MOUNT,
+23015,2,UnitStatMod,City,FALSE,Carry,RAW_BONUS,2,ArmorEqual,MOUNT,
+23015,3,UnitStatMod,City,FALSE,Carry,RAW_BONUS,3,ArmorEqual,MOUNT,
 ,,,,,,,,,,
 //lumbermill,,,,,,,,,,
 21071,1,AtticStorageMod,City,TRUE,115,,,,,

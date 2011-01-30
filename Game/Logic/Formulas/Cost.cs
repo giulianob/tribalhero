@@ -11,9 +11,6 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        //Maximum amount of resources that can be sent from the specified structure        
-        private static readonly int[] sendRate = {0, 200, 200, 400, 400, 600, 600, 800, 1000, 1200, 1200, 1400, 1600, 1800, 1800, 2000};
-
         /// <summary>
         ///   Returns the cost for building the specified structure
         /// </summary>
@@ -85,23 +82,6 @@ namespace Game.Logic.Formulas
         }
 
         /// <summary>
-        ///   Returns number of seconds it takes to get 1 labor
-        /// </summary>
-        /// <param name = "laborTotal"></param>
-        /// <param name = "city"></param>
-        /// <returns></returns>
-        public static int GetLaborRate(int laborTotal, City city)
-        {
-            if (laborTotal < 140)
-                laborTotal = 140;
-
-            if (city.Technologies.GetEffects(EffectCode.CountEffect, EffectInheritance.SelfAll).Any(x => (int)x.Value[0] == 30021))
-                return (int)((43200/(-6.845*Math.Log(laborTotal) + 55))*0.7);
-
-            return (int)(43200/(-6.845*Math.Log(laborTotal) + 55));
-        }
-
-        /// <summary>
         ///   Maximum amount of laborers that can be assigned at once
         /// </summary>
         /// <param name = "structure"></param>
@@ -157,6 +137,8 @@ namespace Game.Logic.Formulas
 
         internal static Resource GetSendCapacity(Structure structure)
         {
+            //Maximum amount of resources that can be sent from the specified structure        
+            int[] sendRate = {0, 200, 200, 400, 400, 600, 600, 800, 1000, 1200, 1200, 1400, 1600, 1800, 1800, 2000};
             return new Resource(sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl]);
         }
 

@@ -56,9 +56,11 @@ namespace Game.Data
         ACallToArmMod = 15,
         AtticStorageMod = 16,
         XFor1 = 17,
-        LaborMoveTimeMod = 18,
-        SenseOfUrgency = 19,
-        LaborTrainTimeMod = 20,
+        TradeSpeedMod = 18,
+        SunDance = 19,
+        LaborMoveTimeMod = 20,
+        SenseOfUrgency = 21,
+        LaborTrainTimeMod = 22,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

@@ -11,14 +11,14 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        internal static int SendTime(int distance)
+        internal static int SendTime(Structure structure, int distance)
         {
-            return MoveTime(11)*distance;
+            return MoveTime(11) * distance * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x==null?0:(int)x.Value[0]));
         }
 
         internal static int TradeTime(Structure structure, int quantity)
         {
-            return quantity*15;
+            return quantity * 15 * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 
         internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager)

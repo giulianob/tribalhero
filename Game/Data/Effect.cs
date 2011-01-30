@@ -57,6 +57,7 @@ namespace Game.Data
         AtticStorageMod = 16,
         XFor1 = 17,
         TradeSpeedMod = 18,
+        SunDance = 19,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

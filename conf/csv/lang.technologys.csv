@@ -149,11 +149,11 @@ HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
 HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%.
 ,
 SUNDANCE_TECHNOLOGY_NAME,Sun Dance
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus to 120%
-SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus to 140%
-SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus to 160%
-SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus to 180%
-SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus to 200%
+SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus by 10%
+SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus by 20%
+SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus by 30%
+SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40%
+SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50%
 ,
 GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
 GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to load up loot bonus by 1%
@@ -179,6 +179,12 @@ REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 16% for th
 REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 24% for the structure.
 REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for the structure.
 REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for the structure.
+,
+,
+,
+,
+,
+,
 ,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
 WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 5 laborers in the Foundry produces 1 gold per hour.

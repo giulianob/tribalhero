@@ -8,7 +8,7 @@
 set PATH=%PATH%;C:\Program Files (x86)\FlashDevelop\Tools\flexsdk\bin
 
 :: Signature (see 'CreateCertificate.bat')
-set CERTIFICATE=SelfSigned.pfx
+set CERTIFICATE=..\certificates\SelfSigned.pfx
 set SIGNING_OPTIONS=-storetype pkcs12 -keystore %CERTIFICATE%
 if not exist %CERTIFICATE% goto certificate
 

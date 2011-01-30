@@ -18,6 +18,7 @@ namespace Game.Logic.Actions
         private readonly ushort count;
         private readonly uint structureId;
         private readonly ushort type;
+        private int timePerUnit;
         private Resource cost;
 
         public UnitTrainAction(uint cityId, uint structureId, ushort type, ushort count)
@@ -46,6 +47,7 @@ namespace Game.Logic.Actions
                                 int.Parse(properties["wood"]),
                                 int.Parse(properties["labor"]));
             count = ushort.Parse(properties["count"]);
+            timePerUnit = int.Parse(properties["time_per_unit"]);
         }
 
         public override ActionType Type
@@ -63,7 +65,8 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectStructureNotFound;
 
-            cost = Formula.UnitTrainCost(structure.City, type, structure.City.Template[type].Lvl);
+            byte unitLvl = structure.City.Template[type].Lvl;
+            cost = Formula.UnitTrainCost(structure.City, type, unitLvl);
             Resource totalCost = cost*count;
             ActionCount = (ushort)(count + count/Formula.GetXForOneCount(structure.Technologies));
 
@@ -74,12 +77,12 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
+            timePerUnit = (int)CalculateTime(Formula.TrainTime(UnitFactory.GetTime(type, unitLvl), structure.Lvl, structure.Technologies));
 
             // add to queue for completion
-            nextTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 0.1 : buildtime);
+            nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);
             BeginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(buildtime*ActionCount));
+            endTime = DateTime.UtcNow.AddSeconds(timePerUnit*ActionCount);
 
             return Error.Ok;
         }
@@ -117,9 +120,10 @@ namespace Game.Logic.Actions
                     StateChange(ActionState.Completed);
                     return;
                 }
+                
+                nextTime = nextTime.AddSeconds(timePerUnit);
+                endTime = DateTime.UtcNow.AddSeconds(timePerUnit * ActionCount);
 
-                int buildtime = Formula.TrainTime(UnitFactory.GetTime(type, 1), structure.Lvl, structure.Technologies);
-                nextTime = nextTime.AddSeconds(Config.actions_instant_time ? 0.1 : buildtime);
                 StateChange(ActionState.Rescheduled);
             }
         }
@@ -179,6 +183,7 @@ namespace Game.Logic.Actions
                                                         new XmlKvPair("type", type), new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId),
                                                         new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron),
                                                         new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor), new XmlKvPair("count", count),
+                                                        new XmlKvPair("time_per_unit", timePerUnit)
                                                 });
             }
         }

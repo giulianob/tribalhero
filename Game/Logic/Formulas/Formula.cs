@@ -73,13 +73,12 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public static int GetXForOneCount(TechnologyManager tech)
         {
-            int ret =
-                    tech.GetEffects(EffectCode.XFor1, EffectInheritance.Invisible).DefaultIfEmpty(new Effect()).Min(
-                                                                                                                    x =>
-                                                                                                                    x.Value[0] == null
-                                                                                                                            ? ushort.MaxValue
-                                                                                                                            : (int)x.Value[0]);
-            return ret;
+            var effects = tech.GetEffects(EffectCode.XFor1, EffectInheritance.Invisible);
+
+            if (effects.Count == 0)
+                return ushort.MaxValue;
+
+            return effects.Min(x => (int)x.Value[0]);
         }
 
         public static Resource GetInitialCityResources()

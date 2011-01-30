@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 
@@ -78,8 +79,6 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                //city.Worker.References.Remove(structure, this);
-
                 if (structure == null)
                 {
                     StateChange(ActionState.Completed);
@@ -125,13 +124,20 @@ namespace Game.Logic.Actions
         }
 
         public override void UserCancelled()
-        {
-            throw new Exception("This action cannot be cancelled!");
+        {            
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            //throw new Exception("City was destroyed?");
+            City city;
+            Structure structure;
+            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            {
+                if (!IsValid())
+                    return;                
+
+                StateChange(ActionState.Failed);
+            }
         }
     }
 }

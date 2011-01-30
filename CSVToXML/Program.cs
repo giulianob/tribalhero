@@ -343,7 +343,7 @@ namespace CSVToXML {
                             case ActionType.LaborMove:
                                 writer.WriteStartElement("LaborMove");
                                 break;
-                            case ActionType.StructureDowngrade:
+                            case ActionType.StructureUserdowngrade:
                                 writer.WriteStartElement("StructureDowngrade");
                                 break;
                             default:

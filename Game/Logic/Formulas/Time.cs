@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
@@ -65,9 +66,33 @@ namespace Game.Logic.Formulas
             return (double)100/(mod + 100);
         }
 
+        /// <summary>
+        /// Get number of seconds it takes to move object by 1 tile
+        /// </summary>
+        /// <param name="speed">Objects speed</param>
+        /// <returns></returns>
         internal static int MoveTime(byte speed) {
             if (Config.battle_instant_move) return 0;
             return 80 * (100 - ((speed - 11) * 5)) / 100;
+        }
+
+        /// <summary>
+        /// Returns number of seconds it takes to get 1 labor
+        /// </summary>
+        /// <param name = "laborTotal"></param>
+        /// <param name = "city"></param>
+        /// <returns></returns>
+        public static int GetLaborRate(int laborTotal, City city)
+        {
+            if (laborTotal < 140)
+                laborTotal = 140;
+
+            var effects = city.Technologies.GetEffects(EffectCode.LaborTrainTimeMod, EffectInheritance.SelfAll);
+            float rateBonus = 1;
+            if (effects.Count > 0)
+                rateBonus = (effects.Min(x => (int)x.Value[0]) * 10) / 100f;
+
+            return (int)((43200 / (-6.845 * Math.Log(laborTotal) + 55)) * rateBonus);
         }
     }
 }

@@ -58,6 +58,7 @@ namespace Game.Data
         XFor1 = 17,
         LaborMoveTimeMod = 18,
         SenseOfUrgency = 19,
+        LaborTrainTimeMod = 20,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

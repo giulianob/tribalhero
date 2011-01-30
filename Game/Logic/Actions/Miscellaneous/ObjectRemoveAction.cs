@@ -36,7 +36,12 @@ namespace Game.Logic.Actions
 
             cancelActions = new List<uint>();
             foreach (var actionId in properties["cancel_references"].Split(','))
+            {
+                if (actionId == string.Empty)
+                    continue;
+
                 cancelActions.Add(uint.Parse(actionId));
+            }
         }
 
         public override ActionType Type
@@ -76,7 +81,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             City city;
-            GameObject obj;
+            GameObject obj;            
 
             using (new MultiObjectLock(cityId, out city))
             {
@@ -88,6 +93,7 @@ namespace Game.Logic.Actions
             }
 
             // Cancel all active actions
+            int loopCount = 0;
             while (true)
             {
                 GameAction action;
@@ -100,6 +106,10 @@ namespace Game.Logic.Actions
                     GameObject obj1 = obj;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
+                    loopCount++;
+                    if (loopCount == 1000)
+                        throw new Exception(string.Format("Unable to cancel all active actions. Stuck cancelling {0}", action.Type));
+
                     if (action == null)
                         break;
                 }
@@ -108,6 +118,7 @@ namespace Game.Logic.Actions
             }
 
             // Cancel all passive actions
+            loopCount = 0;
             while (true)
             {
                 GameAction action;
@@ -119,6 +130,10 @@ namespace Game.Logic.Actions
 
                     GameObject obj1 = obj;
                     action = city.Worker.PassiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
+
+                    loopCount++;
+                    if (loopCount == 1000)
+                        throw new Exception(string.Format("Unable to cancel all passive actions. Stuck cancelling {0}", action.Type));
 
                     if (action == null)
                         break;

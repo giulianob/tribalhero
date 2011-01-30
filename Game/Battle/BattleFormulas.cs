@@ -269,8 +269,8 @@ namespace Game.Battle
 
         public static Resource GetBonusResources(TroopObject troop)
         {
-            var bonus = new Resource(troop.Stats.Loot);
-            bonus *= (Config.Random.NextDouble() + 1.0);
+            int max = troop.City.Technologies.GetEffects(EffectCode.SunDance, EffectInheritance.Self).DefaultIfEmpty().Sum(x => x != null ? (int)x.Value[0] : 0);
+            var bonus = new Resource(troop.Stats.Loot) * ((Config.Random.NextDouble() + 1f) * (100 + max) / 100f);
             return bonus;
         }
 

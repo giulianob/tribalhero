@@ -44,6 +44,8 @@ namespace Game.Database
                     // Calculate how long server was down
                     TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
 
+                    Global.Logger.Info(string.Format("Server was down for {0}", downTime));
+
                     LoadMarket(dbManager);
                     LoadPlayers(dbManager);
                     LoadCities(dbManager, downTime);
@@ -711,7 +713,7 @@ namespace Game.Database
 
                     DateTime nextTime = DateTime.SpecifyKind((DateTime)reader["next_time"], DateTimeKind.Utc);
                     if (nextTime != DateTime.MinValue)
-                        nextTime.Add(downTime);
+                        nextTime = nextTime.Add(downTime);
 
                     DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc).Add(downTime);
 

@@ -18,6 +18,8 @@ namespace Game.Data.Stats
 
         public byte Spd { get; set; }
 
+        public ushort Carry { get; set; }
+
         public BaseBattleStats Base { get; private set; }
 
         #endregion
@@ -34,6 +36,7 @@ namespace Game.Data.Stats
             Rng = baseStats.Rng;
             Stl = baseStats.Stl;
             Spd = baseStats.Spd;
+            Carry = baseStats.Carry;
         }
 
         #endregion

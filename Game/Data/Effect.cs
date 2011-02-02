@@ -36,8 +36,7 @@ namespace Game.Data
         All = 7
     }
 
-    public enum EffectCode
-    {
+    public enum EffectCode {
         BuildTimeMultiplier = 0,
         ResourceRate = 1,
         BuildHeavyTank = 2,
@@ -61,6 +60,7 @@ namespace Game.Data
         LaborMoveTimeMod = 20,
         SenseOfUrgency = 21,
         LaborTrainTimeMod = 22,
+        LootLoadMod=23,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

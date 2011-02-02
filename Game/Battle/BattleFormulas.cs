@@ -153,10 +153,14 @@ namespace Game.Battle
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
         }
 
+        private static int GetLootPerRound(City city) {
+            return Config.battle_loot_per_round + city.Technologies.GetEffects(EffectCode.LootLoadMod, EffectInheritance.All).DefaultIfEmpty().Sum(x => x == null ? 0 : (int)x.Value[0]);
+        }
+
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
         {
             int totalCarry = attacker.BaseStats.Carry*attacker.Count;
-            int count = Math.Max(1, attacker.BaseStats.Carry*attacker.Count*Config.battle_loot_per_round/100);
+            int count = Math.Max(1, attacker.BaseStats.Carry*attacker.Count*GetLootPerRound(attacker.City)/100);
             var spaceLeft = new Resource(totalCarry, totalCarry, totalCarry, totalCarry, 0);
             spaceLeft.Subtract(((AttackCombatUnit)attacker).Loot);
             return new Resource(Math.Min(count, spaceLeft.Crop),

@@ -332,6 +332,22 @@
 			if (Global.map.selectedObject != null)
 			Global.map.selectedObject.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 		}
+		
+		public function getSendResourcesConfirmation(resources: Resources, cityId: int, objId: int, targetCityName: String, callback: Function):void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.CITY_RESOURCES_SEND;
+			packet.writeUInt(cityId);
+			packet.writeUInt(objId);
+			packet.writeString(targetCityName);
+			packet.writeInt(resources.crop);
+			packet.writeInt(resources.gold);
+			packet.writeInt(resources.iron);
+			packet.writeInt(resources.wood);
+			packet.writeByte(0);
+
+			session.write(packet, callback);
+		}
 
 		public function sendResources(resources: Resources, cityId: int, objId: int, targetCityName: String):void
 		{
@@ -344,6 +360,7 @@
 			packet.writeInt(resources.gold);
 			packet.writeInt(resources.iron);
 			packet.writeInt(resources.wood);
+			packet.writeByte(1);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}

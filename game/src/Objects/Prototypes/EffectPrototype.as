@@ -20,7 +20,7 @@
 		public static const EFFECT_REPAIR_SAVING: int = 11;
 		public static const EFFECT_TROOP_SPEED_MOD: int = 12;
 		public static const EFFECT_AWAY_FROM_STRUCTURE_MOD: int = 14;
-		public static const EFFECT_LABOR_MOVE_TRADE_SPEED_MOD: int = 18;
+		public static const EFFECT_TRADE_SPEED_MOD: int = 18;
         public static const EFFECT_LABOR_MOVE_TIME_MOD: int = 20;
 		public static const EFFECT_LABOR_TRAIN_TIME_MOD: int = 22;
 		

@@ -28,7 +28,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (isEnabled())
 			{						
 				var picker: SendResourceDialog = new SendResourceDialog(parentObj, function(dlg: SendResourceDialog) : void {
-					Global.mapComm.City.sendResources(dlg.amount(), parentObj.cityId, parentObj != null ? parentObj.objectId : 0, dlg.cityName());
+					Global.mapComm.City.sendResources(dlg.amount(), parentObj.cityId, parentObj.objectId, dlg.cityName());
 					dlg.getFrame().dispose();
 				});
 				

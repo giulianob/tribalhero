@@ -87,7 +87,7 @@
 			var moveTime: int = 80 * (100 - ((speed - 11) * 5)) / 100;
 
 			return Math.max(1, moveTime * Constants.secondsPerUnit * mod / 100) * distance;
-		}
+		}	
 
 		public static function marketBuyCost(price: int, amount: int, tax: Number): int
 		{

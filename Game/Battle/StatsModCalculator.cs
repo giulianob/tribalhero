@@ -126,6 +126,7 @@ namespace Game.Battle
             Rng = new IntStatsModCalculator(baseStats.Rng);
             Stl = new IntStatsModCalculator(baseStats.Stl);
             Spd = new IntStatsModCalculator(baseStats.Spd);
+            Carry = new IntStatsModCalculator(baseStats.Carry);
             this.baseStats = baseStats;
         }
 
@@ -136,6 +137,7 @@ namespace Game.Battle
         public IntStatsModCalculator Rng { get; private set; }
         public IntStatsModCalculator Stl { get; private set; }
         public IntStatsModCalculator Spd { get; private set; }
+        public IntStatsModCalculator Carry { get; private set; }
 
         public void AddAtkParameter(string paramter, int value)
         {
@@ -167,6 +169,10 @@ namespace Game.Battle
             Spd.AddMod(paramter, value);
         }
 
+        public void AddCarryParameter(string paramter, int value) {
+            Carry.AddMod(paramter, value);
+        }
+
         public void AddMaxHpParameter(string paramter, int value)
         {
             MaxHp.AddMod(paramter, value);
@@ -182,6 +188,7 @@ namespace Game.Battle
                                 Rng = (byte)Rng.GetResult(),
                                 Spd = (byte)Spd.GetResult(),
                                 Stl = (byte)Stl.GetResult(),
+                                Carry = (ushort)Carry.GetResult(),
                                 MaxHp = (ushort)MaxHp.GetResult()
                         };
             return stats;

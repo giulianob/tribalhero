@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Setup;
+using System.Collections.Generic;
 
 #endregion
 
@@ -25,7 +26,7 @@ namespace Game.Battle
 
         public static int GetUnitsPerStructure(Structure structure)
         {
-            var units = new[] {20, 20, 25, 31, 39, 48, 60, 75, 93, 116, 144, 179, 219, 263, 315, 370};
+            var units = new[] { 20, 20, 25, 31, 38, 44, 51, 59, 67, 76, 86, 96, 107, 119, 131, 145 };
             return units[structure.Lvl];
         }
 
@@ -219,24 +220,13 @@ namespace Game.Battle
             return false;
         }
 
-        internal static BattleStats LoadStats(Structure structure)
+        internal static BattleStats LoadStats(BaseBattleStats stats, City city, TroopBattleGroup group)
         {
-            return new BattleStats(structure.Stats.Base.Battle);
-        }
-
-        internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
-        {
-            BaseBattleStats stats = UnitFactory.GetUnitStats(type, lvl).Battle;
             var calculator = new BattleStatsModCalculator(stats);
-
-            foreach (var effect in city.Technologies.GetAllEffects(EffectInheritance.All))
-            {
-                if (effect.Id == EffectCode.UnitStatMod)
-                {
-                    if (UnitStatModCheck(stats, effect.Value[3], effect.Value[4]))
-                    {
-                        switch((string)effect.Value[0])
-                        {
+            foreach (var effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
+                if (effect.Id == EffectCode.UnitStatMod) {
+                    if (UnitStatModCheck(stats, effect.Value[3], effect.Value[4])) {
+                        switch ((string)effect.Value[0]) {
                             case "Atk":
                                 calculator.Atk.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
@@ -255,16 +245,28 @@ namespace Game.Battle
                             case "Rng":
                                 calculator.Rng.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
+                            case "Carry":
+                                calculator.Carry.AddMod((string)effect.Value[1], (int)effect.Value[2]);
+                                break;
                             case "MaxHp":
                                 calculator.MaxHp.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
                         }
                     }
-                }
-                else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
-                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0]*city.Resource.Labor.Value)/(city.MainBuilding.Lvl*100)));
+                } else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
+                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.MainBuilding.Lvl * 100)));
             }
             return calculator.GetStats();
+        }
+
+        internal static BattleStats LoadStats(Structure structure)
+        {
+            return LoadStats(structure.Stats.Base.Battle,structure.City,TroopBattleGroup.Local);
+        }
+
+        internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
+        {
+            return LoadStats(UnitFactory.GetUnitStats(type, lvl).Battle,city,group);
         }
 
         public static Resource GetBonusResources(TroopObject troop)
@@ -276,7 +278,7 @@ namespace Game.Battle
 
         public static int GetNumberOfHits(CombatObject currentAttacker)
         {
-            return currentAttacker.BaseStats.Splash + 1;
+            return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash;
         }
     }
 }

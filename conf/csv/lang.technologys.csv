@@ -61,7 +61,7 @@ ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
 BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash damage by 1.
 BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash damage by 2.
-BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage to by 3.
+BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage by 3.
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
 HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15.

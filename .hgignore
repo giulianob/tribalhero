@@ -14,3 +14,4 @@ glob:app/views/database/generated/*.ctp
 glob:app/views/database/generated/*.php
 glob:app/webroot/img/tree/game-tree.png
 glob:app/webroot/img/tree/game-tree-large.png
+relre:app/webroot/img/db/buildings/(.*).png

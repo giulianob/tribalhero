@@ -1,5 +1,5 @@
-div.cost div { display:inline;  margin-right: 10px; }
-
+div.cost { margin-top: 5px; }
+div.cost div { display:inline; margin-right: 10px; }
 div.cost div.time { margin-right: 25px; }	
 
 ul { margin-bottom: 0; }

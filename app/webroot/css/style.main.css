@@ -556,45 +556,70 @@ div.report-box
 	list-style-type: none;
 }
 
-/* Tables */
-th
-{
-	font-weight: bold;	
-	border: 1px solid #ccc;
-	border-right: 0;
-	border-top: 0;
-	padding: 4px;
+/** Tables **/
+table {
+    background: none;
+    border-right:0;
+    clear: both;
+    color: #333;
+    margin-bottom: 5px;
+    width: 100%;
 }
-
-td.header
-{
-	background: #F0F0F0;
+th {
+    border:0;
+    border-bottom:2px solid #555;
+    text-align: left;
+    padding:4px;
 }
-
-table.borderless, table.borderless td, table.borderless tr, table.borderless th
-{
-	border: 0;
+th a {
+    display: block;
+    padding: 2px 4px;
+    text-decoration: none;
 }
-
-table td
-{
-	background: #fff;
-	border-right: 1px solid #ccc;
-	padding: 4px;
-	text-align: left;
-	vertical-align: top;
+th.actions {
+    text-align: center;
 }
-
-table
-{
-	width: 100%;
-	border: 1px solid #ccc;
-	color: #000;
-	background: #f4f4f4;	
-	font-family: Tahoma, Geneva, sans-serif;
-	margin-bottom: 5px;
-	clear: both;
-	font-size: 9pt;
+th a.asc:after {
+    content: ' ?';
+}
+th a.desc:after {
+    content: ' ?';
+}
+table tr td {
+    background: none;
+    padding: 6px;
+    text-align: left;
+    vertical-align: top;
+    border-right: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+}
+table tr td:first-child {
+    border-left: 1px solid #CCC;
+}
+table tr:nth-child(2n) td {
+    background: #dfd9b8;
+}
+.altrow, table .altrow td {
+    background: #dfd9b8;
+}
+td.actions {
+    text-align: center;
+    white-space: nowrap;
+    padding: 5px 3px 0 0;
+}
+table td.actions a {    
+    padding:2px 5px;
+}
+.cake-sql-log table {
+    background: #f4f4f4;
+}
+.cake-sql-log td {
+    padding: 4px 8px;
+    text-align: left;
+    font-family: Monaco, Consolas, "Courier New", monospaced;
+}
+.cake-sql-log caption {
+    color:#fff;
 }
 
 /* Gallery */

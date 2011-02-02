@@ -32,7 +32,7 @@
 		
 		<!-- Cost/Time -->
 		<div class="span-20 last cost">	
-			<div class="time"><?php echo $this->Html->image('db/icons/basic/clock_16.png', array('alt' => 'Time to build/upgrade'));?> <?php echo $this->element('format_time', array('time' => $info['time'])); ?></div>
+			<div class="time"><?php echo $this->Html->image('db/icons/props/clock.png', array('alt' => 'Time to build/upgrade'));?> <?php echo $this->element('format_time', array('time' => $info['time'])); ?></div>
 			
 			<div><?php echo $info['labor']; ?> <?php echo $this->Html->image('db/icons/resources/Labor.png', array('alt' => 'Labor cost'));?></div>
 			

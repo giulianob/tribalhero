@@ -25,11 +25,18 @@ public class InfoDialog extends GameJPanel {
 	private var inputText:JTextField;
 	private var buttonPane:JPanel;	
 	
-	public function InfoDialog() {
+	public function InfoDialog(body: *) {
 		setLayout(new BorderLayout());
 		centerPane = SoftBox.createVerticalBox(6);
-		msgLabel = new MultilineLabel("", 0);
-		centerPane.append(AsWingUtils.createPaneToHold(msgLabel, new FlowLayout(FlowLayout.CENTER, 5, 5)));
+		
+		if (body is String) {
+			msgLabel = new MultilineLabel("", 0);
+			centerPane.append(AsWingUtils.createPaneToHold(msgLabel, new FlowLayout(FlowLayout.CENTER, 5, 5)));
+			setMessage(body);
+		} else {
+			centerPane.append(AsWingUtils.createPaneToHold(body, new FlowLayout()));
+		}
+		
 		inputText = new JTextField();
 		var inputContainer:JPanel = new JPanel(new BorderLayout());		
 		inputContainer.append(inputText, BorderLayout.CENTER);
@@ -84,19 +91,21 @@ public class InfoDialog extends GameJPanel {
 		buttonPane.append(button);
 	}
 	
-	private function setMessage(msg:String):void{
-		msgLabel.setText(msg);				
-		msgLabel.setColumns(Math.max(20, Math.min(msg.length - 20, 40)));
+	private function setMessage(msg:String):void {
+		if (msgLabel) {
+			msgLabel.setText(msg);				
+			msgLabel.setColumns(Math.max(20, Math.min(msg.length - 20, 40)));
+		}
 	}
+	
 	private function addCloseListener(button:JButton):void{
 		var f:JFrame = getFrame();		
 		button.addActionListener(function():void{ f.tryToClose(); });
 	}
 	
-	public static function showMessageDialog(title:String, msg:String, finishHandler:Function=null, parentComponent:Component=null, modal:Boolean=true, closable:Boolean=true, buttons:int=1, showDirectlyToStage: Boolean = false):InfoDialog{		
-		var pane:InfoDialog = new InfoDialog();
-		pane.getInputText().setVisible(false);
-		pane.setMessage(msg);				
+	public static function showMessageDialog(title:String, msgOrPanel:*, finishHandler:Function=null, parentComponent:Component=null, modal:Boolean=true, closable:Boolean=true, buttons:int=1, showDirectlyToStage: Boolean = false):InfoDialog{		
+		var pane:InfoDialog = new InfoDialog(msgOrPanel);
+		pane.getInputText().setVisible(false);		
 		
 		pane.title = title;		
 		
@@ -160,11 +169,10 @@ public class InfoDialog extends GameJPanel {
 	
 	public static function showInputDialog(title:String, msg:String, finishHandler:Function=null, defaultValue:String="", parentComponent:Component=null, modal:Boolean=true):InfoDialog{
 		var frame:GameJFrame = new GameJFrame(AsWingUtils.getOwnerAncestor(parentComponent), title, modal);
-		var pane:InfoDialog = new InfoDialog();
+		var pane:InfoDialog = new InfoDialog(msg);
 		if(defaultValue != ""){
 			pane.inputText.setText(defaultValue);
-		}
-		pane.setMessage(msg);
+		}		
 		pane.frame = frame;
 		
 		pane.addButton(pane.getOkButton());

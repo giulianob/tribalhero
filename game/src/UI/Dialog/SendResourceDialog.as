@@ -12,6 +12,7 @@
 	import src.Objects.Resources;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
+	import src.Util.Util;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -67,12 +68,22 @@
 		}
 		
 		public function requestUsername(e: Event) : void {						
+			if (amount().total() == 0) {
+				InfoDialog.showMessageDialog("Error", "No resources selected to send");
+				return;
+			}
+			
+			if (txtCityName.getText().length == 0) {
+				InfoDialog.showMessageDialog("Error", "You have to type in the city names you want to send some resources to");
+				return;				
+			}
+			
 			loadingDlg = InfoDialog.showMessageDialog("Send Resources", "Validating...", null, null, true, false, 0);		
 			
-			Global.mapComm.Object.getPlayerUsernameFromCityName(txtCityName.getText(), onReceiveUsername);			
+			Global.mapComm.City.getSendResourcesConfirmation(amount(), parentObj.cityId, parentObj.objectId, txtCityName.getText(), onReceiveTradeInformation);			
 		}
 		
-		public function onReceiveUsername(packet: Packet, custom: * = null) : void {
+		public function onReceiveTradeInformation(packet: Packet, custom: * = null) : void {
 			
 			if (loadingDlg) loadingDlg.getFrame().dispose();
 			
@@ -84,8 +95,13 @@
 			}
 			
 			var playerName: String = packet.readString();
+			var tradeTime: int = packet.readInt();
 			
-			InfoDialog.showMessageDialog("Confirm", "You have chosen to send " + amount().toNiceString() + " to " + playerName + "'s " + txtCityName.getText() + "\n\nAre you sure?", onUserConfirms, null, true, false, JOptionPane.YES | JOptionPane.NO);
+			var infoPanel: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			infoPanel.append(new JLabel(Util.formatTime(tradeTime), new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT));
+			infoPanel.append(new JLabel("You have chosen to send " + amount().toNiceString() + " to " + playerName + "'s " + txtCityName.getText() + "\n\nAre you sure?"));			
+			
+			InfoDialog.showMessageDialog("Confirm", infoPanel, onUserConfirms, null, true, false, JOptionPane.YES | JOptionPane.NO);
 		}
 		
 		public function onUserConfirms(option: int): void {

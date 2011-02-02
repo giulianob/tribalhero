@@ -36,6 +36,11 @@
 			return "Gold: " + gold.toString() + " Wood:" + wood.toString() + " Iron:" + iron.toString() + " Crop:" + crop.toString() + " Labor:" + labor.toString();
 		}
 		
+		public function total():int 
+		{
+			return crop + wood + iron + gold + labor;
+		}
+		
 		public function toNiceString() : String {
             var parts: Array = new Array();
             if (wood > 0) parts.push(wood + " wood");

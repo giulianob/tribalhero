@@ -58,15 +58,10 @@ DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 ,
-,
-,
-,
-,
-,
 BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
-BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash damage to 4.
-BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash damage to 5.
-BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage to 6.
+BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash damage by 1.
+BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash damage by 2.
+BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage by 3.
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
 HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15.
@@ -149,11 +144,11 @@ HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
 HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%.
 ,
 SUNDANCE_TECHNOLOGY_NAME,Sun Dance
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus by 10%
-SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus by 20%
-SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus by 30%
-SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40%
-SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50%
+SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus by 10% (Stackable)
+SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus by 20% (Stackable)
+SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus by 30% (Stackable)
+SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stackable)
+SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stackable)
 ,
 GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
 GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to load up loot bonus by 1%
@@ -180,12 +175,6 @@ REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 24% for th
 REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for the structure.
 REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for the structure.
 ,
-,
-,
-,
-,
-,
-,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
 WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 5 laborers in the Foundry produces 1 gold per hour.
 WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 4 laborers in the Foundry produces 1 gold per hour.
@@ -194,6 +183,11 @@ WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 2 laborers in the Foundry produces 1 gold p
 WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every single laborer in the Foundry produces 1 gold per hour.
 ,
 SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
-SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage to 4.
-SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage to 5.
-SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage to 6.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage by 1.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage by 2.
+SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage by 3.
+,
+HANZO_SWORD_TECHNOLOGY_NAME,Hanzo sword
+HANZO_SWORD_TECHNOLOGY_LVL_1,Increase  Sword Units' Stealth by 1.
+HANZO_SWORD_TECHNOLOGY_LVL_2,Increase  Sword Units' Stealth by 2.
+HANZO_SWORD_TECHNOLOGY_LVL_3,Increase  Sword Units' Stealth by 3.

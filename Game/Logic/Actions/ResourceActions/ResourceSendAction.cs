@@ -77,10 +77,15 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(resource);
             structure.City.EndUpdate();
 
-            endTime = SystemClock.Now.AddSeconds(CalculateTime(Formula.SendTime(structure,structure.TileDistance(targetCity.MainBuilding))));
+            endTime = SystemClock.Now.AddSeconds(CalculateTradeTime(structure, targetCity));
             BeginTime = SystemClock.Now;
 
             return Error.Ok;
+        }
+
+        public int CalculateTradeTime(Structure structure, City targetCity)
+        {
+            return (int)CalculateTime(Formula.SendTime(structure, structure.TileDistance(targetCity.MainBuilding)));
         }
 
         public override void UserCancelled()

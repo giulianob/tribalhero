@@ -86,13 +86,15 @@ namespace Game.Comm
             uint objectId;
             string targetCityName;
             Resource resource;
+            bool actuallySend;
 
             try
             {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
-                targetCityName = packet.GetString();
+                targetCityName = packet.GetString().Trim();
                 resource = new Resource(packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), 0);
+                actuallySend = packet.GetByte() == 1;
             }
             catch(Exception)
             {
@@ -138,11 +140,23 @@ namespace Game.Comm
                     ReplyError(session, packet, Error.Unexpected);
 
                 var action = new ResourceSendAction(cityId, objectId, targetCityId, resource);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(structure), structure, action, structure.Technologies);
-                if (ret != 0)
-                    ReplyError(session, packet, ret);
-                else
-                    ReplySuccess(session, packet);
+
+                // If actually send then we perform the action, otherwise, we send the player information about the trade.
+                if (actuallySend)
+                {                    
+                    Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(structure), structure, action, structure.Technologies);
+                    if (ret != 0)
+                        ReplyError(session, packet, ret);
+                    else
+                        ReplySuccess(session, packet);
+                } else
+                {
+                    var reply = new Packet(packet);
+                    reply.AddString(cities[targetCityId].Owner.Name);
+                    reply.AddInt32(action.CalculateTradeTime(structure, cities[targetCityId]));
+
+                    session.Write(reply);
+                }
             }
         }
     }

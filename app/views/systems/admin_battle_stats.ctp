@@ -1,4 +1,4 @@
-<div class="span-13">
+<div class="span-12">
 	<h2>Unit Battle Stats</h2>
 	<table cellpadding="0" cellspacing="0">
 		<tr>
@@ -9,7 +9,6 @@
 			<th>Dmg Max</th>
 			<th>Dmg Recv</th>
 			<th>Hits Dealt</th>
-			<th>Count</th>
 		</tr>
 		<?php
 		$i = 0;
@@ -27,14 +26,13 @@
 				<td><?php echo $this->Number->precision($stat[0]['damage_max'], 2); ?>&nbsp;</td>
 				<td><?php echo $this->Number->precision($stat[0]['damage_taken_average'], 2); ?>&nbsp;</td>
 				<td><?php echo $this->Number->precision($stat[0]['hits_dealt_average'], 2); ?>&nbsp;</td>
-				<td><?php echo $this->Number->precision($stat[0]['count_average'], 2); ?>&nbsp;</td>
 			</tr>
 		<?php } ?>
 	</table>
 </div>
 
-<div class="span-7 last">
-	<div class="span-7 last">
+<div class="span-8 last">
+	<div class="span-8 last">
 		<h2>Largest By Troops</h2>
 		<table cellpadding="0" cellspacing="0">
 			<tr>
@@ -57,7 +55,7 @@
 		</table>
 	</div>
 	
-	<div class="span-7 last prepend-top">
+	<div class="span-8 last prepend-top">
 		<h2>Largest By Resources</h2>
 		<table cellpadding="0" cellspacing="0">
 			<tr>

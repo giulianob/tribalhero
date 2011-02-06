@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.8.1
+-- version 3.1.3.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 18, 2011 at 08:45 PM
--- Server version: 5.1.41
--- PHP Version: 5.3.1
+-- Generation Time: Feb 06, 2011 at 02:10 PM
+-- Server version: 5.1.33
+-- PHP Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -735,6 +735,7 @@ CREATE TABLE `troop_templates_list` (
   `range` tinyint(3) unsigned NOT NULL,
   `stealth` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,
+  `carry` smallint(5) unsigned NOT NULL,
   KEY `city_id` (`city_id`,`troop_stub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -763,7 +764,3 @@ CREATE TABLE `unit_templates_list` (
   `level` tinyint(4) unsigned NOT NULL,
   KEY `city_id` (`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

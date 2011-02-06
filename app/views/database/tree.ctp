@@ -5,7 +5,13 @@
 </div>
 
 <div class="span-20 last prepend-top">
-	<h2>Building Tree</h2>		
-	<?php echo $this->Html->link('View large', '/img/tree/game-tree-large.png', array('class' => 'small', 'target' => '_blank')); ?>
-	<?php echo $this->Html->image('tree/game-tree.png', array('alt' => 'TribalHero Tree')); ?>
+	<div class="span-15">
+		<h2>Building Tree</h2>		
+	</div>
+	<div class="span-5 last">
+		<?php echo $this->Html->link('View Larger', '/img/tree/game-tree-large.png', array('class' => 'float-right icon action-zoom', 'target' => '_blank')); ?>
+	</div>
+	<div class="span-20 last">
+		<?php echo $this->Html->image('tree/game-tree.png', array('alt' => 'TribalHero Tree', 'class' => 'float-left')); ?>
+	</div>
 </div>

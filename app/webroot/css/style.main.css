@@ -602,3 +602,13 @@ table tr:nth-child(2n) td,.altrow,table .altrow td {
 .cake-sql-log table,dl .altrow {
     background:#f4f4f4;
 }
+
+/* Icons */
+a.icon {
+    padding:0px 0 0 17px;
+}
+
+.action-zoom { 
+	background-image: url('../img/icons/zoom.png') !important; 
+	background-repeat: no-repeat; 
+}

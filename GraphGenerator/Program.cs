@@ -10,6 +10,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
 using Game.Setup;
+using log4net.Config;
 using NDesk.Options;
 
 #endregion
@@ -32,7 +33,7 @@ namespace GraphGenerator
 
         private const string TEMPLATE =
                 @"digraph g {	
-    graph [size=34 fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
+    graph [size=45 fontsize=32 labelloc=""t"" bgcolor=""transparent"" splines=true overlap=false rankdir=""LR"" ranksep=""equally""];
     node [shape=none, fontsize=15];			
     edge [fontsize=15];
 
@@ -45,11 +46,12 @@ namespace GraphGenerator
         private static string[] imageDirectories = new[]
                                                    {
                                                            @"c:\source\game\graphics\buildings",
-                                                           @"c:\source\game\graphics\units"
+                                                           @"c:\source\game\graphics\units",
+                                                           @"c:\source\game\graphics\icons\props"
                                                    };
 
         private static string gvPath = @"C:\Program Files (x86)\Graphviz2.26.3\bin\dot.exe";
-        private static string gvArgs = @"-Tpng -o{0} {1}";
+        private const string GV_ARGS = @"-Tpng -o{0} {1}";
 
         private static string output = "output";
 
@@ -132,7 +134,7 @@ namespace GraphGenerator
             var info = new ProcessStartInfo
                        {
                                FileName = gvPath,
-                               Arguments = string.Format(gvArgs, outImg, gvFile),
+                               Arguments = string.Format(GV_ARGS, outImg, gvFile),
                                WorkingDirectory = Path.Combine(Path.GetFullPath(output), "raw"),
                                CreateNoWindow = true,
                                RedirectStandardError = true,
@@ -192,7 +194,7 @@ namespace GraphGenerator
         {
             int hash = structureBaseStats.Type*100 + structureBaseStats.Lvl;
             if (processedStructures.Contains(hash))
-                return Result.ALREADY_PROCESSED;
+                return Result.AlreadyProcessed;
 
             Console.Out.WriteLine("Parsing " + structureBaseStats.Name + " " + structureBaseStats.Lvl);
 
@@ -206,7 +208,7 @@ namespace GraphGenerator
                 CreateDefinition(structureBaseStats);
 
             if (record == null)
-                return Result.EMPTY;
+                return Result.Empty;
 
             // First pass
             foreach (var action in record.List)
@@ -217,7 +219,7 @@ namespace GraphGenerator
                     case ActionType.StructureChange:
                         StructureBaseStats building = StructureFactory.GetBaseStats(ushort.Parse(action.Parms[0]), 1);
                         Result result = ProcessStructure(building, false);
-                        if (result != Result.ALREADY_PROCESSED)
+                        if (result != Result.AlreadyProcessed)
                         {
                             if (action.Type == ActionType.StructureBuild)
                                 WriteNode(structureBaseStats, building);
@@ -266,7 +268,7 @@ namespace GraphGenerator
                             {
                                 StructureBaseStats to = StructureFactory.GetBaseStats(from.Type, (byte)(i + 1));
                                 Result result = ProcessStructure(to, true);
-                                if (result == Result.OK || i == maxLvl - 1)
+                                if (result == Result.Ok || i == maxLvl - 1)
                                 {
                                     WriteNode(from, to);
                                     CreateDefinition(to);
@@ -283,7 +285,7 @@ namespace GraphGenerator
                 }
             }
 
-            return hadConnection ? Result.OK : Result.EMPTY;
+            return hadConnection ? Result.Ok : Result.Empty;
         }
 
         private static string GetKey(StructureBaseStats stats)
@@ -321,7 +323,7 @@ namespace GraphGenerator
 
         private static void CreateDefinition(TechnologyBase tech)
         {
-            nodeDefintions[GetKey(tech)] = string.Format("[label=\"{0}\", shape=box]",
+            nodeDefintions[GetKey(tech)] = string.Format("[label=\"{0}\", labelloc=\"b\", height=0.8, shape=none, image=\"paper-scroll.png\"]",
                                                          lang[tech.Name + "_TECHNOLOGY_NAME"]);
         }
 
@@ -351,9 +353,9 @@ namespace GraphGenerator
 
         private enum Result
         {
-            OK,
-            EMPTY,
-            ALREADY_PROCESSED
+            Ok,
+            Empty,
+            AlreadyProcessed
         }
 
         #endregion

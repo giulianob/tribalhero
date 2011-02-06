@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using System.Linq;
 
 #endregion
 
@@ -93,6 +94,10 @@ namespace Game.Logic.Actions
 
                 #endregion
 
+                #region WeaponExport
+                int weaponExport = 0;
+                int WeaponExportMarket = 0;
+                #endregion
                 /*********************************** Loop1 *******************************************/
                 foreach (var structure in city)
                 {
@@ -108,6 +113,14 @@ namespace Game.Logic.Actions
                     if (structure.Stats.Labor > 0)
                         laborTotal += structure.Stats.Labor;
 
+                    #endregion
+
+                    #region WeaponExport
+                    weaponExport += structure.Technologies.GetEffects(EffectCode.WeaponExport, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+                    if( ObjectTypeFactory.IsStructureType("Market",structure) )
+                    {
+                        WeaponExportMarket += structure.Lvl;
+                    }
                     #endregion
                 }
 
@@ -155,6 +168,14 @@ namespace Game.Logic.Actions
                 }
 
                 #endregion
+                
+                #region WeaponExport
+                if (weaponExport * WeaponExportMarket > 0)
+                {
+                    city.Resource.Gold.Add(weaponExport*WeaponExportMarket);
+                }
+
+                #endregion
 
                 /********************************** Pre Loop2 ****************************************/
 
@@ -177,7 +198,7 @@ namespace Game.Logic.Actions
                     #endregion
                 }
                 /********************************* Post Loop2 ****************************************/
-
+ 
                 city.EndUpdate();
 
                 // Stop city action if player has not login for more than a week

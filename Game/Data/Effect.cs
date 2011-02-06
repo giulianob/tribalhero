@@ -60,8 +60,8 @@ namespace Game.Data
         LaborMoveTimeMod = 20,
         SenseOfUrgency = 21,
         LaborTrainTimeMod = 22,
-        LootLoadMod=23,
-
+        LootLoadMod = 23,
+        WeaponExport = 24,
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102
     }

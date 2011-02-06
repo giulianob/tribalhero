@@ -10,6 +10,10 @@ package src.Objects {
 	import flash.geom.Point;
 	import flash.events.Event;
 	import flash.text.TextField;
+	import org.aswing.AsWingConstants;
+	import org.aswing.geom.IntDimension;
+	import org.aswing.JLabel;
+	import src.Constants;
 	import src.Map.City;
 	import src.Map.CityObject;
 	import src.Map.Map;
@@ -25,7 +29,7 @@ package src.Objects {
 
 		public static var STATE_NORMAL: int = 0;
 		public static var STATE_BATTLE: int = 1;
-		public static var STATE_MOVING: int = 2;
+		public static var STATE_MOVING: int = 2;		
 
 		public var level: int;
 		public var type: int;
@@ -36,6 +40,8 @@ package src.Objects {
 
 		private var usernameLabel: TextField;
 		private var icon: DisplayObject;
+		
+		public var objectCount: DisplayObject;
 
 		private var radiusVisible: Boolean = false;
 		private var radius: int = 0;
@@ -47,8 +53,14 @@ package src.Objects {
 		{
 			mouseEnabled = false;
 			addEventListener(OBJECT_UPDATE, onObjectUpdate);
-		}
-
+			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
+				if (objectCount != null) {
+					removeChild(objectCount);
+					objectCount = null;
+				}
+			});			
+		}		
+		
 		public function init(map: Map, playerId: int, cityId: int, objectId: int, type: int):void
 		{
 			this.type = type;
@@ -57,6 +69,27 @@ package src.Objects {
 			this.cityId = cityId;
 
 			wall = new WallManager(map, this);
+		}
+		
+		public function setObjectCount(count: int) : void {
+			if (objectCount != null) {
+				removeChild(objectCount);			
+				objectCount = null;
+			}
+			
+			if (count <= 1) return;		
+			
+			var bubble: CountBubble = new CountBubble();
+			bubble.mouseChildren = false;
+			bubble.txtUnreadCount.mouseEnabled = false;
+			bubble.txtUnreadCount.tabEnabled = false;
+			bubble.txtUnreadCount.text = count.toString();
+			bubble.x = Constants.tileW / 2;
+			bubble.y = 0;
+			
+			objectCount = bubble;
+			
+			addChild(bubble);
 		}
 
 		public function getCityId(): int

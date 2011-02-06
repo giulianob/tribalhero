@@ -324,7 +324,7 @@ package src.Objects {
 			for each (var idx: int in idxs)
 			{
 				currObj = objects.getByIndex(idx) as SimpleGameObject;
-
+				
 				if (bestObj == null)
 				{
 					bestObj = currObj;
@@ -338,13 +338,18 @@ package src.Objects {
 				}
 			}
 
-			if (currObj == null)
-			return;
+			if (currObj == null) return;
 
 			for each (idx in idxs)
 			{
 				currObj = objects.getByIndex(idx) as SimpleGameObject;
-				currObj.visible = (SimpleGameObject.compareCityIdAndObjId(bestObj, [currObj.cityId, currObj.objectId]) == 0);
+				if (SimpleGameObject.compareCityIdAndObjId(bestObj, [currObj.cityId, currObj.objectId]) == 0) {
+					currObj.visible = true; 
+					currObj.setObjectCount(idxs.length);
+				} else {
+					currObj.visible = false;
+					currObj.setObjectCount(0);
+				}
 			}
 		}
 		

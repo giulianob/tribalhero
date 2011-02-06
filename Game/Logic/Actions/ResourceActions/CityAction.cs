@@ -31,7 +31,9 @@ namespace Game.Logic.Actions
 
         private const int INTERVAL = 1800;
         private readonly uint cityId;
+        
         private int laborTimeRemains;
+        private bool everyOther;
 
         public CityAction(uint cityId)
         {
@@ -61,7 +63,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return XmlSerializer.Serialize(new[] { new XmlKvPair("city_id", cityId), new XmlKvPair("labor_time_remains", laborTimeRemains) });
+                return XmlSerializer.Serialize(new[] { new XmlKvPair("city_id", cityId), new XmlKvPair("labor_time_remains", laborTimeRemains), new XmlKvPair("every_other", everyOther) });
             }
         }
 
@@ -106,6 +108,8 @@ namespace Game.Logic.Actions
             {
                 if (!IsValid())
                     return;
+
+                everyOther = !everyOther;
 
                 city.BeginUpdate();
 
@@ -223,7 +227,7 @@ namespace Game.Logic.Actions
 
         private void FastIncome()
         {
-            PostFirstLoop += city =>
+           PostFirstLoop += city =>
             {
                 if (!Config.resource_fast_income)
                     return;
@@ -246,6 +250,9 @@ namespace Game.Logic.Actions
 
             FirstLoop += (city, structure) =>
                 {
+                    if (!everyOther)
+                        return;
+
                     var effects = structure.Technologies.GetEffects(EffectCode.WeaponExport, EffectInheritance.Self);
 
                     if (effects.Count > 0)
@@ -257,10 +264,11 @@ namespace Game.Logic.Actions
 
             PostFirstLoop += city =>
                 {
-                    if (weaponExport*weaponExportMarket <= 0)
+                    int gold = weaponExport*weaponExportMarket/2;
+                    if (gold <= 0)
                         return;
 
-                    city.Resource.Gold.Add(weaponExport*weaponExportMarket);
+                    city.Resource.Gold.Add(gold);
                 };
         }
     }

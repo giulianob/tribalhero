@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Game.Data;
 using Game.Data.Stats;
@@ -8,7 +9,7 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Formulas;
 using Game.Setup;
-
+using System.Linq;
 #endregion
 
 namespace Game.Battle
@@ -246,7 +247,17 @@ namespace Game.Battle
 
         public override void CalculateDamage(ushort dmg, out ushort actualDmg)
         {
+
             actualDmg = (ushort)Math.Min(Hp, dmg);
+
+            if (this.stats.MaxHp/5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
+                return;
+
+            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Attack, tech.Value[1], tech.Value[2])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+            if( BattleFormulas.IsAttackMissed((byte)percent) )
+            {
+                actualDmg = 1;
+            }
         }
 
         public override void TakeDamage(int dmg, out Resource returning, out int attackPoints)

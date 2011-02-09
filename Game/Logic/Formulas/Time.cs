@@ -62,7 +62,7 @@ namespace Game.Logic.Formulas
                     mod += (int)effect.Value[0];
                 }
             }
-            return (double)100/(mod + 100);
+            return (double)100 / (Math.Max(1, mod + 100));
         }
 
         /// <summary>

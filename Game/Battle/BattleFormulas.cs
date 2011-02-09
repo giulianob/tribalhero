@@ -208,7 +208,7 @@ namespace Game.Battle
             return 100 - stealth < Config.Random.Next(0, 100);
         }
 
-        internal static bool UnitStatModCheck(BaseBattleStats stats, object comparison, object value)
+        internal static bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, object comparison, object value)
         {
             switch((string)comparison)
             {
@@ -220,6 +220,8 @@ namespace Game.Battle
                     return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), (string)value, true);
                 case "WeaponClassEqual":
                     return stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), (string)value, true);
+                case "GroupEqual":
+                    return group == (TroopBattleGroup)Enum.Parse(typeof(TroopBattleGroup), (string)value, true);
             }
             return false;
         }
@@ -229,7 +231,7 @@ namespace Game.Battle
             var calculator = new BattleStatsModCalculator(stats);
             foreach (var effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
                 if (effect.Id == EffectCode.UnitStatMod) {
-                    if (UnitStatModCheck(stats, effect.Value[3], effect.Value[4])) {
+                    if (UnitStatModCheck(stats, group, effect.Value[3], effect.Value[4])) {
                         switch ((string)effect.Value[0]) {
                             case "Atk":
                                 calculator.Atk.AddMod((string)effect.Value[1], (int)effect.Value[2]);

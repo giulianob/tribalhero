@@ -62,6 +62,8 @@ namespace Game.Data
         LaborTrainTimeMod = 22,
         LootLoadMod = 23,
         WeaponExport = 24,
+        LastStand = 25,
+
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102
     }

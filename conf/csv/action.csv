@@ -88,8 +88,11 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2204,4,6,1,,unit_upgrade,102,3,,,,,
 2204,5,7,1,,unit_train,103,,,,,22014,UPWARD
 2204,5,8,1,,unit_upgrade,103,3,,,,,
+2204,5,11,1,,technology_Upgrade,22041,5,,,,,
+2204,6,12,1,,technology_Upgrade,22042,5,,,,,
 2204,7,9,1,,unit_train,104,,,,,,
 2204,7,10,1,,unit_upgrade,104,3,,,,,
+2204,7,13,1,,technology_Upgrade,22043,5,,,,,
 2204,8,5,1,,unit_upgrade,101,6,,,,,
 2204,8,6,1,,unit_upgrade,102,6,,,,,
 2204,8,8,1,,unit_upgrade,103,6,,,,,

@@ -8,20 +8,30 @@ package src.Util {
 	import fl.motion.AdjustColor;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.Stage;
 	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	import org.aswing.Component;
 	import org.aswing.Container;
 	import org.aswing.event.*;
+	import org.aswing.FocusManager;
 	import org.aswing.geom.IntPoint;
 	import org.aswing.JFrame;
 	import org.aswing.AsWingUtils;
+	import org.aswing.JTextComponent;
 
 	public class Util {
 
+		public static function textfieldHasFocus(stage: Stage) : Boolean {
+			var focusOwner: Component = FocusManager.getManager(stage).getFocusOwner();
+			if (!focusOwner) return false;
+			return focusOwner is JTextComponent;	
+		}
+		
 		public static function centerSprite(obj: DisplayObjectContainer) : void {
 			var item: DisplayObject;
+			
 			for (var i: int = 0; i < obj.numChildren; i++)
 			{
 				item = obj.getChildAt(i);

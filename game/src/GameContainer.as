@@ -18,6 +18,7 @@
 	import src.UI.Dialog.*;
 	import src.UI.*;
 	import flash.ui.*;
+	import src.Util.Util;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -335,14 +336,15 @@
 			
 			if (e.charCode == Keyboard.ESCAPE)
 			{
-				if (map != null) 	map.selectObject(null);				
-
-				if (miniMap != null) zoomIntoMinimap(false);				
+				if (map != null) map.selectObject(null);				
+				if (miniMap != null) zoomIntoMinimap(false);
+				setSidebar(null);
 			}
 			
-			if (e.charCode == 61 || e.charCode == 43 || e.charCode == Keyboard.NUMPAD_ADD) onZoomIn(e);				
-			
-			if (e.charCode == 45 || e.charCode == 95 || e.charCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
+			if (!Util.textfieldHasFocus(stage)) {
+				if (e.keyCode == 187 || e.keyCode == Keyboard.NUMPAD_ADD) onZoomIn(e);							
+				if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
+			}
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
@@ -513,20 +515,21 @@
 
 		public function setSidebar(sidebar: GameJSidebar):void
 		{
-			if (this.sidebar != null) {
-				this.sidebar.getFrame().dispose();
-			}
+			var focusOwner: Component = FocusManager.getManager(stage).getFocusOwner();
+			
+			if (this.sidebar != null)
+				this.sidebar.getFrame().dispose();			
 
 			chains.visible = false;
 			this.sidebar = sidebar;
 
 			if (sidebar != null) {
-				chains.visible = true;
-				sidebar.show(sidebarHolder);
-				FocusManager.getManager(stage).focusPrevious();
-			}
-
-			stage.focus = null;
+				chains.visible = true;							
+				sidebar.show(sidebarHolder);								
+			}					
+			
+			if (focusOwner)
+				stage.focus = focusOwner.getInternalFocusObject();			
 		}
 
 		public function closeAllFrames() : void {

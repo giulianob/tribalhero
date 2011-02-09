@@ -73,6 +73,8 @@
 		}
 
 		public static function moveTime(city: City, speed: int, distance: int, isAttacking: Boolean) : int {
+			
+			// MoveTimeMod
 			var mod: int = 0;
 			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_TROOP_SPEED_MOD, EffectPrototype.INHERIT_ALL)) {
 				if ( (tech.param2.toUpperCase() == "ATTACK" && isAttacking) || (tech.param2.toUpperCase() == "DEFENSE" && !isAttacking)) {
@@ -82,10 +84,12 @@
 				}
 			}
 
-			mod = 100 / (mod + 100);
+			mod = 100 / Math.max(1, (mod + 100));
 
+			// MoveTime
 			var moveTime: int = 80 * (100 - ((speed - 11) * 5)) / 100;
 
+			// Calculate total
 			return Math.max(1, moveTime * Constants.secondsPerUnit * mod / 100) * distance;
 		}	
 

@@ -35,7 +35,8 @@ namespace Game.Data
         public static readonly IDbManager DbManager = new MySqlDbManager(Config.database_host,
                                                                          Config.database_username,
                                                                          Config.database_password,
-                                                                         Config.database_database);
+                                                                         Config.database_database,
+                                                                         Config.database_timeout);
 
         public static readonly Ai Ai = new Ai();
 

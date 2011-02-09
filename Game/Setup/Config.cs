@@ -75,6 +75,7 @@ namespace Game.Setup
         public static readonly bool database_verbose;
         public static readonly bool database_empty;
         public static readonly bool database_load_players = true;
+        public static readonly int database_timeout = 60;
         public static readonly string database_host = "127.0.0.1";
         public static readonly string database_username = "root";
         public static readonly string database_password = "";
@@ -135,9 +136,9 @@ namespace Game.Setup
                             continue;
 
                         key = line.Substring(0, line.IndexOf('=')).ToLower();
-                        key = key.Substring(0, key.IndexOf('.')) + "_" + key.Substring(key.IndexOf('.') + 1);
+                        key = key.Substring(0, key.IndexOf('.')) + "_" + key.Substring(key.IndexOf('.') + 1).Trim();
 
-                        string value = line.Substring(line.IndexOf('=') + 1);
+                        string value = line.Substring(line.IndexOf('=') + 1).Trim();
 
                         Type type = Type.GetType("Game.Setup.Config");
                         FieldInfo field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);

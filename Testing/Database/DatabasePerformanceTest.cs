@@ -69,7 +69,8 @@ namespace Testing.Database
         private readonly IDbManager dbManager = new MySqlDbManager(Config.database_host,
                                                                    Config.database_username,
                                                                    Config.database_password,
-                                                                   Config.database_test);
+                                                                   Config.database_test,
+                                                                   Config.database_timeout);
 
         [TestInitialize]
         public void TestInitialize()

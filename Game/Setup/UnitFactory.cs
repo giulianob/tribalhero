@@ -13,13 +13,13 @@ namespace Game.Setup
 {
     public class UnitFactory
     {
-        public static Dictionary<int, BaseUnitStats> Dict;
+        private static Dictionary<int, BaseUnitStats> dict;
 
         public static void Init(string filename)
         {
-            if (Dict != null)
+            if (dict != null)
                 return;
-            Dict = new Dictionary<int, BaseUnitStats>();
+            dict = new Dictionary<int, BaseUnitStats>();
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
@@ -73,82 +73,87 @@ namespace Game.Setup
                                                       int.Parse(toks[col["UpgrdTime"]]),
                                                       byte.Parse(toks[col["Upkeep"]]));
 
-                    Dict[int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]])] = basestats;
+                    dict[int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }
             }
         }
 
         public static Resource GetCost(int type, int lvl)
         {
-            if (Dict == null)
+            if (dict == null)
                 return null;
             BaseUnitStats tmp;
-            if (Dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type*100 + lvl, out tmp))
                 return new Resource(tmp.Cost);
             return null;
         }
 
         public static Resource GetUpgradeCost(int type, int lvl)
         {
-            if (Dict == null)
+            if (dict == null)
                 return null;
             BaseUnitStats tmp;
-            if (Dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type*100 + lvl, out tmp))
                 return new Resource(tmp.UpgradeCost);
             return null;
         }
 
         public static BaseUnitStats GetUnitStats(ushort type, byte lvl)
         {
-            if (Dict == null)
+            if (dict == null)
                 return null;
             BaseUnitStats tmp;
-            if (Dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type*100 + lvl, out tmp))
                 return tmp;
             return null;
         }
 
         internal static BaseBattleStats GetBattleStats(ushort type, byte lvl)
         {
-            if (Dict == null)
+            if (dict == null)
                 return null;
             BaseUnitStats tmp;
-            if (Dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type*100 + lvl, out tmp))
                 return tmp.Battle;
             return null;
         }
 
         internal static int GetTime(ushort type, byte lvl)
         {
-            if (Dict == null)
+            if (dict == null)
                 return -1;
             BaseUnitStats tmp;
-            if (Dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type*100 + lvl, out tmp))
                 return tmp.BuildTime;
             return -1;
         }
 
         internal static int GetUpgradeTime(ushort type, byte lvl)
         {
-            if (Dict == null)
+            if (dict == null)
                 return -1;
             BaseUnitStats tmp;
-            if (Dict.TryGetValue(type*100 + lvl, out tmp))
+            if (dict.TryGetValue(type*100 + lvl, out tmp))
                 return tmp.UpgradeTime;
             return -1;
         }
 
         public static string GetName(ushort type, byte lvl)
         {
-            if (Dict == null)
+            if (dict == null)
                 return null;
             BaseUnitStats tmp;
-            return Dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.Name : null;
+            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.Name : null;
         }
 
         public static Dictionary<int, BaseUnitStats> GetList()
         {
-            return new Dictionary<int, BaseUnitStats>(Dict);
+            return new Dictionary<int, BaseUnitStats>(dict);
+        }
+
+        public static IEnumerable<BaseUnitStats> AllUnits()
+        {
+            return dict.Values;
         }
     }
 }

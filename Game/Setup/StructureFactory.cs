@@ -162,5 +162,10 @@ namespace Game.Setup
             StructureBaseStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }
+
+        public static IEnumerable<StructureBaseStats> AllStructures()
+        {
+            return dict.Values;
+        }
     }
 }

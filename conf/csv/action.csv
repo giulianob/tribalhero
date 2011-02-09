@@ -44,7 +44,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 ,,,,,,,,,,,,
 // Foundry,,,,,,,,,,,,
 2110,1,0,1,,,,,,,,,
-2110,1,1,1,,structure_Upgrade,5,,,,,,
+2110,1,1,1,,structure_Upgrade,10,,,,,,
 2110,1,2,1,,labor_move,,,,,,,
 2110,2,3,1,,technology_upgrade,21101,5,,,,21101,SELF
 2110,3,4,1,,technology_upgrade,21102,3,,,,,
@@ -54,8 +54,8 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 ,,,,,,,,,,,,
 // Basement,,,,,,,,,,,,
 2111,1,0,1,,,,,,,,,
-2111,1,1,1,,structure_Upgrade,3,,,,,,
-2111,2,1,1,,structure_Upgrade,10,,,,,21111,UPWARD
+2111,1,1,1,,structure_Upgrade,10,,,,,,
+2111,4,1,1,,structure_Upgrade,10,,,,,21111,UPWARD
 ,,,,,,,,,,,,
 //training ground,,,,,,,,,,,,
 2201,1,0,1,,,,,,,,,
@@ -266,7 +266,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 //Tower,,,,,,,,,,,,
 2402,1,0,1,,,,,,,,,
 2402,1,1,1,,structure_Upgrade,10,,,,,,
-2402,2,2,1,,structure_Change,2403,1,,,,,
+2402,5,2,1,,structure_Change,2403,1,,,,,
 ,,,,,,,,,,,,
 //Cannon Tower,,,,,,,,,,,,
 2403,1,0,1,,,,,,,,,

@@ -168,8 +168,8 @@ COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
 COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP at the cost of 3% of travel speed.
 COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP at the cost of 6% of travel speed.
 COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP at the cost of 9% of travel speed.
-COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 8% Max HP at the cost of 12% of travel speed.
-COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 10% Max HP at the cost of 15% of travel speed.
+COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP at the cost of 12% of travel speed.
+COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP at the cost of 15% of travel speed.
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
 REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for the structure.

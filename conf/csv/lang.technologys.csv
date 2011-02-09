@@ -158,15 +158,18 @@ GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to load up loot bonus by 4%
 GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to load up loot bonus by 5%
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,"Defensive reinforcements gain 1 vision when joining the battle, only if other playe ralso has Coordinated Defense."
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,"Defensive reinforcements gain 2 vision when joining the battle, only if other player also has Coordinated Defense. (Takes the lower level of the two forces)"
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,"Defensive reinforcements gain 3 vision when joining the battle, only if other player also has Coordinated Defense. (Takes the lower level of the two forces)"
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP at the cost of 3% of travel speed.
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP at the cost of 6% of travel speed.
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP at the cost of 9% of travel speed.
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP at the cost of 12% of travel speed.
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP at the cost of 15% of travel speed.
 ,
 COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
-COORDINATED_ATTACK_TECHNOLOGY_LVL_1,"Offensive reinforcements gain 1 vision when joining the battle, only if the other player also has Coordinated Attack."
-COORDINATED_ATTACK_TECHNOLOGY_LVL_2,"Offensive reinforcements gain 2 vision when joining the battle, only if the other player also has Coordinated Attack.(Takes the lower level of the two forces)"
-COORDINATED_ATTACK_TECHNOLOGY_LVL_3,"Offensive reinforcements gain 3 vision when joining the battle, only if the other player also has Coordinated Attack.(Takes the lower level of the two forces)"
-,
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP at the cost of 3% of travel speed.
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP at the cost of 6% of travel speed.
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP at the cost of 9% of travel speed.
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 8% Max HP at the cost of 12% of travel speed.
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 10% Max HP at the cost of 15% of travel speed.
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
 REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for the structure.

@@ -269,6 +269,8 @@
 		public function selectObject(obj: GameObject, query: Boolean = true, deselectIfSelected: Boolean = false ):void
 		{
 			selectViewable = null;
+			
+			if (obj == null && selectedObject == null) return;				
 
 			var reselecting: Boolean = false;
 

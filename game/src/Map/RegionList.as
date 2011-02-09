@@ -34,8 +34,6 @@
 
 			var reselect: Boolean = Global.map.selectedObject == obj;
 
-			if (Global.map.selectedObject == obj) Global.map.selectObject(null);
-
 			if (level != obj.level || type != obj.type)
 			{
 				region.removeObject(cityId, objectId);

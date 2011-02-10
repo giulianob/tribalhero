@@ -141,7 +141,7 @@ namespace Game.Logic.Actions
                 troopObj.Stub.State = TroopState.Idle;
                 StateChange(ActionState.Completed);
                 troopObj.Stub.EndUpdate();
-                return 0;
+                return Error.Ok;
             }
             troopObj.Stub.EndUpdate();
 

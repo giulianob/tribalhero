@@ -53,7 +53,7 @@ namespace ConsoleSimulator
                 sw.WriteLine("{0} - Lvl {1} - Cnt {2} - Defending", UnitFactory.GetName(type, lvl), lvl, count);
                 sw.WriteLine(
                              "name,type,lvl,count,DealtToAtker,RecvFromAtker,HitDealt,HitRecv,MaxDealt,MinDealt,MaxRecv,MinRecv,Self,Enemy");
-                foreach (var kvp in UnitFactory.Dict)
+                foreach (var kvp in UnitFactory.GetList())
                 {
                     if (sameLevelOnly && kvp.Value.Lvl != lvl)
                         continue;
@@ -121,7 +121,7 @@ namespace ConsoleSimulator
                 sw.WriteLine("{0} - Lvl {1} - Cnt {2} - Attacking", UnitFactory.GetName(type, lvl), lvl, count);
                 sw.WriteLine(
                              "name,type,lvl,count,DealtToDefender,RecvFromDefender,HitDealt,HitRecv,MaxDealt,MinDealt,MaxRecv,MinRecv");
-                foreach (var kvp in UnitFactory.Dict)
+                foreach (var kvp in UnitFactory.GetList())
                 {
                     if (sameLevelOnly && kvp.Value.Lvl != lvl)
                         continue;

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 using CSVToXML;
 using Game.Data;
 using Game.Data.Stats;
@@ -17,27 +18,17 @@ namespace DatabaseGenerator
 {
     class Program
     {
-        private static readonly ushort[] StructureTypes = new ushort[]
-                                                          {
-                                                                  2000, 2106, 2107, 2110, 2109, 2111, 2201, 2204, 2202, 2203,
-                                                                  2301, 2302, 2303, 2402, 2403, 2501, 2502, 3002, 3003, 3004,
-                                                                  3005
-                                                          };
+        private static IEnumerable<ushort> structureTypes;
 
-        private static readonly ushort[] TechnologyTypes = new ushort[]
-                                                           {
-                                                                   23011, 23013, 23014, 23021, 23022, 23023, 23024, 23031,
-                                                                   23032, 23033, 23034, 22022, 21101, 21102, 21071, 22011,
-                                                                   22012, 22013
-                                                           };
+        private static IEnumerable<uint> technologyTypes;
 
-        private static readonly ushort[] UnitTypes = new ushort[] {11, 12, 101, 102, 103, 104, 105, 106, 107, 108, 401};
+        private static IEnumerable<ushort> unitTypes;
 
-        private static readonly Dictionary<string, string> Lang = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> lang = new Dictionary<string, string>();
 
         private static string output = "output";
 
-        private static void Main(string[] args)
+        private static void Main()
         {
             Factory.CompileConfigFiles();
             Factory.InitAll();
@@ -54,7 +45,20 @@ namespace DatabaseGenerator
             {
             }
 
-            // Process structures
+            // Get types
+            structureTypes = from structure in StructureFactory.AllStructures()
+                             group structure by structure.Type
+                             into types orderby types.Key select types.Key;
+
+            technologyTypes = from technology in TechnologyFactory.AllTechnologies()
+                              group technology by technology.Techtype
+                              into types orderby types.Key select types.Key;
+
+            unitTypes = from unit in UnitFactory.AllUnits()
+                        group unit by unit.Type
+                        into types orderby types.Key select types.Key;
+
+            // Process structures            
             Directory.CreateDirectory(output);
             using (var writer = new StreamWriter(File.Create(Path.Combine(output, "structure_listing.inc.php"))))
             {
@@ -62,14 +66,14 @@ namespace DatabaseGenerator
                     $structures = array(
                 ");
 
-                foreach (var type in StructureTypes)
+                foreach (var type in structureTypes)
                 {
                     ProcessStructure(type);
 
                     StructureBaseStats stats = StructureFactory.GetBaseStats(type, 1);
                     writer.WriteLine("'{2}_STRUCTURE' => array('name' => '{1}', 'sprite' => '{0}'),",
                                      stats.SpriteClass,
-                                     Lang[stats.Name + "_STRUCTURE_NAME"],
+                                     lang[stats.Name + "_STRUCTURE_NAME"],
                                      stats.Name);
                 }
 
@@ -82,14 +86,14 @@ namespace DatabaseGenerator
                 writer.Write(@"<?php
                     $units = array(
                 ");
-                foreach (var type in UnitTypes)
+                foreach (var type in unitTypes)
                 {
                     ProcessUnit(type);
 
                     BaseUnitStats stats = UnitFactory.GetUnitStats(type, 1);
                     writer.WriteLine("'{2}_UNIT' => array('name' => '{1}', 'sprite' => '{0}'),",
                                      stats.SpriteClass,
-                                     Lang[stats.Name + "_UNIT"],
+                                     lang[stats.Name + "_UNIT"],
                                      stats.Name);
                 }
                 writer.Write(@");");
@@ -102,21 +106,21 @@ namespace DatabaseGenerator
                 writer.Write(@"<?php
                     $technologies = array(
                 ");
-                foreach (var type in TechnologyTypes)
+                foreach (var type in technologyTypes)
                 {
                     ProcessTechnology(type);
 
                     TechnologyBase stats = TechnologyFactory.GetTechnologyBase(type, 1);
                     writer.WriteLine("'{0}_TECHNOLOGY' => array('name' => '{1}'),",
                                      stats.Name,
-                                     Lang[stats.Name + "_TECHNOLOGY_NAME"]);
+                                     lang[stats.Name + "_TECHNOLOGY_NAME"]);
                 }
                 writer.Write(@");");
             }
         }
 
         // Technologies        
-        private static void ProcessTechnology(ushort type)
+        private static void ProcessTechnology(uint type)
         {
             string generalTemplate =
                     @"<?php
@@ -144,13 +148,13 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#TECH#", tech.Name + "_TECHNOLOGY");
-            generalTemplate = generalTemplate.Replace("#TECH_NAME#", Lang[tech.Name + "_TECHNOLOGY_NAME"]);
+            generalTemplate = generalTemplate.Replace("#TECH_NAME#", lang[tech.Name + "_TECHNOLOGY_NAME"]);
 
             // Builder info
             StructureBaseStats trainer;
-            FindTechnologyTrainer(type, out trainer);
+            FindTechnologyTrainer(type, 1, out trainer);
             generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#",
-                                                      trainer != null ? Lang[trainer.Name + "_STRUCTURE_NAME"] : "");
+                                                      trainer != null ? lang[trainer.Name + "_STRUCTURE_NAME"] : "");
             generalTemplate = generalTemplate.Replace("#TRAINED_BY#", trainer != null ? trainer.Name + "_STRUCTURE" : "");
             generalTemplate = generalTemplate.Replace("#TRAINED_BY_LEVEL#",
                                                       trainer != null ? trainer.Lvl.ToString() : "");
@@ -162,7 +166,7 @@ namespace DatabaseGenerator
             do
             {
                 string currentLevel = levelTemplate.Replace("#DESCRIPTION#",
-                                                            Lang[currentStats.Name + "_TECHNOLOGY_LVL_" + level].Replace
+                                                            lang[currentStats.Name + "_TECHNOLOGY_LVL_" + level].Replace
                                                                     ("'", "\\'"));
                 currentLevel = currentLevel.Replace("#TIME#", currentStats.Time.ToString());
                 currentLevel = currentLevel.Replace("#GOLD#", currentStats.Resources.Gold.ToString());
@@ -184,7 +188,7 @@ namespace DatabaseGenerator
 
                 levelsWriter.WriteLine(currentLevel);
 
-                trainer = StructureFactory.GetBaseStats(type, level);
+                FindTechnologyTrainer(type, level, out trainer);
                 level++;
             } while ((currentStats = TechnologyFactory.GetTechnologyBase(type, level)) != null);
 
@@ -199,29 +203,26 @@ namespace DatabaseGenerator
             }
         }
 
-        private static void FindTechnologyTrainer(ushort type, out StructureBaseStats trainer)
+        private static void FindTechnologyTrainer(uint type, byte level, out StructureBaseStats trainer)
         {
-            foreach (var builderType in StructureTypes)
+            foreach (var builderType in structureTypes)
             {
-                byte level = 1;
+                byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = StructureFactory.GetBaseStats(builderType, level)) != null)
+                while ((stats = StructureFactory.GetBaseStats(builderType, structureLevel)) != null)
                 {
-                    level++;
+                    structureLevel++;
 
                     ActionRecord record = ActionFactory.GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;
 
-                    foreach (var action in record.List)
+                    if (record.List.Any(action => action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level))
                     {
-                        if (action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type)
-                        {
-                            trainer = stats;
-                            return;
-                        }
+                        trainer = stats;
+                        return;
                     }
                 }
             }
@@ -229,20 +230,11 @@ namespace DatabaseGenerator
             trainer = null;
         }
 
-        private static IEnumerable<string> GetTechnologyRequirements(ushort type, byte level, StructureBaseStats trainer)
+        private static IEnumerable<string> GetTechnologyRequirements(uint type, byte level, StructureBaseStats trainer)
         {
             ActionRecord record = ActionFactory.GetActionRequirementRecord(trainer.WorkerId);
 
-            ActionRequirement foundAction = null;
-            foreach (var action in record.List)
-            {
-                if (action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type &&
-                    ushort.Parse(action.Parms[1]) >= level)
-                {
-                    foundAction = action;
-                    break;
-                }
-            }
+            ActionRequirement foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type && ushort.Parse(action.Parms[1]) >= level);
 
             if (foundAction != null)
             {
@@ -285,15 +277,15 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#UNIT#", stats.Name + "_UNIT");
-            generalTemplate = generalTemplate.Replace("#UNIT_NAME#", Lang[stats.Name + "_UNIT"]);
+            generalTemplate = generalTemplate.Replace("#UNIT_NAME#", lang[stats.Name + "_UNIT"]);
             generalTemplate = generalTemplate.Replace("#DESCRIPTION#",
-                                                      Lang[stats.Name + "_UNIT_DESC"].Replace("'", "\\'"));
+                                                      lang[stats.Name + "_UNIT_DESC"].Replace("'", "\\'"));
 
             // Builder info
             StructureBaseStats trainer;
-            FindUnitTrainer(type, out trainer);
+            FindUnitTrainer(type, 1, out trainer);
             generalTemplate = generalTemplate.Replace("#TRAINED_BY_NAME#",
-                                                      trainer != null ? Lang[trainer.Name + "_STRUCTURE_NAME"] : "");
+                                                      trainer != null ? lang[trainer.Name + "_STRUCTURE_NAME"] : "");
             generalTemplate = generalTemplate.Replace("#TRAINED_BY#", trainer != null ? trainer.Name + "_STRUCTURE" : "");
             generalTemplate = generalTemplate.Replace("#TRAINED_BY_LEVEL#",
                                                       trainer != null ? trainer.Lvl.ToString() : "");
@@ -336,7 +328,7 @@ namespace DatabaseGenerator
 
                 levelsWriter.WriteLine(currentLevel);
 
-                trainer = StructureFactory.GetBaseStats(type, level);
+                FindUnitTrainer(type, level, out trainer);
                 level++;
             } while ((currentStats = UnitFactory.GetUnitStats(type, level)) != null);
 
@@ -351,25 +343,33 @@ namespace DatabaseGenerator
             }
         }
 
-        private static void FindUnitTrainer(ushort type, out StructureBaseStats trainer)
+        private static void FindUnitTrainer(ushort type, byte level, out StructureBaseStats trainer)
         {
-            foreach (var builderType in StructureTypes)
+            foreach (var builderType in structureTypes)
             {
-                byte level = 1;
+                byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = StructureFactory.GetBaseStats(builderType, level)) != null)
+                while ((stats = StructureFactory.GetBaseStats(builderType, structureLevel)) != null)
                 {
-                    level++;
+                    structureLevel++;
 
                     ActionRecord record = ActionFactory.GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;
 
-                    foreach (var action in record.List)
+                    if (level == 1)
                     {
-                        if (action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type)
+                        if (record.List.Any(action => action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type))
+                        {
+                            trainer = stats;
+                            return;
+                        }
+                    } 
+                    else
+                    {
+                        if (record.List.Any(action => action.Type == ActionType.UnitUpgrade && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level))
                         {
                             trainer = stats;
                             return;
@@ -385,25 +385,21 @@ namespace DatabaseGenerator
         {
             ActionRecord record = ActionFactory.GetActionRequirementRecord(trainer.WorkerId);
 
-            ActionRequirement foundAction = null;
-            foreach (var action in record.List)
-            {
-                if (action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type)
-                {
-                    foundAction = action;
-                    break;
-                }
-            }
+            ActionRequirement foundAction;
+            
+            if (level == 1)
+                foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type);
+            else
+                foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.UnitUpgrade && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level);                            
 
-            if (foundAction != null)
-            {
-                var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
-                foreach (var requirement in requirements)
-                {
-                    if (requirement.WebsiteDescription != string.Empty)
-                        yield return requirement.WebsiteDescription;
-                }
-            }
+            if (foundAction == null)
+                yield break;
+
+            var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
+
+            foreach (var requirement in requirements.Where(requirement => requirement.WebsiteDescription != string.Empty))            
+                yield return requirement.WebsiteDescription;            
+
         }
 
         // Structure Database
@@ -437,17 +433,17 @@ namespace DatabaseGenerator
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#STRUCTURE#", stats.Name + "_STRUCTURE");
-            generalTemplate = generalTemplate.Replace("#STRUCTURE_NAME#", Lang[stats.Name + "_STRUCTURE_NAME"]);
+            generalTemplate = generalTemplate.Replace("#STRUCTURE_NAME#", lang[stats.Name + "_STRUCTURE_NAME"]);
             generalTemplate = generalTemplate.Replace("#DESCRIPTION#",
-                                                      Lang[stats.Name + "_STRUCTURE_DESCRIPTION"].Replace("'", "\\'"));
+                                                      lang[stats.Name + "_STRUCTURE_DESCRIPTION"].Replace("'", "\\'"));
 
             // Builder info
             StructureBaseStats builder;
             bool converted;
-            FindStructureBuilder(type, out builder, out converted);
+            FindStructureBuilder(type, 1, out builder, out converted);
             generalTemplate = generalTemplate.Replace("#CONVERTED#", converted ? "1" : "0");
             generalTemplate = generalTemplate.Replace("#BUILT_BY_NAME#",
-                                                      builder != null ? Lang[builder.Name + "_STRUCTURE_NAME"] : "");
+                                                      builder != null ? lang[builder.Name + "_STRUCTURE_NAME"] : "");
             generalTemplate = generalTemplate.Replace("#BUILT_BY#", builder != null ? builder.Name + "_STRUCTURE" : "");
             generalTemplate = generalTemplate.Replace("#BUILT_BY_LEVEL#", builder != null ? builder.Lvl.ToString() : "");
 
@@ -458,7 +454,7 @@ namespace DatabaseGenerator
             do
             {
                 string currentLevel = levelTemplate.Replace("#DESCRIPTION#",
-                                                            Lang[currentStats.Name + "_STRUCTURE_LVL_" + level].Replace(
+                                                            lang[currentStats.Name + "_STRUCTURE_LVL_" + level].Replace(
                                                                                                                         "'",
                                                                                                                         "\\'"));
                 currentLevel = currentLevel.Replace("#TIME#", currentStats.BuildTime.ToString());
@@ -487,7 +483,7 @@ namespace DatabaseGenerator
 
                 levelsWriter.WriteLine(currentLevel);
 
-                builder = StructureFactory.GetBaseStats(type, level);
+                FindStructureBuilder(type, level, out builder, out converted);
                 level++;
             } while ((currentStats = StructureFactory.GetBaseStats(type, level)) != null);
 
@@ -539,19 +535,26 @@ namespace DatabaseGenerator
             }
         }
 
-        private static void FindStructureBuilder(ushort type, out StructureBaseStats builder, out bool convert)
+        private static void FindStructureBuilder(ushort type, byte level, out StructureBaseStats builder, out bool convert)
         {
-            foreach (var builderType in StructureTypes)
+            if (level > 1)
+            {
+                builder = StructureFactory.GetBaseStats(type, (byte)(level - 1));
+                convert = false;
+                return;
+            }
+
+            foreach (var builderType in structureTypes)
             {
                 if (builderType == type)
                     continue;
 
-                byte level = 1;
+                byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = StructureFactory.GetBaseStats(builderType, level)) != null)
+                while ((stats = StructureFactory.GetBaseStats(builderType, structureLevel)) != null)
                 {
-                    level++;
+                    structureLevel++;
 
                     ActionRecord record = ActionFactory.GetActionRequirementRecord(stats.WorkerId);
 
@@ -560,18 +563,21 @@ namespace DatabaseGenerator
 
                     foreach (var action in record.List)
                     {
-                        if (action.Type == ActionType.StructureBuild && ushort.Parse(action.Parms[0]) == type)
+                        if (level == 1)
                         {
-                            builder = stats;
-                            convert = false;
-                            return;
-                        }
+                            if (action.Type == ActionType.StructureBuild && ushort.Parse(action.Parms[0]) == type)
+                            {
+                                builder = stats;
+                                convert = false;
+                                return;
+                            }
 
-                        if (action.Type == ActionType.StructureChange && ushort.Parse(action.Parms[0]) == type)
-                        {
-                            builder = stats;
-                            convert = true;
-                            return;
+                            if (action.Type == ActionType.StructureChange && ushort.Parse(action.Parms[0]) == type)
+                            {
+                                builder = stats;
+                                convert = true;
+                                return;
+                            }
                         }
                     }
                 }
@@ -597,7 +603,7 @@ namespace DatabaseGenerator
                         if (obj[0] == string.Empty)
                             continue;
 
-                        Lang[obj[0]] = obj[1];
+                        lang[obj[0]] = obj[1];
                     }
                 }
             }

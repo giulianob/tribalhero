@@ -117,5 +117,10 @@ namespace Game.Setup
             var t = new Technology(tbase);
             return t;
         }
+
+        public static IEnumerable<TechnologyBase> AllTechnologies()
+        {
+            return technologies.Values;
+        }
     }
 }

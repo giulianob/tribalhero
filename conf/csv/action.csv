@@ -55,7 +55,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 // Basement,,,,,,,,,,,,
 2111,1,0,1,,,,,,,,,
 2111,1,1,1,,structure_Upgrade,3,,,,,,
-2111,2,1,1,,structure_Upgrade,10,,,,,21111,UPWARD
+2111,4,1,1,,structure_Upgrade,10,,,,,21111,UPWARD
 ,,,,,,,,,,,,
 //training ground,,,,,,,,,,,,
 2201,1,0,1,,,,,,,,,

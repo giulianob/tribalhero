@@ -60,7 +60,7 @@ namespace ConsoleSimulator
                           delegate(string path) { File.Delete(path); });
 
             Simulation sim;
-            foreach (var kvp in UnitFactory.Dict)
+            foreach (var kvp in UnitFactory.GetList())
             {
                 if (!lvlFilter.Any(x => x == kvp.Value.Lvl))
                     continue;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="rectiso" width="34" height="62" tilewidth="108" tileheight="54">
+ <tileset name="Untitled" firstgid="1" tilewidth="108" tileheight="108">
+  <image source="../graphics/Tilemap.large.png"/>
+ </tileset>
+ <layer name="Layer 0" width="34" height="62">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAM2ZS49TRxCFe2yPmRmGzILhsQkaRQT+3gS/hIAssifZhkV2eUgss0l4hD8QIaQJAeL4x3BLU0c+Pq7qe68gCovSvW63u757qrq6b3unlLLzCdjBJ8DAdoes1m/mtkPXLnbrP2Bg+5haYExwjJJ+w4/AYmP8lvjQ8TIOa196X7v+67ZK+v/l9obafmnsd7+fBBx3/DoSv/g8dAPHTDguJRzog7ZFY48b+0k4MgazgejJHP+QJqskPvj+LTGYHr96+0TGBwvnaRSbofufk995hQV6vCYOs+eNPXEOsECHtrkCDvhWn1HOvnZjPcyetegRjTWU+2jOgIPjBD3QhjHm7n/h7aOy+RwZA1tWR5ZlPZfmxAGGJTGAA3rwPEButOnB+TclJrTNvB2avCvn+fSWYjMt65xiPczPHnFY20W3qH5wfirbjPRYEAPm9KkbOHguQHPm2G/ss8ZuBywcG2WZlc35Y3r87fpjHpyW7Ro2IgbW39YkW4dvJLFhhiG1obatSBPkJH4bcXB+cC5ecz2M40uJH/uM9ODvh86gtehUPu84w5hYXroeN8p6bxLpka1vXPdRLy4kfcdJO/ztU1wuV1im9KxnpAHymVkiX9Fc5HbowfmhY0VjaG3B78DWxqBjX3OG40rfrNaMgvY2f1n7VWGI4sscy7Jd76PxNV/HyT3rdYXaMU801jP5rdb6jAN+xqLJXMbD/UDGYY69QBO0jcomfxaLWo6ocUyy3Nc1hr9TXVhz5RjTeFFsF2LZHslsWtZrYJaDk9I+Z7L9DXPUfOD5pyVn0pquvmsMrA2eZUD9+Pk4FnZ/Txh0PVDffI+9n8Yq2he15d39xh4Iy6TSP9KC9djrENeI4W5jj4h1UmLuWv2L9MB99r6F+Wox+cE5vhM9MD/6PBM4+vwGHN84x/dlnV+ZHn0NtbMvy6MgLh/KYhxHErts7XtIcelaP2r5muVN9F6DfpYDliPflnWuYq/YhWMv8amfo7WOPxvH126aH11yMnv2qI+uF9l+r4/2GYfe63MvEj5+b+5y3lTTo4tmXO8jrbqwZPE+k/GGZVsz3rvqOtNlToyDvm37OvQ/kr68DvPv9f2M9dD3Vn2PZ5117Gg9UD1qOYKrvZd8Tn4ivSOWqK5zv0HAMivbZ0y4tz3eYTl//17I2Hg25cj06LI2ch/Wwhj0HJt9ax7qfiVbp6Nay7HQc+JD0gPv5Nme1YxrKsevbR6zX40PzhKOiaFN30jnWdncw/etN7uNnZTN97Ts3LOm/YfUvIuuxxf++cfKWNkZQ5a/bRxs18v5GdOJ+3lRzs+V1U9W01iLrK6eBX7x/cAZDp3BagfOlWvPOyqbOcn+2aw9ek/BfpzHZA4zmys4Z884svjC/yLwDfsqiK0xHJAWx4EeNVP9WQvMRT1HjThOnOPANUFNZz3Mxh7DbH2M4sLnvrVcv0WxQP0yjj8ae9qiQ61WMROfK8OsBvN7zT5xMIvlx88VBj2X0XxGPJZl85xBz0pgV4nhpjPUzrs4/m15Yxz4H0jzI2MxhiM3cCi7/u8U3cPM/8qvsGy9gx0l911jwfrw/gln13yG3WUv18fw3+AusViu8f+Aq7L9n08f+7MSDzDgfrcyDmLTl2NMftX3//3//iu/vgdE0ZEp8CAAAA==
+  </data>
+ </layer>
+</map>

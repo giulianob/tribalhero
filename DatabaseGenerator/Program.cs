@@ -482,9 +482,9 @@ namespace DatabaseGenerator
                 currentLevel = currentLevel.Replace("#REQUIREMENTS#", requirementsWriter.ToString());
 
                 levelsWriter.WriteLine(currentLevel);
-
-                FindStructureBuilder(type, level, out builder, out converted);
+                
                 level++;
+                FindStructureBuilder(type, level, out builder, out converted);
             } while ((currentStats = StructureFactory.GetBaseStats(type, level)) != null);
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
@@ -517,7 +517,7 @@ namespace DatabaseGenerator
                     break;
                 }
 
-                if (action.Type == ActionType.StructureUpgrade && byte.Parse(action.Parms[0]) < level)
+                if (action.Type == ActionType.StructureUpgrade && byte.Parse(action.Parms[0]) >= level)
                 {
                     foundAction = action;
                     break;

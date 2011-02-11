@@ -75,7 +75,7 @@
 		public static function moveTime(city: City, speed: int, distance: int, isAttacking: Boolean) : int {
 			
 			// MoveTimeMod
-			var mod: int = 0;
+			var mod: Number = 0;
 			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_TROOP_SPEED_MOD, EffectPrototype.INHERIT_ALL)) {
 				if ( (tech.param2.toUpperCase() == "ATTACK" && isAttacking) || (tech.param2.toUpperCase() == "DEFENSE" && !isAttacking)) {
 					mod += (int) (tech.param1);				
@@ -90,7 +90,7 @@
 			var moveTime: int = 80 * (100 - ((speed - 11) * 5)) / 100;
 
 			// Calculate total
-			return Math.max(1, moveTime * Constants.secondsPerUnit * mod / 100) * distance;
+			return Math.max(1, moveTime * mod) * distance * Constants.secondsPerUnit;
 		}	
 
 		public static function marketBuyCost(price: int, amount: int, tax: Number): int

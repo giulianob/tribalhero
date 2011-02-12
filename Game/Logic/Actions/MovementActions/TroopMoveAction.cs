@@ -195,7 +195,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                StateChange(ActionState.Fired);
+                StateChange(ActionState.Rescheduled);
             }
         }
 

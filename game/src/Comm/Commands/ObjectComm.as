@@ -479,6 +479,7 @@
 			}
 			else
 			{
+				currentAction.workerType = packet.readInt();
 				currentAction.index = packet.readUByte();
 				currentAction.count = packet.readUShort();
 			}

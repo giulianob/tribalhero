@@ -191,6 +191,6 @@ SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage by 2.
 SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage by 3.
 ,
 HANZO_SWORD_TECHNOLOGY_NAME,Hanzo sword
-HANZO_SWORD_TECHNOLOGY_LVL_1,Increase  Sword Units' Stealth by 1.
-HANZO_SWORD_TECHNOLOGY_LVL_2,Increase  Sword Units' Stealth by 2.
-HANZO_SWORD_TECHNOLOGY_LVL_3,Increase  Sword Units' Stealth by 3.
+HANZO_SWORD_TECHNOLOGY_LVL_1,Increase sword unit's stealth by 1.
+HANZO_SWORD_TECHNOLOGY_LVL_2,Increase sword unit's stealth by 2.
+HANZO_SWORD_TECHNOLOGY_LVL_3,Increase sword unit's stealth by 3.

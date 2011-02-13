@@ -11,9 +11,10 @@
 		public var type: int;
 		public var level: int;
 		public var hp: int;
+		public var maxHp: int;
 		public var troopStubId: int;
 		
-		public function CombatObject(playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int)
+		public function CombatObject(playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int, maxHp: int)
 		{
 			this.playerId = playerId;
 			this.cityId = cityId;
@@ -22,6 +23,7 @@
 			this.troopStubId = troopStubId;
 			this.level = level;
 			this.hp = hp;
+			this.maxHp = maxHp;
 		}
 		
 		public function get count(): Number {

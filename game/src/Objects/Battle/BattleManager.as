@@ -37,28 +37,28 @@
 			dispatchEvent(new BattleEvent(END));
 		}
 		
-		public function addToDefense(classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int):void
+		public function addToDefense(classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int, maxHp: int):void
 		{
-			var combatObj: CombatObject = add(defenders, classType, playerId, cityId, combatObjectId, troopStubId, type, level, hp);
+			var combatObj: CombatObject = add(defenders, classType, playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
 			
 			dispatchEvent(new BattleEvent(OBJECT_ADDED_DEFENSE, combatObj));
 		}
 		
-		public function addToAttack(classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int):void
+		public function addToAttack(classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int, maxHp: int):void
 		{
-			var combatObj: CombatObject = add(attackers, classType, playerId, cityId, combatObjectId, troopStubId, type, level, hp);
+			var combatObj: CombatObject = add(attackers, classType, playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
 			
 			dispatchEvent(new BattleEvent(OBJECT_ADDED_ATTACK, combatObj));
 		}
 		
-		private function add(list: BinaryList, classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int): CombatObject
+		private function add(list: BinaryList, classType: int, playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int, maxHp: int): CombatObject
 		{
 			var combatObj: CombatObject;
 			
 			if (classType == UNIT)
-				combatObj = new CombatUnit(playerId, cityId, combatObjectId, troopStubId, type, level, hp);
+				combatObj = new CombatUnit(playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
 			else if (classType == STRUCTURE)
-				combatObj = new CombatStructure(playerId, cityId, combatObjectId, troopStubId, type, level, hp);
+				combatObj = new CombatStructure(playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
 			else
 				throw new Error("Unknown class type " + classType);
 				

@@ -36,7 +36,7 @@
 		}
 
 		public function createUI() : void {
-			setPreferredSize(new IntDimension(600, 500));
+			setPreferredSize(new IntDimension(600, 520));
 
 			var layout0:SoftBoxLayout = new SoftBoxLayout();
 			layout0.setAxis(AsWingConstants.VERTICAL);

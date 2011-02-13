@@ -93,6 +93,7 @@
 			var troopStubId: int;
 			var level: int;
 			var hp: int;
+			var maxHp: int;
 
 			var attackersCnt: int = packet.readUShort();
 			for (var i: int = 0; i < attackersCnt; i++)
@@ -105,8 +106,9 @@
 				type = packet.readUShort();
 				level = packet.readUByte();
 				hp = packet.readUInt();
+				maxHp = packet.readUShort();
 
-				battle.addToAttack(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp);
+				battle.addToAttack(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp, maxHp);
 			}
 
 			var defendersCnt: int = packet.readUShort();
@@ -120,8 +122,9 @@
 				type = packet.readUShort();
 				level = packet.readUByte();
 				hp = packet.readUInt();
+				maxHp = packet.readUShort();
 
-				battle.addToDefense(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp);
+				battle.addToDefense(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp, maxHp);
 			}
 		}
 
@@ -143,6 +146,7 @@
 			var troopStubId: int;
 			var level: int;
 			var hp: int;
+			var maxHp: int;
 
 			var cnt: int = packet.readUShort();
 			for (var i: int = 0; i < cnt; i++)
@@ -155,11 +159,12 @@
 				type = packet.readUShort();
 				level = packet.readUByte();
 				hp = packet.readUInt();
+				maxHp = packet.readUShort();
 
 				if (packet.cmd == Commands.BATTLE_REINFORCE_ATTACKER)
-				battle.addToAttack(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp);
+					battle.addToAttack(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp, maxHp);
 				else
-				battle.addToDefense(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp);
+					battle.addToDefense(classType, playerId, cityId, combatObjId, troopStubId, type, level, hp, maxHp);
 			}
 		}
 

@@ -12,14 +12,14 @@ namespace Game.Battle
 {
     public class ModParameter
     {
-        private readonly List<int> list = new List<int>();
+        private readonly List<double> list = new List<double>();
 
-        public ModParameter(int defaultValue)
+        public ModParameter(double defaultValue)
         {
             list.Add(defaultValue);
         }
 
-        public int Max
+        public double Max
         {
             get
             {
@@ -27,15 +27,15 @@ namespace Game.Battle
             }
         }
 
-        public int Avg
+        public double Avg
         {
             get
             {
-                return (int)list.Average();
+                return list.Average();
             }
         }
 
-        public int Min
+        public double Min
         {
             get
             {
@@ -43,7 +43,7 @@ namespace Game.Battle
             }
         }
 
-        public int Sum
+        public double Sum
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Game.Battle
             }
         }
 
-        public int Product
+        public double Product
         {
             get
             {
@@ -59,7 +59,7 @@ namespace Game.Battle
             }
         }
 
-        public int Count
+        public double Count
         {
             get
             {
@@ -67,7 +67,7 @@ namespace Game.Battle
             }
         }
 
-        public void AddValue(int value)
+        public void AddValue(double value)
         {
             list.Add(value);
         }

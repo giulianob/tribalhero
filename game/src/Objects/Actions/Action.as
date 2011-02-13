@@ -17,7 +17,7 @@ package src.Objects.Actions {
 			{ name: "Train", icon: ICON_SINGLE_SWORD, actions: [ TrainButton] },
 			{ name: "Upgrade", icon: ICON_UPGRADE, actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Research", icon: ICON_BOOK, actions: [ TechnologyButton ] },			
-			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton ] },
+			{ name: "Other", icon: ICON_QUESTION, actions: [ ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton ] },
 		];	
 		
 		public static const costsToCancelActions: Array = [STRUCTURE_BUILD, STRUCTURE_UPGRADE, STRUCTURE_CHANGE, TECHNOLOGY_UPGRADE, UNIT_TRAIN, UNIT_UPGRADE];
@@ -47,7 +47,7 @@ package src.Objects.Actions {
         public static const UNIT_TRAIN: int = 601;
         public static const UNIT_UPGRADE: int = 602;
         public static const BATTLE: int = 701;
-		public static const DEFAULT_ACTION: int = 801;
+				
 		public var actionType: int;
 		public var effectReq: EffectReqManager;
 		public var effectReqInherit: int;

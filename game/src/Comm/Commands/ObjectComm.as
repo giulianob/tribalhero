@@ -88,11 +88,29 @@
 			}
 		}
 
-		public function defaultAction(city: int, objectid: int, command: int):void {
+		public function defaultAction(city: int, objectid: int, command: int, values:Array):void {
 			var packet: Packet = new Packet();
 			packet.cmd = command;
-			packet.writeUInt(city);
-			packet.writeUInt(objectid);
+			for each(var value:* in values) {
+				switch(value.type) {
+					case "Ushort":
+						packet.writeUShort(value.value);
+					break;
+					case "Byte":
+						packet.writeByte(value.value);
+					break;
+					case "Uint":
+						packet.writeUInt(value.value);
+					break;
+					case "CityID":
+						packet.writeUInt(city);
+					break;
+					case "StructureID":
+						packet.writeUInt(objectid);
+					break;
+				}
+			}
+
 			session.write(packet, mapComm.catchAllErrors);
 		}
 

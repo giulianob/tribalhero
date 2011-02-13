@@ -453,7 +453,7 @@ namespace DatabaseGenerator
             StructureBaseStats currentStats = stats;
             do
             {
-                string currentLevel = levelTemplate.Replace("#DESCRIPTION#",
+                 string currentLevel = levelTemplate.Replace("#DESCRIPTION#",
                                                             lang[currentStats.Name + "_STRUCTURE_LVL_" + level].Replace(
                                                                                                                         "'",
                                                                                                                         "\\'"));

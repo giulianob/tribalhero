@@ -212,7 +212,7 @@
 			var count: int = 0;
 			for each (var effect: EffectPrototype in effects) {
 				if (effect.effectCode == EffectPrototype.EFFECT_COUNT_LESS_THAN && effect.param1 == effectCode)
-				count += effect.param2;
+				count += int(effect.param2);
 			}
 
 			return count < maxCount;

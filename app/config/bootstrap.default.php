@@ -12,5 +12,3 @@ define('TROOP_STATE_OUT_OF_STAMINA', 6);
 define('BATTLE_VIEW_MIN_ROUNDS', 5);
 
 define('FLASH_DOMAIN', '*.tribalhero.com');
-
-require_once('clientversion.php');

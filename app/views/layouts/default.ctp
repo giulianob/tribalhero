@@ -20,10 +20,10 @@
 		<div id="header" class="container">
 			<div id="login" class="push-18 span-6 last">				
 				<cake:nocache>
-					<? if ($session->check('Auth.Player.id')) : ?>
+					<?php if ($session->check('Auth.Player.id')) { ?>
 						<div>Hello, <strong><?php echo $session->read('Auth.Player.name')?></strong>.</div>
 						<?php echo $this->Html->link('Play', '/play')?> | <?php echo $this->Html->link('Account', '/players/account')?> | <?php echo $this->Html->link('Logout', '/players/logout')?>
-					<? else: ?>
+					<?php } else { ?>
 						<?php echo $form->create('Player', array('class' => 'small no-label', 'action' => 'login', 'div' => false));?>
 						<div class="last input text">						
 							<?php echo $form->input('Player.name', array('rel' => 'Username', 'label' => false, 'class' => 'default', 'error' => false))?>
@@ -39,7 +39,7 @@
 							<div class="">Not a member? <?php echo $this->Html->link("Register Here", array('controller' => 'players', 'action' => 'register'));?></div>
 						</div>
 						<?php echo $form->end();?>
-					<? endif; ?>
+					<?php } ?>
 				</cake:nocache>
 			</div>							
 		</div>

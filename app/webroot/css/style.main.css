@@ -1,9 +1,12 @@
+html {
+	overflow-y: scroll;	
+}
+
 body {
     background:url(../img/background/top.png) no-repeat top center #e8e2be;
     font-family:Tahoma, Geneva, sans-serif;
     color:#fff;
-    font-size:9pt;
-    height:100%;
+    font-size:9pt;    
 }
 
 div {
@@ -569,10 +572,6 @@ table.cake-sql-log {
 
 *,.no-margin {
     margin:0;
-}
-
-html,#game-box {
-    height:100%;
 }
 
 #login,#login div,#login a,form.white-label label,.cake-sql-log caption {

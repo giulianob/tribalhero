@@ -18,7 +18,7 @@
 
 			for each (var techNode: XML in data.Technologies.*)
 			{
-				var resources: Resources = new Resources(techNode.@crop, techNode.@gold, techNode.@iron, techNode.@wood, 0);
+				var resources: Resources = new Resources(techNode.@crop, techNode.@gold, techNode.@iron, techNode.@wood, techNode.@labor);
 				var tech: TechnologyPrototype = new TechnologyPrototype(techNode.@techtype, techNode.@level, resources, techNode.@time, techNode.@spriteclass);
 
 				for each (var effectNode: XML in techNode.*)

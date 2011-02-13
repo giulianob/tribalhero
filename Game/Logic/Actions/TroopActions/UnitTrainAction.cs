@@ -81,7 +81,7 @@ namespace Game.Logic.Actions
 
             // add to queue for completion
             nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);
-            BeginTime = DateTime.UtcNow;
+            beginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow.AddSeconds(timePerUnit*ActionCount);
 
             return Error.Ok;
@@ -120,8 +120,8 @@ namespace Game.Logic.Actions
                     StateChange(ActionState.Completed);
                     return;
                 }
-                
-                nextTime = nextTime.AddSeconds(timePerUnit);
+
+                nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);
                 endTime = DateTime.UtcNow.AddSeconds(timePerUnit * ActionCount);
 
                 StateChange(ActionState.Rescheduled);

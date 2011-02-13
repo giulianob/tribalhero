@@ -1,15 +1,15 @@
 <project name="gameclient" default="compile" basedir=".">
 	<description>Game client build</description>
 	
-	<property name="src" location="game/src" />
-	<property name="fdbuild" location="C:/Program Files (x86)/FlashDevelop/Tools/fdbuild" />
-	<property name="flexsdk" location="C:/Program Files (x86)/FlashDevelop/Tools/flexsdk" />
-	<property name="secureswf" location="C:\Program Files (x86)\secureSWF" />
-	
 	<target name="init">
 		<echo message="Building from ${basedir}" />
 	
 		<tstamp />
+		
+		<property name="src" location="game/src" />
+		<property name="fdbuild" location="C:/Program Files (x86)/FlashDevelop/Tools/fdbuild" />
+		<property name="flexsdk" location="C:/Program Files (x86)/FlashDevelop/Tools/flexsdk" />
+		<property name="secureswf" location="C:\Program Files (x86)\secureSWF" />		
 		
 		<!-- Make bin dir -->
 		<delete dir="bin" />

@@ -295,8 +295,8 @@ namespace Game.Battle
                 // Figure out how much loot we have to return to the city
                 int totalCarry = BaseStats.Carry*Count;
                 returning = new Resource(loot.Crop > totalCarry ? loot.Crop - totalCarry : 0,
-                                         loot.Gold > totalCarry ? loot.Gold - totalCarry : 0,
-                                         loot.Iron > totalCarry ? loot.Iron - totalCarry : 0,
+                                         loot.Gold > totalCarry/2 ? loot.Gold - totalCarry/2 : 0,
+                                         loot.Iron > totalCarry/5 ? loot.Iron - totalCarry/5 : 0,
                                          loot.Wood > totalCarry ? loot.Wood - totalCarry : 0,
                                          0);
 

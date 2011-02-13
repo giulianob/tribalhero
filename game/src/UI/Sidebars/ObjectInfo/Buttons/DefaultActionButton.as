@@ -11,6 +11,7 @@
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.UI.Cursors.*;
+	import src.UI.Dialog.DefaultActionDialog;
 	import src.UI.Dialog.NumberInputDialog;
 	import src.UI.Tooltips.TextTooltip;
 	import src.Objects.Prototypes.StructurePrototype;
@@ -18,18 +19,17 @@
 	public class DefaultActionButton extends ActionButton
 	{							
 		private var textToolTip: TextTooltip;
-		private var command:int;
-		public function DefaultActionButton(parentObj: GameObject, _commmand: int)
-		{					
-			super(parentObj, "Default");
-			this.command = _commmand;
 		
-			textToolTip = new TextTooltip("Default Action that you never know what it does!");
+		public function DefaultActionButton(button: SimpleButton, parentObj: GameObject, structPrototype: StructurePrototype, name:String)
+		{					
+			super(button, parentObj);
 			
-			addEventListener(MouseEvent.CLICK, onMouseClick);
-			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-			addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
-			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);				
+			textToolTip = new TextTooltip(name);
+			
+			ui.addEventListener(MouseEvent.CLICK, onMouseClick);
+			ui.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			ui.addEventListener(MouseEvent.MOUSE_MOVE, onMouseOver);
+			ui.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);				
 		}
 		
 		public function onMouseOver(event: MouseEvent):void
@@ -44,13 +44,13 @@
 		
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			Global.mapComm.Object.defaultAction(parentObj.cityId, parentObj.objectId, command);
+			if (enabled)
+			{
+				var inputDialog: DefaultActionDialog = new DefaultActionDialog();				
 				
-			/*	var inputDialog: DefaultActionDialog = new DefaultActionDialog();				
 				inputDialog.init(Global.map, parentObj as StructureObject, onAcceptDialog, onCloseDialog);
 				Global.gameContainer.showDialog(inputDialog);
-				*/
-			
+			}
 		}
 		
 		public override function validateButton():Boolean 
@@ -58,7 +58,7 @@
 			return true;
 		}
 		
-		/*public function onAcceptDialog(sender: DefaultActionDialog):void
+		public function onAcceptDialog(sender: DefaultActionDialog):void
 		{
 			Global.mapComm.Object.defaultAction(this.parentObj.cityId, this.parentObj.objectId, sender.Command(), sender.Value());
 			Global.gameContainer.closeDialog(sender);
@@ -66,8 +66,8 @@
 		
 		public function onCloseDialog(sender: DefaultActionDialog):void
 		{
-			//Global.gameContainer.closeDialog(sender);
-		}		*/
+			Global.gameContainer.closeDialog(sender);
+		}		
 	}
 	
 }

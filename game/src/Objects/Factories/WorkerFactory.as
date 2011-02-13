@@ -112,7 +112,6 @@
 						break;
 						default:
 							trace("Unknown action '" + actionNode.name() + "' in worker '" + worker.type.toString() + "'");
-							action = new DefaultAction(actionNode.@command);
 					}
 
 					if (action != null)

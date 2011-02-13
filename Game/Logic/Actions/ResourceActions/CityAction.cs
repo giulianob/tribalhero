@@ -264,7 +264,7 @@ namespace Game.Logic.Actions
 
             PostFirstLoop += city =>
                 {
-                    int gold = weaponExport*weaponExportMarket/2;
+                    int gold = weaponExport*weaponExportMarket;
                     if (gold <= 0)
                         return;
 

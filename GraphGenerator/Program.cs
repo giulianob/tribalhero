@@ -45,9 +45,9 @@ namespace GraphGenerator
 
         private static string[] imageDirectories = new[]
                                                    {
-                                                           @"c:\source\game\graphics\buildings",
-                                                           @"c:\source\game\graphics\units",
-                                                           @"c:\source\game\graphics\icons\props"
+                                                           @"c:\source\gameclient\graphics\buildings",
+                                                           @"c:\source\gameclient\graphics\units",
+                                                           @"c:\source\gameclient\graphics\icons\props"
                                                    };
 
         private static string gvPath = @"C:\Program Files (x86)\Graphviz2.26.3\bin\dot.exe";

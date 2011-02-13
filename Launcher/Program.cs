@@ -33,7 +33,8 @@ namespace Launcher
 
             if (!Engine.Start())
                 throw new Exception("Failed to load server");
-            CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+
+            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
             while (true)
             {

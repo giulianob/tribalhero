@@ -287,6 +287,7 @@ namespace Game.Comm
                 packet.AddUInt16(obj.Type);
                 packet.AddByte(obj.Lvl);
                 packet.AddUInt32(obj.Hp);
+                packet.AddUInt16(obj.Stats.MaxHp);
             }
         }
 

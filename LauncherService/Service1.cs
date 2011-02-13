@@ -26,11 +26,12 @@ namespace LauncherService
             ILog logger = LogManager.GetLogger(typeof(Program));
             logger.Info("#######################################");
 
-            Factory.CompileConfigFiles();
-            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+            Factory.CompileConfigFiles();            
 
             if (!Engine.Start())
                 throw new Exception("Failed to load server");
+
+            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
         }
 
         protected override void OnStop()

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xliff version="1.0" xml:lang="en">
+
+  <file datatype="plaintext" original="Game.fla" source-language="EN">
+    <header></header>
+    <body>
+      <trans-unit id="001" resname="BARRACK_STRUCTURE">
+        <source>Barrack</source>
+      </trans-unit>
+      <trans-unit id="002" resname="BARRACK_STRUCTURE_LVL_1">
+        <source>Trains ground units</source>
+      </trans-unit>
+      <trans-unit id="003" resname="FACTORY_STRUCTURE">
+        <source>Factory</source>
+      </trans-unit>
+      <trans-unit id="004" resname="FACTORY_STRUCTURE_LVL_1">
+        <source>Trains vehicles</source>
+      </trans-unit>
+      <trans-unit id="005" resname="FARM_STRUCTURE">
+        <source>Farm</source>
+      </trans-unit>
+      <trans-unit id="006" resname="FARM_STRUCTURE_LVL_1">
+        <source>Gives 10 food per hour</source>
+      </trans-unit>
+      <trans-unit id="007" resname="FARM_STRUCTURE_LVL_2">
+        <source>Gives 20 food per hour</source>
+      </trans-unit>
+      <trans-unit id="008" resname="FARM_STRUCTURE_LVL_3">
+        <source>Gives 30 food per hour</source>
+      </trans-unit>
+      <trans-unit id="009" resname="FARM_STRUCTURE_LVL_4">
+        <source>Gives 40 food per hour</source>
+      </trans-unit>
+      <trans-unit id="010" resname="FARM_STRUCTURE_LVL_5">
+        <source>Gives 50 food per hour</source>
+      </trans-unit>
+      <trans-unit id="011" resname="HOUSE_STRUCTURE">
+        <source>House</source>
+      </trans-unit>
+      <trans-unit id="012" resname="HOUSE_STRUCTURE_LVL_1">
+        <source>Gives 10 gold per hour</source>
+      </trans-unit>
+      <trans-unit id="013" resname="HOUSE_STRUCTURE_LVL_2">
+        <source>Gives 20 gold per hour</source>
+      </trans-unit>
+      <trans-unit id="014" resname="HOUSE_STRUCTURE_LVL_3">
+        <source>Gives 30 gold per hour</source>
+      </trans-unit>
+      <trans-unit id="015" resname="HOUSE_STRUCTURE_LVL_4">
+        <source>Gives 40 gold per hour</source>
+      </trans-unit>
+      <trans-unit id="016" resname="HOUSE_STRUCTURE_LVL_5">
+        <source>Gives 50 gold per hour</source>
+      </trans-unit>
+      <trans-unit id="017" resname="LUMBERMILL_STRUCTURE">
+        <source>Lumbermill</source>
+      </trans-unit>
+      <trans-unit id="018" resname="LUMBERMILL_STRUCTURE_LVL_1">
+        <source>Gives 10 wood per hour</source>
+      </trans-unit>
+      <trans-unit id="019" resname="LUMBERMILL_STRUCTURE_LVL_2">
+        <source>Gives 20 wood per hour</source>
+      </trans-unit>
+      <trans-unit id="020" resname="LUMBERMILL_STRUCTURE_LVL_3">
+        <source>Gives 30 wood per hour</source>
+      </trans-unit>
+      <trans-unit id="021" resname="LUMBERMILL_STRUCTURE_LVL_4">
+        <source>Gives 50 food per hour but has a 0.5% chance of breaking every hour</source>
+      </trans-unit>
+      <trans-unit id="022" resname="LUMBERMILL_STRUCTURE_LVL_5">
+        <source>Gives 50 food per hour but has a 1% chance of breaking every hour</source>
+      </trans-unit>
+      <trans-unit id="023" resname="MARKET_STRUCTURE">
+        <source>Market</source>
+      </trans-unit>
+      <trans-unit id="024" resname="MARKET_STRUCTURE_LVL_1">
+        <source>Allows sale of 2 items with 30% commission</source>
+      </trans-unit>
+      <trans-unit id="025" resname="MARKET_STRUCTURE_LVL_2">
+        <source>Allows sale of 2 items with 20% commission</source>
+      </trans-unit>
+      <trans-unit id="026" resname="MARKET_STRUCTURE_LVL_3">
+        <source>Allows sale of 2 items with 10% commission</source>
+      </trans-unit>
+      <trans-unit id="027" resname="MARKET_STRUCTURE_LVL_4">
+        <source>Allows sale of 2 items with 5% commission</source>
+      </trans-unit>
+      <trans-unit id="028" resname="TOWNCENTER_STRUCTURE">
+        <source>Town Center</source>
+      </trans-unit>
+      <trans-unit id="029" resname="TOWNCENTER_STRUCTURE_LVL_1">
+        <source>Builds critical structures</source>
+      </trans-unit>
+      <trans-unit id="030" resname="UNIVERSITY_STRUCTURE">
+        <source>University</source>
+      </trans-unit>
+      <trans-unit id="031" resname="UNIVERSITY_STRUCTURE_LVL_1">
+        <source>Gives ability to research multiple technologies</source>
+      </trans-unit>
+    </body>
+  </file>
+
+</xliff>

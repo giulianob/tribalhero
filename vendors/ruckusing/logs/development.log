@@ -1,0 +1,209 @@
+Dec 30 11:05:43 [info] CREATE TABLE `schema_migrations` (
+`version` varchar(255)) ;
+Dec 30 11:05:43 [info] CREATE UNIQUE INDEX idx_schema_migrations_version ON `schema_migrations`(`version`)
+Dec 30 11:08:05 [info] SELECT version FROM schema_migrations
+Dec 30 11:08:05 [info] SELECT version FROM schema_migrations
+Dec 30 11:08:05 [info] SELECT version FROM schema_migrations
+Dec 30 11:08:05 [info] INSERT INTO schema_migrations (version) VALUES ('20101230160633')
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `alert_history`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `alert_metadata`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `alerts`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `attributes`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `categories`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `categories_groups`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `events`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `groups`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `macros`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `properties`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `property_aggregate_int`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `property_aggregate_real`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `property_aggregate_string`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `property_history_int`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `property_history_real`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `property_history_string`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `property_metadata`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `schema_migrations`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `server_templates`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `servers`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `servers_tags`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `status_model_values`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `status_models`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `styles`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `system_properties`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `tags`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `users`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `view_templates`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `widgets`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `world_points`
+Dec 30 11:08:47 [info] SHOW CREATE TABLE `world_views`
+Dec 30 12:41:45 [info] SELECT version FROM schema_migrations
+Dec 30 12:41:45 [info] SELECT version FROM schema_migrations
+Dec 30 12:41:45 [info] SELECT version FROM schema_migrations
+Dec 30 12:41:45 [info] INSERT INTO schema_migrations (version) VALUES ('20101230172638')
+Dec 30 12:41:45 [info] SHOW COLUMNS FROM `servers` LIKE 'name'
+Dec 30 12:42:20 [info] SELECT version FROM schema_migrations
+Dec 30 12:42:20 [info] SELECT version FROM schema_migrations
+Dec 30 12:42:20 [info] SELECT version FROM schema_migrations
+Dec 30 12:42:20 [info] SHOW COLUMNS FROM `servers` LIKE 'name'
+Dec 30 12:42:20 [info] ALTER TABLE `servers` CHANGE `name` `name` varchar(128)
+Dec 30 12:42:21 [info] INSERT INTO schema_migrations (version) VALUES ('20101230172738')
+Dec 30 14:20:23 [info] SELECT version FROM schema_migrations
+Dec 30 14:20:23 [info] SELECT version FROM schema_migrations
+Dec 30 14:20:23 [info] SELECT version FROM schema_migrations
+Jan 03 12:25:03 [info] SELECT version FROM schema_migrations
+Jan 03 12:25:03 [info] SELECT version FROM schema_migrations
+Jan 03 12:25:03 [info] SELECT version FROM schema_migrations
+Jan 03 12:25:03 [info] DELETE FROM `widgets` WHERE `name` = 'Node Alerts' LIMIT 1
+Jan 03 12:25:03 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Alerts', 'AlertsWidget', '[{"title":"Data Settings","tabs":[{"title":"Data","prefs":[{"description":"Filtering mode","item":[{"title":"By Tags","value":"tag"},{"title":"By Server","value":"server"}],"setting":"filterType","title":"Filter Mode","type":"list"},{"type":"text","maxLength":"32","setting":"filter","title":"Filter","description":"Filter to use. This will be the server id if mode is server based or a comma separated list of tags if mode is tag based"},{"type":"list","setting":"rowSize","title":"Row Size","item":[{"title":"Normal","value":"normal"},{"title":"Large","value":"large"}],"description":"Size to use for rows. Normal uses 16x16 icons and regular size font. Large uses 32x32 icons and larger font."}]}]}]')
+Jan 03 12:25:03 [info] INSERT INTO schema_migrations (version) VALUES ('20110103171939')
+Jan 03 12:30:35 [info] SELECT version FROM schema_migrations
+Jan 03 12:30:35 [info] SELECT version FROM schema_migrations
+Jan 03 12:30:35 [info] SELECT version FROM schema_migrations
+Jan 03 12:30:35 [info] DELETE FROM `widgets` WHERE `name` = 'Node Alerts' LIMIT 1
+Jan 03 12:30:35 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Alerts','AlertsWidget','[{\"title\":\"Data Settings\",\"tabs\":[{\"title\":\"Data\",\"prefs\":[{\"type\":\"text\",\"maxLength\":\"32\",\"setting\":\"serverId\",\"title\":\"Server Id\",\"description\":\"Server id\"},{\"type\":\"list\",\"setting\":\"rowSize\",\"title\":\"Row Size\",\"item\":[{\"title\":\"Normal\",\"value\":\"normal\"},{\"title\":\"Large\",\"value\":\"large\"}],\"description\":\"Size to use for rows. Normal uses 16x16 icons and regular size font. Large uses 32x32 icons and larger font.\"}]}]}]')
+Jan 03 12:30:35 [info] DELETE FROM schema_migrations WHERE version = '20110103171939'
+Jan 03 12:30:56 [info] SELECT version FROM schema_migrations
+Jan 03 12:30:56 [info] SELECT version FROM schema_migrations
+Jan 03 12:30:56 [info] SELECT version FROM schema_migrations
+Jan 03 12:30:56 [info] DELETE FROM `widgets` WHERE `name` = 'Node Alerts' LIMIT 1
+Jan 03 12:30:56 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Alerts', 'AlertsWidget', '[{"title":"Data Settings","tabs":[{"title":"Data","prefs":[{"description":"Filtering mode","item":[{"title":"By Tags","value":"tag"},{"title":"By Server","value":"server"}],"setting":"filterType","title":"Filter Mode","type":"list"},{"type":"text","maxLength":"32","setting":"filter","title":"Filter","description":"Filter to use. This will be the server id if mode is server based or a comma separated list of tags if mode is tag based"},{"type":"list","setting":"rowSize","title":"Row Size","item":[{"title":"Normal","value":"normal"},{"title":"Large","value":"large"}],"description":"Size to use for rows. Normal uses 16x16 icons and regular size font. Large uses 32x32 icons and larger font."}]}]}]')
+Jan 03 12:30:56 [info] INSERT INTO schema_migrations (version) VALUES ('20110103171939')
+Jan 10 13:56:24 [info] SELECT version FROM schema_migrations
+Jan 10 13:56:24 [info] SELECT version FROM schema_migrations
+Jan 10 13:56:24 [info] SELECT version FROM schema_migrations
+Jan 10 13:56:24 [info] SHOW COLUMNS FROM `categories` LIKE 'view'
+Jan 10 13:56:24 [info] ALTER TABLE `categories` CHANGE `view` `view` varchar(64)
+Jan 10 13:56:24 [info] INSERT INTO schema_migrations (version) VALUES ('20110110185520')
+Jan 10 14:45:40 [info] SELECT version FROM schema_migrations
+Jan 10 14:45:40 [info] SELECT version FROM schema_migrations
+Jan 10 14:45:40 [info] SELECT version FROM schema_migrations
+Jan 10 14:45:40 [info] DELETE FROM `widgets` WHERE `name` = 'Node Events' LIMIT 1
+Jan 10 14:45:40 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Events', 'EventsWidget', '[{"title":"Data Settings","tabs":[{"title":"Data","prefs":[{"description":"Filtering mode","item":[{"title":"By Tags","value":"tag"},{"title":"By Server","value":"server"}],"setting":"filterType","title":"Filter Mode","type":"list"},{"type":"text","maxLength":"32","setting":"filter","title":"Filter","description":"Filter to use. This will be the server id if mode is server based or a comma separated list of tags if mode is tag based"}]}]}]')
+Jan 10 14:45:40 [info] INSERT INTO schema_migrations (version) VALUES ('20110110191419')
+Jan 10 14:45:40 [info] DELETE FROM `widgets` WHERE `name` = 'Node Properties' LIMIT 1
+Jan 10 14:45:40 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Properties', 'PropertiesWidget', '[{"title":"Data Settings","tabs":[{"title":"Data","prefs":[{"description":"Filtering mode","item":[{"title":"By Tags","value":"tag"},{"title":"By Server","value":"server"}],"setting":"filterType","title":"Filter Mode","type":"list"},{"type":"text","maxLength":"32","setting":"filter","title":"Filter","description":"Filter to use. This will be the server id if mode is server based or a comma separated list of tags if mode is tag based"}]}]}]')
+Jan 10 14:45:40 [info] INSERT INTO schema_migrations (version) VALUES ('20110110194124')
+Jan 10 15:20:56 [info] SELECT version FROM schema_migrations
+Jan 10 15:20:56 [info] SELECT version FROM schema_migrations
+Jan 10 15:20:56 [info] SELECT version FROM schema_migrations
+Jan 17 14:08:56 [info] SELECT version FROM schema_migrations
+Jan 17 14:08:56 [info] SELECT version FROM schema_migrations
+Jan 17 14:08:56 [info] SELECT version FROM schema_migrations
+Jan 17 14:08:56 [info] DELETE FROM `widgets` WHERE `name` = 'Node Alerts' LIMIT 1
+Jan 17 14:08:56 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Alerts', 'AlertsWidget', '[{"title":"Data Settings","tabs":[{"title":"Data","prefs":[{"description":"Filtering mode","item":[{"title":"By Tags","value":"tag"},{"title":"By Server","value":"server"}],"setting":"filterType","title":"Filter Mode","type":"list"},{"type":"text","maxLength":"32","setting":"filter","title":"Filter","description":"Filter to use. This will be the server id if mode is server based or a comma separated list of tags if mode is tag based"},{"description":"If checked, the alert icon will not be shown.","setting":"hide_icon","title":"Hide Icon","type":"checkbox"},{"type":"list","setting":"rowSize","title":"Row Size","item":[{"title":"Normal","value":"normal"},{"title":"Large","value":"large"}],"description":"Size to use for rows. Normal uses 16x16 icons and regular size font. Large uses 32x32 icons and larger font."}]}]}]')
+Jan 17 14:08:56 [info] INSERT INTO schema_migrations (version) VALUES ('20110117190620')
+Jan 17 15:30:16 [info] SELECT version FROM schema_migrations
+Jan 17 15:30:16 [info] SELECT version FROM schema_migrations
+Jan 17 15:30:16 [info] SELECT version FROM schema_migrations
+Jan 17 15:30:16 [info] DELETE FROM `widgets` WHERE `name` = 'Node Alerts' LIMIT 1
+Jan 17 15:30:16 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Alerts', 'AlertsWidget', '[{"title":"Data Settings","tabs":[{"title":"Data","prefs":[{"description":"Filtering mode","item":[{"title":"By Tags","value":"tag"},{"title":"By Server","value":"server"}],"setting":"filterType","title":"Filter Mode","type":"list"},{"type":"text","maxLength":"32","setting":"filter","title":"Filter","description":"Filter to use. This will be the server id if mode is server based or a comma separated list of tags if mode is tag based"},{"description":"If checked, the alert icon will not be shown.","setting":"hideIcon","title":"Hide Icon","type":"checkbox"},{"type":"list","setting":"rowSize","title":"Style","item":[{"title":"Row","value":"normal"},{"title":"LaRow (Large)","value":"large"},{"title":"Tile","value":"tile"}],"description":"Display style. Row style uses 16x16 icons and regular size font. Large row style uses 32x32 icons and larger font. Tile style supports any size icon and displays in a tiled fashion."}]}]}]')
+Jan 17 15:30:16 [info] INSERT INTO schema_migrations (version) VALUES ('20110117202754')
+Jan 19 13:58:33 [info] SELECT version FROM schema_migrations
+Jan 19 13:58:33 [info] SELECT version FROM schema_migrations
+Jan 19 13:58:33 [info] SELECT version FROM schema_migrations
+Jan 19 13:59:52 [info] SELECT version FROM schema_migrations
+Jan 19 13:59:52 [info] SELECT version FROM schema_migrations
+Jan 19 13:59:52 [info] SELECT version FROM schema_migrations
+Jan 19 14:00:23 [info] SELECT version FROM schema_migrations
+Jan 19 14:00:23 [info] SELECT version FROM schema_migrations
+Jan 19 14:00:23 [info] SELECT version FROM schema_migrations
+Jan 19 14:00:23 [info] ALTER TABLE view_templates ADD `macros` text
+Jan 19 14:00:24 [info] SELECT `id`, `widgets` FROM `view_templates`
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 2 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 3 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 4 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 5 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 7 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 8 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 9 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 35 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 36 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 37 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 38 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 39 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 40 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 41 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 42 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 43 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 44 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 45 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 46 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 48 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 49 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 51 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 52 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 53 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 55 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 56 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 57 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 58 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 59 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 60 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 61 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 62 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 63 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 64 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 65 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 66 LIMIT 1
+Jan 19 14:00:24 [info] UPDATE `view_templates` SET `macros` = '{mysql_real_escape_string(json_encode(Array))}' WHERE `id` = 67 LIMIT 1
+Jan 19 14:00:24 [info] INSERT INTO schema_migrations (version) VALUES ('20110119184711')
+Jan 19 14:01:18 [info] SELECT version FROM schema_migrations
+Jan 19 14:01:18 [info] SELECT version FROM schema_migrations
+Jan 19 14:01:18 [info] SELECT version FROM schema_migrations
+Jan 19 14:01:18 [info] ALTER TABLE `view_templates` DROP COLUMN `macros`
+Jan 19 14:01:18 [info] DELETE FROM schema_migrations WHERE version = '20110119184711'
+Jan 19 14:01:22 [info] SELECT version FROM schema_migrations
+Jan 19 14:01:22 [info] SELECT version FROM schema_migrations
+Jan 19 14:01:22 [info] SELECT version FROM schema_migrations
+Jan 19 14:01:22 [info] ALTER TABLE view_templates ADD `macros` text
+Jan 19 14:01:22 [info] SELECT `id`, `widgets` FROM `view_templates`
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 2 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 3 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 4 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 5 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 7 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 8 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 9 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[]' WHERE `id` = 35 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 36 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 37 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 38 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 39 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 40 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 41 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 42 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\",\"SUBMETER\"]' WHERE `id` = 43 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 44 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 45 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 46 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 48 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 49 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\",\"FORMAT\"]' WHERE `id` = 51 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\",\"FORMAT\"]' WHERE `id` = 52 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\",\"FORMAT\",\"Server\"]' WHERE `id` = 53 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\",\"FORMAT\"]' WHERE `id` = 55 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\",\"FORMAT\"]' WHERE `id` = 56 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[]' WHERE `id` = 57 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 58 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 59 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 60 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[]' WHERE `id` = 61 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\"]' WHERE `id` = 62 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[]' WHERE `id` = 63 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[]' WHERE `id` = 64 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[]' WHERE `id` = 65 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[]' WHERE `id` = 66 LIMIT 1
+Jan 19 14:01:22 [info] UPDATE `view_templates` SET `macros` = '[\"SERVERID\",\"SERVERID2\"]' WHERE `id` = 67 LIMIT 1
+Jan 19 14:01:22 [info] INSERT INTO schema_migrations (version) VALUES ('20110119184711')
+Jan 20 15:15:47 [info] SELECT version FROM schema_migrations
+Jan 20 15:15:47 [info] SELECT version FROM schema_migrations
+Jan 20 15:15:47 [info] SELECT version FROM schema_migrations
+Jan 20 15:15:47 [info] DELETE FROM `widgets` WHERE `name` = 'Node Alerts' LIMIT 1
+Jan 20 15:15:47 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Node Alerts', 'AlertsWidget', '[{"title":"Data Settings","tabs":[{"title":"Data","prefs":[{"description":"Filtering mode","item":[{"title":"By Tags","value":"tag"},{"title":"By Server","value":"server"}],"setting":"filterType","title":"Filter Mode","type":"list"},{"type":"text","maxLength":"32","setting":"filter","title":"Filter","description":"Filter to use. This will be the server id if mode is server based or a comma separated list of tags if mode is tag based"},{"description":"If checked, the alert icon will not be shown.","setting":"hideIcon","title":"Hide Icon","type":"checkbox"},{"type":"list","setting":"rowSize","title":"Style","item":[{"title":"Row","value":"normal"},{"title":"LaRow (Large)","value":"large"},{"title":"Tile","value":"tile"}],"description":"Display style. Row style uses 16x16 icons and regular size font. Large row style uses 32x32 icons and larger font. Tile style supports any size icon and displays in a tiled fashion."},{"type":"text","maxLength":"32","setting":"filterStatus","title":"Status Filter","description":"Only show alerts in the specified statuses. Separate multiple statuses with commas (e.g. 1,3,4)"}]}]}]')
+Jan 20 15:15:47 [info] INSERT INTO schema_migrations (version) VALUES ('20110120201414')
+Jan 26 10:33:44 [info] SELECT version FROM schema_migrations
+Jan 26 10:33:44 [info] SELECT version FROM schema_migrations
+Jan 26 10:33:44 [info] SELECT version FROM schema_migrations
+Jan 26 10:33:44 [info] DELETE FROM `widgets` WHERE `name` = 'Image' LIMIT 1
+Jan 26 10:33:44 [info] 		INSERT INTO `widgets` (`name`, `type`, `definition`) VALUES ('Image', 'ImageWidget', '[{"title":"General Settings","tabs":[{"title":"Properties","prefs":[{"maxLength": "128", "type":"text","setting":"imageSrc","title":"Image Source","description":"Path to image"},{"maxLength": "4", "type":"text","setting":"imageWidth","title":"Image Width","description":"Image width in pixels"}]}]},{"title":"Properties","tabs":[{"setting":"properties","title":"Properties","type":"array","prefs":[{"type":"text","maxLength":"32","setting":"serverId","title":"Server Id","description":"Server id"},{"type":"text","maxLength":"32","setting":"name","title":"Property Name","description":"Property name"}]}]}]')
+Jan 26 10:33:44 [info] INSERT INTO schema_migrations (version) VALUES ('20110126153225')

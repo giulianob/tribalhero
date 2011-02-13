@@ -89,7 +89,7 @@
 		</div>		
 	</div>
 	
-	<? if (!empty($info['requirements'])) : ?>
+	<?php if (!empty($info['requirements'])) { ?>
 	<div class="span-20 last prepend-top">
 		<strong>Requirements</strong>
 		<ul class="requirements">
@@ -98,7 +98,7 @@
 			<?php endforeach; ?>
 		</ul>
 	</div>
-	<?php endif; ?>
+	<?php } ?>
 	
 	<?php endforeach; ?>
 </div>

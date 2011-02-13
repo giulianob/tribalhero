@@ -29,7 +29,7 @@ package src.Objects.Prototypes {
 			var effects: Array = builder.techManager.getAllEffects(EffectPrototype.INHERIT_SELF_ALL);
 			for each (var effect: EffectPrototype in effects) {
 				if (effect.effectCode == EffectPrototype.EFFECT_AWAY_FROM_STRUCTURE_MOD && effect.param1 == type) {
-					radius += effect.param2;
+					radius += int(effect.param2);
 				}
 			}			
 

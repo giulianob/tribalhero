@@ -28,6 +28,6 @@
 		<!-- Adjust Game.sspj file for obfuscation -->
 		<replace file="${basedir}/Game.sspj" token="C:\source\gameclient" value="${basedir}" />
 		
-		<secureswf outputpath="${basedir}\bin" projectfile="Game.sspj" codewrapping="0" logfile="bin\obfuscate.log" />
+		<secureswf outputpath="${basedir}\bin\protected" projectfile="Game.sspj" codeWrapping="0" logfile="bin\obfuscate.log" aggressiveRenaming="false" keyFilePath="${basedir}/key.data" />
 	</target>	
 </project>

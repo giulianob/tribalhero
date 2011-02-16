@@ -1,5 +1,6 @@
 ﻿package src.Comm {
 	import flash.utils.*;
+	import src.Util.Util;
 	
 	import src.Constants;
 
@@ -148,7 +149,7 @@
 			bytes.writeShort(length);
 			
 			if (Constants.debug >= 3)
-				trace("header wrote:"+bytes.length);
+				Util.log("header wrote:"+bytes.length);
 			
 			for (var i: int = 0; i < parameters.length; ++i ) 
 			{				
@@ -174,14 +175,14 @@
 							bytes.writeInt(parameters[i].obj);
 							
 						if (Constants.debug >= 3)
-							trace("done writing int4");
+							Util.log("done writing int4");
 						break;
 						
 					case Parameter.STRING:						
 						bytes.writeUTF(parameters[i].obj);
 						
 						if (Constants.debug >= 3)
-							trace("done writing string:"+bytes.length);
+							Util.log("done writing string:"+bytes.length);
 						break;
 				}
 			}

@@ -2,6 +2,7 @@
 	import flash.geom.Point;
 	import src.Comm.*;
 	import src.Global;
+	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
 	import flash.events.Event;
@@ -172,7 +173,7 @@
 
 			if (city == null)
 			{
-				trace("Received channel city obj update command for unknown city");
+				Util.log("Received channel city obj update command for unknown city");
 				return;
 			}
 
@@ -207,7 +208,7 @@
 
 			if (city == null)
 			{
-				trace("Received channel city obj add command for unknown city");
+				Util.log("Received channel city obj add command for unknown city");
 				return;
 			}
 
@@ -222,7 +223,7 @@
 
 			if (city == null)
 			{
-				trace("Received channel city obj remove command for unknown city");
+				Util.log("Received channel city obj remove command for unknown city");
 				return;
 			}
 
@@ -244,7 +245,7 @@
 			var city: City = Global.map.cities.get(cityId);
 
 			if (city == null) {
-				trace("Received technology notification for unknown city");
+				Util.log("Received technology notification for unknown city");
 				return;
 			}
 
@@ -253,7 +254,7 @@
 				var cityObj: CityObject = city.objects.get(ownerId);
 
 				if (cityObj == null) {
-					trace("Received technology notification for unknown city object");
+					Util.log("Received technology notification for unknown city object");
 					return;
 				}
 
@@ -287,7 +288,7 @@
 			var city: City = Global.map.cities.get(cityId);
 
 			if (city == null) {
-				trace("Received technology notification for unknown city");
+				Util.log("Received technology notification for unknown city");
 				return;
 			}
 
@@ -296,7 +297,7 @@
 				var cityObj: CityObject = city.objects.get(ownerId);
 
 				if (cityObj == null) {
-					trace("Received technology notification for unknown city object");
+					Util.log("Received technology notification for unknown city object");
 					return;
 				}
 

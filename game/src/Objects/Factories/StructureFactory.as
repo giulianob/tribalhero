@@ -1,29 +1,19 @@
 ﻿package src.Objects.Factories {
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.SimpleButton;
+	import flash.display.*
 	import flash.filters.BlurFilter;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
+	import src.Util.Util;
 	import flash.geom.Rectangle;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Map.Map;
+	import src.Map.*;
 	import src.Objects.Actions.TechUpgradeAction;
-	import src.Objects.Prototypes.AwayFromLayout;
-	import src.Objects.Prototypes.ILayout;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Prototypes.SimpleLayout;
-	import src.Objects.Prototypes.TechnologyPrototype;
+	import src.Objects.Prototypes.*
 	import src.Objects.SimpleObject;
 	import src.Objects.StructureObject;
 	import src.UI.Sidebars.ObjectInfo.Buttons.TechnologyButton;
-	import src.Util.BinaryList.*;
-	import src.Objects.Resources;
+	import src.Util.BinaryList.*;	
 	import src.Objects.Prototypes.Worker;
-	import src.Objects.TechnologyStats;
+	import src.Objects.*;
 
 	import flash.utils.getDefinitionByName;
 
@@ -99,7 +89,7 @@
 		{
 			var structPrototype: StructurePrototype = structurePrototypes.get([type, level]);
 			if (!structPrototype)
-				trace("Did not find structure prototype for type " + type + " level " + level);
+				Util.log("Did not find structure prototype for type " + type + " level " + level);
 				
 			return structPrototype;
 		}
@@ -111,7 +101,7 @@
 
 			if (strPrototype == null)
 			{
-				trace("Missing obj prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
+				Util.log("Missing obj prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
 				objRef = getDefinitionByName("DEFAULT_STRUCTURE_SIMPLE") as Class;
 			}
 			else
@@ -120,7 +110,7 @@
 
 				if (worker == null)
 				{
-					trace("Missing obj worker. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
+					Util.log("Missing obj worker. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic simple object");
 					objRef = getDefinitionByName("DEFAULT_STRUCTURE_SIMPLE") as Class;
 				}
 				else
@@ -131,7 +121,7 @@
 					}
 					catch (error: Error)
 					{
-						trace("Missing sprite " + strPrototype.spriteClass + ". Loading generic complex object");
+						Util.log("Missing sprite " + strPrototype.spriteClass + ". Loading generic complex object");
 						objRef = getDefinitionByName("DEFAULT_STRUCTURE_COMPLEX") as Class;
 					}
 				}
@@ -192,7 +182,7 @@
 
 			if (worker == null)
 			{
-				trace("Missing worker type: " + structPrototype.workerid);
+				Util.log("Missing worker type: " + structPrototype.workerid);
 				return null;
 			}
 			else return worker.getButtons(parentObj, structPrototype);
@@ -209,13 +199,13 @@
 				}
 				catch (error: Error)
 				{
-					trace("Missing technology button sprite class: " + techPrototype.spriteClass + "_TECHNOLOGY_BUTTON. Loading default");
+					Util.log("Missing technology button sprite class: " + techPrototype.spriteClass + "_TECHNOLOGY_BUTTON. Loading default");
 					objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
 				}
 			}
 			else
 			{
-				trace("Missing technology prototype for object type tech type " + techPrototype.techtype + " tech level " + techPrototype.level);
+				Util.log("Missing technology prototype for object type tech type " + techPrototype.techtype + " tech level " + techPrototype.level);
 				objRef = getDefinitionByName("DEFAULT_TECHNOLOGY_BUTTON") as Class;
 			}
 
@@ -231,13 +221,13 @@
 
 			var city: City = map.cities.get(gameObj.cityId);
 			if (city == null) {
-				trace("StructureFactory.getTechButtons: Unknown city");
+				Util.log("StructureFactory.getTechButtons: Unknown city");
 				return new Array();
 			}
 
 			var cityObj: CityObject = city.objects.get(gameObj.objectId);
 			if (cityObj == null) {
-				trace("StructureFactory.getTechButtons: Unknown city object");
+				Util.log("StructureFactory.getTechButtons: Unknown city object");
 				return new Array();
 			}
 
@@ -291,7 +281,7 @@
 				}
 				catch (error: Error)
 				{
-					trace("Missing cursor '" + strPrototype.spriteClass + "_" + action + "_CURSOR' falling back to standard cursor");
+					Util.log("Missing cursor '" + strPrototype.spriteClass + "_" + action + "_CURSOR' falling back to standard cursor");
 					objRef = getDefinitionByName("STANDARD_STRUCTURE_" + action + "_CURSOR") as Class;
 				}
 			}

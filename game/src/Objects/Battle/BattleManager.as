@@ -2,6 +2,7 @@
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import src.Util.BinaryList.*;
+	import src.Util.Util;
 	
 	/**
 	* ...
@@ -78,7 +79,7 @@
 			
 			if (attacker == null)
 			{
-				trace("Received skip command for unknown combat object. Attacker: " + attackerCombatId);
+				Util.log("Received skip command for unknown combat object. Attacker: " + attackerCombatId);
 				return;
 			}
 						
@@ -92,7 +93,7 @@
 			
 			if (attacker == null || defender == null)
 			{
-				trace("Received attack command for unknown combat object. Attacker: " + attackerCombatId + " Defender: " + defenderCombatId + " Dmg:" + dmg);
+				Util.log("Received attack command for unknown combat object. Attacker: " + attackerCombatId + " Defender: " + defenderCombatId + " Dmg:" + dmg);
 				return;
 			}
 				

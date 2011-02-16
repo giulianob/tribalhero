@@ -69,12 +69,12 @@ package src.UI.Components.ScreenMessages
 
 				if (!timer.running) {
 					timer.start();
-					//trace("Timer started");
+					//Util.log("Timer started");
 				}
 			}
 
 			append(item);
-			//trace("Added message");
+			//Util.log("Added message");
 		}
 		
 		public function hasMessage(key: String) : Boolean {
@@ -93,11 +93,11 @@ package src.UI.Components.ScreenMessages
 				var item: ScreenMessageItem = getComponent(i) as ScreenMessageItem;
 				if (item.key == key) {
 					removeAt(i);
-					//trace("Removed message");
+					//Util.log("Removed message");
 					if (item.duration > 0) {
 						for (var j: int = tempItems.length - 1; j >= 0; j--) {
 							if (tempItems[j].key == key) {
-								//trace("Removed message from temp");
+								//Util.log("Removed message from temp");
 								tempItems.splice(j, 1);
 								break;
 							}
@@ -125,7 +125,7 @@ package src.UI.Components.ScreenMessages
 
 			if (tempItems.length == 0) {
 				timer.stop();
-				//trace("Timer stopped");
+				//Util.log("Timer stopped");
 			}
 		}
 

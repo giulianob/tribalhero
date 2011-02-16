@@ -3,6 +3,7 @@
 	import src.Comm.*;
 	import src.Constants;
 	import src.Global;
+	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Prototypes.*;
@@ -65,10 +66,10 @@
 			var serverTime: int = packet.readUInt();
 			Constants.secondsPerUnit = Number(packet.readString());
 
-			trace("Seconds per unit is " + Constants.secondsPerUnit);
-			trace("Server Time is " + new Date(serverTime * 1000));
+			Util.log("Seconds per unit is " + Constants.secondsPerUnit);
+			Util.log("Server Time is " + new Date(serverTime * 1000));
 			var timeDelta: int = serverTime - int(now.time / 1000);
-			trace("Delta is " + timeDelta);
+			Util.log("Delta is " + timeDelta);
 			Constants.timeDelta = timeDelta;			
 
 			// return whether it's a new player or not, which if it is we show the new city panel

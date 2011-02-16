@@ -9,6 +9,7 @@ package src.Map {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import src.Constants;
+	import src.Util.Util;
 	import src.Global;
 
 	public class MapUtil {
@@ -26,7 +27,7 @@ package src.Map {
 			var id: int = int(xId + yId * Constants.miniMapRegionW);
 
 			if (Constants.debug >= 4)
-			trace(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
+			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
 
 			return id;
 		}
@@ -60,7 +61,7 @@ package src.Map {
 			var id: int = int(xId + yId * Constants.mapRegionW);
 
 			if (Constants.debug >= 4)
-			trace(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
+			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
 
 			return id;
 		}

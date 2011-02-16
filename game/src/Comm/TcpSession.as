@@ -2,6 +2,7 @@
 {
 	import flash.net.XMLSocket;
 	import flash.utils.ByteArray;
+	import src.Util.Util;
 	import flash.events.*;
 	import flash.net.Socket;
 	import flash.utils.Timer;
@@ -9,7 +10,7 @@
 	import flash.system.Security;
 	import src.Global;
 	import src.Main;
-	
+	import src.Util.Util;
 	import src.Constants;
 	import src.Comm.Packet;
 	
@@ -133,7 +134,7 @@
 			var bytes:ByteArray = packet.getBytes();
 			
 			if (Constants.debug >= 3)
-				trace("Sending " + packet.toString());
+				Util.log("Sending " + packet.toString());
 			
 			socket.writeBytes(bytes,0,bytes.length);
 			
@@ -145,8 +146,8 @@
 		{
 			if (Constants.debug >= 3)
 			{
-				trace("connectHandler: " + event);
-				trace("The socket is now connected...");
+				Util.log("connectHandler: " + event);
+				Util.log("The socket is now connected...");
 			}		
 			
 			if (onConnectCallback != null)
@@ -155,7 +156,7 @@
 		
 		private function closeHandler(event:Event):void {
 			if (Constants.debug >= 3)
-				trace("closeHandler: " + event);
+				Util.log("closeHandler: " + event);
 				
 			if (onDisconnectCallback != null)
 				onDisconnectCallback(event);				
@@ -163,7 +164,7 @@
 
 		private function ioErrorHandler(event:IOErrorEvent):void {
 			if (Constants.debug >= 3)
-				trace("ioErrorHandler: " + event);
+				Util.log("ioErrorHandler: " + event);
 				
 			if (onConnectCallback != null)
 				onConnectCallback(event, false);
@@ -171,7 +172,7 @@
 
 		private function securityErrorHandler(event:SecurityErrorEvent):void {
 			if (Constants.debug >= 3)
-				trace("securityErrorHandler: " + event);
+				Util.log("securityErrorHandler: " + event);
 				
 			if (onSecurityErrorCallback != null)
 				onSecurityErrorCallback(event);
@@ -224,7 +225,7 @@
 				if (incomingPacket != null)
 				{				
 					if (Constants.debug >= 2)
-						trace("Received: " + incomingPacket.toString());
+						Util.log("Received: " + incomingPacket.toString());
 					
 					if (Constants.debug > 0) 
 						Global.main.packetCounter.updateCounter();
@@ -232,7 +233,7 @@
 					if ( (incomingPacket.option & Options.REPLY) != Options.REPLY)
 					{
 						if (Constants.debug >= 1)
-							trace("Channel notification: " + incomingPacket.toString());							
+							Util.log("Channel notification: " + incomingPacket.toString());							
 						
 						dispatcher.dispatchEvent(new PacketEvent(Commands.CHANNEL_NOTIFICATION, incomingPacket));
 					}

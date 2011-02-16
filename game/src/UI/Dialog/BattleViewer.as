@@ -2,6 +2,7 @@
 
 	import flash.display.DisplayObjectContainer;
 	import org.aswing.*;
+	import src.Util.Util;
 	import org.aswing.border.*;
 	import org.aswing.event.PopupEvent;
 	import org.aswing.geom.*;
@@ -183,14 +184,14 @@
 			var srcObj: Object = findTab(e.combatObj.cityId, e.combatObj.troopStubId);
 
 			if (srcObj == null) {
-				trace("Received skip for unknown object");
+				Util.log("Received skip for unknown object");
 				return;
 			}
 
 			var attackObj: * = findObject(srcObj.grid, e.combatObj.combatObjectId);
 
 			if (attackObj == null) {
-				trace("Could not find attacker combat object");
+				Util.log("Could not find attacker combat object");
 				return;
 			}
 
@@ -211,7 +212,7 @@
 			var srcObj: Object = findTab(e.combatObj.cityId, e.combatObj.troopStubId);
 
 			if (srcObj == null || destObj == null) {
-				trace("Received attack for unknown object");
+				Util.log("Received attack for unknown object");
 				return;
 			}
 
@@ -219,7 +220,7 @@
 			var attackObj: * = findObject(srcObj.grid, e.combatObj.combatObjectId);
 
 			if (attackObj == null) {
-				trace("Could not find attacker combat object");
+				Util.log("Could not find attacker combat object");
 				return;
 			}
 
@@ -227,7 +228,7 @@
 			var defenseObj: * = findObject(destObj.grid, e.destCombatObj.combatObjectId);
 
 			if (defenseObj == null) {
-				trace("Could not find defender combat object");
+				Util.log("Could not find defender combat object");
 				return;
 			}
 

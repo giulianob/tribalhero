@@ -5,6 +5,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Util.Util;
 	import src.Objects.Actions.UnitUpgradeAction;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.UnitFactory;
@@ -61,13 +62,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			var city: City = Global.map.cities.get(parentObj.cityId);
 			if (city == null) {
-				trace("UnitUpgradeButton.validateButton: Unknown city");
+				Util.log("UnitUpgradeButton.validateButton: Unknown city");
 				return true;
 			}
 
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
-				trace("UnitUpgradeButton.validateButton: Unknown city object");
+				Util.log("UnitUpgradeButton.validateButton: Unknown city object");
 				return true;
 			}
 

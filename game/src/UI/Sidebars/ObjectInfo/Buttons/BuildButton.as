@@ -11,8 +11,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Factories.*;
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
-	import src.Objects.Prototypes.EffectReqPrototype;
-	import src.Objects.Prototypes.StructurePrototype;
+	import src.Objects.Prototypes.*
+	import src.Util.Util;
 	import src.UI.Cursors.*;
 	import src.UI.Tooltips.StructureBuildTooltip;
 
@@ -72,7 +72,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
-				trace("StructureChangeButton.validateButton: Unknown city object");
+				Util.log("StructureChangeButton.validateButton: Unknown city object");
 				return true;
 			}
 

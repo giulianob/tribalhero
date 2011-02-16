@@ -14,8 +14,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.City;
 	import src.Objects.Actions.TechUpgradeAction;
 	import src.Objects.Factories.TechnologyFactory;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Prototypes.TechnologyPrototype;
+	import src.Objects.Prototypes.*;
+	import src.Util.Util;
 	import src.Objects.StructureObject;
 	import src.UI.Tooltips.TechnologyTooltip;
 
@@ -62,14 +62,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			var city: City = Global.map.cities.get(parentObj.cityId);
 			if (city == null) {
-				trace("TechnologyButton.validateButton: Unknown city");
+				Util.log("TechnologyButton.validateButton: Unknown city");
 				disable();
 				return false;
 			}
 
 			if (!techPrototype)
 			{
-				trace("TechnologyButton.validateButton: Missing techprototype. Enabling tech button by default.");
+				Util.log("TechnologyButton.validateButton: Missing techprototype. Enabling tech button by default.");
 				enable();
 				return true;
 			}
@@ -78,7 +78,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			if (parentAction == null)
 			{
-				trace("TechnologyButton.validateButton: missing parent action");
+				Util.log("TechnologyButton.validateButton: missing parent action");
 				techToolTip.draw(currentCount, 999);
 				disable();
 				return false;
@@ -98,7 +98,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
-				trace("TechnologyButton.validateButton: Unknown city object");
+				Util.log("TechnologyButton.validateButton: Unknown city object");
 				disable();
 				return false;
 			}

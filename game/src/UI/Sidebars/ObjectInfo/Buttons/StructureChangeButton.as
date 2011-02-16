@@ -7,6 +7,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.City;
 	import src.Map.CityObject;
 	import src.Objects.*;
+	import src.Util.Util;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Prototypes.StructurePrototype;
@@ -60,13 +61,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			var city: City = Global.map.cities.get(parentObj.cityId);
 			if (city == null) {
-				trace("StructureChangeButton.validateButton: Unknown city");
+				Util.log("StructureChangeButton.validateButton: Unknown city");
 				return true;
 			}
 
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
-				trace("StructureChangeButton.validateButton: Unknown city object");
+				Util.log("StructureChangeButton.validateButton: Unknown city object");
 				return true;
 			}
 

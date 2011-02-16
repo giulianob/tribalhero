@@ -12,6 +12,7 @@ package src.UI.Cursors {
 	import flash.events.MouseEvent;
 	import src.Map.RoadPathFinder;
 	import src.Objects.Factories.*;
+	import src.Util.Util;
 	import src.Objects.GameObject;
 	import src.Objects.IDisposable;
 	import src.Objects.ObjectContainer;
@@ -64,7 +65,7 @@ package src.UI.Cursors {
 
 			if (StructureFactory.getSimpleObject(type, level) == null)
 			{
-				trace("Missing building cursor " + type);
+				Util.log("Missing building cursor " + type);
 				return;
 			}
 
@@ -177,11 +178,11 @@ package src.UI.Cursors {
 			var tileType: int = map.regions.getTileAt(mapPos.x, mapPos.y);
 
 			if (Constants.debug >= 4) {
-				trace("***");
-				trace("Validating:" + screenPos.x + "," + screenPos.y);
-				trace("Callback pos:" + x + "," + y);
-				trace("mapPos is" + mapPos.x + "," + mapPos.y);
-				trace("Tile type is: " + tileType);
+				Util.log("***");
+				Util.log("Validating:" + screenPos.x + "," + screenPos.y);
+				Util.log("Callback pos:" + x + "," + y);
+				Util.log("mapPos is" + mapPos.x + "," + mapPos.y);
+				Util.log("Tile type is: " + tileType);
 			}
 
 			var requiredRoad: Boolean = !ObjectFactory.isType("NoRoadRequired", type);

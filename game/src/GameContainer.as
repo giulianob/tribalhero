@@ -551,7 +551,7 @@
 			if (frame == null) return;
 			frame.removeEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
 			var index: int = frames.indexOf(frame);
-			if (index == -1) trace("Closed a frame that did not call show through GameContainer");
+			if (index == -1) Util.log("Closed a frame that did not call show through GameContainer");
 			frames.splice(index, 1);
 			if (frames.length == 0 && map != null) map.disableMouse(false);
 		}

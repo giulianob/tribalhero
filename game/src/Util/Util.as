@@ -20,9 +20,16 @@ package src.Util {
 	import org.aswing.JFrame;
 	import org.aswing.AsWingUtils;
 	import org.aswing.JTextComponent;
+	import flash.external.ExternalInterface;
+	import src.Constants;
 
 	public class Util {
 
+		public static function log(msg: String) : void {			
+			if (Constants.loginKey) ExternalInterface.call("console.log", msg);
+			else trace(msg);
+		}
+		
 		public static function textfieldHasFocus(stage: Stage) : Boolean {
 			var focusOwner: Component = FocusManager.getManager(stage).getFocusOwner();
 			if (!focusOwner) return false;
@@ -50,14 +57,14 @@ package src.Util {
 		}
 
 		public static function dumpDisplayObject(obj: DisplayObject, depth: int = 0):void {
-			if (depth == 0) trace("===========================");
+			if (depth == 0) Util.log("===========================");
 
 			var spacer: String = "";
 			for (var j: int = 0; j < depth; j++) {
 				spacer += "\t";
 			}
 
-			trace(spacer + "(" + getQualifiedClassName(obj) + ") " + obj.name + (!obj.visible ? "<invisible>" : ""));
+			Util.log(spacer + "(" + getQualifiedClassName(obj) + ") " + obj.name + (!obj.visible ? "<invisible>" : ""));
 
 			if (!(obj is DisplayObjectContainer)) return;
 

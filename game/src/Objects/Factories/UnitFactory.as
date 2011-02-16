@@ -3,6 +3,7 @@
 	import src.Map.Map;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Util.BinaryList.*;
+	import src.Util.Util;
 	import src.Objects.Resources;
 
 	import flash.utils.getDefinitionByName;
@@ -63,7 +64,7 @@
 
 			if (unitPrototype == null)
 			{
-				trace("Missing unit prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic unit");
+				Util.log("Missing unit prototype. type: " + type.toString() + " lvl: " + level.toString() + " Loading generic unit");
 				objRef = getDefinitionByName("DEFAULT_UNIT") as Class;
 			}
 			else
@@ -80,7 +81,7 @@
 				}
 				catch (error: Error)
 				{
-					trace("Missing sprite " + spriteClass + ". Loading generic unit");
+					Util.log("Missing sprite " + spriteClass + ". Loading generic unit");
 					objRef = getDefinitionByName("DEFAULT_UNIT") as Class;
 				}
 			}

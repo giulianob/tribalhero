@@ -43,6 +43,7 @@
 
 		public function Main()
 		{
+			Util.log("TribalHero");
 			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 
@@ -69,7 +70,7 @@
 				var dumpRegionQueryInfo:ContextMenuItem = new ContextMenuItem("Dump region query info");
 				dumpRegionQueryInfo.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(e:Event):void {
 					if (!Global.map) return;
-					trace("Pending regions:" + Util.implode(',', Global.map.pendingRegions));
+					Util.log("Pending regions:" + Util.implode(',', Global.map.pendingRegions));
 				} );
 				fm_menu.customItems.push(dump);
 				fm_menu.customItems.push(dumpRegionQueryInfo);
@@ -108,7 +109,7 @@
 		{			
 			pnlLoading = InfoDialog.showMessageDialog("Loading", "Launching the game...", null, null, true, false, 0);
 			
-			Security.loadPolicyFile("http://" + Constants.hostname + ":8085/crossdomain.xml");				
+			//Security.loadPolicyFile("http://" + Constants.hostname + ":8085/crossdomain.xml");				
 			
 			if (Constants.queryData) {
 				var loader: URLLoader = new URLLoader();
@@ -167,6 +168,7 @@
 			//if (pnlLoading) pnlLoading.getFrame().dispose();
 
 			//InfoDialog.showMessageDialog("Security Error", event.toString());
+			Util.log("Security error " + event.toString());
 		}
 
 		public function onDisconnected(event: Event = null):void
@@ -272,14 +274,14 @@
 		{
 			if (Constants.debug >= 2)
 			{
-				trace("Received packet to main processor");
-				trace(packet);
+				Util.log("Received packet to main processor");
+				Util.log(packet.toString());
 			}
 		}
 
 		private function resizeHandler(event:Event):void {
-			trace("resizeHandler: " + event);
-			trace("stageWidth: " + stage.stageWidth + " stageHeight: " + stage.stageHeight);
+			Util.log("resizeHandler: " + event);
+			Util.log("stageWidth: " + stage.stageWidth + " stageHeight: " + stage.stageHeight);
 		}
 	}
 }

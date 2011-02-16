@@ -8,6 +8,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.CityObject;
 	import src.Objects.Actions.Action;
 	import src.Objects.Effects.Formula;
+	import src.Util.Util;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
@@ -64,14 +65,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			var city: City = Global.map.cities.get(parentObj.cityId);
 			if (city == null) {
-				trace("StructureUpgradeButton.validateButton: Unknown city");
+				Util.log("StructureUpgradeButton.validateButton: Unknown city");
 				disable();
 				return false;
 			}
 
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
-				trace("StructureUpgradeButton.validateButton: Unknown city object");
+				Util.log("StructureUpgradeButton.validateButton: Unknown city object");
 				return true;
 			}
 

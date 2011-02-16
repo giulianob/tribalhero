@@ -101,7 +101,7 @@ package src.UI {
 							obj = ParseStaticObject(colWidth, childNode, staticObjects);
 							break;
 						default:
-							trace("Missing " + childNode.name());
+							Util.log("Missing " + childNode.name());
 							continue;
 							break;
 					}

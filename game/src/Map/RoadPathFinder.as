@@ -78,7 +78,7 @@ package src.Map
 
 		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Point, i: int = 0) : Boolean
 		{
-			//trace("Checking " + visited[visited.length - 1].toString());
+			//Util.log("Checking " + visited[visited.length - 1].toString());
 
 			var nodes: Array = getNeighbors(visited[visited.length - 1]);
 

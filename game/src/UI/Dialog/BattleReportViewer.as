@@ -60,7 +60,7 @@
 		private function onLoaded(e: Event) : void {
 			try
 			{
-				trace(loader.getData());
+				Util.log(loader.getData());
 				data = loader.getDataAsObject();
 			}
 			catch (e: Error) {

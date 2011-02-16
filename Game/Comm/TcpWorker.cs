@@ -40,8 +40,13 @@ namespace Game.Comm
                 {
                     lock (worker.sockListLock)
                     {
+                        // Worker full
                         if (worker.sessions.Count > 250)
                             continue;
+
+                        // Socket already disconnected before we got here
+                        if (!session.Socket.Connected)
+                            return;
 
                         worker.Put(session);
                     }
@@ -116,6 +121,9 @@ namespace Game.Comm
         {
             lock (sockListLock)
             {
+                if (s.Connected)
+                    s.Close();
+
                 //create disconnect packet to send to processor
                 SocketSession dcSession = sessions[s];
 

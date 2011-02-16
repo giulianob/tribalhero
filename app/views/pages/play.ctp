@@ -1,19 +1,6 @@
 <?php
 $this->Html->script('swfobject/swfobject', array('inline' => false));
-?>
 
-<style type="text/css">
-    <!--
-    body, html {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        background-image: none;
-    }
-    -->
-</style>
-
-<?php
 if (isset($lsessid)) {
     
     $swfMtime = AppController::getCorrectMTime(WWW_ROOT . DS . 'files' . DS . 'Game.swf');
@@ -24,7 +11,9 @@ if (isset($lsessid)) {
         flashvars.lsessid = "<?php echo $lsessid; ?>";
         flashvars.sessid = "<?php echo session_id(); ?>";
         flashvars.siteVersion = "<?php echo $swfMtime ?>";
-        var params = {};
+        var params = {
+            wmode: "opaque"
+        };
         var attributes = {
             id: "Game"
         };

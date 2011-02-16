@@ -50,7 +50,7 @@
 
 		private function onReceiveUnread(e: Event = null) : void {
 			try {
-				var data: * = loader.getDataAsObject();
+				var data: Object = loader.getDataAsObject();
 				
 				var unreadMessages: int = data.unreadMessages;								
 				Global.gameContainer.txtUnreadMessages.visible = unreadMessages > 0;				

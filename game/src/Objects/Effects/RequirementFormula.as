@@ -52,7 +52,7 @@
 			var idx: int = getMethodIndex(effectReq);
 
 			if (idx <= -1) {
-				trace("Missing effect requirement formula for effect " + effectReq.method);
+				Util.log("Missing effect requirement formula for effect " + effectReq.method);
 				return true;
 			}
 
@@ -122,7 +122,7 @@
 
 			if (structPrototype == null)
 			{
-				trace("CanBuild requirement formula referencing missing struct id: " + structId);
+				Util.log("CanBuild requirement formula referencing missing struct id: " + structId);
 				return "[Missing Struct]";
 			}
 

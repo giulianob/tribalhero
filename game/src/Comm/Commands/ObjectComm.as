@@ -2,6 +2,7 @@
 
 	import org.aswing.AssetIcon;
 	import src.Comm.*;
+	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Prototypes.*;
@@ -76,7 +77,7 @@
 					if (obj) obj.State = new MovingState(destX, destY);
 				break;
 				default:
-					trace("Unknown object state in onReceiveRegion:" + objState);
+					Util.log("Unknown object state in onReceiveRegion:" + objState);
 				break;
 			}
 		}
@@ -317,7 +318,7 @@
 							obj.addProperty(packet.readInt());
 						break;
 						default:
-							trace("Unknown datatype " + prop.datatype + " in object type " + obj.type);
+							Util.log("Unknown datatype " + prop.datatype + " in object type " + obj.type);
 						break;
 					}
 				}
@@ -347,7 +348,7 @@
 						case "FLOAT":
 							obj.addProperty(packet.readFloat());
 						default:
-							trace("Unknown datatype " + prop.datatype + " in object type " + obj.type);
+							Util.log("Unknown datatype " + prop.datatype + " in object type " + obj.type);
 						break;
 					}
 				}

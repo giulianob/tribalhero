@@ -5,6 +5,7 @@
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.*;
+	import src.Util.Util;
 	import flash.ui.Keyboard;
 	import src.Global;
 	import src.Objects.Forest;
@@ -143,7 +144,7 @@
 		public function addRegion(id:int, data: Array) : Region
 		{
 			if (Constants.debug >= 2)
-			trace("Adding region: " + id);
+			Util.log("Adding region: " + id);
 
 			var newRegion: Region = new Region(id, data, this);
 
@@ -164,7 +165,7 @@
 
 		public function parseRegions(force: Boolean = false):void
 		{
-			if (Constants.debug >= 3) trace("On move: " + camera.x + "," + camera.y);
+			if (Constants.debug >= 3) Util.log("On move: " + camera.x + "," + camera.y);
 
 			// Don't parse every single pixel we move
 			if (!force && !Math.abs(lastParseRegionLoc.x - camera.x) > 10 && !Math.abs(lastParseRegionLoc.y - camera.y) > 10) return;
@@ -211,7 +212,7 @@
 					region.moveWithCamera(camera);
 
 					if (Constants.debug >= 4)
-					trace("Moved: " + region.id + " " + region.x + "," + region.y);
+					Util.log("Moved: " + region.id + " " + region.x + "," + region.y);
 
 					//remove it from required regions since we already have it
 					requiredRegions.splice(found, 1);
@@ -225,11 +226,11 @@
 					regionSpace.removeChild(region);
 					regions.removeByIndex(i);
 
-					if (Constants.debug >= 3)  trace("Discarded: " + i);
+					if (Constants.debug >= 3)  Util.log("Discarded: " + i);
 				}
 			}
 
-			if (Constants.debug >= 3) trace("Required before pending removal:" + requiredRegions);
+			if (Constants.debug >= 3) Util.log("Required before pending removal:" + requiredRegions);
 
 			//remove any pending regions from the required regions list we need
 			//and add any regions we are going to be asking the server to the pending regions list
@@ -242,7 +243,7 @@
 			//regions that we still need, query server
 			if (requiredRegions.length > 0 || outdatedRegions.length > 0)
 			{
-				if (Constants.debug >= 3) trace("Required:" + requiredRegions);
+				if (Constants.debug >= 3) Util.log("Required:" + requiredRegions);
 				Global.mapComm.Region.getRegion(requiredRegions, outdatedRegions);
 			}
 
@@ -401,7 +402,7 @@
 			mouseDown = true;
 
 			if (Constants.debug >= 4)
-			trace("MOUSE DOWN");
+			Util.log("MOUSE DOWN");
 		}
 
 		public function eventMouseUp(event: MouseEvent):void
@@ -409,7 +410,7 @@
 			mouseDown = false;
 
 			if (Constants.debug >= 4)
-			trace("MOUSE UP");
+			Util.log("MOUSE UP");
 		}
 
 		public function eventMouseLeave(event: Event):void
@@ -417,7 +418,7 @@
 			mouseDown = false;
 
 			if (Constants.debug >= 4)
-			trace("MOUSE LEAVE");
+			Util.log("MOUSE LEAVE");
 		}
 
 		public function eventMouseMove(event: MouseEvent):void

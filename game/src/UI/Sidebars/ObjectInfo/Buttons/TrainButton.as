@@ -8,6 +8,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.*;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.Effects.Formula;
+	import src.Util.Util;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.UnitTrainDialog;
@@ -93,7 +94,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
-				trace("TrainButton.validateButton: Unknown city object");
+				Util.log("TrainButton.validateButton: Unknown city object");
 				return true;
 			}
 

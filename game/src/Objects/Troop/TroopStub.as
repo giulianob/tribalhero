@@ -2,6 +2,7 @@
 	import adobe.utils.CustomActions;
 	import src.Global;
 	import src.Map.City;
+	import src.Util.Util;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Util.BinaryList.*;
@@ -118,20 +119,20 @@
 
 		public function ToString():void
 		{
-			trace("=========");
-			trace("Troop " + id );
-			trace("Formation count: " + size());
-			trace("Total unit count: " + getIndividualUnitCount());
+			Util.log("=========");
+			Util.log("Troop " + id );
+			Util.log("Formation count: " + size());
+			Util.log("Total unit count: " + getIndividualUnitCount());
 			for each (var formation: Formation in each())
 			{
-				trace("\tFormation: " + formation.type);
-				trace("\tSize: " + formation.size());
+				Util.log("\tFormation: " + formation.type);
+				Util.log("\tSize: " + formation.size());
 				for each (var unit: Unit in formation.each())
 				{
-					trace("\t\tUnit: " + unit.type + " (" + unit.count + ")");
+					Util.log("\t\tUnit: " + unit.type + " (" + unit.count + ")");
 				}
 			}
-			trace("=========");
+			Util.log("=========");
 		}
 
 		public static function compareCityIdAndTroopId(a: TroopStub, value: Array):int

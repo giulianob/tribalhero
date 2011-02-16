@@ -8,6 +8,7 @@
 	import org.aswing.graphics.Graphics2D;
 	import org.aswing.graphics.SolidBrush;
 	import src.Constants;
+	import src.Util.Util;
 	import src.Global;
 	import src.Objects.ObjectContainer;
 
@@ -132,7 +133,7 @@
 		public function addCityRegion(id:int) : CityRegion
 		{
 			if (Constants.debug >= 2)
-			trace("Adding region: " + id);
+			Util.log("Adding region: " + id);
 
 			var newRegion: CityRegion = new CityRegion(id, Global.map);
 
@@ -154,7 +155,7 @@
 		public function parseRegions():void
 		{
 			if (Constants.debug >= 4) {
-				trace("on move: " + Global.gameContainer.camera.miniMapX + "," + Global.gameContainer.camera.miniMapY);
+				Util.log("on move: " + Global.gameContainer.camera.miniMapX + "," + Global.gameContainer.camera.miniMapY);
 			}
 
 			//calculate which regions we need to render
@@ -195,7 +196,7 @@
 					region.moveWithCamera(Global.gameContainer.camera);
 
 					if (Constants.debug >= 4)
-					trace("Moved: " + region.id + " " + region.x + "," + region.y);
+					Util.log("Moved: " + region.id + " " + region.x + "," + region.y);
 
 					//remove it from required regions since we already have it
 					requiredRegions.splice(found, 1);
@@ -204,7 +205,7 @@
 				{
 					//region is outdated, remove it from buffer
 					if (Constants.debug >= 4)
-					trace("Discarded: " + region.id);
+					Util.log("Discarded: " + region.id);
 					region.disposeData();
 					regionSpace.removeChild(region);
 					regions.removeByIndex(i);
@@ -240,7 +241,7 @@
 			if (requiredRegions.length > 0)
 			{
 				if (Constants.debug >= 3)
-				trace("Required:" + requiredRegions);
+				Util.log("Required:" + requiredRegions);
 
 				Global.mapComm.Region.getCityRegion(requiredRegions);
 			}

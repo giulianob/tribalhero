@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data.Stats;
+using Game.Setup;
 
 #endregion
 
@@ -241,11 +242,11 @@ namespace Game.Data
         public void Add(Resource cost, int cap, out Resource actual, out Resource returning)
         {
             Resource total = this + cost;
-            returning = new Resource(total.Crop > cap ? total.Crop - cap : 0,
-                                     total.Gold > cap ? total.Gold - cap : 0,
-                                     total.Iron > cap ? total.Iron - cap : 0,
-                                     total.Wood > cap ? total.Wood - cap : 0,
-                                     total.labor > cap ? total.labor - cap : 0);
+            returning = new Resource(total.Crop > cap / Config.resource_crop_ratio ? total.Crop - cap / Config.resource_crop_ratio : 0,
+                                     total.Gold > cap / Config.resource_gold_ratio ? total.Gold - cap / Config.resource_gold_ratio : 0,
+                                     total.Iron > cap / Config.resource_iron_ratio ? total.Iron - cap / Config.resource_iron_ratio : 0,
+                                     total.Wood > cap / Config.resource_wood_ratio ? total.Wood - cap / Config.resource_wood_ratio : 0,
+                                     total.labor > cap / Config.resource_labor_ratio ? total.labor - cap / Config.resource_labor_ratio : 0);
 
             actual = new Resource(cost.crop - returning.crop,
                                   cost.gold - returning.gold,

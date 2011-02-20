@@ -16,8 +16,8 @@ namespace MapGenerator
 {
     class Program
     {
-        private const ushort FARM_TILE = 209;
-        private const ushort WOODLAND_TILE = 209;
+        private const ushort FARM_TILE = 220;
+        private const ushort WOODLAND_TILE = 220;
         private const ushort CITY_TILE = 209;        
         private static readonly Random random = new Random();
         private static StreamWriter sw;

@@ -13,7 +13,7 @@ namespace Game.Setup
     {
         private static readonly List<Point> dict = new List<Point>();
         private static int index;
-        private const int SKIP = 2; 
+        private const int SKIP = 1; 
 
         public static void Init(string filename)
         {

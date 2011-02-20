@@ -63,6 +63,11 @@ namespace Game.Setup
         public static readonly bool resource_upkeep = true;
         public static readonly bool resource_cap = true;
         public static readonly bool resource_fast_income;
+        public static readonly int resource_crop_ratio = 1;
+        public static readonly int resource_labor_ratio = 1;
+        public static readonly int resource_wood_ratio = 1;
+        public static readonly int resource_gold_ratio = 2;
+        public static readonly int resource_iron_ratio = 5;
 
         public static readonly byte minimum_distance_apart = 8;
         public static readonly int height_margin = 10;

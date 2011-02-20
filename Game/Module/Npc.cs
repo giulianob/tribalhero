@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -277,13 +278,13 @@ namespace Game.Module
                     List<City> cities = npc.GetCityList();
 
                     Structure structure;
-                    if (!Randomizer.MainBuilding(out structure, 2))
+                    if (!Randomizer.MainBuilding(out structure, Formula.GetInitialCityRadius(), 2))
                     {
                         Global.Logger.Info(npc.Name);
                         break;
                     }
 
-                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityList().Count + 1), new Resource(500, 500, 500, 500, 10), structure);
+                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityList().Count + 1), Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
 
                     Global.World.Add(city);
                     structure.BeginUpdate();

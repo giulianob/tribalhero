@@ -288,7 +288,7 @@ namespace Game.Comm
                         return;
                     }
 
-                    if (!Randomizer.MainBuilding(out mainBuilding))
+                    if (!Randomizer.MainBuilding(out mainBuilding, Formula.GetInitialCityRadius(), 1))
                     {
                         Global.World.Players.Remove(session.Player.PlayerId);
                         Global.DbManager.Rollback();
@@ -297,7 +297,7 @@ namespace Game.Comm
                         return;
                     }
 
-                    city = new City(session.Player, cityName, Formula.GetInitialCityResources(), mainBuilding);
+                    city = new City(session.Player, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), mainBuilding);
 
                     Global.World.Add(city);
                     mainBuilding.BeginUpdate();

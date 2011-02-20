@@ -32,7 +32,8 @@ namespace Game
 
         public static bool Start()
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
+            if (!System.Diagnostics.Debugger.IsAttached)
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
 
             ILog logger = LogManager.GetLogger(typeof(Engine));
             logger.Info(

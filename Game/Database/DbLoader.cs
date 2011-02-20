@@ -43,7 +43,8 @@ namespace Game.Database
 
                     // Calculate how long server was down
                     TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
-
+                    if (downTime.TotalMilliseconds < 0) downTime = new TimeSpan(0);
+                    
                     Global.Logger.Info(string.Format("Server was down for {0}", downTime));
 
                     LoadMarket(dbManager);
@@ -193,9 +194,8 @@ namespace Game.Database
                                                     (int)reader["labor"],
                                                     laborRealizeTime,
                                                     (int)reader["labor_production_rate"]);
-                    var city = new City(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], resource, null)
+                    var city = new City(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], resource, (byte)reader["radius"], null)
                                {
-                                       Radius = (byte)reader["radius"],
                                        DbPersisted = true,
                                        LootStolen = (uint)reader["loot_stolen"],
                                        AttackPoint = (int)reader["attack_point"],

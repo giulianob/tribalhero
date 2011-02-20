@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Troop;
 using Game.Logic.Actions.ResourceActions;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 
@@ -54,6 +55,11 @@ namespace Game.Data
         {
             ForestCount[forest.Lvl - 1]++;
             forests.Add(forest.ObjectId, forest);
+        }
+
+        public static bool HasForestNear(uint x, uint y, int radius)
+        {
+            return Global.World.GetRegion(x, y).GetObjects().Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
         }
 
         public void CreateForest(byte lvl, int capacity, double rate)

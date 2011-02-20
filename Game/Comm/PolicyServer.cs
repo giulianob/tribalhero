@@ -19,11 +19,21 @@ namespace Game.Comm
         private readonly Thread listeningThread;
         private bool isStopped = true;
 
+        private readonly string policy;
+
+        private readonly byte[] xmlBytes;
+
         public PolicyServer()
         {
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
             if (localAddr == null)
                 throw new Exception("Could not bind to listen address");
+
+            policy =
+                    @"<?xml version=""1.0""?><!DOCTYPE cross-domain-policy SYSTEM ""/xml/dtds/cross-domain-policy.dtd""><cross-domain-policy><site-control permitted-cross-domain-policies=""master-only""/><allow-access-from domain=""" +
+                    Config.flash_domain + @""" to-ports=""8085," + Config.server_port + @""" /></cross-domain-policy>";
+
+            xmlBytes = Encoding.UTF8.GetBytes(policy);
 
             listener = new TcpListener(localAddr, 843);
             listeningThread = new Thread(ListenerHandler);
@@ -40,10 +50,6 @@ namespace Game.Comm
 
         public void ListenerHandler()
         {
-            string policy =
-                    @"<?xml version=""1.0""?><!DOCTYPE cross-domain-policy SYSTEM ""/xml/dtds/cross-domain-policy.dtd""><cross-domain-policy><site-control permitted-cross-domain-policies=""master-only""/><allow-access-from domain=""" +
-                    Config.flash_domain + @""" to-ports=""8085," + Config.server_port + @""" /></cross-domain-policy>";
-
             // Write policy to data folder
             File.WriteAllText(Path.Combine(Config.data_folder, "crossdomain.xml"), policy);
 
@@ -74,6 +80,10 @@ namespace Game.Comm
                         try
                         {
                             s.Receive(buffer, 23, SocketFlags.None);
+                            s.NoDelay = true;
+                            s.Send(xmlBytes);
+
+                            Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
                         }
                         catch(Exception)
                         {
@@ -85,15 +95,6 @@ namespace Game.Comm
                             return;
                         }
 
-                        s.NoDelay = true;
-
-                        byte[] xml = Encoding.UTF8.GetBytes(policy);
-                        s.Send(xml);
-
-                        Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
-
-                        s.Shutdown(SocketShutdown.Both);
-                        s.Close();
                     },
                                              newSocket);
             }

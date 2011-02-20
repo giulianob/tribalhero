@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Game.Data;
 using Game.Map;
-
+using System.Linq;
 #endregion
 
 namespace MapGenerator
@@ -21,6 +21,7 @@ namespace MapGenerator
         private const byte radius = 3;
         private static readonly Random random = new Random();
         private static StreamWriter sw;
+        private static List<Location> locations = new List<Location>();
 
         private static int width = 3400;
         private static int height = 6200;
@@ -156,11 +157,26 @@ namespace MapGenerator
 
             foreach (var cityLocation in region.cityLocations)
             {
-                sw.WriteLine("{0},{1}", xOffset + cityLocation.X, yOffset + cityLocation.Y);
+                locations.Add(new Location(xOffset + cityLocation.X, yOffset + cityLocation.Y, (uint)SimpleGameObject.TileDistance(xOffset + cityLocation.X, yOffset + cityLocation.Y, (uint)width / 2, (uint)height / 2)));
                 GenerateResource(cityLocation, map);
             }
 
             return map;
+        }
+
+        private class Location
+        {
+            public uint X { get; set; }
+            public uint Y { get; set; }
+            public uint Distance { get; set; }
+
+            public Location(uint x, uint y, uint distance)
+
+            {
+                X = x;
+                Y = y;
+                Distance = distance;
+            }
         }
 
         private static void Main(string[] args)
@@ -175,26 +191,34 @@ namespace MapGenerator
 
             using (var bw = new BinaryWriter(File.Open("map.dat", FileMode.Create, FileAccess.Write)))
             {
-                using (sw = new StreamWriter(File.Open("CityLocations.txt", FileMode.Create)))
+                for (int row = 0; row < region_row; ++row)
                 {
-                    for (int row = 0; row < region_row; ++row)
+                    for (int col = 0; col < region_column; ++col)
                     {
-                        for (int col = 0; col < region_column; ++col)
+                        var xOffset = (uint)(col*region_width);
+                        var yOffset = (uint)(row*region_height);
+
+                        ushort[] data = GenerateRegion(xOffset, yOffset);
+
+                        for (int y = 0; y < region_height; ++y)
                         {
-                            var xOffset = (uint)(col*region_width);
-                            var yOffset = (uint)(row*region_height);
-
-                            ushort[] data = GenerateRegion(xOffset, yOffset);
-
-                            for (int y = 0; y < region_height; ++y)
-                            {
-                                for (int x = 0; x < region_width; ++x)
-                                    bw.Write(data[y*region_width + x]);
-                            }
+                            for (int x = 0; x < region_width; ++x)
+                                bw.Write(data[y*region_width + x]);
                         }
                     }
                 }
+
+
             }
+            using (sw = new StreamWriter(File.Open("CityLocations.txt", FileMode.Create)))
+            {
+                locations.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+                foreach(Location loc in locations)
+                {
+                    sw.WriteLine("{0},{1}", loc.X, loc.Y);
+                }
+            }
+
         }
 
         #region Nested type: Region

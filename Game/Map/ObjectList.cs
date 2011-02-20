@@ -9,7 +9,7 @@ using Game.Data;
 
 namespace Game.Map
 {
-    class AllObjectEnum : IEnumerator
+    class AllObjectEnum : IEnumerator<SimpleGameObject>
     {
         #region Members
 
@@ -35,6 +35,14 @@ namespace Game.Map
         public void Reset()
         {
             itr = objectList.Dict.GetEnumerator();
+        }
+
+        SimpleGameObject IEnumerator<SimpleGameObject>.Current
+        {
+            get
+            {
+                return listItr.Current;
+            }
         }
 
         public object Current
@@ -74,9 +82,14 @@ namespace Game.Map
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            listItr.Dispose();
+        }
     }
 
-    public class ObjectList : IEnumerable
+    public class ObjectList : IEnumerable<SimpleGameObject>
     {
         #region Members
 
@@ -154,13 +167,14 @@ namespace Game.Map
 
         #endregion
 
-        #region IEnumerable Members
-
-        public IEnumerator GetEnumerator()
+        public IEnumerator<SimpleGameObject> GetEnumerator()
         {
             return new AllObjectEnum(this);
         }
 
-        #endregion
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new AllObjectEnum(this);
+        }
     }
 }

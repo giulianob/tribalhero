@@ -83,7 +83,12 @@ namespace Game.Logic.Formulas
 
         public static Resource GetInitialCityResources()
         {
-            return new Resource(500, 0, 0, 500, 20);
+            return new Resource(500, 0, 0, 500, 30);
+        }
+
+        public static byte GetInitialCityRadius()
+        {
+            return 4;
         }
     }
 }

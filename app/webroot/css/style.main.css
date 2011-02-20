@@ -1,6 +1,6 @@
 html {
-	overflow-y: scroll;
-	height: 100%;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 body {
@@ -65,8 +65,7 @@ a:hover {
 }
 
 #header {
-    height:180px;
-    margin-top:10px;
+    height:180px;    
 }
 
 #footer {
@@ -140,6 +139,10 @@ a:hover {
 
 #main-nav #register a:hover {
     background:url(../img/nav/nav.png) -151px -211px no-repeat;
+}
+
+#game-box {
+	height: 100%;
 }
 
 form.inline div.input {
@@ -576,6 +579,9 @@ table.cake-sql-log {
     margin:0;
 }
 
+#login {
+    margin-top: 10px;
+}
 #login,#login div,#login a,form.white-label label,.cake-sql-log caption {
     color:#fff;
 }
@@ -610,6 +616,6 @@ a.icon {
 }
 
 .action-zoom { 
-	background-image: url('../img/icons/zoom.png') !important; 
-	background-repeat: no-repeat; 
+    background-image: url('../img/icons/zoom.png') !important;
+    background-repeat: no-repeat;
 }

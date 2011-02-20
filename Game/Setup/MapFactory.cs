@@ -31,29 +31,34 @@ namespace Game.Setup
             }
         }
 
-        public static bool NextLocation(out uint x, out uint y)
+        public static bool NextLocation(out uint x, out uint y, byte radius)
         {
             x = 0;
             y = 0;
 
             do {
-                if(index>=dict.Count)
-                {
+                if(index>=dict.Count)                
                     return false;
-                }
+                
                 Point point = dict[index];
                 index += SKIP;
+                
+                // Check if objects already on that point
                 List<SimpleGameObject> objects = Global.World.GetObjects(point.X, point.Y);
 
                 if (objects == null)
                     continue;
 
-                if (objects.Count == 0) {
-                    x = point.X;
-                    y = point.Y;
-                    return true;
-                }
+                if (objects.Count != 0)
+                    continue;
 
+                if (ForestManager.HasForestNear(point.X, point.Y, radius))
+                    continue;
+                
+                x = point.X;
+                y = point.Y;
+
+                return true;
             } while (true);
         }
 

@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Xml;
 using System.Xml.XPath;
 using Game.Data;
+using Game.Logic.Formulas;
 using Game.Map;
 using System.Linq;
 #endregion
@@ -17,8 +18,7 @@ namespace MapGenerator
     {
         private const ushort FARM_TILE = 209;
         private const ushort WOODLAND_TILE = 209;
-        private const ushort CITY_TILE = 209;
-        private const byte radius = 3;
+        private const ushort CITY_TILE = 209;        
         private static readonly Random random = new Random();
         private static StreamWriter sw;
         private static List<Location> locations = new List<Location>();
@@ -68,12 +68,12 @@ namespace MapGenerator
             uint x;
             uint y;
 
-            TileLocator.ForeachObject(cityLocation.X, cityLocation.Y, radius, true, AreaClear, map);
+            TileLocator.ForeachObject(cityLocation.X, cityLocation.Y, Formula.GetInitialCityRadius(), true, AreaClear, map);
             for (int i = 0; i < numberOfFarm; ++i)
             {
                 do
                 {
-                    TileLocator.RandomPoint(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
+                    TileLocator.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.GetInitialCityRadius() - 1), false, out x, out y);
                 } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
                          map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE);
                 map[y*region_width + x] = FARM_TILE;
@@ -83,7 +83,7 @@ namespace MapGenerator
             {
                 do
                 {
-                    TileLocator.RandomPoint(cityLocation.X, cityLocation.Y, radius, false, out x, out y);
+                    TileLocator.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.GetInitialCityRadius() - 1), false, out x, out y);
                 } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
                          map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE);
                 map[y*region_width + x] = WOODLAND_TILE;

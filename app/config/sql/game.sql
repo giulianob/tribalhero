@@ -82,7 +82,7 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=248 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `battle_report_troops` (
   PRIMARY KEY (`id`),
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +158,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +178,7 @@ CREATE TABLE `battles` (
   KEY `ended` (`ended`),
   KEY `created` (`created`),
   KEY `city_id` (`city_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +191,6 @@ DROP TABLE IF EXISTS `chain_actions`;
 CREATE TABLE `chain_actions` (
   `id` int(10) unsigned NOT NULL,
   `city_id` int(10) unsigned NOT NULL,
-  `object_id` int(10) unsigned NOT NULL,
   `type` int(11) NOT NULL,
   `current_action_id` int(10) unsigned DEFAULT NULL,
   `chain_callback` varchar(32) NOT NULL,
@@ -381,7 +380,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -453,21 +452,21 @@ CREATE TABLE `players` (
   `email_address` varchar(256) NOT NULL,
   `login_key` varchar(64) DEFAULT NULL,
   `login_key_date` datetime DEFAULT NULL,
-  `session_id` varchar(128) NOT NULL,
+  `session_id` varchar(128) DEFAULT NULL,
   `created` datetime NOT NULL,
   `last_login` datetime NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
-  `banned` tinyint(1) NOT NULL,
-  `admin` tinyint(1) NOT NULL,
-  `online` tinyint(1) NOT NULL,
+  `banned` tinyint(1) NOT NULL DEFAULT '0',
+  `admin` tinyint(1) NOT NULL DEFAULT '0',
+  `online` tinyint(1) NOT NULL DEFAULT '0',
   `reset_key` varchar(64) DEFAULT NULL,
-  `reset_key_date` datetime NOT NULL,
+  `reset_key_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
   KEY `login_key` (`login_key`),
   KEY `session_id` (`session_id`),
   KEY `facebook_id` (`facebook_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41235 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=50201 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -836,7 +835,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-06 15:31:57
+-- Dump completed on 2011-02-20 16:31:56
 -- MySQL dump 10.13  Distrib 5.1.41, for Win32 (ia32)
 --
 -- Host: localhost    Database: game
@@ -872,4 +871,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-06 15:31:58
+-- Dump completed on 2011-02-20 16:31:56

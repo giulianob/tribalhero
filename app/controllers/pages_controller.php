@@ -1,10 +1,10 @@
 <?php
 
 class PagesController extends AppController {
-    var $uses = array();
 
+    var $uses = array();
     var $cacheAction = array(
-            'index' => '1 month'
+        'index' => '1 month'
     );
 
     function beforeFilter() {
@@ -14,7 +14,7 @@ class PagesController extends AppController {
 
     function index() {
         $this->set('title_for_layout', 'Tribal Hero - a free browser game');
-		$this->set('use_jquery', true);
+        $this->set('use_jquery', true);
     }
 
     function display() {
@@ -42,7 +42,7 @@ class PagesController extends AppController {
 
     function facebook() {
         App::import('Vendor', 'facebook/facebook');
-        $Player =& ClassRegistry::init('Player');
+        $Player = & ClassRegistry::init('Player');
         $this->layout = 'ajax';
         $GLOBALS['facebook_config']['debug'] = null;
         $facebook = new Facebook($this->fbApiKey, $this->fbSecret);
@@ -52,7 +52,7 @@ class PagesController extends AppController {
         if (empty($facebook->fb_params) || !is_numeric($fbid) || empty($fbid))
             $this->redirect('/');
 
-        $loginKey = sha1($fbid + '.' + time() + '.' + rand(0,1000));
+        $loginKey = sha1($fbid + '.' + time() + '.' + rand(0, 1000));
 
         $player = $Player->find('first', array('conditions' => array('facebook_id' => $fbid)));
 
@@ -61,18 +61,17 @@ class PagesController extends AppController {
             $user_details = $facebook->api_client->users_getStandardInfo($fbid, array('name', 'proxied_email'));
 
             $ok = $Player->save(array(
-                    'facebook_id' => $fbid,
-                    'name' => $user_details[0]['name'],
-                    'email_address' => $user_details[0]['proxied_email'],
-                    'login_key_date' => date('Y-m-d H:i:s'),
-                    'login_key' => $loginKey), false);
-        }
-        else {
+                        'facebook_id' => $fbid,
+                        'name' => $user_details[0]['name'],
+                        'email_address' => $user_details[0]['proxied_email'],
+                        'login_key_date' => date('Y-m-d H:i:s'),
+                        'login_key' => $loginKey), false);
+        } else {
             $ok = $Player->save(array(
-                    'id' => $player['Player']['id'],
-                    'login_key_date' => date('Y-m-d H:i:s'),
-                    'login_key' => $loginKey
-                    ), false);
+                        'id' => $player['Player']['id'],
+                        'login_key_date' => date('Y-m-d H:i:s'),
+                        'login_key' => $loginKey
+                            ), false);
         }
 
         if (!$ok) {
@@ -85,30 +84,33 @@ class PagesController extends AppController {
     }
 
     function play() {
+        Configure::write('debug', 0);
+
         // Prevent caching
         $this->disableCache();
 
-		$this->set('title_for_layout', 'Play');
-		
+        $this->set('title_for_layout', 'Play');
+
         $this->layout = 'game';
 
-        $loginKey = sha1($this->Auth->user('id') + '.' + time() + '.' + rand(0,1000));
+        $loginKey = sha1($this->Auth->user('id') + '.' + time() + '.' + rand(0, 1000));
 
-        $player =& ClassRegistry::init('Player');
+        $player = & ClassRegistry::init('Player');
 
-		$playerInfo = $player->findById($this->Auth->user('id'));
-		
-		if (!empty($playerInfo['Player']['login_key']) && time() - strtotime($playerInfo['Player']['login_key_date']) < 300) {
-			$loginKey = $playerInfo['Player']['login_key'];
-		} else if (!$player->save(array(
-        'id' => $this->Auth->user('id'),
-        'login_key_date' => date('Y-m-d H:i:s'),
-        'login_key' => $loginKey
-        ), false)) {
+        $playerInfo = $player->findById($this->Auth->user('id'));
+
+        if (!empty($playerInfo['Player']['login_key']) && time() - strtotime($playerInfo['Player']['login_key_date']) < 300) {
+            $loginKey = $playerInfo['Player']['login_key'];
+        } else if (!$player->save(array(
+                    'id' => $this->Auth->user('id'),
+                    'login_key_date' => date('Y-m-d H:i:s'),
+                    'login_key' => $loginKey
+                        ), false)) {
             $this->Session->setFlash('We were unable to log you into the world. Refresh this page to try again, if the problem persists, contact us.', 'default', array('class' => 'error'));
             $this->redirect('/');
         }
-        
-        $this->set('lsessid', $loginKey);        
+
+        $this->set('lsessid', $loginKey);
     }
+
 }

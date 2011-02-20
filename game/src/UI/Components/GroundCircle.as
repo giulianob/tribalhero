@@ -76,6 +76,7 @@
 		{
 			var tiledata: MASK_TILE = new MASK_TILE(Constants.tileW, Constants.tileH);
 			var tile: Bitmap = new Bitmap(new BitmapData(Constants.tileW, Constants.tileH, true, 0x000000));
+			tile.smoothing = true;
 
 			var tileRadius: int = Math.ceil(size / 2.0);
 			var point: Point = MapUtil.getScreenCoord(x, y);

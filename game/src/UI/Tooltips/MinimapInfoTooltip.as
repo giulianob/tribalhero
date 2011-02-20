@@ -2,14 +2,18 @@
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import org.aswing.AsWingConstants;
 	import org.aswing.JLabel;
 	import org.aswing.SoftBoxLayout;
+	import src.Constants;
 	import src.Global;
+	import src.Map.MapUtil;
 	import src.Map.Username;
 	import src.Objects.SimpleGameObject;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Tooltips.TextTooltip;
+	import src.Util.Util;
 
 	/**
 	 * ...
@@ -43,9 +47,16 @@
 
 			var lblLvl: JLabel = new JLabel("Level " + obj.getLevel(), null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
+			
+			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
+			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
+			
+			var lblDistance: JLabel = new JLabel("About " + distance + " tiles away", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
 
 			ui.append(lblName);
 			ui.append(lblLvl);
+			ui.append(lblDistance);
 
 			show(obj);
 		}

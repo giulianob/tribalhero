@@ -4,6 +4,7 @@
 	import flash.geom.Point;
 	import src.Global;
 	import src.Objects.GameObject;
+	import src.Util.Util;
 	import src.Objects.SimpleGameObject;
 	import src.Util.BinaryList.*;
 
@@ -155,7 +156,7 @@
 
 			if (region == null)
 			{
-				trace("Invalid region at map.addObject. Region received: " + regionId);
+				Util.log("Invalid region at map.addObject. Region received: " + regionId);
 				return null;
 			}
 

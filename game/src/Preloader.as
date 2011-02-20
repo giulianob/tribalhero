@@ -24,7 +24,7 @@
 			addChild(_clip);
 
 			loadText = new TextField();
-			loadText.text = "Loading...";
+			loadText.text = "Downloading game. This may take a minute or two...";
 			loadText.setTextFormat(new TextFormat("Arial", 13, null, true));
 			loadText.x = stage.stageWidth / 2 - loadText.textWidth / 2;
 			loadText.y = stage.stageHeight / 2 - loadText.textHeight / 2;

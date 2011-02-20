@@ -8,7 +8,7 @@
 	import src.Objects.Factories.ObjectFactory;
 	import src.UI.Tooltips.MinimapInfoTooltip;
 	import src.Util.BinaryList.*;
-
+	import src.Util.Util;
 	import src.Constants;
 	import src.Map.Map;
 	import src.Map.Camera;
@@ -51,7 +51,7 @@
 			globalX = (id % Constants.miniMapRegionW) * Constants.cityRegionW;
 			globalY = int(id / Constants.miniMapRegionW) * (Constants.cityRegionH / 2);
 
-			//trace("Create CityRegion " + id + " at " + globalX + " , " + globalY);
+			//Util.log("Create CityRegion " + id + " at " + globalX + " , " + globalY);
 		}
 
 		public function disposeData():void
@@ -86,13 +86,13 @@
 					if (b-1+y >= Constants.cityRegionTileH || a-1+x >= Constants.cityRegionTileW)
 					{
 						if (Constants.debug>=3)
-						trace("OOB:" + (a + x) + "," + (b + y));
+						Util.log("OOB:" + (a + x) + "," + (b + y));
 
 						break;
 					}
 
 					if (Constants.debug>=3)
-					trace((a-1+x) + "," + (b-1+y));
+					Util.log((a-1+x) + "," + (b-1+y));
 
 					var xadd:int = 0;
 					var yadd:int = 0;
@@ -141,7 +141,7 @@
 
 			if (existingObj != null) //don't add if obj already exists
 			{
-				trace("Obj id " + objectId + " already exists in city region " + id);
+				Util.log("Obj id " + objectId + " already exists in city region " + id);
 				return null;
 			}
 

@@ -9,6 +9,7 @@ package src.Map {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import src.Constants;
+	import src.Util.Util;
 	import src.Global;
 
 	public class MapUtil {
@@ -26,7 +27,7 @@ package src.Map {
 			var id: int = int(xId + yId * Constants.miniMapRegionW);
 
 			if (Constants.debug >= 4)
-			trace(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
+			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
 
 			return id;
 		}
@@ -60,7 +61,7 @@ package src.Map {
 			var id: int = int(xId + yId * Constants.mapRegionW);
 
 			if (Constants.debug >= 4)
-			trace(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
+			Util.log(rX + "," + rY + "(" + xId + "," + yId + ") =" + id);
 
 			return id;
 		}
@@ -80,7 +81,15 @@ package src.Map {
 
 			return new Point(xcoord, ycoord);
 		}
+		
+		public static function getScreenMinimapToMapCoord(x: int, y: int): Point // from screen minimap coord (e.g. obj.getX() ) to the true map coord
+		{
+			var xcoord: int = int(Math.max(x + int(Constants.miniMapTileW / 2), 0) / Constants.miniMapTileW);
+			var ycoord: int = Math.round(Math.max(y + (Constants.miniMapTileH / 2), 0) / (Constants.miniMapTileH / 2));
 
+			return new Point(xcoord, ycoord);
+		}
+		
 		public static function getScreenCoord(x: int, y: int) : Point // from map coord to where it belongs on screen
 		{
 			var xadd:int = 0;

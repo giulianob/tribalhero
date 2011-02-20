@@ -80,6 +80,15 @@
 			"TextField.foreground", new ASColorUIResource(0xFFFFFF)
 			],
 			
+			"Class.Tooltip.italicsText", [
+			"Label.font", new ASFontUIResource("Arial", 13, false, true),
+			"Label.foreground", new ASColorUIResource(0xFFFFFF),
+			"TextArea.font", new ASFontUIResource("Arial", 13, false, true),
+			"TextArea.foreground", new ASColorUIResource(0xFFFFFF),
+			"TextField.font", new ASFontUIResource("Arial", 13, false, true),
+			"TextField.foreground", new ASColorUIResource(0xFFFFFF)
+			],			
+			
 			"Class.Console.text", [
 			"Label.font", new ASFontUIResource("Courier New", 12, false),
 			"Label.foreground", new ASColorUIResource(0xFFFFFF),

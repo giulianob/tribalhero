@@ -5,7 +5,7 @@
 	import flash.geom.Rectangle;
 	import src.Objects.Factories.ObjectFactory;
 	import src.Util.BinaryList.*;
-
+	import src.Util.Util;
 	import src.Constants;
 	import src.Map.Map;
 	import src.Map.Camera;
@@ -84,7 +84,7 @@
 		public function createRegion():void
 		{
 			if (Constants.debug >= 2)
-			trace("Creating region id: " + id + " " + globalX + "," + globalY);
+			Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
 
 			var tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
 
@@ -93,7 +93,7 @@
 				for (var b:int = 0; b < Math.ceil(Constants.regionH / Constants.regionBitmapH); b++)
 				{
 					if (Constants.debug>=3)
-					trace("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
+					Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
 
 					createRegionPart(tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
 					break;
@@ -124,6 +124,7 @@
 		public function createRegionPart(tileset:TileSet, x: int, y:int):void
 		{
 			var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionBitmapW + Constants.tileW / 2, Constants.regionBitmapH / 2 + Constants.tileH / 2, true, 0));
+			bg.smoothing = true;
 			
 			for (var bY:int = 1; bY <= Constants.regionBitmapTileH; bY++)
 			{
@@ -146,7 +147,7 @@
 					var drawTo:Point = new Point(xcoord + int(Constants.tileW / 2), (ycoord + int(Constants.tileH / 2)) - (Constants.tileH));
 					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 2);
 
-					//trace(aX + "," + bY + " Tile Id:" + tileid + " draw to " + drawTo.x + "," + drawTo.y + " src " + srcRect.x + "," + srcRect.y + " " + srcRect.width + "," + srcRect.height);
+					//Util.log(aX + "," + bY + " Tile Id:" + tileid + " draw to " + drawTo.x + "," + drawTo.y + " src " + srcRect.x + "," + srcRect.y + " " + srcRect.width + "," + srcRect.height);
 					bg.bitmapData.copyPixels(tileset, srcRect, drawTo, null, null, true);
 				}
 			}
@@ -205,7 +206,7 @@
 
 			if (existingObj != null) //don't add if obj already exists
 			{
-				trace("Obj id " + objectId + " already exists in region " + id);
+				Util.log("Obj id " + objectId + " already exists in region " + id);
 				return null;
 			}
 

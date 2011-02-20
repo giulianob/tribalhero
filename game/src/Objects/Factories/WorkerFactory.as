@@ -3,6 +3,7 @@
 	import src.Objects.Actions.*;
 	import src.Objects.Effects.EffectReqManager;
 	import src.Objects.Prototypes.EffectPrototype;
+	import src.Util.Util;
 	import src.UI.Cursors.StructureDowngradeCursor;
 	import src.Util.BinaryList.*;
 	import src.Objects.Prototypes.Worker;
@@ -111,7 +112,8 @@
 							action = new ForestCampRemoveAction();
 						break;
 						default:
-							trace("Unknown action '" + actionNode.name() + "' in worker '" + worker.type.toString() + "'");
+							Util.log("Unknown action '" + actionNode.name() + "' in worker '" + worker.type.toString() + "'");
+							action = new DefaultAction(actionNode.@command);
 					}
 
 					if (action != null)

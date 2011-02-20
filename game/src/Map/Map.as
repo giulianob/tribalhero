@@ -381,10 +381,11 @@
 			if (event.keyCode == Keyboard.ESCAPE) doSelectedObject(null);
 
 			camera.beginMove();
-			if (event.keyCode == Keyboard.LEFT) camera.MoveLeft(500);
-			if (event.keyCode == Keyboard.RIGHT) camera.MoveRight(500);
-			if (event.keyCode == Keyboard.UP) camera.MoveUp(500);
-			if (event.keyCode == Keyboard.DOWN) camera.MoveDown(500);
+			var keyScrollRate: int = Global.gameContainer.minimapZoomed ? 1150 : 500 * camera.getZoomFactorOverOne();
+			if (event.keyCode == Keyboard.LEFT) camera.MoveLeft(keyScrollRate);
+			if (event.keyCode == Keyboard.RIGHT) camera.MoveRight(keyScrollRate);
+			if (event.keyCode == Keyboard.UP) camera.MoveUp(keyScrollRate);
+			if (event.keyCode == Keyboard.DOWN) camera.MoveDown(keyScrollRate);
 			camera.endMove();
 			//end key press
 		}

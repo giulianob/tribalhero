@@ -76,20 +76,10 @@ namespace Game.Map
         public static void RandomPoint(uint ox, uint oy, byte radius, bool doSelf, out uint x, out uint y)
         {
             byte mode;
-            if (ox%2 == 0)
-            {
-                if (oy%2 == 0)
-                    mode = 0;
-                else
-                    mode = 1;
-            }
-            else
-            {
-                if (oy%2 == 0)
-                    mode = 0;
-                else
-                    mode = 1;
-            }
+            if (ox%2 == 0)            
+                mode = (byte)(oy%2 == 0 ? 0 : 1);            
+            else            
+                mode = (byte)(oy%2 == 0 ? 0 : 1);            
 
             do
             {

@@ -278,7 +278,7 @@ namespace Game.Module
                     List<City> cities = npc.GetCityList();
 
                     Structure structure;
-                    if (!Randomizer.MainBuilding(out structure, 2))
+                    if (!Randomizer.MainBuilding(out structure, Formula.GetInitialCityRadius(), 2))
                     {
                         Global.Logger.Info(npc.Name);
                         break;

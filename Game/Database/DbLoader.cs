@@ -43,7 +43,8 @@ namespace Game.Database
 
                     // Calculate how long server was down
                     TimeSpan downTime = now.Subtract((DateTime)Global.SystemVariables["System.time"].Value);
-
+                    if (downTime.TotalMilliseconds < 0) downTime = new TimeSpan(0);
+                    
                     Global.Logger.Info(string.Format("Server was down for {0}", downTime));
 
                     LoadMarket(dbManager);

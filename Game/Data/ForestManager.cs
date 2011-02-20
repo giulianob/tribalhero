@@ -57,7 +57,7 @@ namespace Game.Data
             forests.Add(forest.ObjectId, forest);
         }
 
-        public bool HasForestNear(uint x, uint y, int radius)
+        public static bool HasForestNear(uint x, uint y, int radius)
         {
             return Global.World.GetRegion(x, y).GetObjects().Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
         }

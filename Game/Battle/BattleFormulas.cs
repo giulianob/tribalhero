@@ -161,12 +161,16 @@ namespace Game.Battle
         {
             int totalCarry = attacker.BaseStats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
             int count = Math.Max(1, totalCarry* GetLootPerRound(attacker.City) / 100); // if carry is 100 and % is 5, then count = 5;
-            var spaceLeft = new Resource(totalCarry, totalCarry/2, totalCarry/5, totalCarry, 0); // spaceleft is the maxcarry.
+            var spaceLeft = new Resource(totalCarry / Config.resource_crop_ratio,
+                                         totalCarry / Config.resource_gold_ratio,
+                                         totalCarry / Config.resource_iron_ratio,
+                                         totalCarry / Config.resource_wood_ratio,
+                                         totalCarry / Config.resource_labor_ratio); // spaceleft is the maxcarry.
             spaceLeft.Subtract(((AttackCombatUnit)attacker).Loot); // maxcarry - current resource is the empty space left.
-            return new Resource(Math.Min(count, spaceLeft.Crop),  // returning lesser value between the count and the empty space.
-                                Math.Min(count/2, spaceLeft.Gold),
-                                Math.Min(count/5, spaceLeft.Iron),
-                                Math.Min(count, spaceLeft.Wood),
+            return new Resource(Math.Min(count / Config.resource_crop_ratio, spaceLeft.Crop),  // returning lesser value between the count and the empty space.
+                                Math.Min(count / Config.resource_gold_ratio, spaceLeft.Gold),
+                                Math.Min(count / Config.resource_iron_ratio, spaceLeft.Iron),
+                                Math.Min(count / Config.resource_wood_ratio, spaceLeft.Wood),
                                 0);
         }
 

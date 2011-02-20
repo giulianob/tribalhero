@@ -294,11 +294,11 @@ namespace Game.Battle
 
                 // Figure out how much loot we have to return to the city
                 int totalCarry = BaseStats.Carry*Count;
-                returning = new Resource(loot.Crop > totalCarry ? loot.Crop - totalCarry : 0,
-                                         loot.Gold > totalCarry/2 ? loot.Gold - totalCarry/2 : 0,
-                                         loot.Iron > totalCarry/5 ? loot.Iron - totalCarry/5 : 0,
-                                         loot.Wood > totalCarry ? loot.Wood - totalCarry : 0,
-                                         0);
+                returning = new Resource(loot.Crop > totalCarry / Config.resource_crop_ratio ? loot.Crop - totalCarry / Config.resource_crop_ratio : 0,
+                                         loot.Gold > totalCarry / Config.resource_gold_ratio ? loot.Gold - totalCarry / Config.resource_gold_ratio : 0,
+                                         loot.Iron > totalCarry / Config.resource_iron_ratio ? loot.Iron - totalCarry / Config.resource_iron_ratio : 0,
+                                         loot.Wood > totalCarry / Config.resource_wood_ratio ? loot.Wood - totalCarry / Config.resource_wood_ratio : 0,
+                                         loot.Labor > totalCarry / Config.resource_labor_ratio ? loot.Wood - totalCarry / Config.resource_labor_ratio : 0);
 
                 // Remove it from our loot
                 loot.Subtract(returning);

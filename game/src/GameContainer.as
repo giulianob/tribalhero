@@ -71,7 +71,7 @@
 
 		//Holds the tools above the minimap
 		public var minimapTools: MinimapToolsContainer = new MinimapToolsContainer();
-		private var minimapZoomed: Boolean = false;
+		public var minimapZoomed: Boolean = false;
 		private var minimapZoomTooltip: SimpleTooltip;
 
 		//Handles fancy auto resizing
@@ -293,7 +293,7 @@
 				minimapZoomTooltip.setText("Minimize map");
 				miniMap.setScreenRectHidden(true);
 				map.disableMapQueries(true);
-				map.scrollRate = 4;
+				map.scrollRate = 25;
 				minimapTools.btnZoomIn.visible = false;
 				minimapTools.btnZoomOut.visible = false;
 			}
@@ -341,7 +341,7 @@
 				setSidebar(null);
 			}
 			
-			if (!Util.textfieldHasFocus(stage)) {
+			if (!minimapZoomed && !Util.textfieldHasFocus(stage)) {
 				if (e.keyCode == 187 || e.keyCode == Keyboard.NUMPAD_ADD) onZoomIn(e);							
 				if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
 			}

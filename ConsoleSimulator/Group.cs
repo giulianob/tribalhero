@@ -5,6 +5,7 @@ using Game;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 
@@ -53,7 +54,7 @@ namespace ConsoleSimulator
                                                                       0,
                                                                       0,
                                                                       ClassId.Structure)));
-            city = new City(player, "city " + city_id, new Resource(), main);
+            city = new City(player, "city " + city_id, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), main);
             city_id++;
 
             attack = new TroopStub();

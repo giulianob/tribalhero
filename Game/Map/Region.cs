@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -112,6 +113,11 @@ namespace Game.Map
             {
                 return objlist.Get(x, y);
             }
+        }
+
+        public IEnumerable<SimpleGameObject> GetObjects()
+        {
+            return objlist;
         }
 
         public byte[] GetObjectBytes()

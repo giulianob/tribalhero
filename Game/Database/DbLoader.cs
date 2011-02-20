@@ -193,9 +193,8 @@ namespace Game.Database
                                                     (int)reader["labor"],
                                                     laborRealizeTime,
                                                     (int)reader["labor_production_rate"]);
-                    var city = new City(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], resource, null)
+                    var city = new City(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], resource, (byte)reader["radius"], null)
                                {
-                                       Radius = (byte)reader["radius"],
                                        DbPersisted = true,
                                        LootStolen = (uint)reader["loot_stolen"],
                                        AttackPoint = (int)reader["attack_point"],

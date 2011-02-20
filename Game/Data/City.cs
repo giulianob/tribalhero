@@ -35,7 +35,7 @@ namespace Game.Data
         private uint id;
         private string name = "Washington";
         private uint nextObjectId;
-        private byte radius = 4;
+        private byte radius;
 
         #region Properties
 
@@ -286,16 +286,17 @@ namespace Game.Data
 
         #region Constructors
 
-        public City(Player owner, string name, Resource resource, Structure mainBuilding)
-                : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), mainBuilding)
+        public City(Player owner, string name, Resource resource, byte radius, Structure mainBuilding)
+                : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding)
         {
         }
 
-        public City(Player owner, string name, LazyResource resource, Structure mainBuilding)
+        public City(Player owner, string name, LazyResource resource, byte radius, Structure mainBuilding)
         {
             Owner = owner;
             this.name = name;
-            Resource = resource;
+            this.radius = radius;
+            Resource = resource;            
 
             Worker = new ActionWorker(this);
 

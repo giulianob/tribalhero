@@ -296,7 +296,6 @@
     <Compile Include="Module\Npc.cs" />
     <Compile Include="Logic\Randomizer.cs" />
     <Compile Include="Setup\ConditionFactory.cs" />
-    <Compile Include="Setup\ForestFactory.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />
     <Compile Include="Setup\SystemVariable.cs" />

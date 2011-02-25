@@ -136,6 +136,9 @@
 			new SimpleTooltip(minimapTools.btnGoToCoords, "Go to...");
 			minimapTools.btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
 			
+			new SimpleTooltip(minimapTools.btnFeedback, "Send Feedback");
+			minimapTools.btnFeedback.addEventListener(MouseEvent.CLICK, onSendFeedback);
+			
 			new SimpleTooltip(minimapTools.btnZoomIn, "Zoom In");
 			minimapTools.btnZoomIn.addEventListener(MouseEvent.CLICK, onZoomIn);
 			
@@ -184,6 +187,11 @@
 		{
 			navigateToURL(new URLRequest("http://" + Constants.hostname + "/players/logout/session:" + Constants.sessionId), null);
 		}
+		
+		public function onAccountOptionsClick(e: Event): void
+		{
+			navigateToURL(new URLRequest("http://" + Constants.hostname + "/players/account"), "_blank");
+		}		
 		
 		public function onHelpClick(e: Event): void
 		{
@@ -252,6 +260,10 @@
 		public function onGoToCoords(e: Event) : void {
 			var goToDialog: GoToDialog = new GoToDialog();
 			goToDialog.show();
+		}
+		
+		public function onSendFeedback(e: Event) : void {
+			navigateToURL(new URLRequest("http://" + Constants.hostname + "/feedback"), "_blank");
 		}
 		
 		public function onZoomIn(e: Event) : void {
@@ -428,9 +440,10 @@
 		public function show() : void {
 			// Create popup menu now that we have all the player info
 			menu = new JPopupMenu();
-			menu.addMenuItem("Logged in as " + Constants.username);
+			menu.addMenuItem("Logged in as " + Constants.username);			
+			menu.addMenuItem("Account Options").addActionListener(onAccountOptionsClick);
 			menu.addMenuItem("Forums").addActionListener(onForumsClick);
-			menu.addMenuItem("Help").addActionListener(onHelpClick);
+			menu.addMenuItem("Help").addActionListener(onHelpClick);			
 			menu.addMenuItem("Logout").addActionListener(onLogoutClick);
 
 			// Reset camera pos

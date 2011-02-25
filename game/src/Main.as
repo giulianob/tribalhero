@@ -107,7 +107,7 @@
 
 		private function loadData(): void 
 		{			
-			pnlLoading = InfoDialog.showMessageDialog("Loading", "Launching the game...", null, null, true, false, 0);
+			pnlLoading = InfoDialog.showMessageDialog("TribalHero", "Launching the game...", null, null, true, false, 0);
 			
 			//Security.loadPolicyFile("http://" + Constants.hostname + ":8085/crossdomain.xml");				
 			

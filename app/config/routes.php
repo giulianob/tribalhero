@@ -37,5 +37,6 @@
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
+        Router::connect('/feedback', array('controller' => 'pages', 'action' => 'feedback'));
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 ?>

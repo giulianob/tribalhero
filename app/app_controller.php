@@ -1,8 +1,27 @@
 <?php
 
+/**
+ * @property EmailComponent $Email
+ * @property SessionComponent $Session
+ */
 class AppController extends Controller {
 
-    var $components = array('Auth', 'Security', 'Session', 'DebugKit.Toolbar');
+    var $components = array('Auth', 'Security', 'Session', 'DebugKit.Toolbar', 'Email' => array(
+            'port' => '25',
+            'replyTo' => 'play@tribalhero.com',
+            'from' => 'Tribal Hero <play@tribalhero.com>',
+            'delivery' => 'smtp',
+            'sendAs' => 'html',
+            'smtpOptions' => array(
+                'port' => 465,
+                'timeout' => 15,
+                'auth' => true,
+                'host' => 'ssl://smtp.gmail.com',
+                'username' => 'play@tribalhero.com',
+                'password' => 'j8qap6DAgu'
+            )
+        )
+    );
     var $helpers = array('Html', 'Js', 'Form', 'Session', 'Cache');
     var $recaptchaPrivateKey = '6LdYFgYAAAAAAMrRHyqHasNnktIyoTh1fwPKV0Jy';
     var $recaptchaPublicKey = '6LdYFgYAAAAAAEJVxFq049CUy9ml57Ds9hSRlw41';

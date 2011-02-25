@@ -113,4 +113,25 @@ class PagesController extends AppController {
         $this->set('lsessid', $loginKey);
     }
 
+    function feedback() {
+        $Feedback = & ClassRegistry::init('Feedback');
+        
+        if (!empty($this->data)) {            
+            $Feedback->set($this->data);
+            if ($Feedback->validates()) {
+
+                $this->Email->to = '<' . FEEDBACK_EMAIL . '>';
+                $this->Email->subject = 'TribalHero Feedback';
+                $this->Email->replyTo = $this->Auth->user('email_address');
+                $this->Email->template = 'feedback';
+                $this->set('username', $this->Auth->user('name'));
+                $this->set('message', $this->data['Feedback']['message']);
+                $this->Email->send();
+
+                $this->Session->setFlash('Thanks for giving us your two cents!', 'default', array('class' => 'success'));
+                $this->redirect('/');
+            }
+        }
+    }
+
 }

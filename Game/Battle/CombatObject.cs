@@ -235,8 +235,7 @@ namespace Game.Battle
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual int TileDistance(uint x, uint y)
-        {
+        public virtual void Location(out uint x, out uint y) {
             throw new Exception("NOT IMPLEMENTED");
         }
 
@@ -244,6 +243,7 @@ namespace Game.Battle
         {
             throw new Exception("NOT IMPLEMENTED");
         }
+
 
         public bool CanSee(CombatObject obj)
         {

@@ -62,6 +62,11 @@ namespace Game.Battle
 
                 int score = 0;
 
+                uint x1, y1, x2, y2;
+                attacker.Location(out x1, out y1);
+                obj.Location(out x2, out y2);
+                score += Math.Max(3 - SimpleGameObject.RadiusDistance(x1, y1, x2, y2) * 2, 0);  // distance 0 gives 60% higher chance to hit, distance 1 gives 20%
+
                 //have to compare armor and weapon type here to give some sort of score
                 score += ((int)(BattleFormulas.GetArmorTypeModifier(attacker.BaseStats.Weapon, obj.BaseStats.Armor)*10));
                 score += ((int)(BattleFormulas.GetArmorClassModifier(attacker.BaseStats.WeaponClass, obj.BaseStats.ArmorClass)*5));

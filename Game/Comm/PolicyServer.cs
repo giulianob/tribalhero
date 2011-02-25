@@ -72,27 +72,31 @@ namespace Game.Comm
                 ThreadPool.QueueUserWorkItem(delegate(object state)
                     {
                         var s = (Socket)state;
-
-                        s.ReceiveTimeout = 1500;
-
-                        var buffer = new byte[128];
-
                         try
                         {
+                            var buffer = new byte[128];
+
+                            s.ReceiveTimeout = 1500;                            
                             s.Receive(buffer, 23, SocketFlags.None);
                             s.NoDelay = true;
                             s.Send(xmlBytes);
 
                             Global.Logger.Info("Served policy file to " + s.RemoteEndPoint);
                         }
-                        catch(Exception)
+                        catch
+                        {
+                        }
+
+                        try
                         {
                             if (s.Connected)
                             {
                                 s.Shutdown(SocketShutdown.Both);
                                 s.Close();
                             }
-                            return;
+                        }
+                        catch
+                        {
                         }
 
                     },

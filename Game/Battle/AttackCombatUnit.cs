@@ -240,9 +240,9 @@ namespace Game.Battle
             throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
-        public override int TileDistance(uint x, uint y)
-        {
-            return SimpleGameObject.TileDistance(x, y, TroopStub.TroopObject.X, TroopStub.TroopObject.Y);
+        public override void Location(out uint x, out uint y) {
+            x = TroopStub.TroopObject.X;
+            y = TroopStub.TroopObject.Y;
         }
 
         public override void CalculateDamage(ushort dmg, out ushort actualDmg)

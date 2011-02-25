@@ -87,8 +87,10 @@
 		}
 		
 		public function writeString(param:String):void {
-			parameters.push(new Parameter(param,Parameter.STRING,Parameter.STRING));
-			length += param.length + 2;  // UTF with 2 byts in prefix
+			parameters.push(new Parameter(param, Parameter.STRING, Parameter.STRING));
+			var tmp: ByteArray = new ByteArray();
+			tmp.writeUTF(param);
+			length += tmp.length;
 		}
 		
 		/***********************   read supports  *************************/

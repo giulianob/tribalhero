@@ -51,7 +51,7 @@
 			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
 			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
 			
-			var lblDistance: JLabel = new JLabel("About " + distance + " tiles away", null, AsWingConstants.LEFT);
+			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
 
 			ui.append(lblName);

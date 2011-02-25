@@ -220,9 +220,16 @@ namespace Game.Battle
             return true;
         }
 
-        public override int TileDistance(uint x, uint y)
-        {
-            return 0;
+        public override void Location(out uint x, out uint y) {
+            if (TroopStub.TroopObject == null) {
+                x = City.MainBuilding.X;
+                y = City.MainBuilding.Y;
+            }
+            else
+            {
+                x = TroopStub.TroopObject.X;
+                y = TroopStub.TroopObject.Y;
+            }
         }
 
         public override void CalculateDamage(ushort dmg, out ushort actualDmg)

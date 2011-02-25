@@ -202,9 +202,10 @@ namespace Game.Battle
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
-        public override int TileDistance(uint x, uint y)
-        {
-            return SimpleGameObject.TileDistance(x, y, Structure.X, Structure.Y);
+
+        public override void Location(out uint x, out uint y) {
+            x = Structure.X;
+            y = Structure.Y;
         }
 
         public override void CalculateDamage(ushort dmg, out ushort actualDmg)

@@ -835,7 +835,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-20 16:31:56
+-- Dump completed on 2011-02-24 20:28:16
 -- MySQL dump 10.13  Distrib 5.1.41, for Win32 (ia32)
 --
 -- Host: localhost    Database: game
@@ -871,4 +871,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-20 16:31:56
+-- Dump completed on 2011-02-24 20:28:16

@@ -238,6 +238,14 @@ namespace Game.Data
             return RadiusDistance(obj.x, obj.y);
         }
 
+        public static float RadiusToPointFiveStyle(int radius)
+        {
+            if (radius == 0)
+                return 0;
+
+            return (radius + 1)/2f;
+        }
+
         public static int RadiusDistance(uint x, uint y, uint x1, uint y1)
         {
             /***********************************************************

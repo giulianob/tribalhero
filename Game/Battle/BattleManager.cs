@@ -222,19 +222,7 @@ namespace Game.Battle
 
         public CombatObject GetCombatObject(uint id)
         {
-            foreach (var co in attackers)
-            {
-                if (co.Id == id)
-                    return co;
-            }
-
-            foreach (var co in defenders)
-            {
-                if (co.Id == id)
-                    return co;
-            }
-
-            return null;
+            return attackers.FirstOrDefault(co => co.Id == id) ?? defenders.FirstOrDefault(co => co.Id == id);
         }
 
         public bool CanWatchBattle(Player player, out int roundsLeft)
@@ -375,25 +363,18 @@ namespace Game.Battle
         {
             lock (battleLock)
             {
-                var list = new List<CombatObject>();
-                foreach (var obj in defenders)
-                {
-                    if (!(obj is CombatStructure))
-                        continue;
-
-                    var combatStructure = obj as CombatStructure;
-                    if (objects.Contains(combatStructure.Structure))
-                        list.Add(obj);
-                }
+                var list = (from obj in defenders                            
+                            where obj is CombatStructure && objects.Contains(((CombatStructure)obj).Structure)
+                            select obj).ToList();
 
                 defenders.RemoveAll(list.Contains);
 
-                if (battleStarted)
-                {
-                    report.WriteReportObjects(list, false, state);
-                    EventWithdrawDefender(list);
-                    RefreshBattleOrder();
-                }
+                if (!battleStarted)
+                    return;
+
+                report.WriteReportObjects(list, false, state);
+                EventWithdrawDefender(list);
+                RefreshBattleOrder();
             }
         }
 
@@ -472,16 +453,9 @@ namespace Game.Battle
         {
             lock (battleLock)
             {
-                var list = new List<CombatObject>();
-                foreach (var obj in combatList)
-                {
-                    if (!(obj is ICombatUnit))
-                        continue;
-
-                    var unit = obj as ICombatUnit;
-                    if (objects.Contains(unit.TroopStub))
-                        list.Add(obj);
-                }
+                var list = (from obj in combatList
+                            where obj is ICombatUnit && objects.Contains(((ICombatUnit)obj).TroopStub)
+                            select obj).ToList();
 
                 combatList.RemoveAll(list.Contains);
 
@@ -534,7 +508,7 @@ namespace Game.Battle
             }
         }
 
-        private bool BattleIsValid()
+        private bool IsBattleValid()
         {
             if (attackers.Count == 0 || defenders.Count == 0)
                 return false;
@@ -615,7 +589,7 @@ namespace Game.Battle
                     RefreshBattleOrder();
 
                     // Makes sure battle is valid before even starting it
-                    if (!BattleIsValid())
+                    if (!IsBattleValid())
                     {
                         BattleEnded(false);
                         return false;
@@ -735,7 +709,7 @@ namespace Game.Battle
                     }
                 }
 
-                if (!BattleIsValid())
+                if (!IsBattleValid())
                 {
                     BattleEnded(true);
                     return false;

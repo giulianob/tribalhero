@@ -288,7 +288,7 @@ namespace Game.Battle
                                        {
                                                new DbColumn("state", state, DbType.Byte), new DbColumn("gold", loot.Gold, DbType.Int32),
                                                new DbColumn("crop", loot.Crop, DbType.Int32), new DbColumn("iron", loot.Iron, DbType.Int32),
-                                               new DbColumn("wood", loot.Wood, DbType.Int32), new DbColumn("id", loot.Gold, DbType.UInt32),
+                                               new DbColumn("wood", loot.Wood, DbType.Int32), new DbColumn("id", id, DbType.UInt32),
                                        });
             }
         }

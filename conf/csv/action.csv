@@ -19,7 +19,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2000,5,8,1,,structure_Build,2501,,,,,,
 ,,,,,,,,,,,,
 2000,6,1,1,,structure_Build,2106,TileCrop,,,,,
-2000,6,2,1,,structure_Build,2107,TileTree,,,,,
+2000,6,2,1,,structure_Build,2107,TileTree,,,,210701,SELF
 ,,,,,,,,,,,,
 2000,7,9,1,,technology_upgrade,20001,5,,,,,
 ,,,,,,,,,,,,

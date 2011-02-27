@@ -196,7 +196,8 @@ namespace Game.Battle
             if (obj is AttackCombatUnit)
             {
                 TroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
-                return troop.RadiusDistance(Structure) <= Structure.Stats.Base.Radius + troop.Stats.AttackRadius;
+                return SimpleGameObject.RadiusToPointFiveStyle(troop.RadiusDistance(Structure)) <=
+                       SimpleGameObject.RadiusToPointFiveStyle(Structure.Stats.Base.Radius) + SimpleGameObject.RadiusToPointFiveStyle(troop.Stats.AttackRadius);
             }
 
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?", obj.GetType().FullName));

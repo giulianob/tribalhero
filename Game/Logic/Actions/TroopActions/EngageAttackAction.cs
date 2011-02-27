@@ -101,7 +101,12 @@ namespace Game.Logic.Actions
 
         private static IEnumerable<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject obj)
         {
-            return structures.Where(structure => structure.RadiusDistance(obj) <= obj.Stats.AttackRadius + structure.Stats.Base.Radius);
+            return
+                    structures.Where(
+                                     structure =>
+                                     SimpleGameObject.RadiusToPointFiveStyle(structure.RadiusDistance(obj)) <=
+                                     SimpleGameObject.RadiusToPointFiveStyle(obj.Stats.AttackRadius) +
+                                     SimpleGameObject.RadiusToPointFiveStyle(structure.Stats.Base.Radius));
         }
 
         public override Error Execute()

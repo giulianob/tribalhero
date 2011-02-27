@@ -237,10 +237,10 @@ namespace Game.Logic.Actions
                 remainingUnitCount = stub.TotalCount;
 
                 // Don't return if we haven't fulfilled the minimum rounds or not below the threshold
-                if (unit.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount > Formula.GetAttackModeTolerance(originalUnitCount, mode))
+                if (unit.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount == 0 || remainingUnitCount > Formula.GetAttackModeTolerance(originalUnitCount, mode))
                     return;
 
-                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, remainingUnitCount == 0 ? ReportState.Dying : ReportState.Retreating);
+                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, ReportState.Retreating);
             }
         }
 

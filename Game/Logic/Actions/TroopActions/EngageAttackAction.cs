@@ -84,6 +84,7 @@ namespace Game.Logic.Actions
             targetCity.Battle.ExitBattle += BattleExitBattle;
             targetCity.Battle.WithdrawAttacker += BattleWithdrawAttacker;
             targetCity.Battle.EnterRound += BattleEnterRound;
+            targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
         private void DeregisterBattleListeners(City targetCity)
@@ -92,6 +93,7 @@ namespace Game.Logic.Actions
             targetCity.Battle.ExitBattle -= BattleExitBattle;
             targetCity.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
             targetCity.Battle.EnterRound -= BattleEnterRound;
+            targetCity.Battle.ExitTurn -= BattleExitTurn;
         }
 
         public override Error Validate(string[] parms)
@@ -203,6 +205,25 @@ namespace Game.Logic.Actions
             battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, looted, actual);
         }
 
+        private void BattleExitTurn(CombatList atk, CombatList def, int turn)
+        {
+            City city;            
+            TroopStub stub;
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+                throw new ArgumentException();
+
+            // Remove troop from battle if he is out of stamina, we need to check here because he might have lost
+            // some stamina after knocking down a building
+            if (stub.TroopObject.Stats.Stamina == 0)
+            {
+                City targetCity;
+                if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+                    throw new ArgumentException();
+
+                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, ReportState.OutOfStamina);
+            }
+        }
+
         private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
         {
             City city;
@@ -224,14 +245,11 @@ namespace Game.Logic.Actions
                         Global.DbManager.Save(this);
                     }
 
-                    ReduceStamina(targetCity, stub, BattleFormulas.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina));
-                }
-
-                return;
+                    ReduceStamina(stub, BattleFormulas.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina));
+                }                
             }
-
             // Check if this troop belongs to us
-            if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject)
+            else if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject)
             {
                 // Check to see if player should retreat
                 remainingUnitCount = stub.TotalCount;
@@ -265,7 +283,7 @@ namespace Game.Logic.Actions
 
             StateChange(ActionState.Completed);
         }
-
+        
         private void BattleEnterRound(CombatList atk, CombatList def, uint round)
         {
             City city;
@@ -275,17 +293,18 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
-            ReduceStamina(targetCity, stub, (short)(stub.TroopObject.Stats.Stamina - 1));
-        }
-
-        private void ReduceStamina(City targetCity, TroopStub stub, short stamina)
-        {
-            stub.TroopObject.BeginUpdate();
-            stub.TroopObject.Stats.Stamina = stamina;
-            stub.TroopObject.EndUpdate();
+            // Reduce stamina and check if we need to remove this stub
+            ReduceStamina(stub, (short)(stub.TroopObject.Stats.Stamina - 1));
 
             if (stub.TroopObject.Stats.Stamina == 0)
-                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, ReportState.OutOfStamina);
+                targetCity.Battle.RemoveFromAttack(new List<TroopStub> { stub }, ReportState.OutOfStamina);
+        }
+
+        private static void ReduceStamina(TroopStub stub, short stamina)
+        {
+            stub.TroopObject.BeginUpdate();
+            stub.TroopObject.Stats.Stamina = Math.Max((short)0, stamina);
+            stub.TroopObject.EndUpdate();
         }
 
         public override void UserCancelled()

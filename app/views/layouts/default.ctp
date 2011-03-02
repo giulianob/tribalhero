@@ -57,7 +57,7 @@
 					<li id="home"><?php echo $this->Html->link('', '/');?></li>					
 					<li id="help"><?php echo $this->Html->link('', '/database/');?></li>
 					<li id="forums"><a href="http://forums.tribalhero.com"></a></li>
-					<li id="blog"><a href="#"></a></li>
+					<li id="blog"><a href="http://blog.tribalhero.com"></a></li>
 					<li id="register"><?php echo $this->Html->link('', '/players/register');?></li>
 				</ul>
 			</div>

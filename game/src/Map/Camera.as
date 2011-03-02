@@ -2,6 +2,7 @@
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.geom.Point;
 	import src.Constants;
 
 	public class Camera extends EventDispatcher
@@ -157,7 +158,12 @@
 
 		public function ScrollToCenter(x: int, y: int): void
 		{
-			ScrollTo(x - (Constants.screenW * zoomFactorOverOne) / 2, y - (Constants.screenH * zoomFactorOverOne) / 2);
+			ScrollTo(x - (Constants.screenW * zoomFactorOverOne) / 2.0, y - (Constants.screenH * zoomFactorOverOne) / 2.0);
+		}
+		
+		public function GetCenter(): Point
+		{
+			return new Point(x + (Constants.screenW * zoomFactorOverOne) / 2.0, y + (Constants.screenH * zoomFactorOverOne) / 2.0);
 		}
 
 		public function ScrollTo(x: int, y: int): void

@@ -164,7 +164,7 @@ namespace Game.Logic
             if (!instantAction)
                 return seconds*Config.seconds_per_unit;
 
-            return Config.actions_instant_time ? 2 : seconds*Config.seconds_per_unit;
+            return Config.actions_instant_time ? 1 : seconds*Config.seconds_per_unit;
         }
     }
 }

@@ -186,17 +186,20 @@
 		}
 
 		/*HAVE NO STRUCTURE*/
-		private static function haveNoStructure(parentObj: GameObject,effects: Array, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): Boolean
+		private static function haveNoStructure(parentObj: GameObject,effects: Array, type: int, minlevel: int, maxlevel: int, count: int, param5:int): Boolean
 		{
 			var city: City = Global.map.cities.get(parentObj.cityId);
 
+			if (count == 0) count = 1;
+			
+			var totalStructures: int = 0;
 			for each (var obj: CityObject in city.objects.each())
 			{
 				if (obj.type == type && obj.level >= minlevel && obj.level <= maxlevel)
-				return false;
+					totalStructures++;
 			}
-
-			return true;
+			
+			return totalStructures < count;
 		}
 
 		private static function haveNoStructureMsg(parentObj: GameObject, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): String

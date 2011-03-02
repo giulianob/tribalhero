@@ -266,20 +266,24 @@
 			navigateToURL(new URLRequest("http://" + Constants.hostname + "/feedback"), "_blank");
 		}
 		
-		public function onZoomIn(e: Event) : void {
+		public function onZoomIn(e: Event) : void {		
+			if (camera.getZoomFactor() >= 0.99) return;
+			var center: Point = camera.GetCenter();
 			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
-			map.scrollRate = 1 * camera.getZoomFactorOverOne();
-			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
-			miniMap.redraw();
-			map.parseRegions();
-		}		
-		
-		public function onZoomOut(e: Event) : void {
-			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
 			map.scrollRate = 1 * camera.getZoomFactorOverOne();
 			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();
 			miniMap.redraw();
-			map.parseRegions();
+			camera.ScrollToCenter(center.x, center.y);
+		}		
+		
+		public function onZoomOut(e: Event) : void {
+			if (camera.getZoomFactor() <= 0.61) return;
+			var center: Point = camera.GetCenter();
+			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
+			map.scrollRate = 1 * camera.getZoomFactorOverOne();
+			mapHolder.scaleX = mapHolder.scaleY = camera.getZoomFactor();			
+			miniMap.redraw();
+			camera.ScrollToCenter(center.x, center.y);
 		}			
 
 		public function onZoomIntoMinimap(e: Event):void {

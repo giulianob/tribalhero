@@ -8,6 +8,7 @@
 	import src.Map.City;
 	import src.Map.Username;
 	import src.Objects.Effects.Formula;
+	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.GameObject;
 	import src.Objects.ObjectContainer;
 	import src.Objects.SimpleGameObject;
@@ -112,13 +113,9 @@
 
 			event.stopImmediatePropagation();
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
+			if (highlightedObj == null) return;
 
-			if (objects.length == 0) return;
-
-			var gameObj: SimpleGameObject = objects[0];
-
-			Global.mapComm.Troop.troopAttack(city.id, gameObj.cityId, gameObj.objectId, mode, troop);
+			Global.mapComm.Troop.troopAttack(city.id, highlightedObj.cityId, highlightedObj.objectId, mode, troop);
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
@@ -180,6 +177,21 @@
 			}
 			
 			var gameObj: SimpleGameObject = objects[0];
+			
+			// Verify that object is attackable
+			if (ObjectFactory.isType("Unattackable", gameObj.type)) {
+				if (tooltip) tooltip.hide();
+				tooltip = null;
+				Global.gameContainer.message.showMessage("This structure can't be attacked");
+				return;
+			}
+			
+			if (gameObj.level == 1 && ObjectFactory.isType("Undestroyable", gameObj.type)) {
+				if (tooltip) tooltip.hide();
+				tooltip = null;
+				Global.gameContainer.message.showMessage("This structure can't be attacked while it's level 1");
+				return;
+			}
 		
 			// Return if we are already highlighting this object
 			if (highlightedObj == gameObj) return;

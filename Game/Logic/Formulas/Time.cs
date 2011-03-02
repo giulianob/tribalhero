@@ -70,8 +70,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="speed">Objects speed</param>
         /// <returns></returns>
-        internal static int MoveTime(byte speed) {
-            if (Config.battle_instant_move) return 0;
+        internal static int MoveTime(byte speed) {            
             return 80 * (100 - ((speed - 11) * 5)) / 100;
         }
 

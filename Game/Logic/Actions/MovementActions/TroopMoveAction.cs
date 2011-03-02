@@ -113,8 +113,8 @@ namespace Game.Logic.Actions
             nextX = recordForeach.X;
             nextY = recordForeach.Y;            
 
-            nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime));
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime) * distanceRemaining);
+            nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false) * distanceRemaining);
 
             return true;
         }
@@ -130,6 +130,9 @@ namespace Game.Logic.Actions
             distanceRemaining = troopObj.TileDistance(x, y);
 
             moveTime = (int)Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed)*Formula.MoveTimeMod(city, distanceRemaining, isAttacking));
+
+            if (Config.battle_instant_move)
+                moveTime = 0;
             
             beginTime = DateTime.UtcNow;
 

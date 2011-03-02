@@ -465,7 +465,7 @@ namespace Game.Battle
                 // Snap a report of exit
                 report.WriteReportObjects(list, combatList == Attacker, state);
 
-                // Clean up object
+                // Tell objects to exit from battle
                 foreach (var co in list.Where(co => !co.IsDead))
                     co.ExitBattle();
 
@@ -474,6 +474,10 @@ namespace Game.Battle
                     EventWithdrawAttacker(list);
                 else if (combatList == Defender)
                     EventWithdrawDefender(list);
+
+                // Clean up objects
+                foreach (var co in list)
+                    co.CleanUp();
 
                 // Refresh battle order
                 RefreshBattleOrder();
@@ -682,6 +686,14 @@ namespace Game.Battle
                 int attackIndex = 0;
                 foreach (var defender in currentDefenders)
                 {
+                    // Make sure the target is still in the battle
+                    if (currentAttacker.CombatList == attackers && !defenders.Contains(defender))
+                        continue;
+                    
+                    if (currentAttacker.CombatList == defenders && !attackers.Contains(defender))
+                        continue;
+                    
+                    // Target is still in battle, attack it
                     if (AttackTarget(currentAttacker, defender, attackIndex))
                         killedADefender = true;
                     attackIndex++;

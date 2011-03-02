@@ -85,15 +85,7 @@ namespace Game.Logic
 
         public static Error HaveTechnology(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
-            int count = 0;
-            foreach (var effect in effects)
-            {
-                if (effect.Id != EffectCode.HaveTechnology)
-                    continue;
-
-                if ((int)effect.Value[0] == int.Parse(parms[0]) && (int)effect.Value[1] >= int.Parse(parms[1]))
-                    ++count;
-            }
+            int count = effects.Count(effect => effect.Id == EffectCode.HaveTechnology && (int)effect.Value[0] == int.Parse(parms[0]) && (int)effect.Value[1] >= int.Parse(parms[1]));
 
             return count >= int.Parse(parms[2]) ? Error.Ok : Error.EffectRequirementNotMet;
         }
@@ -104,12 +96,7 @@ namespace Game.Logic
             byte min = byte.Parse(parms[1]);
             byte max = byte.Parse(parms[2]);
 
-            foreach (var structure in obj.City)
-            {
-                if (structure.Type == type && structure.Lvl >= min && structure.Lvl <= max)
-                    return Error.Ok;
-            }
-            return Error.EffectRequirementNotMet;
+            return obj.City.Any(structure => structure.Type == type && structure.Lvl >= min && structure.Lvl <= max) ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
         public static Error HaveNoStructure(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
@@ -117,14 +104,11 @@ namespace Game.Logic
             ushort type = ushort.Parse(parms[0]);
             byte min = byte.Parse(parms[1]);
             byte max = byte.Parse(parms[2]);
+            byte count = byte.Parse(parms[3]);
 
-            foreach (var structure in obj.City)
-            {
-                if (structure.Type == type && structure.Lvl >= min && structure.Lvl <= max)
-                    return Error.EffectRequirementNotMet;
-            }
+            var totalStructures = obj.City.Count(structure => structure.Type == type && structure.Lvl >= min && structure.Lvl <= max);
 
-            return Error.Ok;
+            return totalStructures < count ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
         public static Error CountLessThan(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
@@ -132,12 +116,7 @@ namespace Game.Logic
             int effectCode = int.Parse(parms[0]);
             int maxCount = int.Parse(parms[1]);
 
-            int count = 0;
-            foreach (var effect in effects)
-            {
-                if (effect.Id == EffectCode.CountEffect && (int)effect.Value[0] == effectCode)
-                    count += (int)effect.Value[1];
-            }
+            int count = effects.Sum(effect => effect.Id == EffectCode.CountEffect && (int)effect.Value[0] == effectCode ? (int)effect.Value[1] : 0);
 
             return count < maxCount ? Error.Ok : Error.EffectRequirementNotMet;
         }

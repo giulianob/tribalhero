@@ -18,7 +18,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 ,,,,,,,,,,,,
 2000,5,8,1,,structure_Build,2501,,,,,,
 ,,,,,,,,,,,,
-2000,6,1,1,,structure_Build,2106,TileCrop,,,,,
+2000,6,1,1,,structure_Build,2106,TileCrop,,,,210602,SELF
 2000,6,2,1,,structure_Build,2107,TileTree,,,,210701,SELF
 ,,,,,,,,,,,,
 2000,7,9,1,,technology_upgrade,20001,5,,,,,
@@ -86,7 +86,7 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2204,3,4,1,,unit_train,102,,,,,22014,UPWARD
 2204,4,5,1,,unit_upgrade,101,3,,,,,
 2204,4,6,1,,unit_upgrade,102,3,,,,,
-2204,5,7,1,,unit_train,103,,,,,22014,UPWARD
+2204,5,7,1,,unit_train,103,,,,,,
 2204,5,8,1,,unit_upgrade,103,3,,,,,
 2204,5,11,1,,technology_Upgrade,22041,5,,,,,
 2204,6,12,1,,technology_Upgrade,22042,5,,,,,

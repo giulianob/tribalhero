@@ -61,9 +61,9 @@ package src.Objects.Prototypes {
 			return true;
 		}
 
-		public function getName(): String
+		public function getName(plural: Boolean = false): String
 		{
-			var str: String = Locale.loadString(name + "_STRUCTURE_NAME");
+			var str: String = Locale.loadString(name + "_STRUCTURE_NAME" + (plural ? "_PLURAL" : ""));
 			if (str && str != "")
 			return str;
 

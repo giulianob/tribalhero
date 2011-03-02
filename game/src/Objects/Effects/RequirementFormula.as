@@ -6,6 +6,7 @@
 	import src.Objects.GameObject;
 	import src.Objects.Prototypes.*
 	import src.Objects.TechnologyStats;
+	import src.Util.StringHelper;
 	import src.Util.Util;
 
 	/**
@@ -25,7 +26,7 @@
 		{name: "AttackPoint", method: attackPoint, message: attackPointMsg },
 		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
 		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg }
-		);
+		);			
 
 		private static var methodsSorted: Boolean = false;
 
@@ -202,11 +203,11 @@
 			return totalStructures < count;
 		}
 
-		private static function haveNoStructureMsg(parentObj: GameObject, type: int, minlevel: int, maxlevel: int, param4: int, param5:int): String
+		private static function haveNoStructureMsg(parentObj: GameObject, type: int, minlevel: int, maxlevel: int, count: int, param5:int): String
 		{
 			var structPrototype: StructurePrototype = StructureFactory.getPrototype(type, minlevel);
 
-			return "You can only have one " + structPrototype.getName() + (minlevel > 0 ? " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")" : "");
+			return "You can only have " + StringHelper.numberInWords(count) + " " + structPrototype.getName(count != 1) + (minlevel > 0 ? " (Lvl " + minlevel.toString() + "-" + maxlevel.toString() + ")" : "");
 		}
 
 		/*COUNT LESS THAN*/

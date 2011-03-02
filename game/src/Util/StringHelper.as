@@ -41,6 +41,12 @@ package src.Util {
 			return str.slice(0, 1);
 		}
 		
+		public static function numberInWords(value: int) : String {
+			var numbers: Array = new Array("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten");
+			if (value >= numbers.length || value < 0) return value.toString();
+			return numbers[value];
+		}
+		
 		public static function makePlural(value: int, singular: String, plural: String, zero: String = "") : String {
 			if (zero != "" && value == 0)
 			return zero;

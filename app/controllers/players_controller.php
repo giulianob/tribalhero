@@ -81,8 +81,14 @@ class PlayersController extends AppController {
                         $this->data['Player']['password'] = $this->Auth->password($this->data['Player']['password_once']);
 
                     if ($this->Player->save($this->data, false, am(array('password'), $fields))) {
-                        $this->Session->setFlash('Your account has been created! Login below to start playing.', 'default', array('class' => 'success'));
-                        $this->redirect($this->Auth->logout(array('controller' => 'players', 'action' => 'login')));
+					    $this->Email->to = '<' . $this->data['Player']['email_address'] . '>';
+						$this->Email->replyTo = '<' . FEEDBACK_EMAIL . '>';
+						$this->Email->subject = 'Tribal Hero Welcomes ' . $this->data['Player']['name'];
+						$this->Email->template = 'welcome';
+						$this->Email->send();
+				
+						$this->Auth->login($this->data);
+						$this->redirect('/play');
                     }
                 } else {
                     $this->Session->write('verified_captcha', true);

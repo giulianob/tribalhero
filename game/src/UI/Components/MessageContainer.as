@@ -20,6 +20,10 @@
 			if (!ui.getFrame())
 			ui.show();
 
+			ui.getFrame().parent.tabEnabled = false;
+			ui.getFrame().parent.mouseEnabled = false;
+			ui.getFrame().parent.mouseChildren = false;
+			
 			ui.getFrame().pack();
 			ui.getFrame().setLocationXY(Constants.screenW / 2 - ui.getFrame().getWidth() / 2, Constants.screenH - ui.getFrame().getHeight() - 50);
 		}

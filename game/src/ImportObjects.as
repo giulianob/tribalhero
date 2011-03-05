@@ -30,6 +30,10 @@
 			ICON_QUESTION;
 			ICON_HAMMER;
 			
+			//Minimap Icons
+			MINIMAP_CITY_ICON;
+			MINIMAP_FOREST_ICON;
+			
 			//Passive Action Icons
 			PASSIVE_ATTACKING;
 			PASSIVE_DEFENDING;

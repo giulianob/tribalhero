@@ -298,6 +298,8 @@
 		}
 
 		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
+			setSidebar(null);
+			
 			if (zoom) {
 				screenMessage.setVisible(false);
 				// We leave a bit of border incase the screen is smaller than the map size
@@ -312,6 +314,7 @@
 				map.scrollRate = 25;
 				minimapTools.btnZoomIn.visible = false;
 				minimapTools.btnZoomOut.visible = false;
+				message.showMessage("Double click to go anywhere\nPress Escape to close this map");
 			}
 			else {
 				screenMessage.setVisible(true);
@@ -324,6 +327,7 @@
 				map.scrollRate = 1 * camera.getZoomFactorOverOne();
 				minimapTools.btnZoomIn.visible = true;
 				minimapTools.btnZoomOut.visible = true;
+				message.hide();
 			}
 
 			minimapZoomed = zoom;

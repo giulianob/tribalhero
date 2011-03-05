@@ -154,19 +154,30 @@
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
-					var objLvl: int = packet.readUByte();
-					var objType: int = packet.readUShort();
-					var objPlayerId: int = packet.readUInt();
-					var objCityId: int = packet.readUInt();
-					var objId: int = packet.readUInt();
-					var objHpPercent: int = 100;
+					var objType: int = packet.readUByte();
+					
+					// City objects
+					if (objType == 0) {
+						var objLvl: int = packet.readUByte();					
+						var objPlayerId: int = packet.readUInt();
+						var objCityId: int = packet.readUInt();
+						var objId: int = 1;						
 
-					var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
-					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
+						var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
+						var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
 
-					var obj: SimpleGameObject = newRegion.addObject(objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY, false);
-
-					//obj may be null so we have to check it here (but we should still read all the stream)
+						var obj: SimpleGameObject = newRegion.addCityObject(objLvl, objType, objPlayerId, objCityId, objId, objX, objY, false);
+					}
+					// Forest objects
+					else if (objType == 1) {
+						objLvl = packet.readUByte();
+						objId = packet.readUInt();
+						
+						objX = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
+						objY = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
+						
+						obj = newRegion.addForestObject(objLvl, objId, objX, objY, false);
+					}
 				}
 
 				newRegion.sortObjects();

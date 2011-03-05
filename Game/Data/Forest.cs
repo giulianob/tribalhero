@@ -4,11 +4,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 
@@ -16,7 +18,7 @@ using Game.Util;
 
 namespace Game.Data
 {
-    public class Forest : SimpleGameObject, IPersistableObject, IEnumerable<Structure>
+    public class Forest : SimpleGameObject, IPersistableObject, IEnumerable<Structure>, ICityRegionObject
     {
         public const string DB_TABLE = "forests";
         private readonly byte lvl = 1;
@@ -318,6 +320,34 @@ namespace Game.Data
         }
 
         public bool DbPersisted { get; set; }
+
+        #endregion
+
+        #region Implementation of ICityRegionObject
+
+        public Location GetCityRegionLocation()
+        {
+            return new Location(X, Y);
+        }
+
+        public byte[] GetCityRegionObjectBytes()
+        {
+            using (var ms = new MemoryStream())
+            {
+                var bw = new BinaryWriter(ms);
+                bw.Write(Lvl);
+                bw.Write(objectId);
+                bw.Write((ushort)(CityRegionRelX));
+                bw.Write((ushort)(CityRegionRelY));
+                ms.Position = 0;
+                return ms.ToArray();
+            }
+        }
+
+        public CityRegion.ObjectType GetCityRegionType()
+        {
+            return CityRegion.ObjectType.Forest;
+        }
 
         #endregion
     }

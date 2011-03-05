@@ -44,7 +44,6 @@ namespace Game.Comm
             // Make sure there is no structure at this point that has no road requirement
             if (Global.World[x, y].Any(s => s is Structure && ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)s)))
             {
-                Global.World.UnlockRegion(x, y);
                 ReplyError(session, packet, Error.StructureExists);
                 return;
             }

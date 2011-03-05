@@ -38,7 +38,7 @@
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
  */
-	Configure::write('debug', 2);
+	Configure::write('debug', 0);
 /**
  * Application wide charset encoding
  */
@@ -131,7 +131,7 @@
  * When set to false, HTTP_USER_AGENT will not be checked
  * in the session
  */
-	Configure::write('Session.checkAgent', true);
+	Configure::write('Session.checkAgent', false);
 /**
  * The level of CakePHP security. The session timeout time defined
  * in 'Session.timeout' is multiplied according to the settings here.

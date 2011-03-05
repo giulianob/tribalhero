@@ -23,19 +23,51 @@
 	{
 		private var obj: SimpleGameObject;
 		private var tooltip: TextTooltip;
+		private var cityRegionObjectType: int;
 
 		private var disposed: Boolean = false;
 
-		public function MinimapInfoTooltip(obj: SimpleGameObject)
+		public function MinimapInfoTooltip(cityRegionObjectType: int, obj: SimpleGameObject)
 		{
 			this.obj = obj;
+			this.cityRegionObjectType = cityRegionObjectType;
 
 			obj.addEventListener(Event.REMOVED_FROM_STAGE, dispose);
 			obj.addEventListener(MouseEvent.ROLL_OUT, dispose);
 
-			Global.map.usernames.cities.getUsername(obj.cityId, onGetUsername);
+			// City tooltip
+			if (cityRegionObjectType == 0) 
+				Global.map.usernames.cities.getUsername(obj.cityId, onGetUsername);
+			// Forest tooltip
+			else if (cityRegionObjectType == 1)
+				createForestUI();
 		}
 
+		private function createForestUI() : void {
+			if (disposed) return;
+
+			var layout0:SoftBoxLayout = new SoftBoxLayout(AsWingConstants.VERTICAL);
+			ui.setLayout(layout0);
+
+			var lblName: JLabel = new JLabel("Forest", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblName, "header");
+
+			var lblLvl: JLabel = new JLabel("Level " + obj.getLevel(), null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblLvl, "Tooltip.text");
+			
+			var mapPos: Point = MapUtil.getScreenMinimapToMapCoord(obj.getX(), obj.getY());
+			var distance: int = MapUtil.distance(mapPos.x, mapPos.y, Global.gameContainer.selectedCity.MainBuilding.x, Global.gameContainer.selectedCity.MainBuilding.y);
+			
+			var lblDistance: JLabel = new JLabel(distance + " tiles away", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblDistance, "Tooltip.italicsText");			
+
+			ui.append(lblName);
+			ui.append(lblLvl);
+			ui.append(lblDistance);
+
+			show(obj);
+		}		
+		
 		private function onGetUsername(username: Username, custom: * ) : void {
 			if (disposed) return;
 

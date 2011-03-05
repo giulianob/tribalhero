@@ -275,6 +275,14 @@ namespace Game.Map
                 else if (obj is Structure && !(ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)obj)))
                     RoadManager.CreateRoad(obj.X, obj.Y);
 
+                // Add appropriate objects to the minimap
+                if (obj is ICityRegionObject)
+                {
+                    CityRegion cityRegion = GetCityRegion(obj.X, obj.Y);
+                    if (cityRegion != null)
+                        cityRegion.Add((ICityRegionObject)obj);
+                }
+
                 // Send obj add event
                 if (Global.FireEvents)
                 {
@@ -305,6 +313,14 @@ namespace Game.Map
             // Set id in use
             if (!(obj is GameObject))
                 objectIdGenerator.Set((int)obj.ObjectId);
+
+            // Add to minimap if needed
+            if (obj is ICityRegionObject)
+            {
+                CityRegion cityRegion = GetCityRegion(obj.X, obj.Y);
+                if (cityRegion != null)
+                    cityRegion.Add((ICityRegionObject)obj);
+            }
         }
 
         public void Remove(SimpleGameObject obj)
@@ -324,6 +340,14 @@ namespace Game.Map
             // Remove from region
             ushort regionId = Region.GetRegionIndex(obj);
             region.Remove(obj);
+
+            // Remove this object from minimap if needed
+            if (obj is ICityRegionObject)
+            {
+                CityRegion cityRegion = GetCityRegion(obj.X, obj.Y);
+                if (cityRegion != null)
+                    cityRegion.Remove((ICityRegionObject)obj);
+            }
 
             // Free object id if this is SimpleGameObject
             if (!(obj is GameObject))

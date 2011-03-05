@@ -195,6 +195,7 @@
     <Compile Include="Logic\ScheduledActiveAction.cs" />
     <Compile Include="Logic\ScheduledPassiveAction.cs" />
     <Compile Include="Logic\Scheduler.cs" />
+    <Compile Include="Data\ICityRegionObject.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.cs" />

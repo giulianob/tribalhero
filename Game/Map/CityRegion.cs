@@ -15,43 +15,26 @@ namespace Game.Map
 
         public const int TILE_SIZE = 2;
 
+        public enum ObjectType : byte
+        {
+            City = 0,
+            Forest = 1
+        }
+
         #endregion
 
         #region Members
 
-        private readonly List<City> data = new List<City>();
+        private readonly List<ICityRegionObject> data = new List<ICityRegionObject>();
         private readonly object objLock = new object();
         private bool isDirty = true;
         private byte[] objects;
-
-        public List<City> Cities
-        {
-            get
-            {
-                return data;
-            }
-        }
-
-        public int Count
-        {
-            get
-            {
-                int count;
-
-                lock (data)
-                {
-                    count = data.Count;
-                }
-
-                return count;
-            }
-        }
 
         #endregion
 
         #region Methods
 
-        public bool Add(City obj)
+        public bool Add(ICityRegionObject obj)
         {
             lock (objLock)
             {
@@ -62,7 +45,7 @@ namespace Game.Map
             return true;
         }
 
-        public void Remove(City obj)
+        public void Remove(ICityRegionObject obj)
         {
             lock (objLock)
             {
@@ -80,20 +63,15 @@ namespace Game.Map
                     using (var ms = new MemoryStream())
                     {
                         var bw = new BinaryWriter(ms);
-                        bw.Write((ushort)Count);
-                        foreach (var city in data)
+                        bw.Write((ushort)data.Count);
+                        foreach (var obj in data)
                         {
-                            bw.Write(city.MainBuilding.Lvl);
-                            bw.Write(city.MainBuilding.Type);
-                            bw.Write(city.MainBuilding.City.Owner.PlayerId);
-                            bw.Write(city.MainBuilding.City.Id);
-                            bw.Write(city.MainBuilding.ObjectId);
-                            bw.Write((ushort)(city.MainBuilding.CityRegionRelX));
-                            bw.Write((ushort)(city.MainBuilding.CityRegionRelY));
+                            bw.Write((byte)obj.GetCityRegionType());
+                            bw.Write(obj.GetCityRegionObjectBytes());
                         }
 
                         isDirty = false;
-
+                        
                         ms.Position = 0;
                         objects = ms.ToArray();
                     }
@@ -107,24 +85,9 @@ namespace Game.Map
 
         #region Static Util Methods
 
-        public static ushort GetRegionIndex(City city)
-        {
-            return GetRegionIndex(city.MainBuilding.X, city.MainBuilding.Y);
-        }
-
         public static ushort GetRegionIndex(uint x, uint y)
         {
             return (ushort)(x/Config.city_region_width + (y/Config.city_region_height)*Config.city_region_column);
-        }
-
-        public static int GetTileIndex(City city)
-        {
-            return GetTileIndex(city.MainBuilding.X, city.MainBuilding.Y);
-        }
-
-        public static int GetTileIndex(uint x, uint y)
-        {
-            return (int)(x%Config.city_region_width + (y%Config.city_region_height)*Config.city_region_width);
         }
 
         #endregion

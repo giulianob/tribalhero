@@ -88,6 +88,14 @@ _________ _______ _________ ______   _______  _
                                   Config.city_region_height);
             }
 
+#if DEBUG
+            if (Config.server_production)
+            {
+                Global.Logger.Error("Trying to run debug on production server");
+                return false;
+            }
+#endif
+
             // Empty database if specified
 #if DEBUG
             if (Config.database_empty)
@@ -96,7 +104,10 @@ _________ _______ _________ ______   _______  _
 
             // Load database
             if (!DbLoader.LoadFromDatabase(Global.DbManager))
+            {
+                Global.Logger.Error("Failed to load database");
                 return false;
+            }
 
             // Initialize game market
             Market.Init();

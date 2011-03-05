@@ -124,9 +124,7 @@ namespace Game.Comm
                 playerName = (string)reader["name"];
                 playerCreated = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
                 banned = (bool)reader["banned"];
-                // ReSharper disable RedundantAssignment
                 admin = (bool)reader["admin"];
-                // ReSharper restore RedundantAssignment
 
                 reader.Close();
 
@@ -194,6 +192,7 @@ namespace Game.Comm
                 {
                     Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
                     player.SessionId = sessionId;
+                    player.Admin = admin;
                     player.LastLogin = SystemClock.Now;
                 }
             }

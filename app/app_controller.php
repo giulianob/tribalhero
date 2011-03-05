@@ -60,7 +60,6 @@ class AppController extends Controller {
                 if (!empty($player)) {
                     $this->Auth->allow($this->action);
                 } else {
-                    debug('denied');
                     $this->Auth->deny($this->action);
                 }
             }
@@ -68,6 +67,10 @@ class AppController extends Controller {
     }
 
     function isAuthorized() {
+	    if ((array_key_exists('admin', $this->params) && $this->params['admin']) && !$this->Auth->user('admin')) {
+            return false;
+        }
+		
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
             if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {
                 return false;

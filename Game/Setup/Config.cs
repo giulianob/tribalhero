@@ -14,13 +14,14 @@ namespace Game.Setup
 {
     public class Config
     {
-        // ReSharper disable InconsistentNaming
+        // ReSharper disable InconsistentNaming        
         public static readonly int client_min_version;
         public static readonly int client_min_revision = 6;
 
         public static readonly int server_port = 48888;
         public static readonly string server_listen_address = "0.0.0.0";
         public static readonly bool server_admin_only;
+        public static readonly bool server_production;
 
         public static readonly string flash_domain = "*.tribalhero.com";
         public static readonly string flash_ports = server_port + ",8085,843";

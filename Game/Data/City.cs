@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Battle;
@@ -21,7 +22,7 @@ using Game.Util;
 
 namespace Game.Data
 {
-    public class City : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject
+    public class City : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject
     {
         public const string DB_TABLE = "cities";
         private readonly object objLock = new object();
@@ -965,5 +966,34 @@ namespace Game.Data
             return cityName != string.Empty && cityName.Length >= 3 && cityName.Length <= 16 &&
                    Regex.IsMatch(cityName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
         }
+
+        #region Implementation of ICityRegionObject
+
+        public Location GetCityRegionLocation()
+        {
+            return new Location(MainBuilding.X, MainBuilding.Y);
+        }
+
+        public byte[] GetCityRegionObjectBytes()
+        {
+            using (var ms = new MemoryStream())
+            {
+                var bw = new BinaryWriter(ms);
+                bw.Write(MainBuilding.Lvl);
+                bw.Write(MainBuilding.City.Owner.PlayerId);
+                bw.Write(MainBuilding.City.Id);                
+                bw.Write((ushort)(MainBuilding.CityRegionRelX));
+                bw.Write((ushort)(MainBuilding.CityRegionRelY));
+                ms.Position = 0;
+                return ms.ToArray();
+            }
+        }
+
+        public CityRegion.ObjectType GetCityRegionType()
+        {
+            return CityRegion.ObjectType.City;
+        }
+
+        #endregion
     }
 }

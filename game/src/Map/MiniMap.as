@@ -50,9 +50,9 @@
 
 			screenRect = new Sprite();
 			
-			mapHolder.addChild(screenRect);
 			mapHolder.addChild(regionSpace);
 			mapHolder.addChild(objContainer);
+			mapHolder.addChild(screenRect);
 
 			bg = new Sprite();
 
@@ -76,7 +76,7 @@
 
 			if (tilesW * Constants.miniMapTileW < this.miniMapWidth && tilesH * Constants.miniMapTileH < this.miniMapHeight) {			
 				screenRect.graphics.clear();
-				screenRect.graphics.lineStyle(1, 0xFFFFFF);
+				screenRect.graphics.lineStyle(1, 0xFFFFFF, 0.8);
 				screenRect.graphics.drawRect(0, 0, tilesW * Constants.miniMapTileW, tilesH * Constants.miniMapTileH);
 			}
 

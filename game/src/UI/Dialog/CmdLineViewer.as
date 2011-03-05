@@ -99,6 +99,7 @@ package src.UI.Dialog
 		}
 
 		private function stageKeyDown(e: KeyboardEvent) : void {
+			trace(e.keyCode);
 			if (e.keyCode == 192) {
 				getFrame().show();
 				txtCommand.makeFocus();

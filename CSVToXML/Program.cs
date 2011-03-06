@@ -307,6 +307,7 @@ namespace CSVToXML {
                                 writer.WriteStartElement("StructureBuild");
                                 writer.WriteAttributeString("type", req.Parms[0]);
                                 writer.WriteAttributeString("tilerequirement", req.Parms[1]);
+                                writer.WriteAttributeString("level", req.Parms[2].Trim() == string.Empty ? "1" : req.Parms[2]);
                                 break;
                             case ActionType.UnitTrain:
                                 writer.WriteStartElement("TrainUnit");

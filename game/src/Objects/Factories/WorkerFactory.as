@@ -75,7 +75,7 @@
 							action = new ForestCampBuildAction(actionNode.@type);
 						break;
 						case "StructureBuild":
-							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement);
+							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement, actionNode.@lvl);
 						break;
 						case "StructureChange":
 							action = new StructureChangeAction(actionNode.@type, actionNode.@level);

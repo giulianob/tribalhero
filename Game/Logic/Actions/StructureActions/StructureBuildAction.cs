@@ -21,13 +21,15 @@ namespace Game.Logic.Actions
         private readonly uint y;
         private Resource cost;
         private uint structureId;
+        private byte level;
 
-        public StructureBuildAction(uint cityId, ushort type, uint x, uint y)
+        public StructureBuildAction(uint cityId, ushort type, uint x, uint y, byte level)
         {
             this.cityId = cityId;
             this.type = type;
             this.x = x;
             this.y = y;
+            this.level = level;
         }
 
         public StructureBuildAction(uint id,
@@ -49,6 +51,15 @@ namespace Game.Logic.Actions
                                 int.Parse(properties["iron"]),
                                 int.Parse(properties["wood"]),
                                 int.Parse(properties["labor"]));
+            string tmp;
+            if(properties.TryGetValue("level",out tmp))
+            {
+                level = byte.Parse(tmp);
+            }
+            else
+            {
+                level = 1;
+            }
         }
 
         public override ActionType Type
@@ -71,7 +82,7 @@ namespace Game.Logic.Actions
             Global.World.LockRegion(x, y);
 
             // cost requirement
-            cost = Formula.StructureCost(city, type, 1);
+            cost = Formula.StructureCost(city, type, level);
             if (!city.Resource.HasEnough(cost))
             {
                 Global.World.UnlockRegion(x, y);
@@ -86,7 +97,7 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (!RequirementFactory.GetLayoutRequirement(type, 1).Validate(WorkerObject as Structure, type, x, y))
+            if (!RequirementFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as Structure, type, x, y))
             {
                 Global.World.UnlockRegion(x, y);
                 return Error.LayoutNotFullfilled;
@@ -249,7 +260,7 @@ namespace Game.Logic.Actions
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(StructureFactory.GetTime(type, 1), city, city.Technologies)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(StructureFactory.GetTime(type, level), city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);
@@ -277,7 +288,7 @@ namespace Game.Logic.Actions
                 city.Worker.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, 1);
+                StructureFactory.GetUpgradedStructure(structure, structure.Type, level);
                 InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();
@@ -293,6 +304,10 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
+            if(ushort.Parse(parms[2])!=level)
+            {
+                return Error.ActionNotFound;
+            }
             if (ushort.Parse(parms[0]) == type)
             {
                 if (parms[1].Length == 0)
@@ -369,7 +384,7 @@ namespace Game.Logic.Actions
                                                 {
                                                         new XmlKvPair("type", type), new XmlKvPair("x", x), new XmlKvPair("y", y), new XmlKvPair("city_id", cityId),
                                                         new XmlKvPair("structure_id", structureId), new XmlKvPair("wood", cost.Wood), new XmlKvPair("crop", cost.Crop),
-                                                        new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor),
+                                                        new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold), new XmlKvPair("labor", cost.Labor), new XmlKvPair("level", level),
                                                 });
             }
         }

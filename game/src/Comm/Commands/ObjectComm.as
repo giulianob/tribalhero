@@ -141,7 +141,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function buildStructure(city: int, parent: int, type: int, x: int, y: int):void
+		public function buildStructure(city: int, parent: int, type: int, level: int, x: int, y: int):void
 		{
 			var packet:Packet = new Packet();
 			packet.cmd = Commands.STRUCTURE_BUILD;
@@ -150,6 +150,7 @@
 			packet.writeUInt(x);
 			packet.writeUInt(y);
 			packet.writeUShort(type);
+			packet.writeUByte(level);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}

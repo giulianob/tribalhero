@@ -749,7 +749,7 @@ namespace Game.Database
 
             types = new[] {typeof(uint), typeof(bool), typeof(Dictionary<string, string>)};
 
-            var scheduledTypes = new[] {typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(bool), typeof(Dictionary<string, string>)};
+            var scheduledTypes = new[] {typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(bool), typeof(string), typeof(Dictionary<string, string>)};
 
             using (var reader = dbManager.Select(PassiveAction.DB_TABLE))
             {
@@ -784,7 +784,9 @@ namespace Game.Database
                         DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc);
                         endTime = endTime.Add(downTime);
 
-                        parms = new object[] {(uint)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], properties};
+                        string nlsDescription = DBNull.Value.Equals(reader["nls_description"]) ? string.Empty : (string)reader["nls_description"];
+
+                        parms = new object[] {(uint)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], nlsDescription, properties};
                     }
                     else
                         parms = new object[] {(uint)reader["id"], (bool)reader["is_visible"], properties};

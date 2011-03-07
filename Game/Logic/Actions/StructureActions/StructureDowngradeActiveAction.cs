@@ -12,18 +12,18 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class StructureUserDowngradeAction : ScheduledActiveAction
+    class StructureDowngradeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly uint structureId;
 
-        public StructureUserDowngradeAction(uint cityId, uint structureId)
+        public StructureDowngradeActiveAction(uint cityId, uint structureId)
         {
             this.cityId = cityId;
             this.structureId = structureId;
         }
 
-        public StructureUserDowngradeAction(uint id,
+        public StructureDowngradeActiveAction(uint id,
                                             DateTime beginTime,
                                             DateTime nextTime,
                                             DateTime endTime,
@@ -41,7 +41,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.StructureUserdowngrade;
+                return ActionType.StructureDowngradeActive;
             }
         }
 

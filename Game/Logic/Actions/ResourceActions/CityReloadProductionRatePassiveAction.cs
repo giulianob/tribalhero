@@ -9,13 +9,13 @@ using Game.Setup;
 
 namespace Game.Logic.Actions
 {
-    public class CityReloadProductionRateAction : PassiveAction, IScriptable
+    public class CityReloadProductionRatePassiveAction : PassiveAction, IScriptable
     {
         public override ActionType Type
         {
             get
             {
-                return ActionType.CityReloadProductionRate;
+                return ActionType.CityReloadProductionRatePassive;
             }
         }
 

@@ -14,7 +14,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class TroopMoveAction : ScheduledPassiveAction
+    class TroopMovePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private readonly Boolean isReturningHome;
@@ -29,7 +29,7 @@ namespace Game.Logic.Actions
         // non-persist variable
         private Boolean isAttacking;
 
-        public TroopMoveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking)
+        public TroopMovePassiveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking)
         {
             this.cityId = cityId;
             this.troopObjectId = troopObjectId;
@@ -39,8 +39,8 @@ namespace Game.Logic.Actions
             this.isAttacking = isAttacking;
         }
 
-        public TroopMoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, isVisible)
+        public TroopMovePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             troopObjectId = uint.Parse(properties["troop_id"]);
@@ -57,7 +57,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.TroopMove;
+                return ActionType.TroopMovePassive;
             }
         }
 

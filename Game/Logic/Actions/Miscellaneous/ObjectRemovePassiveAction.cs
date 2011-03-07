@@ -12,14 +12,14 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class ObjectRemoveAction : ScheduledPassiveAction
+    class ObjectRemovePassiveAction : ScheduledPassiveAction
     {
         private readonly List<uint> cancelActions;
         private readonly uint cityId;
         private readonly uint objectId;
         private readonly bool wasKilled;
 
-        public ObjectRemoveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions)
+        public ObjectRemovePassiveAction(uint cityId, uint objectId, bool wasKilled, List<uint> cancelActions)
         {
             this.cityId = cityId;
             this.objectId = objectId;
@@ -27,8 +27,8 @@ namespace Game.Logic.Actions
             this.cancelActions = cancelActions;
         }
 
-        public ObjectRemoveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, isVisible)
+        public ObjectRemovePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
@@ -48,7 +48,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.ObjectRemove;
+                return ActionType.ObjectRemovePassive;
             }
         }
 

@@ -12,13 +12,13 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class LaborMoveAction : ScheduledActiveAction
+    class LaborMoveActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly bool cityToStructure;
         private readonly uint structureId;
 
-        public LaborMoveAction(uint cityId, uint structureId, bool cityToStructure, ushort count)
+        public LaborMoveActiveAction(uint cityId, uint structureId, bool cityToStructure, ushort count)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -26,7 +26,7 @@ namespace Game.Logic.Actions
             ActionCount = count;
         }
 
-        public LaborMoveAction(uint id,
+        public LaborMoveActiveAction(uint id,
                                DateTime beginTime,
                                DateTime nextTime,
                                DateTime endTime,
@@ -44,7 +44,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.LaborMove;
+                return ActionType.LaborMoveActive;
             }
         }
 

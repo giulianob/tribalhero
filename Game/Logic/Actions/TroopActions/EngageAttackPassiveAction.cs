@@ -15,7 +15,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class EngageAttackAction : PassiveAction
+    class EngageAttackPassiveAction : PassiveAction
     {
         private readonly Resource bonus;
         private readonly uint cityId;
@@ -25,7 +25,7 @@ namespace Game.Logic.Actions
         private int originalUnitCount;
         private int remainingUnitCount;
 
-        public EngageAttackAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode)
+        public EngageAttackPassiveAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode)
         {
             this.cityId = cityId;
             this.stubId = stubId;
@@ -34,7 +34,7 @@ namespace Game.Logic.Actions
             bonus = new Resource();
         }
 
-        public EngageAttackAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
+        public EngageAttackPassiveAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
         {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.EngageAttack;
+                return ActionType.EngageAttackPassive;
             }
         }
 
@@ -139,7 +139,7 @@ namespace Game.Logic.Actions
 
                 RegisterBattleListeners(targetCity);
 
-                var ba = new BattleAction(targetCityId);
+                var ba = new BattlePassiveAction(targetCityId);
 
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 

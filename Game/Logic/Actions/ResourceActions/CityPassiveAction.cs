@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Game.Logic.Actions
 {
-    class CityAction : ScheduledPassiveAction
+    class CityPassiveAction : ScheduledPassiveAction
     {
 
         private delegate void Init(City city);
@@ -35,15 +35,15 @@ namespace Game.Logic.Actions
         private int laborTimeRemains;
         private bool everyOther;
 
-        public CityAction(uint cityId)
+        public CityPassiveAction(uint cityId)
         {
             this.cityId = cityId;
 
             CreateSubscriptions();
         }
 
-        public CityAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
-            : base(id, beginTime, nextTime, endTime, isVisible)
+        public CityPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+            : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             laborTimeRemains = int.Parse(properties["labor_time_remains"]);
@@ -55,7 +55,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.City;
+                return ActionType.CityPassive;
             }
         }
 
@@ -219,7 +219,7 @@ namespace Game.Logic.Actions
                     int upkeepCost = Math.Max(1, (int)((INTERVAL/3600f)/Config.seconds_per_unit)*(city.Resource.Crop.Upkeep - city.Resource.Crop.Rate));
 
                     if (city.Resource.Crop.Value < upkeepCost)
-                        city.Worker.DoPassive(city, new StarveAction(city.Id), false);
+                        city.Worker.DoPassive(city, new StarvePassiveAction(city.Id), false);
 
                     city.Resource.Crop.Subtract(upkeepCost);
                 };

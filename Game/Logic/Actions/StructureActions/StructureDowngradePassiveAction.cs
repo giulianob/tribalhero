@@ -11,19 +11,19 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class StructureDowngradeAction : ScheduledPassiveAction
+    class StructureDowngradePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private readonly uint structureId;
 
-        public StructureDowngradeAction(uint cityId, uint structureId)
+        public StructureDowngradePassiveAction(uint cityId, uint structureId)
         {
             this.cityId = cityId;
             this.structureId = structureId;
         }
 
-        public StructureDowngradeAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, IDictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, isVisible)
+        public StructureDowngradePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, IDictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -33,7 +33,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.StructureDowngrade;
+                return ActionType.StructureDowngradePassive;
             }
         }
 

@@ -12,19 +12,19 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class StructureUpgradeAction : ScheduledActiveAction
+    class StructureUpgradeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly uint structureId;
         private Resource cost;
 
-        public StructureUpgradeAction(uint cityId, uint structureId)
+        public StructureUpgradeActiveAction(uint cityId, uint structureId)
         {
             this.cityId = cityId;
             this.structureId = structureId;
         }
 
-        public StructureUpgradeAction(uint id,
+        public StructureUpgradeActiveAction(uint id,
                                       DateTime beginTime,
                                       DateTime nextTime,
                                       DateTime endTime,
@@ -46,7 +46,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.StructureUpgrade;
+                return ActionType.StructureUpgradeActive;
             }
         }
 
@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (city.Worker.Contains(ActionType.StructureUpgrade, ActionId))
+            if (city.Worker.Contains(ActionType.StructureUpgradeActive, ActionId))
                 return Error.ActionAlreadyInProgress;
 
             // layout requirement

@@ -838,13 +838,13 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var actionType = (ActionType)((int)reader["type"]);
-                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
+                    Type type = Type.GetType("Game.Logic.Actions." + actionType + "Action", true, true);
                     ConstructorInfo cInfo = type.GetConstructor(types);
 
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    var currentActionId = (uint)reader["current_action_id"];
+                    var currentActionId = DBNull.Value.Equals(reader["current_action_id"]) ? 0 : (uint)reader["current_action_id"];
 
                     List<PassiveAction> chainList;
                     PassiveAction currentAction = null;

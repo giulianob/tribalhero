@@ -13,7 +13,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class ForestCampBuildAction : ScheduledActiveAction
+    class ForestCampBuildActiveAction : ScheduledActiveAction
     {
         private readonly ushort campType;
         private readonly uint cityId;
@@ -22,7 +22,7 @@ namespace Game.Logic.Actions
         private readonly uint lumbermillId;
         private uint campId;
 
-        public ForestCampBuildAction(uint cityId, uint lumbermillId, uint forestId, ushort campType, byte labors)
+        public ForestCampBuildActiveAction(uint cityId, uint lumbermillId, uint forestId, ushort campType, byte labors)
         {
             this.cityId = cityId;
             this.lumbermillId = lumbermillId;
@@ -31,7 +31,7 @@ namespace Game.Logic.Actions
             this.campType = campType;
         }
 
-        public ForestCampBuildAction(uint id,
+        public ForestCampBuildActiveAction(uint id,
                                      DateTime beginTime,
                                      DateTime nextTime,
                                      DateTime endTime,
@@ -52,7 +52,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.ForestCampBuild;
+                return ActionType.ForestCampBuildActive;
             }
         }
 

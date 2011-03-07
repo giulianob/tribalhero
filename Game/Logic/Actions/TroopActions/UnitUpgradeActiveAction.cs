@@ -12,19 +12,19 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class UnitUpgradeAction : ScheduledActiveAction
+    class UnitUpgradeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly uint structureId;
 
-        public UnitUpgradeAction(uint cityId, uint structureId, ushort type)
+        public UnitUpgradeActiveAction(uint cityId, uint structureId, ushort type)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             UnitType = type;
         }
 
-        public UnitUpgradeAction(uint id,
+        public UnitUpgradeActiveAction(uint id,
                                  DateTime beginTime,
                                  DateTime nextTime,
                                  DateTime endTime,
@@ -44,7 +44,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.UnitUpgrade;
+                return ActionType.UnitUpgradeActive;
             }
         }
 
@@ -68,7 +68,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (city.Worker.ActiveActions.Exists(action => (action.Type == Type) && (UnitType == ((UnitUpgradeAction)action).UnitType) && (action != this)))
+            if (city.Worker.ActiveActions.Exists(action => (action.Type == Type) && (UnitType == ((UnitUpgradeActiveAction)action).UnitType) && (action != this)))
                 return Error.ActionAlreadyInProgress;
 
             BaseUnitStats unitStats = city.Template[UnitType];

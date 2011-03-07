@@ -11,7 +11,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class StructureChangeAction : ScheduledActiveAction
+    class StructureChangeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly byte lvl;
@@ -19,7 +19,7 @@ namespace Game.Logic.Actions
         private readonly uint type;
         private Resource cost;
 
-        public StructureChangeAction(uint cityId, uint structureId, uint type, byte lvl)
+        public StructureChangeActiveAction(uint cityId, uint structureId, uint type, byte lvl)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -27,7 +27,7 @@ namespace Game.Logic.Actions
             this.lvl = lvl;
         }
 
-        public StructureChangeAction(uint id,
+        public StructureChangeActiveAction(uint id,
                                      DateTime beginTime,
                                      DateTime nextTime,
                                      DateTime endTime,
@@ -51,7 +51,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.StructureChange;
+                return ActionType.StructureChangeActive;
             }
         }
 
@@ -145,10 +145,7 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.GetUpgradedStructure(structure, (ushort)type, lvl);
-                structure.Technologies.Parent = structure.City.Technologies;
-                InitFactory.InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
-                structure.IsBlocked = false;
+                Procedures.Procedure.StructureChange(structure, (ushort)type, lvl);
                 structure.EndUpdate();
 
                 StateChange(ActionState.Completed);

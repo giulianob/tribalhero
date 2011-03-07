@@ -12,7 +12,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class UnitTrainAction : ScheduledActiveAction
+    class UnitTrainActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly ushort count;
@@ -21,7 +21,7 @@ namespace Game.Logic.Actions
         private int timePerUnit;
         private Resource cost;
 
-        public UnitTrainAction(uint cityId, uint structureId, ushort type, ushort count)
+        public UnitTrainActiveAction(uint cityId, uint structureId, ushort type, ushort count)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -29,7 +29,7 @@ namespace Game.Logic.Actions
             this.count = count;
         }
 
-        public UnitTrainAction(uint id,
+        public UnitTrainActiveAction(uint id,
                                DateTime beginTime,
                                DateTime nextTime,
                                DateTime endTime,
@@ -54,7 +54,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.UnitTrain;
+                return ActionType.UnitTrainActive;
             }
         }
 

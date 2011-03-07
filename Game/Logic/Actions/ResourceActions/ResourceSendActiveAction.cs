@@ -11,14 +11,14 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class ResourceSendAction : ScheduledActiveAction
+    class ResourceSendActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly Resource resource;
         private readonly uint structureId;
         private readonly uint targetCityId;
 
-        public ResourceSendAction(uint cityId, uint structureId, uint targetCityId, Resource resource)
+        public ResourceSendActiveAction(uint cityId, uint structureId, uint targetCityId, Resource resource)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -26,7 +26,7 @@ namespace Game.Logic.Actions
             this.resource = new Resource(resource);
         }
 
-        public ResourceSendAction(uint id,
+        public ResourceSendActiveAction(uint id,
                                   DateTime beginTime,
                                   DateTime nextTime,
                                   DateTime endTime,
@@ -49,7 +49,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.ResourceSend;
+                return ActionType.ResourceSendActive;
             }
         }
 

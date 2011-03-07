@@ -12,20 +12,20 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class DefenseAction : ChainAction
+    class DefenseChainAction : ChainAction
     {
         private readonly uint cityId;
         private readonly byte stubId;
         private readonly uint targetCityId;
 
-        public DefenseAction(uint cityId, byte stubId, uint targetCityId)
+        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId)
         {
             this.cityId = cityId;
             this.stubId = stubId;
             this.targetCityId = targetCityId;
         }
 
-        public DefenseAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+        public DefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             cityId = uint.Parse(properties["city_id"]);
@@ -37,7 +37,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.Defense;
+                return ActionType.DefenseChain;
             }
         }
 
@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
             city.Worker.References.Add(stub.TroopObject, this);
             city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
-            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetCity.MainBuilding.X, targetCity.MainBuilding.Y, false, false);
+            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, targetCity.MainBuilding.X, targetCity.MainBuilding.Y, false, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 

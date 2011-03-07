@@ -1,65 +1,64 @@
-Type,Lvl,Condition,Action,P1,P2,P3,P4,P5
-,,,,,,,,
-2204,1,ON_CONVERT,technology_create,techid=0,techlvl=0,time=0,,
-2000,8,ON_UPGRADE,city_radius_change,radius=5,,,,
-3001,1,ON_INIT,property_create,name=Crop,int,200,,
-3001,1,ON_INIT,property_create,name=Labor,int,15,,
-3002,1,ON_INIT,structure_self_destroy,time=28800,,,,
-3002,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,
-3003,1,ON_INIT,structure_self_destroy,time=86400,,,,
-3003,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,
-3004,1,ON_INIT,structure_self_destroy,time=259200,,,,
-3004,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,
-3005,1,ON_INIT,structure_self_destroy,time=604800,,,,
-3005,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,
-2106,7,ON_UPGRADE,city_reload_production_rate,,,,,
-2106,9,ON_UPGRADE,city_reload_production_rate,,,,,
-2106,11,ON_UPGRADE,city_reload_production_rate,,,,,
-2106,13,ON_UPGRADE,city_reload_production_rate,,,,,
-2106,15,ON_UPGRADE,city_reload_production_rate,,,,,
-,,,,,,,,
-3011,1,ON_INIT,structure_change,time=300,type=3012,lvl=1,//changing to mature,
-3011,2,ON_INIT,structure_change,time=300,type=3012,lvl=2,//changing to mature,
-3011,3,ON_INIT,structure_change,time=300,type=3012,lvl=3,//changing to mature,
-3011,4,ON_INIT,structure_change,time=300,type=3012,lvl=4,//changing to mature,
-3011,5,ON_INIT,structure_change,time=300,type=3012,lvl=5,//changing to mature,
-3011,6,ON_INIT,structure_change,time=300,type=3012,lvl=6,//changing to mature,
-3011,7,ON_INIT,structure_change,time=300,type=3012,lvl=7,//changing to mature,
-3011,8,ON_INIT,structure_change,time=300,type=3012,lvl=8,//changing to mature,
-3011,9,ON_INIT,structure_change,time=300,type=3012,lvl=9,//changing to mature,
-3011,10,ON_INIT,structure_change,time=300,type=3012,lvl=10,//changing to mature,
-3011,11,ON_INIT,structure_change,time=300,type=3012,lvl=11,//changing to mature,
-3011,12,ON_INIT,structure_change,time=300,type=3012,lvl=12,//changing to mature,
-3011,13,ON_INIT,structure_change,time=300,type=3012,lvl=13,//changing to mature,
-3011,14,ON_INIT,structure_change,time=300,type=3012,lvl=14,//changing to mature,
-3011,15,ON_INIT,structure_change,time=300,type=3012,lvl=15,//changing to mature,
-3012,1,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,2,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,3,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,4,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,5,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,6,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,7,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,8,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,9,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,10,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,11,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,12,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,13,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,14,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,15,ON_CONVERT,structure_change,time=300,3010,1,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,
+Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
+,,,,,,,,,,
+2204,1,ON_CONVERT,technology_create,techid=0,techlvl=0,time=0,,,,
+2000,8,ON_UPGRADE,city_radius_change,radius=5,,,,,,
+3002,1,ON_INIT,structure_self_destroy,time=28800,,,,,,
+3002,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+3003,1,ON_INIT,structure_self_destroy,time=86400,,,,,,
+3003,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+3004,1,ON_INIT,structure_self_destroy,time=259200,,,,,,
+3004,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+3005,1,ON_INIT,structure_self_destroy,time=604800,,,,,,
+3005,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+2106,7,ON_UPGRADE,city_reload_production_rate,,,,,,,
+2106,9,ON_UPGRADE,city_reload_production_rate,,,,,,,
+2106,11,ON_UPGRADE,city_reload_production_rate,,,,,,,
+2106,13,ON_UPGRADE,city_reload_production_rate,,,,,,,
+2106,15,ON_UPGRADE,city_reload_production_rate,,,,,,,
+,,,,,,,,,,
+3011,1,ON_INIT,structure_change,time=300,type=3012,lvl=1,,,,//changing to mature
+3011,2,ON_INIT,structure_change,time=300,type=3012,lvl=2,,,,//changing to mature
+3011,3,ON_INIT,structure_change,time=300,type=3012,lvl=3,,,,//changing to mature
+3011,4,ON_INIT,structure_change,time=300,type=3012,lvl=4,,,,//changing to mature
+3011,5,ON_INIT,structure_change,time=300,type=3012,lvl=5,,,,//changing to mature
+3011,6,ON_INIT,structure_change,time=300,type=3012,lvl=6,,,,//changing to mature
+3011,7,ON_INIT,structure_change,time=300,type=3012,lvl=7,,,,//changing to mature
+3011,8,ON_INIT,structure_change,time=300,type=3012,lvl=8,,,,//changing to mature
+3011,9,ON_INIT,structure_change,time=300,type=3012,lvl=9,,,,//changing to mature
+3011,10,ON_INIT,structure_change,time=300,type=3012,lvl=10,,,,//changing to mature
+3011,11,ON_INIT,structure_change,time=300,type=3012,lvl=11,,,,//changing to mature
+3011,12,ON_INIT,structure_change,time=300,type=3012,lvl=12,,,,//changing to mature
+3011,13,ON_INIT,structure_change,time=300,type=3012,lvl=13,,,,//changing to mature
+3011,14,ON_INIT,structure_change,time=300,type=3012,lvl=14,,,,//changing to mature
+3011,15,ON_INIT,structure_change,time=300,type=3012,lvl=15,,,,//changing to mature
+3012,1,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,2,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,3,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,4,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,5,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,6,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,7,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,8,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,9,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,10,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,11,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,12,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,13,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,14,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3012,15,ON_CONVERT,structure_change,time=300,3010,1,,,,//kill field
+3011,0,ON_INIT,property_create,name=Crop,int,0,,,,//create crop property
+3012,1,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,2,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,3,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,4,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,5,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,6,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,7,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,8,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,9,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,10,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,11,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,12,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,13,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,14,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,15,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get

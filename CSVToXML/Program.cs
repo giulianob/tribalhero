@@ -320,7 +320,6 @@ namespace CSVToXML {
                                 break;
                             case ActionType.StructureUpgradeActive:
                                 writer.WriteStartElement("StructureUpgrade");
-                                writer.WriteAttributeString("type", req.Parms[0]);
                                 break;
                             case ActionType.UnitUpgradeActive:
                                 writer.WriteStartElement("UnitUpgrade");

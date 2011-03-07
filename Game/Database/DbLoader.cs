@@ -731,7 +731,11 @@ namespace Game.Database
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    action.WorkerObject = city;
+                    var workerId = (uint)reader["object_id"];
+                    if (workerId == 0)
+                        action.WorkerObject = city;
+                    else
+                        action.WorkerObject = city[(uint)reader["object_id"]];
 
                     city.Worker.DbLoaderDoActive(action);
 

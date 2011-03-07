@@ -61,6 +61,11 @@ namespace Game.Logic.Actions
             if (city.Worker.Contains(ActionType.StructureUpgradeActive, ActionId))
                 return Error.ActionAlreadyInProgress;
 
+            cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
+
+            if (cost == null)
+                return Error.ObjectStructureNotFound;
+
             // layout requirement
             if (
                     !RequirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure,
@@ -68,11 +73,6 @@ namespace Game.Logic.Actions
                                                                                                                  structure.X,
                                                                                                                  structure.Y))
                 return Error.LayoutNotFullfilled;
-
-            cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
-
-            if (cost == null)
-                return Error.ObjectStructureNotFound;
 
             if (!structure.City.Resource.HasEnough(cost))
                 return Error.ResourceNotEnough;

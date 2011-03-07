@@ -52,14 +52,7 @@ namespace Game.Logic.Actions
                                 int.Parse(properties["wood"]),
                                 int.Parse(properties["labor"]));
             string tmp;
-            if(properties.TryGetValue("level",out tmp))
-            {
-                level = byte.Parse(tmp);
-            }
-            else
-            {
-                level = 1;
-            }
+            level = properties.TryGetValue("level",out tmp) ? byte.Parse(tmp) : (byte)1;          
         }
 
         public override ActionType Type
@@ -304,10 +297,12 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            if(ushort.Parse(parms[2])!=level)
-            {
+            if(parms[2] != string.Empty && byte.Parse(parms[2])!=level)            
                 return Error.ActionNotFound;
-            }
+
+            if (parms[2] == string.Empty && level != 1)
+                return Error.ActionNotFound;
+
             if (ushort.Parse(parms[0]) == type)
             {
                 if (parms[1].Length == 0)

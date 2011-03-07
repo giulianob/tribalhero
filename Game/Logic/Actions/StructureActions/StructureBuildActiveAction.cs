@@ -248,6 +248,7 @@ namespace Game.Logic.Actions
                 return Error.MapFull;
             }
 
+            InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
             structure.EndUpdate();
 
             structureId = structure.ObjectId;

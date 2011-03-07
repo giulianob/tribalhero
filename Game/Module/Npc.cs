@@ -201,7 +201,7 @@ namespace Game.Module
                         if (!allowedBuildings.Contains(buildingType))
                             continue;
 
-                        var action = new StructureBuildActiveAction(city.Id, buildingType, x, y);
+                        var action = new StructureBuildActiveAction(city.Id, buildingType, x, y, 1);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
                             //Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));

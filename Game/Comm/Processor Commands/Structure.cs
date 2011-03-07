@@ -428,6 +428,7 @@ namespace Game.Comm
             uint x;
             uint y;
             ushort type;
+            byte level;
 
             try
             {
@@ -436,6 +437,7 @@ namespace Game.Comm
                 x = packet.GetUInt32();
                 y = packet.GetUInt32();
                 type = packet.GetUInt16();
+                level = packet.GetByte();
             }
             catch(Exception)
             {
@@ -466,7 +468,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var buildaction = new StructureBuildActiveAction(cityId, type, x, y);
+                var buildaction = new StructureBuildActiveAction(cityId, type, x, y, level);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, buildaction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);

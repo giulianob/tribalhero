@@ -430,7 +430,7 @@
 			var objId: int = packet.readUInt();
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
 			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			
 			var city: City = Global.map.cities.get(cityId);
@@ -480,7 +480,7 @@
 
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
 			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
 			var city: City = Global.map.cities.get(cityId);

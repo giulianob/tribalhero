@@ -75,7 +75,7 @@
 							action = new ForestCampBuildAction(actionNode.@type);
 						break;
 						case "StructureBuild":
-							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement, actionNode.@lvl);
+							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement, actionNode.@level);
 						break;
 						case "StructureChange":
 							action = new StructureChangeAction(actionNode.@type, actionNode.@level);
@@ -88,7 +88,7 @@
 							worker.addTechUpgradeAction(action as TechUpgradeAction);
 						break;
 						case "StructureUpgrade":
-							action = new StructureUpgradeAction(actionNode.@type);
+							action = new StructureUpgradeAction();
 						break;
 						case "TrainUnit":
 							action = new TrainAction(actionNode.@type);
@@ -122,7 +122,8 @@
 						action.options = options;
 						action.effectReq = effectReq;
 						action.effectReqInherit = effectReqInherit;
-						action.index = worker.addAction(action as IAction);
+						action.index = actionNode.@index;
+						worker.addAction(action as IAction)
 					}
 				}
 

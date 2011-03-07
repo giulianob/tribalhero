@@ -18,15 +18,17 @@ namespace Game.Logic
 
         protected ScheduledPassiveAction()
         {
+            NlsDescription = string.Empty;
         }
 
-        protected ScheduledPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible)
-        {
+        protected ScheduledPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription)
+        {            
             ActionId = id;
             IsVisible = isVisible;
             this.beginTime = beginTime;
             this.nextTime = nextTime;
             this.endTime = endTime;
+            NlsDescription = nlsDescription;
         }
 
         public override DbColumn[] DbColumns
@@ -39,7 +41,7 @@ namespace Game.Logic
                                new DbColumn("is_scheduled", true, DbType.Boolean), new DbColumn("is_visible", IsVisible, DbType.Boolean),
                                new DbColumn("type", Type, DbType.UInt32), new DbColumn("begin_time", BeginTime, DbType.DateTime),
                                new DbColumn("end_time", EndTime, DbType.DateTime), new DbColumn("next_time", nextTime, DbType.DateTime),
-                               new DbColumn("properties", Properties, DbType.String)
+                               new DbColumn("properties", Properties, DbType.String), new DbColumn("nls_description", NlsDescription, DbType.String)
                        };
             }
         }
@@ -88,6 +90,8 @@ namespace Game.Logic
                     endTime = nextTime;
             }
         }
+
+        public string NlsDescription { get; protected set; }
 
         #endregion
 

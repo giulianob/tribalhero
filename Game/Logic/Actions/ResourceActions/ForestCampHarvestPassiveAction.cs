@@ -10,20 +10,20 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class ForestCampHarvestAction : ScheduledPassiveAction
+    class ForestCampHarvestPassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private readonly uint forestId;
 
-        public ForestCampHarvestAction(uint cityId, uint forestId)
+        public ForestCampHarvestPassiveAction(uint cityId, uint forestId)
         {
             IsCancellable = true;
             this.forestId = forestId;
             this.cityId = cityId;
         }
 
-        public ForestCampHarvestAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, isVisible)
+        public ForestCampHarvestPassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             IsCancellable = true;
             forestId = uint.Parse(properties["forest_id"]);
@@ -34,7 +34,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.ForestCampHarvest;
+                return ActionType.ForestCampHarvestPassive;
             }
         }
 

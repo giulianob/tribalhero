@@ -206,7 +206,7 @@ namespace Game.Comm
                     return;
                 }
 
-                LaborMoveAction lma;
+                LaborMoveActiveAction lma;
                 if (obj.Stats.Labor < count)
                 {
                     //move from city to obj
@@ -226,13 +226,13 @@ namespace Game.Comm
                         return;
                     }
 
-                    lma = new LaborMoveAction(cityId, objectId, true, count);
+                    lma = new LaborMoveActiveAction(cityId, objectId, true, count);
                 }
                 else if (obj.Stats.Labor > count)
                 {
                     //move from obj to city
                     count = (byte)(obj.Stats.Labor - count);
-                    lma = new LaborMoveAction(cityId, objectId, false, count);
+                    lma = new LaborMoveActiveAction(cityId, objectId, false, count);
                 }
                 else
                 {
@@ -364,7 +364,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var upgradeAction = new StructureUpgradeAction(cityId, objectId);
+                var upgradeAction = new StructureUpgradeActiveAction(cityId, objectId);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -410,7 +410,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var downgradeAction = new StructureUserDowngradeAction(cityId, targetId);
+                var downgradeAction = new StructureDowngradeActiveAction(cityId, targetId);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, downgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -466,7 +466,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var buildaction = new StructureBuildAction(cityId, type, x, y);
+                var buildaction = new StructureBuildActiveAction(cityId, type, x, y);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, buildaction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -513,7 +513,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var changeAction = new StructureChangeAction(cityId, objectId, structureType, structureLvl);
+                var changeAction = new StructureChangeActiveAction(cityId, objectId, structureType, structureLvl);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, changeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -561,7 +561,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var buildaction = new ForestCampBuildAction(cityId, lumbermill.ObjectId, forestId, type, labor);
+                var buildaction = new ForestCampBuildActiveAction(cityId, lumbermill.ObjectId, forestId, type, labor);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(lumbermill), lumbermill, buildaction, lumbermill.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);

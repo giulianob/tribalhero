@@ -13,7 +13,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class StructureBuildAction : ScheduledActiveAction
+    class StructureBuildActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly ushort type;
@@ -22,7 +22,7 @@ namespace Game.Logic.Actions
         private Resource cost;
         private uint structureId;
 
-        public StructureBuildAction(uint cityId, ushort type, uint x, uint y)
+        public StructureBuildActiveAction(uint cityId, ushort type, uint x, uint y)
         {
             this.cityId = cityId;
             this.type = type;
@@ -30,7 +30,7 @@ namespace Game.Logic.Actions
             this.y = y;
         }
 
-        public StructureBuildAction(uint id,
+        public StructureBuildActiveAction(uint id,
                                     DateTime beginTime,
                                     DateTime nextTime,
                                     DateTime endTime,
@@ -55,7 +55,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.StructureBuild;
+                return ActionType.StructureBuildActive;
             }
         }
 
@@ -65,7 +65,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            if (city.Worker.Contains(ActionType.StructureBuild, ActionId))
+            if (city.Worker.Contains(ActionType.StructureBuildActive, ActionId))
                 return Error.ActionAlreadyInProgress;
 
             Global.World.LockRegion(x, y);

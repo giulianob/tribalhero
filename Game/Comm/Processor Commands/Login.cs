@@ -248,8 +248,8 @@ namespace Game.Comm
 
                 //Restart any city actions that may have been stopped due to inactivity
                 foreach (var city in
-                        player.GetCityList().Where(city => !city.Worker.PassiveActions.Exists(x => x.Type == ActionType.City)))
-                    city.Worker.DoPassive(city, new CityAction(city.Id), false);
+                        player.GetCityList().Where(city => !city.Worker.PassiveActions.Exists(x => x.Type == ActionType.CityPassive)))
+                    city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
             }
         }
 
@@ -314,7 +314,7 @@ namespace Game.Comm
 
                 InitFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
-                city.Worker.DoPassive(city, new CityAction(city.Id), false);
+                city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 
                 var reply = new Packet(packet);
                 reply.Option |= (ushort)Packet.Options.Compressed;

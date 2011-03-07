@@ -13,20 +13,20 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class EngageDefenseAction : PassiveAction
+    class EngageDefensePassiveAction : PassiveAction
     {
         private readonly uint cityId;
         private readonly byte stubId;
         private int originalHp;
         private int remainingHp;
 
-        public EngageDefenseAction(uint cityId, byte stubId)
+        public EngageDefensePassiveAction(uint cityId, byte stubId)
         {
             this.cityId = cityId;
             this.stubId = stubId;
         }
 
-        public EngageDefenseAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
+        public EngageDefensePassiveAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
         {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
@@ -45,7 +45,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.EngageDefense;
+                return ActionType.EngageDefensePassive;
             }
         }
 

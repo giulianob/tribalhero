@@ -10,17 +10,17 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class StarveAction : ScheduledPassiveAction
+    class StarvePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
 
-        public StarveAction(uint cityId)
+        public StarvePassiveAction(uint cityId)
         {
             this.cityId = cityId;
         }
 
-        public StarveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, isVisible)
+        public StarvePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, Dictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
         }
@@ -29,7 +29,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.Starve;
+                return ActionType.StarvePassive;
             }
         }
 

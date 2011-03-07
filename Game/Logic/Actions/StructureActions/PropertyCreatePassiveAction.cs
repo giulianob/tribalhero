@@ -9,7 +9,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    public class PropertyCreateAction : PassiveAction, IScriptable
+    public class PropertyCreatePassiveAction : PassiveAction, IScriptable
     {
         private string name;
         private Structure structure;
@@ -19,7 +19,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.PropertyCreate;
+                return ActionType.PropertyCreatePassive;
             }
         }
 

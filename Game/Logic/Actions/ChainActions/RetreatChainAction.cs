@@ -12,18 +12,18 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    public class RetreatAction : ChainAction
+    public class RetreatChainAction : ChainAction
     {
         private readonly uint cityId;
         private readonly byte stubId;
 
-        public RetreatAction(uint cityId, byte stubId)
+        public RetreatChainAction(uint cityId, byte stubId)
         {
             this.cityId = cityId;
             this.stubId = stubId;
         }
 
-        public RetreatAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
+        public RetreatChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             cityId = uint.Parse(properties["city_id"]);
@@ -34,7 +34,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.Retreat;
+                return ActionType.RetreatChain;
             }
         }
 
@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X, stub.City.MainBuilding.Y, true, false);
+            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X, stub.City.MainBuilding.Y, true, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
@@ -89,7 +89,7 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
-                        var eda = new EngageDefenseAction(cityId, stubId);
+                        var eda = new EngageDefensePassiveAction(cityId, stubId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }

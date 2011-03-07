@@ -8,15 +8,18 @@ using Game.Setup;
 
 namespace Game.Logic.Actions
 {
-    class TechnologyDeleteAction : PassiveAction, IScriptable
+    class TechnologyCreatePassiveAction : PassiveAction, IScriptable
     {
+        private byte lvl;
         private Structure obj;
+        private uint techId;
+        private TimeSpan ts;
 
         public override ActionType Type
         {
             get
             {
-                return ActionType.TechCreate;
+                return ActionType.TechnologyCreatePassive;
             }
         }
 
@@ -34,6 +37,9 @@ namespace Game.Logic.Actions
         {
             if ((this.obj = obj as Structure) == null)
                 throw new Exception();
+            techId = uint.Parse(parms[0]);
+            lvl = byte.Parse(parms[1]);
+            ts = TimeSpan.FromSeconds(int.Parse(parms[2]));
             Execute();
         }
 
@@ -49,9 +55,18 @@ namespace Game.Logic.Actions
             if (obj == null)
                 return Error.ObjectNotFound;
 
-            obj.Technologies.BeginUpdate();
-            obj.Technologies.Clear();
-            obj.Technologies.EndUpdate();
+            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, lvl);
+            if (techBase == null)
+                return Error.ObjectNotFound;
+
+            Technology tech;
+            if (!obj.Technologies.TryGetTechnology(techBase.Techtype, out tech))
+            {
+                tech = new Technology(techBase);
+                obj.Technologies.BeginUpdate();
+                obj.Technologies.Add(tech);
+                obj.Technologies.EndUpdate();
+            }
 
             StateChange(ActionState.Completed);
 

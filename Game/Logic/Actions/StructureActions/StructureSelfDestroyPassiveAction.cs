@@ -11,22 +11,24 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    public class StructureSelfDestroyAction : ScheduledPassiveAction, IScriptable
+    public class StructureSelfDestroyPassiveAction : ScheduledPassiveAction, IScriptable
     {
         private uint cityId;
         private uint objectId;
         private TimeSpan ts;
 
-        public StructureSelfDestroyAction()
+        public StructureSelfDestroyPassiveAction()
         {
         }
 
-        public StructureSelfDestroyAction(uint id,
+        public StructureSelfDestroyPassiveAction(uint id,
                                           DateTime beginTime,
                                           DateTime nextTime,
                                           DateTime endTime,
                                           bool isVisible,
-                                          Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, isVisible)
+                                          string nlsDescription, 
+                                          Dictionary<string, string> properties)
+            : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             objectId = uint.Parse(properties["object_id"]);
@@ -36,7 +38,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.StructureSelfDestroy;
+                return ActionType.StructureSelfDestroyPassive;
             }
         }
 
@@ -60,9 +62,11 @@ namespace Game.Logic.Actions
             cityId = obj.City.Id;
             objectId = obj.ObjectId;
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
+            NlsDescription = parms[1];
 
             if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
                 return;
+
             city.Worker.DoPassive(structure, this, true);
         }
 
@@ -73,7 +77,6 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            // Block structure
             using (new MultiObjectLock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())

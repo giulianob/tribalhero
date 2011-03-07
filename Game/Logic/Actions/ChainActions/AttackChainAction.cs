@@ -20,7 +20,7 @@ namespace Game.Logic.Actions
         Strong = 2
     }
 
-    class AttackAction : ChainAction
+    class AttackChainAction : ChainAction
     {
         private readonly uint cityId;
         private readonly AttackMode mode;
@@ -29,7 +29,7 @@ namespace Game.Logic.Actions
         private readonly uint targetStructureId;
         private int initialTroopValue;
 
-        public AttackAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode)
+        public AttackChainAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode)
         {
             this.cityId = cityId;
             this.targetCityId = targetCityId;
@@ -38,7 +38,7 @@ namespace Game.Logic.Actions
             this.mode = mode;
         }
 
-        public AttackAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, IDictionary<string, string> properties)
+        public AttackChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, IDictionary<string, string> properties)
                 : base(id, chainCallback, current, chainState, isVisible)
         {
             cityId = uint.Parse(properties["city_id"]);
@@ -53,7 +53,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.Attack;
+                return ActionType.AttackChain;
             }
         }
 
@@ -109,7 +109,7 @@ namespace Game.Logic.Actions
             city.Worker.References.Add(stub.TroopObject, this);
             city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
-            var tma = new TroopMoveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X, targetStructure.Y, false, true);
+            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X, targetStructure.Y, false, true);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 
@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
                     using (new MultiObjectLock(city))
                     {
                         TroopStub stub = city.Troops[stubId];
-                        TroopMoveAction tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
+                        TroopMovePassiveAction tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
                     }
@@ -150,7 +150,7 @@ namespace Game.Logic.Actions
 
                 using (new CallbackLock(lockAllStationed, null, city, targetCity))
                 {
-                    var bea = new EngageAttackAction(cityId, stubId, targetCityId, mode);
+                    var bea = new EngageAttackPassiveAction(cityId, stubId, targetCityId, mode);
                     ExecuteChainAndWait(bea, AfterBattle);
                 }
             }
@@ -182,7 +182,7 @@ namespace Game.Logic.Actions
                         city.EndUpdate();
 
                         // Send troop back home
-                        var tma = new TroopMoveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
+                        var tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
 
                         // Add notification just to the main city
@@ -235,7 +235,7 @@ namespace Game.Logic.Actions
                     }
                     else
                     {
-                        var eda = new EngageDefenseAction(cityId, stubId);
+                        var eda = new EngageDefensePassiveAction(cityId, stubId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
                 }

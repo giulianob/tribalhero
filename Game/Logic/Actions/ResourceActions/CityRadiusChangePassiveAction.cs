@@ -8,7 +8,7 @@ using Game.Setup;
 
 namespace Game.Logic.Actions
 {
-    public class CityRadiusChangeAction : PassiveAction, IScriptable
+    public class CityRadiusChangePassiveAction : PassiveAction, IScriptable
     {
         private Structure obj;
         private byte radius;
@@ -17,7 +17,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.CityRadiusChange;
+                return ActionType.CityRadiusChangePassive;
             }
         }
 
@@ -25,7 +25,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                throw new NotImplementedException();
+                return string.Empty;
             }
         }
 
@@ -43,7 +43,7 @@ namespace Game.Logic.Actions
 
         public override Error Validate(string[] parms)
         {
-            throw new NotImplementedException();
+            return Error.ActionNotFound;
         }
 
         public override Error Execute()
@@ -59,12 +59,12 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

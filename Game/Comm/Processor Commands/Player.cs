@@ -139,7 +139,7 @@ namespace Game.Comm
                 if (!city.TryGetStructure(objectId, out structure))
                     ReplyError(session, packet, Error.Unexpected);
 
-                var action = new ResourceSendAction(cityId, objectId, targetCityId, resource);
+                var action = new ResourceSendActiveAction(cityId, objectId, targetCityId, resource);
 
                 // If actually send then we perform the action, otherwise, we send the player information about the trade.
                 if (actuallySend)

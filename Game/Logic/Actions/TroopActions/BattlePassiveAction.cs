@@ -14,12 +14,12 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class BattleAction : ScheduledPassiveAction
+    class BattlePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private uint destroyedHp;
 
-        public BattleAction(uint cityId)
+        public BattlePassiveAction(uint cityId)
         {
             this.cityId = cityId;
 
@@ -31,8 +31,8 @@ namespace Game.Logic.Actions
             city.Battle.UnitRemoved += BattleUnitRemoved;
         }
 
-        public BattleAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, IDictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, isVisible)
+        public BattlePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, IDictionary<string, string> properties)
+                : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             cityId = uint.Parse(properties["city_id"]);
             destroyedHp = uint.Parse(properties["destroyed_hp"]);
@@ -51,7 +51,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.Battle;
+                return ActionType.BattlePassive;
             }
         }
 

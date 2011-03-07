@@ -12,7 +12,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class ResourceBuyAction : ScheduledActiveAction
+    class ResourceBuyActiveAction : ScheduledActiveAction
     {
         private const int TRADE_SIZE = 100;
         private readonly uint cityId;
@@ -21,7 +21,7 @@ namespace Game.Logic.Actions
         private readonly ResourceType resourceType;
         private readonly uint structureId;
 
-        public ResourceBuyAction(uint cityId, uint structureId, ushort price, ushort quantity, ResourceType resourceType)
+        public ResourceBuyActiveAction(uint cityId, uint structureId, ushort price, ushort quantity, ResourceType resourceType)
         {
             this.cityId = cityId;
             this.structureId = structureId;
@@ -30,7 +30,7 @@ namespace Game.Logic.Actions
             this.resourceType = resourceType;
         }
 
-        public ResourceBuyAction(uint id,
+        public ResourceBuyActiveAction(uint id,
                                  DateTime beginTime,
                                  DateTime nextTime,
                                  DateTime endTime,
@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.ResourceBuy;
+                return ActionType.ResourceBuyActive;
             }
         }
 

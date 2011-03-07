@@ -50,7 +50,7 @@ namespace Game.Setup
                     if (toks[0].Length <= 0)
                         continue;
                     var record = new InitRecord();
-                    string name = "Game.Logic.Actions." + toks[col["Action"]];
+                    string name = "Game.Logic.Actions." + (toks[col["Action"]] + "_passive_action").ToCamelCase();
                     record.Type = Type.GetType(name, true);
                     if (record.Type == null)
                         continue;

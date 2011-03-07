@@ -69,7 +69,7 @@ namespace Game.Comm
                 if (obj != null)
                 {
                     Error ret;
-                    var rba = new ResourceBuyAction(cityId, objectId, price, quantity, type);
+                    var rba = new ResourceBuyActiveAction(cityId, objectId, price, quantity, type);
                     if ((ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rba, obj.Technologies)) == 0)
                         ReplySuccess(session, packet);
                     else
@@ -127,7 +127,7 @@ namespace Game.Comm
                 if (obj != null)
                 {
                     Error ret;
-                    var rsa = new ResourceSellAction(cityId, objectId, price, quantity, type);
+                    var rsa = new ResourceSellActiveAction(cityId, objectId, price, quantity, type);
                     if ((ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rsa, obj.Technologies)) == 0)
                         ReplySuccess(session, packet);
                     else

@@ -156,13 +156,13 @@ namespace Game.Module
                     if (rand.Next(100) > 60)
                         continue;
 
-                    if (req.Type == ActionType.UnitTrain)
+                    if (req.Type == ActionType.UnitTrainActive)
                     {
                         ushort unitType = ushort.Parse(req.Parms[0]);
                         Resource costPerUnit = city.Template[unitType].Cost;
                         ushort count = Math.Min((ushort)15, (ushort)(city.Resource.FindMaxAffordable(costPerUnit)*intelligence.military));
 
-                        var action = new UnitTrainAction(city.Id, structure.ObjectId, unitType, count);
+                        var action = new UnitTrainActiveAction(city.Id, structure.ObjectId, unitType, count);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
                             //Global.Logger.Info(string.Format("{0} training {1} units of type {2} at ({3},{4})", city.Name, count, unitType, structure.X, structure.Y));
@@ -195,13 +195,13 @@ namespace Game.Module
                     if (rand.Next(100) > 60)
                         continue;
 
-                    if (req.Type == ActionType.StructureBuild)
+                    if (req.Type == ActionType.StructureBuildActive)
                     {
                         ushort buildingType = ushort.Parse(req.Parms[0]);
                         if (!allowedBuildings.Contains(buildingType))
                             continue;
 
-                        var action = new StructureBuildAction(city.Id, buildingType, x, y);
+                        var action = new StructureBuildActiveAction(city.Id, buildingType, x, y);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
                         {
                             //Global.Logger.Info(string.Format("{0} building {1} at ({2},{3})", city.Name, buildingType, structure.Stats.Base.Lvl, x, y));
@@ -231,7 +231,7 @@ namespace Game.Module
             if (structure == null)
                 return false;
 
-            var action = new StructureUpgradeAction(city.Id, structure.ObjectId);
+            var action = new StructureUpgradeActiveAction(city.Id, structure.ObjectId);
 
             if (city.Worker.DoActive(StructureFactory.GetActionWorkerType(structure), structure, action, structure.Technologies) == Error.Ok)
             {
@@ -299,7 +299,7 @@ namespace Game.Module
 
                     InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
 
-                    city.Worker.DoPassive(city, new CityAction(city.Id), false);
+                    city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 
                     //TileLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false, BuildBasicStructures, city);
                 }

@@ -47,7 +47,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.TechnologyUpgrade;
+                return ActionType.TechnologyUpgradeActive;
             }
         }
 

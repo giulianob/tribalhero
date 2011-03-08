@@ -279,7 +279,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var upgradeAction = new TechnologyUpgradeAction(cityId, objectId, techId);
+                var upgradeAction = new TechnologyUpgradeActiveAction(cityId, objectId, techId);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);

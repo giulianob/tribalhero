@@ -91,7 +91,7 @@ namespace Game.Logic
             }
         }
 
-        public string NlsDescription { get; protected set; }
+        public string NlsDescription { get; set; }
 
         #endregion
 

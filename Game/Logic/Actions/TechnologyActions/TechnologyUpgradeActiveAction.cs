@@ -11,25 +11,25 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class TechnologyUpgradeAction : ScheduledActiveAction, IScriptable
+    class TechnologyUpgradeActiveAction : ScheduledActiveAction
     {
         private uint cityId;
         private bool isSelfInit;
         private uint structureId;
         private uint techId;
 
-        public TechnologyUpgradeAction()
+        public TechnologyUpgradeActiveAction()
         {
         }
 
-        public TechnologyUpgradeAction(uint cityId, uint structureId, uint techId)
+        public TechnologyUpgradeActiveAction(uint cityId, uint structureId, uint techId)
         {
             this.cityId = cityId;
             this.structureId = structureId;
             this.techId = techId;
         }
 
-        public TechnologyUpgradeAction(uint id,
+        public TechnologyUpgradeActiveAction(uint id,
                                        DateTime beginTime,
                                        DateTime nextTime,
                                        DateTime endTime,
@@ -50,25 +50,6 @@ namespace Game.Logic.Actions
                 return ActionType.TechnologyUpgradeActive;
             }
         }
-
-        #region IScriptable Members
-
-        public void ScriptInit(GameObject obj, string[] parms)
-        {
-            throw new Exception("have to add logic so that upgrading after a building has been knocked down won't upgrade this tech again");
-
-#pragma warning disable 162
-            if ((obj = obj as Structure) == null)
-                throw new Exception();
-            cityId = obj.City.Id;
-            structureId = obj.ObjectId;
-            techId = uint.Parse(parms[0]);
-            isSelfInit = true;
-            Execute();
-#pragma warning restore 162
-        }
-
-        #endregion
 
         #region IPersistable
 

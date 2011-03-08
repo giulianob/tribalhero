@@ -123,7 +123,7 @@
 						action.effectReq = effectReq;
 						action.effectReqInherit = effectReqInherit;
 						action.index = actionNode.@index;
-						worker.addAction(action as IAction)
+						worker.addAction(action as IAction);
 					}
 				}
 

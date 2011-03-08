@@ -68,8 +68,7 @@ namespace Game.Logic.Actions
             objectId = obj.ObjectId;
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
             type = ushort.Parse(parms[1]);
-            lvl = byte.Parse(parms[2]);
-            NlsDescription = parms[3];
+            lvl = byte.Parse(parms[2]);            
 
             if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
                 return;

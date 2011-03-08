@@ -124,7 +124,13 @@
 		public function createRegionPart(tileset:TileSet, x: int, y:int):void
 		{
 			var bg:Bitmap = new Bitmap(new BitmapData(Constants.regionBitmapW + Constants.tileW / 2, Constants.regionBitmapH / 2 + Constants.tileH / 2, true, 0));
-			bg.smoothing = true;
+			bg.smoothing = false;
+			
+			var tileHDiv2: int = Constants.tileH / 2;
+			var tileHTimes2: int = Constants.tileH * 2;
+			var tileWDiv2: int = Constants.tileW / 2;
+			var tileWTimes2: int = Constants.tileW * 2;
+			var oddShift: int = int(Constants.tileW / 2) * -1;
 			
 			for (var bY:int = 1; bY <= Constants.regionBitmapTileH; bY++)
 			{
@@ -133,19 +139,19 @@
 					var tileid:int = tiles[bY-1+y][aX-1+x];
 
 					var tilesetsrcX:int = int(tileid % Constants.tileSetTileW) * Constants.tileW;
-					var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * Constants.tileH * 2;
+					var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * tileHTimes2;
 
 					var xadd:int = 0;
 					var yadd:int = 0;
 
 					if ((bY % 2) == 1) //odd tile
-					xadd = int(Constants.tileW / 2) * -1;
+					xadd = oddShift;
 
 					var xcoord:int = int((aX - 1) * Constants.tileW + xadd);
-					var ycoord:int = int((bY - 2) * (Constants.tileH / 2));
+					var ycoord:int = int((bY - 2) * tileHDiv2);
 
-					var drawTo:Point = new Point(xcoord + int(Constants.tileW / 2), (ycoord + int(Constants.tileH / 2)) - (Constants.tileH));
-					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, Constants.tileH * 2);
+					var drawTo:Point = new Point(xcoord + tileWDiv2, (ycoord + tileHDiv2) - (Constants.tileH));
+					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, tileHTimes2);
 
 					//Util.log(aX + "," + bY + " Tile Id:" + tileid + " draw to " + drawTo.x + "," + drawTo.y + " src " + srcRect.x + "," + srcRect.y + " " + srcRect.width + "," + srcRect.height);
 					bg.bitmapData.copyPixels(tileset, srcRect, drawTo, null, null, true);

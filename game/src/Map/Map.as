@@ -58,7 +58,7 @@
 		{
 			camera = Global.gameContainer.camera;
 			camera.addEventListener(Camera.ON_MOVE, onMove);
-
+			
 			selectedObject = null;
 
 			regionSpace = new Sprite();
@@ -126,7 +126,7 @@
 					stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 					stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 					stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
-					stage.addEventListener(Event.MOUSE_LEAVE, eventMouseLeave);
+					stage.addEventListener(Event.MOUSE_LEAVE, eventMouseLeave);				
 
 					listenersDefined = true;
 				}
@@ -309,9 +309,11 @@
 				}
 				else {
 					doSelectedObject(obj);
-					return;
 				}
 			}
+			
+			// Set focus back to the map so it doesn't break user scrolling
+			stage.focus = this;
 		}
 
 		private function doSelectedObject(obj: GameObject):void
@@ -411,15 +413,15 @@
 			mouseDown = false;
 
 			if (Constants.debug >= 4)
-			Util.log("MOUSE UP");
+				Util.log("MOUSE UP");
 		}
 
 		public function eventMouseLeave(event: Event):void
 		{
-			mouseDown = false;
+			mouseDown = false;			
 
 			if (Constants.debug >= 4)
-			Util.log("MOUSE LEAVE");
+				Util.log("MOUSE LEAVE");
 		}
 
 		public function eventMouseMove(event: MouseEvent):void

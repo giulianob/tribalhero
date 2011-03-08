@@ -28,7 +28,8 @@ namespace Game.Logic
         PropertyCreatePassive = 105,
         LaborMoveActive = 106,
         StructureDowngradeActive = 107,
-        StructureSelfDestroyPassive = 108,        
+        StructureSelfDestroyPassive = 108,
+        StructureSelfDestroyActive = 109,
 
         TroopMovePassive = 201,
         StarvePassive = 210,

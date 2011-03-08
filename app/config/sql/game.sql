@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.41, for Win32 (ia32)
+-- MySQL dump 10.13  Distrib 5.5.8, for Win32 (x86)
 --
 -- Host: localhost    Database: game
 -- ------------------------------------------------------
--- Server version	5.1.41
+-- Server version	5.5.8
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -82,7 +82,7 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `battle_report_troops` (
   PRIMARY KEY (`id`),
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +158,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +178,7 @@ CREATE TABLE `battles` (
   KEY `ended` (`ended`),
   KEY `created` (`created`),
   KEY `city_id` (`city_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,6 +191,7 @@ DROP TABLE IF EXISTS `chain_actions`;
 CREATE TABLE `chain_actions` (
   `id` int(10) unsigned NOT NULL,
   `city_id` int(10) unsigned NOT NULL,
+  `object_id` int(10) unsigned NOT NULL,
   `type` int(11) NOT NULL,
   `current_action_id` int(10) unsigned DEFAULT NULL,
   `chain_callback` varchar(32) NOT NULL,
@@ -380,7 +381,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -433,6 +434,7 @@ CREATE TABLE `passive_actions` (
   `is_scheduled` tinyint(1) NOT NULL,
   `is_visible` tinyint(1) NOT NULL,
   `properties` text,
+  `nls_description` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -452,21 +454,21 @@ CREATE TABLE `players` (
   `email_address` varchar(256) NOT NULL,
   `login_key` varchar(64) DEFAULT NULL,
   `login_key_date` datetime DEFAULT NULL,
-  `session_id` varchar(128) DEFAULT NULL,
+  `session_id` varchar(128) NOT NULL,
   `created` datetime NOT NULL,
   `last_login` datetime NOT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT '0',
-  `banned` tinyint(1) NOT NULL DEFAULT '0',
-  `admin` tinyint(1) NOT NULL DEFAULT '0',
-  `online` tinyint(1) NOT NULL DEFAULT '0',
+  `banned` tinyint(1) NOT NULL,
+  `admin` tinyint(1) NOT NULL,
+  `online` tinyint(1) NOT NULL,
   `reset_key` varchar(64) DEFAULT NULL,
-  `reset_key_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `reset_key_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `email` (`email_address`),
   KEY `login_key` (`login_key`),
   KEY `session_id` (`session_id`),
   KEY `facebook_id` (`facebook_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50201 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=50249 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -572,23 +574,7 @@ DROP TABLE IF EXISTS `schema_migrations`;
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) DEFAULT NULL,
   UNIQUE KEY `idx_schema_migrations_version` (`version`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `simple_objects`
---
-
-DROP TABLE IF EXISTS `simple_objects`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `simple_objects` (
-  `id` int(11) NOT NULL,
-  `an_int` int(11) NOT NULL,
-  `a_string` varchar(16) NOT NULL,
-  `a_float` float NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Used in Database/DatabasePerformanceTest.cs';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -835,12 +821,12 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-24 20:28:16
--- MySQL dump 10.13  Distrib 5.1.41, for Win32 (ia32)
+-- Dump completed on 2011-03-07 23:20:12
+-- MySQL dump 10.13  Distrib 5.5.8, for Win32 (x86)
 --
 -- Host: localhost    Database: game
 -- ------------------------------------------------------
--- Server version	5.1.41
+-- Server version	5.5.8
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -859,6 +845,7 @@ CREATE TABLE `unit_templates_list` (
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
+INSERT INTO `schema_migrations` VALUES ('20110306191029');
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -871,4 +858,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-24 20:28:16
+-- Dump completed on 2011-03-07 23:20:12

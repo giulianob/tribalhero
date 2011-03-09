@@ -90,6 +90,7 @@ namespace Game.Comm
         StructureChange = 303,
         StructureLaborMove = 304,
         StructureDowngrade = 305,
+        StructureSelfDestroy = 306,
         TechAdded = 311,
         TechUpgrade = 312,
         TechRemoved = 313,
@@ -165,6 +166,10 @@ namespace Game.Comm
         BattleSkipped = 706,
         BattleNewRound = 707,
 
+        #endregion
+
+        #region Misc
+        ReousrceGather = 801,
         #endregion
     }
 }

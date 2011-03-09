@@ -16,7 +16,7 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 2106,13,ON_UPGRADE,city_reload_production_rate,,,,,,,
 2106,15,ON_UPGRADE,city_reload_production_rate,,,,,,,
 ,,,,,,,,,,
-3011,0,ON_INIT,property_create,name=Crop,int,0,,,,//create crop property
+,,,,,,,,,,
 3011,1,ON_INIT,structure_change,time=300,type=3012,lvl=1,,,FARMING_LABEL,//changing to mature
 3011,2,ON_INIT,structure_change,time=300,type=3012,lvl=2,,,FARMING_LABEL,//changing to mature
 3011,3,ON_INIT,structure_change,time=300,type=3012,lvl=3,,,FARMING_LABEL,//changing to mature
@@ -32,33 +32,33 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 3011,13,ON_INIT,structure_change,time=300,type=3012,lvl=13,,,FARMING_LABEL,//changing to mature
 3011,14,ON_INIT,structure_change,time=300,type=3012,lvl=14,,,FARMING_LABEL,//changing to mature
 3011,15,ON_INIT,structure_change,time=300,type=3012,lvl=15,,,FARMING_LABEL,//changing to mature
-3012,1,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,2,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,3,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,4,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,5,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,6,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,7,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,8,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,9,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,10,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,11,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,12,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,13,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,14,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,15,ON_CONVERT,structure_change,time=300,3010,1,,,TIME_LEFT_LABEL,//kill field
-3012,1,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,2,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,3,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,4,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,5,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,6,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,7,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,8,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,9,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,10,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,11,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,12,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,13,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,14,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
-3012,15,ON_CONVERT,property_create,name=Crop,int,500,,,,//set crop property to how much player will get
+3012,1,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,2,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,3,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,4,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,5,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,6,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,7,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,8,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,9,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,10,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,11,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,12,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,13,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,14,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,15,ON_CONVERT,structure_change,time=3000,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,1,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,2,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,3,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,4,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,5,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,6,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,7,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,8,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,9,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,10,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,11,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,12,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,13,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,14,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get
+3012,15,ON_CONVERT,property_create,name=Crop,RandomINT,400,500,,,//set crop property to how much player will get

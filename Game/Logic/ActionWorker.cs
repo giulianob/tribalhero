@@ -222,7 +222,7 @@ namespace Game.Logic
             return passive.Values.FirstOrDefault(action => action.WorkerObject == workerObject && action.GetType() == type);
         }
 
-        public void Remove(GameObject workerObject, ActionInterrupt actionInterrupt, params GameAction[] ignoreActions)
+        public void Remove(GameObject workerObject, params GameAction[] ignoreActions)
         {
             var ignoreActionList = new List<GameAction>(ignoreActions);
 
@@ -238,7 +238,7 @@ namespace Game.Logic
                 if (ignoreActionList.Contains(stub))
                     continue;
 
-                stub.UserCancelled();
+                stub.WorkerRemoved(false);
             }
 
             // Cancel Passive actions
@@ -253,29 +253,12 @@ namespace Game.Logic
                 if (ignoreActionList.Contains(stub))
                     continue;
 
-                stub.UserCancelled();
+                stub.WorkerRemoved(false);
             }
 
             using (new MultiObjectLock(City))
             {
                 references.Remove(workerObject);
-            }
-        }
-
-        public void DoInterrupt(ushort actionId, bool wasKilled)
-        {
-            ActiveAction activeAction;
-            if (ActiveActions.TryGetValue(actionId, out activeAction))
-            {
-                activeAction.WorkerRemoved(wasKilled);
-                return;
-            }
-
-            PassiveAction passiveAction;
-            if (PassiveActions.TryGetValue(actionId, out passiveAction))
-            {
-                passiveAction.WorkerRemoved(wasKilled);
-                return;
             }
         }
 

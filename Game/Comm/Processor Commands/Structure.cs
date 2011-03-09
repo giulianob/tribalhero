@@ -525,6 +525,48 @@ namespace Game.Comm
             }
         }
 
+        public void CmdSelfDestroyStructure(Session session, Packet packet)
+        {
+            uint cityId;
+            uint objectId;
+
+            try
+            {
+                cityId = packet.GetUInt32();
+                objectId = packet.GetUInt32();
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            using (new MultiObjectLock(session.Player))
+            {
+                City city = session.Player.GetCity(cityId);
+
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                Structure obj;
+                if (!city.TryGetStructure(objectId, out obj))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                var destroyAction = new StructureSelfDestroyActiveAction(cityId, objectId);
+                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, destroyAction, obj.Technologies);
+                if (ret != 0)
+                    ReplyError(session, packet, ret);
+                else
+                    ReplySuccess(session, packet);
+                return;
+            }
+        }
         public void CmdCreateForestCamp(Session session, Packet packet)
         {
             uint cityId;

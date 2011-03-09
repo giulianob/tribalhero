@@ -159,11 +159,12 @@ namespace CSVToXML {
                         writer.WriteAttributeString("iron", obj[16]);
                         writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
-                        writer.WriteAttributeString("workerid",
-                                                    byte.Parse(obj[2]) == 0
+                        if( int.Parse(obj[19])!=0 )
+                            writer.WriteAttributeString("workerid", obj[19]);
+                        else
+                            writer.WriteAttributeString("workerid", byte.Parse(obj[2]) == 0
                                                             ? "0"
-                                                            : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString
-                                                                      ());
+                                                            : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString());
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
                         writer.WriteAttributeString("unitclass", obj[22]);

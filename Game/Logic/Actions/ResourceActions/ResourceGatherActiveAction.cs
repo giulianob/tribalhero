@@ -77,9 +77,6 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (structure.State.Type == ObjectState.Battle)
-                return Error.CityInBattle;
-
             city.BeginUpdate();
             city.Resource.BeginUpdate();
 
@@ -97,7 +94,7 @@ namespace Game.Logic.Actions
             city.Resource.EndUpdate();
             city.EndUpdate();
 
-            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, 3010, 1);
+            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, 3009, 1);
             city.Worker.DoPassive(structure, changeAction, true);
 
             StateChange(ActionState.Completed);

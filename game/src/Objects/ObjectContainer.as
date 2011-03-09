@@ -10,8 +10,11 @@ package src.Objects {
 	import src.Global;
 	import src.Map.Camera;
 	import src.Map.MapUtil;
+	import src.Objects.Factories.StructureFactory;
 	import src.UI.Dialog.ObjectSelectDialog;
+	import src.UI.Tooltips.StructureTooltip;
 	import src.UI.Tooltips.TextTooltip;
+	import src.UI.Tooltips.Tooltip;
 	import src.Util.BinaryList.BinaryList;
 	import src.Util.Util;
 
@@ -35,7 +38,7 @@ package src.Objects {
 		private var originClick: Point = new Point(0, 0);
 		private var ignoreClick: Boolean = false;
 
-		private var multipleObjTooltip: TextTooltip = null;
+		private var objTooltip: Tooltip = null;
 		
 		private var mouseDisabled: Boolean;
 
@@ -112,6 +115,7 @@ package src.Objects {
 			}
 
 			ignoreClick = false;
+			eventMouseMove(e);
 		}
 
 		public function eventMouseDown(e: MouseEvent):void
@@ -146,12 +150,11 @@ package src.Objects {
 
 			tilePos = MapUtil.getMapCoord(tilePos.x, tilePos.y);
 			
-			resetDimmedObjects();
-			resetHighlightedObject();
+			resetDimmedObjects();			
 
 			var overlapping: Array = new Array();
 			var found: Boolean = false;
-			var highestObj: SimpleObject = null;
+			var highestObj: SimpleGameObject = null;
 			var obj: SimpleObject;
 			var objects: Array = new Array();
 			
@@ -185,11 +188,22 @@ package src.Objects {
 
 			if (!found && objects.length == 1 && objects[0] is SimpleGameObject)
 			{
-				highestObj = objects[0] as SimpleObject;
+				highestObj = objects[0] as SimpleGameObject;
 				found = true;
 			}
 
 			if (!found && !highestObj) return;			
+			
+			// If we still have the same highest obj then stop here
+			if (highlightedObject == highestObj) {
+				// Adjust tooltip to current mouse position
+				if (objTooltip) objTooltip.show(highestObj);
+				
+				return;
+			}
+			
+			// Reset the highlighted obj since it might have changed
+			resetHighlightedObject();
 
 			var highestObjMapPos: Point = MapUtil.getMapCoord(highestObj.getX(), highestObj.getY());
 			
@@ -217,12 +231,18 @@ package src.Objects {
 			var idxs: Array = Util.binarySearchRange(this.objects.each(), SimpleObject.compareXAndY, [highestObj.getX(), highestObj.getY()]);
 			if (idxs.length > 1)
 			{
-				multipleObjTooltip = new TextTooltip(idxs.length + " objects in this space. Click to view all");
-				multipleObjTooltip.show(highestObj);
+				objTooltip = new TextTooltip(idxs.length + " objects in this space. Click to view all");
+				objTooltip.show(highestObj);
 			}
 
 			if (highestObj is GameObject)
 			{
+				if (!objTooltip) {
+					if (highestObj is StructureObject) {
+						objTooltip = new StructureTooltip(StructureFactory.getPrototype(highestObj.type, highestObj.level));
+					}
+				}
+				
 				highlightedObject = highestObj as GameObject;
 				(highestObj as GameObject).setHighlighted(true);
 			}
@@ -238,10 +258,10 @@ package src.Objects {
 		{
 			if (highlightedObject)
 			{
-				if (multipleObjTooltip != null)
+				if (objTooltip != null)
 				{
-					multipleObjTooltip.hide();
-					multipleObjTooltip = null;
+					objTooltip.hide();
+					objTooltip = null;
 				}
 				highlightedObject.setHighlighted(false);
 				highlightedObject = null;

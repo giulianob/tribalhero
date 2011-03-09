@@ -233,6 +233,26 @@
 			Global.map.selectObject(forest, false);
 		}
 
+		public function structureSelfDestroy(cityId: int, structureId: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRUCTURE_SELF_DESTROY;
+
+			packet.writeUInt(cityId);
+			packet.writeUInt(structureId);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}		
+		
+		public function gatherResource(cityId: int, structureId: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.RESOURCE_GATHER;
+
+			packet.writeUInt(cityId);
+			packet.writeUInt(structureId);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}		
+		
 		public function createForestCamp(forestId: int, cityId: int, type: int, labor: int) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.FOREST_CAMP_CREATE;
@@ -243,7 +263,7 @@
 			packet.writeUByte(labor);
 
 			session.write(packet, mapComm.catchAllErrors);
-		}
+		}		
 
 		public function removeForestCamp(cityId: int, campId: int) : void {
 			var packet: Packet = new Packet();
@@ -274,6 +294,7 @@
 
 			obj.clearProperties();
 
+			obj.type = packet.readUShort();
 			obj.level = packet.readUByte();
 
 			if (obj.playerId == Constants.playerId) {

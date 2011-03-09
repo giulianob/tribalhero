@@ -15,7 +15,6 @@
 
 		private var structurePrototype: StructurePrototype;
 
-		private var pnlHeader: JPanel;
 		private var lblName: JLabel;
 		private var lblLevel: JLabel;
 
@@ -29,7 +28,7 @@
 		}
 
 		private function createUI() : void {
-			pnlHeader = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL, 5, 0));
+			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 3, 0));
 
 			lblName = new JLabel();
 			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
@@ -39,10 +38,8 @@
 			lblLevel.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLevel, "Tooltip.text");
 
-			pnlHeader.append(lblName);
-			pnlHeader.append(lblLevel);
-
-			ui.append(pnlHeader);
+			ui.append(lblName);
+			ui.append(lblLevel);
 		}
 
 	}

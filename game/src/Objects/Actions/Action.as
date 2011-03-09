@@ -17,7 +17,7 @@ package src.Objects.Actions {
 			{ name: "Train", icon: ICON_SINGLE_SWORD, actions: [ TrainButton] },
 			{ name: "Upgrade", icon: ICON_UPGRADE, actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
 			{ name: "Research", icon: ICON_BOOK, actions: [ TechnologyButton ] },			
-			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton ] },
+			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton ] },
 		];	
 		
 		public static const costsToCancelActions: Array = [STRUCTURE_BUILD, STRUCTURE_UPGRADE, STRUCTURE_CHANGE, TECHNOLOGY_UPGRADE, UNIT_TRAIN, UNIT_UPGRADE];
@@ -36,11 +36,13 @@ package src.Objects.Actions {
         public static const STRUCTURE_CHANGE: int = 103;
         public static const LABOR_MOVE: int = 106;        
 		public static const STRUCTURE_USERDOWNGRADE: int = 107;
+		public static const STRUCTURE_SELF_DESTROY: int = 109;
 		public static const RESOURCE_SEND: int = 305;
         public static const RESOURCE_BUY: int = 306;
         public static const RESOURCE_SELL: int = 307;
 		public static const FOREST_CAMP_BUILD: int = 308;
 		public static const FOREST_CAMP_REMOVE: int = 309;
+		public static const RESOURCES_GATHER: int = 311;
         public static const TECHNOLOGY_UPGRADE: int = 402;
 		public static const ROAD_BUILD: int = 510;
 		public static const ROAD_DESTROY: int = 511;

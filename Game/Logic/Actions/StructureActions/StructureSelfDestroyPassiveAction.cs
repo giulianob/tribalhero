@@ -90,7 +90,8 @@ namespace Game.Logic.Actions
 
                 if (structure.State.Type == ObjectState.Battle)
                 {
-                    StateChange(ActionState.Failed);
+                    endTime = DateTime.UtcNow.AddMinutes(5);
+                    StateChange(ActionState.Rescheduled);
                     return;
                 }
 

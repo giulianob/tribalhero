@@ -35,6 +35,7 @@ namespace Game.Comm
             RegisterCommand(Command.StructureDowngrade, CmdDowngradeStructure);
             RegisterCommand(Command.StructureChange, CmdChangeStructure);
             RegisterCommand(Command.StructureLaborMove, CmdLaborMove);
+            RegisterCommand(Command.StructureSelfDestroy, CmdSelfDestroyStructure);
             RegisterCommand(Command.UnitTrain, CmdTrainUnit);
             RegisterCommand(Command.UnitUpgrade, CmdUnitUpgrade);
             RegisterCommand(Command.ActionCancel, CmdCancelAction);
@@ -58,6 +59,7 @@ namespace Game.Comm
             RegisterCommand(Command.RegionRoadBuild, CmdRoadCreate);
             RegisterCommand(Command.RegionRoadDestroy, CmdRoadDestroy);
             RegisterCommand(Command.CityResourceSend, CmdSendResources);
+            RegisterCommand(Command.ReousrceGather, CmdResourceGather);
 
             RegisterEvent(Command.OnDisconnect, EventOnDisconnect);
             RegisterEvent(Command.OnConnect, EventOnConnect);

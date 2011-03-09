@@ -23,6 +23,15 @@ namespace Game.Logic.Actions
         {
         }
 
+        public StructureChangePassiveAction(uint cityId, uint objectId, int seconds, ushort newType, byte newLvl)
+        {
+            this.cityId = cityId;
+            this.objectId = objectId;
+            ts = TimeSpan.FromSeconds(seconds);
+            type = newType;
+            lvl = newLvl;
+        }
+
         public StructureChangePassiveAction(uint id,
                                           DateTime beginTime,
                                           DateTime nextTime,
@@ -94,7 +103,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure, ActionInterrupt.Cancel, new GameAction[] { this });
+            structure.City.Worker.Remove(structure, new GameAction[] { this });
 
             using (new MultiObjectLock(cityId, objectId, out city, out structure))
             {
@@ -125,7 +134,7 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            endTime = SystemClock.Now.AddSeconds(ts.TotalSeconds);
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
             BeginTime = SystemClock.Now;
 
             if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))

@@ -349,7 +349,7 @@ namespace CSVToXML {
                             default:
                                 writer.WriteStartElement("MISSING_WORKER_ACTION");
                                 writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.Type));
-                                writer.WriteAttributeString("command", req.Parms[0]);
+                                writer.WriteAttributeString("command", req.Parms[4]);
                                 break;
                         }
 

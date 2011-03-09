@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure, ActionInterrupt.Cancel);
+            structure.City.Worker.Remove(structure);
 
             using (new MultiObjectLock(cityId, structureId, out city, out structure))
             {

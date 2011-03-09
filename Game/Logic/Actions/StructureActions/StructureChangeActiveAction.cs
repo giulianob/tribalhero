@@ -131,7 +131,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure, ActionInterrupt.Cancel, new GameAction[] {this});
+            structure.City.Worker.Remove(structure, new GameAction[] {this});
 
             using (new MultiObjectLock(cityId, out city))
             {

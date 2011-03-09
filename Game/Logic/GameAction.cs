@@ -43,6 +43,7 @@ namespace Game.Logic
         ForestCampBuildActive = 308,
         ForestCampRemoveActive = 309,
         ForestCampHarvestPassive = 310,
+        ResourceGatherActive = 311,
 
         CityPassive = 502,
         CityRadiusChangePassive = 503,
@@ -156,10 +157,15 @@ namespace Game.Logic
 
         protected double CalculateTime(int seconds, bool instantAction = true)
         {
-            if (!instantAction)
-                return seconds*Config.seconds_per_unit;
-
-            return Config.actions_instant_time ? 1 : seconds*Config.seconds_per_unit;
+            return CalculateTime((double)seconds, instantAction);
         }
+
+        protected double CalculateTime(double seconds, bool instantAction = true) {
+            if (!instantAction)
+                return seconds * Config.seconds_per_unit;
+
+            return Config.actions_instant_time ? 1 : seconds * Config.seconds_per_unit;
+        }
+
     }
 }

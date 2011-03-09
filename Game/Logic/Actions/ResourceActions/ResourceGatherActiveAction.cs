@@ -1,4 +1,5 @@
-﻿#region
+﻿
+#region
 
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,19 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    public class StructureSelfDestroyActiveAction : ScheduledActiveAction
+    public class ResourceGatherActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly uint objectId;
         private TimeSpan ts;
 
-        public StructureSelfDestroyActiveAction(uint cityId, uint objectId)
+        public ResourceGatherActiveAction(uint cityId, uint objectId)
         {
             this.cityId = cityId;
             this.objectId = objectId;
         }
 
-        public StructureSelfDestroyActiveAction(uint id,
+        public ResourceGatherActiveAction(uint id,
                                             DateTime beginTime,
                                             DateTime nextTime,
                                             DateTime endTime,
@@ -40,7 +41,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.StructureSelfDestroyActive;
+                return ActionType.ResourceGatherActive;
             }
         }
 
@@ -63,28 +64,6 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                if (structure == null)
-                {
-                    StateChange(ActionState.Completed);
-                    return;
-                }
-
-                if (structure.State.Type == ObjectState.Battle)
-                {
-                    endTime = DateTime.UtcNow.AddMinutes(5);
-                    StateChange(ActionState.Rescheduled);
-                    return;
-                }
-
-                city.BeginUpdate();
-                structure.BeginUpdate();
-
-                Global.World.Remove(structure);
-                city.ScheduleRemove(structure, false);
-
-                structure.EndUpdate();
-                city.EndUpdate();
-
                 StateChange(ActionState.Completed);
             }
         }
@@ -93,13 +72,35 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-
-            endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
-            BeginTime = SystemClock.Now;
+            object value;
 
             if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
                 return Error.ObjectNotFound;
 
+            if (structure.State.Type == ObjectState.Battle)
+                return Error.CityInBattle;
+
+            city.BeginUpdate();
+            city.Resource.BeginUpdate();
+
+            if(structure.Properties.TryGet("Crop", out value) )
+                city.Resource.Crop.Add((int)structure["Crop"]);
+            if (structure.Properties.TryGet("Gold", out value))
+                city.Resource.Gold.Add((int)structure["Gold"]);
+            if (structure.Properties.TryGet("Iron", out value))
+                city.Resource.Iron.Add((int)structure["Iron"]);
+            if (structure.Properties.TryGet("Wood", out value))
+                city.Resource.Wood.Add((int)structure["Wood"]);
+            if (structure.Properties.TryGet("Labor", out value)) 
+                city.Resource.Labor.Add((int)structure["Labor"]);
+
+            city.Resource.EndUpdate();
+            city.EndUpdate();
+
+            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, 3010, 1);
+            city.Worker.DoPassive(structure, changeAction, true);
+
+            StateChange(ActionState.Completed);
             return Error.Ok;
         }
 
@@ -109,8 +110,6 @@ namespace Game.Logic.Actions
 
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
-
-            ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
 
             return Error.Ok;
         }

@@ -38,24 +38,31 @@ namespace Game.Logic.Actions
             if ((structure = obj as Structure) == null)
                 throw new Exception();
             name = parms[0];
-            switch((DataType)Enum.Parse(typeof(DataType), parms[1], true))
+
+            switch(parms[1].ToLower())
             {
-                case DataType.Byte:
+                case "byte":
                     value = byte.Parse(parms[2]);
                     break;
-                case DataType.UShort:
+                case "ushort":
                     value = ushort.Parse(parms[2]);
                     break;
-                case DataType.Int:
+                case "int":
                     value = int.Parse(parms[2]);
                     break;
-                case DataType.UInt:
+                case "uint":
                     value = uint.Parse(parms[2]);
                     break;
-                case DataType.String:
+                case "string":
                     value = parms[2];
                     break;
+                case "randomint":
+                    value = Config.Random.Next(int.Parse(parms[2]), int.Parse(parms[3]));
+                    break;
+                default:
+                    throw new Exception("Type not supported for structure property");
             }
+
 
             Execute();
         }

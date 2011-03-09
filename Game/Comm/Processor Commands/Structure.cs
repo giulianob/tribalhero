@@ -41,6 +41,7 @@ namespace Game.Comm
                 }
 
                 var reply = new Packet(packet);
+                reply.AddUInt16(structure.Stats.Base.Type);
                 reply.AddByte(structure.Stats.Base.Lvl);
                 if (session.Player == structure.City.Owner)
                 {

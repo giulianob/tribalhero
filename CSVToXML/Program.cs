@@ -346,6 +346,12 @@ namespace CSVToXML {
                             case ActionType.StructureDowngradeActive:
                                 writer.WriteStartElement("StructureDowngrade");
                                 break;
+                            case ActionType.StructureSelfDestroyActive:
+                                writer.WriteStartElement("StructureSelfDestroy");
+                                break;
+                            case ActionType.ResourceGatherActive:
+                                writer.WriteStartElement("ResourceGather");
+                                break;
                             default:
                                 writer.WriteStartElement("MISSING_WORKER_ACTION");
                                 writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.Type));

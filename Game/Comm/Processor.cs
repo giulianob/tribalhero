@@ -59,7 +59,7 @@ namespace Game.Comm
             RegisterCommand(Command.RegionRoadBuild, CmdRoadCreate);
             RegisterCommand(Command.RegionRoadDestroy, CmdRoadDestroy);
             RegisterCommand(Command.CityResourceSend, CmdSendResources);
-            RegisterCommand(Command.ReousrceGather, CmdResourceGather);
+            RegisterCommand(Command.ResourceGather, CmdResourceGather);
 
             RegisterEvent(Command.OnDisconnect, EventOnDisconnect);
             RegisterEvent(Command.OnConnect, EventOnConnect);

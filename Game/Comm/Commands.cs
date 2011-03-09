@@ -169,7 +169,7 @@ namespace Game.Comm
         #endregion
 
         #region Misc
-        ReousrceGather = 801,
+        ResourceGather = 801,
         #endregion
     }
 }

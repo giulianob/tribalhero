@@ -104,9 +104,8 @@ namespace Game.Setup
                         else
                             actionReq.EffectReqInherit = EffectInheritance.All;
                         if (record.List.Any(x => x.Index == actionIndex))
-                        {
                             record.List.RemoveAll(x => x.Index == actionIndex);
-                        }
+                        
                         record.List.Add(actionReq);
                     }
                 }

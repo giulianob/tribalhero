@@ -116,7 +116,16 @@ namespace Game.Logic.Actions
         }
 
         public override void UserCancelled()
-        {            
+        {
+            City city;
+            Structure structure;
+            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            {
+                if (!IsValid())
+                    return;
+
+                StateChange(ActionState.Failed);
+            }
         }
 
         public override void WorkerRemoved(bool wasKilled)

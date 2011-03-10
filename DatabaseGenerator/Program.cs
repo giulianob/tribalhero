@@ -219,7 +219,7 @@ namespace DatabaseGenerator
                     if (record == null)
                         continue;
 
-                    if (record.List.Any(action => action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level))
+                    if (record.List.Any(action => action.Type == ActionType.TechnologyUpgradeActive && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level))
                     {
                         trainer = stats;
                         return;
@@ -234,7 +234,7 @@ namespace DatabaseGenerator
         {
             ActionRecord record = ActionFactory.GetActionRequirementRecord(trainer.WorkerId);
 
-            ActionRequirement foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.TechnologyUpgrade && ushort.Parse(action.Parms[0]) == type && ushort.Parse(action.Parms[1]) >= level);
+            ActionRequirement foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.TechnologyUpgradeActive && ushort.Parse(action.Parms[0]) == type && ushort.Parse(action.Parms[1]) >= level);
 
             if (foundAction != null)
             {
@@ -361,7 +361,7 @@ namespace DatabaseGenerator
 
                     if (level == 1)
                     {
-                        if (record.List.Any(action => action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type))
+                        if (record.List.Any(action => action.Type == ActionType.UnitTrainActive && ushort.Parse(action.Parms[0]) == type))
                         {
                             trainer = stats;
                             return;
@@ -369,7 +369,7 @@ namespace DatabaseGenerator
                     } 
                     else
                     {
-                        if (record.List.Any(action => action.Type == ActionType.UnitUpgrade && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level))
+                        if (record.List.Any(action => action.Type == ActionType.UnitUpgradeActive && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level))
                         {
                             trainer = stats;
                             return;
@@ -388,9 +388,9 @@ namespace DatabaseGenerator
             ActionRequirement foundAction;
             
             if (level == 1)
-                foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.UnitTrain && ushort.Parse(action.Parms[0]) == type);
+                foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.UnitTrainActive && ushort.Parse(action.Parms[0]) == type);
             else
-                foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.UnitUpgrade && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level);                            
+                foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.UnitUpgradeActive && ushort.Parse(action.Parms[0]) == type && byte.Parse(action.Parms[1]) >= level);                            
 
             if (foundAction == null)
                 yield break;
@@ -505,19 +505,19 @@ namespace DatabaseGenerator
             ActionRequirement foundAction = null;
             foreach (var action in record.List)
             {
-                if (level == 1 && action.Type == ActionType.StructureBuild && ushort.Parse(action.Parms[0]) == type)
+                if (level == 1 && action.Type == ActionType.StructureBuildActive && ushort.Parse(action.Parms[0]) == type)
                 {
                     foundAction = action;
                     break;
                 }
 
-                if (level == 1 && action.Type == ActionType.StructureChange && ushort.Parse(action.Parms[0]) == type)
+                if (level == 1 && action.Type == ActionType.StructureChangeActive && ushort.Parse(action.Parms[0]) == type)
                 {
                     foundAction = action;
                     break;
                 }
 
-                if (action.Type == ActionType.StructureUpgrade && byte.Parse(action.Parms[0]) >= level)
+                if (action.Type == ActionType.StructureUpgradeActive && byte.Parse(action.Parms[0]) >= level)
                 {
                     foundAction = action;
                     break;
@@ -565,14 +565,14 @@ namespace DatabaseGenerator
                     {
                         if (level == 1)
                         {
-                            if (action.Type == ActionType.StructureBuild && ushort.Parse(action.Parms[0]) == type)
+                            if (action.Type == ActionType.StructureBuildActive && ushort.Parse(action.Parms[0]) == type)
                             {
                                 builder = stats;
                                 convert = false;
                                 return;
                             }
 
-                            if (action.Type == ActionType.StructureChange && ushort.Parse(action.Parms[0]) == type)
+                            if (action.Type == ActionType.StructureChangeActive && ushort.Parse(action.Parms[0]) == type)
                             {
                                 builder = stats;
                                 convert = true;

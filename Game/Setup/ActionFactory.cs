@@ -80,7 +80,7 @@ namespace Game.Setup
                         actionReq = new ActionRequirement
                                     {
                                             Index = actionIndex,
-                                            Type = (ActionType)Enum.Parse(typeof(ActionType), toks[col["Action"]].ToCamelCase(), true),
+                                            Type = (ActionType)Enum.Parse(typeof(ActionType), (toks[col["Action"]] + "_active").ToCamelCase(), true),
                                             Max = byte.Parse(toks[col["Max"]])
                                     };
 
@@ -104,9 +104,8 @@ namespace Game.Setup
                         else
                             actionReq.EffectReqInherit = EffectInheritance.All;
                         if (record.List.Any(x => x.Index == actionIndex))
-                        {
                             record.List.RemoveAll(x => x.Index == actionIndex);
-                        }
+                        
                         record.List.Add(actionReq);
                     }
                 }

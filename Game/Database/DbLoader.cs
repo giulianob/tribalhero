@@ -731,7 +731,11 @@ namespace Game.Database
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    action.WorkerObject = city;
+                    var workerId = (uint)reader["object_id"];
+                    if (workerId == 0)
+                        action.WorkerObject = city;
+                    else
+                        action.WorkerObject = city[(uint)reader["object_id"]];
 
                     city.Worker.DbLoaderDoActive(action);
 
@@ -749,7 +753,7 @@ namespace Game.Database
 
             types = new[] {typeof(uint), typeof(bool), typeof(Dictionary<string, string>)};
 
-            var scheduledTypes = new[] {typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(bool), typeof(Dictionary<string, string>)};
+            var scheduledTypes = new[] {typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(bool), typeof(string), typeof(Dictionary<string, string>)};
 
             using (var reader = dbManager.Select(PassiveAction.DB_TABLE))
             {
@@ -784,7 +788,9 @@ namespace Game.Database
                         DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc);
                         endTime = endTime.Add(downTime);
 
-                        parms = new object[] {(uint)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], properties};
+                        string nlsDescription = DBNull.Value.Equals(reader["nls_description"]) ? string.Empty : (string)reader["nls_description"];
+
+                        parms = new object[] {(uint)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], nlsDescription, properties};
                     }
                     else
                         parms = new object[] {(uint)reader["id"], (bool)reader["is_visible"], properties};
@@ -836,13 +842,13 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var actionType = (ActionType)((int)reader["type"]);
-                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
+                    Type type = Type.GetType("Game.Logic.Actions." + actionType + "Action", true, true);
                     ConstructorInfo cInfo = type.GetConstructor(types);
 
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
 
-                    var currentActionId = (uint)reader["current_action_id"];
+                    var currentActionId = DBNull.Value.Equals(reader["current_action_id"]) ? 0 : (uint)reader["current_action_id"];
 
                     List<PassiveAction> chainList;
                     PassiveAction currentAction = null;

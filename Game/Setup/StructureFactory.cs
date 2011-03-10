@@ -59,10 +59,15 @@ namespace Game.Setup
                                                     byte.Parse(toks[col["Spd"]]),
                                                     0,
                                                     0);
+                    int workerId = int.Parse(toks[col["Worker"]]);
 
-                    int workerId = byte.Parse(toks[col["Lvl"]]) == 0
-                                           ? 0
-                                           : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
+                    if( workerId==0 )
+                    {
+                        workerId = byte.Parse(toks[col["Lvl"]]) == 0
+                                        ? 0
+                                        : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
+                    }
+
 
                     var basestats = new StructureBaseStats(toks[col["Name"]],
                                                            toks[col["SpriteClass"]],

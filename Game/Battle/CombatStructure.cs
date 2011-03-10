@@ -243,7 +243,7 @@ namespace Game.Battle
                     Structure.State = GameObjectState.NormalState();
                     Structure.EndUpdate();
 
-                    Structure.City.Worker.DoPassive(Structure.City, new StructureDowngradeAction(Structure.City.Id, Structure.ObjectId), false);
+                    Structure.City.Worker.DoPassive(Structure.City, new StructureDowngradePassiveAction(Structure.City.Id, Structure.ObjectId), false);
                 }
                 else
                 {

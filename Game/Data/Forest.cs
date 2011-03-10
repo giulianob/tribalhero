@@ -184,13 +184,13 @@ namespace Game.Data
             //Reset the harvest actions
             foreach (var obj in this.Where(obj => obj.Lvl > 0))
             {
-                var action = (ForestCampHarvestAction)obj.City.Worker.FindAction(obj, typeof(ForestCampHarvestAction));
+                var action = (ForestCampHarvestPassiveAction)obj.City.Worker.FindAction(obj, typeof(ForestCampHarvestPassiveAction));
                 if (action != null)
                     action.Reschedule();
                 else
                 {
                     // Set new harvesting action                             
-                    action = new ForestCampHarvestAction(obj.City.Id, ObjectId);
+                    action = new ForestCampHarvestPassiveAction(obj.City.Id, ObjectId);
                     obj.City.Worker.DoPassive(obj, action, true);
                 }
             }

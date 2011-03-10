@@ -171,6 +171,7 @@ namespace Game.Comm
                 packet.AddByte(0);
                 packet.AddUInt32(actionStub.ActionId);
                 packet.AddUInt16((ushort)actionStub.Type);
+                packet.AddString(actionStub is ScheduledPassiveAction ? ((ScheduledPassiveAction)actionStub).NlsDescription : string.Empty);
             }
             else
             {

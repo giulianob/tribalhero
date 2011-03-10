@@ -20,6 +20,8 @@ namespace Game.Logic
 
         private static DateTime lastUpdateScheduler = DateTime.MinValue;
 
+        private static DateTime systemStartTime = DateTime.MinValue;
+
         public static void Resume()
         {
             if (timer == null)
@@ -39,8 +41,11 @@ namespace Game.Logic
             lock (objLock)
             {
                 using (Global.DbManager.GetThreadTransaction())
-                {
+                {                    
                     DateTime now = DateTime.UtcNow;
+
+                    if (systemStartTime == DateTime.MinValue)
+                        systemStartTime = now;
 
                     //System time
                     Global.SystemVariables["System.time"].Value = now;
@@ -73,8 +78,11 @@ namespace Game.Logic
                     DateTime lastDbProbe;
                     Global.DbManager.Probe(out queriesRan, out lastDbProbe);
 
+                    var uptime = now.Subtract(systemStartTime);
+
                     var variables = new List<SystemVariable>
                                     {
+                                            new SystemVariable("System.uptime", string.Format("{0:D2} hrs, {1:D2} mins, {2:D2} secs", uptime.Hours, uptime.Minutes, uptime.Seconds)),
                                             new SystemVariable("Scheduler.size", schedulerSize),
                                             new SystemVariable("Scheduler.size_change", schedulerDelta),
                                             new SystemVariable("Scheduler.actions_per_second", (int)(actionsFired/now.Subtract(lastProbe).TotalSeconds)),
@@ -92,9 +100,8 @@ namespace Game.Logic
                                             new SystemVariable("Cities.count", Global.World.CityCount),
                                     };
 
-                    variables.AddRange(Global.World.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));
-
                     // Forest cnt
+                    variables.AddRange(Global.World.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    
 
                     // Update vars
                     foreach (var variable in variables)

@@ -12,7 +12,7 @@ if (isset($lsessid)) {
         flashvars.sessid = "<?php echo session_id(); ?>";
         flashvars.siteVersion = "<?php echo $swfMtime ?>";
         var params = {
-            wmode: "opaque"
+
         };
         var attributes = {
             id: "Game"

@@ -17,7 +17,7 @@ namespace Game.Setup
         OnDowngrade = 2,
         OnUpgrade = 3,
         OnDestroy = 4,
-        OnConvert
+        OnConvert = 5,
     }
 
     class InitRecord
@@ -25,6 +25,7 @@ namespace Game.Setup
         public InitCondition Condition { get; set; }
         public string[] Parms { get; set; }
         public Type Type { get; set; }
+        public string NlsDescription { get; set; }
     }
 
     class InitFactory
@@ -49,15 +50,17 @@ namespace Game.Setup
                 {
                     if (toks[0].Length <= 0)
                         continue;
-                    var record = new InitRecord();
-                    string name = "Game.Logic.Actions." + toks[col["Action"]];
-                    record.Type = Type.GetType(name, true);
-                    if (record.Type == null)
-                        continue;
-                    record.Condition = (InitCondition)Enum.Parse(typeof(InitCondition), toks[col["Condition"]].ToCamelCase(), true);
-                    record.Parms = new string[toks.Length - 4];
-                    for (int i = 4; i < toks.Length; ++i)
+                    var record = new InitRecord
+                                 {
+                                         Type = Type.GetType("Game.Logic.Actions." + (toks[col["Action"]] + "_passive_action").ToCamelCase(), true),
+                                         Condition = (InitCondition)Enum.Parse(typeof(InitCondition), toks[col["Condition"]].ToCamelCase(), true),
+                                         Parms = new string[toks.Length - 4],
+                                         NlsDescription = toks[col["NlsDesc"]],
+                                 };
+
+                    for (int i = 4; i <= 8; ++i)
                         record.Parms[i - 4] = toks[i].Contains("=") ? toks[i].Split('=')[1] : toks[i];
+
                     Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]), record.Type));
 
                     int index = int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]);
@@ -85,6 +88,11 @@ namespace Game.Setup
                         continue;
 
                     var action = (IScriptable)Activator.CreateInstance(each.Type, new object[] {});
+
+                    // TODO: This needs to be more generic to support more types of actions. Since this is init and all init actions are passive, then this is okay for now.
+                    if (action is ScheduledPassiveAction)
+                        ((ScheduledPassiveAction)action).NlsDescription = each.NlsDescription;
+
                     action.ScriptInit(obj, each.Parms);
                 }
             }

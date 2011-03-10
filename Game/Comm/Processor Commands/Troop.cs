@@ -219,7 +219,7 @@ namespace Game.Comm
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
-                var upgradeAction = new UnitUpgradeAction(cityId, objectId, type);
+                var upgradeAction = new UnitUpgradeActiveAction(cityId, objectId, type);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -262,7 +262,7 @@ namespace Game.Comm
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
-                var trainAction = new UnitTrainAction(cityId, objectId, type, count);
+                var trainAction = new UnitTrainActiveAction(cityId, objectId, type, count);
                 Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -374,7 +374,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var aa = new AttackAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
+                var aa = new AttackChainAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
@@ -469,7 +469,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var da = new DefenseAction(cityId, stub.TroopId, targetCityId);
+                var da = new DefenseChainAction(cityId, stub.TroopId, targetCityId);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
@@ -551,7 +551,7 @@ namespace Game.Comm
                     return;
                 }
 
-                var ra = new RetreatAction(cityId, troopId);
+                var ra = new RetreatChainAction(cityId, troopId);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
                 if (ret != 0)

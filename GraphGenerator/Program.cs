@@ -215,21 +215,21 @@ namespace GraphGenerator
             {
                 switch(action.Type)
                 {
-                    case ActionType.StructureBuild:
-                    case ActionType.StructureChange:
+                    case ActionType.StructureBuildActive:
+                    case ActionType.StructureChangeActive:
                         StructureBaseStats building = StructureFactory.GetBaseStats(ushort.Parse(action.Parms[0]), 1);
                         Result result = ProcessStructure(building, false);
                         if (result != Result.AlreadyProcessed)
                         {
-                            if (action.Type == ActionType.StructureBuild)
+                            if (action.Type == ActionType.StructureBuildActive)
                                 WriteNode(structureBaseStats, building);
-                            else if (action.Type == ActionType.StructureChange)
+                            else if (action.Type == ActionType.StructureChangeActive)
                                 WriteNode(structureBaseStats, building, "dashed", "Converts To");
 
                             hadConnection = true;
                         }
                         break;
-                    case ActionType.UnitTrain:
+                    case ActionType.UnitTrainActive:
                         BaseUnitStats training = UnitFactory.GetUnitStats(ushort.Parse(action.Parms[0]), 1);
                         if (!processedUnits.Contains(training.UnitHash))
                         {
@@ -239,7 +239,7 @@ namespace GraphGenerator
                             processedUnits.Add(training.UnitHash);
                         }
                         break;
-                    case ActionType.TechnologyUpgrade:
+                    case ActionType.TechnologyUpgradeActive:
                         TechnologyBase tech = TechnologyFactory.GetTechnologyBase(ushort.Parse(action.Parms[0]), 1);
                         if (!processedTechnologies.Contains(tech.TechnologyHash))
                         {
@@ -257,7 +257,7 @@ namespace GraphGenerator
             {
                 switch(action.Type)
                 {
-                    case ActionType.StructureUpgrade:
+                    case ActionType.StructureUpgradeActive:
                         if (!skipUpgrades)
                         {
                             byte maxLvl = byte.Parse(action.Parms[0]);

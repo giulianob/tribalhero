@@ -457,7 +457,7 @@ namespace Game.Data
 
                 obj.IsBlocked = true;
 
-                var removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
+                var removeAction = new ObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, new List<uint>());
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
         }
@@ -492,7 +492,7 @@ namespace Game.Data
 
                 Worker.References.Remove(obj);
 
-                var removeAction = new ObjectRemoveAction(Id, obj.ObjectId, wasKilled, actions);
+                var removeAction = new ObjectRemovePassiveAction(Id, obj.ObjectId, wasKilled, actions);
                 return Worker.DoPassive(this, removeAction, false) == Error.Ok;
             }
         }

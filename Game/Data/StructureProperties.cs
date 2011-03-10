@@ -121,6 +121,17 @@ namespace Game.Data
             properties.Remove(key);
         }
 
+        public bool TryGet(object key, out object value)
+        {
+            if(!properties.Contains(key))
+            {
+                value = null;
+                return false;
+            }
+            value = properties[key];
+            return true;
+        }
+
         public object Get(object key)
         {
             return properties[key];

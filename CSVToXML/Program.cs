@@ -159,11 +159,12 @@ namespace CSVToXML {
                         writer.WriteAttributeString("iron", obj[16]);
                         writer.WriteAttributeString("labor", obj[17]);
                         writer.WriteAttributeString("time", obj[18]);
-                        writer.WriteAttributeString("workerid",
-                                                    byte.Parse(obj[2]) == 0
+                        if( int.Parse(obj[19])!=0 )
+                            writer.WriteAttributeString("workerid", obj[19]);
+                        else
+                            writer.WriteAttributeString("workerid", byte.Parse(obj[2]) == 0
                                                             ? "0"
-                                                            : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString
-                                                                      ());
+                                                            : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString());
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
                         writer.WriteAttributeString("unitclass", obj[22]);
@@ -290,66 +291,72 @@ namespace CSVToXML {
                     foreach(ActionRequirement req in record.List)
                     {
                         switch (req.Type) {
-                            case ActionType.ForestCampBuild:
+                            case ActionType.ForestCampBuildActive:
                                 writer.WriteStartElement("ForestCampBuild");
                                 writer.WriteAttributeString("type", req.Parms[0]);
                                 break;
-                            case ActionType.ForestCampRemove:
+                            case ActionType.ForestCampRemoveActive:
                                 writer.WriteStartElement("ForestCampRemove");
                                 break;
-                            case ActionType.RoadBuild:
+                            case ActionType.RoadBuildActive:
                                 writer.WriteStartElement("RoadBuild");
                                 break;
-                            case ActionType.RoadDestroy:
+                            case ActionType.RoadDestroyActive:
                                 writer.WriteStartElement("RoadDestroy");
                                 break;
-                            case ActionType.StructureBuild:
+                            case ActionType.StructureBuildActive:
                                 writer.WriteStartElement("StructureBuild");
                                 writer.WriteAttributeString("type", req.Parms[0]);
                                 writer.WriteAttributeString("tilerequirement", req.Parms[1]);
+                                writer.WriteAttributeString("level", req.Parms[2].Trim() == string.Empty ? "1" : req.Parms[2]);
                                 break;
-                            case ActionType.UnitTrain:
+                            case ActionType.UnitTrainActive:
                                 writer.WriteStartElement("TrainUnit");
                                 writer.WriteAttributeString("type", req.Parms[0]);
                                 break;
-                            case ActionType.StructureChange:
+                            case ActionType.StructureChangeActive:
                                 writer.WriteStartElement("StructureChange");
                                 writer.WriteAttributeString("type", req.Parms[0]);
                                 writer.WriteAttributeString("level", req.Parms[1]);
                                 break;
-                            case ActionType.StructureUpgrade:
+                            case ActionType.StructureUpgradeActive:
                                 writer.WriteStartElement("StructureUpgrade");
-                                writer.WriteAttributeString("type", req.Parms[0]);
                                 break;
-                            case ActionType.UnitUpgrade:
+                            case ActionType.UnitUpgradeActive:
                                 writer.WriteStartElement("UnitUpgrade");
                                 writer.WriteAttributeString("type", req.Parms[0]);
                                 writer.WriteAttributeString("maxlevel", req.Parms[1]);
                                 break;
-                            case ActionType.TechnologyUpgrade:
+                            case ActionType.TechnologyUpgradeActive:
                                 writer.WriteStartElement("TechnologyUpgrade");
                                 writer.WriteAttributeString("type", req.Parms[0]);
                                 writer.WriteAttributeString("maxlevel", req.Parms[1]);
                                 break;
-                            case ActionType.ResourceSend:
+                            case ActionType.ResourceSendActive:
                                 writer.WriteStartElement("ResourceSend");
                                 break;
-                            case ActionType.ResourceSell:
+                            case ActionType.ResourceSellActive:
                                 writer.WriteStartElement("ResourceSell");
                                 break;
-                            case ActionType.ResourceBuy:
+                            case ActionType.ResourceBuyActive:
                                 writer.WriteStartElement("ResourceBuy");
                                 break;
-                            case ActionType.LaborMove:
+                            case ActionType.LaborMoveActive:
                                 writer.WriteStartElement("LaborMove");
                                 break;
-                            case ActionType.StructureUserdowngrade:
+                            case ActionType.StructureDowngradeActive:
                                 writer.WriteStartElement("StructureDowngrade");
+                                break;
+                            case ActionType.StructureSelfDestroyActive:
+                                writer.WriteStartElement("StructureSelfDestroy");
+                                break;
+                            case ActionType.ResourceGatherActive:
+                                writer.WriteStartElement("ResourceGather");
                                 break;
                             default:
                                 writer.WriteStartElement("MISSING_WORKER_ACTION");
                                 writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.Type));
-                                writer.WriteAttributeString("command", req.Parms[0]);
+                                writer.WriteAttributeString("command", req.Parms[4]);
                                 break;
                         }
 

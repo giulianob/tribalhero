@@ -66,7 +66,7 @@
 				actionDescription = actionWorkerPrototype.getAction((currentAction as CurrentActiveAction).index).toString();
 			}
 			else if (currentAction is CurrentPassiveAction)
-			actionDescription = PassiveAction.toString((currentAction as CurrentPassiveAction).type);
+			actionDescription = (currentAction as CurrentPassiveAction).toString();
 			else
 			actionDescription = "Unexpected action";
 

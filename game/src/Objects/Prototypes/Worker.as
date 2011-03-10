@@ -22,9 +22,9 @@ package src.Objects.Prototypes {
 		public function Worker() {
 		}
 
-		public function addAction(action: IAction): int
+		public function addAction(action: IAction): void
 		{
-			return actions.push(action);
+			actions.push(action);
 		}
 
 		public function addTechUpgradeAction(action: TechUpgradeAction):void
@@ -34,7 +34,11 @@ package src.Objects.Prototypes {
 
 		public function getAction(index: int): *
 		{
-			return actions[index - 1];
+			for each(var action: Action in actions) {
+				if (action.index == index) return action;
+			}
+			
+			return null;
 		}
 
 		public function getTechUpgradeActions(): Array

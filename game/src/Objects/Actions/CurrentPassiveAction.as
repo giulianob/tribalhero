@@ -1,22 +1,33 @@
 ﻿package src.Objects.Actions
 {
+	import fl.lang.Locale;
 	import src.Objects.GameObject;
 	import src.Objects.IObject;
 
 	public class CurrentPassiveAction extends CurrentAction
 	{
 		public var type: int;
+		public var nlsDescription: String;
 		
-		public function CurrentPassiveAction(workerId: int, id: int, type: int, startTime: int, endTime: int) 
+		public function CurrentPassiveAction(workerId: int, id: int, type: int, nlsDescription: String, startTime: int, endTime: int) 
 		{
 			super(workerId, id, startTime, endTime);
 			
+			this.nlsDescription = nlsDescription;			
 			this.type = type;
 		}
 		
 		public override function toString() : String 
 		{
-			return PassiveAction.toString(type);
+			if (nlsDescription && nlsDescription != "") {
+				var str: String = Locale.loadString(nlsDescription);
+				if (str && str != "")
+					return str;
+
+				return "[" + nlsDescription + "]";
+			}
+			else
+				return PassiveAction.toString(type);
 		}
 		
 		public override function getType():int 

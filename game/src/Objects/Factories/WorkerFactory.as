@@ -75,7 +75,7 @@
 							action = new ForestCampBuildAction(actionNode.@type);
 						break;
 						case "StructureBuild":
-							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement);
+							action = new BuildAction(actionNode.@type, actionNode.@tilerequirement, actionNode.@level);
 						break;
 						case "StructureChange":
 							action = new StructureChangeAction(actionNode.@type, actionNode.@level);
@@ -88,7 +88,7 @@
 							worker.addTechUpgradeAction(action as TechUpgradeAction);
 						break;
 						case "StructureUpgrade":
-							action = new StructureUpgradeAction(actionNode.@type);
+							action = new StructureUpgradeAction();
 						break;
 						case "TrainUnit":
 							action = new TrainAction(actionNode.@type);
@@ -111,6 +111,12 @@
 						case "ForestCampRemove":
 							action = new ForestCampRemoveAction();
 						break;
+						case "StructureSelfDestroy":
+							action = new StructureSelfDestroyAction();
+						break;
+						case "ResourceGather":
+							action = new ResourceGatherAction();
+						break;
 						default:
 							Util.log("Unknown action '" + actionNode.name() + "' in worker '" + worker.type.toString() + "'");
 							action = new DefaultAction(actionNode.@command);
@@ -122,7 +128,8 @@
 						action.options = options;
 						action.effectReq = effectReq;
 						action.effectReqInherit = effectReqInherit;
-						action.index = worker.addAction(action as IAction);
+						action.index = actionNode.@index;
+						worker.addAction(action as IAction);
 					}
 				}
 

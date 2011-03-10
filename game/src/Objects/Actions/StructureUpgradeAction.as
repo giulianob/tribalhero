@@ -20,12 +20,10 @@ package src.Objects.Actions {
 	
 	public class StructureUpgradeAction extends Action implements IAction
 	{
-		public var type: int;
-		
-		public function StructureUpgradeAction(type: int)
+	
+		public function StructureUpgradeAction()
 		{
 			super(Action.STRUCTURE_UPGRADE);
-			this.type = type;
 		}
 		
 		public function toString(): String

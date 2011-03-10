@@ -48,7 +48,8 @@ package src.Comm {
 		public static const STRUCTURE_UPGRADE: int = 302;
 		public static const STRUCTURE_CHANGE: int = 303;
 		public static const STRUCTURE_LABOR_MOVE: int = 304;
-		public static const STRUCTURE_DOWNGRADE: int = 305;		
+		public static const STRUCTURE_DOWNGRADE: int = 305;
+		public static const STRUCTURE_SELF_DESTROY: int = 306;
 		
 		public static const TECHNOLOGY_ADDED: int = 311;
 		public static const TECHNOLOGY_UPGRADE: int = 312;
@@ -100,6 +101,8 @@ package src.Comm {
         public static const BATTLE_ENDED: int = 705;
 		public static const BATTLE_SKIPPED: int = 706;
 		public static const BATTLE_NEW_ROUND: int = 707;
+		
+		public static const RESOURCE_GATHER: int = 801;
 		
 	}
 	

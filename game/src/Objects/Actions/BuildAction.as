@@ -24,11 +24,12 @@ package src.Objects.Actions {
 		public var tilerequirement: String;
 		public var level: int = 1;
 		
-		public function BuildAction(type: int, tilerequirement: String)
+		public function BuildAction(type: int, tilerequirement: String, level: int)
 		{
 			super(Action.STRUCTURE_BUILD);
 			this.type = type;			
 			this.tilerequirement = tilerequirement;
+			this.level = level;
 		}
 		
 		public function toString(): String

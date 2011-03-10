@@ -15,11 +15,9 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2000,3,7,1,,structure_Build,2301,,,,,20002,SELF
 ,,,,,,,,,,,,
 2000,4,3,1,,structure_Upgrade,15,,,,,20006,SELF
+2000,4,1,1,,structure_Build,2106,TileCrop,,,,210602,SELF
 ,,,,,,,,,,,,
 2000,5,8,1,,structure_Build,2501,,,,,,
-,,,,,,,,,,,,
-2000,6,1,1,,structure_Build,2106,TileCrop,,,,210602,SELF
-2000,6,2,1,,structure_Build,2107,TileTree,,,,210701,SELF
 ,,,,,,,,,,,,
 2000,7,9,1,,technology_upgrade,20001,5,,,,,
 ,,,,,,,,,,,,
@@ -27,24 +25,25 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2106,1,0,1,,,,,,,,,
 2106,1,1,1,,labor_move,,,,,,,
 2106,1,2,1,,structure_Upgrade,10,,,,,,
-2106,2,5,1,,structure_build,3011,,2,,,,
-2106,3,5,1,,structure_build,3011,,3,,,,
-2106,4,5,1,,structure_build,3011,,4,,,,
-2106,5,5,1,,structure_build,3011,,5,,,,
+2106,1,5,1,,structure_build,3011,,1,,,21061,SELF
+2106,2,5,1,,structure_build,3011,,2,,,21061,SELF
+2106,3,5,1,,structure_build,3011,,3,,,21061,SELF
+2106,4,5,1,,structure_build,3011,,4,,,21061,SELF
+2106,5,5,1,,structure_build,3011,,5,,,21061,SELF
 2106,5,3,1,,structure_Build,2202,,,,,,
 ,,,,,,,,,,,,
-2106,6,5,1,,structure_build,3011,,6,,,,
-2106,7,5,1,,structure_build,3011,,7,,,,
+2106,6,5,1,,structure_build,3011,,6,,,21061,SELF
+2106,7,5,1,,structure_build,3011,,7,,,21061,SELF
 2106,7,4,1,,technology_upgrade,21061,5,,,,,
 ,,,,,,,,,,,,
-2106,8,5,1,,structure_build,3011,,8,,,,
-2106,9,5,1,,structure_build,3011,,9,,,,
-2106,10,5,1,,structure_build,3011,,10,,,,
-2106,11,5,1,,structure_build,3011,,11,,,,
-2106,12,5,1,,structure_build,3011,,12,,,,
-2106,13,5,1,,structure_build,3011,,13,,,,
-2106,14,5,1,,structure_build,3011,,14,,,,
-2106,15,5,1,,structure_build,3011,,15,,,,
+2106,8,5,1,,structure_build,3011,,8,,,21061,SELF
+2106,9,5,1,,structure_build,3011,,9,,,21061,SELF
+2106,10,5,1,,structure_build,3011,,10,,,21061,SELF
+2106,11,5,1,,structure_build,3011,,11,,,21061,SELF
+2106,12,5,1,,structure_build,3011,,12,,,21061,SELF
+2106,13,5,1,,structure_build,3011,,13,,,21061,SELF
+2106,14,5,1,,structure_build,3011,,14,,,21061,SELF
+2106,15,5,1,,structure_build,3011,,15,,,21061,SELF
 ,,,,,,,,,,,,
 ,,,,,,,,,,,,
 // Lumbermill,,,,,,,,,,,,
@@ -324,6 +323,10 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 //matured grape,,,,,,,,,,,,
 3012,1,0,1,,,,,,,,,
 3012,1,1,1,Uncancelable,resource_gather,,,,,,,
+,,,,,,,,,,,,
+//empty field,,,,,,,,,,,,
+3009,1,0,1,,,,,,,,,
+3009,1,1,1,,structure_self_destroy,600,,,,306,,
 ,,,,,,,,,,,,
 //dead plant,,,,,,,,,,,,
 3010,1,0,1,,,,,,,,,

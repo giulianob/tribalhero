@@ -141,7 +141,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function buildStructure(city: int, parent: int, type: int, x: int, y: int):void
+		public function buildStructure(city: int, parent: int, type: int, level: int, x: int, y: int):void
 		{
 			var packet:Packet = new Packet();
 			packet.cmd = Commands.STRUCTURE_BUILD;
@@ -150,6 +150,7 @@
 			packet.writeUInt(x);
 			packet.writeUInt(y);
 			packet.writeUShort(type);
+			packet.writeUByte(level);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}
@@ -232,6 +233,26 @@
 			Global.map.selectObject(forest, false);
 		}
 
+		public function structureSelfDestroy(cityId: int, structureId: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.STRUCTURE_SELF_DESTROY;
+
+			packet.writeUInt(cityId);
+			packet.writeUInt(structureId);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}		
+		
+		public function gatherResource(cityId: int, structureId: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.RESOURCE_GATHER;
+
+			packet.writeUInt(cityId);
+			packet.writeUInt(structureId);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}		
+		
 		public function createForestCamp(forestId: int, cityId: int, type: int, labor: int) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.FOREST_CAMP_CREATE;
@@ -242,7 +263,7 @@
 			packet.writeUByte(labor);
 
 			session.write(packet, mapComm.catchAllErrors);
-		}
+		}		
 
 		public function removeForestCamp(cityId: int, campId: int) : void {
 			var packet: Packet = new Packet();
@@ -273,6 +294,7 @@
 
 			obj.clearProperties();
 
+			obj.type = packet.readUShort();
 			obj.level = packet.readUByte();
 
 			if (obj.playerId == Constants.playerId) {
@@ -429,7 +451,7 @@
 			var objId: int = packet.readUInt();
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
 			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			
 			var city: City = Global.map.cities.get(cityId);
@@ -479,7 +501,7 @@
 
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
 			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
 			var city: City = Global.map.cities.get(cityId);

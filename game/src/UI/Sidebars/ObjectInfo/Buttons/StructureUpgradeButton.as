@@ -20,8 +20,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 	public class StructureUpgradeButton extends ActionButton
 	{
-		private var type: int;
-		private var level: int;
 		private var nextStructPrototype: StructurePrototype;
 
 		private var upgradeToolTip: StructureUpgradeTooltip;

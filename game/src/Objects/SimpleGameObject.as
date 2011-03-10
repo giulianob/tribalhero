@@ -115,6 +115,7 @@ package src.Objects {
 
 		public function dispose():void {
 			if (wall) wall.clear();
+			if (objectCount) removeChild(objectCount);
 			hideRadius();
 		}
 

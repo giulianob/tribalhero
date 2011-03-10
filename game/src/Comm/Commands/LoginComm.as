@@ -111,7 +111,7 @@
 
 					var workerId: int = packet.readUInt();
 
-					if (packet.readUByte() == 0) city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
+					if (packet.readUByte() == 0) city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt()), false);
 					else city.currentActions.add(new CurrentActiveAction(workerId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
 				}
 				city.currentActions.sort();

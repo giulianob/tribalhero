@@ -56,3 +56,4 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 //farm,,,,,,,,,
 21061,HaveNoStructure,3011,minlvl=0,maxlvl=15,count=2,,,You can only have 2 grape farming fields.,2 grape farming field per city
+21061,HaveStructure,2000,minlvl=2,maxlvl=15,,,,Requires a Town Center Level 2,Require towncenter Lvl 2

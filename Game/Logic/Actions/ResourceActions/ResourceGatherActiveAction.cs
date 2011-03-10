@@ -94,7 +94,7 @@ namespace Game.Logic.Actions
             city.Resource.EndUpdate();
             city.EndUpdate();
 
-            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, 3009, 1);
+            var changeAction = new StructureChangePassiveAction(cityId, objectId, 0, ObjectTypeFactory.GetTypes("EmptyField")[0], 1);
             city.Worker.DoPassive(structure, changeAction, true);
 
             StateChange(ActionState.Completed);

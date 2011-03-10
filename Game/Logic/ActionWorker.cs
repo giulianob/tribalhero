@@ -277,9 +277,11 @@ namespace Game.Logic
             ActiveAction activeAction;
             if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.IsDone)
             {
-                if ((ActionFactory.GetActionRequirementRecord(activeAction.WorkerType).List[activeAction.WorkerIndex - 1].Option & ActionOption.Uncancelable) ==
-                    ActionOption.Uncancelable)
+                var actionRequirements = ActionFactory.GetActionRequirementRecord(activeAction.WorkerType);
+                var actionRequirement = actionRequirements.List.FirstOrDefault(x => x.Index == activeAction.WorkerIndex);
+                if (actionRequirement == null || (actionRequirement.Option & ActionOption.Uncancelable) == ActionOption.Uncancelable)
                     return Error.ActionUncancelable;
+
                 ThreadPool.QueueUserWorkItem(ActiveCancelCallback, activeAction);
                 return Error.Ok;
             }

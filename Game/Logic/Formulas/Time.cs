@@ -70,8 +70,10 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="speed">Objects speed</param>
         /// <returns></returns>
-        internal static int MoveTime(byte speed) {            
-            return 80 * (100 - ((speed - 11) * 5)) / 100;
+        internal static int MoveTime(byte speed) {      
+            // 60 is second per square, 12 is the average speed for all troops
+            // second per square is lowered from 80 to 60. 3/9/2011
+            return 60 * (100 - ((speed - 12) * 5)) / 100;
         }
 
         /// <summary>

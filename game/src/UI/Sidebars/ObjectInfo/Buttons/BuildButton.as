@@ -80,7 +80,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
 			
 			// Enforce only one building at a time
-			if (city.currentActions.hasAction(Action.STRUCTURE_BUILD)) {
+			if (!ObjectFactory.isType("UnlimitedBuilding", structPrototype.type) && city.currentActions.hasAction(Action.STRUCTURE_BUILD)) {
 				missingReqs.push(EffectReqPrototype.asMessage("You can only build one structure at a time"));
 			}
 

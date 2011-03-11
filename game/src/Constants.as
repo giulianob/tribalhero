@@ -30,7 +30,7 @@ package src
 		public static const road_start_tile_id: int = 224;
 		public static const road_end_tile_id: int = 255;
 
-		/* MAP CONSTANTS */		
+		/* MAP CONSTANTS */					
 		public static const tileW:int = 108;
 		public static const tileH:int = 54;
 
@@ -66,6 +66,8 @@ package src
 		
 		public static var screenW:int = origScreenW;
 		public static var screenH:int = origScreenH;
+		
+		public static const tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
 
 		/* MINI MAP CONSTANTS */
 		public static const miniMapTileW: int = 4;

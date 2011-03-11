@@ -40,17 +40,22 @@
 		private var pnlLoading: InfoDialog;
 
 		private var siteVersion: String;
+		
+		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
 
 		public function Main()
 		{
-			Util.log("TribalHero");
-			addEventListener(Event.ADDED_TO_STAGE, init);
-		}
+			trace("TribalHero");
+			
+			addEventListener(Event.ADDED_TO_STAGE, init);		
+		}  
 
 		public function init(e: Event = null) : void {
 
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-
+			removeEventListener(Event.ADDED_TO_STAGE, init);		
+			
+			uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
+			
 			//Init ASWING
 			AsWingManager.initAsStandard(stage);
 			UIManager.setLookAndFeel(new GameLookAndFeel());
@@ -102,15 +107,13 @@
 			else
 			{
 				showLoginDialog();
-			}
+			}							
 		}
 
-		private function loadData(): void 
+		private function loadData(): void
 		{			
 			pnlLoading = InfoDialog.showMessageDialog("TribalHero", "Launching the game...", null, null, true, false, 0);
-			
-			//Security.loadPolicyFile("http://" + Constants.hostname + ":8085/crossdomain.xml");				
-			
+					
 			if (Constants.queryData) {
 				var loader: URLLoader = new URLLoader();
 				loader.addEventListener(Event.COMPLETE, function(e: Event) : void { 
@@ -120,7 +123,7 @@
 				loader.addEventListener(IOErrorEvent.IO_ERROR, function(e: Event): void {
 					onDisconnected();
 				});
-				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?" + siteVersion));			
+				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?" + siteVersion));
 			} 
 			else
 				loadLanguages();

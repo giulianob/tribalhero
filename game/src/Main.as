@@ -38,10 +38,12 @@
 		private var loginDialog: LoginDialog;
 
 		private var pnlLoading: InfoDialog;
+		public var errorAlreadyTriggered: Boolean;
 
 		private var siteVersion: String;
 		
 		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
+				
 
 		public function Main()
 		{
@@ -121,6 +123,7 @@
 				});
 				loader.addEventListener(IOErrorEvent.IO_ERROR, function(e: Event): void {
 					onDisconnected();
+					showConnectionError(true);
 				});
 				loader.load(new URLRequest("http://" + Constants.hostname + ":8085/data.xml?" + siteVersion));
 			} 
@@ -131,7 +134,10 @@
 		private function loadLanguages():void
 		{					
 			Locale.setLoadCallback(function(success: Boolean) : void {
-				if (!success) onDisconnected();
+				if (!success) {
+					onDisconnected();
+					showConnectionError(true);
+				}
 				else doConnect();
 			});
 			Locale.addXMLPath(Constants.defLang, "http://" + Constants.hostname + ":8085/Game_" + Constants.defLang + ".xml?" + siteVersion);
@@ -141,6 +147,8 @@
 
 		public function doConnect():void
 		{
+			errorAlreadyTriggered = false;
+			
 			session = new TcpSession();
 			session.setConnect(onConnected);
 			session.setLogin(onLogin);
@@ -174,8 +182,8 @@
 		}
 
 		public function onDisconnected(event: Event = null):void
-		{
-			var wasStillLoading: Boolean = pnlLoading != null;
+		{			
+			var wasStillLoading: Boolean = session == null || !session.hasLoginSuccess();
 			
 			if (pnlLoading)
 				pnlLoading.getFrame().dispose();
@@ -184,11 +192,17 @@
 			if (Global.mapComm) Global.mapComm.dispose();			
 			
 			Global.mapComm = null;
-			Global.map = null;			
+			Global.map = null;
 			session = null;
 
+			if (!errorAlreadyTriggered && !wasStillLoading) {
+				showConnectionError(false);
+			}
+		}
+		
+		public function showConnectionError(wasStillLoading: Boolean) : void {
 			if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? "Unable to connect to server" : "Connection to Server Lost") + ". Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
-			else InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? "Unable to connect to server." : "Connection to Server Lost."), function(result: int):void { if (!parms.hostname) showLoginDialog(); }, null, true, false, 1, true);
+			else InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? "Unable to connect to server." : "Connection to Server Lost."), function(result: int):void { showLoginDialog(); }, null, true, false, 1, true);			
 		}
 
 		public function onConnected(event: Event, connected: Boolean):void
@@ -196,7 +210,7 @@
 			if (pnlLoading) pnlLoading.getFrame().dispose();
 
 			if (!connected) 
-				InfoDialog.showMessageDialog("Error", "Unable to connect to server");			
+				showConnectionError(true);		
 			else
 			{
 				Global.mapComm = new MapComm(session);
@@ -210,7 +224,8 @@
 
 		public function onLogin(packet: Packet):void
 		{
-			if (MapComm.tryShowError(packet, function(result: int) : void { onDisconnected(); } , true)) {
+			if (MapComm.tryShowError(packet, function(result: int) : void { showLoginDialog(); } , true)) {				
+				errorAlreadyTriggered = true;
 				return;
 			}
 

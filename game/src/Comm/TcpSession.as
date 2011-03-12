@@ -166,8 +166,8 @@
 			if (Constants.debug >= 3)
 				Util.log("ioErrorHandler: " + event);
 				
-			if (onConnectCallback != null)
-				onConnectCallback(event, false);
+			if (onDisconnectCallback != null)
+				onDisconnectCallback(event);	
 		}
 
 		private function securityErrorHandler(event:SecurityErrorEvent):void {

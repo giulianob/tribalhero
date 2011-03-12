@@ -1,4 +1,4 @@
-package src 
+package
 {
 	import flash.display.LoaderInfo;
 	import flash.display.Stage;
@@ -7,6 +7,7 @@ package src
 	import flash.system.Capabilities;
 	import src.Util.Util;
 	import flash.events.*;
+	import src.*;
 	
 	/**
 	 * ...
@@ -22,12 +23,28 @@ package src
 			}
 		}
 		
+		private static var stack: Array = new Array();
+		
+		private static var lastSubmission: Number = 0;
+		
+		public static function enterFunction(functionId: int) : void {
+			stack.push(functionId);
+		}
+		
+		public static function exitFunction(functionId: int) : void {
+			stack.pop();
+		}
+		
+		public static function getStacktrace() : String {
+			return stack.join(",");
+		}
+		
 		private function uncaughtErrorHandler(event:*):void
 		{			
 			var error: Error = event.error;
 			
 			Util.log("Got error");
-			Util.log(error.getStackTrace());			
+			Util.log(error.getStackTrace());
 			
 			// Only send error if we are in web mode
 			if (Constants.loginKey == "") return;
@@ -37,11 +54,14 @@ package src
 			var requestVars:URLVariables = new URLVariables();
 			var a: UncaughtErrorEvent;
 			
-			requestVars.stacktrace = error.message + "\n" + error.getStackTrace();
+			requestVars.stacktrace = error.message + "\n" + getStacktrace();
 			requestVars.playerId = Constants.playerId;
 			requestVars.playerName = Constants.playerName;
 			requestVars.flashVersion = Capabilities.version;
 			requestVars.gameVersion = Constants.version.toString() + "." + Constants.revision.toString();
+			
+			// Clear stacktrace since unhandled exceptions kill current execution
+			stack = new Array();
 			
 			try {
 				requestVars.browserVersion = ExternalInterface.call("function(){return navigator.appVersion+'-'+navigator.appName;}");
@@ -60,12 +80,17 @@ package src
 			});
 
 			for (var prop:String in requestVars)
-				Util.log(prop + " = " + requestVars[prop]);			
+				Util.log(prop + " = " + requestVars[prop]);
+			
+			var now: Number = new Date().time;
 			
 			try {
-				urlLoader.load(request);
-			} catch (e:Error) {				
-			}					
-		}		
+				if (now - lastSubmission > 60000)
+					urlLoader.load(request);
+			} catch (e:Error) {
+			}
+			
+			lastSubmission = now;
+		}
 	}
 }

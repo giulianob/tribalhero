@@ -45,7 +45,7 @@ package src.UI.Dialog{
 			sldCount.addEventListener(InteractiveEvent.STATE_CHANGED, onSlideChange);
 
 			var self: ForestLaborDialog = this;
-			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self) } );
+			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
 
 			updateSlider();
 			onSlideChange();

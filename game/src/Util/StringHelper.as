@@ -60,10 +60,12 @@ package src.Util {
 			return firstLetter.toUpperCase() + restOfWord;
 		}		
 		
-		public static function wordsToUpper(s:String):String {
-			return s.replace(/ [a-z]/g, function (m:String, ... rest):String {
+		public static function wordsToUpper(s:String):String {			
+			var ret: * = s.replace(/ [a-z]/g, function (m:String, ... rest):String {
 				return m.toUpperCase();
 			});
+			
+			return ret;
 		}
 	}
 	

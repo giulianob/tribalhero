@@ -11,7 +11,7 @@ namespace stacktracer
 {
     class Program
     {
-        private const string regPOI = @"\bclass\b|\bfunction\b|\breturn\b|[""'/{}]";
+        private const string regPOI = @"\binterface\b|\bclass\b|\bfunction\b|\breturn\b|[""'/{}]";
         private const string regFun = @"\bfunction\b\s*((?:[gs]et\s+)?\w*)\s*\(";
         private const string regCls = @"class\s+(\w+)[\s{]";
         private const string regStr = @"([""'/]).*?(?<!\\)\1";
@@ -21,38 +21,59 @@ namespace stacktracer
         private static Regex reCls = new Regex(regCls, RegexOptions.Multiline & RegexOptions.IgnoreCase);
         private static Regex reStr = new Regex(regStr, RegexOptions.Multiline & RegexOptions.IgnoreCase);
 
+        private static string[] ignoreFiles = new[] {"UncaughtExceptionHandler.as", "Constants.as"};
+
         private static string path;
         private static bool outputOnly = true;
+
+        private static int functionId;
+
+        private static readonly StringWriter functionMappings = new StringWriter(new StringBuilder());
 
         class StackTraceItem
         {
             public string Name { get; set; }
             public int Depth { get; set; }
             public int Anon { get; set; }
+            public int Id { get; set; }
         }
 
         static void Main(string[] args)
         {
+            var mappingsOutputPath = string.Empty;
+
             var p = new OptionSet
-                    {{"output-only=", v => outputOnly = bool.Parse(v)}, {"path=", v => path = v}};
+                    {
+                            {"output-only=", v => outputOnly = bool.Parse(v)}, 
+                            {"path=", v => path = v},
+                            {"mappings-output-path=", v => mappingsOutputPath = v},
+                    };
 
             p.Parse(Environment.GetCommandLineArgs());
 
             var attributes = File.GetAttributes(path);
             if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                
-            } else
-            {
-                ProcessFile(path);
-            }
+                foreach (var file in Directory.GetFiles(path, "*.as", SearchOption.AllDirectories))
+                {
+                    string fileName = Path.GetFileName(file);                    
+                    if (ignoreFiles.Any(x => x == fileName))
+                        continue;
 
-            Console.ReadKey();
+                    ProcessFile(file);
+                }
+            } else
+                ProcessFile(Path.Combine(Environment.CurrentDirectory, path));
+
+            if (mappingsOutputPath != string.Empty)
+                File.WriteAllText(mappingsOutputPath, functionMappings.ToString());
+            else            
+                Console.Out.WriteLine(functionMappings.ToString());            
         }
 
         static void ProcessFile(string filePath)
         {
-            var body = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, filePath));
+            var body = File.ReadAllText(filePath);
 
             var stack = new Stack();
             StackTraceItem lastf;
@@ -60,6 +81,8 @@ namespace stacktracer
             int retvar = 0;
             string klass = "";
             bool alreadyReturned = false;
+
+            string startingBodyInterest;
 
             Match match = rePOI.Match(body);
 
@@ -69,15 +92,26 @@ namespace stacktracer
                 int pos = match.Index;
                 var endPos = match.Index + match.Length;
 
+                var bodyCurrentInterest = body.Substring(pos);
+
                 string line;
                 switch (poi.Value)
                 {
+                    // Interfaces
+                    case "interface":
+                        // We just quit if it's an interface class
+                        return;                       
                     // Strings
+                    case "\'":
                     case "\"":
                     case "/":
                         var strm = reStr.Match(body, pos);
                         Regex strReg = new Regex(@"[=(,]\s*$");
-                        if (strm.Success && (poi.Value != "/" || strReg.Match(body, pos).Success))
+                        if (strm.Success && body.Substring(pos, 2) == "//")
+                            endPos = body.IndexOf("\n", pos) - 1;
+                        else if (strm.Success && body.Substring(pos, 2) == "/*")
+                            endPos = body.IndexOf("*/", pos) - 1;
+                        else if (strm.Success && (poi.Value != "/" || strReg.Match(body, 0, pos).Success))
                             endPos = strm.Index + strm.Length;
                         Console.Out.WriteLine("String:" + strm.Value);
                         break;
@@ -99,9 +133,16 @@ namespace stacktracer
                         // Anonymous functions
                         else
                         {
-                            lastf = (StackTraceItem)stack.Peek();
-                            lastf.Anon += 1;
-                            fname = lastf.Name + ".anon" + lastf.Anon;
+                            if (stack.Count > 0)
+                            {
+                                lastf = (StackTraceItem)stack.Peek();
+                                lastf.Anon += 1;
+                                fname = lastf.Name + ".anon" + lastf.Anon;
+                            } 
+                            // Anonymous function set to a variable
+                            else                            
+                                fname = klass + ".anon";
+                            
                             Console.Out.WriteLine("Anonymous Function: " + fname);
                         }
 
@@ -110,13 +151,16 @@ namespace stacktracer
                                            Name = fname,
                                            Depth = depth,
                                            Anon = 0,
+                                           Id = ++functionId
                                    });
 
+                        functionMappings.WriteLine(string.Format("{0},{1}", functionId, fname));
+
                         var brace = body.IndexOf('{', pos) + 1;
-                        var enterFuncLine = string.Empty;
-                        body = body.Substring(0, brace) + enterFuncLine + body.Substring(brace);
+                        line = string.Format("\r\nUncaughtExceptionHandler.enterFunction({0});\r\n", functionId);
+                        body = body.Substring(0, brace) + line + body.Substring(brace);
                         depth += 1;                        
-                        endPos = brace + enterFuncLine.Length;
+                        endPos = brace + line.Length;
                         break;
                     // Opening brackets
                     case "{":
@@ -126,19 +170,19 @@ namespace stacktracer
                     case "return":
                         lastf = (StackTraceItem)stack.Peek();
                         var semicolon = body.IndexOf(';', pos);
-                        Regex retReg = new Regex(@"return\s*;");
-                        var matchResult = retReg.Match(body, pos);
-                        if (matchResult.Value != string.Empty)
+                        Regex retReg = new Regex(@"return\s*(.*);", RegexOptions.Singleline);
+                        var matchResult = retReg.Match(body, pos, semicolon - pos + 1);
+                        if (matchResult.Groups[1].Value == string.Empty)
                         {
                             //RETURN WITHOUT VALUE HERE
-                            line = string.Format("domystuffhere(\"{0}\");\r\nreturn;\r\n", lastf.Name);
+                            line = string.Format("{{UncaughtExceptionHandler.exitFunction({0});\r\nreturn;}}\r\n", lastf.Id);
                         }
                         else
                         {
                             retvar += 1;
-                            var tmpRetValue = body.Substring(pos + 6, semicolon - (pos + 6));
+                            var tmpRetValue = matchResult.Groups[1].Value;
                             //RETURN WITH VALUE HERE
-                            line = string.Format("var __ret{1}__: * ={0};\r\ndomystuffhere(\"{2}\");\r\nreturn __ret{1}__;\r\n", tmpRetValue, retvar, lastf.Name);
+                            line = string.Format("{{var __ret{1}__: * ={0};\r\nUncaughtExceptionHandler.exitFunction({2});\r\nreturn __ret{1}__;}}\r\n", tmpRetValue, retvar, lastf.Id);
                         }
 
                         body = body.Substring(0, pos) + line + body.Substring(semicolon + 1);
@@ -151,22 +195,28 @@ namespace stacktracer
                         if (stack.Count > 0 && ((StackTraceItem)stack.Peek()).Depth == depth)
                         {
                             lastf = (StackTraceItem)stack.Pop();
-                            if (!alreadyReturned)
-                            {
-                                line = string.Format("domystuffhere(\"{0}\");\r\n", lastf.Name);
+                            //if (!alreadyReturned) {
+                                // Function ended without any returns
+                                line = string.Format("UncaughtExceptionHandler.exitFunction({0});\r\n", lastf.Id);
                                 body = body.Substring(0, pos) + line + body.Substring(pos);
                                 endPos += line.Length;
-                            }
+                            //}
                             alreadyReturned = false;
                         }                        
                         break;
                 }
 
                 pos = endPos;
+
+                startingBodyInterest = body.Substring(pos);
+
                 match = rePOI.Match(body, pos);
             }
 
-            Console.Out.WriteLine(body);
+            if (outputOnly)
+                Console.Out.WriteLine(body);
+            else
+                File.WriteAllText(filePath, body);                           
         }
     }
 }

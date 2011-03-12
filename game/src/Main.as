@@ -50,8 +50,7 @@
 			addEventListener(Event.ADDED_TO_STAGE, init);		
 		}  
 
-		public function init(e: Event = null) : void {
-
+		public function init(e: Event = null) : void {			
 			removeEventListener(Event.ADDED_TO_STAGE, init);		
 			
 			uncaughtExceptionHandler = new UncaughtExceptionHandler(loaderInfo);
@@ -107,7 +106,7 @@
 			else
 			{
 				showLoginDialog();
-			}							
+			}			
 		}
 
 		private function loadData(): void

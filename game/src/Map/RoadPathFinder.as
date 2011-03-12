@@ -36,7 +36,7 @@ package src.Map
 
 			var fromStructure: Boolean = city.hasStructureAt(start);
 
-			return breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
+			var ret: * = breadthFirst(new Point(end.x, end.y), visited, function(node : Point) : Array
 			{
 				var neighbors: Array = new Array();
 				var possibleNeighbors: Array;
@@ -74,6 +74,8 @@ package src.Map
 
 				return neighbors;
 			}, excludedPoint);
+			
+			return ret;
 		}
 
 		private static function breadthFirst(end: Point, visited: Array, getNeighbors: Function, excludedPoint: Point, i: int = 0) : Boolean

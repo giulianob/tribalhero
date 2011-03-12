@@ -299,10 +299,10 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
 
             if(parms[2] != string.Empty && byte.Parse(parms[2])!=level)            
-                return Error.ActionNotFound;
+                return Error.ActionInvalid;
 
             if (parms[2] == string.Empty && level != 1)
-                return Error.ActionNotFound;
+                return Error.ActionInvalid;
 
             if (ushort.Parse(parms[0]) == type)
             {

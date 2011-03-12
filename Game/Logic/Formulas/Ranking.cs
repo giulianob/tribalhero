@@ -17,7 +17,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public static int GetAttackPoint(int enemiesKilled, int unitsKilled)
         {
-            return Math.Max(0, unitsKilled);
+            return Math.Max(0, enemiesKilled);
         }
 
         /// <summary>

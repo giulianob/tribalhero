@@ -1,0 +1,272 @@
+﻿/**
+ * ...
+ * @author Default
+ * @version 0.1
+ */
+
+package src.Objects {
+	import flash.display.DisplayObject;
+	import flash.display.MovieClip;
+	import flash.geom.Point;
+	import flash.events.Event;
+	import flash.text.TextField;
+	import org.aswing.AsWingConstants;
+	import org.aswing.geom.IntDimension;
+	import org.aswing.JLabel;
+	import src.Constants;
+	import src.Map.City;
+	import src.Map.CityObject;
+	import src.Map.Map;
+	import src.Objects.Actions.CurrentActionManager;
+	import src.Objects.States.GameObjectState;
+	import src.UI.Components.GroundCircle;
+	import src.Util.BinaryList.*;
+	import src.Global;
+
+	public class SimpleGameObject extends SimpleObject implements IObject {
+
+		public static var OBJECT_UPDATE: String = "OBJECT_UPDATE";
+
+		public static var STATE_NORMAL: int = 0;
+		public static var STATE_BATTLE: int = 1;
+		public static var STATE_MOVING: int = 2;		
+
+		public var level: int;
+		public var type: int;
+		public var playerId: int;
+		public var objectId: int;
+		public var cityId: int;		
+		public var hp: int;
+
+		private var usernameLabel: TextField;
+		private var icon: DisplayObject;
+		
+		public var objectCount: DisplayObject;
+
+		private var radiusVisible: Boolean = false;
+		private var radius: int = 0;
+		private var circle: GroundCircle;
+
+		public var wall: WallManager;
+
+		public function SimpleGameObject()
+		{
+			mouseEnabled = false;
+			addEventListener(OBJECT_UPDATE, onObjectUpdate);
+			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
+				if (objectCount != null) {
+					removeChild(objectCount);
+					objectCount = null;
+				}
+			});			
+		}		
+		
+		public function init(map: Map, playerId: int, cityId: int, objectId: int, type: int):void
+		{
+			this.type = type;
+			this.playerId = playerId;
+			this.objectId = objectId;
+			this.cityId = cityId;
+
+			wall = new WallManager(map, this);
+		}
+		
+		public function setObjectCount(count: int) : void {
+			if (objectCount != null) {
+				removeChild(objectCount);			
+				objectCount = null;
+			}
+			
+			if (count <= 1) return;		
+			
+			var bubble: CountBubble = new CountBubble();
+			bubble.mouseChildren = false;
+			bubble.txtUnreadCount.mouseEnabled = false;
+			bubble.txtUnreadCount.tabEnabled = false;
+			bubble.txtUnreadCount.text = count.toString();
+			bubble.x = Constants.tileW / 2;
+			bubble.y = 0;
+			
+			objectCount = bubble;
+			
+			addChild(bubble);
+		}
+
+		public function getCityId(): int
+		{
+			return cityId;
+		}
+
+		public function getLevel(): int
+		{
+			return level;
+		}
+
+		public function getType(): int
+		{
+			return type;
+		}
+		
+		public function getCorrespondingCityObj() : CityObject {
+			var city: City = Global.map.cities.get(cityId);
+			if (!city) return null;
+			return city.objects.get(objectId);
+		}
+
+		public function dispose():void {
+			if (wall) wall.clear();
+			if (objectCount) removeChild(objectCount);
+			hideRadius();
+		}
+
+		private function onObjectUpdate(e: Event): void {
+			moveRadius();
+		}
+
+		public function showRadius(radius: int):void {
+			this.radius = radius;
+			radiusVisible = true;
+			moveRadius();
+		}
+
+		public function hideRadius():void {
+			radiusVisible = false;
+			moveRadius();
+		}
+
+		private function moveRadius():void
+		{
+			if (radius == 0 || !radiusVisible)
+			{
+				if (circle)
+				{
+					Global.map.objContainer.removeObject(circle, ObjectContainer.LOWER);
+					circle = null;
+				}
+
+				return;
+			}
+
+			if (!circle)
+			{
+				circle = new GroundCircle(radius, true);
+				circle.alpha = 0.6;
+			}
+			else
+			Global.map.objContainer.removeObject(circle, ObjectContainer.LOWER);
+
+			circle.setX(getX());
+			circle.setY(getY());
+
+			circle.moveWithCamera(Global.gameContainer.camera);
+
+			Global.map.objContainer.addObject(circle, ObjectContainer.LOWER);
+		}
+
+		private var state: GameObjectState = new GameObjectState();
+		public function get State(): GameObjectState
+		{
+			return state;
+		}
+
+		public function set State(value: GameObjectState):void
+		{
+			state = value;
+			setIcon(value.getStateIcon());
+		}
+
+		private function setIcon(icon: DisplayObject):void
+		{
+			if (this.icon)
+			{
+				removeChild(this.icon);
+				this.icon = null;
+			}
+
+			this.icon = icon;
+
+			if (icon)
+			addChild(icon);
+		}
+
+		public function setProperties(level: int, hpPercent: int, objX: int, objY : int):void
+		{
+			this.level = level;
+			this.objX = objX;
+			this.objY = objY;
+		}
+
+		public static function sortOnId(a:SimpleGameObject, b:SimpleGameObject):Number
+		{
+			var aId:Number = a.objectId;
+			var bId:Number = b.objectId;
+
+			if(aId > bId) {
+				return 1;
+			} else if(aId < bId) {
+				return -1;
+			} else  {
+				return 0;
+			}
+		}
+
+		public static function sortOnCityIdAndObjId(a:SimpleGameObject, b:SimpleGameObject):Number {
+			var aCityId:Number = a.cityId;
+			var bCityId:Number = b.cityId;
+
+			var aObjId:Number = a.objectId;
+			var bObjId:Number = b.objectId;
+
+			if (aCityId > bCityId)
+			return 1;
+			else if (aCityId < bCityId)
+			return -1;
+			else if (aObjId > bObjId)
+			return 1;
+			else if (aObjId < bObjId)
+			return -1;
+			else
+			return 0;
+		}
+
+		public function copy(obj: SimpleGameObject):void
+		{			
+		}
+
+		public function distance(x_1: int, y_1: int): int
+		{
+			var offset: int = 0;
+
+			var objPos: Point = new Point();
+
+			objPos.x = getX();
+			objPos.y = getY();
+
+			if (objPos.y % 2 == 1 && y_1 % 2 == 0 && x_1 <= objPos.x) offset = 1;
+			if (objPos.y % 2 == 0 && y_1 % 2 == 1 && x_1 >= objPos.x) offset = 1;
+
+			return ((x_1 > objPos.x ? x_1 - objPos.x : objPos.x - x_1) + (y_1 > objPos.y ? y_1 - objPos.y : objPos.y - y_1) / 2 + offset);
+		}
+
+		public static function compareCityIdAndObjId(a: SimpleGameObject, value: Array):int
+		{
+			var cityDelta: int = a.cityId - value[0];
+			var idDelta: int = a.objectId - value[1];
+
+			if (cityDelta != 0)
+			return cityDelta;
+
+			if (idDelta != 0)
+			return idDelta;
+			else
+			return 0;
+		}
+
+		public static function compareObjId(a: SimpleGameObject, value: int):int
+		{
+			return a.objectId - value;
+		}
+	}
+
+}
+

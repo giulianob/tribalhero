@@ -1,0 +1,38 @@
+<project name="gameclient" default="compile" basedir=".">
+	<description>Game client build</description>
+	
+	<target name="init">
+		<echo message="Building from ${basedir}" />
+		
+		<tstamp />
+		
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+		
+		<property name="src" location="game/src" />
+		<property name="fdbuild" location="C:/Program Files (x86)/FlashDevelop/Tools/fdbuild" />
+		<property name="flexsdk" location="C:/Program Files (x86)/FlashDevelop/Tools/flexsdk" />
+		<property name="secureswf" location="C:\Program Files (x86)\secureSWF" />
+		<propertyregex property="basedir.escaped" input="${basedir}" regexp="\\" replace="/" global="true"/>
+		
+		<echo message="${basedir.escaped}" />
+		
+		<!-- Make bin dir -->
+		<delete dir="bin" />
+		<mkdir dir="bin" />		
+	</target>
+	
+	<target name="compile" depends="init">		
+		<exec executable="${fdbuild}/fdbuild.exe" dir="${basedir}" failonerror="true">
+			<arg line="Game.as3proj -compiler &quot;${flexsdk}&quot; -notrace" />
+		</exec>		
+	</target>
+	
+	<target name="obfuscate" depends="compile">
+		<taskdef name="secureswf" classpath="${secureswf}\secureSWF.jar" classname="secureSWF.ant.ProtectTask" />
+		
+		<!-- Adjust Game.sspj file for obfuscation -->
+		<replaceregexp file="${basedir}/Game.sspj" match="c:\\source\\gameclient" replace="${basedir.escaped}" flags="gi" />
+		
+		<secureswf outputpath="${basedir}\bin\protected" projectfile="Game.sspj" codeWrapping="0" logfile="bin\obfuscate.log" aggressiveRenaming="false" keyFilePath="${basedir}/key.data" />
+	</target>	
+</project>

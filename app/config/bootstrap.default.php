@@ -13,4 +13,4 @@ define('BATTLE_VIEW_MIN_ROUNDS', 5);
 
 define('FLASH_DOMAIN', '*.tribalhero.com');
 
-define('FEEDBACK_EMAIL', 'giuliano@tribalhero.com');
+define('FEEDBACK_EMAIL', 'feedback@tribalhero.com');

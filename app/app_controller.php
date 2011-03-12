@@ -29,7 +29,7 @@ class AppController extends Controller {
     var $fbSecret = 'af3a84dd6ea5c2351209be0aeff31dec';
 
     function beforeFilter() {
-        header("Cache-Control: no-cache");
+        $this->disableCache();
 
         /*
           if (Configure::read('debug') == 0){

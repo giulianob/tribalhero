@@ -60,20 +60,23 @@ namespace Game.Map
             {
                 lock (data)
                 {
-                    using (var ms = new MemoryStream())
+                    if (isDirty || objects == null)
                     {
-                        var bw = new BinaryWriter(ms);
-                        bw.Write((ushort)data.Count);
-                        foreach (var obj in data)
+                        using (var ms = new MemoryStream())
                         {
-                            bw.Write((byte)obj.GetCityRegionType());
-                            bw.Write(obj.GetCityRegionObjectBytes());
-                        }
+                            var bw = new BinaryWriter(ms);
+                            bw.Write((ushort)data.Count);
+                            foreach (var obj in data)
+                            {
+                                bw.Write((byte)obj.GetCityRegionType());
+                                bw.Write(obj.GetCityRegionObjectBytes());
+                            }
 
-                        isDirty = false;
-                        
-                        ms.Position = 0;
-                        objects = ms.ToArray();
+                            isDirty = false;
+
+                            ms.Position = 0;
+                            objects = ms.ToArray();
+                        }
                     }
                 }
             }

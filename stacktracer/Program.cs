@@ -66,8 +66,11 @@ namespace stacktracer
                 ProcessFile(Path.Combine(Environment.CurrentDirectory, path));
 
             if (mappingsOutputPath != string.Empty)
+            {
+                Console.Out.WriteLine("Writing mapping to {0}", mappingsOutputPath);
                 File.WriteAllText(mappingsOutputPath, functionMappings.ToString());
-            else            
+            }
+            else
                 Console.Out.WriteLine(functionMappings.ToString());            
         }
 

@@ -1,4 +1,4 @@
-<project name="gameclient" default="compile" basedir=".">
+<project name="gameclient" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant">
 	<description>Game client build</description>
 	
 	<target name="init">
@@ -21,13 +21,28 @@
 		<mkdir dir="bin" />		
 	</target>
 	
-	<target name="compile" depends="init">		
+	<target name="stacktracer">
+		<echo message="Building ${basedir}\stacktracer\stacktracer.sln" />
+		<dn:msbuild buildfile="${basedir}\stacktracer\stacktracer.sln">
+			<target name="stacktracer:Rebuild" />
+			
+			<property name="Configuration" value="Release" />
+			<property name="Platform" value="any cpu" />
+			<property name="BuildProjectReferences" value="false" />
+		</dn:msbuild>
+		
+		<exec executable="${basedir}/stacktracer/bin/release/stacktracer.exe">
+			<arg line="--path=${basedir}/game/ --mappings-output-path=${basedir}/bin/stacktracer.map --output-only=false" />
+		</exec>
+	</target>
+		
+	<target name="compile">		
 		<exec executable="${fdbuild}/fdbuild.exe" dir="${basedir}" failonerror="true">
 			<arg line="Game.as3proj -compiler &quot;${flexsdk}&quot; -notrace" />
 		</exec>		
 	</target>
 	
-	<target name="obfuscate" depends="compile">
+	<target name="obfuscate">
 		<taskdef name="secureswf" classpath="${secureswf}\secureSWF.jar" classname="secureSWF.ant.ProtectTask" />
 		
 		<!-- Adjust Game.sspj file for obfuscation -->

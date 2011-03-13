@@ -7,6 +7,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.CityObject;
 	import src.Objects.Actions.Action;
 	import src.Objects.Actions.BuildAction;
+	import src.Objects.Actions.CurrentActiveAction;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.*;
 	import src.Objects.*;
@@ -79,9 +80,16 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
 			
-			// Enforce only one building at a time
-			if (!ObjectFactory.isType("UnlimitedBuilding", structPrototype.type) && city.currentActions.hasAction(Action.STRUCTURE_BUILD)) {
-				missingReqs.push(EffectReqPrototype.asMessage("You can only build one structure at a time"));
+			// Enforce only one building at a time for structures that arent marked as UnlimitedBuilding			
+			if (!ObjectFactory.isType("UnlimitedBuilding", structPrototype.type)) {
+				var currentBuildActions: Array = city.currentActions.getActions(Action.STRUCTURE_BUILD);				
+				for each (var currentAction: CurrentActiveAction in currentBuildActions) {
+					var buildAction: BuildAction = currentAction.getAction();
+					if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type)) {
+						missingReqs.push(EffectReqPrototype.asMessage("You can only build one structure at a time"));
+						break;
+					}
+				}								
 			}
 
 			buildToolTip.missingRequirements = missingReqs;

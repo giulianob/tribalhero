@@ -139,7 +139,7 @@
 			//add object to map and objects list
 			var gameObj: SimpleGameObject = (obj as SimpleGameObject);
 			gameObj.name = "City Region Forest Obj " + objectId;
-			gameObj.init(map, 0, 0, objectId, 0);
+			gameObj.init(map, 0, 0, objectId, ObjectFactory.TYPE_FOREST);
 
 			var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
 
@@ -153,6 +153,36 @@
 
 			return gameObj;
 		}
+		
+		public function addTroopObject(objTroopId: int, playerId: int, cityId: int, objectId: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
+		{
+			var existingObj: SimpleGameObject = objects.get([cityId, objectId]);
+
+			if (existingObj != null) //don't add if obj already exists
+			{
+				Util.log("Obj id " + objectId + " already exists in city region " + id);
+				return null;
+			}
+
+			var obj: SimpleGameObject = ObjectFactory.getSimpleGameObject("MINIMAP_TROOP_ICON");
+
+			//add object to map and objects list
+			var gameObj: SimpleGameObject = (obj as SimpleGameObject);
+			gameObj.name = "City Region Troop Obj " + cityId + " " + objectId;
+			gameObj.init(map, playerId, cityId, objectId, ObjectFactory.TYPE_TROOP_OBJ);
+
+			var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
+
+			gameObj.setProperties(0, 0, coord.x, coord.y);
+
+			src.Global.gameContainer.miniMap.objContainer.addObject(gameObj);
+
+			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onTroopObjectMouseOver);
+
+			objects.add(gameObj, resort);
+
+			return gameObj;
+		}		
 
 		public function removeObject(cityId: int, objectId: int, dispose: Boolean = true): SimpleGameObject
 		{
@@ -177,6 +207,10 @@
 		public function onForestObjectMouseOver(e: MouseEvent) : void {
 			new MinimapInfoTooltip(1, e.target.parent);
 		}		
+		
+		public function onTroopObjectMouseOver(e: MouseEvent) : void {
+			new MinimapInfoTooltip(1, e.target.parent);
+		}				
 
 		public function moveWithCamera(camera: Camera):void
 		{

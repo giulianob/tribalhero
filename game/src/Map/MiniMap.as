@@ -44,7 +44,7 @@
 
 			regionSpace = new Sprite();
 
-			objContainer = new ObjectContainer(false);
+			objContainer = new ObjectContainer(false, false);
 
 			mapHolder = new Sprite();
 

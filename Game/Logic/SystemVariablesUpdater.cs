@@ -51,7 +51,7 @@ namespace Game.Logic
                     Global.SystemVariables["System.time"].Value = now;
                     Global.DbManager.Save(Global.SystemVariables["System.time"]);
 
-                    if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalSeconds < 5)
+                    if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 5000)
                         return;
 
                     lastUpdateScheduler = now;
@@ -82,7 +82,7 @@ namespace Game.Logic
 
                     var variables = new List<SystemVariable>
                                     {
-                                            new SystemVariable("System.uptime", string.Format("{0:D2} hrs, {1:D2} mins, {2:D2} secs", uptime.Hours, uptime.Minutes, uptime.Seconds)),
+                                            new SystemVariable("System.uptime", string.Format("{0} days {1:D2} hrs, {2:D2} mins, {3:D2} secs", (int)(uptime.TotalDays), uptime.Hours, uptime.Minutes, uptime.Seconds)),
                                             new SystemVariable("Scheduler.size", schedulerSize),
                                             new SystemVariable("Scheduler.size_change", schedulerDelta),
                                             new SystemVariable("Scheduler.actions_per_second", (int)(actionsFired/now.Subtract(lastProbe).TotalSeconds)),

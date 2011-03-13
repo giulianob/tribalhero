@@ -69,7 +69,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            if(!ObjectTypeFactory.IsStructureType("UnlimitedBuilding",type) && city.Worker.Contains(ActionType.StructureBuildActive, ActionId))
+            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) && city.Worker.ActiveActions.Values.Any(action => action.ActionId != ActionId && action.Type == ActionType.StructureBuildActive && !ObjectTypeFactory.IsStructureType("UnlimitedBuilding", ((StructureBuildActiveAction)action).type)))
                 return Error.ActionAlreadyInProgress;
 
             Global.World.LockRegion(x, y);

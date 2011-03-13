@@ -452,7 +452,7 @@
 			disableMouse(true);
 		}
 
-		private function move(forceParse: Boolean = false) : void {
+		public function move(forceParse: Boolean = false) : void {
 			var pt: Point = MapUtil.getMapCoord(camera.x + (Constants.screenW * camera.getZoomFactorOverOne()) / 2, camera.y + (Constants.screenH * camera.getZoomFactorOverOne()) / 2);
 			Global.gameContainer.minimapTools.txtCoords.text = "(" + (pt.x) + "," + (pt.y) + ")";
 
@@ -461,7 +461,7 @@
 				objContainer.moveWithCamera(camera.x, camera.y);
 			}
 
-			Global.gameContainer.miniMap.parseRegions();
+			Global.gameContainer.miniMap.parseRegions(forceParse);
 			Global.gameContainer.miniMap.objContainer.moveWithCamera(camera.miniMapX, camera.miniMapY);
 		}
 

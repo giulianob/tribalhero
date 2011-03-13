@@ -332,7 +332,7 @@
 
 			minimapZoomed = zoom;
 			if (query) {
-				map.onMove();
+				map.move(true);
 			}
 
 			alignMinimapTools();

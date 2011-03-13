@@ -17,8 +17,8 @@ package
 	{
 		public function UncaughtExceptionHandler(loaderInfo: LoaderInfo)
 		{						
-			if (loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
-				trace("Watching for errors");
+			if (!Capabilities.isDebugger && loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
+				Util.log("Watching for errors");
 				IEventDispatcher(loaderInfo["uncaughtErrorEvents"]).addEventListener("uncaughtError", uncaughtErrorHandler);
 			}
 		}

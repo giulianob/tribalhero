@@ -85,6 +85,7 @@ namespace Game.Logic.Actions
             {
                 city.BeginUpdate();
                 structure.BeginUpdate();
+                structure.IsBlocked = false;
                 byte oldLabor = structure.Stats.Labor;
                 StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
@@ -93,7 +94,6 @@ namespace Game.Logic.Actions
                 InitFactory.InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
                 Procedure.SetResourceCap(structure.City);
 
-                structure.IsBlocked = false;
                 structure.EndUpdate();
                 city.EndUpdate();
 

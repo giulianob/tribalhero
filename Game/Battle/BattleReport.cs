@@ -351,7 +351,7 @@ namespace Game.Battle
         {
             Global.DbManager.Query(
                                    string.Format(
-                                                 @"UPDATE `{0}` SET `loot_wood` = @wood, `loot_gold` = @gold, `loot_crop` = @crop, `loot_iron` = @iron, `bonus_wood` = @wood, `bonus_gold` = @bonus_gold, `bonus_crop` = @bonus_crop, `bonus_iron` = @bonus_iron 
+                                                 @"UPDATE `{0}` SET `loot_wood` = @wood, `loot_gold` = @gold, `loot_crop` = @crop, `loot_iron` = @iron, `bonus_wood` = @bonus_wood, `bonus_gold` = @bonus_gold, `bonus_crop` = @bonus_crop, `bonus_iron` = @bonus_iron 
                       WHERE `city_id` = @city_id AND `battle_id` = @battle_id AND `troop_stub_id` = @troop_stub_id LIMIT 1",
                                                  BATTLE_REPORT_VIEWS_DB),
                                    new[]

@@ -54,7 +54,7 @@ namespace Game.Setup
         public static readonly double seconds_per_unit = 1.0; //dont make it zero!
 
         public static readonly bool battle_instant_watch;
-        public static readonly double battle_turn_interval = 15.0f;
+        public static readonly double battle_turn_interval = 20.0f;
         public static readonly int battle_min_rounds = 5;
         public static readonly int battle_loot_per_round = 10; // percentage of total carry
         public static readonly int battle_stamina_initial = 20;

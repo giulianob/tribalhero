@@ -88,7 +88,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public static ushort LaborMoveMax(Structure structure)
         {
-            return (ushort)Math.Max(5, Math.Ceiling(structure.Stats.Base.MaxLabor/10.0f));
+            return (ushort)Math.Max(5, Math.Ceiling(structure.Stats.Base.MaxLabor/2.0));
         }
 
         /// <summary>

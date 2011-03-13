@@ -32,6 +32,21 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 3011,13,ON_INIT,structure_change,time=14400,type=3012,lvl=13,,,FARMING_LABEL,//changing to mature
 3011,14,ON_INIT,structure_change,time=14400,type=3012,lvl=14,,,FARMING_LABEL,//changing to mature
 3011,15,ON_INIT,structure_change,time=14400,type=3012,lvl=15,,,FARMING_LABEL,//changing to mature
+3011,1,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,2,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,3,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,4,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,5,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,6,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,7,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,8,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,9,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,10,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,11,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,12,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,13,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,14,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,15,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
 3012,1,ON_CONVERT,structure_change,time=21600,3010,1,,,TIME_LEFT_LABEL,//kill field
 3012,2,ON_CONVERT,structure_change,time=21600,3010,1,,,TIME_LEFT_LABEL,//kill field
 3012,3,ON_CONVERT,structure_change,time=21600,3010,1,,,TIME_LEFT_LABEL,//kill field
@@ -62,3 +77,18 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 3012,13,ON_CONVERT,property_create,name=Crop,RandomINT,328,492,,,//set crop property to how much player will get
 3012,14,ON_CONVERT,property_create,name=Crop,RandomINT,336,504,,,//set crop property to how much player will get
 3012,15,ON_CONVERT,property_create,name=Crop,RandomINT,344,516,,,//set crop property to how much player will get
+3012,1,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,2,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,3,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,4,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,5,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,6,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,7,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,8,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,9,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,10,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,11,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,12,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,13,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,14,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,15,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed

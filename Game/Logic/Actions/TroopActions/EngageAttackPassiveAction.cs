@@ -242,6 +242,20 @@ namespace Game.Logic.Actions
                     if (((AttackCombatUnit)source).TroopStub == stub)
                     {
                         bonus.Add(StructureFactory.GetCost(target.Type, target.Lvl)/2);
+
+                        Structure structure = ((CombatStructure)target).Structure;
+                        object value;
+                        if(structure.Properties.TryGet("Crop",out value))
+                            bonus.Crop+=(int)value;
+                        if (structure.Properties.TryGet("Gold", out value))
+                            bonus.Gold += (int)value;
+                        if (structure.Properties.TryGet("Iron", out value))
+                            bonus.Iron += (int)value;
+                        if (structure.Properties.TryGet("Wood", out value))
+                            bonus.Wood += (int)value;
+                        if (structure.Properties.TryGet("Labor", out value))
+                            bonus.Labor += (int)value;
+
                         Global.DbManager.Save(this);
                     }
 

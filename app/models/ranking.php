@@ -32,7 +32,7 @@ class Ranking extends AppModel {
             array('name' => 'RANKING_LOOT_PLAYER', 'field' => 'loot_stolen', 'order' => 'desc', 'cityBased' => false),
     );
 
-    var $rankingsPerPage = 15;
+    var $rankingsPerPage = 100;
 
     /*
      * Returns an array ranking based on the type, and id specified.

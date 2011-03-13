@@ -15,7 +15,7 @@ namespace Game.Logic.Formulas
         /// <param name = "level"></param>
         public static int GetMaxForestCount(byte level)
         {
-            if (level <= 1)
+            if (level <= 3)
                 return 1;
 
             if (level <= 8)
@@ -52,7 +52,7 @@ namespace Game.Logic.Formulas
             if (level <= 2)
                 return 1;
 
-            if (level <= 7)
+            if (level <= 6)
                 return 2;
 
             if (level <= 12)

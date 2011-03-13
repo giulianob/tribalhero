@@ -11,24 +11,24 @@ namespace stacktracer
 {
     class Program
     {
-        private const string regPOI = @"\binterface\b|\bclass\b|\bfunction\b|\breturn\b|[""'/{}]";
-        private const string regFun = @"\bfunction\b\s*((?:[gs]et\s+)?\w*)\s*\(";
-        private const string regCls = @"class\s+(\w+)[\s{]";
-        private const string regStr = @"([""'/]).*?(?<!\\)\1";
+        private const string RegPoi = @"\binterface\b|\bclass\b|\bfunction\b|\breturn\b|[""'/{}]";
+        private const string RegFun = @"\bfunction\b\s*((?:[gs]et\s+)?\w*)\s*\(";
+        private const string RegCls = @"class\s+(\w+)[\s{]";
+        private const string RegStr = @"([""'/]).*?(?<!\\)\1";
 
-        private static Regex rePOI = new Regex(regPOI, RegexOptions.Multiline & RegexOptions.IgnoreCase);
-        private static Regex reFun = new Regex(regFun, RegexOptions.Multiline & RegexOptions.IgnoreCase);
-        private static Regex reCls = new Regex(regCls, RegexOptions.Multiline & RegexOptions.IgnoreCase);
-        private static Regex reStr = new Regex(regStr, RegexOptions.Multiline & RegexOptions.IgnoreCase);
+        private static readonly Regex RePoi = new Regex(RegPoi, RegexOptions.Multiline & RegexOptions.IgnoreCase);
+        private static readonly Regex ReFun = new Regex(RegFun, RegexOptions.Multiline & RegexOptions.IgnoreCase);
+        private static readonly Regex ReCls = new Regex(RegCls, RegexOptions.Multiline & RegexOptions.IgnoreCase);
+        private static readonly Regex ReStr = new Regex(RegStr, RegexOptions.Multiline & RegexOptions.IgnoreCase);
 
-        private static string[] ignoreFiles = new[] {"UncaughtExceptionHandler.as", "Constants.as"};
+        private static readonly string[] IgnoreFiles = new[] {"UncaughtExceptionHandler.as", "Constants.as"};
 
         private static string path;
         private static bool outputOnly = true;
 
         private static int functionId;
 
-        private static readonly StringWriter functionMappings = new StringWriter(new StringBuilder());
+        private static readonly StringWriter FunctionMappings = new StringWriter(new StringBuilder());
 
         class StackTraceItem
         {
@@ -38,7 +38,7 @@ namespace stacktracer
             public int Id { get; set; }
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             var mappingsOutputPath = string.Empty;
 
@@ -57,7 +57,7 @@ namespace stacktracer
                 foreach (var file in Directory.GetFiles(path, "*.as", SearchOption.AllDirectories))
                 {
                     string fileName = Path.GetFileName(file);                    
-                    if (ignoreFiles.Any(x => x == fileName))
+                    if (IgnoreFiles.Any(x => x == fileName))
                         continue;
 
                     ProcessFile(file);
@@ -68,10 +68,10 @@ namespace stacktracer
             if (mappingsOutputPath != string.Empty)
             {
                 Console.Out.WriteLine("Writing mapping to {0}", mappingsOutputPath);
-                File.WriteAllText(mappingsOutputPath, functionMappings.ToString());
+                File.WriteAllText(mappingsOutputPath, FunctionMappings.ToString());
             }
             else
-                Console.Out.WriteLine(functionMappings.ToString());            
+                Console.Out.WriteLine(FunctionMappings.ToString());            
         }
 
         static void ProcessFile(string filePath)
@@ -85,17 +85,13 @@ namespace stacktracer
             string klass = "";
             bool alreadyReturned = false;
 
-            string startingBodyInterest;
-
-            Match match = rePOI.Match(body);
+            Match match = RePoi.Match(body);
 
             while (match.Success)
             {
                 var poi = match.Groups[0];
                 int pos = match.Index;
                 var endPos = match.Index + match.Length;
-
-                var bodyCurrentInterest = body.Substring(pos);
 
                 string line;
                 switch (poi.Value)
@@ -108,7 +104,7 @@ namespace stacktracer
                     case "\'":
                     case "\"":
                     case "/":
-                        var strm = reStr.Match(body, pos);
+                        var strm = ReStr.Match(body, pos);
                         Regex strReg = new Regex(@"[=(,]\s*$");
                         if (strm.Success && body.Substring(pos, 2) == "//")
                             endPos = body.IndexOf("\n", pos) - 1;
@@ -120,13 +116,13 @@ namespace stacktracer
                         break;
                     // Class
                     case "class":
-                        klass = reCls.Match(body, pos).Groups[1].Value;
+                        klass = ReCls.Match(body, pos).Groups[1].Value;
                         Console.Out.WriteLine("Class: " + klass);
                         break;
                     // Function
                     case "function":
-                        var fnameMatch = reFun.Match(body, pos);
-                        var fname = string.Empty;
+                        var fnameMatch = ReFun.Match(body, pos);
+                        string fname;
                         // Regular functions
                         if (fnameMatch.Groups.Count > 1 && fnameMatch.Groups[1].Value != string.Empty)
                         {
@@ -157,7 +153,7 @@ namespace stacktracer
                                            Id = ++functionId
                                    });
 
-                        functionMappings.WriteLine(string.Format("{0},{1}", functionId, fname));
+                        FunctionMappings.WriteLine(string.Format("{0},{1}", functionId, fname));
 
                         var brace = body.IndexOf('{', pos) + 1;
                         line = string.Format("\r\nUncaughtExceptionHandler.enterFunction({0});\r\n", functionId);
@@ -190,7 +186,10 @@ namespace stacktracer
 
                         body = body.Substring(0, pos) + line + body.Substring(semicolon + 1);
                         endPos = pos + line.Length;
-                        alreadyReturned = true;
+
+                        if (stack.Count > 0 && ((StackTraceItem)stack.Peek()).Depth == depth - 1)
+                            alreadyReturned = true;
+
                         break;
                         // Function end
                     case "}":
@@ -198,22 +197,22 @@ namespace stacktracer
                         if (stack.Count > 0 && ((StackTraceItem)stack.Peek()).Depth == depth)
                         {
                             lastf = (StackTraceItem)stack.Pop();
-                            //if (!alreadyReturned) {
+                            if (!alreadyReturned)
+                            {
                                 // Function ended without any returns
                                 line = string.Format("UncaughtExceptionHandler.exitFunction({0});\r\n", lastf.Id);
                                 body = body.Substring(0, pos) + line + body.Substring(pos);
                                 endPos += line.Length;
-                            //}
-                            alreadyReturned = false;
-                        }                        
+                            }
+                        }
+
+                        alreadyReturned = false;
                         break;
                 }
 
                 pos = endPos;
 
-                startingBodyInterest = body.Substring(pos);
-
-                match = rePOI.Match(body, pos);
+                match = RePoi.Match(body, pos);
             }
 
             if (outputOnly)

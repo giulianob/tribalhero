@@ -124,7 +124,7 @@
 			lblDescription.setConstraints("South");
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 
-			lblLvl = new JLabel("Level"  + structPrototype.level);
+			lblLvl = new JLabel("Level "  + structPrototype.level);
 			lblLvl.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLvl, "header");
 

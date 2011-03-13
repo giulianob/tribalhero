@@ -152,10 +152,20 @@
 			return newRegion;
 		}
 
-		public function parseRegions():void
+		public function parseRegions(forceParse: Boolean = false):void
 		{
 			if (Constants.debug >= 4) {
 				Util.log("on move: " + Global.gameContainer.camera.miniMapX + "," + Global.gameContainer.camera.miniMapY);
+			}
+			
+			// Remove all regions if we are forcing
+			if (forceParse) {
+				for each (var region: CityRegion in regions.each()) {
+					region.disposeData();
+					regionSpace.removeChild(region);					
+				}
+				
+				regions.clear();
 			}
 
 			//calculate which regions we need to render
@@ -178,7 +188,7 @@
 			//remove any outdated regions from regions we have
 			for (var i: int = regions.size() - 1; i >= 0; i--)
 			{
-				var region: CityRegion = regions.getByIndex(i);
+				region = regions.getByIndex(i);
 
 				var found: int = -1;
 				for (var a:int= 0; a < requiredRegions.length; a++)

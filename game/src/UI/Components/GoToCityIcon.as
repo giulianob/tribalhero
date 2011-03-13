@@ -14,19 +14,25 @@
 	 */
 	public class GoToCityIcon extends AssetIcon
 	{
-		private var cityId: int;
+		public var cityId: int;
 		private var icon: MovieClip = new ICON_WORLD();
 
 		public function GoToCityIcon(cityId: int)
 		{
 			super(icon);
+			
+			this.cityId = cityId;
 
 			icon.buttonMode = true;
 			icon.mouseEnabled = true;
 			new SimpleTooltip(icon, "Go to city");
 			icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent) : void {				
-				Global.mapComm.City.gotoCityLocation(cityId);
+				goToCity();
 			});
+		}
+		
+		public function goToCity() : void {
+			Global.mapComm.City.gotoCityLocation(cityId);
 		}
 
 	}

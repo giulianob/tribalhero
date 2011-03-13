@@ -53,7 +53,7 @@
 		public var scrollRate: Number = 1;
 
 		private var pressedKeys:Object = {};
-
+		
 		public function Map()
 		{
 			camera = Global.gameContainer.camera;

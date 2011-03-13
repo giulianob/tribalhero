@@ -166,7 +166,7 @@
 						var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
 						var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
 
-						var obj: SimpleGameObject = newRegion.addCityObject(objLvl, objType, objPlayerId, objCityId, objId, objX, objY, false);
+						var obj: SimpleGameObject = newRegion.addCityObject(objLvl, ObjectFactory.getFirstType("MainBuilding"), objPlayerId, objCityId, objId, objX, objY, false);
 					}
 					// Forest objects
 					else if (objType == 1) {
@@ -177,6 +177,18 @@
 						objY = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
 						
 						obj = newRegion.addForestObject(objLvl, objId, objX, objY, false);
+					}
+					// Troop objects
+					else if (objType == 2) {
+						var objTroopId: int = packet.readUByte();
+						objPlayerId = packet.readUInt();
+						objCityId = packet.readUInt();
+						objId = packet.readUInt();
+						
+						objX = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
+						objY = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
+						
+						obj = newRegion.addTroopObject(objPlayerId, objTroopId, objCityId, objId, objX, objY, false);						
 					}
 				}
 

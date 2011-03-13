@@ -42,7 +42,8 @@
 		private var sidebarHolder: Sprite;
 
 		public var map: Map;
-		public var miniMap: MiniMap;
+		public var miniMap: MiniMap;				
+		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
 
 		//Holds any overlay. Overlays are used for different cursor types.
 		private var mapOverlay: Sprite;
@@ -171,9 +172,11 @@
 			sidebarHolder.y = 60;
 			addChildAt(sidebarHolder, 1);
 
+			// Set up minimap refresh timer
+			minimapRefreshTimer.addEventListener(TimerEvent.TIMER, minimapRefresh);
+			
 			//Set up resources timer
-			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);
-			resourcesTimer.start();
+			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);			
 		}
 
 		public function onMenuClick(e: MouseEvent): void
@@ -468,6 +471,10 @@
 			
 			// Add menu overlay
 			addChild(menuDummyOverlay);
+			
+			// Start timers
+			minimapRefreshTimer.start();
+			resourcesTimer.start();
 
 			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
@@ -479,6 +486,17 @@
 				menu.dispose();
 				menu = null;
 				removeChild(menuDummyOverlay);
+			}
+			
+			if (resourcesTimer) {
+				resourcesTimer.stop();				
+				
+				if (resourcesContainer.getFrame())
+					resourcesContainer.getFrame().dispose();
+			}
+			
+			if (minimapRefreshTimer) {
+				minimapRefreshTimer.stop();
 			}
 
 			if (messageTimer) {
@@ -577,13 +595,19 @@
 			if (frames.length == 0 && map != null) map.disableMouse(false);
 		}
 
+		public function minimapRefresh(e: Event = null):void {
+			if (miniMap == null) return;
+			
+			miniMap.parseRegions(true);
+		}
+		
 		public function displayResources(e: Event = null):void {
 			if (!resourcesContainer) return;
 
 			if (selectedCity == null)
 			{
 				if (resourcesContainer.getFrame())
-				resourcesContainer.getFrame().dispose();
+					resourcesContainer.getFrame().dispose();
 
 				return;
 			}

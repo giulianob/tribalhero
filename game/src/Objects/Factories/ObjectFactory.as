@@ -55,6 +55,15 @@
 
 			return ret;
 		}
+		
+		public static function getFirstType(name: String) : int {
+			for each (var obj: ObjectTypePrototype in objectTypes.each()) {
+				if (obj.name == name)
+					return obj.type;
+			}
+			
+			return -1;
+		}
 
 		public static function isType(name: String, type: int) : Boolean
 		{

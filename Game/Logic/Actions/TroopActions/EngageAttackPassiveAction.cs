@@ -293,6 +293,14 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
+            // if battle lasts more than 5 rounds, attacker gets 3 attack points.
+            if(round==5)
+            {
+                stub.TroopObject.BeginUpdate();
+                stub.TroopObject.Stats.AttackPoint += 3;
+                stub.TroopObject.EndUpdate();
+            }
+
             // Reduce stamina and check if we need to remove this stub
             ReduceStamina(stub, (short)(stub.TroopObject.Stats.Stamina - 1));
 

@@ -775,6 +775,12 @@ namespace Game.Battle
                     attacker.ReceiveReward(attackPoints, loot);
                     city.EndUpdate();
                 }
+                else
+                {
+                    city.BeginUpdate();
+                    attacker.ReceiveReward(attackPoints, new Resource());
+                    city.EndUpdate();
+                }
             }
             else
             {

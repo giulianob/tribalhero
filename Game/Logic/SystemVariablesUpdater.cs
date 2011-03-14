@@ -2,12 +2,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -51,7 +55,7 @@ namespace Game.Logic
                     Global.SystemVariables["System.time"].Value = now;
                     Global.DbManager.Save(Global.SystemVariables["System.time"]);
 
-                    if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalSeconds < 5)
+                    if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 5000)
                         return;
 
                     lastUpdateScheduler = now;
@@ -82,7 +86,7 @@ namespace Game.Logic
 
                     var variables = new List<SystemVariable>
                                     {
-                                            new SystemVariable("System.uptime", string.Format("{0:D2} hrs, {1:D2} mins, {2:D2} secs", uptime.Hours, uptime.Minutes, uptime.Seconds)),
+                                            new SystemVariable("System.uptime", string.Format("{0} days {1:D2} hrs, {2:D2} mins, {3:D2} secs", (int)(uptime.TotalDays), uptime.Hours, uptime.Minutes, uptime.Seconds)),
                                             new SystemVariable("Scheduler.size", schedulerSize),
                                             new SystemVariable("Scheduler.size_change", schedulerDelta),
                                             new SystemVariable("Scheduler.actions_per_second", (int)(actionsFired/now.Subtract(lastProbe).TotalSeconds)),
@@ -100,6 +104,34 @@ namespace Game.Logic
                                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
                                             new SystemVariable("Cities.count", Global.World.CityCount),
                                     };
+
+                    // Max player logged in ever
+                    using (DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE `name` = 'Players.max_logged_in' LIMIT 1", SystemVariable.DB_TABLE),
+                                                 new DbColumn[] {}))
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            int maxLoggedIn = (int)DataTypeSerializer.Deserialize((string)reader["value"], (byte)reader["datatype"]);
+                            int currentlyLoggedIn = TcpWorker.GetSessionCount();
+                            if (currentlyLoggedIn > maxLoggedIn)
+                            {
+                                variables.AddRange(new List<SystemVariable>
+                                                   {
+                                                           new SystemVariable("Players.max_logged_in", currentlyLoggedIn),
+                                                           new SystemVariable("Players.max_logged_in_date", DateTime.UtcNow),
+                                                   });
+                            }
+                        }
+                        else
+                        {
+                            variables.AddRange(new List<SystemVariable>
+                                               {
+                                                       new SystemVariable("Players.max_logged_in", 0),
+                                                       new SystemVariable("Players.max_logged_in_date", DateTime.UtcNow),
+                                               });
+                        }
+                    }
 
                     // Forest cnt
                     variables.AddRange(Global.World.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    

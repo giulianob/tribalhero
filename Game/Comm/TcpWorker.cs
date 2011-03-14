@@ -48,6 +48,7 @@ namespace Game.Comm
                         if (!session.Socket.Connected)
                             return;
 
+                        session.OnClose += worker.OnClose;
                         worker.Put(session);
                     }
 
@@ -59,7 +60,10 @@ namespace Game.Comm
                 {
                     var newWorker = new TcpWorker();
                     workerList.Add(newWorker);
+                    
                     newWorker.Put(session);
+                    session.OnClose += newWorker.OnClose;
+
                     newWorker.Start();
                 }
 
@@ -91,14 +95,13 @@ namespace Game.Comm
 
         public void Put(SocketSession session)
         {
-            lock (sockListLock)
-            {
-                sessions.Add(session.Socket, session);
+            // Already locked here btw from the Add call
 
-                sockList.Add(session.Socket);
+            sessions.Add(session.Socket, session);
 
-                socketAvailable.Set();
-            }
+            sockList.Add(session.Socket);
+
+            socketAvailable.Set();
         }
 
         public void Start()
@@ -117,15 +120,28 @@ namespace Game.Comm
             workerThread.Join();
         }
 
+        private void OnClose(Session sender)
+        {
+            SocketDisconnect(((SocketSession)sender).Socket);
+        }
+
         private void SocketDisconnect(Socket s)
         {
             lock (sockListLock)
             {
                 if (s.Connected)
+                {
+                    s.Shutdown(SocketShutdown.Both);
                     s.Close();
+                }
 
                 //create disconnect packet to send to processor
-                SocketSession dcSession = sessions[s];
+                SocketSession dcSession;
+                if (!sessions.TryGetValue(s, out dcSession))
+                {
+                    // Socket already gone, probably happening because the socket handler saw it wasn't connected 
+                    return;
+                }
 
                 sessions.Remove(s);
                 sockList.Remove(s);

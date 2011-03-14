@@ -66,7 +66,9 @@ namespace Game.Comm
     {
         #region Delegates
 
-        public delegate void CloseCallback();
+        public delegate void CloseCallback(Session sender);
+
+        public event CloseCallback OnClose;
 
         #endregion
 
@@ -109,7 +111,11 @@ namespace Game.Comm
             Close();
         }
 
-        protected abstract void Close();
+        protected void Close()
+        {
+            if (OnClose != null)
+                OnClose(this);
+        }
 
         public void Process(object obj)
         {

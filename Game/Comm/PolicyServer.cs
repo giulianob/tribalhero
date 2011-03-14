@@ -31,7 +31,7 @@ namespace Game.Comm
 
             policy =
                     @"<?xml version=""1.0""?><!DOCTYPE cross-domain-policy SYSTEM ""/xml/dtds/cross-domain-policy.dtd""><cross-domain-policy><site-control permitted-cross-domain-policies=""master-only""/><allow-access-from domain=""" +
-                    Config.flash_domain + @""" to-ports=""8085," + Config.server_port + @""" /></cross-domain-policy>";
+                    Config.flash_domain + @""" to-ports=""80,8085," + Config.server_port + @""" /></cross-domain-policy>";
 
             xmlBytes = Encoding.UTF8.GetBytes(policy);
 

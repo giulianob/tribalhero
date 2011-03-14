@@ -35,7 +35,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 ,,,,,,,,,
 //basement,,,,,,,,,
-21111,HaveTechnology,21102,lvl=3,count=1,,,,Requires Tunnel Excavation Research.,Require Tunnel Excavation Technology 
+21111,HaveTechnology,21102,lvl=1,count=1,,,,Requires Tunnel Excavation Research.,Require Tunnel Excavation Technology 
 ,,,,,,,,,
 ,,,,,,,,,
 //training ground,,,,,,,,,

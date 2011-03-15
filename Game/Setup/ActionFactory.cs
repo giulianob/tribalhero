@@ -98,7 +98,10 @@ namespace Game.Setup
 
                         // Set effect requirements
                         uint effectReqId;
-                        actionReq.EffectReqId = uint.TryParse(toks[col["EffectReq"]], out effectReqId) ? effectReqId : 0;
+                        if (Config.actions_ignore_requirements)
+                            actionReq.EffectReqId = 0;
+                        else
+                            actionReq.EffectReqId = uint.TryParse(toks[col["EffectReq"]], out effectReqId) ? effectReqId : 0;
                         if (toks[col["EffectReqInherit"]].Length > 0)
                             actionReq.EffectReqInherit = (EffectInheritance)Enum.Parse(typeof(EffectInheritance), toks[col["EffectReqInherit"]], true);
                         else

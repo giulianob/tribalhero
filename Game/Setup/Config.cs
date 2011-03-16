@@ -94,6 +94,7 @@ namespace Game.Setup
 
         public static readonly bool actions_instant_time;
         public static readonly int actions_free_cancel_interval_in_sec = 60;
+        public static readonly bool actions_ignore_requirements = false;
         // ReSharper restore InconsistentNaming
 
         static Config()

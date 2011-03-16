@@ -489,11 +489,11 @@
 			}
 			
 			if (resourcesTimer) {
-				resourcesTimer.stop();				
-				
-				if (resourcesContainer.getFrame())
-					resourcesContainer.getFrame().dispose();
+				resourcesTimer.stop();												
 			}
+			
+			if (resourcesContainer && resourcesContainer.getFrame())
+				resourcesContainer.getFrame().dispose();			
 			
 			if (minimapRefreshTimer) {
 				minimapRefreshTimer.stop();

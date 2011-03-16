@@ -84,6 +84,7 @@ namespace Game.Logic.Actions
             targetCity.Battle.ExitBattle += BattleExitBattle;
             targetCity.Battle.WithdrawAttacker += BattleWithdrawAttacker;
             targetCity.Battle.EnterRound += BattleEnterRound;
+            targetCity.Battle.UnitRemoved += BattleUnitRemoved;
             targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
@@ -91,6 +92,7 @@ namespace Game.Logic.Actions
         {
             targetCity.Battle.ActionAttacked -= BattleActionAttacked;
             targetCity.Battle.ExitBattle -= BattleExitBattle;
+            targetCity.Battle.UnitRemoved -= BattleUnitRemoved;
             targetCity.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
             targetCity.Battle.EnterRound -= BattleEnterRound;
             targetCity.Battle.ExitTurn -= BattleExitTurn;
@@ -182,6 +184,30 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
+        /// <summary>
+        /// Takes care of finishing this action up if all our units are killed
+        /// </summary>
+        private void BattleUnitRemoved(CombatObject co)
+        {
+            TroopStub stub;
+            City targetCity;
+            City city;
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+                throw new ArgumentException();
+
+            // If this combat object is ours and all the units are dead, then remove it
+            if (!(co is AttackCombatUnit) || ((AttackCombatUnit)co).TroopStub != stub || ((AttackCombatUnit)co).TroopStub.TotalCount > 0)
+                return;
+
+            DeregisterBattleListeners(targetCity);
+
+            stub.TroopObject.BeginUpdate();
+            stub.TroopObject.State = GameObjectState.NormalState();
+            stub.TroopObject.EndUpdate();
+
+            StateChange(ActionState.Completed);
+        }
+
         private void SetLootedResources(BattleManager battle, TroopStub stub)
         {
             if (!battle.BattleStarted)
@@ -242,6 +268,20 @@ namespace Game.Logic.Actions
                     if (((AttackCombatUnit)source).TroopStub == stub)
                     {
                         bonus.Add(StructureFactory.GetCost(target.Type, target.Lvl)/2);
+
+                        Structure structure = ((CombatStructure)target).Structure;
+                        object value;
+                        if(structure.Properties.TryGet("Crop",out value))
+                            bonus.Crop+=(int)value;
+                        if (structure.Properties.TryGet("Gold", out value))
+                            bonus.Gold += (int)value;
+                        if (structure.Properties.TryGet("Iron", out value))
+                            bonus.Iron += (int)value;
+                        if (structure.Properties.TryGet("Wood", out value))
+                            bonus.Wood += (int)value;
+                        if (structure.Properties.TryGet("Labor", out value))
+                            bonus.Labor += (int)value;
+
                         Global.DbManager.Save(this);
                     }
 
@@ -292,6 +332,14 @@ namespace Game.Logic.Actions
 
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
+
+            // if battle lasts more than 5 rounds, attacker gets 3 attack points.
+            if(round==5)
+            {
+                stub.TroopObject.BeginUpdate();
+                stub.TroopObject.Stats.AttackPoint += 3;
+                stub.TroopObject.EndUpdate();
+            }
 
             // Reduce stamina and check if we need to remove this stub
             ReduceStamina(stub, (short)(stub.TroopObject.Stats.Stamina - 1));

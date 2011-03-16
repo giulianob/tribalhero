@@ -2,15 +2,17 @@
 
 using System;
 using System.Data;
+using System.IO;
 using Game.Data.Stats;
 using Game.Database;
+using Game.Map;
 using Game.Util;
 
 #endregion
 
 namespace Game.Data.Troop
 {
-    public class TroopObject : GameObject, IPersistableObject
+    public class TroopObject : GameObject, IPersistableObject, ICityRegionObject
     {
         public const string DB_TABLE = "troops";
         private TroopStats stats = new TroopStats(0, 0);
@@ -128,6 +130,36 @@ namespace Game.Data.Troop
 
             if (objectId > 0)
                 Global.DbManager.Save(this);
+        }
+
+        #endregion
+
+        #region Implementation of ICityRegionObject
+
+        public Location GetCityRegionLocation()
+        {
+            return new Location(X, Y);
+        }
+
+        public byte[] GetCityRegionObjectBytes()
+        {
+            using (var ms = new MemoryStream())
+            {
+                var bw = new BinaryWriter(ms);
+                bw.Write(Stub.TroopId);
+                bw.Write(City.Owner.PlayerId);
+                bw.Write(City.Id);
+                bw.Write(objectId);
+                bw.Write((ushort)(CityRegionRelX));
+                bw.Write((ushort)(CityRegionRelY));
+                ms.Position = 0;
+                return ms.ToArray();
+            }
+        }
+
+        public CityRegion.ObjectType GetCityRegionType()
+        {
+            return CityRegion.ObjectType.Troop;
         }
 
         #endregion

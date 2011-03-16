@@ -380,61 +380,52 @@ namespace Game.Map
 
         public void ObjectUpdateEvent(SimpleGameObject sender, uint origX, uint origY)
         {
-            //Check if object has moved
-            if (sender.X != origX || sender.Y != origY)
+            // If object is a city region object, we need to update that
+            if (sender is ICityRegionObject)
             {
-                //if object has moved then we need to do some logic to see if it has changed regions
-                ushort oldRegionId = Region.GetRegionIndex(origX, origY);
-                ushort newRegionId = Region.GetRegionIndex(sender);
+                var senderAsCityRegionObject = (ICityRegionObject)sender;
 
-                //object has not changed regions so simply update
-                if (oldRegionId == newRegionId)
-                {
-                    regions[newRegionId].Update(sender, origX, origY);
-                    var packet = new Packet(Command.ObjectUpdate);
-                    packet.AddUInt16(newRegionId);
-                    PacketHelper.AddToPacket(sender, packet, true);
-                    Global.Channel.Post("/WORLD/" + newRegionId, packet);
-                }
+                ushort oldCityRegionId = CityRegion.GetRegionIndex(origX, origY);
+                ushort newCityRegionId = CityRegion.GetRegionIndex(sender.X, sender.Y);
+
+                if (oldCityRegionId == newCityRegionId)
+                    cityRegions[oldCityRegionId].Update(senderAsCityRegionObject, origX, origY);
                 else
                 {
-                    regions[oldRegionId].Remove(sender, origX, origY);
-                    regions[newRegionId].Add(sender);
-                    var packet = new Packet(Command.ObjectMove);
-                    packet.AddUInt16(oldRegionId);
-                    packet.AddUInt16(newRegionId);
-                    PacketHelper.AddToPacket(sender, packet, true);
-                    Global.Channel.Post("/WORLD/" + oldRegionId, packet);
-
-                    packet = new Packet(Command.ObjectAdd);
-                    packet.AddUInt16(newRegionId);
-                    PacketHelper.AddToPacket(sender, packet, true);
-                    Global.Channel.Post("/WORLD/" + newRegionId, packet);
+                    cityRegions[oldCityRegionId].Remove(senderAsCityRegionObject);
+                    cityRegions[newCityRegionId].Add(senderAsCityRegionObject);
                 }
             }
+
+            //if object has moved then we need to do some logic to see if it has changed regions
+            ushort oldRegionId = Region.GetRegionIndex(origX, origY);
+            ushort newRegionId = Region.GetRegionIndex(sender);
+
+            //object has not changed regions so simply update
+            if (oldRegionId == newRegionId)
+            {
+                regions[newRegionId].Update(sender, origX, origY);
+                var packet = new Packet(Command.ObjectUpdate);
+                packet.AddUInt16(newRegionId);
+                PacketHelper.AddToPacket(sender, packet, true);
+                Global.Channel.Post("/WORLD/" + newRegionId, packet);
+            }
+            // object has changed regions, need to remove it from the old one and add it to the new one
             else
             {
-                ushort regionId = Region.GetRegionIndex(sender);
-                regions[regionId].Update(sender, sender.X, sender.Y);
-                var packet = new Packet(Command.ObjectUpdate);
-                packet.AddUInt16(regionId);
+                regions[oldRegionId].Remove(sender, origX, origY);
+                regions[newRegionId].Add(sender);
+                var packet = new Packet(Command.ObjectMove);
+                packet.AddUInt16(oldRegionId);
+                packet.AddUInt16(newRegionId);
                 PacketHelper.AddToPacket(sender, packet, true);
-                Global.Channel.Post("/WORLD/" + regionId, packet);
-            }
+                Global.Channel.Post("/WORLD/" + oldRegionId, packet);
 
-            //Handles updating city region information
-            var structObject = sender as Structure;
-            if (structObject == null || structObject.City.MainBuilding != structObject)
-                return;
-
-            //If object is the main building then we need to update the city region
-            CityRegion region = GetCityRegion(origX, origY);
-            if (region != null)
-                region.Remove(structObject.City);
-
-            region = GetCityRegion(structObject.X, structObject.Y);
-            if (region != null)
-                region.Add(structObject.City);
+                packet = new Packet(Command.ObjectAdd);
+                packet.AddUInt16(newRegionId);
+                PacketHelper.AddToPacket(sender, packet, true);
+                Global.Channel.Post("/WORLD/" + newRegionId, packet);
+            }            
         }
 
         #endregion

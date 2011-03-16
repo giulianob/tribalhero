@@ -183,12 +183,6 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return;
 
-            if (cu.TroopStub.StationedCity == city && cu.TroopStub.TotalCount == 0)
-            {
-                //takes care of killing out stationed troops
-                var list = new List<TroopStub>(1) {cu.TroopStub};
-                city.Battle.RemoveFromDefense(list, ReportState.Dying);
-            }
         }
 
         private void BattleUnitRemoved(CombatObject obj) {

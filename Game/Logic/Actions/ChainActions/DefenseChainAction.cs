@@ -108,16 +108,13 @@ namespace Game.Logic.Actions
 
                     if (targetCity.Battle != null)
                     {
-                        var list = new List<TroopStub>();
-
                         stub.BeginUpdate();
                         stub.State = TroopState.BattleStationed;
                         stub.EndUpdate();
 
-                        list.Add(stub);
-
-                        targetCity.Battle.AddToDefense(list);
+                        targetCity.Battle.AddToDefense(new List<TroopStub> { stub });
                     }
+
                     StateChange(ActionState.Completed);
                 }
             }

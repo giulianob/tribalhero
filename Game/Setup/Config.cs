@@ -24,7 +24,6 @@ namespace Game.Setup
         public static readonly bool server_production;
 
         public static readonly string flash_domain = "*.tribalhero.com";
-        public static readonly string flash_ports = server_port + ",8085,843";
 
         public static readonly string csv_folder = "conf/csv/";
         public static readonly string csv_compiled_folder = "conf/csv/compiled/";
@@ -54,7 +53,7 @@ namespace Game.Setup
         public static readonly double seconds_per_unit = 1.0; //dont make it zero!
 
         public static readonly bool battle_instant_watch;
-        public static readonly double battle_turn_interval = 15.0f;
+        public static readonly double battle_turn_interval = 20.0f;
         public static readonly int battle_min_rounds = 5;
         public static readonly int battle_loot_per_round = 10; // percentage of total carry
         public static readonly int battle_stamina_initial = 20;
@@ -95,6 +94,7 @@ namespace Game.Setup
 
         public static readonly bool actions_instant_time;
         public static readonly int actions_free_cancel_interval_in_sec = 60;
+        public static readonly bool actions_ignore_requirements = false;
         // ReSharper restore InconsistentNaming
 
         static Config()

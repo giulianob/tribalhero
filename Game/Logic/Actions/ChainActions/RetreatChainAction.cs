@@ -110,10 +110,7 @@ namespace Game.Logic.Actions
 
                     stub.City.Worker.References.Remove(stub.TroopObject, this);
                     stub.City.Worker.Notifications.Remove(this);
-                    if (stub.TotalCount == 0)
-                        Procedure.TroopObjectDelete(stub.TroopObject, false);
-                    else
-                        Procedure.TroopObjectDelete(stub.TroopObject, true);
+                    Procedure.TroopObjectDelete(stub.TroopObject, stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
                 }
             }

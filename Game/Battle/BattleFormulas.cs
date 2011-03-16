@@ -42,7 +42,7 @@ namespace Game.Battle
                             return 1;
                         case ArmorClass.Metal:
                         case ArmorClass.Stone:
-                            return 0.6;
+                            return 0.8;
                     }
                     break;
                 case WeaponClass.Elemental:
@@ -50,10 +50,10 @@ namespace Game.Battle
                     {
                         case ArmorClass.Leather:
                         case ArmorClass.Wooden:
-                            return 0.7;
+                            return 0.9;
                         case ArmorClass.Metal:
                         case ArmorClass.Stone:
-                            return 1.4;
+                            return 1.2;
                     }
                     break;
             }
@@ -66,11 +66,11 @@ namespace Game.Battle
             const double nodamage = 0.1;
             const double weakest = 0.2;
             const double weaker = 0.4;
-            const double weak = 0.7;
-            const double good = 1;
-            const double strong = 1.4;
-            const double stronger = 1.7;
-            const double strongest = 2;
+            const double weak = 0.8;
+            const double good = 1.1;
+            const double strong = 1.3;
+            const double stronger = 1.6;
+            const double strongest = 2.2;
 
             switch(weapon)
             {
@@ -78,52 +78,52 @@ namespace Game.Battle
                     switch(armor)
                     {
                         case ArmorType.Ground:
-                            return strong;
+                            return 1.1;
                         case ArmorType.Mount:
-                            return weak;
+                            return 0.8;
                         case ArmorType.Machine:
-                            return strong;
+                            return 1.3;
                         case ArmorType.Building:
-                            return weakest;
+                            return 0.2;
                     }
                     break;
                 case WeaponType.Pike:
                     switch(armor)
                     {
                         case ArmorType.Ground:
-                            return weak;
+                            return 0.8;
                         case ArmorType.Mount:
-                            return stronger;
+                            return 1.5;
                         case ArmorType.Machine:
-                            return weak;
+                            return 0.8;
                         case ArmorType.Building:
-                            return weakest;
+                            return 0.2;
                     }
                     break;
                 case WeaponType.Bow:
                     switch(armor)
                     {
                         case ArmorType.Ground:
-                            return strong;
+                            return 1.3;
                         case ArmorType.Mount:
-                            return good;
+                            return 1.1;
                         case ArmorType.Machine:
-                            return weakest;
+                            return 0.2;
                         case ArmorType.Building:
-                            return nodamage;
+                            return 0.1;
                     }
                     break;
                 case WeaponType.Ball:
                     switch(armor)
                     {
                         case ArmorType.Ground:
-                            return nodamage;
+                            return 0.1;
                         case ArmorType.Mount:
-                            return nodamage;
+                            return 0.1;
                         case ArmorType.Machine:
-                            return weak;
+                            return 0.8;
                         case ArmorType.Building:
-                            return strongest;
+                            return 2.0;
                     }
                     break;
                 case WeaponType.Barricade:
@@ -149,7 +149,9 @@ namespace Game.Battle
             int rawDmg = (atk*attacker.Count)/10;
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
+            double modifier = classModifier * typeModifier;
             rawDmg = (int)(typeModifier*classModifier*rawDmg);
+
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
         }
 

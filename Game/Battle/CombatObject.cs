@@ -51,6 +51,8 @@ namespace Game.Battle
 
         public uint GroupId { get; set; }
 
+        public bool Disposed { get; set; }
+
         public BattleManager Battle
         {
             get
@@ -212,7 +214,9 @@ namespace Game.Battle
 
         public virtual void CleanUp()
         {
-            throw new Exception("NOT IMPLEMENTED");
+            Disposed = true;
+
+            Global.DbManager.Delete(this);
         }
 
         public virtual void ExitBattle()

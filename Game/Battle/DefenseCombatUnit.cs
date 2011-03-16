@@ -278,11 +278,6 @@ namespace Game.Battle
             returning = null;
         }
 
-        public override void CleanUp()
-        {
-            Global.DbManager.Delete(this);
-        }
-
         public override void ExitBattle()
         {
         }

@@ -16,20 +16,7 @@ namespace Game.Comm
         }
 
         public Socket Socket { get; private set; }
-
-        protected override void Close()
-        {
-            try
-            {
-                Socket.Shutdown(SocketShutdown.Both);
-                Socket.Close();
-            }
-            catch(Exception e)
-            {
-                Global.Logger.Warn(e);
-            }
-        }
-
+       
         public override bool Write(Packet packet)
         {
 #if DEBUG || CHECK_LOCKS
@@ -38,8 +25,6 @@ namespace Game.Comm
 
             byte[] packetBytes = packet.GetBytes();
             int ret;
-            if (Socket == null || !Socket.Connected)
-                return false;
 
             try
             {

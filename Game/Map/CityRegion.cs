@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
@@ -18,7 +19,8 @@ namespace Game.Map
         public enum ObjectType : byte
         {
             City = 0,
-            Forest = 1
+            Forest = 1,
+            Troop = 2
         }
 
         #endregion
@@ -54,11 +56,25 @@ namespace Game.Map
             }
         }
 
+        public void Update(ICityRegionObject obj, uint origX, uint origY)
+        {
+            lock (objLock)
+            {
+                Location loc = obj.GetCityRegionLocation();
+                if (loc.X != origX || loc.Y != origY)
+                {
+                    Remove(obj);
+                    Add(obj);
+                }
+                isDirty = true;
+            }
+        }
+
         public byte[] GetCityBytes()
         {
             if (isDirty || objects == null)
             {
-                lock (data)
+                lock (objLock)
                 {
                     if (isDirty || objects == null)
                     {
@@ -94,5 +110,6 @@ namespace Game.Map
         }
 
         #endregion
+
     }
 }

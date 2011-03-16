@@ -230,8 +230,11 @@ namespace Game.Battle
             returning = null;
         }
 
-        public new void CleanUp()
+        public override void CleanUp()
         {
+            base.CleanUp();
+
+            // Remove structure if our combat object died
             if (hp <= 0)
             {
                 City city = Structure.City;
@@ -253,9 +256,7 @@ namespace Game.Battle
                     Structure.EndUpdate();
                 }
                 Global.World.UnlockRegion(Structure.X, Structure.Y);
-            }
-
-            Global.DbManager.Delete(this);
+            }           
         }
 
         public override void ExitBattle()

@@ -212,9 +212,11 @@ namespace Game.Battle
 
         #endregion
 
-        public void CleanUp()
+        public virtual void CleanUp()
         {
             Disposed = true;
+
+            Global.DbManager.Delete(this);
         }
 
         public virtual void ExitBattle()

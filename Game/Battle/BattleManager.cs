@@ -705,6 +705,9 @@ namespace Game.Battle
                     attackIndex++;
                 }
 
+                if (currentAttacker.Disposed)
+                    throw new Exception("Attacker has been improperly disposed");
+
                 currentAttacker.ParticipatedInRound();
 
                 Global.DbManager.Save(currentAttacker);

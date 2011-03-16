@@ -312,7 +312,7 @@ namespace Game.Battle
             }
         }
 
-        public override void CleanUp()
+        public new void CleanUp()
         {
             Global.DbManager.Delete(this);
         }

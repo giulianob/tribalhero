@@ -84,6 +84,7 @@ namespace Game.Logic.Actions
             targetCity.Battle.ExitBattle += BattleExitBattle;
             targetCity.Battle.WithdrawAttacker += BattleWithdrawAttacker;
             targetCity.Battle.EnterRound += BattleEnterRound;
+            targetCity.Battle.UnitRemoved += BattleUnitRemoved;
             targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
@@ -91,6 +92,7 @@ namespace Game.Logic.Actions
         {
             targetCity.Battle.ActionAttacked -= BattleActionAttacked;
             targetCity.Battle.ExitBattle -= BattleExitBattle;
+            targetCity.Battle.UnitRemoved -= BattleUnitRemoved;
             targetCity.Battle.WithdrawAttacker -= BattleWithdrawAttacker;
             targetCity.Battle.EnterRound -= BattleEnterRound;
             targetCity.Battle.ExitTurn -= BattleExitTurn;
@@ -177,6 +179,30 @@ namespace Game.Logic.Actions
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.NormalState();
             SetLootedResources(targetCity.Battle, stub);
+            stub.TroopObject.EndUpdate();
+
+            StateChange(ActionState.Completed);
+        }
+
+        /// <summary>
+        /// Takes care of finishing this action up if all our units are killed
+        /// </summary>
+        private void BattleUnitRemoved(CombatObject co)
+        {
+            TroopStub stub;
+            City targetCity;
+            City city;
+            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+                throw new ArgumentException();
+
+            // If this combat object is ours and all the units are dead, then remove it
+            if (!(co is AttackCombatUnit) || ((AttackCombatUnit)co).TroopStub != stub || ((AttackCombatUnit)co).TroopStub.TotalCount > 0)
+                return;
+
+            DeregisterBattleListeners(targetCity);
+
+            stub.TroopObject.BeginUpdate();
+            stub.TroopObject.State = GameObjectState.NormalState();
             stub.TroopObject.EndUpdate();
 
             StateChange(ActionState.Completed);

@@ -278,7 +278,7 @@ namespace Game.Battle
             returning = null;
         }
 
-        public override void CleanUp()
+        public new void CleanUp()
         {
             Global.DbManager.Delete(this);
         }

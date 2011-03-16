@@ -477,7 +477,10 @@ namespace Game.Battle
 
                 // Clean up objects
                 foreach (var co in list)
-                    co.CleanUp();
+                {
+                    if (!co.Disposed)
+                        co.CleanUp();
+                }
 
                 // Refresh battle order
                 RefreshBattleOrder();
@@ -615,19 +618,22 @@ namespace Game.Battle
                 {
                     #region Find Attacker                    
 
-                    if (!battleOrder.NextObject(out currentAttacker) && !battleJustStarted)
+                    do
                     {
-                        ++round;
-                        battleOrder.ParticipatedInRound();
-                        turn = 0;
-                        EventEnterRound(Attacker, Defender, round);
-                    }
+                        if (!battleOrder.NextObject(out currentAttacker) && !battleJustStarted)
+                        {
+                            ++round;
+                            battleOrder.ParticipatedInRound();
+                            turn = 0;
+                            EventEnterRound(Attacker, Defender, round);
+                        }
 
-                    if (currentAttacker == null || defenders.Count == 0 || attackers.Count == 0)
-                    {
-                        BattleEnded(true);
-                        return false;
-                    }
+                        if (currentAttacker == null || defenders.Count == 0 || attackers.Count == 0)
+                        {
+                            BattleEnded(true);
+                            return false;
+                        }                        
+                    } while (!battleOrder.Contains(currentAttacker)); // Since the EventEnterRound can remove the object from battle, we need to make sure he's still here before we proceed
 
                     #endregion
 
@@ -754,12 +760,6 @@ namespace Game.Battle
             defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
             ++defender.HitRecv;
 
-            Global.Logger.Debug(string.Format("{0}[{1}] hit {2}[{3}] for {4} damage", attacker.ClassType, attacker.Type, defender.ClassType, defender.Type, dmg));
-            if (lostResource != null && lostResource.Total > 0)
-                Global.Logger.Debug(string.Format("Defender lost {0} resources", lostResource));
-            if (attackPoints > 0)
-                Global.Logger.Debug(string.Format("Attacker gained {0} attack points", attackPoints));
-
             #endregion
 
             #region Loot and Attack Points
@@ -824,10 +824,7 @@ namespace Game.Battle
 
             bool isDefenderDead = defender.IsDead;
             if (isDefenderDead)
-            {
-                Global.Logger.Debug("Defender has died");
-
-                EventUnitRemoved(defender);
+            {                
                 battleOrder.Remove(defender);
 
                 if (attacker.CombatList == attackers)
@@ -841,14 +838,22 @@ namespace Game.Battle
                     report.WriteReportObject(defender, true, GroupIsDead(defender, attackers) ? ReportState.Dying : ReportState.Staying);
                 }
 
-                defender.CleanUp();
+                EventActionAttacked(attacker, defender, actualDmg);
+
+                EventUnitRemoved(defender);
+
+                if (!defender.Disposed)
+                    defender.CleanUp();
             }
             else
-                Global.DbManager.Save(defender);
+            {
+                EventActionAttacked(attacker, defender, actualDmg);
 
-            #endregion
+                if (!defender.Disposed)
+                    Global.DbManager.Save(defender);
+            }
 
-            EventActionAttacked(attacker, defender, actualDmg);
+            #endregion            
 
             return defender.IsDead;
         }

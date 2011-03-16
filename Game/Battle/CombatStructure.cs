@@ -230,7 +230,7 @@ namespace Game.Battle
             returning = null;
         }
 
-        public override void CleanUp()
+        public new void CleanUp()
         {
             if (hp <= 0)
             {

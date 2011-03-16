@@ -16,3 +16,5 @@ glob:app/webroot/img/tree/game-tree.png
 glob:app/webroot/img/tree/game-tree-large.png
 relre:app/webroot/img/db/buildings/(.*).png
 glob:app/webroot/img/db/units/*.png
+syntax: glob
+vendors/ruckusing/logs/development.log

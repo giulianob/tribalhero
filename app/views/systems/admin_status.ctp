@@ -1,4 +1,6 @@
 <div class="span-20 last">
+    <h2>Server Status</h2>
+    <div>Current time in UTC is: <?php echo gmdate('n/j/y g:i:s A'); ?></div>
     <dl><?php $i = 0;
 $class = ' class="altrow"'; ?>
 

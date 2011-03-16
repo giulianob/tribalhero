@@ -121,8 +121,6 @@ namespace Game.Logic.Actions
             if (remainingHp > 0)
                 return;
 
-            var list = new List<TroopStub> {stub};
-            city.Battle.RemoveFromAttack(list, ReportState.Dying);
             city.Battle.ActionAttacked -= BattleActionAttacked;
             city.Battle.ExitBattle -= BattleExitBattle;
 

@@ -306,6 +306,7 @@ namespace Game.Comm
                 packet.AddByte(city.Radius);
                 packet.AddInt32(city.AttackPoint);
                 packet.AddInt32(city.DefensePoint);
+                packet.AddUInt16(city.Value);
                 packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
                 packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
 

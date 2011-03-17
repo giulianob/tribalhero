@@ -84,7 +84,7 @@
 			return objContainer;
 		}
 		
-		public function addCityObject(level: int, type: int, playerId: int, cityId: int, objectId: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
+		public function addCityObject(level: int, type: int, playerId: int, cityId: int, objectId: int, objCityValue: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
 		{
 			var gameObj: SimpleGameObject;
 			
@@ -100,19 +100,14 @@
 				if (!gameObj)
 					return null;
 				
-				// Apply the difficulty transformation to the tile
-				var levelDelta: int = level - Global.gameContainer.selectedCity.MainBuilding.level;
+				// Apply the difficulty transformation to the tile				
+				var percDiff: Number = Number(objCityValue) / Math.max(1.0, Number(Global.gameContainer.selectedCity.value));
 				var difficultyIdx: int;
-				if (levelDelta <= -3)
-					difficultyIdx = 0;
-				else if (levelDelta <= 0)
-					difficultyIdx = 1;
-				else if (levelDelta <= 2)
-					difficultyIdx = 2;
-				else if (levelDelta <= 3)
-					difficultyIdx = 3;
-				else 
-					difficultyIdx = 4;
+				if (percDiff <= 0.2) difficultyIdx = 0;
+				else if (percDiff <= 0.75) difficultyIdx = 1;
+				else if (percDiff <= 1.5) difficultyIdx = 2;
+				else if (percDiff <= 1.9) difficultyIdx = 3;
+				else difficultyIdx = 4;
 
 				gameObj.transform.colorTransform = new ColorTransform(1, 1, 1, 1, DIFFICULTY_COLORS[difficultyIdx].r, DIFFICULTY_COLORS[difficultyIdx].g, DIFFICULTY_COLORS[difficultyIdx].b);
 			}
@@ -120,7 +115,7 @@
 			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onCityObjectMouseOver);
 
 			var objContainer: * = getWrappedGameObject(gameObj);
-			
+			objContainer.value = objCityValue;
 			objects.add(objContainer, resort);
 
 			return gameObj;

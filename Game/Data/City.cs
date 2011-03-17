@@ -13,6 +13,7 @@ using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -37,6 +38,7 @@ namespace Game.Data
         private string name = "Washington";
         private uint nextObjectId;
         private byte radius;
+        private ushort value;
 
         #region Properties
 
@@ -280,6 +282,25 @@ namespace Game.Data
                 CheckUpdateMode();
                 defensePoint = value;
                 DefenseAttackPointUpdate();
+            }
+        }
+        
+        public ushort Value
+        {
+            get
+            {
+                return value;
+            }
+            set
+            {
+                CheckUpdateMode();
+                this.value = value;
+
+                if (Global.FireEvents && id > 0)
+                {                    
+                    Global.World.GetCityRegion(MainBuilding.X, MainBuilding.Y).MarkAsDirty();
+                    DefenseAttackPointUpdate();
+                }                
             }
         }
 
@@ -566,6 +587,9 @@ namespace Game.Data
             if (!Global.FireEvents)
                 return;
 
+            if (id == 0)
+                return;
+
             if (!IsUpdating)
                 throw new Exception("Changed state outside of begin/end update block");
 
@@ -623,7 +647,7 @@ namespace Game.Data
 
         public void RadiusUpdateEvent()
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || id == 0)
                 return;
 
             var packet = new Packet(Command.CityRadiusUpdate);
@@ -638,7 +662,7 @@ namespace Game.Data
 
         public void DefenseAttackPointUpdate()
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || id == 0)
                 return;
 
             var packet = new Packet(Command.CityAttackDefensePointUpdate);
@@ -646,13 +670,14 @@ namespace Game.Data
             packet.AddUInt32(Id);
             packet.AddInt32(attackPoint);
             packet.AddInt32(defensePoint);
+            packet.AddUInt16(value);
 
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
         public void HideNewUnitsUpdate()
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || id == 0)
                 return;
 
             var packet = new Packet(Command.CityHideNewUnitsUpdate);
@@ -665,8 +690,17 @@ namespace Game.Data
 
         public void ObjAddEvent(GameObject obj)
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || id == 0)
                 return;
+
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+                BeginUpdate();
+            
+            Value = Formula.CalculateCityValue(this);
+            
+            if (!doUpdate)
+                EndUpdate();
 
             var packet = new Packet(Command.CityObjectAdd);
             packet.AddUInt16(Region.GetRegionIndex(obj));
@@ -676,8 +710,17 @@ namespace Game.Data
 
         public void ObjRemoveEvent(GameObject obj)
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || id == 0)
                 return;
+            
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+                BeginUpdate();
+            
+            Value = Formula.CalculateCityValue(this);
+
+            if (!doUpdate)
+                EndUpdate();
 
             var packet = new Packet(Command.CityObjectRemove);
             packet.AddUInt32(Id);
@@ -687,8 +730,17 @@ namespace Game.Data
 
         public void ObjUpdateEvent(GameObject sender, uint origX, uint origY)
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || id == 0)
                 return;
+
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+                BeginUpdate();
+            
+            Value = Formula.CalculateCityValue(this);
+
+            if (!doUpdate)
+                EndUpdate();
 
             var packet = new Packet(Command.CityObjectUpdate);
             packet.AddUInt16(Region.GetRegionIndex(sender));
@@ -698,6 +750,9 @@ namespace Game.Data
 
         private void WorkerActionRescheduled(GameAction stub, ActionState state)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
@@ -709,6 +764,9 @@ namespace Game.Data
 
         private void WorkerActionAdded(GameAction stub, ActionState state)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
@@ -720,6 +778,9 @@ namespace Game.Data
 
         private void WorkerActionRemoved(GameAction stub, ActionState state)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
                 return;
 
@@ -732,12 +793,12 @@ namespace Game.Data
 
         private void TechnologiesTechnologyUpgraded(Technology tech)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             var packet = new Packet(Command.TechUpgraded);
             packet.AddUInt32(Id);
-            if (tech.OwnerLocation == EffectLocation.City)
-                packet.AddUInt32(0);
-            else
-                packet.AddUInt32(tech.OwnerId);
+            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
             packet.AddUInt32(tech.Type);
             packet.AddByte(tech.Level);
 
@@ -746,12 +807,12 @@ namespace Game.Data
 
         private void TechnologiesTechnologyRemoved(Technology tech)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             var packet = new Packet(Command.TechRemoved);
             packet.AddUInt32(Id);
-            if (tech.OwnerLocation == EffectLocation.City)
-                packet.AddUInt32(0);
-            else
-                packet.AddUInt32(tech.OwnerId);
+            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
             packet.AddUInt32(tech.Type);
             packet.AddByte(tech.Level);
 
@@ -760,24 +821,24 @@ namespace Game.Data
 
         private void TechnologiesTechnologyCleared(TechnologyManager manager)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             var packet = new Packet(Command.TechCleared);
             packet.AddUInt32(Id);
-            if (manager.OwnerLocation == EffectLocation.City)
-                packet.AddUInt32(0);
-            else
-                packet.AddUInt32(manager.OwnerId);
+            packet.AddUInt32(manager.OwnerLocation == EffectLocation.City ? 0 : manager.OwnerId);
 
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
         private void TechnologiesTechnologyAdded(Technology tech)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             var packet = new Packet(Command.TechAdded);
             packet.AddUInt32(Id);
-            if (tech.OwnerLocation == EffectLocation.City)
-                packet.AddUInt32(0);
-            else
-                packet.AddUInt32(tech.OwnerId);
+            packet.AddUInt32(tech.OwnerLocation == EffectLocation.City ? 0 : tech.OwnerId);
             packet.AddUInt32(tech.Type);
             packet.AddByte(tech.Level);
 
@@ -786,9 +847,15 @@ namespace Game.Data
 
         private void TroopManagerTroopUpdated(TroopStub stub)
         {
-            BeginUpdate();
+            if (!Global.FireEvents || id == 0)
+                return;
+
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+                BeginUpdate();
             Resource.Crop.Upkeep = Troops.Upkeep;
-            EndUpdate();
+            if (!doUpdate)
+                EndUpdate();
 
             var packet = new Packet(Command.TroopUpdated);
             packet.AddUInt32(Id);
@@ -798,9 +865,15 @@ namespace Game.Data
 
         private void TroopManagerTroopAdded(TroopStub stub)
         {
-            BeginUpdate();
+            if (!Global.FireEvents || id == 0)
+                return;
+
+            bool doUpdate = IsUpdating;
+            if (!doUpdate)
+                BeginUpdate();
             Resource.Crop.Upkeep = Troops.Upkeep;
-            EndUpdate();
+            if (!doUpdate)
+                EndUpdate();
 
             var packet = new Packet(Command.TroopAdded);
             packet.AddUInt32(Id);
@@ -810,6 +883,9 @@ namespace Game.Data
 
         private void TroopManagerTroopRemoved(TroopStub stub)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
@@ -826,7 +902,11 @@ namespace Game.Data
 
         public void UnitTemplateUnitUpdated(UnitTemplate sender)
         {
+            if (!Global.FireEvents || id == 0)
+                return;
+
             Global.DbManager.Save(sender);
+
             var packet = new Packet(Command.UnitTemplateUpgraded);
             packet.AddUInt32(Id);
             PacketHelper.AddToPacket(sender, packet);
@@ -922,6 +1002,7 @@ namespace Game.Data
                 return new[]
                        {
                                new DbColumn("player_id", Owner.PlayerId, DbType.UInt32), new DbColumn("name", Name, DbType.String, 32),
+                               new DbColumn("value", Value, DbType.UInt16),
                                new DbColumn("radius", Radius, DbType.Byte), new DbColumn("hide_new_units", HideNewUnits, DbType.Boolean),
                                new DbColumn("loot_stolen", LootStolen, DbType.UInt32), new DbColumn("attack_point", AttackPoint, DbType.Int32),
                                new DbColumn("defense_point", DefensePoint, DbType.Int32), new DbColumn("gold", Resource.Gold.RawValue, DbType.Int32),
@@ -981,7 +1062,8 @@ namespace Game.Data
                 var bw = new BinaryWriter(ms);
                 bw.Write(MainBuilding.Lvl);
                 bw.Write(MainBuilding.City.Owner.PlayerId);
-                bw.Write(MainBuilding.City.Id);                
+                bw.Write(MainBuilding.City.Id);
+                bw.Write(value);
                 bw.Write((ushort)(MainBuilding.CityRegionRelX));
                 bw.Write((ushort)(MainBuilding.CityRegionRelY));
                 ms.Position = 0;

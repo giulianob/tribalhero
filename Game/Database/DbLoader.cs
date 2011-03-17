@@ -200,7 +200,8 @@ namespace Game.Database
                                        LootStolen = (uint)reader["loot_stolen"],
                                        AttackPoint = (int)reader["attack_point"],
                                        DefensePoint = (int)reader["defense_point"],
-                                       HideNewUnits = (bool)reader["hide_new_units"]
+                                       HideNewUnits = (bool)reader["hide_new_units"],
+                                       Value = (ushort)reader["value"],
                                };
 
                     Global.World.DbLoaderAdd((uint)reader["id"], city);
@@ -322,7 +323,7 @@ namespace Game.Database
                         Global.World.DbLoaderAdd(structure);
                 }
             }
-
+            
             #endregion
         }
 

@@ -56,6 +56,11 @@ namespace Game.Map
             }
         }
 
+        public void MarkAsDirty()
+        {
+            isDirty = true;
+        }
+
         public void Update(ICityRegionObject obj, uint origX, uint origY)
         {
             lock (objLock)
@@ -110,6 +115,5 @@ namespace Game.Map
         }
 
         #endregion
-
     }
 }

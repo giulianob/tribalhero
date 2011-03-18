@@ -180,7 +180,7 @@ class Ranking extends AppModel {
     public function rankCity($type, $field, $order) {
         $cities = $this->City->find('all', array(
                 'contain' => array(),
-                'order' => $field . ' ' . $order,
+                'order' => array($field . ' ' . $order, 'City.player_id ASC'),
                 'fields' => array('player_id', 'id', $field)
         ));
 
@@ -212,7 +212,7 @@ class Ranking extends AppModel {
     public function rankPlayer($type, $field, $order) {
         $cities = $this->City->find('all', array(
                 'contain' => array(),
-                'order' => 'SUM(' . $field . ')  ' . $order,
+                'order' => array('SUM(' . $field . ')  ' . $order, 'player_id ASC'),
                 'fields' => array('player_id', 'id', 'SUM(' . $field . ') as value'),
                 'group' => 'player_id'
         ));

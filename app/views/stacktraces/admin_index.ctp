@@ -22,7 +22,7 @@
             <tr<?php echo $class; ?>>
                 <td><?php echo $stacktrace['Stacktrace']['player_id']; ?>&nbsp;</td>
                 <td><?php echo $stacktrace['Stacktrace']['player_name']; ?>&nbsp;</td>
-                <td><?php echo $stacktrace['Stacktrace']['message']; ?>&nbsp;</td>
+                <td style="max-width: 200px; overflow: scroll;"><?php echo $stacktrace['Stacktrace']['message']; ?>&nbsp;</td>
                 <td><?php echo $stacktrace['Stacktrace']['flash_version']; ?>&nbsp;</td>
                 <td><?php echo $stacktrace['Stacktrace']['game_version']; ?>&nbsp;</td>
                 <td><?php echo $stacktrace['Stacktrace']['browser_version']; ?>&nbsp;</td>

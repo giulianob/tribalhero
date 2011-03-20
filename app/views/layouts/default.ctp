@@ -61,7 +61,7 @@
                                     <li id="blog"><a href="http://blog.tribalhero.com"></a></li>
                                     <li id="register"><?php echo $this->Html->link('', '/players/register'); ?></li>
                                 </ul>
-
+					<cake:nocache>
                     <?php if ($session->check('Auth.Player.id') && $session->read('Auth.Player.admin')) {
                     ?>
                                     <ul class="prepend-top">
@@ -70,6 +70,7 @@
                                         <li><?php echo $this->Html->link('Stacktraces', '/admin/stacktraces'); ?></li>
                                     </ul>
                     <?php } ?>
+					</cake:nocache>
                             </div>
                             <div class="span-20 last">
                     <?php echo $content_for_layout; ?>

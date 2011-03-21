@@ -27,7 +27,7 @@ namespace Game.Setup
 		private static int GetTime(int lvl, int buildType, int buildLvl) 
         {
             if (lvl == 0) return 0;
-            return StructureFactory.GetTime((ushort)buildType, (byte)(buildLvl + lvl - 1)) / 2;
+            return StructureFactory.GetTime((ushort)buildType, (byte)buildLvl) * 2 / 3;
         }
 		
         public static void Init(string technologyFilename, string technologyEffectsFilename)

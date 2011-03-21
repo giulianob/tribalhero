@@ -8,6 +8,13 @@ class SystemsController extends AppController {
 
 	var $name = 'Systems';
 	
+	function beforeFilter() {
+		parent::beforeFilter();
+		
+		if (array_key_exists('key', $this->params['url']) && strcmp($this->params['url']['key'], SYSTEM_STATUS_PASS) === 0)
+			$this->Auth->allow(array($this->action));
+	}
+	
 	function admin_status() {
 		$SystemVariable =& ClassRegistry::init('SystemVariable');
 		

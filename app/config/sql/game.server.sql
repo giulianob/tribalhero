@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.5.8, for Win32 (x86)
 --
--- Host: localhost    Database: game
+-- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
 -- Server version	5.5.8
 
@@ -82,7 +82,7 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2597 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `battle_report_troops` (
   PRIMARY KEY (`id`),
   KEY `battle_report_id` (`battle_report_id`),
   KEY `combat_object_id` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1038 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `battle_report_views` (
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=244 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +158,7 @@ CREATE TABLE `battle_reports` (
   PRIMARY KEY (`id`),
   KEY `battle_id` (`battle_id`),
   KEY `created` (`created`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=480 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +178,7 @@ CREATE TABLE `battles` (
   KEY `ended` (`ended`),
   KEY `created` (`created`),
   KEY `city_id` (`city_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -236,6 +236,7 @@ CREATE TABLE `cities` (
   `iron_production_rate` int(11) NOT NULL,
   `crop_production_rate` int(11) NOT NULL,
   `labor_production_rate` int(11) NOT NULL,
+  `value` smallint(5) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `player_id` (`player_id`),
   KEY `loot_stolen` (`loot_stolen`),
@@ -381,7 +382,7 @@ CREATE TABLE `messages` (
   KEY `created` (`created`),
   KEY `sender_player_id` (`sender_player_id`,`sender_state`),
   KEY `recipient_player_id` (`recipient_player_id`,`recipient_state`)
-) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=233 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -448,27 +449,15 @@ DROP TABLE IF EXISTS `players`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `players` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `facebook_id` int(11) DEFAULT NULL,
   `name` varchar(64) NOT NULL,
-  `password` varchar(64) NOT NULL DEFAULT '8a9719ce5a3aa86d1ccb00047497291274f7feae',
-  `email_address` varchar(256) NOT NULL,
-  `login_key` varchar(64) DEFAULT NULL,
-  `login_key_date` datetime DEFAULT NULL,
   `session_id` varchar(128) NOT NULL,
-  `created` datetime NOT NULL,
   `last_login` datetime NOT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT '0',
-  `banned` tinyint(1) NOT NULL,
-  `admin` tinyint(1) NOT NULL,
   `online` tinyint(1) NOT NULL,
-  `reset_key` varchar(64) DEFAULT NULL,
-  `reset_key_date` datetime NOT NULL,
+  `created` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `email` (`email_address`),
-  KEY `login_key` (`login_key`),
   KEY `session_id` (`session_id`),
-  KEY `facebook_id` (`facebook_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50249 DEFAULT CHARSET=latin1;
+  KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=50258 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -575,6 +564,22 @@ CREATE TABLE `schema_migrations` (
   `version` varchar(255) DEFAULT NULL,
   UNIQUE KEY `idx_schema_migrations_version` (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `simple_objects`
+--
+
+DROP TABLE IF EXISTS `simple_objects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `simple_objects` (
+  `id` int(11) NOT NULL,
+  `an_int` int(11) NOT NULL,
+  `a_string` varchar(16) NOT NULL,
+  `a_float` float NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Used in Database/DatabasePerformanceTest.cs';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -821,10 +826,10 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-03-07 23:20:12
+-- Dump completed on 2011-03-20 21:25:32
 -- MySQL dump 10.13  Distrib 5.5.8, for Win32 (x86)
 --
--- Host: localhost    Database: game
+-- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
 -- Server version	5.5.8
 
@@ -845,7 +850,6 @@ CREATE TABLE `unit_templates_list` (
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
-INSERT INTO `schema_migrations` VALUES ('20110306191029');
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -858,4 +862,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-03-07 23:20:12
+-- Dump completed on 2011-03-20 21:25:32

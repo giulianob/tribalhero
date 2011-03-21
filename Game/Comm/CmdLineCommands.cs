@@ -5,5 +5,6 @@
         SendResources = 100,
         Ban = 110,
         Unban = 111,
+        Delete = 112,
     }
 }

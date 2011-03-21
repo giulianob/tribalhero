@@ -249,12 +249,7 @@ namespace Game.Map
             {
                 Cities[city.Id] = null;
                 cityIdGen.Release((int)city.Id);
-                CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
-
-                if (region == null)
-                    return;
-
-                region.Remove(city);
+                Global.DbManager.Delete(city);
             }
         }
 

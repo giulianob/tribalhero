@@ -15,7 +15,6 @@ namespace Game.Logic.Actions
     {
         private readonly uint cityId;
         private readonly uint objectId;
-        private TimeSpan ts;
 
         public ResourceGatherActiveAction(uint cityId, uint objectId)
         {

@@ -205,6 +205,8 @@
     <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.cs" />
     <Compile Include="Map\RoadPathFinder.cs" />
+    <Compile Include="Module\CityRemover.cs" />
+    <Compile Include="Module\IldeChecker.cs" />
     <Compile Include="Module\Market.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Map\Region.cs" />

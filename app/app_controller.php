@@ -6,27 +6,8 @@
  */
 class AppController extends Controller {
 
-    var $components = array('Auth', 'Security', 'Session', 'DebugKit.Toolbar', 'Email' => array(
-            'port' => '25',
-            'replyTo' => 'play@tribalhero.com',
-            'from' => 'Tribal Hero <play@tribalhero.com>',
-            'delivery' => 'smtp',
-            'sendAs' => 'html',
-            'smtpOptions' => array(
-                'port' => 465,
-                'timeout' => 15,
-                'auth' => true,
-                'host' => 'ssl://smtp.gmail.com',
-                'username' => 'play@tribalhero.com',
-                'password' => 'j8qap6DAgu'
-            )
-        )
-    );
+    var $components = array('Auth', 'Security', 'Session', 'DebugKit.Toolbar');
     var $helpers = array('Html', 'Js', 'Form', 'Session', 'Cache');
-    var $recaptchaPrivateKey = '6LdYFgYAAAAAAMrRHyqHasNnktIyoTh1fwPKV0Jy';
-    var $recaptchaPublicKey = '6LdYFgYAAAAAAEJVxFq049CUy9ml57Ds9hSRlw41';
-    var $fbApiKey = 'e0ccfdaba7a3e778380f19ad431bc1c8';
-    var $fbSecret = 'af3a84dd6ea5c2351209be0aeff31dec';
 
     function beforeFilter() {
         $this->disableCache();

@@ -471,9 +471,6 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (obj == MainBuilding)
-                    throw new Exception("Trying to remove main building");
-
                 if (!structures.ContainsKey(obj.ObjectId))
                     return false;
 
@@ -505,9 +502,6 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (obj == MainBuilding)
-                    throw new Exception("Trying to remove main building");
-
                 obj.Technologies.BeginUpdate();
                 obj.Technologies.Clear();
                 obj.Technologies.EndUpdate();
@@ -560,6 +554,7 @@ namespace Game.Data
         #region Updates
 
         public bool IsUpdating { get; private set; }
+        public bool IsDeleting { get; set; }
 
         private void CheckUpdateMode()
         {

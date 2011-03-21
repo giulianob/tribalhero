@@ -14,8 +14,8 @@ namespace Game.Logic.Actions {
 
         uint x;
         uint y;
-        uint cityId;
-        string cityName;
+        readonly uint cityId;
+        readonly string cityName;
 
         public CityCreateActiveAction(uint cityId, uint x, uint y, string cityName)
         {
@@ -38,8 +38,8 @@ namespace Game.Logic.Actions {
                                     ushort actionCount,
                                     Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
-            newCityId = uint.Parse(properties["city_id"]);
-            newStructureId = uint.Parse(properties["structure_id"]);     
+            newCityId = uint.Parse(properties["new_city_id"]);
+            newStructureId = uint.Parse(properties["new_structure_id"]);     
         }
 
         #region Overrides of GameAction
@@ -56,7 +56,7 @@ namespace Game.Logic.Actions {
         {
             get
             {
-                return XmlSerializer.Serialize(new[] { new XmlKvPair("city_id", newCityId), new XmlKvPair("structure_id", newStructureId),  });
+                return XmlSerializer.Serialize(new[] { new XmlKvPair("new_city_id", newCityId), new XmlKvPair("new_structure_id", newStructureId), });
             }
         }
 
@@ -132,10 +132,9 @@ namespace Game.Logic.Actions {
             newStructureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(2 * 24 * 3600, city, city.Technologies)));
+            //EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(2 * 24 * 3600, city, city.Technologies)));
+            EndTime = DateTime.UtcNow.AddSeconds(120);
             BeginTime = DateTime.UtcNow;
-
-            city.Worker.References.Add(structure, this);
 
             Global.World.UnlockRegion(x, y);
             
@@ -144,7 +143,7 @@ namespace Game.Logic.Actions {
 
         public override void UserCancelled()
         {
-            throw new NotImplementedException();
+            throw new Exception("Not Allow!");
         }
 
         public override void WorkerRemoved(bool wasKilled)
@@ -158,13 +157,15 @@ namespace Game.Logic.Actions {
 
         public override void Callback(object custom)
         {
-            City city;
+            City newCity;
             Structure structure;
-            using (new MultiObjectLock(newCityId, out city)) {
+
+            using (new MultiObjectLock(newCityId, newStructureId, out newCity, out structure))
+            {
                 if (!IsValid())
                     return;
 
-                if (!city.TryGetStructure(newStructureId, out structure)) {
+                if (newCity==null || structure==null) {
                     StateChange(ActionState.Failed);
                     return;
                 }
@@ -174,7 +175,7 @@ namespace Game.Logic.Actions {
                 InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
-                city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
+                newCity.Worker.DoPassive(newCity, new CityPassiveAction(newCity.Id), false);
                 StateChange(ActionState.Completed);
             }
 

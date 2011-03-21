@@ -22,11 +22,6 @@
 			if (copyObj == null)
 			return;
 		}
-
-		override public function setObjectCount(count:int):void 
-		{
-			// Forests shouldnt show object count icons
-		}
 		
 		public function ToSprite(): Object
 		{

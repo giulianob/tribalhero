@@ -22,6 +22,18 @@
 
 			return false;
 		}
+		
+		public function getActions(type: int): Array {
+			var ret: Array = new Array();
+			
+			for each(var currentAction: CurrentAction in each()) {
+				if (currentAction is CurrentActionReference) continue;		
+				
+				if (currentAction.getType() == type) ret.push(currentAction);
+			}
+
+			return ret;			
+		}
 
 		public function getObjectActions(objId: int, activeOnly: Boolean = false) : Array {
 			var ret: Array = new Array();

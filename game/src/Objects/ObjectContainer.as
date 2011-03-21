@@ -10,6 +10,7 @@ package src.Objects {
 	import src.Global;
 	import src.Map.Camera;
 	import src.Map.MapUtil;
+	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.Factories.StructureFactory;
 	import src.UI.Dialog.ObjectSelectDialog;
 	import src.UI.Tooltips.StructureTooltip;
@@ -41,9 +42,13 @@ package src.Objects {
 		private var objTooltip: Tooltip = null;
 		
 		private var mouseDisabled: Boolean;
+		
+		private var showObjectCount: Boolean = true;
 
-		public function ObjectContainer(mouseEnabled: Boolean = true)
+		public function ObjectContainer(mouseEnabled: Boolean = true, showObjectCount: Boolean = true)
 		{
+			this.showObjectCount = showObjectCount;
+			
 			bottomSpace = new Sprite();
 			addChild(bottomSpace);
 
@@ -351,7 +356,7 @@ package src.Objects {
 					continue;
 				}
 
-				if (currObj is StructureObject)
+				if (ObjectFactory.getClassType(currObj.type) == ObjectFactory.TYPE_STRUCTURE)
 				{
 					bestObj = currObj;
 					break;
@@ -365,10 +370,12 @@ package src.Objects {
 				currObj = objects.getByIndex(idx) as SimpleGameObject;
 				if (SimpleGameObject.compareCityIdAndObjId(bestObj, [currObj.cityId, currObj.objectId]) == 0) {
 					currObj.visible = true; 
-					currObj.setObjectCount(idxs.length);
+					if (showObjectCount)
+						currObj.setObjectCount(idxs.length);
 				} else {
 					currObj.visible = false;
-					currObj.setObjectCount(0);
+					if (showObjectCount)
+						currObj.setObjectCount(0);
 				}
 			}
 		}

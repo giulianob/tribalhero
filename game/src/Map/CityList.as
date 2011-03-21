@@ -30,11 +30,11 @@ package src.Map {
 		}
 		
 		override public function add(obj: *, resort: Boolean = true):void {			
-			return super.add(obj, resort);
+			super.add(obj, resort);
 		}
 		
 		override public function clear():void {			
-			return super.clear();
+			super.clear();
 		}
 		
 		override public function remove(val:*):* 

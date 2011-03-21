@@ -2,11 +2,14 @@ package src.UI.Dialog{
 
 	import flash.events.Event;
 	import org.aswing.event.AWEvent;
+	import org.aswing.event.SelectionEvent;
+	import org.aswing.table.GeneralTableCellFactory;
 	import org.aswing.table.PropertyTableModel;
 	import src.Comm.GameURLLoader;
 	import src.Constants;
 	import src.Global;
 	import src.UI.Components.SimpleTooltip;
+	import src.UI.Components.TableCells.GoToCityTextCell;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -54,6 +57,8 @@ package src.UI.Dialog{
 
 		private var txtSearch: JTextField;
 		private var btnSearch: JButton;
+		
+		private var rankingScroll: JScrollPane;
 
 		public function RankingDialog() {
 			loader = new GameURLLoader();
@@ -65,7 +70,11 @@ package src.UI.Dialog{
 			rankingTable.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
 				rankingTable.getCellEditor().stopCellEditing();
 			});
-
+			
+			// Any special row selection stuff goes here
+			rankingTable.addEventListener(SelectionEvent.COLUMN_SELECTION_CHANGED, onSelectionChange);
+			rankingTable.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, onSelectionChange);
+		
 			// Paging buttons
 			btnFirst.addActionListener(function() : void {
 				loadPage(1);
@@ -100,10 +109,23 @@ package src.UI.Dialog{
 
 			tabs.addStateListener(onTabChanged);
 		}
+		
+		private function onSelectionChange(e: SelectionEvent) : void {			
+			if (rankings[type].cityBased) {
+				
+				// Since I want to close this frame, I decided to make the logic to go to the city here.. I have to cheat a bit to make this work
+				if (rankingTable.isColumnSelected(4)) {			
+					if (rankingTable.getSelectedRow() < 0) return;
+					
+					getFrame().dispose();
+					Global.mapComm.City.gotoCityLocation(rankingModel.getValueAt(rankingTable.getSelectedRow(), 4));
+				}
+			}			
+		}
 
 		private function onTabChanged(e: AWEvent) : void {
-			rankingTable.getParent().remove(rankingTable);
-			(tabs.getSelectedComponent() as Container).append(rankingTable);
+			rankingTable.getParent().remove(rankingScroll);
+			(tabs.getSelectedComponent() as Container).append(rankingScroll);
 			(tabs.getSelectedComponent() as Container).pack();
 
 			changeType();
@@ -226,16 +248,17 @@ package src.UI.Dialog{
 			rankingList = new VectorListModel();
 
 			rankingModel = new PropertyTableModel(rankingList,
-			["Rank", "Player", "City", rankings[type].name],
-			["rank", "playerName", "cityName", "value"],
+			["Rank", "Player", "City", rankings[type].name, ""],
+			["rank", "playerName", "cityName", "value", "cityId"],
 			[null, null, null, null]
-			);
+			);					
 
 			var selectIdx: int = -1;
-
+			
 			for each(var rank: Object in data.rankings) {
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "cityId": rank.cityId, "cityName": rank.cityName, "playerName": rank.playerName, "playerId": rank.playerId } );
 
+				// If this is our player then we save this index
 				if (rank.playerId == Constants.playerId)  {
 					selectIdx = rankingList.size() - 1;
 				}
@@ -245,9 +268,13 @@ package src.UI.Dialog{
 
 			rankingTable.getColumnAt(0).setPreferredWidth(43);
 			rankingTable.getColumnAt(1).setPreferredWidth(120);
-			rankingTable.getColumnAt(2).setPreferredWidth(130);
-			rankingTable.getColumnAt(3).setPreferredWidth(120);
+			rankingTable.getColumnAt(2).setPreferredWidth(120);
+			rankingTable.getColumnAt(3).setPreferredWidth(110);
+			rankingTable.getColumnAt(4).setPreferredWidth(20);
+			
+			rankingTable.getColumnAt(4).setCellFactory(new GeneralTableCellFactory(GoToCityTextCell));
 
+			// Select player 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
 			}
@@ -268,8 +295,10 @@ package src.UI.Dialog{
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 
 			rankingTable = new JTable();
-			rankingTable.setSelectionMode(JTable.MULTIPLE_SELECTION);
-			rankingTable.setPreferredSize(new IntDimension(415, 350));
+			rankingTable.setSelectionMode(JTable.SINGLE_SELECTION);
+			rankingTable.setPreferredSize(new IntDimension(435, 350));
+			
+			rankingScroll = new JScrollPane(rankingTable, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
 
 			cityRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			cityAttackRanking = new JToggleButton("Attack");
@@ -280,8 +309,8 @@ package src.UI.Dialog{
 			cityButtonGroup.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking);
 			var cityButtonGroupHolder: JPanel = new JPanel();
 			cityButtonGroupHolder.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking);
-			cityRanking.append(cityButtonGroupHolder);
-			cityRanking.append(rankingTable);
+			cityRanking.append(cityButtonGroupHolder);			
+			cityRanking.append(rankingScroll);
 
 			playerRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			playerAttackRanking = new JToggleButton("Attack");
@@ -319,6 +348,11 @@ package src.UI.Dialog{
 			new SimpleTooltip(txtSearch, "Enter a rank or a name to search for");
 
 			btnSearch = new JButton("Search");
+			
+			// Updated label
+			var lblUpdated: JLabel = new JLabel("Ranking is updated on the hour", null, AsWingConstants.LEFT);
+			lblUpdated.setFont(lblUpdated.getFont().changeItalic(true));			
+			lblUpdated.setConstraints("South");			
 
 			//component layoution
 			pnlPaging.append(btnFirst);
@@ -331,6 +365,7 @@ package src.UI.Dialog{
 
 			pnlFooter.append(pnlPaging);
 			pnlFooter.append(pnlSearch);
+			pnlFooter.append(lblUpdated);
 
 			append(tabs);
 			append(pnlFooter);

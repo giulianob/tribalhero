@@ -72,7 +72,7 @@ package src.UI.Dialog{
 			sldCount.addEventListener(InteractiveEvent.STATE_CHANGED, onSlideChange);
 
 			var self: LaborMoveDialog = this;
-			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self) } );
+			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
 
 			updateSlider();
 			onSlideChange();
@@ -80,7 +80,7 @@ package src.UI.Dialog{
 
 		private function updateSlider(e: Event = null): void {
 			var maxAffordable: int = (city.resources.labor.getValue() + structure.labor);
-			var maxAllowed: int = Math.max(5 + structure.labor, Math.ceil(structPrototype.maxlabor / 10.0) + structure.labor);
+			var maxAllowed: int = Math.max(5 + structure.labor, Math.ceil(structPrototype.maxlabor / 2.0) + structure.labor);
 
 			msg.setText("You can only add " + (maxAllowed - structure.labor) + " labors at a time.");
 			var extent: int = structPrototype.maxlabor - Math.min(maxAffordable, maxAllowed);

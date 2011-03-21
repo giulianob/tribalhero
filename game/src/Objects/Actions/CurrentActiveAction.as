@@ -20,7 +20,7 @@
 			this.count = count;
 		}
 
-		private function getAction() : *
+		public function getAction() : *
 		{
 			var workerPrototype: Worker = WorkerFactory.getPrototype(workerType);			
 			var action: * = workerPrototype.getAction(index);

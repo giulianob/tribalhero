@@ -31,7 +31,7 @@
 			ICON_HAMMER;
 			
 			//Minimap Icons
-			MINIMAP_CITY_ICON;
+			MINIMAP_TROOP_ICON;
 			MINIMAP_FOREST_ICON;
 			
 			//Passive Action Icons

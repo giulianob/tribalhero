@@ -85,9 +85,7 @@
 		{
 			if (Constants.debug >= 2)
 			Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
-
-			var tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
-
+			
 			for (var a:int = 0; a < Math.ceil(Constants.regionW / Constants.regionBitmapW); a++)
 			{
 				for (var b:int = 0; b < Math.ceil(Constants.regionH / Constants.regionBitmapH); b++)
@@ -95,14 +93,11 @@
 					if (Constants.debug>=3)
 					Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
 
-					createRegionPart(tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
+					createRegionPart(Constants.tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
 					break;
 				}
 				break;
 			}
-
-			tileset.dispose();
-			tileset = null;
 		}
 
 		public function sortObjects():void

@@ -26,21 +26,21 @@ namespace Game.Module {
             using (var reader =
                     Global.DbManager.ReaderQuery(
                                                  string.Format(
-                                                               "SELECT * FROM `{0}` WHERE TIMEDIFF(NOW(), `last_login`) > '{1}:00:00.000000'",
+                                                               "SELECT * FROM `{0}` WHERE deleted = 0 AND TIMEDIFF(NOW(), `last_login`) > '{1}:00:00.000000'",
                                                                Player.DB_TABLE, IDLE_HOURS),
                                                  new DbColumn[] { })) {
                 while (reader.Read()) {
                     Player player;
                     using (new MultiObjectLock((uint)reader["id"], out player))
                     {
-                        foreach (City city in player.GetCityList())
+                        foreach (City city in player.GetCityList().Where(city => city.Deleted == City.DeletedState.NotDeleted))
                         {
-                            if (!city.IsDeleting)
-                            {
-                                city.IsDeleting = true;
-                                CityRemover cr = new CityRemover(city.Id);
-                                cr.Start();
-                            }
+                            city.BeginUpdate();
+                            city.Deleted = City.DeletedState.Deleting;
+                            city.EndUpdate();
+
+                            CityRemover cr = new CityRemover(city.Id);
+                            cr.Start();
                         }
                     }
                 }

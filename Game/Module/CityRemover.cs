@@ -5,7 +5,6 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Util;
@@ -47,9 +46,9 @@ namespace Game.Module {
             return ((City)custom[0]).Troops.MyStubs().Where(x=>x.StationedCity!=null).Select(stub => stub.StationedCity).Distinct().Cast<ILockable>().ToArray();
         }
 
-        private Error removeForeignTroop(City city, TroopStub stub)
+        private static Error RemoveForeignTroop(City city, TroopStub stub)
         {
-            if (!Procedure.TroopObjectCreateFromStation(stub, city.MainBuilding.X, city.MainBuilding.Y)) {
+            if (!Procedure.TroopObjectCreateFromStation(stub, city.X, city.Y)) {
                 return Error.Unexpected;
             }
             var ra = new RetreatChainAction(stub.City.Id, stub.TroopId);
@@ -58,7 +57,7 @@ namespace Game.Module {
 
         public void Callback(object custom) {
             City city;
-            Structure mainbuilding;
+            Structure mainBuilding;
 
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
@@ -80,7 +79,7 @@ namespace Game.Module {
                 {
                     foreach (TroopStub stub in new List<TroopStub>(city.Troops.StationedHere().ToList()))
                     {
-                        if (removeForeignTroop(city, stub) != Error.Ok)
+                        if (RemoveForeignTroop(city, stub) != Error.Ok)
                             Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationedTroopId));
                     }
 
@@ -89,7 +88,7 @@ namespace Game.Module {
 
             using (new CallbackLock(GetLocalTroopLockList, new[] { city }, city))
             {
-                if (city.TryGetStructure(1, out mainbuilding))
+                if (city.TryGetStructure(1, out mainBuilding))
                 {
                     // starve all troops)
                     city.Troops.Starve(100);
@@ -101,10 +100,10 @@ namespace Game.Module {
                     }
 
                     // remove all buildings except mainbuilding
-                    if (city.Any(structure => structure != city.MainBuilding))
+                    if (city.Any(structure => !structure.IsMainBuilding))
                     {
                         city.BeginUpdate();
-                        foreach (Structure structure in new List<Structure>(city).Where(structure => !structure.IsBlocked && structure != city.MainBuilding))
+                        foreach (Structure structure in new List<Structure>(city).Where(structure => !structure.IsBlocked && structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
                             Global.World.Remove(structure);
@@ -127,7 +126,7 @@ namespace Game.Module {
             }
 
             // remove all remaining passive action
-            if (city.TryGetStructure(1,out mainbuilding))
+            if (city.TryGetStructure(1,out mainBuilding))
             {
                 foreach (var passiveAction in new List<PassiveAction>(city.Worker.PassiveActions.Values))
                 {
@@ -138,27 +137,30 @@ namespace Game.Module {
             using (new MultiObjectLock(cityId, out city))
             {
                 // remove mainbuilding
-                if (city.TryGetStructure(1, out mainbuilding))
+                if (city.TryGetStructure(1, out mainBuilding))
                 {
                     // remove city from the region
-                    CityRegion region = Global.World.GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
+                    CityRegion region = Global.World.GetCityRegion(city.X, city.Y);
                     if (region != null)
                         region.Remove(city);
 
                     city.Troops.Remove(1);
-                    city.MainBuilding.BeginUpdate();
-                    Global.World.Remove(city.MainBuilding);
-                    city.ScheduleRemove(city.MainBuilding, false);
-                    city.MainBuilding.EndUpdate();
+                    
+                    mainBuilding.BeginUpdate();
+                    Global.World.Remove(mainBuilding);
+                    city.ScheduleRemove(mainBuilding, false);
+                    mainBuilding.EndUpdate();
                     Reschedule(0.01);
                     return;
                 }
+
                 // in the case of the OjectRemoveAction for mainbuilding is still there
                 if(city.Worker.PassiveActions.Count>0)
                 {
                     Reschedule(0.01);
                     return;
                 }
+
                 Global.World.Remove(city);
             }
 

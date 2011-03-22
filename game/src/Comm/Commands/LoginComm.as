@@ -95,12 +95,14 @@
 
 				var attackPoint: int = packet.readInt();
 				var defensePoint: int = packet.readInt();
+				
+				var cityValue: int = packet.readUShort();
 
 				var inBattle: Boolean = packet.readByte() == 1;
 				
 				var hideNewUnits: Boolean = packet.readByte() == 1;
 
-				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, inBattle, hideNewUnits);
+				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits);
 
 				// Add the name of this city to the list of city names
 				Global.map.usernames.cities.add(new Username(id, name));

@@ -162,11 +162,12 @@
 						var objPlayerId: int = packet.readUInt();
 						var objCityId: int = packet.readUInt();
 						var objId: int = 1;						
+						var objCityValue: int = packet.readUShort();
 
 						var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
 						var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
 
-						newRegion.addCityObject(objLvl, ObjectFactory.getFirstType("MainBuilding"), objPlayerId, objCityId, objId, objX, objY, false);
+						newRegion.addCityObject(objLvl, ObjectFactory.getFirstType("MainBuilding"), objPlayerId, objCityId, objId, objCityValue, objX, objY, false);
 					}
 					// Forest objects
 					else if (objType == 1) {

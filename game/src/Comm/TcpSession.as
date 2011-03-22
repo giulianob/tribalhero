@@ -87,25 +87,17 @@
 			onSecurityErrorCallback = callback;
 		}
 		
-		public function login(username:String, passwd:String = null): void
+		public function login(useLoginKey: Boolean, username:String, passwdOrLoginKey:String): void
 		{			
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.LOGIN;			
 			
 			packet.writeShort(Constants.version);
 			packet.writeShort(Constants.revision);
-			
-			if (passwd == null)
-			{
-				packet.writeUByte(0);
-				packet.writeString(username); //this is actually the session id
-			}
-			else
-			{
-				packet.writeUByte(1);
-				packet.writeString(username);
-				packet.writeString(passwd);
-			}
+
+			packet.writeUByte(useLoginKey ? 0 : 1);
+			packet.writeString(username);
+			packet.writeString(passwdOrLoginKey);			
 			
 			write(packet, function(packet:Packet, custom:*):void { 
 				if (onLoginCallback != null)

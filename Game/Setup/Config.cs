@@ -3,10 +3,10 @@
 using System;
 using System.IO;
 using System.Reflection;
+using JsonFx.Json;
 using log4net;
 using log4net.Config;
 using NDesk.Options;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -24,6 +24,10 @@ namespace Game.Setup
         public static readonly bool server_production;
 
         public static readonly string flash_domain = "*.tribalhero.com";
+
+        public static readonly string api_domain = "tribalhero.com";
+        public static readonly string api_id = string.Empty;
+        public static readonly string api_key = string.Empty;
 
         public static readonly string csv_folder = "conf/csv/";
         public static readonly string csv_compiled_folder = "conf/csv/compiled/";
@@ -163,7 +167,7 @@ namespace Game.Setup
                                 field.SetValue(null, UInt32.Parse(value));
                                 break;
                             case "System.Int32[]":
-                                field.SetValue(null, JsonConvert.DeserializeObject<int[]>(value));
+                                field.SetValue(null, (new JsonReader()).Read<int[]>(value));
                                 break;
                             default:
                                 field.SetValue(null, value);

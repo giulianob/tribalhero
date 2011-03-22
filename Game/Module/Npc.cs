@@ -64,14 +64,12 @@ namespace Game.Module
 
                     foreach (var city in intelligence.player.GetCityList())
                     {
-                        Structure mainBuilding = city.MainBuilding;
-
                         bool ret = false;
 
                         uint x;
                         uint y;
 
-                        TileLocator.RandomPoint(mainBuilding.X, mainBuilding.Y, (byte)(city.Radius - 1), true, out x, out y);
+                        TileLocator.RandomPoint(city.X, city.Y, (byte)(city.Radius - 1), true, out x, out y);
 
                         var step = (byte)rand.Next(0, 4);
 
@@ -257,7 +255,7 @@ namespace Game.Module
 
                 uint idx = 50000 + i;
 
-                var npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, false, false);
+                var npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, false);
                 var intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()), Math.Max(0.5, rand.NextDouble()));
 
                 using (new MultiObjectLock(npc))

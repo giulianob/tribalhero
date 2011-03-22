@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
             city.Worker.References.Add(stub.TroopObject, this);
             city.Worker.Notifications.Add(stub.TroopObject, this, targetCity);
 
-            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, targetCity.MainBuilding.X, targetCity.MainBuilding.Y, false, false);
+            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, targetCity.X, targetCity.Y, false, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 

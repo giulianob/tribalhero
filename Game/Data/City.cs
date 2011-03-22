@@ -75,11 +75,20 @@ namespace Game.Data
         /// <summary>
         ///   Returns the town center
         /// </summary>
-        public Structure MainBuilding
+        private Structure MainBuilding
         {
             get
             {
-                return structures[1];
+                Structure mainBuilding;
+                return !structures.TryGetValue(1, out mainBuilding) ? null : mainBuilding;
+            }
+        }
+
+        public byte Lvl
+        {
+            get
+            {
+                return (byte)(MainBuilding == null ? 1 : MainBuilding.Lvl);
             }
         }
 
@@ -90,7 +99,7 @@ namespace Game.Data
         {
             get
             {
-                return MainBuilding.X;
+                return MainBuilding == null ? 0 : MainBuilding.X;
             }
         }
 
@@ -101,7 +110,7 @@ namespace Game.Data
         {
             get
             {
-                return MainBuilding.Y;
+                return MainBuilding == null ? 0 : MainBuilding.Y;
             }
         }
 
@@ -298,7 +307,7 @@ namespace Game.Data
 
                 if (Global.FireEvents && id > 0)
                 {                    
-                    Global.World.GetCityRegion(MainBuilding.X, MainBuilding.Y).MarkAsDirty();
+                    Global.World.GetCityRegion(X, Y).MarkAsDirty();
                     DefenseAttackPointUpdate();
                 }                
             }
@@ -492,13 +501,7 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (obj == MainBuilding)
-                    throw new Exception("Trying to remove main building");
-
-                if (!structures.ContainsKey(obj.ObjectId))
-                    return false;
-
-                if (obj.IsBlocked)
+                if (!structures.ContainsKey(obj.ObjectId) || obj.IsBlocked)
                     return false;
 
                 obj.IsBlocked = true;
@@ -526,9 +529,6 @@ namespace Game.Data
         {
             lock (objLock)
             {
-                if (obj == MainBuilding)
-                    throw new Exception("Trying to remove main building");
-
                 obj.Technologies.BeginUpdate();
                 obj.Technologies.Clear();
                 obj.Technologies.EndUpdate();
@@ -652,7 +652,7 @@ namespace Game.Data
 
             var packet = new Packet(Command.CityRadiusUpdate);
 
-            Global.World.ObjectUpdateEvent(MainBuilding, MainBuilding.X, MainBuilding.Y);
+            Global.World.ObjectUpdateEvent(MainBuilding, X, Y);
 
             packet.AddUInt32(Id);
             packet.AddByte(radius);
@@ -1052,7 +1052,7 @@ namespace Game.Data
 
         public Location GetCityRegionLocation()
         {
-            return new Location(MainBuilding.X, MainBuilding.Y);
+            return new Location(X, Y);
         }
 
         public byte[] GetCityRegionObjectBytes()
@@ -1060,12 +1060,12 @@ namespace Game.Data
             using (var ms = new MemoryStream())
             {
                 var bw = new BinaryWriter(ms);
-                bw.Write(MainBuilding.Lvl);
-                bw.Write(MainBuilding.City.Owner.PlayerId);
-                bw.Write(MainBuilding.City.Id);
+                bw.Write(Lvl);
+                bw.Write(Owner.PlayerId);
+                bw.Write(Id);
                 bw.Write(value);
-                bw.Write((ushort)(MainBuilding.CityRegionRelX));
-                bw.Write((ushort)(MainBuilding.CityRegionRelY));
+                bw.Write((ushort)(CityRegionRelX));
+                bw.Write((ushort)(CityRegionRelY));
                 ms.Position = 0;
                 return ms.ToArray();
             }
@@ -1074,6 +1074,22 @@ namespace Game.Data
         public CityRegion.ObjectType GetCityRegionType()
         {
             return CityRegion.ObjectType.City;
+        }
+
+        public uint CityRegionRelX
+        {
+            get
+            {
+                return X % Config.city_region_width;
+            }
+        }
+
+        public uint CityRegionRelY
+        {
+            get
+            {
+                return Y % Config.city_region_height;
+            }
         }
 
         #endregion

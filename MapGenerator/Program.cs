@@ -94,9 +94,7 @@ namespace MapGenerator
         {
             for (int mapCnt = 1; File.Exists(string.Format("map/map{0}.tmx", mapCnt)); mapCnt++)
             {
-                var settings = new XmlReaderSettings();
-                settings.ProhibitDtd = false;
-                settings.XmlResolver = null;
+                var settings = new XmlReaderSettings {DtdProcessing = DtdProcessing.Parse, XmlResolver = null};
 
                 using (
                         XmlReader str = XmlReader.Create(File.OpenRead(string.Format("map/map{0}.tmx", mapCnt)),

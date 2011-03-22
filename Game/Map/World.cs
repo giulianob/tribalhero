@@ -204,11 +204,11 @@ namespace Game.Map
                 Cities[city.Id] = city;
 
                 //Initial save of these objects
-                Global.DbManager.Save(city.MainBuilding);
+                Global.DbManager.Save((Structure)city[1]);
                 foreach (var stub in city.Troops)
                     Global.DbManager.Save(stub);
 
-                CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
+                CityRegion region = GetCityRegion(city.X, city.Y);
                 return region != null && region.Add(city);
             }
         }
@@ -232,11 +232,9 @@ namespace Game.Map
                 Procedure.SetResourceCap(iter.Current);
 
                 //Set up the city region (for minimap)
-                CityRegion region = GetCityRegion(iter.Current.MainBuilding.X, iter.Current.MainBuilding.Y);
-                if (region == null)
-                    continue;
-
-                region.Add(iter.Current);
+                CityRegion region = GetCityRegion(iter.Current.X, iter.Current.Y);
+                if (region != null)
+                    region.Add(iter.Current);
             }
 
             // Launch forest creator
@@ -249,7 +247,7 @@ namespace Game.Map
             {
                 Cities[city.Id] = null;
                 cityIdGen.Release((int)city.Id);
-                CityRegion region = GetCityRegion(city.MainBuilding.X, city.MainBuilding.Y);
+                CityRegion region = GetCityRegion(city.X, city.Y);
 
                 if (region == null)
                     return;
@@ -439,6 +437,9 @@ namespace Game.Map
 
         public Region GetRegion(uint x, uint y)
         {
+            if (x == 0 && y == 0)
+                return null;
+
             return GetRegion(Region.GetRegionIndex(x, y));
         }
 
@@ -451,6 +452,9 @@ namespace Game.Map
 
         public CityRegion GetCityRegion(uint x, uint y)
         {
+            if (x == 0 && y == 0)
+                return null;
+
             return GetCityRegion(CityRegion.GetRegionIndex(x, y));
         }
 

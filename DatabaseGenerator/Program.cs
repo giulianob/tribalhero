@@ -138,7 +138,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../technology_view.ctp';
+                include $includeLocation . 'technology_view.ctp';
             ";
 
             const string levelTemplate =
@@ -267,7 +267,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../unit_view.ctp';
+                include $includeLocation . 'unit_view.ctp';
             ";
 
             const string levelTemplate =
@@ -423,7 +423,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../structure_view.ctp';
+                include $includeLocation . 'structure_view.ctp';
             ";
 
             const string levelTemplate =

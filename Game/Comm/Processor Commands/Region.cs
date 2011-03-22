@@ -58,7 +58,7 @@ namespace Game.Comm
                 }
 
                 // Make sure user is building road within city walls
-                if (city.MainBuilding.TileDistance(x, y) > city.Radius)
+                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) > city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;
@@ -85,7 +85,7 @@ namespace Game.Comm
                                                     if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
                                                         return true;
 
-                                                    if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1)
+                                                    if (city.X == x1 && city.Y == y1)
                                                     {
                                                         hasRoad = true;
                                                         return false;
@@ -159,7 +159,7 @@ namespace Game.Comm
                 }
 
                 // Make sure user is building road within city walls
-                if (city.MainBuilding.TileDistance(x, y) > city.Radius)
+                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) > city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;
@@ -188,10 +188,10 @@ namespace Game.Comm
 
                 foreach (var str in city)
                 {
-                    if (str == city.MainBuilding || ObjectTypeFactory.IsStructureType("NoRoadRequired", str))
+                    if (str.IsMainBuilding || ObjectTypeFactory.IsStructureType("NoRoadRequired", str))
                         continue;
 
-                    if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.MainBuilding.X, city.MainBuilding.Y), city, new Location(x, y)))
+                    if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.X, city.Y), city, new Location(x, y)))
                     {
                         breaksRoad = true;
                         break;
@@ -216,14 +216,14 @@ namespace Game.Comm
                                                     if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
                                                         return true;
 
-                                                    if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1)
+                                                    if (city.X == x1 && city.Y == y1)
                                                         return true;
 
                                                     if (RoadManager.IsRoad(x1, y1))
                                                     {
                                                         if (
                                                                 !RoadPathFinder.HasPath(new Location(x1, y1),
-                                                                                        new Location(city.MainBuilding.X, city.MainBuilding.Y),
+                                                                                        new Location(city.X, city.Y),
                                                                                         city,
                                                                                         new Location(origX, origY)))
                                                         {
@@ -275,8 +275,8 @@ namespace Game.Comm
                     return;
                 }
 
-                reply.AddUInt32(city.MainBuilding.X);
-                reply.AddUInt32(city.MainBuilding.Y);
+                reply.AddUInt32(city.X);
+                reply.AddUInt32(city.Y);
 
                 session.Write(reply);
             }
@@ -314,8 +314,8 @@ namespace Game.Comm
                     return;
                 }
 
-                reply.AddUInt32(city.MainBuilding.X);
-                reply.AddUInt32(city.MainBuilding.Y);
+                reply.AddUInt32(city.X);
+                reply.AddUInt32(city.Y);
 
                 session.Write(reply);
             }

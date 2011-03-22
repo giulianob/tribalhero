@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
-            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, stub.City.MainBuilding.X, stub.City.MainBuilding.Y, true, false);
+            var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, stub.City.X, stub.City.Y, true, false);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
 

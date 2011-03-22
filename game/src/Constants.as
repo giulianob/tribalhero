@@ -16,6 +16,7 @@ package src
 		public static var playerId: int;
 		
 		/* APP CONSTANTS */
+		public static const mainWebsite: String = "tribalhero.com";
 		public static const debug:int = 0;
 		public static const defLang:String = "en";
 		

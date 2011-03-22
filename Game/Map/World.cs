@@ -245,9 +245,12 @@ namespace Game.Map
         {
             lock (Lock)
             {
-                Cities[city.Id] = null;
+                city.BeginUpdate();
+                city.Deleted = City.DeletedState.Deleted;
+                city.EndUpdate();
+
+                Cities.Remove(city.Id);
                 cityIdGen.Release((int)city.Id);
-                Global.DbManager.Delete(city);
             }
         }
 

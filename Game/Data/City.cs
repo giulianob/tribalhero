@@ -25,6 +25,13 @@ namespace Game.Data
 {
     public class City : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject
     {
+        public enum DeletedState
+        {
+            NotDeleted,
+            Deleting,
+            Deleted,
+        }
+
         public const string DB_TABLE = "cities";
         private readonly object objLock = new object();
 
@@ -581,7 +588,7 @@ namespace Game.Data
         #region Updates
 
         public bool IsUpdating { get; private set; }
-        public bool IsDeleting { get; set; }
+        public DeletedState Deleted { get; set; }
 
         private void CheckUpdateMode()
         {
@@ -1018,7 +1025,7 @@ namespace Game.Data
                                new DbColumn("labor", Resource.Labor.RawValue, DbType.Int32),
                                new DbColumn("labor_realize_time", Resource.Labor.LastRealizeTime, DbType.DateTime),
                                new DbColumn("labor_production_rate", Resource.Labor.Rate, DbType.Int32), new DbColumn("x", X, DbType.UInt32),
-                               new DbColumn("y", Y, DbType.UInt32)
+                               new DbColumn("y", Y, DbType.UInt32), new DbColumn("deleted", Deleted, DbType.Int32),
                        };
             }
         }

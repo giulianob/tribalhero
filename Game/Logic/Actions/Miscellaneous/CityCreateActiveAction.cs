@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Module;
 using Game.Setup;
 using Game.Util;
 
@@ -142,13 +143,19 @@ namespace Game.Logic.Actions {
         }
 
         public override void UserCancelled()
-        {
-            throw new Exception("Not Allow!");
+        {            
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            throw new NotImplementedException();
+            City city;
+            using (new MultiObjectLock(cityId, out city))
+            {
+                CityRemover remover = new CityRemover(newCityId);
+                remover.Start();
+
+                StateChange(ActionState.Failed);
+            }
         }
 
         #endregion

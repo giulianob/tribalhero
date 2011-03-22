@@ -46,7 +46,7 @@ namespace Game.Map
                                                         return false;
                                                     if (!RoadManager.IsRoad(location.X, location.Y))
                                                         return false;
-                                                    if (SimpleGameObject.TileDistance(location.X, location.Y, city.MainBuilding.X, city.MainBuilding.Y) >
+                                                    if (SimpleGameObject.TileDistance(location.X, location.Y, city.X, city.Y) >
                                                         city.Radius)
                                                         return false;
                                                 }

@@ -42,7 +42,6 @@ namespace Game.Comm
             byte loginMode;
             string loginKey = string.Empty;
             string playerName = string.Empty;
-            DateTime playerCreated = DateTime.MinValue;
             string playerPassword = string.Empty;
             uint playerId;
             bool admin = false;
@@ -53,13 +52,11 @@ namespace Game.Comm
                 clientVersion = packet.GetInt16();
                 clientRevision = packet.GetInt16();
                 loginMode = packet.GetByte();
-                if (loginMode == 0)
-                    loginKey = packet.GetString();
+                playerName = packet.GetString();
+                if (loginMode == 0)                
+                    loginKey = packet.GetString();                
                 else
-                {
-                    playerName = packet.GetString();
                     playerPassword = packet.GetString();
-                }
             }
             catch(Exception)
             {
@@ -76,30 +73,13 @@ namespace Game.Comm
 
             if (Config.database_load_players)
             {
-                DbDataReader reader;
+                ApiResponse response;
                 try
                 {
-                    if (loginMode == 0)
-                    {
-                        reader =
-                                Global.DbManager.ReaderQuery(
-                                                             string.Format(
-                                                                           "SELECT * FROM `{0}` WHERE `login_key` IS NOT NULL AND `login_key` = @login_key AND TIMEDIFF(NOW(), `login_key_date`) < '00:10:00.000000' LIMIT 1",
-                                                                           Player.DB_TABLE),
-                                                             new[] {new DbColumn("login_key", loginKey, DbType.String)});
-                    }
-                    else
-                    {
-                        reader =
-                                Global.DbManager.ReaderQuery(
-                                                             string.Format("SELECT * FROM `{0}` WHERE `name` = @name AND `password` = SHA1(@password) LIMIT 1",
-                                                                           Player.DB_TABLE),
-                                                             new[]
-                                                             {
-                                                                     new DbColumn("name", playerName, DbType.String),
-                                                                     new DbColumn("password", Config.database_salt + playerPassword, DbType.String)
-                                                             });
-                    }
+                    if (loginMode == 0)                    
+                        response = ApiCaller.CheckLoginKey(playerName, loginKey);                    
+                    else                    
+                        response = ApiCaller.CheckLogin(playerName, playerPassword);                    
                 }
                 catch(Exception e)
                 {
@@ -109,28 +89,17 @@ namespace Game.Comm
                     return;
                 }
 
-                if (!reader.HasRows)
+                if (!response.Success)
                 {
-                    if (!reader.IsClosed)
-                        reader.Close();
                     ReplyError(session, packet, Error.InvalidLogin);
                     session.CloseSession();
                     return;
                 }
 
-                reader.Read();
-
-                playerId = (uint)reader["id"];
-                playerName = (string)reader["name"];
-                playerCreated = DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc);
-                banned = (bool)reader["banned"];
-                admin = (bool)reader["admin"];
-
-                reader.Close();
-
-                // Reset login key back to null
-                Global.DbManager.Query(string.Format("UPDATE `{0}` SET `login_key` = null WHERE `id` = @id LIMIT 1", Player.DB_TABLE),
-                                       new[] {new DbColumn("id", playerId, DbType.UInt32)});
+                playerId = uint.Parse(response.Data.player.id);
+                playerName = response.Data.player.name;
+                banned = int.Parse(response.Data.player.banned) == 1;
+                admin = int.Parse(response.Data.player.admin) == 1;
 
                 // If we are under admin only mode then kick out non admin
                 if (Config.server_admin_only && !admin)
@@ -147,6 +116,7 @@ namespace Game.Comm
                     session.CloseSession();
                     return;
                 }
+
             }
             else
             {
@@ -182,15 +152,15 @@ namespace Game.Comm
                 {
                     Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
 
-                    // ReSharper disable ConditionIsAlwaysTrueOrFalse
-                    player = new Player(playerId, playerCreated, SystemClock.Now, playerName, admin, banned, sessionId);
-                    // ReSharper restore ConditionIsAlwaysTrueOrFalse
+                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, admin, sessionId);
 
                     Global.World.Players.Add(player.PlayerId, player);
                 }
                 else
                 {
                     Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
+
+                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `session_id` = '{1}' WHERE `id` = '{2}' LIMIT 1", Player.DB_TABLE, sessionId, playerId), new DbColumn[] {});
                     player.SessionId = sessionId;
                     player.Admin = admin;
                     player.LastLogin = SystemClock.Now;
@@ -213,8 +183,6 @@ namespace Game.Comm
                 }
                 else
                 {
-                    player.DbPersisted = Config.database_load_players;
-
                     Global.DbManager.Save(player);
                 }
 

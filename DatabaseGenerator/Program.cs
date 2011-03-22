@@ -68,6 +68,9 @@ namespace DatabaseGenerator
 
                 foreach (var type in structureTypes)
                 {
+                    if (ObjectTypeFactory.IsStructureType("DatabaseIgnoreStructures", type))
+                        continue;
+
                     ProcessStructure(type);
 
                     StructureBaseStats stats = StructureFactory.GetBaseStats(type, 1);
@@ -135,7 +138,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../technology_view.ctp';
+                include $includeLocation . 'technology_view.ctp';
             ";
 
             const string levelTemplate =
@@ -264,7 +267,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../unit_view.ctp';
+                include $includeLocation . 'unit_view.ctp';
             ";
 
             const string levelTemplate =
@@ -420,7 +423,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../structure_view.ctp';
+                include $includeLocation . 'structure_view.ctp';
             ";
 
             const string levelTemplate =
@@ -592,7 +595,7 @@ namespace DatabaseGenerator
             string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
             foreach (var file in files)
             {
-                using (var langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open))))
+                using (var langReader = new CsvReader(new StreamReader(File.OpenRead(file))))
                 {
                     while (true)
                     {

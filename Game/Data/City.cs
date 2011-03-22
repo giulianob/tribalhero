@@ -581,6 +581,7 @@ namespace Game.Data
         #region Updates
 
         public bool IsUpdating { get; private set; }
+        public bool IsDeleting { get; set; }
 
         private void CheckUpdateMode()
         {

@@ -153,9 +153,9 @@ namespace Game.Database
                     var player = new Player((uint)reader["id"],
                                             DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc),
                                             DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
-                                            (string)reader["name"],
-                                            (bool)reader["admin"],
-                                            (bool)reader["banned"]) {DbPersisted = true};
+                                            (string)reader["name"], 
+                                            false)
+                                            {DbPersisted = true};
                     Global.World.Players.Add(player.PlayerId, player);
                 }
             }
@@ -172,6 +172,9 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
+                    if (((City.DeletedState)reader["deleted"]) == City.DeletedState.Deleted)
+                        continue;
+
                     DateTime cropRealizeTime = DateTime.SpecifyKind((DateTime)reader["crop_realize_time"], DateTimeKind.Utc).Add(downTime);
                     DateTime woodRealizeTime = DateTime.SpecifyKind((DateTime)reader["wood_realize_time"], DateTimeKind.Utc).Add(downTime);
                     DateTime ironRealizeTime = DateTime.SpecifyKind((DateTime)reader["iron_realize_time"], DateTimeKind.Utc).Add(downTime);
@@ -200,10 +203,18 @@ namespace Game.Database
                                        LootStolen = (uint)reader["loot_stolen"],
                                        AttackPoint = (int)reader["attack_point"],
                                        DefensePoint = (int)reader["defense_point"],
-                                       HideNewUnits = (bool)reader["hide_new_units"]
+                                       HideNewUnits = (bool)reader["hide_new_units"],
+                                       Value = (ushort)reader["value"],
+                                       Deleted = (City.DeletedState)reader["deleted"]
                                };
 
                     Global.World.DbLoaderAdd((uint)reader["id"], city);
+
+                    if (city.Deleted == City.DeletedState.Deleting)
+                    {
+                        CityRemover cr = new CityRemover(city.Id);
+                        cr.Start();
+                    }
                 }
             }
 
@@ -322,7 +333,7 @@ namespace Game.Database
                         Global.World.DbLoaderAdd(structure);
                 }
             }
-
+            
             #endregion
         }
 

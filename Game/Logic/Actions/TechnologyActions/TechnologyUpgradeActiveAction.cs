@@ -14,7 +14,7 @@ namespace Game.Logic.Actions
     class TechnologyUpgradeActiveAction : ScheduledActiveAction
     {
         private uint cityId;
-        private bool isSelfInit;
+        private bool isSelfInit = false;
         private uint structureId;
         private uint techId;
 

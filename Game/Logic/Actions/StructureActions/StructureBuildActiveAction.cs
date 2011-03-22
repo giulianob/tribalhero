@@ -83,7 +83,7 @@ namespace Game.Logic.Actions
             }
 
             // radius requirements
-            if (city.MainBuilding.TileDistance(x, y) >= city.Radius)
+            if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) >= city.Radius)
             {
                 Global.World.UnlockRegion(x, y);
                 return Error.LayoutNotFullfilled;
@@ -115,7 +115,7 @@ namespace Game.Logic.Actions
 
                     foreach (var str in city)
                     {
-                        if (str == city.MainBuilding)
+                        if (str.IsMainBuilding)
                             continue;
 
                         if (ObjectTypeFactory.IsStructureType("NoRoadRequired", str.Type))
@@ -123,7 +123,7 @@ namespace Game.Logic.Actions
 
                         if (
                                 !RoadPathFinder.HasPath(new Location(str.X, str.Y),
-                                                        new Location(city.MainBuilding.X, city.MainBuilding.Y),
+                                                        new Location(city.X, city.Y),
                                                         city,
                                                         new Location(x, y)))
                         {
@@ -149,14 +149,14 @@ namespace Game.Logic.Actions
                                                         if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
                                                             return true;
 
-                                                        if (city.MainBuilding.X == x1 && city.MainBuilding.Y == y1)
+                                                        if (city.X == x1 && city.Y == y1)
                                                             return true;
 
                                                         if (RoadManager.IsRoad(x1, y1))
                                                         {
                                                             if (
                                                                     !RoadPathFinder.HasPath(new Location(x1, y1),
-                                                                                            new Location(city.MainBuilding.X, city.MainBuilding.Y),
+                                                                                            new Location(city.X, city.Y),
                                                                                             city,
                                                                                             new Location(origX, origY)))
                                                             {
@@ -197,7 +197,7 @@ namespace Game.Logic.Actions
                                                     {
                                                         if (!buildingOnRoad ||
                                                             RoadPathFinder.HasPath(new Location(x1, y1),
-                                                                                   new Location(city.MainBuilding.X, city.MainBuilding.Y),
+                                                                                   new Location(city.X, city.Y),
                                                                                    city,
                                                                                    new Location(origX, origY)))
                                                             hasRoad = true;

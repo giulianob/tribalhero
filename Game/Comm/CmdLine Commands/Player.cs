@@ -30,21 +30,9 @@ namespace Game.Comm
             if (help || string.IsNullOrEmpty(playerName))
                 return "ban --player=player";
 
-            uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
-                return "Player not found";
+            ApiResponse response = ApiCaller.Ban(playerName);
 
-            Player player;
-            using (new MultiObjectLock(playerId, out player))
-            {
-                if (player == null)
-                    return "Player not found";
-
-                player.Banned = true;
-                Global.DbManager.Save(player);
-            }
-
-            return "OK!";
+            return response.Success ? "OK!" : response.ErrorMessage;
         }
 
         public string CmdUnbanPlayer(string[] parms)
@@ -65,21 +53,9 @@ namespace Game.Comm
             if (help || string.IsNullOrEmpty(playerName))
                 return "unban --player=player";
 
-            uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
-                return "Player not found";
+            ApiResponse response = ApiCaller.Unban(playerName);
 
-            Player player;
-            using (new MultiObjectLock(playerId, out player))
-            {
-                if (player == null)
-                    return "Player not found";
-
-                player.Banned = false;
-                Global.DbManager.Save(player);
-            }
-
-            return "OK!";
+            return response.Success ? "OK!" : response.ErrorMessage;
         }
 
         public string CmdDeletePlayer(string[] parms)

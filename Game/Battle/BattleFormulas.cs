@@ -266,7 +266,7 @@ namespace Game.Battle
                         }
                     }
                 } else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
-                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.MainBuilding.Lvl * 100)));
+                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
             }
             return calculator.GetStats();
         }

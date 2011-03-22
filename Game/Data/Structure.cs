@@ -82,6 +82,14 @@ namespace Game.Data
 
         #endregion
 
+        public bool IsMainBuilding
+        {
+            get
+            {
+                return ObjectId == 1;
+            }
+        }
+
         public StructureStats Stats
         {
             get

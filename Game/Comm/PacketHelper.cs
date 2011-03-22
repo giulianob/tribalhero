@@ -245,16 +245,16 @@ namespace Game.Comm
                     }
                     else
                     {
-                        packet.AddUInt32(stub.City.MainBuilding.ObjectId);
-                        packet.AddUInt32(stub.City.MainBuilding.X);
-                        packet.AddUInt32(stub.City.MainBuilding.Y);
+                        packet.AddUInt32(1); // Main building id
+                        packet.AddUInt32(stub.City.X);
+                        packet.AddUInt32(stub.City.Y);
                     }
                     break;
                 case TroopState.Stationed:
                 case TroopState.BattleStationed:
-                    packet.AddUInt32(stub.StationedCity.MainBuilding.ObjectId);
-                    packet.AddUInt32(stub.StationedCity.MainBuilding.X);
-                    packet.AddUInt32(stub.StationedCity.MainBuilding.Y);
+                    packet.AddUInt32(1); // Main building id
+                    packet.AddUInt32(stub.StationedCity.X);
+                    packet.AddUInt32(stub.StationedCity.Y);
                     break;
             }
 
@@ -306,6 +306,7 @@ namespace Game.Comm
                 packet.AddByte(city.Radius);
                 packet.AddInt32(city.AttackPoint);
                 packet.AddInt32(city.DefensePoint);
+                packet.AddUInt16(city.Value);
                 packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
                 packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
 

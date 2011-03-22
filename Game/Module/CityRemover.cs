@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Util;
@@ -16,7 +14,7 @@ using Game.Setup;
 namespace Game.Module {
     class CityRemover:ISchedule {
         const double RETRY_INTERVAL_IN_MINS = 12 * 3600;
-        private uint cityId;
+        private readonly uint cityId;
 
         public CityRemover(uint cityId) {
             // TODO: Complete member initialization
@@ -117,6 +115,14 @@ namespace Game.Module {
                         Reschedule(0.01);
                         return;
                     }
+
+                    // remove all roads
+                    RadiusLocator.ForeachObject(city.X, city.Y, city.Radius, true,
+                                                delegate(uint origX, uint origY, uint x1, uint y1, object c) {
+                                                    Global.World.RevertTileType(x1, y1, true);
+                                                    return true;
+                                                }, null);
+
                 }
             }
 
@@ -147,14 +153,11 @@ namespace Game.Module {
                     Reschedule(0.01);
                     return;
                 }
-                else
+                // in the case of the OjectRemoveAction for mainbuilding is still there
+                if(city.Worker.PassiveActions.Count>0)
                 {
-                    // in the case of the OjectRemoveAction for mainbuilding is still there
-                    if(city.Worker.PassiveActions.Count>0)
-                    {
-                        Reschedule(0.01);
-                        return;
-                    }
+                    Reschedule(0.01);
+                    return;
                 }
                 Global.World.Remove(city);
             }

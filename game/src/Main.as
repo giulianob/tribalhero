@@ -101,6 +101,7 @@
 			if (parms.hostname)
 			{
 				siteVersion = parms.siteVersion;
+				Constants.playerName = parms.playerName;
 				Constants.loginKey = parms.lsessid;
 				Constants.hostname = parms.hostname;
 				loadData();
@@ -189,7 +190,7 @@
 				pnlLoading.getFrame().dispose();
 		
 			gameContainer.dispose();			
-			if (Global.mapComm) Global.mapComm.dispose();			
+			if (Global.mapComm) Global.mapComm.dispose();
 			
 			Global.mapComm = null;
 			Global.map = null;
@@ -215,8 +216,8 @@
 			{
 				Global.mapComm = new MapComm(session);
 
-				if (Constants.loginKey) session.login(Constants.loginKey);
-				else session.login(Constants.username, password);
+				if (Constants.loginKey) session.login(true, Constants.playerName, Constants.loginKey);
+				else session.login(false, Constants.username, password);
 			}
 
 			password = '';

@@ -24,6 +24,7 @@ namespace Game.Comm
         {
             RegisterCommand(CmdLineCommand.Ban, CmdBanPlayer);
             RegisterCommand(CmdLineCommand.Unban, CmdUnbanPlayer);
+            RegisterCommand(CmdLineCommand.Delete, CmdDeletePlayer);
             RegisterCommand(CmdLineCommand.SendResources, CmdSendResources);
         }
 

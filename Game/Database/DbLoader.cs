@@ -213,7 +213,7 @@ namespace Game.Database
                     if (city.Deleted == City.DeletedState.Deleting)
                     {
                         CityRemover cr = new CityRemover(city.Id);
-                        cr.Start();
+                        cr.Start(true);
                     }
                 }
             }

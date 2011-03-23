@@ -216,8 +216,10 @@ namespace Game.Map
         public void DbLoaderAdd(uint id, City city)
         {
             city.Id = id;
-            Cities[city.Id] = city;
             cityIdGen.Set((int)id);
+
+            if (city.Deleted != City.DeletedState.Deleted)
+                Cities.Add(city.Id, city);            
         }
 
         public void AfterDbLoaded()

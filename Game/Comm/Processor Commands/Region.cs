@@ -58,7 +58,7 @@ namespace Game.Comm
                 }
 
                 // Make sure user is building road within city walls
-                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) > city.Radius)
+                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) >= city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;
@@ -159,7 +159,7 @@ namespace Game.Comm
                 }
 
                 // Make sure user is building road within city walls
-                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) > city.Radius)
+                if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) >= city.Radius)
                 {
                     ReplyError(session, packet, Error.NotWithinWalls);
                     return;

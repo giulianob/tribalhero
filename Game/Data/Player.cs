@@ -120,7 +120,7 @@ namespace Game.Data
 
         internal City GetCity(uint id)
         {
-            return list.Find(city => city.Id == id);
+            return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
         }
 
         public override string ToString() {

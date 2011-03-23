@@ -35,10 +35,6 @@ namespace Game.Module {
                     {
                         foreach (City city in player.GetCityList().Where(city => city.Deleted == City.DeletedState.NotDeleted))
                         {
-                            city.BeginUpdate();
-                            city.Deleted = City.DeletedState.Deleting;
-                            city.EndUpdate();
-
                             CityRemover cr = new CityRemover(city.Id);
                             cr.Start();
                         }

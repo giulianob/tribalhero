@@ -642,7 +642,7 @@ namespace Game.Data
 
         public void ResourceUpdateEvent()
         {
-            if (!Global.FireEvents)
+            if (!Global.FireEvents || Deleted != DeletedState.NotDeleted)
                 return;
 
             CheckUpdateMode();
@@ -655,7 +655,7 @@ namespace Game.Data
 
         public void RadiusUpdateEvent()
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.CityRadiusUpdate);
@@ -670,7 +670,7 @@ namespace Game.Data
 
         public void DefenseAttackPointUpdate()
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.CityAttackDefensePointUpdate);
@@ -685,7 +685,7 @@ namespace Game.Data
 
         public void HideNewUnitsUpdate()
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.CityHideNewUnitsUpdate);
@@ -698,7 +698,7 @@ namespace Game.Data
 
         public void ObjAddEvent(GameObject obj)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -718,7 +718,7 @@ namespace Game.Data
 
         public void ObjRemoveEvent(GameObject obj)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
             
             bool doUpdate = IsUpdating;
@@ -738,7 +738,7 @@ namespace Game.Data
 
         public void ObjUpdateEvent(GameObject sender, uint origX, uint origY)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -758,7 +758,7 @@ namespace Game.Data
 
         private void WorkerActionRescheduled(GameAction stub, ActionState state)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
@@ -772,7 +772,7 @@ namespace Game.Data
 
         private void WorkerActionAdded(GameAction stub, ActionState state)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
@@ -786,7 +786,7 @@ namespace Game.Data
 
         private void WorkerActionRemoved(GameAction stub, ActionState state)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             if (stub is PassiveAction && !(stub as PassiveAction).IsVisible)
@@ -801,7 +801,7 @@ namespace Game.Data
 
         private void TechnologiesTechnologyUpgraded(Technology tech)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechUpgraded);
@@ -815,7 +815,7 @@ namespace Game.Data
 
         private void TechnologiesTechnologyRemoved(Technology tech)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechRemoved);
@@ -829,7 +829,7 @@ namespace Game.Data
 
         private void TechnologiesTechnologyCleared(TechnologyManager manager)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechCleared);
@@ -841,7 +841,7 @@ namespace Game.Data
 
         private void TechnologiesTechnologyAdded(Technology tech)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             var packet = new Packet(Command.TechAdded);
@@ -855,7 +855,7 @@ namespace Game.Data
 
         private void TroopManagerTroopUpdated(TroopStub stub)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -873,7 +873,7 @@ namespace Game.Data
 
         private void TroopManagerTroopAdded(TroopStub stub)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -891,7 +891,7 @@ namespace Game.Data
 
         private void TroopManagerTroopRemoved(TroopStub stub)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             bool doUpdate = IsUpdating;
@@ -910,7 +910,7 @@ namespace Game.Data
 
         public void UnitTemplateUnitUpdated(UnitTemplate sender)
         {
-            if (!Global.FireEvents || id == 0)
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
             Global.DbManager.Save(sender);

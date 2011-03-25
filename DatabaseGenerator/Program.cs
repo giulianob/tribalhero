@@ -74,8 +74,15 @@ namespace DatabaseGenerator
                     ProcessStructure(type);
 
                     StructureBaseStats stats = StructureFactory.GetBaseStats(type, 1);
+
+                    var sprite = stats.SpriteClass;
+
+                    // Sorry this is a bit of a hack, it's a CropField then we append the Mature status to it :)
+                    if (ObjectTypeFactory.IsStructureType("CropField", type))                    
+                        sprite = StructureFactory.AllStructures().First(structure => structure.Lvl == 1 && structure.Name == "MATURE_" + stats.Name).SpriteClass;                    
+
                     writer.WriteLine("'{2}_STRUCTURE' => array('name' => '{1}', 'sprite' => '{0}'),",
-                                     stats.SpriteClass,
+                                     sprite,
                                      lang[stats.Name + "_STRUCTURE_NAME"],
                                      stats.Name);
                 }

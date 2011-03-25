@@ -180,6 +180,11 @@
 
 			//InfoDialog.showMessageDialog("Security Error", event.toString());
 			Util.log("Security error " + event.toString());
+			
+			if (session && session.hasLoginSuccess()) 
+				return;
+	
+			onDisconnected();
 		}
 
 		public function onDisconnected(event: Event = null):void
@@ -196,8 +201,8 @@
 			Global.map = null;
 			session = null;
 
-			if (!errorAlreadyTriggered && !wasStillLoading) {
-				showConnectionError(false);
+			if (!errorAlreadyTriggered) {
+				showConnectionError(wasStillLoading);
 			}
 		}
 		

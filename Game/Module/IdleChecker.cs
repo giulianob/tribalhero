@@ -9,7 +9,8 @@ using Game.Util;
 
 namespace Game.Module {
     public class IdleChecker : ISchedule {
-        const double IDLE_HOURS = 14 * 24;
+        public const double IDLE_HOURS = 14 * 24;
+        public const double IDLE_DELETE_HOURS = 30 * 24;
 
         public void Start()
         {
@@ -26,8 +27,8 @@ namespace Game.Module {
             using (var reader =
                     Global.DbManager.ReaderQuery(
                                                  string.Format(
-                                                               "SELECT * FROM `{0}` WHERE deleted = 0 AND TIMEDIFF(NOW(), `last_login`) > '{1}:00:00.000000'",
-                                                               Player.DB_TABLE, IDLE_HOURS),
+                                                               "SELECT * FROM `{0}` WHERE TIMEDIFF(NOW(), `last_login`) > '{1}:00:00.000000'",
+                                                               Player.DB_TABLE, IDLE_DELETE_HOURS),
                                                  new DbColumn[] { })) {
                 while (reader.Read()) {
                     Player player;

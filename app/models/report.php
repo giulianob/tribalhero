@@ -1,76 +1,79 @@
 <?php
 
 class Report extends AppModel {
+
+    var $name = 'Report';
     var $useTable = false;
 
     function getUnreadCount($playerId) {
-        $Battle =& ClassRegistry::init('Battle');
+        $Battle = & ClassRegistry::init('Battle');
 
         $localUnread = $Battle->find('count', array(
-                'link' => array(
+                    'link' => array(
                         'City' => array('type' => 'inner'),
-                ),
-                'conditions' => array(
+                    ),
+                    'conditions' => array(
                         'City.player_id' => $playerId,
                         'NOT' => array(
                             'Battle.ended' => null
                         ),
                         'Battle.read' => false
-                )
-        ));
+                    )
+                ));
 
         $remoteUnread = $Battle->BattleReportView->find('count', array(
-                'link' => array(
+                    'link' => array(
                         'City' => array('type' => 'inner'),
-						'Battle' => array('type' => 'inner')
-                ),
-                'conditions' => array(
+                        'Battle' => array('type' => 'inner')
+                    ),
+                    'conditions' => array(
                         'City.player_id' => $playerId,
                         'BattleReportView.read' => false,
-						'NOT' => array(
-							'Battle.ended' => null
-						)
-                )
-        ));
+                        'NOT' => array(
+                            'Battle.ended' => null
+                        )
+                    )
+                ));
 
         return $localUnread + $remoteUnread;
     }
 
     function markAsRead($playerId, $local, $id) {
 
-        $City =& ClassRegistry::init('City');
-        $Battle =& ClassRegistry::init('Battle');
+        $City = & ClassRegistry::init('City');
+        $Battle = & ClassRegistry::init('Battle');
 
         // Get list of cities for given player
         $cities = $City->find('all', array(
-                'contain' => array(),
-                'conditions' => array(
+                    'contain' => array(),
+                    'conditions' => array(
                         'player_id' => $playerId
-                )
-        ));
+                    )
+                ));
 
         $cityIds = Set::extract('{n}.City.id', $cities);
 
         if ($local) {
             $Battle->updateAll(array(
-                    'Battle.read' => true
+                'Battle.read' => true
                     ),
                     array(
-                    'Battle.id' => $id,
-                    'Battle.city_id' => $cityIds,
-                    'NOT' => array(
+                        'Battle.id' => $id,
+                        'Battle.city_id' => $cityIds,
+                        'NOT' => array(
                             'Battle.ended' => null
                     ))
             );
         } else {
             $Battle->BattleReportView->updateAll(array(
-                    'BattleReportView.read' => true
+                'BattleReportView.read' => true
                     ),
                     array(
-                    'BattleReportView.id' => $id,
-                    'BattleReportView.city_id' => $cityIds,
+                        'BattleReportView.id' => $id,
+                        'BattleReportView.city_id' => $cityIds,
                     )
             );
         }
     }
+
 }

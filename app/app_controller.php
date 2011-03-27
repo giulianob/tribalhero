@@ -12,17 +12,6 @@ class AppController extends Controller {
     function beforeFilter() {
         $this->disableCache();
 
-        /*
-          if (Configure::read('debug') == 0){
-          @ob_start ('ob_gzhandler');
-          header('Content-type: text/html; charset: UTF-8');
-          header('Cache-Control: must-revalidate');
-          $offset = -1;
-          $ExpStr = "Expires: " .gmdate('D, d M Y H:i:s',time() + $offset) . ' GMT';
-          header($ExpStr);
-          }
-         */
-
         $this->Auth->authError = "You have to login to do that!";
         $this->Auth->userModel = 'Player';
         $this->Auth->fields = array('username' => 'name', 'password' => 'password');
@@ -48,10 +37,10 @@ class AppController extends Controller {
     }
 
     function isAuthorized() {
-	    if ((array_key_exists('admin', $this->params) && $this->params['admin']) && !$this->Auth->user('admin')) {
+        if ((array_key_exists('admin', $this->params) && $this->params['admin']) && !$this->Auth->user('admin')) {
             return false;
         }
-		
+
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
             if (!array_key_exists('sessionId', $this->params['form']) || !array_key_exists('playerId', $this->params['form'])) {
                 return false;

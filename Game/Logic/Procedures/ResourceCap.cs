@@ -16,12 +16,13 @@ namespace Game.Logic.Procedures
         /// <param name = "city"></param>
         public static void SetResourceCap(City city)
         {
+            
             if (Config.resource_cap)
             {
-                city.Resource.SetLimits(Formula.ResourceCropCap(city.MainBuilding.Lvl),
+                city.Resource.SetLimits(Formula.ResourceCropCap(city.Lvl),
                                         0,
-                                        Formula.ResourceIronCap(city.MainBuilding.Lvl),
-                                        Formula.ResourceWoodCap(city.MainBuilding.Lvl),
+                                        Formula.ResourceIronCap(city.Lvl),
+                                        Formula.ResourceWoodCap(city.Lvl),
                                         0);
             }
             else

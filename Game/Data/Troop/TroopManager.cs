@@ -195,9 +195,6 @@ namespace Game.Data.Troop
         {
             TroopStub stub;
 
-            if (id == 1)
-                throw new Exception("Trying to remove default troop");
-
             if (!dict.TryGetValue(id, out stub))
                 return false;
 
@@ -216,7 +213,7 @@ namespace Game.Data.Troop
             return dict.TryGetValue(id, out stub);
         }
 
-        public void Starve()
+        public void Starve(int percent = 5)
         {
             // Make a copy of the stub list since it might change during the foreach loop
             var troopStubs = new TroopStub[dict.Values.Count];
@@ -238,7 +235,7 @@ namespace Game.Data.Troop
 
                 // Starve the troop
                 stub.BeginUpdate();
-                stub.Starve();
+                stub.Starve(percent);
                 stub.EndUpdate();
 
                 // Remove it if it's been starved to death (and isn't the default troop)

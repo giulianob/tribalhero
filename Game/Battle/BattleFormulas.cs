@@ -63,14 +63,14 @@ namespace Game.Battle
 
         public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor)
         {
-            const double nodamage = 0.1;
+         /*   const double nodamage = 0.1;
             const double weakest = 0.2;
             const double weaker = 0.4;
             const double weak = 0.8;
             const double good = 1.1;
             const double strong = 1.3;
             const double stronger = 1.6;
-            const double strongest = 2.2;
+            const double strongest = 2.2;*/
 
             switch(weapon)
             {
@@ -130,13 +130,13 @@ namespace Game.Battle
                     switch(armor)
                     {
                         case ArmorType.Ground:
-                            return weaker;
+                            return 0.4;
                         case ArmorType.Mount:
-                            return weaker;
+                            return 0.4;
                         case ArmorType.Machine:
-                            return weaker;
+                            return 0.4;
                         case ArmorType.Building:
-                            return weaker;
+                            return 0.4;
                     }
                     break;
             }
@@ -266,7 +266,7 @@ namespace Game.Battle
                         }
                     }
                 } else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
-                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.MainBuilding.Lvl * 100)));
+                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
             }
             return calculator.GetStats();
         }

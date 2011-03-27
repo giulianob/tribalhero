@@ -25,7 +25,7 @@ namespace ConsoleSimulator
 
         public Group()
         {
-            player = new Player(player_id, DateTime.MinValue, SystemClock.Now, "player " + player_id, false, false);
+            player = new Player(player_id, DateTime.MinValue, SystemClock.Now, "player " + player_id, false);
             player_id++;
             var main =
                     new Structure(
@@ -55,6 +55,7 @@ namespace ConsoleSimulator
                                                                       0,
                                                                       ClassId.Structure)));
             city = new City(player, "city " + city_id, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), main);
+            player.Add(city);
             city_id++;
 
             attack = new TroopStub();

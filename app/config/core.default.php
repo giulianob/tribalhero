@@ -117,7 +117,8 @@
 /**
  * The name of CakePHP's session cookie.
  */
-	Configure::write('Session.cookie', 'tribalhero');
+	list($subdomain, $rest) = explode('.', $_SERVER['SERVER_NAME'], 2);
+	Configure::write('Session.cookie', $subdomain . '_tribalhero');
 /**
  * Session time out time (in seconds).
  * Actual value depends on 'Security.level' setting.

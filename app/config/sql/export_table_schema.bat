@@ -1,8 +1,10 @@
 @ECHO OFF
 if "%1" == "" goto error
 
-mysqldump -d -uroot -p %1 > game.sql
-mysqldump --no-create-info -uroot -p %1 schema_migrations >> game.sql
+mysqldump -d -uroot -p %1 > game.server.sql
+mysqldump --no-create-info -uroot -p %1 schema_migrations >> game.server.sql
+
+sed -i "s/AUTO_INCREMENT=[0-9]*\b/AUTO_INCREMENT=1/" game.server.sql
 
 exit /B 0
 

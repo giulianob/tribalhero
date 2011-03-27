@@ -283,6 +283,7 @@ namespace Game.Module
                     }
 
                     var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityList().Count + 1), Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
+                    npc.Add(city);
 
                     Global.World.Add(city);
                     structure.BeginUpdate();

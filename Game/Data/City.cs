@@ -351,8 +351,7 @@ namespace Game.Data
 
             Worker.ActionRemoved += WorkerActionRemoved;
             Worker.ActionStarted += WorkerActionAdded;
-            Worker.ActionRescheduled += WorkerActionRescheduled;
-            owner.Add(this);
+            Worker.ActionRescheduled += WorkerActionRescheduled;            
 
             if (mainBuilding != null)
             {

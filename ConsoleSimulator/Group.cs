@@ -55,6 +55,7 @@ namespace ConsoleSimulator
                                                                       0,
                                                                       ClassId.Structure)));
             city = new City(player, "city " + city_id, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), main);
+            player.Add(city);
             city_id++;
 
             attack = new TroopStub();

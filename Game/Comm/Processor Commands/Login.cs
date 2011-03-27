@@ -265,6 +265,7 @@ namespace Game.Comm
                     }
 
                     city = new City(session.Player, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), mainBuilding);
+                    session.Player.Add(city);
 
                     Global.World.Add(city);
                     mainBuilding.BeginUpdate();

@@ -142,9 +142,9 @@ namespace Game.Logic
 
         public void Add(GameObject referenceObject, PassiveAction action)
         {
-            PassiveAction workingStub = actionWorker.PassiveActions[action.ActionId];
-            if (workingStub == null)
-                throw new Exception("Action not found");
+
+            PassiveAction workingStub;
+            if (!actionWorker.PassiveActions.TryGetValue(action.ActionId, out workingStub)) return; 
 
             var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);

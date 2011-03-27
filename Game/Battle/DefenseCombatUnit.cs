@@ -222,8 +222,8 @@ namespace Game.Battle
 
         public override void Location(out uint x, out uint y) {
             if (TroopStub.TroopObject == null) {
-                x = City.MainBuilding.X;
-                y = City.MainBuilding.Y;
+                x = City.X;
+                y = City.Y;
             }
             else
             {

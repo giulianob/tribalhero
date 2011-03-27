@@ -163,7 +163,11 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            StateChange(ActionState.Failed);
+            City city;
+            using (new MultiObjectLock(cityId, out city))
+            {
+                StateChange(ActionState.Failed);
+            }
         }
 
         public override void Callback(object custom)

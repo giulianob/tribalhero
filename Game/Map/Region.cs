@@ -169,8 +169,13 @@ namespace Game.Map
                                 }
 
                                 //if this is the main building then include radius
-                                if (obj is GameObject && obj == ((GameObject)obj).City.MainBuilding)
-                                    bw.Write(((GameObject)obj).City.Radius);
+                                if (obj is Structure)
+                                {
+                                    var structure = obj as Structure;
+
+                                    if (structure.IsMainBuilding)
+                                        bw.Write(structure.City.Radius);
+                                }
                             }
 
                             isDirty = false;

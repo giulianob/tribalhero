@@ -68,11 +68,21 @@ namespace DatabaseGenerator
 
                 foreach (var type in structureTypes)
                 {
+                    if (ObjectTypeFactory.IsStructureType("DatabaseIgnoreStructures", type))
+                        continue;
+
                     ProcessStructure(type);
 
                     StructureBaseStats stats = StructureFactory.GetBaseStats(type, 1);
+
+                    var sprite = stats.SpriteClass;
+
+                    // Sorry this is a bit of a hack, it's a CropField then we append the Mature status to it :)
+                    if (ObjectTypeFactory.IsStructureType("CropField", type))                    
+                        sprite = StructureFactory.AllStructures().First(structure => structure.Lvl == 1 && structure.Name == "MATURE_" + stats.Name).SpriteClass;                    
+
                     writer.WriteLine("'{2}_STRUCTURE' => array('name' => '{1}', 'sprite' => '{0}'),",
-                                     stats.SpriteClass,
+                                     sprite,
                                      lang[stats.Name + "_STRUCTURE_NAME"],
                                      stats.Name);
                 }
@@ -135,7 +145,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../technology_view.ctp';
+                include $includeLocation . 'technology_view.ctp';
             ";
 
             const string levelTemplate =
@@ -264,11 +274,11 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../unit_view.ctp';
+                include $includeLocation . 'unit_view.ctp';
             ";
 
             const string levelTemplate =
-                    @"array('time' => #TIME#, 'carry' => #CARRY#, 'speed' => #SPEED#, 'upkeep' => #UPKEEP#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'defense' => #DEFENSE#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'armor' => '#ARMOR#', 'weapon' => '#WEAPON#', 'weaponClass' => '#WEAPONCLASS#', 'unitClass' => '#UNITCLASS#', 'requirements' => array(#REQUIREMENTS#)),";
+                    @"array('time' => #TIME#, 'carry' => #CARRY#, 'speed' => #SPEED#, 'upkeep' => #UPKEEP#, 'trainTime' => #TRAIN_TIME#, 'trainGold' => #TRAIN_GOLD#, 'trainCrop' => #TRAIN_CROP#, 'trainIron' => #TRAIN_IRON#, 'trainLabor' => #TRAIN_LABOR#, 'trainWood' => #TRAIN_WOOD#, 'gold' => #GOLD#, 'crop' => #CROP#, 'iron' => #IRON#, 'labor' => #LABOR#, 'wood' => #WOOD#, 'hp' => #HP#, 'defense' => #DEFENSE#, 'attack' => #ATTACK#, 'range' => #RANGE#, 'stealth' => #STEALTH#, 'armor' => '#ARMOR#', 'weapon' => '#WEAPON#', 'weaponClass' => '#WEAPONCLASS#', 'unitClass' => '#UNITCLASS#', 'requirements' => array(#REQUIREMENTS#)),";
 
             string requirementTemplate = @"'#REQUIREMENT#',";
 
@@ -296,12 +306,18 @@ namespace DatabaseGenerator
             BaseUnitStats currentStats = stats;
             do
             {
-                string currentLevel = levelTemplate.Replace("#TIME#", currentStats.BuildTime.ToString());
-                currentLevel = currentLevel.Replace("#GOLD#", currentStats.Cost.Gold.ToString());
-                currentLevel = currentLevel.Replace("#CROP#", currentStats.Cost.Crop.ToString());
-                currentLevel = currentLevel.Replace("#IRON#", currentStats.Cost.Iron.ToString());
-                currentLevel = currentLevel.Replace("#LABOR#", currentStats.Cost.Labor.ToString());
-                currentLevel = currentLevel.Replace("#WOOD#", currentStats.Cost.Wood.ToString());
+                string currentLevel = levelTemplate.Replace("#TIME#", currentStats.UpgradeTime.ToString());
+                currentLevel = currentLevel.Replace("#GOLD#", currentStats.UpgradeCost.Gold.ToString());
+                currentLevel = currentLevel.Replace("#CROP#", currentStats.UpgradeCost.Crop.ToString());
+                currentLevel = currentLevel.Replace("#IRON#", currentStats.UpgradeCost.Iron.ToString());
+                currentLevel = currentLevel.Replace("#LABOR#", currentStats.UpgradeCost.Labor.ToString());
+                currentLevel = currentLevel.Replace("#WOOD#", currentStats.UpgradeCost.Wood.ToString());
+                currentLevel = currentLevel.Replace("#TRAIN_TIME#", currentStats.BuildTime.ToString());
+                currentLevel = currentLevel.Replace("#TRAIN_GOLD#", currentStats.Cost.Gold.ToString());
+                currentLevel = currentLevel.Replace("#TRAIN_CROP#", currentStats.Cost.Crop.ToString());
+                currentLevel = currentLevel.Replace("#TRAIN_IRON#", currentStats.Cost.Iron.ToString());
+                currentLevel = currentLevel.Replace("#TRAIN_LABOR#", currentStats.Cost.Labor.ToString());
+                currentLevel = currentLevel.Replace("#TRAIN_WOOD#", currentStats.Cost.Wood.ToString());
                 currentLevel = currentLevel.Replace("#HP#", currentStats.Battle.MaxHp.ToString());
                 currentLevel = currentLevel.Replace("#DEFENSE#", currentStats.Battle.Def.ToString());
                 currentLevel = currentLevel.Replace("#RANGE#", currentStats.Battle.Rng.ToString());
@@ -420,7 +436,7 @@ namespace DatabaseGenerator
 		            #LEVELS#
 	            );
 
-                include '/../structure_view.ctp';
+                include $includeLocation . 'structure_view.ctp';
             ";
 
             const string levelTemplate =
@@ -592,7 +608,7 @@ namespace DatabaseGenerator
             string[] files = Directory.GetFiles(Config.csv_folder, "lang.*", SearchOption.TopDirectoryOnly);
             foreach (var file in files)
             {
-                using (var langReader = new CsvReader(new StreamReader(File.Open(file, FileMode.Open))))
+                using (var langReader = new CsvReader(new StreamReader(File.OpenRead(file))))
                 {
                     while (true)
                     {

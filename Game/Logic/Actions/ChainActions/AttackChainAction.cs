@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
                     using (new MultiObjectLock(city))
                     {
                         TroopStub stub = city.Troops[stubId];
-                        TroopMovePassiveAction tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
+                        TroopMovePassiveAction tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
                     }
@@ -182,7 +182,7 @@ namespace Game.Logic.Actions
                         city.EndUpdate();
 
                         // Send troop back home
-                        var tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.MainBuilding.X, city.MainBuilding.Y, true, true);
+                        var tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
 
                         // Add notification just to the main city

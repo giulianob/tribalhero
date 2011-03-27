@@ -16,15 +16,14 @@ namespace Game.Data
         public const string DB_TABLE = "players";
         private readonly List<City> list = new List<City>();
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, bool banned)
-                : this(playerid, created, lastLogin, name, admin, banned, string.Empty)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin)
+                : this(playerid, created, lastLogin, name, admin, string.Empty)
         {
         }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, bool banned, string sessionId)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, string sessionId)
         {
             PlayerId = playerid;
-            Banned = banned;
             LastLogin = lastLogin;
             Created = created;
             Name = name;
@@ -45,8 +44,6 @@ namespace Game.Data
         public string SessionId { get; set; }
 
         public bool Admin { get; set; }
-
-        public bool Banned { get; set; }
 
         #region ILockable Members
 
@@ -86,8 +83,7 @@ namespace Game.Data
                        {
                                new DbColumn("name", Name, DbType.String, 32), new DbColumn("created", Created, DbType.DateTime),
                                new DbColumn("last_login", LastLogin, DbType.DateTime), new DbColumn("session_id", SessionId, DbType.String, 128),
-                               new DbColumn("online", Session != null, DbType.Boolean), new DbColumn("admin", Admin, DbType.Boolean),
-                               new DbColumn("banned", Banned, DbType.Boolean)
+                               new DbColumn("online", Session != null, DbType.Boolean),
                        };
             }
         }
@@ -124,7 +120,11 @@ namespace Game.Data
 
         internal City GetCity(uint id)
         {
-            return list.Find(city => city.Id == id);
+            return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
+        }
+
+        public override string ToString() {
+            return Name;
         }
 
         public void SendSystemMessage(Player from, String subject, String message)

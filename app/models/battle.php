@@ -3,44 +3,12 @@
 class Battle extends AppModel {
 
     var $name = 'Battle';
-    var $actsAs = array('Containable', 'Linkable');
-    
     var $belongsTo = array(
-        'City' => array(
-            'className' => 'City',
-            'foreignKey' => 'city_id',
-            'conditions' => '',
-            'fields' => '',
-            'order' => ''
-        )
+        'City'
     );
     var $hasMany = array(
-        'BattleReport' => array(
-            'className' => 'BattleReport',
-            'foreignKey' => 'battle_id',
-            'dependent' => true,
-            'conditions' => 'BattleReport.ready = 1',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'exclusive' => '',
-            'finderQuery' => '',
-            'counterQuery' => ''
-        ),
-        'BattleReportView' => array(
-            'className' => 'BattleReportView',
-            'foreignKey' => 'battle_id',
-            'dependent' => true,
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'exclusive' => '',
-            'finderQuery' => '',
-            'counterQuery' => ''
-        )
+        'BattleReport' => array('dependent' => true, 'conditions' => 'BattleReport.ready = 1'),
+        'BattleReportView' => array('dependent' => true)
     );
 
     function listInvasionReports($cities, $returnOptions = false) {

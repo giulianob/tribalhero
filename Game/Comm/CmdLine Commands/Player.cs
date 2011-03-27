@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using Game.Data;
 using Game.Module;
 using Game.Util;
@@ -82,8 +83,12 @@ namespace Game.Comm
                 if (player == null)
                     return "Player not found";
 
-                foreach (City city in player.GetCityList())
+                foreach (City city in player.GetCityList().Where(city => city.Deleted == City.DeletedState.NotDeleted))
                 {
+                    city.BeginUpdate();
+                    city.Deleted = City.DeletedState.Deleting;
+                    city.EndUpdate();
+
                     CityRemover cr = new CityRemover(city.Id);
                     cr.Start();
                 }

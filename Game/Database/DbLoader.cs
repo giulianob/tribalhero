@@ -207,10 +207,17 @@ namespace Game.Database
 
                     Global.World.DbLoaderAdd((uint)reader["id"], city);
 
-                    if (city.Deleted == City.DeletedState.Deleting)
+                    switch(city.Deleted)
                     {
-                        CityRemover cr = new CityRemover(city.Id);
-                        cr.Start();
+                        case City.DeletedState.Deleting:
+                        {
+                            CityRemover cr = new CityRemover(city.Id);
+                            cr.Start(true);
+                        }
+                            break;
+                        case City.DeletedState.NotDeleted:
+                            city.Owner.Add(city);
+                            break;
                     }
                 }
             }

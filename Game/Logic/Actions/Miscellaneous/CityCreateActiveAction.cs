@@ -108,6 +108,7 @@ namespace Game.Logic.Actions {
 
                 // Creating New City
                 newCity = new City(city.Owner, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
+                city.Owner.Add(newCity);
 
                 Global.World.Add(newCity);
                 structure.BeginUpdate();

@@ -123,6 +123,10 @@ namespace Game.Data
             return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
         }
 
+        public override string ToString() {
+            return Name;
+        }
+
         public void SendSystemMessage(Player from, String subject, String message)
         {
             subject = String.Format("(System) {0}", subject);

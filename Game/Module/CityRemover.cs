@@ -19,8 +19,22 @@ namespace Game.Module {
             this.cityId = cityId;
         }
 
-        public void Start()
+        public void Start(bool force = false)
         {
+            City city;
+            if (!Global.World.TryGetObjects(cityId, out city))
+                throw new Exception("City not found");
+
+            if (!force && city.Deleted != City.DeletedState.NotDeleted)
+                return;
+
+            if (city.Deleted == City.DeletedState.NotDeleted)
+            {
+                city.BeginUpdate();
+                city.Deleted = City.DeletedState.Deleting;
+                city.EndUpdate();
+            }
+
             Time = DateTime.UtcNow;
             Global.Scheduler.Put(this);
         }

@@ -16,7 +16,6 @@ namespace Game.Module {
         private readonly uint cityId;
 
         public CityRemover(uint cityId) {
-            // TODO: Complete member initialization
             this.cityId = cityId;
         }
 
@@ -33,7 +32,7 @@ namespace Game.Module {
 
         private void Reschedule(double interval = RETRY_INTERVAL_IN_MINS)
         {
-            Time = DateTime.UtcNow.AddMinutes(interval);
+            Time = DateTime.UtcNow.AddMinutes(GameAction.CalculateTime(interval));
             Global.Scheduler.Put(this);
         }
 
@@ -103,7 +102,7 @@ namespace Game.Module {
                     if (city.Any(structure => !structure.IsMainBuilding))
                     {
                         city.BeginUpdate();
-                        foreach (Structure structure in new List<Structure>(city).Where(structure => !structure.IsBlocked && structure.IsMainBuilding))
+                        foreach (Structure structure in new List<Structure>(city).Where(structure => !structure.IsBlocked && !structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
                             Global.World.Remove(structure);
@@ -111,7 +110,7 @@ namespace Game.Module {
                             structure.EndUpdate();
                         }
                         city.EndUpdate();
-                        Reschedule(0.01);
+                        Reschedule();
                         return;
                     }
 
@@ -139,25 +138,27 @@ namespace Game.Module {
                 // remove mainbuilding
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
+                    // remove default troop
+                    city.Troops.Remove(1);
+
                     // remove city from the region
                     CityRegion region = Global.World.GetCityRegion(city.X, city.Y);
                     if (region != null)
-                        region.Remove(city);
-
-                    city.Troops.Remove(1);
+                        region.Remove(city);                    
                     
                     mainBuilding.BeginUpdate();
                     Global.World.Remove(mainBuilding);
                     city.ScheduleRemove(mainBuilding, false);
                     mainBuilding.EndUpdate();
-                    Reschedule(0.01);
+
+                    Reschedule();
                     return;
                 }
 
                 // in the case of the OjectRemoveAction for mainbuilding is still there
                 if(city.Worker.PassiveActions.Count>0)
                 {
-                    Reschedule(0.01);
+                    Reschedule();
                     return;
                 }
 

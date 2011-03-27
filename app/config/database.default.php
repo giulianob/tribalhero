@@ -84,7 +84,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => '',
-		'database' => 'game',
+		'database' => 'tribalhero_server',
 		'prefix' => '',
 	);
 

@@ -88,12 +88,14 @@
 			var cityId: int = packet.readUInt();
 			var attackPoint: int = packet.readInt();
 			var defensePoint: int = packet.readInt();
+			var cityValue: int = packet.readUShort();
 
 			var city: City = Global.map.cities.get(cityId);
 
 			if (city != null) {
 				city.attackPoint = attackPoint;
 				city.defensePoint = defensePoint;
+				city.value = cityValue;
 			}
 		}
 

@@ -38,7 +38,7 @@
 				unitObj.trainResources = new Resources(unitNode.@crop, unitNode.@gold, unitNode.@iron, unitNode.@wood, unitNode.@labor);
 				unitObj.trainTime = unitNode.@time;
 				unitObj.upgradeResources = new Resources(unitNode.@upgradecrop, unitNode.@upgradegold, unitNode.@upgradeiron, unitNode.@upgradewood, unitNode.@upgradelabor);
-				unitObj.upgradeTime = unitNode.@time;
+				unitObj.upgradeTime = unitNode.@upgradetime;
 				unitObj.weapon = unitNode.@weapon;
 				unitObj.unitClass = unitNode.@unitclass;
 				unitObj.weaponClass = unitNode.@weaponclass;

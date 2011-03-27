@@ -3,7 +3,7 @@ package src
 	public class Constants
 	{
 		public static var version: int = 0;
-		public static var revision: int = 10;
+		public static var revision: int = 11;
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";
@@ -16,6 +16,7 @@ package src
 		public static var playerId: int;
 		
 		/* APP CONSTANTS */
+		public static const mainWebsite: String = "tribalhero.com";
 		public static const debug:int = 0;
 		public static const defLang:String = "en";
 		

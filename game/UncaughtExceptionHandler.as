@@ -49,7 +49,7 @@ package
 			// Only send error if we are in web mode
 			if (Constants.loginKey == "") return;
 			
-			var url:String = "http://" + Constants.hostname + "/stacktraces/game_submit";
+			var url:String = "http://" + Constants.mainWebsite + "/stacktraces/game_submit";
 			var request:URLRequest = new URLRequest(url);
 			var requestVars:URLVariables = new URLVariables();
 			var a: UncaughtErrorEvent;

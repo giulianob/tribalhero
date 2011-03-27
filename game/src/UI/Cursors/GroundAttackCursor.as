@@ -186,6 +186,13 @@
 				return;
 			}
 			
+			if (gameObj.level == 0) {
+				if (tooltip) tooltip.hide();
+				tooltip = null;
+				Global.gameContainer.message.showMessage("This structure can't be attacked while it's being built");
+				return;
+			}			
+			
 			if (gameObj.level == 1 && ObjectFactory.isType("Undestroyable", gameObj.type)) {
 				if (tooltip) tooltip.hide();
 				tooltip = null;

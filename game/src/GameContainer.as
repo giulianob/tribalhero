@@ -188,17 +188,17 @@
 
 		public function onLogoutClick(e: Event): void
 		{
-			navigateToURL(new URLRequest("http://" + Constants.hostname + "/players/logout/session:" + Constants.sessionId), null);
+			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/players/logout/session:" + Constants.sessionId), "_self");
 		}
 		
 		public function onAccountOptionsClick(e: Event): void
 		{
-			navigateToURL(new URLRequest("http://" + Constants.hostname + "/players/account"), "_blank");
+			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/players/account"), "_blank");
 		}		
 		
 		public function onHelpClick(e: Event): void
 		{
-			navigateToURL(new URLRequest("http://" + Constants.hostname + "/database"), "_blank");
+			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/database"), "_blank");
 		}
 		
 		public function onForumsClick(e: Event): void
@@ -266,7 +266,7 @@
 		}
 		
 		public function onSendFeedback(e: Event) : void {
-			navigateToURL(new URLRequest("http://" + Constants.hostname + "/feedback"), "_blank");
+			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/feedback"), "_blank");
 		}
 		
 		public function onZoomIn(e: Event) : void {		
@@ -574,8 +574,9 @@
 		public function closeAllFrames() : void {
 			var framesCopy: Array = frames.concat();
 
-			for (var i: int = framesCopy.length - 1; i >= 0; --i)
-			(framesCopy[i] as JFrame).dispose();
+			for (var i: int = framesCopy.length - 1; i >= 0; --i) {
+				(framesCopy[i] as JFrame).dispose();
+			}
 		}
 
 		public function showFrame(frame: JFrame):void {

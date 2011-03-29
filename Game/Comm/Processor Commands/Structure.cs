@@ -211,7 +211,7 @@ namespace Game.Comm
                 if (obj.Stats.Labor < count)
                 {
                     //move from city to obj
-                    count = (byte)(count - obj.Stats.Labor);
+                    count = (ushort)(count - obj.Stats.Labor);
 
                     if (city.Resource.Labor.Value < count)
                     {
@@ -232,7 +232,7 @@ namespace Game.Comm
                 else if (obj.Stats.Labor > count)
                 {
                     //move from obj to city
-                    count = (byte)(obj.Stats.Labor - count);
+                    count = (ushort)(obj.Stats.Labor - count);
                     lma = new LaborMoveActiveAction(cityId, objectId, false, count);
                 }
                 else

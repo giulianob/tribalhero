@@ -146,11 +146,11 @@ namespace Game.Battle
         public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
             ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
-            int rawDmg = (atk*attacker.Count)/10;
+            int rawDmg = (atk*attacker.Count);
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
             double modifier = classModifier * typeModifier;
-            rawDmg = (int)(typeModifier*classModifier*rawDmg);
+            rawDmg = (int)(typeModifier * classModifier * rawDmg / 15);
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
         }

@@ -8,7 +8,6 @@ Type,Level,Index,Max,Option,Action,P1,P2,P3,P4,P5,EffectReq,EffectReqInherit
 2000,1,3,1,,structure_Upgrade,15,,,,,20001,SELF
 2000,1,4,1,,road_Build,,,,,,,
 2000,1,5,1,,road_Destroy,,,,,,,
-2000,1,10,1,,city_create,,,,,498,,
 ,,,,,,,,,,,,
 2000,2,3,1,,structure_Upgrade,15,,,,,20003,SELF
 2000,2,6,1,,structure_Build,2201,,,,,,

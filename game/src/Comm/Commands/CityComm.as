@@ -169,7 +169,7 @@
 			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
 			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
 			var objLabor: int = 0;
-			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE) objLabor = packet.readUByte();
+			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE) objLabor = packet.readUShort();
 
 			var city: City = Global.map.cities.get(objCityId);
 
@@ -204,7 +204,7 @@
 			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
 			var objLabor: int = 0;
 			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
-			objLabor = packet.readUByte();
+			objLabor = packet.readUShort();
 
 			var city: City = Global.map.cities.get(objCityId);
 

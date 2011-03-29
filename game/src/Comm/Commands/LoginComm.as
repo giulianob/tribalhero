@@ -149,7 +149,7 @@
 					var objId: int = packet.readUInt();
 					var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
 					var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-					var objLabor: int = packet.readUByte();
+					var objLabor: int = packet.readUShort();
 
 					var cityObj: CityObject = new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);
 

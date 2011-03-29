@@ -103,7 +103,7 @@
 			packet.cmd = Commands.STRUCTURE_LABOR_MOVE;
 			packet.writeUInt(city);
 			packet.writeUInt(objectid);
-			packet.writeUByte(value);
+			packet.writeUShort(value);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}
@@ -260,7 +260,7 @@
 			packet.writeUInt(cityId);
 			packet.writeUInt(forestId);
 			packet.writeUShort(type);
-			packet.writeUByte(labor);
+			packet.writeUShort(labor);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}		
@@ -298,7 +298,7 @@
 			obj.level = packet.readUByte();
 
 			if (obj.playerId == Constants.playerId) {
-				obj.labor = packet.readUByte();
+				obj.labor = packet.readUShort();
 				obj.hp = packet.readUShort();
 
 				var propPrototype: Array = PropertyFactory.getAllProperties(obj.type);

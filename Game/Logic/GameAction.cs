@@ -156,12 +156,13 @@ namespace Game.Logic
             return !IsDone;
         }
 
-        protected double CalculateTime(int seconds, bool instantAction = true)
+        public static double CalculateTime(int seconds, bool instantAction = true)
         {
             return CalculateTime((double)seconds, instantAction);
         }
 
-        protected double CalculateTime(double seconds, bool instantAction = true) {
+        public static double CalculateTime(double seconds, bool instantAction = true)
+        {
             if (!instantAction)
                 return seconds * Config.seconds_per_unit;
 

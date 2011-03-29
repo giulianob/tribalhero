@@ -88,9 +88,13 @@ namespace Game.Logic.Formulas
                 laborTotal = 140;
 
             var effects = city.Technologies.GetEffects(EffectCode.LaborTrainTimeMod, EffectInheritance.SelfAll);
-            float rateBonus = 1;
+            double rateBonus = 1;
             if (effects.Count > 0)
-                rateBonus = (effects.Min(x => (int)x.Value[0]) * 10) / 100f;
+            {
+                rateBonus = (effects.Min(x => (int)x.Value[0])*10)/100f;
+                if (effects.Count > 1)
+                    rateBonus *= Math.Pow(0.9, effects.Count - 1); // for every extra tribal gathering, you gain 10 % each
+            }
 
             return (int)((43200 / (-6.845 * Math.Log(laborTotal) + 55)) * rateBonus);
         }

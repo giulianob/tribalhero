@@ -26,7 +26,7 @@ namespace Game.Battle
 
         public static int GetUnitsPerStructure(Structure structure)
         {
-            var units = new[] { 20, 20, 25, 31, 38, 44, 51, 59, 67, 76, 86, 96, 107, 119, 131, 145 };
+            var units = new[] { 20, 20, 23, 28, 34, 39, 45, 52, 59, 67, 76, 85, 95, 106, 117, 130 };
             return units[structure.Lvl];
         }
 
@@ -146,11 +146,11 @@ namespace Game.Battle
         public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
             ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
-            int rawDmg = (atk*attacker.Count)/10;
+            int rawDmg = (atk*attacker.Count);
             double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
             double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
             double modifier = classModifier * typeModifier;
-            rawDmg = (int)(typeModifier*classModifier*rawDmg);
+            rawDmg = (int)(typeModifier * classModifier * rawDmg / 15);
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
         }

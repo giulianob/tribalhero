@@ -18,7 +18,7 @@ namespace Game.Module
         private const int MIN_PRICE = 5;
         private const int MAX_PRICE = 1000;
 
-        private const int QUANTITY_PER_CHANGE_PER_PLAYER = 200;
+        private const int QUANTITY_PER_CHANGE_PER_PLAYER = 100;
         public const string DB_TABLE = "market";
 
         private static Market crop;
@@ -149,7 +149,7 @@ namespace Game.Module
                     int flow = outgoing - incoming;
                     if (Global.World.Players.Count > 0)
                     {
-                        price += (flow/(quantityPerChangePerPlayer*Global.World.Players.Count));
+                        price += (flow/(quantityPerChangePerPlayer*Global.World.GetActivePlayerCount()));
                         if (price < MIN_PRICE)
                             price = MIN_PRICE;
                         if (price > MAX_PRICE)

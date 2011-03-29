@@ -11,6 +11,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Procedures;
+using Game.Module;
 using Game.Setup;
 using Game.Util;
 
@@ -50,6 +51,22 @@ namespace Game.Map
             get
             {
                 return Cities.Count;
+            }
+        }
+
+        public int GetActivePlayerCount()
+        {
+            using (
+                    var reader =
+                            Global.DbManager.ReaderQuery(
+                                                         string.Format(
+                                                                       "SELECT COUNT(*) as active_count FROM `{0}` WHERE TIMEDIFF(NOW(), `last_login`) < '{1}:00:00.000000'",
+                                                                       Player.DB_TABLE,
+                                                                       IdleChecker.IDLE_HOURS),
+                                                         new DbColumn[] {}))
+            {
+                reader.Read();
+                return (int)((long)reader.GetValue(0));
             }
         }
 

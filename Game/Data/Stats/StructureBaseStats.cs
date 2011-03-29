@@ -15,7 +15,7 @@ namespace Game.Data.Stats
                                   byte radius,
                                   Resource cost,
                                   BaseBattleStats baseBattleStats,
-                                  byte maxLabor,
+                                  ushort maxLabor,
                                   int buildTime,
                                   int workerId,
                                   ClassId baseClass)
@@ -49,7 +49,7 @@ namespace Game.Data.Stats
 
         public int WorkerId { get; private set; }
 
-        public byte MaxLabor { get; private set; }
+        public ushort MaxLabor { get; private set; }
 
         public byte Radius { get; private set; }
 

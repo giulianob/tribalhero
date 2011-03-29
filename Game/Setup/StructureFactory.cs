@@ -76,7 +76,7 @@ namespace Game.Setup
                                                            byte.Parse(toks[col["Radius"]]),
                                                            resource,
                                                            stats,
-                                                           byte.Parse(toks[col["MaxLabor"]]),
+                                                           ushort.Parse(toks[col["MaxLabor"]]),
                                                            int.Parse(toks[col["Time"]]),
                                                            workerId,
                                                            (ClassId)Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
@@ -133,7 +133,7 @@ namespace Game.Setup
                 else if (newHp > baseStats.Battle.MaxHp)
                     newHp = baseStats.Battle.MaxHp;
 
-                byte newLabor = oldStats.Labor;
+                ushort newLabor = oldStats.Labor;
                 if (baseStats.MaxLabor > 0 && newLabor > baseStats.MaxLabor)
                     newLabor = baseStats.MaxLabor;
 

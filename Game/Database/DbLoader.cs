@@ -323,7 +323,7 @@ namespace Game.Database
                     structure.Y = (uint)reader["y"];
                     structure.Stats.Hp = (ushort)reader["hp"];
                     structure.ObjectId = (uint)reader["id"];
-                    structure.Stats.Labor = (byte)reader["labor"];
+                    structure.Stats.Labor = (ushort)reader["labor"];
                     structure.DbPersisted = true;
                     structure.State.Type = (ObjectState)((byte)reader["state"]);
                     structure.IsBlocked = (bool)reader["is_blocked"];

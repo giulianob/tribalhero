@@ -124,7 +124,7 @@ namespace Game.Logic.Actions
                 }
                 else
                 {
-                    byte oldLabor = structure.Stats.Labor;
+                    ushort oldLabor = structure.Stats.Labor;
                     StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                     structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                     structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);

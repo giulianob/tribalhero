@@ -104,7 +104,7 @@ namespace Game.Comm
             else if (obj is Structure)
             {
                 //if obj is a structure and we are sending it as CityObj we include the labor
-                packet.AddByte((obj as Structure).Stats.Labor);
+                packet.AddUInt16((obj as Structure).Stats.Labor);
             }
         }
 

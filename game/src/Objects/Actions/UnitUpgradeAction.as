@@ -44,7 +44,7 @@ package src.Objects.Actions {
 			var template: UnitTemplate = city.template.get(type);			
 			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(type, template?template.level:1);
 			
-			return new UnitUpgradeButton(parentObj, unitPrototype) as ActionButton;
+			return new UnitUpgradeButton(parentObj, unitPrototype, maxlevel) as ActionButton;
 		}
 		
 	}

@@ -23,14 +23,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var upgradeToolTip: UnitUpgradeTooltip;
 
-		public function UnitUpgradeButton(parentObj: GameObject, unitPrototype: UnitPrototype)
+		public function UnitUpgradeButton(parentObj: GameObject, unitPrototype: UnitPrototype, maxLevel: int)
 		{
 			super(parentObj, unitPrototype.getName());
 
 			if (!unitPrototype)
 			return;
 
-			nextUnitPrototype = UnitFactory.getPrototype(unitPrototype.type, (unitPrototype.level + 1));
+			nextUnitPrototype = unitPrototype.level >= maxLevel?null:UnitFactory.getPrototype(unitPrototype.type, (unitPrototype.level + 1));
 
 			upgradeToolTip = new UnitUpgradeTooltip(parentObj as StructureObject, unitPrototype, nextUnitPrototype);
 

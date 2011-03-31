@@ -632,7 +632,7 @@ CREATE TABLE `structures` (
   `hp` smallint(5) unsigned NOT NULL,
   `type` smallint(6) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
-  `labor` tinyint(3) unsigned NOT NULL,
+  `labor` smallint(5) unsigned DEFAULT NULL,
   `is_blocked` tinyint(1) NOT NULL,
   `in_world` tinyint(1) NOT NULL,
   `state` tinyint(3) unsigned NOT NULL,
@@ -828,7 +828,7 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-03-29 20:33:34
+-- Dump completed on 2011-03-31 18:38:11
 -- MySQL dump 10.13  Distrib 5.5.8, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
@@ -852,7 +852,7 @@ CREATE TABLE `unit_templates_list` (
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
-INSERT INTO `schema_migrations` VALUES ('20110327142607');
+INSERT INTO `schema_migrations` VALUES ('20110327142607'),('20110331223432');
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -865,4 +865,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-03-29 20:33:35
+-- Dump completed on 2011-03-31 18:38:11

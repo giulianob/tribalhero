@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
@@ -113,9 +114,14 @@ namespace Game.Data
             list.Add(city);
         }
 
-        internal List<City> GetCityList()
+        internal int GetCityCount(bool includeDeleted = false)
         {
-            return list;
+            return list.Count(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
+        }
+
+        internal IEnumerable<City> GetCityList(bool includeDeleted = false)
+        {
+            return list.Where(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
         }
 
         internal City GetCity(uint id)

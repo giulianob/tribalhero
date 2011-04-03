@@ -172,6 +172,9 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
+                    if ((City.DeletedState)reader["deleted"] == City.DeletedState.Deleted)
+                        continue;
+
                     DateTime cropRealizeTime = DateTime.SpecifyKind((DateTime)reader["crop_realize_time"], DateTimeKind.Utc).Add(downTime);
                     DateTime woodRealizeTime = DateTime.SpecifyKind((DateTime)reader["wood_realize_time"], DateTimeKind.Utc).Add(downTime);
                     DateTime ironRealizeTime = DateTime.SpecifyKind((DateTime)reader["iron_realize_time"], DateTimeKind.Utc).Add(downTime);
@@ -206,17 +209,14 @@ namespace Game.Database
                                };
 
                     Global.World.DbLoaderAdd((uint)reader["id"], city);
+                    
+                    city.Owner.Add(city);
 
                     switch(city.Deleted)
                     {
-                        case City.DeletedState.Deleting:
-                        {
+                        case City.DeletedState.Deleting:                            
                             CityRemover cr = new CityRemover(city.Id);
-                            cr.Start(true);
-                        }
-                            break;
-                        case City.DeletedState.NotDeleted:
-                            city.Owner.Add(city);
+                            cr.Start(true);                        
                             break;
                     }
                 }

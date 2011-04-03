@@ -295,8 +295,8 @@ namespace Game.Comm
         public static void AddLoginToPacket(Session session, Packet packet)
         {
             //Cities
-            List<City> list = session.Player.GetCityList();
-            packet.AddByte((byte)list.Count);
+            IEnumerable<City> list = session.Player.GetCityList();
+            packet.AddByte((byte)session.Player.GetCityCount());
             foreach (var city in list)
             {
                 city.Subscribe(session);

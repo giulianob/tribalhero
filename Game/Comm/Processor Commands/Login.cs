@@ -204,7 +204,7 @@ namespace Game.Comm
 
                 // If it's a new player we send simply a 1 which means the client will need to send back a city name
                 // Otherwise, we just send the whole login info
-                if (player.GetCityList().Count == 0)
+                if (player.GetCityCount() == 0)
                     reply.AddByte(1);
                 else
                 {

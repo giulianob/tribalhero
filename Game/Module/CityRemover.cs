@@ -151,6 +151,12 @@ namespace Game.Module {
 
             using (new MultiObjectLock(cityId, out city))
             {
+                if (city.Worker.Notifications.Count > 0)
+                {
+                    Reschedule(LONG_RETRY);
+                    return;
+                }
+
                 // remove mainbuilding
                 if (city.TryGetStructure(1, out mainBuilding))
                 {

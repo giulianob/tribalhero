@@ -68,6 +68,11 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(targetCityId, out targetCity))
                 return Error.ObjectNotFound;
 
+            // Can't defend cities that are being deleted
+            if (targetCity.Deleted != City.DeletedState.NotDeleted)
+                return Error.ObjectNotFound;
+
+            // Can't send out defense while in battle
             if (city.Battle != null)
                 return Error.CityInBattle;
 

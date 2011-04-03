@@ -122,6 +122,8 @@ namespace Game.Logic
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub, state);
 
+                    notifications.Remove(actionStub);
+
                     if (action is ScheduledPassiveAction)
                         Global.Scheduler.Remove(action as ScheduledPassiveAction);
 
@@ -141,6 +143,8 @@ namespace Game.Logic
 
                     if (ActionRemoved != null)
                         ActionRemoved(actionStub, state);
+
+                    notifications.Remove(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Global.Scheduler.Remove(action as ScheduledPassiveAction);

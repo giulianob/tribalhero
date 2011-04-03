@@ -9,6 +9,7 @@
 	public class GameURLLoader implements IEventDispatcher
 	{
 		private var loader: URLLoader = new URLLoader();
+		public var lastURL: String;
 		
 		public function GameURLLoader() 
 		{
@@ -54,6 +55,7 @@
 			request.method = URLRequestMethod.POST;
 			
 			try {
+				lastURL = request.url + "?" + request.data;
 				loader.load(request);
 			}
 			catch (e: Error) {

@@ -32,6 +32,7 @@
 
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
+		private var playerNameFilter: String = "";
 		
 		public var refreshOnClose: Boolean = false;
 
@@ -53,7 +54,7 @@
 
 				tblReports.clearSelection(true);
 
-				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, true);
+				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, true);
 				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
 					if (battleReportDialog.refreshOnClose) {
 						refreshOnClose = true;
@@ -72,13 +73,19 @@
 
 			loadPage(0);
 		}
+		
+		public function filterPlayerName(playerName: String) : void {
+			playerNameFilter = playerName;
+			loadPage(0);
+		}
 
 		private function loadPage(page: int) : void {
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);
 			lblPages.setText("Loading...");
+			lblPages.pack();
 
-			Global.mapComm.BattleReport.listLocal(loader, page);
+			Global.mapComm.BattleReport.listLocal(loader, page, playerNameFilter);
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame

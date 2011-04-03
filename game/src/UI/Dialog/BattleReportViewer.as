@@ -34,7 +34,7 @@
 
 		public var refreshOnClose: Boolean;
 
-		public function BattleReportViewer(id: int, isLocal: Boolean)
+		public function BattleReportViewer(id: int, playerNameFilter: String, isLocal: Boolean)
 		{
 			this.id = id;
 			this.isLocal = isLocal;
@@ -46,15 +46,15 @@
 			});
 
 			loader.addEventListener(Event.COMPLETE, onLoaded);
-			load();
+			load(playerNameFilter);
 		}
 
-		private function load() : void {
+		private function load(playerNameFilter: String) : void {
 
 			if (isLocal)
-			Global.mapComm.BattleReport.viewLocal(loader, id);
+				Global.mapComm.BattleReport.viewLocal(loader, id, playerNameFilter);
 			else
-			Global.mapComm.BattleReport.viewRemote(loader, id);
+				Global.mapComm.BattleReport.viewRemote(loader, id, playerNameFilter);
 		}
 
 		private function onLoaded(e: Event) : void {

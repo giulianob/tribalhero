@@ -6,7 +6,9 @@
 	import org.aswing.table.GeneralTableCellFactory;
 	import org.aswing.table.PropertyTableModel;
 	import src.Comm.GameURLLoader;
+	import src.Constants;
 	import src.Global;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -28,18 +30,19 @@
 		private var lblPages:JLabel;
 		private var btnNext:JLabelButton;
 		private var reportList: VectorListModel;
-		private var tableModel: PropertyTableModel;
-
+		private var tableModel: PropertyTableModel;		
+		
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var page: int = 0;
-
+		private var playerNameFilter: String = "";
+		
 		public var refreshOnClose: Boolean = false;
 		
 		public function RemoteReportList()
 		{
 			createUI();
 			loader.addEventListener(Event.COMPLETE, onLoaded);
-
+			
 			tblReports.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
 				tblReports.getCellEditor().stopCellEditing();
 			});
@@ -52,7 +55,7 @@
 
 				tblReports.clearSelection(true);
 
-				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, false);
+				var battleReportDialog: BattleReportViewer = new BattleReportViewer(id, playerNameFilter, false);
 				battleReportDialog.show(null, true, function(viewDialog: BattleReportViewer = null) : void {
 					if (battleReportDialog.refreshOnClose) {
 						refreshOnClose = true;
@@ -72,12 +75,18 @@
 			loadPage(0);
 		}
 
+		public function filterPlayerName(playerName: String) : void {
+			playerNameFilter = playerName;
+			loadPage(0);
+		}		
+		
 		private function loadPage(page: int) : void {
 			btnPrevious.setVisible(false);
 			btnNext.setVisible(false);
 			lblPages.setText("Loading...");
+			lblPages.pack();
 
-			Global.mapComm.BattleReport.listRemote(loader, page);
+			Global.mapComm.BattleReport.listRemote(loader, page, playerNameFilter);
 		}
 
 		private function onLoaded(e: Event) : void {
@@ -131,11 +140,11 @@
 
 			lblPages = new JLabel();
 
-			btnNext = new JLabelButton("Older >");
-
+			btnNext = new JLabelButton("Older >");					
+			
 			//component layoution
 			append(pnlReportsScroll);
-			append(pnlPaging);
+			append(pnlPaging);		
 
 			pnlPaging.append(btnPrevious);
 			pnlPaging.append(lblPages);

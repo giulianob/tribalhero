@@ -13,7 +13,7 @@ using Game.Setup;
 namespace Game.Module {
     class CityRemover:ISchedule {
         const double SHORT_RETRY = 5;
-        const double LONG_RETRY = 30 * 60;
+        const double LONG_RETRY = 90;
 
         private readonly uint cityId;
 

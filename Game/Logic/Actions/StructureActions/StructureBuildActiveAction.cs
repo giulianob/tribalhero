@@ -55,6 +55,14 @@ namespace Game.Logic.Actions
             level = properties.TryGetValue("level",out tmp) ? byte.Parse(tmp) : (byte)1;          
         }
 
+        public ushort BuildType
+        {
+            get
+            {
+                return type;
+            }
+        }
+
         public override ActionType Type
         {
             get
@@ -69,7 +77,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) && city.Worker.ActiveActions.Values.Any(action => action.ActionId != ActionId && action.Type == ActionType.StructureBuildActive && !ObjectTypeFactory.IsStructureType("UnlimitedBuilding", ((StructureBuildActiveAction)action).type)))
+            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) && city.Worker.ActiveActions.Values.Count(action => action.ActionId != ActionId && (action.Type == ActionType.StructureBuildActive || action.Type == ActionType.StructureUpgradeActive) && !ObjectTypeFactory.IsStructureType("UnlimitedBuilding", ((StructureBuildActiveAction)action).type)) >= 2)
                 return Error.ActionAlreadyInProgress;
 
             Global.World.LockRegion(x, y);

@@ -12,7 +12,9 @@ using Game.Setup;
 
 namespace Game.Module {
     class CityRemover:ISchedule {
-        const double RETRY_INTERVAL_IN_MINS = 12 * 3600;
+        const double SHORT_RETRY = 5;
+        const double LONG_RETRY = 90;
+
         private readonly uint cityId;
 
         public CityRemover(uint cityId) {
@@ -44,9 +46,9 @@ namespace Game.Module {
         public DateTime Time { get; private set; }
         public bool IsScheduled { get; set; }
 
-        private void Reschedule(double interval = RETRY_INTERVAL_IN_MINS)
+        private void Reschedule(double interval)
         {
-            Time = DateTime.UtcNow.AddMinutes(GameAction.CalculateTime(interval));
+            Time = DateTime.UtcNow.AddSeconds(GameAction.CalculateTime(interval));
             Global.Scheduler.Put(this);
         }
 
@@ -83,7 +85,7 @@ namespace Game.Module {
                 // if local city is in battle, try again later
                 if (city.Battle != null)
                 {
-                    Reschedule();
+                    Reschedule(LONG_RETRY);
                     return;
                 }
 
@@ -108,7 +110,7 @@ namespace Game.Module {
 
                     if (city.Troops.Upkeep > 0)
                     {
-                        Reschedule();
+                        Reschedule(LONG_RETRY);
                         return;
                     }
 
@@ -124,7 +126,7 @@ namespace Game.Module {
                             structure.EndUpdate();
                         }
                         city.EndUpdate();
-                        Reschedule();
+                        Reschedule(SHORT_RETRY);
                         return;
                     }
 
@@ -165,14 +167,14 @@ namespace Game.Module {
                     city.ScheduleRemove(mainBuilding, false);
                     mainBuilding.EndUpdate();
 
-                    Reschedule();
+                    Reschedule(SHORT_RETRY);
                     return;
                 }
 
                 // in the case of the OjectRemoveAction for mainbuilding is still there
-                if(city.Worker.PassiveActions.Count>0)
+                if(city.Worker.PassiveActions.Count > 0)
                 {
-                    Reschedule();
+                    Reschedule(SHORT_RETRY);
                     return;
                 }
 

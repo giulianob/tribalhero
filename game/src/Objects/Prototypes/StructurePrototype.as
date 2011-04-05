@@ -51,11 +51,11 @@ package src.Objects.Prototypes {
 			if (Global.map.regions.getObjectsAt(x, y, StructureObject).length > 0) {
 				return false;
 			}
-
+			
 			for each(var layout: ILayout in layouts)
 			{
 				if (!layout.validate(builder, city, x, y))
-				return false;
+					return false;
 			}
 
 			return true;

@@ -23,13 +23,13 @@
 			return false;
 		}
 		
-		public function getActions(type: int): Array {
+		public function getActions(type: int = 0): Array {
 			var ret: Array = new Array();
 			
 			for each(var currentAction: CurrentAction in each()) {
 				if (currentAction is CurrentActionReference) continue;		
 				
-				if (currentAction.getType() == type) ret.push(currentAction);
+				if (type == 0 || currentAction.getType() == type) ret.push(currentAction);
 			}
 
 			return ret;			

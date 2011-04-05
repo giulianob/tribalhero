@@ -156,13 +156,13 @@ namespace Game.Logic.Actions
             forest.BeginUpdate();
             forest.AddLumberjack(structure);
             forest.RecalculateForest();
-            forest.EndUpdate();
+            forest.EndUpdate();          
 
             // add to queue for completion
             endTime =
                     DateTime.UtcNow.AddSeconds(
                                                CalculateTime(Formula.BuildTime(StructureFactory.GetTime(campType, 1), city, city.Technologies) +
-                                                             lumbermill.RadiusDistance(forest)));
+                                                             lumbermill.TileDistance(forest) * 30));
             BeginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);

@@ -21,11 +21,11 @@ class Ranking extends AppModel {
      * Returns an array ranking based on the type, and id specified.
      * The id will either be a city_id or player_id depending on the $type provided.
      * If page is set to -1, it will default to the page where the $id specified appears.
-     * @param <type> $type
-     * @param <type> $id
-     * @param <type> $page
-     * @param <type> $returnOptions
-     * @return array
+     * @param int $type Type index
+     * @param int $id City/player id to search for
+     * @param int $page Page to return
+     * @param bool $returnOptions If set to true, will return conditions instead of performing a find
+     * @return array Results or conditions depending on $returnOptions flag
      */
     public function getRankingListing($type, $id = null, $page = -1, $returnOptions = false) {
 
@@ -36,6 +36,7 @@ class Ranking extends AppModel {
         if (!is_numeric($page))
             $page = 0;
 
+        // Auto find the correct page based on player's ranking
         if ($page === -1) {
             $page = intval(($this->getRanking($type, $id) - 1) / $this->rankingsPerPage) + 1;
         }
@@ -69,6 +70,12 @@ class Ranking extends AppModel {
         return $this->find('all', $options);
     }
 
+    /**
+     * Returns the full page of items containing the record found by the search param
+     * @param int $type Type index
+     * @param mixed $search If numeric, will search for that rank, otherwise will search for player/city name
+     * @return mixed Ranking page found
+     */
     public function searchRankingListing($type, $search) {
         if (is_numeric($search))
             $rank = max(1, intval($search));
@@ -82,12 +89,15 @@ class Ranking extends AppModel {
     }
 
     /**
-     * Searches for the ranking of the $search text in the city and player names
-     * @param <type> $type
-     * @param <type> $search
-     * @return <type>
+     * Searches for the ranking of the $search text in the city/player names
+     * @param int $type Type index
+     * @param string $search Search criteria to look for in city/player names
+     * @return int
      */
     private function searchRanking($type, $search) {
+        if (!isset($this->rankingTypes[$type]))
+            return false;
+
         if ($this->rankingTypes[$type]['cityBased']) {
             // For city based ranking we allow searching for both cities and player
             $city = $this->City->findByName($search);
@@ -107,9 +117,9 @@ class Ranking extends AppModel {
      * Returns the ranking of the $type and $id.
      * The $id will either be a city_id or player_id depending on the $type provided.
      * If no ranking is found, it will return 1.
-     * @param <type> $type
-     * @param <type> $id
-     * @return <type>
+     * @param int $type Type index
+     * @param int $id City/player id
+     * @return mixed
      */
     public function getRanking($type, $id) {
         if ($this->rankingTypes[$type]['cityBased'])
@@ -120,10 +130,9 @@ class Ranking extends AppModel {
 
     /**
      * Return the ranking of the player specified.
-     * If no ranking is found, it will return 1
-     * @param <type> $type
-     * @param <type> $player_id
-     * @return <type>
+     * @param int $type Type index
+     * @param int $player_id Player id to find
+     * @return int Player's rank or 1 if not found
      */
     public function getPlayerRanking($type, $player_id) {
         if (empty($player_id) || !is_numeric($player_id))
@@ -142,7 +151,9 @@ class Ranking extends AppModel {
 
     /**
      * Return the ranking of the city specified.
-     * If no ranking is found, it will return 1
+     * @param int $type Type index
+     * @param int $city_id City id to find
+     * @return int City rank or 1 if not found
      */
     public function getCityRanking($type, $city_id) {
         if (empty($city_id) || !is_numeric($city_id))
@@ -160,7 +171,8 @@ class Ranking extends AppModel {
     }
 
     /**
-     * This is the main function used to batch process on all of the different ranking types
+     * This is the main function used to batch process on all of the different ranking types.
+     * This should only be called from the Cake shell
      */
     public function batchRanking() {
         $this->query("TRUNCATE `{$this->table}`");
@@ -207,7 +219,6 @@ class Ranking extends AppModel {
     }
 
     /**
-     *
      * Inserts all of the player ranking into the rankings table
      * @param type int The ranking type
      * @param field string The field used by this ranking to aggregate on

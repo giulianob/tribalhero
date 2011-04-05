@@ -11,6 +11,12 @@ class Battle extends AppModel {
         'BattleReportView' => array('dependent' => true)
     );
 
+    /**
+     * Lists all of the invasion reports for a list of cities
+     * @param array $cities List of cities to find reports on
+     * @param bool $returnOptions Whether to return the conditions or perform the find
+     * @return array List of reports
+     */
     function listInvasionReports($cities, $returnOptions = false) {
         $options = array(
             'fields' => array(
@@ -37,6 +43,12 @@ class Battle extends AppModel {
         return $this->find('all', $options);
     }
 
+    /**
+     * Returns a given report for a list of cities and given battle id
+     * @param array $cities List of cities to search on
+     * @param int $battleId
+     * @return array Report found
+     */
     function viewInvasionReport($cities, $battleId) {
         $report = $this->find('first', array(
                     'fields' => array(
@@ -58,6 +70,12 @@ class Battle extends AppModel {
         return $report;
     }
 
+    /**
+     * Returns the battle report for a given battle
+     * @param int $battleId
+     * @param bool $returnOptions Whether to return the conditions or perform the find
+     * @return array
+     */
     function viewBattle($battleId, $returnOptions = false) {
         $options = array(
             'conditions' => array(
@@ -82,6 +100,12 @@ class Battle extends AppModel {
         return $this->BattleReport->find('all', $options);
     }
 
+    /**
+     * Lists all of the attack reports for a list of cities
+     * @param array $cities List of cities to find reports on
+     * @param bool $returnOptions Whether to return the conditions or perform the find
+     * @return array List of reports
+     */
     function listAttackReports($cities, $returnOptions = false) {
         $options = array(
             'joins' => array(
@@ -135,6 +159,12 @@ class Battle extends AppModel {
         return $this->BattleReportView->find('all', $options);
     }
 
+    /**
+     * Returns the specified attack report for a list of cities
+     * @param array $cities
+     * @param int $reportViewId
+     * @return array
+     */
     function viewAttackReport($cities, $reportViewId) {
         $report = $this->BattleReportView->find('first', array(
                     'joins' => array(

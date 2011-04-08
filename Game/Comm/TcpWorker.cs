@@ -61,9 +61,9 @@ namespace Game.Comm
                     var newWorker = new TcpWorker();
                     workerList.Add(newWorker);
                     
-                    newWorker.Put(session);
                     session.OnClose += newWorker.OnClose;
 
+                    newWorker.Put(session);
                     newWorker.Start();
                 }
 

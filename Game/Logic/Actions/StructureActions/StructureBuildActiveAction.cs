@@ -80,6 +80,9 @@ namespace Game.Logic.Actions
             if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) && city.Worker.ActiveActions.Values.Count(action => action.ActionId != ActionId && (action.Type == ActionType.StructureBuildActive || action.Type == ActionType.StructureUpgradeActive) && !ObjectTypeFactory.IsStructureType("UnlimitedBuilding", ((StructureBuildActiveAction)action).type)) >= 2)
                 return Error.ActionAlreadyInProgress;
 
+            if (!Global.World.IsValidXandY(x, y))
+                return Error.ActionInvalid;
+
             Global.World.LockRegion(x, y);
 
             // cost requirement

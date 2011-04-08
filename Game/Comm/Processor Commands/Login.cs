@@ -159,9 +159,7 @@ namespace Game.Comm
                 else
                 {
                     Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
-
-                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `session_id` = '{1}' WHERE `id` = '{2}' LIMIT 1", Player.DB_TABLE, sessionId, playerId), new DbColumn[] {});
-                    player.SessionId = sessionId;
+                    
                     player.Admin = admin;
                     player.LastLogin = SystemClock.Now;
                 }
@@ -179,16 +177,18 @@ namespace Game.Comm
                     }
 
                     player.Session = session;
+                    player.SessionId = sessionId;
                     Global.DbManager.Save(player);
                 }
                 else
                 {
+                    player.SessionId = sessionId;
+                    player.Session = session;
                     Global.DbManager.Save(player);
                 }
 
-                //User session
-                session.Player = player;
-                player.Session = session;
+                //User session backreference
+                session.Player = player;                
 
                 //Player Id
                 reply.AddUInt32(player.PlayerId);
@@ -204,7 +204,7 @@ namespace Game.Comm
 
                 // If it's a new player we send simply a 1 which means the client will need to send back a city name
                 // Otherwise, we just send the whole login info
-                if (player.GetCityList().Count == 0)
+                if (player.GetCityCount() == 0)
                     reply.AddByte(1);
                 else
                 {

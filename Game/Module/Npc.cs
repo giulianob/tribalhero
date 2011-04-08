@@ -273,7 +273,7 @@ namespace Game.Module
                         continue;
                     }
 
-                    List<City> cities = npc.GetCityList();
+                    IEnumerable<City> cities = npc.GetCityList();
 
                     Structure structure;
                     if (!Randomizer.MainBuilding(out structure, Formula.GetInitialCityRadius(), 2))
@@ -282,7 +282,7 @@ namespace Game.Module
                         break;
                     }
 
-                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityList().Count + 1), Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
+                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
                     npc.Add(city);
 
                     Global.World.Add(city);

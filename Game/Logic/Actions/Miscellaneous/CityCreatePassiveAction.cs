@@ -8,7 +8,7 @@ using Game.Setup;
 using Game.Util;
 
 namespace Game.Logic.Actions {
-    public class CityCreateActiveAction : ScheduledActiveAction
+    public class CityCreatePassiveAction : ScheduledPassiveAction
     {
         uint newCityId;  // new city id
         uint newStructureId; // new mainbuilding
@@ -18,29 +18,25 @@ namespace Game.Logic.Actions {
         readonly uint cityId;
         readonly string cityName;
 
-        public CityCreateActiveAction(uint cityId, uint x, uint y, string cityName)
+        public CityCreatePassiveAction(uint cityId, uint x, uint y, string cityName)
         {
             this.cityId = cityId;
             this.x = x;
             this.y = y;
             this.cityName = cityName;
-
-            if (!MapFactory.NextLocation(out this.x, out this.y, Formula.GetInitialCityRadius())) {
-                throw new Exception();
-            }
         }
 
-        public CityCreateActiveAction(uint id,
+        public CityCreatePassiveAction(uint id,
                                     DateTime beginTime,
                                     DateTime nextTime,
                                     DateTime endTime,
-                                    int workerType,
-                                    byte workerIndex,
-                                    ushort actionCount,
-                                    Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                    bool isVisible, 
+                                    string nlsDescription,
+                                    Dictionary<string, string> properties)
+            : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             newCityId = uint.Parse(properties["new_city_id"]);
-            newStructureId = uint.Parse(properties["new_structure_id"]);     
+            newStructureId = uint.Parse(properties["new_structure_id"]);
         }
 
         #region Overrides of GameAction
@@ -49,7 +45,7 @@ namespace Game.Logic.Actions {
         {
             get
             {
-                return ActionType.CityCreateActive;
+                return ActionType.CityCreatePassive;
             }
         }
 
@@ -77,11 +73,23 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
+            if (!City.IsNameValid(cityName))
+                return Error.CityNameInvalid;
+
+            if (!Global.World.IsValidXandY(x, y))
+                return Error.ActionInvalid;
+
             Global.World.LockRegion(x, y);
+
+            if (!ObjectTypeFactory.IsTileType("CityStartTile", Global.World.GetTileType(x, y)))
+            {
+                Global.World.UnlockRegion(x, y);
+                return Error.TileMismatch;
+            }
 
             // cost requirement
             //var cost = new Resource(5000,2000,1000,5000,200);
-            var cost = new Resource(500, 200, 100, 50, 20);
+            var cost = new Resource();
             if (!city.Resource.HasEnough(cost)) {
                 Global.World.UnlockRegion(x, y);
                 return Error.ResourceNotEnough;
@@ -109,6 +117,8 @@ namespace Game.Logic.Actions {
                 // Creating New City
                 newCity = new City(city.Owner, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
                 city.Owner.Add(newCity);
+
+                Global.World.SetTileType(x, y, 0, true);
 
                 Global.World.Add(newCity);
                 structure.BeginUpdate();

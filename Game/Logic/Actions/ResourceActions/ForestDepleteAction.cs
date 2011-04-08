@@ -32,6 +32,9 @@ namespace Game.Logic.Actions.ResourceActions
 
                 var camps = new List<Structure>(Forest);
 
+                if (!Forest.InWorld)
+                    Global.Logger.Warn("Trying to remove forest that isnt even in the world");
+
                 foreach (var obj in camps)
                 {
                     Forest.BeginUpdate();

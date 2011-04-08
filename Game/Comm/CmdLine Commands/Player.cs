@@ -83,7 +83,18 @@ namespace Game.Comm
                 if (player == null)
                     return "Player not found";
 
-                foreach (City city in player.GetCityList().Where(city => city.Deleted == City.DeletedState.NotDeleted))
+                if (player.Session != null)
+                {
+                    try
+                    {
+                        player.Session.CloseSession();
+                    }
+                    catch(Exception)
+                    {
+                    }
+                }
+
+                foreach (City city in player.GetCityList())
                 {
                     city.BeginUpdate();
                     city.Deleted = City.DeletedState.Deleting;

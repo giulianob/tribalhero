@@ -8,6 +8,7 @@ using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
+using Game.Util;
 
 #endregion
 
@@ -59,22 +60,24 @@ namespace Game.Logic
 
         public void DbLoaderAdd(bool persist, Notification tmpNotification)
         {
+            Notification notification;
+
             lock (objLock)
             {
-                Notification notification = notifications.Find(other => other.Equals(tmpNotification));
+                notification = notifications.Find(other => other.Equals(tmpNotification));
 
                 if (notification == null)
                 {
                     notification = tmpNotification;
                     AddNotification(notification);
                 }
-
-                foreach (var targetCity in notification.Subscriptions)
-                    targetCity.Worker.Notifications.AddNotification(notification);
-
-                if (persist)
-                    Global.DbManager.Save(notification);
             }
+
+            foreach (var targetCity in notification.Subscriptions)
+                targetCity.Worker.Notifications.AddNotification(notification);
+
+            if (persist)
+                Global.DbManager.Save(notification);
         }
 
         private void AddNotification(Notification notification)
@@ -155,20 +158,25 @@ namespace Game.Logic
 
         public void Remove(PassiveAction action)
         {
+            Notification notification;
             lock (objLock)
             {
-                Notification notification = notifications.Find(other => other.Equals(action));
+                notification = notifications.Find(other => other.Equals(action));
 
                 if (notification == null)
                     return;
 
-                foreach (var city in notification.Subscriptions)
+            }
+
+            foreach (var city in notification.Subscriptions)
                     city.Worker.Notifications.RemoveNotification(action);
 
+            lock (objLock)
+            {
                 RemoveNotification(action);
                 Global.DbManager.Delete(notification);
             }
-        }
+        }    
 
         public bool TryGetValue(City city, ushort actionId, out Notification notification)
         {

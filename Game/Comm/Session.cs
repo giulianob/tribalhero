@@ -129,7 +129,7 @@ namespace Game.Comm
                 if (p.Cmd == Command.Login)
                     return;
 
-                if (Player.GetCityList().Count == 0 && p.Cmd != Command.CityCreateInitial)
+                if (Player.GetCityCount() == 0 && p.Cmd != Command.CityCreateInitial)
                     return;
             }
 

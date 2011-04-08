@@ -68,7 +68,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public static int GetMaxForestCapacity(byte level)
         {
-            return (4500 + Config.Random.Next(-1000, 1000))*level;
+            return (9000 + Config.Random.Next(-1000, 1000))*level;
         }
 
         /// <summary>

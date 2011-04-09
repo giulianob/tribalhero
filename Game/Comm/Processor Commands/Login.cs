@@ -69,6 +69,7 @@ namespace Game.Comm
             {
                 ReplyError(session, packet, Error.ClientOldVersion);
                 session.CloseSession();
+                return;
             }
 
             if (Config.database_load_players)

@@ -258,7 +258,7 @@ namespace Game.Battle
             switch(obj.BaseStats.Weapon)
             {
                 case WeaponType.Bow:
-                    totalVision += Math.Max((minRoundsParticipated * BaseStats.Spd-5 / 15),0);
+                    totalVision += Math.Max((minRoundsParticipated * (BaseStats.Spd-5) / 15),0);
                     break;
                 default:
                     break;

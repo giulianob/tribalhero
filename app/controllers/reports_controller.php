@@ -1,26 +1,24 @@
 <?php
 
 class ReportsController extends AppController {
+
     var $uses = array('Report', 'Battle');
     var $helpers = array('TimeAdv', 'Time');
-
     var $allowedFromGame = array('index_local', 'view_local', 'index_remote', 'view_remote');
-
     var $troop_states_pst = array(
-            'joined the battle',
-            'stayed',
-            'left the battle',
-            'died',
-            'retreated',
-            'gained new units',
-            'run out of stamina'
+        'joined the battle',
+        'stayed',
+        'left the battle',
+        'died',
+        'retreated',
+        'gained new units',
+        'run out of stamina'
     );
 
     function beforeFilter() {
         if (!empty($this->params['named'])) {
             $this->params['form'] = $this->params['named'];
-        }
-        else {
+        } else {
             //Configure::write('debug', 0);
         }
 
@@ -29,16 +27,31 @@ class ReportsController extends AppController {
         parent::beforeFilter();
     }
 
-    function index_local() {
-        $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $this->params['form']['playerId']
-        )));
+    private function getPlayerId() {
+        $playerId = $this->params['form']['playerId'];
+        if ($this->Auth->user('admin') && !empty($this->params['form']['playerNameFilter'])) {
+            $Player = & ClassRegistry::init('Player');
+            $player = $Player->findByName($this->params['form']['playerNameFilter']);
+            if ($player)
+                $playerId = $player['Player']['id'];
+        }
 
-        $this->Battle =& ClassRegistry::init('Battle');
+        return $playerId;
+    }
+
+    function index_local() {
+
+        $playerId = $this->getPlayerId();
+
+        $cities = $this->Battle->City->find('list', array('conditions' => array(
+                        'player_id' => $playerId
+                        )));
+
+        $this->Battle = & ClassRegistry::init('Battle');
 
         $this->paginate = $this->Battle->listInvasionReports(array_keys($cities), true) + array(
-                'limit' => 15,
-                'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
+            'limit' => 15,
+            'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
         );
 
         $reports = $this->paginate('Battle');
@@ -52,9 +65,11 @@ class ReportsController extends AppController {
             return;
         }
 
+        $playerId = $this->getPlayerId();
+
         $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $this->params['form']['playerId']
-        )));
+                        'player_id' => $playerId
+                        )));
 
         $report = $this->Battle->viewInvasionReport(array_keys($cities), $this->params['form']['id']);
 
@@ -80,16 +95,18 @@ class ReportsController extends AppController {
     }
 
     function index_remote() {
+        $playerId = $this->getPlayerId();
+
         $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $this->params['form']['playerId']
-        )));
+                        'player_id' => $playerId
+                        )));
 
         $options = $this->Battle->listAttackReports(array_keys($cities), true);
 
         $this->paginate = $options + array(
-                'recursive' => '-1',
-                'limit' => 15,
-                'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
+            'recursive' => '-1',
+            'limit' => 15,
+            'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
         );
 
         $reports = $this->paginate($this->Battle->BattleReportView);
@@ -103,9 +120,11 @@ class ReportsController extends AppController {
             return;
         }
 
+        $playerId = $this->getPlayerId();
+
         $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $this->params['form']['playerId']
-        )));
+                        'player_id' => $playerId
+                        )));
 
         $report = $this->Battle->viewAttackReport(array_keys($cities), $this->params['form']['id']);
 
@@ -138,11 +157,12 @@ class ReportsController extends AppController {
 
                 // Loop through each troop that was in this report to find the guy with the groupId specified above
                 foreach ($battle_report['BattleReportTroop'] as $snapshot) {
-                    if ($snapshot['group_id'] != $groupId) continue;
+                    if ($snapshot['group_id'] != $groupId)
+                        continue;
 
                     $state = $snapshot['state'];
 
-                    switch($state) {
+                    switch ($state) {
                         case TROOP_STATE_ENTERING:
                             $enterRound = $round;
                             $enterSnapshot = $snapshot;
@@ -161,8 +181,8 @@ class ReportsController extends AppController {
                         if ($round - $enterRound < BATTLE_VIEW_MIN_ROUNDS) {
                             // Put the start and exit snapshot of their own troops since that's all they can see.
                             $renderOnlySnapshot = array(
-                                    array('BattleReport' => $enterReport, 'snapshot' => $enterSnapshot),
-                                    array('BattleReport' => $battle_report['BattleReport'], 'snapshot' => $snapshot)
+                                array('BattleReport' => $enterReport, 'snapshot' => $enterSnapshot),
+                                array('BattleReport' => $battle_report['BattleReport'], 'snapshot' => $snapshot)
                             );
                         }
 
@@ -183,10 +203,10 @@ class ReportsController extends AppController {
         if ($renderOnlySnapshot == null) {
             $this->set('battle_reports', $reports);
             $this->render('view');
-        }
-        else {
+        } else {
             $this->set('battle_reports', $renderOnlySnapshot);
             $this->render('view_outcome_only');
         }
     }
+
 }

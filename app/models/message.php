@@ -21,7 +21,7 @@ class Message extends AppModel {
         ),
         'subject' => array(
             'maxLength' => array(
-                'rule' => array('maxLength', 60),
+                'rule' => array('maxLength', 70),
                 'message' => 'Subject is too long. Shorten the subject and try again.',
                 'required' => true,
                 'allowEmpty' => false
@@ -191,7 +191,8 @@ class Message extends AppModel {
         if ($this->save($newMessage, true, array('sender_player_id', 'recipient_player_id', 'subject', 'message'))) {
             return array('success' => true);
         } else {
-            return array('error' => 'An error occurred while sending your message');
+			$errors = $this->invalidFields();
+            return array('error' => reset($errors));
         }
     }
 

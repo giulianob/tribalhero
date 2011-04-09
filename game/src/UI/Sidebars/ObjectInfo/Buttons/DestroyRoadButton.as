@@ -30,7 +30,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 		}
 
-		override public function validateButton(): Boolean
+		override public function alwaysEnabled(): Boolean
 		{
 			return true;
 		}

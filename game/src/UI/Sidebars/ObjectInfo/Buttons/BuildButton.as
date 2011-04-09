@@ -98,7 +98,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				}
 				
 				if (currentCount >= 2)
-					missingReqs.push(EffectReqPrototype.asMessage("You can only build/uprade two structures at a time"));
+					missingReqs.push(EffectReqPrototype.asMessage("You can only build/upgrade two structures at a time"));
 			}
 
 			buildToolTip.missingRequirements = missingReqs;

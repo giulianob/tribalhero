@@ -78,6 +78,9 @@
 
 		public function clear():void
 		{
+			for each (var tech: TechnologyStats in technologies)
+				parent.remove(tech);
+			
 			technologies = new Array();
 		}
 

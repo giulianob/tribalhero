@@ -5,6 +5,8 @@
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.*;
+	import src.Objects.NewCityPlaceholder;
+	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
 	import src.Util.Util;
 	import flash.ui.Keyboard;
 	import src.Global;
@@ -297,19 +299,17 @@
 				if (query) {
 					obj.setSelected(true);
 
-					if (obj is StructureObject) {
-						Global.mapComm.Object.getStructureInfo(obj as StructureObject);
-					}
-					else if (obj is TroopObject) {
-						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);
-					}
-					else if (obj is Forest) {
+					if (obj is StructureObject) 
+						Global.mapComm.Object.getStructureInfo(obj as StructureObject);					
+					else if (obj is TroopObject)
+						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);					
+					else if (obj is Forest)
 						Global.mapComm.Object.getForestInfo(obj as Forest);
-					}
+					else
+						doSelectedObject(obj);
 				}
-				else {
-					doSelectedObject(obj);
-				}
+				else
+					doSelectedObject(obj);				
 			}
 			
 			// Set focus back to the map so it doesn't break user scrolling
@@ -332,15 +332,14 @@
 
 			var sidebar: GameJSidebar;
 
-			if (obj is StructureObject) {
-				sidebar = new ObjectInfoSidebar(obj as StructureObject);
-			}
-			else if (obj is TroopObject) {
-				sidebar = new TroopInfoSidebar(obj);
-			}
-			else if (obj is Forest) {
+			if (obj is StructureObject)
+				sidebar = new ObjectInfoSidebar(obj as StructureObject);			
+			else if (obj is TroopObject)
+				sidebar = new TroopInfoSidebar(obj);			
+			else if (obj is Forest)
 				sidebar = new ForestInfoSidebar(obj as Forest);
-			}
+			else if (obj is NewCityPlaceholder)
+				sidebar = new NewCityPlaceholderSidebar(obj as NewCityPlaceholder);
 
 			Global.gameContainer.setSidebar(sidebar);
 		}

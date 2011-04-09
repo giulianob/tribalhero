@@ -285,7 +285,7 @@
 
 			if (Constants.debug > 0) {
 				if (frameCounter)
-				removeChild(frameCounter);
+					removeChild(frameCounter);
 
 				frameCounter = new FPSCounter();
 				frameCounter.y = Constants.screenH - 32;

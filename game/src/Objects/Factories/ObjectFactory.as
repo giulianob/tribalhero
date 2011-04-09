@@ -8,6 +8,7 @@
 	import flash.geom.Matrix;
 	import src.Map.Map;
 	import src.Objects.Forest;
+	import src.Objects.NewCityPlaceholder;
 	import src.Objects.Prototypes.ObjectTypePrototype;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
@@ -25,6 +26,7 @@
 		public static const TYPE_STRUCTURE: int = 2;
 		public static const TYPE_TROOP_OBJ: int = 3;
 		public static const TYPE_FOREST: int = 4;
+		public static const TYPE_NEW_CITY_PLACEHOLDER: int = 5;
 
 		private static var objectTypes: BinaryList;
 
@@ -73,13 +75,15 @@
 		public static function getClassType(type: int) : int
 		{
 			if (type >= 1000)
-			return TYPE_STRUCTURE;
+				return TYPE_STRUCTURE;
 			else if (type == 100)
-			return TYPE_TROOP_OBJ;
+				return TYPE_TROOP_OBJ;
 			else if (type == 200)
-			return TYPE_FOREST;
+				return TYPE_FOREST;
+			else if (type == 201)
+				return TYPE_NEW_CITY_PLACEHOLDER;
 			else
-			return TYPE_UNIT;
+				return TYPE_UNIT;
 		}
 
 		public static function getPrototype(type: int, level: int): *
@@ -87,11 +91,11 @@
 			var classType: int = getClassType(type);
 
 			if (classType == TYPE_STRUCTURE)
-			return StructureFactory.getPrototype(type, level);
+				return StructureFactory.getPrototype(type, level);
 			else if (classType == TYPE_UNIT)
-			return UnitFactory.getPrototype(type, level);
+				return UnitFactory.getPrototype(type, level);
 			else
-			return null;
+				return null;
 		}
 
 		public static function getInstance(type: int, level: int): SimpleObject
@@ -99,23 +103,23 @@
 			var classType: int = getClassType(type);
 
 			if (classType == TYPE_STRUCTURE)
-			return StructureFactory.getInstance(type, level) as SimpleObject;
+				return StructureFactory.getInstance(type, level) as SimpleObject;
 			else if (classType == TYPE_TROOP_OBJ)
-			return TroopFactory.getInstance() as SimpleObject;
+				return TroopFactory.getInstance() as SimpleObject;
 			else if (classType == TYPE_FOREST)
-			return ForestFactory.getInstance(level) as SimpleObject;
+				return ForestFactory.getInstance(level) as SimpleObject;
 			else
-			return null;
+				return null;
 		}
 
 		public static function getSpriteEx(type: int, level: int, centered: Boolean = false): DisplayObjectContainer
 		{
 			if (type >= 1000)
-			return StructureFactory.getSprite(type, level, centered);
+				return StructureFactory.getSprite(type, level, centered);
 			else if (type == 100)
-			return TroopFactory.getSprite(centered);
+				return TroopFactory.getSprite(centered);
 			else
-			return UnitFactory.getSprite(type, level);
+				return UnitFactory.getSprite(type, level);
 		}
 		
 		public static function makeSpriteSmall(obj: DisplayObjectContainer, scale: Number = 0.5) : DisplayObjectContainer {
@@ -143,15 +147,16 @@
 		public static function getSprite(obj: SimpleGameObject, centered: Boolean = false, encased: Boolean = false):DisplayObjectContainer
 		{
 			var sprite: DisplayObjectContainer;
-			if (obj is StructureObject) {
+			if (obj is StructureObject) 
 				sprite = StructureFactory.getSprite((obj as StructureObject).type, (obj as StructureObject).level, centered);
-			} else if (obj is TroopObject) {
+			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite(centered);
-			} else if (obj is Forest) {
+			else if (obj is Forest)
 				sprite = ForestFactory.getSprite(obj.level, centered);
-			} else {
-				return null;
-			}
+			else if (obj is NewCityPlaceholder)
+				sprite = getNewCityPlaceholderSprite();
+			else
+				return null;			
 
 			if (encased)
 			{
@@ -184,6 +189,18 @@
 
 			obj.addChild(new objRef() as DisplayObject);
 
+			return obj;
+		}
+		
+		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
+		{
+			return getIcon("DEFAULT_BUILDING_ANIM");
+		}
+		
+		public static function getNewCityPlaceholderInstance() : NewCityPlaceholder
+		{
+			var obj: NewCityPlaceholder = new NewCityPlaceholder();
+			obj.addChild(getNewCityPlaceholderSprite());
 			return obj;
 		}
 

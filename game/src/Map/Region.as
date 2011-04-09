@@ -3,7 +3,9 @@
 	import flash.display.*;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import src.Objects.Factories.ForestFactory;
 	import src.Objects.Factories.ObjectFactory;
+	import src.Objects.NewCityPlaceholder;
 	import src.Util.BinaryList.*;
 	import src.Util.Util;
 	import src.Constants;
@@ -22,21 +24,21 @@
 		private var bitmapParts: Array;
 		private var objects: BinaryList = new BinaryList(SimpleGameObject.sortOnCityIdAndObjId, SimpleGameObject.compareCityIdAndObjId);
 		private var map: Map;
-
+		
 		public function Region(id: int, data: Array, map: Map)
 		{
 			mouseEnabled = false;
 
 			this.id = id;
-			tiles = data;
-			bitmapParts = new Array();
-
-			createRegion();
-
-			this.map = map;
+			this.map = map;			
+			this.tiles = data;
+			
+			bitmapParts = new Array();			
 
 			globalX = (id % Constants.mapRegionW) * Constants.regionW;
 			globalY = int(id / Constants.mapRegionW) * (Constants.regionH / 2);
+			
+			createRegion();
 
 			if (Constants.debug == 3)
 			{
@@ -107,8 +109,14 @@
 
 		public function setTile(x: int, y: int, tileType: int, redraw: Boolean = true): void {
 			var pt: Point = getTilePos(x, y);
+			
 			tiles[pt.y][pt.x] = tileType;
-			if (redraw) { this.redraw(); }
+			
+			clearPlaceholders(x, y);
+			addPlaceholderObjects(tileType, x, y);
+			
+			if (redraw) 
+				this.redraw();
 		}
 
 		public function redraw() : void {
@@ -126,12 +134,18 @@
 			var tileWDiv2: int = Constants.tileW / 2;
 			var tileWTimes2: int = Constants.tileW * 2;
 			var oddShift: int = int(Constants.tileW / 2) * -1;
+			var regionStartingX: int = (id % Constants.mapRegionW) * Constants.regionTileW;
+			var regionStartingY: int = int(id / Constants.mapRegionW) * Constants.regionTileH;
 			
 			for (var bY:int = 1; bY <= Constants.regionBitmapTileH; bY++)
 			{
 				for (var aX:int = 1; aX <= Constants.regionBitmapTileW; aX++)
 				{
-					var tileid:int = tiles[bY-1+y][aX-1+x];
+					var tileX: int = aX - 1 + x;
+					var tileY: int = bY - 1 + y;
+					var tileid:int = tiles[tileY][tileX];
+					
+					addPlaceholderObjects(tileid, tileX + regionStartingX, tileY + regionStartingY);
 
 					var tilesetsrcX:int = int(tileid % Constants.tileSetTileW) * Constants.tileW;
 					var tilesetsrcY:int = int(tileid / Constants.tileSetTileW) * tileHTimes2;
@@ -140,7 +154,7 @@
 					var yadd:int = 0;
 
 					if ((bY % 2) == 1) //odd tile
-					xadd = oddShift;
+						xadd = oddShift;
 
 					var xcoord:int = int((aX - 1) * Constants.tileW + xadd);
 					var ycoord:int = int((bY - 2) * tileHDiv2);
@@ -167,6 +181,27 @@
 				graphics.lineStyle(2, 0x0000FF);
 				graphics.drawRect(bg.x, bg.y, bg.bitmapData.width, bg.bitmapData.height);
 				graphics.endFill();
+			}
+		}
+		
+		private function clearPlaceholders(x :int, y: int) : void
+		{
+			var objs: Array = getObjectsAt(x, y);
+			
+			for each (var obj: SimpleGameObject in objs) {
+				if (objs is NewCityPlaceholder)
+					removeGameObject(obj, true);
+			}
+		}
+		
+		private function addPlaceholderObjects(tileId: int, x: int, y: int) : void 
+		{				
+			if (tileId == Constants.cityStartTile) {
+				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
+				var coord: Point = MapUtil.getScreenCoord(x, y);
+				obj.setProperties(1, 100, coord.x, coord.y);				
+				obj.init(map, 0, 0, 0, 0);
+				addGameObject(obj, false);
 			}
 		}
 
@@ -206,17 +241,15 @@
 			var existingObj: SimpleObject = objects.get([cityId, objectId]);
 
 			if (existingObj != null) //don't add if obj already exists
-			{
+			{	
 				Util.log("Obj id " + objectId + " already exists in region " + id);
 				return null;
 			}
 
 			var obj: SimpleObject = ObjectFactory.getInstance(type, level);
 
-			if (obj == null)
-			{
-				return null;
-			}
+			if (obj == null)			
+				return null;			
 
 			var gameObj: SimpleGameObject = (obj as SimpleGameObject);
 			gameObj.name = "Game Obj " + objectId;
@@ -228,12 +261,12 @@
 
 			//set object callback when it's selected. Only gameobjects can be selected.
 			if (gameObj is GameObject)
-			(gameObj as GameObject).setOnSelect(map.selectObject);
+				(gameObj as GameObject).setOnSelect(map.selectObject);
 
 			//add to object container and to internal list
 			map.objContainer.addObject(gameObj);
 			objects.add(gameObj, resort);
-
+			
 			//select object if the map is waiting for it to be selected
 			if (map.selectViewable != null && map.selectViewable.cityId == gameObj.cityId && map.selectViewable.objectId == gameObj.objectId)
 			{
@@ -245,7 +278,8 @@
 
 		public function addGameObject(gameObj: SimpleGameObject, resort: Boolean = true):void
 		{
-			removeObject(gameObj.cityId, gameObj.objectId, false);
+			if (gameObj.cityId > 0 && gameObj.objectId > 0)
+				removeObject(gameObj.cityId, gameObj.objectId, false);
 
 			map.objContainer.addObject(gameObj);
 
@@ -257,11 +291,24 @@
 			var gameObj: SimpleGameObject = objects.remove([cityId, objectId]);
 
 			if (gameObj == null)
-			return null;
+				return null;	
 
 			map.objContainer.removeObject(gameObj, 0, dispose);
 
 			return gameObj;
+		}
+		
+		public function removeGameObject(obj: SimpleGameObject, dispose: Boolean = true) : void
+		{
+			for (var i: int = 0; i < objects.size(); i++) {
+				if (objects.getByIndex(i) != obj)				
+					continue;
+					
+				objects.removeByIndex(i);				
+				break;
+			}
+			
+			map.objContainer.removeObject(obj, 0, dispose);
 		}
 
 		public function getObject(cityId: int, objectId: int): SimpleGameObject

@@ -34,7 +34,17 @@
 				break;
 			}
 		}
-
+		
+		public function createCity(cityId: int, x: int, y: int, cityName: String) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.CITY_CREATE;
+			packet.writeUInt(cityId);
+			packet.writeUInt(x);
+			packet.writeUInt(y);
+			packet.writeString(cityName);
+			session.write(packet, mapComm.catchAllErrors);
+		}
+		
 		public function buildRoad(cityId: int, x: int, y: int) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.REGION_ROAD_BUILD;
@@ -115,12 +125,14 @@
 					var objY: int = packet.readUShort() + int(id / Constants.mapRegionW) * Constants.regionTileH;
 					var objState: int = packet.readUByte();
 
-					var obj:SimpleGameObject = newRegion.addObject(objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
+					var obj:SimpleGameObject = newRegion.addObject(objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY, false);
 
 					mapComm.Object.readState(obj, packet, objState);
 
 					mapComm.Object.readWall(obj, packet);
 				}
+				
+				newRegion.sortObjects();
 			}
 
 			Global.map.objContainer.moveWithCamera(Global.gameContainer.camera.x, Global.gameContainer.camera.y);

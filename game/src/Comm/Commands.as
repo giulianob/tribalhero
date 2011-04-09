@@ -70,6 +70,7 @@ package src.Comm {
 		public static const CITY_HIDE_NEW_UNITS_UPDATE: int = 468;
 		public static const CITY_BATTLE_STARTED: int = 490;
 		public static const CITY_BATTLE_ENDED: int = 491;
+		public static const CITY_CREATE: int = 498;
 		public static const CITY_CREATE_INITIAL: int = 499;
 		
 		public static const FOREST_INFO: int = 350;

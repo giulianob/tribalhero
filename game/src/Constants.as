@@ -69,6 +69,8 @@ package src
 		public static var screenH:int = origScreenH;
 		
 		public static const tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
+		
+		public static const cityStartTile: int = 209;
 
 		/* MINI MAP CONSTANTS */
 		public static const miniMapTileW: int = 4;

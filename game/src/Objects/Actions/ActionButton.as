@@ -51,6 +51,11 @@ package src.Objects.Actions {
 			//filters = [new DropShadowFilter(width, 0, 0, 0.4, 0, 0, 1, 1, true, false, false)];
 		}
 
+		public function alwaysEnabled(): Boolean 
+		{
+			return false;
+		}
+		
 		public function validateButton(): Boolean
 		{
 			return true;

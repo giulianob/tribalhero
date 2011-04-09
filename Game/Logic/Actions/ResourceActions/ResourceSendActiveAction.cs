@@ -64,9 +64,15 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(targetCityId, out targetCity))
                 return Error.ObjectNotFound;
 
+            // Can't send to cities that are being deleted
+            if (targetCity.Deleted != City.DeletedState.NotDeleted)
+                return Error.ObjectNotFound;
+
+            // Make sure we aren't exceeding our trade capacity
             if (!Formula.GetSendCapacity(structure).HasEnough(resource))
                 return Error.ResourceExceedTradeLimit;
 
+            // Gotta send something
             if (resource.Total == 0)
                 return Error.ResourceNotEnough;
 

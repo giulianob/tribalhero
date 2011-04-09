@@ -86,7 +86,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
                 structure.IsBlocked = false;
-                byte oldLabor = structure.Stats.Labor;
+                ushort oldLabor = structure.Stats.Labor;
                 StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);

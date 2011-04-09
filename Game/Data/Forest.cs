@@ -139,7 +139,7 @@ namespace Game.Data
             // Get the number of labors assigned
             int totalLabor = this.Aggregate(0, (current, obj) => current + obj.Stats.Labor);
 
-            // Calculate efficiency           
+            // Calculate efficiency
             double playerEfficiency = structures.Count/8d;
             double laborEfficiency = (double)totalLabor/MaxLabor;
             double efficiency = (1 - Math.Abs(playerEfficiency - laborEfficiency))*(structures.Count*0.125);
@@ -197,7 +197,7 @@ namespace Game.Data
         }
 
         /// <summary>
-        ///   Updates the deplete action to fire when appropriately.
+        ///  Updates the deplete action to fire when appropriately.
         /// </summary>
         private void SetDepleteAction()
         {
@@ -208,7 +208,7 @@ namespace Game.Data
 
             if (Wood.Upkeep != 0)
                 hours = Wood.Value/(Wood.Upkeep/Config.seconds_per_unit);
-
+            
             Global.Logger.Debug(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]", hours, Wood.Upkeep, Wood.Value));
 
             DepleteTime = DateTime.UtcNow.AddHours(hours);

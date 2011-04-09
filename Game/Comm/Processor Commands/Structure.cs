@@ -45,7 +45,7 @@ namespace Game.Comm
                 reply.AddByte(structure.Stats.Base.Lvl);
                 if (session.Player == structure.City.Owner)
                 {
-                    reply.AddByte(structure.Stats.Labor);
+                    reply.AddUInt16(structure.Stats.Labor);
                     reply.AddUInt16(structure.Stats.Hp);
 
                     foreach (var prop in PropertyFactory.GetProperties(structure.Type))
@@ -181,7 +181,7 @@ namespace Game.Comm
         {
             uint cityId;
             uint objectId;
-            byte count;
+            ushort count;
             Structure obj;
             City city;
 
@@ -189,7 +189,7 @@ namespace Game.Comm
             {
                 cityId = packet.GetUInt32();
                 objectId = packet.GetUInt32();
-                count = packet.GetByte();
+                count = packet.GetUInt16();
             }
             catch(Exception)
             {
@@ -211,7 +211,7 @@ namespace Game.Comm
                 if (obj.Stats.Labor < count)
                 {
                     //move from city to obj
-                    count = (byte)(count - obj.Stats.Labor);
+                    count = (ushort)(count - obj.Stats.Labor);
 
                     if (city.Resource.Labor.Value < count)
                     {
@@ -232,7 +232,7 @@ namespace Game.Comm
                 else if (obj.Stats.Labor > count)
                 {
                     //move from obj to city
-                    count = (byte)(obj.Stats.Labor - count);
+                    count = (ushort)(obj.Stats.Labor - count);
                     lma = new LaborMoveActiveAction(cityId, objectId, false, count);
                 }
                 else

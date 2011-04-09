@@ -60,7 +60,8 @@ namespace Game.Logic.Actions
             if (!Global.World.Forests.TryGetValue(forestId, out forest))
                 throw new Exception("Forest is missing");
 
-            Global.Scheduler.Remove(this);
+            if (IsScheduled)
+                Global.Scheduler.Remove(this);
 
             endTime = forest.DepleteTime.AddSeconds(30);
             StateChange(ActionState.Rescheduled);

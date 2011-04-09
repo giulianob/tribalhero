@@ -91,6 +91,10 @@ namespace Game.Logic.Actions
                 return Error.PlayerNewbieProtection;
 #endif
 
+            // Can't attack cities that are being deleted
+            if (targetCity.Deleted != City.DeletedState.NotDeleted)
+                return Error.ObjectNotAttackable;
+
             // Can't attack "Unattackable" Objects
             if (ObjectTypeFactory.IsStructureType("Unattackable", targetStructure))
                 return Error.ObjectNotAttackable;

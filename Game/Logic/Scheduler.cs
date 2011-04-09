@@ -130,21 +130,17 @@ namespace Game.Logic
         {
             lock (schedulesLock)
             {
-                if (!schedule.IsScheduled)
-                {
-                    Global.Logger.Debug("Attempting to remove unscheduled action");
-                    return false;
-                }
+                if (!schedule.IsScheduled)                
+                    return false;                
 
                 if (schedules.Remove(schedule))
                 {
                     schedule.IsScheduled = false;
-                    Global.Logger.Debug("Schedule removed");
                     SetNextActionTime();
                     return true;
                 }
 
-                Global.Logger.Debug("Action was said to be scheduled but was not found in scheduler during a remove");
+                Global.Logger.Warn("Action was said to be scheduled but was not found in scheduler during a remove");
 
                 return false;
             }

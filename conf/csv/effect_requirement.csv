@@ -32,7 +32,7 @@ Id,Method,P1,P2,P3,P4,P5,Description,Website Description,Comment
 ,,,,,,,,,
 //foundry,,,,,,,,,
 21101,UniqueTechnology,id=21101,,,,,,,
-,,,,,,,,,
+21102,HaveNoStructure,2109,minlvl=0,maxlvl=15,count=1,,,,1 Refinery per city Max
 ,,,,,,,,,
 //basement,,,,,,,,,
 21111,HaveTechnology,21102,lvl=1,count=1,,,,Requires Tunnel Excavation Research.,Require Tunnel Excavation Technology 

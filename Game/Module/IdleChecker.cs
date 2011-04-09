@@ -34,7 +34,7 @@ namespace Game.Module {
                     Player player;
                     using (new MultiObjectLock((uint)reader["id"], out player))
                     {
-                        foreach (City city in player.GetCityList().Where(city => city.Deleted == City.DeletedState.NotDeleted))
+                        foreach (City city in player.GetCityList())
                         {
                             CityRemover cr = new CityRemover(city.Id);
                             cr.Start();

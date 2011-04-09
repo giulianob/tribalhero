@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
@@ -31,7 +32,8 @@ namespace Game.Logic.Actions
                                       int workerType,
                                       byte workerIndex,
                                       ushort actionCount,
-                                      Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                      Dictionary<string, string> properties)
+            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -58,7 +60,14 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (city.Worker.Contains(ActionType.StructureUpgradeActive, ActionId))
+            if (
+                    city.Worker.ActiveActions.Values.Count(
+                                                           action =>
+                                                           action.ActionId != ActionId &&
+                                                           (action.Type == ActionType.StructureUpgradeActive ||
+                                                            (action.Type == ActionType.StructureBuildActive &&
+                                                             !ObjectTypeFactory.IsStructureType("UnlimitedBuilding",
+                                                                                                ((StructureBuildActiveAction)action).BuildType)))) >= 2)
                 return Error.ActionAlreadyInProgress;
 
             cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));

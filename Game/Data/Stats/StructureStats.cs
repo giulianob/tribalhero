@@ -5,7 +5,7 @@ namespace Game.Data.Stats
     {
         private ushort hp;
 
-        private byte labor;
+        private ushort labor;
 
         public StructureStats(StructureBaseStats baseStats)
         {
@@ -27,7 +27,7 @@ namespace Game.Data.Stats
             }
         }
 
-        public byte Labor
+        public ushort Labor
         {
             get
             {

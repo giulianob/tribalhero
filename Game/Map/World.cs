@@ -265,6 +265,8 @@ namespace Game.Map
             lock (Lock)
             {
                 city.BeginUpdate();
+                Global.DbManager.Delete(city.Template);
+                Global.DbManager.Delete(city.Technologies);
                 city.Deleted = City.DeletedState.Deleted;
                 city.EndUpdate();
 

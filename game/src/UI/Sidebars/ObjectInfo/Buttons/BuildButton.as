@@ -8,6 +8,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Actions.Action;
 	import src.Objects.Actions.BuildAction;
 	import src.Objects.Actions.CurrentActiveAction;
+	import src.Objects.Actions.StructureUpgradeAction;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.*;
 	import src.Objects.*;
@@ -80,16 +81,24 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
 			
-			// Enforce only one building at a time for structures that arent marked as UnlimitedBuilding			
+			// Enforce only two building/upgrade at a time for structures that arent marked as UnlimitedBuilding			
 			if (!ObjectFactory.isType("UnlimitedBuilding", structPrototype.type)) {
-				var currentBuildActions: Array = city.currentActions.getActions(Action.STRUCTURE_BUILD);				
-				for each (var currentAction: CurrentActiveAction in currentBuildActions) {
-					var buildAction: BuildAction = currentAction.getAction();
-					if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type)) {
-						missingReqs.push(EffectReqPrototype.asMessage("You can only build one structure at a time"));
-						break;
+				var currentBuildActions: Array = city.currentActions.getActions();
+				var currentCount: int = 0;
+				for each (var currentAction: * in currentBuildActions) {		
+					if (!(currentAction is CurrentActiveAction))
+						continue;
+					else if (currentAction.getAction() is BuildAction) {
+						var buildAction: BuildAction = currentAction.getAction();
+						if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type))
+							currentCount++;
 					}
-				}								
+					else if (currentAction.getAction() is StructureUpgradeAction)
+						currentCount++;
+				}
+				
+				if (currentCount >= 2)
+					missingReqs.push(EffectReqPrototype.asMessage("You can only build/upgrade two structures at a time"));
 			}
 
 			buildToolTip.missingRequirements = missingReqs;

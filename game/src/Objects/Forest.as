@@ -15,13 +15,6 @@
 		public function Forest() {
 
 		}
-
-		public override function copy(obj: SimpleGameObject):void
-		{
-			var copyObj: Forest = obj as Forest;
-			if (copyObj == null)
-			return;
-		}
 		
 		public function ToSprite(): Object
 		{

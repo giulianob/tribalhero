@@ -1,8 +1,11 @@
 ﻿package src.UI.Dialog
 {
+	import flash.events.Event;
+	import src.Constants;
 	import src.Global;
 	import src.UI.Components.BattleReport.LocalReportList;
 	import src.UI.Components.BattleReport.RemoteReportList;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -18,9 +21,19 @@
 
 		private var localReports: LocalReportList;
 		private var remoteReports: RemoteReportList;		
+		
+		private var txtAdminCityList: JTextField;
+		private var btnAdminSearch: JButton;
 
 		public function BattleReportList() {
 			createUI();
+			
+			btnAdminSearch.addActionListener(onAdminCitySearch);
+		}
+		
+		public function onAdminCitySearch(e: Event) : void {
+			localReports.filterPlayerName(txtAdminCityList.getText());
+			remoteReports.filterPlayerName(txtAdminCityList.getText());
 		}
 		
 		public function getRefreshOnClose() : Boolean {
@@ -66,9 +79,23 @@
 			remoteReports = new RemoteReportList();
 			remoteReports.setConstraints("Center");
 			pnlRemote.append(remoteReports);
+			
+			// Admin only feature
+			var pnlAdminSearch: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));	
+			txtAdminCityList = new JTextField("", 10);
+			new SimpleTooltip(txtAdminCityList, "Type a player name to view their reports");			
+			btnAdminSearch = new JButton("Search");											
 
+			// component layout			
 			append(pnlLocal);
 			append(pnlRemote);
+			
+			if (Constants.admin) {
+				pnlAdminSearch.append(txtAdminCityList);
+				pnlAdminSearch.append(btnAdminSearch);				
+				append(pnlAdminSearch);			
+				setPreferredHeight(getPreferredHeight() + 50);
+			}
 		}
 	}
 

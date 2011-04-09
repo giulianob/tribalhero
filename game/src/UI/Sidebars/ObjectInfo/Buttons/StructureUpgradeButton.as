@@ -7,7 +7,11 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.City;
 	import src.Map.CityObject;
 	import src.Objects.Actions.Action;
+	import src.Objects.Actions.BuildAction;
+	import src.Objects.Actions.CurrentActiveAction;
+	import src.Objects.Actions.StructureUpgradeAction;
 	import src.Objects.Effects.Formula;
+	import src.Objects.Factories.ObjectFactory;
 	import src.Util.Util;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.GameObject;
@@ -77,14 +81,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
 			var missingReqs: Array = parentAction.validate(parentObj, effects);
 
-			// Enforce only one upgrade at a time
-			if (city.currentActions.hasAction(Action.STRUCTURE_UPGRADE)) {
-				missingReqs.push(EffectReqPrototype.asMessage("You can only upgrade one structure at a time"));
-			}
-
-			upgradeToolTip.missingRequirements = missingReqs;
-			upgradeToolTip.draw(currentCount, parentAction.maxCount);
-
 			if (nextStructPrototype == null)
 			{
 				upgradeToolTip.draw(currentCount, parentAction.maxCount);
@@ -92,6 +88,29 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 
+			// Enforce only 2 build/upgrades at a time
+			if (!ObjectFactory.isType("UnlimitedBuilding", nextStructPrototype.type)) {
+				var currentBuildActions: Array = city.currentActions.getActions();
+				var currentCount: int = 0;
+				for each (var currentAction: * in currentBuildActions) {			
+					if (!(currentAction is CurrentActiveAction))
+						continue;
+					else if (currentAction.getAction() is BuildAction) {
+						var buildAction: BuildAction = currentAction.getAction();
+						if (!ObjectFactory.isType("UnlimitedBuilding", buildAction.type))
+							currentCount++;
+					}
+					else if (currentAction.getAction() is StructureUpgradeAction)
+						currentCount++;
+				}
+				
+				if (currentCount >= 2)
+					missingReqs.push(EffectReqPrototype.asMessage("You can only build/upgrade two structures at a time"));
+			}			
+			
+			upgradeToolTip.missingRequirements = missingReqs;
+			upgradeToolTip.draw(currentCount, parentAction.maxCount);
+			
 			if (missingReqs != null && missingReqs.length > 0)
 			{
 				disable();

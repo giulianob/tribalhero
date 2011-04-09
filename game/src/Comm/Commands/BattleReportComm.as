@@ -18,20 +18,20 @@
 		
 		}
 		
-		public function listLocal(loader: GameURLLoader, page: int) : void {
-			loader.load("/reports/index_local", [ { key: "page", value: page } ]);
+		public function listLocal(loader: GameURLLoader, page: int, playerNameFilter: String) : void {
+			loader.load("/reports/index_local", [ { key: "page", value: page }, { key: "playerNameFilter", value: playerNameFilter } ]);
 		}
 		
-		public function viewLocal(loader: GameURLLoader, id: int) : void {
-			loader.load("/reports/view_local", [ { key: "id", value: id }]);
+		public function viewLocal(loader: GameURLLoader, id: int, playerNameFilter: String) : void {
+			loader.load("/reports/view_local", [ { key: "id", value: id }, { key: "playerNameFilter", value: playerNameFilter } ]);
 		}
 		
-		public function listRemote(loader: GameURLLoader, page: int) : void {
-			loader.load("/reports/index_remote", [ { key: "page", value: page } ]);
+		public function listRemote(loader: GameURLLoader, page: int, playerNameFilter: String) : void {
+			loader.load("/reports/index_remote", [ { key: "page", value: page }, { key: "playerNameFilter", value: playerNameFilter }]);
 		}
 		
-		public function viewRemote(loader: GameURLLoader, id: int) : void {
-			loader.load("/reports/view_remote", [ { key: "id", value: id }]);
+		public function viewRemote(loader: GameURLLoader, id: int, playerNameFilter: String) : void {
+			loader.load("/reports/view_remote", [ { key: "id", value: id }, { key: "playerNameFilter", value: playerNameFilter } ]);
 		}		
 	}
 

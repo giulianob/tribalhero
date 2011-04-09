@@ -2,8 +2,8 @@
 
 class AppModel extends Model {
 
-    var $recursive = -1;    
-	var $actsAs = array('Containable', 'Linkable.Linkable');
+    var $recursive = -1;
+    var $actsAs = array('Containable', 'Linkable.Linkable');
     var $cacheQueries = true;
 
     //Lazy loading

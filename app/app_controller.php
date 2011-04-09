@@ -21,13 +21,12 @@ class AppController extends Controller {
         $this->Auth->authorize = 'controller';
 
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
-
             if (array_key_exists('sessionId', $this->params['form']) && array_key_exists('playerId', $this->params['form']) && !empty($this->params['form']['sessionId']) && !empty($this->params['form']['playerId'])) {
+                $this->Auth->fields = array('username' => 'id', 'password' => 'session_id');
+
                 $playerModel = & ClassRegistry::init('Player');
 
-                $player = $playerModel->find('first', array('conditions' => array('session_id' => $this->params['form']['sessionId'], 'id' => $this->params['form']['playerId'])));
-
-                if (!empty($player)) {
+                if ($this->Auth->login(array('id' => $this->params['form']['playerId'], 'session_id' => $this->params['form']['sessionId']))) {
                     $this->Auth->allow($this->action);
                 } else {
                     $this->Auth->deny($this->action);

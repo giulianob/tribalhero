@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            if (
+            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
                                                            action =>
                                                            action.ActionId != ActionId &&

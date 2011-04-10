@@ -191,6 +191,9 @@ namespace Game.Comm
                 //User session backreference
                 session.Player = player;                
 
+                // Subscribe him to the player channel
+                Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
+
                 //Player Id
                 reply.AddUInt32(player.PlayerId);
                 reply.AddByte((byte)(player.Admin ? 1 : 0));

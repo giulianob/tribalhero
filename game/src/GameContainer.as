@@ -7,6 +7,7 @@
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import org.aswing.event.AWEvent;
+	import org.aswing.event.InteractiveEvent;
 	import org.aswing.event.PopupEvent;
 	import src.Components.MessageTimer;
 	import src.Map.*;
@@ -94,9 +95,9 @@
 			menuDummyOverlay.setLocationXY(btnMenu.x, btnMenu.y);			
 			
 			// Create and position the city list
-			lstCities = new JComboBox();
+			lstCities = new JComboBox();			
 			lstCities.setModel(new VectorListModel());
-			lstCities.addActionListener(onChangeCitySelection);
+			lstCities.addEventListener(InteractiveEvent.SELECTION_CHANGED, onChangeCitySelection);
 			lstCities.setSize(new IntDimension(128, 22));
 			lstCities.setLocation(new IntPoint(40, 12));
 			addChild(lstCities);
@@ -392,7 +393,7 @@
 
 			// Populate city list
 			for each (var city: City in map.cities.each()) {
-				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
+				addCityToUI(city);
 			}
 
 			// Set a default city selection
@@ -546,6 +547,10 @@
 
 			resizeManager = null;
 		}
+		
+		public function addCityToUI(city: City): void {
+			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
+		}
 
 		private function alignMinimapTools() : void {
 			minimapTools.x = miniMap.x;
@@ -642,15 +647,34 @@
 			}
 		}
 
-		public function onChangeCitySelection(e: AWEvent):void {
-			selectedCity = null;
-			if (lstCities.getSelectedIndex() == -1) return;
-
-			selectedCity = lstCities.getSelectedItem().city;
-
-			displayResources();
+		public function selectCity(cityId: int) : void {
+			if (Global.gameContainer.selectedCity.id == cityId) return;
 			
+			for (var i: int = 0; i < lstCities.getModel().getSize(); i++) {
+				var item: * = lstCities.getModel().getElementAt(i);
+				
+				if (item.id == cityId) {
+					lstCities.setSelectedIndex(i, true);
+					
+					setSidebar(null);
+					selectedCity = lstCities.getSelectedItem().city;
+					displayResources();
+					break;
+				}
+			}
+		}
+		
+		public function onChangeCitySelection(e: InteractiveEvent):void {			
+			setSidebar(null);			
+			
+			selectedCity = null;			
+			if (lstCities.getSelectedIndex() == -1) return;
+			
+			selectedCity = lstCities.getSelectedItem().city;
+			displayResources();			
 			onGoToCity(e);
+			
+			stage.focus = map;
 		}
 
 		private function onMinimapNavigateToPoint(e: MouseEvent) : void {

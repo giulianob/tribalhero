@@ -152,5 +152,21 @@ namespace Game.Logic.Formulas
         {
             return (ushort)city.Sum(x => x.Lvl);
         }
+
+        internal static int GetWeaponExportLaborProduce(int weaponExport, int labor) {
+            switch(weaponExport) 
+            {
+                case 1:
+                case 2:
+                    return labor / 3;
+                case 3:
+                case 4:
+                    return labor * 2 / 5;
+                case 5:
+                    return labor / 2;
+                default:
+                    return 0;
+            }
+        }
     }
 }

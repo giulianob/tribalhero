@@ -241,10 +241,12 @@ namespace Game.Logic.Actions
         {
             int weaponExport = 0;
             int weaponExportMarket = 0;
+            int weaponExportMax = 0;
 
             InitVars += city =>
                 {
                     weaponExport = 0;
+                    weaponExportMax = 0;
                     weaponExportMarket = 0;
                 };
 
@@ -256,7 +258,11 @@ namespace Game.Logic.Actions
                     var effects = structure.Technologies.GetEffects(EffectCode.WeaponExport, EffectInheritance.Self);
 
                     if (effects.Count > 0)
-                        weaponExport += effects.Max(x => (int)x.Value[0]);
+                    {
+                        int weaponExportLvl = effects.Max(x => (int)x.Value[0]);
+                        weaponExport += weaponExportLvl;
+                        weaponExportMax = Math.Max(weaponExportMax, weaponExportLvl);
+                    }
 
                     if (ObjectTypeFactory.IsStructureType("Market", structure))
                         weaponExportMarket += structure.Lvl;
@@ -265,6 +271,7 @@ namespace Game.Logic.Actions
             PostFirstLoop += city =>
                 {
                     int gold = weaponExport*weaponExportMarket;
+                    gold += Formula.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
                     if (gold <= 0)
                         return;
 

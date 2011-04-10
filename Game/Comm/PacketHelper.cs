@@ -300,68 +300,73 @@ namespace Game.Comm
             foreach (var city in list)
             {
                 city.Subscribe(session);
-                packet.AddUInt32(city.Id);
-                packet.AddString(city.Name);
-                AddToPacket(city.Resource, packet);
-                packet.AddByte(city.Radius);
-                packet.AddInt32(city.AttackPoint);
-                packet.AddInt32(city.DefensePoint);
-                packet.AddUInt16(city.Value);
-                packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
-                packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
-
-                //City Actions
-                AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
-
-                //Notifications
-                packet.AddUInt16(city.Worker.Notifications.Count);
-                foreach (var notification in city.Worker.Notifications)
-                    AddToPacket(notification, packet);
-
-                //References
-                packet.AddUInt16(city.Worker.References.Count);
-                foreach (var reference in city.Worker.References)
-                {
-                    packet.AddUInt16(reference.ReferenceId);
-                    packet.AddUInt32(reference.WorkerObject.WorkerId);
-                    packet.AddUInt32(reference.Action.ActionId);
-                }
-
-                //Structures
-                var structs = new List<Structure>(city);
-                packet.AddUInt16((ushort)structs.Count);
-                foreach (var structure in structs)
-                {
-                    packet.AddUInt16(Region.GetRegionIndex(structure));
-                    AddToPacket(structure, packet, false);
-
-                    packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
-                    foreach (var tech in structure.Technologies)
-                    {
-                        if (tech.OwnerLocation != EffectLocation.Object)
-                            continue;
-                        packet.AddUInt32(tech.Type);
-                        packet.AddByte(tech.Level);
-                    }
-                }
-
-                //Troop objects
-                var troops = new List<TroopObject>(city.TroopObjects);
-                packet.AddUInt16((ushort)troops.Count);
-                foreach (var troop in troops)
-                {
-                    packet.AddUInt16(Region.GetRegionIndex(troop));
-                    AddToPacket(troop, packet, false);
-                }
-
-                //City Troops
-                packet.AddByte(city.Troops.Size);
-                foreach (var stub in city.Troops)
-                    AddToPacket(stub, packet);
-
-                //Unit Template
-                AddToPacket(city.Template, packet);
+                AddToPacket(city, packet);
             }
+        }
+
+        public static void AddToPacket(City city, Packet packet)
+        {
+            packet.AddUInt32(city.Id);
+            packet.AddString(city.Name);
+            AddToPacket(city.Resource, packet);
+            packet.AddByte(city.Radius);
+            packet.AddInt32(city.AttackPoint);
+            packet.AddInt32(city.DefensePoint);
+            packet.AddUInt16(city.Value);
+            packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
+            packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
+
+            //City Actions
+            AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
+
+            //Notifications
+            packet.AddUInt16(city.Worker.Notifications.Count);
+            foreach (var notification in city.Worker.Notifications)
+                AddToPacket(notification, packet);
+
+            //References
+            packet.AddUInt16(city.Worker.References.Count);
+            foreach (var reference in city.Worker.References)
+            {
+                packet.AddUInt16(reference.ReferenceId);
+                packet.AddUInt32(reference.WorkerObject.WorkerId);
+                packet.AddUInt32(reference.Action.ActionId);
+            }
+
+            //Structures
+            var structs = new List<Structure>(city);
+            packet.AddUInt16((ushort)structs.Count);
+            foreach (var structure in structs)
+            {
+                packet.AddUInt16(Region.GetRegionIndex(structure));
+                AddToPacket(structure, packet, false);
+
+                packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
+                foreach (var tech in structure.Technologies)
+                {
+                    if (tech.OwnerLocation != EffectLocation.Object)
+                        continue;
+                    packet.AddUInt32(tech.Type);
+                    packet.AddByte(tech.Level);
+                }
+            }
+
+            //Troop objects
+            var troops = new List<TroopObject>(city.TroopObjects);
+            packet.AddUInt16((ushort)troops.Count);
+            foreach (var troop in troops)
+            {
+                packet.AddUInt16(Region.GetRegionIndex(troop));
+                AddToPacket(troop, packet, false);
+            }
+
+            //City Troops
+            packet.AddByte(city.Troops.Size);
+            foreach (var stub in city.Troops)
+                AddToPacket(stub, packet);
+
+            //Unit Template
+            AddToPacket(city.Template, packet);
         }
     }
 }

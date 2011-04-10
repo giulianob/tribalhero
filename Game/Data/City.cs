@@ -634,11 +634,6 @@ namespace Game.Data
             }
         }
 
-        public void Unsubscribe(IChannel s)
-        {
-            Global.Channel.Unsubscribe(s, "/CITY/" + id);
-        }
-
         public void ResourceUpdateEvent()
         {
             if (!Global.FireEvents || Deleted != DeletedState.NotDeleted)
@@ -693,6 +688,18 @@ namespace Game.Data
             packet.AddByte(hideNewUnits ? (byte)1 : (byte)0);
 
             Global.Channel.Post("/CITY/" + id, packet);
+        }
+
+        public void NewCityUpdate()
+        {
+            if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
+                return;
+
+            var packet = new Packet(Command.CityNewUpdate);
+
+            PacketHelper.AddToPacket(this, packet);
+
+            Global.Channel.Post("/PLAYER/" + Owner.PlayerId, packet);
         }
 
         public void ObjAddEvent(GameObject obj)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.Comm;
 using Game.Data;
+using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Module;
@@ -88,8 +90,7 @@ namespace Game.Logic.Actions {
             }
 
             // cost requirement
-            //var cost = new Resource(5000,2000,1000,5000,200);
-            var cost = new Resource();
+            var cost = Formula.StructureCost(city, ObjectTypeFactory.GetTypes("MainBuilding")[0], 1);
             if (!city.Resource.HasEnough(cost)) {
                 Global.World.UnlockRegion(x, y);
                 return Error.ResourceNotEnough;
@@ -138,14 +139,21 @@ namespace Game.Logic.Actions {
                 city.BeginUpdate();
                 city.Resource.Subtract(cost);
                 city.EndUpdate();
+
+                // send new city channel notification
+                if (newCity.Owner.Session != null)
+                {
+                    newCity.Subscribe(newCity.Owner.Session);
+                    newCity.NewCityUpdate();
+                }
             }
 
             newCityId = newCity.Id;
             newStructureId = structure.ObjectId;
 
-            // add to queue for completion
-            //EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(2 * 24 * 3600, city, city.Technologies)));
-            EndTime = DateTime.UtcNow.AddSeconds(120);
+            // add to queue for completion            
+            int baseBuildTime = StructureFactory.GetBaseStats(ObjectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
+            EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             Global.World.UnlockRegion(x, y);

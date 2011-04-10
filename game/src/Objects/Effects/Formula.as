@@ -53,9 +53,14 @@
 			return (baseValue * Constants.secondsPerUnit) * (100 - timeDiscount(parentObj.level)) / 100;
 		}
 
-		public static function buildTime(parentObj: GameObject, baseValue: int, techManager:TechnologyManager): int
-		{						
-			var city: City = Global.map.cities.get(parentObj.cityId);
+		public static function buildTime(parentObjOrCity: *, baseValue: int, techManager:TechnologyManager): int
+		{	
+			var city: City;
+			
+			if (parentObjOrCity is City)
+				city = parentObjOrCity;
+			else
+				city = Global.map.cities.get(parentObjOrCity.cityId);
 			
 			if (!city) return 0;
 

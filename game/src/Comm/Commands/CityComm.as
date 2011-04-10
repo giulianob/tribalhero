@@ -36,6 +36,9 @@
 				case Commands.CITY_RESOURCES_UPDATE:
 					onCityResourcesUpdate(e.packet);
 				break;
+				case Commands.CITY_NEW_UPDATE:
+					onCityNewUpdate(e.packet);
+				break;
 				case Commands.CITY_OBJECT_ADD:
 					onCityAddObject(e.packet);
 				break;
@@ -82,6 +85,12 @@
 					onReceiveBattleStateChange(e.packet);
 				break;
 			}
+		}
+		
+		public function onCityNewUpdate(packet: Packet) : void {
+			var newCity: City = mapComm.Login.readCity(packet);			
+			Global.gameContainer.addCityToUI(newCity);
+			Global.gameContainer.selectCity(newCity.id);
 		}
 
 		public function onReceiveDefenseAttackPoint(packet: Packet): void {

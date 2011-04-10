@@ -296,6 +296,10 @@
 
 			if (obj != null)
 			{
+				// Switch current selected city if needed
+				Global.gameContainer.selectCity(obj.cityId);
+				
+				// Decide whether to query for the object info or just go ahead and select it
 				if (query) {
 					obj.setSelected(true);
 

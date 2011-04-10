@@ -27,22 +27,37 @@
 
 	public class NewCityPlaceholderSidebar extends GameJSidebar
 	{
-		private var pnlGroups: JPanel;
-
+		private var pnlGroups: JPanel;		
 		private var newCityPlaceholderObj: NewCityPlaceholder;
+		private var newCityButton: NewCityButton;
 
 		public function NewCityPlaceholderSidebar(newCityPlaceholderObj: NewCityPlaceholder)
 		{
-			this.newCityPlaceholderObj = newCityPlaceholderObj;
-
+			this.newCityPlaceholderObj = newCityPlaceholderObj;			
+			
 			createUI();
 
-			pnlGroups.append(new NewCityButton(newCityPlaceholderObj));
+			this.newCityButton = new NewCityButton(newCityPlaceholderObj);
+			pnlGroups.append(newCityButton);
+			
+			update();
+			Global.gameContainer.selectedCity.addEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
 		}
 	
 		public function dispose():void
 		{
-
+			Global.gameContainer.selectedCity.removeEventListener(City.RESOURCES_UPDATE, onResourcesUpdate);
+		}
+		
+		private function onResourcesUpdate(e: Event): void {
+			update();
+		}		
+		
+		private function update() : void {
+			if (!newCityButton.validateButton())
+				newCityButton.disable();
+			else
+				newCityButton.enable();
 		}
 
 		private function createUI() : void

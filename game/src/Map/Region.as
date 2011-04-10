@@ -86,14 +86,14 @@
 		public function createRegion():void
 		{
 			if (Constants.debug >= 2)
-			Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
+				Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
 			
 			for (var a:int = 0; a < Math.ceil(Constants.regionW / Constants.regionBitmapW); a++)
 			{
 				for (var b:int = 0; b < Math.ceil(Constants.regionH / Constants.regionBitmapH); b++)
 				{
 					if (Constants.debug>=3)
-					Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
+						Util.log("Creating region part: " + (a * Constants.regionBitmapTileW) + "," + (b * Constants.regionBitmapTileH));
 
 					createRegionPart(Constants.tileset, a * Constants.regionBitmapTileW, b * Constants.regionBitmapTileH);
 					break;
@@ -186,10 +186,11 @@
 		
 		private function clearPlaceholders(x :int, y: int) : void
 		{
-			var objs: Array = getObjectsAt(x, y);
+			var coord: Point = MapUtil.getScreenCoord(x, y);
+			var objs: Array = getObjectsAt(coord.x, coord.y);
 			
 			for each (var obj: SimpleGameObject in objs) {
-				if (objs is NewCityPlaceholder)
+				if (obj is NewCityPlaceholder)
 					removeGameObject(obj, true);
 			}
 		}

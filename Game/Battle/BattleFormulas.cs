@@ -82,7 +82,7 @@ namespace Game.Battle
                         case ArmorType.Mount:
                             return 0.8;
                         case ArmorType.Machine:
-                            return 1.3;
+                            return 0.8;
                         case ArmorType.Building:
                             return 0.2;
                     }
@@ -95,9 +95,9 @@ namespace Game.Battle
                         case ArmorType.Mount:
                             return 1.5;
                         case ArmorType.Machine:
-                            return 0.8;
+                            return 0.5;
                         case ArmorType.Building:
-                            return 0.2;
+                            return 0.5;
                     }
                     break;
                 case WeaponType.Bow:

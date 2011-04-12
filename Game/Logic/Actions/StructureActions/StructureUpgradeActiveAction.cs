@@ -69,7 +69,7 @@ namespace Game.Logic.Actions
                                                             (action.Type == ActionType.StructureBuildActive &&
                                                              !ObjectTypeFactory.IsStructureType("UnlimitedBuilding",
                                                                                                 ((StructureBuildActiveAction)action).BuildType)))) >= 2)
-                return Error.ActionAlreadyInProgress;
+                return Error.ActionTotalMaxReached;
 
             cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
             type = structure.Type;

@@ -85,7 +85,7 @@ namespace Game.Logic.Actions
                                                             (action.Type == ActionType.StructureBuildActive &&
                                                              !ObjectTypeFactory.IsStructureType("UnlimitedBuilding",
                                                                                                 ((StructureBuildActiveAction)action).BuildType)))) >= 2)
-                return Error.ActionAlreadyInProgress;
+                return Error.ActionTotalMaxReached;
 
             if (!Global.World.IsValidXandY(x, y))
                 return Error.ActionInvalid;

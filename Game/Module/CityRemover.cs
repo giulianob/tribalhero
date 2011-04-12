@@ -130,7 +130,7 @@ namespace Game.Module {
                         return;
                     }
 
-                    // remove all roads
+                    // remove all customized tiles
                     RadiusLocator.ForeachObject(city.X, city.Y, city.Radius, true,
                                                 delegate(uint origX, uint origY, uint x1, uint y1, object c) {
                                                     Global.World.RevertTileType(x1, y1, true);

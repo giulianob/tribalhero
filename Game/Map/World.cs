@@ -265,8 +265,7 @@ namespace Game.Map
             lock (Lock)
             {
                 city.BeginUpdate();
-                Global.DbManager.Delete(city.Template);
-                Global.DbManager.Delete(city.Technologies);
+                Global.DbManager.DeleteDependencies(city);
                 city.Deleted = City.DeletedState.Deleted;
                 city.EndUpdate();
 
@@ -601,6 +600,11 @@ namespace Game.Map
 
                 long idx = (Region.GetTileIndex(x, y)*Region.TILE_SIZE) + (Region.TILE_SIZE*RegionSize*regionId);
                 tileType = MapData[idx];
+
+                // Check if it's actually changed
+                if (region.GetTileType(x, y) == tileType)
+                    return tileType;
+
                 RegionChanges.Seek(idx, SeekOrigin.Begin);
                 RegionChanges.Write(BitConverter.GetBytes(tileType), 0, 2);
                 RegionChanges.Flush();

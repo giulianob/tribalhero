@@ -4,8 +4,12 @@ namespace Game.Data
 {
     public interface ICityRegionObject
     {
-        Map.Location GetCityRegionLocation();
+        ushort CityRegionRelX { get; }
+        ushort CityRegionRelY { get; }
+        Location CityRegionLocation { get; }
+        CityRegion.ObjectType CityRegionType { get; }
+        uint CityRegionGroupId { get; }
+        uint CityRegionObjectId { get; }
         byte[] GetCityRegionObjectBytes();
-        CityRegion.ObjectType GetCityRegionType();
     }
 }

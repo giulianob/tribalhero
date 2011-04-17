@@ -29,6 +29,14 @@ namespace Game.Data
 
         public City City { get; set; }
 
+        public override uint GroupId
+        {
+            get
+            {
+                return City.Id;
+            }
+        }
+
         public uint WorkerId
         {
             get

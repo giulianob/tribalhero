@@ -18,6 +18,8 @@ namespace Game.Data
 
         private readonly Dictionary<uint, Forest> forests;
 
+        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(int.MaxValue);
+
         public ForestManager()
         {
             ForestCount = new int[Config.forest_count.Length];
@@ -53,6 +55,8 @@ namespace Game.Data
 
         public void DbLoaderAdd(Forest forest)
         {
+            objectIdGenerator.Set(forest.ObjectId);
+
             ForestCount[forest.Lvl - 1]++;
             forests.Add(forest.ObjectId, forest);
         }
@@ -104,9 +108,11 @@ namespace Game.Data
             }
             else
                 Global.World.LockRegion(x, y);
-
+            
             forest.X = x;
             forest.Y = y;
+
+            forest.ObjectId = (uint)objectIdGenerator.GetNext();
 
             Global.World.Add(forest);
             Global.World.UnlockRegion(x, y);

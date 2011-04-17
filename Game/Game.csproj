@@ -143,6 +143,7 @@
     <Compile Include="Database\Managers\MySqlDbTransaction.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
+    <Compile Include="Data\IHasLevel.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />
@@ -160,7 +161,7 @@
     <Compile Include="Data\SimpleGameObject.cs" />
     <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
-    <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\CityCreateActiveAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityReloadProductionRatePassiveAction.cs" />

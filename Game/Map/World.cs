@@ -23,8 +23,7 @@ namespace Game.Map
     {
         #region Members
 
-        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
-        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(int.MaxValue);
+        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);        
         private CityRegion[] cityRegions;
         private Region[] regions;
         public RoadManager RoadManager { get; private set; }
@@ -286,9 +285,7 @@ namespace Game.Map
                 obj.InWorld = true;
 
                 // If simple object, we must assign an id
-                if (!(obj is GameObject))
-                    obj.ObjectId = (uint)objectIdGenerator.GetNext();
-                else if (obj is Structure && !(ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)obj)))
+                if (!ObjectTypeFactory.IsStructureType("NoRoadRequired", obj.Type))
                     RoadManager.CreateRoad(obj.X, obj.Y);
 
                 // Add appropriate objects to the minimap
@@ -326,10 +323,6 @@ namespace Game.Map
             if (obj.InWorld)
                 region.Add(obj);
 
-            // Set id in use
-            if (!(obj is GameObject))
-                objectIdGenerator.Set((int)obj.ObjectId);
-
             // Add to minimap if needed
             if (obj is ICityRegionObject)
             {
@@ -365,19 +358,12 @@ namespace Game.Map
                     cityRegion.Remove((ICityRegionObject)obj);
             }
 
-            // Free object id if this is SimpleGameObject
-            if (!(obj is GameObject))
-                objectIdGenerator.Release((int)obj.ObjectId);
-
             // Send remove update
             if (Global.FireEvents)
             {
                 var packet = new Packet(Command.ObjectRemove);
                 packet.AddUInt16(regionId);
-                if (obj is GameObject)
-                    packet.AddUInt32(((GameObject)obj).City.Id);
-                else
-                    packet.AddUInt32(0);
+                packet.AddUInt32(obj.GroupId);
                 packet.AddUInt32(obj.ObjectId);
 
                 Global.Channel.Post("/WORLD/" + regionId, packet);

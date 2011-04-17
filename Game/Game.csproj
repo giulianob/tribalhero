@@ -143,6 +143,7 @@
     <Compile Include="Database\Managers\MySqlDbTransaction.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
+    <Compile Include="Data\IHasLevel.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />

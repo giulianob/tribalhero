@@ -1057,9 +1057,12 @@ namespace Game.Data
 
         #region Implementation of ICityRegionObject
 
-        public Location GetCityRegionLocation()
+        public Location CityRegionLocation
         {
-            return new Location(X, Y);
+            get
+            {
+                return new Location(X, Y);
+            }
         }
 
         public byte[] GetCityRegionObjectBytes()
@@ -1068,34 +1071,50 @@ namespace Game.Data
             {
                 var bw = new BinaryWriter(ms);
                 bw.Write(Lvl);
-                bw.Write(Owner.PlayerId);
-                bw.Write(Id);
+                bw.Write(Owner.PlayerId);                
                 bw.Write(value);
-                bw.Write((ushort)(CityRegionRelX));
-                bw.Write((ushort)(CityRegionRelY));
                 ms.Position = 0;
                 return ms.ToArray();
             }
         }
 
-        public CityRegion.ObjectType GetCityRegionType()
-        {
-            return CityRegion.ObjectType.City;
-        }
-
-        public uint CityRegionRelX
+        public CityRegion.ObjectType CityRegionType
         {
             get
             {
-                return X % Config.city_region_width;
+                return CityRegion.ObjectType.City;
             }
         }
 
-        public uint CityRegionRelY
+        public ushort CityRegionRelX
         {
             get
             {
-                return Y % Config.city_region_height;
+                return (ushort)(X % Config.city_region_width);
+            }
+        }
+
+        public ushort CityRegionRelY
+        {
+            get
+            {
+                return (ushort)(Y % Config.city_region_height);
+            }
+        }
+
+        public uint CityRegionGroupId
+        {
+            get
+            {
+                return Id;
+            }     
+        }
+
+        public uint CityRegionObjectId
+        {
+            get
+            {
+                return 1;
             }
         }
 

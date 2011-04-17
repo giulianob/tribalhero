@@ -19,7 +19,7 @@ namespace Game.Setup
         private static Resource GetResource(int lvl, int buildType, int buildLvl) 
         {
             if (lvl == 0) return new Resource();
-            Resource ret = StructureFactory.GetCost(buildType, buildLvl) * 2 / 3;
+            Resource ret = StructureFactory.GetCost(buildType, buildLvl) * 1 / 3;
             ret /= 10;
             return ret * 10;
         }

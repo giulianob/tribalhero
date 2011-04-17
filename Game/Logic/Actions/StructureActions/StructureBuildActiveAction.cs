@@ -77,8 +77,15 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) && city.Worker.ActiveActions.Values.Count(action => action.ActionId != ActionId && (action.Type == ActionType.StructureBuildActive || action.Type == ActionType.StructureUpgradeActive) && !ObjectTypeFactory.IsStructureType("UnlimitedBuilding", ((StructureBuildActiveAction)action).type)) >= 2)
-                return Error.ActionAlreadyInProgress;
+            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) &&
+                    city.Worker.ActiveActions.Values.Count(
+                                                           action =>
+                                                           action.ActionId != ActionId &&
+                                                           (action.Type == ActionType.StructureUpgradeActive ||
+                                                            (action.Type == ActionType.StructureBuildActive &&
+                                                             !ObjectTypeFactory.IsStructureType("UnlimitedBuilding",
+                                                                                                ((StructureBuildActiveAction)action).BuildType)))) >= 2)
+                return Error.ActionTotalMaxReached;
 
             if (!Global.World.IsValidXandY(x, y))
                 return Error.ActionInvalid;
@@ -132,11 +139,7 @@ namespace Game.Logic.Actions
                         if (ObjectTypeFactory.IsStructureType("NoRoadRequired", str.Type))
                             continue;
 
-                        if (
-                                !RoadPathFinder.HasPath(new Location(str.X, str.Y),
-                                                        new Location(city.X, city.Y),
-                                                        city,
-                                                        new Location(x, y)))
+                        if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.X, city.Y), city, new Location(x, y)))
                         {
                             breaksRoad = true;
                             break;

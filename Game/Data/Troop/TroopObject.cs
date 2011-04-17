@@ -84,14 +84,6 @@ namespace Game.Data.Troop
             }
         }
 
-        public override byte Lvl
-        {
-            get
-            {
-                return 0;
-            }
-        }
-
         #region Constructors
 
         public TroopObject(TroopStub stub)
@@ -136,9 +128,28 @@ namespace Game.Data.Troop
 
         #region Implementation of ICityRegionObject
 
-        public Location GetCityRegionLocation()
+        public Location CityRegionLocation
         {
-            return new Location(X, Y);
+            get
+            {
+                return new Location(X, Y);
+            }
+        }
+
+        public uint CityRegionGroupId
+        {
+            get
+            {
+                return GroupId;
+            }
+        }
+
+        public uint CityRegionObjectId
+        {
+            get
+            {
+                return objectId;
+            }
         }
 
         public byte[] GetCityRegionObjectBytes()
@@ -146,20 +157,18 @@ namespace Game.Data.Troop
             using (var ms = new MemoryStream())
             {
                 var bw = new BinaryWriter(ms);
-                bw.Write(Stub.TroopId);
-                bw.Write(City.Owner.PlayerId);
-                bw.Write(City.Id);
-                bw.Write(objectId);
-                bw.Write((ushort)(CityRegionRelX));
-                bw.Write((ushort)(CityRegionRelY));
+                bw.Write(Stub.TroopId);                
                 ms.Position = 0;
                 return ms.ToArray();
             }
         }
 
-        public CityRegion.ObjectType GetCityRegionType()
+        public CityRegion.ObjectType CityRegionType
         {
-            return CityRegion.ObjectType.Troop;
+            get
+            {
+                return CityRegion.ObjectType.Troop;
+            }
         }
 
         #endregion

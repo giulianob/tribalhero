@@ -33,18 +33,11 @@ namespace Game.Comm
             packet.AddUInt32(notification.Action.ActionId);
             packet.AddUInt16((ushort)notification.Action.Type);
 
-            if (notification.Action is IActionTime)
-            {
-                var actionTime = notification.Action as IActionTime;
-                if (actionTime.BeginTime == DateTime.MinValue)
-                    packet.AddUInt32(0);
-                else
-                    packet.AddUInt32(UnixDateTime.DateTimeToUnix(actionTime.BeginTime.ToUniversalTime()));
-
-                if (actionTime.EndTime == DateTime.MinValue)
-                    packet.AddUInt32(0);
-                else
-                    packet.AddUInt32(UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
+            var actionTime = notification.Action as IActionTime;
+            if (actionTime != null)
+            {                
+                packet.AddUInt32(actionTime.BeginTime == DateTime.MinValue ? 0 : UnixDateTime.DateTimeToUnix(actionTime.BeginTime.ToUniversalTime()));
+                packet.AddUInt32(actionTime.EndTime == DateTime.MinValue ? 0 : UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
             }
             else
             {
@@ -59,25 +52,20 @@ namespace Game.Comm
         //
         //These add to packet methods might need to be broken up a bit since this one has too many "cases"
         public static void AddToPacket(SimpleGameObject obj, Packet packet, bool sendRegularObject)
-        {
-            packet.AddByte(obj.Lvl);
+        {            
             packet.AddUInt16(obj.Type);
-
-            var gameObj = obj as GameObject;
-            if (gameObj == null || gameObj.City == null)
-            {
-                packet.AddUInt32(0); //playerid
-                packet.AddUInt32(0); //cityid
-            }
-            else
-            {
-                packet.AddUInt32(gameObj.City.Owner.PlayerId);
-                packet.AddUInt32(gameObj.City.Id);
-            }
-
-            packet.AddUInt32(obj.ObjectId);
             packet.AddUInt16((ushort)(obj.RelX));
             packet.AddUInt16((ushort)(obj.RelY));
+
+            packet.AddUInt32(obj.GroupId);
+            packet.AddUInt32(obj.ObjectId);
+
+            var gameObj = obj as GameObject;
+            if (gameObj != null)            
+                packet.AddUInt32(gameObj.City.Owner.PlayerId);
+
+            if (obj is IHasLevel)
+                packet.AddByte(((IHasLevel)obj).Lvl);
 
             if (sendRegularObject)
             {
@@ -97,8 +85,8 @@ namespace Game.Comm
                     else if (parameter is string)
                         packet.AddString((string)parameter);
                 }
-
-                if (gameObj != null && gameObj.ObjectId == 1) //main building, send radius
+                
+                if (gameObj is Structure && ((Structure)gameObj).IsMainBuilding)
                     packet.AddByte(gameObj.City.Radius);
             }
             else if (obj is Structure)
@@ -300,73 +288,68 @@ namespace Game.Comm
             foreach (var city in list)
             {
                 city.Subscribe(session);
-                AddToPacket(city, packet);
-            }
-        }
+                packet.AddUInt32(city.Id);
+                packet.AddString(city.Name);
+                AddToPacket(city.Resource, packet);
+                packet.AddByte(city.Radius);
+                packet.AddInt32(city.AttackPoint);
+                packet.AddInt32(city.DefensePoint);
+                packet.AddUInt16(city.Value);
+                packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
+                packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
 
-        public static void AddToPacket(City city, Packet packet)
-        {
-            packet.AddUInt32(city.Id);
-            packet.AddString(city.Name);
-            AddToPacket(city.Resource, packet);
-            packet.AddByte(city.Radius);
-            packet.AddInt32(city.AttackPoint);
-            packet.AddInt32(city.DefensePoint);
-            packet.AddUInt16(city.Value);
-            packet.AddByte(city.Battle != null ? (byte)1 : (byte)0);
-            packet.AddByte(city.HideNewUnits ? (byte)1 : (byte)0);
+                //City Actions
+                AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
 
-            //City Actions
-            AddToPacket(new List<GameAction>(city.Worker.GetVisibleActions()), packet, true);
+                //Notifications
+                packet.AddUInt16(city.Worker.Notifications.Count);
+                foreach (var notification in city.Worker.Notifications)
+                    AddToPacket(notification, packet);
 
-            //Notifications
-            packet.AddUInt16(city.Worker.Notifications.Count);
-            foreach (var notification in city.Worker.Notifications)
-                AddToPacket(notification, packet);
-
-            //References
-            packet.AddUInt16(city.Worker.References.Count);
-            foreach (var reference in city.Worker.References)
-            {
-                packet.AddUInt16(reference.ReferenceId);
-                packet.AddUInt32(reference.WorkerObject.WorkerId);
-                packet.AddUInt32(reference.Action.ActionId);
-            }
-
-            //Structures
-            var structs = new List<Structure>(city);
-            packet.AddUInt16((ushort)structs.Count);
-            foreach (var structure in structs)
-            {
-                packet.AddUInt16(Region.GetRegionIndex(structure));
-                AddToPacket(structure, packet, false);
-
-                packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
-                foreach (var tech in structure.Technologies)
+                //References
+                packet.AddUInt16(city.Worker.References.Count);
+                foreach (var reference in city.Worker.References)
                 {
-                    if (tech.OwnerLocation != EffectLocation.Object)
-                        continue;
-                    packet.AddUInt32(tech.Type);
-                    packet.AddByte(tech.Level);
+                    packet.AddUInt16(reference.ReferenceId);
+                    packet.AddUInt32(reference.WorkerObject.WorkerId);
+                    packet.AddUInt32(reference.Action.ActionId);
                 }
+
+                //Structures
+                var structs = new List<Structure>(city);
+                packet.AddUInt16((ushort)structs.Count);
+                foreach (var structure in structs)
+                {
+                    packet.AddUInt16(Region.GetRegionIndex(structure));
+                    AddToPacket(structure, packet, false);
+
+                    packet.AddUInt16((ushort)structure.Technologies.OwnedTechnologyCount);
+                    foreach (var tech in structure.Technologies)
+                    {
+                        if (tech.OwnerLocation != EffectLocation.Object)
+                            continue;
+                        packet.AddUInt32(tech.Type);
+                        packet.AddByte(tech.Level);
+                    }
+                }
+
+                //Troop objects
+                var troops = new List<TroopObject>(city.TroopObjects);
+                packet.AddUInt16((ushort)troops.Count);
+                foreach (var troop in troops)
+                {
+                    packet.AddUInt16(Region.GetRegionIndex(troop));
+                    AddToPacket(troop, packet, false);
+                }
+
+                //City Troops
+                packet.AddByte(city.Troops.Size);
+                foreach (var stub in city.Troops)
+                    AddToPacket(stub, packet);
+
+                //Unit Template
+                AddToPacket(city.Template, packet);
             }
-
-            //Troop objects
-            var troops = new List<TroopObject>(city.TroopObjects);
-            packet.AddUInt16((ushort)troops.Count);
-            foreach (var troop in troops)
-            {
-                packet.AddUInt16(Region.GetRegionIndex(troop));
-                AddToPacket(troop, packet, false);
-            }
-
-            //City Troops
-            packet.AddByte(city.Troops.Size);
-            foreach (var stub in city.Troops)
-                AddToPacket(stub, packet);
-
-            //Unit Template
-            AddToPacket(city.Template, packet);
         }
     }
 }

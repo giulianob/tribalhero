@@ -96,10 +96,6 @@ namespace Game.Comm
 
                 foreach (City city in player.GetCityList())
                 {
-                    city.BeginUpdate();
-                    city.Deleted = City.DeletedState.Deleting;
-                    city.EndUpdate();
-
                     CityRemover cr = new CityRemover(city.Id);
                     cr.Start();
                 }

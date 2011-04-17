@@ -15,7 +15,7 @@ namespace Game.Module
     {
         private const int UPDATE_INTERVAL_IN_SECOND = 3600;
 
-        private const int MIN_PRICE = 5;
+        private const int MIN_PRICE = 25;
         private const int MAX_PRICE = 1000;
 
         private const int QUANTITY_PER_CHANGE_PER_PLAYER = 100;

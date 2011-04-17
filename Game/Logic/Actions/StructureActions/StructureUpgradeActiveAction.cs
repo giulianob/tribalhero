@@ -18,6 +18,7 @@ namespace Game.Logic.Actions
         private readonly uint cityId;
         private readonly uint structureId;
         private Resource cost;
+        private ushort type;
 
         public StructureUpgradeActiveAction(uint cityId, uint structureId)
         {
@@ -32,7 +33,8 @@ namespace Game.Logic.Actions
                                       int workerType,
                                       byte workerIndex,
                                       ushort actionCount,
-                                      Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                      Dictionary<string, string> properties)
+            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
@@ -59,10 +61,18 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (city.Worker.ActiveActions.Values.Count(action => action.ActionId != ActionId && (action.Type == ActionType.StructureBuildActive || action.Type == ActionType.StructureUpgradeActive) && !ObjectTypeFactory.IsStructureType("UnlimitedBuilding", ((StructureBuildActiveAction)action).BuildType)) >= 2)
-                return Error.ActionAlreadyInProgress;
+            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) &&
+                    city.Worker.ActiveActions.Values.Count(
+                                                           action =>
+                                                           action.ActionId != ActionId &&
+                                                           (action.Type == ActionType.StructureUpgradeActive ||
+                                                            (action.Type == ActionType.StructureBuildActive &&
+                                                             !ObjectTypeFactory.IsStructureType("UnlimitedBuilding",
+                                                                                                ((StructureBuildActiveAction)action).BuildType)))) >= 2)
+                return Error.ActionTotalMaxReached;
 
             cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
+            type = structure.Type;
 
             if (cost == null)
                 return Error.ObjectStructureNotFound;
@@ -170,7 +180,7 @@ namespace Game.Logic.Actions
                                                 {
                                                         new XmlKvPair("city_id", cityId), new XmlKvPair("structure_id", structureId), new XmlKvPair("wood", cost.Wood),
                                                         new XmlKvPair("crop", cost.Crop), new XmlKvPair("iron", cost.Iron), new XmlKvPair("gold", cost.Gold),
-                                                        new XmlKvPair("labor", cost.Labor),
+                                                        new XmlKvPair("labor", cost.Labor)
                                                 });
             }
         }

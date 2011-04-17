@@ -33,18 +33,11 @@ namespace Game.Comm
             packet.AddUInt32(notification.Action.ActionId);
             packet.AddUInt16((ushort)notification.Action.Type);
 
-            if (notification.Action is IActionTime)
-            {
-                var actionTime = notification.Action as IActionTime;
-                if (actionTime.BeginTime == DateTime.MinValue)
-                    packet.AddUInt32(0);
-                else
-                    packet.AddUInt32(UnixDateTime.DateTimeToUnix(actionTime.BeginTime.ToUniversalTime()));
-
-                if (actionTime.EndTime == DateTime.MinValue)
-                    packet.AddUInt32(0);
-                else
-                    packet.AddUInt32(UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
+            var actionTime = notification.Action as IActionTime;
+            if (actionTime != null)
+            {                
+                packet.AddUInt32(actionTime.BeginTime == DateTime.MinValue ? 0 : UnixDateTime.DateTimeToUnix(actionTime.BeginTime.ToUniversalTime()));
+                packet.AddUInt32(actionTime.EndTime == DateTime.MinValue ? 0 : UnixDateTime.DateTimeToUnix(actionTime.EndTime.ToUniversalTime()));
             }
             else
             {
@@ -59,25 +52,20 @@ namespace Game.Comm
         //
         //These add to packet methods might need to be broken up a bit since this one has too many "cases"
         public static void AddToPacket(SimpleGameObject obj, Packet packet, bool sendRegularObject)
-        {
-            packet.AddByte(obj.Lvl);
+        {            
             packet.AddUInt16(obj.Type);
-
-            var gameObj = obj as GameObject;
-            if (gameObj == null || gameObj.City == null)
-            {
-                packet.AddUInt32(0); //playerid
-                packet.AddUInt32(0); //cityid
-            }
-            else
-            {
-                packet.AddUInt32(gameObj.City.Owner.PlayerId);
-                packet.AddUInt32(gameObj.City.Id);
-            }
-
-            packet.AddUInt32(obj.ObjectId);
             packet.AddUInt16((ushort)(obj.RelX));
             packet.AddUInt16((ushort)(obj.RelY));
+
+            packet.AddUInt32(obj.GroupId);
+            packet.AddUInt32(obj.ObjectId);
+
+            var gameObj = obj as GameObject;
+            if (gameObj != null)            
+                packet.AddUInt32(gameObj.City.Owner.PlayerId);
+
+            if (obj is IHasLevel)
+                packet.AddByte(((IHasLevel)obj).Lvl);
 
             if (sendRegularObject)
             {
@@ -97,8 +85,8 @@ namespace Game.Comm
                     else if (parameter is string)
                         packet.AddString((string)parameter);
                 }
-
-                if (gameObj != null && gameObj.ObjectId == 1) //main building, send radius
+                
+                if (gameObj is Structure && ((Structure)gameObj).IsMainBuilding)
                     packet.AddByte(gameObj.City.Radius);
             }
             else if (obj is Structure)

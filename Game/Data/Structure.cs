@@ -10,7 +10,7 @@ using Game.Util;
 
 namespace Game.Data
 {
-    public class Structure : GameObject, IPersistableObject
+    public class Structure : GameObject, IHasLevel, IPersistableObject
     {
         public const string DB_TABLE = "structures";
         private readonly TechnologyManager techmanager;
@@ -115,7 +115,7 @@ namespace Game.Data
             }
         }
 
-        public override byte Lvl
+        public byte Lvl
         {
             get
             {

@@ -1,25 +1,18 @@
 ﻿
 package src.Objects {
 
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Global;
-	import src.Map.Camera;
-	import src.Map.MapUtil;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.Factories.StructureFactory;
-	import src.UI.Dialog.ObjectSelectDialog;
-	import src.UI.Tooltips.StructureTooltip;
-	import src.UI.Tooltips.TextTooltip;
-	import src.UI.Tooltips.Tooltip;
-	import src.Util.BinaryList.BinaryList;
-	import src.Util.Util;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Factories.*;
+	import src.UI.Dialog.*;
+	import src.UI.Tooltips.*;
+	import src.Util.*;
+	import src.Util.BinaryList.*;
 
-	import src.Objects.GameObject;
 
 	public class ObjectContainer extends Sprite {
 
@@ -34,7 +27,7 @@ package src.Objects {
 		public var objects: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
 
 		private var dimmedObjects: Array = new Array();
-		private var highlightedObject: GameObject;
+		private var highlightedObject: SimpleObject;
 
 		private var originClick: Point = new Point(0, 0);
 		private var ignoreClick: Boolean = false;
@@ -159,7 +152,7 @@ package src.Objects {
 
 			var overlapping: Array = new Array();
 			var found: Boolean = false;
-			var highestObj: SimpleGameObject = null;
+			var highestObj: SimpleObject = null;
 			var obj: SimpleObject;
 			var objects: Array = new Array();
 			
@@ -168,15 +161,15 @@ package src.Objects {
 			{
 				obj = objSpace.getChildAt(i) as SimpleObject;
 
-				if (!obj || !obj.visible) continue;
+				if (!obj || !obj.visible || !obj.isSelectable()) continue;
 
 				if (obj is GameObject) 
 				{
 					// If mouse is over this object's tile then it automatically gets chosen as the best object
-					var objMapPos: Point = MapUtil.getMapCoord((obj as GameObject).getX(), (obj as GameObject).getY());
+					var objMapPos: Point = MapUtil.getMapCoord(obj.getX(), obj.getY());
 					if (objMapPos.x == tilePos.x && objMapPos.y == tilePos.y)
 					{					
-						highestObj = obj as GameObject;
+						highestObj = obj;
 						found = true;
 						break;
 					}
@@ -184,16 +177,16 @@ package src.Objects {
 
 				if (obj.hitTestPoint(e.stageX, e.stageY, true))
 				{
-					if ((!highestObj && obj is GameObject) || (obj is GameObject && obj.getY() < highestObj.getY()))
-					highestObj = obj as GameObject;
+					if (!highestObj || obj.getY() < highestObj.getY() || (highestObj is SimpleObject && obj is SimpleGameObject))
+						highestObj = obj;
 
 					objects.push(obj);
 				}
 			}
 
-			if (!found && objects.length == 1 && objects[0] is SimpleGameObject)
+			if (!found && objects.length == 1)
 			{
-				highestObj = objects[0] as SimpleGameObject;
+				highestObj = objects[0];
 				found = true;
 			}
 
@@ -240,18 +233,15 @@ package src.Objects {
 				objTooltip.show(highestObj);
 			}
 
-			if (highestObj is GameObject)
-			{
-				if (!objTooltip) {
-					if (highestObj is StructureObject) {
-						var structureObj: StructureObject = highestObj as StructureObject;
-						objTooltip = new StructureTooltip(StructureFactory.getPrototype(structureObj.type, structureObj.level));
-					}
+			if (!objTooltip) {
+				if (highestObj is StructureObject) {
+					var structureObj: StructureObject = highestObj as StructureObject;
+					objTooltip = new StructureTooltip(StructureFactory.getPrototype(structureObj.type, structureObj.level));
 				}
-				
-				highlightedObject = highestObj as GameObject;
-				(highestObj as GameObject).setHighlighted(true);
 			}
+			
+			highlightedObject = highestObj;
+			highestObj.setHighlighted(true);			
 		}
 
 		public function resetObjects():void
@@ -279,7 +269,7 @@ package src.Objects {
 			if (dimmedObjects)
 			{
 				for each (var dimmedObj: SimpleObject in dimmedObjects)
-				dimmedObj.alpha = 1;
+					dimmedObj.alpha = 1;
 			}
 
 			dimmedObjects = new Array();
@@ -305,9 +295,9 @@ package src.Objects {
 		{
 			getLayer(layer).addChildAt(DisplayObject(obj), calculateDepth(obj, getLayer(layer)));
 
-			if (layer == 0 && obj is SimpleGameObject)
+			if (layer == 0)
 			{
-				objects.add(obj);				
+				objects.add(obj);
 				showBestObject(obj.getX(), obj.getY());
 			}
 		}
@@ -315,27 +305,31 @@ package src.Objects {
 		public function removeObject(obj: IScrollableObject, layer: int = 0, dispose: Boolean = true):void
 		{
 			if (obj == null)
-			return;
+				return;
 
 			getLayer(layer).removeChild(DisplayObject(obj));
 
-			if (layer == 0 && obj is SimpleGameObject)
+			if (layer == 0 && obj is SimpleObject)
 			{
 				var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [obj.getX(), obj.getY()]);
 
+				var found: Boolean = false;
 				for each (var idx: int in idxs)
 				{
-					var currObj: SimpleGameObject = objects.getByIndex(idx) as SimpleGameObject;
+					var currObj: SimpleObject = objects.getByIndex(idx) as SimpleObject;
 
 					if (obj == currObj)
 					{
-						if (dispose) (obj as SimpleGameObject).dispose();
 						objects.removeByIndex(idx);
+						if (dispose) 
+							currObj.dispose();						
+						found = true;
 						break;
 					}
 				}
 
-				showBestObject(obj.getX(), obj.getY());
+				if (found)
+					showBestObject(obj.getX(), obj.getY());
 			}
 		}
 
@@ -344,12 +338,17 @@ package src.Objects {
 			//figure out which object is the best to show on the map if multiple obj exist on this tile
 			var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [x, y]);
 
-			var bestObj: SimpleGameObject = null;
-			var currObj: SimpleGameObject = null;
+			var bestObj: SimpleObject = null;
+			var currObj: SimpleObject = null;
+			
+			var selectableCnt: int = 0;
 
 			for each (var idx: int in idxs)
 			{
-				currObj = objects.getByIndex(idx) as SimpleGameObject;
+				currObj = objects.getByIndex(idx) as SimpleObject;
+				
+				if (currObj && currObj.isSelectable())
+					selectableCnt++;
 				
 				if (bestObj == null)
 				{
@@ -357,22 +356,23 @@ package src.Objects {
 					continue;
 				}
 
-				if (ObjectFactory.getClassType(currObj.type) == ObjectFactory.TYPE_STRUCTURE)
+				if (currObj is StructureObject)
 				{
 					bestObj = currObj;
 					break;
 				}
 			}
 
-			if (currObj == null) return;
+			if (currObj == null) 
+				return;
 
 			for each (idx in idxs)
 			{
-				currObj = objects.getByIndex(idx) as SimpleGameObject;
+				currObj = objects.getByIndex(idx) as SimpleObject;
 				if (bestObj == currObj) {
 					currObj.visible = true; 
 					if (showObjectCount)
-						currObj.setObjectCount(idxs.length);
+						currObj.setObjectCount(selectableCnt);
 				} else {
 					currObj.visible = false;
 					if (showObjectCount)
@@ -396,7 +396,7 @@ package src.Objects {
 				var obj: IScrollableObject = (layer.getChildAt(i) as IScrollableObject);
 
 				if (obj == null)
-				continue;
+					continue;
 
 				obj.moveWithCamera(camera);
 			}
@@ -427,8 +427,9 @@ package src.Objects {
 		
 		public function hasStructureAt(x: int, y: int) : Boolean {
 			var objs: Array = objects.getRange([x, y]);
-			for each (var obj: SimpleGameObject in objs) {
-				if (obj is StructureObject) return true;
+			for each (var obj: SimpleObject in objs) {
+				if (obj is StructureObject) 
+					return true;
 			}
 			
 			return false;

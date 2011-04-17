@@ -30,6 +30,13 @@
 			else return (includeParenthesis?"(":"") + stubId.toString()  + (includeParenthesis?")":"");
 		}
 		
+		override public function dispose():void 
+		{
+			super.dispose();
+			
+			radiusManager.hideRadius();
+		}
+		
 		override public function setSelected(bool:Boolean = false):void
 		{
 			super.setSelected(bool);

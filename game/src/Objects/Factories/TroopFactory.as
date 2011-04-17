@@ -2,6 +2,7 @@
 
 	import flash.display.DisplayObjectContainer;
 	import flash.utils.getDefinitionByName;
+	import src.Global;
 	import src.Objects.Troop.TroopObject;
 	import src.Objects.Troop.TroopStub;
 
@@ -58,6 +59,8 @@
 			
 			troopObject.addChild(ObjectFactory.makeIntoShadow(getSprite()));
 			troopObject.addChild(getSprite());
+			
+			troopObject.setOnSelect(Global.map.selectObject);
 			
 			return troopObject;
 		}

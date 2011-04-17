@@ -4,6 +4,7 @@
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import src.Constants;
+	import src.Global;
 	import src.Map.Camera;
 	import src.Map.Map;
 	import src.Objects.Factories.ObjectFactory;
@@ -65,19 +66,17 @@
 
 		public function disposeData():void
 		{
+			clearAllPlaceholders();
 			cleanTiles();
 
-			for each(var gameObj: SimpleGameObject in objects.each())
-			{
-				map.objContainer.removeObject(gameObj);
-			}
+			for each(var gameObj: SimpleGameObject in objects.each())		
+				map.objContainer.removeObject(gameObj);			
 
 			objects.clear();
 
-			for (var i: int = numChildren - 1; i >= 0; i--) {
-				removeChildAt(i);
-			}
-
+			for (var i: int = numChildren - 1; i >= 0; i--)
+				removeChildAt(i);			
+				
 			objects = null;
 			map = null;
 			tiles = null;
@@ -190,17 +189,29 @@
 			var objs: Array = placeHolders.getRange([x, y]);
 			
 			for each (var obj: SimpleObject in objs)
-				map.objContainer.removeObject(obj);			
+				map.objContainer.removeObject(obj);
+			
+			placeHolders.clear();
 		}
 		
+		private function clearAllPlaceholders() : void
+		{
+			for each (var obj: SimpleObject in placeHolders.each())
+				map.objContainer.removeObject(obj);
+				
+			placeHolders.clear();
+		}		
+		
 		private function addPlaceholderObjects(tileId: int, x: int, y: int) : void 
-		{				
+		{	
+			return;
 			if (tileId == Constants.cityStartTile) {
 				var coord: Point = MapUtil.getScreenCoord(x, y);
 				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
 				obj.setX(coord.x);
 				obj.setY(coord.y);
-				map.objContainer.addObject(obj);
+				obj.setOnSelect(Global.map.selectObject);
+				map.objContainer.addObject(obj);				
 			}
 		}
 
@@ -237,17 +248,15 @@
 
 		public function addObject(gameObj: SimpleGameObject, resort: Boolean = true) : SimpleGameObject
 		{
-			var existingObj: SimpleObject = objects.get([gameObj.groupId, gameObj.objectId]);
+			if (resort) {
+				var existingObj: SimpleObject = objects.get([gameObj.groupId, gameObj.objectId]);
 
-			if (existingObj != null) //don't add if obj already exists
-			{	
-				Util.log("Obj " + gameObj.groupId + ", " + gameObj.objectId + " already exists in region " + id);
-				return null;
+				if (existingObj != null) //don't add if obj already exists
+				{
+					Util.log("Obj " + gameObj.groupId + ", " + gameObj.objectId + " already exists in region " + id);
+					return null;
+				}
 			}
-
-			//set object callback when it's selected. Only gameobjects can be selected.
-			if (gameObj is GameObject)
-				(gameObj as GameObject).setOnSelect(map.selectObject);
 
 			//add to object container and to internal list
 			map.objContainer.addObject(gameObj);
@@ -256,6 +265,9 @@
 			//select object if the map is waiting for it to be selected
 			if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)			
 				map.selectObject(gameObj as GameObject);			
+				
+			if (resort)
+				sortObjects();
 
 			return gameObj;
 		}

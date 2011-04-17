@@ -127,7 +127,7 @@
 			var objs: Array = new Array();
 
 			for each(var idx: int in idxs)
-			objs.push(list[idx]);
+				objs.push(list[idx]);
 
 			return objs;
 		}

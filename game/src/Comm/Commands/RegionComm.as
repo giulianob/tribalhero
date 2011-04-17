@@ -117,7 +117,7 @@
 				for (var j: int = 0; j < objCnt; j++)
 				{
 					var obj: SimpleGameObject = mapComm.Object.readObject(packet, newRegion.id);
-					newRegion.addObject(obj, false);
+					newRegion.addObject(obj, false);					
 				}
 				
 				newRegion.sortObjects();

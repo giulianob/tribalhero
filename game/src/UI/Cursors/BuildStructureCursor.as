@@ -144,19 +144,20 @@ package src.UI.Cursors {
 			{
 				objX = pos.x;
 				objY = pos.y;
-
-				//Range cursor
+			
 				if (rangeCursor.stage != null) Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
-				rangeCursor.setX(objX); rangeCursor.setY(objY);
-				rangeCursor.moveWithCamera(src.Global.gameContainer.camera);
-				Global.map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
-
-				//Object cursor
 				if (cursor.stage != null) Global.map.objContainer.removeObject(cursor);
+				
+				rangeCursor.setX(objX); rangeCursor.setY(objY);
+				rangeCursor.moveWithCamera(src.Global.gameContainer.camera);				
+				
 				cursor.setX(objX); cursor.setY(objY);
 				cursor.moveWithCamera(src.Global.gameContainer.camera);
-				Global.map.objContainer.addObject(cursor);
-				validateBuilding();
+				
+				if (validateBuilding()) {
+					Global.map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
+					Global.map.objContainer.addObject(cursor);
+				}
 			}
 		}
 
@@ -279,7 +280,7 @@ package src.UI.Cursors {
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
 		}
 
-		public function validateBuilding():void
+		public function validateBuilding():Boolean
 		{
 			var msg: XML;
 
@@ -289,13 +290,16 @@ package src.UI.Cursors {
 			// Check if cursor is inside city walls
 			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
 				hideCursors();
+				return false;
 			}
 			else if (!validateTile(new Point(objX, objY))) {
 				hideCursors();
+				return false;
 			}
-			else {
-				showCursors();
-			}
+			
+			
+			showCursors();
+			return true;
 		}
 	}
 }

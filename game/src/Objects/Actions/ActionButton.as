@@ -13,15 +13,16 @@ package src.Objects.Actions {
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class ActionButton extends JButton {
-		protected var parentObj: GameObject;
+		protected var parentObj: SimpleGameObject;
 
 		public var parentAction: Action = new Action();
 		public var currentCount: int;
 
-		public function ActionButton(parentObj: GameObject, buttonText: String, icon: Icon = null)
+		public function ActionButton(parentObj: SimpleGameObject, buttonText: String, icon: Icon = null)
 		{
 			super(buttonText, icon);
 
@@ -42,13 +43,11 @@ package src.Objects.Actions {
 
 		public function enable():void {
 			setEnabled(true);
-			//filters = new Array();
 		}
 
 		public function disable():void {
 			setEnabled(false);
 			mouseEnabled = true;
-			//filters = [new DropShadowFilter(width, 0, 0, 0.4, 0, 0, 1, 1, true, false, false)];
 		}
 
 		public function alwaysEnabled(): Boolean 
@@ -63,27 +62,34 @@ package src.Objects.Actions {
 
 		public function countCurrentActions(): Boolean
 		{
-			if (!parentAction) return true;
+			var gameObj: GameObject = parentObj as GameObject;
+			
+			if (!parentAction || !gameObj) 
+				return true;						
+
+			var city: City = Global.map.cities.get(gameObj.cityId);
+			
+			if (city == null) 
+				return true;
+
+			var actions: Array = city.currentActions.getObjectActions(gameObj.objectId);
 
 			currentCount = 0;
-
-			var city: City = Global.map.cities.get(parentObj.cityId);
-			if (city == null) return true;
-
-			var actions: Array = city.currentActions.getObjectActions(parentObj.objectId);
-
 			for each (var currentAction: * in actions)
-			{
-				var action: CurrentAction;
+			{			
+				if (currentAction is CurrentActionReference) 
+					continue;
+				
+				if (!(currentAction is CurrentActiveAction)) 
+					continue;
 
-				if (currentAction is CurrentActionReference) continue;
-				else action = currentAction;
+				if (currentAction.endTime - Global.map.getServerTime() <= 0) 
+					continue;
 
-				if (!(action is CurrentActiveAction)) continue;
-
-				if (action.endTime -  Global.map.getServerTime() <= 0) continue;
-
-				if ((action as CurrentActiveAction).index == parentAction.index) currentCount++;
+				if (currentAction.index == parentAction.index)
+					continue;
+					
+				currentCount++;
 			}
 
 			return currentCount < parentAction.maxCount;

@@ -3,16 +3,11 @@
 	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.*;
 
-	public class NewCityPlaceholder extends GameObject {
+	public class NewCityPlaceholder extends SimpleObject {
 
 		public function NewCityPlaceholder() {
-			type = 201;
-		}
-		
-		public function ToSprite(): Object
-		{
-			return ObjectFactory.getNewCityPlaceholderSprite();
-		}
+			
+		}	
 	}
 
 }

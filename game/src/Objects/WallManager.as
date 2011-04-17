@@ -1,5 +1,6 @@
 ﻿package src.Objects
 {
+	import flash.events.Event;
 	import flash.geom.Point;
 	import src.Global;
 	import src.Map.Map;
@@ -267,30 +268,42 @@
 
 		public var objects: Array = new Array();
 
-		private var map: Map;
 		private var parent: SimpleGameObject;
 		public var radius: int = 0;
 
-		public function WallManager(map: Map, parent: SimpleGameObject)
+		public function WallManager(parent: SimpleGameObject, radius: int)
 		{
-			this.map = map;
-			this.parent = parent;
+			this.parent = parent;			
+			this.radius = radius;
+			
+			draw(radius);
+		}
+		
+		private function onAddedToStage(e: Event): void {
+			draw(radius);
 		}
 
 		public function clear():void {
-			for each(var obj: IScrollableObject in objects) {
-				map.objContainer.removeObject(obj);
-			}
+			parent.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			for each(var obj: IScrollableObject in objects)
+				Global.map.objContainer.removeObject(obj);			
 
 			objects = new Array();
 		}
 
-		public function draw(radius: int):void {
+		public function draw(radius: int):void {						
 			this.radius = radius;
 
-			clear();
+			clear();			
 
-			if (radius >= WALLS.length || WALLS[radius].length == 0) return;
+			if (radius == 0 || radius >= WALLS.length || WALLS[radius].length == 0) return;
+			
+			// Delay until the obj is in the stage
+			if (parent.stage == null) {
+				parent.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+				return;
+			}
 
 			var pos: Point = MapUtil.getMapCoord(parent.getX(), parent.getY());
 
@@ -352,11 +365,11 @@
 		}
 
 		private function wallTypeHash(x: int, y: int, wallIdx: int) : int {
-			return Math.max(0, ((x * parent.cityId * 0x1f1f1f1f) ^ y) % WALLS[wallIdx].length);
+			return Math.max(0, ((x * parent.groupId * 0x1f1f1f1f) ^ y) % WALLS[wallIdx].length);
 		}
 
 		private function wallHash(x: int, y: int) : int {
-			return Math.max(0, ((x * parent.cityId * 0x1f1f1f1f) ^ y) % WALL_VARIATIONS);
+			return Math.max(0, ((x * parent.groupId * 0x1f1f1f1f) ^ y) % WALL_VARIATIONS);
 		}
 
 		private function pushWall(wallName: String, x: int, y: int) : void {
@@ -369,7 +382,7 @@
 
 			wall.setX(x);
 			wall.setY(y);
-			map.objContainer.addObject(wall);
+			Global.map.objContainer.addObject(wall);
 			wall.moveWithCamera(Global.gameContainer.camera);
 
 			objects.push(wall);

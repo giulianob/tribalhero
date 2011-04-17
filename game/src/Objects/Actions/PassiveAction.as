@@ -74,7 +74,7 @@
 			return actionLookup[idx].description;
 		}
 		
-		public static function getIcon(actionType: int): DisplayObjectContainer
+		public static function getIcon(actionType: int): DisplayObject
 		{
 			var idx: int = getActionIndex(actionType);
 			

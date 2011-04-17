@@ -20,7 +20,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var trainToolTip: TrainTooltip;
 
-		public function TrainButton(parentObj: GameObject, unitPrototype: UnitPrototype)
+		public function TrainButton(parentObj: SimpleGameObject, unitPrototype: UnitPrototype)
 		{
 			super(parentObj, unitPrototype.getName());
 
@@ -48,7 +48,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				var city: City = Global.map.cities.get(parentObj.cityId);
+				var city: City = Global.map.cities.get(parentObj.groupId);
 
 				if (!city)
 				{
@@ -64,7 +64,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 				}
 
-				var inputDialog: UnitTrainDialog = new UnitTrainDialog(parentObj, unitPrototype, onAcceptDialog, Formula.trainTime(parentObj, unitPrototype.trainTime, parentObj.getCorrespondingCityObj().techManager));
+				var inputDialog: UnitTrainDialog = new UnitTrainDialog(parentObj as StructureObject, unitPrototype, onAcceptDialog, Formula.trainTime(parentObj as StructureObject, unitPrototype.trainTime, (parentObj as StructureObject).getCorrespondingCityObj().techManager));
 
 				inputDialog.show();
 			}
@@ -73,7 +73,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		public function onAcceptDialog(sender: UnitTrainDialog):void
 		{
 			sender.getFrame().dispose();
-			Global.mapComm.Troop.trainUnit(this.parentObj.cityId, this.parentObj.objectId, unitPrototype.type, sender.getAmount().getValue());
+			Global.mapComm.Troop.trainUnit(parentObj.groupId, parentObj.objectId, unitPrototype.type, sender.getAmount().getValue());
 		}
 
 		override public function validateButton(): Boolean
@@ -84,7 +84,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return true;
 			}
 
-			var city: City = Global.map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 
 			if (city == null)
 			{

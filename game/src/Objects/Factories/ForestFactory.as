@@ -7,6 +7,7 @@
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
+	import src.Objects.AggressiveLazyValue;
 	import src.Objects.Forest;
 
 	/**
@@ -39,21 +40,12 @@
 			return sprite;
 		}
 
-		public static function getInstance(lvl: int): Object
+		public static function getInstance(type: int, objX: int, objY: int, groupId: int, objectId: int, level: int): Forest
 		{
-			var obj:Object = getSprite(lvl);
+			var forestObj: Forest = new Forest(type, objX, objY, groupId, objectId, level);
 
-			var forestObj: Forest = new Forest();
-
-			var shadow: DisplayObjectContainer = getSprite(lvl);
-			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
-			shadow.transform.matrix = new Matrix(1, 0, -0.7, 0.5, 20, 15);
-			shadow.alpha = 0.4;
-			shadow.filters = [new BlurFilter(5, 5)];
-			shadow.mouseEnabled = false;
-			forestObj.addChild(shadow);
-
-			forestObj.addChild(obj as DisplayObject);
+			forestObj.addChild(ObjectFactory.makeIntoShadow(getSprite(level)));
+			forestObj.addChild(getSprite(level));
 
 			return forestObj;
 		}

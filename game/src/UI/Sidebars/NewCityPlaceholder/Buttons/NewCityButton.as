@@ -12,13 +12,16 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 	import src.Objects.Forest;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.NewCityPlaceholder;
 	import src.Objects.Prototypes.StructurePrototype;
+	import src.Objects.SimpleObject;
 	import src.Objects.Troop.*;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.CreateCityDialog;
 	import src.UI.Dialog.ForestLaborDialog;
 	import src.UI.GameJPanel;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
 	import src.UI.Tooltips.NewCityTooltip;
 	import src.UI.Tooltips.TextTooltip;
 	import src.Util.Util;
@@ -27,10 +30,14 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 	{
 		private var tooltip: NewCityTooltip;
 		private var mainBuildingPrototype: StructurePrototype;
+		
+		private var newCityPlaceholder: NewCityPlaceholder;
 
-		public function NewCityButton(parentObj: GameObject)
+		public function NewCityButton(newCityPlaceholder: NewCityPlaceholder)
 		{
-			super(parentObj, "Build New City");
+			super(null, "Build New City");
+			
+			this.newCityPlaceholder = newCityPlaceholder;
 
 			mainBuildingPrototype = StructureFactory.getPrototype(ObjectFactory.getFirstType("MainBuilding"), 1);
 			
@@ -66,7 +73,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 			if (isEnabled())
 			{
 				var dlg: CreateCityDialog = new CreateCityDialog(function(sender: CreateCityDialog) : void {				
-					var mapPos: Point = MapUtil.getMapCoord(parentObj.getX(), parentObj.getY());
+					var mapPos: Point = MapUtil.getMapCoord(newCityPlaceholder.getX(), newCityPlaceholder.getY());
 					Global.mapComm.Region.createCity(Global.gameContainer.selectedCity.id, mapPos.x, mapPos.y, sender.getCityName());
 					sender.getFrame().dispose();
 				});						

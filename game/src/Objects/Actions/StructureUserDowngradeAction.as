@@ -8,6 +8,7 @@ package src.Objects.Actions {
 	import src.Objects.Actions.IAction;
 	import src.Objects.GameObject;
 	import src.Objects.Prototypes.StructurePrototype;
+	import src.Objects.SimpleGameObject;
 	import src.UI.Sidebars.ObjectInfo.Buttons.StructureUserDowngradeButton;
 
 	public class StructureUserDowngradeAction extends Action implements IAction
@@ -22,7 +23,7 @@ package src.Objects.Actions {
 			return "Downgrading structure";
 		}
 
-		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
+		public function getButton(parentObj: SimpleGameObject, sender: StructurePrototype): ActionButton
 		{
 			return new StructureUserDowngradeButton(parentObj);
 		}

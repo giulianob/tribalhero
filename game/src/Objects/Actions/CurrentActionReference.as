@@ -9,7 +9,6 @@ package src.Objects.Actions {
 	import src.Map.City;
 	import src.Map.CityObject;
 	import src.Objects.GameObject;
-	import src.Objects.IObject;
 	import src.Objects.SimpleGameObject;
 
 	public class CurrentActionReference {

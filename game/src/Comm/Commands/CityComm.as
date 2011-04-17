@@ -170,60 +170,36 @@
 		{
 			var regionId: int = packet.readUShort();
 
-			var objLvl: int = packet.readUByte();
-			var objType: int = packet.readUShort();
-			var objPlayerId: int = packet.readUInt();
-			var objCityId: int = packet.readUInt();
-			var objId: int = packet.readUInt();
-			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-			var objLabor: int = 0;
-			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE) objLabor = packet.readUShort();
-
-			var city: City = Global.map.cities.get(objCityId);
-
-			if (city == null)
-			{
-				Util.log("Received channel city obj update command for unknown city");
+			var cityObj: CityObject = readObject(packet, regionId);
+			
+			if (!cityObj) 
 				return;
-			}
 
-			var obj: CityObject = city.objects.get(objId);
+			var obj: CityObject = cityObj.city.objects.get(cityObj.objectId);
 
-			if (obj == null) return;
+			if (obj == null) 
+				return;
 
-			obj.type = objType;
-			obj.labor = objLabor;
-			obj.level = objLvl;
-			obj.x = objX;
-			obj.y = objY;
+			obj.type = cityObj.type;
+			obj.labor = cityObj.labor;
+			obj.level = cityObj.level;
+			obj.x = cityObj.x;
+			obj.y = cityObj.y;
 		}
 
 		public function onCityAddObject(packet: Packet):void
 		{
 			var regionId: int = packet.readUShort();
 
-			var objLvl: int = packet.readUByte();
-			var objType: int = packet.readUShort();
-			var objPlayerId: int = packet.readUInt();
-			var objCityId: int = packet.readUInt();
-			var objId: int = packet.readUInt();
-			var objHpPercent: int = 100;
-			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-			var objLabor: int = 0;
-			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE)
-			objLabor = packet.readUShort();
+			var cityObj: CityObject = readObject(packet, regionId);
 
-			var city: City = Global.map.cities.get(objCityId);
-
-			if (city == null)
+			if (!cityObj)
 			{
 				Util.log("Received channel city obj add command for unknown city");
 				return;
 			}
 
-			city.objects.add(new CityObject(city, objId, objType, objLvl, objX, objY, objLabor));
+			cityObj.city.objects.add(cityObj);
 		}
 
 		public function onCityRemoveObject(packet: Packet):void
@@ -239,6 +215,31 @@
 			}
 
 			city.objects.remove(objId);
+		}
+		
+		public function readObject(packet: Packet, regionId: int, city: City = null) : CityObject
+		{						
+			var objType: int = packet.readUShort();
+			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
+			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);			
+			var objCityId: int = packet.readUInt();
+			var objId: int = packet.readUInt();
+			var objPlayerId: int = packet.readUInt();
+			var objLvl: int = 0;			
+			var objLabor: int = 0;			
+		
+			if (ObjectFactory.getClassType(objType) == ObjectFactory.TYPE_STRUCTURE) {
+				objLvl = packet.readUByte();
+				objLabor = packet.readUShort();
+			}
+				
+			if (!city) {
+				city = Global.map.cities.get(objCityId);		
+				if (!city)
+					return null;
+			}
+			
+			return new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);
 		}
 
 		public function onReceiveTechnologyCleared(packet: Packet):void {

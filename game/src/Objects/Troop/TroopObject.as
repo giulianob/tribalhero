@@ -2,10 +2,7 @@
 
 	import src.Objects.Factories.TroopFactory;
 	import src.Objects.*;
-	/**
-	 * ...
-	 * @author Default
-	 */
+
 	public class TroopObject extends GameObject {
 
 		public var speed: int;
@@ -13,13 +10,16 @@
 		public var stubId: int;
 		public var targetX: int;
 		public var targetY: int;
-
 		public var troop: TroopStub;
 
 		public var template: UnitTemplateManager = new UnitTemplateManager();
+		
+		private var radiusManager: RadiusManager;
 
-		public function TroopObject() {
-
+		public function TroopObject(type: int, objX: int, objY: int, playerId: int, cityId: int, objectId: int) {
+			super(type, objX, objY, playerId, cityId, objectId);
+			
+			radiusManager = new RadiusManager(this);			
 		}
 
 		public function getNiceStubId(includeParenthesis: Boolean = false) : String {
@@ -34,15 +34,10 @@
 		{
 			super.setSelected(bool);
 
-			if (bool) showRadius(attackRadius);
-			else hideRadius();
-		}
-
-		public override function copy(obj: SimpleGameObject):void
-		{
-			var copyObj: TroopObject = obj as TroopObject;
-			if (copyObj == null)
-			return;
+			if (bool) 
+				radiusManager.showRadius(attackRadius);
+			else 
+				radiusManager.hideRadius();
 		}
 
 		public function ToSprite(): Object

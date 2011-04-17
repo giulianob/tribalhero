@@ -12,7 +12,6 @@ package src.Objects.Actions {
 	import src.Objects.Actions.IAction;
 	import src.Objects.Factories.TechnologyFactory;
 	import src.Objects.GameObject;
-	import src.Objects.IObject;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.TechnologyPrototype;
 	import src.Objects.SimpleGameObject;
@@ -42,7 +41,7 @@ package src.Objects.Actions {
 			return "Upgrading " + tech.getName();
 		}
 		
-		public function getButton(parentObj: GameObject, structPrototype: StructurePrototype): ActionButton
+		public function getButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype): ActionButton
 		{
 			return null;
 		}

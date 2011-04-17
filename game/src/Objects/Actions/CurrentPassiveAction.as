@@ -2,7 +2,6 @@
 {
 	import fl.lang.Locale;
 	import src.Objects.GameObject;
-	import src.Objects.IObject;
 
 	public class CurrentPassiveAction extends CurrentAction
 	{

@@ -135,7 +135,7 @@
 			if (Constants.debug >= 2)
 			Util.log("Adding region: " + id);
 
-			var newRegion: CityRegion = new CityRegion(id, Global.map);
+			var newRegion: CityRegion = new CityRegion(id);
 
 			for (var i:int = pendingRegions.length - 1; i >= 0; i--)
 			{

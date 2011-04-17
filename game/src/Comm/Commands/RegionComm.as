@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 
+	import flash.geom.Point;
 	import src.Comm.*;
 	import src.Map.*;
 	import src.Objects.*;
@@ -115,21 +116,8 @@
 
 				for (var j: int = 0; j < objCnt; j++)
 				{
-					var objLvl: int = packet.readUByte();
-					var objType: int = packet.readUShort();
-					var objPlayerId: int = packet.readUInt();
-					var objCityId: int = packet.readUInt();
-					var objId: int = packet.readUInt();
-					var objHpPercent: int = 100;
-					var objX: int = packet.readUShort() + (id % Constants.mapRegionW) * Constants.regionTileW;
-					var objY: int = packet.readUShort() + int(id / Constants.mapRegionW) * Constants.regionTileH;
-					var objState: int = packet.readUByte();
-
-					var obj:SimpleGameObject = newRegion.addObject(objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY, false);
-
-					mapComm.Object.readState(obj, packet, objState);
-
-					mapComm.Object.readWall(obj, packet);
+					var obj: SimpleGameObject = mapComm.Object.readObject(packet, newRegion.id);
+					newRegion.addObject(obj, false);
 				}
 				
 				newRegion.sortObjects();
@@ -167,45 +155,34 @@
 				for (var j: int = 0; j < objCnt; j++)
 				{
 					var objType: int = packet.readUByte();
+					var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
+					var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
+					var objGroupId: int = packet.readUInt();
+					var objId: int = packet.readUInt();
+					
+					var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
 					
 					// City objects
-					if (objType == 0) {
-						var objLvl: int = packet.readUByte();					
+					if (objType == ObjectFactory.TYPE_CITY) {									
+						var objLvl: int = packet.readUByte();	
 						var objPlayerId: int = packet.readUInt();
-						var objCityId: int = packet.readUInt();
-						var objId: int = 1;						
 						var objCityValue: int = packet.readUShort();
 
-						var objX: int = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
-						var objY: int = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
-
-						newRegion.addCityObject(objLvl, ObjectFactory.getFirstType("MainBuilding"), objPlayerId, objCityId, objId, objCityValue, objX, objY, false);
+						newRegion.addCityObject(objLvl, objPlayerId, objGroupId, objId, objCityValue, coord.x, coord.y);
 					}
 					// Forest objects
-					else if (objType == 1) {
+					else if (objType == ObjectFactory.TYPE_FOREST) {
 						objLvl = packet.readUByte();
-						objId = packet.readUInt();
 						
-						objX = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
-						objY = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
-						
-						newRegion.addForestObject(objLvl, objId, objX, objY, false);
+						newRegion.addForestObject(objLvl, objGroupId, objId, coord.x, coord.y);
 					}
 					// Troop objects
-					else if (objType == 2) {
+					else if (objType == ObjectFactory.TYPE_TROOP_OBJ) {
 						var objTroopId: int = packet.readUByte();
-						objPlayerId = packet.readUInt();
-						objCityId = packet.readUInt();
-						objId = packet.readUInt();
 						
-						objX = packet.readUShort() + (id % Constants.miniMapRegionW) * Constants.cityRegionTileW;
-						objY = packet.readUShort() + int(id / Constants.miniMapRegionW) * Constants.cityRegionTileH;
-						
-						newRegion.addTroopObject(objTroopId, objPlayerId, objCityId, objId, objX, objY, false);						
+						newRegion.addTroopObject(objTroopId, objPlayerId, objGroupId, objId, coord.x, coord.y);	
 					}
 				}
-
-				newRegion.sortObjects();
 			}
 
 			Global.gameContainer.miniMap.objContainer.moveWithCamera(Global.gameContainer.camera.miniMapX, Global.gameContainer.camera.miniMapY);

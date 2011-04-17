@@ -16,11 +16,11 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{
 		private var textToolTip: TextTooltip;
 
-		public function LaborMoveButton(parentObj: GameObject)
+		public function LaborMoveButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Assign Laborers");
 
-			var strPrototype: StructurePrototype = StructureFactory.getPrototype(parentObj.type, parentObj.level);
+			var strPrototype: StructurePrototype = StructureFactory.getPrototype(parentObj.type, (parentObj as StructureObject).level);
 
 			var str: String = Locale.loadString(strPrototype.name + "_STRUCTURE_LABOR_MOVE");
 			if (!str || str == "") {
@@ -61,7 +61,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onAcceptDialog(sender: LaborMoveDialog):void
 		{
-			Global.mapComm.Object.laborMove(this.parentObj.cityId, this.parentObj.objectId, sender.getCount());
+			Global.mapComm.Object.laborMove(parentObj.groupId, this.parentObj.objectId, sender.getCount());
 			sender.getFrame().dispose();
 		}
 	}

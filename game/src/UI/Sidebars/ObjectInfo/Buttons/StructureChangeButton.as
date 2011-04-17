@@ -22,7 +22,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var changeToolTip: StructureChangeTooltip;
 
-		public function StructureChangeButton(parentObj: GameObject, structPrototype: StructurePrototype, nextStructPrototype: StructurePrototype)
+		public function StructureChangeButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype, nextStructPrototype: StructurePrototype)
 		{
 			super(parentObj, nextStructPrototype.getName());
 
@@ -53,13 +53,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.Object.changeStructure(parentObj.cityId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
+				Global.mapComm.Object.changeStructure(parentObj.groupId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
 			}
 		}
 
 		override public function validateButton(): Boolean
 		{
-			var city: City = Global.map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			if (city == null) {
 				Util.log("StructureChangeButton.validateButton: Unknown city");
 				return true;
@@ -84,7 +84,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 
-			city = Global.map.cities.get(parentObj.cityId);
+			city = Global.map.cities.get(parentObj.groupId);
 
 			if (city == null)
 			{

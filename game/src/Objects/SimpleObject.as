@@ -11,6 +11,8 @@ package src.Objects {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
+	import flash.filters.GlowFilter;
+	import flash.geom.Point;
 	import flash.utils.Timer;
 	import src.Constants;
 	import src.Map.Camera;
@@ -21,7 +23,8 @@ package src.Objects {
 		public var objX: int;
 		public var objY: int;
 		
-		public var bmpSprite: Bitmap;
+		private var onSelect: Function;
+		private var selected: Boolean;						
 		
 		public function SimpleObject() {
 			
@@ -46,6 +49,28 @@ package src.Objects {
 			y = objY - camera.y;
 		}
 		
+		public function setOnSelect(callback: Function):void
+		{
+			onSelect = callback;
+		}
+
+		public function setSelected(bool: Boolean = false):void
+		{
+			filters = bool == false ? [] : [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
+			selected = bool;
+		}
+
+		public function setHighlighted(bool: Boolean = false):void
+		{
+			if (selected)
+				return;
+
+			if (bool == false)			
+				filters = [];			
+			else			
+				filters = [new GlowFilter(0xFFDD00, 0.5, 16, 16, 3)];			
+		}		
+		
 		public function getX(): int
 		{
 			return objX;
@@ -65,6 +90,27 @@ package src.Objects {
 		{
 			objY = y;
 		}
+		
+		public function setXY(x: int, y: int):void
+		{
+			setX(x);
+			setY(y);
+		}		
+		
+		public function distance(x_1: int, y_1: int): int
+		{
+			var offset: int = 0;
+
+			var objPos: Point = new Point();
+
+			objPos.x = getX();
+			objPos.y = getY();
+
+			if (objPos.y % 2 == 1 && y_1 % 2 == 0 && x_1 <= objPos.x) offset = 1;
+			if (objPos.y % 2 == 0 && y_1 % 2 == 1 && x_1 >= objPos.x) offset = 1;
+
+			return ((x_1 > objPos.x ? x_1 - objPos.x : objPos.x - x_1) + (y_1 > objPos.y ? y_1 - objPos.y : objPos.y - y_1) / 2 + offset);
+		}		
 		
 		public static function sortOnXandY(a: IScrollableObject, b: IScrollableObject):Number {
 			var aX:Number = a.getX();

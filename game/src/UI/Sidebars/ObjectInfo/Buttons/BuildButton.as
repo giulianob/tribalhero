@@ -23,7 +23,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		private var structPrototype: StructurePrototype;
 		private var buildToolTip: StructureBuildTooltip;
 
-		public function BuildButton(parentObj: GameObject, structPrototype: StructurePrototype)
+		public function BuildButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype)
 		{
 			super(parentObj, structPrototype.getName());
 
@@ -52,7 +52,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (isEnabled())
 			{
 				var cursor: BuildStructureCursor = new BuildStructureCursor();
-				cursor.init(Global.map, (parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1
+				cursor.init((parentAction as BuildAction).type, (parentAction as BuildAction).level, (parentAction as BuildAction).tilerequirement, parentObj);//hardcoded here to always create level 1
 			}
 		}
 
@@ -64,7 +64,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return true;
 			}
 
-			var city: City = Global.map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 
 			if (city == null)
 			{

@@ -22,10 +22,11 @@
 
 	public class ObjectFactory {
 
-		public static const TYPE_UNIT: int = 1;
-		public static const TYPE_STRUCTURE: int = 2;
-		public static const TYPE_TROOP_OBJ: int = 3;
-		public static const TYPE_FOREST: int = 4;
+		public static const TYPE_CITY: int = 0;
+		public static const TYPE_FOREST: int = 1;
+		public static const TYPE_TROOP_OBJ: int = 2;
+		public static const TYPE_UNIT: int = 3;
+		public static const TYPE_STRUCTURE: int = 4;
 		public static const TYPE_NEW_CITY_PLACEHOLDER: int = 5;
 
 		private static var objectTypes: BinaryList;
@@ -88,28 +89,13 @@
 
 		public static function getPrototype(type: int, level: int): *
 		{
-			var classType: int = getClassType(type);
-
-			if (classType == TYPE_STRUCTURE)
-				return StructureFactory.getPrototype(type, level);
-			else if (classType == TYPE_UNIT)
-				return UnitFactory.getPrototype(type, level);
-			else
-				return null;
-		}
-
-		public static function getInstance(type: int, level: int): SimpleObject
-		{
-			var classType: int = getClassType(type);
-
-			if (classType == TYPE_STRUCTURE)
-				return StructureFactory.getInstance(type, level) as SimpleObject;
-			else if (classType == TYPE_TROOP_OBJ)
-				return TroopFactory.getInstance() as SimpleObject;
-			else if (classType == TYPE_FOREST)
-				return ForestFactory.getInstance(level) as SimpleObject;
-			else
-				return null;
+			switch(getClassType(type)) 
+			{
+				case TYPE_STRUCTURE:
+					return StructureFactory.getPrototype(type, level);
+				case TYPE_UNIT:
+					return UnitFactory.getPrototype(type, level);
+			}
 		}
 
 		public static function getSpriteEx(type: int, level: int, centered: Boolean = false): DisplayObjectContainer
@@ -129,10 +115,10 @@
 			return obj;
 		}
 
-		public static function getIcon(name: String) : DisplayObjectContainer
+		public static function getIcon(name: String) : DisplayObject
 		{
 			var objRef: Class;
-
+			
 			try {
 				objRef = getDefinitionByName(name) as Class;
 			}
@@ -141,7 +127,7 @@
 				return new Sprite();
 			}
 
-			return new objRef() as DisplayObjectContainer;
+			return new objRef() as DisplayObject;
 		}
 
 		public static function getSprite(obj: SimpleGameObject, centered: Boolean = false, encased: Boolean = false):DisplayObjectContainer
@@ -152,7 +138,7 @@
 			else if (obj is TroopObject)
 				sprite = TroopFactory.getSprite(centered);
 			else if (obj is Forest)
-				sprite = ForestFactory.getSprite(obj.level, centered);
+				sprite = ForestFactory.getSprite((obj as Forest).level, centered);
 			else if (obj is NewCityPlaceholder)
 				sprite = getNewCityPlaceholderSprite();
 			else
@@ -164,17 +150,8 @@
 				holder.addChild(sprite);
 				return holder;
 			}
-			else
+			
 			return sprite;
-		}
-
-		public static function getSimpleGameObject(name: String): SimpleGameObject {
-			var obj: SimpleGameObject = new SimpleGameObject();
-
-			var objRef: Class = getDefinitionByName(name) as Class;
-			obj.addChild(new objRef() as DisplayObject);
-
-			return obj;
 		}
 
 		public static function getSimpleObject(name: String, addShadow: Boolean = true): SimpleObject {
@@ -194,7 +171,9 @@
 		
 		public static function getNewCityPlaceholderSprite() : DisplayObjectContainer
 		{
-			return getIcon("DEFAULT_BUILDING_ANIM");
+			var obj: Sprite = new Sprite();
+			obj.addChild(getIcon("DEFAULT_BUILDING_ANIM"));
+			return obj;
 		}
 		
 		public static function getNewCityPlaceholderInstance() : NewCityPlaceholder

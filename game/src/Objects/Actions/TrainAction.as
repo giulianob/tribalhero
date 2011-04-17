@@ -14,7 +14,6 @@ package src.Objects.Actions {
 	import src.Objects.Actions.IAction;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.GameObject;
-	import src.Objects.IObject;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleGameObject;
@@ -37,9 +36,9 @@ package src.Objects.Actions {
 			return "Training " + unitPrototype.getName();			
 		}
 		
-		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
+		public function getButton(parentObj: SimpleGameObject, sender: StructurePrototype): ActionButton
 		{			
-			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(type, Global.map.cities.getTemplateLevel(parentObj.cityId, type));
+			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(type, Global.map.cities.getTemplateLevel(parentObj.groupId, type));
 			
 			return new TrainButton(parentObj, unitPrototype) as ActionButton;
 		}

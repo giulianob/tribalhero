@@ -204,14 +204,14 @@
 		
 		private function addPlaceholderObjects(tileId: int, x: int, y: int) : void 
 		{	
-			return;
 			if (tileId == Constants.cityStartTile) {
 				var coord: Point = MapUtil.getScreenCoord(x, y);
 				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
 				obj.setX(coord.x);
 				obj.setY(coord.y);
 				obj.setOnSelect(Global.map.selectObject);
-				map.objContainer.addObject(obj);				
+				map.objContainer.addObject(obj);		
+				placeHolders.add(obj);
 			}
 		}
 

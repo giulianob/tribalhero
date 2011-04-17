@@ -16,7 +16,7 @@
 
 	public class ObjectSelectDialog extends GameJPanel {
 
-		public var selectedObject: GameObject;
+		public var selectedObject: SimpleObject;
 
 		private var lblTitle:JLabel;
 		private var pnlObject:JPanel;
@@ -37,9 +37,11 @@
 				icon.useHandCursor = true;
 				icon.buttonMode = true;
 				icon.tag = obj;
+				icon.mouseChildren = false;
+				icon.mouseEnabled = true;
 
 				icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent):void {
-					selectedObject = e.target.parent.tag;
+					selectedObject = e.target.tag ? e.target.tag : e.target.parent.tag;
 					onAccept(self);
 				});
 

@@ -380,8 +380,7 @@
 			x = pos.x;
 			y = pos.y;
 
-			wall.setX(x);
-			wall.setY(y);
+			wall.setXY(x, y);
 			Global.map.objContainer.addObject(wall);
 			wall.moveWithCamera(Global.gameContainer.camera);
 

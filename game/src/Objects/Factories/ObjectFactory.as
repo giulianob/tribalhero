@@ -130,7 +130,7 @@
 			return new objRef() as DisplayObject;
 		}
 
-		public static function getSprite(obj: SimpleGameObject, centered: Boolean = false, encased: Boolean = false):DisplayObjectContainer
+		public static function getSprite(obj: SimpleObject, centered: Boolean = false, encased: Boolean = false):DisplayObjectContainer
 		{
 			var sprite: DisplayObjectContainer;
 			if (obj is StructureObject) 

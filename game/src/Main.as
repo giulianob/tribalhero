@@ -42,11 +42,10 @@
 		private var siteVersion: String;
 		
 		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
-				
-
+		
 		public function Main()
 		{
-			trace("TribalHero");
+			trace("TribalHero v" + Constants.version + "." + Constants.revision);
 			
 			addEventListener(Event.ADDED_TO_STAGE, init);		
 		}  

@@ -7,6 +7,7 @@
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
+	import src.Global;
 	import src.Objects.AggressiveLazyValue;
 	import src.Objects.Forest;
 
@@ -47,6 +48,8 @@
 			forestObj.addChild(ObjectFactory.makeIntoShadow(getSprite(level)));
 			forestObj.addChild(getSprite(level));
 
+			forestObj.setOnSelect(Global.map.selectObject);
+			
 			return forestObj;
 		}
 	}

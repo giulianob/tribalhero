@@ -3,6 +3,7 @@
 	import flash.filters.BlurFilter;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
+	import src.Global;
 	import src.Util.Util;
 	import flash.geom.Rectangle;
 	import src.Map.*;
@@ -169,6 +170,8 @@
 
 			var img: DisplayObject = getSprite(type, level);
 			structureObj.addChild(img);
+			
+			structureObj.setOnSelect(Global.map.selectObject);
 
 			return structureObj;
 		}

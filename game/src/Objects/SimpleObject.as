@@ -7,6 +7,7 @@
 package src.Objects {
 
 	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -26,8 +27,40 @@ package src.Objects {
 		private var onSelect: Function;
 		private var selected: Boolean;						
 		
+		public var objectCount: DisplayObject;		
+		
 		public function SimpleObject() {
+			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
+				if (objectCount != null) {
+					removeChild(objectCount);
+					objectCount = null;
+				}
+			});
+		}
+		
+		public function setObjectCount(count: int) : void {
+			if (objectCount != null) {
+				removeChild(objectCount);			
+				objectCount = null;
+			}
 			
+			if (count <= 1) return;		
+			
+			var bubble: CountBubble = new CountBubble();
+			bubble.mouseChildren = false;
+			bubble.txtUnreadCount.mouseEnabled = false;
+			bubble.txtUnreadCount.tabEnabled = false;
+			bubble.txtUnreadCount.text = count.toString();
+			bubble.x = Constants.tileW / 2;
+			bubble.y = 0;
+			
+			objectCount = bubble;
+			
+			addChild(bubble);
+		}
+		
+		public function dispose(): void {
+			if (objectCount) removeChild(objectCount);
 		}
 		
 		public function fadeIn():void
@@ -52,6 +85,10 @@ package src.Objects {
 		public function setOnSelect(callback: Function):void
 		{
 			onSelect = callback;
+		}
+		
+		public function isSelectable(): Boolean {
+			return onSelect != null;
 		}
 
 		public function setSelected(bool: Boolean = false):void

@@ -30,10 +30,8 @@ package src.Objects {
 		public var objectId: int;
 		public var groupId: int;	
 		
-		private var icon: DisplayObject;
+		private var icon: DisplayObject;		
 		
-		public var objectCount: DisplayObject;		
-				
 		public function SimpleGameObject(type: int, objX: int, objY: int, groupId: int, objectId: int)
 		{
 			this.type = type;
@@ -44,38 +42,7 @@ package src.Objects {
 			
 			mouseEnabled = false;
 			addEventListener(OBJECT_UPDATE, onObjectUpdate);
-			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
-				if (objectCount != null) {
-					removeChild(objectCount);
-					objectCount = null;
-				}
-			});			
 		}		
-		
-		public function setObjectCount(count: int) : void {
-			if (objectCount != null) {
-				removeChild(objectCount);			
-				objectCount = null;
-			}
-			
-			if (count <= 1) return;		
-			
-			var bubble: CountBubble = new CountBubble();
-			bubble.mouseChildren = false;
-			bubble.txtUnreadCount.mouseEnabled = false;
-			bubble.txtUnreadCount.tabEnabled = false;
-			bubble.txtUnreadCount.text = count.toString();
-			bubble.x = Constants.tileW / 2;
-			bubble.y = 0;
-			
-			objectCount = bubble;
-			
-			addChild(bubble);
-		}
-
-		public function dispose():void {			
-			if (objectCount) removeChild(objectCount);			
-		}
 
 		protected function onObjectUpdate(e: Event): void {			
 		}		

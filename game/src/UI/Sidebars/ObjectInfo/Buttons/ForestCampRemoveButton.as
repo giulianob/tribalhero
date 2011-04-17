@@ -19,7 +19,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{							
 		private var textToolTip: TextTooltip;
 		
-		public function ForestCampRemoveButton(parentObj: GameObject) 
+		public function ForestCampRemoveButton(parentObj: SimpleGameObject) 
 		{			
 			super(parentObj, "Demolish Camp");
 			
@@ -45,7 +45,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.Object.removeForestCamp(parentObj.cityId, parentObj.objectId);
+				Global.mapComm.Object.removeForestCamp(parentObj.groupId, parentObj.objectId);
 			}
 		}
 		

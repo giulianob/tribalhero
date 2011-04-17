@@ -14,7 +14,6 @@ package src.Objects.Actions {
 	import src.Objects.Actions.IAction;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.GameObject;
-	import src.Objects.IObject;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Objects.SimpleGameObject;
@@ -38,9 +37,9 @@ package src.Objects.Actions {
 			return "Upgrading " + UnitFactory.getPrototype(type, 1).getName(); //we assume level 1 here because all units have the same name
 		}
 		
-		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
+		public function getButton(parentObj: SimpleGameObject, sender: StructurePrototype): ActionButton
 		{
-			var city: City = Global.map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			var template: UnitTemplate = city.template.get(type);			
 			var unitPrototype: UnitPrototype = UnitFactory.getPrototype(type, template?template.level:1);
 			

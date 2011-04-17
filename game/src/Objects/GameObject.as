@@ -2,54 +2,31 @@ package src.Objects {
 
 	import flash.filters.GlowFilter;
 	import flash.geom.Point;
+	import src.Global;
+	import src.Map.City;
+	import src.Map.CityObject;
 
 	public class GameObject extends SimpleGameObject implements IScrollableObject
 	{
-		private var onSelect: Function;
-		private var selected: Boolean;
+		public var playerId: int;				
 
-		private var ignoreClick: Boolean;
-		private var originClick: Point;
-
-		public function GameObject()
+		public function GameObject(type: int, objX: int, objY: int, playerId: int, cityId: int, objectId: int)
 		{
-			ignoreClick = false;
-			originClick = new Point(0, 0);
+			super(type, objX, objY, cityId, objectId);			
+			
+			this.playerId = playerId;			
 		}
-
-		public function setOnSelect(callback: Function):void
+		
+		public function get cityId(): int		
 		{
-			onSelect = callback;
+			return groupId;
 		}
-
-		public function setSelected(bool: Boolean = false):void
-		{
-			if (bool == false)
-			{
-				filters = [];
-			}
-			else
-			{
-				filters = [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
-			}
-
-			selected = bool;
-		}
-
-		public function setHighlighted(bool: Boolean = false):void
-		{
-			if (selected)
-			return;
-
-			if (bool == false)
-			{
-				filters = [];
-			}
-			else
-			{
-				filters = [new GlowFilter(0xFFDD00, 0.5, 16, 16, 3)];
-			}
-		}
+		
+		public function getCorrespondingCityObj() : CityObject {
+			var city: City = Global.map.cities.get(cityId);
+			if (!city) return null;
+			return city.objects.get(objectId);
+		}		
 	}
 }
 

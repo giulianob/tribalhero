@@ -19,7 +19,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		private var mode: String;
 		private var pnlGetPrices: InfoDialog;
 
-		public function MarketButton(parentObj: GameObject, mode: String)
+		public function MarketButton(parentObj: SimpleGameObject, mode: String)
 		{
 			super(parentObj, mode == "sell" ? "Sell Resources" : "Buy Resources");
 
@@ -91,7 +91,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 					return;
 			}
 
-			Global.mapComm.Market.sellResources(onMarketResponse, marketDialog, parentObj.cityId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
+			Global.mapComm.Market.sellResources(onMarketResponse, marketDialog, parentObj.groupId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
 		}
 
 		public function onAcceptBuyDialog(marketDialog: MarketBuyDialog):void
@@ -116,7 +116,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return;
 		}
 
-		Global.mapComm.Market.buyResources(onMarketResponse, marketDialog, parentObj.cityId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
+		Global.mapComm.Market.buyResources(onMarketResponse, marketDialog, parentObj.groupId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
 	}
 
 	public function onMarketResponse(status: int, custom: *):void

@@ -7,7 +7,6 @@
 	import flash.events.*;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.system.Security;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	import org.aswing.*;

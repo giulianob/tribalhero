@@ -1,5 +1,4 @@
 ﻿package src.Map {
-	import src.Objects.IObject;
 	import src.Objects.Prototypes.EffectPrototype;
 	import src.Objects.TechnologyManager;
 	import src.Util.BinaryList.*;
@@ -8,7 +7,7 @@
 	 * ...
 	 * @author Default
 	 */
-	public class CityObject implements IObject {
+	public class CityObject {
 
 		public var type: int;
 		public var level: int;
@@ -29,21 +28,6 @@
 			this.y = y;
 			this.labor = labor;
 			techManager = new TechnologyManager(EffectPrototype.LOCATION_OBJECT, city.techManager);
-		}
-
-		public function getCityId(): int
-		{
-			return city.id;
-		}
-
-		public function getLevel(): int
-		{
-			return level;
-		}
-
-		public function getType(): int
-		{
-			return type;
 		}
 
 		public static function sortOnId(a:CityObject, b:CityObject):Number

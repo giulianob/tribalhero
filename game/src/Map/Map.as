@@ -6,6 +6,7 @@
 	import flash.geom.Rectangle;
 	import flash.utils.*;
 	import src.Objects.NewCityPlaceholder;
+	import src.Objects.SimpleObject;
 	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
 	import src.Util.Util;
 	import flash.ui.Keyboard;
@@ -38,7 +39,7 @@
 		public var pendingRegions: Array;
 
 		public var selectViewable: Object;
-		public var selectedObject: GameObject;
+		public var selectedObject: SimpleObject;
 
 		private var listenersDefined: Boolean;
 
@@ -260,7 +261,7 @@
 
 			selectViewable = null;
 			for each(var gameObject: GameObject in objContainer.objects.each()) {
-				if (SimpleGameObject.compareCityIdAndObjId(gameObject, [cityId, objectId]) == 0) {
+				if (SimpleGameObject.compareGroupIdAndObjId(gameObject, [cityId, objectId]) == 0) {
 					selectObject(gameObject, true, false);
 					return;
 				}
@@ -269,7 +270,7 @@
 			selectViewable = { 'cityId' : cityId, 'objectId': objectId };
 		}
 
-		public function selectObject(obj: GameObject, query: Boolean = true, deselectIfSelected: Boolean = false ):void
+		public function selectObject(obj: SimpleObject, query: Boolean = true, deselectIfSelected: Boolean = false ):void
 		{
 			selectViewable = null;
 			
@@ -278,18 +279,21 @@
 			var reselecting: Boolean = false;
 
 			//Check if we are reselecting the currently selected object
-			if (selectedObject != null && obj != null && selectedObject.cityId == obj.cityId && selectedObject.objectId == obj.objectId)
+			if (selectedObject != null && obj != null && (selectedObject == obj || (selectedObject is SimpleGameObject && (selectedObject as SimpleGameObject).equalById(obj))))
 			{
 				//If we are, then deselect it if we have the deselectIfSelected option
-				if (deselectIfSelected) obj = null;
-				else reselecting = true;
+				if (deselectIfSelected) 
+					obj = null;
+				else 
+					reselecting = true;
 			}
 
 			//If the reselecting bit is on, then we dont want to refresh the whole UI. This just makes a better user experience.
 			if (!reselecting) {
 				Global.gameContainer.setSidebar(null);
 
-				if (selectedObject != null) selectedObject.setSelected(false);
+				if (selectedObject != null) 
+					selectedObject.setSelected(false);
 
 				selectedObject = obj;
 			}
@@ -297,7 +301,8 @@
 			if (obj != null)
 			{
 				// Switch current selected city if needed
-				Global.gameContainer.selectCity(obj.cityId);
+				if (obj is GameObject)
+					Global.gameContainer.selectCity((obj as GameObject).groupId);
 				
 				// Decide whether to query for the object info or just go ahead and select it
 				if (query) {
@@ -320,7 +325,7 @@
 			stage.focus = this;
 		}
 
-		private function doSelectedObject(obj: GameObject):void
+		private function doSelectedObject(obj: SimpleObject):void
 		{
 			selectViewable = null;
 
@@ -339,7 +344,7 @@
 			if (obj is StructureObject)
 				sidebar = new ObjectInfoSidebar(obj as StructureObject);			
 			else if (obj is TroopObject)
-				sidebar = new TroopInfoSidebar(obj);			
+				sidebar = new TroopInfoSidebar(obj as TroopObject);			
 			else if (obj is Forest)
 				sidebar = new ForestInfoSidebar(obj as Forest);
 			else if (obj is NewCityPlaceholder)

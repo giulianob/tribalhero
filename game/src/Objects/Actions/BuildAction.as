@@ -13,7 +13,6 @@ package src.Objects.Actions {
 	import src.Objects.Actions.IAction;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.GameObject;
-	import src.Objects.IObject;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleGameObject;
 	import src.UI.Sidebars.ObjectInfo.Buttons.BuildButton;
@@ -45,7 +44,7 @@ package src.Objects.Actions {
 			}
 		}
 		
-		public function getButton(parentObj: GameObject, sender: StructurePrototype): ActionButton
+		public function getButton(parentObj: SimpleGameObject, sender: StructurePrototype): ActionButton
 		{		
 			return new BuildButton(parentObj, StructureFactory.getPrototype(type, level));
 		}

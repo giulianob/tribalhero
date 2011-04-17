@@ -37,9 +37,9 @@
 
 		private var t:Timer = new Timer(1000);
 
-		public function TroopInfoSidebar(troopObj: GameObject)
+		public function TroopInfoSidebar(troopObj: TroopObject)
 		{
-			this.troopObj = troopObj as TroopObject;
+			this.troopObj = troopObj;
 
 			troopObj.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
 

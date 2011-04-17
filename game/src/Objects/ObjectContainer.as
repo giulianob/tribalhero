@@ -244,7 +244,8 @@ package src.Objects {
 			{
 				if (!objTooltip) {
 					if (highestObj is StructureObject) {
-						objTooltip = new StructureTooltip(StructureFactory.getPrototype(highestObj.type, highestObj.level));
+						var structureObj: StructureObject = highestObj as StructureObject;
+						objTooltip = new StructureTooltip(StructureFactory.getPrototype(structureObj.type, structureObj.level));
 					}
 				}
 				
@@ -326,7 +327,7 @@ package src.Objects {
 				{
 					var currObj: SimpleGameObject = objects.getByIndex(idx) as SimpleGameObject;
 
-					if (SimpleGameObject.compareCityIdAndObjId(obj as SimpleGameObject, [currObj.cityId, currObj.objectId]) == 0)
+					if (obj == currObj)
 					{
 						if (dispose) (obj as SimpleGameObject).dispose();
 						objects.removeByIndex(idx);
@@ -368,7 +369,7 @@ package src.Objects {
 			for each (idx in idxs)
 			{
 				currObj = objects.getByIndex(idx) as SimpleGameObject;
-				if (SimpleGameObject.compareCityIdAndObjId(bestObj, [currObj.cityId, currObj.objectId]) == 0) {
+				if (bestObj == currObj) {
 					currObj.visible = true; 
 					if (showObjectCount)
 						currObj.setObjectCount(idxs.length);

@@ -26,7 +26,7 @@
 
 		private var city: City;
 
-		private var highlightedObj: GameObject;
+		private var highlightedObj: StructureObject;
 
 		private var parentObj: StructureObject;
 
@@ -96,11 +96,11 @@
 
 			event.stopImmediatePropagation();
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
 
 			if (objects.length == 0) return;
 
-			var gameObj: SimpleGameObject = objects[0];
+			var gameObj: StructureObject = objects[0];
 
 			if (gameObj.cityId != parentObj.cityId) return;
 
@@ -156,18 +156,16 @@
 				highlightedObj = null;
 			}
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
 
 			if (objects.length == 0 || objects[0].cityId != parentObj.cityId) {
 				Global.gameContainer.message.showMessage("Choose a structure to downgrade");
 				return;
 			}
 
-			var gameObj: SimpleGameObject = objects[0];
-
-			var structObj: StructureObject = gameObj as StructureObject;
-			structObj.setHighlighted(true);
-			highlightedObj = (gameObj as GameObject);
+			var gameObj: StructureObject = objects[0];
+			gameObj.setHighlighted(true);
+			highlightedObj = gameObj;
 
 			Global.gameContainer.message.showMessage("Double click to downgrade this structure.");
 		}

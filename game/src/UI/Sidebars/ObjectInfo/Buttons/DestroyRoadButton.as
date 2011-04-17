@@ -12,7 +12,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 	public class DestroyRoadButton extends ActionButton
 	{
-		public function DestroyRoadButton(parentObj: GameObject)
+		public function DestroyRoadButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Destroy Road");
 
@@ -26,7 +26,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (isEnabled())
 			{
 				var cursor: DestroyRoadCursor = new DestroyRoadCursor();
-				cursor.init(Global.map, parentObj);
+				cursor.init(parentObj);
 			}
 		}
 

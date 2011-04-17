@@ -1,19 +1,13 @@
 ﻿package src.Map
 {
 	import flash.display.*;
-	import flash.events.MouseEvent;
-	import flash.filters.GlowFilter;
-	import flash.geom.ColorTransform;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Objects.Factories.ObjectFactory;
-	import src.UI.Tooltips.MinimapInfoTooltip;
+	import flash.events.*;
+	import flash.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.Factories.*;
+	import src.UI.Tooltips.*;
 	import src.Util.BinaryList.*;
-	import src.Util.Util;
-	import src.Constants;
-	import src.Map.Map;
-	import src.Map.Camera;
-	import src.Objects.SimpleGameObject;
 
 	public class CityRegion extends Sprite
 	{
@@ -29,14 +23,11 @@
 		public var id: int;
 		private var globalX: int;
 		private var globalY: int;
-		private var objects: BinaryList = new BinaryList(objContainerSortOnCityIdAndObjId, objContainerCompareCityIdAndObjId);
-		private var map: Map;
+		private var objects: Array = new Array();
 
-		public function CityRegion(id: int, map: Map)
+		public function CityRegion(id: int)
 		{
 			this.id = id;
-
-			this.map = map;
 
 			globalX = (id % Constants.miniMapRegionW) * Constants.cityRegionW;
 			globalY = int(id / Constants.miniMapRegionW) * (Constants.cityRegionH / 2);
@@ -44,59 +35,39 @@
 
 		public function disposeData():void
 		{
-			for each(var objContainer: * in objects.each())			
-				src.Global.gameContainer.miniMap.objContainer.removeObject(objContainer.gameObj);
+			for each(var obj: * in objects)			
+				Global.gameContainer.miniMap.objContainer.removeObject(obj);
 
-			objects.clear();
-		}
-
-		public function sortObjects():void
-		{
-			objects.sort();
+			objects = new Array();
 		}
 		
-		private function getSimpleGameObject(sprite: String, type: int, playerId: int, cityId: int, objectId: int, level: int, objX: int, objY: int) : SimpleGameObject {
-			var existingObj: * = objects.get([cityId, objectId]);
-			
-			if (existingObj != null) //don't add if obj already exists
-			{
-				Util.log("Obj id " + cityId + " " + objectId + " already exists in city region " + id);
-				return null;
-			}
-				
-			//add object to map and objects list
-			var gameObj: SimpleGameObject = ObjectFactory.getSimpleGameObject(sprite);
-			gameObj.name = "City Region Obj " + cityId + " " + objectId;
-			gameObj.init(map, playerId, cityId, objectId, type);
-
+		private function createRegionObject(sprite: String, type: int, groupId: int, objectId: int, objX: int, objY: int) : CityRegionObject {		
 			var coord: Point = MapUtil.getMiniMapScreenCoord(objX, objY);
 
-			gameObj.setProperties(level, 0, coord.x, coord.y);
+			var regionObject: CityRegionObject = new CityRegionObject(type, groupId, objectId);
+			regionObject.setX(objX);
+			regionObject.setY(objY);
+			var img: DisplayObject = ObjectFactory.getIcon(sprite);
+			regionObject.addChild(img);
 
-			Global.gameContainer.miniMap.objContainer.addObject(gameObj);			
+			Global.gameContainer.miniMap.objContainer.addObject(regionObject);
 			
-			return gameObj;
+			return regionObject;
 		}
 		
-		private function getWrappedGameObject(gameObj: SimpleGameObject) : * {
-			var objContainer: * = new Object();
-			objContainer.gameObj = gameObj;
-			return objContainer;
-		}
-		
-		public function addCityObject(level: int, type: int, playerId: int, cityId: int, objectId: int, objCityValue: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
+		public function addCityObject(level: int, playerId: int, cityId: int, objectId: int, objCityValue: int, objX: int, objY : int) : CityRegionObject
 		{
-			var gameObj: SimpleGameObject;
+			var gameObj: CityRegionObject;
 			
 			// If it's our city, we just show a special flag
-			if (map.cities.get(cityId)) {
-				gameObj = getSimpleGameObject(DOT_SPRITE_OWN, type, playerId, cityId, objectId, level, objX, objY);
+			if (Global.map.cities.get(cityId)) {
+				gameObj = createRegionObject(DOT_SPRITE_OWN, ObjectFactory.TYPE_CITY, cityId, objectId, objX, objY);
 				
 				if (!gameObj) 
 					return null;
 			}
 			else {
-				gameObj = getSimpleGameObject(DOT_SPRITE, type, playerId, cityId, objectId, level, objX, objY);
+				gameObj = createRegionObject(DOT_SPRITE, ObjectFactory.TYPE_CITY, cityId, objectId, objX, objY);
 				if (!gameObj)
 					return null;
 				
@@ -114,115 +85,64 @@
 			
 			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onCityObjectMouseOver);
 
-			var objContainer: * = getWrappedGameObject(gameObj);
-			objContainer.value = objCityValue;
-			objects.add(objContainer, resort);
+			gameObj.extraProps.value = objCityValue;
+			gameObj.extraProps.playerId = playerId;
+			gameObj.extraProps.level = level;
+			
+			objects.push(gameObj);
 
 			return gameObj;
 		}
 		
-		public function addForestObject(level: int, objectId: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
+		public function addForestObject(level: int, groupId: int, objectId: int, objX: int, objY : int) : CityRegionObject
 		{
 			//add object to map and objects list
-			var gameObj: SimpleGameObject = getSimpleGameObject("MINIMAP_FOREST_ICON", ObjectFactory.TYPE_FOREST, 0, 0, objectId, level, objX, objY);
+			var gameObj: CityRegionObject = createRegionObject("MINIMAP_FOREST_ICON", ObjectFactory.TYPE_FOREST, groupId, objectId, objX, objY);
 			if (!gameObj)
 				return null;
 				
 			gameObj.alpha = 0.5;
 			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onForestObjectMouseOver);
-
-			var objContainer: * = getWrappedGameObject(gameObj);
 			
-			objects.add(objContainer, resort);
+			gameObj.extraProps.level = level;
+			
+			objects.push(gameObj);
 
 			return gameObj;
 		}
 		
-		public function addTroopObject(objTroopId: int, playerId: int, cityId: int, objectId: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
+		public function addTroopObject(objTroopId: int, playerId: int, cityId: int, objectId: int, objX: int, objY : int, resort: Boolean = true) : CityRegionObject
 		{
 			//add object to map and objects list
-			var gameObj: SimpleGameObject = getSimpleGameObject("MINIMAP_TROOP_ICON", ObjectFactory.TYPE_TROOP_OBJ, playerId, cityId, objectId, 0, objX, objY);
+			var gameObj: CityRegionObject = createRegionObject("MINIMAP_TROOP_ICON", ObjectFactory.TYPE_TROOP_OBJ, cityId, objectId, objX, objY);
 			if (!gameObj)
 				return null;
 				
 			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onTroopObjectMouseOver);
 
-			var objContainer: * = getWrappedGameObject(gameObj);
-			objContainer.troopId = objTroopId;
-			objects.add(objContainer, resort);
+			gameObj.extraProps.troopId = objTroopId;
+			objects.push(gameObj);
 
 			return gameObj;
 		}		
-
-		public function removeObject(cityId: int, objectId: int, dispose: Boolean = true): SimpleGameObject
-		{
-			var objContainer: * = objects.remove([cityId, objectId]);
-
-			if (objContainer == null) return null;
-
-			Global.gameContainer.miniMap.objContainer.removeObject(objContainer.gameObj, 0, dispose);
-
-			return objContainer.gameObj;
-		}
-		
-		public function getContainerFromGameObject(gameObj: SimpleGameObject) : * 
-		{
-			return objects.get([gameObj.cityId, gameObj.objectId]);
-		}
-
-		public function getObject(cityId: int, objectId: int): SimpleGameObject
-		{
-			var objContainer: * = objects.get([cityId, objectId]);
-			if (!objContainer)
-				return null;
-				
-			return objContainer.gameObj;
-		}
-
+	
 		public function onCityObjectMouseOver(e: MouseEvent) : void {
-			new MinimapInfoTooltip(0, getContainerFromGameObject(e.target.parent));
+			new MinimapInfoTooltip(e.target is CityRegionObject ? e.target as CityRegionObject : e.target.parent);
 		}
 		
 		public function onForestObjectMouseOver(e: MouseEvent) : void {
-			new MinimapInfoTooltip(1, getContainerFromGameObject(e.target.parent));
+			new MinimapInfoTooltip(e.target is CityRegionObject ? e.target as CityRegionObject : e.target.parent);
 		}		
 		
 		public function onTroopObjectMouseOver(e: MouseEvent) : void {
-			new MinimapInfoTooltip(2, getContainerFromGameObject(e.target.parent));
+			new MinimapInfoTooltip(e.target is CityRegionObject ? e.target as CityRegionObject : e.target.parent);
 		}				
 
 		public function moveWithCamera(camera: Camera):void
 		{
 			x = globalX - camera.miniMapX - int(Constants.miniMapTileW / 2);
 			y = globalY - camera.miniMapY - int(Constants.miniMapTileH / 2);
-		}
-
-		public static function objContainerSortOnCityIdAndObjId(a: *, b: *):Number {
-			var aCityId:Number = a.gameObj.cityId;
-			var bCityId:Number = b.gameObj.cityId;
-
-			var aObjId:Number = a.gameObj.objectId;
-			var bObjId:Number = b.gameObj.objectId;
-
-			if (aCityId > bCityId) return 1;
-			else if (aCityId < bCityId) return -1;
-			else if (aObjId > bObjId) return 1;
-			else if (aObjId < bObjId) return -1;
-			else return 0;
-		}
-		
-		public static function objContainerCompareCityIdAndObjId(a: *, value: Array):int
-		{
-			var cityDelta: int = a.gameObj.cityId - value[0];
-			var idDelta: int = a.gameObj.objectId - value[1];
-
-			if (cityDelta != 0) 
-				return cityDelta;
-
-			if (idDelta != 0) return idDelta;
-			else return 0;
 		}		
-		
 		public static function sortOnId(a:CityRegion, b:CityRegion):Number
 		{
 			var aId:Number = a.id;

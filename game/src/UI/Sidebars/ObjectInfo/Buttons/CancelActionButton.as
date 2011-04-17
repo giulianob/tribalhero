@@ -12,7 +12,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Map.City;
 	import src.Objects.Actions.Action;
 	import src.Objects.Actions.CurrentAction;
-	import src.Objects.SimpleGameObject;
+	import src.Objects.GameObject;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Dialog.InfoDialog;
 
@@ -20,9 +20,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var ui: CancelActionButton_base = new CancelActionButton_base();
 		private var id: int;
-		private var parentObj: SimpleGameObject;
+		private var parentObj: GameObject;
 
-		public function CancelActionButton(parentObj: SimpleGameObject, id: int)
+		public function CancelActionButton(parentObj: GameObject, id: int)
 		{
 			addChild(ui);
 

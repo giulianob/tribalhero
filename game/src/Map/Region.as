@@ -3,17 +3,16 @@
 	import flash.display.*;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import src.Objects.Factories.ForestFactory;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.NewCityPlaceholder;
-	import src.Util.BinaryList.*;
-	import src.Util.Util;
 	import src.Constants;
-	import src.Map.Map;
 	import src.Map.Camera;
+	import src.Map.Map;
+	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.GameObject;
+	import src.Objects.NewCityPlaceholder;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
+	import src.Util.BinaryList.*;
+	import src.Util.Util;
 
 	public class Region extends Sprite
 	{
@@ -22,7 +21,8 @@
 		private var globalX: int;
 		private var globalY: int;
 		private var bitmapParts: Array;
-		private var objects: BinaryList = new BinaryList(SimpleGameObject.sortOnCityIdAndObjId, SimpleGameObject.compareCityIdAndObjId);
+		private var objects: BinaryList = new BinaryList(SimpleGameObject.sortOnGroupIdAndObjId, SimpleGameObject.compareGroupIdAndObjId);
+		private var placeHolders: BinaryList = new BinaryList(SimpleObject.sortOnXandY, SimpleObject.compareXAndY);
 		private var map: Map;
 		
 		public function Region(id: int, data: Array, map: Map)
@@ -84,7 +84,7 @@
 		}
 
 		public function createRegion():void
-		{
+		{			
 			if (Constants.debug >= 2)
 				Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
 			
@@ -184,25 +184,23 @@
 			}
 		}
 		
-		private function clearPlaceholders(x :int, y: int) : void
+		private function clearPlaceholders(x: int, y: int) : void
 		{
 			var coord: Point = MapUtil.getScreenCoord(x, y);
-			var objs: Array = getObjectsAt(coord.x, coord.y);
+			var objs: Array = placeHolders.getRange([x, y]);
 			
-			for each (var obj: SimpleGameObject in objs) {
-				if (obj is NewCityPlaceholder)
-					removeGameObject(obj, true);
-			}
+			for each (var obj: SimpleObject in objs)
+				map.objContainer.removeObject(obj);			
 		}
 		
 		private function addPlaceholderObjects(tileId: int, x: int, y: int) : void 
 		{				
 			if (tileId == Constants.cityStartTile) {
-				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
 				var coord: Point = MapUtil.getScreenCoord(x, y);
-				obj.setProperties(1, 100, coord.x, coord.y);				
-				obj.init(map, 0, 0, 0, 0);
-				addGameObject(obj, false);
+				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
+				obj.setX(coord.x);
+				obj.setY(coord.y);
+				map.objContainer.addObject(obj);
 			}
 		}
 
@@ -237,28 +235,15 @@
 			return new Point(x, y);
 		}
 
-		public function addObject(level: int, type: int, playerId: int, cityId: int, objectId: int, hpPercent: int, objX: int, objY : int, resort: Boolean = true) : SimpleGameObject
+		public function addObject(gameObj: SimpleGameObject, resort: Boolean = true) : SimpleGameObject
 		{
-			var existingObj: SimpleObject = objects.get([cityId, objectId]);
+			var existingObj: SimpleObject = objects.get([gameObj.groupId, gameObj.objectId]);
 
 			if (existingObj != null) //don't add if obj already exists
 			{	
-				Util.log("Obj id " + objectId + " already exists in region " + id);
+				Util.log("Obj " + gameObj.groupId + ", " + gameObj.objectId + " already exists in region " + id);
 				return null;
 			}
-
-			var obj: SimpleObject = ObjectFactory.getInstance(type, level);
-
-			if (obj == null)			
-				return null;			
-
-			var gameObj: SimpleGameObject = (obj as SimpleGameObject);
-			gameObj.name = "Game Obj " + objectId;
-			gameObj.init(map, playerId, cityId, objectId, type);
-
-			var coord: Point = MapUtil.getScreenCoord(objX, objY);
-
-			gameObj.setProperties(level, hpPercent, coord.x, coord.y);
 
 			//set object callback when it's selected. Only gameobjects can be selected.
 			if (gameObj is GameObject)
@@ -269,27 +254,15 @@
 			objects.add(gameObj, resort);
 			
 			//select object if the map is waiting for it to be selected
-			if (map.selectViewable != null && map.selectViewable.cityId == gameObj.cityId && map.selectViewable.objectId == gameObj.objectId)
-			{
-				map.selectObject(gameObj as GameObject);
-			}
+			if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)			
+				map.selectObject(gameObj as GameObject);			
 
 			return gameObj;
 		}
 
-		public function addGameObject(gameObj: SimpleGameObject, resort: Boolean = true):void
+		public function removeObject(groupId: int, objectId: int, dispose: Boolean = true): SimpleGameObject
 		{
-			if (gameObj.cityId > 0 && gameObj.objectId > 0)
-				removeObject(gameObj.cityId, gameObj.objectId, false);
-
-			map.objContainer.addObject(gameObj);
-
-			objects.add(gameObj, resort);
-		}
-
-		public function removeObject(cityId: int, objectId: int, dispose: Boolean = true): SimpleGameObject
-		{
-			var gameObj: SimpleGameObject = objects.remove([cityId, objectId]);
+			var gameObj: SimpleGameObject = objects.remove([groupId, objectId]);
 
 			if (gameObj == null)
 				return null;	
@@ -298,23 +271,10 @@
 
 			return gameObj;
 		}
-		
-		public function removeGameObject(obj: SimpleGameObject, dispose: Boolean = true) : void
-		{
-			for (var i: int = 0; i < objects.size(); i++) {
-				if (objects.getByIndex(i) != obj)				
-					continue;
-					
-				objects.removeByIndex(i);				
-				break;
-			}
-			
-			map.objContainer.removeObject(obj, 0, dispose);
-		}
 
-		public function getObject(cityId: int, objectId: int): SimpleGameObject
+		public function getObject(groupId: int, objectId: int): SimpleGameObject
 		{
-			return objects.get([cityId, objectId]);
+			return objects.get([groupId, objectId]);
 		}
 
 		public function moveWithCamera(camera: Camera):void

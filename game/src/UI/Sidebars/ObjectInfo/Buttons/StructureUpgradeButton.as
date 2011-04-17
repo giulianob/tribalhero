@@ -12,6 +12,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Actions.StructureUpgradeAction;
 	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.ObjectFactory;
+	import src.Objects.SimpleGameObject;
 	import src.Util.Util;
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.GameObject;
@@ -28,12 +29,12 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var upgradeToolTip: StructureUpgradeTooltip;
 
-		public function StructureUpgradeButton(parentObj: GameObject, structPrototype: StructurePrototype)
+		public function StructureUpgradeButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype)
 		{
 			super(parentObj, structPrototype.getName(), new AssetIcon(new ICON_UPGRADE()));
 
 			if (!structPrototype)
-			return;
+				return;
 
 			nextStructPrototype = StructureFactory.getPrototype(structPrototype.type, (structPrototype.level + 1));
 
@@ -59,13 +60,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.Object.upgradeStructure(parentObj.cityId, parentObj.objectId);
+				Global.mapComm.Object.upgradeStructure(parentObj.groupId, parentObj.objectId);
 			}
 		}
 
 		override public function validateButton(): Boolean
 		{
-			var city: City = Global.map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			if (city == null) {
 				Util.log("StructureUpgradeButton.validateButton: Unknown city");
 				disable();

@@ -54,13 +54,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.City.technologyUpgrade(parentObj.cityId, parentObj.objectId, techPrototype.techtype);
+				Global.mapComm.City.technologyUpgrade(parentObj.groupId, parentObj.objectId, techPrototype.techtype);
 			}
 		}
 
 		override public function validateButton(): Boolean
 		{
-			var city: City = Global.map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			if (city == null) {
 				Util.log("TechnologyButton.validateButton: Unknown city");
 				disable();
@@ -115,7 +115,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 
-			if (Global.map.cities.get(parentObj.cityId).resources.GreaterThanOrEqual(nextTechPrototype.resources))
+			if (Global.map.cities.get(parentObj.groupId).resources.GreaterThanOrEqual(nextTechPrototype.resources))
 			{
 				enable();
 				return true;

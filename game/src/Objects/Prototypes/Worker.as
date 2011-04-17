@@ -10,6 +10,7 @@ package src.Objects.Prototypes {
 	import src.Objects.Actions.IAction;
 	import src.Objects.Actions.TechUpgradeAction;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
 
 	public class Worker {
 
@@ -52,7 +53,7 @@ package src.Objects.Prototypes {
 			return upgradeActions;
 		}
 
-		public function getButtons(parentObj: GameObject, structPrototype: StructurePrototype): Array
+		public function getButtons(parentObj: SimpleGameObject, structPrototype: StructurePrototype): Array
 		{
 			var ret: Array = new Array();
 

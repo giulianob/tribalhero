@@ -33,10 +33,10 @@
 		private var lblTime:JLabel;
 		private var lblDescription:MultilineLabel;
 		private var pnlFooter:JPanel;		
-		private var pnlResources:JPanel;		
+		private var pnlResources:JPanel;
 		
 		private var city: City;
-
+		
 		public function NewCityTooltip(structPrototype: StructurePrototype)
 		{
 			this.structPrototype = structPrototype;

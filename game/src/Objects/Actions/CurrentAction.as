@@ -5,7 +5,6 @@
 */
 
 package src.Objects.Actions {
-	import src.Objects.IObject;
 	import src.Objects.SimpleGameObject;
 
 	public class CurrentAction {

@@ -52,17 +52,13 @@
 			return sprite;
 		}
 
-		public static function getInstance(): Object
+		public static function getInstance(type: int, objX: int, objY: int, playerId: int, cityId: int, objectId: int): TroopObject
 		{
-			var obj: DisplayObjectContainer = getSprite();
-
-			var shadow: DisplayObjectContainer = getSprite();
-			ObjectFactory.makeIntoShadow(shadow);
-
-			var troopObject: TroopObject = new TroopObject();
-			troopObject.addChild(shadow);
-			troopObject.addChild(obj);
-
+			var troopObject: TroopObject = new TroopObject(type, objX, objY, playerId, cityId, objectId);
+			
+			troopObject.addChild(ObjectFactory.makeIntoShadow(getSprite()));
+			troopObject.addChild(getSprite());
+			
 			return troopObject;
 		}
 	}

@@ -144,21 +144,12 @@
 			for (var j: int = 0; j < structCnt; j++)
 			{
 				var regionId: int = packet.readUShort();
-
-				var objLvl: int = packet.readUByte();
-				var objType: int = packet.readUShort();
-				var objPlayerId: int = packet.readUInt();
-				var objCityId: int = packet.readUInt();
-				var objId: int = packet.readUInt();
-				var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-				var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-				var objLabor: int = packet.readUShort();
-
-				var cityObj: CityObject = new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);
+			
+				var cityObj: CityObject = mapComm.City.readObject(packet, regionId, city);
 
 				var technologyCount: int = packet.readUShort();
 				for (k = 0; k < technologyCount; k++)
-				cityObj.techManager.add(new TechnologyStats(TechnologyFactory.getPrototype(packet.readUInt(), packet.readUByte()), EffectPrototype.LOCATION_OBJECT, objId));
+				cityObj.techManager.add(new TechnologyStats(TechnologyFactory.getPrototype(packet.readUInt(), packet.readUByte()), EffectPrototype.LOCATION_OBJECT, cityObj.objectId));
 
 				city.objects.add(cityObj, false);
 			}
@@ -170,15 +161,7 @@
 			{
 				regionId = packet.readUShort();
 
-				objLvl = packet.readUByte();
-				objType = packet.readUShort();
-				objPlayerId = packet.readUInt();
-				objCityId = packet.readUInt();
-				objId = packet.readUInt();
-				objX = packet.readUShort() + MapUtil.regionXOffset(regionId);
-				objY = packet.readUShort() + MapUtil.regionYOffset(regionId);
-
-				cityObj = new CityObject(city, objId, objType, objLvl, objX, objY, 0);
+				cityObj = mapComm.City.readObject(packet, regionId, city);
 				
 				city.objects.add(cityObj, false);
 			}

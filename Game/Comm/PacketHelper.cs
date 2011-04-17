@@ -288,6 +288,11 @@ namespace Game.Comm
             foreach (var city in list)
             {
                 city.Subscribe(session);
+                AddToPacket(city, packet);
+            }
+        }
+        public static void AddToPacket(City city, Packet packet)
+        {
                 packet.AddUInt32(city.Id);
                 packet.AddString(city.Name);
                 AddToPacket(city.Resource, packet);
@@ -349,7 +354,6 @@ namespace Game.Comm
 
                 //Unit Template
                 AddToPacket(city.Template, packet);
-            }
         }
     }
 }

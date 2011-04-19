@@ -8,6 +8,7 @@
 	 */
 	public class BinaryList extends EventDispatcher {
 
+		private var dirty: Boolean;
 		private var sortFunc: Function;
 		private var compareFunc: Function;
 
@@ -42,6 +43,7 @@
 		{
 			if (!sorted) {
 				list.push(obj);
+				dirty = true;
 			}
 			else {
 				var idx: int = Util.binarySearch(list, sortFunc, obj);
@@ -92,7 +94,11 @@
 
 		public function sort():void
 		{
+			if (!dirty) 
+				return;
+				
 			list.sort(sortFunc);
+			dirty = false;
 			super.dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
 

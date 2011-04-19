@@ -21,6 +21,8 @@ package src.Objects {
 	
 	public class SimpleObject extends SmartMovieClip implements IScrollableObject {
 		
+		public var disposed: Boolean;
+		
 		public var objX: int;
 		public var objY: int;
 		
@@ -60,7 +62,8 @@ package src.Objects {
 		}
 		
 		public function dispose(): void {
-			if (objectCount) removeChild(objectCount);
+			disposed = true;
+			if (objectCount) removeChild(objectCount);			
 		}
 		
 		public function fadeIn():void

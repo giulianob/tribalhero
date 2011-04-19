@@ -163,6 +163,9 @@
 			if (MapComm.tryShowError(packet)) return;
 
 			var obj: TroopObject = custom as TroopObject;
+			if (obj.disposed) 
+				return;
+
 			obj.troop = new TroopStub();
 			obj.stubId = packet.readUByte();
 

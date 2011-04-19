@@ -246,9 +246,9 @@
 			return new Point(x, y);
 		}
 
-		public function addObject(gameObj: SimpleGameObject, resort: Boolean = true) : SimpleGameObject
+		public function addObject(gameObj: SimpleGameObject, sorted: Boolean = true) : SimpleGameObject
 		{
-			if (resort) {
+			if (sorted) {
 				var existingObj: SimpleObject = objects.get([gameObj.groupId, gameObj.objectId]);
 
 				if (existingObj != null) //don't add if obj already exists
@@ -260,15 +260,14 @@
 
 			//add to object container and to internal list
 			map.objContainer.addObject(gameObj);
-			objects.add(gameObj, resort);
+			objects.add(gameObj, sorted);
 			
 			//select object if the map is waiting for it to be selected
 			if (map.selectViewable != null && map.selectViewable.groupId == gameObj.groupId && map.selectViewable.objectId == gameObj.objectId)			
 				map.selectObject(gameObj as GameObject);			
-				
-			if (resort)
-				sortObjects();
 
+			gameObj.moveWithCamera(Global.gameContainer.camera);
+			
 			return gameObj;
 		}
 

@@ -32,13 +32,15 @@ package src.Objects {
 		
 		private var icon: DisplayObject;		
 		
-		public function SimpleGameObject(type: int, objX: int, objY: int, groupId: int, objectId: int)
+		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int)
 		{
 			this.type = type;
 			this.groupId = groupId;
 			this.objectId = objectId;
 			this.objX = objX;
 			this.objY = objY;
+			
+			State = state;
 			
 			mouseEnabled = false;
 			addEventListener(OBJECT_UPDATE, onObjectUpdate);

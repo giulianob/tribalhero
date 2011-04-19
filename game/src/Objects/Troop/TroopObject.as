@@ -2,6 +2,7 @@
 
 	import src.Objects.Factories.TroopFactory;
 	import src.Objects.*;
+	import src.Objects.States.GameObjectState;
 
 	public class TroopObject extends GameObject {
 
@@ -16,8 +17,8 @@
 		
 		private var radiusManager: RadiusManager;
 
-		public function TroopObject(type: int, objX: int, objY: int, playerId: int, cityId: int, objectId: int) {
-			super(type, objX, objY, playerId, cityId, objectId);
+		public function TroopObject(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int) {
+			super(type, state, objX, objY, playerId, cityId, objectId);
 			
 			radiusManager = new RadiusManager(this);			
 		}

@@ -302,7 +302,7 @@
 		}
 
 		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
-			setSidebar(null);
+			clearAllSelections();
 			
 			if (zoom) {
 				screenMessage.setVisible(false);
@@ -362,7 +362,7 @@
 			{
 				if (map != null) map.selectObject(null);				
 				if (miniMap != null) zoomIntoMinimap(false);
-				setSidebar(null);
+				clearAllSelections();
 			}
 			
 			if (!minimapZoomed && !Util.textfieldHasFocus(stage)) {
@@ -528,7 +528,7 @@
 			}
 
 			resourcesContainer = null;
-			setSidebar(null);
+			clearAllSelections();
 
 			if (map) {
 				resizeManager.removeEventListener(Event.RESIZE, map.onResize);
@@ -557,10 +557,16 @@
 			minimapTools.y = miniMap.y - 3;
 		}
 
-		public function setSidebar(sidebar: GameJSidebar):void
+		public function clearAllSelections() : void 
 		{
-			var focusOwner: Component = FocusManager.getManager(stage).getFocusOwner();
-			
+			if (map)
+				map.selectObject(null);
+				
+			setSidebar(null);
+		}
+		
+		public function setSidebar(sidebar: GameJSidebar):void
+		{			
 			if (this.sidebar != null)
 				this.sidebar.getFrame().dispose();			
 
@@ -572,8 +578,7 @@
 				sidebar.show(sidebarHolder);								
 			}					
 			
-			if (focusOwner)
-				stage.focus = focusOwner.getInternalFocusObject();			
+			stage.focus = map;
 		}
 
 		public function closeAllFrames() : void {
@@ -584,11 +589,15 @@
 			}
 		}
 
-		public function showFrame(frame: JFrame):void {
-			if (map != null) map.disableMouse(true);
+		public function showFrame(frame: JFrame):void {						
+			if (map != null) {
+				clearAllSelections();
+				map.disableMouse(true);				
+			}
+				
 			frames.push(frame);
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
-			frame.show();
+			frame.show();			
 		}
 
 		public function onFrameClosing(e: PopupEvent):void {

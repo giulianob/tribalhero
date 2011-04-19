@@ -4,6 +4,7 @@
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleGameObject;
+	import src.Objects.States.GameObjectState;
 	
 	public class StructureObject extends GameObject {
 		
@@ -15,8 +16,8 @@
 		public var wallManager: WallManager;
 		public var radiusManager: RadiusManager;
 		
-		public function StructureObject(type: int, objX: int, objY: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int) {
-			super(type, objX, objY, playerId, cityId, objectId);
+		public function StructureObject(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int) {
+			super(type, state, objX, objY, playerId, cityId, objectId);
 			
 			this.level = level;
 			

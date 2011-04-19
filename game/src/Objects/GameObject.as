@@ -5,14 +5,15 @@ package src.Objects {
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.States.GameObjectState;
 
 	public class GameObject extends SimpleGameObject implements IScrollableObject
 	{
 		public var playerId: int;				
 
-		public function GameObject(type: int, objX: int, objY: int, playerId: int, cityId: int, objectId: int)
+		public function GameObject(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int)
 		{
-			super(type, objX, objY, cityId, objectId);			
+			super(type, state, objX, objY, cityId, objectId);			
 			
 			this.playerId = playerId;			
 		}

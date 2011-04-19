@@ -277,7 +277,11 @@
 		{
 			selectViewable = null;
 			
-			if (obj == null && selectedObject == null) return;				
+			if (obj == null && selectedObject == null)
+				return;
+				
+			if (obj != null && obj.disposed)
+				obj = null;
 
 			var reselecting: Boolean = false;
 
@@ -292,11 +296,11 @@
 			}
 
 			//If the reselecting bit is on, then we dont want to refresh the whole UI. This just makes a better user experience.
-			if (!reselecting) {
-				Global.gameContainer.setSidebar(null);
-
+			if (!reselecting) {				
 				if (selectedObject != null) 
-					selectedObject.setSelected(false);				
+					selectedObject.setSelected(false);
+					
+				Global.gameContainer.setSidebar(null);
 			}
 			
 			selectedObject = obj;
@@ -311,21 +315,18 @@
 				if (query) {
 					obj.setSelected(true);
 
-					if (obj is StructureObject) 
-						Global.mapComm.Object.getStructureInfo(obj as StructureObject);					
+					if (obj is StructureObject)
+						Global.mapComm.Object.getStructureInfo(obj as StructureObject);
 					else if (obj is TroopObject)
-						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);					
+						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);
 					else if (obj is Forest)
 						Global.mapComm.Object.getForestInfo(obj as Forest);
 					else
 						doSelectedObject(obj);
 				}
 				else
-					doSelectedObject(obj);				
+					doSelectedObject(obj);
 			}
-			
-			// Set focus back to the map so it doesn't break user scrolling
-			stage.focus = this;
 		}
 
 		private function doSelectedObject(obj: SimpleObject):void
@@ -406,7 +407,7 @@
 		public function eventMouseClick(event: MouseEvent):void
 		{
 			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4)
-			doSelectedObject(null);
+				doSelectedObject(null);
 		}
 
 		public function eventMouseDown(event: MouseEvent):void

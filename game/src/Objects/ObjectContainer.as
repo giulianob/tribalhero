@@ -95,7 +95,7 @@ package src.Objects {
 					if (obj.isSelectable())
 						multiObjects.push(obj);
 				}
-					
+				
 				if (multiObjects.length > 1)
 				{
 					var objectSelection: ObjectSelectDialog = new ObjectSelectDialog(multiObjects,

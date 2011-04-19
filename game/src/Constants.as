@@ -130,7 +130,7 @@ package src
 		};
 
 		public static const structureStatRanges: * = {
-			"defense": { min: 0, max: 5520 },
+			"defense": { min: 0, max: 800 },
 			"stealth": { min: 0, max: 17 },
 			"range": { min: 0, max: 11 }
 		};

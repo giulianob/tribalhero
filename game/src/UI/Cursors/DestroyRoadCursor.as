@@ -66,6 +66,7 @@ package src.UI.Cursors {
 			redrawLaterTimer.addEventListener(TimerEvent.TIMER, function(e: Event) : void {
 				redrawLaterTimer.stop();
 				destroyableArea.redraw();
+				validateBuilding();
 			});
 
 			src.Global.gameContainer.message.showMessage("Double click on a highlighted road to destroy it. Roads that are not highlighted may not be destroyed.");
@@ -107,6 +108,9 @@ package src.UI.Cursors {
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
+			if (!cursor.visible)
+				return;
+				
 			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) 
 				return;
 

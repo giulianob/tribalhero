@@ -61,6 +61,7 @@ package src.UI.Cursors {
 
 		public function update(e: Event = null) : void {
 			buildableArea.redraw();
+			validateBuilding();
 		}
 
 		public function dispose():void
@@ -94,6 +95,7 @@ package src.UI.Cursors {
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
+			if (!cursor.visible) return;
 			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
 
 			event.stopImmediatePropagation();
@@ -111,7 +113,7 @@ package src.UI.Cursors {
 		{
 			if (event.buttonDown) return;
 			
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
+			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, stage.mouseX), Math.max(0, stage.mouseY));
 			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
 
 			if (pos.x != objX || pos.y != objY)
@@ -122,9 +124,9 @@ package src.UI.Cursors {
 				//Object cursor
 				if (cursor.stage != null) 
 					Global.map.objContainer.removeObject(cursor);
-					
-				cursor.setX(objX); cursor.setY(objY);
-				cursor.moveWithCamera(src.Global.gameContainer.camera);
+				
+				cursor.setXY(objX, objY);
+				cursor.moveWithCamera(Global.gameContainer.camera);
 				
 				Global.map.objContainer.addObject(cursor);
 				

@@ -15,11 +15,15 @@ namespace Game.Comm
     {
         public void CmdCityCreate(Session session, Packet packet) {
             uint cityId;
-            uint objectId;
+            uint x;
+            uint y;
+            string cityName;
 
             try {
                 cityId = packet.GetUInt32();
-                objectId = packet.GetUInt32();
+                x = packet.GetUInt32();
+                y = packet.GetUInt32();
+                cityName = packet.GetString();
             } catch (Exception) {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -33,14 +37,8 @@ namespace Game.Comm
                     return;
                 }
 
-                Structure obj;
-                if (!city.TryGetStructure(objectId, out obj)) {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
-
-                var cityCreateAction = new CityCreateActiveAction(cityId, 0,0,session.Player+Config.Random.Next(9999).ToString());
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, cityCreateAction, obj.Technologies);
+                var cityCreateAction = new CityCreatePassiveAction(cityId, x, y, cityName);
+                Error ret = city.Worker.DoPassive(city[1], cityCreateAction, true);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else

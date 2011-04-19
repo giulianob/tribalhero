@@ -7,6 +7,6 @@ IRON_DESC,An ore used for advanced tasks. Iron can be acquired through the Refin
 UPKEEP_DESC,Amount of crop consumed every hour by the military.
 DEFENSE_POINTS_DESC,Defense points are acquired when your units kill enemy units. These points are not only acquired when your city is attacked but also when your units fight while stationed in other player's cities.
 ATTACK_POINTS_DESC,Attack points are acquired when you attack and kill enemy units.
-,
+NEW_CITY_DESC,Build a new city here. All of your existing cities must have a Town Center at level 10 or higher.
 FARMING_LABEL,Farming
 TIME_LEFT_LABEL,Time Left

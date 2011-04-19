@@ -15,7 +15,6 @@ namespace Game.Comm
     {
         public void CmdCityCreate(Session session, Packet packet) {
             uint cityId;
-            uint objectId;
             uint x;
             uint y;
             string cityName;

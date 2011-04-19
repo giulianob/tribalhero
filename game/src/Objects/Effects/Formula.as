@@ -151,6 +151,8 @@
 			for each (var effect: EffectPrototype in effects) {
 				rateBonus = Math.min(rateBonus, (int)(effect.param1) / 10);
 			}
+			if (effects.length > 1)
+				rateBonus *= Math.pow(0.92, effects.length - 1); // for every extra tribal gathering, you gain 10 % each
 			
 			return (43200 / (-6.845 * Math.log(laborTotal) + 55)) * rateBonus;
 		}

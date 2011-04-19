@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using Game.Database;
 using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -156,18 +157,29 @@ namespace Game.Logic
             return !IsDone;
         }
 
-        public static double CalculateTime(int seconds, bool instantAction = true)
+        public double CalculateTime(int seconds, bool instantAction = true)
         {
             return CalculateTime((double)seconds, instantAction);
         }
 
-        public static double CalculateTime(double seconds, bool instantAction = true)
-        {
+        public double CalculateTime(double seconds, bool instantAction = true)
+        {            
+#if DEBUG            
+            string customTime;
+            string key = "actions_" + Type.ToString().ToUnderscore();
+            if (Config.ExtraProperties.TryGetValue(key, out customTime))            
+                return double.Parse(customTime);            
+
             if (!instantAction)
                 return seconds * Config.seconds_per_unit;
 
             return Config.actions_instant_time ? 1 : seconds * Config.seconds_per_unit;
+#else
+            return seconds * Config.seconds_per_unit;
+#endif
+
         }
+
 
     }
 }

@@ -149,7 +149,7 @@ namespace Game.Module
                     int flow = outgoing - incoming;
                     if (Global.World.Players.Count > 0)
                     {
-                        price += (flow/(quantityPerChangePerPlayer*Global.World.GetActivePlayerCount()));
+                        price += (flow/Math.Max(1,quantityPerChangePerPlayer*Global.World.GetActivePlayerCount()));
                         if (price < MIN_PRICE)
                             price = MIN_PRICE;
                         if (price > MAX_PRICE)

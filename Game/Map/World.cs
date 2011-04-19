@@ -269,7 +269,6 @@ namespace Game.Map
                 city.EndUpdate();
 
                 Cities.Remove(city.Id);
-                cityIdGen.Release((int)city.Id);
             }
         }
 

@@ -10,6 +10,7 @@
 	import src.Global;
 	import src.Objects.AggressiveLazyValue;
 	import src.Objects.Forest;
+	import src.Objects.States.GameObjectState;
 
 	/**
 	 * ...
@@ -41,9 +42,9 @@
 			return sprite;
 		}
 
-		public static function getInstance(type: int, objX: int, objY: int, groupId: int, objectId: int, level: int): Forest
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int, level: int): Forest
 		{
-			var forestObj: Forest = new Forest(type, objX, objY, groupId, objectId, level);
+			var forestObj: Forest = new Forest(type, state, objX, objY, groupId, objectId, level);
 
 			forestObj.addChild(ObjectFactory.makeIntoShadow(getSprite(level)));
 			forestObj.addChild(getSprite(level));

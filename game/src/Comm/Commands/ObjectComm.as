@@ -92,11 +92,11 @@
 			switch(ObjectFactory.getClassType(objType)) {
 				case ObjectFactory.TYPE_STRUCTURE:
 					var wallRadius: int = objId == 1 ? packet.readUByte() : 0;
-					return StructureFactory.getInstance(objType, coord.x, coord.y, objPlayerId, objGroupId, objId, objLvl, wallRadius);
+					return StructureFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId, objLvl, wallRadius);
 				case ObjectFactory.TYPE_FOREST:
-					return ForestFactory.getInstance(objType, coord.x, coord.y, objGroupId, objId, objLvl);
+					return ForestFactory.getInstance(objType, objState, coord.x, coord.y, objGroupId, objId, objLvl);
 				case ObjectFactory.TYPE_TROOP_OBJ:
-					return TroopFactory.getInstance(objType, coord.x, coord.y, objPlayerId, objGroupId, objId);
+					return TroopFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId);
 			}
 			
 			return null;
@@ -331,11 +331,9 @@
 
 		public function onReceiveStructureInfo(packet: Packet, custom: *):void
 		{
-			if (MapComm.tryShowError(packet)) return;
+			if (MapComm.tryShowError(packet, null, false, [400])) return;
 
 			var obj:StructureObject = custom as StructureObject;
-			if (obj.disposed)
-				return;
 
 			obj.clearProperties();
 

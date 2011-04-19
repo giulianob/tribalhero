@@ -17,7 +17,7 @@ Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
 2402,1,AwayFrom,2402,1,20,5,255,255
 ,,,,,,,,
 //Build tribal festival @farm,,,,,,,,
-3002,1,Simple,2000,1,20,0,6,1
+3002,1,Simple,2000,1,20,0,10,1
 ,,,,,,,,
 //Build fields @farm,,,,,,,,
 3011,1,Simple,2106,1,20,0,2,1

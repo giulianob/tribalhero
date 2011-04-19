@@ -186,7 +186,7 @@
 		private function clearPlaceholders(x: int, y: int) : void
 		{
 			var coord: Point = MapUtil.getScreenCoord(x, y);
-			var objs: Array = placeHolders.getRange([x, y]);
+			var objs: Array = placeHolders.getRange([coord.x, coord.y]);
 			
 			for each (var obj: SimpleObject in objs)
 				map.objContainer.removeObject(obj);

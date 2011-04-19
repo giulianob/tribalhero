@@ -65,7 +65,7 @@ namespace Game.Map
         {
             lock (objLock)
             {
-                Location loc = obj.GetCityRegionLocation();
+                Location loc = obj.CityRegionLocation;
                 if (loc.X != origX || loc.Y != origY)
                 {
                     Remove(obj);
@@ -89,7 +89,12 @@ namespace Game.Map
                             bw.Write((ushort)data.Count);
                             foreach (var obj in data)
                             {
-                                bw.Write((byte)obj.GetCityRegionType());
+                                bw.Write((byte)obj.CityRegionType);
+                                bw.Write(obj.CityRegionRelX);
+                                bw.Write(obj.CityRegionRelY);
+                                bw.Write(obj.CityRegionGroupId);
+                                bw.Write(obj.CityRegionObjectId);
+
                                 bw.Write(obj.GetCityRegionObjectBytes());
                             }
 

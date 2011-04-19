@@ -89,15 +89,18 @@ package src.Objects {
 			if (highlightedObject && !ignoreClick)
 			{
 				var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [highlightedObject.getX(), highlightedObject.getY()]);
-				if (idxs.length > 1)
+				var multiObjects: Array = new Array();
+				for each(var idx: int in idxs) {
+					var obj: SimpleObject = objects.getByIndex(idx);
+					if (obj.isSelectable())
+						multiObjects.push(obj);
+				}
+					
+				if (multiObjects.length > 1)
 				{
-					var multiObjects: Array = new Array();
-					for each(var idx: int in idxs)
-					multiObjects.push(objects.getByIndex(idx));
-
 					var objectSelection: ObjectSelectDialog = new ObjectSelectDialog(multiObjects,
 					function(sender: ObjectSelectDialog):void {
-						Global.map.selectObject((sender as ObjectSelectDialog).selectedObject, true, true);
+						Global.map.selectObject((sender as ObjectSelectDialog).selectedObject);
 						sender.getFrame().dispose();
 					}
 					);
@@ -150,6 +153,7 @@ package src.Objects {
 			
 			resetDimmedObjects();			
 
+			var selectableCnt: int = 0;
 			var overlapping: Array = new Array();
 			var found: Boolean = false;
 			var highestObj: SimpleObject = null;
@@ -162,6 +166,8 @@ package src.Objects {
 				obj = objSpace.getChildAt(i) as SimpleObject;
 
 				if (!obj || !obj.visible || !obj.isSelectable()) continue;
+				
+				selectableCnt++;
 
 				if (obj is GameObject) 
 				{
@@ -184,13 +190,14 @@ package src.Objects {
 				}
 			}
 
-			if (!found && objects.length == 1)
+			if (!found && selectableCnt == 1)
 			{
 				highestObj = objects[0];
 				found = true;
 			}
 
-			if (!found && !highestObj) return;			
+			if (!found && !highestObj) 
+				return;			
 			
 			// If we still have the same highest obj then stop here
 			if (highlightedObject == highestObj) {
@@ -229,8 +236,17 @@ package src.Objects {
 			var idxs: Array = Util.binarySearchRange(this.objects.each(), SimpleObject.compareXAndY, [highestObj.getX(), highestObj.getY()]);
 			if (idxs.length > 1)
 			{
-				objTooltip = new TextTooltip(idxs.length + " objects in this space. Click to view all");
-				objTooltip.show(highestObj);
+				selectableCnt = 0;
+				for each (var idx: int in idxs) {
+					obj = this.objects.getByIndex(idx);
+					if (obj.isSelectable())
+						selectableCnt++;
+				}
+				
+				if (selectableCnt > 1) {
+					objTooltip = new TextTooltip(idxs.length + " objects in this space. Click to view all");
+					objTooltip.show(highestObj);
+				}
 			}
 
 			if (!objTooltip) {
@@ -311,6 +327,9 @@ package src.Objects {
 
 			if (layer == 0 && obj is SimpleObject)
 			{
+				if (Global.map.selectedObject && Global.map.selectedObject == obj)
+					Global.map.selectObject(null);
+							
 				var idxs: Array = Util.binarySearchRange(objects.each(), SimpleObject.compareXAndY, [obj.getX(), obj.getY()]);
 
 				var found: Boolean = false;
@@ -321,8 +340,8 @@ package src.Objects {
 					if (obj == currObj)
 					{
 						objects.removeByIndex(idx);
-						if (dispose) 
-							currObj.dispose();						
+						if (dispose)
+							currObj.dispose();	
 						found = true;
 						break;
 					}

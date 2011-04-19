@@ -4,6 +4,7 @@
 	import flash.geom.Point;
 	import src.Global;
 	import src.Objects.GameObject;
+	import src.Objects.SimpleObject;
 	import src.Util.Util;
 	import src.Objects.SimpleGameObject;
 	import src.Util.BinaryList.*;
@@ -37,17 +38,16 @@
 
 			newObj.copy(obj);
 			region.removeObject(obj.groupId, obj.objectId);
-			obj = addObject(regionId, newObj);
+			addObject(regionId, newObj);
 			if (!newObj.equalsOnMap(obj))
-				obj.fadeIn();			
-			obj = newObj;
+				newObj.fadeIn();						
 			
 			if (reselect) 
-				Global.map.selectObject(obj);
+				Global.map.selectObject(newObj);
 			
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+			newObj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
 			
-			return obj;			
+			return newObj;			
 		}
 
 		public function removeObjectByObj(obj: SimpleGameObject):void {
@@ -60,11 +60,8 @@
 
 			if (region == null)
 				return;
-
+			
 			var obj: SimpleGameObject = region.removeObject(groupId, objId);
-
-			if (Global.map.selectedObject == obj)
-				Global.map.selectObject(null);
 		}
 
 		public function moveObject(oldRegionId: int, newRegionId: int, newObj: SimpleGameObject): SimpleGameObject
@@ -74,19 +71,27 @@
 			if (oldRegion == null)
 				return null;
 
-			var gameObject: SimpleGameObject = oldRegion.removeObject(newObj.groupId, newObj.objectId, false);
+			var reselect: Boolean = Global.map.selectedObject != null && Global.map.selectedObject is SimpleGameObject && newObj.equalById(Global.map.selectedObject);
+			
+			var obj: SimpleGameObject = oldRegion.removeObject(newObj.groupId, newObj.objectId);
 
-			if (gameObject == null)
+			if (obj == null)
 				return null;
 
-			var newRegion:Region = get(newRegionId);
-
+			var newRegion:Region = get(newRegionId);			
+			
 			if (newRegion == null)
-				return gameObject;
-
-			newRegion.addObject(gameObject);
-
-			return updateObject(newRegionId, newObj);
+				return null;
+			
+			newObj.copy(obj);
+			newRegion.addObject(newObj);
+				
+			if (reselect) 
+				Global.map.selectObject(newObj);
+			
+			newObj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+			
+			return newObj;
 		}
 
 		public function getObjectsAt(x: int, y: int, objClass: Class = null): Array
@@ -143,12 +148,7 @@
 			}
 
 			var obj:SimpleGameObject = region.addObject(obj);
-
-			if (!obj)
-				return null;
-
-			obj.moveWithCamera(Global.gameContainer.camera);
-
+			
 			return obj;
 		}
 	}

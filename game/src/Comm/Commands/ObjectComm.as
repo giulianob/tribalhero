@@ -334,6 +334,8 @@
 			if (MapComm.tryShowError(packet)) return;
 
 			var obj:StructureObject = custom as StructureObject;
+			if (obj.disposed)
+				return;
 
 			obj.clearProperties();
 

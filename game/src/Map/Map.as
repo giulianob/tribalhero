@@ -256,18 +256,21 @@
 		//###################################################################
 		//#################### Object Manipulation ##########################
 		//###################################################################
-		public function selectWhenViewable(cityId: int, objectId: int) : void {
+		public function selectWhenViewable(groupId: int, objectId: int) : void {
 			selectObject(null);
 
 			selectViewable = null;
-			for each(var gameObject: GameObject in objContainer.objects.each()) {
-				if (SimpleGameObject.compareGroupIdAndObjId(gameObject, [cityId, objectId]) == 0) {
+			for each(var gameObject: SimpleObject in objContainer.objects.each()) {
+				if (!(gameObject is SimpleGameObject)) 
+					continue;
+				
+				if (SimpleGameObject.compareGroupIdAndObjId(gameObject as SimpleGameObject, [groupId, objectId]) == 0) {
 					selectObject(gameObject, true, false);
 					return;
 				}
 			}
 
-			selectViewable = { 'cityId' : cityId, 'objectId': objectId };
+			selectViewable = { 'groupId' : groupId, 'objectId': objectId };
 		}
 
 		public function selectObject(obj: SimpleObject, query: Boolean = true, deselectIfSelected: Boolean = false ):void
@@ -293,10 +296,10 @@
 				Global.gameContainer.setSidebar(null);
 
 				if (selectedObject != null) 
-					selectedObject.setSelected(false);
-
-				selectedObject = obj;
+					selectedObject.setSelected(false);				
 			}
+			
+			selectedObject = obj;
 
 			if (obj != null)
 			{

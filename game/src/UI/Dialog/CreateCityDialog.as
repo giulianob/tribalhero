@@ -43,7 +43,6 @@ package src.UI.Dialog{
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
 		{
 			super.showSelf(owner, modal, onClose);
-			frame.setClosable(false);
 			Global.gameContainer.showFrame(frame);
 
 			return frame;

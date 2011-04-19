@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.Comm;
+using System.Linq;
 using Game.Data;
-using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Module;
@@ -81,19 +80,21 @@ namespace Game.Logic.Actions {
             if (!Global.World.IsValidXandY(x, y))
                 return Error.ActionInvalid;
 
+            // cost requirement uses town center lvl 1 for cost
+            var cost = Formula.StructureCost(city, ObjectTypeFactory.GetTypes("MainBuilding")[0], 1);
+            if (!city.Resource.HasEnough(cost))            
+                return Error.ResourceNotEnough;            
+
+            // make sure all cities are at least level 10
+            if (city.Owner.GetCityList().Any(c => c.Lvl < 10))
+                return Error.EffectRequirementNotMet;
+
             Global.World.LockRegion(x, y);
 
             if (!ObjectTypeFactory.IsTileType("CityStartTile", Global.World.GetTileType(x, y)))
             {
                 Global.World.UnlockRegion(x, y);
                 return Error.TileMismatch;
-            }
-
-            // cost requirement
-            var cost = Formula.StructureCost(city, ObjectTypeFactory.GetTypes("MainBuilding")[0], 1);
-            if (!city.Resource.HasEnough(cost)) {
-                Global.World.UnlockRegion(x, y);
-                return Error.ResourceNotEnough;
             }
 
             // check if tile is occupied

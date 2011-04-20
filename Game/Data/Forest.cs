@@ -18,7 +18,7 @@ using Game.Util;
 
 namespace Game.Data
 {
-    public class Forest : SimpleGameObject, IPersistableObject, IEnumerable<Structure>, ICityRegionObject
+    public class Forest : SimpleGameObject, IHasLevel, IPersistableObject, IEnumerable<Structure>, ICityRegionObject
     {
         public const string DB_TABLE = "forests";
         private readonly byte lvl = 1;
@@ -51,7 +51,15 @@ namespace Game.Data
             }
         }
 
-        public override byte Lvl
+        public override uint GroupId
+        {
+            get
+            {
+                return (uint)SystemGroupIds.Forest;
+            }
+        }
+
+        public byte Lvl
         {
             get
             {
@@ -224,7 +232,7 @@ namespace Game.Data
 
         public override void CheckUpdateMode()
         {
-            if (!Global.FireEvents || objectId == 0)
+            if (!Global.FireEvents || !DbPersisted)
                 return;
 
             if (!updating)
@@ -325,9 +333,12 @@ namespace Game.Data
 
         #region Implementation of ICityRegionObject
 
-        public Location GetCityRegionLocation()
+        public Location CityRegionLocation
         {
-            return new Location(X, Y);
+            get
+            {
+                return new Location(X, Y);
+            }
         }
 
         public byte[] GetCityRegionObjectBytes()
@@ -336,17 +347,33 @@ namespace Game.Data
             {
                 var bw = new BinaryWriter(ms);
                 bw.Write(Lvl);
-                bw.Write(objectId);
-                bw.Write((ushort)(CityRegionRelX));
-                bw.Write((ushort)(CityRegionRelY));
                 ms.Position = 0;
                 return ms.ToArray();
             }
         }
 
-        public CityRegion.ObjectType GetCityRegionType()
+        public CityRegion.ObjectType CityRegionType
         {
-            return CityRegion.ObjectType.Forest;
+            get
+            {
+                return CityRegion.ObjectType.Forest;
+            }
+        }
+
+        public uint CityRegionGroupId
+        {
+            get
+            {
+                return GroupId;
+            }
+        }
+
+        public uint CityRegionObjectId
+        {
+            get
+            {
+                return ObjectId;
+            }
         }
 
         #endregion

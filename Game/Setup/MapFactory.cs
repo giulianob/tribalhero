@@ -16,7 +16,7 @@ namespace Game.Setup
         private const int SKIP = 1; 
 
         public static void Init(string filename)
-        {
+        {            
             using (var reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
                 String line;
@@ -36,10 +36,14 @@ namespace Game.Setup
             x = 0;
             y = 0;
 
+            SystemVariable mapStartIndex;
+            if (Global.SystemVariables.TryGetValue("Map.start_index", out mapStartIndex) && index == 0)
+                index = (int)mapStartIndex.Value;            
+
             do {
-                if(index>=dict.Count)                
+                if(index >= dict.Count)                
                     return false;
-                
+
                 Point point = dict[index];
                 index += SKIP;
                 
@@ -58,8 +62,16 @@ namespace Game.Setup
                 x = point.X;
                 y = point.Y;
 
-                return true;
+                break;
             } while (true);
+
+            if (mapStartIndex != null)
+            {
+                mapStartIndex.Value = index;
+                Global.DbManager.Save(mapStartIndex);
+            }
+
+            return true;
         }
 
         #region Nested type: Point

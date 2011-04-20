@@ -188,6 +188,21 @@ namespace Game.Database.Managers
             return true;
         }
 
+        public void DeleteDependencies(IPersistable obj)
+        {
+            Type objType = obj.GetType();
+            foreach (var dependency in obj.DbDependencies)
+            {
+                if (!dependency.AutoDelete)
+                    continue;
+
+                PropertyInfo propInfo = objType.GetProperty(dependency.Property);
+                var persistable = propInfo.GetValue(obj, null) as IPersistable;
+                if (persistable != null)
+                    Delete(persistable);
+            }
+        }
+
         public DbDataReader Select(string table)
         {
             MySqlConnection connection = GetConnection();

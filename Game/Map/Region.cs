@@ -133,24 +133,20 @@ namespace Game.Map
                             var bw = new BinaryWriter(ms);
                             bw.Write(Count);
                             foreach (SimpleGameObject obj in objlist)
-                            {
-                                bw.Write(obj.Lvl);
+                            {                                
                                 bw.Write(obj.Type);
-
-                                if (obj is GameObject)
-                                {
-                                    bw.Write(((GameObject)obj).City.Owner.PlayerId);
-                                    bw.Write(((GameObject)obj).City.Id);
-                                }
-                                else
-                                {
-                                    bw.Write((uint)0);
-                                    bw.Write((uint)0);
-                                }
-
-                                bw.Write(obj.ObjectId);
                                 bw.Write((ushort)(obj.RelX));
                                 bw.Write((ushort)(obj.RelY));
+
+                                bw.Write(obj.GroupId);
+                                bw.Write(obj.ObjectId);
+
+                                if (obj is GameObject)
+                                    bw.Write(((GameObject)obj).City.Owner.PlayerId);                                
+
+                                if (obj is IHasLevel)
+                                    bw.Write(((IHasLevel)obj).Lvl);
+                                                                
                                 bw.Write((byte)obj.State.Type);
                                 foreach (var parameter in obj.State.Parameters)
                                 {

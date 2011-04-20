@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 #endregion
@@ -116,13 +117,20 @@ namespace Game.Util
             return false;
         }
 
-        public int SubscriptionCount(IChannel session)
+        public int SubscriptionCount(IChannel session = null)
         {
             lock (channelLock)
             {
-                Subscriber sub;
-                if (subscribersBySession.TryGetValue(session, out sub))
-                    return sub.Channels.Count;
+                if (session != null)
+                {
+                    Subscriber sub;
+                    if (subscribersBySession.TryGetValue(session, out sub))
+                        return sub.Channels.Count;
+                }
+                else
+                {
+                    return subscribersByChannel.Values.Sum(subscription => subscription.Count);
+                }
             }
 
             return 0;

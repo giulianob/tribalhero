@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using JsonFx.Json;
@@ -99,6 +100,16 @@ namespace Game.Setup
         public static readonly bool actions_instant_time;
         public static readonly int actions_free_cancel_interval_in_sec = 60;
         public static readonly bool actions_ignore_requirements = false;
+
+        private static readonly Dictionary<string, string> extraProperties = new Dictionary<string, string>();
+
+        public static Dictionary<string, string> ExtraProperties
+        {
+            get
+            {
+                return extraProperties;
+            }
+        }
         // ReSharper restore InconsistentNaming
 
         static Config()
@@ -152,6 +163,13 @@ namespace Game.Setup
 
                         Type type = Type.GetType("Game.Setup.Config");
                         FieldInfo field = type.GetField(key, BindingFlags.Public | BindingFlags.Static);
+
+                        if (field == null)
+                        {
+                            extraProperties[key] = value;
+                            continue;
+                        }
+
                         switch(field.FieldType.FullName)
                         {
                             case "System.Boolean":

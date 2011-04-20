@@ -18,5 +18,10 @@ namespace Game.Util
         {
             return str.Replace('_', ' ').ToUpperWords().Replace(" ", "");
         }
+
+        public static string ToUnderscore(this String str)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(str, "([A-Z])", "_$1", System.Text.RegularExpressions.RegexOptions.Compiled).ToLower().Trim(new[] { '_', ' ', });
+        }
     }
 }

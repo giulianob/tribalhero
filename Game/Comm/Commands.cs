@@ -125,8 +125,9 @@ namespace Game.Comm
         CityBattleStarted = 490,
         CityBattleEnded = 491,
 
+        CityNewUpdate = 497,
         CityCreate = 498,
-        CityCreateInitial = 499,
+        CityCreateInitial = 499,        
 
         #endregion
 

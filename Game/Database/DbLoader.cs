@@ -140,6 +140,9 @@ namespace Game.Database
             if (!Global.SystemVariables.ContainsKey("System.time"))
                 Global.SystemVariables.Add("System.time", new SystemVariable("System.time", DateTime.UtcNow));
 
+            if (!Global.SystemVariables.ContainsKey("Map.start_index"))
+                Global.SystemVariables.Add("Map.start_index", new SystemVariable("Map.start_index", 0));
+
             #endregion
         }
 

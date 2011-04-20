@@ -88,8 +88,18 @@ namespace Game.Setup
         DefendSelf = 602,
         BattleNotViewable = 603,
         TroopChanged = 604,
-        TooManyTroops = 605
+        TooManyTroops = 605,
 
         #endregion
+
+        #region Tribe Errors
+        TribeFull = 701,
+        TribeIsNull = 702,
+        TribesmanNotFound = 721,
+        TribesmanAlreadyExists = 722,
+        TribesmanIsOwner = 723,
+        TribesmanAlreadyInTribe = 724,
+        #endregion
+
     }
 }

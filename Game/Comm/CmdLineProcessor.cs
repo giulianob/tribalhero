@@ -26,6 +26,13 @@ namespace Game.Comm
             RegisterCommand(CmdLineCommand.Unban, CmdUnbanPlayer);
             RegisterCommand(CmdLineCommand.Delete, CmdDeletePlayer);
             RegisterCommand(CmdLineCommand.SendResources, CmdSendResources);
+
+            RegisterCommand(CmdLineCommand.TribeInfo, CmdTribeInfo);
+            RegisterCommand(CmdLineCommand.TribeCreate, CmdTribeCreate);
+            RegisterCommand(CmdLineCommand.TribeUpdate, CmdTribeUpdate);
+            RegisterCommand(CmdLineCommand.TribesmanAdd, CmdTribesmanAdd);
+            RegisterCommand(CmdLineCommand.TribesmanRemove, CmdTribesmanRemove);
+            RegisterCommand(CmdLineCommand.TribeIncomingList, CmdTribeIncomingList);
         }
 
         protected void RegisterCommand(CmdLineCommand cmd, DoWork func)

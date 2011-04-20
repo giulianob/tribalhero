@@ -61,6 +61,19 @@ namespace Game.Comm
             RegisterCommand(Command.CityResourceSend, CmdSendResources);
             RegisterCommand(Command.ResourceGather, CmdResourceGather);
             RegisterCommand(Command.CityCreate, CmdCityCreate);
+            RegisterCommand(Command.TribeInfo, CmdTribeInfo);
+            RegisterCommand(Command.TribeCreate, CmdTribeCreate);
+            RegisterCommand(Command.TribeDelete, CmdTribeDelete);
+            RegisterCommand(Command.TribeUpdate, CmdTribeUpdate);
+            RegisterCommand(Command.TribeUpgrade, CmdTribeUpgrade);
+            RegisterCommand(Command.TribesmanAdd, CmdTribesmanAdd);
+            RegisterCommand(Command.TribesmanRemove, CmdTribesmanRemove);
+            RegisterCommand(Command.TribesmanUpdate, CmdTribesmanUpdate);
+            RegisterCommand(Command.TribeAssignementList, CmdTribeAssignmentList);
+            RegisterCommand(Command.TribeAssignementCreate, CmdTribeAssignmentCreate);
+            RegisterCommand(Command.TribeAssignementJoin, CmdTribeAssignmentJoin);
+            RegisterCommand(Command.TribeIncomingList, CmdTribeIncomingList);
+
 
             RegisterEvent(Command.OnDisconnect, EventOnDisconnect);
             RegisterEvent(Command.OnConnect, EventOnConnect);

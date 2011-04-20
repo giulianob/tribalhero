@@ -46,6 +46,8 @@ namespace Game.Data
 
         public bool Admin { get; set; }
 
+        public Data.Tribe.Tribe Tribe { get; set; }
+
         #region ILockable Members
 
         public int Hash

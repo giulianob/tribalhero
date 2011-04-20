@@ -48,11 +48,14 @@ namespace Game.Data
             FireEvents = true;
             SystemVariables = new Dictionary<string, SystemVariable>();
             World = new World();
+            Tribes = new Dictionary<uint, Tribe.Tribe>();
         }
 
         public static World World { get; private set; }
 
         public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
+
+        public static Dictionary<uint,Tribe.Tribe> Tribes { get; private set; }
 
         public static bool FireEvents { get; set; }
 

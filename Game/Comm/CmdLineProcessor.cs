@@ -14,7 +14,7 @@ namespace Game.Comm
     {
         #region Delegates
 
-        public delegate string DoWork(string[] parms);
+        public delegate string DoWork(Session session, string[] parms);
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace Game.Comm
             commands[cmd] = new ProcessorCommand(func);
         }
 
-        public string Execute(string cmd, string parms)
+        public string Execute(Session session, string cmd, string parms)
         {
             switch(cmd)
             {
@@ -67,7 +67,7 @@ namespace Game.Comm
             ProcessorCommand cmdWorker;
             return !commands.TryGetValue(cmdCode, out cmdWorker)
                            ? "Command not registered"
-                           : commands[cmdCode].Function(CmdParserExtension.SplitCommandLine(parms).ToArray());
+                           : commands[cmdCode].Function(session,CmdParserExtension.SplitCommandLine(parms).ToArray());
         }
 
         private string GetCommandList()

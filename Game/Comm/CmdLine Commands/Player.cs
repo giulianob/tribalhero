@@ -13,7 +13,7 @@ namespace Game.Comm
 {
     partial class CmdLineProcessor
     {
-        public string CmdBanPlayer(string[] parms)
+        public string CmdBanPlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -36,7 +36,7 @@ namespace Game.Comm
             return response.Success ? "OK!" : response.ErrorMessage;
         }
 
-        public string CmdUnbanPlayer(string[] parms)
+        public string CmdUnbanPlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -59,7 +59,7 @@ namespace Game.Comm
             return response.Success ? "OK!" : response.ErrorMessage;
         }
 
-        public string CmdDeletePlayer(string[] parms)
+        public string CmdDeletePlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;

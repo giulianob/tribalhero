@@ -46,7 +46,7 @@ namespace Game.Comm
 
             string parms = cmdParts.Length == 2 ? cmdParts[1] : string.Empty;
 
-            string output = CmdLineProcessor.Execute(cmdParts[0].Trim(), parms);
+            string output = CmdLineProcessor.Execute(session,cmdParts[0].Trim(), parms);
 
             reply.AddString(output);
             session.Write(reply);

@@ -11,7 +11,7 @@ namespace Game.Comm
 {
     public partial class CmdLineProcessor
     {
-        public string CmdSendResources(string[] parms)
+        public string CmdSendResources(Session session, string[] parms)
         {
             var resource = new Resource();
             string cityName = string.Empty;

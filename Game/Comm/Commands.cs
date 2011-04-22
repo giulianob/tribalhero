@@ -183,11 +183,15 @@ namespace Game.Comm
         TribesmanAdd = 911,
         TribesmanRemove = 912,
         TribesmanUpdate = 913,
+        TribesmanRequest = 914,
+        TribesmanConfirm = 915,
         TribeAssignementList = 921,
         TribeAssignementCreate = 922,
         TribeAssignementJoin = 923,
         TribeIncomingList = 931,
 
+
+        TribeChannelUpdate = 951,
         #endregion
     }
 }

@@ -95,10 +95,15 @@ namespace Game.Setup
         #region Tribe Errors
         TribeFull = 701,
         TribeIsNull = 702,
+        TribeAlreadyExists =703,
+        TribeNotFound = 704,
         TribesmanNotFound = 721,
         TribesmanAlreadyExists = 722,
         TribesmanIsOwner = 723,
         TribesmanAlreadyInTribe = 724,
+        TribesmanNotAuthorized = 725,
+        TribesmanPendingRequest = 726,
+        TribesmanNoRequest = 727,
         #endregion
 
     }

@@ -46,7 +46,30 @@ namespace Game.Data
 
         public bool Admin { get; set; }
 
-        public Data.Tribe.Tribe Tribe { get; set; }
+        public Data.Tribe.Tribe Tribe {
+            get
+            {
+                return Tribe;
+            }
+            set 
+            {
+                Tribe = value;
+                TribeUpdate();
+            }
+        }
+
+        public uint TribeRequest
+        {
+            get
+            {
+                return TribeRequest;
+            }  
+            set
+            {
+                TribeRequest = value;
+                TribeUpdate();
+            }
+        }
 
         #region ILockable Members
 
@@ -87,6 +110,7 @@ namespace Game.Data
                                new DbColumn("name", Name, DbType.String, 32), new DbColumn("created", Created, DbType.DateTime),
                                new DbColumn("last_login", LastLogin, DbType.DateTime), new DbColumn("session_id", SessionId, DbType.String, 128),
                                new DbColumn("online", Session != null, DbType.Boolean), new DbColumn("admin", Admin, DbType.Boolean),
+                               new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32), 
                        };
             }
         }
@@ -147,6 +171,17 @@ namespace Game.Data
                                            new DbColumn("message", message, DbType.String), new DbColumn("sender_state", 2, DbType.Int16),
                                            new DbColumn("recipient_state", 0, DbType.Int16),
                                    });
+        }
+
+        public void TribeUpdate()
+        {
+            if (!Global.FireEvents )
+                return;
+
+            var packet = new Packet(Command.TribeChannelUpdate);
+            packet.AddUInt32(Tribe.Id);
+            packet.AddUInt32(TribeRequest);
+            Global.Channel.Post("/PLAYER/" + PlayerId, packet);
         }
     }
 }

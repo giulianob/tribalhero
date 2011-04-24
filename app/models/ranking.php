@@ -241,7 +241,7 @@ class Ranking extends AppModel {
         for ($i = 0; $i < $cityCount; ++$i) {
             $city = $cities[$i];
 
-            $rankings[] = '(' . $city['City']['player_id'] . "," . $city['City']['id'] . "," . ($i + 1) . "," . $type . "," . $city[0]['value'] . ')';
+            $rankings[] = '(' . $city['City']['player_id'] . ",0," . ($i + 1) . "," . $type . "," . $city[0]['value'] . ')';
 
             if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($cities) - 1) {
                 $this->getDataSource()->insertMulti($this->table, $fields, $rankings);

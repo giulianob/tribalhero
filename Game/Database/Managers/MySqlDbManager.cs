@@ -398,6 +398,9 @@ namespace Game.Database.Managers
 
             while (reader.Read())
             {
+                if ((String)reader[0] == "schema_migrations")
+                    continue;
+
                 MySqlConnection truncateConnection = GetConnection();
                 MySqlCommand truncateCommand = connection.CreateCommand();
                 truncateCommand.CommandText = string.Format("TRUNCATE TABLE `{0}`", reader[0]);

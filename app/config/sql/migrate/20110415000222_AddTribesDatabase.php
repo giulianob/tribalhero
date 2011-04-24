@@ -19,7 +19,7 @@ class AddTribesDatabase extends Ruckusing_BaseMigration {
 		$table = $this->create_table('tribes', array('options' => 'Engine=InnoDB', 'id' => false));
         $table->column("id", "integer", array('auto_increment' => false, 'primary_key' => true, 'unsigned' => true));
 		$table->column("name", "string", array('length' => 20));
-		$table->column("desc", "string", array('length' => 1024));
+		$table->column("desc", "text", array('null' => false, 'default' => ''));
 		$table->column("level", "boolean", array('limit' => 3, 'unsigned' => true));
         $table->column("owner_id", "integer", array('null' => false, 'unsigned' => true));
         $table->finish();		

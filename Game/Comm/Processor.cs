@@ -22,6 +22,7 @@ namespace Game.Comm
         public Processor()
         {
             RegisterCommand(Command.Login, CmdLogin);
+            RegisterCommand(Command.PlayerProfile, CmdGetProfile);
             RegisterCommand(Command.CmdLine, CmdLineCommand);
             RegisterCommand(Command.CityCreateInitial, CmdCreateInitialCity);
             RegisterCommand(Command.QueryXml, CmdQueryXml);

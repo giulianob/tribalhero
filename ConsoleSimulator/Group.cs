@@ -25,7 +25,7 @@ namespace ConsoleSimulator
 
         public Group()
         {
-            player = new Player(player_id, DateTime.MinValue, SystemClock.Now, "player " + player_id, false);
+            player = new Player(player_id, DateTime.MinValue, SystemClock.Now, "player " + player_id, string.Empty, false);
             player_id++;
             var main =
                     new Structure(

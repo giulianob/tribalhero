@@ -28,6 +28,7 @@ namespace Game.Comm
         PlayerUsernameGet = 12,
         CityUsernameGet = 13,
         PlayerNameFromCityName = 14,
+        PlayerProfile = 20,
 
         #endregion
 

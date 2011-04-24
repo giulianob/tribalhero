@@ -153,7 +153,7 @@ namespace Game.Comm
                 {
                     Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
 
-                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, admin, sessionId);
+                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, admin, sessionId);
 
                     Global.World.Players.Add(player.PlayerId, player);
                 }

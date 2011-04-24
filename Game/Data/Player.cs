@@ -15,14 +15,15 @@ namespace Game.Data
     public class Player : ILockable, IPersistableObject
     {
         public const string DB_TABLE = "players";
+        public const int MAX_DESCRIPTION_LENGTH = 1000;
         private readonly List<City> list = new List<City>();
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin)
-                : this(playerid, created, lastLogin, name, admin, string.Empty)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin)
+                : this(playerid, created, lastLogin, name, description, admin, string.Empty)
         {
         }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, bool admin, string sessionId)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description,bool admin, string sessionId)
         {
             PlayerId = playerid;
             LastLogin = lastLogin;
@@ -30,6 +31,7 @@ namespace Game.Data
             Name = name;
             SessionId = sessionId;
             Admin = admin;
+            this.description = description;
         }
 
         public Session Session { get; set; }
@@ -45,6 +47,25 @@ namespace Game.Data
         public string SessionId { get; set; }
 
         public bool Admin { get; set; }
+
+        private string description = string.Empty;
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
+            set
+            {
+                description = value;
+
+                if (DbPersisted)
+                {
+                    Global.DbManager.Query("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1",
+                                           new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) });
+                }
+            }
+        }
 
         private Tribe.Tribesman tribesman;
         public Tribe.Tribesman Tribesman {

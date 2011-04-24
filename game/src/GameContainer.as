@@ -107,7 +107,11 @@
 			barBg = new barBgClass() as DisplayObject;
 			addChildAt(barBg, 1);
 
-			// Hide the new count bubble for messaged and reports
+			// Hide the menu bubbles
+			tribeInviteRequest.visible = false;
+			tribeInviteRequest.mouseChildren = false;
+			tribeInviteRequest.mouseEnabled = false;
+			
 			txtUnreadMessages.visible = false;
 			txtUnreadMessages.mouseChildren = false;
 			txtUnreadMessages.mouseEnabled = false;
@@ -165,6 +169,9 @@
 			new SimpleTooltip(btnCityTroops, "View unit movement");
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
 			
+			new SimpleTooltip(btnTribe, "View tribe");
+			btnTribe.addEventListener(MouseEvent.CLICK, onViewTribe);
+			
 			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
 			// Set up sidebar holder
@@ -210,10 +217,31 @@
 		public function onViewCityTroops(e: MouseEvent) :void
 		{
 			if (!selectedCity)
-			return;
+				return;
 
 			var movementDialog: MovementDialog = new MovementDialog(selectedCity);
 			movementDialog.show();
+		}
+		
+		public function onViewTribe(e: MouseEvent) :void
+		{			
+			if (Constants.tribeId != 0) {				
+				//var tribeDialog: TribeDialog = new TribeDialog();
+				//tribeDialog.show();
+			}
+			else if (Constants.tribeInviteId != 0) {
+				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {
+					if (sender.getResult()) {
+						//player accepted request
+					}
+					
+					sender.getFrame().dispose();
+				});				
+				tribeInviteDialog.show();
+			}
+			else {
+				InfoDialog.showMessageDialog("Tribe", "You need to be part of a tribe before you can use this feature");
+			}
 		}
 
 		public function onViewCityInfo(e: MouseEvent) :void
@@ -581,11 +609,15 @@
 			stage.focus = map;
 		}
 
-		public function closeAllFrames() : void {
+		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
 			var framesCopy: Array = frames.concat();
 
 			for (var i: int = framesCopy.length - 1; i >= 0; --i) {
-				(framesCopy[i] as JFrame).dispose();
+				var frame: JFrame = framesCopy[i] as JFrame;
+				if (onlyClosableFrames && !frame.isClosable())
+					break;
+				
+				frame.dispose();
 			}
 		}
 

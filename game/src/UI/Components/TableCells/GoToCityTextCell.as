@@ -28,7 +28,7 @@
 		public function GoToCityTextCell()
 		{
 			super();
-
+			
 			wrapper = new JPanel(new CenterLayout());
 			wrapper.setOpaque(true);
 			

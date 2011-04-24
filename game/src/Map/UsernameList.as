@@ -70,7 +70,7 @@
 				add(username);
 			}
 			else
-			username.name = name;
+				username.name = name;
 
 			for (var i: int = 0; i < pending.length; i++) {
 				if (pending[i].id != id) continue;
@@ -85,9 +85,6 @@
 
 			dispatchEvent(new BinaryListEvent(BinaryListEvent.CHANGED));
 		}
-
-		//*********************
-		// Helper Functions
 
 		public function setLabelUsername(id: int, obj: JLabel):void {
 			getUsername(id, onGetLabelUsername, obj);

@@ -156,7 +156,8 @@ namespace Game.Database
                     var player = new Player((uint)reader["id"],
                                             DateTime.SpecifyKind((DateTime)reader["created"], DateTimeKind.Utc),
                                             DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
-                                            (string)reader["name"], 
+                                            (string)reader["name"],
+                                            (string)reader["description"],
                                             false)
                                             {DbPersisted = true};
                     Global.World.Players.Add(player.PlayerId, player);

@@ -46,27 +46,29 @@ namespace Game.Data
 
         public bool Admin { get; set; }
 
-        public Data.Tribe.Tribe Tribe {
+        private Tribe.Tribesman tribesman;
+        public Tribe.Tribesman Tribesman {
             get
             {
-                return Tribe;
+                return tribesman;
             }
             set 
             {
-                Tribe = value;
+                tribesman = value;
                 TribeUpdate();
             }
         }
 
+        private uint tribeRequest;
         public uint TribeRequest
         {
             get
             {
-                return TribeRequest;
+                return tribeRequest;
             }  
             set
             {
-                TribeRequest = value;
+                tribeRequest = value;
                 TribeUpdate();
             }
         }
@@ -179,8 +181,9 @@ namespace Game.Data
                 return;
 
             var packet = new Packet(Command.TribeChannelUpdate);
-            packet.AddUInt32(Tribe.Id);
+            packet.AddUInt32(Tribesman == null ? 0 : Tribesman.Tribe.Id);
             packet.AddUInt32(TribeRequest);
+            packet.AddByte(tribesman.Rank);
             Global.Channel.Post("/PLAYER/" + PlayerId, packet);
         }
     }

@@ -205,6 +205,30 @@
 			
 			session.write(packet, callback);
 		}
+
+		public function getTribeUsername(id: int, callback: Function, custom: * = null) : void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_USERNAME_GET;
+			packet.writeUByte(1); //just doing 1 username now
+			packet.writeUInt(id);
+
+			var pass: Array = new Array();
+			pass.push(callback);
+			pass.push(custom);
+
+			session.write(packet, onReceiveTribeUsername, pass);
+		}
+
+		public function onReceiveTribeUsername(packet: Packet, custom: *):void
+		{
+			packet.readUByte(); //just doing 1 username now
+
+			var id: int = packet.readUInt();
+			var username: String = packet.readString();
+
+			custom[0](id, username, custom[1]);
+		}		
 		
 		public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
 		{

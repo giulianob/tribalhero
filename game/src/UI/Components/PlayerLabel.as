@@ -1,0 +1,57 @@
+package src.UI.Components 
+{
+	import flash.events.Event;
+	import org.aswing.JLabelButton;
+	import org.aswing.JPanel;
+	import src.Global;
+	import src.Map.Username;
+	import src.UI.Dialog.InfoDialog;
+	import src.UI.Dialog.PlayerProfileDialog;
+	
+	/**
+	 * ...
+	 * @author Giuliano Barberi
+	 */
+	public class PlayerLabel extends JLabelButton
+	{
+		private var playerId: int = 0;
+		
+		private var loadingPanel: InfoDialog;
+		
+		public function PlayerLabel(playerId: int)
+		{
+			super("-");
+			
+			this.playerId = playerId;
+			
+			new SimpleTooltip(this, "View profile");
+			
+			Global.map.usernames.players.getUsername(playerId, onReceiveUsername);
+			addActionListener(onClick);
+		}
+		
+		private function onClick(e: Event = null) : void {
+			loadingPanel = InfoDialog.showMessageDialog("Loading", "Loading user profile", null, null, true, false, 0);
+			Global.mapComm.City.viewPlayerProfile(playerId, onReceiveProfile);
+		}
+		
+		private function onReceiveProfile(profileData: * ) : void {
+			if (loadingPanel)
+				loadingPanel.getFrame().dispose();
+				
+			loadingPanel = null;
+			
+			if (!profileData) 
+				return;
+			
+			var dialog: PlayerProfileDialog = new PlayerProfileDialog(profileData);
+			dialog.show();
+		}
+		
+		private function onReceiveUsername(username: Username, custom: *) : void {
+			setText(username.name);
+		}
+		
+	}
+
+}

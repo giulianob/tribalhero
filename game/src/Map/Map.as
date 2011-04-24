@@ -133,6 +133,7 @@
 
 					listenersDefined = true;
 				}
+				stage.focus = Global.map;
 			}
 		}
 

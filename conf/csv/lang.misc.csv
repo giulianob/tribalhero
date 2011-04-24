@@ -1,0 +1,12 @@
+Key,EN
+GOLD_DESC,This rare resource is often used to train advanced military units and to fund research. Gold can be acquired by trading on the market or can be looted from other cities. It takes more time to loot gold than other resources during battle.
+WOOD_DESC,A basic resource used for many purposes. Wood can be harvested from forests scattered throughout the world. 
+CROP_DESC,"A staple resource required for just about everything, including keeping your units alive. Crop can be acquired by laborers through Farms."
+LABOR_DESC,"These are the working people in your city. Laborers can be trained into military or to gather most resources. Your city will automatically gain laborers as time passes. However, the more laborers in your city, the longer it will take to get more."
+IRON_DESC,An ore used for advanced tasks. Iron can be acquired through the Refinery.
+UPKEEP_DESC,Amount of crop consumed every hour by the military.
+DEFENSE_POINTS_DESC,Defense points are acquired when your units kill enemy units. These points are not only acquired when your city is attacked but also when your units fight while stationed in other player's cities.
+ATTACK_POINTS_DESC,Attack points are acquired when you attack and kill enemy units.
+NEW_CITY_DESC,Build a new city here. All of your existing cities must have a Town Center at level 10 or higher.
+FARMING_LABEL,Farming
+TIME_LEFT_LABEL,Time Left

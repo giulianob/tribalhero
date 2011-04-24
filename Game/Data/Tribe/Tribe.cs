@@ -21,17 +21,16 @@ namespace Game.Data.Tribe {
         public Player Owner { get; private set; } 
         public string Name { get; set; }
         public string Desc { get; set; }
-        public byte Level { get; private set; }
+        public byte Level { get; set; }
         
         readonly Dictionary<uint, Tribesman> tribesmen = new Dictionary<uint, Tribesman>();
         
         public Resource Resource { get; private set; }
 
-        public Tribe(Player owner)
+        public Tribe(Player owner, string name) :
+            this(owner, name, string.Empty, 1, new Resource())
         {
-            Owner = owner;
-            Level = 1;
-            Resource = new Resource();
+
         }
 
         public Tribe(Player owner, string name, string desc, byte level, Resource resource ) {
@@ -41,18 +40,32 @@ namespace Game.Data.Tribe {
             Desc = desc;
             Name = name;
         }
+        public bool IsOwner(Player player)
+        {
+            return player.PlayerId == Id;
+        }
 
-        public Error AddTribesman(Tribesman tribesman)
+        public Error AddTribesman(Tribesman tribesman, bool save=true)
         {
             if (tribesmen.ContainsKey(tribesman.Player.PlayerId)) return Error.TribesmanAlreadyExists;
             if (tribesmen.Count >= Level * MEMBERS_PER_LEVEL) return Error.TribeFull;
+            tribesman.Player.Tribesman = tribesman;
             tribesmen.Add(tribesman.Player.PlayerId, tribesman);
+            if(save)
+            {
+                MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+                Global.DbManager.Save(tribesman);
+            }
             return Error.Ok;
         }
 
         public Error RemoveTribesman(uint playerId)
         {
-            if (playerId == Owner.PlayerId) return Error.TribesmanIsOwner;
+            Tribesman tribesman;
+            if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
+            MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            tribesman.Player.Tribesman = null;
+            Global.DbManager.Delete(tribesman);
             return !tribesmen.Remove(playerId) ? Error.TribesmanNotFound : Error.Ok;
         }
 
@@ -162,7 +175,7 @@ namespace Game.Data.Tribe {
                 return new DbColumn[]
                        {
                                new DbColumn("name",Name,DbType.String, 20),
-                               new DbColumn("desc",Desc,DbType.String, 1024), 
+                               new DbColumn("desc",Desc,DbType.String), 
                                new DbColumn("level",Level,DbType.Byte), 
                                new DbColumn("owner_id",Owner.PlayerId,DbType.UInt32),
                        };

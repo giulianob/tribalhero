@@ -23,20 +23,20 @@ namespace Game.Comm {
                 return;
             }
 
-            if (session.Player.Tribe == null) {
+            if (session.Player.Tribesman == null) {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
 
             Dictionary<uint, Player> players;
-            Tribe tribe = session.Player.Tribe;
+            Tribe tribe = session.Player.Tribesman.Tribe;
             using (new MultiObjectLock(out players, playerId, tribe.Owner.PlayerId)) {
                 if (!tribe.HasRight(session.Player.PlayerId, "Request"))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;
                 }
-                if( players[playerId].Tribe!=null )
+                if( players[playerId].Tribesman.Tribe!=null )
                 {
                     ReplyError(session, packet, Error.TribesmanAlreadyInTribe);
                     return;
@@ -90,9 +90,7 @@ namespace Game.Comm {
 
             using (new MultiObjectLock(session.Player,tribe)) {
                 Tribesman tribesman = new Tribesman(tribe, session.Player, 2);
-                session.Player.Tribe = tribe;
                 tribe.AddTribesman(tribesman);
-                Global.DbManager.Save(tribesman);
                 ReplySuccess(session, packet);
             }
         }
@@ -106,17 +104,16 @@ namespace Game.Comm {
                 return;
             }
 
-            if(session.Player.Tribe==null)
+            if (session.Player.Tribesman == null)
             {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
 
             Dictionary<uint,Player> players;
-            using (new MultiObjectLock(out players,playerId,session.Player.Tribe.Owner.PlayerId)) {
-                Tribesman tribesman = new Tribesman(session.Player.Tribe, players[playerId],2);
-                players[playerId].Tribe = session.Player.Tribe;
-                session.Player.Tribe.AddTribesman(tribesman);
+            using (new MultiObjectLock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId)) {
+                Tribesman tribesman = new Tribesman(session.Player.Tribesman.Tribe, players[playerId], 2);
+                session.Player.Tribesman.Tribe.AddTribesman(tribesman);
                 ReplySuccess(session, packet);
             }
         }
@@ -129,19 +126,47 @@ namespace Game.Comm {
                 return;
             }
 
-            if (session.Player.Tribe == null) {
+            if (session.Player.Tribesman == null) {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
 
             Dictionary<uint, Player> players;
-            using (new MultiObjectLock(out players, playerId, session.Player.Tribe.Owner.PlayerId)) {
-                session.Player.Tribe.RemoveTribesman(playerId);
+            using (new MultiObjectLock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId)) {
+                Tribe tribe = session.Player.Tribesman.Tribe;
+                if (!tribe.HasRight(session.Player.PlayerId, "Kick")) {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+                if(tribe.IsOwner(session.Player))
+                {
+                    ReplyError(session, packet, Error.TribesmanIsOwner);
+                    return;
+                }
+                session.Player.Tribesman.Tribe.RemoveTribesman(playerId);
                 ReplySuccess(session, packet);
             }
         }
         public void CmdTribesmanUpdate(Session session, Packet packet) {
+        }
+        public void CmdTribesmanLeave(Session session , Packet packet)
+        {
+            if (session.Player.Tribesman == null) {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
 
+            using (new MultiObjectLock(session.Player.Tribesman.Tribe,session.Player)) {
+                Tribe tribe = session.Player.Tribesman.Tribe;
+                
+                if(tribe.IsOwner(session.Player))
+                {
+                    ReplyError(session, packet, Error.TribesmanIsOwner);
+                    return;
+                }
+                tribe.RemoveTribesman(session.Player.PlayerId);
+                ReplySuccess(session, packet);
+            }
         }
 
     }

@@ -58,10 +58,10 @@ namespace Game.Comm
             using (new MultiObjectLock(playerId, out player)) {
                 if (player == null)
                     return "Player not found";
-                if (player.Tribe == null)
+                if (player.Tribesman == null)
                     return "Player does not own a tribe";
 
-                Tribe tribe = player.Tribe;
+                Tribe tribe = player.Tribesman.Tribe;
                 result = string.Format("Id[{0}] Owner[{1}] Lvl[{2}] Name[{3}] Desc[{4}] \n",tribe.Id,tribe.Owner.Name,tribe.Level,tribe.Name,tribe.Desc);
                 result += tribe.Resource.ToNiceString();
                 result += string.Format("Member Count[{0}]\n", tribe.Count);
@@ -104,7 +104,7 @@ namespace Game.Comm
             Player player;
             using (new MultiObjectLock(playerId, out player))
             {
-                if (player.Tribe != null) {
+                if (player.Tribesman != null) {
                     return Enum.GetName(typeof(Error), Error.TribesmanAlreadyInTribe);
                 }
 
@@ -114,12 +114,51 @@ namespace Game.Comm
 
                 if (Global.Tribes.ContainsKey(player.PlayerId)) return "Tribe already exists!";
 
-                Tribe tribe = new Tribe(player) { Desc = tribeDesc, Name = tribeName };
-                Tribesman tribesman = new Tribesman(tribe,player,0);
-                player.Tribe = tribe;
-                tribe.AddTribesman(tribesman);
+                Tribe tribe = new Tribe(player, tribeName);
+                
                 Global.Tribes.Add(tribe.Id, tribe);
-                Global.DbManager.Save(tribe, tribesman);
+                Global.DbManager.Save(tribe);
+
+                Tribesman tribesman = new Tribesman(tribe, player, 0);
+                tribe.AddTribesman(tribesman);
+            }
+            return "OK!";
+        }
+
+        public string CmdTribeDelete(Session session, string[] parms) {
+            bool help = false;
+            string tribeName = string.Empty;
+
+            try {
+                var p = new OptionSet
+                    {
+                        { "?|help|h", v => help = true }, 
+                        { "tribe=", v => tribeName = v.TrimMatchingQuotes()},
+                    };
+                p.Parse(parms);
+            } catch (Exception) {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(tribeName))
+                return "TribeDelete --name=tribe_name";
+
+
+            uint tribeId;
+            if (!Global.World.FindTribeId(tribeName, out tribeId))
+                return "Tribe not found";
+
+            Tribe tribe;
+            if(!Global.Tribes.TryGetValue(tribeId, out tribe))
+                return "Tribe not found seriously";
+
+            using (new CallbackLock(custom => tribe.ToArray(), new object[] {}, tribe)) {
+                foreach (var tribesman in new List<Tribesman>(tribe))
+                {
+                    tribe.RemoveTribesman(tribesman.Player.PlayerId);
+                }
+                Global.Tribes.Remove(tribe.Id);
+                Global.DbManager.Delete(tribe);
             }
             return "OK!";
         }
@@ -189,14 +228,13 @@ namespace Game.Comm
             Dictionary<uint, Player> players;
             using (new MultiObjectLock( out players,playerId,tribeId))
             {
-                Tribe tribe = players[tribeId].Tribe;
+                Tribe tribe = players[tribeId].Tribesman.Tribe;
                 Tribesman tribesman = new Tribesman(tribe, players[playerId],2);
-                players[playerId].Tribe = tribe;
                 tribe.AddTribesman(tribesman);
-                Global.DbManager.Save(tribesman);
             }
             return "OK";
         }
+
         public string CmdTribesmanRemove(Session session, string[] parms) {
             bool help = false;
             string playerName = string.Empty;
@@ -228,25 +266,46 @@ namespace Game.Comm
 
             Dictionary<uint, Player> players;
             using (new MultiObjectLock(out players, playerId, tribeId)) {
-                Tribe tribe = players[tribeId].Tribe;
-                Tribesman tribesman;
-                if(tribe.TryGetTribesman(playerId,out tribesman))
+                Tribe tribe = players[tribeId].Tribesman.Tribe;
+                Error ret;
+                if((ret=tribe.RemoveTribesman(playerId))!=Error.Ok)
                 {
-                    Error ret;
-                    if((ret=tribe.RemoveTribesman(playerId))==Error.Ok)
-                    {
-                        Global.DbManager.Delete(tribesman);
-                    }
-                    else
-                    {
-                        return Enum.GetName(typeof(Error), ret);
-                    }
-                }
-                else
-                {
-                    return "Tribesman not found";
+                    return Enum.GetName(typeof(Error), ret);
                 }
             } 
+            return "OK";
+        }
+
+        public string CmdTribesmanUpdate(Session session, string[] parms) {
+            bool help = false;
+            string playerName = string.Empty;
+            string rank = string.Empty;
+
+            try {
+                var p = new OptionSet
+                    {
+                        { "?|help|h", v => help = true }, 
+                        { "player=", v => playerName = v.TrimMatchingQuotes() },
+                        { "rank=", v => rank = v.TrimMatchingQuotes() },
+                    };
+                p.Parse(parms);
+            } catch (Exception) {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName) || string.IsNullOrEmpty(rank))
+                return "TribesmanUpdate --rank=rank --player=player_name";
+
+            uint playerId;
+            Player player;
+            if (!Global.World.FindPlayerId(playerName, out playerId)|| !Global.World.Players.TryGetValue(playerId,out player))
+                return "Player not found";
+
+            if(player.Tribesman==null) return "Player not in tribe";
+            using (new MultiObjectLock(player)) {
+                player.Tribesman.Rank=byte.Parse(rank);
+                Global.DbManager.Save(player.Tribesman);
+            }
             return "OK";
         }
 

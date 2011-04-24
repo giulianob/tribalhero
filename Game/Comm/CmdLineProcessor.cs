@@ -30,8 +30,10 @@ namespace Game.Comm
             RegisterCommand(CmdLineCommand.TribeInfo, CmdTribeInfo);
             RegisterCommand(CmdLineCommand.TribeCreate, CmdTribeCreate);
             RegisterCommand(CmdLineCommand.TribeUpdate, CmdTribeUpdate);
+            RegisterCommand(CmdLineCommand.TribeDelete, CmdTribeDelete);
             RegisterCommand(CmdLineCommand.TribesmanAdd, CmdTribesmanAdd);
             RegisterCommand(CmdLineCommand.TribesmanRemove, CmdTribesmanRemove);
+            RegisterCommand(CmdLineCommand.TribesmanUpdate, CmdTribesmanUpdate);
             RegisterCommand(CmdLineCommand.TribeIncomingList, CmdTribeIncomingList);
         }
 

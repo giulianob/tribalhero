@@ -113,8 +113,8 @@ namespace Game.Database
                     Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
                     var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
                     var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], (DateTime)reader["join_date"], contribution, (byte)reader["rank"])
-                                    {DbPersisted = true, Player = {Tribe = tribe}};
-                    tribe.AddTribesman(tribesman);
+                                    {DbPersisted = true};
+                    tribe.AddTribesman(tribesman,false);
                 }
             }
             #endregion

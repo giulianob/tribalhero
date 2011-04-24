@@ -15,11 +15,11 @@ namespace Game.Comm {
     public partial class Processor {
         public void CmdTribeInfo(Session session, Packet packet) {
             var reply = new Packet(packet);
-            var tribe = session.Player.Tribe;
-            if (tribe == null) {
+            if (session.Player.Tribesman == null) {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
+            var tribe = session.Player.Tribesman.Tribe;
 
             using (new MultiObjectLock(tribe)) {
                 reply.AddUInt32(tribe.Id);
@@ -51,7 +51,7 @@ namespace Game.Comm {
 
             using (new MultiObjectLock(session.Player))
             {
-                if (session.Player.Tribe != null)
+                if (session.Player.Tribesman != null)
                 {
                     ReplyError(session, packet, Error.TribesmanAlreadyInTribe);
                     return;
@@ -70,26 +70,73 @@ namespace Game.Comm {
                 }
                 // deduct resource
 
-                Tribe tribe = new Tribe(session.Player) { Name = name };
-                Tribesman tribesman = new Tribesman(tribe,session.Player,0);
-                session.Player.Tribe = tribe;
-                tribe.AddTribesman(tribesman);
+                Tribe tribe = new Tribe(session.Player,name);
                 Global.Tribes.Add(tribe.Id, tribe);
-                Global.DbManager.Save(tribe, tribesman);
+                Global.DbManager.Save(tribe);
+
+                Tribesman tribesman = new Tribesman(tribe, session.Player, 0);
+                tribe.AddTribesman(tribesman);
                 ReplySuccess(session, packet);
             }
         }
 
         public void CmdTribeDelete(Session session, Packet packet) {
+            if( session.Player.Tribesman==null )
+            {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+            if (!session.Player.Tribesman.Tribe.IsOwner(session.Player)) {
+                ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                return;
+            }
 
+            Tribe tribe = session.Player.Tribesman.Tribe;
+            using (new CallbackLock(custom => tribe.ToArray(), new object[] { }, tribe)) {
+                foreach (var tribesman in new List<Tribesman>(tribe)) {
+                    tribe.RemoveTribesman(tribesman.Player.PlayerId);
+                }
+                Global.Tribes.Remove(tribe.Id);
+                Global.DbManager.Delete(tribe);
+            }
         }
+
         public void CmdTribeUpdate(Session session, Packet packet) {
+            string desc;
+            try {
+                desc = packet.GetString();
+            } catch (Exception) {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
 
+            if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
+            {
+                ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                return;
+            }
 
+            using (new MultiObjectLock(session.Player.Tribesman.Tribe)) {
+                session.Player.Tribesman.Tribe.Desc = desc;
+                Global.DbManager.Save(session.Player.Tribesman.Tribe);
+            }
+            ReplySuccess(session,packet);
         }
+
         public void CmdTribeUpgrade(Session session, Packet packet) {
-        
+            if (!session.Player.Tribesman.Tribe.IsOwner(session.Player)) {
+                ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                return;
+            }
+
+            using (new MultiObjectLock(session.Player.Tribesman.Tribe)) {
+                // deduct resource
+                ++session.Player.Tribesman.Tribe.Level;
+                Global.DbManager.Save(session.Player.Tribesman.Tribe);
+            }
+            ReplySuccess(session, packet);     
         }
+
         public void CmdTribeAssignmentList(Session session, Packet packet) {
 
         }

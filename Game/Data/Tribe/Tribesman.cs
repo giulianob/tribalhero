@@ -8,7 +8,7 @@ using Game.Util;
 
 namespace Game.Data.Tribe {
 
-    public class Tribesman: IPersistableObject  {
+    public class Tribesman: IPersistableObject,ILockable  {
         public const string DB_TABLE = "tribesmen";
 
         public Tribe Tribe { get; private set; }
@@ -22,6 +22,7 @@ namespace Game.Data.Tribe {
             Tribe = tribe;
             Player = player;
             JoinDate = DateTime.UtcNow;
+            Rank = rank;
             Contribution = new Resource();
         }
 
@@ -69,6 +70,18 @@ namespace Game.Data.Tribe {
                             new DbColumn("wood",Contribution.Wood,DbType.Int32),
                        };
             }
+        }
+
+        #endregion
+
+        #region ILockable Members
+
+        public int Hash {
+            get { return unchecked((int)Player.PlayerId); }
+        }
+
+        public object Lock {
+            get { return Player; }
         }
 
         #endregion

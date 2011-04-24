@@ -8,6 +8,7 @@ using System.Reflection;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -50,6 +51,8 @@ namespace Game.Database
                     LoadMarket(dbManager);
                     LoadPlayers(dbManager);
                     LoadCities(dbManager, downTime);
+                    LoadTribes(dbManager);
+                    LoadTribesmen(dbManager);
                     LoadUnitTemplates(dbManager);
                     LoadStructures(dbManager);
                     LoadStructureProperties(dbManager);
@@ -83,6 +86,38 @@ namespace Game.Database
             Global.FireEvents = true;
             Global.Scheduler.Resume();
             return true;
+        }
+
+        private static void LoadTribes(IDbManager dbManager) {
+            #region Tribes
+
+            Global.Logger.Info("Loading tribes...");
+            using (var reader = dbManager.Select(Tribe.DB_TABLE))
+            {
+                while (reader.Read())
+                {
+                   // var resource = new Resource((int)reader["crop"],(int)reader["gold"],(int)reader["iron"],(int)reader["wood"],0);
+                    var tribe = new Tribe(Global.World.Players[(uint)reader["id"]], (string)reader["name"], (string)reader["desc"], (byte)reader["level"], new Resource()) { DbPersisted = true };
+                    Global.Tribes.Add(tribe.Id, tribe);
+                }
+            }
+            #endregion
+        }
+
+        private static void LoadTribesmen(IDbManager dbManager) {
+            #region Tribes
+
+            Global.Logger.Info("Loading tribesmen...");
+            using (var reader = dbManager.Select(Tribesman.DB_TABLE)) {
+                while (reader.Read()) {
+                    Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
+                    var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], (DateTime)reader["join_date"], contribution, (byte)reader["rank"])
+                                    {DbPersisted = true};
+                    tribe.AddTribesman(tribesman,false);
+                }
+            }
+            #endregion
         }
 
         private static void LoadSystemVariables(IDbManager dbManager)
@@ -158,8 +193,7 @@ namespace Game.Database
                                             DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
                                             (string)reader["name"],
                                             (string)reader["description"],
-                                            false)
-                                            {DbPersisted = true};
+                                            false) { DbPersisted = true, TribeRequest = (uint)reader["invitation_tribe_id"] };
                     Global.World.Players.Add(player.PlayerId, player);
                 }
             }

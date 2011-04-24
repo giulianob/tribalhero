@@ -174,5 +174,25 @@ namespace Game.Comm
         #region Misc
         ResourceGather = 801,
         #endregion
+
+        #region Tribe
+        TribeInfo = 901,
+        TribeCreate = 902,
+        TribeDelete = 903,
+        TribeUpdate = 904,
+        TribeUpgrade = 905,
+        TribesmanAdd = 911,
+        TribesmanRemove = 912,
+        TribesmanUpdate = 913,
+        TribesmanRequest = 914,
+        TribesmanConfirm = 915,
+        TribeAssignementList = 921,
+        TribeAssignementCreate = 922,
+        TribeAssignementJoin = 923,
+        TribeIncomingList = 931,
+
+
+        TribeChannelUpdate = 951,
+        #endregion
     }
 }

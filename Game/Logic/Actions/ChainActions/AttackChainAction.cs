@@ -29,6 +29,14 @@ namespace Game.Logic.Actions
         private readonly uint targetStructureId;
         private int initialTroopValue;
 
+        public uint From
+        {
+            get
+            {
+                return cityId;
+            }
+        }
+
         public AttackChainAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode)
         {
             this.cityId = cityId;

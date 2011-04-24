@@ -14,7 +14,7 @@ namespace Game.Comm
     {
         #region Delegates
 
-        public delegate string DoWork(string[] parms);
+        public delegate string DoWork(Session session, string[] parms);
 
         #endregion
 
@@ -26,6 +26,15 @@ namespace Game.Comm
             RegisterCommand(CmdLineCommand.Unban, CmdUnbanPlayer);
             RegisterCommand(CmdLineCommand.Delete, CmdDeletePlayer);
             RegisterCommand(CmdLineCommand.SendResources, CmdSendResources);
+
+            RegisterCommand(CmdLineCommand.TribeInfo, CmdTribeInfo);
+            RegisterCommand(CmdLineCommand.TribeCreate, CmdTribeCreate);
+            RegisterCommand(CmdLineCommand.TribeUpdate, CmdTribeUpdate);
+            RegisterCommand(CmdLineCommand.TribeDelete, CmdTribeDelete);
+            RegisterCommand(CmdLineCommand.TribesmanAdd, CmdTribesmanAdd);
+            RegisterCommand(CmdLineCommand.TribesmanRemove, CmdTribesmanRemove);
+            RegisterCommand(CmdLineCommand.TribesmanUpdate, CmdTribesmanUpdate);
+            RegisterCommand(CmdLineCommand.TribeIncomingList, CmdTribeIncomingList);
         }
 
         protected void RegisterCommand(CmdLineCommand cmd, DoWork func)
@@ -33,7 +42,7 @@ namespace Game.Comm
             commands[cmd] = new ProcessorCommand(func);
         }
 
-        public string Execute(string cmd, string parms)
+        public string Execute(Session session, string cmd, string parms)
         {
             switch(cmd)
             {
@@ -60,7 +69,7 @@ namespace Game.Comm
             ProcessorCommand cmdWorker;
             return !commands.TryGetValue(cmdCode, out cmdWorker)
                            ? "Command not registered"
-                           : commands[cmdCode].Function(CmdParserExtension.SplitCommandLine(parms).ToArray());
+                           : commands[cmdCode].Function(session,CmdParserExtension.SplitCommandLine(parms).ToArray());
         }
 
         private string GetCommandList()

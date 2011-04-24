@@ -6,8 +6,10 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Threading;
+using System.Linq;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Procedures;
@@ -556,6 +558,19 @@ namespace Game.Map
             }
         }
 
+        public bool FindTribeId(string name, out uint tribeId) {
+            tribeId = ushort.MaxValue;
+            using (
+                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                                                                       new[] { new DbColumn("name", name, DbType.String) })) {
+                if (!reader.HasRows)
+                    return false;
+                reader.Read();
+                tribeId = (uint)reader[0];
+                return true;
+            }
+        }
+
         public bool CityNameTaken(string name)
         {
             using (
@@ -565,6 +580,7 @@ namespace Game.Map
                 return reader.HasRows;
             }
         }
+
 
         #region Map Region Methods
 

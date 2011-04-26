@@ -74,6 +74,19 @@ namespace Game.Data.Tribe {
             return tribesmen.TryGetValue(playerId, out tribesman);
         }
 
+        public Error SetRank(uint playerId, byte rank)
+        {
+            Tribesman tribesman;
+            if (rank == 0) return Error.TribesmanNotAuthorized;
+            if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
+            MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            if (IsOwner(tribesman.Player)) return Error.TribesmanIsOwner;
+
+            tribesman.Rank = rank;
+            Global.DbManager.Save(tribesman);
+            return Error.Ok;
+        }
+
         public bool HasRight(uint playerId, string action) {
             Tribesman tribesman;
             if (!TryGetTribesman(playerId, out tribesman)) return false;

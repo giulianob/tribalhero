@@ -1,6 +1,7 @@
 ﻿package src.UI.Dialog 
 {
 	import com.adobe.images.JPGEncoder;
+	import fl.lang.Locale;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import org.aswing.*;
@@ -18,6 +19,7 @@
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import src.UI.LookAndFeel.GameLookAndFeel;
+	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
 	
 	public class PlayerProfileDialog extends GameJPanel
 	{
@@ -43,6 +45,25 @@
 			
 			btnSetDescription.addActionListener(function(e: Event = null): void {
 				
+				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
+				txtDescription.setMaxChars(1000);
+				
+				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
+			
+				pnl.appendAll(new JLabel("Set a message to appears on your profile. This will be visible to everyone.", null, AsWingConstants.LEFT), scrollDescription);
+				InfoDialog.showMessageDialog("Say something about yourself", pnl, function(msg: String = ""): void {
+					Global.mapComm.City.setPlayerDescription(txtDescription.getText());
+					getFrame().dispose();
+					
+					Global.mapComm.City.viewPlayerProfile(profileData.playerId, function(newProfileData: *): void {
+						if (!newProfileData) 
+							return;
+			
+						var dialog: PlayerProfileDialog = new PlayerProfileDialog(newProfileData);
+						dialog.show();
+					});
+				});
 			});
 		}
 		
@@ -106,18 +127,33 @@
 					pnlActions.append(btnInviteTribe);
 			}
 			
-			pnlHeader.appendAll(pnlHeaderFirstRow, pnlActions);
+			pnlHeader.append(pnlHeaderFirstRow);
+			
+			if (profileData.tribeId > 0) {
+				var lblTribe: MultilineLabel = new MultilineLabel("", 1);
+				lblTribe.setHtmlText("<b>" + profileData.tribeName + "</b> (" + Locale.loadString("TRIBE_RANK_" + profileData.tribeRank) + ")");
+				pnlHeader.append(lblTribe);
+			}
+			
+			pnlHeader.appendAll(new JLabel(" "), pnlActions);
 			
 			// description
 			var description: String = profileData.description == "" ? "This player hasn't written anything about themselves yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
-			lblDescription.setConstraints("Center");			
+			lblDescription.setPreferredWidth(325);
+			lblDescription.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
+			lblDescription.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));
+			
+			var scrollDescription: JScrollPane = new JScrollPane(new JViewport(lblDescription));
+			(scrollDescription.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+			(scrollDescription.getViewport() as JViewport).setHorizontalAlignment(AsWingConstants.LEFT);
+			scrollDescription.setConstraints("Center");
 			
 			// Create west panel
 			var pnlWest: JPanel = new JPanel(new BorderLayout());
 			pnlWest.setConstraints("Center");
 			pnlWest.append(pnlHeader);
-			pnlWest.append(lblDescription);
+			pnlWest.append(scrollDescription);
 			
 			// Tab panel
 			var pnlTabs: JTabbedPane = new JTabbedPane();

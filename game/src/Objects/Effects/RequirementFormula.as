@@ -354,6 +354,18 @@
 		{
 			return "Does not already have this technology elsewhere";
 		}
+		
+		/* CAN CREATE TRIBE */
+		public static function canCreateTribe() : Boolean {
+			var count: int = 0;
+			for each (var city: City in Global.map.cities.each()) {
+				if (city.MainBuilding.level >= 10)
+					count++;
+			}
+			
+			return count >= 2;
+		}
+		
 	}
 }
 

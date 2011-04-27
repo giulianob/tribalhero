@@ -231,16 +231,18 @@
 			}
 			else if (Constants.tribeInviteId != 0) {
 				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {
-					if (sender.getResult()) {
-						//player accepted request
-					}
+					Global.mapComm.Tribe.invitationConfirm(sender.getResult());
 					
 					sender.getFrame().dispose();
 				});				
 				tribeInviteDialog.show();
 			}
 			else {
-				InfoDialog.showMessageDialog("Tribe", "You need to be part of a tribe before you can use this feature");
+				var createTribeDialog: CreateTribeDialog = new CreateTribeDialog(function(sender: CreateTribeDialog) : void {
+					Global.mapComm.Tribe.createTribe(sender.getTribeName());
+					sender.getFrame().dispose();
+				});
+				createTribeDialog.show();
 			}
 		}
 

@@ -21,6 +21,7 @@ package src.Comm {
 		public static const TRIBE_USERNAME_GET: int = 15;
 		
 		public static const PLAYER_PROFILE: int = 20;
+		public static const PLAYER_DESCRIPTION_SET: int = 21;
 		
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
@@ -108,6 +109,19 @@ package src.Comm {
 		public static const BATTLE_NEW_ROUND: int = 707;
 		
 		public static const RESOURCE_GATHER: int = 801;
+		
+        public static const TRIBE_INFO: int = 901;
+        public static const TRIBE_CREATE: int = 902;
+        public static const TRIBE_DELETE: int = 903;
+        public static const TRIBE_UPDATE: int = 904;
+        public static const TRIBE_UPGRADE: int = 905;
+        public static const TRIBESMAN_ADD: int = 911;
+        public static const TRIBESMAN_REMOVE: int = 912;
+        public static const TRIBESMAN_UPDATE: int = 913;
+        public static const TRIBESMAN_REQUEST: int = 914;
+        public static const TRIBESMAN_CONFIRM: int = 915;
+		
+		public static const TRIBE_UPDATE_CHANNEL: int = 951;
 		
 	}
 	

@@ -28,7 +28,9 @@ namespace Game.Comm
         PlayerUsernameGet = 12,
         CityUsernameGet = 13,
         PlayerNameFromCityName = 14,
+        TribeNameGet = 15,
         PlayerProfile = 20,
+        PlayerDescriptionSet = 21,
 
         #endregion
 

@@ -10,3 +10,7 @@ ATTACK_POINTS_DESC,Attack points are acquired when you attack and kill enemy uni
 NEW_CITY_DESC,Build a new city here. All of your existing cities must have a Town Center at level 10 or higher.
 FARMING_LABEL,Farming
 TIME_LEFT_LABEL,Time Left
+,
+TRIBE_RANK_0,Chief
+TRIBE_RANK_1,Elder
+TRIBE_RANK_2,Tribesman

@@ -23,6 +23,7 @@ namespace Game.Comm
         {
             RegisterCommand(Command.Login, CmdLogin);
             RegisterCommand(Command.PlayerProfile, CmdGetProfile);
+            RegisterCommand(Command.PlayerDescriptionSet, CmdSetPlayerDescription);
             RegisterCommand(Command.CmdLine, CmdLineCommand);
             RegisterCommand(Command.CityCreateInitial, CmdCreateInitialCity);
             RegisterCommand(Command.QueryXml, CmdQueryXml);
@@ -69,6 +70,7 @@ namespace Game.Comm
             RegisterCommand(Command.ResourceGather, CmdResourceGather);
             RegisterCommand(Command.CityCreate, CmdCityCreate);
 
+            RegisterCommand(Command.TribeNameGet, CmdTribeName);
             RegisterCommand(Command.TribeInfo, CmdTribeInfo);
             RegisterCommand(Command.TribeCreate, CmdTribeCreate);
             RegisterCommand(Command.TribeDelete, CmdTribeDelete);

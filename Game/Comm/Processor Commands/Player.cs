@@ -71,6 +71,10 @@ namespace Game.Comm
                 reply.AddUInt32(player.PlayerId);
                 reply.AddString(player.Name);
                 reply.AddString(player.Description);
+
+                reply.AddUInt32(player.Tribesman != null ? player.Tribesman.Tribe.Id : 0);
+                reply.AddString(player.Tribesman != null ? player.Tribesman.Tribe.Name : string.Empty);
+                reply.AddByte((byte)(player.Tribesman != null ? player.Tribesman.Rank : 0));
                 
                 // Ranking info
                 List<dynamic> ranks = new List<dynamic>();

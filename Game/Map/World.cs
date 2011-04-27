@@ -581,6 +581,15 @@ namespace Game.Map
             }
         }
 
+        public bool TribeNameTaken(string name)
+        {
+            using (
+                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                                                                       new[] { new DbColumn("name", name, DbType.String) }))
+            {
+                return reader.HasRows;
+            }
+        }
 
         #region Map Region Methods
 

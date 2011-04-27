@@ -13,6 +13,45 @@ using System.Linq;
 
 namespace Game.Comm {
     public partial class Processor {
+
+        public void CmdTribeName(Session session, Packet packet)
+        {
+            var reply = new Packet(packet);
+
+            byte count;
+            uint[] tribeIds;
+            try
+            {
+                count = packet.GetByte();
+                tribeIds = new uint[count];
+                for (int i = 0; i < count; i++)
+                    tribeIds[i] = packet.GetUInt32();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            reply.AddByte(count);
+            for (int i = 0; i < count; i++)
+            {
+                uint tribeId = tribeIds[i];
+                Tribe tribe;
+
+                if (!Global.Tribes.TryGetValue(tribeId, out tribe))
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                reply.AddUInt32(tribeId);
+                reply.AddString(tribe.Name);
+            }
+
+            session.Write(reply);
+        }
+
         public void CmdTribeInfo(Session session, Packet packet) {
             var reply = new Packet(packet);
             if (session.Player.Tribesman == null) {
@@ -57,18 +96,23 @@ namespace Game.Comm {
                     return;
                 }
 
-                if (Global.Tribes.Any(x => x.Value.Name.Equals(name)))
-                {
-                    ReplyError(session, packet, Error.TribesmanAlreadyExists);
-                    return;
-                }
-
-                if (Global.Tribes.ContainsKey(session.Player.PlayerId))
+                if (Global.World.TribeNameTaken(name))
                 {
                     ReplyError(session, packet, Error.TribeAlreadyExists);
                     return;
                 }
-                // deduct resource
+
+                if (!Tribe.IsNameValid(name))
+                {
+                    ReplyError(session, packet, Error.TribeNameInvalid);
+                    return;
+                }
+
+                if (session.Player.GetCityList().Count(city => city.Lvl >= 10) < 2)
+                {
+                    ReplyError(session, packet, Error.EffectRequirementNotMet);
+                    return;
+                }
 
                 Tribe tribe = new Tribe(session.Player,name);
                 Global.Tribes.Add(tribe.Id, tribe);

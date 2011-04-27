@@ -241,6 +241,14 @@
 			
 			return new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);
 		}
+
+		public function setPlayerDescription(description: String) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.PLAYER_DESCRIPTION_SET;
+			packet.writeString(description);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}
 		
 		public function viewPlayerProfile(playerId: int, callback: Function):void {
 			var packet: Packet = new Packet();
@@ -260,6 +268,10 @@
 			profileData.playerId = packet.readUInt();
 			profileData.username = packet.readString();
 			profileData.description = packet.readString();
+			
+			profileData.tribeId = packet.readUInt();
+			profileData.tribeName = packet.readString();
+			profileData.tribeRank = packet.readUByte();
 			
 			profileData.ranks = [];
 			var rankCount: int = packet.readUByte();

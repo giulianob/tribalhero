@@ -61,7 +61,7 @@
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			
 			Constants.playerName = packet.readString();			
-
+			
 			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();
 			Constants.secondsPerUnit = Number(packet.readString());
@@ -78,6 +78,17 @@
 
 		public function readLoginInfo(packet: Packet): void
 		{
+			// Tribe info
+			Constants.tribeId = packet.readUInt();
+			Constants.tribeInviteId = packet.readUInt();
+			Constants.tribeRank = packet.readUByte();
+			Global.gameContainer.tribeInviteRequest.visible = Constants.tribeInviteId > 0;			
+			
+			var tribeName: String = packet.readString();
+			if (Constants.tribeId > 0)
+				Global.map.usernames.tribes.add(new Username(Constants.tribeId, tribeName));
+				
+			// Cities
 			var cityCnt: int = packet.readUByte();
 			for (var i: int = 0; i < cityCnt; i++)			
 				readCity(packet);			

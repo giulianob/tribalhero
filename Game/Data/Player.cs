@@ -61,7 +61,7 @@ namespace Game.Data
 
                 if (DbPersisted)
                 {
-                    Global.DbManager.Query("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1",
+                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) });
                 }
             }
@@ -204,7 +204,7 @@ namespace Game.Data
             var packet = new Packet(Command.TribeChannelUpdate);
             packet.AddUInt32(Tribesman == null ? 0 : Tribesman.Tribe.Id);
             packet.AddUInt32(TribeRequest);
-            packet.AddByte(tribesman.Rank);
+            packet.AddByte((byte)(Tribesman == null ? 0 : tribesman.Rank));
             Global.Channel.Post("/PLAYER/" + PlayerId, packet);
         }
     }

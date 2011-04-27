@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Game.Database;
 using Game.Setup;
 using Game.Util;
@@ -142,7 +143,11 @@ namespace Game.Data.Tribe {
 
         #endregion
 
-
+        public static bool IsNameValid(string tribeName)
+        {
+            return tribeName != string.Empty && tribeName.Length >= 3 && tribeName.Length <= 20 &&
+                   Regex.IsMatch(tribeName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+        }
 
         #region IPersistableObject Members
 

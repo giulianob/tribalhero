@@ -298,13 +298,14 @@ namespace Game.Comm
 
             uint playerId;
             Player player;
-            if (!Global.World.FindPlayerId(playerName, out playerId)|| !Global.World.Players.TryGetValue(playerId,out player))
+            if (!Global.World.FindPlayerId(playerName, out playerId))
                 return "Player not found";
+            if (!Global.World.Players.TryGetValue(playerId, out player))
+                return "Player not found2";
 
             if(player.Tribesman==null) return "Player not in tribe";
-            using (new MultiObjectLock(player)) {
-                player.Tribesman.Rank=byte.Parse(rank);
-                Global.DbManager.Save(player.Tribesman);
+            using (new MultiObjectLock(player,player.Tribesman.Tribe)) {
+                player.Tribesman.Tribe.SetRank(playerId, byte.Parse(rank));
             }
             return "OK";
         }

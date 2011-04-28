@@ -5,6 +5,9 @@
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.*;
+	import src.Objects.NewCityPlaceholder;
+	import src.Objects.SimpleObject;
+	import src.UI.Sidebars.NewCityPlaceholder.NewCityPlaceholderSidebar;
 	import src.Util.Util;
 	import flash.ui.Keyboard;
 	import src.Global;
@@ -36,7 +39,7 @@
 		public var pendingRegions: Array;
 
 		public var selectViewable: Object;
-		public var selectedObject: GameObject;
+		public var selectedObject: SimpleObject;
 
 		private var listenersDefined: Boolean;
 
@@ -130,6 +133,7 @@
 
 					listenersDefined = true;
 				}
+				stage.focus = Global.map;
 			}
 		}
 
@@ -253,70 +257,80 @@
 		//###################################################################
 		//#################### Object Manipulation ##########################
 		//###################################################################
-		public function selectWhenViewable(cityId: int, objectId: int) : void {
+		public function selectWhenViewable(groupId: int, objectId: int) : void {
 			selectObject(null);
 
 			selectViewable = null;
-			for each(var gameObject: GameObject in objContainer.objects.each()) {
-				if (SimpleGameObject.compareCityIdAndObjId(gameObject, [cityId, objectId]) == 0) {
+			for each(var gameObject: SimpleObject in objContainer.objects.each()) {
+				if (!(gameObject is SimpleGameObject)) 
+					continue;
+				
+				if (SimpleGameObject.compareGroupIdAndObjId(gameObject as SimpleGameObject, [groupId, objectId]) == 0) {
 					selectObject(gameObject, true, false);
 					return;
 				}
 			}
 
-			selectViewable = { 'cityId' : cityId, 'objectId': objectId };
+			selectViewable = { 'groupId' : groupId, 'objectId': objectId };
 		}
 
-		public function selectObject(obj: GameObject, query: Boolean = true, deselectIfSelected: Boolean = false ):void
+		public function selectObject(obj: SimpleObject, query: Boolean = true, deselectIfSelected: Boolean = false ):void
 		{
 			selectViewable = null;
 			
-			if (obj == null && selectedObject == null) return;				
+			if (obj == null && selectedObject == null)
+				return;
+				
+			if (obj != null && obj.disposed)
+				obj = null;
 
 			var reselecting: Boolean = false;
 
 			//Check if we are reselecting the currently selected object
-			if (selectedObject != null && obj != null && selectedObject.cityId == obj.cityId && selectedObject.objectId == obj.objectId)
+			if (selectedObject != null && obj != null && (selectedObject == obj || (selectedObject is SimpleGameObject && (selectedObject as SimpleGameObject).equalById(obj))))
 			{
 				//If we are, then deselect it if we have the deselectIfSelected option
-				if (deselectIfSelected) obj = null;
-				else reselecting = true;
+				if (deselectIfSelected) 
+					obj = null;
+				else 
+					reselecting = true;
 			}
 
 			//If the reselecting bit is on, then we dont want to refresh the whole UI. This just makes a better user experience.
-			if (!reselecting) {
+			if (!reselecting) {				
+				if (selectedObject != null) 
+					selectedObject.setSelected(false);
+					
 				Global.gameContainer.setSidebar(null);
-
-				if (selectedObject != null) selectedObject.setSelected(false);
-
-				selectedObject = obj;
 			}
+			
+			selectedObject = obj;
 
 			if (obj != null)
 			{
+				// Switch current selected city if needed
+				if (obj is GameObject)
+					Global.gameContainer.selectCity((obj as GameObject).groupId);
+				
+				// Decide whether to query for the object info or just go ahead and select it
 				if (query) {
 					obj.setSelected(true);
 
-					if (obj is StructureObject) {
+					if (obj is StructureObject)
 						Global.mapComm.Object.getStructureInfo(obj as StructureObject);
-					}
-					else if (obj is TroopObject) {
+					else if (obj is TroopObject)
 						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);
-					}
-					else if (obj is Forest) {
+					else if (obj is Forest)
 						Global.mapComm.Object.getForestInfo(obj as Forest);
-					}
+					else
+						doSelectedObject(obj);
 				}
-				else {
+				else
 					doSelectedObject(obj);
-				}
 			}
-			
-			// Set focus back to the map so it doesn't break user scrolling
-			stage.focus = this;
 		}
 
-		private function doSelectedObject(obj: GameObject):void
+		private function doSelectedObject(obj: SimpleObject):void
 		{
 			selectViewable = null;
 
@@ -332,15 +346,14 @@
 
 			var sidebar: GameJSidebar;
 
-			if (obj is StructureObject) {
-				sidebar = new ObjectInfoSidebar(obj as StructureObject);
-			}
-			else if (obj is TroopObject) {
-				sidebar = new TroopInfoSidebar(obj);
-			}
-			else if (obj is Forest) {
+			if (obj is StructureObject)
+				sidebar = new ObjectInfoSidebar(obj as StructureObject);			
+			else if (obj is TroopObject)
+				sidebar = new TroopInfoSidebar(obj as TroopObject);			
+			else if (obj is Forest)
 				sidebar = new ForestInfoSidebar(obj as Forest);
-			}
+			else if (obj is NewCityPlaceholder)
+				sidebar = new NewCityPlaceholderSidebar(obj as NewCityPlaceholder);
 
 			Global.gameContainer.setSidebar(sidebar);
 		}
@@ -395,7 +408,7 @@
 		public function eventMouseClick(event: MouseEvent):void
 		{
 			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4)
-			doSelectedObject(null);
+				doSelectedObject(null);
 		}
 
 		public function eventMouseDown(event: MouseEvent):void

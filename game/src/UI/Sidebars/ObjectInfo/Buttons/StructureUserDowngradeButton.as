@@ -12,7 +12,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 	public class StructureUserDowngradeButton extends ActionButton
 	{
-		public function StructureUserDowngradeButton(parentObj: GameObject)
+		public function StructureUserDowngradeButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Downgrade Structure");
 

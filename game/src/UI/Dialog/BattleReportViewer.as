@@ -59,8 +59,7 @@
 
 		private function onLoaded(e: Event) : void {
 			try
-			{
-				Util.log(loader.getData());
+			{				
 				data = loader.getDataAsObject();
 			}
 			catch (e: Error) {

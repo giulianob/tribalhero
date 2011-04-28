@@ -3,6 +3,8 @@
 	import flash.filters.BlurFilter;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
+	import src.Global;
+	import src.Objects.States.GameObjectState;
 	import src.Util.Util;
 	import flash.geom.Rectangle;
 	import src.Map.*;
@@ -148,15 +150,16 @@
 		{
 			var sprite: DisplayObjectContainer = getSprite(type, level) as DisplayObjectContainer;
 			var simpleObject: SimpleObject = new SimpleObject();
+			
 			if (sprite != null)
-			simpleObject.addChild(sprite);
+				simpleObject.addChild(sprite);
 
 			return simpleObject;
 		}
 
-		public static function getInstance(type: int, level: int): Object
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int, level: int, wallRadius: int): StructureObject
 		{
-			var structureObj: StructureObject = new StructureObject();
+			var structureObj: StructureObject = new StructureObject(type, state, objX, objY, playerId, cityId, objectId, level, wallRadius);
 
 			var shadow: DisplayObjectContainer = StructureFactory.getSprite(type, level);
 			shadow.transform.colorTransform = new ColorTransform(0, 0, 0);
@@ -168,6 +171,8 @@
 
 			var img: DisplayObject = getSprite(type, level);
 			structureObj.addChild(img);
+			
+			structureObj.setOnSelect(Global.map.selectObject);
 
 			return structureObj;
 		}

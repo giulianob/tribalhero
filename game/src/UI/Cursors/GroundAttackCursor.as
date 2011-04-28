@@ -176,7 +176,7 @@
 				return;
 			}
 			
-			var gameObj: SimpleGameObject = objects[0];
+			var gameObj: StructureObject = objects[0];
 			
 			// Verify that object is attackable
 			if (ObjectFactory.isType("Unattackable", gameObj.type)) {

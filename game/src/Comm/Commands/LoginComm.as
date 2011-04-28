@@ -61,7 +61,7 @@
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			
 			Constants.playerName = packet.readString();			
-
+			
 			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();
 			Constants.secondsPerUnit = Number(packet.readString());
@@ -78,129 +78,127 @@
 
 		public function readLoginInfo(packet: Packet): void
 		{
+			// Tribe info
+			Constants.tribeId = packet.readUInt();
+			Constants.tribeInviteId = packet.readUInt();
+			Constants.tribeRank = packet.readUByte();
+			Global.gameContainer.tribeInviteRequest.visible = Constants.tribeInviteId > 0;			
+			
+			var tribeName: String = packet.readString();
+			if (Constants.tribeId > 0)
+				Global.map.usernames.tribes.add(new Username(Constants.tribeId, tribeName));
+				
+			// Cities
 			var cityCnt: int = packet.readUByte();
-			for (var i: int = 0; i < cityCnt; i++)
-			{
-				var id: int = packet.readUInt();
-				var name: String = packet.readString();
-				var resources: LazyResources = new LazyResources(
-				new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
-				new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
-				new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
-				new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
-				new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt())
-				);
+			for (var i: int = 0; i < cityCnt; i++)			
+				readCity(packet);			
+		}
+		
+		public function readCity(packet: Packet) : City {
+			var id: int = packet.readUInt();
+			var name: String = packet.readString();
+			var resources: LazyResources = new LazyResources(
+			new LazyValue(packet.readInt(), packet.readInt(), packet.readInt(), packet.readInt(), packet.readUInt()),
+			new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
+			new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
+			new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt()),
+			new LazyValue(packet.readInt(), packet.readInt(), 0, packet.readInt(), packet.readUInt())
+			);
 
-				var radius: int = packet.readUByte();
+			var radius: int = packet.readUByte();
 
-				var attackPoint: int = packet.readInt();
-				var defensePoint: int = packet.readInt();
-				
-				var cityValue: int = packet.readUShort();
+			var attackPoint: int = packet.readInt();
+			var defensePoint: int = packet.readInt();
+			
+			var cityValue: int = packet.readUShort();
 
-				var inBattle: Boolean = packet.readByte() == 1;
-				
-				var hideNewUnits: Boolean = packet.readByte() == 1;
+			var inBattle: Boolean = packet.readByte() == 1;
+			
+			var hideNewUnits: Boolean = packet.readByte() == 1;
 
-				var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits);
+			var city: City = new City(id, name, radius, resources, attackPoint, defensePoint, cityValue, inBattle, hideNewUnits);
 
-				// Add the name of this city to the list of city names
-				Global.map.usernames.cities.add(new Username(id, name));
+			// Add the name of this city to the list of city names
+			Global.map.usernames.cities.add(new Username(id, name));
 
-				//Current Actions
-				var currentActionCount: int = packet.readUByte();
-				for (var k: int = 0; k < currentActionCount; k++) {
+			//Current Actions
+			var currentActionCount: int = packet.readUByte();
+			for (var k: int = 0; k < currentActionCount; k++) {
 
-					var workerId: int = packet.readUInt();
+				var workerId: int = packet.readUInt();
 
-					if (packet.readUByte() == 0) city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt()), false);
-					else city.currentActions.add(new CurrentActiveAction(workerId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
-				}
-				city.currentActions.sort();
-
-				//Notifications
-				var notificationsCnt: int = packet.readUShort();
-				for (k = 0; k < notificationsCnt; k++)
-				{
-					var notification: Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
-					city.notifications.add(notification, false);
-				}
-				city.notifications.sort();
-				
-				//References
-				var referencesCnt: int = packet.readUShort();
-				for (k = 0; k < referencesCnt; k++) {
-					var reference: CurrentActionReference = new CurrentActionReference(id, packet.readUShort(), packet.readUInt(), packet.readUInt());
-					city.references.add(reference, false);
-				}
-				city.references.sort();
-
-				//Structures
-				var structCnt: int = packet.readUShort();
-
-				for (var j: int = 0; j < structCnt; j++)
-				{
-					var regionId: int = packet.readUShort();
-
-					var objLvl: int = packet.readUByte();
-					var objType: int = packet.readUShort();
-					var objPlayerId: int = packet.readUInt();
-					var objCityId: int = packet.readUInt();
-					var objId: int = packet.readUInt();
-					var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-					var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-					var objLabor: int = packet.readUShort();
-
-					var cityObj: CityObject = new CityObject(city, objId, objType, objLvl, objX, objY, objLabor);
-
-					var technologyCount: int = packet.readUShort();
-					for (k = 0; k < technologyCount; k++)
-					cityObj.techManager.add(new TechnologyStats(TechnologyFactory.getPrototype(packet.readUInt(), packet.readUByte()), EffectPrototype.LOCATION_OBJECT, objId));
-
-					city.objects.add(cityObj, false);
-				}
-
-				// Troop objects
-				var troopCnt: int = packet.readUShort();
-
-				for (j = 0; j < troopCnt; j++)
-				{
-					regionId = packet.readUShort();
-
-					objLvl = packet.readUByte();
-					objType = packet.readUShort();
-					objPlayerId = packet.readUInt();
-					objCityId = packet.readUInt();
-					objId = packet.readUInt();
-					objX = packet.readUShort() + MapUtil.regionXOffset(regionId);
-					objY = packet.readUShort() + MapUtil.regionYOffset(regionId);
-
-					cityObj = new CityObject(city, objId, objType, objLvl, objX, objY, 0);
-					
-					city.objects.add(cityObj, false);
-				}
-				city.objects.sort();
-				
-				// Troop stubs
-				troopCnt = packet.readUByte();
-				for (var troopI: int = 0; troopI < troopCnt; troopI++)
-				{
-					var troop: TroopStub = mapComm.Troop.readTroop(packet);
-					city.troops.add(troop, false);
-				}
-				city.troops.sort();				
-
-				// Troop template
-				var templateCount: int = packet.readUShort();
-				for (j = 0; j < templateCount; j++) city.template.add(new UnitTemplate(packet.readUShort(), packet.readUByte()));
-				city.template.sort();
-
-				// Add city to player's cities
-				Global.map.cities.add(city);
-				
-				// Show any messages
-				BuiltInMessages.processAll(city);
+				if (packet.readUByte() == 0) city.currentActions.add(new CurrentPassiveAction(workerId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt()), false);
+				else city.currentActions.add(new CurrentActiveAction(workerId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt()), false);
 			}
+			city.currentActions.sort();
+
+			//Notifications
+			var notificationsCnt: int = packet.readUShort();
+			for (k = 0; k < notificationsCnt; k++)
+			{
+				var notification: Notification = new Notification(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+				city.notifications.add(notification, false);
+			}
+			city.notifications.sort();
+			
+			//References
+			var referencesCnt: int = packet.readUShort();
+			for (k = 0; k < referencesCnt; k++) {
+				var reference: CurrentActionReference = new CurrentActionReference(id, packet.readUShort(), packet.readUInt(), packet.readUInt());
+				city.references.add(reference, false);
+			}
+			city.references.sort();
+
+			//Structures
+			var structCnt: int = packet.readUShort();
+
+			for (var j: int = 0; j < structCnt; j++)
+			{
+				var regionId: int = packet.readUShort();
+			
+				var cityObj: CityObject = mapComm.City.readObject(packet, regionId, city);
+
+				var technologyCount: int = packet.readUShort();
+				for (k = 0; k < technologyCount; k++)
+				cityObj.techManager.add(new TechnologyStats(TechnologyFactory.getPrototype(packet.readUInt(), packet.readUByte()), EffectPrototype.LOCATION_OBJECT, cityObj.objectId));
+
+				city.objects.add(cityObj, false);
+			}
+
+			// Troop objects
+			var troopCnt: int = packet.readUShort();
+
+			for (j = 0; j < troopCnt; j++)
+			{
+				regionId = packet.readUShort();
+
+				cityObj = mapComm.City.readObject(packet, regionId, city);
+				
+				city.objects.add(cityObj, false);
+			}
+			city.objects.sort();
+			
+			// Troop stubs
+			troopCnt = packet.readUByte();
+			for (var troopI: int = 0; troopI < troopCnt; troopI++)
+			{
+				var troop: TroopStub = mapComm.Troop.readTroop(packet);
+				city.troops.add(troop, false);
+			}
+			city.troops.sort();				
+
+			// Troop template
+			var templateCount: int = packet.readUShort();
+			for (j = 0; j < templateCount; j++) city.template.add(new UnitTemplate(packet.readUShort(), packet.readUByte()));
+			city.template.sort();
+
+			// Add city to player's cities
+			Global.map.cities.add(city);
+			
+			// Show any messages
+			BuiltInMessages.processAll(city);			
+			
+			return city;
 		}
 		
 		public function sendCommand(command: String, callback: Function) : void {			

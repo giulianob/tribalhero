@@ -7,6 +7,7 @@
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import org.aswing.event.AWEvent;
+	import org.aswing.event.InteractiveEvent;
 	import org.aswing.event.PopupEvent;
 	import src.Components.MessageTimer;
 	import src.Map.*;
@@ -94,9 +95,9 @@
 			menuDummyOverlay.setLocationXY(btnMenu.x, btnMenu.y);			
 			
 			// Create and position the city list
-			lstCities = new JComboBox();
+			lstCities = new JComboBox();			
 			lstCities.setModel(new VectorListModel());
-			lstCities.addActionListener(onChangeCitySelection);
+			lstCities.addEventListener(InteractiveEvent.SELECTION_CHANGED, onChangeCitySelection);
 			lstCities.setSize(new IntDimension(128, 22));
 			lstCities.setLocation(new IntPoint(40, 12));
 			addChild(lstCities);
@@ -106,7 +107,11 @@
 			barBg = new barBgClass() as DisplayObject;
 			addChildAt(barBg, 1);
 
-			// Hide the new count bubble for messaged and reports
+			// Hide the menu bubbles
+			tribeInviteRequest.visible = false;
+			tribeInviteRequest.mouseChildren = false;
+			tribeInviteRequest.mouseEnabled = false;
+			
 			txtUnreadMessages.visible = false;
 			txtUnreadMessages.mouseChildren = false;
 			txtUnreadMessages.mouseEnabled = false;
@@ -164,6 +169,9 @@
 			new SimpleTooltip(btnCityTroops, "View unit movement");
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
 			
+			new SimpleTooltip(btnTribe, "View tribe");
+			btnTribe.addEventListener(MouseEvent.CLICK, onViewTribe);
+			
 			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
 			// Set up sidebar holder
@@ -209,10 +217,33 @@
 		public function onViewCityTroops(e: MouseEvent) :void
 		{
 			if (!selectedCity)
-			return;
+				return;
 
 			var movementDialog: MovementDialog = new MovementDialog(selectedCity);
 			movementDialog.show();
+		}
+		
+		public function onViewTribe(e: MouseEvent) :void
+		{			
+			if (Constants.tribeId != 0) {				
+				//var tribeDialog: TribeDialog = new TribeDialog();
+				//tribeDialog.show();
+			}
+			else if (Constants.tribeInviteId != 0) {
+				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {
+					Global.mapComm.Tribe.invitationConfirm(sender.getResult());
+					
+					sender.getFrame().dispose();
+				});				
+				tribeInviteDialog.show();
+			}
+			else {
+				var createTribeDialog: CreateTribeDialog = new CreateTribeDialog(function(sender: CreateTribeDialog) : void {
+					Global.mapComm.Tribe.createTribe(sender.getTribeName());
+					sender.getFrame().dispose();
+				});
+				createTribeDialog.show();
+			}
 		}
 
 		public function onViewCityInfo(e: MouseEvent) :void
@@ -301,7 +332,7 @@
 		}
 
 		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
-			setSidebar(null);
+			clearAllSelections();
 			
 			if (zoom) {
 				screenMessage.setVisible(false);
@@ -361,7 +392,7 @@
 			{
 				if (map != null) map.selectObject(null);				
 				if (miniMap != null) zoomIntoMinimap(false);
-				setSidebar(null);
+				clearAllSelections();
 			}
 			
 			if (!minimapZoomed && !Util.textfieldHasFocus(stage)) {
@@ -392,7 +423,7 @@
 
 			// Populate city list
 			for each (var city: City in map.cities.each()) {
-				(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
+				addCityToUI(city);
 			}
 
 			// Set a default city selection
@@ -527,7 +558,7 @@
 			}
 
 			resourcesContainer = null;
-			setSidebar(null);
+			clearAllSelections();
 
 			if (map) {
 				resizeManager.removeEventListener(Event.RESIZE, map.onResize);
@@ -546,16 +577,26 @@
 
 			resizeManager = null;
 		}
+		
+		public function addCityToUI(city: City): void {
+			(lstCities.getModel() as VectorListModel).append( { id: city.id, city: city, toString: function() : String { return this.city.name; } } );
+		}
 
 		private function alignMinimapTools() : void {
 			minimapTools.x = miniMap.x;
 			minimapTools.y = miniMap.y - 3;
 		}
 
-		public function setSidebar(sidebar: GameJSidebar):void
+		public function clearAllSelections() : void 
 		{
-			var focusOwner: Component = FocusManager.getManager(stage).getFocusOwner();
-			
+			if (map)
+				map.selectObject(null);
+				
+			setSidebar(null);
+		}
+		
+		public function setSidebar(sidebar: GameJSidebar):void
+		{			
 			if (this.sidebar != null)
 				this.sidebar.getFrame().dispose();			
 
@@ -567,23 +608,30 @@
 				sidebar.show(sidebarHolder);								
 			}					
 			
-			if (focusOwner)
-				stage.focus = focusOwner.getInternalFocusObject();			
+			stage.focus = map;
 		}
 
-		public function closeAllFrames() : void {
+		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
 			var framesCopy: Array = frames.concat();
 
 			for (var i: int = framesCopy.length - 1; i >= 0; --i) {
-				(framesCopy[i] as JFrame).dispose();
+				var frame: JFrame = framesCopy[i] as JFrame;
+				if (onlyClosableFrames && !frame.isClosable())
+					break;
+				
+				frame.dispose();
 			}
 		}
 
-		public function showFrame(frame: JFrame):void {
-			if (map != null) map.disableMouse(true);
+		public function showFrame(frame: JFrame):void {						
+			if (map != null) {
+				clearAllSelections();
+				map.disableMouse(true);				
+			}
+				
 			frames.push(frame);
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
-			frame.show();
+			frame.show();			
 		}
 
 		public function onFrameClosing(e: PopupEvent):void {
@@ -642,15 +690,34 @@
 			}
 		}
 
-		public function onChangeCitySelection(e: AWEvent):void {
-			selectedCity = null;
-			if (lstCities.getSelectedIndex() == -1) return;
-
-			selectedCity = lstCities.getSelectedItem().city;
-
-			displayResources();
+		public function selectCity(cityId: int) : void {
+			if (Global.gameContainer.selectedCity.id == cityId) return;
 			
+			for (var i: int = 0; i < lstCities.getModel().getSize(); i++) {
+				var item: * = lstCities.getModel().getElementAt(i);
+				
+				if (item.id == cityId) {
+					lstCities.setSelectedIndex(i, true);
+					
+					setSidebar(null);
+					selectedCity = lstCities.getSelectedItem().city;
+					displayResources();
+					break;
+				}
+			}
+		}
+		
+		public function onChangeCitySelection(e: InteractiveEvent):void {			
+			setSidebar(null);			
+			
+			selectedCity = null;			
+			if (lstCities.getSelectedIndex() == -1) return;
+			
+			selectedCity = lstCities.getSelectedItem().city;
+			displayResources();			
 			onGoToCity(e);
+			
+			stage.focus = map;
 		}
 
 		private function onMinimapNavigateToPoint(e: MouseEvent) : void {

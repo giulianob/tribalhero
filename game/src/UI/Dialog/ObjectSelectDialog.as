@@ -4,6 +4,7 @@
 	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
+	import src.Objects.SimpleObject;
 	import src.UI.GameJPanel;
 	import src.UI.SmartMovieClip;
 
@@ -15,7 +16,7 @@
 
 	public class ObjectSelectDialog extends GameJPanel {
 
-		public var selectedObject: GameObject;
+		public var selectedObject: SimpleObject;
 
 		private var lblTitle:JLabel;
 		private var pnlObject:JPanel;
@@ -28,17 +29,19 @@
 
 			var self: ObjectSelectDialog = this;
 
-			for each(var obj: SimpleGameObject in objects)
+			for each(var obj: SimpleObject in objects)
 			{
-				if (!(obj is GameObject)) continue;
+				if (!obj.isSelectable()) continue;
 
 				var icon: SmartMovieClip = ObjectFactory.getSprite(obj, true, true) as SmartMovieClip;
 				icon.useHandCursor = true;
 				icon.buttonMode = true;
-				icon.tag = obj as GameObject;
+				icon.tag = obj;
+				icon.mouseChildren = false;
+				icon.mouseEnabled = true;
 
 				icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent):void {
-					selectedObject = e.target.parent.tag as GameObject;
+					selectedObject = e.target.tag ? e.target.tag : e.target.parent.tag;
 					onAccept(self);
 				});
 

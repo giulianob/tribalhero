@@ -10,6 +10,7 @@
 	import src.Objects.GameError;
 	import src.Objects.GameObject;
 	import src.Objects.Resources;
+	import src.Objects.StructureObject;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import src.Util.Util;
@@ -49,9 +50,9 @@
 		private var onAccept: Function;
 		private var loadingDlg: InfoDialog;
 		
-		private var parentObj: GameObject;
+		private var parentObj: StructureObject;
 		
-		public function SendResourceDialog(parentObj: GameObject, onAccept: Function):void
+		public function SendResourceDialog(parentObj: StructureObject, onAccept: Function):void
 		{
 			this.onAccept = onAccept;
 			this.parentObj = parentObj;

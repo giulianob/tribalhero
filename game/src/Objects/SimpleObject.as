@@ -7,10 +7,13 @@
 package src.Objects {
 
 	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
+	import flash.filters.GlowFilter;
+	import flash.geom.Point;
 	import flash.utils.Timer;
 	import src.Constants;
 	import src.Map.Camera;
@@ -18,13 +21,49 @@ package src.Objects {
 	
 	public class SimpleObject extends SmartMovieClip implements IScrollableObject {
 		
+		public var disposed: Boolean;
+		
 		public var objX: int;
 		public var objY: int;
 		
-		public var bmpSprite: Bitmap;
+		private var onSelect: Function;
+		private var selected: Boolean;						
+		
+		public var objectCount: DisplayObject;		
 		
 		public function SimpleObject() {
+			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
+				if (objectCount != null) {
+					removeChild(objectCount);
+					objectCount = null;
+				}
+			});
+		}
+		
+		public function setObjectCount(count: int) : void {
+			if (objectCount != null) {
+				removeChild(objectCount);			
+				objectCount = null;
+			}
 			
+			if (count <= 1) return;		
+			
+			var bubble: CountBubble = new CountBubble();
+			bubble.mouseChildren = false;
+			bubble.txtUnreadCount.mouseEnabled = false;
+			bubble.txtUnreadCount.tabEnabled = false;
+			bubble.txtUnreadCount.text = count.toString();
+			bubble.x = Constants.tileW / 2;
+			bubble.y = 0;
+			
+			objectCount = bubble;
+			
+			addChild(bubble);
+		}
+		
+		public function dispose(): void {
+			disposed = true;
+			if (objectCount) removeChild(objectCount);			
 		}
 		
 		public function fadeIn():void
@@ -46,6 +85,32 @@ package src.Objects {
 			y = objY - camera.y;
 		}
 		
+		public function setOnSelect(callback: Function):void
+		{
+			onSelect = callback;
+		}
+		
+		public function isSelectable(): Boolean {
+			return onSelect != null;
+		}
+
+		public function setSelected(bool: Boolean = false):void
+		{
+			filters = bool == false ? [] : [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
+			selected = bool;
+		}
+
+		public function setHighlighted(bool: Boolean = false):void
+		{
+			if (selected)
+				return;
+
+			if (bool == false)			
+				filters = [];			
+			else			
+				filters = [new GlowFilter(0xFFDD00, 0.5, 16, 16, 3)];			
+		}		
+		
 		public function getX(): int
 		{
 			return objX;
@@ -65,6 +130,27 @@ package src.Objects {
 		{
 			objY = y;
 		}
+		
+		public function setXY(x: int, y: int):void
+		{
+			setX(x);
+			setY(y);
+		}		
+		
+		public function distance(x_1: int, y_1: int): int
+		{
+			var offset: int = 0;
+
+			var objPos: Point = new Point();
+
+			objPos.x = getX();
+			objPos.y = getY();
+
+			if (objPos.y % 2 == 1 && y_1 % 2 == 0 && x_1 <= objPos.x) offset = 1;
+			if (objPos.y % 2 == 0 && y_1 % 2 == 1 && x_1 >= objPos.x) offset = 1;
+
+			return ((x_1 > objPos.x ? x_1 - objPos.x : objPos.x - x_1) + (y_1 > objPos.y ? y_1 - objPos.y : objPos.y - y_1) / 2 + offset);
+		}		
 		
 		public static function sortOnXandY(a: IScrollableObject, b: IScrollableObject):Number {
 			var aX:Number = a.getX();

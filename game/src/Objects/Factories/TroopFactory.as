@@ -2,6 +2,8 @@
 
 	import flash.display.DisplayObjectContainer;
 	import flash.utils.getDefinitionByName;
+	import src.Global;
+	import src.Objects.States.GameObjectState;
 	import src.Objects.Troop.TroopObject;
 	import src.Objects.Troop.TroopStub;
 
@@ -52,17 +54,15 @@
 			return sprite;
 		}
 
-		public static function getInstance(): Object
+		public static function getInstance(type: int, state: GameObjectState, objX: int, objY: int, playerId: int, cityId: int, objectId: int): TroopObject
 		{
-			var obj: DisplayObjectContainer = getSprite();
-
-			var shadow: DisplayObjectContainer = getSprite();
-			ObjectFactory.makeIntoShadow(shadow);
-
-			var troopObject: TroopObject = new TroopObject();
-			troopObject.addChild(shadow);
-			troopObject.addChild(obj);
-
+			var troopObject: TroopObject = new TroopObject(type, state, objX, objY, playerId, cityId, objectId);
+			
+			troopObject.addChild(ObjectFactory.makeIntoShadow(getSprite()));
+			troopObject.addChild(getSprite());
+			
+			troopObject.setOnSelect(Global.map.selectObject);
+			
 			return troopObject;
 		}
 	}

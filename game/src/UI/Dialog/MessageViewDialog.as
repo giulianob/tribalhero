@@ -3,6 +3,7 @@
 	import src.Global;
 	import src.Map.*;
 	import src.Objects.*;
+	import src.UI.Components.PlayerLabel;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
@@ -18,7 +19,7 @@
 
 		private var pnlName:JPanel;
 		private var lblName:JLabel;
-		private var txtName:JLabel;
+		private var txtName:PlayerLabel;
 		private var pnlDate:JPanel;
 		private var lblDate:JLabel;
 		private var txtDate:JLabel;
@@ -40,8 +41,7 @@
 			this.message = message;
 
 			createUI();
-
-			txtName.setText(message.name);
+			
 			txtMessage.setText(message.message);
 			txtSubject.setText(message.subject);
 			txtDate.setText(message.date);
@@ -100,7 +100,7 @@
 			lblName.setHorizontalAlignment(AsWingConstants.RIGHT);
 			GameLookAndFeel.changeClass(lblName, "Form.label");
 
-			txtName = new JLabel();
+			txtName = new PlayerLabel(message.isRecipient ? message.senderId : message.recipientId);
 
 			pnlDate = new JPanel();
 			var layout4:FlowLayout = new FlowLayout();

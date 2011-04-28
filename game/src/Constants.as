@@ -3,7 +3,7 @@ package src
 	public class Constants
 	{
 		public static var version: int = 0;
-		public static var revision: int = 11;
+		public static var revision: int = 13;
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";
@@ -14,6 +14,9 @@ package src
 		public static var admin: Boolean;
 		public static var loginKey: String;
 		public static var playerId: int;
+		public static var tribeId: int;
+		public static var tribeRank: int;
+		public static var tribeInviteId: int = 3;
 		
 		/* APP CONSTANTS */
 		public static const mainWebsite: String = "tribalhero.com";
@@ -69,6 +72,8 @@ package src
 		public static var screenH:int = origScreenH;
 		
 		public static const tileset:TileSet = new TileSet(Constants.tileSetW, Constants.tileSetH);
+		
+		public static const cityStartTile: int = 209;
 
 		/* MINI MAP CONSTANTS */
 		public static const miniMapTileW: int = 4;
@@ -128,11 +133,22 @@ package src
 		};
 
 		public static const structureStatRanges: * = {
-			"defense": { min: 0, max: 5520 },
+			"defense": { min: 0, max: 800 },
 			"stealth": { min: 0, max: 17 },
 			"range": { min: 0, max: 11 }
 		};
 
+		/* Ranking Types */
+		public static const rankings: Array = [
+			{desc: "City ranking by attack points", icon: ICON_BATTLE },
+			{desc: "City ranking by defense points", icon: ICON_SHIELD },
+			{desc: "City ranking by total loot stolen", icon: ICON_CROP },
+			{desc: "Player ranking by attack points", icon: ICON_BATTLE },
+			{desc: "Player ranking by defense points", icon: ICON_SHIELD },
+			{desc: "Player ranking by total loot stolen", icon: ICON_CROP }
+		];
+		
+		/* Buffer for game XML data */
 		public static var objData: XML = <Data></Data>;
 	}
 }

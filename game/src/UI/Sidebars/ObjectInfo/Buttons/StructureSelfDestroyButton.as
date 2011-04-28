@@ -8,6 +8,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.SimpleGameObject;
 	import src.Objects.States.MovingState;
 	import src.UI.Cursors.*;
 	import src.UI.Tooltips.TextTooltip;
@@ -16,7 +17,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{
 		private var tooltip: TextTooltip;
 
-		public function StructureSelfDestroyButton(parentObj: GameObject)
+		public function StructureSelfDestroyButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Remove");
 
@@ -41,7 +42,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		public function onMouseClick(event: Event):void
 		{
 			if (isEnabled())			
-				Global.mapComm.Object.structureSelfDestroy(parentObj.cityId, parentObj.objectId);			
+				Global.mapComm.Object.structureSelfDestroy(parentObj.groupId, parentObj.objectId);			
 
 			event.stopImmediatePropagation();
 		}

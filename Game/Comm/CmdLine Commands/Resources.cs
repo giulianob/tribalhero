@@ -37,7 +37,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(cityName))
-                return "send_resources --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###]";
+                return "sendresources --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###] [--gold=###]";
 
             uint cityId;
             if (!Global.World.FindCityId(cityName, out cityId))

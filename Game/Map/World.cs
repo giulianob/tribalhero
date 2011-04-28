@@ -6,8 +6,10 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Threading;
+using System.Linq;
 using Game.Comm;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Procedures;
@@ -23,8 +25,7 @@ namespace Game.Map
     {
         #region Members
 
-        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);
-        private readonly LargeIdGenerator objectIdGenerator = new LargeIdGenerator(int.MaxValue);
+        private readonly LargeIdGenerator cityIdGen = new LargeIdGenerator(uint.MaxValue);        
         private CityRegion[] cityRegions;
         private Region[] regions;
         public RoadManager RoadManager { get; private set; }
@@ -265,13 +266,11 @@ namespace Game.Map
             lock (Lock)
             {
                 city.BeginUpdate();
-                Global.DbManager.Delete(city.Template);
-                Global.DbManager.Delete(city.Technologies);
+                Global.DbManager.DeleteDependencies(city);
                 city.Deleted = City.DeletedState.Deleted;
                 city.EndUpdate();
 
                 Cities.Remove(city.Id);
-                cityIdGen.Release((int)city.Id);
             }
         }
 
@@ -287,9 +286,7 @@ namespace Game.Map
                 obj.InWorld = true;
 
                 // If simple object, we must assign an id
-                if (!(obj is GameObject))
-                    obj.ObjectId = (uint)objectIdGenerator.GetNext();
-                else if (obj is Structure && !(ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)obj)))
+                if (!ObjectTypeFactory.IsStructureType("NoRoadRequired", obj.Type))
                     RoadManager.CreateRoad(obj.X, obj.Y);
 
                 // Add appropriate objects to the minimap
@@ -327,10 +324,6 @@ namespace Game.Map
             if (obj.InWorld)
                 region.Add(obj);
 
-            // Set id in use
-            if (!(obj is GameObject))
-                objectIdGenerator.Set((int)obj.ObjectId);
-
             // Add to minimap if needed
             if (obj is ICityRegionObject)
             {
@@ -366,19 +359,12 @@ namespace Game.Map
                     cityRegion.Remove((ICityRegionObject)obj);
             }
 
-            // Free object id if this is SimpleGameObject
-            if (!(obj is GameObject))
-                objectIdGenerator.Release((int)obj.ObjectId);
-
             // Send remove update
             if (Global.FireEvents)
             {
                 var packet = new Packet(Command.ObjectRemove);
                 packet.AddUInt16(regionId);
-                if (obj is GameObject)
-                    packet.AddUInt32(((GameObject)obj).City.Id);
-                else
-                    packet.AddUInt32(0);
+                packet.AddUInt32(obj.GroupId);
                 packet.AddUInt32(obj.ObjectId);
 
                 Global.Channel.Post("/WORLD/" + regionId, packet);
@@ -572,11 +558,34 @@ namespace Game.Map
             }
         }
 
+        public bool FindTribeId(string name, out uint tribeId) {
+            tribeId = ushort.MaxValue;
+            using (
+                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                                                                       new[] { new DbColumn("name", name, DbType.String) })) {
+                if (!reader.HasRows)
+                    return false;
+                reader.Read();
+                tribeId = (uint)reader[0];
+                return true;
+            }
+        }
+
         public bool CityNameTaken(string name)
         {
             using (
                     DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
                                                                        new[] {new DbColumn("name", name, DbType.String)}))
+            {
+                return reader.HasRows;
+            }
+        }
+
+        public bool TribeNameTaken(string name)
+        {
+            using (
+                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                                                                       new[] { new DbColumn("name", name, DbType.String) }))
             {
                 return reader.HasRows;
             }
@@ -601,6 +610,11 @@ namespace Game.Map
 
                 long idx = (Region.GetTileIndex(x, y)*Region.TILE_SIZE) + (Region.TILE_SIZE*RegionSize*regionId);
                 tileType = MapData[idx];
+
+                // Check if it's actually changed
+                if (region.GetTileType(x, y) == tileType)
+                    return tileType;
+
                 RegionChanges.Seek(idx, SeekOrigin.Begin);
                 RegionChanges.Write(BitConverter.GetBytes(tileType), 0, 2);
                 RegionChanges.Flush();

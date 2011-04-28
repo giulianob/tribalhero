@@ -153,7 +153,7 @@ namespace Game.Comm
                 {
                     Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
 
-                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, admin, sessionId);
+                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, admin, sessionId);
 
                     Global.World.Players.Add(player.PlayerId, player);
                 }
@@ -190,6 +190,9 @@ namespace Game.Comm
 
                 //User session backreference
                 session.Player = player;                
+
+                // Subscribe him to the player channel
+                Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
                 //Player Id
                 reply.AddUInt32(player.PlayerId);

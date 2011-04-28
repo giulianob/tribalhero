@@ -11,7 +11,7 @@ namespace Game.Comm
 {
     public partial class CmdLineProcessor
     {
-        public string CmdSendResources(string[] parms)
+        public string CmdSendResources(Session session, string[] parms)
         {
             var resource = new Resource();
             string cityName = string.Empty;
@@ -37,7 +37,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(cityName))
-                return "send_resources --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###]";
+                return "sendresources --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###] [--gold=###]";
 
             uint cityId;
             if (!Global.World.FindCityId(cityName, out cityId))

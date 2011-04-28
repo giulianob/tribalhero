@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -8,7 +9,7 @@ using Game.Setup;
 using Game.Util;
 
 namespace Game.Logic.Actions {
-    public class CityCreateActiveAction : ScheduledActiveAction
+    public class CityCreatePassiveAction : ScheduledPassiveAction
     {
         uint newCityId;  // new city id
         uint newStructureId; // new mainbuilding
@@ -18,29 +19,25 @@ namespace Game.Logic.Actions {
         readonly uint cityId;
         readonly string cityName;
 
-        public CityCreateActiveAction(uint cityId, uint x, uint y, string cityName)
+        public CityCreatePassiveAction(uint cityId, uint x, uint y, string cityName)
         {
             this.cityId = cityId;
             this.x = x;
             this.y = y;
             this.cityName = cityName;
-
-            if (!MapFactory.NextLocation(out this.x, out this.y, Formula.GetInitialCityRadius())) {
-                throw new Exception();
-            }
         }
 
-        public CityCreateActiveAction(uint id,
+        public CityCreatePassiveAction(uint id,
                                     DateTime beginTime,
                                     DateTime nextTime,
                                     DateTime endTime,
-                                    int workerType,
-                                    byte workerIndex,
-                                    ushort actionCount,
-                                    Dictionary<string, string> properties) : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                    bool isVisible, 
+                                    string nlsDescription,
+                                    Dictionary<string, string> properties)
+            : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
             newCityId = uint.Parse(properties["new_city_id"]);
-            newStructureId = uint.Parse(properties["new_structure_id"]);     
+            newStructureId = uint.Parse(properties["new_structure_id"]);
         }
 
         #region Overrides of GameAction
@@ -49,7 +46,7 @@ namespace Game.Logic.Actions {
         {
             get
             {
-                return ActionType.CityCreateActive;
+                return ActionType.CityCreatePassive;
             }
         }
 
@@ -77,14 +74,27 @@ namespace Game.Logic.Actions {
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
+            if (!City.IsNameValid(cityName))
+                return Error.CityNameInvalid;
+
+            if (!Global.World.IsValidXandY(x, y))
+                return Error.ActionInvalid;
+
+            // cost requirement uses town center lvl 1 for cost
+            var cost = Formula.StructureCost(city, ObjectTypeFactory.GetTypes("MainBuilding")[0], 1);
+            if (!city.Resource.HasEnough(cost))            
+                return Error.ResourceNotEnough;            
+
+            // make sure all cities are at least level 10
+            if (city.Owner.GetCityList().Any(c => c.Lvl < 10))
+                return Error.EffectRequirementNotMet;
+
             Global.World.LockRegion(x, y);
 
-            // cost requirement
-            //var cost = new Resource(5000,2000,1000,5000,200);
-            var cost = new Resource(500, 200, 100, 50, 20);
-            if (!city.Resource.HasEnough(cost)) {
+            if (!ObjectTypeFactory.IsTileType("CityStartTile", Global.World.GetTileType(x, y)))
+            {
                 Global.World.UnlockRegion(x, y);
-                return Error.ResourceNotEnough;
+                return Error.TileMismatch;
             }
 
             // check if tile is occupied
@@ -110,6 +120,8 @@ namespace Game.Logic.Actions {
                 newCity = new City(city.Owner, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
                 city.Owner.Add(newCity);
 
+                Global.World.SetTileType(x, y, 0, true);
+
                 Global.World.Add(newCity);
                 structure.BeginUpdate();
                 Global.World.Add(structure);
@@ -128,14 +140,21 @@ namespace Game.Logic.Actions {
                 city.BeginUpdate();
                 city.Resource.Subtract(cost);
                 city.EndUpdate();
+
+                // send new city channel notification
+                if (newCity.Owner.Session != null)
+                {
+                    newCity.Subscribe(newCity.Owner.Session);
+                    newCity.NewCityUpdate();
+                }
             }
 
             newCityId = newCity.Id;
             newStructureId = structure.ObjectId;
 
-            // add to queue for completion
-            //EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(2 * 24 * 3600, city, city.Technologies)));
-            EndTime = DateTime.UtcNow.AddSeconds(120);
+            // add to queue for completion            
+            int baseBuildTime = StructureFactory.GetBaseStats(ObjectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
+            EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             Global.World.UnlockRegion(x, y);

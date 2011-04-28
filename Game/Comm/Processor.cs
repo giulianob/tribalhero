@@ -22,6 +22,8 @@ namespace Game.Comm
         public Processor()
         {
             RegisterCommand(Command.Login, CmdLogin);
+            RegisterCommand(Command.PlayerProfile, CmdGetProfile);
+            RegisterCommand(Command.PlayerDescriptionSet, CmdSetPlayerDescription);
             RegisterCommand(Command.CmdLine, CmdLineCommand);
             RegisterCommand(Command.CityCreateInitial, CmdCreateInitialCity);
             RegisterCommand(Command.QueryXml, CmdQueryXml);
@@ -30,12 +32,14 @@ namespace Game.Comm
             RegisterCommand(Command.StructureInfo, CmdGetStructureInfo);
             RegisterCommand(Command.ForestInfo, CmdGetForestInfo);
             RegisterCommand(Command.ForestCampCreate, CmdCreateForestCamp);
+
             RegisterCommand(Command.StructureBuild, CmdCreateStructure);
             RegisterCommand(Command.StructureUpgrade, CmdUpgradeStructure);
             RegisterCommand(Command.StructureDowngrade, CmdDowngradeStructure);
             RegisterCommand(Command.StructureChange, CmdChangeStructure);
             RegisterCommand(Command.StructureLaborMove, CmdLaborMove);
             RegisterCommand(Command.StructureSelfDestroy, CmdSelfDestroyStructure);
+
             RegisterCommand(Command.UnitTrain, CmdTrainUnit);
             RegisterCommand(Command.UnitUpgrade, CmdUnitUpgrade);
             RegisterCommand(Command.ActionCancel, CmdCancelAction);
@@ -45,14 +49,18 @@ namespace Game.Comm
             RegisterCommand(Command.TroopDefend, CmdTroopDefend);
             RegisterCommand(Command.TroopRetreat, CmdTroopRetreat);
             RegisterCommand(Command.TroopLocalSet, CmdLocalTroopSet);
+
             RegisterCommand(Command.PlayerUsernameGet, CmdGetUsername);
             RegisterCommand(Command.PlayerNameFromCityName, CmdGetCityOwnerName);
             RegisterCommand(Command.CityUsernameGet, CmdGetCityUsername);
+
             RegisterCommand(Command.BattleSubscribe, CmdBattleSubscribe);
             RegisterCommand(Command.BattleUnsubscribe, CmdBattleUnsubscribe);
+
             RegisterCommand(Command.MarketBuy, CmdMarketBuy);
             RegisterCommand(Command.MarketSell, CmdMarketSell);
             RegisterCommand(Command.MarketPrices, CmdMarketGetPrices);
+
             RegisterCommand(Command.NotificationLocate, CmdNotificationLocate);
             RegisterCommand(Command.CityLocate, CmdCityLocate);
             RegisterCommand(Command.CityLocateByName, CmdCityLocateByName);
@@ -61,6 +69,23 @@ namespace Game.Comm
             RegisterCommand(Command.CityResourceSend, CmdSendResources);
             RegisterCommand(Command.ResourceGather, CmdResourceGather);
             RegisterCommand(Command.CityCreate, CmdCityCreate);
+
+            RegisterCommand(Command.TribeNameGet, CmdTribeName);
+            RegisterCommand(Command.TribeInfo, CmdTribeInfo);
+            RegisterCommand(Command.TribeCreate, CmdTribeCreate);
+            RegisterCommand(Command.TribeDelete, CmdTribeDelete);
+            RegisterCommand(Command.TribeUpdate, CmdTribeUpdate);
+            RegisterCommand(Command.TribeUpgrade, CmdTribeUpgrade);
+            RegisterCommand(Command.TribesmanAdd, CmdTribesmanAdd);
+            RegisterCommand(Command.TribesmanRemove, CmdTribesmanRemove);
+            RegisterCommand(Command.TribesmanUpdate, CmdTribesmanUpdate);
+            RegisterCommand(Command.TribesmanRequest, CmdTribesmanRequest);
+            RegisterCommand(Command.TribesmanConfirm, CmdTribesmanConfirm);
+            RegisterCommand(Command.TribeAssignementList, CmdTribeAssignmentList);
+            RegisterCommand(Command.TribeAssignementCreate, CmdTribeAssignmentCreate);
+            RegisterCommand(Command.TribeAssignementJoin, CmdTribeAssignmentJoin);
+            RegisterCommand(Command.TribeIncomingList, CmdTribeIncomingList);
+
 
             RegisterEvent(Command.OnDisconnect, EventOnDisconnect);
             RegisterEvent(Command.OnConnect, EventOnConnect);

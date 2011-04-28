@@ -19,6 +19,7 @@ namespace Game.Database
 
         bool Save(params IPersistable[] objects);
         bool Delete(params IPersistable[] objects);
+        void DeleteDependencies(IPersistable obj);
 
         void Rollback();
 

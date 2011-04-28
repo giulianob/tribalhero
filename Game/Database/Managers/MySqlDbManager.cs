@@ -188,6 +188,21 @@ namespace Game.Database.Managers
             return true;
         }
 
+        public void DeleteDependencies(IPersistable obj)
+        {
+            Type objType = obj.GetType();
+            foreach (var dependency in obj.DbDependencies)
+            {
+                if (!dependency.AutoDelete)
+                    continue;
+
+                PropertyInfo propInfo = objType.GetProperty(dependency.Property);
+                var persistable = propInfo.GetValue(obj, null) as IPersistable;
+                if (persistable != null)
+                    Delete(persistable);
+            }
+        }
+
         public DbDataReader Select(string table)
         {
             MySqlConnection connection = GetConnection();
@@ -383,6 +398,9 @@ namespace Game.Database.Managers
 
             while (reader.Read())
             {
+                if ((String)reader[0] == "schema_migrations")
+                    continue;
+
                 MySqlConnection truncateConnection = GetConnection();
                 MySqlCommand truncateCommand = connection.CreateCommand();
                 truncateCommand.CommandText = string.Format("TRUNCATE TABLE `{0}`", reader[0]);

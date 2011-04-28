@@ -7,6 +7,7 @@ using System.Threading;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
+using Game.Data.Tribe;
 
 #endregion
 
@@ -61,6 +62,29 @@ namespace Game.Util
             Lock(cities);
         }
 
+        public MultiObjectLock(out Dictionary<uint, Player> result, params uint[] playerIds) {
+            result = new Dictionary<uint, Player>(playerIds.Length);
+            var players = new Player[playerIds.Length];
+
+            int i = 0;
+            foreach (var playerId in playerIds) {
+                Player player;
+                if (!Global.World.TryGetObjects(playerId, out player)) {
+                    result = null;
+                    return;
+                }
+
+                result[playerId] = player;
+                players[i++] = player;
+            }
+
+            Lock(players);
+        }
+
+        public MultiObjectLock(uint tribeId, out Tribe tribe) {
+            TryGetTribe(tribeId, out tribe);
+        }
+        
         public MultiObjectLock(uint playerId, out Player player)
         {
             TryGetPlayer(playerId, out player);
@@ -182,6 +206,22 @@ namespace Game.Util
             catch(Exception)
             {
                 player = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool TryGetTribe(uint tribeId, out Tribe tribe) {
+            if (!Global.Tribes.TryGetValue(tribeId, out tribe))
+                return false;
+
+            try {
+                Lock(tribe);
+            } catch (LockException) {
+                throw;
+            } catch (Exception) {
+                tribe = null;
                 return false;
             }
 

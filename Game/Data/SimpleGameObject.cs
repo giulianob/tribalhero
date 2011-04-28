@@ -10,15 +10,17 @@ namespace Game.Data
 {
     public abstract class SimpleGameObject
     {
-        #region Types enum
-
         public enum Types : ushort
         {
             Troop = 100,
-            Forest = 200
+            Forest = 200,
         }
 
-        #endregion
+        public enum SystemGroupIds : uint
+        {
+            NewCityStartTile = 10000001,
+            Forest = 10000002,
+        }
 
         protected uint objectId;
         protected uint x;
@@ -57,7 +59,7 @@ namespace Game.Data
         }
 
         public abstract ushort Type { get; }
-        public abstract byte Lvl { get; }
+        public abstract uint GroupId { get; }
 
         public virtual uint ObjectId
         {
@@ -116,19 +118,19 @@ namespace Game.Data
             }
         }
 
-        public uint CityRegionRelX
+        public ushort CityRegionRelX
         {
             get
             {
-                return x%Config.city_region_width;
+                return (ushort)(x%Config.city_region_width);
             }
         }
 
-        public uint CityRegionRelY
+        public ushort CityRegionRelY
         {
             get
             {
-                return y%Config.city_region_height;
+                return (ushort)(y%Config.city_region_height);
             }
         }
 

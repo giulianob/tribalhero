@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 
+	import flash.geom.Point;
 	import org.aswing.AssetIcon;
 	import src.Comm.*;
 	import src.Util.Util;
@@ -60,33 +61,75 @@
 				break;
 			}
 		}
+		
+		public function readObject(packet: Packet, regionId: int) : SimpleGameObject {
+			var objType: int = packet.readUShort();
+			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
+			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
+			
+			var objGroupId: int = packet.readUInt();
+			var objId: int = packet.readUInt();
+			
+			var objPlayerId: int;
+			var objLvl: int;
+			switch(ObjectFactory.getClassType(objType)) {
+				case ObjectFactory.TYPE_STRUCTURE:
+					objPlayerId = packet.readUInt();
+					objLvl = packet.readUByte();						
+					break;
+				case ObjectFactory.TYPE_FOREST:
+					objLvl = packet.readUByte();						
+					break;
+				case ObjectFactory.TYPE_TROOP_OBJ:
+					objPlayerId = packet.readUInt();
+					break;
+			} 							
+			
+			var objState: GameObjectState = readState(packet);
+			
+			var coord: Point = MapUtil.getScreenCoord(objX, objY);
+			
+			switch(ObjectFactory.getClassType(objType)) {
+				case ObjectFactory.TYPE_STRUCTURE:
+					var wallRadius: int = objId == 1 ? packet.readUByte() : 0;
+					return StructureFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId, objLvl, wallRadius);
+				case ObjectFactory.TYPE_FOREST:
+					return ForestFactory.getInstance(objType, objState, coord.x, coord.y, objGroupId, objId, objLvl);
+				case ObjectFactory.TYPE_TROOP_OBJ:
+					return TroopFactory.getInstance(objType, objState, coord.x, coord.y, objPlayerId, objGroupId, objId);
+			}
+			
+			return null;
+		}
 
-		public function readState(obj: SimpleGameObject, packet: Packet, objState: int) : void {
+		public function readState(packet: Packet) : GameObjectState {
+			var objState: int = packet.readUByte();
+			
 			switch(objState)
 			{
 				case SimpleGameObject.STATE_NORMAL:
-					if (obj) obj.State = new GameObjectState();
+					return new GameObjectState();
 				break;
 				case SimpleGameObject.STATE_BATTLE:
 					var battleCityId: int = packet.readUInt();
-					if (obj) obj.State = new BattleState(battleCityId);
+					return new BattleState(battleCityId);
 				break;
 				case SimpleGameObject.STATE_MOVING:
 					var destX: int = 0;
 					var destY: int = 0;
-					if (obj) obj.State = new MovingState(destX, destY);
+					return new MovingState(destX, destY);
 				break;
 				default:
 					Util.log("Unknown object state in onReceiveRegion:" + objState);
 				break;
 			}
+			
+			return null;
 		}
 
-		public function readWall(obj: SimpleGameObject, packet: Packet) : void {
-			if (ObjectFactory.getClassType(obj.type) == ObjectFactory.TYPE_STRUCTURE && obj.objectId == 1) {
-				var radius: int = packet.readUByte();
-				if (obj) obj.wall.draw(radius);
-			}
+		public function readWall(obj: StructureObject, packet: Packet) : void {
+			if (obj.objectId == 1)
+				obj.wallManager.draw(packet.readUByte());			
 		}
 
 		public function defaultAction(city: int, objectid: int, command: int):void {
@@ -162,6 +205,30 @@
 			
 			session.write(packet, callback);
 		}
+
+		public function getTribeUsername(id: int, callback: Function, custom: * = null) : void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_USERNAME_GET;
+			packet.writeUByte(1); //just doing 1 username now
+			packet.writeUInt(id);
+
+			var pass: Array = new Array();
+			pass.push(callback);
+			pass.push(custom);
+
+			session.write(packet, onReceiveTribeUsername, pass);
+		}
+
+		public function onReceiveTribeUsername(packet: Packet, custom: *):void
+		{
+			packet.readUByte(); //just doing 1 username now
+
+			var id: int = packet.readUInt();
+			var username: String = packet.readString();
+
+			custom[0](id, username, custom[1]);
+		}		
 		
 		public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
 		{
@@ -288,7 +355,7 @@
 
 		public function onReceiveStructureInfo(packet: Packet, custom: *):void
 		{
-			if (MapComm.tryShowError(packet)) return;
+			if (MapComm.tryShowError(packet, null, false, [400])) return;
 
 			var obj:StructureObject = custom as StructureObject;
 
@@ -364,48 +431,19 @@
 		public function onUpdateObject(packet: Packet):void
 		{
 			var regionId: int = packet.readUShort();
-
-			var objLvl: int = packet.readUByte();
-			var objType: int = packet.readUShort();
-			var objPlayerId: int = packet.readUInt();
-			var objCityId: int = packet.readUInt();
-			var objId: int = packet.readUInt();
-			var objHpPercent: int = 100;
-			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-			var objState: int = packet.readUByte();
-
-			var obj: SimpleGameObject = Global.map.regions.updateObject(regionId, objPlayerId, objCityId, objId, objType, objLvl, objHpPercent, objX, objY);
-
-			if (!obj) return;
-
-			readState(obj, packet, objState);
-
-			readWall(obj, packet);
-
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+			
+			var obj: SimpleGameObject = readObject(packet, regionId);
+			
+			Global.map.regions.updateObject(regionId, obj);
 		}
 
 		public function onAddObject(packet: Packet):void
 		{
 			var regionId: int = packet.readUShort();
 
-			var objLvl: int = packet.readUByte();
-			var objType: int = packet.readUShort();
-			var objPlayerId: int = packet.readUInt();
-			var objCityId: int = packet.readUInt();
-			var objId: int = packet.readUInt();
-			var objHpPercent: int = 100;
-			var objX: int = packet.readUShort() + MapUtil.regionXOffset(regionId);
-			var objY: int = packet.readUShort() + MapUtil.regionYOffset(regionId);
-			var obj: SimpleGameObject = Global.map.regions.addObject(null, regionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
-			var objState: int = packet.readUByte();
-
-			if (!obj) return;
-
-			readState(obj, packet, objState);
-
-			readWall(obj, packet);
+			var obj: SimpleGameObject = readObject(packet, regionId);
+			
+			Global.map.regions.addObject(regionId, obj);
 
 			obj.fadeIn();
 		}
@@ -413,36 +451,20 @@
 		public function onRemoveObject(packet: Packet):void
 		{
 			var regionId: int = packet.readUShort();
-			var cityId: int = packet.readUInt();
+			var groupId: int = packet.readUInt();
 			var objId: int = packet.readUInt();
 
-			Global.map.regions.removeObject(regionId, cityId, objId);
+			Global.map.regions.removeObject(regionId, groupId, objId);
 		}
 
 		public function onMoveObject(packet: Packet):void
 		{
 			var oldRegionId: int = packet.readUShort();
 			var newRegionId: int = packet.readUShort();
-
-			var objLvl: int = packet.readUByte();
-			var objType: int = packet.readUShort();
-			var objPlayerId: int = packet.readUInt();
-			var objCityId: int = packet.readUInt();
-			var objId: int = packet.readUInt();
-			var objHpPercent: int = 100;
-			var objX: int = packet.readUShort() + (newRegionId % Constants.mapRegionW) * Constants.regionTileW;
-			var objY: int = packet.readUShort() + int(newRegionId / Constants.mapRegionW) * Constants.regionTileH;
-			var objState: int = packet.readUByte();
-
-			var obj: SimpleGameObject = Global.map.regions.moveObject(oldRegionId, newRegionId, objLvl, objType, objPlayerId, objCityId, objId, objHpPercent, objX, objY);
-
-			if (!obj) return;
-
-			readState(obj, packet, objState);
-
-			readWall(obj, packet);
-
-			obj.dispatchEvent(new Event(SimpleGameObject.OBJECT_UPDATE));
+			
+			var obj: SimpleGameObject = readObject(packet, newRegionId);
+			
+			Global.map.regions.moveObject(oldRegionId, newRegionId, obj);
 		}
 
 		public function onReceiveStartObjectAction(packet: Packet):void
@@ -451,12 +473,14 @@
 			var objId: int = packet.readUInt();
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
-			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) 
+				currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
+			else 
+				currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 			
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
-			return;
+				return;
 
 			city.currentActions.add(currentAction);
 		}
@@ -471,17 +495,15 @@
 
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
-			return;
+				return;
 
 			currentAction = city.currentActions.get(actionId);
 
 			if (!currentAction)
-			return;
+				return;
 
-			if (mode == 0)
-			{
-				currentAction.type = packet.readUShort();
-			}
+			if (mode == 0)			
+				currentAction.type = packet.readUShort();			
 			else
 			{
 				currentAction.workerType = packet.readInt();
@@ -501,18 +523,21 @@
 
 			var currentAction: CurrentAction;
 
-			if (packet.readUByte() == 0) currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
-			else currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
+			if (packet.readUByte() == 0) 
+				currentAction = new CurrentPassiveAction(objId, packet.readUInt(), packet.readUShort(), packet.readString(), packet.readUInt(), packet.readUInt());
+			else 
+				currentAction = new CurrentActiveAction(objId, packet.readUInt(), packet.readInt(), packet.readUByte(), packet.readUShort(), packet.readUInt(), packet.readUInt());
 
 			var city: City = Global.map.cities.get(cityId);
-			if (city == null) return;
+			if (city == null) 
+				return;
 
 			// Show screen message if action completes
 			if (state == Action.STATE_COMPLETED) {
 				var obj: CityObject = city.objects.get(objId);
 				if (obj) {
-					var strPrototype: StructurePrototype = StructureFactory.getPrototype(obj.getType(), obj.getLevel());
-					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": " + currentAction.toString() + " has completed", new AssetIcon(new ICON_CLOCK), 2000));
+					var strPrototype: StructurePrototype = StructureFactory.getPrototype(obj.type, obj.level);
+					Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/ACTCMPT/" + city.id + "/" + objId + "/" + currentAction.id, city.name + " " + strPrototype.getName() + ": " + currentAction.toString() + " has completed", new AssetIcon(new ICON_CLOCK), 60000));
 				}
 			}
 

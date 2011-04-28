@@ -1,30 +1,19 @@
 ﻿
 package src.UI.Cursors {
-	import flash.geom.ColorTransform;
-	import flash.geom.Point;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Map.Map;
-	import src.Map.MapUtil;
-	import flash.display.MovieClip;
-	import flash.events.MouseEvent;
-	import src.Map.RoadPathFinder;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
 	import src.Objects.Factories.*;
-	import src.Util.Util;
-	import src.Objects.GameObject;
-	import src.Objects.IDisposable;
-	import src.Objects.ObjectContainer;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.SimpleObject;
-	import src.UI.Components.GroundCallbackCircle;
-	import src.UI.Components.GroundCircle;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+	import src.Objects.Prototypes.*;
+	import src.UI.Components.*;
+	import src.UI.Sidebars.CursorCancel.*;
+	import src.Util.*;
 
 	public class BuildStructureCursor extends MovieClip implements IDisposable
-	{
-		private var map: Map;
+	{		
 		private var objX: int;
 		private var objY: int;
 		private var city: City;
@@ -35,7 +24,7 @@ package src.UI.Cursors {
 		private var rangeCursor: GroundCircle;
 		private var buildableArea: GroundCallbackCircle;
 		private var structPrototype: StructurePrototype;
-		private var parentObj: GameObject;
+		private var parentObj: SimpleGameObject;
 		private var type: int;
 		private var level: int;
 		private var tilerequirement: String;
@@ -45,7 +34,7 @@ package src.UI.Cursors {
 
 		public function BuildStructureCursor() { }
 
-		public function init(map: Map, type: int, level: int, tilerequirement: String, parentObject: GameObject):void
+		public function init(type: int, level: int, tilerequirement: String, parentObject: SimpleGameObject):void
 		{
 			doubleClickEnabled = true;
 
@@ -53,12 +42,11 @@ package src.UI.Cursors {
 			this.type = type;
 			this.level = level;
 			this.tilerequirement = tilerequirement;
-			this.map = map;
 
-			city = map.cities.get(parentObj.cityId);
+			city = Global.map.cities.get(parentObj.groupId);
 
 			src.Global.gameContainer.setOverlaySprite(this);
-			map.selectObject(null);
+			Global.map.selectObject(null);
 
 			structPrototype = StructureFactory.getPrototype(type, level);
 			cursor = StructureFactory.getSimpleObject(type, level);
@@ -79,7 +67,7 @@ package src.UI.Cursors {
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 			buildableArea.setX(point.x); buildableArea.setY(point.y);
 			buildableArea.moveWithCamera(src.Global.gameContainer.camera);
-			map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
+			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			src.Global.gameContainer.setSidebar(sidebar);
@@ -105,9 +93,9 @@ package src.UI.Cursors {
 
 			if (cursor != null)
 			{
-				if (cursor.stage != null) map.objContainer.removeObject(cursor);
-				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
-				if (buildableArea.stage != null) map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
+				if (cursor.stage != null) Global.map.objContainer.removeObject(cursor);
+				if (rangeCursor.stage != null) Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
+				if (buildableArea.stage != null) Global.map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
 			}
 		}
 
@@ -133,11 +121,11 @@ package src.UI.Cursors {
 			event.stopImmediatePropagation();
 
 			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Object.buildStructure(parentObj.cityId, parentObj.objectId, type, level, pos.x, pos.y);
+			Global.mapComm.Object.buildStructure(parentObj.groupId, parentObj.objectId, type, level, pos.x, pos.y);
 
 			src.Global.gameContainer.setOverlaySprite(null);
 			src.Global.gameContainer.setSidebar(null);
-			map.selectObject(parentObj, false);
+			Global.map.selectObject(parentObj, false);
 		}
 
 		public function onMouseDown(event: MouseEvent):void
@@ -156,26 +144,27 @@ package src.UI.Cursors {
 			{
 				objX = pos.x;
 				objY = pos.y;
-
-				//Range cursor
-				if (rangeCursor.stage != null) map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
+			
+				if (rangeCursor.stage != null) Global.map.objContainer.removeObject(rangeCursor, ObjectContainer.LOWER);
+				if (cursor.stage != null) Global.map.objContainer.removeObject(cursor);
+				
 				rangeCursor.setX(objX); rangeCursor.setY(objY);
-				rangeCursor.moveWithCamera(src.Global.gameContainer.camera);
-				map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
-
-				//Object cursor
-				if (cursor.stage != null) map.objContainer.removeObject(cursor);
+				rangeCursor.moveWithCamera(src.Global.gameContainer.camera);				
+				
 				cursor.setX(objX); cursor.setY(objY);
 				cursor.moveWithCamera(src.Global.gameContainer.camera);
-				map.objContainer.addObject(cursor);
-				validateBuilding();
+				
+				if (validateBuilding()) {
+					Global.map.objContainer.addObject(rangeCursor, ObjectContainer.LOWER);
+					Global.map.objContainer.addObject(cursor);
+				}
 			}
 		}
 
 		private function validateTile(screenPos: Point) : Boolean {
 			// Get the tile type
 			var mapPos: Point = MapUtil.getMapCoord(screenPos.x, screenPos.y);
-			var tileType: int = map.regions.getTileAt(mapPos.x, mapPos.y);
+			var tileType: int = Global.map.regions.getTileAt(mapPos.x, mapPos.y);
 
 			if (Constants.debug >= 4) {
 				Util.log("***");
@@ -291,23 +280,26 @@ package src.UI.Cursors {
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
 		}
 
-		public function validateBuilding():void
+		public function validateBuilding():Boolean
 		{
 			var msg: XML;
 
-			var city: City = map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
 
 			// Check if cursor is inside city walls
 			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
 				hideCursors();
+				return false;
 			}
 			else if (!validateTile(new Point(objX, objY))) {
 				hideCursors();
+				return false;
 			}
-			else {
-				showCursors();
-			}
+			
+			
+			showCursors();
+			return true;
 		}
 	}
 }

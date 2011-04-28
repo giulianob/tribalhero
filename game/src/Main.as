@@ -7,7 +7,6 @@
 	import flash.events.*;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.system.Security;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	import org.aswing.*;
@@ -43,11 +42,10 @@
 		private var siteVersion: String;
 		
 		private var uncaughtExceptionHandler: UncaughtExceptionHandler;
-				
-
+		
 		public function Main()
 		{
-			trace("TribalHero");
+			trace("TribalHero v" + Constants.version + "." + Constants.revision);
 			
 			addEventListener(Event.ADDED_TO_STAGE, init);		
 		}  
@@ -278,6 +276,8 @@
 			UnitFactory.init(map, Constants.objData);
 			WorkerFactory.init(map, Constants.objData);
 			ObjectFactory.init(map, Constants.objData);
+			
+			Constants.objData = <Data></Data>;
 
 			gameContainer.show();
 			Global.mapComm.Login.readLoginInfo(packet);
@@ -285,7 +285,7 @@
 
 			if (Constants.debug > 0) {
 				if (frameCounter)
-				removeChild(frameCounter);
+					removeChild(frameCounter);
 
 				frameCounter = new FPSCounter();
 				frameCounter.y = Constants.screenH - 32;

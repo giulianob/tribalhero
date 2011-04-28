@@ -1,30 +1,17 @@
 ﻿
 package src.UI.Cursors {
-	import flash.events.Event;
-	import flash.geom.ColorTransform;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.Map;
-	import src.Map.MapUtil;
-	import flash.display.MovieClip;
-	import flash.events.MouseEvent;
-	import src.Map.Region;
-	import src.Map.RegionList;
-	import src.Map.RoadPathFinder;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
 	import src.Objects.Factories.*;
-	import src.Objects.GameObject;
-	import src.Objects.IDisposable;
-	import src.Objects.ObjectContainer;
-	import src.Objects.SimpleObject;
-	import src.Objects.StructureObject;
-	import src.UI.Components.GroundCallbackCircle;
-	import src.UI.Components.GroundCircle;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
+	import src.UI.Components.*;
+	import src.UI.Sidebars.CursorCancel.*;
 
 	public class BuildRoadCursor extends MovieClip implements IDisposable
 	{
-		private var map: Map;
 		private var objX: int;
 		private var objY: int;
 		private var city: City;
@@ -33,21 +20,20 @@ package src.UI.Cursors {
 
 		private var cursor: SimpleObject;
 		private var buildableArea: GroundCallbackCircle;
-		private var parentObj: GameObject;
+		private var parentObj: SimpleGameObject;
 
 		public function BuildRoadCursor() { }
 
-		public function init(map: Map, parentObject: GameObject):void
+		public function init(parentObject: SimpleGameObject):void
 		{
 			doubleClickEnabled = true;
 
 			this.parentObj = parentObject;
-			this.map = map;
 
-			city = map.cities.get(parentObj.cityId);
+			city = Global.map.cities.get(parentObj.groupId);
 
-			src.Global.gameContainer.setOverlaySprite(this);
-			map.selectObject(null);
+			Global.gameContainer.setOverlaySprite(this);
+			Global.map.selectObject(null);
 
 			cursor = new GroundCircle(0);
 			cursor.alpha = 0.7;
@@ -57,7 +43,7 @@ package src.UI.Cursors {
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 			buildableArea.setX(point.x); buildableArea.setY(point.y);
 			buildableArea.moveWithCamera(src.Global.gameContainer.camera);
-			map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
+			Global.map.objContainer.addObject(buildableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			src.Global.gameContainer.setSidebar(sidebar);
@@ -75,7 +61,7 @@ package src.UI.Cursors {
 
 		public function update(e: Event = null) : void {
 			buildableArea.redraw();
-
+			validateBuilding();
 		}
 
 		public function dispose():void
@@ -86,8 +72,11 @@ package src.UI.Cursors {
 
 			if (cursor != null)
 			{
-				if (cursor.stage != null) map.objContainer.removeObject(cursor);
-				if (buildableArea.stage != null) map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
+				if (cursor.stage != null) 
+					Global.map.objContainer.removeObject(cursor);
+					
+				if (buildableArea.stage != null) 
+					Global.map.objContainer.removeObject(buildableArea, ObjectContainer.LOWER);
 			}
 		}
 
@@ -106,12 +95,13 @@ package src.UI.Cursors {
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
+			if (!cursor.visible) return;
 			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
 
 			event.stopImmediatePropagation();
 
 			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Region.buildRoad(parentObj.cityId, pos.x, pos.y);
+			Global.mapComm.Region.buildRoad(parentObj.groupId, pos.x, pos.y);
 		}
 
 		public function onMouseDown(event: MouseEvent):void
@@ -123,7 +113,7 @@ package src.UI.Cursors {
 		{
 			if (event.buttonDown) return;
 			
-			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
+			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, stage.mouseX), Math.max(0, stage.mouseY));
 			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
 
 			if (pos.x != objX || pos.y != objY)
@@ -132,17 +122,21 @@ package src.UI.Cursors {
 				objY = pos.y;
 
 				//Object cursor
-				if (cursor.stage != null) map.objContainer.removeObject(cursor);
-				cursor.setX(objX); cursor.setY(objY);
-				cursor.moveWithCamera(src.Global.gameContainer.camera);
-				map.objContainer.addObject(cursor);
+				if (cursor.stage != null) 
+					Global.map.objContainer.removeObject(cursor);
+				
+				cursor.setXY(objX, objY);
+				cursor.moveWithCamera(Global.gameContainer.camera);
+				
+				Global.map.objContainer.addObject(cursor);
+				
 				validateBuilding();
 			}
 		}
 
 		private function validateTile(screenPos: Point) : Boolean {
 			var mapPos: Point = MapUtil.getMapCoord(screenPos.x, screenPos.y);
-			var tileType: int = map.regions.getTileAt(mapPos.x, mapPos.y);
+			var tileType: int = Global.map.regions.getTileAt(mapPos.x, mapPos.y);
 
 			if (RoadPathFinder.isRoad(tileType)) return false;
 
@@ -189,7 +183,7 @@ package src.UI.Cursors {
 		{
 			var msg: XML;
 
-			var city: City = map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
 
 			// Check if cursor is inside city walls

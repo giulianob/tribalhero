@@ -19,6 +19,7 @@
 		public static const RETREAT: int = 252;			
 		public static const FOREST_CAMP_HARVEST: int = 310;		
 		public static const STRUCTURE_CHANGE: int = 5103;
+		public static const CREATE_CITY: int = 505;
 		
 		private static var actionLookup: Array = new Array(
 			{type: ATTACK, description: "Attacking", notificationDescription: attackNotification, icon: "PASSIVE_ATTACKING", cancellable: false },
@@ -26,7 +27,8 @@
 			{type: RETREAT, description: "Retreating", notificationDescription: retreatNotification, icon: "PASSIVE_RETREATING", cancellable: false },
 			{type: FOREST_CAMP_HARVEST, description: "Gathering Wood", notificationDescription: retreatNotification, icon: "PASSIVE_DEFENDING", cancellable: true },
 			{type: STRUCTURE_SELF_DESTROY, description: "Time Left", notificationDescription: selfDestroyNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
-			{type: STRUCTURE_CHANGE, description: "Converting", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false }
+			{type: STRUCTURE_CHANGE, description: "Converting", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false },
+			{type: CREATE_CITY, description: "Building City", notificationDescription: noNotification, icon: "PASSIVE_DEFENDING", cancellable: false }
 		);		
 		
 		private static var actionsSorted: Boolean = false;
@@ -72,7 +74,7 @@
 			return actionLookup[idx].description;
 		}
 		
-		public static function getIcon(actionType: int): DisplayObjectContainer
+		public static function getIcon(actionType: int): DisplayObject
 		{
 			var idx: int = getActionIndex(actionType);
 			

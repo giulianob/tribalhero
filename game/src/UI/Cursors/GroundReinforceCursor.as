@@ -107,11 +107,11 @@
 
 			event.stopImmediatePropagation();
 
-			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);
+			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
 
 			if (objects.length == 0) return;
 
-			var gameObj: SimpleGameObject = objects[0];
+			var gameObj: StructureObject = objects[0];
 
 			if (gameObj.objectId != 1) return;
 

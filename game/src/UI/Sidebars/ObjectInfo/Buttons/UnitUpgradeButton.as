@@ -23,7 +23,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		private var upgradeToolTip: UnitUpgradeTooltip;
 
-		public function UnitUpgradeButton(parentObj: GameObject, unitPrototype: UnitPrototype, maxLevel: int)
+		public function UnitUpgradeButton(parentObj: SimpleGameObject, unitPrototype: UnitPrototype, maxLevel: int)
 		{
 			super(parentObj, unitPrototype.getName());
 
@@ -54,13 +54,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.Troop.upgradeUnit(parentObj.cityId, parentObj.objectId, nextUnitPrototype.type);
+				Global.mapComm.Troop.upgradeUnit(parentObj.groupId, parentObj.objectId, nextUnitPrototype.type);
 			}
 		}
 
 		override public function validateButton(): Boolean
 		{
-			var city: City = Global.map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			if (city == null) {
 				Util.log("UnitUpgradeButton.validateButton: Unknown city");
 				return true;
@@ -87,7 +87,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				return false;
 			}
 
-			city = Global.map.cities.get(parentObj.cityId);
+			city = Global.map.cities.get(parentObj.groupId);
 
 			if (city == null)
 			{

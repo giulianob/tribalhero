@@ -14,7 +14,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 	public class SendResourcesButton extends ActionButton
 	{
-		public function SendResourcesButton(parentObj: GameObject)
+		public function SendResourcesButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Send Resources");
 
@@ -27,8 +27,8 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{						
-				var picker: SendResourceDialog = new SendResourceDialog(parentObj, function(dlg: SendResourceDialog) : void {
-					Global.mapComm.City.sendResources(dlg.amount(), parentObj.cityId, parentObj.objectId, dlg.cityName());
+				var picker: SendResourceDialog = new SendResourceDialog(parentObj as StructureObject, function(dlg: SendResourceDialog) : void {
+					Global.mapComm.City.sendResources(dlg.amount(), parentObj.groupId, parentObj.objectId, dlg.cityName());
 					dlg.getFrame().dispose();
 				});
 				

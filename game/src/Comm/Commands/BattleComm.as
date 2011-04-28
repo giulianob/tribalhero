@@ -81,7 +81,7 @@
 			}
 
 			// Hide the sidebar from the selected troop
-			Global.gameContainer.setSidebar(null);
+			Global.gameContainer.clearAllSelections();
 			
 			var subscribeCityId: int = custom;
 

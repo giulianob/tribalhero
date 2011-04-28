@@ -1,23 +1,25 @@
 ﻿
 package src.UI.Sidebars.CursorCancel {
 	import flash.events.MouseEvent;
-	import src.Global;
-	import src.Objects.GameObject;
-	import src.UI.GameJSidebar;
-
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import org.aswing.geom.*;
+	import src.Global;
+	import src.Objects.GameObject;
+	import src.Objects.SimpleGameObject;
+	import src.Objects.SimpleObject;
+	import src.UI.GameJSidebar;
+
 
 	public class CursorCancelSidebar extends GameJSidebar {
 
-		private var parentObj: GameObject;
+		private var parentObj: SimpleObject;
 
 		private var btnCancel: CursorCancelButton_base = new CursorCancelButton_base();
 
-		public function CursorCancelSidebar(parentObj: GameObject = null) {
+		public function CursorCancelSidebar(parentObj: SimpleObject = null) {
 			createUI();
 
 			btnCancel.addEventListener(MouseEvent.CLICK, onCancel);
@@ -31,7 +33,7 @@ package src.UI.Sidebars.CursorCancel {
 			Global.gameContainer.setSidebar(null);
 
 			if (parentObj != null)
-			Global.map.selectObject(parentObj);
+				Global.map.selectObject(parentObj);
 		}
 
 		private function createUI() : void

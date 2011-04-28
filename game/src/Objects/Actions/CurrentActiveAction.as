@@ -2,7 +2,6 @@
 {
 	import src.Objects.Factories.StructureFactory;
 	import src.Objects.Factories.WorkerFactory;
-	import src.Objects.IObject;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.Worker;
 

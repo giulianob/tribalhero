@@ -55,8 +55,10 @@
 			addChild(circle);
 		}
 
-		public function dispose():void
+		override public function dispose():void 
 		{
+			super.dispose();
+
 			if (circle)
 			{
 				removeChild(circle);

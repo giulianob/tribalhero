@@ -8,6 +8,7 @@
 	import src.Objects.*;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
+	import src.UI.Components.PlayerLabel;
 	import src.UI.Dialog.*;
 	import src.UI.GameJSidebar;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
@@ -37,9 +38,9 @@
 
 		private var t:Timer = new Timer(1000);
 
-		public function TroopInfoSidebar(troopObj: GameObject)
+		public function TroopInfoSidebar(troopObj: TroopObject)
 		{
-			this.troopObj = troopObj as TroopObject;
+			this.troopObj = troopObj;
 
 			troopObj.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
 
@@ -50,20 +51,6 @@
 		public function onObjectUpdate(e: Event):void
 		{
 			update();
-		}
-
-		private function setPlayerUsername(username: Username, custom: * ) : void {
-			var usernameLabel: JLabel = custom as JLabel;
-
-			usernameLabel.setText(username.name);
-
-			// Show message icon if its not the current player
-			if (username.id != Constants.playerId) {
-				usernameLabel.setIcon(new MessagingIcon(username.name));
-				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
-			}
-			
-			if (getFrame()) getFrame().pack();
 		}
 
 		private function setCityUsername(username: Username, custom: * ) : void {
@@ -83,10 +70,10 @@
 
 			clear();
 
-			var usernameLabel: JLabel = addStatRow("Player", "-");
+			var usernameLabel: PlayerLabel = addStatRow("Player", new PlayerLabel(troopObj.playerId));
+			
 			var cityLabel: JLabel = addStatRow("Troop", "-");
-
-			Global.map.usernames.players.getUsername(troopObj.playerId, setPlayerUsername, usernameLabel);
+			
 			Global.map.usernames.cities.getUsername(troopObj.cityId, setCityUsername, cityLabel);
 
 			var buttons: Array = new Array();
@@ -160,14 +147,22 @@
 			t.start();
 		}
 
-		private function addStatRow(title: String, value: String) : JLabel {
+		private function addStatRow(title: String, textOrComponent: *, icon: Icon = null) : * {
 			var rowTitle: JLabel = new JLabel(title);
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");
 
-			var rowValue: JLabel = new JLabel(value);
-			rowValue.setHorizontalAlignment(AsWingConstants.LEFT);
-			rowValue.setName("value");
+			var rowValue: Component;
+			if (textOrComponent is String) {
+				var label: JLabel = new JLabel(textOrComponent as String);
+				label.setHorizontalAlignment(AsWingConstants.LEFT);
+				label.setHorizontalTextPosition(AsWingConstants.LEFT);
+				label.setName("value");
+				label.setIcon(icon);
+				rowValue = label;
+			} 
+			else			
+				rowValue = textOrComponent as Component;			
 
 			pnlStats.addRow(rowTitle, rowValue);
 

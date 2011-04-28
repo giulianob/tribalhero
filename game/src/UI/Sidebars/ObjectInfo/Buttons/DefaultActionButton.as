@@ -19,7 +19,7 @@
 	{							
 		private var textToolTip: TextTooltip;
 		private var command:int;
-		public function DefaultActionButton(parentObj: GameObject, _commmand: int)
+		public function DefaultActionButton(parentObj: SimpleGameObject, _commmand: int)
 		{					
 			super(parentObj, "Default");
 			this.command = _commmand;
@@ -44,30 +44,13 @@
 		
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			Global.mapComm.Object.defaultAction(parentObj.cityId, parentObj.objectId, command);
-				
-			/*	var inputDialog: DefaultActionDialog = new DefaultActionDialog();				
-				inputDialog.init(Global.map, parentObj as StructureObject, onAcceptDialog, onCloseDialog);
-				Global.gameContainer.showDialog(inputDialog);
-				*/
-			
+			Global.mapComm.Object.defaultAction(parentObj.groupId, parentObj.objectId, command);			
 		}
 		
 		public override function validateButton():Boolean 
 		{
 			return true;
 		}
-		
-		/*public function onAcceptDialog(sender: DefaultActionDialog):void
-		{
-			Global.mapComm.Object.defaultAction(this.parentObj.cityId, this.parentObj.objectId, sender.Command(), sender.Value());
-			Global.gameContainer.closeDialog(sender);
-		}
-		
-		public function onCloseDialog(sender: DefaultActionDialog):void
-		{
-			//Global.gameContainer.closeDialog(sender);
-		}		*/
 	}
 	
 }

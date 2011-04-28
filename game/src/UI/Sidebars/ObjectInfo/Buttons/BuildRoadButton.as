@@ -12,7 +12,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 	public class BuildRoadButton extends ActionButton
 	{
-		public function BuildRoadButton(parentObj: GameObject)
+		public function BuildRoadButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Build Road");
 
@@ -26,7 +26,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (isEnabled())
 			{
 				var cursor: BuildRoadCursor = new BuildRoadCursor();
-				cursor.init(Global.map, parentObj);
+				cursor.init(parentObj);
 			}
 		}
 

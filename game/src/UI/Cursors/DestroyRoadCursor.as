@@ -16,7 +16,6 @@ package src.UI.Cursors {
 
 	public class DestroyRoadCursor extends MovieClip implements IDisposable
 	{
-		private var map: Map;
 		private var objX: int;
 		private var objY: int;
 		private var city: City;
@@ -25,23 +24,22 @@ package src.UI.Cursors {
 
 		private var cursor: SimpleObject;
 		private var destroyableArea: GroundCallbackCircle;
-		private var parentObj: GameObject;
+		private var parentObj: SimpleGameObject;
 
 		private var redrawLaterTimer: Timer = new Timer(250);
 
 		public function DestroyRoadCursor() { }
 
-		public function init(map: Map, parentObject: GameObject):void
+		public function init(parentObject: SimpleGameObject):void
 		{
 			doubleClickEnabled = true;
 
 			this.parentObj = parentObject;
-			this.map = map;
 
-			city = map.cities.get(parentObj.cityId);
+			city = Global.map.cities.get(parentObj.groupId);
 
-			src.Global.gameContainer.setOverlaySprite(this);
-			map.selectObject(null);
+			Global.gameContainer.setOverlaySprite(this);
+			Global.map.selectObject(null);
 
 			cursor = new GroundCircle(0);
 			cursor.alpha = 0.7;
@@ -52,7 +50,7 @@ package src.UI.Cursors {
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 			destroyableArea.setX(point.x); destroyableArea.setY(point.y);
 			destroyableArea.moveWithCamera(src.Global.gameContainer.camera);
-			map.objContainer.addObject(destroyableArea, ObjectContainer.LOWER);
+			Global.map.objContainer.addObject(destroyableArea, ObjectContainer.LOWER);
 
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar(parentObj);
 			src.Global.gameContainer.setSidebar(sidebar);
@@ -68,6 +66,7 @@ package src.UI.Cursors {
 			redrawLaterTimer.addEventListener(TimerEvent.TIMER, function(e: Event) : void {
 				redrawLaterTimer.stop();
 				destroyableArea.redraw();
+				validateBuilding();
 			});
 
 			src.Global.gameContainer.message.showMessage("Double click on a highlighted road to destroy it. Roads that are not highlighted may not be destroyed.");
@@ -86,8 +85,11 @@ package src.UI.Cursors {
 
 			if (cursor != null)
 			{
-				if (cursor.stage != null) map.objContainer.removeObject(cursor);
-				if (destroyableArea.stage != null) map.objContainer.removeObject(destroyableArea, ObjectContainer.LOWER);
+				if (cursor.stage != null) 
+					Global.map.objContainer.removeObject(cursor);
+					
+				if (destroyableArea.stage != null) 
+					Global.map.objContainer.removeObject(destroyableArea, ObjectContainer.LOWER);
 			}
 		}
 
@@ -106,12 +108,16 @@ package src.UI.Cursors {
 
 		public function onMouseDoubleClick(event: MouseEvent):void
 		{
-			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) return;
+			if (!cursor.visible)
+				return;
+				
+			if (Point.distance(MapUtil.getPointWithZoomFactor(event.stageX, event.stageY), originPoint) > city.radius) 
+				return;
 
 			event.stopImmediatePropagation();
 
 			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Region.destroyRoad(parentObj.cityId, pos.x, pos.y);
+			Global.mapComm.Region.destroyRoad(parentObj.groupId, pos.x, pos.y);
 		}
 
 		public function onMouseDown(event: MouseEvent):void
@@ -121,7 +127,8 @@ package src.UI.Cursors {
 
 		public function onMouseMove(event: MouseEvent) : void
 		{
-			if (event.buttonDown) return;
+			if (event.buttonDown) 
+				return;
 
 			var mousePos: Point = MapUtil.getPointWithZoomFactor(Math.max(0, event.stageX), Math.max(0, event.stageY));
 			var pos: Point = MapUtil.getActualCoord(src.Global.gameContainer.camera.x + mousePos.x, src.Global.gameContainer.camera.y + mousePos.y);
@@ -132,28 +139,39 @@ package src.UI.Cursors {
 				objY = pos.y;
 
 				//Object cursor
-				if (cursor.stage != null) map.objContainer.removeObject(cursor);
+				if (cursor.stage != null) 
+					Global.map.objContainer.removeObject(cursor);
+					
 				cursor.setX(objX); cursor.setY(objY);
 				cursor.moveWithCamera(src.Global.gameContainer.camera);
-				map.objContainer.addObject(cursor);
+				
+				Global.map.objContainer.addObject(cursor);
+				
 				validateBuilding();
 			}
 		}
 
 		private function validateTile(screenPos: Point) : Boolean {
 			var mapPos: Point = MapUtil.getMapCoord(screenPos.x, screenPos.y);
-			var tileType: int = map.regions.getTileAt(mapPos.x, mapPos.y);
+			var tileType: int = Global.map.regions.getTileAt(mapPos.x, mapPos.y);
 
-			if (!RoadPathFinder.isRoad(tileType)) return false;
+			if (!RoadPathFinder.isRoad(tileType)) 
+				return false;
 
-			if (Global.map.regions.getObjectsAt(screenPos.x, screenPos.y, StructureObject).length > 0) return false;
+			if (Global.map.regions.getObjectsAt(screenPos.x, screenPos.y, StructureObject).length > 0) 
+				return false;
 
 			// Make sure that buildings have a path back to the city without this point				
 			var breaksPath: Boolean = false;
 			for each(var cityObject: CityObject in city.objects.each()) {
-				if (ObjectFactory.getClassType(cityObject.type) != ObjectFactory.TYPE_STRUCTURE) continue;
-				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) continue;
-				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) continue;
+				if (ObjectFactory.getClassType(cityObject.type) != ObjectFactory.TYPE_STRUCTURE) 
+					continue;
+					
+				if (cityObject.x == city.MainBuilding.x && cityObject.y == city.MainBuilding.y) 
+					continue;
+					
+				if (ObjectFactory.isType("NoRoadRequired", cityObject.type)) 
+					continue;
 
 				if (!RoadPathFinder.hasPath(new Point(cityObject.x, cityObject.y), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
 					breaksPath = true;
@@ -161,15 +179,18 @@ package src.UI.Cursors {
 				}
 			}
 
-			if (breaksPath) return false;
+			if (breaksPath) 
+				return false;
 
 			// Make sure all neighbors have a different path
 			var allNeighborsHaveOtherPaths: Boolean = true;
 			MapUtil.foreach_object(mapPos.x, mapPos.y, 1, function(x1: int, y1: int, custom: *) : Boolean
 			{
-				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) return true;
+				if (MapUtil.radiusDistance(mapPos.x, mapPos.y, x1, y1) != 1) 
+					return true;
 
-				if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) return true;
+				if (city.MainBuilding.x == x1 && city.MainBuilding.y == y1) 
+					return true;
 				
 				if (RoadPathFinder.isRoadByMapPosition(x1, y1)) {					
 					if (!RoadPathFinder.hasPath(new Point(x1, y1), new Point(city.MainBuilding.x, city.MainBuilding.y), city, mapPos)) {
@@ -181,7 +202,8 @@ package src.UI.Cursors {
 				return true;
 			}, false, null);
 
-			if (!allNeighborsHaveOtherPaths) return false;
+			if (!allNeighborsHaveOtherPaths) 
+				return false;
 			
 			return true;
 		}
@@ -191,7 +213,8 @@ package src.UI.Cursors {
 			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 
-			if (!validateTile(new Point(point.x + x, point.y + y))) return false;
+			if (!validateTile(new Point(point.x + x, point.y + y))) 
+				return false;
 
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 100);
 		}
@@ -200,20 +223,18 @@ package src.UI.Cursors {
 		{
 			var msg: XML;
 
-			var city: City = map.cities.get(parentObj.cityId);
+			var city: City = Global.map.cities.get(parentObj.groupId);
 			var mapObjPos: Point = MapUtil.getMapCoord(objX, objY);
 
 			// Check if cursor is inside city walls
-			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius) {
+			if (city != null && MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, mapObjPos.x, mapObjPos.y) >= city.radius)
 				hideCursors();
-			}
+			
 			// Perform other validations
-			else if (!validateTile(new Point(objX, objY))) {
+			else if (!validateTile(new Point(objX, objY)))
 				hideCursors();
-			}
-			else {
-				showCursors();
-			}
+			else
+				showCursors();			
 		}
 	}
 }

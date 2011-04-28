@@ -160,9 +160,10 @@
 
 		public function onReceiveTroopInfo(packet: Packet, custom: * ):void
 		{
-			if (MapComm.tryShowError(packet)) return;
+			if (MapComm.tryShowError(packet, null, false, [400])) return;
 
 			var obj: TroopObject = custom as TroopObject;
+
 			obj.troop = new TroopStub();
 			obj.stubId = packet.readUByte();
 

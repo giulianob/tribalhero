@@ -1,5 +1,4 @@
 ﻿package src.Objects.Actions {
-	import src.Objects.IObject;
 	import src.Util.BinaryList.*;
 
 	/**

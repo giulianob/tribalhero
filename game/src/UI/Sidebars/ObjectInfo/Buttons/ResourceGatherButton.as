@@ -8,6 +8,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Objects.Factories.*;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.SimpleGameObject;
 	import src.Objects.States.MovingState;
 	import src.UI.Cursors.*;
 	import src.UI.Tooltips.TextTooltip;
@@ -16,7 +17,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{
 		private var tooltip: TextTooltip;
 
-		public function ResourceGatherButton(parentObj: GameObject)
+		public function ResourceGatherButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Harvest");
 
@@ -46,7 +47,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		public function onMouseClick(event: Event):void
 		{
 			if (isEnabled())			
-				Global.mapComm.Object.gatherResource(parentObj.cityId, parentObj.objectId);
+				Global.mapComm.Object.gatherResource(parentObj.groupId, parentObj.objectId);
 
 			event.stopImmediatePropagation();
 		}

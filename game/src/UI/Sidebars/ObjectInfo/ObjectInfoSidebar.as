@@ -16,6 +16,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.UI.*;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
+	import src.UI.Components.PlayerLabel;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Components.StarRating;
 	import src.UI.Sidebars.ObjectInfo.Buttons.*;
@@ -61,20 +62,6 @@ package src.UI.Sidebars.ObjectInfo {
 			update();
 		}
 
-		private function setPlayerUsername(username: Username, custom: * ) : void {
-			var usernameLabel: JLabel = custom as JLabel;
-
-			usernameLabel.setText(username.name);
-
-			// Show message icon if its not the current player
-			if (username.id != Constants.playerId) {
-				usernameLabel.setIcon(new MessagingIcon(username.name));
-				usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
-			}
-
-			if (getFrame()) getFrame().pack();
-		}
-
 		private function setCityUsername(username: Username, custom: * ) : void {
 			var usernameLabel: JLabel = custom as JLabel;
 
@@ -99,10 +86,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var structureObject: StructureObject = gameObject as StructureObject;
 
-			var usernameLabel: JLabel = addStatRow("Player", "-");
-			var cityLabel: JLabel = addStatRow("City", "-");
-
-			Global.map.usernames.players.getUsername(gameObject.playerId, setPlayerUsername, usernameLabel);
+			var usernameLabel: PlayerLabel = addStatRow("Player", new PlayerLabel(gameObject.playerId));
+			
+			var cityLabel: JLabel = addStatRow("City", "-");					
 			Global.map.usernames.cities.getUsername(gameObject.cityId, setCityUsername, cityLabel);
 
 			addStatRow("Level", gameObject.level.toString());
@@ -216,16 +202,22 @@ package src.UI.Sidebars.ObjectInfo {
 			pnlStats.addRow(rowTitle, rowValue);
 		}
 
-		private function addStatRow(title: String, value: String, icon: Icon = null) : JLabel {
+		private function addStatRow(title: String, textOrComponent: *, icon: Icon = null) : * {
 			var rowTitle: JLabel = new JLabel(title);
 			rowTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 			rowTitle.setName("title");
 
-			var rowValue: JLabel = new JLabel(value);
-			rowValue.setHorizontalAlignment(AsWingConstants.LEFT);
-			rowValue.setHorizontalTextPosition(AsWingConstants.LEFT);
-			rowValue.setName("value");
-			rowValue.setIcon(icon);
+			var rowValue: Component;
+			if (textOrComponent is String) {
+				var label: JLabel = new JLabel(textOrComponent as String);
+				label.setHorizontalAlignment(AsWingConstants.LEFT);
+				label.setHorizontalTextPosition(AsWingConstants.LEFT);
+				label.setName("value");
+				label.setIcon(icon);
+				rowValue = label;
+			} 
+			else			
+				rowValue = textOrComponent as Component;			
 
 			pnlStats.addRow(rowTitle, rowValue);
 

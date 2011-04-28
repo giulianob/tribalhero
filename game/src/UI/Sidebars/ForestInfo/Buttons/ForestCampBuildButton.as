@@ -8,6 +8,7 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 	import src.Objects.Forest;
 	import src.Objects.GameObject;
 	import src.Objects.Actions.ActionButton;
+	import src.Objects.SimpleGameObject;
 	import src.Objects.Troop.*;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.ForestLaborDialog;
@@ -18,7 +19,7 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 	{
 		private var tooltip: TextTooltip;
 
-		public function ForestCampBuildButton(parentObj: GameObject)
+		public function ForestCampBuildButton(parentObj: SimpleGameObject)
 		{
 			super(parentObj, "Gather Lumber");
 
@@ -52,8 +53,8 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 					var laborDialog: ForestLaborDialog = new ForestLaborDialog(Global.gameContainer.selectedCity.id, parentObj as Forest, onSetLabor);
 					laborDialog.show();
 				} else {									
-					var cursor: GroundForestCursor = new GroundForestCursor(parentObj.cityId, function(forest: Forest) : void {
-						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.cityId, forest, onSetLabor);
+					var cursor: GroundForestCursor = new GroundForestCursor(parentObj.groupId, function(forest: Forest) : void {
+						var laborDialog: ForestLaborDialog = new ForestLaborDialog(parentObj.groupId, forest, onSetLabor);
 						laborDialog.show();
 					});
 

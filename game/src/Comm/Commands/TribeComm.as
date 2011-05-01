@@ -56,6 +56,52 @@
 
 			session.write(packet, mapComm.catchAllErrors);
 		}		
+		
+		public function viewTribeProfile(callback: Function):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_INFO;
+
+			session.write(packet, onReceiveTribeProfile, {callback: callback});
+		}
+		
+		public function setTribeDescription(description: String) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_DESCRIPTION_SET;
+			packet.writeString(description);
+
+			session.write(packet, mapComm.catchAllErrors);
+		}		
+		
+		public function onReceiveTribeProfile(packet: Packet, custom: *):void {
+			if (MapComm.tryShowError(packet)) {
+				custom.callback(null);
+				return;
+			}
+			
+			var profileData: * = new Object();
+			profileData.tribeId = packet.readUInt();
+			profileData.chiefId = packet.readUInt();
+			profileData.tribeLevel = packet.readUByte();
+			profileData.tribeName = packet.readString();
+			profileData.description = packet.readString();
+			
+			profileData.resources = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
+			
+			profileData.members = [];
+			var memberCount: int = packet.readInt();
+			for (var i: int = 0; i < memberCount; i++)
+				profileData.members.push({
+					playerId: packet.readUInt(),
+					playerName: packet.readString(),
+					cityCount: packet.readInt(),
+					rank: packet.readUByte(),
+					contribution: new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0)
+				});
+				
+			(profileData.members as Array).sortOn("rank", [Array.NUMERIC]);
+			custom.callback(profileData);
+		}
+
 	}
 
 }

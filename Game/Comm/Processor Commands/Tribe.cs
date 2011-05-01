@@ -14,6 +14,45 @@ using System.Linq;
 namespace Game.Comm {
     public partial class Processor {
 
+        public void CmdTribeSetDescription(Session session, Packet packet)
+        {
+            string description;
+            try
+            {
+                description = packet.GetString();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+                        
+            using (new MultiObjectLock(session.Player))
+            {
+                if (session.Player.Tribesman == null)
+                {
+                    ReplyError(session, packet, Error.TribeIsNull);
+                    return;
+                }
+
+                if (session.Player.Tribesman.Rank != 0)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                if (description.Length > Player.MAX_DESCRIPTION_LENGTH)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                session.Player.Tribesman.Tribe.Description = description;
+
+                ReplySuccess(session, packet);
+            }
+        }
+
         public void CmdTribeName(Session session, Packet packet)
         {
             var reply = new Packet(packet);
@@ -65,12 +104,13 @@ namespace Game.Comm {
                 reply.AddUInt32(tribe.Owner.PlayerId);
                 reply.AddByte(tribe.Level);
                 reply.AddString(tribe.Name);
-                reply.AddString(tribe.Desc);
+                reply.AddString(tribe.Description);
                 PacketHelper.AddToPacket(tribe.Resource, reply);
 
                 reply.AddInt32(tribe.Count);
                 foreach (var tribesman in tribe) {
                     reply.AddUInt32(tribesman.Player.PlayerId);
+                    reply.AddString(tribesman.Player.Name);
                     reply.AddInt32(tribesman.Player.GetCityCount());
                     reply.AddByte(tribesman.Rank);
                     PacketHelper.AddToPacket(tribesman.Contribution, reply);
@@ -161,7 +201,7 @@ namespace Game.Comm {
             }
 
             using (new MultiObjectLock(session.Player.Tribesman.Tribe)) {
-                session.Player.Tribesman.Tribe.Desc = desc;
+                session.Player.Tribesman.Tribe.Description = desc;
                 Global.DbManager.Save(session.Player.Tribesman.Tribe);
             }
             ReplySuccess(session,packet);

@@ -20,9 +20,27 @@ namespace Game.Data.Tribe {
             }
         }
         public Player Owner { get; private set; } 
-        public string Name { get; set; }
-        public string Desc { get; set; }
+        public string Name { get; set; }        
         public byte Level { get; set; }
+
+        private string description = string.Empty;
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
+            set
+            {
+                description = value;
+
+                if (DbPersisted)
+                {
+                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `id` = @id LIMIT 1", DB_TABLE),
+                                           new[] { new DbColumn("desc", description, DbType.String), new DbColumn("id", Id, DbType.UInt32) });
+                }
+            }
+        }
         
         readonly Dictionary<uint, Tribesman> tribesmen = new Dictionary<uint, Tribesman>();
         
@@ -38,7 +56,7 @@ namespace Game.Data.Tribe {
             Owner = owner;
             Level = level;
             Resource = resource;
-            Desc = desc;
+            Description = desc;
             Name = name;
         }
         public bool IsOwner(Player player)
@@ -192,8 +210,7 @@ namespace Game.Data.Tribe {
             {
                 return new DbColumn[]
                        {
-                               new DbColumn("name",Name,DbType.String, 20),
-                               new DbColumn("desc",Desc,DbType.String), 
+                               new DbColumn("name",Name,DbType.String, 20),                               
                                new DbColumn("level",Level,DbType.Byte), 
                                new DbColumn("owner_id",Owner.PlayerId,DbType.UInt32),
                        };

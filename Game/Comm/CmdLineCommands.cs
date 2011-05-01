@@ -7,6 +7,8 @@
         Unban = 111,
         Delete = 112,
 
+        PlayerClearDescription = 120,
+
         TribeInfo = 201,
         TribeCreate = 202,
         TribeDelete = 203,

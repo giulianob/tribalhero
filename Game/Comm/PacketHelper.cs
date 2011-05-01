@@ -96,12 +96,14 @@ namespace Game.Comm
             }
         }
 
-        public static void AddToPacket(Resource resource, Packet packet)
+        public static void AddToPacket(Resource resource, Packet packet, bool includeLabor = false)
         {
             packet.AddUInt32((uint)resource.Crop);
             packet.AddUInt32((uint)resource.Gold);
             packet.AddUInt32((uint)resource.Iron);
             packet.AddUInt32((uint)resource.Wood);
+            if (includeLabor)
+                packet.AddUInt32((uint)resource.Labor);
         }
 
         public static void AddToPacket(LazyValue value, Packet packet)

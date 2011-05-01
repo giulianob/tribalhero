@@ -178,23 +178,22 @@ namespace Game.Comm
         #endregion
 
         #region Tribe
-        TribeInfo = 1901,
-        TribeCreate = 1902,
-        TribeDelete = 1903,
-        TribeUpdate = 1904,
-        TribeUpgrade = 1905,
-        TribesmanAdd = 1911,
-        TribesmanRemove = 1912,
-        TribesmanUpdate = 1913,
-        TribesmanRequest = 1914,
-        TribesmanConfirm = 1915,
-        TribeAssignementList = 1921,
-        TribeAssignementCreate = 1922,
-        TribeAssignementJoin = 1923,
-        TribeIncomingList = 1931,
-
-
-        TribeChannelUpdate = 951,
+        TribeInfo = 1001,
+        TribeCreate = 1002,
+        TribeDelete = 1003,
+        TribeUpdate = 1004,
+        TribeUpgrade = 1005,
+        TribeSetDescription = 1006,
+        TribesmanAdd = 1011,
+        TribesmanRemove = 1012,
+        TribesmanUpdate = 1013,
+        TribesmanRequest = 1014,
+        TribesmanConfirm = 1015,
+        TribeAssignementList = 1021,
+        TribeAssignementCreate = 1022,
+        TribeAssignementJoin = 1023,        
+        TribeIncomingList = 1031,
+        TribeChannelUpdate = 1051,
         #endregion
     }
 }

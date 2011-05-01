@@ -232,6 +232,11 @@
 		
 		public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
 		{
+			if (id <= 0) {
+				callback(id, "System", custom);
+				return;
+			}
+			
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.PLAYER_USERNAME_GET;
 			packet.writeUByte(1); //just doing 1 username now
@@ -240,12 +245,18 @@
 			var pass: Array = new Array();
 			pass.push(callback);
 			pass.push(custom);
+			pass.push(id);
 
 			session.write(packet, onReceivePlayerUsername, pass);
 		}
 
 		public function onReceivePlayerUsername(packet: Packet, custom: *):void
 		{
+			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
+				custom[0](custom[2], "", custom[1]);
+				return;
+			}
+			
 			packet.readUByte(); //just doing 1 username now
 
 			var id: int = packet.readUInt();

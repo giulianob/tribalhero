@@ -1,23 +1,12 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetPane;
-	import org.aswing.CenterLayout;
-	import org.aswing.Component;
-	import org.aswing.event.AWEvent;
-	import org.aswing.JCheckBox;
-	import org.aswing.JPanel;
-	import org.aswing.JTable;
-	import org.aswing.JToggleButton;
-	import org.aswing.table.AbstractTableCell;
-	import src.Global;
-	import src.UI.Components.GoToCityIcon;
+	import flash.events.*;
+	import org.aswing.*;
+	import org.aswing.event.*;
+	import org.aswing.table.*;
+	import src.*;
+	import src.UI.Components.*;
 
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class GoToCityTextCell extends AbstractTableCell
 	{
 		protected var icon: GoToCityIcon;

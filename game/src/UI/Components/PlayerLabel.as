@@ -1,6 +1,8 @@
 package src.UI.Components 
 {
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import org.aswing.AsWingConstants;
 	import org.aswing.JLabelButton;
 	import org.aswing.JPanel;
 	import src.Global;
@@ -18,16 +20,23 @@ package src.UI.Components
 		
 		private var loadingPanel: InfoDialog;
 		
-		public function PlayerLabel(playerId: int)
+		public function PlayerLabel(playerId: int, playerName: String = null)
 		{
 			super("-");
 			
-			this.playerId = playerId;
+			setHorizontalAlignment(AsWingConstants.LEFT);
 			
-			new SimpleTooltip(this, "View profile");
+			this.playerId = playerId;			
 			
-			Global.map.usernames.players.getUsername(playerId, onReceiveUsername);
-			addActionListener(onClick);
+			if (playerName)
+				setText(playerName);
+			else
+				Global.map.usernames.players.getUsername(playerId, onReceiveUsername);
+			
+			if (playerId > 0) {
+				new SimpleTooltip(this, "View profile");
+				addEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			}
 		}
 		
 		private function onClick(e: Event = null) : void {

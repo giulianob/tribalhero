@@ -31,7 +31,7 @@ package src.Objects.Actions {
 		
 		public function toString(): String
 		{
-			return "Converting to " + StructureFactory.getPrototype(type, 1).getName();
+			return "Converting to " + StructureFactory.getPrototype(type, level).getName();
 		}
 		
 		public function getButton(parentObj: SimpleGameObject, sender: StructurePrototype): ActionButton

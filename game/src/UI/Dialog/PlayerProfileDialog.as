@@ -65,6 +65,10 @@
 					});
 				});
 			});
+			
+			btnInviteTribe.addActionListener(function(e: Event = null): void {
+				Global.mapComm.Tribe.invitePlayer(profileData.username);
+			});
 		}
 		
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
@@ -123,7 +127,7 @@
 				pnlActions.append(btnSetDescription);
 			else {
 				pnlActions.append(btnSendMessage);
-				if (Constants.tribeId > 0 && Constants.tribeRank < 2)
+				if (profileData.tribeId == 0 && Constants.tribeId > 0 && Constants.tribeRank <= 1)
 					pnlActions.append(btnInviteTribe);
 			}
 			

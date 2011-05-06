@@ -30,18 +30,18 @@
 
 		public function MessageCreateDialog(onSent: Function, to: String = "", subject: String = "", isReply: Boolean = false)
 		{
-			createUI();
+			createUI();				
 
 			txtTo.setText(to);
 			
 			if (isReply && subject.substr(0, 3) != "Re:") {				
 				subject = "Re: " + subject;
-			}
+			}		
 			
 			txtSubject.setText(subject);
 
 			title = "New Message";
-
+			
 			var self: MessageCreateDialog = this;
 			btnSend.addActionListener(function():void {
 
@@ -105,13 +105,12 @@
 			Global.gameContainer.showFrame(frame);
 
 			// Set focus to subject field if the To is already filled
-			if (txtSubject.getText() != "") {
-				txtMessage.requestFocus();
-			}			
-			else if (txtTo.getText() != "") {
-				txtSubject.requestFocus();
-			}
-		
+			if (txtSubject.getText() != "")
+				txtMessage.requestFocus();			
+			else if (txtTo.getText() != "")
+				txtSubject.requestFocus();		
+			else
+				txtTo.requestFocus();
 			
 			return frame;
 		}

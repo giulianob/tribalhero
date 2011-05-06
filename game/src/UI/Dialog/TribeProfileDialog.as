@@ -1,33 +1,19 @@
 ﻿package src.UI.Dialog 
 {
-	import com.adobe.images.JPGEncoder;
-	import fl.lang.Locale;
-	import flash.events.Event;
-	import flash.geom.Point;
+	import flash.events.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.event.AWEvent;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
+	import org.aswing.event.*;
 	import org.aswing.ext.*;
-	import org.aswing.plaf.basic.background.TableBackground;
-	import org.aswing.plaf.basic.BasicTableUI;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import src.Constants;
-	import src.Global;
-	import src.Map.MapUtil;
-	import src.UI.Components.GoToCityIcon;
-	import src.UI.Components.ResourcesContainer;
-	import src.UI.Components.ResourcesPanel;
-	import src.UI.Components.SimpleResourcesPanel;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.TableCells.PlayerLabelCell;
-	import src.UI.Components.TableCells.TribeMemberActionCell;
-	import src.UI.Components.Tribe.TribeRankTranslator;
-	import src.UI.GameJPanel;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+	import org.aswing.geom.*;
+	import org.aswing.table.*;
+	import src.*;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.Components.TableCells.*;
+	import src.UI.Components.Tribe.*;
+	import src.UI.LookAndFeel.*;
 	
 	public class TribeProfileDialog extends GameJPanel
 	{
@@ -37,6 +23,8 @@
 		private var btnDonate: JLabelButton;
 		private var btnInvite: JLabelButton;
 		private var btnSetDescription: JLabelButton;
+		private var btnDismantle: JLabelButton;
+		private var btnLeave: JLabelButton;
 		
 		public function TribeProfileDialog(profileData: *) 
 		{
@@ -58,6 +46,27 @@
 					update();
 				});
 			});
+			
+			btnInvite.addActionListener(function(e: Event): void {
+				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Invite a new tribesman", "Type in the name of the player you want to invite", function(playerName: *) : void {
+					if (playerName != null && playerName != "")
+						Global.mapComm.Tribe.invitePlayer(playerName);
+				});				
+			});
+			
+			btnDismantle.addActionListener(function(e: Event): void {
+				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Dismantle tribe", "If you really want to dismantle your tribe then type 'delete' below and click ok.", function(input: *) : void {
+					if (input == "'delete'" || input == "delete")
+						Global.mapComm.Tribe.dismantle();
+				});				
+			});			
+			
+			btnLeave.addActionListener(function(e: Event): void {
+				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Leave tribe", "Do you really want to leave the tribe?", function(result: *) : void {
+					if (result == JOptionPane.YES)
+						Global.mapComm.Tribe.leave();
+				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				
+			});						
 		}
 		
 		public function update(): void {
@@ -105,19 +114,21 @@
 			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
 			btnDonate = new JLabelButton("Donate");
 			btnSetDescription = new JLabelButton("Set Announcement");
-			btnInvite = new JLabelButton("Invite New Member");
+			btnInvite = new JLabelButton("Invite");
 			btnUpgrade = new JLabelButton("Upgrade");
+			btnDismantle = new JLabelButton("Dismantle");
+			btnLeave = new JLabelButton("Leave");
 			
 			// Show correct buttons depending on rank
 			switch (Constants.tribeRank) {
 				case 0: 
-					pnlActions.appendAll(btnSetDescription, btnInvite, btnDonate, btnUpgrade);
+					pnlActions.appendAll(btnSetDescription, btnInvite, btnDonate, btnUpgrade, btnDismantle);
 					break;
 				case 1:
-					pnlActions.appendAll(btnInvite, btnDonate);
+					pnlActions.appendAll(btnInvite, btnDonate, btnLeave);
 					break;
 				default:
-					pnlActions.appendAll(btnDonate);
+					pnlActions.appendAll(btnDonate, btnLeave);
 					break;
 			}
 			
@@ -156,13 +167,16 @@
 				[".", "rank", "."],
 				[null, new TribeRankTranslator(), null]
 			));			
+			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
+				tableMembers.getCellEditor().stopCellEditing();
+			});			
 			tableMembers.setRowSelectionAllowed(false);
 			tableMembers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tableMembers.getColumnAt(0).setPreferredWidth(165);
+			tableMembers.getColumnAt(0).setPreferredWidth(145);
 			tableMembers.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
 			tableMembers.getColumnAt(1).setPreferredWidth(100);
 			tableMembers.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
-			tableMembers.getColumnAt(2).setPreferredWidth(50);
+			tableMembers.getColumnAt(2).setPreferredWidth(70);
 
 			var scrollMembers: JScrollPane = new JScrollPane(new JViewport(tableMembers, true, false), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
 			(scrollMembers.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);

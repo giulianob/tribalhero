@@ -2,30 +2,25 @@
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
-	import flash.net.navigateToURL;
-	import flash.net.URLRequest;
-	import flash.ui.Keyboard;
-	import flash.utils.Timer;
-	import org.aswing.event.AWEvent;
-	import org.aswing.event.InteractiveEvent;
-	import org.aswing.event.PopupEvent;
-	import src.Components.MessageTimer;
-	import src.Map.*;
-	import src.Objects.Effects.*;
-	import src.Objects.*;
-	import src.Map.Map;
-	import src.UI.Components.*;
-	import src.UI.Components.ScreenMessages.ScreenMessagePanel;
-	import src.UI.Dialog.*;
-	import src.UI.*;
+	import flash.net.*;
 	import flash.ui.*;
-	import src.Util.Util;
-
+	import flash.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
+	import org.aswing.event.*;
 	import org.aswing.ext.*;
+	import org.aswing.geom.*;
+	import src.Components.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Effects.*;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.Components.ScreenMessages.*;
+	import src.UI.Dialog.*;
+	import src.Util.*;
+
 
 	public class GameContainer extends GameContainer_base {
 
@@ -637,6 +632,15 @@
 			frames.push(frame);
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
 			frame.show();			
+		}
+		
+		public function findDialog(type: Class): * {
+			for (var i: int = frames.length - 1; i >= 0; i--) {
+				if (frames[i].getContentPane() is type)
+					return frames[i].getContentPane();
+			}
+			
+			return null;
 		}
 
 		public function onFrameClosing(e: PopupEvent):void {

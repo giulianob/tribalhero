@@ -7,6 +7,8 @@
 	import src.Objects.Actions.*;
 	import src.Objects.Troop.*;
 	import src.Global;
+	import src.UI.Dialog.InfoDialog;
+	import src.UI.Dialog.TribeProfileDialog;
 
 	public class TribeComm {
 
@@ -54,7 +56,7 @@
 			packet.cmd = Commands.TRIBESMAN_CONFIRM;
 			packet.writeByte(response ? 1 : 0);
 
-			session.write(packet, mapComm.catchAllErrors);
+			session.write(packet, showErrorOrRefreshTribePanel);
 		}		
 		
 		public function viewTribeProfile(callback: Function):void {
@@ -69,7 +71,7 @@
 			packet.cmd = Commands.TRIBE_DESCRIPTION_SET;
 			packet.writeString(description);
 
-			session.write(packet, mapComm.catchAllErrors);
+			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
 		}		
 		
 		public function onReceiveTribeProfile(packet: Packet, custom: *):void {
@@ -102,6 +104,63 @@
 			custom.callback(profileData);
 		}
 
+		public function setRank(playerId: int, newRank: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBESMAN_SET_RANK;
+			packet.writeUInt(playerId);
+			packet.writeUByte(newRank);
+			
+			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
+		}
+
+		public function kick(playerId: int) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBESMAN_REMOVE;
+			packet.writeUInt(playerId);
+			
+			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
+		}
+		
+		public function invitePlayer(playerName: String) : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBESMAN_REQUEST;
+			packet.writeString(playerName);
+			
+			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Invitation sent", content: "An invitation has been sent to this player to join your tribe." }, refresh: false });
+		}
+		
+		public function dismantle() : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_DELETE;
+			
+			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe dismantled", content: "Your tribe has been dismantled" }, close: true });
+		}	
+
+		public function leave() : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBESMAN_LEAVE;
+			
+			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe", content: "You have left the tribe" }, close: true });
+		}			
+		
+		public function showErrorOrRefreshTribePanel(packet: Packet, custom: *): void {
+			if (MapComm.tryShowError(packet))
+				return;			
+			
+			if (!custom)
+				custom = new Object();
+				
+			var tribeProfileDialog: TribeProfileDialog = Global.gameContainer.findDialog(TribeProfileDialog); 
+			if (tribeProfileDialog) {
+				if (custom.close)
+					tribeProfileDialog.getFrame().dispose();
+				else if (custom.refresh)
+					tribeProfileDialog.update();
+			}
+			
+			if (custom.message)
+				InfoDialog.showMessageDialog(custom.message.title, custom.message.content);
+		}
 	}
 
 }

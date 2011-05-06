@@ -1,22 +1,18 @@
 ﻿package src.Comm.Commands {
 
-	import flash.geom.Point;
-	import org.aswing.AssetIcon;
+	import flash.geom.*;
+	import org.aswing.*;
+	import src.*;
 	import src.Comm.*;
-	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
-	import src.Objects.Prototypes.*;
-	import src.Objects.Factories.*;
-	import src.Constants;
 	import src.Objects.Actions.*;
-	import flash.events.Event;
-	import src.Global;
-	import src.Objects.States.BattleState;
-	import src.Objects.States.GameObjectState;
-	import src.Objects.States.MovingState;
+	import src.Objects.Factories.*;
+	import src.Objects.Prototypes.*;
+	import src.Objects.States.*;
 	import src.Objects.Troop.*;
 	import src.UI.Components.ScreenMessages.*;
+	import src.Util.*;
 
 	public class ObjectComm {
 
@@ -228,7 +224,7 @@
 			var username: String = packet.readString();
 
 			custom[0](id, username, custom[1]);
-		}		
+		}
 		
 		public function getPlayerUsername(id: int, callback: Function, custom: * = null) : void
 		{

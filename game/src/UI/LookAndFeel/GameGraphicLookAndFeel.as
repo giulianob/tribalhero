@@ -1250,6 +1250,7 @@ package src.UI.LookAndFeel
 
 			// *** TabbedPane
 			comDefaults = [
+			"TabbedPane.font", new ASFontUIResource("Arial", 12, true),
 			"TabbedPane.tab", SkinTabbedPaneTab,
 			"TabbedPane.tabMargin", new InsetsUIResource(5, 5, 0, 5),  //modify this to fit header image
 			"TabbedPane.tabBorderInsets", new InsetsUIResource(0, 10, 0, 10),

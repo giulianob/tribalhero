@@ -7,12 +7,14 @@
 	import src.*;
 	import src.UI.Components.*;
 	import src.UI.Components.Messaging.MessagingIcon;
+	import src.UI.Components.Tribe.KickIcon;
 	import src.UI.Components.Tribe.SetRankIcon;
 
 	public class TribeMemberActionCell extends AbstractTableCell
 	{
 		protected var btnSendMessage: MessagingIcon;
 		protected var btnSetRank: SetRankIcon;
+		protected var btnKick: KickIcon;
 		
 		protected var wrapper: JPanel;
 
@@ -29,17 +31,22 @@
 			super.setCellValue(value);
 			wrapper.removeAll();
 			
-			// Show messaging icon if it's not yourself
-			if (Constants.playerId != value.playerId) {
-				btnSendMessage = new MessagingIcon(value.playerName);
-				wrapper.append(new AssetPane(btnSendMessage.getAsset()));
-			}
-			
-			// Only show set rank if rank is chief/elder and other guy isn't the chief
-			if (Constants.tribeRank <= 1 && value.rank > 0) {
+			// Only show set rank if player is chief
+			if (Constants.tribeRank == 0 && value.rank > 0) {
 				btnSetRank = new SetRankIcon(value.playerId, value.rank);
 				wrapper.append(new AssetPane(btnSetRank.getAsset()));
-			}
+			}					
+			
+			// Show icons that aren't for yourself
+			if (Constants.playerId != value.playerId) {
+				if (Constants.tribeRank <= 1 && value.rank > 0) {
+					btnKick = new KickIcon(value.playerId);
+					wrapper.append(new AssetPane(btnKick.getAsset()));					
+				}
+				
+				btnSendMessage = new MessagingIcon(value.playerName);
+				wrapper.append(new AssetPane(btnSendMessage.getAsset()));
+			}			
 		}
 
 		override public function getCellValue():*

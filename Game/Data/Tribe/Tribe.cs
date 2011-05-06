@@ -103,6 +103,7 @@ namespace Game.Data.Tribe {
 
             tribesman.Rank = rank;
             Global.DbManager.Save(tribesman);
+            tribesman.Player.TribeUpdate();
             return Error.Ok;
         }
 
@@ -116,24 +117,18 @@ namespace Game.Data.Tribe {
                         case 0:
                         case 1:
                             return true;
-                        case 2:
-                            return false;
-                        default:
-                            return false;
                     }
+                    break;
                 case "Kick":
                     switch (tribesman.Rank) {
                         case 0:
                         case 1:
                             return true;
-                        case 2:
-                            return false;
-                        default:
-                            return false;
                     }
-                default:
-                    return false;
+                    break;                
             }
+
+            return false;
         }
 
         #region Properties

@@ -169,5 +169,53 @@ namespace Game.Comm {
             }
         }
 
+        public void CmdTribesmanContribute(Session session, Packet packet) {
+            uint cityId;
+            Resource resource;
+            try
+            {
+                cityId = packet.GetUInt32();
+                resource = new Resource(packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), 0);
+            }
+            catch(Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            if (session.Player.Tribesman == null) {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+
+            using (new MultiObjectLock(session.Player.Tribesman.Tribe, session.Player)) {
+                City city = session.Player.GetCity(cityId);
+                Tribe tribe = session.Player.Tribesman.Tribe;
+                
+                if (city == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                if(!city.Resource.HasEnough(resource))
+                {
+                    ReplyError(session,packet,Error.ResourceNotEnough);
+                    return;
+                }
+
+                Error error=tribe.Contribute(session.Player.PlayerId, resource);
+                if(error!=Error.Ok)
+                {
+                    ReplyError(session, packet, error);
+                    return;
+                }
+                city.BeginUpdate();
+                city.Resource.Subtract(resource);
+                city.EndUpdate();
+                ReplySuccess(session, packet);
+            }
+        }
+
     }
 }

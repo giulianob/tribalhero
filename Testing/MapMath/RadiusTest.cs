@@ -46,7 +46,7 @@ namespace Testing.MapMath
         }
 
         [TestMethod]
-        public void TesOddyOddy1()
+        public void TestOddyOddy1()
         {
             //Odd y Odd y1
             Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 15, 12, 15));

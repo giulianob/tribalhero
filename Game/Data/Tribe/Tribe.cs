@@ -100,10 +100,18 @@ namespace Game.Data.Tribe {
             if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
             MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             if (IsOwner(tribesman.Player)) return Error.TribesmanIsOwner;
-
             tribesman.Rank = rank;
             Global.DbManager.Save(tribesman);
             tribesman.Player.TribeUpdate();
+        }
+
+        public Error Contribute(uint playerId, Resource resource)
+        {
+            Tribesman tribesman;
+            if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
+            MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            tribesman.Contribution += resource;
+            Global.DbManager.Save(tribesman,this);
             return Error.Ok;
         }
 

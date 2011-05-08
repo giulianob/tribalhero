@@ -123,7 +123,7 @@ namespace Game.Setup
 
             try
             {
-                string settingsFile = "settings.ini";
+                string settingsFile = @"c:\source\gameserver\conf\settings.ini";
                 bool help = false;
 
                 try

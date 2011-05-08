@@ -103,6 +103,7 @@ namespace Game.Data.Tribe {
             tribesman.Rank = rank;
             Global.DbManager.Save(tribesman);
             tribesman.Player.TribeUpdate();
+            return Error.Ok;
         }
 
         public Error Contribute(uint playerId, Resource resource)

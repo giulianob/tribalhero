@@ -14,7 +14,7 @@ namespace Game.Data.Tribe {
         public Tribe Tribe { get; private set; }
         public Player Player { get; private set; }
 	    public DateTime JoinDate { get; private set; }
-        public Resource Contribution { get; private set; }
+        public Resource Contribution { get; set; }
         public byte Rank { get; set; }
 
         public Tribesman(Tribe tribe, Player player, byte rank)

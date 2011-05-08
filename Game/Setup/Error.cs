@@ -97,6 +97,7 @@ namespace Game.Setup
         TribeIsNull = 702,
         TribeAlreadyExists =703,
         TribeNotFound = 704,
+        TribeNameInvalid = 705,
         TribesmanNotFound = 721,
         TribesmanAlreadyExists = 722,
         TribesmanIsOwner = 723,

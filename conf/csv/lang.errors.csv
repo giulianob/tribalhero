@@ -47,3 +47,15 @@ ERROR_601,Not allowed while city is in battle
 ERROR_602,Why would you want to defend yourself?
 ERROR_603,You aren't allowed to watch this battle unless one of your troops have participated for at least 5 rounds.
 ERROR_605,You have reached the maximum number of troops allowed.
+ERROR_701,Tribe is already full
+ERROR_702,You are not allowed to do this action because you aren't currently a member in a tribe
+ERROR_703,Tribe name already taken
+ERROR_704,Tribe not found
+ERROR_705,Tribe name is invalid. You can only use alphanumeric characters for your tribe name.
+ERROR_721,Tribesman not found
+ERROR_722,This player is already a member of a tribe
+ERROR_723,This action cannot be performed on the tribe's chief
+ERROR_724,This player is already part of a tribe
+ERROR_725,You are not authorized to do that
+ERROR_726,This tribesman already has a pending invitation from another tribe. They must decline the current request before you can invite them.
+ERROR_727,You don't currently have any invitations to join a tribe

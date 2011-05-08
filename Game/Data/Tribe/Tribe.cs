@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Game.Database;
 using Game.Setup;
 using Game.Util;
@@ -19,9 +20,27 @@ namespace Game.Data.Tribe {
             }
         }
         public Player Owner { get; private set; } 
-        public string Name { get; set; }
-        public string Desc { get; set; }
+        public string Name { get; set; }        
         public byte Level { get; set; }
+
+        private string description = string.Empty;
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
+            set
+            {
+                description = value;
+
+                if (DbPersisted)
+                {
+                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `id` = @id LIMIT 1", DB_TABLE),
+                                           new[] { new DbColumn("desc", description, DbType.String), new DbColumn("id", Id, DbType.UInt32) });
+                }
+            }
+        }
         
         readonly Dictionary<uint, Tribesman> tribesmen = new Dictionary<uint, Tribesman>();
         
@@ -37,7 +56,7 @@ namespace Game.Data.Tribe {
             Owner = owner;
             Level = level;
             Resource = resource;
-            Desc = desc;
+            Description = desc;
             Name = name;
         }
         public bool IsOwner(Player player)
@@ -83,7 +102,7 @@ namespace Game.Data.Tribe {
             if (IsOwner(tribesman.Player)) return Error.TribesmanIsOwner;
             tribesman.Rank = rank;
             Global.DbManager.Save(tribesman);
-            return Error.Ok;
+            tribesman.Player.TribeUpdate();
         }
 
         public Error Contribute(uint playerId, Resource resource)
@@ -106,24 +125,18 @@ namespace Game.Data.Tribe {
                         case 0:
                         case 1:
                             return true;
-                        case 2:
-                            return false;
-                        default:
-                            return false;
                     }
+                    break;
                 case "Kick":
                     switch (tribesman.Rank) {
                         case 0:
                         case 1:
                             return true;
-                        case 2:
-                            return false;
-                        default:
-                            return false;
                     }
-                default:
-                    return false;
+                    break;                
             }
+
+            return false;
         }
 
         #region Properties
@@ -164,7 +177,11 @@ namespace Game.Data.Tribe {
 
         #endregion
 
-
+        public static bool IsNameValid(string tribeName)
+        {
+            return tribeName != string.Empty && tribeName.Length >= 3 && tribeName.Length <= 20 &&
+                   Regex.IsMatch(tribeName, "^([a-z][a-z0-9\\s].*)$", RegexOptions.IgnoreCase);
+        }
 
         #region IPersistableObject Members
 
@@ -196,8 +213,7 @@ namespace Game.Data.Tribe {
             {
                 return new DbColumn[]
                        {
-                               new DbColumn("name",Name,DbType.String, 20),
-                               new DbColumn("desc",Desc,DbType.String), 
+                               new DbColumn("name",Name,DbType.String, 20),                               
                                new DbColumn("level",Level,DbType.Byte), 
                                new DbColumn("owner_id",Owner.PlayerId,DbType.UInt32),
                        };

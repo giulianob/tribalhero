@@ -96,12 +96,14 @@ namespace Game.Comm
             }
         }
 
-        public static void AddToPacket(Resource resource, Packet packet)
+        public static void AddToPacket(Resource resource, Packet packet, bool includeLabor = false)
         {
             packet.AddUInt32((uint)resource.Crop);
             packet.AddUInt32((uint)resource.Gold);
             packet.AddUInt32((uint)resource.Iron);
             packet.AddUInt32((uint)resource.Wood);
+            if (includeLabor)
+                packet.AddUInt32((uint)resource.Labor);
         }
 
         public static void AddToPacket(LazyValue value, Packet packet)
@@ -282,6 +284,12 @@ namespace Game.Comm
 
         public static void AddLoginToPacket(Session session, Packet packet)
         {
+            // Tribal info
+            packet.AddUInt32(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Tribe.Id);
+            packet.AddUInt32(session.Player.TribeRequest);
+            packet.AddByte((byte)(session.Player.Tribesman == null ? 0 : session.Player.Tribesman.Rank));
+            packet.AddString(session.Player.Tribesman == null ? string.Empty : session.Player.Tribesman.Tribe.Name);
+
             //Cities
             IEnumerable<City> list = session.Player.GetCityList();
             packet.AddByte((byte)session.Player.GetCityCount());

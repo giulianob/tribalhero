@@ -28,6 +28,9 @@ namespace Game.Comm
         PlayerUsernameGet = 12,
         CityUsernameGet = 13,
         PlayerNameFromCityName = 14,
+        TribeNameGet = 15,
+        PlayerProfile = 20,
+        PlayerDescriptionSet = 21,
 
         #endregion
 
@@ -149,14 +152,6 @@ namespace Game.Comm
 
         #endregion
 
-        #region Market
-
-        MarketBuy = 901,
-        MarketSell = 902,
-        MarketPrices = 903,
-
-        #endregion
-
         #region Battle
 
         BattleSubscribe = 700,
@@ -174,24 +169,33 @@ namespace Game.Comm
         ResourceGather = 801,
         #endregion
 
+        #region Market
+
+        MarketBuy = 901,
+        MarketSell = 902,
+        MarketPrices = 903,
+
+        #endregion
+
         #region Tribe
-        TribeInfo = 901,
-        TribeCreate = 902,
-        TribeDelete = 903,
-        TribeUpdate = 904,
-        TribeUpgrade = 905,
-        TribesmanAdd = 911,
-        TribesmanRemove = 912,
-        TribesmanUpdate = 913,
-        TribesmanRequest = 914,
-        TribesmanConfirm = 915,
-        TribeAssignementList = 921,
-        TribeAssignementCreate = 922,
-        TribeAssignementJoin = 923,
-        TribeIncomingList = 931,
-
-
-        TribeChannelUpdate = 951,
+        TribeInfo = 1001,
+        TribeCreate = 1002,
+        TribeDelete = 1003,
+        TribeUpdate = 1004,
+        TribeUpgrade = 1005,
+        TribeSetDescription = 1006,
+        TribesmanAdd = 1011,
+        TribesmanRemove = 1012,
+        TribesmanUpdate = 1013,
+        TribesmanRequest = 1014,
+        TribesmanConfirm = 1015,
+        TribesmanSetRank = 1016,
+        TribesmanLeave = 1017,
+        TribeAssignementList = 1021,
+        TribeAssignementCreate = 1022,
+        TribeAssignementJoin = 1023,        
+        TribeIncomingList = 1031,
+        TribeChannelUpdate = 1051,
         #endregion
     }
 }

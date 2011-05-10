@@ -17,6 +17,7 @@
 		public var BattleReport: BattleReportComm;
 		public var Ranking: RankingComm;
 		public var Messaging: MessagingComm;
+		public var Tribe: TribeComm;
 
 		public var session: Session;
 
@@ -33,6 +34,7 @@
 			BattleReport = new BattleReportComm(this);
 			Ranking = new RankingComm(this);
 			Messaging = new MessagingComm(this);
+			Tribe = new TribeComm(this);
 		}
 
 		public function dispose() : void {

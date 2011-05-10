@@ -113,13 +113,7 @@ package src.UI.Dialog{
 		private function onSelectionChange(e: SelectionEvent) : void {			
 			if (rankings[type].cityBased) {
 				
-				// Since I want to close this frame, I decided to make the logic to go to the city here.. I have to cheat a bit to make this work
-				if (rankingTable.isColumnSelected(4)) {			
-					if (rankingTable.getSelectedRow() < 0) return;
-					
-					getFrame().dispose();
-					Global.mapComm.City.gotoCityLocation(rankingModel.getValueAt(rankingTable.getSelectedRow(), 4));
-				}
+
 			}			
 		}
 

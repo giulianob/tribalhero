@@ -18,6 +18,10 @@ package src.Comm {
 		public static const PLAYER_USERNAME_GET: int = 12;
 		public static const CITY_USERNAME_GET: int = 13;
 		public static const PLAYER_NAME_FROM_CITY_NAME: int = 14;
+		public static const TRIBE_USERNAME_GET: int = 15;
+		
+		public static const PLAYER_PROFILE: int = 20;
+		public static const PLAYER_DESCRIPTION_SET: int = 21;
 		
 		public static const ACTION_CANCEL: int = 51;
 		public static const ACTION_COMPLETE: int = 52;
@@ -89,11 +93,7 @@ package src.Comm {
 		public static const TROOP_ADDED: int = 611;
 		public static const TROOP_UPDATED: int = 612;
 		public static const TROOP_REMOVED: int = 613;
-		public static const LOCAL_TROOP_MOVE: int = 621;
-		
-		public static const	MARKET_BUY: int = 901;
-        public static const	MARKET_SELL: int = 902;
-        public static const	MARKET_PRICES: int = 903;
+		public static const LOCAL_TROOP_MOVE: int = 621;	
 		
         public static const BATTLE_SUBSCRIBE: int = 700;
         public static const BATTLE_UNSUBSCRIBE: int = 701;
@@ -105,6 +105,25 @@ package src.Comm {
 		public static const BATTLE_NEW_ROUND: int = 707;
 		
 		public static const RESOURCE_GATHER: int = 801;
+		
+		public static const	MARKET_BUY: int = 901;
+        public static const	MARKET_SELL: int = 902;
+        public static const	MARKET_PRICES: int = 903;		
+		
+        public static const TRIBE_INFO: int = 1001;
+        public static const TRIBE_CREATE: int = 1002;
+        public static const TRIBE_DELETE: int = 1003;
+        public static const TRIBE_UPDATE: int = 1004;
+        public static const TRIBE_UPGRADE: int = 1005;
+		public static const TRIBE_DESCRIPTION_SET: int = 1006;
+        public static const TRIBESMAN_ADD: int = 1011;
+        public static const TRIBESMAN_REMOVE: int = 1012;
+        public static const TRIBESMAN_UPDATE: int = 1013;
+        public static const TRIBESMAN_REQUEST: int = 1014;
+        public static const TRIBESMAN_CONFIRM: int = 1015;
+		public static const TRIBESMAN_SET_RANK: int = 1016;
+		public static const TRIBESMAN_LEAVE: int = 1017;
+		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
 		
 	}
 	

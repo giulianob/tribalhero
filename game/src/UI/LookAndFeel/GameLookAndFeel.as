@@ -54,6 +54,8 @@
 			var comDefaults:Array = [
 
 			/* DEFAULT COMPONENTS */
+			"LabelButton.foreground", new ASColorUIResource(0x0066cc), 
+			"LabelButton.font", new ASFontUIResource("Arial", 11, false, false, true),
 
 			/* CLASSES */
 			"Class.header", [

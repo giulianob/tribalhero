@@ -98,7 +98,7 @@ package src.UI.Dialog{
 			btnOk = new JButton();
 			btnOk.setLocation(new IntPoint(87, 5));
 			btnOk.setSize(new IntDimension(34, 22));
-			btnOk.setText("Create!");
+			btnOk.setText("Create City");
 
 			lblWelcome = new MultilineLabel("Welcome! Since this is your first time on this server, you have to choose a name for your first city");
 

@@ -23,7 +23,9 @@
 			icon.buttonMode = true;
 			icon.mouseEnabled = true;
 			new SimpleTooltip(icon, "Send message");
-			icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent) : void {				
+			icon.addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {		
+				e.stopImmediatePropagation();
+				
 				var messagingDialog: MessageCreateDialog = new MessageCreateDialog(function(dialog: MessageCreateDialog) : void {
 					dialog.getFrame().dispose();
 				}, to);

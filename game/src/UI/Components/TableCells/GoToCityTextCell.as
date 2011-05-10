@@ -1,20 +1,12 @@
 ﻿package src.UI.Components.TableCells
 {
-	import flash.events.Event;
-	import org.aswing.AssetPane;
-	import org.aswing.CenterLayout;
-	import org.aswing.Component;
-	import org.aswing.JCheckBox;
-	import org.aswing.JPanel;
-	import org.aswing.JTable;
-	import org.aswing.JToggleButton;
-	import org.aswing.table.AbstractTableCell;
-	import src.UI.Components.GoToCityIcon;
+	import flash.events.*;
+	import org.aswing.*;
+	import org.aswing.event.*;
+	import org.aswing.table.*;
+	import src.*;
+	import src.UI.Components.*;
 
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
 	public class GoToCityTextCell extends AbstractTableCell
 	{
 		protected var icon: GoToCityIcon;
@@ -25,23 +17,32 @@
 		public function GoToCityTextCell()
 		{
 			super();
-
-			icon = new GoToCityIcon(value);
+			
 			wrapper = new JPanel(new CenterLayout());
 			wrapper.setOpaque(true);
-			wrapper.append(new AssetPane(icon.getAsset()));
+			
+			setCellValue(value);
 		}
 
 		override public function setCellValue(value:*):void
 		{
 			super.setCellValue(value);
 			if (icon) {
+				icon.getAsset().removeEventListener(AWEvent.ACT, onGoToCity);
 				wrapper.removeAll();
 				icon = null;	
 			}						
 			
 			icon = new GoToCityIcon(value);
+			icon.getAsset().addEventListener(AWEvent.ACT, onGoToCity);
+			
 			wrapper.append(new AssetPane(icon.getAsset()));
+		}
+		
+		private function onGoToCity(e: Event): void 
+		{
+			Global.gameContainer.clearAllSelections();
+			Global.gameContainer.closeAllFrames(true);
 		}
 
 		override public function getCellValue():*
@@ -55,7 +56,8 @@
 		}
 		
 		public function goToCity() : void {
-			if (icon) icon.goToCity();
+			if (icon) 
+				icon.goToCity();
 		}
 
 		override public function setTableCellStatus(table:JTable, isSelected:Boolean, row:int, column:int):void{

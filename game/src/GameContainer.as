@@ -2,30 +2,25 @@
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
-	import flash.net.navigateToURL;
-	import flash.net.URLRequest;
-	import flash.ui.Keyboard;
-	import flash.utils.Timer;
-	import org.aswing.event.AWEvent;
-	import org.aswing.event.InteractiveEvent;
-	import org.aswing.event.PopupEvent;
-	import src.Components.MessageTimer;
-	import src.Map.*;
-	import src.Objects.Effects.*;
-	import src.Objects.*;
-	import src.Map.Map;
-	import src.UI.Components.*;
-	import src.UI.Components.ScreenMessages.ScreenMessagePanel;
-	import src.UI.Dialog.*;
-	import src.UI.*;
+	import flash.net.*;
 	import flash.ui.*;
-	import src.Util.Util;
-
+	import flash.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
+	import org.aswing.event.*;
 	import org.aswing.ext.*;
+	import org.aswing.geom.*;
+	import src.Components.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Effects.*;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.Components.ScreenMessages.*;
+	import src.UI.Dialog.*;
+	import src.Util.*;
+
 
 	public class GameContainer extends GameContainer_base {
 
@@ -107,7 +102,11 @@
 			barBg = new barBgClass() as DisplayObject;
 			addChildAt(barBg, 1);
 
-			// Hide the new count bubble for messaged and reports
+			// Hide the menu bubbles
+			tribeInviteRequest.visible = false;
+			tribeInviteRequest.mouseChildren = false;
+			tribeInviteRequest.mouseEnabled = false;
+			
 			txtUnreadMessages.visible = false;
 			txtUnreadMessages.mouseChildren = false;
 			txtUnreadMessages.mouseEnabled = false;
@@ -165,6 +164,9 @@
 			new SimpleTooltip(btnCityTroops, "View unit movement");
 			btnCityTroops.addEventListener(MouseEvent.CLICK, onViewCityTroops);
 			
+			new SimpleTooltip(btnTribe, "View tribe");
+			btnTribe.addEventListener(MouseEvent.CLICK, onViewTribe);
+			
 			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
 			// Set up sidebar holder
@@ -210,10 +212,38 @@
 		public function onViewCityTroops(e: MouseEvent) :void
 		{
 			if (!selectedCity)
-			return;
+				return;
 
 			var movementDialog: MovementDialog = new MovementDialog(selectedCity);
 			movementDialog.show();
+		}
+		
+		public function onViewTribe(e: MouseEvent) :void
+		{			
+			if (Constants.tribeId != 0) {				
+				Global.mapComm.Tribe.viewTribeProfile(function(profileData: *): void {
+					if (!profileData) 
+						return;
+					
+					var dialog: TribeProfileDialog = new TribeProfileDialog(profileData);
+					dialog.show();
+				});
+			}
+			else if (Constants.tribeInviteId != 0) {
+				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {
+					Global.mapComm.Tribe.invitationConfirm(sender.getResult());
+					
+					sender.getFrame().dispose();
+				});				
+				tribeInviteDialog.show();
+			}
+			else {
+				var createTribeDialog: CreateTribeDialog = new CreateTribeDialog(function(sender: CreateTribeDialog) : void {
+					Global.mapComm.Tribe.createTribe(sender.getTribeName());
+					sender.getFrame().dispose();
+				});
+				createTribeDialog.show();
+			}
 		}
 
 		public function onViewCityInfo(e: MouseEvent) :void
@@ -581,11 +611,15 @@
 			stage.focus = map;
 		}
 
-		public function closeAllFrames() : void {
+		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
 			var framesCopy: Array = frames.concat();
 
 			for (var i: int = framesCopy.length - 1; i >= 0; --i) {
-				(framesCopy[i] as JFrame).dispose();
+				var frame: JFrame = framesCopy[i] as JFrame;
+				if (onlyClosableFrames && !frame.isClosable())
+					break;
+				
+				frame.dispose();
 			}
 		}
 
@@ -598,6 +632,15 @@
 			frames.push(frame);
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onFrameClosing);
 			frame.show();			
+		}
+		
+		public function findDialog(type: Class): * {
+			for (var i: int = frames.length - 1; i >= 0; i--) {
+				if (frames[i].getContentPane() is type)
+					return frames[i].getContentPane();
+			}
+			
+			return null;
 		}
 
 		public function onFrameClosing(e: PopupEvent):void {

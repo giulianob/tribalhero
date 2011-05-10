@@ -276,6 +276,8 @@
 			UnitFactory.init(map, Constants.objData);
 			WorkerFactory.init(map, Constants.objData);
 			ObjectFactory.init(map, Constants.objData);
+			
+			Constants.objData = <Data></Data>;
 
 			gameContainer.show();
 			Global.mapComm.Login.readLoginInfo(packet);

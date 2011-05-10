@@ -4,6 +4,7 @@
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.AssetIcon;
+	import org.aswing.event.AWEvent;
 	import src.Constants;
 	import src.Global;
 	import src.UI.Components.SimpleTooltip;
@@ -26,7 +27,8 @@
 			icon.buttonMode = true;
 			icon.mouseEnabled = true;
 			new SimpleTooltip(icon, "Go to city");
-			icon.addEventListener(MouseEvent.CLICK, function(e: MouseEvent) : void {				
+			icon.addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent) : void {		
+				getAsset().dispatchEvent(new AWEvent(AWEvent.ACT));
 				goToCity();
 			});
 		}

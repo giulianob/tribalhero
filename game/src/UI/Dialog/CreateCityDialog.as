@@ -8,9 +8,6 @@ package src.UI.Dialog{
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	/**
-	 * ConnectionDialog
-	 */
 	public class CreateCityDialog extends GameJPanel {
 
 		//members define
@@ -97,7 +94,7 @@ package src.UI.Dialog{
 			btnOk = new JButton();
 			btnOk.setLocation(new IntPoint(87, 5));
 			btnOk.setSize(new IntDimension(34, 22));
-			btnOk.setText("Create!");
+			btnOk.setText("Create City");
 
 			lblWelcome = new MultilineLabel("Choose a name for your new city");
 

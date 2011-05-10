@@ -136,7 +136,7 @@
 			var total: int = 0;
 			for each(var effect: EffectPrototype in effects)
 			{
-				if (effect.effectCode != EffectPrototype.EFFECT_HAVE_TECHNOLOGY || effect.param1 != techType || techLevel < effect.param2)
+				if (effect.effectCode != EffectPrototype.EFFECT_HAVE_TECHNOLOGY || effect.param1 != techType || techLevel > effect.param2)
 				continue;
 
 				total++;

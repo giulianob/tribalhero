@@ -40,7 +40,7 @@ package src.UI.Components
 		}
 		
 		private function onClick(e: Event = null) : void {
-			loadingPanel = InfoDialog.showMessageDialog("Loading", "Loading user profile", null, null, true, false, 0);
+			loadingPanel = InfoDialog.showMessageDialog("TribalHero", "Loading...", null, null, true, false, 0);
 			Global.mapComm.City.viewPlayerProfile(playerId, onReceiveProfile);
 		}
 		

@@ -4,16 +4,19 @@
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.net.*;
+	import org.aswing.JPanel;
 	import src.Constants;	
+	import src.UI.Dialog.InfoDialog;
 	
 	public class GameURLLoader implements IEventDispatcher
 	{
 		private var loader: URLLoader = new URLLoader();
 		public var lastURL: String;
+		private var pnlLoading: InfoDialog;
 		
 		public function GameURLLoader() 
 		{
-			
+			addEventListener(Event.COMPLETE, onComplete);
 		}
 		
 		public function getData() : String {
@@ -28,7 +31,7 @@
 			return new JSONDecoder(loader.data).getValue();
 		}
 		
-		public function load(path: String, params: Array, includeLoginInfo: Boolean = true) : void {			
+		public function load(path: String, params: Array, includeLoginInfo: Boolean = true, showLoadingMessage: Boolean = true) : void {			
 			var request: URLRequest = new URLRequest("http://" + Constants.hostname + path);
 			
 			var first: Boolean = true;
@@ -54,12 +57,22 @@
 			
 			request.method = URLRequestMethod.POST;
 			
+			if (showLoadingMessage)
+				pnlLoading = InfoDialog.showMessageDialog("TribalHero", "Loading...", null, null, true, false, 0);			
+			
 			try {
 				lastURL = request.url + "?" + request.data;
 				loader.load(request);
 			}
 			catch (e: Error) {
 				loader.dispatchEvent(new Event(Event.COMPLETE));
+			}
+		}
+		
+		private function onComplete(e: Event = null): void {
+			if (pnlLoading) {
+				pnlLoading.getFrame().dispose();				
+				pnlLoading = null;
 			}
 		}
 		
@@ -78,7 +91,7 @@
 		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void{
 			loader.removeEventListener(type, listener, useCapture);
 		}
-					   
+		
 		public function willTrigger(type:String):Boolean {
 			return loader.willTrigger(type);
 		}	

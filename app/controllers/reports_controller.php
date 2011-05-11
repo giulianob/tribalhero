@@ -15,18 +15,6 @@ class ReportsController extends AppController {
         'run out of stamina'
     );
 
-    function beforeFilter() {
-        if (!empty($this->params['named'])) {
-            $this->params['form'] = $this->params['named'];
-        } else {
-            //Configure::write('debug', 0);
-        }
-
-        $this->layout = 'ajax';
-
-        parent::beforeFilter();
-    }
-
     private function getPlayerId() {
         $playerId = $this->params['form']['playerId'];
         if ($this->Auth->user('admin') && !empty($this->params['form']['playerNameFilter'])) {

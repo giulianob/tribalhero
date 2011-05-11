@@ -52,8 +52,12 @@
 				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
 			
 				pnl.appendAll(new JLabel("Set a message to appears on your profile. This will be visible to everyone.", null, AsWingConstants.LEFT), scrollDescription);
-				InfoDialog.showMessageDialog("Say something about yourself", pnl, function(msg: String = ""): void {
+				InfoDialog.showMessageDialog("Say something about yourself", pnl, function(result: *): void {			
+					if (result == JOptionPane.CANCEL || result == JOptionPane.CLOSE)
+						return;									
+					
 					Global.mapComm.City.setPlayerDescription(txtDescription.getText());
+					
 					getFrame().dispose();
 					
 					Global.mapComm.City.viewPlayerProfile(profileData.playerId, function(newProfileData: *): void {

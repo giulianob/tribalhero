@@ -43,7 +43,7 @@
 		
 		private function onTimer(e: TimerEvent = null) : void {
 			try {
-				loader.load("/actions/unread", [ ], true);
+				loader.load("/actions/unread", [ ], true, false);
 			}
 			catch (e: Error) { }
 		}

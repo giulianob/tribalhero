@@ -172,7 +172,7 @@
 
 			txtMessage = new JTextArea();
 			txtMessage.setWordWrap(true);
-			txtMessage.setMaxChars(2995);
+			txtMessage.setMaxChars(30000);
 
 			pnlFooter = new JPanel();
 			var layout4:FlowLayout = new FlowLayout();

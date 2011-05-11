@@ -28,8 +28,6 @@ package src.UI.Dialog{
 		private var lblPages:JLabel;
 		private var btnNext:JLabelButton;
 
-		private var pnlLoading: GameJPanel;
-
 		private var messageList: VectorListModel;
 		private var messageModel: PropertyTableModel;
 		private var messageTable: JTable;
@@ -117,14 +115,12 @@ package src.UI.Dialog{
 				return;
 			}
 
-			pnlLoading = InfoDialog.showMessageDialog("Deleting", "Deleting messages...", null, null, true, false, 0);
 			Global.mapComm.Messaging.del(actionLoader, ids);
 			
 			refreshOnClose = true;
 		}
 
 		private function deleteMessage(id: int) : void {
-			pnlLoading = InfoDialog.showMessageDialog("Deleting", "Deleting message...", null, null, true, false, 0);
 			var ids: Array = new Array();
 			ids.push(id);
 			Global.mapComm.Messaging.del(actionLoader, ids);
@@ -140,7 +136,6 @@ package src.UI.Dialog{
 				return;
 			}
 
-			pnlLoading = InfoDialog.showMessageDialog("Marking as Read", "Marking messages...", null, null, true, false, 0);
 			Global.mapComm.Messaging.markAsRead(actionLoader, ids);
 		}
 
@@ -218,8 +213,6 @@ package src.UI.Dialog{
 		}
 
 		private function loadPage(page: int) : void {
-			pnlLoading = InfoDialog.showMessageDialog("Loading", "Loading messages...", null, null, true, false, 0);
-
 			if (tabs.getSelectedIndex() == 0) {
 				Global.mapComm.Messaging.list(loader, "inbox", page);
 			} else {
@@ -228,8 +221,6 @@ package src.UI.Dialog{
 		}
 
 		private function onLoadMessages(e: Event) : void {
-			pnlLoading.getFrame().dispose();
-
 			var data: Object;
 			try
 			{
@@ -260,8 +251,6 @@ package src.UI.Dialog{
 		}
 
 		private function onActionReply(e: Event) : void {
-			pnlLoading.getFrame().dispose();
-
 			var data: Object;
 			try
 			{

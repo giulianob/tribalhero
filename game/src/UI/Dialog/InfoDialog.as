@@ -109,7 +109,7 @@ public class InfoDialog extends GameJPanel {
 		
 		pane.title = title;		
 		
-		pane.showSelf(AsWingUtils.getOwnerAncestor(parentComponent), modal, finishHandler);
+		pane.showSelf(AsWingUtils.getOwnerAncestor(parentComponent), modal, null);
 		
 		var handler:Function = finishHandler;
 		

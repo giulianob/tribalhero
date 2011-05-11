@@ -19,8 +19,17 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = array('/');
         $this->Auth->autoRedirect = false;
         $this->Auth->authorize = 'controller';
-
+        $this->Auth->fields = array('Player.id', 'Player.name', 'Player.session_id', 'Player.last_login', 'Player.created', 'Player.admin');
+        
         if (isset($this->allowedFromGame) && in_array($this->action, $this->allowedFromGame)) {
+            if (!empty($this->params['named'])) {
+                $this->params['form'] = $this->params['named'];
+                $this->layout = 'default';
+            } else {
+                Configure::write('debug', 0);
+                $this->layout = 'ajax';
+            }
+
             if (array_key_exists('sessionId', $this->params['form']) && array_key_exists('playerId', $this->params['form']) && !empty($this->params['form']['sessionId']) && !empty($this->params['form']['playerId'])) {
                 $this->Auth->fields = array('username' => 'id', 'password' => 'session_id');
 

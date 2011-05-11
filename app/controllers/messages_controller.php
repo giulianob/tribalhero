@@ -1,21 +1,9 @@
 <?php
 
 class MessagesController extends AppController {
+
     var $helpers = array('Time', 'Text');
     var $allowedFromGame = array('listing', 'view', 'del', 'mark_as_read', 'send');
-
-    function beforeFilter() {
-        if (!empty($this->params['named'])) {
-            $this->params['form'] = $this->params['named'];
-        }
-        else {
-            Configure::write('debug', 0);
-        }
-
-        $this->layout = 'ajax';
-
-        parent::beforeFilter();
-    }
 
     function del() {
         $playerId = $this->params['form']['playerId'];
@@ -53,9 +41,6 @@ class MessagesController extends AppController {
         $folder = array_key_exists('folder', $this->params['form']) ? $this->params['form']['folder'] : "inbox";
 
         switch ($folder) {
-//            case "trash":
-//                $this->paginate = $this->Message->getTrash($playerId, $page);
-//                break;
             case "sent":
                 $this->paginate = $this->Message->getSent($playerId, $page);
                 break;
@@ -81,7 +66,7 @@ class MessagesController extends AppController {
             $this->render('/elements/to_json');
             return;
         }
-        
+
         // Set as read if necessary
         $refreshOnClose = false;
         if ($playerId == $message['Message']['recipient_player_id'] && $message['Message']['recipient_state'] == $this->Message->states['unread']) {
@@ -102,13 +87,13 @@ class MessagesController extends AppController {
 
         // Only allow 1 message every x seconds
         $lastMessage = $this->Message->find('first', array(
-                'contain' => array(),
-                'field' => array('Message.created'),
-                'conditions' => array(
+                    'contain' => array(),
+                    'field' => array('Message.created'),
+                    'conditions' => array(
                         'Message.sender_player_id' => $playerId
-                ),
-                'order' => 'Message.created DESC'
-        ));
+                    ),
+                    'order' => 'Message.created DESC'
+                ));
 
         if (!empty($lastMessage) && time() - strtotime($lastMessage['Message']['created']) < 10) {
             $data = array('error' => 'You are sending messages too fast. Please wait a few more seconds and try again.');
@@ -119,4 +104,5 @@ class MessagesController extends AppController {
         $this->set(compact('data'));
         $this->render('/elements/to_json');
     }
+
 }

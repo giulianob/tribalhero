@@ -27,8 +27,6 @@ namespace ConsoleSimulator
 
         Helepolis = 107,
         Catapult = 108,
-
-        TestSwordsman = 1001,
     }
 
     public class Group

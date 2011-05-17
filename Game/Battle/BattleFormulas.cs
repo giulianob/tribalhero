@@ -14,14 +14,26 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
+        
         public static int MissChance(bool isAttacker, CombatList defenders, CombatList attackers)
         {
+            
             int defendersUpkeep = defenders.Sum(x => x.Upkeep);
             int attackersUpkeep = attackers.Sum(x => x.Upkeep);
 
-            int delta = isAttacker ? Math.Max(0, attackersUpkeep - defendersUpkeep) : Math.Max(0, defendersUpkeep - attackersUpkeep);
+            double delta = isAttacker ? Math.Max(0, (double)attackersUpkeep / defendersUpkeep) : Math.Max(0, (double)defendersUpkeep / attackersUpkeep);
+            double effectiveness = isAttacker ? Math.Max((double)attackersUpkeep / 100, 1) : Math.Max((double)defendersUpkeep / 100, 1);
+            effectiveness /= 2;
+            if ((isAttacker ? attackersUpkeep : defendersUpkeep) < 100) return 0;
 
-            return Math.Min(delta*2, 25);
+            if (delta < 1.25) return (int)(0 * effectiveness);
+            if (delta < 1.5) return (int)(4 * effectiveness);
+            if (delta < 2) return (int)(7 * effectiveness);
+            if (delta < 3.5) return (int)(25 * effectiveness);
+            if (delta < 5) return (int)(65 * effectiveness);
+            if (delta < 7) return (int)(77 * effectiveness);
+            if (delta < 10) return (int)(84 * effectiveness);
+            return 95;
         }
 
         public static int GetUnitsPerStructure(Structure structure)

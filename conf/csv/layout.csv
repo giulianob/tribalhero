@@ -1,12 +1,12 @@
 Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
 //Building Market @ Trading post,,,,,,,,
-2502,1,Simple,2501,1,15,0,5,1
+//2502,1,Simple,2501,1,15,0,5,1
 ,,,,,,,,
 //Building Armory @ Univeristy,,,,,,,,
-2302,1,Simple,2301,1,20,0,6,1
+//2302,1,Simple,2301,1,20,0,6,1
 ,,,,,,,,
 //Building Blacksmith @ University,,,,,,,,
-2303,1,Simple,2301,1,20,0,6,1
+//2303,1,Simple,2301,1,20,0,6,1
 ,,,,,,,,
 //Building basement @ Foundry away from basement,,,,,,,,
 2111,1,AwayFrom,2111,1,20,6,255,255
@@ -17,7 +17,7 @@ Type,Lvl,Layout,Rtype,Lmin,Lmax,Dmin,Dmax,Cmp
 2402,1,AwayFrom,2402,1,20,5,255,255
 ,,,,,,,,
 //Build tribal festival @farm,,,,,,,,
-3002,1,Simple,2000,1,20,0,10,1
+//3002,1,Simple,2000,1,20,0,10,1
 ,,,,,,,,
 //Build fields @farm,,,,,,,,
 3011,1,Simple,2106,1,20,0,2,1

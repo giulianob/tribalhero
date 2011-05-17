@@ -20,6 +20,7 @@ namespace Testing.Troop
     public class TestOutnumber
     {
         private TroopStub stub;
+        const double ERROR_MARGIN = .0;
 
         [TestInitialize]
         public void TestInitialize()
@@ -34,52 +35,96 @@ namespace Testing.Troop
         {
         }
 
-        [TestMethod]
-        public void Test100Vs10()
+        private void TestMultiplier(int baseCount, double multiplier, double expectAdvantage)
         {
             Group defender = new Group();
-            defender.AddToLocal(UnitType.Swordsman, 1, 100);
-
+            defender.AddToLocal(UnitType.TestSwordsman, 1, (ushort)(baseCount * multiplier));
             Group attacker = new Group();
-            attacker.AddToAttack(UnitType.Swordsman, 1, 10);
-
+            attacker.AddToAttack(UnitType.TestSwordsman, 1, (ushort)baseCount);
             Simulation sim = new Simulation(attacker,defender);
-            sim.RunTill(20);
+            sim.Run();
 
-            Assert.AreNotEqual(sim.CurrentRound,0);
-            Assert.IsTrue(attacker.Upkeep() == 0, "swordsman[{0}] is not 0", attacker.Upkeep());
-            Assert.IsTrue(90 < defender.Upkeep() && defender.Upkeep() < 96, "archer[{0}] is less than 95", defender.Upkeep());
+            double actualAdvantage = defender.Upkeep() * multiplier / baseCount;
+            // Assert.IsTrue(attacker.Upkeep() == 0, "swordsman[{0}] is not 0", attacker.Upkeep());
+            Assert.IsTrue(expectAdvantage - ERROR_MARGIN < actualAdvantage && actualAdvantage < expectAdvantage + ERROR_MARGIN, "Multi[{0}] Base[{3}] Left[{4}]'s actual advantage[{1}] is close to [{2}] expect left[{5}]", multiplier, actualAdvantage, expectAdvantage, baseCount * multiplier, defender.Upkeep(), multiplier * baseCount * expectAdvantage);
+            //Assert.IsTrue(expectLeft - ERROR_MARGIN * BASE_COUNT < defender.Upkeep() && defender.Upkeep() < expectLeft + ERROR_MARGIN* BASE_COUNT, "Multi[{0}] Base[{3}] Left[{4}]'s actual advantage[{1}] is close to [{2}] expect left[{5}]", multiplier, actualAdvantage, expectAdvantage, BASE_COUNT * multiplier, defender.Upkeep(), expectLeft);
         }
 
         [TestMethod]
-        public void Test500Vs50() {
-            Group defender = new Group();
-            defender.AddToLocal(UnitType.Swordsman, 1, 500);
-
-            Group attacker = new Group();
-            attacker.AddToAttack(UnitType.Swordsman, 1, 50);
-
-            Simulation sim = new Simulation(attacker, defender);
-            sim.RunTill(20);
-
-            Assert.AreNotEqual(sim.CurrentRound, 0);
-            Assert.IsTrue(attacker.Upkeep() == 0, "swordsman[{0}] is not 0", attacker.Upkeep());
-            Assert.IsTrue(450 < defender.Upkeep() && defender.Upkeep() < 475, "archer[{0}] is less than 95", defender.Upkeep());
+        public void Test100X100() {
+            TestMultiplier(100, 0, 0);
+        }
+        [TestMethod]
+        public void Test100X125() {
+            TestMultiplier(100, 1.25, .24);
+        }
+        [TestMethod]
+        public void Test100X150() {
+            TestMultiplier(100, 1.5, .47);
+        }
+        [TestMethod]
+        public void Test100X200() {
+            TestMultiplier(100, 2, .75);
+        }
+        [TestMethod]
+        public void Test100X350() {
+            TestMultiplier(100, 3.5, .85);
+        }
+        [TestMethod]
+        public void Test100X500() {
+            TestMultiplier(100, 5, .90);
         }
 
         [TestMethod]
-        public void Test500Vs250() {
-            Group defender = new Group();
-            defender.AddToLocal(UnitType.Swordsman, 1, 500);
-
-            Group attacker = new Group();
-            attacker.AddToAttack(UnitType.Swordsman, 1, 250);
-
-            Simulation sim = new Simulation(attacker, defender);
-            sim.RunTill(20);
-
-            Assert.IsTrue(attacker.Upkeep() == 0, "swordsman[{0}] is not 0", attacker.Upkeep());
-            Assert.IsTrue(450 < defender.Upkeep() && defender.Upkeep() < 475, "archer[{0}] is less than 95", defender.Upkeep());
+        public void Test500X100()
+        {
+            TestMultiplier(500, 0, 0);
         }
+        [TestMethod]
+        public void Test500X125() {
+            TestMultiplier(500, 1.25, .24);
+        }
+        [TestMethod]
+        public void Test500X150() {
+            TestMultiplier(500, 1.5, .47);
+        }
+        [TestMethod]
+        public void Test500X200() {
+            TestMultiplier(500, 2, .75);
+        }
+        [TestMethod]
+        public void Test500X350() {
+            TestMultiplier(500, 3.5, .85);
+        }
+        [TestMethod]
+        public void Test500X500() {
+            TestMultiplier(500, 5, .90);
+        }
+
+        [TestMethod]
+        public void Test1000X100() {
+            TestMultiplier(1000, 0, 0);
+        }
+        [TestMethod]
+        public void Test1000X125() {
+            TestMultiplier(1000, 1.25, .24);
+        }
+        [TestMethod]
+        public void Test1000X150() {
+            TestMultiplier(1000, 1.5, .47);
+        }
+        [TestMethod]
+        public void Test1000X200() {
+            TestMultiplier(1000, 2, .75);
+        }
+        [TestMethod]
+        public void Test1000X350() {
+            TestMultiplier(1000, 3.5, .85);
+        }
+        [TestMethod]
+        public void Test1000X500() {
+            TestMultiplier(1000, 5, .90);
+        }
+
     }
 }

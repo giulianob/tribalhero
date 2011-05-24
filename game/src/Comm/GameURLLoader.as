@@ -7,6 +7,7 @@
 	import org.aswing.JPanel;
 	import src.Constants;	
 	import src.UI.Dialog.InfoDialog;
+	import src.Util.Util;
 	
 	public class GameURLLoader implements IEventDispatcher
 	{
@@ -62,6 +63,10 @@
 			
 			try {
 				lastURL = request.url + "?" + request.data;
+				
+				if (Constants.debug)
+					Util.log(lastURL);
+				
 				loader.load(request);
 			}
 			catch (e: Error) {

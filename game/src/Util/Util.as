@@ -24,7 +24,6 @@ package src.Util {
 	import src.Constants;
 
 	public class Util {
-
 		public static function log(msg: String) : void {			
 			if (Constants.loginKey) ExternalInterface.call("console.log", msg);
 			else trace(msg);

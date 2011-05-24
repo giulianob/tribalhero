@@ -14,11 +14,8 @@
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
 
-	public class MessageCreateDialog extends GameJPanel {
-
-		private var pnlTo:JPanel;
-		private var lblTo:JLabel;
-		private var txtTo:JTextField;
+	public class MessageBoardThreadCreateDialog extends GameJPanel {
+		
 		private var pnlSubject:JPanel;
 		private var lblSubject:JLabel;
 		private var txtSubject:JTextField;
@@ -26,29 +23,16 @@
 		private var lblMessage:JLabel;
 		private var txtMessage:JTextArea;
 		private var pnlFooter:JPanel;
-		private var btnSend:JButton;
+		private var btnCreate:JButton;
 
-		public function MessageCreateDialog(onSent: Function, to: String = "", subject: String = "", isReply: Boolean = false)
-		{
+		public function MessageBoardThreadCreateDialog(onAccept: Function)
+		{			
 			createUI();				
 
-			txtTo.setText(to);
+			title = "New Thread";
 			
-			if (isReply && subject.substr(0, 3) != "Re:") {				
-				subject = "Re: " + subject;
-			}		
-			
-			txtSubject.setText(subject);
-
-			title = "New Message";
-			
-			var self: MessageCreateDialog = this;
-			btnSend.addActionListener(function():void {
-
-				if (txtTo.getLength() == 0) {
-					InfoDialog.showMessageDialog("Error", "Please specify a recipient.");
-					return;
-				}
+			var self: MessageBoardThreadCreateDialog = this;
+			btnCreate.addActionListener(function():void {
 
 				if (txtSubject.getLength() == 0) {
 					InfoDialog.showMessageDialog("Error", "Please enter a subject.");
@@ -75,13 +59,15 @@
 					if (data.error != null && data.error != "") {
 						InfoDialog.showMessageDialog("Info", data.error);
 						return;
-					}
+					}										
 					
-					if (onSent != null) onSent(self);
+					if (onAccept != null) 
+						onAccept(self, data.id);
 				});
 
 				var message: * = getMessage();
-				Global.mapComm.Messaging.send(messageLoader, message.to, message.subject, message.message);				
+				
+				Global.mapComm.MessageBoard.addThread(messageLoader, message.subject, message.message);
 			});
 		}
 
@@ -89,7 +75,6 @@
 			var message: * = new Object();
 			message.subject = txtSubject.getText();
 			message.message = txtMessage.getText();
-			message.to = txtTo.getText();
 
 			return message;
 		}
@@ -100,13 +85,7 @@
 
 			Global.gameContainer.showFrame(frame);
 
-			// Set focus to subject field if the To is already filled
-			if (txtSubject.getText() != "")
-				txtMessage.requestFocus();			
-			else if (txtTo.getText() != "")
-				txtSubject.requestFocus();		
-			else
-				txtTo.requestFocus();
+			txtSubject.requestFocus();
 			
 			return frame;
 		}
@@ -119,21 +98,6 @@
 			layout0.setAlign(AsWingConstants.LEFT);
 			layout0.setGap(5);
 			setLayout(layout0);
-
-			pnlTo = new JPanel();
-			var layout1:FlowLayout = new FlowLayout();
-			layout1.setAlignment(AsWingConstants.LEFT);
-			layout1.setMargin(false);
-			pnlTo.setLayout(layout1);
-
-			lblTo = new JLabel();
-			lblTo.setPreferredSize(new IntDimension(45, 25));
-			lblTo.setText("To");
-			lblTo.setHorizontalAlignment(AsWingConstants.RIGHT);
-			GameLookAndFeel.changeClass(lblTo, "Form.label");
-
-			txtTo = new JTextField();
-			txtTo.setPreferredSize(new IntDimension(100, 25));
 
 			pnlSubject = new JPanel();
 			var layout2:FlowLayout = new FlowLayout();
@@ -175,17 +139,13 @@
 			layout4.setAlignment(AsWingConstants.CENTER);
 			pnlFooter.setLayout(layout4);
 
-			btnSend = new JButton();
-			btnSend.setText("Send");
+			btnCreate = new JButton();
+			btnCreate.setText("Create Thread");
 
 			//component layoution
-			append(pnlTo);
 			append(pnlSubject);
 			append(pnlMessage);
 			append(pnlFooter);
-
-			pnlTo.append(lblTo);
-			pnlTo.append(txtTo);
 
 			pnlSubject.append(lblSubject);
 			pnlSubject.append(txtSubject);
@@ -195,7 +155,7 @@
 
 			scrollMessage.append(txtMessage);
 
-			pnlFooter.append(btnSend);
+			pnlFooter.append(btnCreate);
 
 		}
 	}

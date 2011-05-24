@@ -1,22 +1,18 @@
 package src.UI.Dialog{
 
-	import flash.events.Event;
-	import org.aswing.event.AWEvent;
-	import org.aswing.event.SelectionEvent;
-	import org.aswing.table.GeneralTableCellFactory;
-	import org.aswing.table.PropertyTableModel;
-	import src.Comm.GameURLLoader;
-	import src.Constants;
-	import src.Global;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.TableCells.GoToCityTextCell;
-	import src.UI.GameJPanel;
+	import flash.events.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
-	import org.aswing.event.TableCellEditEvent;
+	import org.aswing.event.*;
 	import org.aswing.ext.*;
+	import org.aswing.geom.*;
+	import org.aswing.table.*;
+	import src.*;
+	import src.Comm.*;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.Components.TableCells.*;
 
 	public class RankingDialog extends GameJPanel {
 
@@ -29,16 +25,10 @@ package src.UI.Dialog{
 		{name: "Resources Stolen", cityBased: false},
 		];
 
-		private var loader: GameURLLoader;
-		private var page: int = -1;
+		private var loader: GameURLLoader;		
 		private var type: int = 0;
-		private var pnlPaging:JPanel;
-		private var btnPrevious:JLabelButton;
-		private var btnFirst:JLabelButton;
-		private var lblPages:JLabel;
-		private var btnNext:JLabelButton;
-
-		private var pnlLoading: GameJPanel;
+		
+		private var pagingBar: PagingBar;
 
 		private var rankingList: VectorListModel;
 		private var rankingModel: PropertyTableModel;
@@ -74,19 +64,6 @@ package src.UI.Dialog{
 			// Any special row selection stuff goes here
 			rankingTable.addEventListener(SelectionEvent.COLUMN_SELECTION_CHANGED, onSelectionChange);
 			rankingTable.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, onSelectionChange);
-		
-			// Paging buttons
-			btnFirst.addActionListener(function() : void {
-				loadPage(1);
-			});
-
-			btnNext.addActionListener(function() : void {
-				loadPage(page + 1);
-			});
-
-			btnPrevious.addActionListener(function() : void{
-				loadPage(page - 1);
-			});
 
 			// Tooltips
 			new SimpleTooltip(cityAttackRanking, "Sort by attack points");
@@ -159,18 +136,14 @@ package src.UI.Dialog{
 				}
 			}
 
-			loadPage(-1);
+			pagingBar.refreshPage( -1);
 		}
 
 		private function search(txt: String) : void {
-			pnlLoading = InfoDialog.showMessageDialog("Loading", "Searching...", null, null, true, false, 0);
-
 			Global.mapComm.Ranking.search(loader, txt, type);
 		}
 
 		private function loadPage(page: int) : void {
-			pnlLoading = InfoDialog.showMessageDialog("Loading", "Loading ranking...", null, null, true, false, 0);
-
 			if (rankings[type].cityBased) {
 				Global.mapComm.Ranking.list(loader, Global.gameContainer.selectedCity.id, type, page);
 			} else {
@@ -179,8 +152,6 @@ package src.UI.Dialog{
 		}
 
 		private function onLoadRanking(e: Event) : void {
-			pnlLoading.getFrame().dispose();
-
 			var data: Object;
 			try
 			{
@@ -197,16 +168,12 @@ package src.UI.Dialog{
 			}
 
 			//Paging info
-			this.page = data.page;
-			btnFirst.setVisible(page > 1);
-			btnPrevious.setVisible(page > 1);
-			btnNext.setVisible(page < data.pages);
-			lblPages.setText(data.page + " of " + data.pages);
+			pagingBar.setData(data);
 
 			if (rankings[type].cityBased)
-			onCityRanking(data);
+				onCityRanking(data);
 			else
-			onPlayerRanking(data);
+				onPlayerRanking(data);
 		}
 
 		private function onPlayerRanking(data: Object) : void {
@@ -279,7 +246,7 @@ package src.UI.Dialog{
 			super.showSelf(owner, modal, onClose);
 			Global.gameContainer.showFrame(frame);
 
-			loadPage(page);
+			pagingBar.refreshPage();
 
 			return frame;
 		}
@@ -325,14 +292,7 @@ package src.UI.Dialog{
 			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));
 
 			// Paging
-			pnlPaging = new JPanel();
-			pnlPaging.setConstraints("West");
-
-			btnFirst = new JLabelButton("<< First");
-			btnPrevious = new JLabelButton("< Previous");
-			btnNext = new JLabelButton("Next >");
-
-			lblPages = new JLabel();
+			pagingBar = new PagingBar(loadPage, false);
 
 			// Search
 			var pnlSearch: JPanel = new JPanel();
@@ -349,15 +309,10 @@ package src.UI.Dialog{
 			lblUpdated.setConstraints("South");			
 
 			//component layoution
-			pnlPaging.append(btnFirst);
-			pnlPaging.append(btnPrevious);
-			pnlPaging.append(lblPages);
-			pnlPaging.append(btnNext);
-
 			pnlSearch.append(txtSearch);
 			pnlSearch.append(btnSearch);
 
-			pnlFooter.append(pnlPaging);
+			pnlFooter.append(pagingBar);
 			pnlFooter.append(pnlSearch);
 			pnlFooter.append(lblUpdated);
 

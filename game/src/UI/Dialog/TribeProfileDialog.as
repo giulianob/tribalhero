@@ -26,11 +26,17 @@
 		private var btnDismantle: JLabelButton;
 		private var btnLeave: JLabelButton;
 		
+		private var messageBoard: MessageBoard;
+		
+		private var pnlTabs: JTabbedPane;
+		
 		public function TribeProfileDialog(profileData: *) 
 		{
 			this.profileData = profileData;
 			
 			createUI();
+			
+			messageBoard.loadThreadPage();
 			
 			btnSetDescription.addActionListener(function(e: Event = null): void {
 				
@@ -117,17 +123,23 @@
 			pnlHeader.append(pnlHeaderFirstRow);
 			
 			// Tab panel
-			var pnlTabs: JTabbedPane = new JTabbedPane();
+			pnlTabs = new JTabbedPane();
 			pnlTabs.setPreferredSize(new IntDimension(375, 350));
 			pnlTabs.setConstraints("Center");
-			
+						
 			// Append tabs			
 			pnlTabs.appendTab(createInfoTab(), "Info");
+			pnlTabs.appendTab(createMessageBoardTab(), "Message Board");
 			
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
 		}
 	
+		private function createMessageBoardTab(): Container {		
+			messageBoard = new MessageBoard();					
+			return messageBoard;
+		}
+		
 		private function createInfoTab(): Container {
 			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));		
 			

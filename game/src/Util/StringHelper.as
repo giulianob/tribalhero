@@ -25,6 +25,13 @@ package src.Util {
 			}
 			return str;
 		}
+		
+		public static function truncate(str:String, maxLength: int = 150, ending: String = "..."): String {
+			if (str.length + ending.length <= maxLength) 
+				return str;
+				
+			return str.substr(0, maxLength) + ending;
+		}
 
 		public static function trimBack(str:String, char:String):String {
 			char = stringToCharacter(char);

@@ -26,11 +26,17 @@
 		private var btnDismantle: JLabelButton;
 		private var btnLeave: JLabelButton;
 		
+		private var messageBoard: MessageBoard;
+		
+		private var pnlTabs: JTabbedPane;
+		
 		public function TribeProfileDialog(profileData: *) 
 		{
 			this.profileData = profileData;
 			
 			createUI();
+			
+			messageBoard.loadThreadPage();
 			
 			btnSetDescription.addActionListener(function(e: Event = null): void {
 				
@@ -41,7 +47,10 @@
 				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
 			
 				pnl.appendAll(new JLabel("Set a message to appears on the tribe profile. This will only be visible to your tribe members.", null, AsWingConstants.LEFT), scrollDescription);
-				InfoDialog.showMessageDialog("Say something to your tribe", pnl, function(msg: String = ""): void {
+				InfoDialog.showMessageDialog("Say something to your tribe", pnl, function(result: * ): void {
+					if (result == JOptionPane.CANCEL || result == JOptionPane.CLOSE)
+						return;
+						
 					Global.mapComm.Tribe.setTribeDescription(txtDescription.getText());
 					update();
 				});
@@ -89,9 +98,9 @@
 		}
 		
 		private function createUI():void {
-			setPreferredSize(new IntDimension(775, 375));
+			setPreferredSize(new IntDimension(Math.min(1025, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.max(375, Constants.screenH - GameJImagePanelBackground.getFrameHeight() * 2)));
 			title = "Tribe Profile - " + profileData.tribeName;
-			setLayout(new BorderLayout(5));
+			setLayout(new BorderLayout(10, 10));
 			
 			// Header panel
 			var pnlHeader: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
@@ -109,9 +118,31 @@
 			
 			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
 			
-			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);
+			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);		
 			
-			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
+			pnlHeader.append(pnlHeaderFirstRow);
+			
+			// Tab panel
+			pnlTabs = new JTabbedPane();
+			pnlTabs.setPreferredSize(new IntDimension(375, 350));
+			pnlTabs.setConstraints("Center");
+						
+			// Append tabs			
+			pnlTabs.appendTab(createInfoTab(), "Info");
+			pnlTabs.appendTab(createMessageBoardTab(), "Message Board");
+			
+			// Append main panels
+			appendAll(pnlHeader, pnlTabs);
+		}
+	
+		private function createMessageBoardTab(): Container {		
+			messageBoard = new MessageBoard();					
+			return messageBoard;
+		}
+		
+		private function createInfoTab(): Container {
+			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));		
+			
 			btnDonate = new JLabelButton("Donate");
 			btnSetDescription = new JLabelButton("Set Announcement");
 			btnInvite = new JLabelButton("Invite");
@@ -131,35 +162,13 @@
 					pnlActions.appendAll(btnDonate, btnLeave);
 					break;
 			}
-			
-			pnlHeader.append(pnlHeaderFirstRow);
-			
-			pnlHeader.appendAll(new JLabel(" "), pnlActions);
-			
+				
 			// description
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
-			lblDescription.setPreferredWidth(325);
-			lblDescription.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
-			lblDescription.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));
 			
-			var scrollDescription: JScrollPane = new JScrollPane(new JViewport(lblDescription));
-			(scrollDescription.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
-			(scrollDescription.getViewport() as JViewport).setHorizontalAlignment(AsWingConstants.LEFT);
-			scrollDescription.setConstraints("Center");
+			var scrollDescription: JScrollPane = new JScrollPane(lblDescription);
 			
-			// Create west panel
-			var pnlWest: JPanel = new JPanel(new BorderLayout());
-			pnlWest.setConstraints("Center");
-			pnlWest.append(pnlHeader);
-			pnlWest.append(scrollDescription);
-			
-			// Tab panel
-			var pnlTabs: JTabbedPane = new JTabbedPane();
-			pnlTabs.setPreferredSize(new IntDimension(375, 350));
-			pnlTabs.setConstraints("East");
-			
-			// Members tab			
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(
 				modelMembers, 
@@ -177,16 +186,31 @@
 			tableMembers.getColumnAt(1).setPreferredWidth(100);
 			tableMembers.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
 			tableMembers.getColumnAt(2).setPreferredWidth(70);
+			
+			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			
+			var lblMembers: JLabel = new JLabel("Members (" + profileData.members.length + ")");
+			lblMembers.setHorizontalAlignment(AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblMembers, "darkHeader");
+			
+			var pnlEast: JPanel = new JPanel(new BorderLayout(0, 5));
+			lblMembers.setConstraints("North");
+			scrollMembers.setConstraints("Center");
+			pnlEast.appendAll(lblMembers, scrollMembers);
 
-			var scrollMembers: JScrollPane = new JScrollPane(new JViewport(tableMembers, true, false), JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
-			(scrollMembers.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+			var pnlWest: JPanel = new JPanel(new BorderLayout(0, 5));
+			pnlActions.setConstraints("North");
+			scrollDescription.setConstraints("Center");
 			
-			// Append tabs			
-			pnlTabs.appendTab(scrollMembers, "Members (" + profileData.members.length + ")");			
+			pnlWest.appendAll(pnlActions, scrollDescription);
 			
-			// Append main panels
-			append(pnlWest);
-			append(pnlTabs);
+			var pnlContainer: JPanel = new JPanel(new BorderLayout(10, 10));
+			pnlWest.setConstraints("Center");
+			pnlEast.setConstraints("East");
+			
+			pnlContainer.appendAll(pnlWest, pnlEast);
+			
+			return pnlContainer;
 		}
 	}
 	

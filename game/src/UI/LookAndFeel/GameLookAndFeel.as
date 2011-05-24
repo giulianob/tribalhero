@@ -52,12 +52,17 @@
 			super.initComponentDefaults(table);
 
 			var comDefaults:Array = [
-
+			
 			/* DEFAULT COMPONENTS */
 			"LabelButton.foreground", new ASColorUIResource(0x0066cc), 
 			"LabelButton.font", new ASFontUIResource("Arial", 11, false, false, true),
 
-			/* CLASSES */
+			/* CLASSES */			
+			"Class.darkText", [
+			"Label.font", new ASFontUIResource("Arial", 12, true),
+			"Label.foreground", new ASColorUIResource(0x000000)				
+			],
+			
 			"Class.header", [
 			"Label.font", new ASFontUIResource("Arial", 13, true),
 			"Label.foreground", new ASColorUIResource(0xFFFFFF)

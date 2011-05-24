@@ -9,6 +9,7 @@ package src.UI.Dialog{
 	import src.Comm.GameURLLoader;
 	import src.Global;
 	import src.UI.Components.Messaging.PreviewTextCell;
+	import src.UI.Components.PagingBar;
 	import src.UI.Components.TableCells.CheckboxTextCell;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
@@ -21,14 +22,6 @@ package src.UI.Dialog{
 
 		private var loader: GameURLLoader;
 		private var actionLoader: GameURLLoader;
-		private var page: int = 1;
-		private var pnlPaging:JPanel;
-		private var btnPrevious:JLabelButton;
-		private var btnFirst:JLabelButton;
-		private var lblPages:JLabel;
-		private var btnNext:JLabelButton;
-
-		private var pnlLoading: GameJPanel;
 
 		private var messageList: VectorListModel;
 		private var messageModel: PropertyTableModel;
@@ -39,6 +32,8 @@ package src.UI.Dialog{
 
 		private var btnSentDelete: JButton;
 
+		private var pagingBar: PagingBar;
+		
 		private var tabs: JTabbedPane;
 
 		private var pnlInbox: JPanel;
@@ -76,19 +71,6 @@ package src.UI.Dialog{
 			// Sent buttons
 			btnSentDelete.addActionListener(deleteChecked);
 
-			// Paging buttons
-			btnFirst.addActionListener(function() : void {
-				loadPage(1);
-			});
-
-			btnNext.addActionListener(function() : void {
-				loadPage(page + 1);
-			});
-
-			btnPrevious.addActionListener(function() : void{
-				loadPage(page - 1);
-			});
-
 			tabs.addStateListener(onTabChanged);			
 		}
 
@@ -104,8 +86,8 @@ package src.UI.Dialog{
 		private function onNewMessageSend(dialog: MessageCreateDialog) : void {
 			dialog.getFrame().dispose();
 			// Refresh if on send tab
-			if (tabs.getSelectedIndex() == 1 && page < 2) {
-				loadPage(1);
+			if (tabs.getSelectedIndex() == 1 && pagingBar.page < 2) {
+				pagingBar.refreshPage(1);
 			}
 		}
 
@@ -117,14 +99,12 @@ package src.UI.Dialog{
 				return;
 			}
 
-			pnlLoading = InfoDialog.showMessageDialog("Deleting", "Deleting messages...", null, null, true, false, 0);
 			Global.mapComm.Messaging.del(actionLoader, ids);
 			
 			refreshOnClose = true;
 		}
 
 		private function deleteMessage(id: int) : void {
-			pnlLoading = InfoDialog.showMessageDialog("Deleting", "Deleting message...", null, null, true, false, 0);
 			var ids: Array = new Array();
 			ids.push(id);
 			Global.mapComm.Messaging.del(actionLoader, ids);
@@ -140,7 +120,6 @@ package src.UI.Dialog{
 				return;
 			}
 
-			pnlLoading = InfoDialog.showMessageDialog("Marking as Read", "Marking messages...", null, null, true, false, 0);
 			Global.mapComm.Messaging.markAsRead(actionLoader, ids);
 		}
 
@@ -185,7 +164,7 @@ package src.UI.Dialog{
 				viewMessageDialog.show(null, true, function(viewDialog: MessageViewDialog = null) : void {
 					if (data.refreshOnClose) {
 						refreshOnClose = true;
-						loadPage(page);
+						pagingBar.refreshPage();
 					}
 				});
 			});
@@ -214,22 +193,17 @@ package src.UI.Dialog{
 				scrollSent.setView(messageTable);
 			}
 			
-			loadPage(1);
+			pagingBar.refreshPage(1);
 		}
 
 		private function loadPage(page: int) : void {
-			pnlLoading = InfoDialog.showMessageDialog("Loading", "Loading messages...", null, null, true, false, 0);
-
-			if (tabs.getSelectedIndex() == 0) {
+			if (tabs.getSelectedIndex() == 0)
 				Global.mapComm.Messaging.list(loader, "inbox", page);
-			} else {
-				Global.mapComm.Messaging.list(loader, "sent", page);
-			}
+			else
+				Global.mapComm.Messaging.list(loader, "sent", page);			
 		}
 
 		private function onLoadMessages(e: Event) : void {
-			pnlLoading.getFrame().dispose();
-
 			var data: Object;
 			try
 			{
@@ -245,12 +219,7 @@ package src.UI.Dialog{
 				return;
 			}
 
-			//Paging info
-			this.page = data.page;
-			btnFirst.setVisible(page > 1);
-			btnPrevious.setVisible(page > 1);
-			btnNext.setVisible(page < data.pages);
-			lblPages.setText(data.page + " of " + data.pages);
+			pagingBar.setData(data);
 
 			messageList.clear();
 
@@ -260,8 +229,6 @@ package src.UI.Dialog{
 		}
 
 		private function onActionReply(e: Event) : void {
-			pnlLoading.getFrame().dispose();
-
 			var data: Object;
 			try
 			{
@@ -277,7 +244,7 @@ package src.UI.Dialog{
 				return;
 			}
 
-			loadPage(page);
+			pagingBar.refreshPage();
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
@@ -285,7 +252,7 @@ package src.UI.Dialog{
 			super.showSelf(owner, modal, onClose);
 			Global.gameContainer.showFrame(frame);
 
-			loadPage(page);
+			pagingBar.refreshPage();
 
 			return frame;
 		}
@@ -302,7 +269,7 @@ package src.UI.Dialog{
 		private function createUI():void {
 			title = "Messages";
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-
+					
 			// Messages Table
 			messageList = new VectorListModel();
 
@@ -360,14 +327,8 @@ package src.UI.Dialog{
 			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));
 
 			// Paging
-			pnlPaging = new JPanel();
-			pnlPaging.setConstraints("West");
-
-			btnFirst = new JLabelButton("<< Newest");
-			btnPrevious = new JLabelButton("< Newer");
-			btnNext = new JLabelButton("Older >");
-
-			lblPages = new JLabel();
+			pagingBar = new PagingBar(loadPage);
+			pagingBar.setConstraints("West");
 
 			// New Message footer
 			var pnlNewMessage: JPanel = new JPanel();
@@ -381,14 +342,9 @@ package src.UI.Dialog{
 			tabs.appendTab(pnlSent, "Sent");
 
 			//component layoution
-			pnlPaging.append(btnFirst);
-			pnlPaging.append(btnPrevious);
-			pnlPaging.append(lblPages);
-			pnlPaging.append(btnNext);
-
 			pnlNewMessage.append(btnNewMessage);
 
-			pnlFooter.append(pnlPaging);
+			pnlFooter.append(pagingBar);
 			pnlFooter.append(pnlNewMessage);
 
 			append(tabs);

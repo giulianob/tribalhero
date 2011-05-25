@@ -1,19 +1,17 @@
 package src.UI.Dialog 
 {
-	import adobe.utils.CustomActions;
 	import flash.events.*;
 	import org.aswing.*;
-	import org.aswing.border.EmptyBorder;
+	import org.aswing.border.*;
 	import org.aswing.event.*;
-	import org.aswing.ext.MultilineLabel;
+	import org.aswing.ext.*;
 	import org.aswing.table.*;
 	import src.*;
 	import src.Comm.*;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+	import src.UI.LookAndFeel.*;
 
 	public class MessageBoard extends GameJPanel
 	{
@@ -58,15 +56,18 @@ package src.UI.Dialog
 				if (e.isProgrammatic()) 
 					return;
 					
-				lastThreadId = getSelectedThreadId();
-				trace(lastThreadId);
+				lastThreadId = getSelectedThreadId();				
 				loadPostPage(0);
 			});					
 			
 			btnNewThread.addActionListener(function(e: Event = null) : void {
 				var afterCreate: Function = function(createDlg: * , newThreadId: int):void {
 					createDlg.getFrame().dispose();
+					
+					clearPostView();
+					lastThreadId = newThreadId;
 					threadPaging.refreshPage(0);
+					
 					Global.mapComm.MessageBoard.view(postLoader, 0, newThreadId);				
 				};			
 			
@@ -136,6 +137,7 @@ package src.UI.Dialog
 			}	
 			
 			threadPaging.refreshPage();
+			postPaging.refreshPage();
 		}
 		
 		private function onReceiveThreads(e: Event): void {
@@ -160,6 +162,17 @@ package src.UI.Dialog
 			
 			modelThreads.clear();
 			modelThreads.appendAll(data.messages);
+			
+			// try to reselect the last selected thread
+			if (lastThreadId > -1) {
+				for (var i: int = 0; i < data.messages.length; i++) {
+					if (data.messages[i].id != lastThreadId) 
+						continue;
+					
+					tableThreads.setRowSelectionInterval(i, i);	
+					break;					
+				}
+			}
 		}
 		
 		private function onReceivePosts(e: Event): void {
@@ -189,7 +202,7 @@ package src.UI.Dialog
 			postPaging.setData(data);
 			
 			pnlPostBottomContainer.setVisible(true);
-
+			
 			// create main post item
 			if (postPaging.page <= 1)	
 				pnlPostItemContainer.append(createPostItem(data.thread));
@@ -226,11 +239,41 @@ package src.UI.Dialog
 			
 			var message: MultilineLabel = new MultilineLabel(postData.message);
 			message.setColumns(50);
+			message.pack();			
 			
-			post.appendAll(pnlHeader, message);
+			var scrollMessage: JScrollPane = new JScrollPane(message);						
+			scrollMessage.setPreferredHeight(Math.min(500, message.getHeight()));
+			
+			var pnlPostTools: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
+			
+			if (Constants.tribeRank <= 1 || Constants.playerId == postData.playerId) {
+				var btnDelete: AssetPane = new AssetPane(new ICON_REDX());
+				btnDelete.buttonMode = true;
+				btnDelete.addEventListener(MouseEvent.CLICK, function(e: Event): void {
+					InfoDialog.showMessageDialog("Delete", "Are you sure?", function(result: *):void {
+						if (result != JOptionPane.YES)
+							return;
+							
+						if (postData.subject) {
+							Global.mapComm.MessageBoard.delThread(actionLoader, postData.id);
+							
+							lastThreadId = -1;
+							clearPostView();
+						} else
+							Global.mapComm.MessageBoard.delPost(actionLoader, postData.id);
+					}, null, true, true, JOptionPane.YES | JOptionPane.NO);
+				});
+				new SimpleTooltip(btnDelete, postData.subject ? "Delete Thread" : "Delete Post");
+				
+				pnlPostTools.append(btnDelete);
+			}
+			
+			post.appendAll(pnlHeader, scrollMessage, pnlPostTools);
 			
 			post.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
 			post.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));		
+			
+			post.pack();
 			
 			return post;
 		}

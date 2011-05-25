@@ -42,7 +42,7 @@
 				
 				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
-				txtDescription.setMaxChars(1000);
+				txtDescription.setMaxChars(3000);
 				
 				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
 			

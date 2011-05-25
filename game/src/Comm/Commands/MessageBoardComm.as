@@ -26,12 +26,12 @@
 			loader.load("/message_boards/view", [ { key: "page", value: page }, { key: "id", value: threadId }]);
 		}
 		
-		public function delThread(loader: GameURLLoader, page: int, threadId: int) : void {
-			loader.load("/message_boards/del_thread", [ { key: "page", value: page }, { key: "threadId", value: threadId }]);
+		public function delThread(loader: GameURLLoader, threadId: int) : void {
+			loader.load("/message_boards/del_thread", [ { key: "id", value: threadId }]);
 		}
 		
-		public function delPost(loader: GameURLLoader, page: int, postId: int) : void {
-			loader.load("/message_boards/del_thread", [ { key: "page", value: page }, { key: "postId", value: postId }]);
+		public function delPost(loader: GameURLLoader, postId: int) : void {
+			loader.load("/message_boards/del_post", [ { key: "id", value: postId }]);
 		}		
 		
 		public function addThread(loader: GameURLLoader, subject: String, message: String) : void {

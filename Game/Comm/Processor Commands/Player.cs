@@ -94,7 +94,7 @@ namespace Game.Comm
                     }
                 }
 
-                reply.AddByte((byte)ranks.Count);
+                reply.AddUInt16((ushort)ranks.Count);
                 foreach (var rank in ranks)
                 {
                     reply.AddUInt32(rank.CityId);
@@ -103,7 +103,8 @@ namespace Game.Comm
                 }
 
                 // City info
-                reply.AddByte((byte)player.GetCityCount());
+                var cityCount = (byte)player.GetCityCount();
+                reply.AddByte(cityCount);
                 foreach (var city in player.GetCityList())
                 {
                     reply.AddUInt32(city.Id);

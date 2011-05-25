@@ -36,8 +36,7 @@ namespace Game.Database.Managers
 
         public MySqlDbManager(string hostname, string username, string password, string database, int timeout)
         {
-            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout=60", database, hostname, username, password);
-            string.Format("mysqldump ---user={0} ---password={1} {2} > ", username, password, database);
+            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4}", database, hostname, username, password, timeout);            
         }
 
         #region IDbManager Members

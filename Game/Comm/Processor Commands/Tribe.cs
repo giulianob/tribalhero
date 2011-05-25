@@ -37,7 +37,7 @@ namespace Game.Comm
                     return;
                 }
 
-                if (session.Player.Tribesman.Rank != 0)
+                if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -198,33 +198,6 @@ namespace Game.Comm
                 Global.DbManager.Delete(tribe);
             }
 
-            ReplySuccess(session, packet);
-        }
-
-        public void CmdTribeUpdate(Session session, Packet packet)
-        {
-            string desc;
-            try
-            {
-                desc = packet.GetString();
-            }
-            catch (Exception)
-            {
-                ReplyError(session, packet, Error.Unexpected);
-                return;
-            }
-
-            if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
-            {
-                ReplyError(session, packet, Error.TribesmanNotAuthorized);
-                return;
-            }
-
-            using (new MultiObjectLock(session.Player.Tribesman.Tribe))
-            {
-                session.Player.Tribesman.Tribe.Description = desc;
-                Global.DbManager.Save(session.Player.Tribesman.Tribe);
-            }
             ReplySuccess(session, packet);
         }
 

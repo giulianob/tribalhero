@@ -17,8 +17,8 @@ class AddMessageBoards extends Ruckusing_BaseMigration {
         $table->column("sticky", "boolean", array('null' => false));
         $table->finish();
 
-        $this->add_index('message_board_threads', array('tribe_id', 'deleted'));
-        $this->add_index('message_board_threads', array('sticky', 'last_post_date'));
+        $this->add_index('message_board_threads', array('tribe_id', 'deleted'), array('unique' => false));
+        $this->add_index('message_board_threads', array('sticky', 'last_post_date'), array('unique' => false));
 
         $table = $this->create_table('message_board_posts', array('options' => 'Engine=InnoDB', 'id' => false));
         $table->column("id", "integer", array('auto_increment' => true, 'primary_key' => true));
@@ -29,7 +29,7 @@ class AddMessageBoards extends Ruckusing_BaseMigration {
         $table->column("deleted", "boolean", array('null' => false));
         $table->finish();
 
-        $this->add_index('message_board_posts', array('message_board_thread_id', 'created'));
+        $this->add_index('message_board_posts', array('message_board_thread_id', 'created'), array('unique' => false));
     }
 
     public function down() {

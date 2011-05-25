@@ -8,9 +8,11 @@ $result = array(
     'thread' => array(
         'id' => $thread['MessageBoardThread']['id'],
         'created' => $time->niceShort($thread['MessageBoardThread']['created']),
+		'createdInWords' => $time->timeAgoInWords($thread['MessageBoardThread']['created']),
         'subject' => $thread['MessageBoardThread']['subject'],
         'message' => $thread['MessageBoardThread']['message'],
-        'player_name' => $thread['Player']['name'],
+        'playerName' => $thread['Player']['name'],
+		'playerId' => $thread['Player']['id'],
     ),
     'posts' => array()
 );
@@ -19,9 +21,10 @@ foreach ($posts as $post) {
     $result['posts'][] = array(
         'id' => $post['MessageBoardPost']['id'],
         'created' => $time->niceShort($post['MessageBoardPost']['created']),
+        'createdInWords' => $time->timeAgoInWords($post['MessageBoardPost']['created']),
         'message' => $post['MessageBoardPost']['message'],
-        'player_id' => $post['Player']['id'],
-        'player_name' => $post['Player']['name'],
+        'playerId' => $post['Player']['id'],
+        'playerName' => $post['Player']['name'],
     );
 }
 

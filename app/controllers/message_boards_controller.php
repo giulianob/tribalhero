@@ -50,8 +50,11 @@ class MessageBoardsController extends AppController {
         $playerId = $this->params['form']['playerId'];
         $id = array_key_exists('id', $this->params['form']) ? intval($this->params['form']['id']) : -1;
 
-        $this->MessageBoardThread->markDeleted($playerId, $id);
-
+        if (!$this->MessageBoardThread->markDeleted($playerId, $id))
+            $data = array('success' => false, 'error' => 'An error occurred while deleting your post');        
+        else
+            $data = array('success' => true);
+        
         $data = array('success' => true);
         $this->set('data', $data);
         $this->render('/elements/to_json');
@@ -61,17 +64,19 @@ class MessageBoardsController extends AppController {
         $playerId = $this->params['form']['playerId'];
         $id = array_key_exists('id', $this->params['form']) ? intval($this->params['form']['id']) : -1;
 
-        $this->MessageBoardPost->markDeleted($playerId, $id);
-
-        $data = array('success' => true);
+        if (!$this->MessageBoardPost->markDeleted($playerId, $id))
+            $data = array('success' => false, 'error' => 'An error occurred while deleting your post');        
+        else
+            $data = array('success' => true);
+        
         $this->set('data', $data);
         $this->render('/elements/to_json');
     }
 
     function add_thread() {
         $playerId = $this->params['form']['playerId'];
-        $subject = $this->params['form']['subject'];
-        $message = $this->params['form']['message'];
+        $subject = trim($this->params['form']['subject']);
+        $message = rtrim($this->params['form']['message']);
 
         $data = $this->MessageBoardThread->addThread($playerId, $subject, $message);
 
@@ -82,7 +87,7 @@ class MessageBoardsController extends AppController {
     function add_post() {
         $playerId = $this->params['form']['playerId'];
         $threadId = $this->params['form']['threadId'];
-        $message = $this->params['form']['message'];
+        $message = rtrim($this->params['form']['message']);
 
         $thread = $this->MessageBoardThread->getThreadHeader($playerId, $threadId);
 

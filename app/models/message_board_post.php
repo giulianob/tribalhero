@@ -46,7 +46,20 @@ class MessageBoardPost extends AppModel {
         );
 
         if ($this->save($newMessage)) {
-            return array('success' => true, 'id' => $this->id);
+
+            $this->MessageBoardThread->create();
+            $this->MessageBoardThread->id = $threadId;
+            $this->MessageBoardThread->save(array(
+                'last_post_date' => DboSource::expression('UTC_TIMESTAMP()'),
+                'last_post_player_id' => $playerId,
+                    ), false);
+
+            $this->MessageBoardThread->create();
+            
+            $count = $this->MessageBoardThread->find('count', array(
+                        'conditions' => array('MessageBoardThread.id' => $threadId)
+                    ));
+            return array('success' => true, 'id' => $this->id, 'pages' => ceil($count / $this->limitPerPage));
         } else {
             $errors = $this->invalidFields();
             return array('success' => false, 'error' => reset($errors));
@@ -76,11 +89,11 @@ class MessageBoardPost extends AppModel {
         // Player should be either poster or high rank enough to delete this post
         if ($post['MessageBoardPost']['player_id'] !== $playerId && $tribesman['Tribesman']['rank'] > 1)
             return false;
-
+        
         $this->id = $postId;
         $this->save(array(
             'deleted' => true
-        ));
+        ), false);
 
         return true;
     }

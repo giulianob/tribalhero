@@ -7,14 +7,16 @@ $data = array();
 foreach ($messages as $message) {
 
     $data[] = array(
-        'last_post_date' => $time->niceShort($message['MessageBoardThread']['last_post_date']),
-        'post_count' => $message['MessageBoardThread']['message_board_post_count'],
+        'id' => $message['MessageBoardThread']['id'],
+        'lastPostAgoInWords' => $time->timeAgoInWords($message['MessageBoardThread']['last_post_date']),
+        'lastPostDate' => $time->niceShort($message['MessageBoardThread']['last_post_date']),
+        'postCount' => $message['MessageBoardThread']['message_board_post_count'],        
         'subject' => $message['MessageBoardThread']['subject'],
-        'player_id' => $message['Player']['id'],
-        'player_name' => $message['Player']['name'],
-        'last_post_player_id' => $message['LastPostPlayer']['id'],
-        'last_post_player_id' => $message['LastPostPlayer']['name'],
-        'sticky' => $message['MessageBoardThread']['sticky'],
+        'playerId' => $message['Player']['id'],
+        'playerName' => $message['Player']['name'],
+        'lastPostPlayerId' => $message['LastPostPlayer']['id'],
+        'lastPostPlayerName' => $message['LastPostPlayer']['name'],
+        'sticky' => $message['MessageBoardThread']['sticky'],        
     );
 }
 

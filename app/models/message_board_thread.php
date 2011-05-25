@@ -59,7 +59,7 @@ class MessageBoardThread extends AppModel {
             'message' => $message,
             'deleted' => 0,
             'sticky' => 0,
-            'last_post_date' => DboSource::expression('NOW()'),
+            'last_post_date' => DboSource::expression('UTC_TIMESTAMP()'),
             'last_post_player_id' => $playerId,
             'tribe_id' => $tribeId
         );
@@ -90,7 +90,7 @@ class MessageBoardThread extends AppModel {
             'page' => $page,
             'limit' => $this->limitPerPage,
             'order' => array('MessageBoardThread.sticky DESC', 'MessageBoardThread.last_post_date DESC'),
-            'fields' => array('last_post_date', 'message_board_post_count', 'subject', 'sticky'),
+            'fields' => array('last_post_date', 'message_board_post_count', 'subject', 'sticky', 'id'),
         );
     }
 
@@ -115,7 +115,7 @@ class MessageBoardThread extends AppModel {
         $this->id = $threadId;
         $this->save(array(
             'deleted' => true
-        ));
+        ), false);
 
         return true;
     }

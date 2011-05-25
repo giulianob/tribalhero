@@ -293,12 +293,6 @@ namespace Game.Comm
                 return;
             }
 
-            if (cityId == targetCityId)
-            {
-                ReplyError(session, packet, Error.AttackSelf);
-                return;
-            }
-
             using (new MultiObjectLock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
@@ -321,6 +315,12 @@ namespace Game.Comm
 
                 City targetCity = cities[targetCityId];
                 Structure targetStructure;
+
+                if (city.Owner.PlayerId == targetCity.Owner.PlayerId)
+                {
+                    ReplyError(session, packet, Error.AttackSelf);
+                    return;
+                }
 
                 if (!targetCity.TryGetStructure(targetObjectId, out targetStructure))
                 {

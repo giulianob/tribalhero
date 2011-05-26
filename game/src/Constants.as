@@ -20,7 +20,7 @@ package src
 		
 		/* APP CONSTANTS */
 		public static const mainWebsite: String = "tribalhero.com";
-		public static const debug:int = 1;
+		public static const debug:int = 0;
 		public static const defLang:String = "en";
 		
 		public static const alwaysEnableButtons: Boolean = false;

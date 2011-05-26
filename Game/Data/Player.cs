@@ -15,7 +15,7 @@ namespace Game.Data
     public class Player : ILockable, IPersistableObject
     {
         public const string DB_TABLE = "players";
-        public const int MAX_DESCRIPTION_LENGTH = 1000;
+        public const int MAX_DESCRIPTION_LENGTH = 3000;
         private readonly List<City> list = new List<City>();
 
         public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin)

@@ -1,9 +1,9 @@
 ﻿package src.Map {
 
 	import src.Comm.*;
-	import src.Objects.GameError;
-	import src.UI.Dialog.*;
 	import src.Comm.Commands.*;
+	import src.Objects.*;
+	import src.UI.Dialog.*;
 
 	public class MapComm {
 
@@ -18,6 +18,7 @@
 		public var Ranking: RankingComm;
 		public var Messaging: MessagingComm;
 		public var Tribe: TribeComm;
+		public var MessageBoard: MessageBoardComm;
 
 		public var session: Session;
 
@@ -35,6 +36,7 @@
 			Ranking = new RankingComm(this);
 			Messaging = new MessagingComm(this);
 			Tribe = new TribeComm(this);
+			MessageBoard = new src.Comm.Commands.MessageBoardComm(this);
 		}
 
 		public function dispose() : void {

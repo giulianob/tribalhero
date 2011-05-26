@@ -274,7 +274,7 @@
 			profileData.tribeRank = packet.readUByte();
 			
 			profileData.ranks = [];
-			var rankCount: int = packet.readUByte();
+			var rankCount: int = packet.readUShort();
 			for (var i: int = 0; i < rankCount; i++)
 				profileData.ranks.push({
 					cityId: packet.readUInt(),

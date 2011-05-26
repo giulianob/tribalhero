@@ -109,7 +109,7 @@ public class InfoDialog extends GameJPanel {
 		
 		pane.title = title;		
 		
-		pane.showSelf(AsWingUtils.getOwnerAncestor(parentComponent), modal, finishHandler);
+		pane.showSelf(AsWingUtils.getOwnerAncestor(parentComponent), modal, null);
 		
 		var handler:Function = finishHandler;
 		
@@ -170,10 +170,12 @@ public class InfoDialog extends GameJPanel {
 	public static function showInputDialog(title:String, msg:String, finishHandler:Function=null, defaultValue:String="", parentComponent:Component=null, modal:Boolean=true):InfoDialog{
 		var frame:GameJFrame = new GameJFrame(AsWingUtils.getOwnerAncestor(parentComponent), title, modal);
 		var pane:InfoDialog = new InfoDialog(msg);
-		if(defaultValue != ""){
+		pane.title = title;
+		
+		if(defaultValue != "")
 			pane.inputText.setText(defaultValue);
-		}		
-		pane.frame = frame;
+		
+		pane.showSelf(AsWingUtils.getOwnerAncestor(parentComponent), modal, null);
 		
 		pane.addButton(pane.getOkButton());
 		pane.addCloseListener(pane.getOkButton());
@@ -193,17 +195,18 @@ public class InfoDialog extends GameJPanel {
 		};
 		
 		pane.getCancelButton().addActionListener(cancelHandler);
+		
+		frame = pane.getFrame();
 		frame.addEventListener(FrameEvent.FRAME_CLOSING, cancelHandler);
 			
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setResizable(false);
-		frame.getContentPane().append(pane, BorderLayout.CENTER);
-		frame.pack();
-		var location:IntPoint = AsWingUtils.getScreenCenterPosition();
-		location.x = Math.round(location.x - frame.getWidth()/2);
-		location.y = Math.round(location.y - frame.getHeight()/2);
-		frame.setLocation(location);
-		Global.gameContainer.showFrame(frame);
+		pane.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		pane.frame.setResizable(false);
+		pane.frame.pack();
+		
+		Global.gameContainer.showFrame(pane.frame);
+		
+		pane.getInputText().requestFocus();
+		
 		return pane;
 	}
 }

@@ -65,7 +65,7 @@ package src.UI{
 		}
 
 		public static function getFrameWidth() : int {			
-			return 0;
+			return 20;
 		}
 		
 		public static function getFrameHeight() : int {

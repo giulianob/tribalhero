@@ -10,34 +10,30 @@ package src.UI.Dialog{
 	import org.aswing.ext.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 
-	public class TribeInviteRequestDialog extends GameJPanel {
+	public class TribeSetRankDialog extends GameJPanel {
 
 		private var lblName:JLabel;
 		private var lblNameTitle:JLabel;		
 		private var btnAccept:JButton;
 		private var btnDecline:JButton;
-		private var lblWelcome: MultilineLabel;
+		private var lblMessage: MultilineLabel;
+		private var lstRank: JComboBox;
 		
-		private var result: Boolean;
+		private var playerId: int;
+		private var currentRank: int;
 
-		public function TribeInviteRequestDialog(onAccept: Function) {
-			createUI();
-
-			Global.map.usernames.tribes.setLabelUsername(Constants.tribeInviteId, lblName);
+		public function TribeSetRankDialog(playerId: int, currentRank: int, onAccept: Function) {		
+			this.playerId = playerId;
+			this.currentRank = currentRank;
 			
-			var self: TribeInviteRequestDialog = this;
-			btnAccept.addActionListener(function():void {				
-				result = true;
-				if (onAccept != null) onAccept(self);
-			});
-			btnDecline.addActionListener(function():void {				
-				result = false;
-				if (onAccept != null) onAccept(self);
-			});
-		}
+			createUI();			
 
-		public function getResult():Boolean{
-			return result;
+			Global.map.usernames.players.setLabelUsername(playerId, lblName);
+			
+			var self: TribeSetRankDialog = this;
+			btnAccept.addActionListener(function():void {				
+				if (onAccept != null) onAccept(self);
+			});
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
@@ -47,12 +43,16 @@ package src.UI.Dialog{
 
 			return frame;
 		}
+		
+		public function getNewRank(): int {
+			return lstRank.getSelectedIndex() + 1;
+		}
 
 		private function createUI():void {
-			title = "Join a Tribe";
+			title = "Set Member Rank";
 			//component creation
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			setPreferredWidth(250);			
+			setPreferredWidth(350);			
 			var border0:EmptyBorder = new EmptyBorder();
 			border0.setTop(10);
 			border0.setLeft(10);
@@ -61,42 +61,47 @@ package src.UI.Dialog{
 			setBorder(border0);
 
 			var pnlName: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
+			pnlName.setPreferredWidth(150);
 			
-			lblNameTitle = new JLabel();
-			lblNameTitle.setLocation(new IntPoint(0, 2));
-			lblNameTitle.setSize(new IntDimension(52, 25));
-			lblNameTitle.setText("Tribe Name");
+			lblNameTitle = new JLabel("Player");
 			lblNameTitle.setHorizontalAlignment(AsWingConstants.RIGHT);
 
 			lblName = new JLabel();
 			lblName.setText("Loading...");
 			GameLookAndFeel.changeClass(lblName, "Form.label");
 			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
+			
+			var pnlNewRank: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
+			pnlNewRank.setPreferredWidth(150);
+			
+			var lblNewRankTitle: JLabel = new JLabel("Rank");
+			lblNewRankTitle.setHorizontalAlignment(AsWingConstants.RIGHT);
+			
+			lstRank = new JComboBox(["Elder", "Tribesman"]);
+			lstRank.setPreferredWidth(100);
+			lstRank.setSelectedIndex(currentRank - 1);
 
 			var pnlButtons: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
+			pnlButtons.setPreferredWidth(150);
 
-			btnDecline = new JButton();
-			btnDecline.setLocation(new IntPoint(87, 5));
-			btnDecline.setSize(new IntDimension(34, 22));
-			btnDecline.setText("Decline");
-			
 			btnAccept = new JButton();
-			btnAccept.setLocation(new IntPoint(87, 5));
-			btnAccept.setSize(new IntDimension(34, 22));
-			btnAccept.setText("Accept");
+			btnAccept.setText("Set New Rank");
 
-			lblWelcome = new MultilineLabel("You have been invited to a tribe. You may accept or decline this request below.");
+			lblMessage = new MultilineLabel("Since you are the chief of your tribe, you are the only one that can change the rank of your members. Elders have the ability to recruit/kick tribesmen and can moderate the message board. The Tribesman rank has no administrative privilege.", 5);
 
 			//component layout
-			append(lblWelcome);
+			append(lblMessage);
 			append(pnlName);
+			append(pnlNewRank);
 			append(pnlButtons);
+
+			pnlNewRank.append(lblNewRankTitle);
+			pnlNewRank.append(lstRank);			
 			
 			pnlName.append(lblNameTitle);
 			pnlName.append(lblName);
 			
-			pnlButtons.append(btnAccept);			
-			pnlButtons.append(btnDecline);			
+			pnlButtons.append(btnAccept);					
 		}
 	}
 }

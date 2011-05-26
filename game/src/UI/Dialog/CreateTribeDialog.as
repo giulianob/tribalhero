@@ -64,7 +64,7 @@ package src.UI.Dialog{
 
 			var lblMessage: MultilineLabel;			
 			if (!RequirementFormula.canCreateTribe()) {
-				lblMessage = new MultilineLabel("You need to be part of a tribe before you can use this feature.\n\nYou can join an existing tribe or create your own after you have two cities with Town Center (Level 10)", 6);
+				lblMessage = new MultilineLabel("You need to be part of a tribe before you can use this feature.\n\nYou can create your own tribe after you have two cities with Town Center (Level 10) or you can join an existing tribe right now if someone invites you.", 6);
 				
 				append(lblMessage);			
 			}

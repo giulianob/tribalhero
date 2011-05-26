@@ -70,18 +70,24 @@
 		{			
 			var count: int = 0;
 			var totalSpeed: int = 0;
-
+			var machineSpeed: int = int.MAX_VALUE;
+			
 			for each (var formation: Formation in each())
 			{
 				for each (var unit: Unit in formation.each()) {
 					var template: UnitTemplate = city.template.get(unit.type);
 					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, template.level);
-                    count += (unit.count * unitPrototype.upkeep);
-                    totalSpeed += (unit.count * unitPrototype.upkeep * unitPrototype.speed);									
+					
+					if (unitPrototype.unitClass == "Machine") {
+						  machineSpeed = Math.min(unitPrototype.speed, machineSpeed);
+					} else {
+						count += (unit.count * unitPrototype.upkeep);
+						totalSpeed += (unit.count * unitPrototype.upkeep * unitPrototype.speed);		
+					}
 				}
 			}
 
-			return totalSpeed / count;
+			return machineSpeed == int.MAX_VALUE ? totalSpeed / count: machineSpeed;
 		}
 
 		public function getIndividualUnitCount(type: int = -1): int

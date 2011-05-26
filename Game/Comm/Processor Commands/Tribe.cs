@@ -158,7 +158,7 @@ namespace Game.Comm
                     return;
                 }
 
-                if (session.Player.GetCityList().Count(city => city.Lvl >= 10) >= 1)
+                if (session.Player.GetCityList().Count(city => city.Lvl >= 10) < 1)
                 {
                     ReplyError(session, packet, Error.EffectRequirementNotMet);
                     return;

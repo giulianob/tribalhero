@@ -36,7 +36,7 @@ namespace Game.Data.Tribe {
 
                 if (DbPersisted)
                 {
-                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `id` = @id LIMIT 1", DB_TABLE),
+                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("desc", description, DbType.String), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -199,7 +199,7 @@ namespace Game.Data.Tribe {
         public DbColumn[] DbPrimaryKey {
             get
             {
-                return new DbColumn[]{ new DbColumn("id",Id, DbType.UInt32)} ;
+                return new DbColumn[]{ new DbColumn("player_id",Id, DbType.UInt32)} ;
             }
         }
 
@@ -215,8 +215,7 @@ namespace Game.Data.Tribe {
                 return new DbColumn[]
                        {
                                new DbColumn("name",Name,DbType.String, 20),                               
-                               new DbColumn("level",Level,DbType.Byte), 
-                               new DbColumn("owner_id",Owner.PlayerId,DbType.UInt32),
+                               new DbColumn("level",Level,DbType.Byte),                                
                        };
             }
         }

@@ -97,7 +97,7 @@ namespace Game.Database
                 while (reader.Read())
                 {
                    // var resource = new Resource((int)reader["crop"],(int)reader["gold"],(int)reader["iron"],(int)reader["wood"],0);
-                    var tribe = new Tribe(Global.World.Players[(uint)reader["id"]], (string)reader["name"], (string)reader["desc"], (byte)reader["level"], new Resource()) { DbPersisted = true };
+                    var tribe = new Tribe(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], (string)reader["desc"], (byte)reader["level"], new Resource()) { DbPersisted = true };
                     Global.Tribes.Add(tribe.Id, tribe);
                 }
             }

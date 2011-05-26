@@ -23,7 +23,8 @@ class Player extends AppModel {
         )
     );
     var $hasOne = array(
-        'City'
+        'City',
+        'Tribesman'
     );
     var $hasMany = array(
         'SendMessage' => array(
@@ -43,4 +44,13 @@ class Player extends AppModel {
             'dependent' => true
         )
     );
+
+    public function getTribeId($playerId) {
+        $tribesman = $this->Tribesman->findByPlayerId($playerId);
+        if (empty($tribesman)) 
+            return null;
+        
+        return $tribesman['Tribesman']['tribe_id'];
+    }   
+
 }

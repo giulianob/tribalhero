@@ -4,20 +4,7 @@ class ActionsController extends AppController {
     var $uses = array();
 
     var $allowedFromGame = array('unread');
-
-    function beforeFilter() {
-        if (!empty($this->params['named'])) {
-            $this->params['form'] = $this->params['named'];
-        }
-        else {
-            Configure::write('debug', 0);
-        }
-
-        $this->layout = 'ajax';
-
-        parent::beforeFilter();
-    }
-    
+   
     function unread() {
         if (!array_key_exists('playerId', $this->params['form'])) return;
 

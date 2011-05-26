@@ -9,19 +9,6 @@ class RankingsController extends AppController {
         $this->render(false);
     }
     
-    function beforeFilter() {
-        if (!empty($this->params['named'])) {
-            $this->params['form'] = $this->params['named'];
-        }
-        else {
-            Configure::write('debug', 0);
-        }
-
-        $this->layout = 'ajax';
-
-        parent::beforeFilter();
-    }
-
     function listing() {
         $id = array_key_exists('id', $this->params['form']) ? intval($this->params['form']['id']) : null;
         $page = array_key_exists('page', $this->params['form']) ? intval($this->params['form']['page']) : -1;

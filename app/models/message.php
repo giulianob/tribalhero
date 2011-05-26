@@ -13,7 +13,7 @@ class Message extends AppModel {
     var $validate = array(
         'message' => array(
             'maxLength' => array(
-                'rule' => array('maxLength', 3000),
+                'rule' => array('maxLength', 30000),
                 'message' => 'Message is too long. Shorten the message and try again.',
                 'required' => true,
                 'allowEmpty' => false
@@ -29,18 +29,8 @@ class Message extends AppModel {
         )
     );
     var $belongsTo = array(
-        'Sender' => array('className' => 'Player',
-            'foreignKey' => 'sender_player_id',
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-        ),
-        'Recipient' => array('className' => 'Player',
-            'foreignKey' => 'recipient_player_id',
-            'conditions' => '',
-            'fields' => '',
-            'order' => ''
-        )
+        'Sender' => array('className' => 'Player', 'foreignKey' => 'sender_player_id'),
+        'Recipient' => array('className' => 'Player', 'foreignKey' => 'recipient_player_id')
     );
 
     function getInbox($playerId, $page) {
@@ -102,19 +92,17 @@ class Message extends AppModel {
     function sendToTrash($playerId, $ids) {
         $this->updateAll(array(
             'Message.sender_state' => $this->states["deleted"]
-                ),
-                array(
-                    'Message.sender_player_id' => $playerId,
-                    'Message.id' => $ids
+                ), array(
+            'Message.sender_player_id' => $playerId,
+            'Message.id' => $ids
                 )
         );
 
         $this->updateAll(array(
             'Message.recipient_state' => $this->states["deleted"]
-                ),
-                array(
-                    'Message.recipient_player_id' => $playerId,
-                    'Message.id' => $ids
+                ), array(
+            'Message.recipient_player_id' => $playerId,
+            'Message.id' => $ids
                 )
         );
     }
@@ -122,11 +110,10 @@ class Message extends AppModel {
     function markAsRead($playerId, $ids) {
         $this->updateAll(array(
             'Message.recipient_state' => $this->states["read"]
-                ),
-                array(
-                    'Message.recipient_player_id' => $playerId,
-                    'Message.recipient_state' => $this->states["unread"],
-                    'Message.id' => $ids
+                ), array(
+            'Message.recipient_player_id' => $playerId,
+            'Message.recipient_state' => $this->states["unread"],
+            'Message.id' => $ids
                 )
         );
     }
@@ -191,7 +178,7 @@ class Message extends AppModel {
         if ($this->save($newMessage, true, array('sender_player_id', 'recipient_player_id', 'subject', 'message'))) {
             return array('success' => true);
         } else {
-			$errors = $this->invalidFields();
+            $errors = $this->invalidFields();
             return array('error' => reset($errors));
         }
     }

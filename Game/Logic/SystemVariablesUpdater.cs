@@ -104,6 +104,7 @@ namespace Game.Logic
                                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
                                             new SystemVariable("Cities.count", Global.World.CityCount),
                                             new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
+                                            new SystemVariable("Tribes.count", Global.Tribes.Count),
                                     };
 
                     // Max player logged in ever

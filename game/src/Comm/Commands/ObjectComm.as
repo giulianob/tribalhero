@@ -488,8 +488,11 @@
 			var city: City = Global.map.cities.get(cityId);
 			if (city == null)
 				return;
-
+				
 			city.currentActions.add(currentAction);
+			
+			if (!Global.map.selectedObject)
+				Global.map.selectWhenViewable(cityId, objId);
 		}
 
 		public function onReceiveRescheduledObjectAction(packet: Packet):void

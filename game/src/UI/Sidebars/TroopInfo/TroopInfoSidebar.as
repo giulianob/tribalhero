@@ -6,6 +6,7 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Prototypes.*;
 	import src.Objects.*;
+	import src.UI.Components.CityLabel;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Components.PlayerLabel;
@@ -53,17 +54,6 @@
 			update();
 		}
 
-		private function setCityUsername(username: Username, custom: * ) : void {
-			var usernameLabel: JLabel = custom as JLabel;
-
-			usernameLabel.setText(username.name + troopObj.getNiceStubId(true));
-
-			usernameLabel.setIcon(new GoToCityIcon(username.id));
-			usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);
-			
-			if (getFrame()) getFrame().pack();
-		}
-
 		public function update():void
 		{
 			t.reset();
@@ -72,9 +62,7 @@
 
 			var usernameLabel: PlayerLabel = addStatRow("Player", new PlayerLabel(troopObj.playerId));
 			
-			var cityLabel: JLabel = addStatRow("Troop", "-");
-			
-			Global.map.usernames.cities.getUsername(troopObj.cityId, setCityUsername, cityLabel);
+			var cityLabel: CityLabel = addStatRow("City", new CityLabel(troopObj.cityId));
 
 			var buttons: Array = new Array();
 

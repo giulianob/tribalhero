@@ -15,6 +15,7 @@
 	import src.Constants;
 	import src.Global;
 	import src.Map.MapUtil;
+	import src.UI.Components.CityLabel;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
@@ -173,13 +174,8 @@
 			
 			for each (var city: * in profileData.cities) {
 				var pnlCity: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 5, false));
-				var goToCityIcon: GoToCityIcon = new GoToCityIcon(city.id);
-				goToCityIcon.getAsset().addEventListener(AWEvent.ACT, function(e: Event = null): void {
-					getFrame().dispose();
-				});
-				var lblCityName: JLabel = new JLabel(city.name, goToCityIcon);			
-				GameLookAndFeel.changeClass(lblCityName, "darkHeader");
-				lblCityName.setHorizontalAlignment(AsWingConstants.LEFT);
+				var lblCityName: CityLabel = new CityLabel(city.id, city.name);
+				GameLookAndFeel.changeClass(lblCityName, "darkHeader");					
 				lblCityName.setPreferredWidth(100);
 				
 				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));

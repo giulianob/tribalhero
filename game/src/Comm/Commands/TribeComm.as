@@ -90,7 +90,7 @@
 			profileData.resources = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
 			
 			profileData.members = [];
-			var memberCount: int = packet.readInt();
+			var memberCount: int = packet.readShort();
 			for (var i: int = 0; i < memberCount; i++)
 				profileData.members.push({
 					playerId: packet.readUInt(),
@@ -101,6 +101,23 @@
 				});
 				
 			(profileData.members as Array).sortOn("rank", [Array.NUMERIC]);
+			
+			profileData.incomingAttacks = [];
+			var incomingAttackCount: int = packet.readShort();
+			for (i = 0; i < incomingAttackCount; i++) {
+				profileData.incomingAttacks.push( {
+					targetPlayerId: packet.readUInt(),
+					targetCityId: packet.readUInt(),
+					targetPlayerName: packet.readString(),
+					targetCityName: packet.readString(),
+					sourcePlayerId: packet.readUInt(),
+					sourceCityId: packet.readUInt(),
+					sourcePlayerName: packet.readString(),
+					sourceCityName: packet.readString(),
+					endTime: packet.readUInt()
+				});
+			}
+			
 			custom.callback(profileData);
 		}
 

@@ -295,11 +295,14 @@ namespace Game.Battle
             return LoadStats(UnitFactory.GetUnitStats(type, lvl).Battle,city,group);
         }
 
-        public static Resource GetBonusResources(TroopObject troop)
+        public static Resource GetBonusResources(TroopObject troop, int originalCount, int remainingCount)
         {
+            if (originalCount == 0)
+                return new Resource();
+
             int max = troop.City.Technologies.GetEffects(EffectCode.SunDance, EffectInheritance.Self).DefaultIfEmpty().Sum(x => x != null ? (int)x.Value[0] : 0);
-            var bonus = new Resource(troop.Stats.Loot) * ((Config.Random.NextDouble() + 1f) * (100 + max) / 100f);
-            return bonus;
+            float troopsLostPercentage = 1 - remainingCount/(float)originalCount;
+            return new Resource(troop.Stats.Loot)*(troopsLostPercentage)*(1f+(Config.Random.Next(max)/100f));
         }
 
         public static int GetNumberOfHits(CombatObject currentAttacker)

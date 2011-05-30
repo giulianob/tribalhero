@@ -246,7 +246,7 @@ namespace Game.Comm
             parameters.Add(new Parameter(values));
         }
 
-        public void AddInt16(int value)
+        public void AddInt16(short value)
         {
             parameters.Add(new Parameter(value));
         }

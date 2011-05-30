@@ -132,7 +132,7 @@ namespace Game.Data.Tribe
         {
             return from tribesmen in this
                    from city in tribesmen.Player.GetCityList()
-                   from notification in city.Worker.Notifications
+                   from notification in city.Worker.Notifications                   
                    where notification.Action is AttackChainAction && notification.Subscriptions.Count > 0
                    orderby ((ChainAction)notification.Action).EndTime ascending
                    select new IncomingListItem {City = city, Action = (AttackChainAction)notification.Action};

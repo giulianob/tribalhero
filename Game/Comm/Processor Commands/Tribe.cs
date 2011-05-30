@@ -112,7 +112,7 @@ namespace Game.Comm
                 reply.AddString(tribe.Description);
                 PacketHelper.AddToPacket(tribe.Resource, reply);
 
-                reply.AddInt32(tribe.Count);
+                reply.AddInt16((short)tribe.Count);
                 foreach (var tribesman in tribe)
                 {
                     reply.AddUInt32(tribesman.Player.PlayerId);
@@ -121,6 +121,22 @@ namespace Game.Comm
                     reply.AddByte(tribesman.Rank);
                     PacketHelper.AddToPacket(tribesman.Contribution, reply);
                 }
+
+                var incomingList = tribe.GetIncomingList();
+                reply.AddInt16((short)incomingList.Count());
+                foreach (var incoming in incomingList)
+                {
+                    reply.AddUInt32(incoming.City.Owner.PlayerId);
+                    reply.AddUInt32(incoming.City.Id);
+                    reply.AddString(incoming.City.Owner.Name);
+                    reply.AddString(incoming.City.Name);
+                    reply.AddUInt32(incoming.Action.WorkerObject.City.Owner.PlayerId);
+                    reply.AddUInt32(incoming.Action.WorkerObject.City.Id);
+                    reply.AddString(incoming.Action.WorkerObject.City.Owner.Name);
+                    reply.AddString(incoming.Action.WorkerObject.City.Name);
+                    reply.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.Action.EndTime.ToUniversalTime()));
+                }
+
                 session.Write(reply);
             }
         }

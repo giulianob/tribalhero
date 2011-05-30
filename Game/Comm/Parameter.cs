@@ -18,6 +18,13 @@ namespace Game.Comm
             bytes = BitConverter.GetBytes(value);
         }
 
+        public Parameter(short value)
+        {
+            Value = value;
+            Length = sizeof(short);
+            bytes = BitConverter.GetBytes(value);
+        }
+
         public Parameter(long value)
         {
             Value = value;

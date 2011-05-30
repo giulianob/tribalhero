@@ -14,6 +14,7 @@ package src.UI.Sidebars.ObjectInfo {
 	import src.Objects.*;
 	import src.Objects.Prototypes.*;
 	import src.UI.*;
+	import src.UI.Components.CityLabel;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.Messaging.MessagingIcon;
 	import src.UI.Components.PlayerLabel;
@@ -62,16 +63,6 @@ package src.UI.Sidebars.ObjectInfo {
 			update();
 		}
 
-		private function setCityUsername(username: Username, custom: * ) : void {
-			var usernameLabel: JLabel = custom as JLabel;
-
-			usernameLabel.setText(username.name);
-			usernameLabel.setIcon(new GoToCityIcon(username.id));
-			usernameLabel.setHorizontalTextPosition(AsWingConstants.LEFT);			
-
-			if (getFrame()) getFrame().pack();
-		}
-
 		public function update():void
 		{
 			t.reset();
@@ -88,8 +79,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 			var usernameLabel: PlayerLabel = addStatRow("Player", new PlayerLabel(gameObject.playerId));
 			
-			var cityLabel: JLabel = addStatRow("City", "-");					
-			Global.map.usernames.cities.getUsername(gameObject.cityId, setCityUsername, cityLabel);
+			var cityLabel: CityLabel = addStatRow("City", new CityLabel(gameObject.cityId));
 
 			addStatRow("Level", gameObject.level.toString());
 

@@ -181,7 +181,7 @@ package src.UI.Dialog{
 
 			rankingModel = new PropertyTableModel(rankingList,
 			["Rank", "Player", rankings[type].name],
-			["rank", "playerName", "value"],
+			["rank", ".", "value"],
 			[null, null, null, null]
 			);
 
@@ -200,6 +200,8 @@ package src.UI.Dialog{
 			rankingTable.getColumnAt(0).setPreferredWidth(45);
 			rankingTable.getColumnAt(1).setPreferredWidth(220);
 			rankingTable.getColumnAt(2).setPreferredWidth(150);
+			
+			rankingTable.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
@@ -209,9 +211,9 @@ package src.UI.Dialog{
 			rankingList = new VectorListModel();
 
 			rankingModel = new PropertyTableModel(rankingList,
-			["Rank", "Player", "City", rankings[type].name, ""],
-			["rank", "playerName", "cityName", "value", "cityId"],
-			[null, null, null, null]
+			["Rank", "Player", "City", rankings[type].name],
+			["rank", ".", ".", "value"],
+			[null, null, null]
 			);					
 
 			var selectIdx: int = -1;
@@ -228,12 +230,12 @@ package src.UI.Dialog{
 			rankingTable.setModel(rankingModel);
 
 			rankingTable.getColumnAt(0).setPreferredWidth(43);
-			rankingTable.getColumnAt(1).setPreferredWidth(120);
-			rankingTable.getColumnAt(2).setPreferredWidth(120);
+			rankingTable.getColumnAt(1).setPreferredWidth(130);
+			rankingTable.getColumnAt(2).setPreferredWidth(130);
 			rankingTable.getColumnAt(3).setPreferredWidth(110);
-			rankingTable.getColumnAt(4).setPreferredWidth(20);
 			
-			rankingTable.getColumnAt(4).setCellFactory(new GeneralTableCellFactory(GoToCityTextCell));
+			rankingTable.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
+			rankingTable.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(CityLabelCell));
 
 			// Select player 
 			if (selectIdx > -1) {

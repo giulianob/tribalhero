@@ -10,6 +10,7 @@ package src.UI.Sidebars.CursorCancel {
 	import src.Objects.GameObject;
 	import src.Objects.SimpleGameObject;
 	import src.Objects.SimpleObject;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJSidebar;
 
 
@@ -23,6 +24,7 @@ package src.UI.Sidebars.CursorCancel {
 			createUI();
 
 			btnCancel.addEventListener(MouseEvent.CLICK, onCancel);
+			new SimpleTooltip(btnCancel, "Cancel/Finish");
 
 			this.parentObj = parentObj;
 		}

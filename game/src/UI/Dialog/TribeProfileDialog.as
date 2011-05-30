@@ -1,6 +1,8 @@
 ﻿package src.UI.Dialog 
 {
+	import adobe.utils.CustomActions;
 	import flash.events.*;
+	import flash.utils.Timer;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -19,16 +21,14 @@
 	{
 		private var profileData: * ;
 		
-		private var btnUpgrade: JLabelButton;
-		private var btnDonate: JLabelButton;
-		private var btnInvite: JLabelButton;
-		private var btnSetDescription: JLabelButton;
-		private var btnDismantle: JLabelButton;
-		private var btnLeave: JLabelButton;
+		private var pnlInfoContainer: JPanel;
 		
 		private var messageBoard: MessageBoard;
 		
 		private var pnlTabs: JTabbedPane;
+		private var pnlInfoTabs: JTabbedPane;
+		
+		private var updateTimer: Timer;
 		
 		public function TribeProfileDialog(profileData: *) 
 		{
@@ -38,61 +38,31 @@
 			
 			messageBoard.loadThreadPage();
 			
-			btnSetDescription.addActionListener(function(e: Event = null): void {
-				
-				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
-				txtDescription.setMaxChars(3000);
-				
-				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
-			
-				pnl.appendAll(new JLabel("Set a message to appears on the tribe profile. This will only be visible to your tribe members.", null, AsWingConstants.LEFT), scrollDescription);
-				InfoDialog.showMessageDialog("Say something to your tribe", pnl, function(result: * ): void {
-					if (result == JOptionPane.CANCEL || result == JOptionPane.CLOSE)
-						return;
-						
-					Global.mapComm.Tribe.setTribeDescription(txtDescription.getText());
-					update();
-				});
-			});
-			
-			btnInvite.addActionListener(function(e: Event): void {
-				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Invite a new tribesman", "Type in the name of the player you want to invite", function(playerName: *) : void {
-					if (playerName != null && playerName != "")
-						Global.mapComm.Tribe.invitePlayer(playerName);
-				});				
-			});
-			
-			btnDismantle.addActionListener(function(e: Event): void {
-				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Dismantle tribe", "If you really want to dismantle your tribe then type 'delete' below and click ok.", function(input: *) : void {
-					if (input == "'delete'" || input == "delete")
-						Global.mapComm.Tribe.dismantle();
-				});				
+			updateTimer = new Timer(60 * 5 * 1000);
+			updateTimer.addEventListener(TimerEvent.TIMER, function(e: Event = null): void {
+				update();
 			});			
-			
-			btnLeave.addActionListener(function(e: Event): void {
-				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Leave tribe", "Do you really want to leave the tribe?", function(result: *) : void {
-					if (result == JOptionPane.YES)
-						Global.mapComm.Tribe.leave();
-				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				
-			});						
+			updateTimer.start();
+		}
+		
+		private function dispose():void {
+			updateTimer.stop();
 		}
 		
 		public function update(): void {
-			getFrame().dispose();
-			
 			Global.mapComm.Tribe.viewTribeProfile(function(newProfileData: *): void {
 				if (!newProfileData) 
 					return;
 				
-				var dialog: TribeProfileDialog = new TribeProfileDialog(newProfileData);
-				dialog.show();
-			});			
+				profileData = newProfileData;
+				createInfoTab();
+				pnlInfoContainer.repaintAndRevalidate();				
+			});
 		}
 		
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
 		{
-			super.showSelf(owner, modal, onClose);
+			super.showSelf(owner, modal, onClose, dispose);
 			Global.gameContainer.showFrame(frame);
 			return frame;
 		}
@@ -140,15 +110,39 @@
 			return messageBoard;
 		}
 		
-		private function createInfoTab(): Container {
-			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));		
+		private function createIncomingPanelItem(incoming: *): JPanel {
+			var pnlContainer: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
 			
-			btnDonate = new JLabelButton("Donate");
-			btnSetDescription = new JLabelButton("Set Announcement");
-			btnInvite = new JLabelButton("Invite");
-			btnUpgrade = new JLabelButton("Upgrade");
-			btnDismantle = new JLabelButton("Dismantle");
-			btnLeave = new JLabelButton("Leave");
+			var pnlHeader: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
+			
+			pnlHeader.appendAll(
+				new PlayerCityLabel(incoming.targetPlayerId, incoming.targetCityId, incoming.targetPlayerName, incoming.targetCityName),
+				new JLabel(" is being attacked by ", null, AsWingConstants.LEFT),
+				new PlayerCityLabel(incoming.sourcePlayerId, incoming.sourceCityId, incoming.sourcePlayerName, incoming.sourceCityName)
+			);
+			
+			var lblCountdown: CountDownLabel = new CountDownLabel(incoming.endTime, "Battle In Progress");
+			
+			pnlContainer.appendAll(pnlHeader, lblCountdown);
+			
+			return pnlContainer;
+		}
+		
+		private function createInfoTab(): Container {
+			// Clear out container if it already exists instead of recreating it
+			if (!pnlInfoContainer)
+				pnlInfoContainer = new JPanel(new BorderLayout(10, 10));			
+			else
+				pnlInfoContainer.removeAll();
+			
+			var btnUpgrade: JLabelButton = new JLabelButton("Upgrade");
+			var btnDonate: JLabelButton = new JLabelButton("Contribute");
+			var btnInvite: JLabelButton = new JLabelButton("Invite");
+			var btnSetDescription: JLabelButton = new JLabelButton("Set Announcement");
+			var btnDismantle: JLabelButton = new JLabelButton("Dismantle");
+			var btnLeave: JLabelButton = new JLabelButton("Leave");
+			
+			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));				
 			
 			// Show correct buttons depending on rank
 			switch (Constants.tribeRank) {
@@ -162,13 +156,21 @@
 					pnlActions.appendAll(btnDonate, btnLeave);
 					break;
 			}
-				
+			
 			// description
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
 			
 			var scrollDescription: JScrollPane = new JScrollPane(lblDescription);
 			
+			// Side tab browser
+			var lastActiveInfoTab: int = 0;
+			if (pnlInfoTabs)
+				lastActiveInfoTab = pnlInfoTabs.getSelectedIndex();
+				
+			pnlInfoTabs = new JTabbedPane();
+			
+			// Members tab
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(
 				modelMembers, 
@@ -189,28 +191,76 @@
 			
 			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			
-			var lblMembers: JLabel = new JLabel("Members (" + profileData.members.length + ")");
-			lblMembers.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblMembers, "darkHeader");
+			// Incoming attacks tab
+			var pnlIncomingAttacks: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
 			
+			for each (var incoming: * in profileData.incomingAttacks) {
+				pnlIncomingAttacks.append(createIncomingPanelItem(incoming));
+			}
+			
+			var scrollIncomingAttacks: JScrollPane = new JScrollPane(new JViewport(pnlIncomingAttacks, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			(scrollIncomingAttacks.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+			
+			// Put it all together
 			var pnlEast: JPanel = new JPanel(new BorderLayout(0, 5));
-			lblMembers.setConstraints("North");
-			scrollMembers.setConstraints("Center");
-			pnlEast.appendAll(lblMembers, scrollMembers);
+			pnlInfoTabs.setConstraints("Center");
+			pnlEast.appendAll(pnlInfoTabs);
+			
+			pnlInfoTabs.appendTab(scrollMembers, "Members (" + profileData.members.length + ")");
+			pnlInfoTabs.appendTab(scrollIncomingAttacks, "Incoming Attacks (" + profileData.incomingAttacks.length + ")");
 
+			pnlInfoTabs.setSelectedIndex(lastActiveInfoTab);
+			
 			var pnlWest: JPanel = new JPanel(new BorderLayout(0, 5));
 			pnlActions.setConstraints("North");
 			scrollDescription.setConstraints("Center");
 			
 			pnlWest.appendAll(pnlActions, scrollDescription);
-			
-			var pnlContainer: JPanel = new JPanel(new BorderLayout(10, 10));
+				
 			pnlWest.setConstraints("Center");
 			pnlEast.setConstraints("East");
 			
-			pnlContainer.appendAll(pnlWest, pnlEast);
+			pnlInfoContainer.appendAll(pnlWest, pnlEast);		
 			
-			return pnlContainer;
+			// Button handlers
+			btnSetDescription.addActionListener(function(e: Event = null): void {			
+				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
+				txtDescription.setMaxChars(3000);
+				
+				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
+			
+				pnl.appendAll(new JLabel("Set a message to appears on the tribe profile. This will only be visible to your tribe members.", null, AsWingConstants.LEFT), scrollDescription);
+				InfoDialog.showMessageDialog("Say something to your tribe", pnl, function(result: * ): void {
+					if (result == JOptionPane.CANCEL || result == JOptionPane.CLOSE)
+						return;
+						
+					Global.mapComm.Tribe.setTribeDescription(txtDescription.getText());					
+				});
+			});
+			
+			btnInvite.addActionListener(function(e: Event): void {
+				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Invite a new tribesman", "Type in the name of the player you want to invite", function(playerName: *) : void {
+					if (playerName != null && playerName != "")
+						Global.mapComm.Tribe.invitePlayer(playerName);
+				});				
+			});
+			
+			btnDismantle.addActionListener(function(e: Event): void {
+				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Dismantle tribe", "If you really want to dismantle your tribe then type 'delete' below and click ok.", function(input: *) : void {
+					if (input == "'delete'" || input == "delete")
+						Global.mapComm.Tribe.dismantle();
+				});				
+			});			
+			
+			btnLeave.addActionListener(function(e: Event): void {
+				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Leave tribe", "Do you really want to leave the tribe?", function(result: *) : void {
+					if (result == JOptionPane.YES)
+						Global.mapComm.Tribe.leave();
+				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				
+			});		
+			
+			return pnlInfoContainer;
 		}
 	}
 	

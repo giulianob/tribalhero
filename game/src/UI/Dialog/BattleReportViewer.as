@@ -31,13 +31,15 @@
 		private var loader: GameURLLoader = new GameURLLoader();
 		private var id: int;
 		private var isLocal: Boolean;
-
+		private var playerNameFilter: String;
+		
 		public var refreshOnClose: Boolean;
 
 		public function BattleReportViewer(id: int, playerNameFilter: String, isLocal: Boolean)
 		{
 			this.id = id;
 			this.isLocal = isLocal;
+			this.playerNameFilter = playerNameFilter;
 
 			createUI();
 
@@ -45,12 +47,10 @@
 				renderSnapshots();
 			});
 
-			loader.addEventListener(Event.COMPLETE, onLoaded);
-			load(playerNameFilter);
+			loader.addEventListener(Event.COMPLETE, onLoaded);	
 		}
 
-		private function load(playerNameFilter: String) : void {
-
+		private function load(playerNameFilter: String) : void {			
 			if (isLocal)
 				Global.mapComm.BattleReport.viewLocal(loader, id, playerNameFilter);
 			else
@@ -188,6 +188,9 @@
 			super.showSelf(owner, modal, onClose);
 			Global.gameContainer.showFrame(frame);
 			frame.setTitle("Battle Report Viewer");
+			
+			load(playerNameFilter);
+			
 			return frame;
 		}
 
@@ -208,7 +211,7 @@
 			pnlResources.setLayout(new FlowLayout(AsWingConstants.LEFT, 8));
 			pnlResources.setConstraints("East");
 
-			chkViewAll = new JCheckBox("Loading...");
+			chkViewAll = new JCheckBox("");
 			chkViewAll.setConstraints("West");
 			chkViewAll.setEnabled(false);
 

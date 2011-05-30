@@ -3,6 +3,8 @@ package src.UI.Components
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.AsWingConstants;
+	import org.aswing.border.EmptyBorder;
+	import org.aswing.Insets;
 	import org.aswing.JLabelButton;
 	import org.aswing.JPanel;
 	import src.Global;
@@ -25,6 +27,9 @@ package src.UI.Components
 			super("-");
 			
 			setHorizontalAlignment(AsWingConstants.LEFT);
+			
+			setBorder(new EmptyBorder(null, new Insets()));
+			setMargin(new Insets());
 			
 			this.playerId = playerId;			
 			
@@ -59,6 +64,7 @@ package src.UI.Components
 		
 		private function onReceiveUsername(username: Username, custom: *) : void {
 			setText(username.name);
+			repaintAndRevalidate();
 		}
 		
 	}

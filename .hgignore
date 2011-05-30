@@ -13,3 +13,5 @@ glob:conf/conf.rar
 glob:conf/settings.ini
 glob:*.pidb
 glob:output/
+syntax: glob
+ratio.csv

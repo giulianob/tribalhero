@@ -184,5 +184,9 @@ namespace Game.Setup
         {
             return dict.Values;
         }
+
+        public static void AddType(BaseUnitStats baseUnitStats) {
+            dict[baseUnitStats.Type * 100 + baseUnitStats.Lvl] = baseUnitStats;
+        }
     }
 }

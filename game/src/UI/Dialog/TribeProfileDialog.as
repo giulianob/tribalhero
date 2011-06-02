@@ -21,6 +21,7 @@
 	{
 		private var profileData: * ;
 		
+		private var pnlHeader: JPanel;
 		private var pnlInfoContainer: JPanel;
 		
 		private var messageBoard: MessageBoard;
@@ -55,8 +56,7 @@
 					return;
 				
 				profileData = newProfileData;
-				createInfoTab();
-				pnlInfoContainer.repaintAndRevalidate();				
+				createInfoTab();				
 			});
 		}
 		
@@ -73,24 +73,8 @@
 			setLayout(new BorderLayout(10, 10));
 			
 			// Header panel
-			var pnlHeader: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
-			pnlHeader.setConstraints("North");
-			
-			// First row of header panel which contains player name + ranking
-			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
-			
-			var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);	
-			lblTribeName.setConstraints("Center");
-			GameLookAndFeel.changeClass(lblTribeName, "darkHeader");			
-			
-			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
-			pnlResources.setConstraints("East");
-			
-			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
-			
-			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);		
-			
-			pnlHeader.append(pnlHeaderFirstRow);
+			pnlHeader = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
+			pnlHeader.setConstraints("North");		
 			
 			// Tab panel
 			pnlTabs = new JTabbedPane();
@@ -259,6 +243,27 @@
 						Global.mapComm.Tribe.leave();
 				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				
 			});		
+			
+			// First row of header panel which contains player name + ranking
+			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
+			
+			var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);	
+			lblTribeName.setConstraints("Center");
+			GameLookAndFeel.changeClass(lblTribeName, "darkHeader");			
+			
+			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
+			pnlResources.setConstraints("East");
+			
+			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
+			
+			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);		
+			
+			pnlHeader.removeAll();
+			pnlHeader.append(pnlHeaderFirstRow);			
+			
+			// Needed since gets called after the panel has already been rendered (for updates
+			pnlHeader.repaintAndRevalidate();
+			pnlInfoContainer.repaintAndRevalidate();
 			
 			return pnlInfoContainer;
 		}

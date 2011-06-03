@@ -78,8 +78,12 @@ namespace Game.Data.Tribe
 
         public Error AddTribesman(Tribesman tribesman, bool save = true)
         {
-            if (tribesmen.ContainsKey(tribesman.Player.PlayerId)) return Error.TribesmanAlreadyExists;
-            if (tribesmen.Count >= Level * MEMBERS_PER_LEVEL) return Error.TribeFull;
+            if (tribesmen.ContainsKey(tribesman.Player.PlayerId))
+                return Error.TribesmanAlreadyExists;
+
+            if (tribesmen.Count >= Level*MEMBERS_PER_LEVEL)
+                return Error.TribeFull;
+
             tribesman.Player.Tribesman = tribesman;
             tribesmen.Add(tribesman.Player.PlayerId, tribesman);
             if (save)
@@ -93,7 +97,9 @@ namespace Game.Data.Tribe
         public Error RemoveTribesman(uint playerId)
         {
             Tribesman tribesman;
-            if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
+            if (!tribesmen.TryGetValue(playerId, out tribesman))
+                return Error.TribesmanNotFound;
+
             MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Player.Tribesman = null;
             Global.DbManager.Delete(tribesman);
@@ -108,23 +114,36 @@ namespace Game.Data.Tribe
         public Error SetRank(uint playerId, byte rank)
         {
             Tribesman tribesman;
-            if (rank == 0) return Error.TribesmanNotAuthorized;
-            if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
+            
+            if (rank == 0)
+                return Error.TribesmanNotAuthorized;
+            
+            if (!tribesmen.TryGetValue(playerId, out tribesman))
+                return Error.TribesmanNotFound;
+            
             MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
-            if (IsOwner(tribesman.Player)) return Error.TribesmanIsOwner;
+            
+            if (IsOwner(tribesman.Player))
+                return Error.TribesmanIsOwner;
+
             tribesman.Rank = rank;
             Global.DbManager.Save(tribesman);
             tribesman.Player.TribeUpdate();
+
             return Error.Ok;
         }
 
         public Error Contribute(uint playerId, Resource resource)
         {
             Tribesman tribesman;
-            if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
+            if (!tribesmen.TryGetValue(playerId, out tribesman)) 
+                return Error.TribesmanNotFound;
+            
             MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Contribution += resource;
+            Resource += resource;
             Global.DbManager.Save(tribesman, this);
+
             return Error.Ok;
         }
 
@@ -132,10 +151,10 @@ namespace Game.Data.Tribe
         {
             return from tribesmen in this
                    from city in tribesmen.Player.GetCityList()
-                   from notification in city.Worker.Notifications                   
+                   from notification in city.Worker.Notifications
                    where notification.Action is AttackChainAction && notification.Subscriptions.Count > 0
                    orderby ((ChainAction)notification.Action).EndTime ascending
-                   select new IncomingListItem {City = city, Action = (AttackChainAction)notification.Action};
+                   select new IncomingListItem { City = city, Action = (AttackChainAction)notification.Action };
         }
 
         public bool HasRight(uint playerId, string action)
@@ -251,8 +270,9 @@ namespace Game.Data.Tribe
             {
                 return new DbColumn[]
                        {
-                               new DbColumn("name",Name,DbType.String, 20),                               
-                               new DbColumn("level",Level,DbType.Byte),                                
+                               new DbColumn("name", Name, DbType.String, 20), new DbColumn("level", Level, DbType.Byte),
+                               new DbColumn("crop", Resource.Crop, DbType.Int32), new DbColumn("gold", Resource.Gold, DbType.Int32),
+                               new DbColumn("iron", Resource.Iron, DbType.Int32), new DbColumn("wood", Resource.Wood, DbType.Int32),
                        };
             }
         }

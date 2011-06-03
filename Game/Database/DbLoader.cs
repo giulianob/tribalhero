@@ -96,8 +96,12 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                   // var resource = new Resource((int)reader["crop"],(int)reader["gold"],(int)reader["iron"],(int)reader["wood"],0);
-                    var tribe = new Tribe(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], (string)reader["desc"], (byte)reader["level"], new Resource()) { DbPersisted = true };
+                    var resource = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
+                    var tribe = new Tribe(Global.World.Players[(uint)reader["player_id"]],
+                                          (string)reader["name"],
+                                          (string)reader["desc"],
+                                          (byte)reader["level"],
+                                          resource) {DbPersisted = true};
                     Global.Tribes.Add(tribe.Id, tribe);
                 }
             }
@@ -112,7 +116,7 @@ namespace Game.Database
                 while (reader.Read()) {
                     Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
                     var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
-                    var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], (DateTime)reader["join_date"], contribution, (byte)reader["rank"])
+                    var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc), contribution, (byte)reader["rank"])
                                     {DbPersisted = true};
                     tribe.AddTribesman(tribesman,false);
                 }

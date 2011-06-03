@@ -400,6 +400,11 @@
 				if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
 			}
 		}
+		
+		public function getSelectedCityIndex(): int
+		{
+			return lstCities.getSelectedIndex();
+		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
 		{

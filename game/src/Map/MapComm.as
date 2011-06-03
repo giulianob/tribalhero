@@ -21,6 +21,8 @@
 		public var MessageBoard: MessageBoardComm;
 
 		public var session: Session;
+		
+		private var pnlLoading: InfoDialog;
 
 		public function MapComm(session: Session)
 		{
@@ -69,14 +71,31 @@
 			return false;
 		}
 
-		public function catchAllErrors(packet: Packet, custom: * ):void
+		public function catchAllErrors(packet: Packet, custom: *):void
 		{
+			hideLoading();
+			
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{
 				var err: int = packet.readUInt();
 
 				GameError.showMessage(err);
 			}
+			
+			if (custom != null && custom is Function)
+				custom();
+		}
+		
+		public function showLoading(message: String = "Loading...", title: String = "Tribal Hero"): void {
+			pnlLoading = InfoDialog.showMessageDialog(title, message, null, null, true, false, 0);
+		}
+		
+		public function hideLoading():void {
+			if (!pnlLoading) 
+				return;
+				
+			pnlLoading.getFrame().dispose();
+			pnlLoading = null;
 		}
 	}
 }

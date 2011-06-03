@@ -43,6 +43,19 @@
 			Global.gameContainer.tribeInviteRequest.visible = Constants.tribeInviteId > 0;
 		}
 		
+		public function contribute(cityId: int, resources: Resources, callback: Function): void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBESMAN_CONTRIBUTE;
+			packet.writeUInt(cityId);
+			packet.writeInt(resources.crop);
+			packet.writeInt(resources.gold);
+			packet.writeInt(resources.iron);
+			packet.writeInt(resources.wood);
+			
+			mapComm.showLoading();
+			session.write(packet, mapComm.catchAllErrors, callback);
+		}
+		
 		public function createTribe(name: String) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_CREATE;

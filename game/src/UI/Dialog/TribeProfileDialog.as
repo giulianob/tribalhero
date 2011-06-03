@@ -244,6 +244,14 @@
 				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				
 			});		
 			
+			btnDonate.addActionListener(function(e: Event): void {
+				var tribeContributeDialog: TribeContributeDialog = new TribeContributeDialog(function(dialog: TribeContributeDialog): void {
+					dialog.getFrame().dispose();
+					update();
+				});
+				tribeContributeDialog.show();
+			});
+			
 			// First row of header panel which contains player name + ranking
 			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
 			

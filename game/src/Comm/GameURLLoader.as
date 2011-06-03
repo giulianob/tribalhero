@@ -59,7 +59,7 @@
 			request.method = URLRequestMethod.POST;
 			
 			if (showLoadingMessage)
-				pnlLoading = InfoDialog.showMessageDialog("TribalHero", "Loading...", null, null, true, false, 0);			
+				pnlLoading = InfoDialog.showMessageDialog("Tribal Hero", "Loading...", null, null, true, false, 0);			
 			
 			try {
 				lastURL = request.url + "?" + request.data;

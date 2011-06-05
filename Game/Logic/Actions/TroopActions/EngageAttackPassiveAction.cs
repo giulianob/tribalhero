@@ -212,9 +212,9 @@ namespace Game.Logic.Actions
         {
             if (!battle.BattleStarted)
                 return;
-
+            
             // Calculate bonus
-            Resource resource = BattleFormulas.GetBonusResources(stub.TroopObject);
+            Resource resource = BattleFormulas.GetBonusResources(stub.TroopObject, originalUnitCount, remainingUnitCount);
 
             // Destroyed Structure bonus
             resource.Add(bonus);
@@ -288,7 +288,7 @@ namespace Game.Logic.Actions
                     ReduceStamina(stub, BattleFormulas.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina));
                 }                
             }
-            // Check if this troop belongs to us
+            // Check if the unit being attacked belongs to us
             else if (unit.TroopStub == stub && unit.TroopStub.TroopObject == stub.TroopObject)
             {
                 // Check to see if player should retreat

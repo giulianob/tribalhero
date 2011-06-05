@@ -164,6 +164,11 @@ namespace ConsoleSimulator
             AddToAttack((ushort)type,lvl,count, FormationType.Normal);
         }
 
+        public void AddToAttack(UnitType type, byte lvl, ushort count)
+        {
+            AddToAttack((ushort)type,lvl,count, FormationType.Normal);
+        }
+
         public void AddToAttack(ushort type, byte lvl, ushort count, FormationType formation)
         {
             using (new MultiObjectLock(city))

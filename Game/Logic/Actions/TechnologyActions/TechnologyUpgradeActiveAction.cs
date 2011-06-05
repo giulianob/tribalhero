@@ -132,9 +132,13 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
+                Structure structure;
+                if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+                    return;
+
                 Technology tech;
                 TechnologyBase techBase;
-                if (city.Technologies.TryGetTechnology(techId, out tech))
+                if (structure.Technologies.TryGetTechnology(techId, out tech))
                     techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
                 else
                     techBase = TechnologyFactory.GetTechnologyBase(techId, 1);

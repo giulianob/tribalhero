@@ -1,6 +1,8 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game;
 using Game.Data;
 using Game.Data.Stats;
@@ -13,11 +15,36 @@ using Game.Util;
 
 namespace ConsoleSimulator
 {
+    public enum StructureType
+    {
+        Barrack = 2204,
+        Farm = 2106,
+    }
+
+    public enum UnitType {
+        Fighter = 11,
+        Bowman = 12,
+
+        Swordsman = 101,
+        Archer = 102,
+        Pikeman = 103,
+        Gladiator = 104,
+
+        Cavalry = 105,
+        Knight = 106,
+
+        Helepolis = 107,
+        Catapult = 108,
+
+        TestSwordsman =1001,
+    }
+
     public class Group
     {
         private static uint player_id;
         private static uint city_id;
         private readonly TroopStub attack;
+        private List<Structure> structures = new List<Structure>();
 
         private readonly City city;
         private readonly TroopObject obj;
@@ -95,17 +122,46 @@ namespace ConsoleSimulator
             }
         }
 
+        public List<Structure> Structures
+        {
+            get
+            {
+                return structures;
+            }
+        }
+
+        public void AddToLocal(UnitType type, byte lvl, ushort count)
+        {
+            AddToLocal((ushort)type, lvl, count, FormationType.Normal);
+        }
+
         public void AddToLocal(ushort type, byte lvl, ushort count, FormationType formation)
         {
             using (new MultiObjectLock(city))
             {
                 city.BeginUpdate();
                 city.Template[type] = UnitFactory.GetUnitStats(type, lvl);
+                if(city.Template[type]==null) throw  new Exception("Unit type not found!");
                 city.EndUpdate();
                 city.DefaultTroop.BeginUpdate();
                 city.DefaultTroop.AddUnit(formation, type, count);
                 city.DefaultTroop.EndUpdate();
             }
+        }
+        public void AddStructure(StructureType type, byte lvl)
+        {
+            AddStructure((ushort)type,lvl);
+        }
+        public void AddStructure(ushort type, byte lvl)
+        {
+            Structure structure = StructureFactory.GetNewStructure(type, lvl);
+            city.Add(structure);
+            structures.Add(structure);
+        }
+
+        public void AddToAttack(UnitType type, byte lvl, ushort count)
+        {
+            AddToAttack((ushort)type,lvl,count, FormationType.Normal);
         }
 
         public void AddToAttack(ushort type, byte lvl, ushort count, FormationType formation)
@@ -114,11 +170,24 @@ namespace ConsoleSimulator
             {
                 city.BeginUpdate();
                 city.Template[type] = UnitFactory.GetUnitStats(type, lvl);
+                if (city.Template[type] == null) throw new Exception("Unit type not found!");
                 city.EndUpdate();
                 attack.BeginUpdate();
                 attack.AddUnit(formation, type, count);
                 attack.EndUpdate();
             }
+        }
+
+
+        public int Upkeep(UnitType type)
+        {
+
+            return attack[FormationType.Normal][(ushort)type] * city.Template[(ushort)type].Upkeep;
+        }
+
+        public int Upkeep()
+        {
+            return city.DefaultTroop.Upkeep;
         }
     }
 }

@@ -48,6 +48,7 @@
 				
 				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
+				GameLookAndFeel.changeClass(txtDescription, "Message");
 				txtDescription.setMaxChars(3000);
 				
 				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
@@ -149,6 +150,7 @@
 			// description
 			var description: String = profileData.description == "" ? "This player hasn't written anything about themselves yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
+			GameLookAndFeel.changeClass(lblDescription, "Message");
 			lblDescription.setPreferredWidth(325);
 			lblDescription.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
 			lblDescription.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));

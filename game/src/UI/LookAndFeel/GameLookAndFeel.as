@@ -99,6 +99,12 @@
 			"TextField.foreground", new ASColorUIResource(0xFFFFFF)
 			],			
 			
+			"Class.Message", [
+			"MultilineLabel.font", new ASFontUIResource("Arial", 13, false),
+			"Label.font", new ASFontUIResource("Arial", 13, false),
+			"TextArea.font", new ASFontUIResource("Arial", 13, false),
+			],
+			
 			"Class.Console.text", [
 			"Label.font", new ASFontUIResource("Courier New", 12, false),
 			"Label.foreground", new ASColorUIResource(0xFFFFFF),

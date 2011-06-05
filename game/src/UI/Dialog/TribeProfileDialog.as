@@ -144,6 +144,7 @@
 			// description
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
+			GameLookAndFeel.changeClass(lblDescription, "Message");
 			
 			var scrollDescription: JScrollPane = new JScrollPane(lblDescription);
 			
@@ -209,9 +210,9 @@
 			// Button handlers
 			btnSetDescription.addActionListener(function(e: Event = null): void {			
 				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
+				var txtDescription: JTextArea = new JTextArea(profileData.description, 15, 10);
 				txtDescription.setMaxChars(3000);
-				
+				GameLookAndFeel.changeClass(txtDescription, "Message");
 				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
 			
 				pnl.appendAll(new JLabel("Set a message to appears on the tribe profile. This will only be visible to your tribe members.", null, AsWingConstants.LEFT), scrollDescription);

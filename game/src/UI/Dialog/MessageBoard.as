@@ -238,6 +238,7 @@ package src.UI.Dialog
 			pnlHeader.appendAll(lblPlayer, pnlTools, lblCreated);
 			
 			var message: MultilineLabel = new MultilineLabel(postData.message);
+			GameLookAndFeel.changeClass(message, "Message");			
 			message.setColumns(50);
 			message.pack();			
 			
@@ -381,6 +382,7 @@ package src.UI.Dialog
 			GameLookAndFeel.changeClass(lblNewPostMessage, "Form.label");
 
 			txtNewPostMessage = new JTextArea("", 15);
+			GameLookAndFeel.changeClass(txtNewPostMessage, "Message");
 			txtNewPostMessage.setWordWrap(true);
 			txtNewPostMessage.setMaxChars(30000);
 			

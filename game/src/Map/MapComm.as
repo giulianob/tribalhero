@@ -87,6 +87,7 @@
 		}
 		
 		public function showLoading(message: String = "Loading...", title: String = "Tribal Hero"): void {
+			hideLoading();
 			pnlLoading = InfoDialog.showMessageDialog(title, message, null, null, true, false, 0);
 		}
 		

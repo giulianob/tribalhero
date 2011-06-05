@@ -167,6 +167,7 @@
 			scrollMessage.setPreferredSize(new IntDimension(400, 200));
 
 			txtMessage = new JTextArea();
+			GameLookAndFeel.changeClass(txtMessage, "Message");
 			txtMessage.setWordWrap(true);
 			txtMessage.setMaxChars(30000);
 

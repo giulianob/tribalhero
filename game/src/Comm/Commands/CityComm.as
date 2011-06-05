@@ -255,10 +255,12 @@
 			packet.cmd = Commands.PLAYER_PROFILE;
 			packet.writeUInt(playerId);
 
+			mapComm.showLoading();
 			session.write(packet, onReceivePlayerProfile, {callback: callback});
 		}
 		
-		public function onReceivePlayerProfile(packet: Packet, custom: *):void {
+		public function onReceivePlayerProfile(packet: Packet, custom: * ):void {
+			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
 				return;

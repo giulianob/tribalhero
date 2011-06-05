@@ -156,6 +156,7 @@
 			packet.cmd = Commands.TRIBESMAN_REQUEST;
 			packet.writeString(playerName);
 			
+			mapComm.showLoading();
 			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Invitation sent", content: "An invitation has been sent to this player to join your tribe." }, refresh: false });
 		}
 		
@@ -173,7 +174,9 @@
 			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe", content: "You have left the tribe" }, close: true });
 		}			
 		
-		public function showErrorOrRefreshTribePanel(packet: Packet, custom: *): void {
+		public function showErrorOrRefreshTribePanel(packet: Packet, custom: * ): void {
+			mapComm.hideLoading();
+			
 			if (MapComm.tryShowError(packet))
 				return;			
 			

@@ -1,29 +1,17 @@
 ﻿package src.UI.Cursors {
-	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.Username;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.GameObject;
-	import src.Objects.ObjectContainer;
-	import src.Objects.SimpleGameObject;
-	import src.Map.MapUtil;
-	import src.Objects.IDisposable;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Effects.*;
+	import src.Objects.Factories.*;
 	import src.Objects.Troop.*;
-	import src.Objects.StructureObject;
-	import src.UI.Components.GroundCircle;
-	import src.UI.Tooltips.TextTooltip;
-	import src.Util.Util;
+	import src.UI.Components.*;
+	import src.UI.Tooltips.*;
+	import src.Util.*;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	public class GroundAttackCursor extends MovieClip implements IDisposable
 	{
 		private var objX: int;

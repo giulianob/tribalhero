@@ -1,31 +1,59 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Game.Database;
+using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
 
-namespace Game.Data.Tribe {
-    public class Tribe:ILockable,IEnumerable<Tribesman>,IPersistableObject
+namespace Game.Data.Tribe
+{
+    public class Tribe : ILockable, IEnumerable<Tribesman>, IPersistableObject
     {
+        public class IncomingListItem
+        {
+            public City City { get; set; }
+            public AttackChainAction Action { get; set; }
+        }
+
         public const string DB_TABLE = "tribes";
         const int MEMBERS_PER_LEVEL = 5;
-        public uint Id { 
+        public uint Id
+        {
             get
             {
                 return Owner.PlayerId;
             }
         }
-        public Player Owner { get; private set; } 
+        public Player Owner { get; private set; }
         public string Name { get; set; }
-        public string Desc { get; set; }
         public byte Level { get; set; }
-        
+
+        private string description = string.Empty;
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
+            set
+            {
+                description = value;
+
+                if (DbPersisted)
+                {
+                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                                           new[] { new DbColumn("desc", description, DbType.String), new DbColumn("id", Id, DbType.UInt32) });
+                }
+            }
+        }
+
         readonly Dictionary<uint, Tribesman> tribesmen = new Dictionary<uint, Tribesman>();
-        
+
         public Resource Resource { get; private set; }
 
         public Tribe(Player owner, string name) :
@@ -34,25 +62,27 @@ namespace Game.Data.Tribe {
 
         }
 
-        public Tribe(Player owner, string name, string desc, byte level, Resource resource ) {
+        public Tribe(Player owner, string name, string desc, byte level, Resource resource)
+        {
             Owner = owner;
             Level = level;
             Resource = resource;
-            Desc = desc;
+            Description = desc;
             Name = name;
         }
+
         public bool IsOwner(Player player)
         {
             return player.PlayerId == Id;
         }
 
-        public Error AddTribesman(Tribesman tribesman, bool save=true)
+        public Error AddTribesman(Tribesman tribesman, bool save = true)
         {
             if (tribesmen.ContainsKey(tribesman.Player.PlayerId)) return Error.TribesmanAlreadyExists;
             if (tribesmen.Count >= Level * MEMBERS_PER_LEVEL) return Error.TribeFull;
             tribesman.Player.Tribesman = tribesman;
             tribesmen.Add(tribesman.Player.PlayerId, tribesman);
-            if(save)
+            if (save)
             {
                 MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
                 Global.DbManager.Save(tribesman);
@@ -82,58 +112,80 @@ namespace Game.Data.Tribe {
             if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
             MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             if (IsOwner(tribesman.Player)) return Error.TribesmanIsOwner;
-
             tribesman.Rank = rank;
             Global.DbManager.Save(tribesman);
+            tribesman.Player.TribeUpdate();
             return Error.Ok;
         }
 
-        public bool HasRight(uint playerId, string action) {
+        public Error Contribute(uint playerId, Resource resource)
+        {
+            Tribesman tribesman;
+            if (!tribesmen.TryGetValue(playerId, out tribesman)) return Error.TribesmanNotFound;
+            MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            tribesman.Contribution += resource;
+            Global.DbManager.Save(tribesman, this);
+            return Error.Ok;
+        }
+
+        public IEnumerable<IncomingListItem> GetIncomingList()
+        {
+            return from tribesmen in this
+                   from city in tribesmen.Player.GetCityList()
+                   from notification in city.Worker.Notifications
+                   where notification.Action is AttackChainAction && notification.Subscriptions.Count > 0
+                   orderby ((ChainAction)notification.Action).EndTime ascending
+                   select new IncomingListItem {City = city, Action = (AttackChainAction)notification.Action};
+        }
+
+        public bool HasRight(uint playerId, string action)
+        {
             Tribesman tribesman;
             if (!TryGetTribesman(playerId, out tribesman)) return false;
 
-            switch (action) {
+            switch (action)
+            {
                 case "Request":
-                    switch (tribesman.Rank) {
+                    switch (tribesman.Rank)
+                    {
                         case 0:
                         case 1:
                             return true;
-                        case 2:
-                            return false;
-                        default:
-                            return false;
                     }
+                    break;
                 case "Kick":
-                    switch (tribesman.Rank) {
+                    switch (tribesman.Rank)
+                    {
                         case 0:
                         case 1:
                             return true;
-                        case 2:
-                            return false;
-                        default:
-                            return false;
                     }
-                default:
-                    return false;
+                    break;
             }
+
+            return false;
         }
 
         #region Properties
-        public int Count {
-            get {
+        public int Count
+        {
+            get
+            {
                 return tribesmen.Count;
             }
-        } 
+        }
         #endregion
 
 
         #region ILockable Members
 
-        public int Hash {
+        public int Hash
+        {
             get { return unchecked((int)Owner.PlayerId); }
         }
 
-        public object Lock {
+        public object Lock
+        {
             get { return Owner; }
         }
 
@@ -142,7 +194,8 @@ namespace Game.Data.Tribe {
 
         #region IEnumerable<Tribesman> Members
 
-        public IEnumerator<Tribesman> GetEnumerator() {
+        public IEnumerator<Tribesman> GetEnumerator()
+        {
             return tribesmen.Values.GetEnumerator();
         }
 
@@ -150,7 +203,8 @@ namespace Game.Data.Tribe {
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
             return tribesmen.Values.GetEnumerator();
         }
 
@@ -170,32 +224,35 @@ namespace Game.Data.Tribe {
 
         #region IPersistable Members
 
-        public string DbTable {
+        public string DbTable
+        {
             get { return DB_TABLE; }
         }
 
-        public DbColumn[] DbPrimaryKey {
+        public DbColumn[] DbPrimaryKey
+        {
             get
             {
-                return new DbColumn[]{ new DbColumn("id",Id, DbType.UInt32)} ;
+                return new DbColumn[] { new DbColumn("player_id", Id, DbType.UInt32) };
             }
         }
 
-        public DbDependency[] DbDependencies {
-            get {
+        public DbDependency[] DbDependencies
+        {
+            get
+            {
                 return new DbDependency[] { };
             }
         }
 
-        public DbColumn[] DbColumns {
+        public DbColumn[] DbColumns
+        {
             get
             {
                 return new DbColumn[]
                        {
-                               new DbColumn("name",Name,DbType.String, 20),
-                               new DbColumn("desc",Desc,DbType.String), 
-                               new DbColumn("level",Level,DbType.Byte), 
-                               new DbColumn("owner_id",Owner.PlayerId,DbType.UInt32),
+                               new DbColumn("name",Name,DbType.String, 20),                               
+                               new DbColumn("level",Level,DbType.Byte),                                
                        };
             }
         }

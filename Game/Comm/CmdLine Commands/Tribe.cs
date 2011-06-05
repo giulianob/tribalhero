@@ -62,7 +62,7 @@ namespace Game.Comm
                     return "Player does not own a tribe";
 
                 Tribe tribe = player.Tribesman.Tribe;
-                result = string.Format("Id[{0}] Owner[{1}] Lvl[{2}] Name[{3}] Desc[{4}] \n",tribe.Id,tribe.Owner.Name,tribe.Level,tribe.Name,tribe.Desc);
+                result = string.Format("Id[{0}] Owner[{1}] Lvl[{2}] Name[{3}] Desc[{4}] \n",tribe.Id,tribe.Owner.Name,tribe.Level,tribe.Name,tribe.Description);
                 result += tribe.Resource.ToNiceString();
                 result += string.Format("Member Count[{0}]\n", tribe.Count);
                 foreach (var tribesman in tribe) {
@@ -190,7 +190,7 @@ namespace Game.Comm
 
             Tribe tribe;
             using (new MultiObjectLock(tribeId, out tribe)) {
-                tribe.Desc = desc;
+                tribe.Description = desc;
                 Global.DbManager.Save(tribe);
             }
             return "OK";

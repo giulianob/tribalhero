@@ -13,7 +13,6 @@ using Game.Util;
 
 namespace ConsoleSimulator
 {
-
     public class Simulation
     {
         public Group Attacker{ get; private set; }

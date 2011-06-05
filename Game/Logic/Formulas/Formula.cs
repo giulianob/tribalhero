@@ -62,8 +62,8 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public static int GetIronRate(Structure structure)
         {
-            int[] multiplier = {int.MaxValue, 70, 68, 66, 64, 62, 60, 58, 56, 54, 52, 50, 48, 45, 42, 40};
-            return structure.Stats.Labor*10/multiplier[structure.Lvl];
+            int[] multiplier = {int.MaxValue, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 5, 5, 5, 5, 4};
+            return structure.Stats.Labor / multiplier[structure.Lvl];
         }
 
         /// <summary>

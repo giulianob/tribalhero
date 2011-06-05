@@ -20,7 +20,7 @@ namespace Game.Logic.Actions
         Strong = 2
     }
 
-    class AttackChainAction : ChainAction
+    public class AttackChainAction : ChainAction
     {
         private readonly uint cityId;
         private readonly AttackMode mode;

@@ -70,7 +70,7 @@ package src.UI.Dialog
 						default:
 							if (txtCommand.getText().length > 0) {
 								log(txtCommand.getText(), true);
-								Global.mapComm.Login.sendCommand(txtCommand.getText(), function(resp: String) : void {
+								Global.mapComm.General.sendCommand(txtCommand.getText(), function(resp: String) : void {
 									log(resp, false);
 							});
 							txtCommand.setText("");

@@ -178,7 +178,7 @@
 				var pnlCity: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 5, false));
 				var lblCityName: CityLabel = new CityLabel(city.id, city.name);
 				GameLookAndFeel.changeClass(lblCityName, "darkHeader");					
-				lblCityName.setPreferredWidth(100);
+				lblCityName.setPreferredWidth(Math.max(100, AsWingUtils.computeStringSizeWithFont(lblCityName.getFont(), lblCityName.getText()).width));
 				
 				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
 				for each (rank in profileData.ranks) {

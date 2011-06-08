@@ -9,7 +9,7 @@
 
 		public var Battle: BattleComm;
 		public var City: CityComm;
-		public var Login: LoginComm;
+		public var General: GeneralComm;
 		public var Object: ObjectComm;
 		public var Region: RegionComm;
 		public var Troop: TroopComm;
@@ -29,7 +29,7 @@
 			this.session = session;
 			Battle = new BattleComm(this);
 			City = new CityComm(this);
-			Login = new LoginComm(this);
+			General = new GeneralComm(this);
 			Object = new ObjectComm(this);
 			Region = new RegionComm(this);
 			Troop = new TroopComm(this);
@@ -45,7 +45,7 @@
 			if (this.session) {
 				Battle.dispose();
 				City.dispose();
-				Login.dispose();
+				General.dispose();
 				Object.dispose();
 				Region.dispose();
 				Troop.dispose();

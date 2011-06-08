@@ -49,14 +49,26 @@ namespace Game.Comm
             var reply = new Packet(packet);
 
             uint playerId;
+            string playerName = string.Empty;
             try
             {
                 playerId = packet.GetUInt32();
+                if (playerId == 0)
+                    playerName = packet.GetString();
             }
             catch (Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
+            }
+
+            if (playerId == 0)
+            {
+                if (!Global.World.FindPlayerId(playerName, out playerId))
+                {
+                    ReplyError(session, packet, Error.PlayerNotFound);
+                    return;
+                }
             }
 
             Player player;

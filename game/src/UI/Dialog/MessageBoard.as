@@ -247,10 +247,15 @@ package src.UI.Dialog
 			
 			var pnlPostTools: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			
-			if (Constants.tribeRank <= 1 || Constants.playerId == postData.playerId) {
-				var btnDelete: AssetPane = new AssetPane(new ICON_REDX());
-				btnDelete.buttonMode = true;
-				btnDelete.addEventListener(MouseEvent.CLICK, function(e: Event): void {
+			var menuTools: JPopupMenu = new JPopupMenu();			
+			
+			var btnPostTools: JLabelButton = new JLabelButton("Actions", null, AsWingConstants.RIGHT);								
+			btnPostTools.addActionListener(function(e: Event): void {
+				menuTools.show(btnPostTools, 0, btnPostTools.getHeight());
+			});
+			
+			if (Constants.tribeRank <= 1 || Constants.playerId == postData.playerId) {				
+				menuTools.addMenuItem(postData.subject ? "Delete Thread" : "Delete Post").addActionListener(function(e: Event): void {
 					InfoDialog.showMessageDialog("Delete", "Are you sure?", function(result: *):void {
 						if (result != JOptionPane.YES)
 							return;
@@ -264,10 +269,11 @@ package src.UI.Dialog
 							Global.mapComm.MessageBoard.delPost(actionLoader, postData.id);
 					}, null, true, true, JOptionPane.YES | JOptionPane.NO);
 				});
-				new SimpleTooltip(btnDelete, postData.subject ? "Delete Thread" : "Delete Post");
-				
-				pnlPostTools.append(btnDelete);
 			}
+			
+			// Only append actions if there's something in the menu
+			if (menuTools.numChildren) 
+				pnlPostTools.append(btnPostTools);
 			
 			post.appendAll(pnlHeader, scrollMessage, pnlPostTools);
 			

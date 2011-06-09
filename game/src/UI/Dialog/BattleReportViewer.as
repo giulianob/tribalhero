@@ -1,21 +1,22 @@
 ﻿package src.UI.Dialog
 {
-	import flash.events.Event;
-	import src.Comm.GameURLLoader;
-	import src.Objects.Resources;
-	import src.Objects.Troop.TroopStub;
-	import src.UI.Components.BattleReport.OutcomeSnapshot;
-	import src.UI.Components.BattleReport.Snapshot;
-	import src.UI.Components.ResourcesPanel;
-	import src.UI.GameJPanel;
-	import src.Global;
+	import flash.events.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
-	import src.UI.Tooltips.BattleLootTooltip;
-	import src.Util.Util;
+	import org.aswing.geom.*;
+	import org.aswing.plaf.*;
+	import src.*;
+	import src.Comm.*;
+	import src.Objects.*;
+	import src.Objects.Troop.*;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.Components.BattleReport.*;
+	import src.UI.LookAndFeel.*;
+	import src.UI.Tooltips.*;
+	import src.Util.*;
 
 	public class BattleReportViewer extends GameJPanel
 	{
@@ -71,8 +72,6 @@
 			
 			refreshOnClose = data.refreshOnClose;
 			renderSnapshots();
-			chkViewAll.setVisible(!data.outcomeOnly);
-			chkViewAll.setEnabled(!data.outcomeOnly);
 
 			// Show resources gained if applicable
 			if (data.loot) {
@@ -155,15 +154,20 @@
 			chkViewAll.setText("View complete report");
 
 			pnlSnapshots.removeAll();
+			var showHiddenReportMessage: Boolean = false;
 			for each (var snapshot: Object in data.snapshots) {
 				// Don't show this snapshot if we arent viewing them all
 				// if it doesnt pertain to this player OR show them all regardless if this is an outcome only reports
 				if (data.outcomeOnly == false && !chkViewAll.isSelected()) {
-					if (!canSeeSnapshot(snapshot)) continue;
+					if (!canSeeSnapshot(snapshot)) {
+						if (!showHiddenReportMessage) {							
+							showHiddenReportMessage = true;
+						}
+						continue;
+					}
 				}
 
 				if (data.outcomeOnly)  {
-					pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, "Your troop was unable to report the enemies. You can only see a partial report"));
 					pnlSnapshots.append(new OutcomeSnapshot(snapshot));
 
 					//Resize accordingly
@@ -181,6 +185,19 @@
 					Util.centerFrame(getFrame());
 				}
 			}
+			
+			var headerFont: ASFontUIResource = GameLookAndFeel.getClassAttribute("darkHeader", "Label.font");
+			if (data.outcomeOnly) {
+				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, "Your troop was unable to report the enemies. You can only see a partial report.", AsWingConstants.TOP, AsWingConstants.CENTER, 0, headerFont));
+			}
+			else if (showHiddenReportMessage) {
+				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, "You are currently viewing a summary of the battle report. To view the entire report, click 'View complete report' below", AsWingConstants.TOP, AsWingConstants.CENTER, 0, headerFont));
+			}
+			else {
+				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, ""));
+			}
+			
+			chkViewAll.setVisible(showHiddenReportMessage);
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame
@@ -213,7 +230,6 @@
 
 			chkViewAll = new JCheckBox("");
 			chkViewAll.setConstraints("West");
-			chkViewAll.setEnabled(false);
 
 			pnlFooter.append(chkViewAll);
 

@@ -2,6 +2,8 @@
 
 	import flash.display.DisplayObjectContainer;
 	import org.aswing.*;
+	import src.Constants;
+	import src.UI.GameJImagePanelBackground;
 	import src.Util.Util;
 	import org.aswing.border.*;
 	import org.aswing.event.PopupEvent;
@@ -306,15 +308,9 @@
 		}
 
 		private function createUI(): void {
-			var layout0:SoftBoxLayout = new SoftBoxLayout();
-			layout0.setAxis(AsWingConstants.VERTICAL);
-			layout0.setGap(5);
-			setLayout(layout0);
+			setLayout(new BorderLayout());
 			setBorder(null);
-			setPreferredSize(new IntDimension(650, 600));
-
-			var pnlBody: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			pnlBody.setBorder(null);
+			setPreferredSize(new IntDimension(650, Math.max(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight() * 2)));
 
 			tabDefensive = new JTabbedPane();
 			tabDefensive.setPreferredHeight(175);
@@ -330,7 +326,6 @@
 
 			var tabLog: JTabbedPane = new JTabbedPane();
 			tabLog.appendTab(lstLogScroll, "Battle Log");
-			tabLog.setPreferredHeight(150);
 
 			tabOffensive = new JTabbedPane();
 			tabOffensive.setPreferredHeight(175);
@@ -339,11 +334,13 @@
 			tabOffensive.setBorder(border3);
 
 			//component layoution
-			pnlBody.append(tabDefensive);
-			pnlBody.append(tabLog);
-			pnlBody.append(tabOffensive);
-
-			append(pnlBody);
+			tabDefensive.setConstraints("North");
+			tabLog.setConstraints("Center");
+			tabOffensive.setConstraints("South");
+			
+			append(tabDefensive);
+			append(tabLog);
+			append(tabOffensive);
 		}
 	}
 

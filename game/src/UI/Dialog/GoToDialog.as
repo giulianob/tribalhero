@@ -10,27 +10,54 @@
 	import src.Constants;
 	import src.Global;
 	import src.Map.MapUtil;
+	import src.UI.Components.AutoCompleteTextField;
 	import src.UI.GameJPanel;
 	
 	public class GoToDialog extends GameJPanel
 	{
 		//members define
-		private var label81:JLabel;
-		private var panel8:JPanel;
 		private var txtX:JTextField;
-		private var label10:JLabel;
-		private var txtY:JTextField;
-		private var panel86:JPanel;
+		private var txtY:JTextField;		
 		private var btnOkCoord:JButton;
 		
 		private var txtCityName:JTextField;
-		private var btnOkName:JButton;
+		private var btnOkCity:JButton;
+		
+		private var txtPlayerName:JTextField;
+		private var btnOkPlayer:JButton;
+		
+		private var pnlTabs: JTabbedPane;
 	
 		public function GoToDialog() 
 		{
-			createUI();
+			createUI();		
+			
+			txtX.addActionListener(onOkCoord);
+			txtY.addActionListener(onOkCoord);
 			btnOkCoord.addActionListener(onOkCoord);
-			btnOkName.addActionListener(onOkName);
+			
+			txtCityName.addActionListener(onOkCity);
+			btnOkCity.addActionListener(onOkCity);
+			
+			txtPlayerName.addActionListener(onOkPlayer);
+			btnOkPlayer.addActionListener(onOkPlayer);
+			
+			AsWingManager.callLater(txtX.requestFocus);
+				
+			pnlTabs.addStateListener(function(e: Event = null): void {
+				switch (pnlTabs.getSelectedIndex())
+				{
+					case 0:
+						AsWingManager.callLater(txtX.requestFocus);
+						break;
+					case 1:
+						AsWingManager.callLater(txtCityName.requestFocus);										
+						break;
+					case 2:
+						AsWingManager.callLater(txtPlayerName.requestFocus);
+						break;
+				}
+			});
 		}		
 		
 		private function onOkCoord(e: *):void {
@@ -46,7 +73,7 @@
 			getFrame().dispose();
 		}
 		
-		private function onOkName(e: *):void {
+		private function onOkCity(e: * ):void {		
 			if (txtCityName.getText() == "") {
 				getFrame().dispose();
 				return;
@@ -55,6 +82,22 @@
 			Global.mapComm.City.gotoCityLocationByName(txtCityName.getText());	
 			getFrame().dispose();
 		}		
+		
+		private function onOkPlayer(e: * ):void {		
+			if (txtPlayerName.getText() == "") {
+				getFrame().dispose();
+				return;
+			}
+			
+			Global.mapComm.City.viewPlayerProfileByName(txtPlayerName.getText(), function(profileData: * ):void {
+				if (!profileData)
+					return;
+					
+				getFrame().dispose();
+				var playerProfile: PlayerProfileDialog = new PlayerProfileDialog(profileData);
+				playerProfile.show();
+			});			
+		}				
 		
 		private function getCoordX(): int {
 			return int(txtX.getText());
@@ -78,25 +121,19 @@
 			//coord panel			
 			var pnlCoords: JPanel = new JPanel(new BorderLayout());			
 			
-			label81 = new JLabel();
-			label81.setConstraints("North");
-			label81.setText("Enter coordinates to visit");
-			label81.setPreferredSize(new IntDimension(200, 21));
-			label81.setHorizontalAlignment(AsWingConstants.LEFT);
+			var lblCoords: JLabel = new JLabel("Enter coordinates to visit", null, AsWingConstants.LEFT);
+			lblCoords.setConstraints("North");
 			
-			panel8 = new JPanel();
-			panel8.setConstraints("Center");
-			panel8.setLayout(new FlowLayout(AsWingConstants.CENTER, 0));
-			
+			var pnlCoordCenter: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0));
+			pnlCoordCenter.setConstraints("Center");
+		
 			txtX = new JTextField();
 			txtX.setSize(new IntDimension(40, 21));
 			txtX.setColumns(4);
 			txtX.setMaxChars(4);
 			txtX.setRestrict("0-9");
 			
-			label10 = new JLabel();
-			label10.setSize(new IntDimension(26, 17));
-			label10.setText(",");
+			var lblCoordComma: JLabel = new JLabel(",");
 			
 			txtY = new JTextField();
 			txtY.setSize(new IntDimension(40, 21));
@@ -104,55 +141,72 @@
 			txtY.setMaxChars(4);
 			txtY.setRestrict("0-9");
 			
-			panel86 = new JPanel();
-			panel86.setConstraints("South");
-			panel86.setLayout(new FlowLayout(AsWingConstants.CENTER));
+			var pnlCoordSouth: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER));
+			pnlCoordSouth.setConstraints("South");
 			
 			btnOkCoord = new JButton();
 			btnOkCoord.setText("Ok");
 			
+			pnlCoordSouth.appendAll(btnOkCoord);
+			pnlCoordCenter.appendAll(txtX, lblCoordComma, txtY);			
+			pnlCoords.appendAll(lblCoords, pnlCoordCenter, pnlCoordSouth);
+			
 			//city name panel
-			var pnlName: JPanel = new JPanel(new BorderLayout());			
+			var pnlCity: JPanel = new JPanel(new BorderLayout());			
 			
-			var pnlNameTitle: JLabel = new JLabel();
-			pnlNameTitle.setConstraints("North");
-			pnlNameTitle.setText("Enter city name to visit");
-			pnlNameTitle.setHorizontalAlignment(AsWingConstants.LEFT);
+			var lblCityTitle: JLabel = new JLabel("Enter city name to visit", null, AsWingConstants.LEFT);
+			lblCityTitle.setConstraints("North");
 			
-			var pnlNameCenter: JPanel = new JPanel();
-			pnlNameCenter.setConstraints("Center");
-			pnlNameCenter.setLayout(new FlowLayout(AsWingConstants.CENTER, 0));			
+			var pnlCityCenter: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0));
+			pnlCityCenter.setConstraints("Center");
 			
-			txtCityName = new JTextField();
+			txtCityName = new AutoCompleteTextField(Global.mapComm.General.autoCompleteCity);
 			txtCityName.setColumns(16);
 			txtCityName.setMaxChars(32);
 			
-			var pnlNameSouth: JPanel = new JPanel();
-			pnlNameSouth.setConstraints("South");
-			pnlNameSouth.setLayout(new FlowLayout(AsWingConstants.CENTER));
+			var pnlCitySouth: JPanel = new JPanel();
+			pnlCitySouth.setConstraints("South");
+			pnlCitySouth.setLayout(new FlowLayout(AsWingConstants.CENTER));
 			
-			btnOkName = new JButton();
-			btnOkName.setText("Ok");			
+			btnOkCity = new JButton();
+			btnOkCity.setText("Ok");
 			
-			//component layoution
-			pnlCoords.append(label81);
-			pnlCoords.append(panel8);
-			pnlCoords.append(panel86);			
-			panel8.append(txtX);
-			panel8.append(label10);
-			panel8.append(txtY);			
-			panel86.append(btnOkCoord);		
+			pnlCitySouth.appendAll(btnOkCity);
+			pnlCityCenter.appendAll(txtCityName);
+			pnlCity.appendAll(lblCityTitle, pnlCityCenter, pnlCitySouth);
 			
-			pnlNameCenter.append(txtCityName);
-			pnlNameSouth.append(btnOkName);
-			pnlName.append(pnlNameTitle);
-			pnlName.append(pnlNameCenter);
-			pnlName.append(pnlNameSouth);
+			//player name panel
+			var pnlPlayer: JPanel = new JPanel(new BorderLayout());			
 			
-			append(pnlCoords);
-			append(new JSeparator());
-			append(pnlName);
+			var lblPlayerTitle: JLabel = new JLabel("Enter a player name to view their profile", null, AsWingConstants.LEFT);
+			lblPlayerTitle.setConstraints("North");
 			
+			var pnlPlayerCenter: JPanel = new JPanel(new FlowLayout(AsWingConstants.CENTER, 0));
+			pnlPlayerCenter.setConstraints("Center");
+			
+			txtPlayerName = new AutoCompleteTextField(Global.mapComm.General.autoCompletePlayer);
+			txtPlayerName.setColumns(16);
+			txtPlayerName.setMaxChars(32);
+			
+			var pnlPlayerSouth: JPanel = new JPanel();
+			pnlPlayerSouth.setConstraints("South");
+			pnlPlayerSouth.setLayout(new FlowLayout(AsWingConstants.CENTER));
+			
+			btnOkPlayer = new JButton();
+			btnOkPlayer.setText("Ok");
+			
+			pnlPlayerSouth.appendAll(btnOkPlayer);
+			pnlPlayerCenter.appendAll(txtPlayerName);
+			pnlPlayer.appendAll(lblPlayerTitle, pnlPlayerCenter, pnlPlayerSouth);					
+			
+			// Tabs
+			pnlTabs = new JTabbedPane();
+			
+			pnlTabs.appendTab(pnlCity, "Find city");
+			pnlTabs.appendTab(pnlPlayer, "Find player");
+			pnlTabs.appendTab(pnlCoords, "Go to coordinates");
+
+			append(pnlTabs);			
 		}
 	}
 	

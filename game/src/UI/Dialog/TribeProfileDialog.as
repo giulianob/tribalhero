@@ -21,6 +21,7 @@
 	{
 		private var profileData: * ;
 		
+		private var pnlHeader: JPanel;
 		private var pnlInfoContainer: JPanel;
 		
 		private var messageBoard: MessageBoard;
@@ -55,8 +56,7 @@
 					return;
 				
 				profileData = newProfileData;
-				createInfoTab();
-				pnlInfoContainer.repaintAndRevalidate();				
+				createInfoTab();				
 			});
 		}
 		
@@ -73,24 +73,8 @@
 			setLayout(new BorderLayout(10, 10));
 			
 			// Header panel
-			var pnlHeader: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
-			pnlHeader.setConstraints("North");
-			
-			// First row of header panel which contains player name + ranking
-			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
-			
-			var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);	
-			lblTribeName.setConstraints("Center");
-			GameLookAndFeel.changeClass(lblTribeName, "darkHeader");			
-			
-			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
-			pnlResources.setConstraints("East");
-			
-			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
-			
-			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);		
-			
-			pnlHeader.append(pnlHeaderFirstRow);
+			pnlHeader = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
+			pnlHeader.setConstraints("North");		
 			
 			// Tab panel
 			pnlTabs = new JTabbedPane();
@@ -160,6 +144,7 @@
 			// description
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;
 			var lblDescription: MultilineLabel = new MultilineLabel(description);
+			GameLookAndFeel.changeClass(lblDescription, "Message");
 			
 			var scrollDescription: JScrollPane = new JScrollPane(lblDescription);
 			
@@ -225,9 +210,9 @@
 			// Button handlers
 			btnSetDescription.addActionListener(function(e: Event = null): void {			
 				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-				var txtDescription: JTextArea = new JTextArea(profileData.description, 10, 10);
+				var txtDescription: JTextArea = new JTextArea(profileData.description, 15, 10);
 				txtDescription.setMaxChars(3000);
-				
+				GameLookAndFeel.changeClass(txtDescription, "Message");
 				var scrollDescription: JScrollPane = new JScrollPane(txtDescription, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_AS_NEEDED);			
 			
 				pnl.appendAll(new JLabel("Set a message to appears on the tribe profile. This will only be visible to your tribe members.", null, AsWingConstants.LEFT), scrollDescription);
@@ -240,9 +225,13 @@
 			});
 			
 			btnInvite.addActionListener(function(e: Event): void {
-				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Invite a new tribesman", "Type in the name of the player you want to invite", function(playerName: *) : void {
-					if (playerName != null && playerName != "")
-						Global.mapComm.Tribe.invitePlayer(playerName);
+				var pnl: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));			
+				var txtPlayerName: JTextField = new AutoCompleteTextField(Global.mapComm.General.autoCompletePlayer);
+				pnl.appendAll(new JLabel("Type in the name of the player you want to invite", null, AsWingConstants.LEFT), txtPlayerName);				
+				
+				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Invite a new tribesman", pnl, function(response: *) : void {
+					if (txtPlayerName.getLength() > 0)
+						Global.mapComm.Tribe.invitePlayer(txtPlayerName.getText());
 				});				
 			});
 			
@@ -259,6 +248,35 @@
 						Global.mapComm.Tribe.leave();
 				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				
 			});		
+			
+			btnDonate.addActionListener(function(e: Event): void {
+				var tribeContributeDialog: TribeContributeDialog = new TribeContributeDialog(function(dialog: TribeContributeDialog): void {
+					dialog.getFrame().dispose();
+					update();
+				});
+				tribeContributeDialog.show();
+			});
+			
+			// First row of header panel which contains player name + ranking
+			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
+			
+			var lblTribeName: JLabel = new JLabel(profileData.tribeName + " (Level " + profileData.tribeLevel + ")", null, AsWingConstants.LEFT);	
+			lblTribeName.setConstraints("Center");
+			GameLookAndFeel.changeClass(lblTribeName, "darkHeader");			
+			
+			var pnlResources: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
+			pnlResources.setConstraints("East");
+			
+			pnlResources.append(new SimpleResourcesPanel(profileData.resources, false));
+			
+			pnlHeaderFirstRow.appendAll(lblTribeName, pnlResources);		
+			
+			pnlHeader.removeAll();
+			pnlHeader.append(pnlHeaderFirstRow);			
+			
+			// Needed since gets called after the panel has already been rendered (for updates
+			pnlHeader.repaintAndRevalidate();
+			pnlInfoContainer.repaintAndRevalidate();
 			
 			return pnlInfoContainer;
 		}

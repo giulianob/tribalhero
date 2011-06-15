@@ -123,6 +123,7 @@ package src.Comm {
         public static const TRIBESMAN_CONFIRM: int = 1015;
 		public static const TRIBESMAN_SET_RANK: int = 1016;
 		public static const TRIBESMAN_LEAVE: int = 1017;
+		public static const TRIBESMAN_CONTRIBUTE: int = 1018;
 		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
 		
 	}

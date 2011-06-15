@@ -237,7 +237,7 @@
 
 			if (loginDialog != null) loginDialog.getFrame().dispose();
 
-			var newPlayer: Boolean = Global.mapComm.Login.onLogin(packet);
+			var newPlayer: Boolean = Global.mapComm.General.onLogin(packet);
 
 			if (!newPlayer) {
 				completeLogin(packet);
@@ -245,7 +245,7 @@
 			else {
 				// Need to make the createInitialCity static and pass in the session
 				var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
-					Global.mapComm.Login.createInitialCity(sender.getCityName(), completeLogin);
+					Global.mapComm.General.createInitialCity(sender.getCityName(), completeLogin);
 				});
 
 				createCityDialog.show();
@@ -280,7 +280,7 @@
 			Constants.objData = <Data></Data>;
 
 			gameContainer.show();
-			Global.mapComm.Login.readLoginInfo(packet);
+			Global.mapComm.General.readLoginInfo(packet);
 			gameContainer.setMap(map, miniMap);
 
 			if (Constants.debug > 0) {

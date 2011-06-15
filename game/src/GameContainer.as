@@ -134,7 +134,7 @@
 			minimapZoomTooltip = new SimpleTooltip(minimapTools.btnMinimapZoom);
 			minimapTools.btnMinimapZoom.addEventListener(MouseEvent.CLICK, onZoomIntoMinimap);
 
-			new SimpleTooltip(minimapTools.btnGoToCoords, "Go to...");
+			new SimpleTooltip(minimapTools.btnGoToCoords, "Find cities, players, and coordinates");
 			minimapTools.btnGoToCoords.addEventListener(MouseEvent.CLICK, onGoToCoords);
 			
 			new SimpleTooltip(minimapTools.btnFeedback, "Send Feedback");
@@ -399,6 +399,11 @@
 				if (e.keyCode == 187 || e.keyCode == Keyboard.NUMPAD_ADD) onZoomIn(e);							
 				if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
 			}
+		}
+		
+		public function getSelectedCityIndex(): int
+		{
+			return lstCities.getSelectedIndex();
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void

@@ -4,6 +4,7 @@
 	import src.Global;
 	import src.Map.*;
 	import src.Objects.*;
+	import src.UI.Components.AutoCompleteTextField;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
@@ -132,7 +133,7 @@
 			lblTo.setHorizontalAlignment(AsWingConstants.RIGHT);
 			GameLookAndFeel.changeClass(lblTo, "Form.label");
 
-			txtTo = new JTextField();
+			txtTo = new AutoCompleteTextField(Global.mapComm.General.autoCompletePlayer);
 			txtTo.setPreferredSize(new IntDimension(100, 25));
 
 			pnlSubject = new JPanel();
@@ -167,6 +168,7 @@
 			scrollMessage.setPreferredSize(new IntDimension(400, 200));
 
 			txtMessage = new JTextArea();
+			GameLookAndFeel.changeClass(txtMessage, "Message");
 			txtMessage.setWordWrap(true);
 			txtMessage.setMaxChars(30000);
 

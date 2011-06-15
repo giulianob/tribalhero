@@ -88,7 +88,7 @@
 		}
 		
 		public function onCityNewUpdate(packet: Packet) : void {
-			var newCity: City = mapComm.Login.readCity(packet);			
+			var newCity: City = mapComm.General.readCity(packet);			
 			Global.gameContainer.addCityToUI(newCity);
 			Global.gameContainer.selectCity(newCity.id);
 		}
@@ -255,10 +255,22 @@
 			packet.cmd = Commands.PLAYER_PROFILE;
 			packet.writeUInt(playerId);
 
+			mapComm.showLoading();
 			session.write(packet, onReceivePlayerProfile, {callback: callback});
 		}
 		
-		public function onReceivePlayerProfile(packet: Packet, custom: *):void {
+		public function viewPlayerProfileByName(playerName: String, callback: Function):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.PLAYER_PROFILE;
+			packet.writeUInt(0);
+			packet.writeString(playerName);
+
+			mapComm.showLoading();
+			session.write(packet, onReceivePlayerProfile, {callback: callback});
+		}		
+		
+		public function onReceivePlayerProfile(packet: Packet, custom: * ):void {
+			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
 				return;

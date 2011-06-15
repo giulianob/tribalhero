@@ -153,6 +153,7 @@
 			txtMessage.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
 			txtMessage.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));
 			txtMessage.setColumns(50);
+			GameLookAndFeel.changeClass(txtMessage, "Message");
 
 			pnlFooter = new JPanel();
 			var layout5:FlowLayout = new FlowLayout();

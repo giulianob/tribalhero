@@ -1,4 +1,5 @@
 ﻿package src.Comm.Commands {
+	import flash.events.Event;
 	import org.aswing.AssetIcon;
 	import src.Comm.*;
 	import src.Constants;
@@ -14,12 +15,12 @@
 	import src.UI.Components.ScreenMessages.ScreenMessageItem;
 	import src.UI.Dialog.InfoDialog;
 
-	public class LoginComm {
+	public class GeneralComm {
 
 		private var mapComm: MapComm;
-		private var session: Session;
+		private var session: Session;		
 
-		public function LoginComm(mapComm: MapComm) {
+		public function GeneralComm(mapComm: MapComm) {
 			this.mapComm = mapComm;
 			this.session = mapComm.session;
 		}
@@ -219,6 +220,42 @@
 
 			callback(packet.readString());
 		}		
+		
+		public function autoCompleteCity(name: String, callback: Function) : void {
+			var autocompleteLoader: GameURLLoader = new GameURLLoader();
+			autocompleteLoader.addEventListener(Event.COMPLETE, function(e: Event): void {
+				var data: Object;
+				try
+				{
+					data = autocompleteLoader.getDataAsObject();
+				}
+				catch (e: Error) {					
+					return;
+				}
+				
+				callback(data, name);
+			});
+			
+			autocompleteLoader.load("/cities/autocomplete", [ { key: "name", value: name }], true, false);
+		}		
+		
+		public function autoCompletePlayer(name: String, callback: Function) : void {
+			var autocompleteLoader: GameURLLoader = new GameURLLoader();
+			autocompleteLoader.addEventListener(Event.COMPLETE, function(e: Event): void {
+				var data: Object;
+				try
+				{
+					data = autocompleteLoader.getDataAsObject();
+				}
+				catch (e: Error) {					
+					return;
+				}
+				
+				callback(data, name);
+			});
+			
+			autocompleteLoader.load("/players/autocomplete", [ { key: "name", value: name }], true, false);
+		}				
 	}
 }
 

@@ -9,7 +9,7 @@
 
 		public var Battle: BattleComm;
 		public var City: CityComm;
-		public var Login: LoginComm;
+		public var General: GeneralComm;
 		public var Object: ObjectComm;
 		public var Region: RegionComm;
 		public var Troop: TroopComm;
@@ -21,13 +21,15 @@
 		public var MessageBoard: MessageBoardComm;
 
 		public var session: Session;
+		
+		private var pnlLoading: InfoDialog;
 
 		public function MapComm(session: Session)
 		{
 			this.session = session;
 			Battle = new BattleComm(this);
 			City = new CityComm(this);
-			Login = new LoginComm(this);
+			General = new GeneralComm(this);
 			Object = new ObjectComm(this);
 			Region = new RegionComm(this);
 			Troop = new TroopComm(this);
@@ -43,7 +45,7 @@
 			if (this.session) {
 				Battle.dispose();
 				City.dispose();
-				Login.dispose();
+				General.dispose();
 				Object.dispose();
 				Region.dispose();
 				Troop.dispose();
@@ -69,14 +71,32 @@
 			return false;
 		}
 
-		public function catchAllErrors(packet: Packet, custom: * ):void
+		public function catchAllErrors(packet: Packet, custom: *):void
 		{
+			hideLoading();
+			
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
 			{
 				var err: int = packet.readUInt();
 
 				GameError.showMessage(err);
 			}
+			
+			if (custom != null && custom is Function)
+				custom();
+		}
+		
+		public function showLoading(message: String = "Loading...", title: String = "Tribal Hero"): void {
+			hideLoading();
+			pnlLoading = InfoDialog.showMessageDialog(title, message, null, null, true, false, 0);
+		}
+		
+		public function hideLoading():void {
+			if (!pnlLoading) 
+				return;
+				
+			pnlLoading.getFrame().dispose();
+			pnlLoading = null;
 		}
 	}
 }

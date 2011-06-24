@@ -7,8 +7,7 @@
 		<tstamp />
 		
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-		
-		
+				
 		<property name="src" location="game/src" />
 		<property name="fdbuild" location="C:/Program Files (x86)/FlashDevelop/Tools/fdbuild" />
 		<property name="flexsdk" location="C:/Program Files (x86)/FlashDevelop/Tools/flexsdk" />

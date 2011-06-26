@@ -1,6 +1,8 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game;
 using Game.Data;
 using Game.Data.Stats;
@@ -13,6 +15,14 @@ using Game.Util;
 
 namespace ConsoleSimulator
 {
+    public enum StructureType
+    {
+        Barrack = 2204,
+        Farm = 2106,
+        Tower = 2402,
+        TradingPost = 2501,
+    }
+
     public enum UnitType {
         Fighter = 11,
         Bowman = 12,
@@ -27,6 +37,8 @@ namespace ConsoleSimulator
 
         Helepolis = 107,
         Catapult = 108,
+
+        TestSwordsman =1001,
     }
 
     public class Group
@@ -34,6 +46,7 @@ namespace ConsoleSimulator
         private static uint player_id;
         private static uint city_id;
         private readonly TroopStub attack;
+        private List<Structure> structures = new List<Structure>();
 
         private readonly City city;
         private readonly TroopObject obj;
@@ -111,6 +124,14 @@ namespace ConsoleSimulator
             }
         }
 
+        public List<Structure> Structures
+        {
+            get
+            {
+                return structures;
+            }
+        }
+
         public void AddToLocal(UnitType type, byte lvl, ushort count)
         {
             AddToLocal((ushort)type, lvl, count, FormationType.Normal);
@@ -128,6 +149,16 @@ namespace ConsoleSimulator
                 city.DefaultTroop.AddUnit(formation, type, count);
                 city.DefaultTroop.EndUpdate();
             }
+        }
+        public void AddStructure(StructureType type, byte lvl)
+        {
+            AddStructure((ushort)type,lvl);
+        }
+        public void AddStructure(ushort type, byte lvl)
+        {
+            Structure structure = StructureFactory.GetNewStructure(type, lvl);
+            city.Add(structure);
+            structures.Add(structure);
         }
 
         public void AddToAttack(UnitType type, byte lvl, ushort count)

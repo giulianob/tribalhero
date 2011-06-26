@@ -368,7 +368,7 @@ namespace Game.Comm
                 }
 
                 // Create troop object                
-                if (!Procedure.TroopObjectCreate(city, stub, city.X, city.Y))
+                if (!Procedure.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -463,7 +463,7 @@ namespace Game.Comm
                     }
                 }
 
-                if (!Procedure.TroopObjectCreate(city, stub, city.X, city.Y))
+                if (!Procedure.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;

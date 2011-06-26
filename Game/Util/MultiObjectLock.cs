@@ -90,6 +90,37 @@ namespace Game.Util
             TryGetPlayer(playerId, out player);
         }
 
+        public MultiObjectLock(uint playerId, out Player player, out Tribe tribe)
+        {
+            if (!Global.World.TryGetObjects(playerId, out player))
+            {
+                tribe = null;
+                return;
+            }
+
+            if (player.Tribesman == null)
+            {
+                tribe = null;
+                return;
+            }
+           
+            try {
+                if (!player.Tribesman.Tribe.IsOwner(player)) {
+                    Lock(player,player.Tribesman.Tribe);
+                } 
+                else
+                {
+                    Lock(player);
+                }
+                tribe = player.Tribesman.Tribe;
+            } catch (LockException) {
+                throw;
+            } catch (Exception) {
+                tribe = null;
+            }
+
+        }
+
         public MultiObjectLock(uint cityId, out City city)
         {
             TryGetCity(cityId, out city);
@@ -257,6 +288,7 @@ namespace Game.Util
             obj = null;
             UnlockAll();
         }
+
     }
 
     public class CallbackLock : IDisposable

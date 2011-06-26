@@ -199,7 +199,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = session.Player.Tribesman.Tribe;
-            using (new CallbackLock(custom => tribe.ToArray(), new object[] { }, tribe))
+            using (new CallbackLock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {

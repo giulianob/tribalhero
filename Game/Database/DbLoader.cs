@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Dynamic;
 using System.Reflection;
 using Game.Battle;
 using Game.Data;
@@ -460,6 +461,9 @@ namespace Game.Database
         {
             #region Troop Stubs
 
+
+            List<dynamic> stationedTroops = new List<dynamic>();
+
             Global.Logger.Info("Loading troop stubs...");
             using (var reader = dbManager.Select(TroopStub.DB_TABLE))
             {
@@ -467,10 +471,6 @@ namespace Game.Database
                 {
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
-                    City stationedCity = null;
-
-                    if ((uint)reader["stationed_city_id"] != 0)
-                        Global.World.TryGetObjects((uint)reader["stationed_city_id"], out stationedCity);
 
                     var stub = new TroopStub
                                {
@@ -495,9 +495,18 @@ namespace Game.Database
                     }
 
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
-                    if (stationedCity != null)
-                        stationedCity.Troops.AddStationed(stub);
+
+                    var stationedCityId = (uint)reader["stationed_city_id"];
+                    if (stationedCityId != 0)
+                        stationedTroops.Add(new {stub, stationedCityId}); 
                 }
+            }
+
+            foreach (var stubInfo in stationedTroops)
+            {
+                City stationedCity;
+                Global.World.TryGetObjects(stubInfo.stationedCityId, out stationedCity);
+                stationedCity.Troops.AddStationed(stubInfo.stub);
             }
 
             #endregion

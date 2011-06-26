@@ -340,13 +340,12 @@ namespace Game.Comm
                 List<NotificationManager.Notification> notifications;
                 //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));
                 foreach (var city in ((IEnumerable<Tribesman>)tribe).SelectMany(tribesman => tribesman.Player.GetCityList())) {
-                    result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", incoming.City.Owner.Name, incoming.City.Name, incoming.Action.From, incoming.Action.NextTime));                
                     notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
                     foreach(var notification in notifications)
                     {
                         AttackChainAction action = notification.Action as AttackChainAction;
                         if (action == null) continue;
-                        result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", city.Owner.Name, city.Name, action.From, action.NextTime);
+                        result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", city.Owner.Name, city.Name, action.From, action.NextTime));
                     }
                 }
             }

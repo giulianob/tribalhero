@@ -98,7 +98,15 @@ namespace Game.Battle
 
             // Get top results specified by the maxCount param
             result = objectsByScore.GetRange(0, Math.Min(maxCount, objectsByScore.Count)).Select(x => x.CombatObject).ToList();
+#if DEBUG
+            foreach( var obj in objectsByScore)
+            {
 
+                Global.Logger.Debug(string.Format("Unit[{0}] Score[{1}]",
+                                                        obj.CombatObject.ClassType == BattleClass.Unit ? UnitFactory.GetName(obj.CombatObject.Type, 1) : StructureFactory.GetName(obj.CombatObject.Type, 1),
+                                                        obj.Score));
+            }
+#endif 
             return BestTargetResult.Ok;
         }
 

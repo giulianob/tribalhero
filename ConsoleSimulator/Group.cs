@@ -19,6 +19,8 @@ namespace ConsoleSimulator
     {
         Barrack = 2204,
         Farm = 2106,
+        Tower = 2402,
+        TradingPost = 2501,
     }
 
     public enum UnitType {

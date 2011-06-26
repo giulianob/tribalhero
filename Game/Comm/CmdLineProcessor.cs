@@ -37,6 +37,9 @@ namespace Game.Comm
             RegisterCommand(CmdLineCommand.TribesmanRemove, CmdTribesmanRemove);
             RegisterCommand(CmdLineCommand.TribesmanUpdate, CmdTribesmanUpdate);
             RegisterCommand(CmdLineCommand.TribeIncomingList, CmdTribeIncomingList);
+            RegisterCommand(CmdLineCommand.AssignmentList, CmdAssignmentList);
+            RegisterCommand(CmdLineCommand.AssignmentCreate, CmdAssignmentCreate);
+            RegisterCommand(CmdLineCommand.AssignmentJoin, CmdAssignmentJoin);
         }
 
         protected void RegisterCommand(CmdLineCommand cmd, DoWork func)

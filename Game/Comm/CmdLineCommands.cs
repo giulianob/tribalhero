@@ -19,5 +19,8 @@
         TribesmanUpdate = 213,
         TribeIncomingList = 214,
 
+        AssignmentList = 221,
+        AssignmentCreate = 222,
+        AssignmentJoin = 223,
     }
 }

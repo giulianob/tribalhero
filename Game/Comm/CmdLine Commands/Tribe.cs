@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
@@ -152,7 +153,7 @@ namespace Game.Comm
             if(!Global.Tribes.TryGetValue(tribeId, out tribe))
                 return "Tribe not found seriously";
 
-            using (new CallbackLock(custom => tribe.ToArray(), new object[] {}, tribe)) {
+            using (new CallbackLock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
                 foreach (var tribesman in new List<Tribesman>(tribe))
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
@@ -337,7 +338,7 @@ namespace Game.Comm
             using (new MultiObjectLock(tribeId, out tribe)) {
                 List<NotificationManager.Notification> notifications;
                 //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));
-                foreach (var city in tribe.SelectMany(tribesman => tribesman.Player.GetCityList())) {
+                foreach (var city in ((IEnumerable<Tribesman>)tribe).SelectMany(tribesman => tribesman.Player.GetCityList())) {
                     notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
                     foreach(var notification in notifications)
                     {

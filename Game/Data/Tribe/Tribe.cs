@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Actions;
 using Game.Setup;
@@ -12,7 +13,7 @@ using Game.Util;
 
 namespace Game.Data.Tribe
 {
-    public class Tribe : ILockable, IEnumerable<Tribesman>, IPersistableObject
+    public class Tribe : ILockable, IEnumerable<Tribesman>, IPersistableObject, IEnumerable<Assignment>
     {
         public class IncomingListItem
         {
@@ -53,6 +54,7 @@ namespace Game.Data.Tribe
         }
 
         readonly Dictionary<uint, Tribesman> tribesmen = new Dictionary<uint, Tribesman>();
+        readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
 
         public Resource Resource { get; private set; }
 
@@ -130,7 +132,7 @@ namespace Game.Data.Tribe
 
         public IEnumerable<IncomingListItem> GetIncomingList()
         {
-            return from tribesmen in this
+            return from tribesmen in ((IEnumerable<Tribesman>)this)
                    from city in tribesmen.Player.GetCityList()
                    from notification in city.Worker.Notifications
                    where notification.Action is AttackChainAction && notification.Subscriptions.Count > 0
@@ -193,6 +195,11 @@ namespace Game.Data.Tribe
 
 
         #region IEnumerable<Tribesman> Members
+
+        IEnumerator<Assignment> IEnumerable<Assignment>.GetEnumerator()
+        {
+            return assignments.Values.GetEnumerator();
+        }
 
         public IEnumerator<Tribesman> GetEnumerator()
         {
@@ -258,5 +265,43 @@ namespace Game.Data.Tribe
         }
 
         #endregion
+
+        public Error CreateAssignment(TroopStub stub, uint x, uint y, DateTime time, AttackMode mode, out int id)
+        {
+            LargeIdGenerator largeIdGenerator = new LargeIdGenerator(1000);
+            largeIdGenerator.GetNext();
+            Assignment assignment = new Assignment(this, x, y, mode, time, stub);
+            id = assignment.Id;
+            assignments.Add(assignment.Id, assignment);
+            assignment.AssignmentComplete += RemoveAssignment;
+            return Error.Ok;
+        }
+
+        internal Error JoinAssignment(int id, TroopStub stub) {
+            Assignment assignment;
+            if(assignments.TryGetValue(id,out assignment))
+            {
+                Error error = assignment.Add(stub);
+                if(error!=Error.Ok)
+                {
+                    return error;
+                }
+            }
+            else
+            {
+                return Error.AssignmentNotFound;
+            }
+            return Error.Ok;
+        }
+
+        internal void RemoveAssignment(Assignment assignment)
+        {
+            assignments.Remove(assignment.Id);
+        }
+
+        internal void DbLoaderAddAssignment(Assignment assignment) {
+            assignment.AssignmentComplete += RemoveAssignment;
+            assignments.Add(assignment.Id,assignment);
+        }
     }
 }

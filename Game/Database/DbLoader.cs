@@ -66,6 +66,7 @@ namespace Game.Database
                     LoadActions(dbManager, downTime);
                     LoadActionReferences(dbManager);
                     LoadActionNotifications(dbManager);
+                    LoadAssignments(dbManager);
 
                     Global.World.AfterDbLoaded();
 
@@ -116,6 +117,37 @@ namespace Game.Database
                     var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], (DateTime)reader["join_date"], contribution, (byte)reader["rank"])
                                     {DbPersisted = true};
                     tribe.AddTribesman(tribesman,false);
+                }
+            }
+            #endregion
+        }
+
+        private static void LoadAssignments(IDbManager dbManager) {
+            #region Assignments
+
+            Global.Logger.Info("Loading assignements...");
+            using (var reader = dbManager.Select(Assignment.DB_TABLE)) {
+                while (reader.Read()) {
+                    Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    Assignment assignment = new Assignment(
+                                                    (int)reader["id"],
+                                                     tribe,
+                                                    (uint)reader["x"],
+                                                    (uint)reader["y"],
+                                                    (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
+                                                    DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc),
+                                                    (uint)reader["dispatch_count"]);
+
+                    using (DbDataReader listReader = dbManager.SelectList(assignment)) {
+                        while (listReader.Read()) {
+                            City city;
+                            Global.World.TryGetObjects((uint)listReader["city_id"], out city);
+                            assignment.DbLoaderAdd(city.Troops[(byte)listReader["stub_id"]]);
+                        }
+                    }
+                    assignment.DbPersisted=true;
+                    tribe.DbLoaderAddAssignment(assignment);
+                    Global.Scheduler.Put(assignment);
                 }
             }
             #endregion

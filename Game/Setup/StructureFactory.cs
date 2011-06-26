@@ -152,12 +152,12 @@ namespace Game.Setup
             return dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp) ? tmp.WorkerId : 0;
         }
 
-        public static string GetName(Structure structure)
+        public static string GetName(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
             StructureBaseStats tmp;
-            return dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp) ? tmp.Name : null;
+            return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Name : null;
         }
 
         public static StructureBaseStats GetBaseStats(ushort type, byte lvl)

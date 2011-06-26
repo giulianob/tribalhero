@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -153,7 +154,7 @@ namespace Game.Comm
             if(!Global.Tribes.TryGetValue(tribeId, out tribe))
                 return "Tribe not found seriously";
 
-            using (new CallbackLock(custom => tribe.ToArray(), new object[] {}, tribe)) {
+            using (new CallbackLock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
                 foreach (var tribesman in new List<Tribesman>(tribe))
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
@@ -335,10 +336,19 @@ namespace Game.Comm
 
             Tribe tribe;
             StringBuilder result = new StringBuilder("Incomings:\n");
-            using (new MultiObjectLock(tribeId, out tribe))
-            {
-                foreach (var incoming in tribe.GetIncomingList())                
+            using (new MultiObjectLock(tribeId, out tribe)) {
+                List<NotificationManager.Notification> notifications;
+                //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));
+                foreach (var city in ((IEnumerable<Tribesman>)tribe).SelectMany(tribesman => tribesman.Player.GetCityList())) {
                     result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", incoming.City.Owner.Name, incoming.City.Name, incoming.Action.From, incoming.Action.NextTime));                
+                    notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
+                    foreach(var notification in notifications)
+                    {
+                        AttackChainAction action = notification.Action as AttackChainAction;
+                        if (action == null) continue;
+                        result.Append(string.Format("To [{0}-{1}] From[{2}] Arrival Time[{3}]\n", city.Owner.Name, city.Name, action.From, action.NextTime);
+                    }
+                }
             }
 
             return result.ToString();

@@ -112,6 +112,7 @@
     <Compile Include="Battle\AttackCombatUnit.cs" />
     <Compile Include="Battle\CombatUnitFactory.cs" />
     <Compile Include="Comm\ApiCaller.cs" />
+    <Compile Include="Comm\CmdLine Commands\Assignment.cs" />
     <Compile Include="Comm\CmdLine Commands\Tribe.cs" />
     <Compile Include="Comm\CmdLine Commands\Player.cs" />
     <Compile Include="Comm\CmdLine Commands\Resources.cs" />

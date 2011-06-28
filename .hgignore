@@ -7,7 +7,6 @@ glob:nbproject/project.properties
 glob:nbproject/private/private.xml
 glob:app/tmp/cache/cake_*
 glob:app/webroot/files/Game.swf
-glob:app/config/bootstrap.php
 glob:app/config/core.php
 glob:app/config/database.php
 glob:app/views/database/generated/*.ctp

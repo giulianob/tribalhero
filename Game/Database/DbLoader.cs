@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Dynamic;
 using System.Reflection;
 using Game.Battle;
 using Game.Data;
@@ -65,6 +66,7 @@ namespace Game.Database
                     LoadActions(dbManager, downTime);
                     LoadActionReferences(dbManager);
                     LoadActionNotifications(dbManager);
+                    LoadAssignments(dbManager);
 
                     Global.World.AfterDbLoaded();
 
@@ -119,6 +121,37 @@ namespace Game.Database
                     var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc), contribution, (byte)reader["rank"])
                                     {DbPersisted = true};
                     tribe.AddTribesman(tribesman,false);
+                }
+            }
+            #endregion
+        }
+
+        private static void LoadAssignments(IDbManager dbManager) {
+            #region Assignments
+
+            Global.Logger.Info("Loading assignements...");
+            using (var reader = dbManager.Select(Assignment.DB_TABLE)) {
+                while (reader.Read()) {
+                    Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    Assignment assignment = new Assignment(
+                                                    (int)reader["id"],
+                                                     tribe,
+                                                    (uint)reader["x"],
+                                                    (uint)reader["y"],
+                                                    (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
+                                                    DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc),
+                                                    (uint)reader["dispatch_count"]);
+
+                    using (DbDataReader listReader = dbManager.SelectList(assignment)) {
+                        while (listReader.Read()) {
+                            City city;
+                            Global.World.TryGetObjects((uint)listReader["city_id"], out city);
+                            assignment.DbLoaderAdd(city.Troops[(byte)listReader["stub_id"]]);
+                        }
+                    }
+                    assignment.DbPersisted=true;
+                    tribe.DbLoaderAddAssignment(assignment);
+                    Global.Scheduler.Put(assignment);
                 }
             }
             #endregion
@@ -464,6 +497,9 @@ namespace Game.Database
         {
             #region Troop Stubs
 
+
+            List<dynamic> stationedTroops = new List<dynamic>();
+
             Global.Logger.Info("Loading troop stubs...");
             using (var reader = dbManager.Select(TroopStub.DB_TABLE))
             {
@@ -471,10 +507,6 @@ namespace Game.Database
                 {
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
-                    City stationedCity = null;
-
-                    if ((uint)reader["stationed_city_id"] != 0)
-                        Global.World.TryGetObjects((uint)reader["stationed_city_id"], out stationedCity);
 
                     var stub = new TroopStub
                                {
@@ -499,9 +531,18 @@ namespace Game.Database
                     }
 
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
-                    if (stationedCity != null)
-                        stationedCity.Troops.AddStationed(stub);
+
+                    var stationedCityId = (uint)reader["stationed_city_id"];
+                    if (stationedCityId != 0)
+                        stationedTroops.Add(new {stub, stationedCityId}); 
                 }
+            }
+
+            foreach (var stubInfo in stationedTroops)
+            {
+                City stationedCity;
+                Global.World.TryGetObjects(stubInfo.stationedCityId, out stationedCity);
+                stationedCity.Troops.AddStationed(stubInfo.stub);
             }
 
             #endregion

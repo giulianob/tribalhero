@@ -105,6 +105,9 @@ namespace Game.Setup
         TribesmanNotAuthorized = 725,
         TribesmanPendingRequest = 726,
         TribesmanNoRequest = 727,
+
+        AssignmentDone = 741,
+        AssignmentNotFound = 742,
         #endregion
 
     }

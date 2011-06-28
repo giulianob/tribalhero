@@ -35,7 +35,7 @@ namespace Game.Database
             DateTime now = DateTime.UtcNow;
 
             // Set all players to offline
-            Global.DbManager.Query("UPDATE `players` SET online = @online", new[] {new DbColumn("online", false, DbType.Boolean)});
+            Global.DbManager.Query("UPDATE `players` SET online = @online", new[] {new DbColumn("online", false, DbType.Boolean)}, false);
 
             using (DbTransaction transaction = Global.DbManager.GetThreadTransaction())
             {
@@ -49,6 +49,7 @@ namespace Game.Database
                     
                     Global.Logger.Info(string.Format("Server was down for {0}", downTime));
 
+                    LoadReportIds(dbManager);
                     LoadMarket(dbManager);
                     LoadPlayers(dbManager);
                     LoadCities(dbManager, downTime);
@@ -88,6 +89,25 @@ namespace Game.Database
             Global.FireEvents = true;
             Global.Scheduler.Resume();
             return true;
+        }
+
+        private static uint GetMaxId(IDbManager dbManager, string table)
+        {
+            using (var reader = dbManager.ReaderQuery(string.Format("SELECT max(`id`) FROM `{0}`", table)))
+            {
+                reader.Read();
+                if (DBNull.Value.Equals(reader[0]))
+                    return 0;
+
+                return (uint)reader[0];
+            }
+        }
+
+        private static void LoadReportIds(IDbManager dbManager)
+        {
+            BattleReport.BattleIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_DB));
+            BattleReport.ReportIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_REPORTS_DB));
+            BattleReport.BattleTroopIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_REPORT_TROOPS_DB));
         }
 
         private static void LoadTribes(IDbManager dbManager) {

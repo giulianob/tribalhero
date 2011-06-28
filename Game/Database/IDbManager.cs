@@ -27,12 +27,11 @@ namespace Game.Database
         DbDataReader SelectList(IPersistableList obj);
         DbDataReader SelectList(string table, params DbColumn[] primaryKeyValues);
 
-        int Query(string query, DbColumn[] parms);
-        DbDataReader ReaderQuery(string query, DbColumn[] parms);
-        uint LastInsertId();
+        void Query(string query, DbColumn[] parms, bool transactional);
+        DbDataReader ReaderQuery(string query, DbColumn[] parms = null);
 
         void EmptyDatabase();
 
-        void Probe(out int queriesRan, out DateTime lastProbe);
+        void Probe(out int queriesRanOut, out DateTime lastProbeOut);
     }
 }

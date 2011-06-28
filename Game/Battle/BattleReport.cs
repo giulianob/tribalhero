@@ -5,6 +5,7 @@ using System.Data;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Database;
+using Game.Util;
 
 #endregion
 
@@ -23,11 +24,15 @@ namespace Game.Battle
 
     public class BattleReport
     {
-        private const string BATTLE_DB = "battles";
-        private const string BATTLE_REPORTS_DB = "battle_reports";
-        private const string BATTLE_REPORT_TROOPS_DB = "battle_report_troops";
-        private const string BATTLE_REPORT_OBJECTS_DB = "battle_report_objects";
-        private const string BATTLE_REPORT_VIEWS_DB = "battle_report_views";
+        public static readonly LargeIdGenerator BattleIdGenerator = new LargeIdGenerator(uint.MaxValue);
+        public static readonly LargeIdGenerator ReportIdGenerator = new LargeIdGenerator(uint.MaxValue);
+        public static readonly LargeIdGenerator BattleTroopIdGenerator = new LargeIdGenerator(uint.MaxValue);
+
+        public const string BATTLE_DB = "battles";
+        public const string BATTLE_REPORTS_DB = "battle_reports";
+        public const string BATTLE_REPORT_TROOPS_DB = "battle_report_troops";
+        public const string BATTLE_REPORT_OBJECTS_DB = "battle_report_objects";
+        public const string BATTLE_REPORT_VIEWS_DB = "battle_report_views";
 
         private readonly BattleManager battle;
         private bool reportFlag;
@@ -236,22 +241,24 @@ namespace Game.Battle
 
         private static void SnapBattle(out uint battleId, uint cityId)
         {
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', @city_id, NOW(), NULL, '0')", BATTLE_DB),
-                                   new[] {new DbColumn("city_id", cityId, DbType.UInt32)});
-            battleId = Global.DbManager.LastInsertId();
+            battleId = (uint)BattleIdGenerator.GetNext();
+
+            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, @city_id, NOW(), NULL, '0')", BATTLE_DB),
+                                   new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) }, true);
         }
 
         private static void SnapBattleEnd(uint battleId)
         {
             Global.DbManager.Query(string.Format("UPDATE `{0}` SET `ended` = NOW() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB),
-                                   new[] {new DbColumn("battle_id", battleId, DbType.UInt32)});
+                                   new[] { new DbColumn("battle_id", battleId, DbType.UInt32) }, true);
         }
 
         private static void SnapReport(out uint reportId, uint battleId)
         {
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES ('', NOW(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
-                                   new[] {new DbColumn("battle_id", battleId, DbType.UInt32)});
-            reportId = Global.DbManager.LastInsertId();
+            reportId = (uint)ReportIdGenerator.GetNext();
+
+            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, NOW(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
+                                   new[] { new DbColumn("id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32) }, true);            
         }
 
         internal static void SnapEndReport(uint reportId, uint battleId, uint round, uint turn)
@@ -264,7 +271,7 @@ namespace Game.Battle
                                    {
                                            new DbColumn("report_id", reportId, DbType.UInt32), new DbColumn("round", round, DbType.UInt32),
                                            new DbColumn("turn", turn, DbType.UInt32),
-                                   });
+                                   }, true);
         }
 
         private void SnapTroopState(TroopStub stub, ReportState state)
@@ -275,7 +282,7 @@ namespace Game.Battle
             if (stub.TroopObject == null)
             {
                 Global.DbManager.Query(string.Format("UPDATE `{0}` SET `state` = @state WHERE `id` = @id LIMIT 1", BATTLE_REPORT_TROOPS_DB),
-                                       new[] {new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("id", id, DbType.UInt32),});
+                                       new[] { new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("id", id, DbType.UInt32), }, true);
             }
             else
             {
@@ -289,26 +296,28 @@ namespace Game.Battle
                                                new DbColumn("state", state, DbType.Byte), new DbColumn("gold", loot.Gold, DbType.Int32),
                                                new DbColumn("crop", loot.Crop, DbType.Int32), new DbColumn("iron", loot.Iron, DbType.Int32),
                                                new DbColumn("wood", loot.Wood, DbType.Int32), new DbColumn("id", id, DbType.UInt32),
-                                       });
+                                       }, true);
             }
         }
 
         private void SnapTroop(ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, out uint battleTroopId, Resource loot)
         {
+            battleTroopId = (uint)BattleTroopIdGenerator.GetNext();
+
             Global.DbManager.Query(
                                    string.Format(
-                                                 "INSERT INTO `{0}` VALUES ('', @report_id, @city_id, @object_id, @troop_id, @state, @is_attacker, @gold, @crop, @iron, @wood)",
+                                                 "INSERT INTO `{0}` VALUES (@id, @report_id, @city_id, @object_id, @troop_id, @state, @is_attacker, @gold, @crop, @iron, @wood)",
                                                  BATTLE_REPORT_TROOPS_DB),
                                    new[]
                                    {
+                                           new DbColumn("id", battleTroopId, DbType.UInt32),
                                            new DbColumn("report_id", reportId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32),
                                            new DbColumn("object_id", objectId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
                                            new DbColumn("state", state, DbType.Byte), new DbColumn("is_attacker", isAttacker, DbType.Boolean),
                                            new DbColumn("gold", loot.Gold, DbType.Int32), new DbColumn("crop", loot.Crop, DbType.Int32),
                                            new DbColumn("iron", loot.Iron, DbType.Int32), new DbColumn("wood", loot.Wood, DbType.Int32),
-                                   });
-
-            battleTroopId = Global.DbManager.LastInsertId();
+                                   },
+                                   true);
 
             // Log any troops that are entering the battle to the view table so they are able to see this report
             // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
@@ -323,7 +332,8 @@ namespace Game.Battle
                                                new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
                                                new DbColumn("battle_id", battle.BattleId, DbType.UInt32), new DbColumn("object_id", objectId, DbType.UInt32),
                                                new DbColumn("is_attacker", isAttacker, DbType.Boolean)
-                                       });
+                                       },
+                                       true);
             }
         }
 
@@ -344,7 +354,8 @@ namespace Game.Battle
                                            new DbColumn("formation", (byte)(unit == null ? FormationType.Structure : unit.Formation), DbType.Byte),
                                            new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16), new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32),
                                            new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),
-                                   });
+                                   },
+                                   true);
         }
 
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
@@ -362,7 +373,8 @@ namespace Game.Battle
                                            new DbColumn("bonus_iron", bonusResource.Iron, DbType.Int32), new DbColumn("bonus_gold", bonusResource.Gold, DbType.Int32),
                                            new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32),
                                            new DbColumn("troop_stub_id", troopId, DbType.Byte),
-                                   });
+                                   },
+                                   true);
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ConsoleSimulator.UserBattle;
 using Game.Battle;
 using Game.Data;
 using Game.Setup;
@@ -18,8 +19,6 @@ namespace ConsoleSimulator
     {
         private static void Main(string[] args)
         {
-            bool sameLevelOnly = true;
-            var lvlFilter = new List<byte> {1, 10};
 
             Factory.CompileConfigFiles();
             // CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
@@ -49,28 +48,35 @@ namespace ConsoleSimulator
                                   Config.city_region_width,
                                   Config.city_region_height);
             }
-
             Global.DbManager.Pause();
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Program));
 
-            //      BattleReport.WriterInit();
+            JimSwdTgtArc b = new JimSwdTgtArc();
+            b.Run();
+            Console.ReadKey();
+
+        }
+
+        private  static void RunFullSimulation()
+        {
+            bool sameLevelOnly = true;
+            var lvlFilter = new List<byte> { 1, 10 };
 
             Array.ForEach(Directory.GetFiles(Directory.GetCurrentDirectory(), "Simulation*.csv"),
-                          delegate(string path) { File.Delete(path); });
+              delegate(string path) { File.Delete(path); });
 
             FullSimulation sim;
-            foreach (var kvp in UnitFactory.GetList())
-            {
+            foreach (var kvp in UnitFactory.GetList()) {
                 if (!lvlFilter.Any(x => x == kvp.Value.Lvl))
                     continue;
-                sim = new FullSimulation((ushort)(kvp.Key/100),
+                sim = new FullSimulation((ushort)(kvp.Key / 100),
                                      kvp.Value.Lvl,
                                      1,
                                      FullSimulation.QuantityUnit.GroupSize,
                                      sameLevelOnly);
                 sim.RunDef("Simulation " + kvp.Value.Lvl + ".csv");
-                sim = new FullSimulation((ushort)(kvp.Key/100),
+                sim = new FullSimulation((ushort)(kvp.Key / 100),
                                      kvp.Value.Lvl,
                                      1,
                                      FullSimulation.QuantityUnit.GroupSize,

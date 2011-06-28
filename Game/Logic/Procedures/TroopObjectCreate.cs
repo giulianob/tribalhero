@@ -11,7 +11,27 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public static bool TroopObjectCreate(City city, TroopStub stub, uint x, uint y)
+        public static bool TroopStubCreate(City city, TroopStub stub) {
+            if (!RemoveFromNormal(city.DefaultTroop, stub))
+                return false;
+
+            city.Troops.Add(stub);
+            return true;
+        }
+
+        public static bool TroopObjectCreate(City city, TroopStub stub)
+        {
+            var troop = new TroopObject(stub) { X = city.X, Y = city.Y };
+            city.Add(troop);
+
+            troop.BeginUpdate();
+            troop.Stats = new TroopStats(Formula.GetTroopRadius(stub, null), Formula.GetTroopSpeed(stub));
+            Global.World.Add(troop);
+            troop.EndUpdate();
+            return true;
+        }
+
+        public static bool TroopObjectCreateFromCity(City city, TroopStub stub, uint x, uint y)
         {
             if (!RemoveFromNormal(city.DefaultTroop, stub))
                 return false;

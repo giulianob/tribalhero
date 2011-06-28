@@ -212,6 +212,8 @@ namespace Game.Database.Managers
 
             command.CommandText = string.Format("SELECT * FROM `{0}`", table);
 
+            LogCommand(command);
+
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
@@ -240,7 +242,21 @@ namespace Game.Database.Managers
             foreach (var column in obj.DbPrimaryKey)
                 AddParameter(command, column, DataRowVersion.Original);
 
+            LogCommand(command);
+
             return command.ExecuteReader(CommandBehavior.CloseConnection);
+        }
+
+        private static void LogCommand(MySqlCommand command)
+        {
+            if (!Config.database_verbose)
+                return;
+
+            var sqlwriter = new StringWriter();
+            foreach (MySqlParameter param in command.Parameters)
+                sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
+
+            Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
         }
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
@@ -785,25 +801,20 @@ namespace Game.Database.Managers
         {
             Interlocked.Increment(ref queriesRan);
 
-            if (Config.database_verbose)
-            {
-                var sqlwriter = new StringWriter();
-                foreach (MySqlParameter param in command.Parameters)
-                    sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
+            LogCommand(command);
 
-                Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
-            }
-
-            try
+            do
             {
-                return command.ExecuteNonQuery();
-            }
-            catch(Exception e)
-            {
-                HandleGeneralException(e, command);
-            }
-
-            return 0;
+                try
+                {
+                    return command.ExecuteNonQuery();
+                }
+                catch(Exception e)
+                {
+                    HandleGeneralException(e, command);
+                    continue;
+                }
+            } while (true);
         }
 
         public static void HandleGeneralException(Exception e, MySqlCommand command)
@@ -817,6 +828,14 @@ namespace Game.Database.Managers
             }
 
             Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") " + writer, e);
+
+            var mysqlException = e as MySqlException;
+            if (mysqlException != null) {
+                if (mysqlException.Number == 1213) {
+                    Thread.Sleep(0);
+                    return;
+                }
+            }
 
             Environment.Exit(-999);
         }

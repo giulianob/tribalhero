@@ -310,7 +310,7 @@
 		private function createUI(): void {
 			setLayout(new BorderLayout());
 			setBorder(null);
-			setPreferredSize(new IntDimension(650, Math.max(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight() * 2)));
+			setPreferredSize(new IntDimension(650, Math.max(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
 
 			tabDefensive = new JTabbedPane();
 			tabDefensive.setPreferredHeight(175);

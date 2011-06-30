@@ -76,7 +76,7 @@
 
 			return buildTime * Constants.secondsPerUnit;
 		}
-
+		
 		public static function moveTime(city: City, speed: int, distance: int, isAttacking: Boolean) : int {
 			
 			// MoveTimeMod

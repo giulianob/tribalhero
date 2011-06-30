@@ -68,7 +68,7 @@
 		}
 		
 		private function createUI():void {
-			setPreferredSize(new IntDimension(Math.min(1025, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.max(375, Constants.screenH - GameJImagePanelBackground.getFrameHeight() * 2)));
+			setPreferredSize(new IntDimension(Math.min(1025, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.max(375, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
 			title = "Tribe Profile - " + profileData.tribeName;
 			setLayout(new BorderLayout(10, 10));
 			

@@ -38,6 +38,7 @@ package src.UI.Sidebars.ObjectInfo {
 		private var pnlUpgrades:JPanel;
 		private var pnlGroups:JPanel;
 		private var pnlActions:JPanel;
+		private var scrollGroups: JScrollPane;
 
 		private var gameObject: StructureObject;
 
@@ -60,12 +61,20 @@ package src.UI.Sidebars.ObjectInfo {
 			gameObject.addEventListener(SimpleGameObject.OBJECT_UPDATE, onObjectUpdate);
 
 			createUI();
-			update();
+			
+			addEventListener(Event.ADDED_TO_STAGE, function(e: Event): void {
+				update();
+			});			
+			
+			Global.gameContainer.resizeManager.addEventListener(Event.RESIZE, onObjectUpdate);
 		}
 
 		public function update():void
-		{
+		{			
 			t.reset();
+			
+			if (!getFrame())
+				return;
 
 			clear();
 
@@ -172,14 +181,25 @@ package src.UI.Sidebars.ObjectInfo {
 
 				pnlGroups.append(pnlGroup);
 			}
+		
+			getFrame().pack();
+			
+			if (city != null) {
+				validateButtons();
+				displayCurrentActions();
+				
+				setPreferredHeight( -1);
+				repaintAndRevalidate();								
+				pack();
+				
+				setPreferredHeight(Math.min(getSize().height, Util.getMaxGamePanelHeight(getFrame().getGlobalLocation().y)));				
 
-			if (city == null) return;
-
-			validateButtons();
-			displayCurrentActions();
-
-			t.addEventListener(TimerEvent.TIMER, onUpdateTimer);
-			t.start();
+				pack();
+				getFrame().pack();
+				
+				t.addEventListener(TimerEvent.TIMER, onUpdateTimer);
+				t.start();
+			}							
 		}
 
 		private function addStatStarRow(title: String, value: int, min: int, max: int) : void {
@@ -290,9 +310,11 @@ package src.UI.Sidebars.ObjectInfo {
 			t.stop();
 			t = null;
 
+			Global.gameContainer.resizeManager.removeEventListener(Event.RESIZE, onObjectUpdate);
+			
 			if (gameObject != null)
 			{
-				var city: City = Global.map.cities.get(gameObject.cityId);
+				var city: City = Global.map.cities.get(gameObject.cityId);							
 
 				if (city != null)
 				{
@@ -312,9 +334,7 @@ package src.UI.Sidebars.ObjectInfo {
 
 		public function onObjectUpdate(event: Event):void
 		{
-			update();
-
-			if (getFrame() != null) getFrame().pack();
+			update();			
 		}
 
 		public function validateButtons():void
@@ -346,8 +366,7 @@ package src.UI.Sidebars.ObjectInfo {
 		private function createUI() : void
 		{
 			//component creation
-			//setPreferredHeight(GameJSidebar.FULL_HEIGHT);
-			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			setLayout(new BorderLayout(10));
 
 			lblName = new JLabel();
 			lblName.setFont(new ASFont("Tahoma", 11, true, false, false, false));
@@ -355,17 +374,24 @@ package src.UI.Sidebars.ObjectInfo {
 			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
 
 			pnlStats = new Form();
+			pnlStats.setConstraints("North");
 
 			pnlGroups = new JPanel();
 			pnlGroups.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
-			pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));
+			pnlGroups.setBorder(new EmptyBorder(null, new Insets(0, 0, 20, 0)));		
 
 			pnlActions = new JPanel();
 			pnlActions.setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+			pnlActions.setConstraints("South");
 
+			var viewPort: JViewport = new JViewport(pnlGroups, true, false);
+			viewPort.setVerticalAlignment(AsWingConstants.TOP);
+			scrollGroups = new JScrollPane(viewPort, JScrollPane.SCROLLBAR_AS_NEEDED, JScrollPane.SCROLLBAR_NEVER);
+			scrollGroups.setConstraints("Center");
+			
 			//component layoution
 			append(pnlStats);
-			append(pnlGroups);
+			append(scrollGroups);
 			append(pnlActions);
 		}
 

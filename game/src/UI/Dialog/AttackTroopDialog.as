@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog {
 
+	import flash.events.Event;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.geom.*;
@@ -7,24 +8,28 @@
 	import org.aswing.ext.*;
 	import src.Global;
 	import src.Map.City;
+	import src.Objects.Effects.Formula;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Components.SimpleTroopGridList.*;
+	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
+	import src.Util.Util;
 
 	public class AttackTroopDialog extends GameJPanel {
 
 		//members define
-		private var panel2:JPanel;
+		private var pnlAttackStrength:JPanel;
 		private var lblAttackStrength:JLabel;
 		private var rdAssault:JRadioButton;
 		private var rdRaid:JRadioButton;
 		private var rdSlaughter:JRadioButton;
 		private var pnlLocal:JTabbedPane;
 		private var pnlAttack:JTabbedPane;
-		private var panel9:JPanel;
+		private var pnlButton:JPanel;
 		private var btnOk:JButton;
 		private var radioGroup: ButtonGroup;
+		private var lblTroopSpeed: JLabel;
 
 		private var city: City;
 
@@ -52,7 +57,7 @@
 			//create attack tile lists
 			var newTroop: TroopStub = new TroopStub();
 			for (var i: int = 0; i < destFormations.length; i ++)
-			newTroop.add(new Formation(destFormations[i]));
+				newTroop.add(new Formation(destFormations[i]));
 
 			attackTilelists = SimpleTroopGridList.getGridList(newTroop, city.template);
 
@@ -61,6 +66,24 @@
 			//drag handler
 			tilelists = localTilelists.concat(attackTilelists);
 			var tileListDragDropHandler: SimpleTroopGridDragHandler = new SimpleTroopGridDragHandler(tilelists);
+			
+			// troop speed label
+			for each (var tilelist: SimpleTroopGridList in attackTilelists) {
+				tilelist.addEventListener(SimpleTroopGridList.UNIT_CHANGED, updateSpeedInfo);
+			}
+			
+			updateSpeedInfo();
+		}
+		
+		public function updateSpeedInfo(e: Event = null): void {
+			var stub: TroopStub = getTroop();			
+			if (stub.getIndividualUnitCount() == 0) {
+				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
+			}
+			else {
+				var secsPerTile: int = Formula.moveTime(city, stub.getSpeed(city), 1, true);
+				lblTroopSpeed.setText("Troop will move a tile about every " + Util.niceTime(secsPerTile, false));
+			}
 		}
 
 		public function getMode(): int
@@ -98,9 +121,9 @@
 			layout0.setGap(10);
 			setLayout(layout0);
 
-			panel2 = new JPanel();
-			panel2.setLocation(new IntPoint(5, 5));
-			panel2.setSize(new IntDimension(10, 10));
+			pnlAttackStrength = new JPanel();
+			pnlAttackStrength.setLocation(new IntPoint(5, 5));
+			pnlAttackStrength.setSize(new IntDimension(10, 10));
 
 			lblAttackStrength = new JLabel();
 			lblAttackStrength.setLocation(new IntPoint(5, 5));
@@ -132,37 +155,39 @@
 			pnlAttack = new JTabbedPane();
 			pnlAttack.setSize(new IntDimension(389, 35));
 
-			panel9 = new JPanel();
-			panel9.setLocation(new IntPoint(0, 127));
-			panel9.setSize(new IntDimension(389, 10));
+			pnlButton = new JPanel();
+			pnlButton.setLocation(new IntPoint(0, 127));
+			pnlButton.setSize(new IntDimension(389, 10));
 			var layout3:FlowLayout = new FlowLayout();
 			layout3.setAlignment(AsWingConstants.CENTER);
-			panel9.setLayout(layout3);
+			pnlButton.setLayout(layout3);
 
 			btnOk = new JButton();
 			btnOk.setLocation(new IntPoint(183, 5));
 			btnOk.setSize(new IntDimension(22, 22));
 			btnOk.setText("Ok");
 
+			lblTroopSpeed = new JLabel("", null, AsWingConstants.LEFT);
+			
 			//component layoution
-			append(panel2);
-			append(new JLabel("Hint: Drag units to assign to the different troops", null, AsWingConstants.LEFT));
+			append(pnlAttackStrength);
 			append(pnlLocal);
 			append(pnlAttack);
-			append(panel9);
+			append(lblTroopSpeed);
+			append(pnlButton);
 
-			panel2.append(lblAttackStrength);
+			pnlAttackStrength.append(lblAttackStrength);
 
 			radioGroup = new ButtonGroup();
 			radioGroup.append(rdAssault);
 			radioGroup.append(rdRaid);
 			radioGroup.append(rdSlaughter);
 
-			panel2.append(rdRaid);
-			panel2.append(rdAssault);
-			panel2.append(rdSlaughter);
+			pnlAttackStrength.append(rdRaid);
+			pnlAttackStrength.append(rdAssault);
+			pnlAttackStrength.append(rdSlaughter);
 
-			panel9.append(btnOk);
+			pnlButton.append(btnOk);
 		}
 	}
 

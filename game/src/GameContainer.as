@@ -72,7 +72,7 @@
 		private var minimapZoomTooltip: SimpleTooltip;
 
 		//Handles fancy auto resizing
-		private var resizeManager: ResizeManager;
+		public var resizeManager: ResizeManager;
 
 		// Game bar bg. Can't be in Flash because of scale9 issue
 		private var barBg: DisplayObject;

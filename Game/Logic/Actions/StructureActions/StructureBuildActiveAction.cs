@@ -63,6 +63,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Normal;
+            }
+        }
+
         public override ActionType Type
         {
             get

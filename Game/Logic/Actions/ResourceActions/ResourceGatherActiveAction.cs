@@ -36,6 +36,14 @@ namespace Game.Logic.Actions
             objectId = uint.Parse(properties["object_id"]);
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Normal;
+            }
+        }
+
         public override ActionType Type
         {
             get

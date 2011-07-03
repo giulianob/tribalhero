@@ -17,7 +17,6 @@ namespace Game.Logic
         public uint EffectReqId { get; set; }
         public EffectInheritance EffectReqInherit { get; set; }
         public byte Index { get; set; }
-        public byte Max { get; set; }
         public ActionOption Option { get; set; }
         public string[] Parms { get; set; }
         public ActionType Type { get; set; }
@@ -343,7 +342,6 @@ namespace Game.Logic
 
             int actionId = actionIdGen.GetNext();
 
-            Error error;
             if (actionId == -1)
                 return Error.ActionTotalMaxReached;
 
@@ -352,59 +350,64 @@ namespace Game.Logic
             if (record == null)
                 return Error.ActionNotFound;
 
-            List<ActiveAction> stubsRemain = active.FindAll(stub => stub.WorkerObject == workerObject);
-
-            if (stubsRemain.Count >= record.Max)
-                return Error.ActionWorkerMaxReached;
-
-            foreach (var actionReq in record.List)
+            foreach (var actionReq in record.List.Where(x => x.Type == action.Type))
             {
-                if (actionReq.Type != action.Type)
-                    continue;
+                var error = action.Validate(actionReq.Parms);
 
-                if ((error = action.Validate(actionReq.Parms)) == Error.Ok)
+                if (error != Error.Ok)
                 {
-                    if (stubsRemain.FindAll(stub => stub.WorkerIndex == actionReq.Index).Count >= actionReq.Max)
-                        return Error.ActionIndexMaxReached;
+                    if (error != Error.ActionInvalid)
+                        return error;
 
-                    if (
-                            (error =
-                             EffectRequirementFactory.GetEffectRequirementContainer(actionReq.EffectReqId).Validate(workerObject,
-                                                                                                                    effects.GetAllEffects(
-                                                                                                                                          actionReq.
-                                                                                                                                                  EffectReqInherit))) ==
-                            Error.Ok)
-                    {
-                        action.OnNotify += NotifyActive;
-                        action.ActionId = (ushort)actionId;
-                        action.WorkerIndex = actionReq.Index;
-                        action.WorkerType = workerType;
-                        action.WorkerObject = workerObject;
-                        active.Add(action.ActionId, action);
-
-                        Error ret = action.Execute();
-
-                        if (ret != Error.Ok)
-                        {
-                            action.StateChange(ActionState.Failed);
-                            active.Remove(action.ActionId);
-                            ReleaseId(action.ActionId);
-                        }
-                        else
-                            action.StateChange(ActionState.Started);
-
-                        return ret;
-                    }
-
-                    Global.Logger.Debug("Effect Requirement failed for action[" + action.Type + "].");
-                    return error;
+                    continue;
                 }
 
-                if (error != Error.ActionInvalid)
+                if (!CanDoActiveAction(action, actionReq, workerObject))
+                    return Error.ActionTotalMaxReached;
+
+                error = EffectRequirementFactory.GetEffectRequirementContainer(actionReq.EffectReqId).Validate(workerObject,
+                                                                                                               effects.GetAllEffects(actionReq.EffectReqInherit));
+
+                if (error != Error.Ok)
                     return error;
+
+                action.OnNotify += NotifyActive;
+                action.ActionId = (ushort)actionId;
+                action.WorkerIndex = actionReq.Index;
+                action.WorkerType = workerType;
+                action.WorkerObject = workerObject;
+                active.Add(action.ActionId, action);
+
+                Error ret = action.Execute();
+
+                if (ret != Error.Ok)
+                {
+                    action.StateChange(ActionState.Failed);
+                    active.Remove(action.ActionId);
+                    ReleaseId(action.ActionId);
+                }
+                else
+                    action.StateChange(ActionState.Started);
+
+                return ret;
             }
 
             return Error.ActionInvalid;
+        }
+
+        private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, GameObject worker)
+        {
+            switch(action.Concurrency)
+            {
+                case ConcurrencyType.StandAlone:
+                    return !active.Any(x => x.Value.WorkerObject == worker);
+                case ConcurrencyType.Normal:
+                    return !active.Any(x => x.Value.WorkerObject == worker && (x.Value.Concurrency == ConcurrencyType.StandAlone || x.Value.Concurrency == ConcurrencyType.Normal));
+                case ConcurrencyType.Concurrent:
+                    return !active.Any(x => x.Value.WorkerObject == worker && (x.Value.Type == actionReq.Type || x.Value.Concurrency == ConcurrencyType.StandAlone));
+            }
+
+            return false;
         }
 
         public Error DoPassive(ICanDo workerObject, PassiveAction action, bool visible)

@@ -24,7 +24,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function StructureChangeButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype, nextStructPrototype: StructurePrototype)
 		{
-			super(parentObj, nextStructPrototype.getName());
+			super(parentObj, "Convert to " + nextStructPrototype.getName());
 
 			if (!structPrototype)
 			return;
@@ -72,15 +72,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
-			var missingReqs: Array = parentAction.validate(parentObj, effects);
+			var missingReqs: Array = parentAction.getMissingRequirements(parentObj, effects);
 
 			changeToolTip.missingRequirements = missingReqs;
-			changeToolTip.draw(currentCount, parentAction.maxCount);
+			changeToolTip.draw();
 
 			if (nextStructPrototype == null)
 			{
-				changeToolTip.draw(currentCount, parentAction.maxCount);
-				disable();
+				changeToolTip.draw();
 				return false;
 			}
 
@@ -88,26 +87,15 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			if (city == null)
 			{
-				disable();
 				return false;
 			}
 
 			if (missingReqs != null && missingReqs.length > 0)
 			{
-				disable();
 				return false;
 			}
 
-			if (city.resources.GreaterThanOrEqual(Formula.buildCost(city, nextStructPrototype)))
-			{
-				enable();
-				return true;
-			}
-			else
-			{
-				disable();
-				return false;
-			}
+			return city.resources.GreaterThanOrEqual(Formula.buildCost(city, nextStructPrototype));
 		}
 	}
 

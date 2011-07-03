@@ -15,6 +15,7 @@ package src.Map {
 	import src.Objects.*;
 	import src.Objects.Troop.*;
 	import src.Util.BinaryList.*;
+	import src.Util.Util;
 
 	public class City extends EventDispatcher
 	{
@@ -168,6 +169,38 @@ package src.Map {
 			}
 
 			return labors;
+		}
+		
+		public function validateAction(action: Action, parentObj: GameObject): Boolean {
+			// Button doesnt have a real action, dont validate it
+			if (!action)
+				return true;
+			
+			var concurrency: int = Action.actionConcurrency[action.actionType];
+			
+			if (!concurrency) {
+				Util.log("Missing concurrency for action " + action.actionType);
+				return true;
+			}
+				
+			for each (var currentAction: CurrentActiveAction in currentActions.getObjectActions(parentObj.objectId, true)) {
+				var otherConcurrency: int = Action.actionConcurrency[currentAction.getType()];
+				
+				switch (concurrency) {
+					case Action.CONCURRENCY_STANDALONE:
+						return false;
+					case Action.CONCURRENCY_NORMAL:
+						if (otherConcurrency == Action.CONCURRENCY_STANDALONE || otherConcurrency == Action.CONCURRENCY_NORMAL)
+							return false;
+						break;
+					case Action.CONCURRENCY_CONCURRENT:
+						if (otherConcurrency == Action.CONCURRENCY_STANDALONE || action.actionType == currentAction.getType())
+							return false;
+						break;
+				}
+			}
+				
+			return true;
 		}
 
 		public static function sortOnId(a:City, b:City):Number

@@ -63,7 +63,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var city: City = Global.map.cities.get(parentObj.groupId);
 			if (city == null) {
 				Util.log("TechnologyButton.validateButton: Unknown city");
-				disable();
 				return false;
 			}
 
@@ -79,8 +78,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (parentAction == null)
 			{
 				Util.log("TechnologyButton.validateButton: missing parent action");
-				techToolTip.draw(currentCount, 999);
-				disable();
+				techToolTip.draw();
 				return false;
 			}
 
@@ -88,8 +86,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			if (techUpgradeAction == null || techPrototype.level >= techUpgradeAction.maxlevel)
 			{
-				techToolTip.draw(currentCount, parentAction.maxCount);
-				disable();
+				techToolTip.draw();
 				return false;
 			}
 
@@ -99,32 +96,21 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var parentCityObj: CityObject = city.objects.get(parentObj.objectId);
 			if (parentCityObj == null) {
 				Util.log("TechnologyButton.validateButton: Unknown city object");
-				disable();
 				return false;
 			}
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
-			var missingReqs: Array = parentAction.validate(parentObj, effects);
+			var missingReqs: Array = parentAction.getMissingRequirements(parentObj, effects);
 
 			techToolTip.missingRequirements = missingReqs;
-			techToolTip.draw(currentCount, parentAction.maxCount);
+			techToolTip.draw();
 
 			if (missingReqs != null && missingReqs.length > 0)
 			{
-				disable();
 				return false;
 			}
 
-			if (Global.map.cities.get(parentObj.groupId).resources.GreaterThanOrEqual(nextTechPrototype.resources))
-			{
-				enable();
-				return true;
-			}
-			else
-			{
-				disable();
-				return false;
-			}
+			return Global.map.cities.get(parentObj.groupId).resources.GreaterThanOrEqual(nextTechPrototype.resources);
 		}
 	}
 

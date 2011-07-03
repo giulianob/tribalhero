@@ -14,12 +14,37 @@ package src.Objects.Actions {
 	public class Action {
 		
 		public static const groups: Object = [
-			{ name: "Build", icon: ICON_HAMMER, actions: [ BuildButton ] },
-			{ name: "Train", icon: ICON_SINGLE_SWORD, actions: [ TrainButton] },
-			{ name: "Upgrade", icon: ICON_UPGRADE, actions: [ StructureUpgradeButton, StructureChangeButton, UnitUpgradeButton ] },				
+			{ name: "Build and Upgrade", icon: ICON_HAMMER, actions: [ StructureUpgradeButton, BuildButton ] },
+			{ name: "Train Units", icon: ICON_SINGLE_SWORD, actions: [ TrainButton] },
+			{ name: "Upgrade Units", icon: ICON_UPGRADE, actions: [ UnitUpgradeButton ] },				
+			{ name: "Convert Structure", icon: ICON_HAMMER, actions: [ StructureChangeButton ] },
 			{ name: "Research", icon: ICON_BOOK, actions: [ TechnologyButton ] },			
 			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton ] },
 		];	
+		
+		public static const CONCURRENCY_STANDALONE: int = 1;
+		public static const CONCURRENCY_NORMAL: int = 2;
+		public static const CONCURRENCY_CONCURRENT: int = 3;
+		
+		public static const actionConcurrency: Object = {
+			101: CONCURRENCY_NORMAL, // STRUCTURE BUILD
+			102: CONCURRENCY_STANDALONE, // STRUCTURE UPGRADE
+			103: CONCURRENCY_STANDALONE, // STRUCTURE CHANGE
+			106: CONCURRENCY_CONCURRENT, // LABOR MOVE
+			107: CONCURRENCY_NORMAL, // STRUCTURE DOWNGRADE
+			305: CONCURRENCY_NORMAL, // RESOURCE SEND
+			306: CONCURRENCY_NORMAL, // RESOURCE BUY
+			307: CONCURRENCY_NORMAL, // RESOURCE SELL
+			308: CONCURRENCY_CONCURRENT, // FOREST CAMP BUILD
+			309: CONCURRENCY_NORMAL, // FOREST CAMP REMOVE
+			311: CONCURRENCY_CONCURRENT, // RESOURCE GATHER
+			402: CONCURRENCY_NORMAL, // TECH UPGRADE
+			510: CONCURRENCY_CONCURRENT, // ROAD BUILD
+			511: CONCURRENCY_CONCURRENT, // ROAD DESTROY
+			601: CONCURRENCY_CONCURRENT, // UNIT TRAIN
+			602: CONCURRENCY_NORMAL, // UNIT UPGRADE
+			701: CONCURRENCY_CONCURRENT // DEFAULT ACTION
+		};
 		
 		public static const costsToCancelActions: Array = [STRUCTURE_BUILD, STRUCTURE_UPGRADE, STRUCTURE_CHANGE, TECHNOLOGY_UPGRADE, UNIT_TRAIN, UNIT_UPGRADE];
 		
@@ -49,13 +74,12 @@ package src.Objects.Actions {
 		public static const ROAD_DESTROY: int = 511;
         public static const UNIT_TRAIN: int = 601;
         public static const UNIT_UPGRADE: int = 602;
-        public static const BATTLE: int = 701;
 		public static const DEFAULT_ACTION: int = 801;
+		
 		public var actionType: int;
 		public var effectReq: EffectReqManager;
 		public var effectReqInherit: int;
 		public var index: int;
-		public var maxCount: int;
 		public var options: int;
 		
 		public function Action(actionType: int = 0) 
@@ -63,7 +87,7 @@ package src.Objects.Actions {
 			this.actionType = actionType;			
 		}
 		
-		public function validate(parentObj: SimpleGameObject, effects: Array): Array
+		public function getMissingRequirements(parentObj: SimpleGameObject, effects: Array): Array
 		{
 			if (!(parentObj is GameObject)) return new Array();
 			if (effectReq == null) return new Array();

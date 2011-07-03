@@ -28,11 +28,9 @@
 				var worker: Worker = new Worker();
 
 				worker.type = workerNode.@type;
-				worker.maxCount = workerNode.@max;
 
 				for each (var actionNode: XML in workerNode.*)
 				{
-					var maxCount: int = actionNode.@max;
 					var effectReqId: int = actionNode.@effectreq;
 					var effectReq: EffectReqManager = null;
 					var effectReqInherit: int = EffectPrototype.INHERIT_UPWARD;
@@ -124,7 +122,6 @@
 
 					if (action != null)
 					{
-						action.maxCount = maxCount;
 						action.options = options;
 						action.effectReq = effectReq;
 						action.effectReqInherit = effectReqInherit;

@@ -40,8 +40,7 @@ package src.UI.Tooltips {
 		private var lblNextLvlDescription:MultilineLabel;
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
-		private var pnlFooter:JPanel;
-		private var lblActionCount:JLabel;
+		private var pnlFooter:JPanel;		
 		private var pnlResources:JPanel;
 		private var nextStatsBox: StructureStatBox;
 
@@ -52,9 +51,9 @@ package src.UI.Tooltips {
 			this.nextStructPrototype = nextStructPrototype;
 		}
 
-		override public function draw(count: int, max: int): void
+		override public function draw(): void
 		{
-			super.draw(count, max);
+			super.draw();
 			
 			if (!drawTooltip) return;
 			else if (pnlHeader == null) createUI();
@@ -150,13 +149,6 @@ package src.UI.Tooltips {
 			pnlFooter = new JPanel();
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 
-			lblActionCount = new JLabel();
-			lblActionCount.setVisible(false);
-			lblActionCount.setConstraints("West");
-			lblActionCount.setText("0/1");
-			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblActionCount, "Tooltip.text");
-
 			pnlResources = new JPanel();
 			pnlResources.setConstraints("Center");
 			var layout4:FlowLayout = new FlowLayout();
@@ -187,7 +179,6 @@ package src.UI.Tooltips {
 				ui.append(pnlNextLvl);
 			}
 
-			pnlFooter.append(lblActionCount);
 			pnlFooter.append(pnlResources);
 			
 			lblTitle.setText("Upgrade " + structPrototype.getName());

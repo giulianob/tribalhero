@@ -29,11 +29,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				cursor.init(parentObj as StructureObject);
 			}
 		}
-
-		override public function validateButton(): Boolean
-		{
-			return isEnabled();
-		}
 	}
 
 }

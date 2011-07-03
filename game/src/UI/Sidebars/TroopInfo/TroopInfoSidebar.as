@@ -120,7 +120,9 @@
 					if (groupButton.parentAction == null) continue;
 
 					pnlGroup.append(groupButton);
-					groupButton.validateButton();
+					
+					if (!groupButton.validateButton())
+						groupButton.disable();
 				}
 
 				pnlGroups.append(pnlGroup);

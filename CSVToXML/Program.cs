@@ -287,7 +287,6 @@ namespace CSVToXML {
             {
                     writer.WriteStartElement("Worker");
                     writer.WriteAttributeString("type", record.Id.ToString());
-                    writer.WriteAttributeString("max", record.Max.ToString());
                     foreach(ActionRequirement req in record.List)
                     {
                         switch (req.Type) {
@@ -361,7 +360,6 @@ namespace CSVToXML {
                         }
 
                         writer.WriteAttributeString("index", req.Index.ToString());
-                        writer.WriteAttributeString("max", req.Max.ToString());
                         writer.WriteAttributeString("option", ((int)req.Option).ToString());
                         
                         if (req.EffectReqId !=0) {

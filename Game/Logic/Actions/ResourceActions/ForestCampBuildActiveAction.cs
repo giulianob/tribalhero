@@ -48,6 +48,14 @@ namespace Game.Logic.Actions
             forestId = uint.Parse(properties["forest_id"]);
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Concurrent;
+            }
+        }
+
         public override ActionType Type
         {
             get

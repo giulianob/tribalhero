@@ -11,6 +11,7 @@
 	import src.Objects.GameObject;
 	import src.Objects.Resources;
 	import src.Objects.StructureObject;
+	import src.UI.Components.AutoCompleteTextField;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.GameJPanel;
 	import src.Util.Util;
@@ -26,7 +27,7 @@
 		private var lblTitle1:JLabel;
 		private var lblCityTitle: JLabel;
 		
-		private var txtCityName: JTextField;
+		private var txtCityName: AutoCompleteTextField;
 
 		private var pnlResources:JPanel;
 
@@ -152,7 +153,9 @@
 			
 			lblCityTitle = new JLabel("Recipient City:");
 			
-			txtCityName = new JTextField("", 10);
+			txtCityName = new AutoCompleteTextField(Global.mapComm.General.autoCompleteCity);
+			txtCityName.setColumns(16);
+			txtCityName.setMaxChars(32);			
 			
 			pnlCity.append(lblCityTitle);
 			pnlCity.append(txtCityName);

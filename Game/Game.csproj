@@ -124,6 +124,7 @@
     <Compile Include="Comm\PacketHelper.cs" />
     <Compile Include="Comm\Parameter.cs" />
     <Compile Include="Comm\Processor Commands\Battle.cs" />
+    <Compile Include="Comm\Processor Commands\Assignment.cs" />
     <Compile Include="Comm\Processor Commands\Tribesman.cs" />
     <Compile Include="Comm\Processor Commands\Tribe.cs" />
     <Compile Include="Comm\Processor Commands\General.cs" />

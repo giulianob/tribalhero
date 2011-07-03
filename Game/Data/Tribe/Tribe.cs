@@ -57,6 +57,7 @@ namespace Game.Data.Tribe
         readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
 
         public Resource Resource { get; private set; }
+        public int AssignmentCount { get { return assignments.Count; } }
 
         public Tribe(Player owner, string name) :
             this(owner, name, string.Empty, 1, new Resource())
@@ -288,8 +289,11 @@ namespace Game.Data.Tribe
 
         public Error CreateAssignment(TroopStub stub, uint x, uint y, DateTime time, AttackMode mode, out int id)
         {
-            LargeIdGenerator largeIdGenerator = new LargeIdGenerator(1000);
-            largeIdGenerator.GetNext();
+            if (DateTime.UtcNow.AddDays(2) < time)
+            {
+                id = 0;
+                return Error.AssignmentBadTime;
+            }
             Assignment assignment = new Assignment(this, x, y, mode, time, stub);
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);

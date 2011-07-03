@@ -234,19 +234,6 @@ namespace Game.Comm
             ReplySuccess(session, packet);
         }
 
-        public void CmdTribeAssignmentList(Session session, Packet packet)
-        {
-
-        }
-        public void CmdTribeAssignmentCreate(Session session, Packet packet)
-        {
-
-        }
-        public void CmdTribeAssignmentJoin(Session session, Packet packet)
-        {
-
-        }
-
         public void CmdTribeIncomingList(Session session, Packet packet)
         {
             /* Tribe t;

@@ -19,6 +19,13 @@ namespace Game.Logic.Procedures
             return true;
         }
 
+        public static bool TroopStubDelete(City city, TroopStub stub)
+        {
+            AddToNormal(stub, city.DefaultTroop);
+            city.Troops.Remove(stub.TroopId);
+            return true;
+        }
+
         public static bool TroopObjectCreate(City city, TroopStub stub)
         {
             var troop = new TroopObject(stub) { X = city.X, Y = city.Y };

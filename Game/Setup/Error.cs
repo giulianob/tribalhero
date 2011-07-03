@@ -108,6 +108,7 @@ namespace Game.Setup
 
         AssignmentDone = 741,
         AssignmentNotFound = 742,
+        AssignmentBadTime = 743,
         #endregion
 
     }

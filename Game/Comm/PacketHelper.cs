@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
 using Game.Map;
@@ -362,6 +363,24 @@ namespace Game.Comm
 
                 //Unit Template
                 AddToPacket(city.Template, packet);
+        }
+
+        internal static void AddToPacket(Assignment assignment, Packet packet)
+        {
+            packet.AddInt32(assignment.Id);
+            packet.AddUInt32(UnixDateTime.DateTimeToUnix(assignment.TargetTime.ToUniversalTime()));
+            packet.AddUInt32(assignment.X);
+            packet.AddUInt32(assignment.Y);
+            packet.AddByte((byte)assignment.AttackMode);
+            packet.AddUInt32(assignment.DispatchCount);
+            packet.AddInt32(assignment.TroopCount);
+            foreach(var kvp in (IEnumerable<KeyValuePair<DateTime,TroopStub>>)assignment)
+            {
+                packet.AddUInt32(kvp.Value.City.Id);
+                packet.AddByte(kvp.Value.TroopId);
+                packet.AddUInt32(UnixDateTime.DateTimeToUnix(kvp.Key.ToUniversalTime()));
+                packet.AddInt32(kvp.Value.Upkeep);
+            }
         }
     }
 }

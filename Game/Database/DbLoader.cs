@@ -67,7 +67,7 @@ namespace Game.Database
                     LoadActions(dbManager, downTime);
                     LoadActionReferences(dbManager);
                     LoadActionNotifications(dbManager);
-                    LoadAssignments(dbManager);
+                    LoadAssignments(dbManager,downTime);
 
                     Global.World.AfterDbLoaded();
 
@@ -146,7 +146,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadAssignments(IDbManager dbManager) {
+        private static void LoadAssignments(IDbManager dbManager, TimeSpan downTime) {
             #region Assignments
 
             Global.Logger.Info("Loading assignements...");
@@ -159,7 +159,7 @@ namespace Game.Database
                                                     (uint)reader["x"],
                                                     (uint)reader["y"],
                                                     (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
-                                                    DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc),
+                                                    DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
                                                     (uint)reader["dispatch_count"]);
 
                     using (DbDataReader listReader = dbManager.SelectList(assignment)) {
@@ -171,6 +171,7 @@ namespace Game.Database
                     }
                     assignment.DbPersisted=true;
                     tribe.DbLoaderAddAssignment(assignment);
+                    Global.DbManager.Save(assignment);
                     Global.Scheduler.Put(assignment);
                 }
             }

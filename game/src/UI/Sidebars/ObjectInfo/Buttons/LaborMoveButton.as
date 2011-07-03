@@ -54,11 +54,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 		}
 
-		public override function validateButton():Boolean
-		{
-			return isEnabled();
-		}
-
 		public function onAcceptDialog(sender: LaborMoveDialog):void
 		{
 			Global.mapComm.Object.laborMove(parentObj.groupId, this.parentObj.objectId, sender.getCount());

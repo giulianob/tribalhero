@@ -353,20 +353,17 @@ package src.UI.Sidebars.ObjectInfo {
 				if (button.alwaysEnabled() || Constants.alwaysEnableButtons) {
 					button.enable();
 					continue;
-				}
-
-				button.validateButton();
-
-				if (!button.countCurrentActions() || (city != null && workerPrototype != null && city.currentActions.getObjectActions(gameObject.objectId, true).length >= workerPrototype.maxCount)) {
+				}				
+				
+				if (!city.validateAction(button.parentAction, gameObject) || !button.validateButton())
 					button.disable();
-				}
 			}
 		}
 
 		private function createUI() : void
 		{
 			//component creation
-			setLayout(new BorderLayout(10));
+			setLayout(new BorderLayout(0, 5));
 
 			lblName = new JLabel();
 			lblName.setFont(new ASFont("Tahoma", 11, true, false, false, false));

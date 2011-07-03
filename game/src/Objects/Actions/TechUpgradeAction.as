@@ -36,9 +36,9 @@ package src.Objects.Actions {
 			var tech: TechnologyPrototype = TechnologyFactory.getPrototype(techtype, 1); //we assume level 1 because all techs have the same name
 				
 			if (!tech)
-				return "Upgrading " + techtype;
+				return "Researching " + techtype;
 			
-			return "Upgrading " + tech.getName();
+			return "Researching " + tech.getName();
 		}
 		
 		public function getButton(parentObj: SimpleGameObject, structPrototype: StructurePrototype): ActionButton

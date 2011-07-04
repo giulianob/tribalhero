@@ -46,6 +46,14 @@ namespace Game.Logic.Actions
             resourceType = (ResourceType)Enum.Parse(typeof(ResourceType), properties["resource_type"]);
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Normal;
+            }
+        }
+
         public override ActionType Type
         {
             get

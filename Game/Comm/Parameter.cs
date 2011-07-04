@@ -8,73 +8,49 @@ using System.Text;
 namespace Game.Comm
 {
     public class Parameter
-    {
-        private readonly byte[] bytes;
-
-        public Parameter(int value)
+    {        
+        public static byte[] ToBytes(int value)
         {
-            Value = value;
-            Length = sizeof(int);
-            bytes = BitConverter.GetBytes(value);
+            return BitConverter.GetBytes(value);
         }
 
-        public Parameter(long value)
+        public static byte[] ToBytes(short value)
         {
-            Value = value;
-            Length = sizeof(long);
-            bytes = BitConverter.GetBytes(value);
+            return BitConverter.GetBytes(value);
         }
 
-        public Parameter(uint value)
+        public static byte[] ToBytes(long value)
         {
-            Value = value;
-            Length = sizeof(uint);
-            bytes = BitConverter.GetBytes(value);
+            return BitConverter.GetBytes(value);
         }
 
-        public Parameter(ushort value)
+        public static byte[] ToBytes(uint value)
         {
-            Value = value;
-            Length = sizeof(ushort);
-            bytes = BitConverter.GetBytes(value);
+            return BitConverter.GetBytes(value);
         }
 
-        public Parameter(byte value)
+        public static byte[] ToBytes(ushort value)
         {
-            Value = value;
-            Length = sizeof(byte);
-            bytes = new[] {value};
+            return BitConverter.GetBytes(value);
         }
 
-        public Parameter(float value)
+        public static byte[] ToBytes(byte value)
         {
-            Value = value;
-            Length = sizeof(float);
-            bytes = BitConverter.GetBytes(value);
+            return new[] {value};
         }
 
-        public Parameter(string value)
+        public static byte[] ToBytes(float value)
         {
-            Value = value;
-            Length = sizeof(ushort) + value.Length;
-            bytes = new byte[2 + Length];
-            Buffer.BlockCopy(BitConverter.GetBytes((ushort)Length), 0, bytes, 0, 2);
+            return BitConverter.GetBytes(value);
+        }
+
+        public static byte[] ToBytes(string value)
+        {
+            int length = sizeof(ushort) + value.Length;
+            byte[] bytes = new byte[2 + length];
+            Buffer.BlockCopy(BitConverter.GetBytes((ushort)length), 0, bytes, 0, 2);
             Buffer.BlockCopy(Encoding.UTF8.GetBytes(value), 0, bytes, 2, value.Length);
-        }
 
-        public Parameter(byte[] value)
-        {
-            Value = value;
-            Length = value.Length;
-            bytes = value;
-        }
-
-        public object Value { get; private set; }
-
-        public int Length { get; private set; }
-
-        public byte[] GetBytes()
-        {
             return bytes;
         }
     }

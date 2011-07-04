@@ -37,6 +37,14 @@ namespace Game.Logic.Actions
             structureId = uint.Parse(properties["structure_id"]);
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Normal;
+            }
+        }
+
         public override ActionType Type
         {
             get

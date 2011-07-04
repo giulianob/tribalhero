@@ -1,6 +1,8 @@
 #region
 
 using System;
+using System.Collections.Generic;
+using System.Data.Common;
 using System.Threading;
 using Game.Data;
 using Game.Setup;
@@ -12,7 +14,8 @@ namespace Game.Database.Managers
 {
     class MySqlDbTransaction : DbTransaction
     {
-        internal MySqlDbTransaction(MySqlDbManager manager, MySqlTransaction transaction) : base(manager, transaction)
+        internal MySqlDbTransaction(MySqlDbManager manager, MySqlTransaction transaction)
+            : base(manager, transaction)
         {
         }
 
@@ -24,6 +27,39 @@ namespace Game.Database.Managers
                 return;
 
             ((MySqlTransaction)Transaction).Rollback();
+        }
+
+        public void RerunTransaction()
+        {
+            Global.DbLogger.Warn("Rerunning transactions due to deadlock");
+
+            do
+            {
+                DbCommand currentCommand = null;
+
+                try
+                {
+                    foreach (var command in Commands)
+                    {
+                        currentCommand = command;
+                        command.ExecuteNonQuery();
+                    }
+
+                    break;
+                }
+                catch(MySqlException e)
+                {
+                    if (e.ErrorCode == 1213)
+                    {
+                        Global.DbLogger.Warn("Rerunning transaction AGAIN due to deadlock");
+                        Thread.Sleep(0);
+                        continue;
+                    }
+
+                    Global.DbLogger.Error("Failed while trying to rerun transactions", e);
+                    MySqlDbManager.LogCommand(currentCommand, false);
+                }                
+            } while (true);
         }
 
         protected override void Commit()
@@ -55,7 +91,7 @@ namespace Game.Database.Managers
                 {
                 }
 
-                MySqlDbManager.HandleGeneralException(e, null);
+                (manager as MySqlDbManager).HandleGeneralException(e, null);
                 throw;
             }
 

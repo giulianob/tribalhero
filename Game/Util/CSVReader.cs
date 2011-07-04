@@ -58,6 +58,7 @@ namespace Game.Util
 
         private string[] TokenizeCSVLine(string line)
         {
+            if(line==null) return new string[0];
             string[] cells = line.Split(',');
 
             var result = new string[cells.Length];

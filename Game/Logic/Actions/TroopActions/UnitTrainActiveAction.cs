@@ -50,6 +50,14 @@ namespace Game.Logic.Actions
             timePerUnit = int.Parse(properties["time_per_unit"]);
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Concurrent;
+            }
+        }
+
         public override ActionType Type
         {
             get

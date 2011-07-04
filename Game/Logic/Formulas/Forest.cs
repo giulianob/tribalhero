@@ -55,7 +55,7 @@ namespace Game.Logic.Formulas
             if (level <= 6)
                 return 2;
 
-            if (level <= 12)
+            if (level <= 11)
                 return 3;
 
             return 4;

@@ -1,6 +1,10 @@
 #region
 
 using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using Game.Data;
+using MySql.Data.MySqlClient;
 
 #endregion
 
@@ -27,10 +31,13 @@ namespace Game.Database
         private int referenceCount;
         private DbTransactionState state = DbTransactionState.InProgress;
 
+        public List<DbCommand> Commands { get; set; }
+
         internal DbTransaction(IDbManager manager, object transaction)
         {
             this.manager = manager;
             Transaction = transaction;
+            Commands = new List<DbCommand>();
         }
 
         public int ReferenceCount
@@ -45,6 +52,22 @@ namespace Game.Database
                 if (value > 1)
                     throw new Exception("Only 1 transaction reference is allowed");
             }
+        }
+
+        protected virtual void Commit()
+        {
+            state = DbTransactionState.Committed;
+
+            if (referenceCount == 0)
+                state = DbTransactionState.Disposed;
+        }
+
+        public virtual void Rollback()
+        {
+            state = DbTransactionState.Rolledback;
+
+            if (referenceCount == 0)
+                state = DbTransactionState.Disposed;
         }
 
         #region IDisposable Members
@@ -70,21 +93,5 @@ namespace Game.Database
         }
 
         #endregion
-
-        protected virtual void Commit()
-        {
-            state = DbTransactionState.Committed;
-
-            if (referenceCount == 0)
-                state = DbTransactionState.Disposed;
-        }
-
-        public virtual void Rollback()
-        {
-            state = DbTransactionState.Rolledback;
-
-            if (referenceCount == 0)
-                state = DbTransactionState.Disposed;
-        }
     }
 }

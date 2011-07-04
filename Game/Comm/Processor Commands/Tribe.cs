@@ -112,7 +112,7 @@ namespace Game.Comm
                 reply.AddString(tribe.Description);
                 PacketHelper.AddToPacket(tribe.Resource, reply);
 
-                reply.AddInt32(tribe.Count);
+                reply.AddInt16((short)tribe.Count);
                 foreach (var tribesman in tribe)
                 {
                     reply.AddUInt32(tribesman.Player.PlayerId);
@@ -121,6 +121,22 @@ namespace Game.Comm
                     reply.AddByte(tribesman.Rank);
                     PacketHelper.AddToPacket(tribesman.Contribution, reply);
                 }
+
+                var incomingList = tribe.GetIncomingList();
+                reply.AddInt16((short)incomingList.Count());
+                foreach (var incoming in incomingList)
+                {
+                    reply.AddUInt32(incoming.City.Owner.PlayerId);
+                    reply.AddUInt32(incoming.City.Id);
+                    reply.AddString(incoming.City.Owner.Name);
+                    reply.AddString(incoming.City.Name);
+                    reply.AddUInt32(incoming.Action.WorkerObject.City.Owner.PlayerId);
+                    reply.AddUInt32(incoming.Action.WorkerObject.City.Id);
+                    reply.AddString(incoming.Action.WorkerObject.City.Owner.Name);
+                    reply.AddString(incoming.Action.WorkerObject.City.Name);
+                    reply.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.Action.EndTime.ToUniversalTime()));
+                }
+
                 session.Write(reply);
             }
         }
@@ -183,7 +199,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = session.Player.Tribesman.Tribe;
-            using (new CallbackLock(custom => tribe.ToArray(), new object[] { }, tribe))
+            using (new CallbackLock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {
@@ -216,19 +232,6 @@ namespace Game.Comm
                 Global.DbManager.Save(session.Player.Tribesman.Tribe);
             }
             ReplySuccess(session, packet);
-        }
-
-        public void CmdTribeAssignmentList(Session session, Packet packet)
-        {
-
-        }
-        public void CmdTribeAssignmentCreate(Session session, Packet packet)
-        {
-
-        }
-        public void CmdTribeAssignmentJoin(Session session, Packet packet)
-        {
-
         }
 
         public void CmdTribeIncomingList(Session session, Packet packet)

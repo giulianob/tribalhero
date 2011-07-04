@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Dynamic;
 using System.Reflection;
 using Game.Battle;
 using Game.Data;
@@ -34,7 +35,7 @@ namespace Game.Database
             DateTime now = DateTime.UtcNow;
 
             // Set all players to offline
-            Global.DbManager.Query("UPDATE `players` SET online = @online", new[] {new DbColumn("online", false, DbType.Boolean)});
+            Global.DbManager.Query("UPDATE `players` SET online = @online", new[] {new DbColumn("online", false, DbType.Boolean)}, false);
 
             using (DbTransaction transaction = Global.DbManager.GetThreadTransaction())
             {
@@ -48,6 +49,7 @@ namespace Game.Database
                     
                     Global.Logger.Info(string.Format("Server was down for {0}", downTime));
 
+                    LoadReportIds(dbManager);
                     LoadMarket(dbManager);
                     LoadPlayers(dbManager);
                     LoadCities(dbManager, downTime);
@@ -65,6 +67,7 @@ namespace Game.Database
                     LoadActions(dbManager, downTime);
                     LoadActionReferences(dbManager);
                     LoadActionNotifications(dbManager);
+                    LoadAssignments(dbManager,downTime);
 
                     Global.World.AfterDbLoaded();
 
@@ -88,6 +91,25 @@ namespace Game.Database
             return true;
         }
 
+        private static uint GetMaxId(IDbManager dbManager, string table)
+        {
+            using (var reader = dbManager.ReaderQuery(string.Format("SELECT max(`id`) FROM `{0}`", table)))
+            {
+                reader.Read();
+                if (DBNull.Value.Equals(reader[0]))
+                    return 0;
+
+                return (uint)reader[0];
+            }
+        }
+
+        private static void LoadReportIds(IDbManager dbManager)
+        {
+            BattleReport.BattleIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_DB));
+            BattleReport.ReportIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_REPORTS_DB));
+            BattleReport.BattleTroopIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_REPORT_TROOPS_DB));
+        }
+
         private static void LoadTribes(IDbManager dbManager) {
             #region Tribes
 
@@ -96,8 +118,12 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                   // var resource = new Resource((int)reader["crop"],(int)reader["gold"],(int)reader["iron"],(int)reader["wood"],0);
-                    var tribe = new Tribe(Global.World.Players[(uint)reader["player_id"]], (string)reader["name"], (string)reader["desc"], (byte)reader["level"], new Resource()) { DbPersisted = true };
+                    var resource = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
+                    var tribe = new Tribe(Global.World.Players[(uint)reader["player_id"]],
+                                          (string)reader["name"],
+                                          (string)reader["desc"],
+                                          (byte)reader["level"],
+                                          resource) {DbPersisted = true};
                     Global.Tribes.Add(tribe.Id, tribe);
                 }
             }
@@ -112,9 +138,41 @@ namespace Game.Database
                 while (reader.Read()) {
                     Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
                     var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
-                    var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], (DateTime)reader["join_date"], contribution, (byte)reader["rank"])
+                    var tribesman = new Tribesman(tribe, Global.World.Players[(uint)reader["player_id"]], DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc), contribution, (byte)reader["rank"])
                                     {DbPersisted = true};
                     tribe.AddTribesman(tribesman,false);
+                }
+            }
+            #endregion
+        }
+
+        private static void LoadAssignments(IDbManager dbManager, TimeSpan downTime) {
+            #region Assignments
+
+            Global.Logger.Info("Loading assignements...");
+            using (var reader = dbManager.Select(Assignment.DB_TABLE)) {
+                while (reader.Read()) {
+                    Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    Assignment assignment = new Assignment(
+                                                    (int)reader["id"],
+                                                     tribe,
+                                                    (uint)reader["x"],
+                                                    (uint)reader["y"],
+                                                    (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
+                                                    DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
+                                                    (uint)reader["dispatch_count"]);
+
+                    using (DbDataReader listReader = dbManager.SelectList(assignment)) {
+                        while (listReader.Read()) {
+                            City city;
+                            Global.World.TryGetObjects((uint)listReader["city_id"], out city);
+                            assignment.DbLoaderAdd(city.Troops[(byte)listReader["stub_id"]]);
+                        }
+                    }
+                    assignment.DbPersisted=true;
+                    tribe.DbLoaderAddAssignment(assignment);
+                    Global.DbManager.Save(assignment);
+                    Global.Scheduler.Put(assignment);
                 }
             }
             #endregion
@@ -460,6 +518,9 @@ namespace Game.Database
         {
             #region Troop Stubs
 
+
+            List<dynamic> stationedTroops = new List<dynamic>();
+
             Global.Logger.Info("Loading troop stubs...");
             using (var reader = dbManager.Select(TroopStub.DB_TABLE))
             {
@@ -467,10 +528,6 @@ namespace Game.Database
                 {
                     City city;
                     Global.World.TryGetObjects((uint)reader["city_id"], out city);
-                    City stationedCity = null;
-
-                    if ((uint)reader["stationed_city_id"] != 0)
-                        Global.World.TryGetObjects((uint)reader["stationed_city_id"], out stationedCity);
 
                     var stub = new TroopStub
                                {
@@ -495,9 +552,18 @@ namespace Game.Database
                     }
 
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
-                    if (stationedCity != null)
-                        stationedCity.Troops.AddStationed(stub);
+
+                    var stationedCityId = (uint)reader["stationed_city_id"];
+                    if (stationedCityId != 0)
+                        stationedTroops.Add(new {stub, stationedCityId}); 
                 }
+            }
+
+            foreach (var stubInfo in stationedTroops)
+            {
+                City stationedCity;
+                Global.World.TryGetObjects(stubInfo.stationedCityId, out stationedCity);
+                stationedCity.Troops.AddStationed(stubInfo.stub);
             }
 
             #endregion

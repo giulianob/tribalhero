@@ -7,7 +7,7 @@ using Game.Setup;
 
 namespace Game.Battle
 {
-    class BattleViewer
+    public class BattleViewer
     {
         private BattleManager battle;
 
@@ -20,7 +20,14 @@ namespace Game.Battle
             battle.ExitTurn += BattleExitTurn;
             battle.UnitRemoved += BattleUnitRemoved;
             battle.ActionAttacked += BattleActionAttacked;
+            battle.SkippedAttacker += BattleSkippedAttacker;
+            battle.EnterRound += BattleEnterRound;
         }
+
+        void BattleEnterRound(CombatList atk, CombatList def, uint round) {
+            Append("Round[" + round + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
+        }
+
 
         protected virtual void Append(string str)
         {
@@ -32,13 +39,19 @@ namespace Game.Battle
             if (co is AttackCombatUnit)
             {
                 var unit = co as AttackCombatUnit;
-                Append("List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + UnitFactory.GetName(unit.Type, 1) +
+                Append("Team[Atk] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + UnitFactory.GetName(unit.Type, 1) +
                        "] HP[" + unit.Hp + "]");
             }
+            else if(co is DefenseCombatUnit)
+            {
+                var unit = co as DefenseCombatUnit;
+                Append("Team[Def] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + UnitFactory.GetName(unit.Type, 1) +
+                       "] HP[" + unit.Hp + "]");
+            } 
             else if (co is CombatStructure)
             {
                 var cs = co as CombatStructure;
-                Append("List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + StructureFactory.GetName(cs.Structure) + "] HP[" + cs.Hp + "]");
+                Append("Team[Def] List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + StructureFactory.GetName(cs.Structure.Type,(byte)cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
             }
         }
 
@@ -47,10 +60,8 @@ namespace Game.Battle
             Append("**************************************");
             Append("Attacker: ");
             PrintCombatobject(source);
-            Append("\n");
             Append("Defender: ");
             PrintCombatobject(target);
-            Append("\n");
             Append("**************************************\n");
         }
 
@@ -59,7 +70,6 @@ namespace Game.Battle
             Append("**************************************");
             Append("Removing: ");
             PrintCombatobject(obj);
-            Append("\n");
             Append("**************************************\n");
         }
 
@@ -81,6 +91,13 @@ namespace Game.Battle
         private void BattleEnterBattle(CombatList atk, CombatList def)
         {
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
+        }
+
+        void BattleSkippedAttacker(CombatObject obj) {
+            Append("**************************************");
+            Append("Skipping: ");
+            PrintCombatobject(obj);
+            Append("**************************************\n");
         }
     }
 }

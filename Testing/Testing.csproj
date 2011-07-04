@@ -76,6 +76,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Balancing\TestUserBattles.cs" />
+    <Compile Include="Balancing\TestSwordsman.cs" />
+    <Compile Include="Balancing\TestUtility.cs" />
+    <Compile Include="Balancing\TestCavalry.cs" />
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
     <Compile Include="Channel\ChannelTest.cs" />

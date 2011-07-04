@@ -39,8 +39,6 @@ namespace Game.Database.Managers
             connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4}", database, hostname, username, password, timeout);            
         }
 
-        #region IDbManager Members
-
         public void Close(DbConnection connection)
         {
             lock (this)
@@ -204,25 +202,11 @@ namespace Game.Database.Managers
 
         public DbDataReader Select(string table)
         {
-            MySqlConnection connection = GetConnection();
-
-            MySqlCommand command = connection.CreateCommand();
-
-            command.Connection = connection;
-
-            command.CommandText = string.Format("SELECT * FROM `{0}`", table);
-
-            return command.ExecuteReader(CommandBehavior.CloseConnection);
+            return ReaderQuery(string.Format("SELECT * FROM `{0}`", table));
         }
 
         DbDataReader IDbManager.SelectList(IPersistableList obj)
         {
-            MySqlConnection connection = GetConnection();
-
-            MySqlCommand command = connection.CreateCommand();
-
-            command.Connection = connection;
-
             bool startComma = false;
             string where = "";
             foreach (var column in obj.DbPrimaryKey)
@@ -235,12 +219,19 @@ namespace Game.Database.Managers
                 where += string.Format("`{0}`=@{0}", column.Column);
             }
 
-            command.CommandText = string.Format("SELECT * FROM `{0}_list` WHERE {1}", obj.DbTable, where);
+            return ReaderQuery(string.Format("SELECT * FROM `{0}_list` WHERE {1}", obj.DbTable, where), obj.DbPrimaryKey);
+        }
 
-            foreach (var column in obj.DbPrimaryKey)
-                AddParameter(command, column, DataRowVersion.Original);
+        internal static void LogCommand(DbCommand command, bool onlyIfVerbose = true)
+        {
+            if (command == null || (onlyIfVerbose && !Config.database_verbose))
+                return;
 
-            return command.ExecuteReader(CommandBehavior.CloseConnection);
+            var sqlwriter = new StringWriter();
+            foreach (MySqlParameter param in command.Parameters)
+                sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
+
+            Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
         }
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
@@ -263,16 +254,14 @@ namespace Game.Database.Managers
                 where += string.Format("`{0}`=@{0}", column.Column);
             }
 
-            command.CommandText = string.Format("SELECT * FROM `{0}` WHERE {1}", table, where);
-
-            foreach (var column in primaryKeyValues)
-                AddParameter(command, column, DataRowVersion.Original);
-
-            return command.ExecuteReader(CommandBehavior.CloseConnection);
+            return ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE {1}", table, where), primaryKeyValues);
         }
 
-        public DbDataReader ReaderQuery(string query, DbColumn[] parms)
+        public DbDataReader ReaderQuery(string query, DbColumn[] parms = null)
         {
+            if (parms == null)
+                parms = new DbColumn[] {};
+
             MySqlConnection connection = GetConnection();
 
             MySqlCommand command = connection.CreateCommand();
@@ -282,48 +271,45 @@ namespace Game.Database.Managers
             foreach (var parm in parms)
                 AddParameter(command, parm);
 
+            LogCommand(command);
+
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public int Query(string query, DbColumn[] parms)
+        public void Query(string query, DbColumn[] parms, bool transactional)
         {
             if (paused)
-                return 0;
+                return;
 
-            MySqlCommand command;
-            bool transactional = persistantTransaction != null;
-            MySqlDbTransaction transaction;
+            MySqlCommand command;            
+
+            if (transactional && persistantTransaction == null)
+                throw new Exception("Calling transactional query outside of transactional block");
 
             if (!transactional)
             {
-                transaction = CreateTransaction();
                 MySqlConnection connection = GetConnection();
                 command = connection.CreateCommand();
                 command.Connection = connection;
             }
             else
-            {
-                transaction = persistantTransaction;
+            {                
                 InitPersistantTransaction();
+                command = ((MySqlTransaction)persistantTransaction.Transaction).Connection.CreateCommand();
+                command.Connection = ((MySqlTransaction)persistantTransaction.Transaction).Connection;
+                command.Transaction = (persistantTransaction.Transaction as MySqlTransaction);
             }
-
-            command = ((MySqlTransaction)transaction.Transaction).Connection.CreateCommand();
-            command.Connection = ((MySqlTransaction)transaction.Transaction).Connection;
-            command.Transaction = (transaction.Transaction as MySqlTransaction);
 
             command.CommandText = query;
             foreach (var parm in parms)
                 AddParameter(command, parm);
 
-            int affected = ExecuteNonQuery(command);
+            ExecuteNonQuery(command);
 
             if (!transactional)
             {
-                ((MySqlTransaction)transaction.Transaction).Commit();
                 Close(command.Connection);
             }
-
-            return affected;
         }
 
         public void Rollback()
@@ -335,44 +321,6 @@ namespace Game.Database.Managers
                 Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction rollback");
 
             persistantTransaction.Rollback();
-        }
-
-        public uint LastInsertId()
-        {
-            if (paused)
-                return 0;
-            MySqlCommand command;
-            bool transactional = persistantTransaction != null;
-            MySqlDbTransaction transaction;
-
-            if (!transactional)
-            {
-                transaction = CreateTransaction();
-                MySqlConnection connection = GetConnection();
-                command = connection.CreateCommand();
-                command.Connection = connection;
-            }
-            else
-            {
-                transaction = persistantTransaction;
-                InitPersistantTransaction();
-            }
-
-            command = ((MySqlTransaction)transaction.Transaction).Connection.CreateCommand();
-            command.Connection = ((MySqlTransaction)transaction.Transaction).Connection;
-            command.Transaction = (transaction.Transaction as MySqlTransaction);
-
-            command.CommandText = "SELECT LAST_INSERT_ID()";
-
-            var id = (long)command.ExecuteScalar();
-
-            if (!transactional)
-            {
-                ((MySqlTransaction)transaction.Transaction).Commit();
-                Close(command.Connection);
-            }
-
-            return (uint)id;
         }
 
         public void Pause()
@@ -411,15 +359,13 @@ namespace Game.Database.Managers
             Close(connection);
         }
 
-        public void Probe(out int queriesRan, out DateTime lastProbe)
+        public void Probe(out int queriesRanOut, out DateTime lastProbeOut)
         {
-            queriesRan = (int)Interlocked.Read(ref this.queriesRan);
+            queriesRanOut = (int)Interlocked.Read(ref queriesRan);
             Interlocked.Exchange(ref this.queriesRan, 0);
-            lastProbe = this.lastProbe;
-            this.lastProbe = DateTime.UtcNow;
+            lastProbeOut = lastProbe;
+            lastProbe = DateTime.UtcNow;
         }
-
-        #endregion
 
         private MySqlConnection GetConnection()
         {
@@ -759,12 +705,7 @@ namespace Game.Database.Managers
             return command;
         }
 
-        private void AddParameter(MySqlCommand command, DbColumn column)
-        {
-            AddParameter(command, column, DataRowVersion.Default);
-        }
-
-        private void AddParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion)
+        private static void AddParameter(MySqlCommand command, DbColumn column, DataRowVersion sourceVersion = DataRowVersion.Default)
         {
             MySqlParameter parameter = command.CreateParameter();
             parameter.ParameterName = "@" + column.Column;
@@ -781,44 +722,54 @@ namespace Game.Database.Managers
             command.Parameters.Add(parameter);
         }
 
-        private int ExecuteNonQuery(MySqlCommand command)
+        private void ExecuteNonQuery(MySqlCommand command)
         {
             Interlocked.Increment(ref queriesRan);
 
-            if (Config.database_verbose)
-            {
-                var sqlwriter = new StringWriter();
-                foreach (MySqlParameter param in command.Parameters)
-                    sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
+            LogCommand(command);
 
-                Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
-            }
-
-            try
+            do
             {
-                return command.ExecuteNonQuery();
-            }
-            catch(Exception e)
-            {
-                HandleGeneralException(e, command);
-            }
+                try
+                {
+                    command.ExecuteNonQuery();
+                    break;
+                }
+                catch (MySqlException e)
+                {
+                    switch (e.Number)
+                    {
+                        case 1213:
+                            Thread.Sleep(0);
+                            if (command.Transaction == persistantTransaction.Transaction)
+                                persistantTransaction.RerunTransaction();
+                            break;
+                        case 1215:
+                            Thread.Sleep(0);
+                            continue;
+                        default:
+                            HandleGeneralException(e, command);
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    HandleGeneralException(e, command);                    
+                }
+            } while (true);                                      
 
-            return 0;
+            if (command.Transaction != null && command.Transaction == persistantTransaction.Transaction)
+                persistantTransaction.Commands.Add(command);
         }
 
-        public static void HandleGeneralException(Exception e, MySqlCommand command)
+        public void HandleGeneralException(Exception e, DbCommand command = null)
         {
-            var writer = new StringWriter();
+            Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") ", e);
+
             if (command != null)
-            {
-                writer.Write(command.CommandText);
-                foreach (MySqlParameter param in command.Parameters)
-                    writer.Write(param + "=" + param.Value + ",");
-            }
+                LogCommand(command, false);
 
-            Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") " + writer, e);
-
-            Environment.Exit(-999);
+            Environment.Exit(2);
         }
     }
 }

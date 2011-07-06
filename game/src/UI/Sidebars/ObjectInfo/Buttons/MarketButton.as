@@ -103,35 +103,30 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var originalPrice: int;
 			switch (marketDialog.resourceType())
 			{
-			case Resources.TYPE_WOOD:
-				originalPrice = marketDialog.wood;
-			break;
-			case Resources.TYPE_IRON:
-				originalPrice = marketDialog.iron;
-			break;
-			case Resources.TYPE_CROP:
-				originalPrice = marketDialog.crop;
-			break;
-			default:
-				return;
+				case Resources.TYPE_WOOD:
+					originalPrice = marketDialog.wood;
+				break;
+				case Resources.TYPE_IRON:
+					originalPrice = marketDialog.iron;
+				break;
+				case Resources.TYPE_CROP:
+					originalPrice = marketDialog.crop;
+				break;
+				default:
+					return;
+			}
+
+			Global.mapComm.Market.buyResources(onMarketResponse, marketDialog, parentObj.groupId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
 		}
 
-		Global.mapComm.Market.buyResources(onMarketResponse, marketDialog, parentObj.groupId, parentObj.objectId, marketDialog.resourceType(), count, originalPrice);
+		public function onMarketResponse(status: int, custom: *):void
+		{
+			if (status == 0)
+				(custom as GameJPanel).getFrame().dispose();
+			else
+				GameError.showMessage(status);
+		}
 	}
-
-	public function onMarketResponse(status: int, custom: *):void
-	{
-		if (status == 0)
-		(custom as GameJPanel).getFrame().dispose();
-		else
-		GameError.showMessage(status);
-	}
-
-	override public function validateButton(): Boolean
-	{
-		return isEnabled();
-	}
-}
 
 }
 

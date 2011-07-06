@@ -68,9 +68,9 @@ package src.UI{
 			return 20;
 		}
 		
-		public static function getFrameHeight() : int {
+		public static function getFrameHeight(topAndBottom: Boolean = true) : int {
 			var border: SkinEmptyBorder = UIManager.getDefaults().get("Frame.borderWithoutPaper");
-			return border.getTop();
+			return border.getTop() * (topAndBottom ? 2 : 1);
 		}
 	}
 }

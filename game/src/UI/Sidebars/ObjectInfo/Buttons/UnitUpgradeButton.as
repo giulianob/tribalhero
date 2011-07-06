@@ -73,17 +73,16 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
-			var missingReqs: Array = parentAction.validate(parentObj, effects);
+			var missingReqs: Array = parentAction.getMissingRequirements(parentObj, effects);
 
 			upgradeToolTip.missingRequirements = missingReqs;
-			upgradeToolTip.draw(currentCount, parentAction.maxCount);
+			upgradeToolTip.draw();
 
 			var unitUpgradeAction: UnitUpgradeAction = parentAction as UnitUpgradeAction;
 
 			if (nextUnitPrototype == null || nextUnitPrototype.level > unitUpgradeAction.maxlevel)
 			{
-				upgradeToolTip.draw(currentCount, parentAction.maxCount);
-				disable();
+				upgradeToolTip.draw();
 				return false;
 			}
 
@@ -91,26 +90,15 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			if (city == null)
 			{
-				disable();
 				return false;
 			}
 
 			if (missingReqs != null && missingReqs.length > 0)
 			{
-				disable();
 				return false;
 			}
 
-			if (city.resources.GreaterThanOrEqual(Formula.unitUpgradeCost(city, nextUnitPrototype)))
-			{
-				enable();
-				return true;
-			}
-			else
-			{
-				disable();
-				return false;
-			}
+			return city.resources.GreaterThanOrEqual(Formula.unitUpgradeCost(city, nextUnitPrototype));
 		}
 	}
 

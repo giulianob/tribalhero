@@ -51,7 +51,6 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 		
 		override public function validateButton():Boolean 
 		{
-			super.validateButton();
 			if (!Global.gameContainer.selectedCity.resources.GreaterThanOrEqual(mainBuildingPrototype.buildResources))
 				return false;
 			

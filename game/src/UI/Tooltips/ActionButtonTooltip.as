@@ -18,7 +18,7 @@ package src.UI.Tooltips
 		override public function show(obj:DisplayObject):void 
 		{
 			drawTooltip = true;
-			draw(0, 0);
+			draw();
 			super.show(obj);
 		}
 		
@@ -28,7 +28,7 @@ package src.UI.Tooltips
 			drawTooltip = false;
 		}
 		
-		public function draw(count: int, max: int) : void {}
+		public function draw() : void {}
 		
 	}
 

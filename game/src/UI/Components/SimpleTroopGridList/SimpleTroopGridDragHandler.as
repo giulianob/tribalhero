@@ -1,5 +1,6 @@
 ﻿package src.UI.Components.SimpleTroopGridList
 {
+	import flash.events.Event;
 	import org.aswing.Component;
 	import org.aswing.dnd.DragListener;
 	import org.aswing.dnd.DragManager;
@@ -30,7 +31,7 @@
 
 				this.tilelists.push(tilelist);
 				for (var i: int = 0; i < tilelist.getModel().getSize(); i++)
-				addToAllTileLists(tilelist, tilelists, tilelist.getCellByIndex(i) as Component);
+					addToAllTileLists(tilelist, tilelists, tilelist.getCellByIndex(i) as Component);
 			}
 		}
 
@@ -70,7 +71,8 @@
 					var numberInput: NumberInputDialog = new NumberInputDialog("Enter amount of troops to transfer", 1, cellValue.data.count, function():void {
 						numberInput.getFrame().dispose();
 
-						if (numberInput.getAmount().getValue() == cellValue.data.count) {
+						// Remove from source
+						if (numberInput.getAmount().getValue() >= cellValue.data.count) {
 							(sourceGrid.getModel() as VectorListModel).remove(cellValue);
 							removeFromAllTileLists(dragInitiator);
 						}
@@ -79,11 +81,15 @@
 							cellValue.data.count -= numberInput.getAmount().getValue();
 							cell.setCellValue(cellValue);							
 						}
+						
+						sourceGrid.dispatchEvent(new Event(SimpleTroopGridList.UNIT_CHANGED));
 
+						// Add to target
 						var newTroopCell: SimpleTroopGridCell = targetGrid.addUnit(cellValue.data.type, numberInput.getAmount().getValue());
 
+						// Bind drag handlre to new cell item
 						if (newTroopCell != null)
-						addToAllTileLists(targetGrid, tilelists, newTroopCell); //new guy, add to all
+							addToAllTileLists(targetGrid, tilelists, newTroopCell); //new guy, add to all
 					},
 					cellValue.data.count);
 
@@ -93,13 +99,18 @@
 				}
 				else
 				{
+					// Remove from source
 					(sourceGrid.getModel() as VectorListModel).remove(cellValue);
 					removeFromAllTileLists(dragInitiator);
 
+					sourceGrid.dispatchEvent(new Event(SimpleTroopGridList.UNIT_CHANGED));
+					
+					// Add to target
 					var newTroopCell: SimpleTroopGridCell = targetGrid.addUnit(cellValue.data.type, 1);
 
+					// Bind drag handler to new cell item
 					if (newTroopCell != null)
-					addToAllTileLists(targetGrid, tilelists, newTroopCell); //new guy, add to all
+						addToAllTileLists(targetGrid, tilelists, newTroopCell); //new guy, add to all
 				}
 			}else{
 				DragManager.setDropMotion(new RejectedMotion());

@@ -43,9 +43,9 @@
 			this.city = Global.gameContainer.selectedCity;
 		}		
 		
-		override public function draw(count: int, max: int): void
+		override public function draw(): void
 		{
-			super.draw(count, max);
+			super.draw();
 			
 			if (!drawTooltip) return;
 			else if (pnlHeader == null) createUI();

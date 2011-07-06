@@ -1,4 +1,5 @@
 ﻿package src.Objects.Actions {
+	import src.Global;
 	import src.Util.BinaryList.*;
 
 	/**
@@ -38,9 +39,8 @@
 			var ret: Array = new Array();
 			for each(var currentAction: CurrentAction in each())
 			{
-				if (activeOnly && !(currentAction is CurrentActiveAction)) {
-					continue;
-				}
+				if (activeOnly && !(currentAction is CurrentActiveAction)) continue;
+				if (currentAction.endTime - Global.map.getServerTime() <= 0) continue;				
 
 				if (currentAction.workerId == objId) {
 					ret.push(currentAction);

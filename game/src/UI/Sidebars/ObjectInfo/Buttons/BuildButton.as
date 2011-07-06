@@ -68,7 +68,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 			if (city == null)
 			{
-				disable();
 				return false;
 			}
 
@@ -79,7 +78,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
-			var missingReqs: Array = parentAction.validate(parentObj, effects);
+			var missingReqs: Array = parentAction.getMissingRequirements(parentObj, effects);
 			
 			// Enforce only two building/upgrade at a time for structures that arent marked as UnlimitedBuilding			
 			if (!ObjectFactory.isType("UnlimitedBuilding", structPrototype.type)) {
@@ -102,24 +101,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 
 			buildToolTip.missingRequirements = missingReqs;
-			buildToolTip.draw(currentCount, parentAction.maxCount);
+			buildToolTip.draw();
 
 			if (missingReqs != null && missingReqs.length > 0)
 			{
-				disable();
 				return false;
 			}
 
-			if (city.resources.GreaterThanOrEqual(Formula.buildCost(city, structPrototype)))
-			{
-				enable();
-				return true;
-			}
-			else
-			{
-				disable();
-				return false;
-			}
+			return city.resources.GreaterThanOrEqual(Formula.buildCost(city, structPrototype));
 		}
 	}
 

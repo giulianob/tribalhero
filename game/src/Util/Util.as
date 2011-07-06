@@ -22,6 +22,7 @@ package src.Util {
 	import org.aswing.JTextComponent;
 	import flash.external.ExternalInterface;
 	import src.Constants;
+	import src.UI.GameJImagePanelBackground;
 
 	public class Util {
 		public static function log(msg: String) : void {			
@@ -82,6 +83,10 @@ package src.Util {
 			location.x = Math.round(location.x - frame.getWidth()/2);
 			location.y = Math.max(0, Math.round(location.y - frame.getHeight()/2));
 			frame.setLocation(location);
+		}
+		
+		public static function getMaxGamePanelHeight(top: int = 0): int {			
+			return Constants.screenH - GameJImagePanelBackground.getFrameHeight() - top;
 		}
 
 		public static function binarySearch(array: Array, compare: Function, value: *): int

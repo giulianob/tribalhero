@@ -36,7 +36,6 @@
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
 		private var pnlFooter:JPanel;
-		private var lblActionCount:JLabel;
 		private var pnlResources:JPanel;
 		private var statsBox: StructureStatBox;
 		
@@ -49,9 +48,9 @@
 			this.city = Global.map.cities.get(parentObj.cityId);			
 		}		
 		
-		override public function draw(count: int, max: int): void
+		override public function draw(): void
 		{
-			super.draw(count, max);
+			super.draw();
 			
 			if (!drawTooltip) return;
 			else if (pnlHeader == null) createUI();
@@ -71,8 +70,6 @@
 			};
 
 			lblTime.setText(Util.formatTime(Formula.buildTime(parentObj, structPrototype.buildTime, parentObj.getCorrespondingCityObj().techManager)));
-
-			lblActionCount.setText(count + "/" + max);
 
 			if (structPrototype.layouts.length > 0 || (missingRequirements != null && missingRequirements.length > 0))
 			{
@@ -142,13 +139,6 @@
 			pnlFooter = new JPanel();
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 
-			lblActionCount = new JLabel();
-			lblActionCount.setVisible(false);
-			lblActionCount.setConstraints("West");
-			lblActionCount.setText("0/1");
-			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblActionCount, "Tooltip.text");
-
 			pnlResources = new JPanel();
 			pnlResources.setConstraints("Center");
 			var layout4:FlowLayout = new FlowLayout();
@@ -169,7 +159,6 @@
 			pnlHeader.append(lblTime);
 			pnlHeader.append(lblDescription);
 
-			pnlFooter.append(lblActionCount);
 			pnlFooter.append(pnlResources);
 			
 			// text values

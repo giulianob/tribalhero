@@ -69,7 +69,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			var city: City = Global.map.cities.get(parentObj.groupId);
 			if (city == null) {
 				Util.log("StructureUpgradeButton.validateButton: Unknown city");
-				disable();
 				return false;
 			}
 
@@ -80,11 +79,11 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}
 
 			var effects: Array = parentCityObj.techManager.getAllEffects(parentAction.effectReqInherit);
-			var missingReqs: Array = parentAction.validate(parentObj, effects);
+			var missingReqs: Array = parentAction.getMissingRequirements(parentObj, effects);
 
 			if (nextStructPrototype == null)
 			{
-				upgradeToolTip.draw(currentCount, parentAction.maxCount);
+				upgradeToolTip.draw();
 				disable();
 				return false;
 			}
@@ -110,24 +109,14 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			}			
 			
 			upgradeToolTip.missingRequirements = missingReqs;
-			upgradeToolTip.draw(currentCount, parentAction.maxCount);
+			upgradeToolTip.draw();
 			
 			if (missingReqs != null && missingReqs.length > 0)
 			{
-				disable();
 				return false;
 			}
 
-			if (city.resources.GreaterThanOrEqual(Formula.buildCost(city, nextStructPrototype)))
-			{
-				enable();
-				return true;
-			}
-			else
-			{
-				disable();
-				return false;
-			}
+			return city.resources.GreaterThanOrEqual(Formula.buildCost(city, nextStructPrototype));
 		}
 	}
 

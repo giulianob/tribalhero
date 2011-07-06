@@ -1,6 +1,7 @@
 ﻿package src.UI.Components.SimpleTroopGridList
 {
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import org.aswing.AsWingConstants;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.ext.GeneralGridListCellFactory;
@@ -31,6 +32,8 @@
 		private var templates: UnitTemplateManager;
 		private var formationType: int;
 		private var tooltip: Tooltip;
+		
+		public static const UNIT_CHANGED: String = "UNIT_CHANGED";
 
 		public function SimpleTroopGridList(templateManager: UnitTemplateManager, formationType: int)
 		{
@@ -90,7 +93,7 @@
 			return formation;
 		}
 
-		public function addUnit(type: int, count: int) : SimpleTroopGridCell {
+		public function addUnit(type: int, count: int) : SimpleTroopGridCell {					
 			for (var i: int = 0; i < getModel().getSize(); i++)
 			{
 				var troopCell: SimpleTroopGridCell = getCellByIndex(i) as SimpleTroopGridCell;
@@ -98,6 +101,7 @@
 				if (value.data.type == type) {
 					value.data.count += count;
 					troopCell.setCellValue(value);
+					dispatchEvent(new Event(UNIT_CHANGED));
 					return null;
 				}
 			}
@@ -115,6 +119,8 @@
 
 			pack();
 
+			dispatchEvent(new Event(UNIT_CHANGED));
+			
 			return getCellByIndex(getModel().getSize() - 1) as SimpleTroopGridCell;
 		}
 

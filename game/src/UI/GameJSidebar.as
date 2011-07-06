@@ -1,5 +1,7 @@
 ﻿package src.UI
 {
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.event.FrameEvent;
 	import org.aswing.geom.IntPoint;
@@ -19,6 +21,10 @@
 		public function GameJSidebar()
 		{
 			setPreferredWidth(WIDTH);
+
+			addEventListener(MouseEvent.MOUSE_DOWN, function(e: Event): void {
+				e.stopImmediatePropagation();
+			});
 		}
 
 		public function getFrame(): GameJFrame {

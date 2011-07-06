@@ -59,41 +59,6 @@ package src.Objects.Actions {
 		{
 			return true;
 		}
-
-		public function countCurrentActions(): Boolean
-		{
-			var gameObj: GameObject = parentObj as GameObject;
-			
-			if (!parentAction || !gameObj) 
-				return true;						
-
-			var city: City = Global.map.cities.get(gameObj.cityId);
-			
-			if (city == null) 
-				return true;
-
-			var actions: Array = city.currentActions.getObjectActions(gameObj.objectId);
-
-			currentCount = 0;
-			for each (var currentAction: * in actions)
-			{			
-				if (currentAction is CurrentActionReference) 
-					continue;
-				
-				if (!(currentAction is CurrentActiveAction)) 
-					continue;
-
-				if (currentAction.endTime - Global.map.getServerTime() <= 0) 
-					continue;
-
-				if (currentAction.index == parentAction.index)
-					continue;
-					
-				currentCount++;
-			}
-
-			return currentCount < parentAction.maxCount;
-		}
 	}
 }
 

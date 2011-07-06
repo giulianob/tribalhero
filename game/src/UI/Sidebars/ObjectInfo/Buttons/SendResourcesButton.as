@@ -35,11 +35,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				picker.show();
 			}
 		}
-
-		override public function validateButton(): Boolean
-		{
-			return isEnabled();
-		}
 	}
 
 }

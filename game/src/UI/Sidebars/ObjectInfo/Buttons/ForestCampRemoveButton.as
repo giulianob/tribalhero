@@ -48,11 +48,6 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				Global.mapComm.Object.removeForestCamp(parentObj.groupId, parentObj.objectId);
 			}
 		}
-		
-		public override function validateButton():Boolean 
-		{
-			return isEnabled();
-		}
 	}
 	
 }

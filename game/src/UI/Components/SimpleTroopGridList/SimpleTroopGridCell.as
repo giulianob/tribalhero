@@ -35,7 +35,7 @@
 			setIcon(new AssetIcon(value.source));
 			var unit: Unit = value.data;
 			setText(unit.count.toString());
-			pack();
+			repaintAndRevalidate();
 		}
 
 		public function getCellValue():*{

@@ -35,7 +35,6 @@ package src.UI.Tooltips {
 		private var pnlRequired:JPanel;
 		private var lblRequires:JLabel;
 		private var pnlFooter:JPanel;
-		private var lblActionCount:JLabel;
 		private var pnlResources:JPanel;
 
 		public function StructureChangeTooltip(parentObj: StructureObject, nextStructPrototype: StructurePrototype)
@@ -44,9 +43,9 @@ package src.UI.Tooltips {
 			this.nextStructPrototype = nextStructPrototype;
 		}
 
-		override public function draw(count: int, max: int) :void
+		override public function draw() :void
 		{
-			super.draw(count, max);
+			super.draw();
 			
 			if (!drawTooltip) return;
 			else if (pnlHeader == null) createUI();
@@ -72,8 +71,6 @@ package src.UI.Tooltips {
 			lblDescription.setText(nextStructPrototype.getGeneralDescription());
 
 			lblLvlDescription.setText(nextStructPrototype.getDescription());
-
-			lblActionCount.setText(count + "/" + max);
 
 			if (nextStructPrototype.layouts.length > 0 || (missingRequirements != null && missingRequirements.length > 0))
 			{
@@ -140,13 +137,6 @@ package src.UI.Tooltips {
 			pnlFooter = new JPanel();
 			pnlFooter.setLayout(new BorderLayout(10, 0));
 
-			lblActionCount = new JLabel();
-			lblActionCount.setVisible(false);
-			lblActionCount.setConstraints("West");
-			lblActionCount.setText("0/1");
-			lblActionCount.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblActionCount, "Tooltip.text");
-
 			pnlResources = new JPanel();
 			pnlResources.setConstraints("Center");
 			var layout4:FlowLayout = new FlowLayout();
@@ -166,7 +156,6 @@ package src.UI.Tooltips {
 			pnlHeader.append(lblTitle);
 			pnlHeader.append(lblTime);
 
-			pnlFooter.append(lblActionCount);
 			pnlFooter.append(pnlResources);
 		}
 

@@ -43,6 +43,14 @@ namespace Game.Logic.Actions
             techId = uint.Parse(properties["tech_id"]);
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Normal;
+            }
+        }
+
         public override ActionType Type
         {
             get

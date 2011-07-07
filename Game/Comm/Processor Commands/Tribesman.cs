@@ -151,8 +151,11 @@ namespace Game.Comm
             using (new MultiObjectLock(session.Player, tribe))
             {
                 Tribesman tribesman = new Tribesman(tribe, session.Player, 2);
-                tribe.AddTribesman(tribesman);
-                ReplySuccess(session, packet);
+                var error = tribe.AddTribesman(tribesman);
+                if (error != Error.Ok)
+                    ReplyError(session, packet, error);
+                else
+                    ReplySuccess(session, packet);
             }
         }
 

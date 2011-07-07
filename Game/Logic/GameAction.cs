@@ -17,6 +17,13 @@ namespace Game.Logic
         Uncancelable = 1
     }
 
+    public enum ConcurrencyType
+    {
+        StandAlone,
+        Normal,
+        Concurrent
+    }
+
     public enum ActionType
     {
         ObjectRemovePassive = 10,
@@ -93,7 +100,7 @@ namespace Game.Logic
         public bool IsDone { get; set; }
 
         public uint ActionId { get; set; }
-
+        
         public abstract ActionType Type { get; }
         public abstract String Properties { get; }
 

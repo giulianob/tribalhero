@@ -16,6 +16,8 @@ namespace Game.Logic
 
         public ushort ActionCount { get; protected set; }
 
+        public abstract ConcurrencyType Concurrency { get; }
+
         public override string DbTable
         {
             get

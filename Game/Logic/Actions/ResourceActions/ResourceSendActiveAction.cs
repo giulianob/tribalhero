@@ -45,6 +45,14 @@ namespace Game.Logic.Actions
                                     int.Parse(properties["labor"]));
         }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Normal;
+            }
+        }
+
         public override ActionType Type
         {
             get

@@ -40,6 +40,14 @@ namespace Game.Logic.Actions
 
         public ushort UnitType { get; private set; }
 
+        public override ConcurrencyType Concurrency
+        {
+            get
+            {
+                return ConcurrencyType.Normal;
+            }
+        }
+
         public override ActionType Type
         {
             get

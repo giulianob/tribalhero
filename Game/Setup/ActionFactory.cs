@@ -15,7 +15,6 @@ namespace Game.Setup
     {
         public int Id { get; set; }
         public List<ActionRequirement> List { get; set; }
-        public byte Max { get; set; }
     }
 
     public class ActionFactory : IEnumerable<ActionRecord>
@@ -27,13 +26,11 @@ namespace Game.Setup
             if (dict != null)
                 return;
 
-            dict = new Dictionary<int, ActionRecord> {{0, new ActionRecord {Id = 0, List = new List<ActionRequirement>(), Max = 0}}};
+            dict = new Dictionary<int, ActionRecord> {{0, new ActionRecord {Id = 0, List = new List<ActionRequirement>()}}};
 
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
-                ActionRecord record;
-                ActionRequirement actionReq;
 
                 var col = new Dictionary<string, int>();
                 for (int i = 0; i < reader.Columns.Length; ++i)
@@ -47,13 +44,14 @@ namespace Game.Setup
                     int type = int.Parse(toks[col["Type"]]);
                     int index = type*100 + lvl;
 
-                    if (dict.Any(x => x.Key > index && x.Key < type*100 + 99))
+                    if (dict.Any(x => x.Key > index && x.Key < type * 100 + 99))
                     {
                         throw new Exception("Action out of sequence, newer lvl is found!");
                     }
 
                     int lastLvl = dict.Keys.LastOrDefault(x => x <= index && x > type*100);
 
+                    ActionRecord record;
                     if (lastLvl == 0)
                     {
                         record = new ActionRecord {List = new List<ActionRequirement>(), Id = index};
@@ -66,23 +64,19 @@ namespace Game.Setup
                     else
                     {
                         ActionRecord lastActionRecord = dict[lastLvl];
-                        record = new ActionRecord {Max = lastActionRecord.Max, List = new List<ActionRequirement>(), Id = index};
+                        record = new ActionRecord { List = new List<ActionRequirement>(), Id = index};
                         record.List.AddRange(lastActionRecord.List);
                         dict[index] = record;
                     }
 
                     byte actionIndex;
-                    if ((actionIndex = byte.Parse(toks[col["Index"]])) == 0)
-                        record.Max = byte.Parse(toks[col["Max"]]);
-                    else
-                    {
+                    if ((actionIndex = byte.Parse(toks[col["Index"]])) > 0) {
                         // Create action and set basic options
-                        actionReq = new ActionRequirement
-                                    {
-                                            Index = actionIndex,
-                                            Type = (ActionType)Enum.Parse(typeof(ActionType), (toks[col["Action"]] + "_active").ToCamelCase(), true),
-                                            Max = byte.Parse(toks[col["Max"]])
-                                    };
+                        ActionRequirement actionReq = new ActionRequirement
+                                                      {
+                                                              Index = actionIndex,
+                                                              Type = (ActionType)Enum.Parse(typeof(ActionType), (toks[col["Action"]] + "_active").ToCamelCase(), true),
+                                                      };
 
                         // Set action options
                         if (toks[col["Option"]].Length > 0)

@@ -22,7 +22,7 @@ namespace Game.Data.Tribe
         }
 
         public const string DB_TABLE = "tribes";
-        const int MEMBERS_PER_LEVEL = 5;
+        public const int MEMBERS_PER_LEVEL = 5;
         public uint Id
         {
             get

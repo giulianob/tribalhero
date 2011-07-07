@@ -98,6 +98,7 @@ namespace Game.Setup
         TribeAlreadyExists =703,
         TribeNotFound = 704,
         TribeNameInvalid = 705,
+        TribeMaxLevel = 706,
         TribesmanNotFound = 721,
         TribesmanAlreadyExists = 722,
         TribesmanIsOwner = 723,

@@ -229,6 +229,11 @@ namespace Game.Comm
             Tribe tribe = session.Player.Tribesman.Tribe;
             using (new MultiObjectLock(tribe))
             {
+                if(tribe.Level>=20)
+                {
+                    ReplyError(session, packet, Error.TribeMaxLevel);
+                    return;
+                }
                 Resource cost = Formula.GetTribeUpgradeCost(tribe.Level);
                 tribe.Resource.HasEnough(cost);
                 tribe.Resource.Subtract(cost);

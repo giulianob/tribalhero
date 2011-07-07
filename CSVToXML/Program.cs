@@ -555,6 +555,11 @@ namespace CSVToXML {
                         if (obj[0] == string.Empty)
                             continue;
 
+                        if (obj[0].StartsWith("#"))
+                        {
+                            continue;
+                        }
+
                         writer.WriteStartElement("trans-unit");
                         writer.WriteAttributeString("resname", obj[0]);
                         writer.WriteStartElement("source");

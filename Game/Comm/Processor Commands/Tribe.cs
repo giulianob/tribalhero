@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
@@ -225,10 +226,13 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player.Tribesman.Tribe))
+            Tribe tribe = session.Player.Tribesman.Tribe;
+            using (new MultiObjectLock(tribe))
             {
-                // deduct resource
-                ++session.Player.Tribesman.Tribe.Level;
+                Resource cost = Formula.GetTribeUpgradeCost(tribe.Level);
+                tribe.Resource.HasEnough(cost);
+                tribe.Resource.Subtract(cost);
+                ++tribe.Level;
                 Global.DbManager.Save(session.Player.Tribesman.Tribe);
             }
             ReplySuccess(session, packet);

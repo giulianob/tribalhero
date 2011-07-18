@@ -7,129 +7,129 @@ OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%
 OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%
 ,
 A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. 
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide a little more help defending when the town is under attack. 
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide a lot more help defending when the town is under attack. 
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide great help defending when the town is under attack. 
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide superb help defending when the town is under attack. 
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. (Stacks exponetially)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide a little more help defending when the town is under attack. (Stacks exponetially)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide a lot more help defending when the town is under attack. (Stacks exponetially)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide great help defending when the town is under attack. (Stacks exponetially)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide superb help defending when the town is under attack. (Stacks exponetially)
 ,
 ,
 TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Reduces distance requirement by 1 for underground structures.
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Reduces distance requirement by 2 for underground structures.
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Reduces distance requirement by 3 for underground structures.
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Reduces distance requirement by 1 for underground structures. (Stacks linearly)
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Reduces distance requirement by 2 for underground structures. (Stacks linearly)
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Reduces distance requirement by 3 for underground structures. (Stacks linearly)
 ,
 SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP. Stackable up to 100%"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structure is destroyed in battle, all other buildings are repaired by 8% of the destroyed buildings HP. Stackable up to 100%"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structure is destroyed in battle, all other buildings are repaired by 12% of the destroyed buildings HP. Stackable up to 100%"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all other buildings are repaired by 16% of the destroyed buildings HP. Stackable up to 100%"
-SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP. Stackable up to 100%"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP. (Stacks linearly up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_2,"If any structure is destroyed in battle, all other buildings are repaired by 8% of the destroyed buildings HP. (Stacks linearly up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_3,"If any structure is destroyed in battle, all other buildings are repaired by 12% of the destroyed buildings HP. (Stacks linearly up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all other buildings are repaired by 16% of the destroyed buildings HP. (Stacks linearly up to 100%)"
+SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP. (Stacks linearly up to 100%)"
 ,
 LAST_STAND_TECHNOLOGY_NAME,Last Stand
-LAST_STAND_TECHNOLOGY_LVL_1,15% chance to completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_2,30% chance to completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_3,45% chance to completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_4,60% chance to completely ignore the attack when team is about to die.
-LAST_STAND_TECHNOLOGY_LVL_5,75% chance to completely ignore the attack when team is about to die.
+LAST_STAND_TECHNOLOGY_LVL_1,15% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_2,30% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_3,45% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_4,60% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_5,75% chance to completely ignore the attack when team is about to die. (Does not stack)
 ,
 ,
 RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack
-RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an attack mission. (Stackable)
-RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an attack mission. (Stackable)
-RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an attack mission. (Stackable)
-RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attack mission. (Stackable)
-RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stackable)
+RUSH_ATTACK_TECHNOLOGY_LVL_1,Increases travel speed of troops by 4% on an attack mission. (Stacks linearly)
+RUSH_ATTACK_TECHNOLOGY_LVL_2,Increases travel speed of troops by 8% on an attack mission. (Stacks linearly)
+RUSH_ATTACK_TECHNOLOGY_LVL_3,Increases travel speed of troops by 12% on an attack mission. (Stacks linearly)
+RUSH_ATTACK_TECHNOLOGY_LVL_4,Increases travel speed of troops by 16% on an attack mission. (Stacks linearly)
+RUSH_ATTACK_TECHNOLOGY_LVL_5,Increases travel speed of troops by 20% on an attack mission. (Stacks linearly)
 ,
 RUSH_DEFENSE_TECHNOLOGY_NAME,Rush Defense
-RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stackable)
-RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stackable)
+RUSH_DEFENSE_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% on a defense mission. (Stacks linearly)
+RUSH_DEFENSE_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% on a defense mission. (Stacks linearly)
+RUSH_DEFENSE_TECHNOLOGY_LVL_3,Increases troops' travel speed by 12% on a defense mission. (Stacks linearly)
+RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense mission. (Stacks linearly)
+RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks linearly)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
-DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% when distance is greater than 50 tiles. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% when distance is greater than 50 tiles. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 12% when distance is greater than 50 tiles. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance is greater than 50 tiles. (Stackable)
-DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 50 tiles. (Stackable)
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% when distance is greater than 50 tiles. (Stacks linearly)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% when distance is greater than 50 tiles. (Stacks linearly)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 12% when distance is greater than 50 tiles. (Stacks linearly)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance is greater than 50 tiles. (Stacks linearly)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 50 tiles. (Stacks linearly)
 ,
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 ,
 BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
-BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash damage by 1.
-BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash damage by 2.
-BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage by 3.
+BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash damage by 1. (Does not stack)
+BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash damage by 2. (Does not stack)
+BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage by 3. (Does not stack)
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
-HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15.
-HIPPOSANDAL_TECHNOLOGY_LVL_2,Equips mounts with horseshoes.  Increase base Carry for mount unit by 30.
-HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry for mount unit by 45.
+HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15. (Does not stack)
+HIPPOSANDAL_TECHNOLOGY_LVL_2,Equips mounts with horseshoes.  Increase base Carry for mount unit by 30. (Does not stack)
+HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry for mount unit by 45. (Does not stack)
 ,
 GROUND_ARMOR_RESEARCH_TECHNOLOGY_NAME,Ground Unit Defence
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all ground units by 3%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all ground units by 6%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all ground units by 9%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all ground units by 12%.
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all ground units by 15%.
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all ground units by 3%. (Stacks exponetially)
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all ground units by 6%. (Stacks exponetially)
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all ground units by 9%. (Stacks exponetially)
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all ground units by 12%. (Stacks exponetially)
+GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all ground units by 15%. (Stacks exponetially)
 ,
 MOUNT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Mounted Unit Defence
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all mounted units by 3%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all mounted units by 6%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all mounted units by 9%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all mounted units by 12%.
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all mounted units by 15%.
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all mounted units by 3%. (Stacks exponetially)
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all mounted units by 6%. (Stacks exponetially)
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all mounted units by 9%. (Stacks exponetially)
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all mounted units by 12%. (Stacks exponetially)
+MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all mounted units by 15%. (Stacks exponetially)
 ,
 MACHINE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Machinery Unit Defence
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all machinery units by 3%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all machinery units by 6%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all machinery units by 9%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all machinery units by 12%.
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all machinery units by 15%.
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all machinery units by 3%. (Stacks exponetially)
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all machinery units by 6%. (Stacks exponetially)
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all machinery units by 9%. (Stacks exponetially)
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all machinery units by 12%. (Stacks exponetially)
+MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all machinery units by 15%. (Stacks exponetially)
 ,
 STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defence
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all structures by 3%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all structures by 6%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all structures by 9%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all structures by 12%.
-STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all structures by 15%.
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases the armor quality of all structures by 3%. (Stacks exponetially)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases the armor quality of all structures by 6%. (Stacks exponetially)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases the armor quality of all structures by 9%. (Stacks exponetially)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases the armor quality of all structures by 12%. (Stacks exponetially)
+STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases the armor quality of all structures by 15%. (Stacks exponetially)
 ,
 SWORD_WEAPON_RESEARCH_TECHNOLOGY_NAME,Sword Damage Boost
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use swords by 3%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use swords by 6%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use swords by 9%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use swords by 12%.
-SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use swords by 15%.
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use swords by 3%. (Stacks exponetially)
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use swords by 6%. (Stacks exponetially)
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use swords by 9%. (Stacks exponetially)
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use swords by 12%. (Stacks exponetially)
+SWORD_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use swords by 15%. (Stacks exponetially)
 ,
 PIKE_WEAPON_RESEARCH_TECHNOLOGY_NAME,Pike Damage Boost
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use pikes by 3%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use pikes by 6%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use pikes by 9%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use pikes by 12%.
-PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use pikes by 15%.
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use pikes by 3%. (Stacks exponetially)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use pikes by 6%. (Stacks exponetially)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use pikes by 9%. (Stacks exponetially)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use pikes by 12%. (Stacks exponetially)
+PIKE_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use pikes by 15%. (Stacks exponetially)
 ,
 BOW_WEAPON_RESEARCH_TECHNOLOGY_NAME,Bow Damage Boost
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use bows by 3%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use bows by 6%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use bows by 9%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use bows by 12%.
-BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use bows by 15%.
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use bows by 3%. (Stacks exponetially)
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use bows by 6%. (Stacks exponetially)
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use bows by 9%. (Stacks exponetially)
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use bows by 12%. (Stacks exponetially)
+BOW_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use bows by 15%. (Stacks exponetially)
 ,
 BALL_WEAPON_RESEARCH_TECHNOLOGY_NAME,Ballistic Damage Boost
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use ballistic weapons by 3%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use ballistic weapons by 6%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use ballistic weapons by 9%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use ballistic weapons by 12%.
-BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use ballistic weapons by 15%.
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all units use ballistic weapons by 3%. (Stacks exponetially)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of all units use ballistic weapons by 6%. (Stacks exponetially)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of all units use ballistic weapons by 9%. (Stacks exponetially)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of all units use ballistic weapons by 12%. (Stacks exponetially)
+BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of all units use ballistic weapons by 15%. (Stacks exponetially)
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
-ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 10%.
-ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the basements by 20%.
-ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the basements by 30%.
-ATTIC_STORAGE_TECHNOLOGY_LVL_4,Increase capacity of the basements by 40%.
-ATTIC_STORAGE_TECHNOLOGY_LVL_5,Increase capacity of the basements by 50%.
+ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 10%. (Does not stack)
+ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the basements by 20%. (Does not stack)
+ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the basements by 30%. (Does not stack)
+ATTIC_STORAGE_TECHNOLOGY_LVL_4,Increase capacity of the basements by 40%. (Does not stack)
+ATTIC_STORAGE_TECHNOLOGY_LVL_5,Increase capacity of the basements by 50%. (Does not stack)
 ,
 FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
 FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained.
@@ -141,35 +141,35 @@ TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
 TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2th unit free for every 1 unit that is trained.
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
-HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%.
+HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%. (8% for every addition)
 ,
 SUNDANCE_TECHNOLOGY_NAME,Sun Dance
-SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus by 10% (Stackable)
-SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus by 20% (Stackable)
-SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus by 30% (Stackable)
-SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stackable)
-SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stackable)
+SUNDANCE_TECHNOLOGY_LVL_1,Increase maximum loot bonus by 10% (Stacks linearly)
+SUNDANCE_TECHNOLOGY_LVL_2,Increase maximum loot bonus by 20% (Stacks linearly)
+SUNDANCE_TECHNOLOGY_LVL_3,Increase maximum loot bonus by 30% (Stacks linearly)
+SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stacks linearly)
+SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stacks linearly)
 ,
 GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
-GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to load up loot bonus by 1%
-GREED_IS_GOOD_TECHNOLOGY_LVL_2,Increase efficiency to load up loot bonus by 2%
-GREED_IS_GOOD_TECHNOLOGY_LVL_3,Increase efficiency to load up loot bonus by 3%
-GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to load up loot bonus by 4%
-GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to load up loot bonus by 5%
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to load up loot bonus by 1% (Stacks linearly)
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Increase efficiency to load up loot bonus by 2% (Stacks linearly)
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Increase efficiency to load up loot bonus by 3% (Stacks linearly)
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to load up loot bonus by 4% (Stacks linearly)
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to load up loot bonus by 5% (Stacks linearly)
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP at the cost of 3% of travel speed.
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP at the cost of 6% of travel speed.
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP at the cost of 9% of travel speed.
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP at the cost of 12% of travel speed.
-COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP at the cost of 15% of travel speed.
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP at the cost of 3% of travel speed. (Stacks linearly)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_2,Defensive Reinforcement Troops gains 4% Max HP at the cost of 6% of travel speed. (Stacks linearly)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_3,Defensive Reinforcement Troops gains 6% Max HP at the cost of 9% of travel speed. (Stacks linearly)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_4,Defensive Reinforcement Troops gains 8% Max HP at the cost of 12% of travel speed. (Stacks linearly)
+COORDINATED_DEFENSE_TECHNOLOGY_LVL_5,Defensive Reinforcement Troops gains 10% Max HP at the cost of 15% of travel speed. (Stacks linearly)
 ,
 COORDINATED_ATTACK_TECHNOLOGY_NAME,Coordinated Attack
-COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP at the cost of 3% of travel speed.
-COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP at the cost of 6% of travel speed.
-COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP at the cost of 9% of travel speed.
-COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP at the cost of 12% of travel speed.
-COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP at the cost of 15% of travel speed.
+COORDINATED_ATTACK_TECHNOLOGY_LVL_1,Offensive Troops gains 2% Max HP at the cost of 3% of travel speed. (Stacks linearly)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_2,Offensive Troops gains 4% Max HP at the cost of 6% of travel speed. (Stacks linearly)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_3,Offensive Troops gains 6% Max HP at the cost of 9% of travel speed. (Stacks linearly)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP at the cost of 12% of travel speed. (Stacks linearly)
+COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP at the cost of 15% of travel speed. (Stacks linearly)
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
 REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for the structure.
@@ -179,11 +179,11 @@ REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for th
 REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for the structure.
 ,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
-WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 3 idle laborers produce 1 gold per hour and all Markets produce 1 gold per its level per hour.
-WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 3 idle laborers produce 1 gold per hour and all Markets produce 2 gold per its level per hour.
-WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 5 idle laborers produce 2 gold per hour and all Markets produce 3 gold per its level per hour.
-WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 5 idle laborers produce 2 gold per hour and all Markets produce 4 gold per its level per hour.
-WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every 2 idle laborers produce 1 gold per hour and all Markets produce 5 gold per its level per hour.
+WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 3 idle laborers produce 1 gold per hour and all Markets produce 1 gold per its level per hour. (Stacks linearly)
+WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 3 idle laborers produce 1 gold per hour and all Markets produce 2 gold per its level per hour. (Stacks linearly)
+WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 5 idle laborers produce 2 gold per hour and all Markets produce 3 gold per its level per hour. (Stacks linearly)
+WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 5 idle laborers produce 2 gold per hour and all Markets produce 4 gold per its level per hour. (Stacks linearly)
+WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every 2 idle laborers produce 1 gold per hour and all Markets produce 5 gold per its level per hour. (Stacks linearly)
 ,
 SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
 SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage by 1.

@@ -172,6 +172,7 @@
 			pnlCrop.setLayout(new FlowLayout(AsWingConstants.LEFT, 5, 0));
 
 			lblCropAmount = new JAdjuster(3);
+			lblCropAmount.setPreferredWidth(65);
 			lblCropAmount.setMinimum(0);
 			lblCropAmount.setValue(0);
 
@@ -179,6 +180,7 @@
 			pnlIron.setLayout(new FlowLayout(AsWingConstants.LEFT, 5, 0));
 
 			lblIronAmount = new JAdjuster(3);
+			lblIronAmount.setPreferredWidth(65);
 			lblIronAmount.setMinimum(0);
 			lblIronAmount.setValue(0);
 
@@ -186,6 +188,7 @@
 			pnlWood.setLayout(new FlowLayout(AsWingConstants.CENTER, 5, 0));
 
 			lblWoodAmount = new JAdjuster(3);
+			lblWoodAmount.setPreferredWidth(65);
 			lblWoodAmount.setMinimum(0);
 			lblWoodAmount.setValue(0);
 
@@ -193,6 +196,7 @@
 			pnlGold.setLayout(new FlowLayout(AsWingConstants.LEFT, 5, 0));
 
 			lblGoldAmount = new JAdjuster(3);
+			lblGoldAmount.setPreferredWidth(65);
 			lblGoldAmount.setMinimum(0);
 			lblGoldAmount.setValue(0);
 

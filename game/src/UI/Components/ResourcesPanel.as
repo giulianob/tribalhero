@@ -13,7 +13,7 @@
 
 	public class ResourcesPanel extends JPanel
 	{
-		private var city: City = null;
+		private var cityOrResource: * = null;
 		private var resources: Resources = null;
 		private var tooltipMode: Boolean;
 		private var showLabor: Boolean;
@@ -21,9 +21,9 @@
 		/*
 		* Set a city to show affordability based on city resources
 		*/
-		public function ResourcesPanel(resources: Resources, city: City = null, forTooltip: Boolean = true, showLabor: Boolean = true)
+		public function ResourcesPanel(resources: Resources, cityOrResource: * = null, forTooltip: Boolean = true, showLabor: Boolean = true)
 		{
-			this.city = city;
+			this.cityOrResource = cityOrResource;
 			this.resources = resources;
 			this.tooltipMode = forTooltip;
 			this.showLabor = showLabor;
@@ -38,16 +38,16 @@
 
 		private function addedToStage(e: Event) : void
 		{
-			if (city) {
-				city.addEventListener(City.RESOURCES_UPDATE, draw);
+			if (cityOrResource is City) {
+				cityOrResource.addEventListener(City.RESOURCES_UPDATE, draw);
 			}
 			draw();
 		}
 
 		private function removedFromStage(e: Event) : void
 		{
-			if (city) {
-				city.removeEventListener(City.RESOURCES_UPDATE, draw);
+			if (cityOrResource is City) {
+				cityOrResource.removeEventListener(City.RESOURCES_UPDATE, draw);
 			}
 		}
 
@@ -56,13 +56,17 @@
 			removeAll();
 			var affordable: Resources = new Resources( -1, -1, -1, -1, -1);
 
-			if (city) {
-				affordable = city.resources.toResources();
+			if (cityOrResource is City) {
+				affordable = cityOrResource.resources.toResources();
+			}
+			else if (cityOrResource is Resources) {
+				affordable = cityOrResource;
 			}
 
 			if (showLabor) {
 				append(resourceLabelMaker(resources.labor, affordable.labor, new AssetIcon(new ICON_LABOR())));
 			}
+			
 			append(resourceLabelMaker(resources.gold, affordable.gold, new AssetIcon(new ICON_GOLD())));
 			append(resourceLabelMaker(resources.wood, affordable.wood, new AssetIcon(new ICON_WOOD())));
 			append(resourceLabelMaker(resources.crop, affordable.crop, new AssetIcon(new ICON_CROP())));

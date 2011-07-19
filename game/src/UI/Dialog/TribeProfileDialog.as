@@ -16,6 +16,7 @@
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
 	import src.UI.LookAndFeel.*;
+	import src.UI.Tooltips.TribeUpgradeTooltip;
 	
 	public class TribeProfileDialog extends GameJPanel
 	{
@@ -140,6 +141,13 @@
 					pnlActions.appendAll(btnDonate, btnLeave);
 					break;
 			}
+			
+			// upgrade btn
+			var upgradeTooltip: TribeUpgradeTooltip = new TribeUpgradeTooltip(profileData.tribeLevel, profileData.resources);
+			upgradeTooltip.bind(btnUpgrade);
+			btnUpgrade.addActionListener(function(e: Event): void {
+				Global.mapComm.Tribe.upgrade();
+			});
 			
 			// description
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;

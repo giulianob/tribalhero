@@ -174,7 +174,14 @@
 			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe", content: "You have left the tribe" }, close: true });
 		}			
 		
-		public function showErrorOrRefreshTribePanel(packet: Packet, custom: * ): void {
+		public function upgrade() : void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_UPGRADE;
+			
+			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
+		}
+		
+		public function showErrorOrRefreshTribePanel(packet: Packet, custom: *): void {
 			mapComm.hideLoading();
 			
 			if (MapComm.tryShowError(packet))

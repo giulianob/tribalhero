@@ -230,11 +230,15 @@ namespace Game.Comm
             using (new MultiObjectLock(tribe))
             {
                 Resource cost = Formula.GetTribeUpgradeCost(tribe.Level);
-                tribe.Resource.HasEnough(cost);
-                tribe.Resource.Subtract(cost);
-                ++tribe.Level;
-                Global.DbManager.Save(session.Player.Tribesman.Tribe);
+                if (!tribe.Resource.HasEnough(cost))
+                {
+                    ReplyError(session, packet, Error.ResourceNotEnough);
+                    return;
+                }
+
+                tribe.Upgrade();
             }
+
             ReplySuccess(session, packet);
         }
 

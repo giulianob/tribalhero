@@ -28,6 +28,15 @@ package src.UI.Tooltips {
 		public function getUI(): GameJBox {
 			return ui;
 		}
+		
+		public function bind(obj: DisplayObject) : void {
+			obj.addEventListener(MouseEvent.ROLL_OVER, function(e: Event): void {
+				show(obj);
+			});
+			obj.addEventListener(MouseEvent.ROLL_OUT, function(e: Event): void {
+				hide();
+			});			
+		}
 
 		public function show(obj: DisplayObject):void
 		{
@@ -114,7 +123,7 @@ package src.UI.Tooltips {
 			}
 
 			if (ui.getFrame())
-			ui.getFrame().dispose();
+				ui.getFrame().dispose();
 		}
 	}
 

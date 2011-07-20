@@ -1,18 +1,12 @@
 package src.UI.Tooltips 
 {
 	import flash.display.DisplayObject;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+
 	public class ActionButtonTooltip extends Tooltip
 	{
-
 		protected var drawTooltip: Boolean = false;
 		
-		public function ActionButtonTooltip() 
-		{
-			
+		public function ActionButtonTooltip() {	
 		}
 		
 		override public function show(obj:DisplayObject):void 

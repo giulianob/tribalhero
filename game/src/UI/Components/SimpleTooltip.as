@@ -22,6 +22,12 @@
 			this.tooltip = new TextTooltip(tooltip);
 			ui.addEventListener(MouseEvent.MOUSE_MOVE, onRollOver);
 			ui.addEventListener(MouseEvent.ROLL_OUT, onRollOut);
+			ui.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
+		}
+		
+		private function parentHidden(e: Event): void {
+			onRollOut(e);
+			ui.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
 		}
 		
 		public function setText(tooltip: String) : void {

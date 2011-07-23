@@ -8,6 +8,7 @@
         Delete = 112,
 
         PlayerClearDescription = 120,
+        DeleteInactives = 121,
 
         TribeInfo = 201,
         TribeCreate = 202,

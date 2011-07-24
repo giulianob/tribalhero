@@ -123,18 +123,33 @@ namespace Game.Comm
                     PacketHelper.AddToPacket(tribesman.Contribution, reply);
                 }
 
-                var incomingList = tribe.GetIncomingList();
+                var incomingList = tribe.GetIncomingList().ToList();
                 reply.AddInt16((short)incomingList.Count());
                 foreach (var incoming in incomingList)
                 {
-                    reply.AddUInt32(incoming.City.Owner.PlayerId);
-                    reply.AddUInt32(incoming.City.Id);
-                    reply.AddString(incoming.City.Owner.Name);
-                    reply.AddString(incoming.City.Name);
+                    // Target
+                    City targetCity;
+                    if (Global.World.TryGetObjects(incoming.Action.To, out targetCity))
+                    {                        
+                        reply.AddUInt32(targetCity.Owner.PlayerId);
+                        reply.AddUInt32(targetCity.Id);
+                        reply.AddString(targetCity.Owner.Name);
+                        reply.AddString(targetCity.Name);
+                    }
+                    else
+                    {
+                        reply.AddUInt32(0);
+                        reply.AddUInt32(0);
+                        reply.AddString("N/A");
+                        reply.AddString("N/A");                        
+                    }
+
+                    // Attacker
                     reply.AddUInt32(incoming.Action.WorkerObject.City.Owner.PlayerId);
                     reply.AddUInt32(incoming.Action.WorkerObject.City.Id);
                     reply.AddString(incoming.Action.WorkerObject.City.Owner.Name);
                     reply.AddString(incoming.Action.WorkerObject.City.Name);
+
                     reply.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.Action.EndTime.ToUniversalTime()));
                 }
 

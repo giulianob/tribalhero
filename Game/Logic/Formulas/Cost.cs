@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
+using Game.Data.Tribe;
 
 #endregion
 
@@ -167,6 +168,12 @@ namespace Game.Logic.Formulas
                 default:
                     return 0;
             }
+        }
+
+
+        public static Resource GetTribeUpgradeCost(byte level)
+        {
+            return new Resource(5000, 2000, 200, 5000, 0) * Tribe.MEMBERS_PER_LEVEL * level;
         }
     }
 }

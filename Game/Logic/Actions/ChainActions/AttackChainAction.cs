@@ -37,6 +37,14 @@ namespace Game.Logic.Actions
             }
         }
 
+        public uint To
+        {
+            get
+            {
+                return targetCityId;
+            }
+        }
+
         public AttackChainAction(uint cityId, byte stubId, uint targetCityId, uint targetStructureId, AttackMode mode)
         {
             this.cityId = cityId;

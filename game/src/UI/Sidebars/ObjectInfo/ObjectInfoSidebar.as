@@ -350,8 +350,9 @@ package src.UI.Sidebars.ObjectInfo {
 
 			for each(var button: ActionButton in buttons)
 			{
-				if (button.alwaysEnabled() || Constants.alwaysEnableButtons) {
-					button.enable();
+				button.enable();
+				
+				if (button.alwaysEnabled() || Constants.alwaysEnableButtons) {					
 					continue;
 				}				
 				

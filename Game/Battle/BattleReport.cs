@@ -243,13 +243,13 @@ namespace Game.Battle
         {
             battleId = (uint)BattleIdGenerator.GetNext();
 
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, @city_id, NOW(), NULL, '0')", BATTLE_DB),
+            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, @city_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
                                    new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) }, true);
         }
 
         private static void SnapBattleEnd(uint battleId)
         {
-            Global.DbManager.Query(string.Format("UPDATE `{0}` SET `ended` = NOW() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB),
+            Global.DbManager.Query(string.Format("UPDATE `{0}` SET `ended` = UTC_TIMESTAMP() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB),
                                    new[] { new DbColumn("battle_id", battleId, DbType.UInt32) }, true);
         }
 
@@ -257,7 +257,7 @@ namespace Game.Battle
         {
             reportId = (uint)ReportIdGenerator.GetNext();
 
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, NOW(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
+            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, UTC_TIMESTAMP(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
                                    new[] { new DbColumn("id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32) }, true);            
         }
 
@@ -265,7 +265,7 @@ namespace Game.Battle
         {
             Global.DbManager.Query(
                                    string.Format(
-                                                 "UPDATE `{0}` SET `ready` = 1, `round` = @round, turn = @turn, `created` = NOW() WHERE id = @report_id LIMIT 1",
+                                                 "UPDATE `{0}` SET `ready` = 1, `round` = @round, turn = @turn, `created` = UTC_TIMESTAMP() WHERE id = @report_id LIMIT 1",
                                                  BATTLE_REPORTS_DB),
                                    new[]
                                    {
@@ -325,7 +325,7 @@ namespace Game.Battle
             {
                 Global.DbManager.Query(
                                        string.Format(
-                                                     "INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW())",
+                                                     "INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP())",
                                                      BATTLE_REPORT_VIEWS_DB),
                                        new[]
                                        {

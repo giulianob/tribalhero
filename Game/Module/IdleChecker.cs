@@ -27,7 +27,7 @@ namespace Game.Module {
             using (var reader =
                     Global.DbManager.ReaderQuery(
                                                  string.Format(
-                                                               "SELECT * FROM `{0}` WHERE TIMEDIFF(NOW(), `last_login`) > '{1}:00:00.000000'",
+                                                               "SELECT * FROM `{0}` WHERE TIMEDIFF(UTC_TIMESTAMP(), `last_login`) > '{1}:00:00.000000'",
                                                                Player.DB_TABLE, IDLE_DELETE_HOURS),
                                                  new DbColumn[] { })) {
                 while (reader.Read()) {

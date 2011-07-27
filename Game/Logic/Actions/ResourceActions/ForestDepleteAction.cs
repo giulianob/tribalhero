@@ -42,8 +42,8 @@ namespace Game.Logic.Actions.ResourceActions
                     Forest.EndUpdate();
 
                     obj.City.Owner.SendSystemMessage(null,
-                                                     "Forest depleted",
-                                                     "One of your lumbermill outposts have finished gathering wood from a forest. All laborers have returned to your city and are now idle.");
+                                                     string.Format("{0}: Forest depleted", obj.City.Name),
+                                                     string.Format("{0}: One of your lumbermill outposts have finished gathering wood from a forest. All laborers have returned to your city and are now idle.", obj.City.Name));
 
                     // Remove structure from city
                     obj.BeginUpdate();

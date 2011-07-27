@@ -226,7 +226,7 @@ namespace Game.Data.Troop
             return TroopId == 1;
         }
 
-        public void Starve(int percent = 5)
+        public void Starve(int percent = 5, bool bypassProtection = false)
         {
             lock (objLock)
             {
@@ -234,6 +234,7 @@ namespace Game.Data.Troop
 
                 foreach (var formation in data.Values)
                 {
+                    if (!bypassProtection && formation.Values.Sum(x => x) <= 1) continue;
                     foreach (var kvp in new Dictionary<ushort, ushort>(formation))
                     {
                         var newCount = (ushort)(kvp.Value*(100-percent)/100);
@@ -564,6 +565,11 @@ namespace Game.Data.Troop
             }
 
             return true;
+        }
+
+        public bool HasFormation(FormationType formation)
+        {
+            return data.ContainsKey(formation);
         }
 
         public ushort RemoveUnit(FormationType formationType, ushort type, ushort count)

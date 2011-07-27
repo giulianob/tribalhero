@@ -106,7 +106,7 @@ namespace Game.Module {
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
                     // starve all troops)
-                    city.Troops.Starve(100);
+                    city.Troops.Starve(100, true);
 
                     if (city.Troops.Upkeep > 0)
                     {

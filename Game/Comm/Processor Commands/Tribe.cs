@@ -223,6 +223,12 @@ namespace Game.Comm
                     return;
                 }
 
+                if( tribe.AssignmentCount>0 )
+                {
+                    ReplyError(session, packet, Error.TribeHasAssignment);
+                    return;                    
+                }
+
                 foreach (var tribesman in new List<Tribesman>(tribe))
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 

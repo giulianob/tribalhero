@@ -28,6 +28,7 @@ namespace Game.Comm
             RegisterCommand(CmdLineCommand.SendResources, CmdSendResources);
 
             RegisterCommand(CmdLineCommand.PlayerClearDescription, CmdPlayerClearDescription);
+            RegisterCommand(CmdLineCommand.DeleteInactives, CmdDeleteInactives);
 
             RegisterCommand(CmdLineCommand.TribeInfo, CmdTribeInfo);
             RegisterCommand(CmdLineCommand.TribeCreate, CmdTribeCreate);

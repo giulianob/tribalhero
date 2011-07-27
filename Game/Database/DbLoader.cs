@@ -166,7 +166,7 @@ namespace Game.Database
                         while (listReader.Read()) {
                             City city;
                             Global.World.TryGetObjects((uint)listReader["city_id"], out city);
-                            assignment.DbLoaderAdd(city.Troops[(byte)listReader["stub_id"]]);
+                            assignment.DbLoaderAdd(city.Troops[(byte)listReader["stub_id"]], (byte)listReader["dispatched"] == 1);
                         }
                     }
                     assignment.DbPersisted=true;

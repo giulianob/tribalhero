@@ -374,12 +374,12 @@ namespace Game.Comm
             packet.AddByte((byte)assignment.AttackMode);
             packet.AddUInt32(assignment.DispatchCount);
             packet.AddInt32(assignment.TroopCount);
-            foreach(var kvp in (IEnumerable<KeyValuePair<DateTime,TroopStub>>)assignment)
+            foreach(var assignmentTroop in (IEnumerable<Assignment.AssignmentTroop>)assignment)
             {
-                packet.AddUInt32(kvp.Value.City.Id);
-                packet.AddByte(kvp.Value.TroopId);
-                packet.AddUInt32(UnixDateTime.DateTimeToUnix(kvp.Key.ToUniversalTime()));
-                packet.AddInt32(kvp.Value.Upkeep);
+                packet.AddUInt32(assignmentTroop.Stub.City.Id);
+                packet.AddByte(assignmentTroop.Stub.TroopId);
+                packet.AddUInt32(UnixDateTime.DateTimeToUnix(assignmentTroop.DepartureTime.ToUniversalTime()));
+                packet.AddInt32(assignmentTroop.Stub.Upkeep);
             }
         }
     }

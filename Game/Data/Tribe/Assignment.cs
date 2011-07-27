@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic;
@@ -14,7 +13,22 @@ using Game.Util;
 
 namespace Game.Data.Tribe {
 
-    public class Assignment : ISchedule, IPersistableList, IEnumerable<KeyValuePair<DateTime,TroopStub>> {
+    public class Assignment : ISchedule, IPersistableList, IEnumerable<Assignment.AssignmentTroop>
+    {
+        public class AssignmentTroop
+        {
+            public TroopStub Stub { get; set; }
+            public DateTime DepartureTime { get; set; }
+            public bool Dispatched { get; set; }
+
+            public AssignmentTroop(TroopStub stub, DateTime departureTime, bool dispatched = false)
+            {
+                Stub = stub;
+                DepartureTime = departureTime;
+                Dispatched = dispatched;
+            }
+        }
+
         public static readonly LargeIdGenerator IdGen = new LargeIdGenerator(long.MaxValue);
         public const string DB_TABLE = "Assignments";
 
@@ -26,7 +40,7 @@ namespace Game.Data.Tribe {
         public AttackMode AttackMode { get; private set; }
         public uint DispatchCount { get; private set; }
         public int TroopCount { get { return stubs.Count; } }
-        Dictionary<DateTime, TroopStub> stubs = new Dictionary<DateTime, TroopStub>();
+        private readonly List<AssignmentTroop> stubs = new List<AssignmentTroop>();
 
         public delegate void OnComplete(Assignment assignment);
         public event OnComplete AssignmentComplete;
@@ -39,43 +53,41 @@ namespace Game.Data.Tribe {
         public Assignment(int id, Tribe tribe, uint x, uint y, AttackMode mode, DateTime targetTime, uint dispatchCount) {
             Id = id;
             Tribe = tribe;
-            this.TargetTime = targetTime;
-            this.X = x;
-            this.Y = y;
+            TargetTime = targetTime;
+            X = x;
+            Y = y;
             AttackMode = mode;
-            this.DispatchCount = dispatchCount;
+            DispatchCount = dispatchCount;
         }
 
         public Assignment(Tribe tribe, uint x, uint y, AttackMode mode, DateTime targetTime, TroopStub stub) {
             Id = IdGen.GetNext();
             Tribe = tribe;
             TargetTime = targetTime;
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
             AttackMode = mode;
             DispatchCount = 0;
-            stubs.Add(DepartureTime(stub), stub);
+            stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
             Global.DbManager.Save(this);
             Global.Scheduler.Put(this);
         }
 
         public string ToNiceString() {
             string result = string.Format("Id[{0}] Time[{1}] x[{2}] y[{3}] mode[{4}] # of stubs[{5}] pispatched[{6}]\n", Id, TargetTime, X, Y, Enum.GetName(typeof(AttackMode), AttackMode), stubs.Count, DispatchCount);
-            foreach (var kvp in stubs) {
-                TroopStub stub = kvp.Value;
+            foreach (var obj in stubs) {
+                TroopStub stub = obj.Stub;
                 result += string.Format("\tTime[{0}] Player[{1}] City[{2}] Stub[{3}] Upkeep[{4}]\n",
-                    kvp.Key, stub.City.Owner.Name, stub.City.Name, stub.TroopId, stub.Upkeep);
+                    obj.DepartureTime, stub.City.Owner.Name, stub.City.Name, stub.TroopId, stub.Upkeep);
             }
             return result;
         }
 
         public Error Add(TroopStub stub) {
             if (!stubs.Any()) return Error.AssignmentDone;
-            DateTime t = DepartureTime(stub);
-            while (stubs.ContainsKey(t)) {
-                t = t.AddMilliseconds(1);
-            }
-            stubs.Add(t, stub);
+
+            stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
+
             if (Global.Scheduler.Remove(this)) {
                 Global.Scheduler.Put(this);
             }
@@ -109,19 +121,27 @@ namespace Game.Data.Tribe {
 
         public DateTime Time {
             get {
-                return stubs.Any() ? stubs.Keys.Min() : TargetTime;
+                return stubs.Any() ? stubs.Min(x => x.DepartureTime) : TargetTime;
             }
         }
 
-        public void Callback(object custom) {
-            using (new CallbackLock((c) => ((Dictionary<DateTime, TroopStub>)c[0]).Values.ToArray(), new object[] { stubs }, Tribe)) {
-                foreach (var kvp in new List<KeyValuePair<DateTime, TroopStub>>(stubs.Where(z => z.Key <= DateTime.UtcNow))) {
-                    Dispatch(kvp.Value);
-                    stubs.Remove(kvp.Key);
-                    ++DispatchCount;
+        public void Callback(object custom)
+        {
+            var now = DateTime.UtcNow;
+            using (new CallbackLock(c => stubs.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe)) {
+                foreach (var assignmentTroop in stubs) {
+                    if (assignmentTroop.Dispatched || assignmentTroop.DepartureTime > now)
+                    {
+                        continue;
+                    }
+
+                    Dispatch(assignmentTroop.Stub);
+                    assignmentTroop.Dispatched = true;                   
                 }
+
                 Global.DbManager.Save(this);
-                if (stubs.Any() || TargetTime.CompareTo(DateTime.UtcNow) > 0) {
+
+                if (stubs.Any(x => !x.Dispatched) || TargetTime.CompareTo(DateTime.UtcNow) > 0) {
                     Global.Scheduler.Put(this);
                 } else {
                     InvokeAssignmentComplete();
@@ -137,7 +157,7 @@ namespace Game.Data.Tribe {
 
         public DbColumn[] DbListColumns {
             get {
-                return new[] { new DbColumn("city_id", DbType.UInt32), new DbColumn("stub_id", DbType.Byte) };
+                return new[] { new DbColumn("city_id", DbType.UInt32), new DbColumn("stub_id", DbType.Byte), new DbColumn("dispatched", DbType.Byte) };
             }
         }
 
@@ -186,13 +206,14 @@ namespace Game.Data.Tribe {
         #region IEnumerable<DbColumn[]> Members
 
         public IEnumerator<DbColumn[]> GetEnumerator() {
-            Dictionary<DateTime, TroopStub>.Enumerator itr = stubs.GetEnumerator();
+            var itr = stubs.GetEnumerator();
             while (itr.MoveNext()) {
                 yield return
                     new[]
                     {
-                        new DbColumn("city_id", itr.Current.Value.City.Id,DbType.UInt32),
-                        new DbColumn("stub_id", itr.Current.Value.TroopId,DbType.Byte),
+                        new DbColumn("city_id", itr.Current.Stub.City.Id, DbType.UInt32),
+                        new DbColumn("stub_id", itr.Current.Stub.TroopId, DbType.Byte),
+                        new DbColumn("dispatched", itr.Current.Dispatched ? (byte)1 : (byte)0, DbType.Byte)
                     };
             }
         }
@@ -205,18 +226,15 @@ namespace Game.Data.Tribe {
             return stubs.GetEnumerator();
         }
 
-        IEnumerator<KeyValuePair<DateTime, TroopStub>> IEnumerable<KeyValuePair<DateTime, TroopStub>>.GetEnumerator() {
+        IEnumerator<AssignmentTroop> IEnumerable<AssignmentTroop>.GetEnumerator()
+        {
             return stubs.GetEnumerator();
         }
 
         #endregion
 
-        internal void DbLoaderAdd(TroopStub stub) {
-            DateTime t = DepartureTime(stub);
-            while (stubs.ContainsKey(t)) {
-                t = t.AddMilliseconds(1);
-            }
-            stubs.Add(t, stub);
+        internal void DbLoaderAdd(TroopStub stub, bool dispatched) {
+            stubs.Add(new AssignmentTroop(stub, DepartureTime(stub), dispatched));
 
         }
     }

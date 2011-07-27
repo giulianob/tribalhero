@@ -39,7 +39,7 @@ namespace Game.Comm
                 packet.AddInt32(tribe.AssignmentCount);
                 foreach (var assignment in (IEnumerable<Assignment>)tribe)
                 {
-                    PacketHelper.AddToPacket(assignment,packet);
+                    PacketHelper.AddToPacket(assignment, packet);
                 }
             }
             ReplySuccess(session,packet);

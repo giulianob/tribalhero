@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Game.Data.Troop;
 using Game.Database;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 
@@ -155,9 +156,9 @@ namespace Game.Data.Tribe
             return from tribesmen in ((IEnumerable<Tribesman>)this)
                    from city in tribesmen.Player.GetCityList()
                    from notification in city.Worker.Notifications
-                   where notification.Action is AttackChainAction && notification.Subscriptions.Count > 0
+                   where notification.Action is AttackChainAction && notification.Action.WorkerObject.City != city && notification.Subscriptions.Count > 0
                    orderby ((ChainAction)notification.Action).EndTime ascending
-                   select new IncomingListItem { City = city, Action = (AttackChainAction)notification.Action };
+                   select new IncomingListItem { Action = (AttackChainAction)notification.Action };
         }
 
         public bool HasRight(uint playerId, string action)
@@ -326,6 +327,16 @@ namespace Game.Data.Tribe
         internal void DbLoaderAddAssignment(Assignment assignment) {
             assignment.AssignmentComplete += RemoveAssignment;
             assignments.Add(assignment.Id,assignment);
+        }
+
+        public void Upgrade()
+        {
+            if (Level >= 20)
+                return;
+
+            Resource.Subtract(Formula.GetTribeUpgradeCost(Level));
+            Level++;
+            Global.DbManager.Save(this);
         }
     }
 }

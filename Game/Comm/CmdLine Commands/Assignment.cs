@@ -107,6 +107,7 @@ namespace Game.Comm {
                     return "No troops in the city!";
                 }
                 stub.Add(city.DefaultTroop);
+                stub.RemoveAllUnits(FormationType.Garrison, FormationType.InBattle);
                 Procedure.TroopStubCreate(city, stub);
                 Global.DbManager.Save(stub);
 
@@ -114,14 +115,11 @@ namespace Game.Comm {
                 Error error = tribe.CreateAssignment(stub, x, y, DateTime.UtcNow.Add(time), mode, out id);
                 if (error == Error.Ok)
                 {
-           //         Global.DbManager.Save(stub);
                     return string.Format("OK ID[{0}]",id);
                 }
-                else 
-                {
-                    Global.DbManager.Rollback();
-                    return Enum.GetName(typeof(Error), error);
-                }
+
+                Global.DbManager.Rollback();
+                return Enum.GetName(typeof(Error), error);
             }
         }
  

@@ -23,7 +23,9 @@
 		{name: "HaveNoStructure", method: haveNoStructure, message: haveNoStructureMsg },
 		{name: "CountLessThan", method: countLessThan, message: countLessThanMsg },
 		{name: "DefensePoint", method: defensePoint, message: defensePointMsg },
+		{name: "PlayerDefensePoint", method: playerDefensePoint, message: playerDefensePointMsg },
 		{name: "AttackPoint", method: attackPoint, message: attackPointMsg },
+		{name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
 		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
 		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg }
 		);			
@@ -257,12 +259,46 @@
 
 			return "";
 		}
+		/*PLAYER DEFENSE POINT*/
+		private static function playerDefensePoint(parentObj: GameObject, effects: Array, comparison: String, value: int, param3: int, param4: int, param5:int): Boolean
+		{
+			var totalDefensePoints: int = 0;
+			for each (var city: City in Global.map.cities.each()) {
+				totalDefensePoints += city.attackPoint;
+			}
 
+			if (comparison == "lt")
+			return totalDefensePoints < value;
+
+			if (comparison == "gt")
+			return totalDefensePoints > value;
+
+			return false;
+		}
+
+		private static function playerDefensePointMsg(parentObj: GameObject, comparison: String, value: int, param3: int, param4: int, param5:int): String
+		{
+			var totalDefensePoints: int = 0;
+			for each (var city: City in Global.map.cities.each()) {
+				totalDefensePoints += city.attackPoint;
+			}
+
+			if (city == null) return "";
+
+			if (comparison == "lt")
+			return "Less than " + value + " player defense points" + (totalDefensePoints >= value ? ". You currently have " + totalDefensePoints + " player defense points." : "");
+
+			if (comparison == "gt")
+			return "More than " + value + " player defense points" + (totalDefensePoints <= value ? ". You currently have " + totalDefensePoints + " player defense points." : "");
+
+			return "";
+		}
+		
 		/*ATTACK POINT*/
 		private static function attackPoint(parentObj: GameObject, effects: Array, comparison: String, value: int, param3: int, param4: int, param5:int): Boolean
 		{
 			var city: City = Global.map.cities.get(parentObj.cityId);
-
+		
 			if (city == null) return false;
 
 			if (comparison == "lt")
@@ -288,7 +324,40 @@
 
 			return "";
 		}
+		
+		/*PLAYER ATTACK POINT*/
+		private static function playerAttackPoint(parentObj: GameObject, effects: Array, comparison: String, value: int, param3: int, param4: int, param5:int): Boolean
+		{
+			var totalAttackPoints: int = 0;
+			for each (var city: City in Global.map.cities.each()) {
+				totalAttackPoints += city.attackPoint;
+			}
 
+			if (comparison == "lt")
+			return totalAttackPoints < value;
+
+			if (comparison == "gt")
+			return totalAttackPoints > value;
+
+			return false;
+		}
+
+		private static function playerAttackPointMsg(parentObj: GameObject, comparison: String, value: int, param3: int, param4: int, param5:int): String
+		{
+			var totalAttackPoints: int = 0;
+			for each (var city: City in Global.map.cities.each()) {
+				totalAttackPoints += city.attackPoint;
+			}
+
+			if (comparison == "lt")
+			return "Less than " + value + " player attack points" + (totalAttackPoints >= value ? ". You currently have " + totalAttackPoints + " player attack points." : "");
+
+			if (comparison == "gt")
+			return "More than " + value + " player attack points" + (totalAttackPoints <= value ? ". You currently have " + totalAttackPoints + " player attack points." : "");
+
+			return "";
+		}
+		
 		/*HAVE UNIT*/
 		private static function haveUnit(parentObj: GameObject, effects: Array, type: int, comparison: String, count: int, param4: int, param5:int): Boolean
 		{

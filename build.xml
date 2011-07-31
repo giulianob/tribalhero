@@ -6,11 +6,7 @@
 	
 		<tstamp />
 		
-		<property name="src" location="game/src" />
-			
-		<!-- Make bin dir -->
-		<delete dir="bin" />
-		<mkdir dir="bin" />		
+		<property name="src" location="game/src" />	
 	</target>
 	
 	<target name="compile" depends="init">
@@ -28,10 +24,19 @@
 		</dn:msbuild>
 	</target>
 	
-	<target name="deploy" if="deploydir" depends="compile">
-		<mkdir dir="${deploydir}" />
+	<target name="generate" if="deploydir" depends="compile">
+		<exec executable="${basedir}/GraphGenerator/bin/Release/GraphGenerator.exe">
+			<arg line="--output=${deploydir}/graphoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		</exec>
 		
-		<!-- Zip launcher -->
+		<exec executable="${basedir}/DatabaseGenerator/bin/Release/DatabaseGenerator.exe">
+			<arg line="--output=${deploydir}/databaseoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		</exec>				
+	</target>
+	
+	<target name="deploy" if="deploydir" depends="compile">
+		<mkdir dir="${deploydir}" />	
+		
 		<zip destfile="${deploydir}/Launcher.zip">
 			<zipfileset dir="${basedir}/Launcher/bin/Release" prefix="bin" />
 			<zipfileset dir="${basedir}/conf" prefix="conf" />			
@@ -43,4 +48,15 @@
 		</zip>		
 		
 	</target>
+	
+	<target name="deploydb" if="deploydir" depends="generate">
+		<mkdir dir="${deploydir}" />	
+	
+		<zip destfile="${deploydir}/Database.zip">
+			<zipfileset dir="${deploydir}/databaseoutput/"/>
+		</zip>
+		<zip destfile="${deploydir}/Graph.zip">
+			<zipfileset dir="${deploydir}/graphoutput/" includes="*.png" />			
+		</zip>
+	</target>	
 </project>

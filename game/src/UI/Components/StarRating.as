@@ -6,6 +6,8 @@ package src.UI.Components
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import src.UI.GameJFrame;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	/**
 	 * ...
@@ -55,6 +57,10 @@ package src.UI.Components
 			for (i = 0; i < numberOfStars - (fullStars + halfStars); i++) {
 				append(new AssetPane(new ICON_EMPTY_STAR));
 			}
+			
+			var lblValue: JLabel = new JLabel("(" + value + ")", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblValue, "Tooltip.text Label.very_small");
+			append(lblValue);
 		}
 
 		public function setValue(newValue: int) : void {

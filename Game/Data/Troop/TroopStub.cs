@@ -19,7 +19,8 @@ namespace Game.Data.Troop
         Stationed = 2,
         BattleStationed = 3,
         Moving = 4,
-        ReturningHome = 5
+        ReturningHome = 5,
+        WaitingInAssignment = 6
     }
 
     public enum TroopBattleGroup
@@ -663,6 +664,16 @@ namespace Game.Data.Troop
             foreach (var type in data.Keys)
                 mask += (ushort)Math.Pow(2, (double)type);
             return mask;
+        }
+
+        public void KeepFormations(params FormationType[] formations)
+        {
+            var currentFormations = data.Keys.ToList();
+
+            foreach (FormationType formation in currentFormations.Where(formation => !formations.Contains(formation)))
+            {
+                data.Remove(formation);
+            }
         }
     }
 }

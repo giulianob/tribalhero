@@ -58,7 +58,7 @@ namespace Game.Data.Tribe
         readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
 
         public Resource Resource { get; private set; }
-        public int AssignmentCount { get { return assignments.Count; } }
+        public short AssignmentCount { get { return (short)assignments.Count; } }
 
         public Tribe(Player owner, string name) :
             this(owner, name, string.Empty, 1, new Resource())
@@ -288,17 +288,36 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        public Error CreateAssignment(TroopStub stub, uint x, uint y, DateTime time, AttackMode mode, out int id)
+        public Error CreateAssignment(TroopStub stub, uint x, uint y, City targetCity, DateTime time, AttackMode mode, out int id)
         {
+            id = 0;
+
             if (DateTime.UtcNow.AddDays(2) < time)
-            {
-                id = 0;
+            {               
                 return Error.AssignmentBadTime;
             }
-            Assignment assignment = new Assignment(this, x, y, mode, time, stub);
+
+            if (stub.TotalCount == 0)
+            {
+                return Error.TroopEmpty;
+            }
+
+            if (stub.City.Owner.Tribesman == null)
+            {
+                return Error.TribeNotFound;
+            }
+
+            if (targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
+            {
+                return Error.AssignmentCantAttackFriend;
+            }
+
+            // Create assignment
+            Assignment assignment = new Assignment(this, x, y, targetCity, mode, time, stub);
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
+
             return Error.Ok;
         }
 

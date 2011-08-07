@@ -11,10 +11,11 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public static bool TroopStubCreate(City city, TroopStub stub) {
+        public static bool TroopStubCreate(City city, TroopStub stub, TroopState initialState = TroopState.Idle) {
             if (!RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
 
+            stub.State = initialState;
             city.Troops.Add(stub);
             return true;
         }

@@ -146,35 +146,46 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadAssignments(IDbManager dbManager, TimeSpan downTime) {
+        private static void LoadAssignments(IDbManager dbManager, TimeSpan downTime)
+        {
             #region Assignments
 
+            City city;
             Global.Logger.Info("Loading assignements...");
-            using (var reader = dbManager.Select(Assignment.DB_TABLE)) {
-                while (reader.Read()) {
+            using (var reader = dbManager.Select(Assignment.DB_TABLE))
+            {
+                while (reader.Read())
+                {
                     Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
-                    Assignment assignment = new Assignment(
-                                                    (int)reader["id"],
-                                                     tribe,
-                                                    (uint)reader["x"],
-                                                    (uint)reader["y"],
-                                                    (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
-                                                    DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
-                                                    (uint)reader["dispatch_count"]);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
-                    using (DbDataReader listReader = dbManager.SelectList(assignment)) {
-                        while (listReader.Read()) {
-                            City city;
-                            Global.World.TryGetObjects((uint)listReader["city_id"], out city);
+                    Assignment assignment = new Assignment((int)reader["id"],
+                                                           tribe,
+                                                           (uint)reader["x"],
+                                                           (uint)reader["y"],
+                                                           city,
+                                                           (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
+                                                           DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
+                                                           (uint)reader["dispatch_count"]);
+
+                    using (DbDataReader listReader = dbManager.SelectList(assignment))
+                    {
+                        while (listReader.Read())
+                        {
+                            if (!Global.World.TryGetObjects((uint)listReader["city_id"], out city))
+                                throw new Exception("City not found");
+
                             assignment.DbLoaderAdd(city.Troops[(byte)listReader["stub_id"]], (byte)listReader["dispatched"] == 1);
                         }
                     }
-                    assignment.DbPersisted=true;
+                    assignment.DbPersisted = true;
                     tribe.DbLoaderAddAssignment(assignment);
                     Global.DbManager.Save(assignment);
                     Global.Scheduler.Put(assignment);
                 }
             }
+
             #endregion
         }
 
@@ -331,7 +342,9 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
+                    
                     city.Template.DbPersisted = true;
 
                     using (DbDataReader listReader = dbManager.SelectList(city.Template))
@@ -411,7 +424,8 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
                     Structure structure = StructureFactory.GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
                     structure.InWorld = (bool)reader["in_world"];
                     structure.Technologies.Parent = city.Technologies;
@@ -449,7 +463,10 @@ namespace Game.Database
                 {
                     // Simple optimization                        
                     if (city == null || city.Id != (uint)reader["city_id"])
-                        Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    {
+                        if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                            throw new Exception("City not found");
+                    }
 
                     var structure = (Structure)city[(uint)reader["structure_id"]];
 
@@ -485,7 +502,9 @@ namespace Game.Database
                         case EffectLocation.Object:
                         {
                             City city;
-                            Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                            if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                                throw new Exception("City not found");
+
                             var structure = (Structure)city[(uint)reader["owner_id"]];
                             manager = structure.Technologies;
                         }
@@ -493,7 +512,8 @@ namespace Game.Database
                         case EffectLocation.City:
                         {
                             City city;
-                            Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                            if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                                throw new Exception("City not found");
                             manager = city.Technologies;
                         }
                             break;
@@ -527,7 +547,8 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
                     var stub = new TroopStub
                                {
@@ -562,7 +583,8 @@ namespace Game.Database
             foreach (var stubInfo in stationedTroops)
             {
                 City stationedCity;
-                Global.World.TryGetObjects(stubInfo.stationedCityId, out stationedCity);
+                if (!Global.World.TryGetObjects(stubInfo.stationedCityId, out stationedCity))
+                    throw new Exception("City not found");
                 stationedCity.Troops.AddStationed(stubInfo.stub);
             }
 
@@ -579,7 +601,8 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
                     TroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
                     stub.Template.DbPersisted = true;
 
@@ -620,7 +643,8 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
                     TroopStub stub = (byte)reader["troop_stub_id"] != 0 ? city.Troops[(byte)reader["troop_stub_id"]] : null;
                     var obj = new TroopObject(stub)
                               {
@@ -664,7 +688,8 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
                     var bm = new BattleManager(city);
                     city.Battle = bm;
@@ -683,7 +708,8 @@ namespace Game.Database
                         while (listReader.Read())
                         {
                             City structureCity;
-                            Global.World.TryGetObjects((uint)listReader["structure_city_id"], out structureCity);
+                            if (!Global.World.TryGetObjects((uint)listReader["structure_city_id"], out structureCity))
+                                throw new Exception("City not found");
 
                             var structure = (Structure)structureCity[(uint)listReader["structure_id"]];
 
@@ -725,7 +751,8 @@ namespace Game.Database
                         while (listReader.Read())
                         {
                             City troopStubCity;
-                            Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity);
+                            if (!Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
+                                throw new Exception("City not found");
                             TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                             CombatObject combatObj;
@@ -779,7 +806,8 @@ namespace Game.Database
                         while (listReader.Read())
                         {
                             City troopStubCity;
-                            Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity);
+                            if (!Global.World.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
+                                throw new Exception("City not found");
                             TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                             if (troopStub == null)
@@ -848,7 +876,8 @@ namespace Game.Database
                     action.DbPersisted = true;
 
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
                     var workerId = (uint)reader["object_id"];
                     if (workerId == 0)
@@ -918,7 +947,8 @@ namespace Game.Database
                     action.DbPersisted = true;
 
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
                     var workerId = (uint)reader["object_id"];
                     if (workerId == 0)
@@ -965,7 +995,8 @@ namespace Game.Database
                     ConstructorInfo cInfo = type.GetConstructor(types);
 
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
                     var currentActionId = DBNull.Value.Equals(reader["current_action_id"]) ? 0 : (uint)reader["current_action_id"];
 
@@ -1010,7 +1041,8 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
                     GameAction action;
                     if ((bool)reader["is_active"])
@@ -1044,7 +1076,8 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     City city;
-                    Global.World.TryGetObjects((uint)reader["city_id"], out city);
+                    if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
+                        throw new Exception("City not found");
 
                     GameObject obj = city[(uint)reader["object_id"]];
                     PassiveAction action = city.Worker.PassiveActions[(uint)reader["action_id"]];
@@ -1056,7 +1089,8 @@ namespace Game.Database
                         while (listReader.Read())
                         {
                             City subscriptionCity;
-                            Global.World.TryGetObjects((uint)listReader["subscription_city_id"], out subscriptionCity);
+                            if (!Global.World.TryGetObjects((uint)listReader["subscription_city_id"], out subscriptionCity))
+                                throw new Exception("City not found");
                             notification.Subscriptions.Add(subscriptionCity);
                         }
                     }

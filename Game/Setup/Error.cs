@@ -89,6 +89,7 @@ namespace Game.Setup
         BattleNotViewable = 603,
         TroopChanged = 604,
         TooManyTroops = 605,
+        TroopEmpty = 606,
 
         #endregion
 
@@ -111,6 +112,7 @@ namespace Game.Setup
         AssignmentDone = 741,
         AssignmentNotFound = 742,
         AssignmentBadTime = 743,
+        AssignmentCantAttackFriend = 744,
         #endregion
 
     }

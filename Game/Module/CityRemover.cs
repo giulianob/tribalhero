@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -98,6 +101,17 @@ namespace Game.Module {
                             Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationedTroopId));
                     }
 
+                }
+
+                // If city is being targetted by an assignment, try again later
+                var reader = Global.DbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
+                                                          new[] {new DbColumn("cityId", city.Id, DbType.UInt32)});
+                bool beingTargetted = reader.HasRows;
+                reader.Close();
+                if (beingTargetted)
+                {
+                    Reschedule(LONG_RETRY);
+                    return;
                 }
             }
 

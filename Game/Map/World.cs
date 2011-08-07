@@ -374,7 +374,7 @@ namespace Game.Map
         public List<SimpleGameObject> GetObjects(uint x, uint y)
         {
             Region region = GetRegion(x, y);
-            return region == null ? null : region.GetObjects(x, y);
+            return region == null ? new List<SimpleGameObject>() : region.GetObjects(x, y);
         }
 
         #endregion

@@ -192,9 +192,8 @@ namespace Game.Comm
         TribesmanSetRank = 1016,
         TribesmanLeave = 1017,
         TribesmanContribute = 1018,
-        TribeAssignementList = 1021,
-        TribeAssignementCreate = 1022,
-        TribeAssignementJoin = 1023,        
+        TribeAssignmentCreate = 1022,
+        TribeAssignmentJoin = 1023,        
         TribeIncomingList = 1031,
         TribeChannelUpdate = 1051,
         #endregion

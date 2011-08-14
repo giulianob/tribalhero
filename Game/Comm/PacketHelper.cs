@@ -212,7 +212,8 @@ namespace Game.Comm
                 packet.AddUInt16(stats.Value.MaxHp);
                 packet.AddUInt16(stats.Value.Atk);
                 packet.AddByte(stats.Value.Splash);
-                packet.AddUInt16(stats.Value.Def);
+                // Await client update
+                packet.AddUInt16(0);
                 packet.AddByte(stats.Value.Rng);
                 packet.AddByte(stats.Value.Spd);
                 packet.AddByte(stats.Value.Stl);

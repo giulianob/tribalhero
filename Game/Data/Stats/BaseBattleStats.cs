@@ -5,7 +5,9 @@ namespace Game.Data
         Ground = 0,
         Mount = 1,
         Machine = 2,
-        Building = 3
+        Building1 = 4,
+        Building2 = 5,
+        Building3 = 6,
     }
 
     public enum ArmorClass

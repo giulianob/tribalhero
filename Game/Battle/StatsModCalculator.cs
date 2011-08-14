@@ -184,7 +184,6 @@ namespace Game.Battle
                         {
                                 Atk = (ushort)Atk.GetResult(),
                                 Splash = (byte)Splash.GetResult(),
-                                Def = (ushort)Def.GetResult(),
                                 Rng = (byte)Rng.GetResult(),
                                 Spd = (byte)Spd.GetResult(),
                                 Stl = (byte)Stl.GetResult(),

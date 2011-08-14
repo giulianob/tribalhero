@@ -54,6 +54,7 @@ namespace Game.Setup
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "technology.csv"), Config.csv_folder, "*technology.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "technology_effects.csv"), Config.csv_folder, "*technology_effects.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit.csv"), Config.csv_folder, "*unit.csv");
+            BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"), Config.csv_folder, "*unit_modifier.csv");
             File.Copy(Path.Combine(Config.csv_folder, "object_type.csv"), Path.Combine(Config.csv_compiled_folder, "object_type.csv"), true);
         }
 
@@ -68,6 +69,7 @@ namespace Game.Setup
             TechnologyFactory.Init(Path.Combine(Config.csv_compiled_folder, "technology.csv"), Path.Combine(Config.csv_folder, "technology_effects.csv"));
             UnitFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit.csv"));
             ObjectTypeFactory.Init(Path.Combine(Config.csv_compiled_folder, "object_type.csv"));
+            UnitModFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"));
             MapFactory.Init(Path.Combine(Config.maps_folder, "CityLocations.txt"));
         }
     }

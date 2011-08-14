@@ -648,8 +648,7 @@ namespace Game.Battle
                     else
                         throw new Exception("How can this happen");
 
-                    if (currentDefenders == null || currentDefenders.Count == 0 || (currentAttacker.CombatList == attackers && currentAttacker.Stats.Atk == 0) ||
-                        (currentAttacker.CombatList == defenders && currentAttacker.Stats.Def == 0))
+                    if (currentDefenders == null || currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
                     {
                         currentAttacker.ParticipatedInRound();
                         Global.DbManager.Save(currentAttacker);

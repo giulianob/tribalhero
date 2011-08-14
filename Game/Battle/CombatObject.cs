@@ -248,7 +248,7 @@ namespace Game.Battle
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public bool CanSee(CombatObject obj)
+        public bool CanSee(CombatObject obj, uint lowestSteath)
         {
             // In order to implement visibility as discussed in http://trac.tribalhero.com/wiki/Discussion%2011/08/10
             // we always take the lowest RoundsParticipated of the two objects.
@@ -264,8 +264,8 @@ namespace Game.Battle
                 default:
                     break;
             }
-
             if (totalVision >= obj.Stats.Stl)
+                //if (Visibility > obj.Stats.Stl || lowestSteath >= obj.Stats.Stl)
             {
 #if DEBUG
                 Global.Logger.Debug(string.Format("Total Vision[{2}] CanSee [{0}] Stl[{1}]",

@@ -68,7 +68,7 @@ namespace ConsoleSimulator
                                                                                           1,
                                                                                           WeaponType.Sword,
                                                                                           WeaponClass.Elemental,
-                                                                                          ArmorType.Building,
+                                                                                          ArmorType.Building3,
                                                                                           ArmorClass.Stone,
                                                                                           500,
                                                                                           0,

@@ -101,10 +101,13 @@ namespace Game.Data.Tribe {
             return TargetTime.Subtract(new TimeSpan(0, 0, (int)(Formula.MoveTime(Formula.GetTroopSpeed(stub)) * Formula.MoveTimeMod(stub.City, distance, true))));
         }
 
-        private void Dispatch(TroopStub stub) {
+        private bool Dispatch(TroopStub stub) {
             Structure structure = (Structure)Global.World.GetObjects(X, Y).Find(z => z is Structure);
             if (structure == null) {
-                throw new Exception("nothing to attack, please add code to handle!");
+                Procedure.TroopStubDelete(stub.City, stub);
+                stub.City.Owner.SendSystemMessage(null, "Assignment Failed", string.Format(@"Assigned target({0},{1}) is already destroyed.
+                                                                                           The reserved troops has already returned to the city", X, Y));
+                return false;
             }
             // Create troop object
             if (!Procedure.TroopObjectCreate(stub.City, stub)) {
@@ -112,6 +115,8 @@ namespace Game.Data.Tribe {
             }
             var aa = new AttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
             stub.City.Worker.DoPassive(stub.City, aa, true);
+
+            return true;
         }
 
 
@@ -129,14 +134,16 @@ namespace Game.Data.Tribe {
         {
             var now = DateTime.UtcNow;
             using (new CallbackLock(c => stubs.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe)) {
-                foreach (var assignmentTroop in stubs) {
+                for (int i = stubs.Count-1; i >= 0; i--)
+                {
+                    var assignmentTroop = stubs[i];
                     if (assignmentTroop.Dispatched || assignmentTroop.DepartureTime > now)
-                    {
                         continue;
-                    }
 
-                    Dispatch(assignmentTroop.Stub);
-                    assignmentTroop.Dispatched = true;                   
+                    if (Dispatch(assignmentTroop.Stub))
+                        assignmentTroop.Dispatched = true;
+                    else                    
+                        stubs.RemoveAt(i);                    
                 }
 
                 Global.DbManager.Save(this);

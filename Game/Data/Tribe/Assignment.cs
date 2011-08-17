@@ -34,6 +34,7 @@ namespace Game.Data.Tribe {
 
         public int Id { get; set; }
         public Tribe Tribe { get; private set; }
+        public City TargetCity { get; private set; }
         public DateTime TargetTime { get; private set; }
         public uint X { get; private set; }
         public uint Y { get; private set; }
@@ -50,20 +51,23 @@ namespace Game.Data.Tribe {
                 handler(this);
         }
 
-        public Assignment(int id, Tribe tribe, uint x, uint y, AttackMode mode, DateTime targetTime, uint dispatchCount) {
+        public Assignment(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount) {
             Id = id;
             Tribe = tribe;
             TargetTime = targetTime;
+            TargetCity = targetCity;
             X = x;
             Y = y;
             AttackMode = mode;
             DispatchCount = dispatchCount;
+            IdGen.Set(id);
         }
 
-        public Assignment(Tribe tribe, uint x, uint y, AttackMode mode, DateTime targetTime, TroopStub stub) {
+        public Assignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub) {
             Id = IdGen.GetNext();
             Tribe = tribe;
             TargetTime = targetTime;
+            TargetCity = targetCity;
             X = x;
             Y = y;
             AttackMode = mode;
@@ -199,6 +203,7 @@ namespace Game.Data.Tribe {
                 return new[]
                        {
                               new DbColumn("tribe_id", Tribe.Id, DbType.UInt32),
+                              new DbColumn("city_id", TargetCity.Id, DbType.UInt32),
                               new DbColumn("x", X, DbType.UInt32),
                               new DbColumn("y", Y, DbType.UInt32),
                               new DbColumn("mode",Enum.GetName(typeof(AttackMode),AttackMode),DbType.String),

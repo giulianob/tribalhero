@@ -74,7 +74,14 @@ namespace Game.Comm
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
-                    
+                
+                // Make sure this player is ranked high enough
+                if (city.Owner.Tribesman == null || !city.Owner.Tribesman.Tribe.HasRight(city.Owner.PlayerId, "Assignment"))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+
                 // Get target structure
                 Structure targetStructure;
                 if (!targetCity.TryGetStructure(targetObjectId, out targetStructure))

@@ -112,7 +112,13 @@ namespace Game.Comm
             }
 
             Tribe tribe = city.Owner.Tribesman.Tribe;
-            using (new MultiObjectLock(city, tribe))
+            Structure targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();           
+            if (targetStructure == null)
+            {
+                return "Could not find a structure for the given coordinates";
+            }
+
+            using (new MultiObjectLock(city, tribe, targetStructure.City))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -123,7 +129,7 @@ namespace Game.Comm
                 Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
                 Global.DbManager.Save(stub);
 
-                Structure targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();
+                targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();
 
                 if (targetStructure == null)
                 {
@@ -132,13 +138,13 @@ namespace Game.Comm
 
                 int id;
                 Error error = tribe.CreateAssignment(stub, x, y, targetStructure.City, DateTime.UtcNow.Add(time), mode, out id);
-                if (error == Error.Ok)
+                if (error != Error.Ok)
                 {
-                    return string.Format("OK ID[{0}]", id);
+                    city.Troops.Remove(stub.TroopId);
+                    return Enum.GetName(typeof(Error), error);
                 }
 
-                city.Troops.Remove(stub.TroopId);
-                return Enum.GetName(typeof(Error), error);
+                return string.Format("OK ID[{0}]", id);
             }
         }
 

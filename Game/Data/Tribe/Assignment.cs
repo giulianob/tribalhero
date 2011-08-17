@@ -60,6 +60,7 @@ namespace Game.Data.Tribe {
             Y = y;
             AttackMode = mode;
             DispatchCount = dispatchCount;
+            IdGen.Set(id);
         }
 
         public Assignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub) {

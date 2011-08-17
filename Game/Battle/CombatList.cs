@@ -84,14 +84,6 @@ namespace Game.Battle
             if (bestTarget == null)
                 return !hasInRange ? BestTargetResult.NoneInRange : BestTargetResult.NoneVisible;
 
-            if (BattleFormulas.IsAttackMissed(bestTarget.Stats.Stl))
-            {
-                if (objectsByScore.Count == 1)
-                    return BestTargetResult.Ok;
-
-                objectsByScore.RemoveAt(0);
-            }
-
             // Sort by score descending
             objectsByScore.Sort((x, y) => x.Score.CompareTo(y.Score)*-1);
 

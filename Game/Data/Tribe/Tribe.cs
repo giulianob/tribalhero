@@ -169,13 +169,7 @@ namespace Game.Data.Tribe
             switch (action)
             {
                 case "Request":
-                    switch (tribesman.Rank)
-                    {
-                        case 0:
-                        case 1:
-                            return true;
-                    }
-                    break;
+                case "Assignment":
                 case "Kick":
                     switch (tribesman.Rank)
                     {
@@ -183,7 +177,7 @@ namespace Game.Data.Tribe
                         case 1:
                             return true;
                     }
-                    break;
+                    break;                
             }
 
             return false;

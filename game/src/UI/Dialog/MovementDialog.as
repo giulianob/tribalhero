@@ -154,8 +154,9 @@
 		}
 
 		private function addTroop(troop: TroopStub) : void {
-			if (troop.id == 1)
-			return;
+			if (troop.id == 1 || troop.state == TroopStub.WAITING_IN_ASSIGNMENT) {
+				return;
+			}
 
 			//Add stationed troops to proper list
 			if (troop.isStationed()) {

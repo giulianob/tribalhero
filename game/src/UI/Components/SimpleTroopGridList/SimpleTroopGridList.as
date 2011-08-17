@@ -127,7 +127,7 @@
 		public static function getGridList(srcTroop: TroopStub, templateManager: UnitTemplateManager, formations: Array = null): Array
 		{
 			//make a copy of troop
-			var troop: TroopStub = new TroopStub(srcTroop.id);
+			var troop: TroopStub = new TroopStub(srcTroop.id, srcTroop.playerId, srcTroop.cityId);
 			for each(var formation: Formation in srcTroop.each())
 			{
 				var newFormation: Formation = new Formation(formation.type);
@@ -162,10 +162,13 @@
 				{
 					unit = formation.getByIndex(z);
 
-					var template: UnitTemplate = templateManager.get(unit.type);
 					var level: int = 1;
-					if (template != null)
-					level = template.level;
+					
+					if (templateManager) {
+						var template: UnitTemplate = templateManager.get(unit.type);					
+						if (template != null)
+							level = template.level;
+					}
 
 					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, level);
 					var icon: DisplayObject = UnitFactory.getSprite(unit.type, level) as DisplayObject;

@@ -24,7 +24,9 @@ namespace Game.Data
         Pike = 1,
         Bow = 2,
         Ball = 3,
-        Barricade = 4
+        Barricade = 4,
+        Tower = 5,
+        Cannon = 6,
     }
 
     public enum WeaponClass

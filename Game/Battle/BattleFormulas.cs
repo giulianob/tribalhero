@@ -24,8 +24,8 @@ namespace Game.Battle
             return Math.Min(delta * 2, 25);*/
 
             double delta = isAttacker ? Math.Max(0, (double)attackersUpkeep / defendersUpkeep) : Math.Max(0, (double)defendersUpkeep / attackersUpkeep);
-          //  double effectiveness = isAttacker ? (attackersUpkeep > 100 ? 1 : (double)attackersUpkeep / 100) : (defendersUpkeep > 100 ? 1 : (double)defendersUpkeep / 100);
-            double effectiveness = 1;
+            double effectiveness = isAttacker ? (attackersUpkeep > 100 ? 1 : (double)attackersUpkeep / 100) : (defendersUpkeep > 100 ? 1 : (double)defendersUpkeep / 100);
+          //  double effectiveness = 1;
 
             if (delta < 1) return (int)(0 * effectiveness);
             if (delta < 1.25) return (int)(10 * effectiveness);
@@ -55,9 +55,9 @@ namespace Game.Battle
         }
 
         public static double GetDmgModifier(CombatObject attacker, CombatObject target) {
-            switch(attacker.BaseStats.Armor)
+            switch(attacker.BaseStats.Weapon)
             {
-                case ArmorType.Building1:
+                case WeaponType.Tower:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
                             return UnitModFactory.GetModifier(1, 1);
@@ -68,7 +68,7 @@ namespace Game.Battle
                         default:
                             return UnitModFactory.GetModifier(1, target.Type);
                     }
-                case ArmorType.Building2:
+                case WeaponType.Cannon:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
                             return UnitModFactory.GetModifier(2, 1);
@@ -79,7 +79,7 @@ namespace Game.Battle
                         default:
                             return UnitModFactory.GetModifier(2, target.Type);
                     }
-                case ArmorType.Building3:
+                case WeaponType.Barricade:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
                             return UnitModFactory.GetModifier(3, 1);

@@ -125,18 +125,15 @@ package src
 		/* STAT RANGES */
 		public static const unitStatRanges: * = {
 			"attack": { min: 5, max: 100 },
-			"defense": { min: 5, max: 84 },
-			"stealth": { min: 0, max: 14 },
-			"range": { min: 0, max: 19 },
 			"speed": { min: 2, max: 22 },
 			"carry": { min: 0, max: 352 }
 		};
 
 		public static const structureStatRanges: * = {
-			"defense": { min: 0, max: 800 },
-			"stealth": { min: 0, max: 17 },
-			"range": { min: 0, max: 11 }
+			"attack": { min: 0, max: 800 }
 		};
+		
+		public static const stealthRangeNames: Array = ["", "1st row", "2nd row", "3rd row", "4th row"];
 
 		/* Ranking Types */
 		public static const rankings: Array = [

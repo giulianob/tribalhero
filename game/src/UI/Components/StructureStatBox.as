@@ -22,17 +22,17 @@
 		private var lblArmor: JLabel; //Armor is not currently used
 		private var lblWeapon: JLabel;
 		private var lblHp: JLabel;
-		private var lblDefense: StarRating;
+		private var lblAttack: StarRating;
 		private var lblMaxLabor: JLabel;
-		private var lblStealth: StarRating;
-		private var lblRange: StarRating;
+		private var lblStealth: JLabel;
+		private var lblRange: JLabel;
 		private var lblRadius: JLabel;
 
 		private var lblArmorTitle: JLabel;
 		private var lblWeaponTitle: JLabel;
 		private var lblHpTitle: JLabel;
 		private var lblMaxLaborTitle: JLabel;
-		private var lblDefenseTitle: JLabel;
+		private var lblAttackTitle: JLabel;
 		private var lblStealthTitle: JLabel;
 		private var lblRangeTitle: JLabel;
 		private var lblRadiusTitle: JLabel;
@@ -48,9 +48,9 @@
 			createUI();
 
 			lblMaxLabor.setText(structurePrototype.maxlabor.toString());
-			lblDefense.setValue(structurePrototype.defense);
-			lblRange.setValue(structurePrototype.range);
-			lblStealth.setValue(structurePrototype.stealth);
+			lblAttack.setValue(structurePrototype.defense);
+			lblRange.setText(Constants.stealthRangeNames[structurePrototype.range]);
+			lblStealth.setText(Constants.stealthRangeNames[structurePrototype.stealth]);
 			lblHp.setText(structurePrototype.hp.toString());
 			lblWeapon.setText(structurePrototype.weapon);
 			lblRadius.setText(structurePrototype.radius.toString());
@@ -58,14 +58,16 @@
 
 		private function createUI() : void
 		{
-			setLayout(new GridLayout(3, 4, 5, 0));
+			setPreferredWidth(375);
+			setBorder(new EmptyBorder(null, new Insets(5)));
+			setLayout(new GridLayout(2, 4, 2, 2));
 
 			lblArmorTitle = titleLabelMaker("Armor");
 			lblWeaponTitle = titleLabelMaker("Weapon");
 			lblHpTitle = titleLabelMaker("HP");
 			lblMaxLaborTitle = titleLabelMaker("Max Laborer");
-			lblDefenseTitle = titleLabelMaker("Defense");
-			lblStealthTitle = titleLabelMaker("Stealth");
+			lblAttackTitle = titleLabelMaker("Attack");
+			lblStealthTitle = titleLabelMaker("Position");
 			lblRangeTitle = titleLabelMaker("Range");
 			lblRadiusTitle = titleLabelMaker("Radius");
 
@@ -73,16 +75,20 @@
 			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
 			lblMaxLabor = valueLabelMaker();
-			lblDefense = new StarRating(Constants.structureStatRanges.defense.min, Constants.structureStatRanges.defense.max, 0, 5);
-			lblStealth = new StarRating(Constants.structureStatRanges.stealth.min, Constants.structureStatRanges.stealth.max, 0, 5);
-			lblRange = new StarRating(Constants.structureStatRanges.range.min, Constants.structureStatRanges.range.max, 0, 5);
+			lblAttack = new StarRating(Constants.structureStatRanges.attack.min, Constants.structureStatRanges.attack.max, 0, 5);
+			lblStealth = valueLabelMaker();
+			lblRange = valueLabelMaker();
 			lblRadius = valueLabelMaker();
 
-			appendAll(lblHpTitle, lblHp, lblDefenseTitle, lblDefense);
+			appendAll(lblHpTitle, lblHp, lblAttackTitle, lblAttack);
 			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
-			appendAll(lblWeaponTitle, lblWeapon, structurePrototype.maxlabor>0?lblMaxLaborTitle:new JLabel(), structurePrototype.maxlabor>0?lblMaxLabor:new JLabel());			
+			if (structurePrototype.maxlabor > 0) {
+				(getLayout() as GridLayout).setRows((getLayout() as GridLayout).getRows() + 1);
+				appendAll(lblMaxLaborTitle, lblMaxLabor, new JLabel(), new JLabel());
+			}
+			
 			if (structurePrototype.radius > 0) {
-				(getLayout() as GridLayout).setRows(4);
+				(getLayout() as GridLayout).setRows((getLayout() as GridLayout).getRows() + 1);
 				appendAll(lblRadiusTitle, lblRadius, new JLabel(), new JLabel());
 			}
 		}

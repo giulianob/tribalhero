@@ -33,8 +33,8 @@
 		private var lblWeaponClass: JLabel;
 		private var lblAttack: StarRating;
 		private var lblDefense: StarRating;
-		private var lblStealth: StarRating;
-		private var lblRange: StarRating;
+		private var lblStealth: JLabel;
+		private var lblRange: JLabel;
 		private var lblSpeed: StarRating;
 		private var lblUpkeep: JLabel;
 
@@ -90,22 +90,19 @@
 
 		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, splash: int, defense: int, stealth: int, range: int, speed: int) : void {
 			lblAttack.setValue(attack / upkeep);
-			lblCarry.setText(carry.toString());
-			lblDefense.setValue(defense / upkeep);
+			lblCarry.setText(carry.toString());		
 			lblSpeed.setValue(speed);
-			lblRange.setValue(range);
-			lblStealth.setValue(stealth);
+			lblRange.setText(Constants.stealthRangeNames[range]);
+			lblStealth.setText(Constants.stealthRangeNames[stealth]);
 			lblHp.setText(hp.toString());
-			lblUnitClass.setText(unitClass);
-			lblWeaponClass.setText(weaponClass);
 			lblUpkeep.setText("-" + upkeep.toString());
-			lblWeapon.setText(weapon);
-			lblArmor.setText(armor);
 		}
 
 		private function createUI() : void
 		{
-			setLayout(new GridLayout(6, 4, 3, 0));
+			setPreferredWidth(375);
+			setBorder(new EmptyBorder(null, new Insets(5)));
+			setLayout(new GridLayout(4, 4, 2, 2));
 
 			lblCarryTitle = titleLabelMaker("Carry");
 			lblArmorTitle = titleLabelMaker("Armor");
@@ -115,30 +112,22 @@
 			lblUnitClassTitle = titleLabelMaker("Unit Class");
 			lblAttackTitle = titleLabelMaker("Attack");
 			lblDefenseTitle = titleLabelMaker("Defense");
-			lblStealthTitle = titleLabelMaker("Stealth");
+			lblStealthTitle = titleLabelMaker("Position");
 			lblRangeTitle = titleLabelMaker("Range");
 			lblSpeedTitle = titleLabelMaker("Speed");
 			lblUpkeepTitle = titleLabelMaker("Upkeep");
 
 			lblCarry = valueLabelMaker();
-			lblArmor = valueLabelMaker();
-			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
 			lblAttack = new StarRating(Constants.unitStatRanges.attack.min, Constants.unitStatRanges.attack.max, 0, 5);
-			lblWeaponClass = valueLabelMaker();
-			lblUnitClass = valueLabelMaker();
-			lblDefense = new StarRating(Constants.unitStatRanges.defense.min, Constants.unitStatRanges.defense.max, 0, 5);
-			lblStealth = new StarRating(Constants.unitStatRanges.stealth.min, Constants.unitStatRanges.stealth.max, 0, 5);
-			lblRange = new StarRating(Constants.unitStatRanges.range.min, Constants.unitStatRanges.range.max, 0, 5);
+			lblStealth = valueLabelMaker();
+			lblRange = valueLabelMaker();
 			lblSpeed = new StarRating(Constants.unitStatRanges.speed.min, Constants.unitStatRanges.speed.max, 0, 5);
 			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
 
-			appendAll(lblHpTitle, lblHp, lblCarryTitle, lblCarry);
-			appendAll(lblArmorTitle, lblArmor, lblUnitClassTitle, lblUnitClass);
-			appendAll(lblWeaponTitle, lblWeapon, lblWeaponClassTitle, lblWeaponClass);
-			appendAll(lblAttackTitle, lblAttack, lblDefenseTitle, lblDefense);
-			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);
-			appendAll(lblSpeedTitle, lblSpeed, lblUpkeepTitle, lblUpkeep);
+			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());
+			appendAll(lblAttackTitle, lblAttack, lblCarryTitle, lblCarry);
+			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);			
 			appendAll(lblSpeedTitle, lblSpeed, lblUpkeepTitle, lblUpkeep);
 		}
 

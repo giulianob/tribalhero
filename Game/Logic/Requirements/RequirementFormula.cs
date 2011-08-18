@@ -49,6 +49,39 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
+        public static Error PlayerDefensePoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
+            switch (parms[0]) {
+                case "lt":
+                    if (obj.City.Owner.DefensePoint < int.Parse(parms[1]))
+                        return Error.Ok;
+                    break;
+                case "gt":
+                    if (obj.City.Owner.DefensePoint > int.Parse(parms[1]))
+                        return Error.Ok;
+                    break;
+                default:
+                    throw new Exception("Bad requirement parameter!");
+            }
+            return Error.EffectRequirementNotMet;
+        }
+
+        public static Error PlayerAttackPoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
+            switch (parms[0]) {
+                case "lt":
+                    if (obj.City.Owner.AttackPoint < int.Parse(parms[1]))
+                        return Error.Ok;
+                    break;
+                case "gt":
+                    if (obj.City.Owner.AttackPoint > int.Parse(parms[1]))
+                        return Error.Ok;
+                    break;
+                default:
+                    throw new Exception("Bad requirement parameter!");
+            }
+            return Error.EffectRequirementNotMet;
+        }
+
+
         public static Error HaveUnit(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             ushort type = ushort.Parse(parms[0]);

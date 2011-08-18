@@ -89,6 +89,7 @@ namespace Game.Setup
         BattleNotViewable = 603,
         TroopChanged = 604,
         TooManyTroops = 605,
+        TroopEmpty = 606,
 
         #endregion
 
@@ -99,6 +100,7 @@ namespace Game.Setup
         TribeNotFound = 704,
         TribeNameInvalid = 705,
         TribeMaxLevel = 706,
+        TribeHasAssignment = 707,
         TribesmanNotFound = 721,
         TribesmanAlreadyExists = 722,
         TribesmanIsOwner = 723,
@@ -110,6 +112,7 @@ namespace Game.Setup
         AssignmentDone = 741,
         AssignmentNotFound = 742,
         AssignmentBadTime = 743,
+        AssignmentCantAttackFriend = 744,
         #endregion
 
     }

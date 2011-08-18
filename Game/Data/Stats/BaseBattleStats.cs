@@ -5,7 +5,9 @@ namespace Game.Data
         Ground = 0,
         Mount = 1,
         Machine = 2,
-        Building = 3
+        Building1 = 4,
+        Building2 = 5,
+        Building3 = 6,
     }
 
     public enum ArmorClass
@@ -22,7 +24,9 @@ namespace Game.Data
         Pike = 1,
         Bow = 2,
         Ball = 3,
-        Barricade = 4
+        Barricade = 4,
+        Tower = 5,
+        Cannon = 6,
     }
 
     public enum WeaponClass
@@ -55,8 +59,6 @@ namespace Game.Data
 
         public byte Splash { get; private set; }
 
-        public ushort Def { get; private set; }
-
         public byte Rng { get; private set; }
 
         public byte Stl { get; private set; }
@@ -78,7 +80,6 @@ namespace Game.Data
                                ushort maxHp,
                                ushort atk,
                                byte splash,
-                               ushort def,
                                byte range,
                                byte stealth,
                                byte speed,
@@ -94,7 +95,6 @@ namespace Game.Data
             MaxHp = maxHp;
             Atk = atk;
             Splash = splash;
-            Def = def;
             Rng = range;
             Stl = stealth;
             Spd = speed;

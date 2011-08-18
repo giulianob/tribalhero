@@ -337,6 +337,7 @@ namespace Game.Comm
                     try
                     {
                         formationType = (FormationType)packet.GetByte();
+                        formationType = FormationType.Normal;
                         unitCount = packet.GetByte();
                     }
                     catch(Exception)
@@ -433,6 +434,7 @@ namespace Game.Comm
                     try
                     {
                         formationType = (FormationType)packet.GetByte();
+                        formationType = FormationType.Normal;
                         unitCount = packet.GetByte();
                     }
                     catch(Exception)

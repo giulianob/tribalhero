@@ -123,6 +123,7 @@ namespace Game.Comm
                     PacketHelper.AddToPacket(tribesman.Contribution, reply);
                 }
 
+                // Incoming List
                 var incomingList = tribe.GetIncomingList().ToList();
                 reply.AddInt16((short)incomingList.Count());
                 foreach (var incoming in incomingList)
@@ -151,6 +152,13 @@ namespace Game.Comm
                     reply.AddString(incoming.Action.WorkerObject.City.Name);
 
                     reply.AddUInt32(UnixDateTime.DateTimeToUnix(incoming.Action.EndTime.ToUniversalTime()));
+                }
+
+                // Assignment List
+                reply.AddInt16(tribe.AssignmentCount);
+                foreach (var assignment in (IEnumerable<Assignment>)tribe)
+                {
+                    PacketHelper.AddToPacket(assignment, reply);
                 }
 
                 session.Write(reply);
@@ -221,6 +229,12 @@ namespace Game.Comm
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
                     return;
+                }
+
+                if( tribe.AssignmentCount>0 )
+                {
+                    ReplyError(session, packet, Error.TribeHasAssignment);
+                    return;                    
                 }
 
                 foreach (var tribesman in new List<Tribesman>(tribe))

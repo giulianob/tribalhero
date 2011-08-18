@@ -30,7 +30,7 @@ namespace Testing.Troop
             Global.FireEvents = false;
             Factory.CompileConfigFiles();
             Factory.InitAll();
-            BaseBattleStats baseBattleStats= new BaseBattleStats((ushort)UnitType.TestSwordsman,1,WeaponType.Sword,WeaponClass.Basic,ArmorType.Ground,ArmorClass.Leather,70,30,1,30,9,2,9,10,30);
+            BaseBattleStats baseBattleStats= new BaseBattleStats((ushort)UnitType.TestSwordsman,1,WeaponType.Sword,WeaponClass.Basic,ArmorType.Ground,ArmorClass.Leather,70,30,1,9,2,9,10,30);
             BaseUnitStats baseUnitStats = new BaseUnitStats("TestSwordsman","SWORDSMAN_UNIT",1001,1,new Resource(), new Resource(), baseBattleStats,300,300,1); 
             UnitFactory.AddType(baseUnitStats);
             Global.DbManager.Pause();

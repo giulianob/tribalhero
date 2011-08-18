@@ -10,8 +10,6 @@ namespace Game.Data.Stats
 
         public byte Splash { get; set; }
 
-        public ushort Def { get; set; }
-
         public byte Rng { get; set; }
 
         public byte Stl { get; set; }
@@ -32,7 +30,6 @@ namespace Game.Data.Stats
             MaxHp = baseStats.MaxHp;
             Atk = baseStats.Atk;
             Splash = baseStats.Splash;
-            Def = baseStats.Def;
             Rng = baseStats.Rng;
             Stl = baseStats.Stl;
             Spd = baseStats.Spd;

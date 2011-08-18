@@ -83,10 +83,9 @@ namespace Game.Comm
             RegisterCommand(Command.TribesmanRequest, CmdTribesmanRequest);
             RegisterCommand(Command.TribesmanConfirm, CmdTribesmanConfirm);
             RegisterCommand(Command.TribesmanLeave, CmdTribesmanLeave);
-            RegisterCommand(Command.TribesmanContribute, CmdTribesmanContribute);
-            RegisterCommand(Command.TribeAssignementList, CmdAssignmentList);
-            RegisterCommand(Command.TribeAssignementCreate, CmdAssignmentCreate);
-            RegisterCommand(Command.TribeAssignementJoin, CmdAssignmentJoin);
+            RegisterCommand(Command.TribesmanContribute, CmdTribesmanContribute);            
+            RegisterCommand(Command.TribeAssignmentCreate, CmdAssignmentCreate);
+            RegisterCommand(Command.TribeAssignmentJoin, CmdAssignmentJoin);
             RegisterCommand(Command.TribeIncomingList, CmdTribeIncomingList);            
 
 

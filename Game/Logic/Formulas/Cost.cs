@@ -173,7 +173,7 @@ namespace Game.Logic.Formulas
 
         public static Resource GetTribeUpgradeCost(byte level)
         {
-            return new Resource(5000, 2000, 200, 5000, 0) * Tribe.MEMBERS_PER_LEVEL * level;
+            return new Resource(5000, 2000, 200, 10000, 0) * Tribe.MEMBERS_PER_LEVEL * level;
         }
     }
 }

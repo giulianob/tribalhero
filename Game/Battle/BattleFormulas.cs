@@ -24,8 +24,8 @@ namespace Game.Battle
             return Math.Min(delta * 2, 25);*/
 
             double delta = isAttacker ? Math.Max(0, (double)attackersUpkeep / defendersUpkeep) : Math.Max(0, (double)defendersUpkeep / attackersUpkeep);
-          //  double effectiveness = isAttacker ? (attackersUpkeep > 100 ? 1 : (double)attackersUpkeep / 100) : (defendersUpkeep > 100 ? 1 : (double)defendersUpkeep / 100);
-            double effectiveness = 1;
+            double effectiveness = isAttacker ? (attackersUpkeep > 100 ? 1 : (double)attackersUpkeep / 100) : (defendersUpkeep > 100 ? 1 : (double)defendersUpkeep / 100);
+          //  double effectiveness = 1;
 
             if (delta < 1) return (int)(0 * effectiveness);
             if (delta < 1.25) return (int)(10 * effectiveness);
@@ -44,129 +44,64 @@ namespace Game.Battle
             return units[structure.Lvl];
         }
 
-        public static double GetArmorClassModifier(WeaponClass weapon, ArmorClass armor)
-        {
-            switch(weapon)
-            {
-                case WeaponClass.Basic:
-                    switch(armor)
-                    {
-                        case ArmorClass.Leather:
-                        case ArmorClass.Wooden:
-                            return 1;
-                        case ArmorClass.Metal:
-                        case ArmorClass.Stone:
-                            return 0.8;
-                    }
-                    break;
-                case WeaponClass.Elemental:
-                    switch(armor)
-                    {
-                        case ArmorClass.Leather:
-                        case ArmorClass.Wooden:
-                            return 0.9;
-                        case ArmorClass.Metal:
-                        case ArmorClass.Stone:
-                            return 1.2;
-                    }
-                    break;
-            }
-
-            return 1;
-        }
-
-        public static double GetArmorTypeModifier(WeaponType weapon, ArmorType armor)
-        {
-         /*   const double nodamage = 0.1;
-            const double weakest = 0.2;
-            const double weaker = 0.4;
-            const double weak = 0.8;
-            const double good = 1.1;
-            const double strong = 1.3;
-            const double stronger = 1.6;
-            const double strongest = 2.2;*/
-
-            switch(weapon)
-            {
-                case WeaponType.Sword:
-                    switch(armor)
-                    {
-                        case ArmorType.Ground:
-                            return 1.1;
-                        case ArmorType.Mount:
-                            return 0.8;
-                        case ArmorType.Machine:
-                            return 0.8;
-                        case ArmorType.Building:
-                            return 0.2;
-                    }
-                    break;
-                case WeaponType.Pike:
-                    switch(armor)
-                    {
-                        case ArmorType.Ground:
-                            return 0.8;
-                        case ArmorType.Mount:
-                            return 1.5;
-                        case ArmorType.Machine:
-                            return 0.5;
-                        case ArmorType.Building:
-                            return 0.5;
-                    }
-                    break;
-                case WeaponType.Bow:
-                    switch(armor)
-                    {
-                        case ArmorType.Ground:
-                            return 1.3;
-                        case ArmorType.Mount:
-                            return 1.1;
-                        case ArmorType.Machine:
-                            return 0.2;
-                        case ArmorType.Building:
-                            return 0.1;
-                    }
-                    break;
-                case WeaponType.Ball:
-                    switch(armor)
-                    {
-                        case ArmorType.Ground:
-                            return 0.1;
-                        case ArmorType.Mount:
-                            return 0.1;
-                        case ArmorType.Machine:
-                            return 0.8;
-                        case ArmorType.Building:
-                            return 2.0;
-                    }
-                    break;
-                case WeaponType.Barricade:
-                    switch(armor)
-                    {
-                        case ArmorType.Ground:
-                            return 0.4;
-                        case ArmorType.Mount:
-                            return 0.4;
-                        case ArmorType.Machine:
-                            return 0.4;
-                        case ArmorType.Building:
-                            return 0.4;
-                    }
-                    break;
-            }
-            return 1;
-        }
-
         public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
-            ushort atk = useDefAsAtk ? attacker.Stats.Def : attacker.Stats.Atk;
+            ushort atk = attacker.Stats.Atk;
             int rawDmg = (atk*attacker.Count);
-            double typeModifier = GetArmorTypeModifier(attacker.BaseStats.Weapon, target.BaseStats.Armor);
-            double classModifier = GetArmorClassModifier(attacker.BaseStats.WeaponClass, target.BaseStats.ArmorClass);
-            double modifier = classModifier * typeModifier;
-            rawDmg = (int)(typeModifier * classModifier * rawDmg / 15);
+            double modifier = BattleFormulas.GetDmgModifier(attacker, target);
+            rawDmg = (int)(modifier * rawDmg);
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
+        }
+
+        public static double GetDmgModifier(CombatObject attacker, CombatObject target) {
+            switch(attacker.BaseStats.Weapon)
+            {
+                case WeaponType.Tower:
+                    switch (target.BaseStats.Armor) {
+                        case ArmorType.Building1:
+                            return UnitModFactory.GetModifier(1, 1);
+                        case ArmorType.Building2:
+                            return UnitModFactory.GetModifier(1, 2);
+                        case ArmorType.Building3:
+                            return UnitModFactory.GetModifier(1, 3);
+                        default:
+                            return UnitModFactory.GetModifier(1, target.Type);
+                    }
+                case WeaponType.Cannon:
+                    switch (target.BaseStats.Armor) {
+                        case ArmorType.Building1:
+                            return UnitModFactory.GetModifier(2, 1);
+                        case ArmorType.Building2:
+                            return UnitModFactory.GetModifier(2, 2);
+                        case ArmorType.Building3:
+                            return UnitModFactory.GetModifier(2, 3);
+                        default:
+                            return UnitModFactory.GetModifier(2, target.Type);
+                    }
+                case WeaponType.Barricade:
+                    switch (target.BaseStats.Armor) {
+                        case ArmorType.Building1:
+                            return UnitModFactory.GetModifier(3, 1);
+                        case ArmorType.Building2:
+                            return UnitModFactory.GetModifier(3, 2);
+                        case ArmorType.Building3:
+                            return UnitModFactory.GetModifier(3, 3);
+                        default:
+                            return UnitModFactory.GetModifier(3, target.Type);
+                    }
+                default:
+                    switch(target.BaseStats.Armor) {
+                        case ArmorType.Building1:
+                            return UnitModFactory.GetModifier(attacker.Type, 1);
+                        case ArmorType.Building2:
+                            return UnitModFactory.GetModifier(attacker.Type, 2);
+                        case ArmorType.Building3:
+                            return UnitModFactory.GetModifier(attacker.Type, 3);
+                        default:
+                            return UnitModFactory.GetModifier(attacker.Type, target.Type);
+                    }
+            }
         }
 
         private static int GetLootPerRound(City city) {
@@ -259,9 +194,6 @@ namespace Game.Battle
                             case "Splash":
                                 calculator.Splash.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
-                            case "Def":
-                                calculator.Def.AddMod((string)effect.Value[1], (int)effect.Value[2]);
-                                break;
                             case "Spd":
                                 calculator.Spd.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
@@ -280,7 +212,7 @@ namespace Game.Battle
                         }
                     }
                 } else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
-                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
+                    calculator.Atk.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
             }
             return calculator.GetStats();
         }

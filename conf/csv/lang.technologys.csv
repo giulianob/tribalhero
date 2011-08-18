@@ -179,11 +179,11 @@ REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for th
 REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for the structure.
 ,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
-WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 3 idle laborers produce 1 gold per hour and all Markets produce 1 gold per its level per hour. (Stacks linearly)
-WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 3 idle laborers produce 1 gold per hour and all Markets produce 2 gold per its level per hour. (Stacks linearly)
-WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 5 idle laborers produce 2 gold per hour and all Markets produce 3 gold per its level per hour. (Stacks linearly)
-WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 5 idle laborers produce 2 gold per hour and all Markets produce 4 gold per its level per hour. (Stacks linearly)
-WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every 2 idle laborers produce 1 gold per hour and all Markets produce 5 gold per its level per hour. (Stacks linearly)
+WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 3 idle laborers produce 1 gold per hour and all Markets produce 1 gold per its level per hour.  Production stops when Gold Reserve is higher than 500.  (Does not stack)
+WEAPON_EXPORT_TECHNOLOGY_LVL_2,Every 3 idle laborers produce 1 gold per hour and all Markets produce 2 gold per its level per hour.  Production stops when Gold Reserve is higher than 1000. (Does not stack)
+WEAPON_EXPORT_TECHNOLOGY_LVL_3,Every 5 idle laborers produce 2 gold per hour and all Markets produce 3 gold per its level per hour.  Production stops when Gold Reserve is higher than 1500. (Does not stack)
+WEAPON_EXPORT_TECHNOLOGY_LVL_4,Every 5 idle laborers produce 2 gold per hour and all Markets produce 4 gold per its level per hour.  Production stops when Gold Reserve is higher than 2000. (Does not stack)
+WEAPON_EXPORT_TECHNOLOGY_LVL_5,Every 2 idle laborers produce 1 gold per hour and all Markets produce 5 gold per its level per hour.  Production stops when Gold Reserve is higher than 2500. (Does not stack)
 ,
 SPIKE_BARRICADE_TECHNOLOGY_NAME,Spike Barricade
 SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage by 1.

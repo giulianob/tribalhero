@@ -1,5 +1,6 @@
 ﻿package src.UI.Dialog {
 
+	import flash.events.Event;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.geom.*;
@@ -7,9 +8,11 @@
 	import org.aswing.ext.*;
 	import src.Global;
 	import src.Map.City;
+	import src.Objects.Effects.Formula;
 	import src.UI.Components.SimpleTroopGridList.*;
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
+	import src.Util.Util;
 
 	public class ReinforceTroopDialog extends GameJPanel {
 
@@ -18,7 +21,8 @@
 		private var pnlAttack:JTabbedPane;
 		private var panel9:JPanel;
 		private var btnOk:JButton;
-		private var radioGroup: ButtonGroup;
+		private var radioGroup: ButtonGroup;		
+		private var lblTroopSpeed: JLabel;
 
 		private var city: City;
 
@@ -55,8 +59,26 @@
 			//drag handler
 			tilelists = localTilelists.concat(attackTilelists);
 			var tileListDragDropHandler: SimpleTroopGridDragHandler = new SimpleTroopGridDragHandler(tilelists);
+			
+			// troop speed label
+			for each (var tilelist: SimpleTroopGridList in attackTilelists) {
+				tilelist.addEventListener(SimpleTroopGridList.UNIT_CHANGED, updateSpeedInfo);
+			}
+			
+			updateSpeedInfo();
 		}
 
+		public function updateSpeedInfo(e: Event = null): void {
+			var stub: TroopStub = getTroop();			
+			if (stub.getIndividualUnitCount() == 0) {
+				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
+			}
+			else {
+				var secsPerTile: int = Formula.moveTime(city, stub.getSpeed(city), 1, true);
+				lblTroopSpeed.setText("Troop will move a tile about every " + Util.niceTime(secsPerTile, false));
+			}
+		}		
+		
 		public function getTroop(): TroopStub
 		{
 			var newTroop: TroopStub = new TroopStub();
@@ -100,11 +122,14 @@
 			btnOk.setLocation(new IntPoint(183, 5));
 			btnOk.setSize(new IntDimension(22, 22));
 			btnOk.setText("Ok");
+			
+			lblTroopSpeed = new JLabel("", null, AsWingConstants.LEFT);
 
 			//component layoution
 			append(new JLabel("Hint: Drag units from local troop to assign for reinforcement", null, AsWingConstants.LEFT));
 			append(pnlLocal);
 			append(pnlAttack);
+			append(lblTroopSpeed);
 			append(panel9);
 
 			panel9.append(btnOk);

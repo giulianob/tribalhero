@@ -213,7 +213,7 @@ namespace Game.Data.Troop
             return dict.TryGetValue(id, out stub);
         }
 
-        public void Starve(int percent = 5)
+        public void Starve(int percent = 5, bool bypassProtection=false)
         {
             // Make a copy of the stub list since it might change during the foreach loop
             var troopStubs = new TroopStub[dict.Values.Count];
@@ -221,21 +221,18 @@ namespace Game.Data.Troop
 
             foreach (var stub in troopStubs)
             {
+
                 // Skip troops that aren't ours
                 if (stub.City != City)
                     continue;
 
-                // Skip troops that are on the move
-                if (stub.TroopObject != null)
-                    continue;
-
-                // Skip troops that aren't idle
-                if (stub.State != TroopState.Stationed && stub.State != TroopState.Idle)
+                // Skip troops that are in battle
+                if (stub.State == TroopState.Battle || stub.State == TroopState.BattleStationed)
                     continue;
 
                 // Starve the troop
                 stub.BeginUpdate();
-                stub.Starve(percent);
+                stub.Starve(percent, bypassProtection);
                 stub.EndUpdate();
 
                 // Remove it if it's been starved to death (and isn't the default troop)

@@ -125,7 +125,7 @@ namespace Game.Setup
             {
 
 
-                string settingsFile = "c:\\source\\gameservertest\\conf\\settings.ini";
+                string settingsFile = "c:\\source\\gameserverbeta\\conf\\settings.ini";
                 bool help = false;
 
                 try

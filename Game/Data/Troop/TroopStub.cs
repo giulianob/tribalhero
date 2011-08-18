@@ -19,7 +19,8 @@ namespace Game.Data.Troop
         Stationed = 2,
         BattleStationed = 3,
         Moving = 4,
-        ReturningHome = 5
+        ReturningHome = 5,
+        WaitingInAssignment = 6
     }
 
     public enum TroopBattleGroup
@@ -226,7 +227,7 @@ namespace Game.Data.Troop
             return TroopId == 1;
         }
 
-        public void Starve(int percent = 5)
+        public void Starve(int percent = 5, bool bypassProtection = false)
         {
             lock (objLock)
             {
@@ -234,6 +235,7 @@ namespace Game.Data.Troop
 
                 foreach (var formation in data.Values)
                 {
+                    if (!bypassProtection && formation.Values.Sum(x => x) <= 1) continue;
                     foreach (var kvp in new Dictionary<ushort, ushort>(formation))
                     {
                         var newCount = (ushort)(kvp.Value*(100-percent)/100);
@@ -566,6 +568,11 @@ namespace Game.Data.Troop
             return true;
         }
 
+        public bool HasFormation(FormationType formation)
+        {
+            return data.ContainsKey(formation);
+        }
+
         public ushort RemoveUnit(FormationType formationType, ushort type, ushort count)
         {
             lock (objLock)
@@ -663,6 +670,16 @@ namespace Game.Data.Troop
             foreach (var type in data.Keys)
                 mask += (ushort)Math.Pow(2, (double)type);
             return mask;
+        }
+
+        public void KeepFormations(params FormationType[] formations)
+        {
+            var currentFormations = data.Keys.ToList();
+
+            foreach (FormationType formation in currentFormations.Where(formation => !formations.Contains(formation)))
+            {
+                data.Remove(formation);
+            }
         }
     }
 }

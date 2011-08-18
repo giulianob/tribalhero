@@ -11,14 +11,18 @@ using Game.Setup;
 using Game.Util;
 using NDesk.Options;
 
-namespace Game.Comm {
-    partial class CmdLineProcessor {
-        public string CmdAssignmentList(Session session, string[] parms) {
+namespace Game.Comm
+{
+    partial class CmdLineProcessor
+    {
+        public string CmdAssignmentList(Session session, string[] parms)
+        {
             bool help = false;
             string playerName = string.Empty;
             string tribeName = string.Empty;
 
-            try {
+            try
+            {
                 var p = new OptionSet
                         {
                                 {"?|help|h", v => help = true},
@@ -26,7 +30,9 @@ namespace Game.Comm {
                                 {"tribe=", v => tribeName = v.TrimMatchingQuotes()},
                         };
                 p.Parse(parms);
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 help = true;
             }
 
@@ -34,17 +40,20 @@ namespace Game.Comm {
                 return "AssignmentList --player=player_name|--tribe=tribe_name";
 
             uint playerId;
-            if (!string.IsNullOrEmpty(playerName)) {
+            if (!string.IsNullOrEmpty(playerName))
+            {
                 if (!Global.World.FindPlayerId(playerName, out playerId))
                     return "Player not found";
-            } else {
+            }
+            else
+            {
                 if (!Global.World.FindTribeId(tribeName, out playerId))
                     return "Tribe not found";
             }
 
             Player player;
             Tribe tribe;
-            string result = string.Format("Now[{0}] Assignments:\n",DateTime.UtcNow);
+            string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
             using (new MultiObjectLock(playerId, out player, out tribe))
             {
                 if (player == null)
@@ -58,14 +67,16 @@ namespace Game.Comm {
             return result;
         }
 
-        public string CmdAssignmentCreate(Session session, string[] parms) {
+        public string CmdAssignmentCreate(Session session, string[] parms)
+        {
             bool help = false;
             string cityName = string.Empty;
-            uint x=0;
-            uint y=0;
+            uint x = 0;
+            uint y = 0;
             TimeSpan time = TimeSpan.MinValue;
             AttackMode mode = AttackMode.Normal;
-            try {
+            try
+            {
                 var p = new OptionSet
                         {
                                 {"?|help|h", v => help = true},
@@ -73,15 +84,87 @@ namespace Game.Comm {
                                 {"x=", v => x = uint.Parse(v)},
                                 {"y=", v => y = uint.Parse(v)},
                                 {"timespan=", v => time = TimeSpan.Parse(v.TrimMatchingQuotes())},
-                                {"mode=", v => mode = (AttackMode)Enum.Parse(typeof(AttackMode),v)},
+                                {"mode=", v => mode = (AttackMode)Enum.Parse(typeof(AttackMode), v)},
                         };
                 p.Parse(parms);
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(cityName) || x == 0 || y == 0 || time == TimeSpan.MinValue)
-                return "AssignementCreate --city=city_name --x=x --y=y --timespan=0:0:0 [--mode=attack_mode]";
+                return "AssignmentCreate --city=city_name --x=x --y=y --timespan=0:0:0 [--mode=attack_mode]";
+
+            uint cityId;
+            if (!Global.World.FindCityId(cityName, out cityId))
+                return "City not found";
+
+            City city;
+            if (!Global.World.TryGetObjects(cityId, out city))
+            {
+                return "City not found!";
+            }
+
+            if (city.Owner.Tribesman == null)
+            {
+                return "Not in tribe";
+            }
+
+            Tribe tribe = city.Owner.Tribesman.Tribe;
+            Structure targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();           
+            if (targetStructure == null)
+            {
+                return "Could not find a structure for the given coordinates";
+            }
+
+            using (new MultiObjectLock(city, tribe, targetStructure.City))
+            {
+                if (city.DefaultTroop.Upkeep == 0)
+                {
+                    return "No troops in the city!";
+                }
+
+                TroopStub stub = new TroopStub { city.DefaultTroop };
+                Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
+                Global.DbManager.Save(stub);
+
+                targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();
+
+                if (targetStructure == null)
+                {
+                    return "Could not find a structure for the given coordinates";
+                }
+
+                int id;
+                Error error = tribe.CreateAssignment(stub, x, y, targetStructure.City, DateTime.UtcNow.Add(time), mode, out id);
+                if (error != Error.Ok)
+                {
+                    city.Troops.Remove(stub.TroopId);
+                    return Enum.GetName(typeof(Error), error);
+                }
+
+                return string.Format("OK ID[{0}]", id);
+            }
+        }
+
+        public string CmdAssignmentJoin(Session session, string[] parms)
+        {
+            bool help = false;
+            string cityName = string.Empty;
+            int id = int.MaxValue;
+            try
+            {
+                var p = new OptionSet { { "?|help|h", v => help = true }, { "city=", v => cityName = v.TrimMatchingQuotes() }, { "id=", v => id = int.Parse(v) }, };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(cityName) || id == int.MaxValue)
+                return "AssignementCreate --city=city_name --id=id";
 
             uint cityId;
             if (!Global.World.FindCityId(cityName, out cityId))
@@ -94,7 +177,7 @@ namespace Game.Comm {
                 return "City not found!";
             }
 
-            if(city.Owner.Tribesman==null)
+            if (city.Owner.Tribesman == null)
             {
                 return "Not in tribe";
             }
@@ -102,78 +185,22 @@ namespace Game.Comm {
             Tribe tribe = city.Owner.Tribesman.Tribe;
             using (new MultiObjectLock(city, tribe))
             {
-                if(city.DefaultTroop.Upkeep==0)
+                if (city.DefaultTroop.Upkeep == 0)
                 {
                     return "No troops in the city!";
                 }
                 stub.Add(city.DefaultTroop);
-                Procedure.TroopStubCreate(city, stub);
+                Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
                 Global.DbManager.Save(stub);
 
-                int id;
-                Error error = tribe.CreateAssignment(stub, x, y, DateTime.UtcNow.Add(time), mode, out id);
-                if (error == Error.Ok)
+                Error error = tribe.JoinAssignment(id, stub);
+                if (error != Error.Ok)
                 {
-           //         Global.DbManager.Save(stub);
-                    return string.Format("OK ID[{0}]",id);
-                }
-                else 
-                {
-                    Global.DbManager.Rollback();
+                    Procedure.TroopStubDelete(city, stub);
                     return Enum.GetName(typeof(Error), error);
                 }
-            }
-        }
- 
-        public string CmdAssignmentJoin(Session session, string[] parms) {
-            bool help = false;
-            string cityName = string.Empty;
-            int id = int.MaxValue;
-            try {
-                var p = new OptionSet
-                        {
-                                {"?|help|h", v => help = true},
-                                {"city=", v => cityName = v.TrimMatchingQuotes()},
-                                {"id=", v => id = int.Parse(v)},
-                        };
-                p.Parse(parms);
-            } catch (Exception) {
-                help = true;
-            }
 
-            if (help || string.IsNullOrEmpty(cityName) || id==int.MaxValue)
-                return "AssignementCreate --city=city_name --id=id";
-
-            uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId))
-                return "City not found";
-
-            City city;
-            TroopStub stub = new TroopStub();
-            if (!Global.World.TryGetObjects(cityId, out city)) {
-                return "City not found!";
-            }
-
-            if (city.Owner.Tribesman == null) {
-                return "Not in tribe";
-            }
-
-            Tribe tribe = city.Owner.Tribesman.Tribe;
-            using (new MultiObjectLock(city, tribe)) {
-                if (city.DefaultTroop.Upkeep == 0) {
-                    return "No troops in the city!";
-                }
-                stub.Add(city.DefaultTroop);
-                Procedure.TroopStubCreate(city, stub);
-                Global.DbManager.Save(stub);
-
-                Error error = tribe.JoinAssignment(id,stub);
-                if (error == Error.Ok) {
-                    return string.Format("OK");
-                } else {
-                    Global.DbManager.Rollback();
-                    return Enum.GetName(typeof(Error), error);
-                }
+                return string.Format("OK");                
             }
         }
 

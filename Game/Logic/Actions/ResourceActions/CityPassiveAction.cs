@@ -245,7 +245,6 @@ namespace Game.Logic.Actions
 
             InitVars += city =>
                 {
-                    weaponExport = 0;
                     weaponExportMax = 0;
                     weaponExportMarket = 0;
                 };
@@ -260,7 +259,6 @@ namespace Game.Logic.Actions
                     if (effects.Count > 0)
                     {
                         int weaponExportLvl = effects.Max(x => (int)x.Value[0]);
-                        weaponExport += weaponExportLvl;
                         weaponExportMax = Math.Max(weaponExportMax, weaponExportLvl);
                     }
 
@@ -270,11 +268,11 @@ namespace Game.Logic.Actions
 
             PostFirstLoop += city =>
                 {
-                    int gold = weaponExport*weaponExportMarket;
+                    if (city.Resource.Gold.Value > weaponExportMax * 500) return;
+                    int gold = weaponExportMax*weaponExportMarket;
                     gold += Formula.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
                     if (gold <= 0)
                         return;
-
                     city.Resource.Gold.Add(gold);
                 };
         }

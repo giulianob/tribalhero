@@ -61,7 +61,7 @@ namespace Game.Map
                     var reader =
                             Global.DbManager.ReaderQuery(
                                                          string.Format(
-                                                                       "SELECT COUNT(*) as active_count FROM `{0}` WHERE TIMEDIFF(NOW(), `last_login`) < '{1}:00:00.000000'",
+                                                                       "SELECT COUNT(*) as active_count FROM `{0}` WHERE TIMEDIFF(UTC_TIMESTAMP(), `last_login`) < '{1}:00:00.000000'",
                                                                        Player.DB_TABLE,
                                                                        IdleChecker.IDLE_HOURS),
                                                          new DbColumn[] {}))
@@ -374,7 +374,7 @@ namespace Game.Map
         public List<SimpleGameObject> GetObjects(uint x, uint y)
         {
             Region region = GetRegion(x, y);
-            return region == null ? null : region.GetObjects(x, y);
+            return region == null ? new List<SimpleGameObject>() : region.GetObjects(x, y);
         }
 
         #endregion

@@ -76,6 +76,16 @@ namespace Testing.Troop
             stub.AddUnit(FormationType.Normal, 0, 1);
 
             stub.Starve();
+            Assert.AreEqual(stub[FormationType.Normal][0],1);
+        }
+
+        [TestMethod]
+        public void TestStarveToZeroBypassProtection()
+        {
+            TroopStub stub = CreateSimpleStub();
+            stub.AddUnit(FormationType.Normal, 0, 1);
+
+            stub.Starve(5,true);
             Assert.IsFalse(stub[FormationType.Normal].ContainsKey(0));
         }
     }

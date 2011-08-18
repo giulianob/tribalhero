@@ -11,10 +11,11 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public static bool TroopStubCreate(City city, TroopStub stub) {
+        public static bool TroopStubCreate(City city, TroopStub stub, TroopState initialState = TroopState.Idle) {
             if (!RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
 
+            stub.State = initialState;
             city.Troops.Add(stub);
             return true;
         }
@@ -58,25 +59,21 @@ namespace Game.Logic.Procedures
 
         private static bool RemoveFromNormal(TroopStub source, TroopStub target)
         {
-            foreach (var formation in target)
+            if (!target.HasFormation(FormationType.Normal) || !source.HasFormation(FormationType.Normal))
+                return false;
+
+            foreach (var unit in target[FormationType.Normal])
             {
-                foreach (var unit in formation)
-                {
-                    ushort count;
-                    if (!source[FormationType.Normal].TryGetValue(unit.Key, out count) || count < unit.Value)
-                        return false;
-                }
-            }
+                ushort count;
+                if (!source[FormationType.Normal].TryGetValue(unit.Key, out count) || count < unit.Value)
+                    return false;
+            }            
 
             source.BeginUpdate();
-            foreach (var formation in target)
+            foreach (var unit in target[FormationType.Normal])
             {
-                foreach (var unit in formation)
-                {
-                    if (source[FormationType.Normal].Remove(unit.Key, unit.Value) != unit.Value)
-                        return false;
-                }
-            }
+                source[FormationType.Normal].Remove(unit.Key, unit.Value);
+            }            
             source.EndUpdate();
 
             return true;

@@ -94,6 +94,21 @@ namespace Game.Data
             }
         }
 
+        public int AttackPoint
+        {
+            get
+            {
+                return list.Sum(x => x.AttackPoint);
+            }
+        }
+
+        public int DefensePoint
+        {
+            get {
+                return list.Sum(x => x.DefensePoint);
+            }
+        }
+
         #region ILockable Members
 
         public int Hash

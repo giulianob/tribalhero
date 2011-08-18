@@ -248,30 +248,15 @@ namespace Game.Battle
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public bool CanSee(CombatObject obj)
+        public bool CanSee(CombatObject obj, uint lowestSteath)
         {
-            // In order to implement visibility as discussed in http://trac.tribalhero.com/wiki/Discussion%2011/08/10
-            // we always take the lowest RoundsParticipated of the two objects.
-
-            // Removed the chance to hit even when total is lower stl, making it more deterministic
-            int minRoundsParticipated = Math.Min(RoundsParticipated, obj.RoundsParticipated);
-            var totalVision = (int)(Visibility + minRoundsParticipated);
-            switch(obj.BaseStats.Weapon)
-            {
-                case WeaponType.Bow:
-                    totalVision += Math.Max((minRoundsParticipated * (BaseStats.Spd-5) / 15),0);
-                    break;
-                default:
-                    break;
-            }
-
-            if (totalVision >= obj.Stats.Stl)
+            if (Visibility >= obj.Stats.Stl || lowestSteath >= obj.Stats.Stl)
             {
 #if DEBUG
                 Global.Logger.Debug(string.Format("Total Vision[{2}] CanSee [{0}] Stl[{1}]",
                                                         obj.ClassType == BattleClass.Unit ? UnitFactory.GetName(obj.Type, 1) : StructureFactory.GetName(obj.Type, 1),
                                                         obj.Stats.Stl,
-                                                        totalVision));
+                                                        Visibility));
 #endif
                 return true;
             }

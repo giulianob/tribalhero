@@ -223,6 +223,7 @@
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
     <Compile Include="Setup\ActionFactory.cs" />
+    <Compile Include="Setup\UnitModFactory.cs" />
     <Compile Include="Setup\UnitFactory.cs" />
     <Compile Include="Setup\EffectRequirementFactory.cs" />
     <Compile Include="Setup\Error.cs" />

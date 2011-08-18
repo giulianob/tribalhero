@@ -140,5 +140,24 @@ namespace Game.Comm
             return "OK!";
 
         }
+
+        public string CmdDeleteInactives(Session session, string[] parms) {
+            bool help = false;
+            string playerName = string.Empty;
+
+            try {
+                var p = new OptionSet { { "?|help|h", v => help = true } };
+                p.Parse(parms);
+            } catch (Exception) {
+                help = true;
+            }
+
+            if (help)
+                return "DeleteInactives";
+
+            IdleChecker.DeleteAllInactivePlayers();
+            return "OK!";
+
+        }
     }
 }

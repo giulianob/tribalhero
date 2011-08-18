@@ -56,7 +56,6 @@ namespace Game.Setup
                                                     ushort.Parse(toks[col["Hp"]]),
                                                     ushort.Parse(toks[col["Atk"]]),
                                                     byte.Parse(toks[col["Splash"]]),
-                                                    ushort.Parse(toks[col["Def"]]),
                                                     byte.Parse(toks[col["Rng"]]),
                                                     byte.Parse(toks[col["Stl"]]),
                                                     byte.Parse(toks[col["Spd"]]),
@@ -76,34 +75,6 @@ namespace Game.Setup
 
                     dict[int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }
-            }
-            using (var fs = new StreamWriter(File.Open("ratio.csv", FileMode.Create, FileAccess.Write, FileShare.ReadWrite))) {
-                fs.Write("Header,");
-                foreach (var kvp in UnitFactory.GetList().Where(x => (x.Value.Lvl % 100) == 1)) {
-                    fs.Write(kvp.Value.Name + ",");
-                }
-                fs.WriteLine("Min,Max,Avg");
-
-                foreach (var kvp in UnitFactory.GetList().Where(x => (x.Value.Lvl % 100) == 1)) {
-                    double sum = 0;
-                    int count = 0;
-                    double min = double.MaxValue;
-                    double max = double.MinValue;
-                    fs.Write(kvp.Value.Name + ",");
-                    foreach (var kvp2 in UnitFactory.GetList().Where(x => (x.Value.Lvl % 100) == 1)) {
-                        double classModifer = BattleFormulas.GetArmorClassModifier(kvp.Value.Battle.WeaponClass, kvp2.Value.Battle.ArmorClass);
-                        double typeModifer = BattleFormulas.GetArmorTypeModifier(kvp.Value.Battle.Weapon, kvp2.Value.Battle.Armor);
-                        double modifier = classModifer * typeModifer;
-                       // fs.Write(String.Format("{0}x{1}={2},", classModifer, typeModifer, modifier));
-                        fs.Write(String.Format("{0},", modifier));
-                        min = Math.Min(modifier, min);
-                        max = Math.Max(modifier, max);
-                        sum += modifier;
-                        ++count;
-                    }
-                    fs.WriteLine(string.Format("{0},{1},{2}", min, max, sum / count));
-                }
-
             }
         }
 

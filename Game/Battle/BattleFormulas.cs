@@ -194,9 +194,6 @@ namespace Game.Battle
                             case "Splash":
                                 calculator.Splash.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
-                            case "Def":
-                                calculator.Def.AddMod((string)effect.Value[1], (int)effect.Value[2]);
-                                break;
                             case "Spd":
                                 calculator.Spd.AddMod((string)effect.Value[1], (int)effect.Value[2]);
                                 break;
@@ -215,7 +212,7 @@ namespace Game.Battle
                         }
                     }
                 } else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
-                    calculator.Def.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
+                    calculator.Atk.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
             }
             return calculator.GetStats();
         }

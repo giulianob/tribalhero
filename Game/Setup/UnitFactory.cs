@@ -56,7 +56,6 @@ namespace Game.Setup
                                                     ushort.Parse(toks[col["Hp"]]),
                                                     ushort.Parse(toks[col["Atk"]]),
                                                     byte.Parse(toks[col["Splash"]]),
-                                                    ushort.Parse(toks[col["Def"]]),
                                                     byte.Parse(toks[col["Rng"]]),
                                                     byte.Parse(toks[col["Stl"]]),
                                                     byte.Parse(toks[col["Spd"]]),

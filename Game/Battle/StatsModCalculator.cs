@@ -122,7 +122,6 @@ namespace Game.Battle
             MaxHp = new IntStatsModCalculator(baseStats.MaxHp);
             Atk = new IntStatsModCalculator(baseStats.Atk);
             Splash = new IntStatsModCalculator(baseStats.Splash);
-            Def = new IntStatsModCalculator(baseStats.Def);
             Rng = new IntStatsModCalculator(baseStats.Rng);
             Stl = new IntStatsModCalculator(baseStats.Stl);
             Spd = new IntStatsModCalculator(baseStats.Spd);
@@ -133,7 +132,6 @@ namespace Game.Battle
         public IntStatsModCalculator MaxHp { get; private set; }
         public IntStatsModCalculator Atk { get; private set; }
         public IntStatsModCalculator Splash { get; private set; }
-        public IntStatsModCalculator Def { get; private set; }
         public IntStatsModCalculator Rng { get; private set; }
         public IntStatsModCalculator Stl { get; private set; }
         public IntStatsModCalculator Spd { get; private set; }
@@ -142,11 +140,6 @@ namespace Game.Battle
         public void AddAtkParameter(string paramter, int value)
         {
             Atk.AddMod(paramter, value);
-        }
-
-        public void AddDefParameter(string paramter, int value)
-        {
-            Def.AddMod(paramter, value);
         }
 
         public void AddSplashParameter(string paramter, int value)

@@ -51,17 +51,17 @@ class Battle extends AppModel {
      */
     function viewInvasionReport($cities, $battleId) {
         $report = $this->find('first', array(
-                    'fields' => array(
-                        'Battle.id',
-                        'Battle.created',
-                        'Battle.read'
-                    ),
-                    'conditions' => array(
-                        'Battle.city_id' => $cities,
-                        'Battle.id' => $battleId,
-                        'NOT' => array('Battle.ended' => null)
-                    ),
-                    'link' => array()
+            'fields' => array(
+                'Battle.id',
+                'Battle.created',
+                'Battle.read'
+            ),
+            'conditions' => array(
+                'Battle.city_id' => $cities,
+                'Battle.id' => $battleId,
+                'NOT' => array('Battle.ended' => null)
+            ),
+            'link' => array()
                 ));
 
         if (empty($report))
@@ -84,7 +84,9 @@ class Battle extends AppModel {
             'contain' => array(
                 'BattleReportTroop' => array(
                     'order' => array('BattleReportTroop.group_id ASC'),
-                    'City' => array('fields' => array('id', 'name')),
+                    'City' => array('fields' => array('id', 'name'),
+                        'Player' => array('fields' => array('name')),
+                    ),
                     'BattleReportObject' => array('order' => array('BattleReportObject.type ASC', 'BattleReportObject.object_id ASC'))
                 )
             ),
@@ -167,37 +169,37 @@ class Battle extends AppModel {
      */
     function viewAttackReport($cities, $reportViewId) {
         $report = $this->BattleReportView->find('first', array(
-                    'joins' => array(
-                        array(
-                            'table' => 'battles',
-                            'alias' => 'Battle',
-                            'type' => 'INNER',
-                            'foreignKey' => false,
-                            'conditions' => array(
-                                'BattleReportView.battle_id = Battle.id',
-                                'Battle.ended IS NOT NULL',
-                            )
-                        )
-                    ),
-                    'fields' => array(
-                        'BattleReportView.id',
-                        'BattleReportView.battle_id',
-                        'BattleReportView.is_attacker',
-                        'BattleReportView.group_id',
-                        'BattleReportView.read',
-                        'BattleReportView.loot_crop',
-                        'BattleReportView.loot_wood',
-                        'BattleReportView.loot_iron',
-                        'BattleReportView.loot_gold',
-                        'BattleReportView.bonus_crop',
-                        'BattleReportView.bonus_wood',
-                        'BattleReportView.bonus_iron',
-                        'BattleReportView.bonus_gold',
-                    ),
+            'joins' => array(
+                array(
+                    'table' => 'battles',
+                    'alias' => 'Battle',
+                    'type' => 'INNER',
+                    'foreignKey' => false,
                     'conditions' => array(
-                        'BattleReportView.id' => $reportViewId,
-                        'BattleReportView.city_id' => $cities,
+                        'BattleReportView.battle_id = Battle.id',
+                        'Battle.ended IS NOT NULL',
                     )
+                )
+            ),
+            'fields' => array(
+                'BattleReportView.id',
+                'BattleReportView.battle_id',
+                'BattleReportView.is_attacker',
+                'BattleReportView.group_id',
+                'BattleReportView.read',
+                'BattleReportView.loot_crop',
+                'BattleReportView.loot_wood',
+                'BattleReportView.loot_iron',
+                'BattleReportView.loot_gold',
+                'BattleReportView.bonus_crop',
+                'BattleReportView.bonus_wood',
+                'BattleReportView.bonus_iron',
+                'BattleReportView.bonus_gold',
+            ),
+            'conditions' => array(
+                'BattleReportView.id' => $reportViewId,
+                'BattleReportView.city_id' => $cities,
+            )
                 ));
 
         if (empty($report))

@@ -1,0 +1,62 @@
+<project name="gameserver" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant">
+	<description>Game server build</description>
+	
+	<target name="init">
+		<echo message="Building from ${basedir}" />
+	
+		<tstamp />
+		
+		<property name="src" location="game/src" />	
+	</target>
+	
+	<target name="compile" depends="init">
+		<dn:msbuild buildfile="${basedir}\Game.sln">
+			<target name="Game:Rebuild" />
+			<target name="CSVToXML:Rebuild" />
+			<target name="DatabaseGenerator:Rebuild" />
+			<target name="GraphGenerator:Rebuild" />
+			<target name="Launcher:Rebuild" />
+			<target name="LauncherService:Rebuild" />
+			
+			<property name="Configuration" value="Release" />
+			<property name="Platform" value="any cpu" />
+			<property name="BuildProjectReferences" value="false" />
+		</dn:msbuild>
+	</target>
+	
+	<target name="generate" if="deploydir" depends="compile">
+		<exec executable="${basedir}/GraphGenerator/bin/Release/GraphGenerator.exe">
+			<arg line="--output=${deploydir}/graphoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		</exec>
+		
+		<exec executable="${basedir}/DatabaseGenerator/bin/Release/DatabaseGenerator.exe">
+			<arg line="--output=${deploydir}/databaseoutput --settings=${basedir}/conf/settings.ini --img=${basedir}/graphics/buildings --img=${basedir}/graphics/units --img=${basedir}/graphics/icons/props" />
+		</exec>				
+	</target>
+	
+	<target name="deploy" if="deploydir" depends="compile">
+		<mkdir dir="${deploydir}" />	
+		
+		<zip destfile="${deploydir}/Launcher.zip">
+			<zipfileset dir="${basedir}/Launcher/bin/Release" prefix="bin" />
+			<zipfileset dir="${basedir}/conf" prefix="conf" />			
+		</zip>
+		 
+		<zip destfile="${deploydir}/LauncherService.zip">
+			<zipfileset dir="${basedir}/LauncherService/bin/Release" prefix="bin" />
+			<zipfileset dir="${basedir}/conf" prefix="conf" />			
+		</zip>		
+		
+	</target>
+	
+	<target name="deploydb" if="deploydir" depends="generate">
+		<mkdir dir="${deploydir}" />	
+	
+		<zip destfile="${deploydir}/Database.zip">
+			<zipfileset dir="${deploydir}/databaseoutput/"/>
+		</zip>
+		<zip destfile="${deploydir}/Graph.zip">
+			<zipfileset dir="${deploydir}/graphoutput/" includes="*.png" />			
+		</zip>
+	</target>	
+</project>

@@ -27,8 +27,8 @@ foreach ($battle_reports as $battle_report) {
     foreach ($battle_report['BattleReportTroop'] as $battle_troop) {
         //Save the events
         if ($battle_troop['state'] != TROOP_STATE_STAYING) {
-            $snapshot['events'][] = $battle_troop['City']['name'] . '(' . ($battle_troop['troop_stub_id'] == 1 ? 'Local' : $battle_troop['troop_stub_id']) . ') has ' . $troop_states_pst[$battle_troop['state']];
-			$snapshot['eventsRaw'][] = array('groupId' => $battle_troop['group_id'], 'type' => $battle_troop['state']);
+            $snapshot['events'][] = $battle_troop['City']['Player']['name'] . ': ' . $battle_troop['City']['name'] . '(' . ($battle_troop['troop_stub_id'] == 1 ? 'Local' : $battle_troop['troop_stub_id']) . ') has ' . $troop_states_pst[$battle_troop['state']];
+            $snapshot['eventsRaw'][] = array('groupId' => $battle_troop['group_id'], 'type' => $battle_troop['state']);
         }
 
         //Save the main troop info
@@ -41,7 +41,7 @@ foreach ($battle_reports as $battle_report) {
         //Gather all the unit info
         foreach ($battle_troop['BattleReportObject'] as $battle_object) {
             $troop['units'][] = array(
-				'id' => $battle_object['object_id'],
+                'id' => $battle_object['object_id'],
                 'type' => $battle_object['type'],
                 'level' => $battle_object['level'],
                 'count' => $battle_object['count'],

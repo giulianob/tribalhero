@@ -239,7 +239,7 @@ namespace Game.Battle
             if (this.stats.MaxHp / 5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
                 return;
 
-            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Defense, tech.Value[1], tech.Value[2])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Defense, (string)tech.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
             if (BattleFormulas.IsAttackMissed((byte)percent)) {
                 actualDmg = 1;
             }

@@ -163,20 +163,23 @@ namespace Game.Battle
             return 100 - stealth < Config.Random.Next(0, 100);
         }
 
-        internal static bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, object comparison, object value)
-        {
-            switch((string)comparison)
-            {
-                case "ArmorEqual":
-                    return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)value, true);
-                case "ArmorClassEqual":
-                    return stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), (string)value, true);
-                case "WeaponEqual":
-                    return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), (string)value, true);
-                case "WeaponClassEqual":
-                    return stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), (string)value, true);
-                case "GroupEqual":
-                    return group == (TroopBattleGroup)Enum.Parse(typeof(TroopBattleGroup), (string)value, true);
+        internal static bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, string value) {
+            string[] conditions = value.Split('=', ',');
+            for (int i = 0; i < conditions.Length / 2; ++i) {
+                switch (conditions[i * 2]) {
+                    case "ArmorEqual":
+                        return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true);
+                    case "ArmorClassEqual":
+                        return stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), conditions[i * 2 + 1], true);
+                    case "WeaponEqual":
+                        return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), conditions[i * 2 + 1], true);
+                    case "WeaponClassEqual":
+                        return stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), conditions[i * 2 + 1], true);
+                    case "GroupEqual":
+                        return group == (TroopBattleGroup)Enum.Parse(typeof(TroopBattleGroup), conditions[i * 2 + 1], true);
+                    case "TypeEqual":
+                        return stats.Type == ushort.Parse(conditions[i * 2 + 1]);
+                }
             }
             return false;
         }
@@ -186,7 +189,7 @@ namespace Game.Battle
             var calculator = new BattleStatsModCalculator(stats);
             foreach (var effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
                 if (effect.Id == EffectCode.UnitStatMod) {
-                    if (UnitStatModCheck(stats, group, effect.Value[3], effect.Value[4])) {
+                    if (UnitStatModCheck(stats, group, (string)effect.Value[3])) {
                         switch ((string)effect.Value[0]) {
                             case "Atk":
                                 calculator.Atk.AddMod((string)effect.Value[1], (int)effect.Value[2]);

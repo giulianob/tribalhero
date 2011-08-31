@@ -219,7 +219,7 @@ namespace Game.Data
             
             Global.Logger.Debug(string.Format("DepleteTime in [{0}] hours Wood.Upkeep[{1}] Wood.Value[{2}]", hours, Wood.Upkeep, Wood.Value));
 
-            DepleteTime = DateTime.UtcNow.AddHours(hours * (Config.seconds_per_unit / 3600));
+            DepleteTime = DateTime.UtcNow.AddSeconds(hours * 3600 * Config.seconds_per_unit);
 
             DepleteAction = new ForestDepleteAction(this, DepleteTime);
 

@@ -110,7 +110,7 @@ namespace Game.Battle
 
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
         {
-            int totalCarry = attacker.BaseStats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
+            int totalCarry = attacker.Stats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
             int count = Math.Max(1, totalCarry* GetLootPerRound(attacker.City) / 100); // if carry is 100 and % is 5, then count = 5;
             var spaceLeft = new Resource(totalCarry / Config.resource_crop_ratio,
                                          totalCarry / Config.resource_gold_ratio,

@@ -58,10 +58,10 @@ DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 ,
-BOW_RESEARCH_TECHNOLOGY_NAME,New Bow Research
-BOW_RESEARCH_TECHNOLOGY_LVL_1,Equips ranged units with a Long Bow. Increases splash damage by 1. (Does not stack)
-BOW_RESEARCH_TECHNOLOGY_LVL_2,Equips ranged units with a Composite Bow. Increases splash damage by 2. (Does not stack)
-BOW_RESEARCH_TECHNOLOGY_LVL_3,Equips ranged units with a Crossbow. Increases splash damage by 3. (Does not stack)
+BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield  Research
+BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP 5. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP 10. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP 15. (Does not stack)"
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
 HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15. (Does not stack)
@@ -75,12 +75,12 @@ GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, 
 GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, Hoplite and Gladiator by 12% on defense mission . (Stacks compoundly)"
 GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman, Hoplite and Gladiator by 15% on defense mission . (Stacks compoundly)"
 ,
-BOW_ARMOR_TECHNOLOGY_NAME,Bow Units Defensive Boost
-BOW_ARMOR_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 3% on defense mission . (Stacks compoundly)"
-BOW_ARMOR_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 6% on defense mission . (Stacks compoundly)"
-BOW_ARMOR_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 9% on defense mission . (Stacks compoundly)"
-BOW_ARMOR_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 12% on defense mission . (Stacks compoundly)"
-BOW_ARMOR_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on defense mission . (Stacks compoundly)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Bow Units Defensive Boost
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 3% on defense mission . (Stacks compoundly)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Bowman, Archer and Helepolis by 6% on defense mission . (Stacks compoundly)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Helepolis by 9% on defense mission . (Stacks compoundly)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 12% on defense mission . (Stacks compoundly)"
+BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on defense mission . (Stacks compoundly)"
 ,
 MOUNT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Pike Units Defensive Boost
 MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 3% on defense mission . (Stacks compoundly)
@@ -197,7 +197,7 @@ SPIKE_BARRICADE_TECHNOLOGY_LVL_1,Increases building's splash damage by 1.
 SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage by 2.
 SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage by 3.
 ,
-HANZO_SWORD_TECHNOLOGY_NAME,Hanzo sword
-HANZO_SWORD_TECHNOLOGY_LVL_1,Increase sword unit's stealth by 1.
-HANZO_SWORD_TECHNOLOGY_LVL_2,Increase sword unit's stealth by 2.
-HANZO_SWORD_TECHNOLOGY_LVL_3,Increase sword unit's stealth by 3.
+HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Formation
+HANZO_SWORD_TECHNOLOGY_LVL_1,"Increase Fighter, Swordsman and gladiator's Group Size by 5"
+HANZO_SWORD_TECHNOLOGY_LVL_2,"Increase Fighter, Swordsman and gladiator's Group Size by 10"
+HANZO_SWORD_TECHNOLOGY_LVL_3,"Increase Fighter, Swordsman and gladiator's Group Size by 15"

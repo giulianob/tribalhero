@@ -295,7 +295,7 @@ namespace Game.Battle
                 TroopStub.EndUpdate();
 
                 // Figure out how much loot we have to return to the city
-                int totalCarry = BaseStats.Carry*Count;
+                int totalCarry = Stats.Carry*Count;
                 returning = new Resource(loot.Crop > totalCarry / Config.resource_crop_ratio ? loot.Crop - totalCarry / Config.resource_crop_ratio : 0,
                                          loot.Gold > totalCarry / Config.resource_gold_ratio ? loot.Gold - totalCarry / Config.resource_gold_ratio : 0,
                                          loot.Iron > totalCarry / Config.resource_iron_ratio ? loot.Iron - totalCarry / Config.resource_iron_ratio : 0,

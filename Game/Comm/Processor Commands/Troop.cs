@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
@@ -84,14 +85,14 @@ namespace Game.Comm
 
         public void CmdLocalTroopSet(Session session, Packet packet)
         {
-            uint cityId;
-            byte formationCount;
+            uint cityId;            
             bool hideNewUnits;
+            TroopStub stub;
             try
             {
                 cityId = packet.GetUInt32();
                 hideNewUnits = packet.GetByte() == 1;
-                formationCount = packet.GetByte();
+                stub = PacketHelper.ReadStub(packet, FormationType.Normal, FormationType.Garrison);
             }
             catch(Exception)
             {
@@ -114,66 +115,22 @@ namespace Game.Comm
                 city.HideNewUnits = hideNewUnits;
                 city.EndUpdate();
 
-                // Validate troop stub sent from player
-                var stub = new TroopStub();
-
-                if (formationCount != 2)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
-
-                for (int f = 0; f < formationCount; ++f)
-                {
-                    FormationType formationType;
-                    byte unitCount;
-                    try
-                    {
-                        formationType = (FormationType)packet.GetByte();
-
-                        if ((f == 0 && formationType != FormationType.Normal) || (f == 1 && formationType != FormationType.Garrison))
-                        {
-                            // a bit dirty
-                            ReplyError(session, packet, Error.Unexpected);
-                            return;
-                        }
-
-                        unitCount = packet.GetByte();
-                    }
-                    catch(Exception)
-                    {
-                        ReplyError(session, packet, Error.Unexpected);
-                        return;
-                    }
-
-                    stub.AddFormation(formationType);
-
-                    for (int u = 0; u < unitCount; ++u)
-                    {
-                        ushort type;
-                        ushort count;
-
-                        try
-                        {
-                            type = packet.GetUInt16();
-                            count = packet.GetUInt16();
-                        }
-                        catch(Exception)
-                        {
-                            ReplyError(session, packet, Error.Unexpected);
-                            return;
-                        }
-
-                        stub.AddUnit(formationType, type, count);
-                    }
-                }
-
+                // Move units
                 if (stub.TotalCount > 0)
                 {
-                    stub.TroopId = 1;
-                    if (!stub.Equal(city.DefaultTroop, FormationType.InBattle))
+                    var currentUnits = city.DefaultTroop.ToUnitList(FormationType.Normal, FormationType.Garrison);
+                    var newUnits = stub.ToUnitList();
+
+                    if (currentUnits.Count != newUnits.Count)
                     {
-                        ReplyError(session, packet, Error.Unexpected);
+                        ReplyError(session, packet, Error.TroopChanged);
+                        return;                        
+                    }
+
+                    // Units are ordered by their type so we can compare the array by indexes
+                    if (currentUnits.Where((currentUnit, i) => currentUnit.Type != newUnits[i].Type || currentUnit.Count != newUnits[i].Count).Any())
+                    {
+                        ReplyError(session, packet, Error.TroopChanged);
                         return;
                     }
 
@@ -276,7 +233,7 @@ namespace Game.Comm
             uint cityId;
             uint targetCityId;
             uint targetObjectId;
-            byte formationCount;
+            TroopStub stub;
             AttackMode mode;
 
             try
@@ -285,7 +242,7 @@ namespace Game.Comm
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
                 targetObjectId = packet.GetUInt32();
-                formationCount = packet.GetByte();
+                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch(Exception)
             {
@@ -328,46 +285,6 @@ namespace Game.Comm
                     return;
                 }
 
-                var stub = new TroopStub();
-
-                for (int f = 0; f < formationCount; ++f)
-                {
-                    FormationType formationType;
-                    byte unitCount;
-                    try
-                    {
-                        formationType = (FormationType)packet.GetByte();
-                        formationType = FormationType.Normal;
-                        unitCount = packet.GetByte();
-                    }
-                    catch(Exception)
-                    {
-                        ReplyError(session, packet, Error.Unexpected);
-                        return;
-                    }
-
-                    stub.AddFormation(formationType);
-
-                    for (int u = 0; u < unitCount; ++u)
-                    {
-                        ushort type;
-                        ushort count;
-
-                        try
-                        {
-                            type = packet.GetUInt16();
-                            count = packet.GetUInt16();
-                        }
-                        catch(Exception)
-                        {
-                            ReplyError(session, packet, Error.Unexpected);
-                            return;
-                        }
-
-                        stub.AddUnit(formationType, type, count);
-                    }
-                }
-
                 // Create troop object                
                 if (!Procedure.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
                 {
@@ -391,13 +308,13 @@ namespace Game.Comm
         {
             uint cityId;
             uint targetCityId;
-            byte formationCount;
+            TroopStub stub;
 
             try
             {
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
-                formationCount = packet.GetByte();
+                stub = PacketHelper.ReadStub(packet, FormationType.Defense);
             }
             catch(Exception)
             {
@@ -424,46 +341,6 @@ namespace Game.Comm
             using (new MultiObjectLock(out cities, cityId, targetCityId))
             {
                 City city = cities[cityId];
-
-                var stub = new TroopStub();
-
-                for (int f = 0; f < formationCount; ++f)
-                {
-                    FormationType formationType;
-                    byte unitCount;
-                    try
-                    {
-                        formationType = (FormationType)packet.GetByte();
-                        formationType = FormationType.Normal;
-                        unitCount = packet.GetByte();
-                    }
-                    catch(Exception)
-                    {
-                        ReplyError(session, packet, Error.Unexpected);
-                        return;
-                    }
-
-                    stub.AddFormation(formationType);
-
-                    for (int u = 0; u < unitCount; ++u)
-                    {
-                        ushort type;
-                        ushort count;
-
-                        try
-                        {
-                            type = packet.GetUInt16();
-                            count = packet.GetUInt16();
-                        }
-                        catch(Exception)
-                        {
-                            ReplyError(session, packet, Error.Unexpected);
-                            return;
-                        }
-
-                        stub.AddUnit(formationType, type, count);
-                    }
-                }
 
                 if (!Procedure.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
                 {

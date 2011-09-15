@@ -12,13 +12,12 @@ namespace Testing.Troop
     ///   Summary description for TroopProcedureTest
     /// </summary>
     [TestClass]
-    public class TroopStarveTest
+    public class TroopStarveTest : TestBase
     {
         [TestInitialize]
         public void TestInitialize()
         {
-            Global.FireEvents = false;
-            ;
+            Global.FireEvents = false;            
         }
 
         [TestCleanup]

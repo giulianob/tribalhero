@@ -12,7 +12,7 @@ namespace Testing.Channel
     ///   Summary description for ChannelTest
     /// </summary>
     [TestClass]
-    public class ChannelTest
+    public class ChannelTest : TestBase
     {
         private readonly object msg1 = new object();
         private readonly object msg2 = new object();

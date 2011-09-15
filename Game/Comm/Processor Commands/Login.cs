@@ -1,18 +1,12 @@
 #region
 
 using System;
-using System.Data;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using Game.Data;
-using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 
@@ -248,7 +242,6 @@ namespace Game.Comm
                 }
 
                 City city;
-                Structure mainBuilding;
 
                 lock (Global.World.Lock)
                 {
@@ -259,31 +252,14 @@ namespace Game.Comm
                         return;
                     }
 
-                    if (!Randomizer.MainBuilding(out mainBuilding, Formula.GetInitialCityRadius(), 1))
+                    if (!Procedure.CreateCity(session.Player, cityName, out city))
                     {
-                        Global.World.Players.Remove(session.Player.PlayerId);
-                        Global.DbManager.Rollback();
-                        // If this happens I'll be a very happy game developer
                         ReplyError(session, packet, Error.MapFull);
                         return;
                     }
-
-                    city = new City(session.Player, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), mainBuilding);
-                    session.Player.Add(city);
-
-                    Global.World.Add(city);
-                    mainBuilding.BeginUpdate();
-                    Global.World.Add(mainBuilding);
-                    mainBuilding.EndUpdate();
-
-                    var defaultTroop = new TroopStub();
-                    defaultTroop.BeginUpdate();
-                    defaultTroop.AddFormation(FormationType.Normal);
-                    defaultTroop.AddFormation(FormationType.Garrison);
-                    defaultTroop.AddFormation(FormationType.InBattle);
-                    city.Troops.Add(defaultTroop);
-                    defaultTroop.EndUpdate();
                 }
+
+                Structure mainBuilding = (Structure)city[1];
 
                 InitFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 

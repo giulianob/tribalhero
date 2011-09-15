@@ -11,7 +11,7 @@ namespace Testing.Resources
     ///   Summary description for LazyResourceTest
     /// </summary>
     [TestClass]
-    public class ResourceTest
+    public class ResourceTest : TestBase
     {
         [TestInitialize]
         public void TestInitialize()
@@ -193,7 +193,7 @@ namespace Testing.Resources
             var resource1 = new Resource(1, 2, 3, 4, 5);
             Resource returning;
             Resource actual;
-            resource1.Add(new Resource(1, 2, 3, 4, 5), 10, out actual, out returning);
+            resource1.Add(new Resource(1, 2, 3, 4, 5), new Resource(10), out actual, out returning);
 
             Assert.IsTrue(resource1.CompareTo(new Resource(2, 4, 6, 8, 10)) == 0);
             Assert.IsTrue(returning.CompareTo(new Resource(0, 0, 0, 0, 0)) == 0);
@@ -206,7 +206,7 @@ namespace Testing.Resources
             var resource1 = new Resource(1, 2, 3, 4, 5);
             Resource returning;
             Resource actual;
-            resource1.Add(new Resource(1, 2, 3, 4, 5), 5, out actual, out returning);
+            resource1.Add(new Resource(1, 2, 3, 4, 5), new Resource(5), out actual, out returning);
 
             Assert.IsTrue(resource1.CompareTo(new Resource(2, 4, 5, 5, 5)) == 0);
             Assert.IsTrue(returning.CompareTo(new Resource(0, 0, 1, 3, 5)) == 0);
@@ -219,7 +219,7 @@ namespace Testing.Resources
             var resource1 = new Resource(0, 20, 30, 40, 50);
             Resource returning;
             Resource actual;
-            resource1.Add(new Resource(1, 20, 30, 40, 50), 5, out actual, out returning);
+            resource1.Add(new Resource(1, 20, 30, 40, 50), new Resource(5), out actual, out returning);
 
             Assert.IsTrue(resource1.CompareTo(new Resource(1, 5, 5, 5, 5)) == 0);
             Assert.IsTrue(returning.CompareTo(new Resource(0, 35, 55, 75, 95)) == 0);

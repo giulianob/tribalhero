@@ -19,7 +19,7 @@ namespace Testing.Troop
     ///   Summary description for TroopProcedureTest
     /// </summary>
     [TestClass]
-    public class TestOutnumber
+    public class TestOutnumber : TestBase
     {
         private TroopStub stub;
         const double ERROR_MARGIN = .15;

@@ -16,92 +16,94 @@ namespace Game.Setup
     public class Config
     {
         // ReSharper disable InconsistentNaming        
-        public static readonly int client_min_version;
-        public static readonly int client_min_revision = 14;
+        public static int client_min_version;
+        public static int client_min_revision = 14;
 
-        public static readonly int server_port = 48888;
-        public static readonly string server_listen_address = "0.0.0.0";
-        public static readonly bool server_admin_only;
-        public static readonly bool server_production;
+        public static int server_port = 48888;
+        public static string server_listen_address = "0.0.0.0";
+        public static bool server_admin_only;
+        public static bool server_production;
 
-        public static readonly string flash_domain = "*.tribalhero.com";
+        public static string flash_domain = "*.tribalhero.com";
 
-        public static readonly string api_domain = "tribalhero.com";
-        public static readonly string api_id = string.Empty;
-        public static readonly string api_key = string.Empty;
+        public static string api_domain = "tribalhero.com";
+        public static string api_id = string.Empty;
+        public static string api_key = string.Empty;
 
-        public static readonly string csv_folder = "conf/csv/";
-        public static readonly string csv_compiled_folder = "conf/csv/compiled/";
-        public static readonly string settings_folder = "conf/";
-        public static readonly string maps_folder = "conf/maps/";
-        public static readonly string data_folder = "conf/data/";
-        public static readonly string regions_folder = "conf/regions/";
+        public static string csv_folder = "conf/csv/";
+        public static string csv_compiled_folder = "conf/csv/compiled/";
+        public static string settings_folder = "conf/";
+        public static string maps_folder = "conf/maps/";
+        public static string data_folder = "conf/data/";
+        public static string regions_folder = "conf/regions/";
 
-        public static readonly uint map_width = 3400;
-        public static readonly uint map_height = 6200;
-        public static readonly uint region_width = 34;
-        public static readonly uint region_height = 62;
+        public static uint map_width = 3400;
+        public static uint map_height = 6200;
+        public static uint region_width = 34;
+        public static uint region_height = 62;
 
-        public static readonly int road_set_count = 1;
-        public static readonly int road_start_tile_id = 224;
-        public static readonly int road_end_tile_id = 255;
+        public static int road_set_count = 1;
+        public static int road_start_tile_id = 224;
+        public static int road_end_tile_id = 255;
 
-        public static readonly int column = (int)(map_width/region_width);
-        public static readonly int row = (int)(map_height/region_height);
-        public static readonly int regions_count = column*row;
+        public static int column = (int)(map_width/region_width);
+        public static int row = (int)(map_height/region_height);
+        public static int regions_count = column*row;
 
-        public static readonly uint city_region_width = 100;
-        public static readonly uint city_region_height = 100;
-        public static readonly int city_region_column = (int)(map_width/city_region_width);
-        public static readonly int city_region_row = (int)(map_height/city_region_height);
+        public static uint city_region_width = 100;
+        public static uint city_region_height = 100;
+        public static int city_region_column = (int)(map_width/city_region_width);
+        public static int city_region_row = (int)(map_height/city_region_height);
 
-        public static readonly double seconds_per_unit = 1.0; //dont make it zero!
+        public static double seconds_per_unit = 1.0; //dont make it zero!
 
-        public static readonly bool battle_instant_watch;
-        public static readonly double battle_turn_interval = 20.0f;
-        public static readonly int battle_min_rounds = 5;
-        public static readonly int battle_loot_per_round = 10; // percentage of total carry
-        public static readonly int battle_stamina_initial = 20;
-        public static readonly ushort battle_stamina_destroyed_deduction = 5;
-        public static readonly bool battle_instant_move;
-        public static readonly double battle_cost_penalty = 1;
-        public static readonly bool resource_upkeep = true;
-        public static readonly bool resource_cap = true;
-        public static readonly bool resource_fast_income;
-        public static readonly int resource_crop_ratio = 1;
-        public static readonly int resource_labor_ratio = 1;
-        public static readonly int resource_wood_ratio = 1;
-        public static readonly int resource_gold_ratio = 2;
-        public static readonly int resource_iron_ratio = 5;
+        public static bool battle_instant_watch;
+        public static double battle_turn_interval = 20.0f;
+        public static int battle_min_rounds = 5;
+        public static int battle_loot_per_round = 10; // percentage of total carry
+        public static int battle_stamina_initial = 20;
+        public static ushort battle_stamina_destroyed_deduction = 5;
+        public static bool battle_instant_move;
+        public static double battle_cost_penalty = 1;
+        public static bool resource_upkeep = true;
+        public static bool resource_cap = true;
+        public static bool resource_fast_income;
+        public static int resource_crop_ratio = 1;
+        public static int resource_labor_ratio = 1;
+        public static int resource_wood_ratio = 1;
+        public static int resource_gold_ratio = 2;
+        public static int resource_iron_ratio = 5;
 
-        public static readonly byte minimum_distance_apart = 8;
-        public static readonly int height_margin = 10;
-        public static readonly int width_margin = 10;
+        public static byte minimum_distance_apart = 8;
+        public static int height_margin = 10;
+        public static int width_margin = 10;
 
-        public static readonly int[] forest_count = new[] {100, 100, 100, 100};
+        public static int[] forest_count = new[] {100, 100, 100, 100};
 
-        public static readonly int newbie_protection = 259200; // Number of seconds for newbie protection
+        public static int newbie_protection = 259200; // Number of seconds for newbie protection
 
-        public static readonly bool database_verbose;
-        public static readonly bool database_empty;
-        public static readonly bool database_load_players = true;
-        public static readonly int database_timeout = 60;
-        public static readonly string database_host = "127.0.0.1";
-        public static readonly string database_username = "root";
-        public static readonly string database_password = "";
-        public static readonly string database_database = "game";
-        public static readonly string database_test = "game_test";
-        public static readonly string database_salt = "DFjkxcVsDfwgf4kuj2sDmM334";
+        public static bool database_verbose;
+        public static bool database_empty;
+        public static bool database_load_players = true;
+        public static int database_timeout = 60;
+        public static string database_host = "127.0.0.1";
+        public static string database_username = "root";
+        public static string database_password = "";
+        public static string database_database = "game";
+        public static string database_test = "game_test";
+        public static string database_salt = "DFjkxcVsDfwgf4kuj2sDmM334";
         public static bool database_dump;
 
-        public static readonly bool ai_enabled;
-        public static readonly int ai_count = 100;
+        public static bool ai_enabled;
+        public static int ai_count = 100;
 
-        public static readonly bool actions_instant_time;
-        public static readonly int actions_free_cancel_interval_in_sec = 60;
-        public static readonly bool actions_ignore_requirements = false;
+        public static bool actions_instant_time;
+        public static int actions_free_cancel_interval_in_sec = 60;
+        public static bool actions_ignore_requirements = false;
 
-        private static readonly Dictionary<string, string> extraProperties = new Dictionary<string, string>();
+        public static Random Random { get; private set; }
+
+        private static Dictionary<string, string> extraProperties = new Dictionary<string, string>();
 
         public static Dictionary<string, string> ExtraProperties
         {
@@ -112,8 +114,13 @@ namespace Game.Setup
         }
         // ReSharper restore InconsistentNaming
 
-        static Config()
+        public static void LoadConfigFile(string settingsFile = null)
         {
+            if (string.IsNullOrEmpty(settingsFile))
+            {
+                settingsFile = @"conf\settings.ini";
+            }
+
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Config));
 
@@ -122,29 +129,7 @@ namespace Game.Setup
             string key = string.Empty;
 
             try
-            {
-
-
-                string settingsFile = "c:\\source\\gameserverbeta\\conf\\settings.ini";
-                bool help = false;
-
-                try
-                {
-                    var p = new OptionSet {{"?|help|h", v => help = true}, {"settings=", v => settingsFile = v},};
-                    p.Parse(Environment.GetCommandLineArgs());
-                }
-                catch(Exception e)
-                {
-                    logger.Error(e);
-                    Environment.Exit(0);
-                }
-
-                if (help)
-                {
-                    logger.Info("[--settings=settings.ini]");
-                    Environment.Exit(0);
-                }
-
+            {                
                 settingsFile = Path.GetFullPath(settingsFile);
                 logger.InfoFormat("Loading settings from {0}", settingsFile);
 
@@ -200,8 +185,6 @@ namespace Game.Setup
             {
                 logger.Error("Error loading settings file at " + key, e);
             }
-        }
-
-        public static Random Random { get; private set; }
+        }        
     }
 }

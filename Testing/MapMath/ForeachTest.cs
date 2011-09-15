@@ -12,7 +12,7 @@ namespace Testing.MapMath
     ///   Summary description for ChannelTest
     /// </summary>
     [TestClass]
-    public class ForeachTest
+    public class ForeachTest : TestBase
     {
         [TestInitialize]
         public void TestInitialize()

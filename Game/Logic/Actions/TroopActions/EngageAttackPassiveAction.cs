@@ -225,7 +225,13 @@ namespace Game.Logic.Actions
             // Add bonus to troop object            
             Resource returning;
             Resource actual;
-            stub.TroopObject.Stats.Loot.Add(resource, stub.Carry, out actual, out returning);
+            Resource cap = new Resource(stub.Carry/Config.resource_crop_ratio,
+                                        stub.Carry/Config.resource_gold_ratio,
+                                        stub.Carry/Config.resource_iron_ratio,
+                                        stub.Carry/Config.resource_wood_ratio,
+                                        stub.Carry/Config.resource_labor_ratio);
+
+            stub.TroopObject.Stats.Loot.Add(resource, cap, out actual, out returning);
 
             // Update battle report view with actual received bonus            
             battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, looted, actual);

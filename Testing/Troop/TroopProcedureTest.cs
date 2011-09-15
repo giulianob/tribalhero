@@ -12,7 +12,7 @@ namespace Testing.Troop
     ///   Summary description for TroopProcedureTest
     /// </summary>
     [TestClass]
-    public class TroopProcedureTest
+    public class TroopProcedureTest : TestBase
     {
         private TroopStub stub;
 

@@ -5,13 +5,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace Testing.Troop
+namespace Testing.Lock
 {
     /// <summary>
     ///   Summary description for TroopProcedureTest
     /// </summary>
     [TestClass]
-    public class CallbackLockTest
+    public class CallbackLockTest : TestBase
     {
         [TestInitialize]
         public void TestInitialize()

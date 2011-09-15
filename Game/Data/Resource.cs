@@ -48,6 +48,11 @@ namespace Game.Data
             this.labor = Math.Max(0, labor);
         }
 
+        public Resource(int value)
+            : this(value, value, value, value, value)
+        {
+        }
+
         public int Gold
         {
             get
@@ -239,14 +244,14 @@ namespace Game.Data
             FireStatsUpdate();
         }
 
-        public void Add(Resource cost, int cap, out Resource actual, out Resource returning)
+        public void Add(Resource cost, Resource cap, out Resource actual, out Resource returning)
         {
             Resource total = this + cost;
-            returning = new Resource(total.Crop > cap / Config.resource_crop_ratio ? total.Crop - cap / Config.resource_crop_ratio : 0,
-                                     total.Gold > cap / Config.resource_gold_ratio ? total.Gold - cap / Config.resource_gold_ratio : 0,
-                                     total.Iron > cap / Config.resource_iron_ratio ? total.Iron - cap / Config.resource_iron_ratio : 0,
-                                     total.Wood > cap / Config.resource_wood_ratio ? total.Wood - cap / Config.resource_wood_ratio : 0,
-                                     total.labor > cap / Config.resource_labor_ratio ? total.labor - cap / Config.resource_labor_ratio : 0);
+            returning = new Resource(total.Crop > cap.crop ? total.Crop - cap.crop : 0,
+                                     total.Gold > cap.gold ? total.Gold - cap.gold : 0,
+                                     total.Iron > cap.iron ? total.Iron - cap.iron : 0,
+                                     total.Wood > cap.wood ? total.Wood - cap.wood : 0,
+                                     total.labor > cap.labor ? total.labor - cap.labor : 0);
 
             actual = new Resource(cost.crop - returning.crop,
                                   cost.gold - returning.gold,
@@ -258,13 +263,13 @@ namespace Game.Data
             FireStatsUpdate();
         }
 
-        public void Add(Resource cost, int cap)
+        public void Add(Resource cost, Resource cap)
         {
-            crop = Math.Min(crop + cost.Crop, cap);
-            gold = Math.Min(gold + cost.Gold, cap);
-            iron = Math.Min(iron + cost.Iron, cap);
-            wood = Math.Min(wood + cost.Wood, cap);
-            labor = Math.Min(labor + cost.Labor, cap);
+            crop = Math.Min(crop + cost.Crop, cap.crop);
+            gold = Math.Min(gold + cost.Gold, cap.gold);
+            iron = Math.Min(iron + cost.Iron, cap.iron);
+            wood = Math.Min(wood + cost.Wood, cap.wood);
+            labor = Math.Min(labor + cost.Labor, cap.labor);
         }
 
         public void Add(Resource cost)

@@ -17,7 +17,8 @@ namespace Testing.Troop
     ///   Summary description for TroopProcedureTest
     /// </summary>
     [TestClass]
-    public class TestArcher {
+    public class TestArcher : TestBase
+    {
 
         [TestInitialize]
         public void TestInitialize()

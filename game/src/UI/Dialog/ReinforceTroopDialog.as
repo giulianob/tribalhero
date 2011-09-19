@@ -28,31 +28,28 @@
 
 		private var tilelists: Array = new Array();
 		private var attackTilelists: Array = new Array();
-		private var destFormations: Array;
 
-		public function ReinforceTroopDialog(city: City, srcTroop: TroopStub, destFormations: Array, onAccept: Function):void
+		public function ReinforceTroopDialog(onAccept: Function):void
 		{
 			createUI();
 
 			title = "Send Reinforcement";
 
-			this.city = city;
-			this.destFormations = destFormations;
+			this.city = Global.gameContainer.selectedCity;
 
 			var self: ReinforceTroopDialog = this;
 			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
 
 			//create local tile lists
-			var localTilelists: Array = SimpleTroopGridList.getGridList(srcTroop, city.template, [Formation.Normal]);
+			var localTilelists: Array = SimpleTroopGridList.getGridList(city.troops.getDefaultTroop(), city.template, [Formation.Normal]);
 
 			pnlLocal.appendTab(SimpleTroopGridList.stackGridLists(localTilelists, false), "Local Troop");
 
 			//create attack tile lists
 			var newTroop: TroopStub = new TroopStub();
-			for (var i: int = 0; i < destFormations.length; i ++)
-			newTroop.add(new Formation(destFormations[i]));
+			newTroop.add(new Formation(Formation.Defense));
 
-			attackTilelists = SimpleTroopGridList.getGridList(newTroop, city.template, destFormations);
+			attackTilelists = SimpleTroopGridList.getGridList(newTroop, city.template, [Formation.Defense]);
 
 			pnlAttack.appendTab(SimpleTroopGridList.stackGridLists(attackTilelists, false), "Reinforcement Troop");
 
@@ -71,7 +68,7 @@
 		public function updateSpeedInfo(e: Event = null): void {
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
-				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
+				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops");
 			}
 			else {
 				var secsPerTile: int = Formula.moveTime(city, stub.getSpeed(city), 1, true);

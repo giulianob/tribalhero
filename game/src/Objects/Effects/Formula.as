@@ -93,7 +93,7 @@
 			mod = 100 / Math.max(1, (mod + 100));
 
 			// MoveTime
-			var moveTime: int = 60 * (100 - ((speed - 11) * 5)) / 100;
+			var moveTime: int = 60 * (100 - ((speed - 12) * 5)) / 100;
 
 			// Calculate total
 			return Math.max(1, moveTime * mod) * distance * Constants.secondsPerUnit;

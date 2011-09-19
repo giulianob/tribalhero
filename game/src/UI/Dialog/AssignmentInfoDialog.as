@@ -1,34 +1,16 @@
 package src.UI.Dialog {
-	import flash.display.*
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import org.aswing.AssetIcon;
-	import org.aswing.AssetPane;
-	import org.aswing.AsWingConstants;
-	import org.aswing.BorderLayout;
-	import org.aswing.FlowLayout;
-	import org.aswing.geom.IntDimension;
-	import org.aswing.JFrame;
-	import org.aswing.JLabel;
-	import org.aswing.JLabelButton;
-	import org.aswing.JPanel;
-	import org.aswing.JScrollPane;
-	import org.aswing.JViewport;
-	import org.aswing.SoftBoxLayout;
-	import src.Global;
+	import flash.display.*;
+	import flash.events.*;
+	import org.aswing.*;
+	import org.aswing.geom.*;
+	import src.*;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Troop.*;
-	import src.UI.Components.CityLabel;
-	import src.UI.Components.CoordLabel;
-	import src.UI.Components.CountDownLabel;
-	import src.UI.Components.PlayerCityLabel;
-	import src.UI.Components.PlayerLabel;
-	import src.UI.Components.SimpleTroopGridList.SimpleTroopGridList;
-	import src.UI.GameJPanel;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.Tooltips.SimpleTroopStubTooltip;
-	import src.UI.Tooltips.TroopStubTooltip;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.LookAndFeel.*;
+	import src.UI.Tooltips.*;
 
 	public class AssignmentInfoDialog extends GameJPanel {
 

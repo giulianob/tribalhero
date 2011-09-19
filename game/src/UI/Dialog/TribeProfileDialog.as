@@ -2,7 +2,7 @@
 {
 	import adobe.utils.CustomActions;
 	import flash.events.*;
-	import flash.utils.Timer;
+	import flash.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -11,12 +11,15 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
+	import src.Objects.Process.AssignmentCreateProcess;
+	import src.Objects.Process.AssignmentJoinProcess;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
+	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.TribeUpgradeTooltip;
+	import src.UI.Tooltips.*;
 	
 	public class TribeProfileDialog extends GameJPanel
 	{
@@ -150,6 +153,11 @@
 				info.show();
 			});
 			
+			btnJoin.addActionListener(function(e: Event): void {
+				var join: AssignmentJoinProcess = new AssignmentJoinProcess(assignment);
+				join.execute();
+			});			
+						
 			return pnlContainer;
 		}		
 		
@@ -176,6 +184,11 @@
 			if (Constants.tribeRank <= 1) {
 				pnlFooter.append(btnCreate);
 			}
+			
+			btnCreate.addActionListener(function(e: Event): void {
+				var assignmentCreate: AssignmentCreateProcess = new AssignmentCreateProcess();
+				assignmentCreate.execute();
+			});
 			
 			return pnlAssignmentHolder;
 		}

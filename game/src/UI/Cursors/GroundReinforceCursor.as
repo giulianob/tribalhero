@@ -38,17 +38,16 @@
 		private var highlightedObj: GameObject;
 
 		private var tooltip: TextTooltip;
+		
+		private var onAccept: Function;
 
-		public function GroundReinforceCursor() {
-
-		}
-
-		public function init(troop: TroopStub, cityId: int):void
+		public function GroundReinforceCursor(onAccept: Function, troop: TroopStub):void
 		{
 			doubleClickEnabled = true;
 
 			this.troop = troop;
-			this.city = Global.map.cities.get(cityId);
+			this.city = Global.gameContainer.selectedCity;
+			this.onAccept = onAccept;
 
 			Global.map.selectObject(null);
 			Global.map.objContainer.resetObjects();
@@ -70,6 +69,11 @@
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
 			Global.gameContainer.setOverlaySprite(this);
+		}
+		
+		public function getTargetObject(): GameObject
+		{
+			return highlightedObj;
 		}
 
 		public function onAddedToStage(e: Event):void
@@ -115,11 +119,8 @@
 
 			if (gameObj.objectId != 1) return;
 
-			Global.mapComm.Troop.troopReinforce(city.id, gameObj.cityId, troop);
-
-			Global.gameContainer.setOverlaySprite(null);
-			Global.gameContainer.setSidebar(null);
-			Global.map.selectObject(null);
+			if (onAccept != null)
+				onAccept(this);
 		}
 
 		public function onMouseDown(event: MouseEvent):void

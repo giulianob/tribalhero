@@ -7,6 +7,7 @@
 	import src.Objects.Actions.*;
 	import src.Objects.Troop.*;
 	import src.Global;
+	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.TribeProfileDialog;
 
@@ -129,6 +130,61 @@
 					sourceCityName: packet.readString(),
 					endTime: packet.readUInt()
 				});
+			}
+			
+			profileData.assignments = [];
+			var assignmentCount: int = packet.readShort();
+			for (i = 0; i < assignmentCount; i++) {
+				var assignment: * = {
+					id: packet.readInt(),
+					endTime: packet.readUInt(),
+					x: packet.readUInt(),
+					y: packet.readUInt(),
+					targetPlayerId: packet.readUInt(),
+					targetCityId: packet.readUInt(),
+					targetPlayerName: packet.readString(),
+					targetCityName: packet.readString(),
+					attackMode: packet.readByte(),
+					dispatchCount: packet.readUInt(),
+					troopCount: packet.readInt(),
+					troops: []
+				};
+				
+				Global.map.usernames.players.add(new Username(assignment.targetPlayerId, assignment.targetPlayerName));
+				Global.map.usernames.cities.add(new Username(assignment.targetCityId, assignment.targetCityName));
+				
+				for (var assignmentIter: int = 0; assignmentIter < assignment.troopCount; assignmentIter++) {
+					var troop: * = {
+						playerId: packet.readUInt(),
+						cityId: packet.readUInt(),
+						playerName: packet.readString(),
+						cityName: packet.readString(),
+						stub: null
+					};
+					
+					troop.stub = new TroopStub(packet.readByte(), troop.playerId, troop.cityId);
+					
+					Global.map.usernames.players.add(new Username(troop.playerId, troop.playerName));
+					Global.map.usernames.cities.add(new Username(troop.cityId, troop.cityName));
+					
+					var stub: TroopStub = troop.stub;
+					
+					var formationCnt: int = packet.readByte();
+					for (var formationIter: int = 0; formationIter < formationCnt; formationIter++) {
+						var formation: Formation = new Formation(packet.readByte());
+						
+						var unitCount: int = packet.readByte();
+						for (var unitIter: int = 0; unitIter < unitCount; unitIter++) {
+							formation.add(new Unit(packet.readUShort(), packet.readUShort()));
+						}
+						
+						stub.add(formation);
+					}
+					
+					assignment.troops.push(troop);
+				}
+				
+				profileData.assignments.push(assignment);
 			}
 			
 			custom.callback(profileData);

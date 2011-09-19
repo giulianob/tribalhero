@@ -16,6 +16,7 @@
 		public static const BATTLE_STATIONED: int = 3;
 		public static const MOVING: int = 4;
 		public static const RETURNING_HOME: int = 5;
+		public static const WAITING_IN_ASSIGNMENT: int = 6;
 		
 		public static const REPORT_STATE_ENTERING: int = 0;
 		public static const REPORT_STATE_STAYING: int = 1;
@@ -39,10 +40,12 @@
 
 		public var template: TroopTemplateManager = new TroopTemplateManager();
 
-		public function TroopStub(id: int = 0)
+		public function TroopStub(id: int = 0, playerId: int = 0, cityId: int = 0)
 		{
 			super(Formation.sortOnType, Formation.compareType);
 			this.id = id;
+			this.playerId = playerId;
+			this.cityId = cityId;
 		}
 
 		public function isStationed() : Boolean

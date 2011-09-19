@@ -9,6 +9,7 @@
 	import src.Objects.Factories.*;
 	import src.Objects.Troop.*;
 	import src.UI.Components.*;
+	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Tooltips.*;
 	import src.Util.*;
 
@@ -27,24 +28,25 @@
 		private var troopSpeed: int;
 		private var city: City;
 		private var mode: int;
+		
+		private var onAccept: Function;
 
 		private var highlightedObj: GameObject;
 
 		private var tooltip: TextTooltip;
 
-		public function GroundAttackCursor() {
-
-		}
-
-		public function init(troop: TroopStub, mode: int, cityId: int):void
+		public function GroundAttackCursor(onAccept: Function, troop: TroopStub = null):void
 		{
 			doubleClickEnabled = true;
 
 			this.troop = troop;
-			this.city = Global.map.cities.get(cityId);
+			this.city = Global.gameContainer.selectedCity;
 			this.mode = mode;
-
-			troopSpeed = troop.getSpeed(city);
+			this.onAccept = onAccept;
+			
+			if (troop) {
+				troopSpeed = troop.getSpeed(city);
+			}
 
 			Global.map.selectObject(null);
 			Global.map.objContainer.resetObjects();
@@ -64,6 +66,11 @@
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
 			Global.gameContainer.setOverlaySprite(this);
+		}
+		
+		public function getTargetObject(): GameObject
+		{
+			return highlightedObj;
 		}
 
 		public function onAddedToStage(e: Event):void
@@ -101,13 +108,11 @@
 
 			event.stopImmediatePropagation();
 
-			if (highlightedObj == null) return;
-
-			Global.mapComm.Troop.troopAttack(city.id, highlightedObj.cityId, highlightedObj.objectId, mode, troop);
-
-			Global.gameContainer.setOverlaySprite(null);
-			Global.gameContainer.setSidebar(null);
-			Global.map.selectObject(null);
+			if (highlightedObj == null) 
+				return;
+			
+			if (onAccept != null)
+				onAccept(this);
 		}
 
 		public function onMouseDown(event: MouseEvent):void

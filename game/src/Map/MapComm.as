@@ -75,15 +75,22 @@
 		{
 			hideLoading();
 			
-			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED)
+			var hasError: Boolean = (packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED;
+			
+			if (hasError)
 			{
 				var err: int = packet.readUInt();
 
 				GameError.showMessage(err);
 			}
 			
-			if (custom != null && custom is Function)
-				custom();
+			if (custom != null) {
+				if (custom is Function)
+					custom();			
+				
+				if (!hasError && custom.message)
+					InfoDialog.showMessageDialog(custom.message.title, custom.message.content);
+			}
 		}
 		
 		public function showLoading(message: String = "Loading...", title: String = "Tribal Hero"): void {

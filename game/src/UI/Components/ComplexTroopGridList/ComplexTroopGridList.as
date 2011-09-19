@@ -120,14 +120,16 @@
 					//Again, here we will check which template we are using, depending on the conditions mentioned above
 					//and find the level based on the appropriate one
 
-					var level: int;
+					var level: int = 1;
 					if (template is UnitTemplateManager) {
 						var unitTemplate: UnitTemplate = template.get(unit.type);
-						level = unitTemplate.level;
+						if (unitTemplate)
+							level = unitTemplate.level;
 					}
-					else {
+					else if (template is TroopTemplateManager) {
 						var troopTemplate: TroopTemplate = template.get(unit.type);
-						level = troopTemplate.level;
+						if (troopTemplate)
+							level = troopTemplate.level;
 					}
 
 					var unitPrototype: UnitPrototype = UnitFactory.getPrototype(unit.type, level);

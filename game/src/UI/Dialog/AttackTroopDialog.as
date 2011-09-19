@@ -9,6 +9,7 @@
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Effects.Formula;
+	import src.Objects.GameError;
 	import src.UI.Components.SimpleTooltip;
 	import src.UI.Components.SimpleTroopGridList.*;
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
@@ -19,45 +20,52 @@
 	public class AttackTroopDialog extends GameJPanel {
 
 		//members define
-		private var pnlAttackStrength:JPanel;
-		private var lblAttackStrength:JLabel;
-		private var rdAssault:JRadioButton;
-		private var rdRaid:JRadioButton;
-		private var rdSlaughter:JRadioButton;
-		private var pnlLocal:JTabbedPane;
-		private var pnlAttack:JTabbedPane;
-		private var pnlButton:JPanel;
-		private var btnOk:JButton;
-		private var radioGroup: ButtonGroup;
-		private var lblTroopSpeed: JLabel;
+		protected var pnlAttackStrength:JPanel;
+		protected var lblAttackStrength:JLabel;
+		protected var rdAssault:JRadioButton;
+		protected var rdRaid:JRadioButton;
+		protected var rdSlaughter:JRadioButton;
+		protected var pnlLocal:JTabbedPane;
+		protected var pnlAttack:JTabbedPane;
+		protected var pnlButton:JPanel;
+		protected var btnOk:JButton;
+		protected var radioGroup: ButtonGroup;
+		protected var lblTroopSpeed: JLabel;
 
-		private var city: City;
+		protected var city: City;
+		
+		protected var hasAttackStrength: Boolean;
 
-		private var tilelists: Array = new Array();
-		private var attackTilelists: Array = new Array();
-		private var destFormations: Array;
+		protected var tilelists: Array = new Array();
+		protected var attackTilelists: Array = new Array();
 
-		public function AttackTroopDialog(city: City, srcTroop: TroopStub, destFormations: Array, onAccept: Function):void
+		public function AttackTroopDialog(onAccept: Function, hasAttackStrength: Boolean = true):void
 		{
-			createUI();
-
 			title = "Send Attack";
 
-			this.city = city;
-			this.destFormations = destFormations;
+			this.city = Global.gameContainer.selectedCity;
+			this.hasAttackStrength = hasAttackStrength;
+			
+			createUI();			
 
 			var self: AttackTroopDialog = this;
-			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
+			btnOk.addActionListener(function():void { 
+				if (getTroop().getIndividualUnitCount() == 0) {
+					InfoDialog.showMessageDialog("Error", "You have to assign units before continuing. Drag units from the local troop to assign them.");
+					return;
+				}
+				
+				if (onAccept != null) onAccept(self); 
+			} );
 
 			//create local tile lists
-			var localTilelists: Array = SimpleTroopGridList.getGridList(srcTroop, city.template, [Formation.Normal]);
+			var localTilelists: Array = SimpleTroopGridList.getGridList(city.troops.getDefaultTroop(), city.template, [Formation.Normal]);
 
 			pnlLocal.appendTab(SimpleTroopGridList.stackGridLists(localTilelists, false), "Local Troop");
 
 			//create attack tile lists
 			var newTroop: TroopStub = new TroopStub();
-			for (var i: int = 0; i < destFormations.length; i ++)
-				newTroop.add(new Formation(destFormations[i]));
+			newTroop.add(new Formation(Formation.Attack));
 
 			attackTilelists = SimpleTroopGridList.getGridList(newTroop, city.template);
 
@@ -75,7 +83,7 @@
 			updateSpeedInfo();
 		}
 		
-		public function updateSpeedInfo(e: Event = null): void {
+		protected function updateSpeedInfo(e: Event = null): void {
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
 				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
@@ -170,7 +178,10 @@
 			lblTroopSpeed = new JLabel("", null, AsWingConstants.LEFT);
 			
 			//component layoution
-			append(pnlAttackStrength);
+			if (hasAttackStrength) {
+				append(pnlAttackStrength);
+			}
+			
 			append(pnlLocal);
 			append(pnlAttack);
 			append(lblTroopSpeed);

@@ -1,27 +1,26 @@
 ﻿package src.UI.Dialog
 {
 	import flash.events.*;
-	import org.aswing.event.*;
-	import org.aswing.geom.IntDimension;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.*;
-	import src.UI.Components.NotificationGridList.NotificationGridList;
-	import src.UI.Components.TroopStubGridList.TroopStubGridList;
-	import src.UI.Cursors.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
+	import org.aswing.event.*;
 	import org.aswing.ext.*;
-	import src.UI.*;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
-	import src.UI.Tooltips.*;
-	import src.Util.BinaryList.BinaryListEvent;
+	import org.aswing.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.Effects.*;
+	import src.Objects.Factories.*;
+	import src.Objects.Process.*;
 	import src.Objects.Troop.*;
+	import src.UI.*;
+	import src.UI.Components.NotificationGridList.*;
+	import src.UI.Components.TroopStubGridList.*;
+	import src.UI.Cursors.*;
+	import src.UI.LookAndFeel.*;
+	import src.UI.Sidebars.CursorCancel.*;
+	import src.UI.Tooltips.*;
+	import src.Util.BinaryList.*;
 
 	public class MovementDialog extends GameJImagePanel
 	{
@@ -85,50 +84,14 @@
 
 		public function onClickAttack(event: AWEvent):void
 		{
-			var attackTroopDialog: AttackTroopDialog = new AttackTroopDialog(city, city.troops.getDefaultTroop(), [Formation.Attack], onSendTroopAttack);
-			attackTroopDialog.show();
+			var attackProcess: AttackSendProcess = new AttackSendProcess();
+			attackProcess.execute();
 		}
 
 		public function onClickReinforce(event: AWEvent):void
-		{
-			var reinforceTroopDialog: ReinforceTroopDialog = new ReinforceTroopDialog(city, city.troops.getDefaultTroop(), [Formation.Defense], onSendTroopReinforce);
-			reinforceTroopDialog.show();
-		}
-
-		public function onSendTroopReinforce(dialog: ReinforceTroopDialog):void
-		{
-			dialog.getFrame().dispose();
-			getFrame().dispose();
-
-			var troop: TroopStub = dialog.getTroop();
-			if (troop.getIndividualUnitCount() == 0)
-			return;
-
-			var cursor: GroundReinforceCursor = new GroundReinforceCursor();
-
-			cursor.init(troop, city.id);
-
-			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
-			Global.gameContainer.setSidebar(sidebar);
-		}
-
-		public function onSendTroopAttack(dialog: AttackTroopDialog):void
-		{
-			dialog.getFrame().dispose();
-			getFrame().dispose();
-
-			var troop: TroopStub = dialog.getTroop();
-			if (troop.getIndividualUnitCount() == 0)
-			{
-				return;
-			}
-
-			var cursor: GroundAttackCursor = new GroundAttackCursor();
-
-			cursor.init(troop, dialog.getMode(), city.id);
-
-			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
-			Global.gameContainer.setSidebar(sidebar);
+		{		
+			var reinforcementProcess: ReinforcementSendProcess = new ReinforcementSendProcess();
+			reinforcementProcess.execute();
 		}
 
 		private function onTroopUpdated(e: BinaryListEvent) : void {
@@ -154,8 +117,9 @@
 		}
 
 		private function addTroop(troop: TroopStub) : void {
-			if (troop.id == 1)
-			return;
+			if (troop.id == 1 || troop.state == TroopStub.WAITING_IN_ASSIGNMENT) {
+				return;
+			}
 
 			//Add stationed troops to proper list
 			if (troop.isStationed()) {

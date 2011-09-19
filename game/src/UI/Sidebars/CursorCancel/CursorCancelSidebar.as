@@ -1,5 +1,6 @@
 ﻿
 package src.UI.Sidebars.CursorCancel {
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -18,18 +19,17 @@ package src.UI.Sidebars.CursorCancel {
 
 		private var parentObj: SimpleObject;
 
-		private var btnCancel: CursorCancelButton_base = new CursorCancelButton_base();
+		private var btnCancel: JButton = new JButton("Cancel");
 
 		public function CursorCancelSidebar(parentObj: SimpleObject = null) {
 			createUI();
 
-			btnCancel.addEventListener(MouseEvent.CLICK, onCancel);
-			new SimpleTooltip(btnCancel, "Cancel/Finish");
+			btnCancel.addActionListener(onCancel);
 
 			this.parentObj = parentObj;
 		}
 
-		public function onCancel(event: MouseEvent):void
+		public function onCancel(event: Event):void
 		{
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
@@ -40,8 +40,9 @@ package src.UI.Sidebars.CursorCancel {
 
 		private function createUI() : void
 		{
+			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			//component creation
-			append(new AssetPane(btnCancel));
+			append(btnCancel);
 		}
 
 		public function dispose():void
@@ -53,7 +54,7 @@ package src.UI.Sidebars.CursorCancel {
 		{
 			super.showSelf(owner, onClose, dispose);
 
-			frame.getTitleBar().setText("Cancel");
+			frame.getTitleBar().setText("Actions");
 
 			frame.show();
 			return frame;

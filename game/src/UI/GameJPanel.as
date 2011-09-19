@@ -1,5 +1,6 @@
 ﻿package src.UI
 {
+	import org.aswing.Border;
 	import org.aswing.border.EmptyBorder;
 	import org.aswing.event.FrameEvent;
 	import org.aswing.Insets;
@@ -15,6 +16,7 @@
 	{
 		protected var frame: GameJFrame = null;
 		protected var title: String = "";
+		private var originalBorder: Border;
 
 		public function GameJPanel()
 		{
@@ -25,8 +27,13 @@
 		}
 
 		public function showSelf(owner: * = null, modal: Boolean = true, onClose: Function = null, onDispose: Function = null) : JFrame {
+			
+			if (!originalBorder) {
+				originalBorder = getBorder();
+			}
+			
 			frame = new GameJFrame(owner, title, modal, onDispose);
-			setBorder(new EmptyBorder(getBorder(), new Insets(15, 22, 30, 25)));
+			setBorder(new EmptyBorder(originalBorder, new Insets(15, 22, 30, 25)));
 
 			frame.setContentPane(this);
 

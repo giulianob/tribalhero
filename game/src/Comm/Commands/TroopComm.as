@@ -7,6 +7,7 @@
 	import src.Objects.Actions.*;
 	import src.Objects.Troop.*;
 	import src.Global;
+	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 
 	public class TroopComm {
 
@@ -70,6 +71,21 @@
 			return troop;
 		}
 
+		public function writeTroop(stub: TroopStub, packet: Packet): void
+		{
+			for each(var formation: Formation in stub.each())
+			{
+				packet.writeUByte(formation.type);
+				packet.writeUByte(formation.size());
+
+				for each (var unit: Unit in formation.each())
+				{
+					packet.writeUShort(unit.type);
+					packet.writeUShort(unit.count);
+				}
+			}
+		}
+		
 		public function onChannelReceive(e: PacketEvent):void
 		{
 			switch(e.packet.cmd)
@@ -242,19 +258,7 @@
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
 			packet.writeUInt(targetObjectId);
-
-			packet.writeUByte(troop.size());
-			for each(var formation: Formation in troop.each())
-			{
-				packet.writeUByte(formation.type);
-				packet.writeUByte(formation.size());
-
-				for each (var unit: Unit in formation.each())
-				{
-					packet.writeUShort(unit.type);
-					packet.writeUShort(unit.count);
-				}
-			}
+			writeTroop(troop, packet);
 
 			session.write(packet, mapComm.catchAllErrors);
 		}
@@ -265,20 +269,8 @@
 			packet.cmd = Commands.TROOP_REINFORCE;
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
-
-			packet.writeUByte(troop.size());
-			for each(var formation: Formation in troop.each())
-			{
-				packet.writeUByte(formation.type);
-				packet.writeUByte(formation.size());
-
-				for each (var unit: Unit in formation.each())
-				{
-					packet.writeUShort(unit.type);
-					packet.writeUShort(unit.count);
-				}
-			}
-
+			writeTroop(troop, packet);
+			
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
@@ -290,20 +282,36 @@
 			
 			packet.writeByte(hideNewUnits ? 1 : 0);
 
-			packet.writeUByte(troop.size());
-			for each(var formation: Formation in troop.each())
-			{
-				packet.writeUByte(formation.type);
-				packet.writeUByte(formation.size());
-
-				for each (var unit: Unit in formation.each())
-				{
-					packet.writeUShort(unit.type);
-					packet.writeUShort(unit.count);
-				}
-			}
+			writeTroop(troop, packet);
 
 			session.write(packet, mapComm.catchAllErrors);
+		}
+		
+		public function assignmentCreate(cityId: int, targetCityId: int, targetObjectId: int, time: int, mode: int, troop: TroopStub): void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_ASSIGNMENT_CREATE;
+			
+			packet.writeUByte(mode);
+			packet.writeUInt(cityId);
+			packet.writeUInt(targetCityId);
+			packet.writeUInt(targetObjectId);
+			packet.writeInt(time);			
+			writeTroop(troop, packet);
+			
+			session.write(packet, mapComm.catchAllErrors, { message: { title: "Info", content: "The assignment has been created. Other tribe members will be able to join this assignment until the end time has been reached." } });
+		}
+		
+		public function assignmentJoin(cityId: int, assignmentId: int, troop: TroopStub): void
+		{
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_ASSIGNMENT_JOIN;
+			
+			packet.writeUInt(cityId);
+			packet.writeUInt(assignmentId);
+			writeTroop(troop, packet);
+			
+			session.write(packet, mapComm.catchAllErrors, { message: { title: "Info", content: "You have joined the assignment. Your units will be automatically deployed at the proper time." } });
 		}
 	}
 

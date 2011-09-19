@@ -6,16 +6,16 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Threading;
-using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Procedures;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -59,7 +59,7 @@ namespace Game.Map
         {
             using (
                     var reader =
-                            Global.DbManager.ReaderQuery(
+                            Ioc.Kernel.Get<IDbManager>().ReaderQuery(
                                                          string.Format(
                                                                        "SELECT COUNT(*) as active_count FROM `{0}` WHERE TIMEDIFF(UTC_TIMESTAMP(), `last_login`) < '{1}:00:00.000000'",
                                                                        Player.DB_TABLE,
@@ -222,9 +222,9 @@ namespace Game.Map
                 Cities[city.Id] = city;
 
                 //Initial save of these objects
-                Global.DbManager.Save((Structure)city[1]);
+                Ioc.Kernel.Get<IDbManager>().Save((Structure)city[1]);
                 foreach (var stub in city.Troops)
-                    Global.DbManager.Save(stub);
+                    Ioc.Kernel.Get<IDbManager>().Save(stub);
 
                 CityRegion region = GetCityRegion(city.X, city.Y);
                 return region != null && region.Add(city);
@@ -246,7 +246,7 @@ namespace Game.Map
             while (iter.MoveNext())
             {
                 // Resave city to update times
-                Global.DbManager.Save(iter.Current);
+                Ioc.Kernel.Get<IDbManager>().Save(iter.Current);
 
                 //Set resource cap
                 Procedure.SetResourceCap(iter.Current);
@@ -266,7 +266,7 @@ namespace Game.Map
             lock (Lock)
             {
                 city.BeginUpdate();
-                Global.DbManager.DeleteDependencies(city);
+                Ioc.Kernel.Get<IDbManager>().DeleteDependencies(city);
                 city.Deleted = City.DeletedState.Deleted;
                 city.EndUpdate();
 
@@ -532,7 +532,7 @@ namespace Game.Map
         {
             playerId = ushort.MaxValue;
             using (
-                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE),
+                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE),
                                                                        new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
@@ -547,7 +547,7 @@ namespace Game.Map
         {
             cityId = ushort.MaxValue;
             using (
-                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
+                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
                                                                        new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
@@ -561,7 +561,7 @@ namespace Game.Map
         public bool FindTribeId(string name, out uint tribeId) {
             tribeId = ushort.MaxValue;
             using (
-                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
                                                                        new[] { new DbColumn("name", name, DbType.String) })) {
                 if (!reader.HasRows)
                     return false;
@@ -574,7 +574,7 @@ namespace Game.Map
         public bool CityNameTaken(string name)
         {
             using (
-                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
+                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
                                                                        new[] {new DbColumn("name", name, DbType.String)}))
             {
                 return reader.HasRows;
@@ -584,7 +584,7 @@ namespace Game.Map
         public bool TribeNameTaken(string name)
         {
             using (
-                    DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
                                                                        new[] { new DbColumn("name", name, DbType.String) }))
             {
                 return reader.HasRows;

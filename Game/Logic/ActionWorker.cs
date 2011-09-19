@@ -7,6 +7,8 @@ using System.Threading;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -99,7 +101,7 @@ namespace Game.Logic
                         ActionRescheduled(actionStub, state);
 
                     if (action is PassiveAction)
-                        Global.DbManager.Save(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -109,7 +111,7 @@ namespace Game.Logic
                         ActionStarted(actionStub, state);
 
                     if (action is PassiveAction)
-                        Global.DbManager.Save(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -127,11 +129,11 @@ namespace Game.Logic
                         Global.Scheduler.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
-                        Global.DbManager.Delete(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
                     break;
                 case ActionState.Fired:
                     if (action is PassiveAction)
-                        Global.DbManager.Save(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -149,7 +151,7 @@ namespace Game.Logic
                         Global.Scheduler.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
-                        Global.DbManager.Delete(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
                     break;
             }
         }
@@ -170,7 +172,7 @@ namespace Game.Logic
 
                     if (actionStub is ScheduledActiveAction)
                     {
-                        Global.DbManager.Save(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -180,7 +182,7 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Global.DbManager.Save(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -193,14 +195,14 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Global.DbManager.Delete(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
                         Global.Scheduler.Remove(action as ISchedule);
                     }
                     break;
                 case ActionState.Fired:
                     if (action is ScheduledActiveAction)
                     {
-                        Global.DbManager.Save(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -213,7 +215,7 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Global.DbManager.Delete(actionStub);
+                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
                         Global.Scheduler.Remove(action as ISchedule);
                     }
                     break;
@@ -468,8 +470,8 @@ namespace Game.Logic
         {
             var actions = new List<GameAction>();
 
-            actions.AddRange(PassiveActions.FindAll(x => x.WorkerObject == gameObject).Cast<GameAction>());
-            actions.AddRange(ActiveActions.FindAll(x => x.WorkerObject == gameObject).Cast<GameAction>());
+            actions.AddRange(PassiveActions.FindAll(x => x.WorkerObject == gameObject));
+            actions.AddRange(ActiveActions.FindAll(x => x.WorkerObject == gameObject));
 
             return actions;
         }

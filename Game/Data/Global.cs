@@ -2,13 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using Game.Database;
-using Game.Database.Managers;
 using Game.Logic;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Persistance;
 using log4net;
 
 #endregion
@@ -29,14 +28,7 @@ namespace Game.Data
 
         #endregion
 
-        public static readonly ILog Logger = LogManager.GetLogger(typeof(Global));
-        public static readonly ILog DbLogger = LogManager.GetLogger(typeof(IDbManager));
-
-        public static readonly IDbManager DbManager = new MySqlDbManager(Config.database_host,
-                                                                         Config.database_username,
-                                                                         Config.database_password,
-                                                                         Config.database_database,
-                                                                         Config.database_timeout);
+        public static readonly ILog Logger = LogManager.GetLogger(typeof(Global));        
 
         public static readonly Ai Ai = new Ai();
 

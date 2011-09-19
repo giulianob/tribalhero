@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Battle;
+using Game.Comm.Channel;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
@@ -28,7 +29,8 @@ namespace ConsoleSimulator
             CurrentRound = 0;
             TurnIntervalInSecond = 0;
 
-            bm = new BattleManager(Defender.City);
+            bm = new BattleManager(new BattleChannel(Defender.City), new BattleReport(), Defender.City);
+            bm.BattleReport.Battle = bm;
             bv = new BattleViewer(bm);
             using (new MultiObjectLock(Defender.Local)) {
                 Defender.Local.BeginUpdate();

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Setup;
+using Persistance;
 
 #endregion
 
@@ -24,6 +24,10 @@ namespace Game.Battle
         }
 
         #endregion
+
+        public CombatList(IDbManager manager) : base(manager)
+        {
+        }
 
         public int Id { get; set; }
 

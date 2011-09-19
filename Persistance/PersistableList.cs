@@ -2,14 +2,20 @@
 
 using System;
 using System.Collections.Generic;
-using Game.Data;
 
 #endregion
 
-namespace Game.Database
+namespace Persistance
 {
-    public class PersistableList<T> : List<T> where T : IPersistableObject
+    abstract public class PersistableList<T> : List<T> where T : IPersistableObject
     {
+        protected IDbManager manager;
+
+        protected PersistableList(IDbManager manager)
+        {
+            this.manager = manager;
+        }
+
         public new void Add(T item)
         {
             Add(item, true);
@@ -19,7 +25,7 @@ namespace Game.Database
         {
             base.Add(item);
             if (save)
-                Global.DbManager.Save(item);
+                manager.Save(item);
         }
 
         public new bool Remove(T item)
@@ -32,7 +38,8 @@ namespace Game.Database
             if (base.Remove(item))
             {
                 if (save)
-                    Global.DbManager.Delete(item);
+                    manager.Delete(item);
+
                 return true;
             }
             
@@ -41,7 +48,7 @@ namespace Game.Database
 
         public new void RemoveAt(int index)
         {
-            Global.DbManager.Delete(this[index]);
+            manager.Delete(this[index]);
             base.RemoveAt(index);
         }
 
@@ -50,11 +57,11 @@ namespace Game.Database
             int count = 0;
             for (int i = Count - 1; i >= 0; i--)
             {
-                if (match(this[i]))
-                {
-                    RemoveAt(i);
-                    count++;
-                }
+                if (!match(this[i]))
+                    continue;
+
+                RemoveAt(i);
+                count++;
             }
 
             return count;
@@ -63,7 +70,7 @@ namespace Game.Database
         public new void Clear()
         {
             foreach (T item in this)
-                Global.DbManager.Delete(item);
+                manager.Delete(item);
 
             base.Clear();
         }

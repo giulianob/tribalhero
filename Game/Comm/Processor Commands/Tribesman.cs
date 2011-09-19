@@ -9,6 +9,9 @@ using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
+using Ninject;
+using Persistance;
+
 #endregion
 
 namespace Game.Comm
@@ -101,7 +104,7 @@ namespace Game.Comm
                 }
 
                 players[playerId].TribeRequest = tribe.Id;
-                Global.DbManager.Save(players[playerId]);
+                Ioc.Kernel.Get<IDbManager>().Save(players[playerId]);
                 ReplySuccess(session, packet);
             }
 
@@ -133,7 +136,7 @@ namespace Game.Comm
                 var tribeRequestId = session.Player.TribeRequest;
 
                 session.Player.TribeRequest = 0;
-                Global.DbManager.Save(session.Player);
+                Ioc.Kernel.Get<IDbManager>().Save(session.Player);
 
                 if (!isAccepting)
                 {

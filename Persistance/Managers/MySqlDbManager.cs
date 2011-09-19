@@ -8,13 +8,12 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using Game.Data;
-using Game.Setup;
 using MySql.Data.MySqlClient;
+using Ninject.Extensions.Logging;
 
 #endregion
 
-namespace Game.Database.Managers
+namespace Persistance.Managers
 {
     public class MySqlDbManager : IDbManager
     {
@@ -29,14 +28,20 @@ namespace Game.Database.Managers
         private readonly Dictionary<Type, String> deleteListCommands = new Dictionary<Type, String>();
         private readonly Dictionary<Type, String> saveCommands = new Dictionary<Type, String>();
 
+        private readonly bool verbose;
+
         private DateTime lastProbe;
 
         private bool paused;
         private long queriesRan;
 
-        public MySqlDbManager(string hostname, string username, string password, string database, int timeout)
+        private readonly ILogger logger;
+
+        public MySqlDbManager(ILogger logger, string hostname, string username, string password, string database, int timeout, bool verbose)
         {
-            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4}", database, hostname, username, password, timeout);            
+            connectionString = string.Format("Database={0};Host={1};User Id={2};Password={3};Connection Timeout={4}", database, hostname, username, password, timeout);
+            this.logger = logger;
+            this.verbose = verbose;
         }
 
         public void Close(DbConnection connection)
@@ -61,7 +66,7 @@ namespace Game.Database.Managers
                 return persistantTransaction;
             }
 
-            persistantTransaction = new MySqlDbTransaction(this, null) {ReferenceCount = 1};
+            persistantTransaction = new MySqlDbTransaction(this, logger, verbose, null) {ReferenceCount = 1};
 
             return persistantTransaction;
         }
@@ -88,10 +93,7 @@ namespace Game.Database.Managers
                 if (obj is IPersistableObject)
                 {
                     var persistableObj = obj as IPersistableObject;
-                    if (persistableObj.DbPersisted)
-                        command = UpdateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
-                    else
-                        command = CreateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
+                    command = persistableObj.DbPersisted ? UpdateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj) : CreateObject(mySqlTransaction.Connection, mySqlTransaction, persistableObj);
 
                     if (command != null)
                         ExecuteNonQuery(command);
@@ -222,16 +224,16 @@ namespace Game.Database.Managers
             return ReaderQuery(string.Format("SELECT * FROM `{0}_list` WHERE {1}", obj.DbTable, where), obj.DbPrimaryKey);
         }
 
-        internal static void LogCommand(DbCommand command, bool onlyIfVerbose = true)
+        public void LogCommand(DbCommand command, bool onlyIfVerbose = true)
         {
-            if (command == null || (onlyIfVerbose && !Config.database_verbose))
+            if (command == null || (onlyIfVerbose && !verbose))
                 return;
 
             var sqlwriter = new StringWriter();
             foreach (MySqlParameter param in command.Parameters)
                 sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
 
-            Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
+            logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
         }
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
@@ -317,8 +319,8 @@ namespace Game.Database.Managers
             if (persistantTransaction == null)
                 throw new Exception("Not inside of a transaction");
 
-            if (Config.database_verbose)
-                Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction rollback");
+            if (verbose)
+                logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction rollback");
 
             persistantTransaction.Rollback();
         }
@@ -362,7 +364,7 @@ namespace Game.Database.Managers
         public void Probe(out int queriesRanOut, out DateTime lastProbeOut)
         {
             queriesRanOut = (int)Interlocked.Read(ref queriesRan);
-            Interlocked.Exchange(ref this.queriesRan, 0);
+            Interlocked.Exchange(ref queriesRan, 0);
             lastProbeOut = lastProbe;
             lastProbe = DateTime.UtcNow;
         }
@@ -379,7 +381,7 @@ namespace Game.Database.Managers
                 }
                 catch(Exception ex)
                 {
-                    Global.Logger.Error("An exception of type " + ex.GetType() + " was encountered while attempting to open the connection.", ex);
+                    logger.Error("An exception of type " + ex.GetType() + " was encountered while attempting to open the connection.", ex);
                     Environment.Exit(-1);
                 }
                 return connection;
@@ -395,20 +397,25 @@ namespace Game.Database.Managers
 
             if (connection == null)
             {
-                HandleGeneralException(new Exception("Did not get a connection"), null);
+                HandleGeneralException(new Exception("Did not get a connection"));
                 return;
             }
 
-            if (Config.database_verbose)
-                Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
+            if (verbose)
+                logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
 
             try
             {
                 persistantTransaction.Transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+
+                if (persistantTransaction.Transaction == null)
+                {
+                    throw new NullReferenceException("Failed to initialize persistant transaction");
+                }
             }
             catch(Exception e)
             {
-                HandleGeneralException(e, null);
+                HandleGeneralException(e);
                 return;
             }
 
@@ -416,30 +423,6 @@ namespace Game.Database.Managers
                                            (persistantTransaction.Transaction as MySqlTransaction).Connection,
                                            (persistantTransaction.Transaction as MySqlTransaction));
             ExecuteNonQuery(command);
-        }
-
-        private MySqlDbTransaction CreateTransaction()
-        {
-            MySqlConnection connection = GetConnection();
-
-            if (connection == null)
-            {
-                HandleGeneralException(new Exception("Did not get a connection"), null);
-                return null;
-            }
-
-            if (Config.database_verbose)
-                Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction started");
-
-            var transaction = new MySqlDbTransaction(this, connection.BeginTransaction(IsolationLevel.RepeatableRead));
-
-            var command = new MySqlCommand("SET AUTOCOMMIT = 0",
-                                           ((MySqlTransaction)transaction.Transaction).Connection,
-                                           (transaction.Transaction as MySqlTransaction));
-
-            ExecuteNonQuery(command);
-
-            return transaction;
         }
 
         private MySqlCommand UpdateObject(MySqlConnection connection, MySqlTransaction transaction, IPersistableObject obj)
@@ -762,9 +745,9 @@ namespace Game.Database.Managers
                 persistantTransaction.Commands.Add(command);
         }
 
-        public void HandleGeneralException(Exception e, DbCommand command = null)
+        internal void HandleGeneralException(Exception e, DbCommand command = null)
         {
-            Global.DbLogger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") ", e);
+            logger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") ", e);
 
             if (command != null)
                 LogCommand(command, false);

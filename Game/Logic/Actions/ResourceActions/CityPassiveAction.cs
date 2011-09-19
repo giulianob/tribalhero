@@ -239,7 +239,6 @@ namespace Game.Logic.Actions
 
         private void WeaponExport()
         {
-            int weaponExport = 0;
             int weaponExportMarket = 0;
             int weaponExportMax = 0;
 

@@ -2,9 +2,10 @@
 
 using System;
 using Game.Data;
-using Game.Database;
 using Game.Map;
 using Game.Setup;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -61,7 +62,7 @@ namespace Game.Logic
                 if (!Global.World.Add(structure))
                     feObj.City.ScheduleRemove(structure, false);
                 InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
-                Global.DbManager.Save(structure);
+                Ioc.Kernel.Get<IDbManager>().Save(structure);
                 Global.World.UnlockRegion(x, y);
             }
             return true;

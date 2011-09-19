@@ -18,9 +18,6 @@ namespace Launcher
         {
             XmlConfigurator.Configure();
 
-            ILog logger = LogManager.GetLogger(typeof(Program));
-            logger.Info("#######################################");
-
             bool help = false;
             string settingsFile = string.Empty;
 
@@ -31,13 +28,13 @@ namespace Launcher
             }
             catch (Exception e)
             {
-                logger.Error(e);
+                Console.Out.WriteLine(e.Message);
                 Environment.Exit(0);
             }
 
             if (help)
             {
-                logger.Info("[--settings=settings.ini]");
+                Console.Out.WriteLine("Usage: launcher [--settings=settings.ini]");
                 Environment.Exit(0);
             }
 

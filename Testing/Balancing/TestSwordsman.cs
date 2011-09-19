@@ -23,8 +23,7 @@ namespace Testing.Troop
         public void TestInitialize()
         {
             Global.FireEvents = false;
-            Factory.InitAll();
-            Global.DbManager.Pause();
+            Factory.InitAll();            
         }
 
         [TestCleanup]

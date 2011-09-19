@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Game.Database
+namespace Persistance
 {
     public interface IPersistable
     {

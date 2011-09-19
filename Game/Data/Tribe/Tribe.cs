@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 namespace Game.Data.Tribe
 {
@@ -48,7 +49,7 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("desc", description, DbType.String), new DbColumn("id", Id, DbType.UInt32) }, false);
                 }
             }
@@ -93,7 +94,7 @@ namespace Game.Data.Tribe
             if (save)
             {
                 MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
-                Global.DbManager.Save(tribesman);
+                Ioc.Kernel.Get<IDbManager>().Save(tribesman);
             }
             return Error.Ok;
         }
@@ -106,7 +107,7 @@ namespace Game.Data.Tribe
 
             MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Player.Tribesman = null;
-            Global.DbManager.Delete(tribesman);
+            Ioc.Kernel.Get<IDbManager>().Delete(tribesman);
             return !tribesmen.Remove(playerId) ? Error.TribesmanNotFound : Error.Ok;
         }
 
@@ -131,7 +132,7 @@ namespace Game.Data.Tribe
                 return Error.TribesmanIsOwner;
 
             tribesman.Rank = rank;
-            Global.DbManager.Save(tribesman);
+            Ioc.Kernel.Get<IDbManager>().Save(tribesman);
             tribesman.Player.TribeUpdate();
 
             return Error.Ok;
@@ -146,7 +147,7 @@ namespace Game.Data.Tribe
             MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Contribution += resource;
             Resource += resource;
-            Global.DbManager.Save(tribesman, this);
+            Ioc.Kernel.Get<IDbManager>().Save(tribesman, this);
 
             return Error.Ok;
         }
@@ -225,7 +226,7 @@ namespace Game.Data.Tribe
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return tribesmen.Values.GetEnumerator();
         }
@@ -255,7 +256,7 @@ namespace Game.Data.Tribe
         {
             get
             {
-                return new DbColumn[] { new DbColumn("player_id", Id, DbType.UInt32) };
+                return new[] { new DbColumn("player_id", Id, DbType.UInt32) };
             }
         }
 
@@ -271,7 +272,7 @@ namespace Game.Data.Tribe
         {
             get
             {
-                return new DbColumn[]
+                return new[]
                        {
                                new DbColumn("name", Name, DbType.String, 20), new DbColumn("level", Level, DbType.Byte),
                                new DbColumn("crop", Resource.Crop, DbType.Int32), new DbColumn("gold", Resource.Gold, DbType.Int32),
@@ -361,7 +362,7 @@ namespace Game.Data.Tribe
 
             Resource.Subtract(Formula.GetTribeUpgradeCost(Level));
             Level++;
-            Global.DbManager.Save(this);
+            Ioc.Kernel.Get<IDbManager>().Save(this);
         }
     }
 }

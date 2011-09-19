@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -68,7 +70,7 @@ namespace Game.Setup
             if (mapStartIndex != null)
             {
                 mapStartIndex.Value = index;
-                Global.DbManager.Save(mapStartIndex);
+                Ioc.Kernel.Get<IDbManager>().Save(mapStartIndex);
             }
 
             return true;

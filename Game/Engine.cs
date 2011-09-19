@@ -8,6 +8,8 @@ using Game.Database;
 using Game.Logic;
 using Game.Module;
 using Game.Setup;
+using Ninject;
+using Persistance;
 using log4net;
 
 #endregion
@@ -34,6 +36,8 @@ namespace Game
         {
             if (!System.Diagnostics.Debugger.IsAttached)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
+
+            CreateKernel();
 
             ILog logger = LogManager.GetLogger(typeof(Engine));
             logger.Info(
@@ -99,11 +103,11 @@ _________ _______ _________ ______   _______  _
             // Empty database if specified
 #if DEBUG
             if (Config.database_empty)
-                Global.DbManager.EmptyDatabase();
+                Ioc.Kernel.Get<IDbManager>().EmptyDatabase();
 #endif
 
             // Load database
-            if (!DbLoader.LoadFromDatabase(Global.DbManager))
+            if (!DbLoader.LoadFromDatabase(Ioc.Kernel.Get<IDbManager>()))
             {
                 Global.Logger.Error("Failed to load database");
                 return false;
@@ -130,6 +134,11 @@ _________ _______ _________ ______   _______  _
             State = EngineState.Started;
 
             return true;
+        }
+
+        private static void CreateKernel()
+        {
+            Ioc.Kernel = new StandardKernel(new GameModule());
         }
 
         private static void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)

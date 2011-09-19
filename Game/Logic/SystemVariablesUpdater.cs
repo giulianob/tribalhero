@@ -9,9 +9,10 @@ using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
-using Game.Database;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -44,7 +45,7 @@ namespace Game.Logic
         {
             lock (objLock)
             {
-                using (Global.DbManager.GetThreadTransaction())
+                using (Ioc.Kernel.Get<IDbManager>().GetThreadTransaction())
                 {                    
                     DateTime now = DateTime.UtcNow;
 
@@ -53,7 +54,7 @@ namespace Game.Logic
 
                     //System time
                     Global.SystemVariables["System.time"].Value = now;
-                    Global.DbManager.Save(Global.SystemVariables["System.time"]);
+                    Ioc.Kernel.Get<IDbManager>().Save(Global.SystemVariables["System.time"]);
 
                     if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 5000)
                         return;
@@ -80,7 +81,7 @@ namespace Game.Logic
                     // Database info
                     int queriesRan;
                     DateTime lastDbProbe;
-                    Global.DbManager.Probe(out queriesRan, out lastDbProbe);
+                    Ioc.Kernel.Get<IDbManager>().Probe(out queriesRan, out lastDbProbe);
 
                     var uptime = now.Subtract(systemStartTime);
 
@@ -108,7 +109,7 @@ namespace Game.Logic
                                     };
 
                     // Max player logged in ever
-                    using (DbDataReader reader = Global.DbManager.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE `name` = 'Players.max_logged_in' LIMIT 1", SystemVariable.DB_TABLE),
+                    using (DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE `name` = 'Players.max_logged_in' LIMIT 1", SystemVariable.DB_TABLE),
                                                  new DbColumn[] {}))
                     {
                         if (reader.HasRows)
@@ -146,7 +147,7 @@ namespace Game.Logic
                         else
                             Global.SystemVariables[variable.Key].Value = variable.Value;
 
-                        Global.DbManager.Save(Global.SystemVariables[variable.Key]);
+                        Ioc.Kernel.Get<IDbManager>().Save(Global.SystemVariables[variable.Key]);
                     }
                 }
             }

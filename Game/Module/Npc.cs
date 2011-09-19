@@ -10,6 +10,8 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -263,7 +265,7 @@ namespace Game.Module
                     if (!Global.World.Players.ContainsKey(idx))
                     {
                         Global.World.Players.Add(idx, npc);
-                        Global.DbManager.Save(npc);
+                        Ioc.Kernel.Get<IDbManager>().Save(npc);
                         Global.Ai.playerList.Add(intelligence);
                     }
                     else

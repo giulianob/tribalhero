@@ -7,6 +7,8 @@ using Game.Logic.Actions.ResourceActions;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -136,7 +138,7 @@ namespace Game.Data
             Global.World.Remove(forest);
             forest.EndUpdate();
 
-            Global.DbManager.Delete(forest);
+            Ioc.Kernel.Get<IDbManager>().Delete(forest);
         }
 
         /// <summary>

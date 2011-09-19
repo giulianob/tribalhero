@@ -4,7 +4,7 @@ using System.Data;
 
 #endregion
 
-namespace Game.Database
+namespace Persistance
 {
     public class DbColumn
     {

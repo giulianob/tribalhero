@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Game.Battle
 {
-    public class BattleBase
+    public abstract class BattleBase
     {
         #region Delegates
 

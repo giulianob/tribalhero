@@ -5,7 +5,7 @@ using System.Data.Common;
 
 #endregion
 
-namespace Game.Database
+namespace Persistance
 {
     public interface IDbManager
     {
@@ -13,6 +13,8 @@ namespace Game.Database
         void Resume();
 
         void Close(DbConnection connection);
+
+        void LogCommand(DbCommand command, bool onlyIfVerbose = true);
 
         DbTransaction GetThreadTransaction();
         void ClearThreadTransaction();

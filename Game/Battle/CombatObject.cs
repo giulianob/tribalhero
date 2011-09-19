@@ -3,8 +3,9 @@
 using System;
 using Game.Data;
 using Game.Data.Stats;
-using Game.Database;
 using Game.Setup;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -216,7 +217,7 @@ namespace Game.Battle
         {
             Disposed = true;
 
-            Global.DbManager.Delete(this);
+            Ioc.Kernel.Get<IDbManager>().Delete(this);
         }
 
         public virtual void ExitBattle()

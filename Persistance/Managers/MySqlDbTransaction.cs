@@ -1,21 +1,19 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading;
-using Game.Data;
-using Game.Setup;
 using MySql.Data.MySqlClient;
+using Ninject.Extensions.Logging;
 
 #endregion
 
-namespace Game.Database.Managers
+namespace Persistance.Managers
 {
     class MySqlDbTransaction : DbTransaction
     {
-        internal MySqlDbTransaction(MySqlDbManager manager, MySqlTransaction transaction)
-            : base(manager, transaction)
+        internal MySqlDbTransaction(MySqlDbManager manager, ILogger logger, bool verbose, MySqlTransaction transaction)
+            : base(manager, logger, verbose, transaction)
         {
         }
 
@@ -31,7 +29,7 @@ namespace Game.Database.Managers
 
         public void RerunTransaction()
         {
-            Global.DbLogger.Warn("Rerunning transactions due to deadlock");
+            logger.Warn("Rerunning transactions due to deadlock");
 
             do
             {
@@ -51,13 +49,13 @@ namespace Game.Database.Managers
                 {
                     if (e.ErrorCode == 1213)
                     {
-                        Global.DbLogger.Warn("Rerunning transaction AGAIN due to deadlock");
+                        logger.Warn("Rerunning transaction AGAIN due to deadlock");
                         Thread.Sleep(0);
                         continue;
                     }
 
-                    Global.DbLogger.Error("Failed while trying to rerun transactions", e);
-                    MySqlDbManager.LogCommand(currentCommand, false);
+                    logger.Error("Failed while trying to rerun transactions", e);
+                    Manager.LogCommand(currentCommand, false);
                 }                
             } while (true);
         }
@@ -76,26 +74,26 @@ namespace Game.Database.Managers
             {
                 ((MySqlTransaction)Transaction).Commit();
 
-                if (Config.database_verbose)
-                    Global.DbLogger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction committed");
+                if (verbose)
+                    logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") Transaction committed");
             }
             catch(Exception e)
             {
-                Global.Logger.Error(e.Message + " " + e.StackTrace);
+                logger.Error(e.Message + " " + e.StackTrace);
                 try
                 {
                     ((MySqlTransaction)Transaction).Rollback();
-                    manager.Close(((MySqlTransaction)Transaction).Connection);
+                    Manager.Close(((MySqlTransaction)Transaction).Connection);
                 }
                 catch
                 {
                 }
 
-                (manager as MySqlDbManager).HandleGeneralException(e, null);
+                ((MySqlDbManager)Manager).HandleGeneralException(e);
                 throw;
             }
 
-            manager.Close(((MySqlTransaction)Transaction).Connection);
+            Manager.Close(((MySqlTransaction)Transaction).Connection);
         }
     }
 }

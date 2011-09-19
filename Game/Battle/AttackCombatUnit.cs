@@ -6,10 +6,11 @@ using System.Data;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Formulas;
 using Game.Setup;
 using System.Linq;
+using Persistance;
+
 #endregion
 
 namespace Game.Battle

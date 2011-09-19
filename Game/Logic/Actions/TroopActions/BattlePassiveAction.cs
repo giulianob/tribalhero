@@ -9,6 +9,8 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -83,7 +85,7 @@ namespace Game.Logic.Actions
                 {
                     city.Battle.ActionAttacked -= BattleActionAttacked;
                     city.Battle.UnitRemoved -= BattleUnitRemoved;
-                    Global.DbManager.Delete(city.Battle);
+                    Ioc.Kernel.Get<IDbManager>().Delete(city.Battle);
                     city.Battle = null;
 
                     city.DefaultTroop.BeginUpdate();
@@ -127,7 +129,7 @@ namespace Game.Logic.Actions
                 }
                 else
                 {
-                    Global.DbManager.Save(city.Battle);
+                    Ioc.Kernel.Get<IDbManager>().Save(city.Battle);
                     endTime = DateTime.UtcNow.AddSeconds(Config.battle_turn_interval);
                     StateChange(ActionState.Fired);
                 }
@@ -145,7 +147,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            Global.DbManager.Save(city.Battle);
+            Ioc.Kernel.Get<IDbManager>().Save(city.Battle);
 
             //Add local troop
             Procedure.AddLocalToBattle(city.Battle, city, ReportState.Entering);

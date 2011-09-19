@@ -2,8 +2,9 @@
 
 using System.Collections.Generic;
 using System.Data;
+using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
+using Persistance;
 
 #endregion
 
@@ -12,11 +13,11 @@ namespace Game.Battle
     public class ReportedTroops : Dictionary<TroopStub, uint>, IPersistableList
     {
         public const string DB_TABLE = "reported_troops";
-        private readonly BattleManager battle;
+        private readonly City city;
 
-        public ReportedTroops(BattleManager battle)
+        public ReportedTroops(City city)
         {
-            this.battle = battle;
+            this.city = city;
         }
 
         #region IPersistableList Members
@@ -35,7 +36,7 @@ namespace Game.Battle
         {
             get
             {
-                return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("city_id", city.Id, DbType.UInt32)};
             }
         }
 
@@ -93,11 +94,11 @@ namespace Game.Battle
     public class ReportedObjects : List<CombatObject>, IPersistableList
     {
         public const string DB_TABLE = "reported_objects";
-        private readonly BattleManager battle;
+        private readonly City city;
 
-        public ReportedObjects(BattleManager battle)
+        public ReportedObjects(City city)
         {
-            this.battle = battle;
+            this.city = city;
         }
 
         #region IPersistableList Members
@@ -116,7 +117,7 @@ namespace Game.Battle
         {
             get
             {
-                return new[] {new DbColumn("city_id", battle.City.Id, DbType.UInt32)};
+                return new[] {new DbColumn("city_id", city.Id, DbType.UInt32)};
             }
         }
 

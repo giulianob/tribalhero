@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +11,8 @@ using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
 using NDesk.Options;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -80,7 +81,6 @@ namespace Game.Comm
             bool help = false;
             string playerName = string.Empty;
             string tribeName = string.Empty;
-            string tribeDesc = string.Empty;
 
             try {
                 var p = new OptionSet
@@ -88,7 +88,7 @@ namespace Game.Comm
                         { "?|help|h", v => help = true }, 
                         { "player=", v => playerName = v.TrimMatchingQuotes() },
                         { "name=", v => tribeName = v.TrimMatchingQuotes()},
-                        { "desc=", v => tribeDesc = v.TrimMatchingQuotes()},
+                        { "desc=", v => v.TrimMatchingQuotes()},
                     };
                 p.Parse(parms);
             } catch (Exception) {
@@ -119,7 +119,7 @@ namespace Game.Comm
                 Tribe tribe = new Tribe(player, tribeName);
                 
                 Global.Tribes.Add(tribe.Id, tribe);
-                Global.DbManager.Save(tribe);
+                Ioc.Kernel.Get<IDbManager>().Save(tribe);
 
                 Tribesman tribesman = new Tribesman(tribe, player, 0);
                 tribe.AddTribesman(tribesman);
@@ -160,7 +160,7 @@ namespace Game.Comm
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
                 Global.Tribes.Remove(tribe.Id);
-                Global.DbManager.Delete(tribe);
+                Ioc.Kernel.Get<IDbManager>().Delete(tribe);
             }
             return "OK!";
         }
@@ -193,7 +193,7 @@ namespace Game.Comm
             Tribe tribe;
             using (new MultiObjectLock(tribeId, out tribe)) {
                 tribe.Description = desc;
-                Global.DbManager.Save(tribe);
+                Ioc.Kernel.Get<IDbManager>().Save(tribe);
             }
             return "OK";
         }
@@ -337,10 +337,10 @@ namespace Game.Comm
             Tribe tribe;
             StringBuilder result = new StringBuilder("Incomings:\n");
             using (new MultiObjectLock(tribeId, out tribe)) {
-                List<NotificationManager.Notification> notifications;
                 //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));
-                foreach (var city in ((IEnumerable<Tribesman>)tribe).SelectMany(tribesman => tribesman.Player.GetCityList())) {
-                    notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
+                foreach (var city in ((IEnumerable<Tribesman>)tribe).SelectMany(tribesman => tribesman.Player.GetCityList()))
+                {
+                    List<NotificationManager.Notification> notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
                     foreach(var notification in notifications)
                     {
                         AttackChainAction action = notification.Action as AttackChainAction;

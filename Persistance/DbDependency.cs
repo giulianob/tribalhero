@@ -1,4 +1,4 @@
-namespace Game.Database
+namespace Persistance
 {
     public class DbDependency
     {

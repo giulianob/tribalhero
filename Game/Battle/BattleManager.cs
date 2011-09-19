@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Comm;
+using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Ninject.Parameters;
+using Persistance;
 
 #endregion
 
@@ -19,13 +22,14 @@ namespace Game.Battle
     public class BattleManager : BattleBase, IPersistableObject
     {
         public const string DB_TABLE = "battle_managers";
-        private readonly CombatList attackers = new CombatList();
+        private readonly CombatList attackers;
         private readonly object battleLock = new object();
-        private readonly CombatList defenders = new CombatList();
-        private readonly LargeIdGenerator groupIdGen = new LargeIdGenerator(ushort.MaxValue);
-        private readonly LargeIdGenerator idGen = new LargeIdGenerator(ushort.MaxValue);
+        private readonly CombatList defenders;
+        private readonly LargeIdGenerator groupIdGen;
+        private readonly LargeIdGenerator idGen;
 
-        private readonly BattleReport report;
+        private readonly IDbManager dbManager;
+        private readonly IBattleReport report;
 
         private uint battleId;
         private BattleOrder battleOrder = new BattleOrder(0);
@@ -34,15 +38,29 @@ namespace Game.Battle
         private uint round;
         private uint turn;
 
-        public BattleManager(City owner)
+        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport)
         {
-            city = owner;
-            report = new BattleReport(this);
-            Channel = new BattleChannel(this, "/BATTLE/" + city.Id);
+            attackers = Ioc.Kernel.Get<CombatList>();
+            defenders = Ioc.Kernel.Get<CombatList>();
+
+            groupIdGen = new LargeIdGenerator(ushort.MaxValue);
+            idGen = new LargeIdGenerator(ushort.MaxValue);
+
+            city = (City)owner;
+            this.dbManager = dbManager;
+            report = battleReport;  
+            channel = battleChannel;
             groupIdGen.Set(1);
+
+            ActionAttacked += battleChannel.BattleActionAttacked;
+            SkippedAttacker += battleChannel.BattleSkippedAttacker;
+            ReinforceAttacker += battleChannel.BattleReinforceAttacker;
+            ReinforceDefender += battleChannel.BattleReinforceDefender;
+            ExitBattle += battleChannel.BattleExitBattle;
+            EnterRound += battleChannel.BattleEnterRound;
         }
 
-        public BattleChannel Channel { get; private set; }
+        private readonly IBattleChannel channel;
 
         public uint BattleId
         {
@@ -120,7 +138,7 @@ namespace Game.Battle
             }
         }
 
-        public BattleReport BattleReport
+        public IBattleReport BattleReport
         {
             get
             {
@@ -651,7 +669,7 @@ namespace Game.Battle
                     if (currentDefenders == null || currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
                     {
                         currentAttacker.ParticipatedInRound();
-                        Global.DbManager.Save(currentAttacker);
+                        dbManager.Save(currentAttacker);
                         EventSkippedAttacker(currentAttacker);
 
                         // If the attacker can't attack because it has no one in range, then we skip him and find another target right away.
@@ -678,7 +696,7 @@ namespace Game.Battle
                     if (rand <= missChance)
                     {
                         currentAttacker.ParticipatedInRound();
-                        Global.DbManager.Save(currentAttacker);
+                        dbManager.Save(currentAttacker);
                         EventSkippedAttacker(currentAttacker);
                         return true;
                     }
@@ -709,7 +727,7 @@ namespace Game.Battle
 
                 currentAttacker.ParticipatedInRound();
 
-                Global.DbManager.Save(currentAttacker);
+                dbManager.Save(currentAttacker);
 
                 EventExitTurn(Attacker, Defender, (int)turn++);
 
@@ -852,7 +870,7 @@ namespace Game.Battle
                 EventActionAttacked(attacker, defender, actualDmg);
 
                 if (!defender.Disposed)
-                    Global.DbManager.Save(defender);
+                    dbManager.Save(defender);
             }
 
             #endregion            

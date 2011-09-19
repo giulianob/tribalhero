@@ -3,15 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using Game.Data;
-using MySql.Data.MySqlClient;
+using Ninject.Extensions.Logging;
 
 #endregion
 
-namespace Game.Database
+namespace Persistance
 {
     public abstract class DbTransaction : IDisposable
-    {
+    {        
         #region DbTransactionState enum
 
         public enum DbTransactionState
@@ -24,19 +23,23 @@ namespace Game.Database
 
         #endregion
 
-        internal object Transaction;
+        protected IDbManager Manager { get; set; }
+        protected internal object Transaction { get; set; }
 
-        protected IDbManager manager;
+        protected ILogger logger;
+        protected bool verbose;
 
         private int referenceCount;
         private DbTransactionState state = DbTransactionState.InProgress;
 
         public List<DbCommand> Commands { get; set; }
 
-        internal DbTransaction(IDbManager manager, object transaction)
+        internal DbTransaction(IDbManager manager, ILogger logger, bool verbose, object transaction)
         {
-            this.manager = manager;
+            Manager = manager;
             Transaction = transaction;
+            this.logger = logger;
+            this.verbose = verbose;
             Commands = new List<DbCommand>();
         }
 
@@ -89,7 +92,7 @@ namespace Game.Database
                     break;
             }
 
-            manager.ClearThreadTransaction();
+            Manager.ClearThreadTransaction();
         }
 
         #endregion

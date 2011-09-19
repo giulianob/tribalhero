@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -22,7 +24,25 @@ namespace Game.Battle
         OutOfStamina = 6
     }
 
-    public class BattleReport
+    public interface IBattleReport
+    {
+        BattleManager Battle { get; set; }
+        bool ReportStarted { get; set; }
+        bool ReportFlag { get; set; }
+        uint ReportId { get; set; }
+        ReportedObjects ReportedObjects { get; }
+        ReportedTroops ReportedTroops { get; }
+        void WriteBeginReport();
+        void CreateBattleReport();
+        void CompleteBattle();
+        void WriteReportObject(CombatObject co, bool isAttacker, ReportState state);
+        void WriteReportObjects(List<CombatObject> list, bool isAttacker, ReportState state);
+        void CompleteReport(ReportState state);
+        void WriteReport(ReportState state);
+        void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource);
+    }
+
+    public class BattleReport : IBattleReport
     {
         public static readonly LargeIdGenerator BattleIdGenerator = new LargeIdGenerator(uint.MaxValue);
         public static readonly LargeIdGenerator ReportIdGenerator = new LargeIdGenerator(uint.MaxValue);
@@ -34,18 +54,26 @@ namespace Game.Battle
         public const string BATTLE_REPORT_OBJECTS_DB = "battle_report_objects";
         public const string BATTLE_REPORT_VIEWS_DB = "battle_report_views";
 
-        private readonly BattleManager battle;
+        private BattleManager battle;
+
+        public BattleManager Battle
+        {
+            get
+            {
+                return battle;
+            }
+            set
+            {
+                battle = value;
+                ReportedObjects = new ReportedObjects(battle.City);
+                ReportedTroops = new ReportedTroops(battle.City);
+            }
+        }
+
         private bool reportFlag;
         private uint reportId;
 
         private bool reportStarted;
-
-        public BattleReport(BattleManager bm)
-        {
-            ReportedObjects = new ReportedObjects(bm);
-            ReportedTroops = new ReportedTroops(bm);
-            battle = bm;
-        }
 
         public bool ReportStarted
         {
@@ -92,15 +120,15 @@ namespace Game.Battle
             if (reportStarted)
                 return;
 
-            SnapReport(out reportId, battle.BattleId);
+            SnapReport(out reportId, Battle.BattleId);
             reportStarted = true;
         }
 
         public void CreateBattleReport()
         {
             uint battleId;
-            SnapBattle(out battleId, battle.City.Id);
-            battle.BattleId = battleId;
+            SnapBattle(out battleId, Battle.City.Id);
+            Battle.BattleId = battleId;
             WriteBeginReport();
             reportFlag = true;
             WriteReport(ReportState.Entering);
@@ -108,7 +136,7 @@ namespace Game.Battle
 
         public void CompleteBattle()
         {
-            SnapBattleEnd(battle.BattleId);
+            SnapBattleEnd(Battle.BattleId);
         }
 
         public void WriteReportObject(CombatObject co, bool isAttacker, ReportState state)
@@ -230,9 +258,9 @@ namespace Game.Battle
             if (!reportStarted || !reportFlag)
                 return;
 
-            WriteReportObjects(battle.Attacker, true, state);
-            WriteReportObjects(battle.Defender, false, state);
-            SnapEndReport(reportId, battle.BattleId, battle.Round, battle.Turn);
+            WriteReportObjects(Battle.Attacker, true, state);
+            WriteReportObjects(Battle.Defender, false, state);
+            SnapEndReport(reportId, Battle.BattleId, Battle.Round, Battle.Turn);
             ReportedObjects.Clear();
             ReportedTroops.Clear();
             reportStarted = false;
@@ -243,13 +271,13 @@ namespace Game.Battle
         {
             battleId = (uint)BattleIdGenerator.GetNext();
 
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, @city_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
+            Ioc.Kernel.Get<IDbManager>().Query(string.Format("INSERT INTO `{0}` VALUES (@id, @city_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
                                    new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) }, true);
         }
 
         private static void SnapBattleEnd(uint battleId)
         {
-            Global.DbManager.Query(string.Format("UPDATE `{0}` SET `ended` = UTC_TIMESTAMP() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB),
+            Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `ended` = UTC_TIMESTAMP() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB),
                                    new[] { new DbColumn("battle_id", battleId, DbType.UInt32) }, true);
         }
 
@@ -257,13 +285,13 @@ namespace Game.Battle
         {
             reportId = (uint)ReportIdGenerator.GetNext();
 
-            Global.DbManager.Query(string.Format("INSERT INTO `{0}` VALUES (@id, UTC_TIMESTAMP(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
+            Ioc.Kernel.Get<IDbManager>().Query(string.Format("INSERT INTO `{0}` VALUES (@id, UTC_TIMESTAMP(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
                                    new[] { new DbColumn("id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32) }, true);            
         }
 
         internal static void SnapEndReport(uint reportId, uint battleId, uint round, uint turn)
         {
-            Global.DbManager.Query(
+            Ioc.Kernel.Get<IDbManager>().Query(
                                    string.Format(
                                                  "UPDATE `{0}` SET `ready` = 1, `round` = @round, turn = @turn, `created` = UTC_TIMESTAMP() WHERE id = @report_id LIMIT 1",
                                                  BATTLE_REPORTS_DB),
@@ -281,13 +309,13 @@ namespace Game.Battle
             // If there's a troop object we also want to update its loot
             if (stub.TroopObject == null)
             {
-                Global.DbManager.Query(string.Format("UPDATE `{0}` SET `state` = @state WHERE `id` = @id LIMIT 1", BATTLE_REPORT_TROOPS_DB),
+                Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `state` = @state WHERE `id` = @id LIMIT 1", BATTLE_REPORT_TROOPS_DB),
                                        new[] { new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("id", id, DbType.UInt32), }, true);
             }
             else
             {
                 Resource loot = stub.TroopObject.Stats.Loot;
-                Global.DbManager.Query(
+                Ioc.Kernel.Get<IDbManager>().Query(
                                        string.Format(
                                                      "UPDATE `{0}` SET `state` = @state, `gold` = @gold, `crop` = @crop, `iron` = @iron, `wood` = @wood WHERE `id` = @id LIMIT 1",
                                                      BATTLE_REPORT_TROOPS_DB),
@@ -304,7 +332,7 @@ namespace Game.Battle
         {
             battleTroopId = (uint)BattleTroopIdGenerator.GetNext();
 
-            Global.DbManager.Query(
+            Ioc.Kernel.Get<IDbManager>().Query(
                                    string.Format(
                                                  "INSERT INTO `{0}` VALUES (@id, @report_id, @city_id, @object_id, @troop_id, @state, @is_attacker, @gold, @crop, @iron, @wood)",
                                                  BATTLE_REPORT_TROOPS_DB),
@@ -321,16 +349,16 @@ namespace Game.Battle
 
             // Log any troops that are entering the battle to the view table so they are able to see this report
             // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
-            if (battle.City.Id != cityId && (state == ReportState.Entering || state == ReportState.Reinforced))
+            if (Battle.City.Id != cityId && (state == ReportState.Entering || state == ReportState.Reinforced))
             {
-                Global.DbManager.Query(
+                Ioc.Kernel.Get<IDbManager>().Query(
                                        string.Format(
                                                      "INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP())",
                                                      BATTLE_REPORT_VIEWS_DB),
                                        new[]
                                        {
                                                new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
-                                               new DbColumn("battle_id", battle.BattleId, DbType.UInt32), new DbColumn("object_id", objectId, DbType.UInt32),
+                                               new DbColumn("battle_id", Battle.BattleId, DbType.UInt32), new DbColumn("object_id", objectId, DbType.UInt32),
                                                new DbColumn("is_attacker", isAttacker, DbType.Boolean)
                                        },
                                        true);
@@ -341,7 +369,7 @@ namespace Game.Battle
         {
             var unit = co as ICombatUnit;
 
-            Global.DbManager.Query(
+            Ioc.Kernel.Get<IDbManager>().Query(
                                    string.Format(
                                                  "INSERT INTO `{0}` VALUES ('', @object_id, @troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @formation, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
                                                  BATTLE_REPORT_OBJECTS_DB),
@@ -360,7 +388,7 @@ namespace Game.Battle
 
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
         {
-            Global.DbManager.Query(
+            Ioc.Kernel.Get<IDbManager>().Query(
                                    string.Format(
                                                  @"UPDATE `{0}` SET `loot_wood` = @wood, `loot_gold` = @gold, `loot_crop` = @crop, `loot_iron` = @iron, `bonus_wood` = @bonus_wood, `bonus_gold` = @bonus_gold, `bonus_crop` = @bonus_crop, `bonus_iron` = @bonus_iron 
                       WHERE `city_id` = @city_id AND `battle_id` = @battle_id AND `troop_stub_id` = @troop_stub_id LIMIT 1",

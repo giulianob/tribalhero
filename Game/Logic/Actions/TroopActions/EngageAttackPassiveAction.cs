@@ -4,12 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
+using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Ninject.Parameters;
+using Persistance;
 
 #endregion
 
@@ -137,7 +141,7 @@ namespace Game.Logic.Actions
             }
             else
             {
-                targetCity.Battle = new BattleManager(targetCity);
+                targetCity.Battle = Ioc.Kernel.Get<BattleManagerFactory>().CreateBattleManager(targetCity);
 
                 RegisterBattleListeners(targetCity);
 
@@ -288,7 +292,7 @@ namespace Game.Logic.Actions
                         if (structure.Properties.TryGet("Labor", out value))
                             bonus.Labor += (int)value;
 
-                        Global.DbManager.Save(this);
+                        Ioc.Kernel.Get<IDbManager>().Save(this);
                     }
 
                     ReduceStamina(stub, BattleFormulas.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina));

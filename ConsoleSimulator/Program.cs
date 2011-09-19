@@ -48,7 +48,7 @@ namespace ConsoleSimulator
                                   Config.city_region_width,
                                   Config.city_region_height);
             }
-            Global.DbManager.Pause();
+            
             XmlConfigurator.Configure();
             ILog logger = LogManager.GetLogger(typeof(Program));
 

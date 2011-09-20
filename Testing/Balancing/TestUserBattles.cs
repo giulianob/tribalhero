@@ -18,7 +18,8 @@ namespace Testing.Troop
     ///   Summary description for TroopProcedureTest
     /// </summary>
     [TestClass]
-    public class TestUserBattles {
+    public class TestUserBattles : TestBase
+    {
 
         [TestInitialize]
         public void TestInitialize()

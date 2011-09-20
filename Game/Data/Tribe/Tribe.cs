@@ -286,8 +286,9 @@ namespace Game.Data.Tribe
         {
             id = 0;
 
+            // Max of 48 hrs for planning assignments
             if (DateTime.UtcNow.AddDays(2) < time)
-            {               
+            {
                 return Error.AssignmentBadTime;
             }
 
@@ -301,9 +302,20 @@ namespace Game.Data.Tribe
                 return Error.TribeNotFound;
             }
 
+            // Cant attack other tribesman
             if (targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
             {
                 return Error.AssignmentCantAttackFriend;
+            }
+
+            // Player creating the assignment cannot be late
+            int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
+            DateTime reachTime =
+                    DateTime.UtcNow.AddSeconds((int)(Formula.MoveTime(Formula.GetTroopSpeed(stub))*Formula.MoveTimeMod(stub.City, distance, true))*distance*
+                                               Config.seconds_per_unit);
+            if (reachTime > time)
+            {
+                return Error.AssignmentUnitsTooSlow;
             }
 
             // Create assignment

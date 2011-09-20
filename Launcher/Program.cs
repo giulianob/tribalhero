@@ -4,6 +4,7 @@ using System;
 using CSVToXML;
 using Game;
 using Game.Setup;
+using NDesk.Options;
 using log4net;
 using log4net.Config;
 
@@ -20,6 +21,27 @@ namespace Launcher
             ILog logger = LogManager.GetLogger(typeof(Program));
             logger.Info("#######################################");
 
+            bool help = false;
+            string settingsFile = string.Empty;
+
+            try
+            {                
+                var p = new OptionSet { { "?|help|h", v => help = true }, { "settings=", v => settingsFile = v }, };
+                p.Parse(Environment.GetCommandLineArgs());
+            }
+            catch (Exception e)
+            {
+                logger.Error(e);
+                Environment.Exit(0);
+            }
+
+            if (help)
+            {
+                logger.Info("[--settings=settings.ini]");
+                Environment.Exit(0);
+            }
+
+            Config.LoadConfigFile(settingsFile);
             Factory.CompileConfigFiles();
  
 #if DEBUG

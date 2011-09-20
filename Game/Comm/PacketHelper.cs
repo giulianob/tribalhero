@@ -408,7 +408,7 @@ namespace Game.Comm
         {
             var stub = new TroopStub();
 
-            for (int f = 0; f < formations.Length; ++f)
+            foreach (FormationType t in formations)
             {
                 FormationType formationType = (FormationType)packet.GetByte();
                 if (!formations.Contains(formationType))

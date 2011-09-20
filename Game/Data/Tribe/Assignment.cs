@@ -102,7 +102,7 @@ namespace Game.Data.Tribe {
 
         private DateTime DepartureTime(TroopStub stub) {
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, X, Y);
-            return TargetTime.Subtract(new TimeSpan(0, 0, (int)(Formula.MoveTime(Formula.GetTroopSpeed(stub)) * Formula.MoveTimeMod(stub.City, distance, true))));
+            return TargetTime.Subtract(new TimeSpan(0, 0, (int)(Formula.MoveTime(Formula.GetTroopSpeed(stub)) * Formula.MoveTimeMod(stub.City, distance, true) * distance * Config.seconds_per_unit)));
         }
 
         private bool Dispatch(TroopStub stub) {

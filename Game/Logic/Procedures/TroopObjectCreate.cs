@@ -17,6 +17,7 @@ namespace Game.Logic.Procedures
 
             stub.State = initialState;
             city.Troops.Add(stub);
+            
             return true;
         }
 
@@ -57,23 +58,30 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        private static bool RemoveFromNormal(TroopStub source, TroopStub target)
+        private static bool RemoveFromNormal(TroopStub source, TroopStub unitsToRemove)
         {
-            if (!target.HasFormation(FormationType.Normal) || !source.HasFormation(FormationType.Normal))
+            if (!source.HasFormation(FormationType.Normal))
                 return false;
 
-            foreach (var unit in target[FormationType.Normal])
+            var totalUnits = unitsToRemove.ToUnitList();
+
+            // Make sure there are enough units
+            foreach (var unit in totalUnits)
             {
                 ushort count;
-                if (!source[FormationType.Normal].TryGetValue(unit.Key, out count) || count < unit.Value)
+                if (!source[FormationType.Normal].TryGetValue(unit.Type, out count) || count < unit.Count)
                     return false;
-            }            
+            }
 
+            // Remove them, shouldnt fail since we've already checked
             source.BeginUpdate();
-            foreach (var unit in target[FormationType.Normal])
+            foreach (var formation in unitsToRemove)
             {
-                source[FormationType.Normal].Remove(unit.Key, unit.Value);
-            }            
+                foreach (var unit in formation)
+                {
+                    source[FormationType.Normal].Remove(unit.Key, unit.Value);
+                }
+            }
             source.EndUpdate();
 
             return true;

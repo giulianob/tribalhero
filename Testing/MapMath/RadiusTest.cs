@@ -11,7 +11,7 @@ namespace Testing.MapMath
     ///   Summary description for ChannelTest
     /// </summary>
     [TestClass]
-    public class RadiusTest
+    public class RadiusTest : TestBase
     {
         [TestInitialize]
         public void TestInitialize()

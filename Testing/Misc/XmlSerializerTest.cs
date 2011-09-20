@@ -12,7 +12,7 @@ namespace Testing.MapMath
     ///   Summary description for ChannelTest
     /// </summary>
     [TestClass]
-    public class XmlSerializerTest
+    public class XmlSerializerTest : TestBase
     {
         [TestInitialize]
         public void TestInitialize()

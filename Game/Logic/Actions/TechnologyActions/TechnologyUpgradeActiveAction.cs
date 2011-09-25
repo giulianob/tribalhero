@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -104,9 +105,9 @@ namespace Game.Logic.Actions
             Technology tech;
             TechnologyBase techBase;
             if (structure.Technologies.TryGetTechnology(techId, out tech))
-                techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
             else
-                techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
+                techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
 
             if (techBase == null)
                 return Error.ObjectNotFound;
@@ -147,9 +148,9 @@ namespace Game.Logic.Actions
                 Technology tech;
                 TechnologyBase techBase;
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
-                    techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                    techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
                 else
-                    techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
+                    techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
 
                 if (techBase == null)
                 {
@@ -196,7 +197,7 @@ namespace Game.Logic.Actions
                 Technology tech;
                 if (structure.Technologies.TryGetTechnology(techId, out tech))
                 {
-                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
+                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(tech.Type, (byte)(tech.Level + 1));
 
                     if (techBase == null)
                     {
@@ -216,7 +217,7 @@ namespace Game.Logic.Actions
                 }
                 else
                 {
-                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, 1);
+                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, 1);
 
                     if (techBase == null)
                     {

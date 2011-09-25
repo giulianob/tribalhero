@@ -3,8 +3,10 @@
 using System;
 using System.Data;
 using Game.Data.Stats;
-using Game.Database;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -187,7 +189,7 @@ namespace Game.Data
             if (updating)
                 return;
 
-            Global.DbManager.Save(this);
+            Ioc.Kernel.Get<IDbManager>().Save(this);
         }
     }
 }

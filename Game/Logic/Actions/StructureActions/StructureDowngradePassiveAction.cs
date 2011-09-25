@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -87,11 +88,11 @@ namespace Game.Logic.Actions
                 structure.BeginUpdate();
                 structure.IsBlocked = false;
                 ushort oldLabor = structure.Stats.Labor;
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
+                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
                 Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
-                InitFactory.InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
                 Procedure.SetResourceCap(structure.City);
 
                 structure.EndUpdate();

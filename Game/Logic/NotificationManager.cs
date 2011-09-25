@@ -7,8 +7,10 @@ using System.Data;
 using System.Linq;
 using Game.Comm;
 using Game.Data;
-using Game.Database;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -77,7 +79,7 @@ namespace Game.Logic
                 targetCity.Worker.Notifications.AddNotification(notification);
 
             if (persist)
-                Global.DbManager.Save(notification);
+                Ioc.Kernel.Get<IDbManager>().Save(notification);
         }
 
         private void AddNotification(Notification notification)
@@ -174,7 +176,7 @@ namespace Game.Logic
             lock (objLock)
             {
                 RemoveNotification(action);
-                Global.DbManager.Delete(notification);
+                Ioc.Kernel.Get<IDbManager>().Delete(notification);
             }
         }    
 

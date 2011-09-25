@@ -3,24 +3,20 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Game.Battle;
-using Game.Data;
-using Game.Data.Stats;
 using Game.Util;
-using System.Linq;
+
 #endregion
 
 namespace Game.Setup
 {
     public class UnitModFactory
     {
-        private static Dictionary<int, double> dict;
+        private readonly Dictionary<int, double> dict;
 
-        public static void Init(string filename)
+        public UnitModFactory(string filename)
         {
-            if (dict != null)
-                return;
             dict = new Dictionary<int, double>();
+
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
@@ -48,7 +44,7 @@ namespace Game.Setup
             }
         }
 
-        public static double GetModifier(int type, int target)
+        public double GetModifier(int type, int target)
         {
             
             return dict[type * 1000 + target];

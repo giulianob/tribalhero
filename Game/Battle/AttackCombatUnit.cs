@@ -6,10 +6,12 @@ using System.Data;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Formulas;
 using Game.Setup;
 using System.Linq;
+using Ninject;
+using Persistance;
+
 #endregion
 
 namespace Game.Battle
@@ -24,7 +26,7 @@ namespace Game.Battle
         private readonly ushort type;
         private ushort count;
 
-        public AttackCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
+        public AttackCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
         {
             TroopStub = stub;
             this.formation = formation;
@@ -38,7 +40,7 @@ namespace Game.Battle
         }
 
         // Used by the db loader
-        public AttackCombatUnit(BattleManager owner,
+        public AttackCombatUnit(IBattleManager owner,
                                 TroopStub stub,
                                 FormationType formation,
                                 ushort type,
@@ -90,7 +92,7 @@ namespace Game.Battle
         {
             get
             {
-                return UnitFactory.GetUnitStats(type, lvl).Upkeep*count;
+                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
             }
         }
 
@@ -98,7 +100,7 @@ namespace Game.Battle
         {
             get
             {
-                return UnitFactory.GetBattleStats(type, lvl);
+                return Ioc.Kernel.Get<UnitFactory>().GetBattleStats(type, lvl);
             }
         }
 

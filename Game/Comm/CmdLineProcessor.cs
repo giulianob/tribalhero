@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Game.Util;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -12,6 +13,8 @@ namespace Game.Comm
 {
     public partial class CmdLineProcessor
     {
+        private readonly ILogger logger;
+
         #region Delegates
 
         public delegate string DoWork(Session session, string[] parms);
@@ -20,8 +23,10 @@ namespace Game.Comm
 
         private readonly Dictionary<CmdLineCommand, ProcessorCommand> commands = new Dictionary<CmdLineCommand, ProcessorCommand>();
 
-        public CmdLineProcessor()
+        public CmdLineProcessor(ILogger logger)
         {
+            this.logger = logger;
+
             RegisterCommand(CmdLineCommand.Ban, CmdBanPlayer);
             RegisterCommand(CmdLineCommand.Unban, CmdUnbanPlayer);
             RegisterCommand(CmdLineCommand.Delete, CmdDeletePlayer);

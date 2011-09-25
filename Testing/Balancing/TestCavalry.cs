@@ -7,6 +7,8 @@ using Game.Logic.Procedures;
 using Game.Setup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Game.Battle;
+using Ninject;
+using Persistance;
 using Testing.Balancing;
 
 #endregion
@@ -19,13 +21,9 @@ namespace Testing.Troop
     [TestClass]
     public class TestCavalry : TestBase
     {
-
         [TestInitialize]
         public void TestInitialize()
         {
-            Global.FireEvents = false;
-            Factory.InitAll();
-            Global.DbManager.Pause();
         }
 
         [TestCleanup]

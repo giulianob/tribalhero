@@ -8,6 +8,8 @@ using System.Xml;
 using Game.Data;
 using Game.Logic;
 using Game.Setup;
+using Ninject;
+
 #endregion
 
 namespace CSVToXML {
@@ -164,7 +166,7 @@ namespace CSVToXML {
                         else
                             writer.WriteAttributeString("workerid", byte.Parse(obj[2]) == 0
                                                             ? "0"
-                                                            : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString());
+                                                            : Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString());
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
                         writer.WriteAttributeString("unitclass", obj[22]);
@@ -283,7 +285,7 @@ namespace CSVToXML {
             writer.WriteAttributeString("max", "0");
             writer.WriteEndElement();
 
-            foreach(ActionRecord record in new ActionFactory())
+            foreach (ActionRecord record in Ioc.Kernel.Get<ActionFactory>())
             {
                     writer.WriteStartElement("Worker");
                     writer.WriteAttributeString("type", record.Id.ToString());
@@ -420,7 +422,7 @@ namespace CSVToXML {
 
                     writer.WriteStartElement("Tech");
 
-                    TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(uint.Parse(obj[0]), byte.Parse(obj[3]));
+                    TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(uint.Parse(obj[0]), byte.Parse(obj[3]));
 
                     writer.WriteAttributeString("techtype", obj[0]);
                     writer.WriteAttributeString("name", obj[1]);

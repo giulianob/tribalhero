@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Game.Data;
-using Game.Database;
 using Game.Logic;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 namespace Game.Module {
     public class IdleChecker : ISchedule {
@@ -22,7 +24,7 @@ namespace Game.Module {
         public bool IsScheduled { get; set; }
 
         public static void DeleteAllInactivePlayers() {
-            using (var reader = Global.DbManager.ReaderQuery(
+            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(
                                      string.Format(
                                                    "SELECT * FROM `{0}` WHERE TIMEDIFF(UTC_TIMESTAMP(), `last_login`) > '{1}:00:00.000000'",
                                                    Player.DB_TABLE, IDLE_DELETE_HOURS),

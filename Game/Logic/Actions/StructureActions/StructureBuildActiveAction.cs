@@ -8,6 +8,7 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -85,13 +86,13 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) &&
+            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
                                                            action =>
                                                            action.ActionId != ActionId &&
                                                            (action.Type == ActionType.StructureUpgradeActive ||
                                                             (action.Type == ActionType.StructureBuildActive &&
-                                                             !ObjectTypeFactory.IsStructureType("UnlimitedBuilding",
+                                                             !Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding",
                                                                                                 ((StructureBuildActiveAction)action).BuildType)))) >= 2)
                 return Error.ActionTotalMaxReached;
 
@@ -116,7 +117,7 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (!RequirementFactory.GetLayoutRequirement(type, level).Validate(WorkerObject as Structure, type, x, y))
+            if (!Ioc.Kernel.Get<RequirementFactory>().GetLayoutRequirement(type, level).Validate(WorkerObject as Structure, type, x, y))
             {
                 Global.World.UnlockRegion(x, y);
                 return Error.LayoutNotFullfilled;
@@ -130,7 +131,7 @@ namespace Game.Logic.Actions
             }
 
             // check for road requirements       
-            bool roadRequired = !ObjectTypeFactory.IsStructureType("NoRoadRequired", type);
+            bool roadRequired = !Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", type);
             bool buildingOnRoad = RoadManager.IsRoad(x, y);
 
             if (roadRequired)
@@ -144,7 +145,7 @@ namespace Game.Logic.Actions
                         if (str.IsMainBuilding)
                             continue;
 
-                        if (ObjectTypeFactory.IsStructureType("NoRoadRequired", str.Type))
+                        if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", str.Type))
                             continue;
 
                         if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.X, city.Y), city, new Location(x, y)))
@@ -246,7 +247,7 @@ namespace Game.Logic.Actions
             }
 
             // add structure to the map                    
-            Structure structure = StructureFactory.GetNewStructure(type, 0);
+            Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, 0);
             structure.X = x;
             structure.Y = y;
 
@@ -268,13 +269,13 @@ namespace Game.Logic.Actions
                 return Error.MapFull;
             }
 
-            InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
+            Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
             structure.EndUpdate();
 
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(StructureFactory.GetTime(type, level), city, city.Technologies)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(type, level), city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);
@@ -302,8 +303,8 @@ namespace Game.Logic.Actions
                 city.Worker.References.Remove(structure, this);
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, level);
-                InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, level);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();
 
@@ -329,7 +330,7 @@ namespace Game.Logic.Actions
                 if (parms[1].Length == 0)
                 {
                     ushort tileType = Global.World.GetTileType(x, y);
-                    if (RoadManager.IsRoad(x, y) || ObjectTypeFactory.IsTileType("TileBuildable", tileType))
+                    if (RoadManager.IsRoad(x, y) || Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", tileType))
                         return Error.Ok;
 
                     return Error.TileMismatch;
@@ -340,7 +341,7 @@ namespace Game.Logic.Actions
                     ushort tileType = Global.World.GetTileType(x, y);
                     foreach (var str in tokens)
                     {
-                        if (ObjectTypeFactory.IsTileType(str, tileType))
+                        if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType(str, tileType))
                             return Error.Ok;
                     }
                     return Error.TileMismatch;

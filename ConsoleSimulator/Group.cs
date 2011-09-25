@@ -10,6 +10,7 @@ using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -141,7 +142,7 @@ namespace ConsoleSimulator
             using (new MultiObjectLock(city))
             {
                 city.BeginUpdate();
-                city.Template[type] = UnitFactory.GetUnitStats(type, lvl);
+                city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);
                 if(city.Template[type]==null) throw  new Exception("Unit type not found!");
                 city.EndUpdate();
                 city.DefaultTroop.BeginUpdate();
@@ -155,7 +156,7 @@ namespace ConsoleSimulator
         }
         public void AddStructure(ushort type, byte lvl)
         {
-            Structure structure = StructureFactory.GetNewStructure(type, lvl);
+            Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, lvl);
             city.Add(structure);
             structures.Add(structure);
         }
@@ -170,7 +171,7 @@ namespace ConsoleSimulator
             using (new MultiObjectLock(city))
             {
                 city.BeginUpdate();
-                city.Template[type] = UnitFactory.GetUnitStats(type, lvl);
+                city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);
                 if (city.Template[type] == null) throw new Exception("Unit type not found!");
                 city.EndUpdate();
                 attack.BeginUpdate();

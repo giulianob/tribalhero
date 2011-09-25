@@ -92,13 +92,10 @@ namespace Game.Setup
 
     public class PropertyFactory
     {
-        private static Dictionary<int, List<Property>> dict;
+        private Dictionary<int, List<Property>> dict;
 
-        public static void Init(string filename)
+        public PropertyFactory(string filename)
         {
-            if (dict != null)
-                return;
-
             dict = new Dictionary<int, List<Property>>();
 
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
@@ -138,7 +135,7 @@ namespace Game.Setup
             }
         }
 
-        public static IEnumerable<Property> GetProperties(int type)
+        public IEnumerable<Property> GetProperties(int type)
         {
             if (dict == null)
                 return null;
@@ -147,7 +144,7 @@ namespace Game.Setup
             return !dict.TryGetValue(type, out list) ? new List<Property>() : list;
         }
 
-        public static IEnumerable<Property> GetProperties(int type, Visibility visibility)
+        public IEnumerable<Property> GetProperties(int type, Visibility visibility)
         {
             List<Property> list;
             if (dict == null || !dict.TryGetValue(type, out list))

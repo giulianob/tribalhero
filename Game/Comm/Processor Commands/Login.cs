@@ -3,6 +3,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Game.Data;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -40,7 +42,7 @@ namespace Game.Comm
             string playerName;
             string playerPassword = string.Empty;
             uint playerId;
-            bool admin;
+            bool admin = false;
 
             try
             {

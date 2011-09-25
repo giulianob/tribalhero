@@ -34,7 +34,7 @@ namespace LauncherService
                 var p = new OptionSet { { "settings=", v => settingsFile = v }, };
                 p.Parse(Environment.GetCommandLineArgs());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Environment.Exit(0);
             }

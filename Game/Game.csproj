@@ -68,14 +68,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSScriptLibrary">
+      <HintPath>..\Lib\csscript\CSScriptLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="JsonFx">
-      <HintPath>..\Lib\JsonFx.dll</HintPath>
+      <HintPath>..\Lib\jsonfx\JsonFx.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\ninject.logging\log4net\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NDesk.Options">
+      <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
     </Reference>
@@ -92,20 +98,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\zlib.net.dll</HintPath>
-    </Reference>
-    <Reference Include="CSScriptLibrary, Version=2.6.0.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\CSScriptLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\mysql.data.dll</HintPath>
-    </Reference>
-    <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Lib\NDesk.Options.dll</HintPath>
+    <Reference Include="zlib.net">
+      <HintPath>..\Lib\zlib\zlib.net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

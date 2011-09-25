@@ -10,13 +10,11 @@ namespace Testing.Troop
         [TestInitialize]
         public void TestInitialize()
         {                        
-            Global.FireEvents = false;
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            Global.FireEvents = true;
         }
 
         [TestMethod]

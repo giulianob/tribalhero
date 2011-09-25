@@ -22,8 +22,6 @@ namespace Testing.Troop
         [TestInitialize]
         public void TestInitialize()
         {
-            Global.FireEvents = false;
-            Factory.InitAll();            
         }
 
         [TestCleanup]

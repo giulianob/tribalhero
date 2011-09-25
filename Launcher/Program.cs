@@ -1,10 +1,12 @@
 #region
 
 using System;
+using System.IO;
 using CSVToXML;
 using Game;
 using Game.Setup;
 using NDesk.Options;
+using Ninject;
 using log4net;
 using log4net.Config;
 
@@ -39,8 +41,9 @@ namespace Launcher
             }
 
             Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();
- 
+            Engine.CreateDefaultKernel();
+            Factory.CompileConfigFiles();                       
+            
 #if DEBUG
             if (Config.database_empty)
             {
@@ -50,7 +53,9 @@ namespace Launcher
             }
 #endif
 
-            if (!Engine.Start())
+            var engine = Ioc.Kernel.Get<Engine>();
+
+            if (!engine.Start())
                 throw new Exception("Failed to load server");
 
             Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
@@ -62,7 +67,7 @@ namespace Launcher
                 if (key.Key != ConsoleKey.Q || key.Modifiers != ConsoleModifiers.Alt)
                     continue;
 
-                Engine.Stop();
+                engine.Stop();
                 return;
             }
         }

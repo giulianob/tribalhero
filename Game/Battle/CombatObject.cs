@@ -19,7 +19,7 @@ namespace Game.Battle
 
     public abstract class CombatObject : IComparable<object>, IPersistableObject
     {
-        protected BattleManager battleManager;
+        protected IBattleManager battleManager;
 
         protected CombatObject()
         {
@@ -54,7 +54,7 @@ namespace Game.Battle
 
         public bool Disposed { get; set; }
 
-        public BattleManager Battle
+        public IBattleManager Battle
         {
             get
             {
@@ -255,7 +255,7 @@ namespace Game.Battle
             {
 #if DEBUG
                 Global.Logger.Debug(string.Format("Total Vision[{2}] CanSee [{0}] Stl[{1}]",
-                                                        obj.ClassType == BattleClass.Unit ? UnitFactory.GetName(obj.Type, 1) : StructureFactory.GetName(obj.Type, 1),
+                                                        obj.ClassType == BattleClass.Unit ? Ioc.Kernel.Get<UnitFactory>().GetName(obj.Type, 1) : Ioc.Kernel.Get<StructureFactory>().GetName(obj.Type, 1),
                                                         obj.Stats.Stl,
                                                         Visibility));
 #endif

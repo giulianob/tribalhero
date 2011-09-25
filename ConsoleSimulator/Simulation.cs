@@ -9,6 +9,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -19,7 +20,7 @@ namespace ConsoleSimulator
         public Group Attacker{ get; private set; }
         public Group Defender{ get; private set; }
         public uint CurrentRound { get; private set; }
-        private BattleManager bm;
+        private IBattleManager bm;
         private BattleViewer bv;
 
         public Simulation(Group attack, Group defense)
@@ -29,7 +30,7 @@ namespace ConsoleSimulator
             CurrentRound = 0;
             TurnIntervalInSecond = 0;
 
-            bm = new BattleManager(new BattleChannel(Defender.City), new BattleReport(), Defender.City);
+            bm = Ioc.Kernel.Get<BattleManager.Factory>()(Defender.City);
             bm.BattleReport.Battle = bm;
             bv = new BattleViewer(bm);
             using (new MultiObjectLock(Defender.Local)) {

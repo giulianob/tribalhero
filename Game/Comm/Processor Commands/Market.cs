@@ -6,6 +6,7 @@ using Game.Logic.Actions;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -70,7 +71,7 @@ namespace Game.Comm
                 {
                     Error ret;
                     var rba = new ResourceBuyActiveAction(cityId, objectId, price, quantity, type);
-                    if ((ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rba, obj.Technologies)) == 0)
+                    if ((ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, rba, obj.Technologies)) == 0)
                         ReplySuccess(session, packet);
                     else
                         ReplyError(session, packet, ret);
@@ -128,7 +129,7 @@ namespace Game.Comm
                 {
                     Error ret;
                     var rsa = new ResourceSellActiveAction(cityId, objectId, price, quantity, type);
-                    if ((ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, rsa, obj.Technologies)) == 0)
+                    if ((ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, rsa, obj.Technologies)) == 0)
                         ReplySuccess(session, packet);
                     else
                         ReplyError(session, packet, ret);

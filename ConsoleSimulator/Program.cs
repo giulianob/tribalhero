@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ConsoleSimulator.UserBattle;
+using Game;
 using Game.Battle;
 using Game.Data;
 using Game.Setup;
+using Ninject;
 using log4net;
 using log4net.Config;
 
@@ -22,7 +24,8 @@ namespace ConsoleSimulator
 
             Factory.CompileConfigFiles();
             // CSVToXML.Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
-            Factory.InitAll();
+            Engine.CreateDefaultKernel();
+
             // Load map
             using (var map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open))
             {
@@ -67,7 +70,7 @@ namespace ConsoleSimulator
               delegate(string path) { File.Delete(path); });
 
             FullSimulation sim;
-            foreach (var kvp in UnitFactory.GetList()) {
+            foreach (var kvp in Ioc.Kernel.Get<UnitFactory>().GetList()) {
                 if (!lvlFilter.Any(x => x == kvp.Value.Lvl))
                     continue;
                 sim = new FullSimulation((ushort)(kvp.Key / 100),

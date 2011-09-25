@@ -5,6 +5,7 @@ using Game.Data;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -18,7 +19,7 @@ namespace Game.Logic.Procedures
             if (Config.Random.Next()%4 == 0)
             {
                 Global.World.LockRegion(x, y);
-                Structure structure = Config.Random.Next()%2 == 0 ? StructureFactory.GetNewStructure(2106, 1) : StructureFactory.GetNewStructure(2107, 1);
+                Structure structure = Config.Random.Next()%2 == 0 ? Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2106, 1) : Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
 
@@ -29,7 +30,7 @@ namespace Game.Logic.Procedures
                     Global.World.UnlockRegion(x, y);
                     return true;
                 }
-                InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 Global.World.UnlockRegion(x, y);
             }
             return true;

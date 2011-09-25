@@ -9,8 +9,11 @@ using Game.Logic;
 using Game.Module;
 using Game.Setup;
 using Ninject;
+using Ninject.Extensions.Logging;
+using Ninject.Extensions.Logging.Log4net;
 using Persistance;
 using log4net;
+using log4net.Repository.Hierarchy;
 
 #endregion
 
@@ -26,20 +29,24 @@ namespace Game
 
     public class Engine
     {
-        private static TcpServer server;
+        private readonly ILogger logger;
+        private readonly IPolicyServer policyServer;
+        private readonly ITcpServer server;        
 
-        private static PolicyServer policyServer;
+        public EngineState State { get; private set; }
 
-        public static EngineState State { get; private set; }
+        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer)
+        {
+            this.logger = logger;
+            this.server = server;
+            this.policyServer = policyServer;
+        }
 
-        public static bool Start()
+        public bool Start()
         {
             if (!System.Diagnostics.Debugger.IsAttached)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
 
-            CreateKernel();
-
-            ILog logger = LogManager.GetLogger(typeof(Engine));
             logger.Info(
                         @"
 _________ _______ _________ ______   _______  _       
@@ -65,14 +72,12 @@ _________ _______ _________ ______   _______  _
 
             State = EngineState.Starting;
 
-            // Initialize all of the factories
-            Factory.InitAll();
-
             // Load map
             using (var map = new FileStream(Config.maps_folder + "map.dat", FileMode.Open))
             {
                 // Create region changes file or open it depending on config settings
                 string regionChangesPath = Config.regions_folder + "region_changes.dat";
+
 #if DEBUG
                 bool createRegionChanges = Config.database_empty || !File.Exists(regionChangesPath);
 #else
@@ -95,7 +100,7 @@ _________ _______ _________ ______   _______  _
 #if DEBUG
             if (Config.server_production)
             {
-                Global.Logger.Error("Trying to run debug on production server");
+                logger.Error("Trying to run debug on production server");
                 return false;
             }
 #endif
@@ -109,7 +114,7 @@ _________ _______ _________ ______   _______  _
             // Load database
             if (!DbLoader.LoadFromDatabase(Ioc.Kernel.Get<IDbManager>()))
             {
-                Global.Logger.Error("Failed to load database");
+                logger.Error("Failed to load database");
                 return false;
             }
 
@@ -120,15 +125,10 @@ _________ _______ _________ ______   _______  _
             if (Config.ai_enabled)
                 Ai.Init();
 
-            // Initialize command processor
-            var processor = new Processor();
-
-            // Start accepting connections
-            server = new TcpServer(processor);
+            // Start command processor
             server.Start();
 
-            // Initialize policy server
-            policyServer = new PolicyServer();
+            // Start policy server
             policyServer.Start();
 
             State = EngineState.Started;
@@ -136,18 +136,18 @@ _________ _______ _________ ______   _______  _
             return true;
         }
 
-        private static void CreateKernel()
+        public static void CreateDefaultKernel()
         {
             Ioc.Kernel = new StandardKernel(new GameModule());
         }
 
-        private static void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = (Exception)e.ExceptionObject;
-            Global.Logger.Error("Unhandled Exception", ex);
+            logger.Error("Unhandled Exception", ex);
         }
 
-        public static void Stop()
+        public void Stop()
         {
             if (State != EngineState.Started)
                 throw new Exception("Server is not started");
@@ -155,11 +155,11 @@ _________ _______ _________ ______   _______  _
             State = EngineState.Stopping;
 
             SystemVariablesUpdater.Pause();
-            Global.Logger.Info("Stopping TCP server...");
+            logger.Info("Stopping TCP server...");
             server.Stop();
-            Global.Logger.Info("Stopping policy server...");
+            logger.Info("Stopping policy server...");
             policyServer.Stop();
-            Global.Logger.Info("Waiting for scheduler to end...");
+            logger.Info("Waiting for scheduler to end...");
             Global.Scheduler.Pause();
             Global.World.Unload();
             Global.Logger.Info("Goodbye!");

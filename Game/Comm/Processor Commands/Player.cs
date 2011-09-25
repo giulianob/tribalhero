@@ -259,7 +259,7 @@ namespace Game.Comm
                 // If actually send then we perform the action, otherwise, we send the player information about the trade.
                 if (actuallySend)
                 {                    
-                    Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(structure), structure, action, structure.Technologies);
+                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure), structure, action, structure.Technologies);
                     if (ret != 0)
                         ReplyError(session, packet, ret);
                     else

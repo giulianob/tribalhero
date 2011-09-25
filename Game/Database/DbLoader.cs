@@ -353,7 +353,7 @@ namespace Game.Database
                     {
                         while (listReader.Read())
                             city.Template.DbLoaderAdd((ushort)listReader["type"],
-                                                      UnitFactory.GetUnitStats((ushort)listReader["type"], (byte)listReader["level"]));
+                                                      Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)listReader["type"], (byte)listReader["level"]));
                     }
                 }
             }
@@ -428,7 +428,7 @@ namespace Game.Database
                     City city;
                     if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
-                    Structure structure = StructureFactory.GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
+                    Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
                     structure.InWorld = (bool)reader["in_world"];
                     structure.Technologies.Parent = city.Technologies;
                     structure.X = (uint)reader["x"];
@@ -528,7 +528,7 @@ namespace Game.Database
                     using (DbDataReader listReader = dbManager.SelectList(manager))
                     {
                         while (listReader.Read())
-                            manager.Add(TechnologyFactory.GetTechnology((uint)listReader["type"], (byte)listReader["level"]), false);
+                            manager.Add(Ioc.Kernel.Get<TechnologyFactory>().GetTechnology((uint)listReader["type"], (byte)listReader["level"]), false);
                     }
                 }
             }
@@ -614,7 +614,7 @@ namespace Game.Database
                         {
                             //First we load the BaseBattleStats and pass it into the BattleStats
                             //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
-                            var battleStats = new BattleStats(UnitFactory.GetBattleStats((ushort)listReader["type"], (byte)listReader["level"]))
+                            var battleStats = new BattleStats(Ioc.Kernel.Get<UnitFactory>().GetBattleStats((ushort)listReader["type"], (byte)listReader["level"]))
                                               {
                                                       MaxHp = (ushort)listReader["max_hp"],
                                                       Atk = (ushort)listReader["attack"],
@@ -692,7 +692,7 @@ namespace Game.Database
                     if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    var bm = Ioc.Kernel.Get<BattleManagerFactory>().CreateBattleManager(city);
+                    var bm = Ioc.Kernel.Get<BattleManager.Factory>()(city);
                     city.Battle = bm;
                     bm.DbPersisted = true;
                     bm.BattleId = (uint)reader["battle_id"];

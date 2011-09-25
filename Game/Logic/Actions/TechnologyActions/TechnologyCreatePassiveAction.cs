@@ -3,6 +3,7 @@
 using System;
 using Game.Data;
 using Game.Setup;
+using Ninject;
 
 #endregion
 
@@ -55,7 +56,7 @@ namespace Game.Logic.Actions
             if (obj == null)
                 return Error.ObjectNotFound;
 
-            TechnologyBase techBase = TechnologyFactory.GetTechnologyBase(techId, lvl);
+            TechnologyBase techBase = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(techId, lvl);
             if (techBase == null)
                 return Error.ObjectNotFound;
 

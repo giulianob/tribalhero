@@ -7,6 +7,7 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
+using Ninject;
 
 #endregion
 
@@ -187,7 +188,7 @@ namespace Game.Logic.Actions
 
             FirstLoop += (city, structure) =>
                 {
-                    if (ObjectTypeFactory.IsStructureType("RepairBuilding", structure))
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("RepairBuilding", structure))
                         repairPower += Formula.RepairRate(structure);
                 };
 
@@ -196,7 +197,7 @@ namespace Game.Logic.Actions
                     if (repairPower <= 0)
                         return;
 
-                    if (structure.Stats.Base.Battle.MaxHp <= structure.Stats.Hp || ObjectTypeFactory.IsStructureType("NonRepairable", structure) ||
+                    if (structure.Stats.Base.Battle.MaxHp <= structure.Stats.Hp || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NonRepairable", structure) ||
                         structure.State.Type == ObjectState.Battle)
                         return;
 
@@ -261,7 +262,7 @@ namespace Game.Logic.Actions
                         weaponExportMax = Math.Max(weaponExportMax, weaponExportLvl);
                     }
 
-                    if (ObjectTypeFactory.IsStructureType("Market", structure))
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Market", structure))
                         weaponExportMarket += structure.Lvl;
                 };
 

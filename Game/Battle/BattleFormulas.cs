@@ -7,6 +7,7 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Setup;
 using System.Collections.Generic;
+using Ninject;
 
 #endregion
 
@@ -60,46 +61,46 @@ namespace Game.Battle
                 case WeaponType.Tower:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(1, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(1, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(1, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, 3);
                         default:
-                            return UnitModFactory.GetModifier(1, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, target.Type);
                     }
                 case WeaponType.Cannon:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(2, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(2, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(2, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, 3);
                         default:
-                            return UnitModFactory.GetModifier(2, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, target.Type);
                     }
                 case WeaponType.Barricade:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(3, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(3, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(3, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, 3);
                         default:
-                            return UnitModFactory.GetModifier(3, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, target.Type);
                     }
                 default:
                     switch(target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(attacker.Type, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(attacker.Type, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(attacker.Type, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, 3);
                         default:
-                            return UnitModFactory.GetModifier(attacker.Type, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, target.Type);
                     }
             }
         }
@@ -224,7 +225,7 @@ namespace Game.Battle
 
         internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
         {
-            return LoadStats(UnitFactory.GetUnitStats(type, lvl).Battle,city,group);
+            return LoadStats(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle,city,group);
         }
 
         public static Resource GetBonusResources(TroopObject troop, int originalCount, int remainingCount)

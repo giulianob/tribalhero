@@ -51,7 +51,7 @@ namespace Game.Data
         /// <summary>
         ///   City's battle manager. Maybe null if city is not in battle.
         /// </summary>
-        BattleManager Battle { get; set; }
+        IBattleManager Battle { get; set; }
 
         /// <summary>
         ///   Enumerates through all troop objects in this city
@@ -203,7 +203,7 @@ namespace Game.Data
         private readonly Dictionary<uint, Structure> structures = new Dictionary<uint, Structure>();
         private readonly Dictionary<uint, TroopObject> troopobjects = new Dictionary<uint, TroopObject>();
         private int attackPoint;
-        private BattleManager battle;
+        private IBattleManager battle;
         private int defensePoint;
         private bool hideNewUnits;
         private uint id;
@@ -289,7 +289,7 @@ namespace Game.Data
         /// <summary>
         ///   City's battle manager. Maybe null if city is not in battle.
         /// </summary>
-        public BattleManager Battle
+        public IBattleManager Battle
         {
             get
             {

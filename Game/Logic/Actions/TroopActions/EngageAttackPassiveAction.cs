@@ -141,7 +141,7 @@ namespace Game.Logic.Actions
             }
             else
             {
-                targetCity.Battle = Ioc.Kernel.Get<BattleManagerFactory>().CreateBattleManager(targetCity);
+                targetCity.Battle = Ioc.Kernel.Get<BattleManager.Factory>()(targetCity);
 
                 RegisterBattleListeners(targetCity);
 
@@ -212,7 +212,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void SetLootedResources(BattleManager battle, TroopStub stub)
+        private void SetLootedResources(IBattleManager battle, TroopStub stub)
         {
             if (!battle.BattleStarted)
                 return;
@@ -277,7 +277,7 @@ namespace Game.Logic.Actions
                     // if our troop knocked down a building, we get the bonus.
                     if (((AttackCombatUnit)source).TroopStub == stub)
                     {
-                        bonus.Add(StructureFactory.GetCost(target.Type, target.Lvl)/2);
+                        bonus.Add(Ioc.Kernel.Get<StructureFactory>().GetCost(target.Type, target.Lvl)/2);
 
                         Structure structure = ((CombatStructure)target).Structure;
                         object value;

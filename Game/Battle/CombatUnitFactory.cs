@@ -9,7 +9,7 @@ namespace Game.Battle
 {
     public class CombatUnitFactory
     {
-        public static AttackCombatUnit[] CreateAttackCombatUnit(BattleManager owner, TroopObject troop, FormationType formation, ushort type, ushort count)
+        public AttackCombatUnit[] CreateAttackCombatUnit(BattleManager owner, TroopObject troop, FormationType formation, ushort type, ushort count)
         {
             BaseUnitStats template = troop.City.Template[type];
             BattleStats stats = troop.Stub.Template[type];
@@ -26,7 +26,7 @@ namespace Game.Battle
             return units;
         }
 
-        public static DefenseCombatUnit[] CreateDefenseCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, ushort count)
+        public DefenseCombatUnit[] CreateDefenseCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, ushort count)
         {
             BaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];

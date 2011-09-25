@@ -71,6 +71,10 @@
     <Reference Include="JsonFx">
       <HintPath>..\Lib\JsonFx.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ninject.logging\log4net\lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Ninject">
       <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
@@ -96,10 +100,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\CSScriptLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\mysql.data.dll</HintPath>
@@ -109,8 +109,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Battle\BattleBase.cs" />
-    <Compile Include="Battle\BattleManagerFactory.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />

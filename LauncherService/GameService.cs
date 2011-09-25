@@ -6,6 +6,7 @@ using CSVToXML;
 using Game;
 using Game.Setup;
 using NDesk.Options;
+using Ninject;
 using log4net;
 using log4net.Config;
 
@@ -13,9 +14,11 @@ using log4net.Config;
 
 namespace LauncherService
 {
-    public partial class Service1 : ServiceBase
+    public partial class GameService : ServiceBase
     {
-        public Service1()
+        private Engine engine;
+
+        public GameService()
         {
             InitializeComponent();
         }
@@ -23,10 +26,6 @@ namespace LauncherService
         protected override void OnStart(string[] args)
         {
             XmlConfigurator.Configure();
-
-            ILog logger = LogManager.GetLogger(typeof(Program));
-            logger.Info("#######################################");
-
 
             var settingsFile = string.Empty;
  
@@ -37,14 +36,16 @@ namespace LauncherService
             }
             catch (Exception e)
             {
-                logger.Error(e);
                 Environment.Exit(0);
             }
 
             Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();            
+            Engine.CreateDefaultKernel();
+            Factory.CompileConfigFiles();
 
-            if (!Engine.Start())
+            engine = Ioc.Kernel.Get<Engine>();
+
+            if (!engine.Start())
                 throw new Exception("Failed to load server");
 
             Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
@@ -52,7 +53,10 @@ namespace LauncherService
 
         protected override void OnStop()
         {
-            Engine.Stop();
+            if (engine != null)
+            {
+                engine.Stop();
+            }
         }
     }
 }

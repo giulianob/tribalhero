@@ -2,7 +2,7 @@
 {
 	import adobe.utils.CustomActions;
 	import flash.events.*;
-	import flash.utils.Timer;
+	import flash.utils.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -11,12 +11,15 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
+	import src.Objects.Process.AssignmentCreateProcess;
+	import src.Objects.Process.AssignmentJoinProcess;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.Components.Tribe.*;
+	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.LookAndFeel.*;
-	import src.UI.Tooltips.TribeUpgradeTooltip;
+	import src.UI.Tooltips.*;
 	
 	public class TribeProfileDialog extends GameJPanel
 	{
@@ -113,6 +116,120 @@
 			return pnlContainer;
 		}
 		
+		private function createAssignmentItem(assignment: *): JPanel {
+			var pnlContainer: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0));
+			
+			var pnlName: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));			
+			pnlName.appendAll(				
+				new JLabel("Attack", null, AsWingConstants.LEFT),
+				new PlayerCityLabel(assignment.targetPlayerId, assignment.targetCityId, assignment.targetPlayerName, assignment.targetCityName)
+			);						
+			pnlName.setConstraints("Center");
+			
+			var pnlStats: JPanel = new JPanel(new SoftBoxLayout(AsWingConstants.RIGHT, 5, AsWingConstants.RIGHT));
+			pnlStats.appendAll(
+				new JLabel(assignment.troopCount, new AssetIcon(new ICON_SINGLE_SWORD()), AsWingConstants.RIGHT),
+				new CountDownLabel(assignment.endTime, "Troops Dispatched")
+			);
+			pnlStats.setConstraints("East");
+			
+			var pnlHeader: JPanel = new JPanel(new BorderLayout(10));
+			pnlHeader.appendAll(pnlName, pnlStats);
+			
+			var pnlBottom: JPanel = new JPanel(new BorderLayout(5));
+			
+			var btnJoin: JLabelButton = new JLabelButton("Join", null, AsWingConstants.RIGHT);
+			btnJoin.setConstraints("East");
+			
+			var btnDetails: JLabelButton = new JLabelButton("Details", null, AsWingConstants.LEFT);
+			btnDetails.setConstraints("Center");						
+			
+			pnlBottom.appendAll(btnDetails, btnJoin);
+			
+			pnlContainer.appendAll(pnlHeader, pnlBottom);
+			
+			btnDetails.addActionListener(function(e: Event): void {
+				var info: AssignmentInfoDialog = new AssignmentInfoDialog(assignment);
+				info.show();
+			});
+			
+			btnJoin.addActionListener(function(e: Event): void {
+				var join: AssignmentJoinProcess = new AssignmentJoinProcess(assignment);
+				join.execute();
+			});			
+						
+			return pnlContainer;
+		}		
+		
+		private function createAssignmentTab() : Container {
+			var btnCreate: JButton = new JButton("Create");
+			
+			var pnlFooter: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
+			pnlFooter.setConstraints("South");			
+			
+			// Set up tab
+			var pnlAssignmentHolder: JPanel = new JPanel(new BorderLayout(0, 5));
+			var pnlAssignments: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+			
+			for each (var assignment: * in profileData.assignments) {
+				pnlAssignments.append(createAssignmentItem(assignment));
+			}
+			
+			var scrollAssignment: JScrollPane = new JScrollPane(new JViewport(pnlAssignments, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			(scrollAssignment.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+			scrollAssignment.setConstraints("Center");
+			
+			pnlAssignmentHolder.appendAll(scrollAssignment, pnlFooter);
+			
+			if (Constants.tribeRank <= 1) {
+				pnlFooter.append(btnCreate);
+			}
+			
+			btnCreate.addActionListener(function(e: Event): void {
+				var assignmentCreate: AssignmentCreateProcess = new AssignmentCreateProcess();
+				assignmentCreate.execute();
+			});
+			
+			return pnlAssignmentHolder;
+		}
+		
+		private function createMembersTab() : Container {
+			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
+			var tableMembers: JTable = new JTable(new PropertyTableModel(
+				modelMembers, 
+				["Player", "Rank", ""],
+				[".", "rank", "."],
+				[null, new TribeRankTranslator(), null]
+			));			
+			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
+				tableMembers.getCellEditor().stopCellEditing();
+			});			
+			tableMembers.setRowSelectionAllowed(false);
+			tableMembers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			tableMembers.getColumnAt(0).setPreferredWidth(145);
+			tableMembers.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
+			tableMembers.getColumnAt(1).setPreferredWidth(100);
+			tableMembers.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
+			tableMembers.getColumnAt(2).setPreferredWidth(70);
+			
+			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			
+			return scrollMembers;
+		}
+		
+		private function createIncomingAttackTab(): Container {
+			var pnlIncomingAttacks: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+			
+			for each (var incoming: * in profileData.incomingAttacks) {
+				pnlIncomingAttacks.append(createIncomingPanelItem(incoming));
+			}
+			
+			var scrollIncomingAttacks: JScrollPane = new JScrollPane(new JViewport(pnlIncomingAttacks, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
+			(scrollIncomingAttacks.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
+			
+			return scrollIncomingAttacks;			
+		}
+		
 		private function createInfoTab(): Container {
 			// Clear out container if it already exists instead of recreating it
 			if (!pnlInfoContainer)
@@ -162,45 +279,15 @@
 				lastActiveInfoTab = pnlInfoTabs.getSelectedIndex();
 				
 			pnlInfoTabs = new JTabbedPane();
-			
-			// Members tab
-			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
-			var tableMembers: JTable = new JTable(new PropertyTableModel(
-				modelMembers, 
-				["Player", "Rank", ""],
-				[".", "rank", "."],
-				[null, new TribeRankTranslator(), null]
-			));			
-			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tableMembers.getCellEditor().stopCellEditing();
-			});			
-			tableMembers.setRowSelectionAllowed(false);
-			tableMembers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tableMembers.getColumnAt(0).setPreferredWidth(145);
-			tableMembers.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
-			tableMembers.getColumnAt(1).setPreferredWidth(100);
-			tableMembers.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
-			tableMembers.getColumnAt(2).setPreferredWidth(70);
-			
-			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
-			
-			// Incoming attacks tab
-			var pnlIncomingAttacks: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
-			
-			for each (var incoming: * in profileData.incomingAttacks) {
-				pnlIncomingAttacks.append(createIncomingPanelItem(incoming));
-			}
-			
-			var scrollIncomingAttacks: JScrollPane = new JScrollPane(new JViewport(pnlIncomingAttacks, true), JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
-			(scrollIncomingAttacks.getViewport() as JViewport).setVerticalAlignment(AsWingConstants.TOP);
-			
+					
 			// Put it all together
 			var pnlEast: JPanel = new JPanel(new BorderLayout(0, 5));
 			pnlInfoTabs.setConstraints("Center");
 			pnlEast.appendAll(pnlInfoTabs);
 			
-			pnlInfoTabs.appendTab(scrollMembers, "Members (" + profileData.members.length + ")");
-			pnlInfoTabs.appendTab(scrollIncomingAttacks, "Incoming Attacks (" + profileData.incomingAttacks.length + ")");
+			pnlInfoTabs.appendTab(createMembersTab(), "Members (" + profileData.members.length + ")");
+			pnlInfoTabs.appendTab(createIncomingAttackTab(), "Invasions (" + profileData.incomingAttacks.length + ")");
+			pnlInfoTabs.appendTab(createAssignmentTab(), "Assignments (" + profileData.assignments.length + ")");
 
 			pnlInfoTabs.setSelectedIndex(lastActiveInfoTab);
 			

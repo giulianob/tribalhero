@@ -1,9 +1,5 @@
 ﻿package src.Objects.Effects {
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	import src.Constants;
 	import src.Global;
 	import src.Map.City;
@@ -19,7 +15,7 @@
 	import src.Objects.Troop.TroopStub;
 
 	public class Formula {
-
+		
 		public static const RESOURCE_CHUNK: int = 100;
 		public static const RESOURCE_MAX_TRADE: int = 1500;
 		public static const TRIBE_MEMBER_PER_LEVEL: int = 5;
@@ -28,11 +24,12 @@
 			var rate: Array = [0, 200, 200, 400, 400, 600, 600, 800, 1000, 1200, 1200, 1400, 1600, 1800, 1800, 2000];
 			return rate[level];
 		}
-
+		
 		public static function troopRadius(troop: TroopStub) : int {
-			return Math.min(Math.ceil(troop.getUpkeep(true) / 100.0), 5);
+			var city: City = Global.map.cities.get(troop.cityId);
+			return Math.min(4, city.value / 40);
 		}
-
+		
 		private static function timeDiscount(level: int) : int {
 			var discount: Array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40];
 			return discount[level];
@@ -53,7 +50,7 @@
 		{			
 			return (baseValue * Constants.secondsPerUnit) * (100 - timeDiscount(parentObj.level)) / 100;
 		}
-
+		
 		public static function buildTime(parentObjOrCity: *, baseValue: int, techManager:TechnologyManager): int
 		{	
 			var city: City;
@@ -93,7 +90,7 @@
 			mod = 100 / Math.max(1, (mod + 100));
 
 			// MoveTime
-			var moveTime: int = 60 * (100 - ((speed - 11) * 5)) / 100;
+			var moveTime: int = 60 * (100 - ((speed - 12) * 5)) / 100;
 
 			// Calculate total
 			return Math.max(1, moveTime * mod) * distance * Constants.secondsPerUnit;

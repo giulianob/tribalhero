@@ -2,6 +2,7 @@
 
 using Game.Data;
 using Game.Setup;
+using Ninject;
 
 #endregion
 
@@ -9,9 +10,9 @@ namespace Game.Battle
 {
     public class BattleViewer
     {
-        private BattleManager battle;
+        private IBattleManager battle;
 
-        public BattleViewer(BattleManager battle)
+        public BattleViewer(IBattleManager battle)
         {
             this.battle = battle;
             battle.EnterBattle += BattleEnterBattle;
@@ -39,19 +40,19 @@ namespace Game.Battle
             if (co is AttackCombatUnit)
             {
                 var unit = co as AttackCombatUnit;
-                Append("Team[Atk] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + UnitFactory.GetName(unit.Type, 1) +
+                Append("Team[Atk] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
                        "] HP[" + unit.Hp + "]");
             }
             else if(co is DefenseCombatUnit)
             {
                 var unit = co as DefenseCombatUnit;
-                Append("Team[Def] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + UnitFactory.GetName(unit.Type, 1) +
+                Append("Team[Def] List[" + co.CombatList.Id + "] Unit[" + co.Id + "] Formation[" + unit.Formation + "] Type[" + Ioc.Kernel.Get<UnitFactory>().GetName(unit.Type, 1) +
                        "] HP[" + unit.Hp + "]");
             } 
             else if (co is CombatStructure)
             {
                 var cs = co as CombatStructure;
-                Append("Team[Def] List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + StructureFactory.GetName(cs.Structure.Type,(byte)cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
+                Append("Team[Def] List[" + co.CombatList.Id + "] Structure[" + co.Id + "] Type[" + Ioc.Kernel.Get<StructureFactory>().GetName(cs.Structure.Type,(byte)cs.Structure.Lvl) + "] HP[" + cs.Hp + "]");
             }
         }
 

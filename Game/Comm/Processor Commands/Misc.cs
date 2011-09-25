@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -75,7 +76,7 @@ namespace Game.Comm
                 }
 
                 var gatherAction = new ResourceGatherActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, gatherAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, gatherAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else

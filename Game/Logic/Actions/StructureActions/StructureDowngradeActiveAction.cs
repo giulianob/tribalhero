@@ -7,6 +7,7 @@ using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -61,12 +62,12 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
+            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
                 return Error.StructureUndestroyable;
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                               CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
                                                                                city,
                                                                                structure.Technologies)));
             BeginTime = DateTime.UtcNow;
@@ -97,7 +98,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (ObjectTypeFactory.IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
+                if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
                 {
                     StateChange(ActionState.Failed);
                     return;
@@ -133,7 +134,7 @@ namespace Game.Logic.Actions
                 else
                 {
                     ushort oldLabor = structure.Stats.Labor;
-                    StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
+                    Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                     structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                     structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
                     Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
@@ -143,7 +144,7 @@ namespace Game.Logic.Actions
                     Procedure.SetResourceCap(structure.City);
 
                     if (structure.Lvl > 0)
-                        InitFactory.InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
+                        Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
                     else
                     {
                         Global.World.Remove(structure);

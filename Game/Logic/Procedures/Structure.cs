@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Game.Data;
 using Game.Setup;
+using Ninject;
 
 namespace Game.Logic.Procedures
 {
@@ -17,10 +18,10 @@ namespace Game.Logic.Procedures
         /// <param name="newLvl">New lvl</param>
         public static void StructureChange(Structure structure, ushort newType, byte newLvl)
         {
-            StructureFactory.GetUpgradedStructure(structure, newType, newLvl);
+            Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, newType, newLvl);
             structure.Technologies.Parent = structure.City.Technologies;
             structure.IsBlocked = false;
-            InitFactory.InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
+            Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
         }
     }
 }

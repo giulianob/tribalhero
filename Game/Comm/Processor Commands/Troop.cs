@@ -10,6 +10,7 @@ using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -177,7 +178,7 @@ namespace Game.Comm
                     ReplyError(session, packet, Error.Unexpected);
 
                 var upgradeAction = new UnitUpgradeActiveAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -220,7 +221,7 @@ namespace Game.Comm
                     ReplyError(session, packet, Error.Unexpected);
 
                 var trainAction = new UnitTrainActiveAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else

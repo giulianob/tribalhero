@@ -2,9 +2,10 @@
 
 using System;
 using Game.Data;
-using Game.Database;
 using Game.Map;
 using Game.Setup;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -32,9 +33,9 @@ namespace Game.Logic
 
         public static bool MainBuilding(out Structure structure, byte radius, byte lvl)
         {
-            structure = StructureFactory.GetNewStructure(2000, lvl);
+            structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2000, lvl);
             uint x, y;
-            if (!MapFactory.NextLocation(out x, out y, radius))
+            if (!Ioc.Kernel.Get<MapFactory>().NextLocation(out x, out y, radius))
             {
                 structure = null;
                 return false;
@@ -52,16 +53,16 @@ namespace Game.Logic
                 Structure structure;
                 Global.World.LockRegion(x, y);
                 if (Config.Random.Next()%2 == 0)
-                    structure = StructureFactory.GetNewStructure(2402, 1);
+                    structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2402, 1);
                 else
-                    structure = StructureFactory.GetNewStructure(2402, 1);
+                    structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2402, 1);
                 structure.X = x;
                 structure.Y = y;
                 feObj.City.Add(structure);
                 if (!Global.World.Add(structure))
                     feObj.City.ScheduleRemove(structure, false);
-                InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
-                Global.DbManager.Save(structure);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<IDbManager>().Save(structure);
                 Global.World.UnlockRegion(x, y);
             }
             return true;

@@ -5,13 +5,14 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Util;
 using Game.Setup;
+using Ninject;
+using Persistance;
 
 namespace Game.Module {
     class CityRemover:ISchedule {
@@ -104,7 +105,7 @@ namespace Game.Module {
                 }
 
                 // If city is being targetted by an assignment, try again later
-                var reader = Global.DbManager.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
+                var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
                                                           new[] {new DbColumn("cityId", city.Id, DbType.UInt32)});
                 bool beingTargetted = reader.HasRows;
                 reader.Close();

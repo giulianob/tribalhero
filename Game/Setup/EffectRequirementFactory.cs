@@ -12,12 +12,10 @@ namespace Game.Setup
 {
     public class EffectRequirementFactory
     {
-        private static Dictionary<uint, EffectRequirementContainer> dict;
+        private Dictionary<uint, EffectRequirementContainer> dict;
 
-        public static void Init(string filename)
-        {
-            if (dict != null)
-                return;
+        public EffectRequirementFactory(string filename)
+        {            
             dict = new Dictionary<uint, EffectRequirementContainer>();
 
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
@@ -27,8 +25,6 @@ namespace Game.Setup
                 for (int i = 0; i < reader.Columns.Length; ++i)
                     col.Add(reader.Columns[i], i);
 
-                EffectRequirementContainer container;
-                EffectRequirement req;
                 Type type = typeof(RequirementFormula);
                 while ((toks = reader.ReadRow()) != null)
                 {
@@ -36,13 +32,14 @@ namespace Game.Setup
                         continue;
 
                     uint index = uint.Parse(toks[col["Id"]]);
+                    EffectRequirementContainer container;
                     if (!dict.TryGetValue(index, out container))
                     {
                         container = new EffectRequirementContainer {Id = index};
                         dict.Add(index, container);
                     }
                     //string name = "Game.Logic.EffectRequirements." + toks[col["Method"]];
-                    req = new EffectRequirement();
+                    EffectRequirement req = new EffectRequirement();
                     var parms = new string[toks.Length - 2];
                     for (int i = 2; i < toks.Length; ++i)
                     {
@@ -60,7 +57,7 @@ namespace Game.Setup
             }
         }
 
-        public static EffectRequirementContainer GetEffectRequirementContainer(uint index)
+        public EffectRequirementContainer GetEffectRequirementContainer(uint index)
         {
             if (dict == null)
                 return null;

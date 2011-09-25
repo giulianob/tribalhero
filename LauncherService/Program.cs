@@ -13,9 +13,8 @@ namespace LauncherService
         /// </summary>
         private static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] {new Service1()};
-            ServiceBase.Run(ServicesToRun);
+            ServiceBase[] servicesToRun = new ServiceBase[] {new GameService()};
+            ServiceBase.Run(servicesToRun);
         }
     }
 }

@@ -5,9 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Game.Database;
 using Game.Logic;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -249,7 +251,7 @@ namespace Game.Data
             if (!updating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
-            Global.DbManager.Save(this);
+            Ioc.Kernel.Get<IDbManager>().Save(this);
             updating = false;
         }
 

@@ -1,10 +1,12 @@
 #region
 
 using System;
+using System.IO;
 using CSVToXML;
 using Game;
 using Game.Setup;
 using NDesk.Options;
+using Ninject;
 using log4net;
 using log4net.Config;
 
@@ -18,9 +20,6 @@ namespace Launcher
         {
             XmlConfigurator.Configure();
 
-            ILog logger = LogManager.GetLogger(typeof(Program));
-            logger.Info("#######################################");
-
             bool help = false;
             string settingsFile = string.Empty;
 
@@ -31,19 +30,20 @@ namespace Launcher
             }
             catch (Exception e)
             {
-                logger.Error(e);
+                Console.Out.WriteLine(e.Message);
                 Environment.Exit(0);
             }
 
             if (help)
             {
-                logger.Info("[--settings=settings.ini]");
+                Console.Out.WriteLine("Usage: launcher [--settings=settings.ini]");
                 Environment.Exit(0);
             }
 
             Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();
- 
+            Engine.CreateDefaultKernel();
+            Factory.CompileConfigFiles();                       
+            
 #if DEBUG
             if (Config.database_empty)
             {
@@ -53,7 +53,9 @@ namespace Launcher
             }
 #endif
 
-            if (!Engine.Start())
+            var engine = Ioc.Kernel.Get<Engine>();
+
+            if (!engine.Start())
                 throw new Exception("Failed to load server");
 
             Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
@@ -65,7 +67,7 @@ namespace Launcher
                 if (key.Key != ConsoleKey.Q || key.Modifiers != ConsoleModifiers.Alt)
                     continue;
 
-                Engine.Stop();
+                engine.Stop();
                 return;
             }
         }

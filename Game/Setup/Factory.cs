@@ -57,20 +57,5 @@ namespace Game.Setup
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"), Config.csv_folder, "*unit_modifier.csv");
             File.Copy(Path.Combine(Config.csv_folder, "object_type.csv"), Path.Combine(Config.csv_compiled_folder, "object_type.csv"), true);
         }
-
-        public static void InitAll()
-        {
-            ActionFactory.Init(Path.Combine(Config.csv_compiled_folder, "action.csv"));
-            StructureFactory.Init(Path.Combine(Config.csv_compiled_folder, "structure.csv"));
-            EffectRequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"));
-            InitFactory.Init(Path.Combine(Config.csv_compiled_folder, "init.csv"));
-            PropertyFactory.Init(Path.Combine(Config.csv_compiled_folder, "property.csv"));
-            RequirementFactory.Init(Path.Combine(Config.csv_compiled_folder, "layout.csv"));
-            TechnologyFactory.Init(Path.Combine(Config.csv_compiled_folder, "technology.csv"), Path.Combine(Config.csv_folder, "technology_effects.csv"));
-            UnitFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit.csv"));
-            ObjectTypeFactory.Init(Path.Combine(Config.csv_compiled_folder, "object_type.csv"));
-            UnitModFactory.Init(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"));
-            MapFactory.Init(Path.Combine(Config.maps_folder, "CityLocations.txt"));
-        }
     }
 }

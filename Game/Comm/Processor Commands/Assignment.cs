@@ -13,6 +13,8 @@ using Game.Setup;
 using Game.Util;
 using System.Linq;
 using NDesk.Options;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -96,7 +98,7 @@ namespace Game.Comm
                     return;
                 }
 
-                Global.DbManager.Save(stub);
+                Ioc.Kernel.Get<IDbManager>().Save(stub);
 
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(stub, targetStructure.X, targetStructure.Y, targetCity, time, mode, out id);
@@ -142,7 +144,7 @@ namespace Game.Comm
                     return;                        
                 }
 
-                Global.DbManager.Save(stub);
+                Ioc.Kernel.Get<IDbManager>().Save(stub);
 
                 Error error = tribe.JoinAssignment(assignmentId, stub);
                 if (error != Error.Ok) {

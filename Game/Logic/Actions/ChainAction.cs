@@ -3,8 +3,9 @@
 using System;
 using System.Data;
 using Game.Data;
-using Game.Database;
 using Game.Setup;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -132,7 +133,7 @@ namespace Game.Logic.Actions
             Current.WorkerObject = WorkerObject;
             Current.ActionId = (uint)WorkerObject.City.Worker.GetId();
 
-            Global.DbManager.Save(this);
+            Ioc.Kernel.Get<IDbManager>().Save(this);
             chainable.StateChange(chainable.Execute() == Error.Ok ? ActionState.Started : ActionState.Failed);
 
             StateChange(ActionState.Rescheduled);
@@ -147,19 +148,19 @@ namespace Game.Logic.Actions
                 case ActionState.Fired:
                 case ActionState.Started:
                 case ActionState.Rescheduled:
-                    Global.DbManager.Save(action);
+                    Ioc.Kernel.Get<IDbManager>().Save(action);
                     if (action is ScheduledPassiveAction)
                         Global.Scheduler.Put((ScheduledPassiveAction)action);
                     else if (action is ScheduledActiveAction)
                         Global.Scheduler.Put((ScheduledActiveAction)action);
 
-                    Global.DbManager.Save(this);
+                    Ioc.Kernel.Get<IDbManager>().Save(this);
 
                     return;
                 case ActionState.Completed:
                 case ActionState.Failed:
                     WorkerObject.City.Worker.ReleaseId(action.ActionId);
-                    Global.DbManager.Delete(action);
+                    Ioc.Kernel.Get<IDbManager>().Delete(action);
                     break;
                 default:
                     throw new Exception("Unexpected state " + state);
@@ -170,7 +171,7 @@ namespace Game.Logic.Actions
             action.OnNotify -= ChainNotify;
 
             ChainCallback currentChain = chainCallback;
-            Global.DbManager.Save(this);
+            Ioc.Kernel.Get<IDbManager>().Save(this);
 
             Global.Scheduler.Put(new ChainExecuter(currentChain, state));
         }

@@ -10,6 +10,8 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -144,8 +146,8 @@ namespace Game.Module
             {
                 Structure structure = enumerator.Current.Value;
 
-                int workerType = StructureFactory.GetActionWorkerType(structure);
-                ActionRecord record = ActionFactory.GetActionRequirementRecord(workerType);
+                int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
+                ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
 
@@ -183,8 +185,8 @@ namespace Game.Module
             while (enumerator.MoveNext())
             {
                 Structure structure = enumerator.Current.Value;
-                int workerType = StructureFactory.GetActionWorkerType(structure);
-                ActionRecord record = ActionFactory.GetActionRequirementRecord(workerType);
+                int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
+                ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
 
@@ -231,7 +233,7 @@ namespace Game.Module
 
             var action = new StructureUpgradeActiveAction(city.Id, structure.ObjectId);
 
-            if (city.Worker.DoActive(StructureFactory.GetActionWorkerType(structure), structure, action, structure.Technologies) == Error.Ok)
+            if (city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure), structure, action, structure.Technologies) == Error.Ok)
             {
                 //Global.Logger.Info(string.Format("{0} upgrading {1}({2}) at ({3},{4})", city.Name, structure.Type, structure.Stats.Base.Lvl, x, y));
                 return true;
@@ -263,7 +265,7 @@ namespace Game.Module
                     if (!Global.World.Players.ContainsKey(idx))
                     {
                         Global.World.Players.Add(idx, npc);
-                        Global.DbManager.Save(npc);
+                        Ioc.Kernel.Get<IDbManager>().Save(npc);
                         Global.Ai.playerList.Add(intelligence);
                     }
                     else
@@ -296,7 +298,7 @@ namespace Game.Module
                     defaultTroop.AddFormation(FormationType.InBattle);
                     city.Troops.Add(defaultTroop);
 
-                    InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
+                    Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
 
                     city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 
@@ -317,10 +319,10 @@ namespace Game.Module
             var city = (custom as City);
 
             ushort tileType = Global.World.GetTileType(x, y);
-            if (ObjectTypeFactory.IsTileType("TileTree", tileType))
+            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileTree", tileType))
             {
                 // Lumber mill
-                Structure structure = StructureFactory.GetNewStructure(2107, 1);
+                Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
@@ -328,10 +330,10 @@ namespace Game.Module
                 city.Add(structure);
                 Global.World.Add(structure);
             }
-            else if (ObjectTypeFactory.IsTileType("TileCrop", tileType))
+            else if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileCrop", tileType))
             {
                 // Farm
-                Structure structure = StructureFactory.GetNewStructure(2106, 1);
+                Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2106, 1);
                 structure.X = x;
                 structure.Y = y;
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
@@ -342,7 +344,7 @@ namespace Game.Module
             else if (x == origX - 1 && y == origY - 1)
             {
                 // Barrack
-                Structure structure = StructureFactory.GetNewStructure(2201, 1);
+                Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2201, 1);
                 structure.X = x;
                 structure.Y = y;
 

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Dynamic;
 using System.Reflection;
 using Game.Battle;
 using Game.Data;
@@ -17,6 +16,9 @@ using Game.Logic.Actions.ResourceActions;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
+using DbTransaction = System.Data.Common.DbTransaction;
 
 #endregion
 
@@ -35,9 +37,9 @@ namespace Game.Database
             DateTime now = DateTime.UtcNow;
 
             // Set all players to offline
-            Global.DbManager.Query("UPDATE `players` SET online = @online", new[] {new DbColumn("online", false, DbType.Boolean)}, false);
+            dbManager.Query("UPDATE `players` SET online = @online", new[] { new DbColumn("online", false, DbType.Boolean) }, false);
 
-            using (DbTransaction transaction = Global.DbManager.GetThreadTransaction())
+            using (Persistance.DbTransaction transaction = dbManager.GetThreadTransaction())
             {
                 try
                 {
@@ -73,7 +75,7 @@ namespace Game.Database
 
                     //Ok data all loaded. We can get the system going now.
                     Global.SystemVariables["System.time"].Value = now;
-                    Global.DbManager.Save(Global.SystemVariables["System.time"]);
+                    dbManager.Save(Global.SystemVariables["System.time"]);
                 }
                 catch(Exception e)
                 {
@@ -150,13 +152,13 @@ namespace Game.Database
         {
             #region Assignments
 
-            City city;
             Global.Logger.Info("Loading assignements...");
             using (var reader = dbManager.Select(Assignment.DB_TABLE))
             {
                 while (reader.Read())
                 {
                     Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    City city;
                     if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
@@ -181,7 +183,7 @@ namespace Game.Database
                     }
                     assignment.DbPersisted = true;
                     tribe.DbLoaderAddAssignment(assignment);
-                    Global.DbManager.Save(assignment);
+                    dbManager.Save(assignment);
                     Global.Scheduler.Put(assignment);
                 }
             }
@@ -351,7 +353,7 @@ namespace Game.Database
                     {
                         while (listReader.Read())
                             city.Template.DbLoaderAdd((ushort)listReader["type"],
-                                                      UnitFactory.GetUnitStats((ushort)listReader["type"], (byte)listReader["level"]));
+                                                      Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)listReader["type"], (byte)listReader["level"]));
                     }
                 }
             }
@@ -409,7 +411,7 @@ namespace Game.Database
                     }
 
                     // Resave to include new time
-                    Global.DbManager.Save(forest);
+                    dbManager.Save(forest);
                 }
             }
         }
@@ -426,7 +428,7 @@ namespace Game.Database
                     City city;
                     if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
-                    Structure structure = StructureFactory.GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
+                    Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
                     structure.InWorld = (bool)reader["in_world"];
                     structure.Technologies.Parent = city.Technologies;
                     structure.X = (uint)reader["x"];
@@ -526,7 +528,7 @@ namespace Game.Database
                     using (DbDataReader listReader = dbManager.SelectList(manager))
                     {
                         while (listReader.Read())
-                            manager.Add(TechnologyFactory.GetTechnology((uint)listReader["type"], (byte)listReader["level"]), false);
+                            manager.Add(Ioc.Kernel.Get<TechnologyFactory>().GetTechnology((uint)listReader["type"], (byte)listReader["level"]), false);
                     }
                 }
             }
@@ -612,7 +614,7 @@ namespace Game.Database
                         {
                             //First we load the BaseBattleStats and pass it into the BattleStats
                             //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
-                            var battleStats = new BattleStats(UnitFactory.GetBattleStats((ushort)listReader["type"], (byte)listReader["level"]))
+                            var battleStats = new BattleStats(Ioc.Kernel.Get<UnitFactory>().GetBattleStats((ushort)listReader["type"], (byte)listReader["level"]))
                                               {
                                                       MaxHp = (ushort)listReader["max_hp"],
                                                       Atk = (ushort)listReader["attack"],
@@ -690,7 +692,7 @@ namespace Game.Database
                     if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    var bm = new BattleManager(city);
+                    var bm = Ioc.Kernel.Get<BattleManager.Factory>()(city);
                     city.Battle = bm;
                     bm.DbPersisted = true;
                     bm.BattleId = (uint)reader["battle_id"];
@@ -870,6 +872,11 @@ namespace Game.Database
                                         (ushort)reader["count"], properties
                                 };
 
+                    if (cInfo == null)
+                    {
+                        throw new Exception(string.Format("Could not find matching constructor for {0}", actionType.ToString()));
+                    }
+
                     var action = (ScheduledActiveAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
 
@@ -885,7 +892,7 @@ namespace Game.Database
 
                     city.Worker.DbLoaderDoActive(action);
 
-                    Global.DbManager.Save(action);
+                    dbManager.Save(action);
                 }
             }
 
@@ -973,7 +980,7 @@ namespace Game.Database
                     }
 
                     // Resave city to update times
-                    Global.DbManager.Save(action);
+                    dbManager.Save(action);
                 }
             }
 
@@ -1011,6 +1018,11 @@ namespace Game.Database
                                         (bool)reader["is_visible"], properties
                                 };
 
+                    if (cInfo == null)
+                    {
+                        throw new Exception(string.Format("Could not find matching constructor for {0}", actionType.ToString()));
+                    }
+
                     var action = (ChainAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
 
@@ -1022,7 +1034,7 @@ namespace Game.Database
 
                     city.Worker.DbLoaderDoPassive(action);
 
-                    Global.DbManager.Save(action);
+                    dbManager.Save(action);
                 }
             }
 

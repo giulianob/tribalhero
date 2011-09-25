@@ -71,7 +71,20 @@
     <Reference Include="JsonFx">
       <HintPath>..\Lib\JsonFx.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ninject.logging\log4net\lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Ninject">
+      <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging">
+      <HintPath>..\Lib\ninject.logging\Ninject.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging.Log4Net">
+      <HintPath>..\Lib\ninject.logging\log4net\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -87,10 +100,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\CSScriptLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="MySql.Data, Version=6.2.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\mysql.data.dll</HintPath>
@@ -100,8 +109,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Battle\BattleBase.cs" />
-    <Compile Include="Battle\BattleChannel.cs" />
+    <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />
     <Compile Include="Battle\BattleOrder.cs" />
@@ -139,13 +147,7 @@
     <Compile Include="Comm\SocketSession.cs" />
     <Compile Include="Comm\TcpServer.cs" />
     <Compile Include="Comm\TcpWorker.cs" />
-    <Compile Include="Database\DbColumn.cs" />
-    <Compile Include="Database\DbDependency.cs" />
-    <Compile Include="Database\DbTransaction.cs" />
-    <Compile Include="Database\IDbManager.cs" />
-    <Compile Include="Database\IPersistable.cs" />
-    <Compile Include="Database\Managers\MySqlDbManager.cs" />
-    <Compile Include="Database\Managers\MySqlDbTransaction.cs" />
+    <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
     <Compile Include="Data\IHasLevel.cs" />
@@ -168,6 +170,7 @@
     <Compile Include="Data\Troop\TroopStub.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Data\SimpleGameObject.cs" />
+    <Compile Include="GameModule.cs" />
     <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
@@ -225,6 +228,7 @@
     <Compile Include="Map\Region.cs" />
     <Compile Include="Map\World.cs" />
     <Compile Include="Setup\ActionFactory.cs" />
+    <Compile Include="Setup\Ioc.cs" />
     <Compile Include="Setup\UnitModFactory.cs" />
     <Compile Include="Setup\UnitFactory.cs" />
     <Compile Include="Setup\EffectRequirementFactory.cs" />
@@ -257,8 +261,6 @@
     <Compile Include="Battle\DefenseCombatUnit.cs" />
     <Compile Include="Battle\ReportedObjects.cs" />
     <Compile Include="Comm\Processor Commands\Market.cs" />
-    <Compile Include="Database\DbLoader.cs" />
-    <Compile Include="Database\PersistableList.cs" />
     <Compile Include="Data\GameObject.cs" />
     <Compile Include="Data\ForestManager.cs" />
     <Compile Include="Data\GameObjectState.cs">
@@ -346,6 +348,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Persistance\Persistance.csproj">
+      <Project>{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}</Project>
+      <Name>Persistance</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

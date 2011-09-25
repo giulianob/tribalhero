@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -10,6 +9,8 @@ using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using NDesk.Options;
+using Ninject;
+using Persistance;
 
 namespace Game.Comm
 {
@@ -127,7 +128,7 @@ namespace Game.Comm
 
                 TroopStub stub = new TroopStub { city.DefaultTroop };
                 Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                Global.DbManager.Save(stub);
+                Ioc.Kernel.Get<IDbManager>().Save(stub);
 
                 targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();
 
@@ -191,7 +192,7 @@ namespace Game.Comm
                 }
                 stub.Add(city.DefaultTroop);
                 Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                Global.DbManager.Save(stub);
+                Ioc.Kernel.Get<IDbManager>().Save(stub);
 
                 Error error = tribe.JoinAssignment(id, stub);
                 if (error != Error.Ok)

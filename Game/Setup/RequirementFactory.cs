@@ -12,15 +12,12 @@ using Game.Util;
 
 namespace Game.Setup
 {
-    class RequirementFactory
+    public class RequirementFactory
     {
-        private static Dictionary<int, LayoutRequirement> dict;
+        private readonly Dictionary<int, LayoutRequirement> dict;
 
-        public static void Init(string filename)
+        public RequirementFactory(string filename)
         {
-            if (dict != null)
-                return;
-
             dict = new Dictionary<int, LayoutRequirement>();
 
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
@@ -30,13 +27,12 @@ namespace Game.Setup
                 for (int i = 0; i < reader.Columns.Length; ++i)
                     col.Add(reader.Columns[i], i);
 
-                LayoutRequirement layoutReq;
-
                 while ((toks = reader.ReadRow()) != null)
                 {
                     if (toks[0].Length <= 0)
                         continue;
                     int index = int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]);
+                    LayoutRequirement layoutReq;
                     if (!dict.TryGetValue(index, out layoutReq))
                     {
                         switch(toks[col["Layout"]])
@@ -67,7 +63,7 @@ namespace Game.Setup
             }
         }
 
-        public static LayoutRequirement GetLayoutRequirement(ushort type, byte lvl)
+        public LayoutRequirement GetLayoutRequirement(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;

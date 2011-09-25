@@ -2,6 +2,7 @@
 
 using System;
 using Game.Setup;
+using Ninject;
 
 #endregion
 
@@ -29,7 +30,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public static int GetUnitKilledAttackPoint(ushort type, byte lvl, int count)
         {
-            return UnitFactory.GetUnitStats(type, lvl).Upkeep*count;
+            return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
         }
 
         /// <summary>

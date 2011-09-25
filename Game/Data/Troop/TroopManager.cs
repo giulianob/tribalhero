@@ -4,7 +4,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -82,7 +85,7 @@ namespace Game.Data.Troop
 
             CheckUpdateMode();
 
-            Global.DbManager.Save(stub);
+            Ioc.Kernel.Get<IDbManager>().Save(stub);
 
             if (TroopUpdated != null)
                 TroopUpdated(stub);
@@ -108,7 +111,7 @@ namespace Game.Data.Troop
 
             //We don't want to delete a troopstub that doesn't belong to us.
             if (stub.City == City)
-                Global.DbManager.Delete(stub);
+                Ioc.Kernel.Get<IDbManager>().Delete(stub);
 
             if (TroopRemoved != null)
                 TroopRemoved(stub);

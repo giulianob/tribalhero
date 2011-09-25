@@ -8,6 +8,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -50,10 +51,10 @@ namespace ConsoleSimulator
 
             using (sw = new StreamWriter(File.Open(filename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
             {
-                sw.WriteLine("{0} - Lvl {1} - Cnt {2} - Defending", UnitFactory.GetName(type, lvl), lvl, count);
+                sw.WriteLine("{0} - Lvl {1} - Cnt {2} - Defending", Ioc.Kernel.Get<UnitFactory>().GetName(type, lvl), lvl, count);
                 sw.WriteLine(
                              "name,type,lvl,count,DealtToAtker,RecvFromAtker,HitDealt,HitRecv,MaxDealt,MinDealt,MaxRecv,MinRecv,Self,Enemy");
-                foreach (var kvp in UnitFactory.GetList())
+                foreach (var kvp in Ioc.Kernel.Get<UnitFactory>().GetList())
                 {
                     if (sameLevelOnly && kvp.Value.Lvl != lvl)
                         continue;
@@ -63,10 +64,10 @@ namespace ConsoleSimulator
                             defCount = atkCount = count;
                             break;
                         case QuantityUnit.GroupSize:
-                            defCount = (ushort)(UnitFactory.GetUnitStats(type, lvl).Battle.GroupSize*count);
+                            defCount = (ushort)(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle.GroupSize * count);
                             atkCount =
                                     (ushort)
-                                    (UnitFactory.GetUnitStats((ushort)(kvp.Key/100), lvl).Battle.GroupSize*count);
+                                    (Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)(kvp.Key / 100), lvl).Battle.GroupSize * count);
                             break;
                         default:
                             throw new Exception();
@@ -77,7 +78,7 @@ namespace ConsoleSimulator
                     defender.AddToLocal(type, lvl, defCount, FormationType.Normal);
                     attacker.AddToAttack((ushort)(kvp.Key/100), kvp.Value.Lvl, atkCount, FormationType.Normal);
                     sw.Write("{0},{1},{2},{3},", kvp.Value.Name, kvp.Key/100, kvp.Value.Lvl, atkCount);
-                    var bm = new BattleManager(defender.City);
+                    var bm = Ioc.Kernel.Get<BattleManager.Factory>()(defender.City); 
 
                     bm.ExitBattle += bm_ExitBattle;
                     bm.UnitRemoved += bm_UnitRemoved;
@@ -118,10 +119,10 @@ namespace ConsoleSimulator
 
             using (sw = new StreamWriter(File.Open(filename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)))
             {
-                sw.WriteLine("{0} - Lvl {1} - Cnt {2} - Attacking", UnitFactory.GetName(type, lvl), lvl, count);
+                sw.WriteLine("{0} - Lvl {1} - Cnt {2} - Attacking", Ioc.Kernel.Get<UnitFactory>().GetName(type, lvl), lvl, count);
                 sw.WriteLine(
                              "name,type,lvl,count,DealtToDefender,RecvFromDefender,HitDealt,HitRecv,MaxDealt,MinDealt,MaxRecv,MinRecv");
-                foreach (var kvp in UnitFactory.GetList())
+                foreach (var kvp in Ioc.Kernel.Get<UnitFactory>().GetList())
                 {
                     if (sameLevelOnly && kvp.Value.Lvl != lvl)
                         continue;
@@ -131,10 +132,10 @@ namespace ConsoleSimulator
                             defCount = atkCount = count;
                             break;
                         case QuantityUnit.GroupSize:
-                            atkCount = (ushort)(UnitFactory.GetUnitStats(type, lvl).Battle.GroupSize*count);
+                            atkCount = (ushort)(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle.GroupSize * count);
                             defCount =
                                     (ushort)
-                                    (UnitFactory.GetUnitStats((ushort)(kvp.Key/100), lvl).Battle.GroupSize*count);
+                                    (Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)(kvp.Key / 100), lvl).Battle.GroupSize * count);
                             break;
                         default:
                             throw new Exception();
@@ -145,7 +146,7 @@ namespace ConsoleSimulator
                     defender.AddToLocal((ushort)(kvp.Key/100), kvp.Value.Lvl, defCount, FormationType.Normal);
                     attacker.AddToAttack(type, lvl, atkCount, FormationType.Normal);
                     sw.Write("{0},{1},{2},{3},", kvp.Value.Name, kvp.Key/100, kvp.Value.Lvl, defCount);
-                    var bm = new BattleManager(defender.City);
+                    var bm = Ioc.Kernel.Get<BattleManager.Factory>()(defender.City);
 
                     bm.ExitBattle += bm_ExitBattle2;
                     bm.UnitRemoved += bm_UnitRemoved2;

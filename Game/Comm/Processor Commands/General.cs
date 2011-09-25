@@ -1,7 +1,10 @@
 #region
 
 using System;
+using System.Reflection;
 using Game.Setup;
+using Ninject;
+using Ninject.Extensions.Logging;
 
 #endregion
 
@@ -9,7 +12,7 @@ namespace Game.Comm
 {
     public partial class Processor
     {
-        public CmdLineProcessor CmdLineProcessor = new CmdLineProcessor();
+        private CmdLineProcessor cmdLineProcessor;
 
         public void CmdLineCommand(Session session, Packet packet)
         {
@@ -46,7 +49,7 @@ namespace Game.Comm
 
             string parms = cmdParts.Length == 2 ? cmdParts[1] : string.Empty;
 
-            string output = CmdLineProcessor.Execute(session,cmdParts[0].Trim(), parms);
+            string output = cmdLineProcessor.Execute(session,cmdParts[0].Trim(), parms);
 
             reply.AddString(output);
             session.Write(reply);

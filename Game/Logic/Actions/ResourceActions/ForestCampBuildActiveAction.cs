@@ -8,6 +8,7 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -74,7 +75,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
 
             // Count number of camps and verify there's enough space left                
-            int campCount = city.Count(s => ObjectTypeFactory.IsStructureType("ForestCamp", s));
+            int campCount = city.Count(s => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("ForestCamp", s));
             if (campCount >= Formula.GetMaxForestCount(lumbermill.Lvl))
                 return Error.ForestCampMaxReached;
 
@@ -113,7 +114,7 @@ namespace Game.Logic.Actions
                                              delegate(uint ox, uint oy, uint x, uint y, object custom)
                                                  {
                                                      // Check tile type                
-                                                     if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
+                                                     if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
                                                          return true;
 
                                                      // Make sure it's not taken
@@ -133,7 +134,7 @@ namespace Game.Logic.Actions
             Global.World.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
-            Structure structure = StructureFactory.GetNewStructure(campType, 0);
+            Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(campType, 0);
             structure["Rate"] = 0; // Set initial rate for camp
             structure.X = emptyX;
             structure.Y = emptyY;
@@ -169,7 +170,7 @@ namespace Game.Logic.Actions
             // add to queue for completion
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.BuildTime(StructureFactory.GetTime(campType, 1), city, city.Technologies) +
+                                               CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(campType, 1), city, city.Technologies) +
                                                              lumbermill.TileDistance(forest) * 30));
             BeginTime = DateTime.UtcNow;
 
@@ -227,8 +228,8 @@ namespace Game.Logic.Actions
                 // Upgrade the camp
                 structure.BeginUpdate();
                 structure.Technologies.Parent = structure.City.Technologies;
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, 1);
-                InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, 1);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 // Recalculate the forest

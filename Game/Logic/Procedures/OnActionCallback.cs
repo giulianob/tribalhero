@@ -3,6 +3,7 @@
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
+using Ninject;
 
 #endregion
 
@@ -12,9 +13,9 @@ namespace Game.Logic.Procedures
     {
         public static void AdjustCityResourceRates(Structure structure, int laborDelta)
         {
-            if (ObjectTypeFactory.IsStructureType("Crop", structure))
+            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", structure))
                 structure.City.Resource.Crop.Rate = Formula.GetCropRate(structure.City);
-            else if (ObjectTypeFactory.IsStructureType("Iron", structure))
+            else if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Iron", structure))
                 structure.City.Resource.Iron.Rate = Formula.GetIronRate(structure);
         }
 

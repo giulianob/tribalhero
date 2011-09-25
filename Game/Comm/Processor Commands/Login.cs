@@ -9,6 +9,8 @@ using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -35,11 +37,10 @@ namespace Game.Comm
             short clientRevision;
             byte loginMode;
             string loginKey = string.Empty;
-            string playerName = string.Empty;
+            string playerName;
             string playerPassword = string.Empty;
             uint playerId;
-            bool admin = false;
-            bool banned = false;
+            bool admin;
 
             try
             {
@@ -71,10 +72,7 @@ namespace Game.Comm
                 ApiResponse response;
                 try
                 {
-                    if (loginMode == 0)                    
-                        response = ApiCaller.CheckLoginKey(playerName, loginKey);                    
-                    else                    
-                        response = ApiCaller.CheckLogin(playerName, playerPassword);                    
+                    response = loginMode == 0 ? ApiCaller.CheckLoginKey(playerName, loginKey) : ApiCaller.CheckLogin(playerName, playerPassword);                    
                 }
                 catch(Exception e)
                 {
@@ -93,7 +91,7 @@ namespace Game.Comm
 
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
-                banned = int.Parse(response.Data.player.banned) == 1;
+                bool banned = int.Parse(response.Data.player.banned) == 1;
                 admin = int.Parse(response.Data.player.admin) == 1;
 
                 // If we are under admin only mode then kick out non admin
@@ -173,13 +171,13 @@ namespace Game.Comm
 
                     player.Session = session;
                     player.SessionId = sessionId;
-                    Global.DbManager.Save(player);
+                    Ioc.Kernel.Get<IDbManager>().Save(player);
                 }
                 else
                 {
                     player.SessionId = sessionId;
                     player.Session = session;
-                    Global.DbManager.Save(player);
+                    Ioc.Kernel.Get<IDbManager>().Save(player);
                 }
 
                 //User session backreference
@@ -261,7 +259,7 @@ namespace Game.Comm
 
                 Structure mainBuilding = (Structure)city[1];
 
-                InitFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 

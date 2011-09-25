@@ -5,9 +5,9 @@ using System.Data;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Persistance;
 
 #endregion
 
@@ -21,7 +21,7 @@ namespace Game.Battle
         private readonly ushort type;
         private uint hp; //need to keep a copy track of the hp for reporting
 
-        public CombatStructure(BattleManager owner, Structure structure, BattleStats stats)
+        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats)
         {
             battleManager = owner;
             this.stats = stats;
@@ -31,7 +31,7 @@ namespace Game.Battle
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(BattleManager owner, Structure structure, BattleStats stats, uint hp, ushort type, byte lvl)
+        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats, uint hp, ushort type, byte lvl)
         {
             battleManager = owner;
             Structure = structure;

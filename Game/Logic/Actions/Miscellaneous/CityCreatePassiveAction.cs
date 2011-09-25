@@ -7,6 +7,7 @@ using Game.Logic.Formulas;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 namespace Game.Logic.Actions {
     public class CityCreatePassiveAction : ScheduledPassiveAction
@@ -61,7 +62,7 @@ namespace Game.Logic.Actions {
         public override Error Validate(string[] parms)
         {
             ushort tileType = Global.World.GetTileType(x, y);
-            if (!ObjectTypeFactory.IsTileType("CityStartTile", tileType))
+            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("CityStartTile", tileType))
                 return Error.TileMismatch;
             return Error.Ok;
         }
@@ -81,7 +82,7 @@ namespace Game.Logic.Actions {
                 return Error.ActionInvalid;
 
             // cost requirement uses town center lvl 1 for cost
-            var cost = Formula.StructureCost(city, ObjectTypeFactory.GetTypes("MainBuilding")[0], 1);
+            var cost = Formula.StructureCost(city, Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("MainBuilding")[0], 1);
             if (!city.Resource.HasEnough(cost))            
                 return Error.ResourceNotEnough;            
 
@@ -91,7 +92,7 @@ namespace Game.Logic.Actions {
 
             Global.World.LockRegion(x, y);
 
-            if (!ObjectTypeFactory.IsTileType("CityStartTile", Global.World.GetTileType(x, y)))
+            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("CityStartTile", Global.World.GetTileType(x, y)))
             {
                 Global.World.UnlockRegion(x, y);
                 return Error.TileMismatch;
@@ -112,7 +113,7 @@ namespace Game.Logic.Actions {
                 }
 
                 // Creating Mainbuilding
-                structure = StructureFactory.GetNewStructure(2000, 0);
+                structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2000, 0);
                 structure.X = x;
                 structure.Y = y;
 
@@ -125,7 +126,7 @@ namespace Game.Logic.Actions {
                 Global.World.Add(newCity);
                 structure.BeginUpdate();
                 Global.World.Add(structure);
-                InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                 structure.EndUpdate();
 
                 var defaultTroop = new TroopStub();
@@ -153,7 +154,7 @@ namespace Game.Logic.Actions {
             newStructureId = structure.ObjectId;
 
             // add to queue for completion            
-            int baseBuildTime = StructureFactory.GetBaseStats(ObjectTypeFactory.GetTypes("MainBuilding")[0], 1).BuildTime;
+            int baseBuildTime = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("MainBuilding")[0], 1).BuildTime;
             EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
@@ -198,8 +199,8 @@ namespace Game.Logic.Actions {
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                InitFactory.InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 newCity.Worker.DoPassive(newCity, new CityPassiveAction(newCity.Id), false);

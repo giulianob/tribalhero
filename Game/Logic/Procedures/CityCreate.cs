@@ -6,6 +6,8 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
+using Ninject;
+using Persistance;
 
 namespace Game.Logic.Procedures
 {
@@ -25,7 +27,7 @@ namespace Game.Logic.Procedures
             if (!Randomizer.MainBuilding(out mainBuilding, Formula.GetInitialCityRadius(), 1))
             {
                 Global.World.Players.Remove(player.PlayerId);
-                Global.DbManager.Rollback();
+                Ioc.Kernel.Get<IDbManager>().Rollback();
                 // If this happens I'll be a very happy game developer
                 return false;
             }

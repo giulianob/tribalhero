@@ -4,6 +4,8 @@ using System;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -77,7 +79,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             structure[name] = value;
-            Global.DbManager.Save(structure);
+            Ioc.Kernel.Get<IDbManager>().Save(structure);
             StateChange(ActionState.Completed);
 
             return Error.Ok;

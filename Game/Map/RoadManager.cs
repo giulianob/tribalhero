@@ -5,6 +5,7 @@ using System.Linq;
 using Game.Comm;
 using Game.Data;
 using Game.Setup;
+using Ninject;
 
 #endregion
 
@@ -181,11 +182,11 @@ namespace Game.Map
             ushort[] types;
 
             if (Global.World[x, y].Exists(s => s is Structure))
-                types = ObjectTypeFactory.GetTypes("RoadSetStructures");
+                types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSetStructures");
             else
             {
                 //TODO: Load random road set
-                types = ObjectTypeFactory.GetTypes("RoadSet1");
+                types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSet1");
             }
 
             // Set the new road tile

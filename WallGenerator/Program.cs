@@ -41,7 +41,7 @@ namespace WallGenerator
             output.WriteLine("[");
 
             foreach (string file in Directory.GetFiles("map", "wall*", SearchOption.TopDirectoryOnly)) {
-                XmlReaderSettings settings = new XmlReaderSettings {ProhibitDtd = false, XmlResolver = null};
+                XmlReaderSettings settings = new XmlReaderSettings {DtdProcessing = DtdProcessing.Ignore, XmlResolver = null};
 
                 using (XmlReader str = XmlReader.Create(File.OpenRead(file), settings))
                 {

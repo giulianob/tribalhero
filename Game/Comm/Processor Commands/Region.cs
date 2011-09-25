@@ -8,6 +8,7 @@ using Game.Logic;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -42,7 +43,7 @@ namespace Game.Comm
             }
 
             // Make sure there is no structure at this point that has no road requirement
-            if (Global.World[x, y].Any(s => s is Structure && ObjectTypeFactory.IsStructureType("NoRoadRequired", (Structure)s)))
+            if (Global.World[x, y].Any(s => s is Structure && Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", (Structure)s)))
             {
                 ReplyError(session, packet, Error.StructureExists);
                 return;
@@ -108,7 +109,7 @@ namespace Game.Comm
                     return;
                 }
 
-                if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
+                if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
                 {
                     Global.World.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.TileMismatch);
@@ -188,7 +189,7 @@ namespace Game.Comm
 
                 foreach (var str in city)
                 {
-                    if (str.IsMainBuilding || ObjectTypeFactory.IsStructureType("NoRoadRequired", str))
+                    if (str.IsMainBuilding || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", str))
                         continue;
 
                     if (!RoadPathFinder.HasPath(new Location(str.X, str.Y), new Location(city.X, city.Y), city, new Location(x, y)))

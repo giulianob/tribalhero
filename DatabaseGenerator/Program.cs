@@ -6,11 +6,13 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using CSVToXML;
+using Game;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
 using Game.Setup;
 using NDesk.Options;
+using Ninject;
 
 #endregion
 
@@ -31,7 +33,7 @@ namespace DatabaseGenerator
         private static void Main()
         {
             Factory.CompileConfigFiles();
-            Factory.InitAll();
+            Engine.CreateDefaultKernel();
 
             LoadLanguages();
 
@@ -46,15 +48,15 @@ namespace DatabaseGenerator
             }
 
             // Get types
-            structureTypes = from structure in StructureFactory.AllStructures()
+            structureTypes = from structure in Ioc.Kernel.Get<StructureFactory>().AllStructures()
                              group structure by structure.Type
                              into types orderby types.Key select types.Key;
 
-            technologyTypes = from technology in TechnologyFactory.AllTechnologies()
+            technologyTypes = from technology in Ioc.Kernel.Get<TechnologyFactory>().AllTechnologies()
                               group technology by technology.Techtype
                               into types orderby types.Key select types.Key;
 
-            unitTypes = from unit in UnitFactory.AllUnits()
+            unitTypes = from unit in Ioc.Kernel.Get<UnitFactory>().AllUnits()
                         group unit by unit.Type
                         into types orderby types.Key select types.Key;
 
@@ -68,18 +70,18 @@ namespace DatabaseGenerator
 
                 foreach (var type in structureTypes)
                 {
-                    if (ObjectTypeFactory.IsStructureType("DatabaseIgnoreStructures", type))
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("DatabaseIgnoreStructures", type))
                         continue;
 
                     ProcessStructure(type);
 
-                    StructureBaseStats stats = StructureFactory.GetBaseStats(type, 1);
+                    StructureBaseStats stats = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(type, 1);
 
                     var sprite = stats.SpriteClass;
 
                     // Sorry this is a bit of a hack, it's a CropField then we append the Mature status to it :)
-                    if (ObjectTypeFactory.IsStructureType("CropField", type))                    
-                        sprite = StructureFactory.AllStructures().First(structure => structure.Lvl == 1 && structure.Name == "MATURE_" + stats.Name).SpriteClass;                    
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("CropField", type))
+                        sprite = Ioc.Kernel.Get<StructureFactory>().AllStructures().First(structure => structure.Lvl == 1 && structure.Name == "MATURE_" + stats.Name).SpriteClass;                    
 
                     writer.WriteLine("'{2}_STRUCTURE' => array('name' => '{1}', 'sprite' => '{0}'),",
                                      sprite,
@@ -100,7 +102,7 @@ namespace DatabaseGenerator
                 {
                     ProcessUnit(type);
 
-                    BaseUnitStats stats = UnitFactory.GetUnitStats(type, 1);
+                    BaseUnitStats stats = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
                     writer.WriteLine("'{2}_UNIT' => array('name' => '{1}', 'sprite' => '{0}'),",
                                      stats.SpriteClass,
                                      lang[stats.Name + "_UNIT"],
@@ -120,7 +122,7 @@ namespace DatabaseGenerator
                 {
                     ProcessTechnology(type);
 
-                    TechnologyBase stats = TechnologyFactory.GetTechnologyBase(type, 1);
+                    TechnologyBase stats = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(type, 1);
                     writer.WriteLine("'{0}_TECHNOLOGY' => array('name' => '{1}'),",
                                      stats.Name,
                                      lang[stats.Name + "_TECHNOLOGY_NAME"]);
@@ -154,7 +156,7 @@ namespace DatabaseGenerator
             string requirementTemplate = @"'#REQUIREMENT#',";
 
             // Get basic information
-            TechnologyBase tech = TechnologyFactory.GetTechnologyBase(type, 1);
+            TechnologyBase tech = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(type, 1);
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#TECH#", tech.Name + "_TECHNOLOGY");
@@ -200,7 +202,7 @@ namespace DatabaseGenerator
 
                 FindTechnologyTrainer(type, level, out trainer);
                 level++;
-            } while ((currentStats = TechnologyFactory.GetTechnologyBase(type, level)) != null);
+            } while ((currentStats = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(type, level)) != null);
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
@@ -220,11 +222,11 @@ namespace DatabaseGenerator
                 byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = StructureFactory.GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 
-                    ActionRecord record = ActionFactory.GetActionRequirementRecord(stats.WorkerId);
+                    ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;
@@ -242,13 +244,13 @@ namespace DatabaseGenerator
 
         private static IEnumerable<string> GetTechnologyRequirements(uint type, byte level, StructureBaseStats trainer)
         {
-            ActionRecord record = ActionFactory.GetActionRequirementRecord(trainer.WorkerId);
+            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(trainer.WorkerId);
 
             ActionRequirement foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.TechnologyUpgradeActive && ushort.Parse(action.Parms[0]) == type && ushort.Parse(action.Parms[1]) >= level);
 
             if (foundAction != null)
             {
-                var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
+                var requirements = Ioc.Kernel.Get<EffectRequirementFactory>().GetEffectRequirementContainer(foundAction.EffectReqId);
                 foreach (var requirement in requirements)
                 {
                     if (requirement.WebsiteDescription != string.Empty)
@@ -283,7 +285,7 @@ namespace DatabaseGenerator
             string requirementTemplate = @"'#REQUIREMENT#',";
 
             // Get basic information
-            BaseUnitStats stats = UnitFactory.GetUnitStats(type, 1);
+            BaseUnitStats stats = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#UNIT#", stats.Name + "_UNIT");
@@ -345,7 +347,7 @@ namespace DatabaseGenerator
 
                 FindUnitTrainer(type, level, out trainer);
                 level++;
-            } while ((currentStats = UnitFactory.GetUnitStats(type, level)) != null);
+            } while ((currentStats = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, level)) != null);
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
@@ -365,11 +367,11 @@ namespace DatabaseGenerator
                 byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = StructureFactory.GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 
-                    ActionRecord record = ActionFactory.GetActionRequirementRecord(stats.WorkerId);
+                    ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;
@@ -398,7 +400,7 @@ namespace DatabaseGenerator
 
         private static IEnumerable<string> GetUnitRequirements(ushort type, byte level, StructureBaseStats trainer)
         {
-            ActionRecord record = ActionFactory.GetActionRequirementRecord(trainer.WorkerId);
+            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(trainer.WorkerId);
 
             ActionRequirement foundAction;
             
@@ -410,7 +412,7 @@ namespace DatabaseGenerator
             if (foundAction == null)
                 yield break;
 
-            var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
+            var requirements = Ioc.Kernel.Get<EffectRequirementFactory>().GetEffectRequirementContainer(foundAction.EffectReqId);
 
             foreach (var requirement in requirements.Where(requirement => requirement.WebsiteDescription != string.Empty))            
                 yield return requirement.WebsiteDescription;            
@@ -444,7 +446,7 @@ namespace DatabaseGenerator
             string requirementTemplate = @"'#REQUIREMENT#',";
 
             // Get basic information
-            StructureBaseStats stats = StructureFactory.GetBaseStats(type, 1);
+            StructureBaseStats stats = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(type, 1);
 
             generalTemplate = generalTemplate.Replace("#DATE#", DateTime.Now.ToString());
             generalTemplate = generalTemplate.Replace("#STRUCTURE#", stats.Name + "_STRUCTURE");
@@ -500,7 +502,7 @@ namespace DatabaseGenerator
                 
                 level++;
                 FindStructureBuilder(type, level, out builder, out converted);
-            } while ((currentStats = StructureFactory.GetBaseStats(type, level)) != null);
+            } while ((currentStats = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(type, level)) != null);
 
             generalTemplate = generalTemplate.Replace("#LEVELS#", levelsWriter.ToString());
 
@@ -515,7 +517,7 @@ namespace DatabaseGenerator
 
         private static IEnumerable<string> GetStructureRequirements(ushort type, byte level, StructureBaseStats builder)
         {
-            ActionRecord record = ActionFactory.GetActionRequirementRecord(builder.WorkerId);
+            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(builder.WorkerId);
 
             ActionRequirement foundAction = null;
             foreach (var action in record.List)
@@ -541,7 +543,7 @@ namespace DatabaseGenerator
 
             if (foundAction != null)
             {
-                var requirements = EffectRequirementFactory.GetEffectRequirementContainer(foundAction.EffectReqId);
+                var requirements = Ioc.Kernel.Get<EffectRequirementFactory>().GetEffectRequirementContainer(foundAction.EffectReqId);
                 foreach (var requirement in requirements)
                 {
                     if (requirement.WebsiteDescription != string.Empty)
@@ -554,7 +556,7 @@ namespace DatabaseGenerator
         {
             if (level > 1)
             {
-                builder = StructureFactory.GetBaseStats(type, (byte)(level - 1));
+                builder = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(type, (byte)(level - 1));
                 convert = false;
                 return;
             }
@@ -567,11 +569,11 @@ namespace DatabaseGenerator
                 byte structureLevel = 1;
                 StructureBaseStats stats;
 
-                while ((stats = StructureFactory.GetBaseStats(builderType, structureLevel)) != null)
+                while ((stats = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(builderType, structureLevel)) != null)
                 {
                     structureLevel++;
 
-                    ActionRecord record = ActionFactory.GetActionRequirementRecord(stats.WorkerId);
+                    ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;

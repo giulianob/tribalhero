@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -11,11 +13,11 @@ namespace Game.Setup
 {
     public class MapFactory
     {
-        private static readonly List<Point> dict = new List<Point>();
-        private static int index;
+        private readonly List<Point> dict = new List<Point>();
+        private int index;
         private const int SKIP = 1; 
 
-        public static void Init(string filename)
+        public MapFactory(string filename)
         {            
             using (var reader = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
@@ -31,7 +33,7 @@ namespace Game.Setup
             }
         }
 
-        public static bool NextLocation(out uint x, out uint y, byte radius)
+        public bool NextLocation(out uint x, out uint y, byte radius)
         {
             x = 0;
             y = 0;
@@ -68,7 +70,7 @@ namespace Game.Setup
             if (mapStartIndex != null)
             {
                 mapStartIndex.Value = index;
-                Global.DbManager.Save(mapStartIndex);
+                Ioc.Kernel.Get<IDbManager>().Save(mapStartIndex);
             }
 
             return true;

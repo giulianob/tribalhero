@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using Game.Database;
 using Game.Util;
+using Persistance;
 
 namespace Game.Data.Tribe {
 

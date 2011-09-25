@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
+using Ninject;
 
 #endregion
 
@@ -44,7 +45,7 @@ namespace Game.Logic.Formulas
 
         public static int BuildTime(int baseValue, City city, TechnologyManager em)
         {
-            Structure university = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("University", structure));
+            Structure university = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("University", structure));
             return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
         }
 

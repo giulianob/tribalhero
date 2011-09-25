@@ -13,7 +13,13 @@ using Game.Setup;
 
 namespace Game.Comm
 {
-    public class PolicyServer
+    public interface IPolicyServer
+    {
+        bool Start();
+        bool Stop();
+    }
+
+    public class PolicyServer : IPolicyServer
     {
         private readonly TcpListener listener;
         private readonly Thread listeningThread;
@@ -48,7 +54,7 @@ namespace Game.Comm
             return true;
         }
 
-        public void ListenerHandler()
+        private void ListenerHandler()
         {
             // Write policy to data folder
             File.WriteAllText(Path.Combine(Config.data_folder, "crossdomain.xml"), policy);

@@ -5,13 +5,14 @@ using System.Text;
 using ConsoleSimulator;
 using Game.Setup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Ninject;
 
 namespace Testing.Balancing {
     public class TestUtility {
 
         public static void TestUnitPerUpkeep(UnitType type, UnitType target, double multiplier, double expectAdvantage, double errorMargin=.15) {
-            ushort typeUpkeep = UnitFactory.GetUnitStats((ushort)type, 1).Upkeep;
-            ushort targetUpkeep = UnitFactory.GetUnitStats((ushort)target, 1).Upkeep;
+            ushort typeUpkeep = Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)type, 1).Upkeep;
+            ushort targetUpkeep = Ioc.Kernel.Get<UnitFactory>().GetUnitStats((ushort)target, 1).Upkeep;
             int count = (int)(typeUpkeep * targetUpkeep * multiplier);
 
             Group defender = new Group();

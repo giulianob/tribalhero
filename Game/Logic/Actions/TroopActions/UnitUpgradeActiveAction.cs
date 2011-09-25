@@ -7,6 +7,7 @@ using Game.Data.Stats;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -91,7 +92,7 @@ namespace Game.Logic.Actions
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            var upgradeTime = Formula.BuildTime(UnitFactory.GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)), city, structure.Technologies);
+            var upgradeTime = Formula.BuildTime(Ioc.Kernel.Get<UnitFactory>().GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)), city, structure.Technologies);
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(upgradeTime));
             BeginTime = DateTime.UtcNow;
 
@@ -109,7 +110,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, UnitFactory.GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
+                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
                     city.EndUpdate();
                 }
 
@@ -142,7 +143,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                structure.City.Template[UnitType] = UnitFactory.GetUnitStats(UnitType, (byte)(structure.City.Template[UnitType].Lvl + 1));
+                structure.City.Template[UnitType] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(UnitType, (byte)(structure.City.Template[UnitType].Lvl + 1));
 
                 StateChange(ActionState.Completed);
             }

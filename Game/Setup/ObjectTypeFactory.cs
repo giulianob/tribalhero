@@ -13,12 +13,10 @@ namespace Game.Setup
 {
     public class ObjectTypeFactory
     {
-        private static Dictionary<string, List<ushort>> dict;
+        private Dictionary<string, List<ushort>> dict;
 
-        public static void Init(string filename)
+        public ObjectTypeFactory(string filename)
         {
-            if (dict != null)
-                return;
             dict = new Dictionary<string, List<ushort>>();
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
@@ -47,7 +45,7 @@ namespace Game.Setup
             }
         }
 
-        public static bool IsStructureType(string type, Structure structure)
+        public bool IsStructureType(string type, Structure structure)
         {
             if (dict == null)
                 return false;
@@ -57,7 +55,7 @@ namespace Game.Setup
             return false;
         }
 
-        public static bool IsStructureType(string type, ushort structureType)
+        public bool IsStructureType(string type, ushort structureType)
         {
             if (dict == null)
                 return false;
@@ -67,14 +65,14 @@ namespace Game.Setup
             return false;
         }
 
-        public static ushort[] GetTypes(string type)
+        public ushort[] GetTypes(string type)
         {
             if (dict == null || !dict.ContainsKey(type))
                 return new ushort[] {};
             return dict[type].ToArray();
         }
 
-        public static bool IsTileType(string type, ushort tileType)
+        public bool IsTileType(string type, ushort tileType)
         {
             if (dict == null)
                 return false;
@@ -84,7 +82,7 @@ namespace Game.Setup
             return false;
         }
 
-        public static bool HasTileType(string type, IEnumerable<ushort> tileTypes)
+        public bool HasTileType(string type, IEnumerable<ushort> tileTypes)
         {
             if (dict == null)
                 return false;
@@ -92,7 +90,7 @@ namespace Game.Setup
             return dict.TryGetValue(type, out set) && tileTypes.Any(tileType => set.Contains(tileType));
         }
 
-        public static bool IsAllTileType(string type, IEnumerable<ushort> tileTypes)
+        public bool IsAllTileType(string type, IEnumerable<ushort> tileTypes)
         {
             if (dict == null)
                 return false;

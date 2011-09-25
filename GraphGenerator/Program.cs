@@ -6,10 +6,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using CSVToXML;
+using Game;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic;
 using Game.Setup;
+using Ninject;
 using log4net.Config;
 using NDesk.Options;
 
@@ -80,7 +82,7 @@ namespace GraphGenerator
         {
             ParseArgs();
             Factory.CompileConfigFiles();
-            Factory.InitAll();
+            Engine.CreateDefaultKernel();            
 
             LoadLanguages();
 
@@ -97,7 +99,7 @@ namespace GraphGenerator
             // Process
             nodeConnections = new StringWriter(new StringBuilder());
 
-            ProcessStructure(StructureFactory.GetBaseStats(MAIN_BUILDING, 1), false);
+            ProcessStructure(Ioc.Kernel.Get<StructureFactory>().GetBaseStats(MAIN_BUILDING, 1), false);
 
             using (var b = new StringWriter(new StringBuilder()))
             {
@@ -198,7 +200,7 @@ namespace GraphGenerator
 
             Console.Out.WriteLine("Parsing " + structureBaseStats.Name + " " + structureBaseStats.Lvl);
 
-            ActionRecord record = ActionFactory.GetActionRequirementRecord(structureBaseStats.WorkerId);
+            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(structureBaseStats.WorkerId);
 
             processedStructures.Add(hash);
 
@@ -217,7 +219,7 @@ namespace GraphGenerator
                 {
                     case ActionType.StructureBuildActive:
                     case ActionType.StructureChangeActive:
-                        StructureBaseStats building = StructureFactory.GetBaseStats(ushort.Parse(action.Parms[0]), 1);
+                        StructureBaseStats building = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(ushort.Parse(action.Parms[0]), 1);
                         Result result = ProcessStructure(building, false);
                         if (result != Result.AlreadyProcessed)
                         {
@@ -230,7 +232,7 @@ namespace GraphGenerator
                         }
                         break;
                     case ActionType.UnitTrainActive:
-                        BaseUnitStats training = UnitFactory.GetUnitStats(ushort.Parse(action.Parms[0]), 1);
+                        BaseUnitStats training = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(ushort.Parse(action.Parms[0]), 1);
                         if (!processedUnits.Contains(training.UnitHash))
                         {
                             WriteNode(structureBaseStats, training);
@@ -240,7 +242,7 @@ namespace GraphGenerator
                         }
                         break;
                     case ActionType.TechnologyUpgradeActive:
-                        TechnologyBase tech = TechnologyFactory.GetTechnologyBase(ushort.Parse(action.Parms[0]), 1);
+                        TechnologyBase tech = Ioc.Kernel.Get<TechnologyFactory>().GetTechnologyBase(ushort.Parse(action.Parms[0]), 1);
                         if (!processedTechnologies.Contains(tech.TechnologyHash))
                         {
                             WriteNode(structureBaseStats, tech);
@@ -266,7 +268,7 @@ namespace GraphGenerator
 
                             for (int i = from.Lvl; i < maxLvl; i++)
                             {
-                                StructureBaseStats to = StructureFactory.GetBaseStats(from.Type, (byte)(i + 1));
+                                StructureBaseStats to = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(from.Type, (byte)(i + 1));
                                 Result result = ProcessStructure(to, true);
                                 if (result == Result.Ok || i == maxLvl - 1)
                                 {

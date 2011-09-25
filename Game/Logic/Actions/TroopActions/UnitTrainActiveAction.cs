@@ -7,6 +7,7 @@ using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -85,7 +86,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            timePerUnit = (int)CalculateTime(Formula.TrainTime(UnitFactory.GetTime(type, unitLvl), structure.Lvl, structure.Technologies));
+            timePerUnit = (int)CalculateTime(Formula.TrainTime(Ioc.Kernel.Get<UnitFactory>().GetTime(type, unitLvl), structure.Lvl, structure.Technologies));
 
             // add to queue for completion
             nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);

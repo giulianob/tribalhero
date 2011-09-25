@@ -7,6 +7,8 @@ using Game.Logic.Actions.ResourceActions;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -82,15 +84,15 @@ namespace Game.Data
                     x = (uint)Config.Random.Next(15, (int)Config.map_width - 15);
                     y = (uint)Config.Random.Next(15, (int)Config.map_height - 15);
 
-                    if (!ObjectTypeFactory.IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
+                    if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
                         continue;
 
                     // check if tile is safe
                     List<ushort> tiles = Global.World.GetTilesWithin(x, y, 7);
-                    if (ObjectTypeFactory.HasTileType("CityStartTile", tiles))
+                    if (Ioc.Kernel.Get<ObjectTypeFactory>().HasTileType("CityStartTile", tiles))
                         continue;
 
-                    if (!ObjectTypeFactory.IsAllTileType("TileBuildable", tiles))
+                    if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsAllTileType("TileBuildable", tiles))
                         continue;
 
                     Global.World.LockRegion(x, y);
@@ -136,7 +138,7 @@ namespace Game.Data
             Global.World.Remove(forest);
             forest.EndUpdate();
 
-            Global.DbManager.Delete(forest);
+            Ioc.Kernel.Get<IDbManager>().Delete(forest);
         }
 
         /// <summary>

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using Game;
 using Game.Data;
 using Game.Setup;
+using Ninject;
+using Persistance;
 
 namespace Testing
 {
@@ -9,8 +12,15 @@ namespace Testing
     {
         public TestBase()
         {
-            LoadConfigFile();
-            Config.seconds_per_unit = 1;
+            if (Ioc.Kernel == null)
+            {
+                LoadConfigFile();
+                Engine.CreateDefaultKernel();
+                Factory.CompileConfigFiles();
+                Config.seconds_per_unit = 1;
+                Global.FireEvents = false;
+                Ioc.Kernel.Get<IDbManager>().Pause();
+            }
         }
 
         protected void LoadConfigFile(string settingsFile = null)

@@ -1,7 +1,10 @@
 #region
 
 using Game.Data;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -27,7 +30,7 @@ namespace Game.Comm
 
                 session.Player.SessionId = string.Empty;
 
-                Global.DbManager.Save(session.Player);
+                Ioc.Kernel.Get<IDbManager>().Save(session.Player);
             }
         }
     }

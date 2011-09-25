@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -48,7 +49,7 @@ namespace Game.Comm
                     reply.AddUInt16(structure.Stats.Labor);
                     reply.AddUInt16(structure.Stats.Hp);
 
-                    foreach (var prop in PropertyFactory.GetProperties(structure.Type))
+                    foreach (var prop in Ioc.Kernel.Get<PropertyFactory>().GetProperties(structure.Type))
                     {
                         switch(prop.Type)
                         {
@@ -75,7 +76,7 @@ namespace Game.Comm
                 }
                 else
                 {
-                    foreach (var prop in PropertyFactory.GetProperties(structure.Type, Visibility.Public))
+                    foreach (var prop in Ioc.Kernel.Get<PropertyFactory>().GetProperties(structure.Type, Visibility.Public))
                     {
                         switch(prop.Type)
                         {
@@ -241,7 +242,7 @@ namespace Game.Comm
                     return;
                 }
 
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, lma, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, lma, obj.Technologies);
 
                 if (ret != 0)
                     ReplyError(session, packet, ret);
@@ -281,7 +282,7 @@ namespace Game.Comm
                 }
 
                 var upgradeAction = new TechnologyUpgradeActiveAction(cityId, objectId, techId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -366,7 +367,7 @@ namespace Game.Comm
                 }
 
                 var upgradeAction = new StructureUpgradeActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, upgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -412,7 +413,7 @@ namespace Game.Comm
                 }
 
                 var downgradeAction = new StructureDowngradeActiveAction(cityId, targetId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, downgradeAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, downgradeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -470,7 +471,7 @@ namespace Game.Comm
                 }
 
                 var buildaction = new StructureBuildActiveAction(cityId, type, x, y, level);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, buildaction, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, buildaction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -517,7 +518,7 @@ namespace Game.Comm
                 }
 
                 var changeAction = new StructureChangeActiveAction(cityId, objectId, structureType, structureLvl);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, changeAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, changeAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -560,7 +561,7 @@ namespace Game.Comm
                 }
 
                 var destroyAction = new StructureSelfDestroyActiveAction(cityId, objectId);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(obj), obj, destroyAction, obj.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(obj), obj, destroyAction, obj.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -598,7 +599,7 @@ namespace Game.Comm
             using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
             {
                 // Get the lumbermill
-                Structure lumbermill = city.FirstOrDefault(structure => ObjectTypeFactory.IsStructureType("Wood", structure));
+                Structure lumbermill = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Wood", structure));
 
                 if (lumbermill == null || lumbermill.Lvl == 0)
                 {
@@ -607,7 +608,7 @@ namespace Game.Comm
                 }
 
                 var buildaction = new ForestCampBuildActiveAction(cityId, lumbermill.ObjectId, forestId, type, labor);
-                Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(lumbermill), lumbermill, buildaction, lumbermill.Technologies);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(lumbermill), lumbermill, buildaction, lumbermill.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else

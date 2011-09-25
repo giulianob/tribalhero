@@ -286,7 +286,7 @@ namespace Game.Map
                 obj.InWorld = true;
 
                 // If simple object, we must assign an id
-                if (!ObjectTypeFactory.IsStructureType("NoRoadRequired", obj.Type))
+                if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", obj.Type))
                     RoadManager.CreateRoad(obj.X, obj.Y);
 
                 // Add appropriate objects to the minimap

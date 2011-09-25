@@ -259,7 +259,7 @@ namespace Game.Comm
 
                 Structure mainBuilding = (Structure)city[1];
 
-                InitFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 

@@ -5,6 +5,7 @@ using System.Linq;
 using Game.Data;
 using Game.Setup;
 using Game.Data.Tribe;
+using Ninject;
 
 #endregion
 
@@ -22,9 +23,9 @@ namespace Game.Logic.Formulas
         public static Resource StructureCost(City city, uint type, byte lvl)
         {
             if (city.Battle == null)
-                return StructureFactory.GetCost((int)type, lvl);
+                return Ioc.Kernel.Get<StructureFactory>().GetCost((int)type, lvl);
 
-            return StructureFactory.GetCost((int)type, lvl)*Config.battle_cost_penalty;
+            return Ioc.Kernel.Get<StructureFactory>().GetCost((int)type, lvl)*Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -37,9 +38,9 @@ namespace Game.Logic.Formulas
         public static Resource UnitTrainCost(City city, ushort type, byte lvl)
         {
             if (city.Battle == null)
-                return UnitFactory.GetCost(type, lvl);
+                return Ioc.Kernel.Get<UnitFactory>().GetCost(type, lvl);
 
-            return UnitFactory.GetCost(type, lvl)*Config.battle_cost_penalty;
+            return Ioc.Kernel.Get<UnitFactory>().GetCost(type, lvl)*Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -52,9 +53,9 @@ namespace Game.Logic.Formulas
         public static Resource UnitUpgradeCost(City city, ushort type, byte lvl)
         {
             if (city.Battle == null)
-                return UnitFactory.GetUpgradeCost(type, lvl);
+                return Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(type, lvl);
 
-            return UnitFactory.GetUpgradeCost(type, lvl)*Config.battle_cost_penalty;
+            return Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(type, lvl)*Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -118,7 +119,7 @@ namespace Game.Logic.Formulas
                     city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SelfAll).DefaultIfEmpty(new Effect {Value = new object[] {100}}).
                             Max(x => (int)x.Value[0]);
             var resource = new Resource();
-            foreach (var structure in city.Where(x => ObjectTypeFactory.IsStructureType("Basement", x)))
+            foreach (var structure in city.Where(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Basement", x)))
                 resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
             return resource*maxbonus/100;
         }
@@ -146,7 +147,7 @@ namespace Game.Logic.Formulas
         internal static int GetCropRate(City city)
         {
             double[] lvlBonus = {1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5};
-            return (int)city.Sum(x => ObjectTypeFactory.IsStructureType("Crop", x) ? x.Stats.Labor*lvlBonus[x.Lvl] : 0);
+            return (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor*lvlBonus[x.Lvl] : 0);
         }
 
         public static ushort CalculateCityValue(City city)

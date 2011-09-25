@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Data.Stats;
 using Game.Setup;
+using Ninject;
 using Persistance;
 
 #endregion
@@ -52,7 +53,7 @@ namespace Game.Data.Troop
                 BaseUnitStats ret;
                 if (dict.TryGetValue(type, out ret))
                     return ret;
-                return UnitFactory.GetUnitStats(type, 1);
+                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, 1);
             }
             set
             {

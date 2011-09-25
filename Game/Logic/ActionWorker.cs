@@ -282,7 +282,7 @@ namespace Game.Logic
             ActiveAction activeAction;
             if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.IsDone)
             {
-                var actionRequirements = ActionFactory.GetActionRequirementRecord(activeAction.WorkerType);
+                var actionRequirements = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(activeAction.WorkerType);
                 var actionRequirement = actionRequirements.List.FirstOrDefault(x => x.Index == activeAction.WorkerIndex);
                 if (actionRequirement == null || (actionRequirement.Option & ActionOption.Uncancelable) == ActionOption.Uncancelable)
                     return Error.ActionUncancelable;
@@ -347,7 +347,7 @@ namespace Game.Logic
             if (actionId == -1)
                 return Error.ActionTotalMaxReached;
 
-            ActionRecord record = ActionFactory.GetActionRequirementRecord(workerType);
+            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(workerType);
 
             if (record == null)
                 return Error.ActionNotFound;
@@ -367,7 +367,7 @@ namespace Game.Logic
                 if (!CanDoActiveAction(action, actionReq, workerObject))
                     return Error.ActionTotalMaxReached;
 
-                error = EffectRequirementFactory.GetEffectRequirementContainer(actionReq.EffectReqId).Validate(workerObject,
+                error = Ioc.Kernel.Get<EffectRequirementFactory>().GetEffectRequirementContainer(actionReq.EffectReqId).Validate(workerObject,
                                                                                                                effects.GetAllEffects(actionReq.EffectReqInherit));
 
                 if (error != Error.Ok)

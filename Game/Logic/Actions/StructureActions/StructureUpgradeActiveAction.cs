@@ -8,6 +8,7 @@ using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -69,13 +70,13 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (!ObjectTypeFactory.IsStructureType("UnlimitedBuilding", type) &&
+            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
                                                            action =>
                                                            action.ActionId != ActionId &&
                                                            (action.Type == ActionType.StructureUpgradeActive ||
                                                             (action.Type == ActionType.StructureBuildActive &&
-                                                             !ObjectTypeFactory.IsStructureType("UnlimitedBuilding",
+                                                             !Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding",
                                                                                                 ((StructureBuildActiveAction)action).BuildType)))) >= 2)
                 return Error.ActionTotalMaxReached;
 
@@ -87,7 +88,7 @@ namespace Game.Logic.Actions
 
             // layout requirement
             if (
-                    !RequirementFactory.GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure,
+                    !Ioc.Kernel.Get<RequirementFactory>().GetLayoutRequirement(structure.Type, (byte)(structure.Lvl + 1)).Validate(structure,
                                                                                                                  structure.Type,
                                                                                                                  structure.X,
                                                                                                                  structure.Y))
@@ -102,7 +103,7 @@ namespace Game.Logic.Actions
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.BuildTime(StructureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                               CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
                                                                                city,
                                                                                structure.Technologies)));
             BeginTime = DateTime.UtcNow;
@@ -126,8 +127,8 @@ namespace Game.Logic.Actions
                 }
 
                 structure.BeginUpdate();
-                StructureFactory.GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
-                InitFactory.InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
+                Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl + 1));
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
                 Procedure.OnStructureUpgrade(structure);

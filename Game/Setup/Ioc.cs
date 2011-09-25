@@ -6,7 +6,7 @@ namespace Game.Setup
     /// <summary>
     /// A static container for the kernel.
     /// </summary>
-    static class Ioc
+    public static class Ioc
     {
         #region Fields
 

@@ -1,5 +1,5 @@
 ﻿namespace LauncherService {
-    partial class Service1 {
+    partial class GameService {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -24,9 +24,9 @@
         /// </summary>
         private void InitializeComponent() {
             // 
-            // Service1
+            // GameService
             // 
-            this.ServiceName = "Service1";
+            this.ServiceName = "GameService";
 
         }
 

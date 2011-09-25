@@ -26,7 +26,7 @@ namespace Game.Battle
 
     public interface IBattleReport
     {
-        BattleManager Battle { get; set; }
+        IBattleManager Battle { get; set; }
         bool ReportStarted { get; set; }
         bool ReportFlag { get; set; }
         uint ReportId { get; set; }
@@ -54,9 +54,9 @@ namespace Game.Battle
         public const string BATTLE_REPORT_OBJECTS_DB = "battle_report_objects";
         public const string BATTLE_REPORT_VIEWS_DB = "battle_report_views";
 
-        private BattleManager battle;
+        private IBattleManager battle;
 
-        public BattleManager Battle
+        public IBattleManager Battle
         {
             get
             {

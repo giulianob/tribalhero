@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Setup;
+using Ninject;
 using Persistance;
 
 #endregion
@@ -98,7 +99,7 @@ namespace Game.Battle
             {
 
                 Global.Logger.Debug(string.Format("Unit[{0}] Score[{1}]",
-                                                        obj.CombatObject.ClassType == BattleClass.Unit ? UnitFactory.GetName(obj.CombatObject.Type, 1) : StructureFactory.GetName(obj.CombatObject.Type, 1),
+                                                        obj.CombatObject.ClassType == BattleClass.Unit ? Ioc.Kernel.Get<UnitFactory>().GetName(obj.CombatObject.Type, 1) : Ioc.Kernel.Get<StructureFactory>().GetName(obj.CombatObject.Type, 1),
                                                         obj.Score));
             }
 #endif 

@@ -18,7 +18,7 @@ namespace Game.Logic.Procedures
             stub[source].Clear();
         }
 
-        public static void AddLocalToBattle(BattleManager bm, City city, ReportState state)
+        public static void AddLocalToBattle(IBattleManager bm, City city, ReportState state)
         {
             if (city.DefaultTroop[FormationType.Normal].Count == 0)
                 return;

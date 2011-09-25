@@ -10,23 +10,19 @@ using Game.Setup;
 
 namespace Game.Comm
 {
-    public class TcpServer
+    public interface ITcpServer
+    {
+        bool Start();
+        bool Stop();
+    }
+
+    public class TcpServer : ITcpServer
     {
         private readonly TcpListener listener;
         private readonly Thread listeningThread;
         private readonly int port = Config.server_port;
         private readonly Processor processor;
         private bool isStopped = true;
-
-        public TcpServer()
-        {
-            IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
-            if (localAddr == null)
-                throw new Exception("Could not bind to listen address");
-
-            listener = new TcpListener(localAddr, port);
-            listeningThread = new Thread(ListenerHandler);
-        }
 
         public TcpServer(Processor processor)
         {
@@ -48,7 +44,7 @@ namespace Game.Comm
             return true;
         }
 
-        public void ListenerHandler()
+        private void ListenerHandler()
         {
             listener.Start();
 

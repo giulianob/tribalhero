@@ -6,8 +6,10 @@ using System.Linq;
 using System.Threading;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Data.Tribe;
+using Game.Setup;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -183,7 +185,7 @@ namespace Game.Util
                 lockedObjects[i] = list[i].Lock;
             }
 
-            transaction = Global.DbManager.GetThreadTransaction();
+            transaction = Ioc.Kernel.Get<IDbManager>().GetThreadTransaction();
         }
 
         private void UnlockAll()

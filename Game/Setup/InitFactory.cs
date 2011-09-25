@@ -11,7 +11,7 @@ using Game.Util;
 
 namespace Game.Setup
 {
-    enum InitCondition : byte
+    public enum InitCondition : byte
     {
         OnInit = 1,
         OnDowngrade = 2,
@@ -28,15 +28,12 @@ namespace Game.Setup
         public string NlsDescription { get; set; }
     }
 
-    class InitFactory
+    public class InitFactory
     {
-        private static Dictionary<int, List<InitRecord>> dict;
+        private readonly Dictionary<int, List<InitRecord>> dict;
 
-        public static void Init(string filename)
+        public InitFactory(string filename)
         {
-            if (dict != null)
-                return;
-
             dict = new Dictionary<int, List<InitRecord>>();
 
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
@@ -75,7 +72,7 @@ namespace Game.Setup
             }
         }
 
-        public static void InitGameObject(InitCondition condition, GameObject obj, int type, int lvl)
+        public void InitGameObject(InitCondition condition, GameObject obj, int type, int lvl)
         {
             if (dict == null)
                 return;

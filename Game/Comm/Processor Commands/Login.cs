@@ -1,20 +1,16 @@
 #region
 
 using System;
-using System.Data;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using Game.Data;
-using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
-using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -41,11 +37,10 @@ namespace Game.Comm
             short clientRevision;
             byte loginMode;
             string loginKey = string.Empty;
-            string playerName = string.Empty;
+            string playerName;
             string playerPassword = string.Empty;
             uint playerId;
-            bool admin = false;
-            bool banned = false;
+            bool admin;
 
             try
             {
@@ -77,10 +72,7 @@ namespace Game.Comm
                 ApiResponse response;
                 try
                 {
-                    if (loginMode == 0)                    
-                        response = ApiCaller.CheckLoginKey(playerName, loginKey);                    
-                    else                    
-                        response = ApiCaller.CheckLogin(playerName, playerPassword);                    
+                    response = loginMode == 0 ? ApiCaller.CheckLoginKey(playerName, loginKey) : ApiCaller.CheckLogin(playerName, playerPassword);                    
                 }
                 catch(Exception e)
                 {
@@ -99,7 +91,7 @@ namespace Game.Comm
 
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
-                banned = int.Parse(response.Data.player.banned) == 1;
+                bool banned = int.Parse(response.Data.player.banned) == 1;
                 admin = int.Parse(response.Data.player.admin) == 1;
 
                 // If we are under admin only mode then kick out non admin
@@ -179,13 +171,13 @@ namespace Game.Comm
 
                     player.Session = session;
                     player.SessionId = sessionId;
-                    Global.DbManager.Save(player);
+                    Ioc.Kernel.Get<IDbManager>().Save(player);
                 }
                 else
                 {
                     player.SessionId = sessionId;
                     player.Session = session;
-                    Global.DbManager.Save(player);
+                    Ioc.Kernel.Get<IDbManager>().Save(player);
                 }
 
                 //User session backreference
@@ -248,7 +240,6 @@ namespace Game.Comm
                 }
 
                 City city;
-                Structure mainBuilding;
 
                 lock (Global.World.Lock)
                 {
@@ -259,33 +250,16 @@ namespace Game.Comm
                         return;
                     }
 
-                    if (!Randomizer.MainBuilding(out mainBuilding, Formula.GetInitialCityRadius(), 1))
+                    if (!Procedure.CreateCity(session.Player, cityName, out city))
                     {
-                        Global.World.Players.Remove(session.Player.PlayerId);
-                        Global.DbManager.Rollback();
-                        // If this happens I'll be a very happy game developer
                         ReplyError(session, packet, Error.MapFull);
                         return;
                     }
-
-                    city = new City(session.Player, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), mainBuilding);
-                    session.Player.Add(city);
-
-                    Global.World.Add(city);
-                    mainBuilding.BeginUpdate();
-                    Global.World.Add(mainBuilding);
-                    mainBuilding.EndUpdate();
-
-                    var defaultTroop = new TroopStub();
-                    defaultTroop.BeginUpdate();
-                    defaultTroop.AddFormation(FormationType.Normal);
-                    defaultTroop.AddFormation(FormationType.Garrison);
-                    defaultTroop.AddFormation(FormationType.InBattle);
-                    city.Troops.Add(defaultTroop);
-                    defaultTroop.EndUpdate();
                 }
 
-                InitFactory.InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
+                Structure mainBuilding = (Structure)city[1];
+
+                Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 
                 city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 

@@ -7,6 +7,7 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Setup;
 using System.Collections.Generic;
+using Ninject;
 
 #endregion
 
@@ -60,46 +61,46 @@ namespace Game.Battle
                 case WeaponType.Tower:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(1, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(1, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(1, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, 3);
                         default:
-                            return UnitModFactory.GetModifier(1, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(1, target.Type);
                     }
                 case WeaponType.Cannon:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(2, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(2, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(2, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, 3);
                         default:
-                            return UnitModFactory.GetModifier(2, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(2, target.Type);
                     }
                 case WeaponType.Barricade:
                     switch (target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(3, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(3, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(3, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, 3);
                         default:
-                            return UnitModFactory.GetModifier(3, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(3, target.Type);
                     }
                 default:
                     switch(target.BaseStats.Armor) {
                         case ArmorType.Building1:
-                            return UnitModFactory.GetModifier(attacker.Type, 1);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, 1);
                         case ArmorType.Building2:
-                            return UnitModFactory.GetModifier(attacker.Type, 2);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, 2);
                         case ArmorType.Building3:
-                            return UnitModFactory.GetModifier(attacker.Type, 3);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, 3);
                         default:
-                            return UnitModFactory.GetModifier(attacker.Type, target.Type);
+                            return Ioc.Kernel.Get<UnitModFactory>().GetModifier(attacker.Type, target.Type);
                     }
             }
         }
@@ -110,7 +111,7 @@ namespace Game.Battle
 
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
         {
-            int totalCarry = attacker.BaseStats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
+            int totalCarry = attacker.Stats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
             int count = Math.Max(1, totalCarry* GetLootPerRound(attacker.City) / 100); // if carry is 100 and % is 5, then count = 5;
             var spaceLeft = new Resource(totalCarry / Config.resource_crop_ratio,
                                          totalCarry / Config.resource_gold_ratio,
@@ -163,20 +164,23 @@ namespace Game.Battle
             return 100 - stealth < Config.Random.Next(0, 100);
         }
 
-        internal static bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, object comparison, object value)
-        {
-            switch((string)comparison)
-            {
-                case "ArmorEqual":
-                    return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), (string)value, true);
-                case "ArmorClassEqual":
-                    return stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), (string)value, true);
-                case "WeaponEqual":
-                    return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), (string)value, true);
-                case "WeaponClassEqual":
-                    return stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), (string)value, true);
-                case "GroupEqual":
-                    return group == (TroopBattleGroup)Enum.Parse(typeof(TroopBattleGroup), (string)value, true);
+        internal static bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, string value) {
+            string[] conditions = value.Split('=', ',');
+            for (int i = 0; i < conditions.Length / 2; ++i) {
+                switch (conditions[i * 2]) {
+                    case "ArmorEqual":
+                        return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true);
+                    case "ArmorClassEqual":
+                        return stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), conditions[i * 2 + 1], true);
+                    case "WeaponEqual":
+                        return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), conditions[i * 2 + 1], true);
+                    case "WeaponClassEqual":
+                        return stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), conditions[i * 2 + 1], true);
+                    case "GroupEqual":
+                        return group == (TroopBattleGroup)Enum.Parse(typeof(TroopBattleGroup), conditions[i * 2 + 1], true);
+                    case "TypeEqual":
+                        return stats.Type == ushort.Parse(conditions[i * 2 + 1]);
+                }
             }
             return false;
         }
@@ -186,7 +190,7 @@ namespace Game.Battle
             var calculator = new BattleStatsModCalculator(stats);
             foreach (var effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
                 if (effect.Id == EffectCode.UnitStatMod) {
-                    if (UnitStatModCheck(stats, group, effect.Value[3], effect.Value[4])) {
+                    if (UnitStatModCheck(stats, group, (string)effect.Value[3])) {
                         switch ((string)effect.Value[0]) {
                             case "Atk":
                                 calculator.Atk.AddMod((string)effect.Value[1], (int)effect.Value[2]);
@@ -224,7 +228,7 @@ namespace Game.Battle
 
         internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
         {
-            return LoadStats(UnitFactory.GetUnitStats(type, lvl).Battle,city,group);
+            return LoadStats(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle,city,group);
         }
 
         public static Resource GetBonusResources(TroopObject troop, int originalCount, int remainingCount)

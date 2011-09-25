@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 namespace Game.Data.Tribe {
 
@@ -73,7 +74,7 @@ namespace Game.Data.Tribe {
             AttackMode = mode;
             DispatchCount = 0;
             stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
-            Global.DbManager.Save(this);
+            Ioc.Kernel.Get<IDbManager>().Save(this);
             Global.Scheduler.Put(this);
         }
 
@@ -95,14 +96,14 @@ namespace Game.Data.Tribe {
             if (Global.Scheduler.Remove(this)) {
                 Global.Scheduler.Put(this);
             }
-            Global.DbManager.Save(this);
+            Ioc.Kernel.Get<IDbManager>().Save(this);
             return Error.Ok;
 
         }
 
         private DateTime DepartureTime(TroopStub stub) {
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, X, Y);
-            return TargetTime.Subtract(new TimeSpan(0, 0, (int)(Formula.MoveTime(Formula.GetTroopSpeed(stub)) * Formula.MoveTimeMod(stub.City, distance, true))));
+            return TargetTime.Subtract(new TimeSpan(0, 0, (int)(Formula.MoveTime(Formula.GetTroopSpeed(stub)) * Formula.MoveTimeMod(stub.City, distance, true) * distance * Config.seconds_per_unit)));
         }
 
         private bool Dispatch(TroopStub stub) {
@@ -150,14 +151,14 @@ namespace Game.Data.Tribe {
                         stubs.RemoveAt(i);                    
                 }
 
-                Global.DbManager.Save(this);
+                Ioc.Kernel.Get<IDbManager>().Save(this);
 
                 if (stubs.Any(x => !x.Dispatched) || TargetTime.CompareTo(DateTime.UtcNow) > 0) {
                     Global.Scheduler.Put(this);
                 } else {
                     InvokeAssignmentComplete();
                     IdGen.Release(Id);
-                    Global.DbManager.Delete(this);
+                    Ioc.Kernel.Get<IDbManager>().Delete(this);
                 }
             }
         }

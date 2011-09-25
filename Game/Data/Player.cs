@@ -5,8 +5,10 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
-using Game.Database;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -61,7 +63,7 @@ namespace Game.Data
 
                 if (DbPersisted)
                 {
-                    Global.DbManager.Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
+                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) }, false);
                 }
             }
@@ -200,7 +202,7 @@ namespace Game.Data
         public void SendSystemMessage(Player from, String subject, String message)
         {
             subject = String.Format("(System) {0}", subject);
-            Global.DbManager.Query(
+            Ioc.Kernel.Get<IDbManager>().Query(
                                    "INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES (@sender_player_id, @recipient_player_id, @subject, @message, @sender_state, @recipient_state, UTC_TIMESTAMP())",
                                    new[]
                                    {

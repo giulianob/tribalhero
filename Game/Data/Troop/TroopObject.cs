@@ -4,9 +4,11 @@ using System;
 using System.Data;
 using System.IO;
 using Game.Data.Stats;
-using Game.Database;
 using Game.Map;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -121,7 +123,7 @@ namespace Game.Data.Troop
                 return;
 
             if (objectId > 0)
-                Global.DbManager.Save(this);
+                Ioc.Kernel.Get<IDbManager>().Save(this);
         }
 
         #endregion

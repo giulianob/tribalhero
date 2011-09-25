@@ -6,6 +6,7 @@ using System.IO;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -20,14 +21,12 @@ namespace Game.Setup
 
     public class StructureFactory
     {
-        private static Dictionary<int, StructureBaseStats> dict;
+        private readonly Dictionary<int, StructureBaseStats> dict;
 
-        public static void Init(string filename)
+        public StructureFactory(string filename)
         {
-            if (dict != null)
-                return;
             dict = new Dictionary<int, StructureBaseStats>();
-            Init("Game\\Setup\\CSV\\structure.csv");
+            
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
@@ -64,7 +63,7 @@ namespace Game.Setup
                     {
                         workerId = byte.Parse(toks[col["Lvl"]]) == 0
                                         ? 0
-                                        : ActionFactory.GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
+                                        : Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
                     }
 
 
@@ -86,7 +85,7 @@ namespace Game.Setup
             }
         }
 
-        public static Resource GetCost(int type, int lvl)
+        public Resource GetCost(int type, int lvl)
         {
             if (dict == null)
                 return null;
@@ -94,7 +93,7 @@ namespace Game.Setup
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
         }
 
-        public static int GetTime(ushort type, byte lvl)
+        public int GetTime(ushort type, byte lvl)
         {
             if (dict == null)
                 return -1;
@@ -104,7 +103,7 @@ namespace Game.Setup
             return -1;
         }
 
-        public static Structure GetNewStructure(ushort type, byte lvl)
+        public Structure GetNewStructure(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -116,7 +115,7 @@ namespace Game.Setup
             throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
         }
 
-        public static void GetUpgradedStructure(Structure structure, ushort type, byte lvl)
+        public void GetUpgradedStructure(Structure structure, ushort type, byte lvl)
         {
             if (dict == null)
                 return;
@@ -143,7 +142,7 @@ namespace Game.Setup
             return;
         }
 
-        public static int GetActionWorkerType(Structure structure)
+        public int GetActionWorkerType(Structure structure)
         {
             if (dict == null)
                 return 0;
@@ -151,7 +150,7 @@ namespace Game.Setup
             return dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp) ? tmp.WorkerId : 0;
         }
 
-        public static string GetName(ushort type, byte lvl)
+        public string GetName(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -159,7 +158,7 @@ namespace Game.Setup
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Name : null;
         }
 
-        public static StructureBaseStats GetBaseStats(ushort type, byte lvl)
+        public StructureBaseStats GetBaseStats(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -167,7 +166,7 @@ namespace Game.Setup
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }
 
-        public static IEnumerable<StructureBaseStats> AllStructures()
+        public IEnumerable<StructureBaseStats> AllStructures()
         {
             return dict.Values;
         }

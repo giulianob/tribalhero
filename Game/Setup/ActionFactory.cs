@@ -19,13 +19,10 @@ namespace Game.Setup
 
     public class ActionFactory : IEnumerable<ActionRecord>
     {
-        private static Dictionary<int, ActionRecord> dict;
+        private readonly Dictionary<int, ActionRecord> dict;
 
-        public static void Init(string filename)
-        {
-            if (dict != null)
-                return;
-
+        public ActionFactory(string filename)
+        {            
             dict = new Dictionary<int, ActionRecord> {{0, new ActionRecord {Id = 0, List = new List<ActionRequirement>()}}};
 
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
@@ -109,7 +106,7 @@ namespace Game.Setup
             }
         }
 
-        public static ActionRecord GetActionRequirementRecordBestFit(int type, byte lvl)
+        public ActionRecord GetActionRequirementRecordBestFit(int type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -122,7 +119,7 @@ namespace Game.Setup
             return dict[lastLvl];
         }
 
-        public static ActionRecord GetActionRequirementRecord(int workerId)
+        public ActionRecord GetActionRequirementRecord(int workerId)
         {
             if (dict == null)
                 return null;

@@ -10,6 +10,9 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
+using Ninject;
+using Persistance;
+
 #endregion
 
 namespace Game.Comm
@@ -206,7 +209,7 @@ namespace Game.Comm
 
                 Tribe tribe = new Tribe(session.Player, name);
                 Global.Tribes.Add(tribe.Id, tribe);
-                Global.DbManager.Save(tribe);
+                Ioc.Kernel.Get<IDbManager>().Save(tribe);
 
                 Tribesman tribesman = new Tribesman(tribe, session.Player, 0);
                 tribe.AddTribesman(tribesman);
@@ -241,7 +244,7 @@ namespace Game.Comm
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 
                 Global.Tribes.Remove(tribe.Id);
-                Global.DbManager.Delete(tribe);
+                Ioc.Kernel.Get<IDbManager>().Delete(tribe);
             }
 
             ReplySuccess(session, packet);

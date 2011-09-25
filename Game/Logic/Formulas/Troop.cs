@@ -14,7 +14,7 @@ namespace Game.Logic.Formulas
     {
         public static byte GetTroopRadius(TroopStub stub, TechnologyManager em)
         {
-            return (byte)Math.Min((int)Math.Ceiling((decimal)stub.Upkeep/100), 5);
+            return (byte)Math.Min((int)Math.Ceiling((decimal)stub.City.Value / 40), 4);
         }
 
         public static byte GetTroopSpeed(TroopStub stub)

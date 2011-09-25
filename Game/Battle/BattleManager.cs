@@ -5,27 +5,79 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Comm;
+using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Ninject.Parameters;
+using Persistance;
 
 #endregion
 
 namespace Game.Battle
 {
-    public class BattleManager : BattleBase, IPersistableObject
+    public interface IBattleManager : IPersistableObject
     {
-        public const string DB_TABLE = "battle_managers";
-        private readonly CombatList attackers = new CombatList();
-        private readonly object battleLock = new object();
-        private readonly CombatList defenders = new CombatList();
-        private readonly LargeIdGenerator groupIdGen = new LargeIdGenerator(ushort.MaxValue);
-        private readonly LargeIdGenerator idGen = new LargeIdGenerator(ushort.MaxValue);
+        uint BattleId { get; set; }
+        bool BattleStarted { get; set; }
+        uint Round { get; set; }
+        uint Turn { get; set; }
+        City City { get; set; }
+        CombatList Attacker { get; }
+        CombatList Defender { get; }
+        IBattleReport BattleReport { get; }
+        ReportedObjects ReportedObjects { get; }
+        ReportedTroops ReportedTroops { get; }
+        City[] LockList { get; }
+        void Subscribe(Session session);
+        void Unsubscribe(Session session);
+        CombatObject GetCombatObject(uint id);
+        bool CanWatchBattle(Player player, out int roundsLeft);
+        void DbLoaderAddToLocal(CombatStructure structure, uint id);
+        void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
+        void AddToLocal(IEnumerable<TroopStub> objects, ReportState state);
+        void AddToLocal(IEnumerable<Structure> objects);
+        void AddToAttack(TroopStub stub);
+        void AddToAttack(IEnumerable<TroopStub> objects);
+        void AddToDefense(IEnumerable<TroopStub> objects);
+        void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state);
+        void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state);
+        void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state);
+        void RefreshBattleOrder();
+        bool GroupIsDead(CombatObject co, CombatList combatList);
+        bool ExecuteTurn();
+        event BattleManager.OnBattle EnterBattle;
+        event BattleManager.OnBattle ExitBattle;
+        event BattleManager.OnRound EnterRound;
+        event BattleManager.OnTurn EnterTurn;
+        event BattleManager.OnTurn ExitTurn;
+        event BattleManager.OnReinforce ReinforceAttacker;
+        event BattleManager.OnReinforce ReinforceDefender;
+        event BattleManager.OnReinforce WithdrawAttacker;
+        event BattleManager.OnReinforce WithdrawDefender;
+        event BattleManager.OnUnitUpdate UnitAdded;
+        event BattleManager.OnUnitUpdate UnitRemoved;
+        event BattleManager.OnUnitUpdate UnitUpdated;
+        event BattleManager.OnUnitUpdate SkippedAttacker;
+        event BattleManager.OnAttack ActionAttacked;
+    }
 
-        private readonly BattleReport report;
+    public class BattleManager : IBattleManager
+    {
+        public delegate IBattleManager Factory(City owner);
+
+        public const string DB_TABLE = "battle_managers";
+        private readonly CombatList attackers;
+        private readonly object battleLock = new object();
+        private readonly CombatList defenders;
+        private readonly LargeIdGenerator groupIdGen;
+        private readonly LargeIdGenerator idGen;
+
+        private readonly IDbManager dbManager;
+        private readonly IBattleReport report;
 
         private uint battleId;
         private BattleOrder battleOrder = new BattleOrder(0);
@@ -34,15 +86,29 @@ namespace Game.Battle
         private uint round;
         private uint turn;
 
-        public BattleManager(City owner)
+        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport)
         {
-            city = owner;
-            report = new BattleReport(this);
-            Channel = new BattleChannel(this, "/BATTLE/" + city.Id);
+            attackers = Ioc.Kernel.Get<CombatList>();
+            defenders = Ioc.Kernel.Get<CombatList>();
+
+            groupIdGen = new LargeIdGenerator(ushort.MaxValue);
+            idGen = new LargeIdGenerator(ushort.MaxValue);
+
+            city = (City)owner;
+            this.dbManager = dbManager;
+            report = battleReport;  
+            channel = battleChannel;
             groupIdGen.Set(1);
+
+            ActionAttacked += battleChannel.BattleActionAttacked;
+            SkippedAttacker += battleChannel.BattleSkippedAttacker;
+            ReinforceAttacker += battleChannel.BattleReinforceAttacker;
+            ReinforceDefender += battleChannel.BattleReinforceDefender;
+            ExitBattle += battleChannel.BattleExitBattle;
+            EnterRound += battleChannel.BattleEnterRound;
         }
 
-        public BattleChannel Channel { get; private set; }
+        private readonly IBattleChannel channel;
 
         public uint BattleId
         {
@@ -120,7 +186,7 @@ namespace Game.Battle
             }
         }
 
-        public BattleReport BattleReport
+        public IBattleReport BattleReport
         {
             get
             {
@@ -310,12 +376,12 @@ namespace Game.Battle
 
                 foreach (var obj in objects)
                 {
-                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || ObjectTypeFactory.IsStructureType("Unattackable", obj) || obj.IsBlocked)
+                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Unattackable", obj) || obj.IsBlocked)
                         continue;
 
                     // Don't add main building if lvl 1 or if a building is lvl 0
-                    if ((ObjectTypeFactory.IsStructureType("Undestroyable", obj) && obj.Lvl <= 1) || (obj.Lvl == 0) ||
-                        ObjectTypeFactory.IsStructureType("Noncombatstructure", obj))
+                    if ((Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", obj) && obj.Lvl <= 1) || (obj.Lvl == 0) ||
+                        Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Noncombatstructure", obj))
                         continue;
 
                     added = true;
@@ -414,9 +480,9 @@ namespace Game.Battle
                         {
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
-                                combatObjects = CombatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
+                                combatObjects = Ioc.Kernel.Get<CombatUnitFactory>().CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
                             else
-                                combatObjects = CombatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
+                                combatObjects = Ioc.Kernel.Get<CombatUnitFactory>().CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
 
                             foreach (var unit in combatObjects)
                             {
@@ -651,7 +717,7 @@ namespace Game.Battle
                     if (currentDefenders == null || currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
                     {
                         currentAttacker.ParticipatedInRound();
-                        Global.DbManager.Save(currentAttacker);
+                        dbManager.Save(currentAttacker);
                         EventSkippedAttacker(currentAttacker);
 
                         // If the attacker can't attack because it has no one in range, then we skip him and find another target right away.
@@ -678,7 +744,7 @@ namespace Game.Battle
                     if (rand <= missChance)
                     {
                         currentAttacker.ParticipatedInRound();
-                        Global.DbManager.Save(currentAttacker);
+                        dbManager.Save(currentAttacker);
                         EventSkippedAttacker(currentAttacker);
                         return true;
                     }
@@ -709,7 +775,7 @@ namespace Game.Battle
 
                 currentAttacker.ParticipatedInRound();
 
-                Global.DbManager.Save(currentAttacker);
+                dbManager.Save(currentAttacker);
 
                 EventExitTurn(Attacker, Defender, (int)turn++);
 
@@ -852,7 +918,7 @@ namespace Game.Battle
                 EventActionAttacked(attacker, defender, actualDmg);
 
                 if (!defender.Disposed)
-                    Global.DbManager.Save(defender);
+                    dbManager.Save(defender);
             }
 
             #endregion            
@@ -860,6 +926,114 @@ namespace Game.Battle
             return defender.IsDead;
         }
 
+        #endregion
+
+        #region Events
+        public delegate void OnAttack(CombatObject source, CombatObject target, ushort damage);
+        public delegate void OnBattle(CombatList atk, CombatList def);
+        public delegate void OnReinforce(IEnumerable<CombatObject> list);
+        public delegate void OnRound(CombatList atk, CombatList def, uint round);
+        public delegate void OnTurn(CombatList atk, CombatList def, int turn);
+        public delegate void OnUnitUpdate(CombatObject obj);
+
+        public event OnBattle EnterBattle;
+        public event OnBattle ExitBattle;
+        public event OnRound EnterRound;
+        public event OnTurn EnterTurn;
+        public event OnTurn ExitTurn;
+        public event OnReinforce ReinforceAttacker;
+        public event OnReinforce ReinforceDefender;
+        public event OnReinforce WithdrawAttacker;
+        public event OnReinforce WithdrawDefender;
+        public event OnUnitUpdate UnitAdded;
+        public event OnUnitUpdate UnitRemoved;
+        public event OnUnitUpdate UnitUpdated;
+        public event OnUnitUpdate SkippedAttacker;
+        public event OnAttack ActionAttacked;
+
+        private void EventEnterBattle(CombatList atk, CombatList def)
+        {
+            if (EnterBattle != null)
+                EnterBattle(atk, def);
+        }
+
+        private void EventExitBattle(CombatList atk, CombatList def)
+        {
+            if (ExitBattle != null)
+                ExitBattle(atk, def);
+        }
+
+        private void EventEnterRound(CombatList atk, CombatList def, uint round)
+        {
+            if (EnterRound != null)
+                EnterRound(atk, def, round);
+        }
+
+        private void EventEnterTurn(CombatList atk, CombatList def, int turn)
+        {
+            if (EnterTurn != null)
+                EnterTurn(atk, def, turn);
+        }
+
+        private void EventExitTurn(CombatList atk, CombatList def, int turn)
+        {
+            if (ExitTurn != null)
+                ExitTurn(atk, def, turn);
+        }
+
+        private void EventReinforceAttacker(IEnumerable<CombatObject> list)
+        {
+            if (ReinforceAttacker != null)
+                ReinforceAttacker(list);
+        }
+
+        private void EventReinforceDefender(IEnumerable<CombatObject> list)
+        {
+            if (ReinforceDefender != null)
+                ReinforceDefender(list);
+        }
+
+        private void EventWithdrawAttacker(IEnumerable<CombatObject> list)
+        {
+            if (WithdrawAttacker != null)
+                WithdrawAttacker(list);
+        }
+
+        private void EventWithdrawDefender(IEnumerable<CombatObject> list)
+        {
+            if (WithdrawDefender != null)
+                WithdrawDefender(list);
+        }
+
+        private void EventUnitRemoved(CombatObject obj)
+        {
+            if (UnitRemoved != null)
+                UnitRemoved(obj);
+        }
+
+        private void EventUnitAdded(CombatObject obj)
+        {
+            if (UnitAdded != null)
+                UnitAdded(obj);
+        }
+
+        private void EventUnitUpdated(CombatObject obj)
+        {
+            if (UnitUpdated != null)
+                UnitUpdated(obj);
+        }
+
+        private void EventActionAttacked(CombatObject source, CombatObject target, ushort dmg)
+        {
+            if (ActionAttacked != null)
+                ActionAttacked(source, target, dmg);
+        }
+
+        private void EventSkippedAttacker(CombatObject source)
+        {
+            if (SkippedAttacker != null)
+                SkippedAttacker(source);
+        }
         #endregion
     }
 }

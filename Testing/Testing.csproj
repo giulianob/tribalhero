@@ -66,13 +66,17 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Moq, Version=3.1.416.3, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Moq.dll</HintPath>
+      <HintPath>..\Lib\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -84,8 +88,8 @@
     <Compile Include="Balancing\TestArcher.cs" />
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
+    <Compile Include="Fixtures\SimpleFixture.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />
-    <Compile Include="Database\DatabasePerformanceTest.cs" />
     <Compile Include="MapMath\ForeachTest.cs" />
     <Compile Include="MapMath\RadiusTest.cs" />
     <Compile Include="Misc\XmlSerializerTest.cs" />
@@ -93,8 +97,12 @@
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestModule.cs" />
+    <Compile Include="Tribe\AssignmentTest.cs" />
     <Compile Include="Troop\TroopStarveTest.cs" />
     <Compile Include="Troop\TroopProcedureTest.cs" />
+    <Compile Include="Troop\TroopStubTest.cs" />
+    <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConsoleSimulator\ConsoleSimulator.csproj">
@@ -104,6 +112,10 @@
     <ProjectReference Include="..\Game\Game.csproj">
       <Project>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</Project>
       <Name>Game</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Persistance\Persistance.csproj">
+      <Project>{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}</Project>
+      <Name>Persistance</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +144,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

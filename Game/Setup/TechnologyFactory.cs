@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Game.Data;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -12,31 +13,10 @@ namespace Game.Setup
 {
     public class TechnologyFactory
     {
-        private static bool initc;
+        private readonly Dictionary<uint, TechnologyBase> technologies = new Dictionary<uint, TechnologyBase>();
 
-        private static readonly Dictionary<uint, TechnologyBase> technologies = new Dictionary<uint, TechnologyBase>();
-		
-        private static Resource GetResource(int lvl, int buildType, int buildLvl) 
+        public TechnologyFactory(string technologyFilename, string technologyEffectsFilename)
         {
-            if (lvl == 0) return new Resource();
-            Resource ret = StructureFactory.GetCost(buildType, buildLvl) * 1 / 3;
-            ret /= 10;
-            return ret * 10;
-        }
-        
-		private static int GetTime(int lvl, int buildType, int buildLvl) 
-        {
-            if (lvl == 0) return 0;
-            return StructureFactory.GetTime((ushort)buildType, (byte)buildLvl) * 2 / 3;
-        }
-		
-        public static void Init(string technologyFilename, string technologyEffectsFilename)
-        {
-            if (initc)
-                return;
-
-            initc = true;
-
             using (var reader = new CsvReader(new StreamReader(new FileStream(technologyFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 var col = new Dictionary<string, int>();
@@ -102,14 +82,14 @@ namespace Game.Setup
             }
         }
 
-        public static TechnologyBase GetTechnologyBase(uint type, byte level)
+        public TechnologyBase GetTechnologyBase(uint type, byte level)
         {
             TechnologyBase ret;
             technologies.TryGetValue(type*100 + level, out ret);
             return ret;
         }
 
-        public static Technology GetTechnology(uint type, byte level)
+        public Technology GetTechnology(uint type, byte level)
         {
             TechnologyBase tbase = GetTechnologyBase(type, level);
             if (tbase == null)
@@ -118,7 +98,21 @@ namespace Game.Setup
             return t;
         }
 
-        public static IEnumerable<TechnologyBase> AllTechnologies()
+        private Resource GetResource(int lvl, int buildType, int buildLvl)
+        {
+            if (lvl == 0) return new Resource();
+            Resource ret = Ioc.Kernel.Get<StructureFactory>().GetCost(buildType, buildLvl) * 1 / 3;
+            ret /= 10;
+            return ret * 10;
+        }
+
+        private int GetTime(int lvl, int buildType, int buildLvl)
+        {
+            if (lvl == 0) return 0;
+            return Ioc.Kernel.Get<StructureFactory>().GetTime((ushort)buildType, (byte)buildLvl) * 2 / 3;
+        }
+
+        public IEnumerable<TechnologyBase> AllTechnologies()
         {
             return technologies.Values;
         }

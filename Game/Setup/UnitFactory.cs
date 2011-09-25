@@ -14,13 +14,12 @@ namespace Game.Setup
 {
     public class UnitFactory
     {
-        private static Dictionary<int, BaseUnitStats> dict;
+        private readonly Dictionary<int, BaseUnitStats> dict;
 
-        public static void Init(string filename)
+        public UnitFactory(string filename)
         {
-            if (dict != null)
-                return;
             dict = new Dictionary<int, BaseUnitStats>();
+
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
@@ -78,7 +77,7 @@ namespace Game.Setup
             }
         }
 
-        public static Resource GetCost(int type, int lvl)
+        public Resource GetCost(int type, int lvl)
         {
             if (dict == null)
                 return null;
@@ -88,7 +87,7 @@ namespace Game.Setup
             return null;
         }
 
-        public static Resource GetUpgradeCost(int type, int lvl)
+        public Resource GetUpgradeCost(int type, int lvl)
         {
             if (dict == null)
                 return null;
@@ -98,7 +97,7 @@ namespace Game.Setup
             return null;
         }
 
-        public static BaseUnitStats GetUnitStats(ushort type, byte lvl)
+        public BaseUnitStats GetUnitStats(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -108,7 +107,7 @@ namespace Game.Setup
             return null;
         }
 
-        internal static BaseBattleStats GetBattleStats(ushort type, byte lvl)
+        internal BaseBattleStats GetBattleStats(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -118,7 +117,7 @@ namespace Game.Setup
             return null;
         }
 
-        internal static int GetTime(ushort type, byte lvl)
+        internal int GetTime(ushort type, byte lvl)
         {
             if (dict == null)
                 return -1;
@@ -128,7 +127,7 @@ namespace Game.Setup
             return -1;
         }
 
-        internal static int GetUpgradeTime(ushort type, byte lvl)
+        internal int GetUpgradeTime(ushort type, byte lvl)
         {
             if (dict == null)
                 return -1;
@@ -138,7 +137,7 @@ namespace Game.Setup
             return -1;
         }
 
-        public static string GetName(ushort type, byte lvl)
+        public string GetName(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -146,17 +145,17 @@ namespace Game.Setup
             return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.Name : null;
         }
 
-        public static Dictionary<int, BaseUnitStats> GetList()
+        public Dictionary<int, BaseUnitStats> GetList()
         {
             return new Dictionary<int, BaseUnitStats>(dict);
         }
 
-        public static IEnumerable<BaseUnitStats> AllUnits()
+        public IEnumerable<BaseUnitStats> AllUnits()
         {
             return dict.Values;
         }
 
-        public static void AddType(BaseUnitStats baseUnitStats) {
+        public void AddType(BaseUnitStats baseUnitStats) {
             dict[baseUnitStats.Type * 100 + baseUnitStats.Lvl] = baseUnitStats;
         }
     }

@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
 using Game.Data;
-using Game.Database;
+using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -47,7 +49,7 @@ namespace Game.Logic
                 return new[]
                        {
                                new DbColumn("object_id", WorkerObject.WorkerId, DbType.UInt32), new DbColumn("action_id", Action.ActionId, DbType.UInt32),
-                               new DbColumn("is_active", Action is ActiveAction ? true : false, DbType.Boolean)
+                               new DbColumn("is_active", Action is ActiveAction, DbType.Boolean)
                        };
             }
         }
@@ -148,7 +150,7 @@ namespace Game.Logic
 
             var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Global.DbManager.Save(newReference);
+            Ioc.Kernel.Get<IDbManager>().Save(newReference);
 
             SendAddReference(newReference);
         }
@@ -161,7 +163,7 @@ namespace Game.Logic
 
             var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Global.DbManager.Save(newReference);
+            Ioc.Kernel.Get<IDbManager>().Save(newReference);
 
             SendAddReference(newReference);
         }
@@ -174,7 +176,7 @@ namespace Game.Logic
 
                     if (ret)
                     {
-                        Global.DbManager.Delete(referenceStub);
+                        Ioc.Kernel.Get<IDbManager>().Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }
@@ -191,7 +193,7 @@ namespace Game.Logic
 
                     if (ret)
                     {
-                        Global.DbManager.Delete(referenceStub);
+                        Ioc.Kernel.Get<IDbManager>().Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }

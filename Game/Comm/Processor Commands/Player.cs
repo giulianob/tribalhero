@@ -6,10 +6,11 @@ using System.Data;
 using System.Data.Common;
 using System.Dynamic;
 using Game.Data;
-using Game.Database;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -92,7 +93,7 @@ namespace Game.Comm
                 List<dynamic> ranks = new List<dynamic>();
 
                 using (DbDataReader reader =
-                        Global.DbManager.ReaderQuery(
+                        Ioc.Kernel.Get<IDbManager>().ReaderQuery(
                                                      string.Format("SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC"),
                                                      new[] { new DbColumn("playerId", player.PlayerId, DbType.String) }))
                 {                    
@@ -258,7 +259,7 @@ namespace Game.Comm
                 // If actually send then we perform the action, otherwise, we send the player information about the trade.
                 if (actuallySend)
                 {                    
-                    Error ret = city.Worker.DoActive(StructureFactory.GetActionWorkerType(structure), structure, action, structure.Technologies);
+                    Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure), structure, action, structure.Technologies);
                     if (ret != 0)
                         ReplyError(session, packet, ret);
                     else

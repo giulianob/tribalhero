@@ -7,6 +7,8 @@ using Game.Logic.Procedures;
 using Game.Setup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Game.Battle;
+using Ninject;
+using Persistance;
 using Testing.Balancing;
 
 #endregion
@@ -17,14 +19,11 @@ namespace Testing.Troop
     ///   Summary description for TroopProcedureTest
     /// </summary>
     [TestClass]
-    public class TestArcher {
-
+    public class TestArcher : TestBase
+    {
         [TestInitialize]
         public void TestInitialize()
         {
-            Global.FireEvents = false;
-            Factory.InitAll();
-            Global.DbManager.Pause();
         }
 
         [TestCleanup]

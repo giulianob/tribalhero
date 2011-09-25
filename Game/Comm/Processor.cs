@@ -19,8 +19,10 @@ namespace Game.Comm
         private readonly Dictionary<Command, ProcessorCommand> commands = new Dictionary<Command, ProcessorCommand>();
         private readonly Dictionary<Command, ProcessorCommand> events = new Dictionary<Command, ProcessorCommand>();
 
-        public Processor()
+        public Processor(CmdLineProcessor cmdLineProcessor)
         {
+            this.cmdLineProcessor = cmdLineProcessor;
+
             RegisterCommand(Command.Login, CmdLogin);
             RegisterCommand(Command.PlayerProfile, CmdGetProfile);
             RegisterCommand(Command.PlayerDescriptionSet, CmdSetPlayerDescription);

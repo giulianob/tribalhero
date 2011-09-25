@@ -13,6 +13,8 @@ using Game.Setup;
 using Game.Util;
 using System.Linq;
 using NDesk.Options;
+using Ninject;
+using Persistance;
 
 #endregion
 
@@ -33,8 +35,8 @@ namespace Game.Comm
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
                 targetObjectId = packet.GetUInt32();
-                time = DateTime.UtcNow.AddMinutes(packet.GetInt32());
-                stub = PacketHelper.ReadStub(packet, FormationType.Normal);
+                time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
+                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch (Exception) {
                 ReplyError(session, packet, Error.Unexpected);
@@ -96,27 +98,30 @@ namespace Game.Comm
                     return;
                 }
 
-                Global.DbManager.Save(stub);
+                Ioc.Kernel.Get<IDbManager>().Save(stub);
 
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(stub, targetStructure.X, targetStructure.Y, targetCity, time, mode, out id);
                 if (ret != 0) {
                     Procedure.TroopStubDelete(city, stub);
                     ReplyError(session, packet, ret);
-                } else
+                }
+                else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
  
         public void CmdAssignmentJoin(Session session, Packet packet) {
             uint cityId;
             int assignmentId;
-            byte formationCount;
+            TroopStub stub;
             try
             {
                 cityId = packet.GetUInt32();
                 assignmentId = packet.GetInt32();
-                formationCount = packet.GetByte();
+                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch (Exception) {
                 ReplyError(session, packet, Error.Unexpected);
@@ -126,52 +131,30 @@ namespace Game.Comm
             Tribe tribe = session.Player.Tribesman.Tribe;
             using (new MultiObjectLock(session.Player, tribe)) {
                 City city = session.Player.GetCity(cityId);
-                if( city==null)
+                if (city == null)
                 {
                     ReplyError(session, packet, Error.CityNotFound);
                     return;
                 }
-                var stub = new TroopStub();
 
-                for (int f = 0; f < formationCount; ++f) {
-                    FormationType formationType;
-                    byte unitCount;
-                    try {
-                        formationType = (FormationType)packet.GetByte();
-                        unitCount = packet.GetByte();
-                    } catch (Exception) {
-                        ReplyError(session, packet, Error.Unexpected);
-                        return;
-                    }
-
-                    stub.AddFormation(formationType);
-
-                    for (int u = 0; u < unitCount; ++u) {
-                        ushort type;
-                        ushort count;
-
-                        try {
-                            type = packet.GetUInt16();
-                            count = packet.GetUInt16();
-                        } catch (Exception) {
-                            ReplyError(session, packet, Error.Unexpected);
-                            return;
-                        }
-
-                        stub.AddUnit(formationType, type, count);
-                    }
+                // Create stub
+                if (!Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
+                {
+                    ReplyError(session, packet, Error.TroopChanged);
+                    return;                        
                 }
 
-                Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                Global.DbManager.Save(stub);
+                Ioc.Kernel.Get<IDbManager>().Save(stub);
 
                 Error error = tribe.JoinAssignment(assignmentId, stub);
                 if (error != Error.Ok) {
                     Procedure.TroopStubDelete(city, stub);                    
                     ReplyError(session, packet, error);
-                } else
+                }
+                else
+                {
                     ReplySuccess(session, packet);
-
+                }
             }
         }
     }

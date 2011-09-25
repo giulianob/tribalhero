@@ -6,10 +6,12 @@ using System.Data;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Formulas;
 using Game.Setup;
 using System.Linq;
+using Ninject;
+using Persistance;
+
 #endregion
 
 namespace Game.Battle
@@ -24,7 +26,7 @@ namespace Game.Battle
         private readonly ushort type;
         private ushort count;
 
-        public AttackCombatUnit(BattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
+        public AttackCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
         {
             TroopStub = stub;
             this.formation = formation;
@@ -38,7 +40,7 @@ namespace Game.Battle
         }
 
         // Used by the db loader
-        public AttackCombatUnit(BattleManager owner,
+        public AttackCombatUnit(IBattleManager owner,
                                 TroopStub stub,
                                 FormationType formation,
                                 ushort type,
@@ -90,7 +92,7 @@ namespace Game.Battle
         {
             get
             {
-                return UnitFactory.GetUnitStats(type, lvl).Upkeep*count;
+                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
             }
         }
 
@@ -98,7 +100,7 @@ namespace Game.Battle
         {
             get
             {
-                return UnitFactory.GetBattleStats(type, lvl);
+                return Ioc.Kernel.Get<UnitFactory>().GetBattleStats(type, lvl);
             }
         }
 
@@ -255,7 +257,7 @@ namespace Game.Battle
             if (stats.MaxHp/5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
                 return;
 
-            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Attack, tech.Value[1], tech.Value[2])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
             if( BattleFormulas.IsAttackMissed((byte)percent) )
             {
                 actualDmg = 1;
@@ -295,7 +297,7 @@ namespace Game.Battle
                 TroopStub.EndUpdate();
 
                 // Figure out how much loot we have to return to the city
-                int totalCarry = BaseStats.Carry*Count;
+                int totalCarry = Stats.Carry*Count;
                 returning = new Resource(loot.Crop > totalCarry / Config.resource_crop_ratio ? loot.Crop - totalCarry / Config.resource_crop_ratio : 0,
                                          loot.Gold > totalCarry / Config.resource_gold_ratio ? loot.Gold - totalCarry / Config.resource_gold_ratio : 0,
                                          loot.Iron > totalCarry / Config.resource_iron_ratio ? loot.Iron - totalCarry / Config.resource_iron_ratio : 0,

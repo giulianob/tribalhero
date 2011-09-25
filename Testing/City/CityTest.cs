@@ -11,7 +11,7 @@ namespace Testing.Channel
     ///   Summary description for ChannelTest
     /// </summary>
     [TestClass]
-    public class CityTest
+    public class CityTest : TestBase
     {
         [TestInitialize]
         public void TestInitialize()

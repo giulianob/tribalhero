@@ -512,8 +512,10 @@
 			if (!currentAction)
 				return;
 
-			if (mode == 0)			
+			if (mode == 0) {
 				currentAction.type = packet.readUShort();			
+				currentAction.nlsDescription = packet.readString();
+			}
 			else
 			{
 				currentAction.workerType = packet.readInt();

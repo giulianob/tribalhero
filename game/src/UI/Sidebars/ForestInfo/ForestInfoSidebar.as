@@ -70,7 +70,7 @@
 
 			addStatRow("Laborers", forestObj.labor + "/" + Formula.maxForestLabor(forestObj.level));
 			addStatRow("Wood", forestObj.wood.getValue().toString(), new AssetIcon(new ICON_WOOD()));
-			addStatRow("Depletion", "-" + (forestObj.wood.getUpkeep() / Constants.secondsPerUnit) + "/hr", new AssetIcon(new ICON_WOOD()));
+			addStatRow("Depletion", "-" + Math.round(forestObj.wood.getUpkeep() / Constants.secondsPerUnit) + "/hr", new AssetIcon(new ICON_WOOD()));
 			var timeLeft: int = forestObj.depleteTime > 0 ? forestObj.depleteTime - Global.map.getServerTime() : 0;
 			addStatRow("Time left", Util.formatTime(timeLeft), new AssetIcon(new ICON_CLOCK()));
 		}

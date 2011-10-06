@@ -56,7 +56,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 
 		public function onAcceptDialog(sender: LaborMoveDialog):void
 		{
-			Global.mapComm.Object.laborMove(parentObj.groupId, this.parentObj.objectId, sender.getCount());
+			Global.mapComm.Objects.laborMove(parentObj.groupId, this.parentObj.objectId, sender.getCount());
 			sender.getFrame().dispose();
 		}
 	}

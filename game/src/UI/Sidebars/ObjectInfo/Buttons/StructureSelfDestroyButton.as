@@ -42,7 +42,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		public function onMouseClick(event: Event):void
 		{
 			if (isEnabled())			
-				Global.mapComm.Object.structureSelfDestroy(parentObj.groupId, parentObj.objectId);			
+				Global.mapComm.Objects.structureSelfDestroy(parentObj.groupId, parentObj.objectId);			
 
 			event.stopImmediatePropagation();
 		}

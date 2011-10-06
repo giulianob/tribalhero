@@ -45,7 +45,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.Object.removeForestCamp(parentObj.groupId, parentObj.objectId);
+				Global.mapComm.Objects.removeForestCamp(parentObj.groupId, parentObj.objectId);
 			}
 		}
 	}

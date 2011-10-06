@@ -104,7 +104,7 @@
 
 			if (gameObj.cityId != parentObj.cityId) return;
 
-			Global.mapComm.Object.downgrade(city.id, parentObj.objectId, gameObj.objectId);
+			Global.mapComm.Objects.downgrade(city.id, parentObj.objectId, gameObj.objectId);
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);

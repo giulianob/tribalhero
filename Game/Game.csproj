@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Game</RootNamespace>
+    <AssemblyName>Game</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'LauncherService %28Check Locks%29|AnyCPU' ">
+    <OutputPath>bin\LauncherService %28Check Locks%29\</OutputPath>
+    <DefineConstants>TRACE;CHECK_LOCKS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSScriptLibrary">
+      <HintPath>..\Lib\csscript\CSScriptLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonFx">
+      <HintPath>..\Lib\jsonfx\JsonFx.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ninject.logging\log4net\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NDesk.Options">
+      <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging">
+      <HintPath>..\Lib\ninject.logging\Ninject.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging.Log4Net">
+      <HintPath>..\Lib\ninject.logging\log4net\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="zlib.net">
+      <HintPath>..\Lib\zlib\zlib.net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Comm\Channel\BattleChannel.cs" />
+    <Compile Include="Battle\BattleFormulas.cs" />
+    <Compile Include="Battle\BattleManager.cs" />
+    <Compile Include="Battle\BattleOrder.cs" />
+    <Compile Include="Battle\BattleViewer.cs" />
+    <Compile Include="Battle\CombatList.cs" />
+    <Compile Include="Battle\CombatObject.cs" />
+    <Compile Include="Battle\CombatStructure.cs" />
+    <Compile Include="Battle\AttackCombatUnit.cs" />
+    <Compile Include="Battle\CombatUnitFactory.cs" />
+    <Compile Include="Comm\ApiCaller.cs" />
+    <Compile Include="Comm\CmdLine Commands\Assignment.cs" />
+    <Compile Include="Comm\CmdLine Commands\Tribe.cs" />
+    <Compile Include="Comm\CmdLine Commands\Player.cs" />
+    <Compile Include="Comm\CmdLine Commands\Resources.cs" />
+    <Compile Include="Comm\CmdLineCommands.cs" />
+    <Compile Include="Comm\CmdLineProcessor.cs" />
+    <Compile Include="Comm\Commands.cs" />
+    <Compile Include="Comm\PolicyServer.cs" />
+    <Compile Include="Comm\Packet.cs" />
+    <Compile Include="Comm\PacketHelper.cs" />
+    <Compile Include="Comm\Parameter.cs" />
+    <Compile Include="Comm\Processor Commands\Battle.cs" />
+    <Compile Include="Comm\Processor Commands\Assignment.cs" />
+    <Compile Include="Comm\Processor Commands\Tribesman.cs" />
+    <Compile Include="Comm\Processor Commands\Tribe.cs" />
+    <Compile Include="Comm\Processor Commands\General.cs" />
+    <Compile Include="Comm\Processor Commands\Events.cs" />
+    <Compile Include="Comm\Processor Commands\Login.cs" />
+    <Compile Include="Comm\Processor Commands\Misc.cs" />
+    <Compile Include="Comm\Processor Commands\Player.cs" />
+    <Compile Include="Comm\Processor Commands\Region.cs" />
+    <Compile Include="Comm\Processor Commands\Structure.cs" />
+    <Compile Include="Comm\Processor Commands\Troop.cs" />
+    <Compile Include="Comm\Session.cs" />
+    <Compile Include="Comm\SocketSession.cs" />
+    <Compile Include="Comm\TcpServer.cs" />
+    <Compile Include="Comm\TcpWorker.cs" />
+    <Compile Include="Database\DbLoader.cs" />
+    <Compile Include="Data\City.cs" />
+    <Compile Include="Comm\Processor.cs" />
+    <Compile Include="Data\IHasLevel.cs" />
+    <Compile Include="Data\Stats\TroopStats.cs" />
+    <Compile Include="Data\Effect.cs" />
+    <Compile Include="Data\Global.cs" />
+    <Compile Include="Data\Player.cs" />
+    <Compile Include="Data\Resource.cs" />
+    <Compile Include="Data\Structure.cs" />
+    <Compile Include="Data\Technology.cs" />
+    <Compile Include="Data\TechnologyManager.cs" />
+    <Compile Include="Data\Tribe\Assignment.cs" />
+    <Compile Include="Data\Tribe\Tribe.cs" />
+    <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\Unit.cs" />
+    <Compile Include="Data\Troop\Formation.cs" />
+    <Compile Include="Data\Troop\TroopManager.cs" />
+    <Compile Include="Data\Troop\UnitTemplate.cs" />
+    <Compile Include="Data\Troop\TroopObject.cs" />
+    <Compile Include="Data\Troop\TroopStub.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="Data\SimpleGameObject.cs" />
+    <Compile Include="GameModule.cs" />
+    <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
+    <Compile Include="Logic\Actions\ChainAction.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\MovementActions\TroopMovePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\CityReloadProductionRatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceGatherActiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureSelfDestroyActiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureChangePassiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureSelfDestroyPassiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureBuildActiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureChangeActiveAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\TechnologyDeletePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\TechnologyCreatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TechnologyActions\TechnologyUpgradeActiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\BattlePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\EngageAttackPassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\UnitTrainActiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\UnitUpgradeActiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureUpgradeActiveAction.cs" />
+    <Compile Include="Logic\ActionWorker.cs" />
+    <Compile Include="Logic\GameAction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Logic\ActiveAction.cs" />
+    <Compile Include="Logic\IActionTime.cs" />
+    <Compile Include="Logic\PassiveAction.cs" />
+    <Compile Include="Logic\Procedures\CityCreate.cs" />
+    <Compile Include="Logic\Procedures\Structure.cs" />
+    <Compile Include="Logic\Requirements\EffectRequirement.cs" />
+    <Compile Include="Logic\Formulas\Formula.cs" />
+    <Compile Include="Logic\ICanDo.cs" />
+    <Compile Include="Logic\Actions\IScriptable.cs" />
+    <Compile Include="Logic\IHasEffect.cs" />
+    <Compile Include="Logic\ISchedule.cs" />
+    <Compile Include="Logic\Procedures\Procedure.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectCreate.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectDelete.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\LayoutRequirement.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\Requirement.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\SimpleLayout.cs" />
+    <Compile Include="Logic\Requirements\RequirementFormula.cs" />
+    <Compile Include="Logic\ScheduledActiveAction.cs" />
+    <Compile Include="Logic\ScheduledPassiveAction.cs" />
+    <Compile Include="Logic\Scheduler.cs" />
+    <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Map\MapMath.cs" />
+    <Compile Include="Map\ObjectLink.cs" />
+    <Compile Include="Map\ObjectList.cs" />
+    <Compile Include="Map\RoadPathFinder.cs" />
+    <Compile Include="Module\CityRemover.cs" />
+    <Compile Include="Module\IdleChecker.cs" />
+    <Compile Include="Module\Market.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Map\Region.cs" />
+    <Compile Include="Map\World.cs" />
+    <Compile Include="Setup\ActionFactory.cs" />
+    <Compile Include="Setup\Ioc.cs" />
+    <Compile Include="Setup\UnitModFactory.cs" />
+    <Compile Include="Setup\UnitFactory.cs" />
+    <Compile Include="Setup\EffectRequirementFactory.cs" />
+    <Compile Include="Setup\Error.cs" />
+    <Compile Include="Setup\InitFactory.cs" />
+    <Compile Include="Setup\StructureFactory.cs" />
+    <Compile Include="Setup\Config.cs" />
+    <Compile Include="Setup\Factory.cs" />
+    <Compile Include="Setup\PropertyFactory.cs" />
+    <Compile Include="Setup\RequirementFactory.cs" />
+    <Compile Include="Setup\TechnologyFactory.cs" />
+    <Compile Include="Util\Channel.cs" />
+    <Compile Include="Util\Inflector.cs" />
+    <Compile Include="Util\CmdParserExtension.cs" />
+    <Compile Include="Util\CSVReader.cs" />
+    <Compile Include="Util\HexDump.cs" />
+    <Compile Include="Util\IChannel.cs" />
+    <Compile Include="Util\IdGenerator.cs" />
+    <Compile Include="Util\MathParser.cs" />
+    <Compile Include="Util\MultiObjectLock.cs" />
+    <Compile Include="Util\UnixDateTime.cs" />
+    <Compile Include="Util\XMLSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Battle\BattleReport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Battle\StatsModCalculator.cs" />
+    <Compile Include="Battle\ICombatUnit.cs" />
+    <Compile Include="Battle\DefenseCombatUnit.cs" />
+    <Compile Include="Battle\ReportedObjects.cs" />
+    <Compile Include="Comm\Processor Commands\Market.cs" />
+    <Compile Include="Data\GameObject.cs" />
+    <Compile Include="Data\ForestManager.cs" />
+    <Compile Include="Data\GameObjectState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\LazyResource.cs" />
+    <Compile Include="Data\Stats\BaseBattleStats.cs" />
+    <Compile Include="Data\Stats\BaseStats.cs" />
+    <Compile Include="Data\Stats\BattleStats.cs" />
+    <Compile Include="Data\Stats\StructureBaseStats.cs" />
+    <Compile Include="Data\Stats\StructureStats.cs" />
+    <Compile Include="Data\Stats\UnitStats.cs" />
+    <Compile Include="Data\StructureProperties.cs" />
+    <Compile Include="Data\Forest.cs" />
+    <Compile Include="Data\Troop\TroopTemplate.cs" />
+    <Compile Include="Logic\Actions\ChainActions\DefenseChainAction.cs" />
+    <Compile Include="Logic\Actions\ChainActions\RetreatChainAction.cs" />
+    <Compile Include="Logic\Actions\ChainExecuter.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\ObjectRemovePassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\CityPassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceSendActiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCreatorAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampHarvestPassiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestDepleteAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceSellActiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ResourceBuyActiveAction.cs" />
+    <Compile Include="Logic\Actions\ResourceActions\ForestCampBuildActiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureDowngradeActiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\StructureDowngradePassiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\LaborMoveActiveAction.cs" />
+    <Compile Include="Logic\Actions\StructureActions\PropertyCreatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\StarvePassiveAction.cs" />
+    <Compile Include="Logic\Actions\TroopActions\EngageDefensePassiveAction.cs" />
+    <Compile Include="Logic\Formulas\Forest.cs" />
+    <Compile Include="Logic\Formulas\Ranking.cs" />
+    <Compile Include="Logic\Conditons\IBaseBattleStatsCondition.cs" />
+    <Compile Include="Logic\Conditons\ICombatObject.cs" />
+    <Compile Include="Logic\Conditons\ICityCondition.cs" />
+    <Compile Include="Logic\Conditons\IICombatUnitCondition.cs" />
+    <Compile Include="Logic\Conditons\IStructureCondition.cs" />
+    <Compile Include="Logic\Formulas\Cost.cs" />
+    <Compile Include="Logic\Formulas\Troop.cs" />
+    <Compile Include="Logic\Formulas\Time.cs" />
+    <Compile Include="Logic\NotificationManager.cs" />
+    <Compile Include="Logic\Procedures\BattleProcedures.cs" />
+    <Compile Include="Logic\Procedures\Ranking.cs" />
+    <Compile Include="Logic\Procedures\OnActionCallback.cs" />
+    <Compile Include="Logic\Procedures\RandomizeResource.cs" />
+    <Compile Include="Logic\Procedures\ResourceCap.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectCreateFromStation.cs" />
+    <Compile Include="Logic\Procedures\TroopObjectStation.cs" />
+    <Compile Include="Logic\ReferenceManager.cs" />
+    <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />
+    <Compile Include="Logic\SystemVariablesUpdater.cs" />
+    <Compile Include="Map\CityRegion.cs" />
+    <Compile Include="Map\RoadManager.cs" />
+    <Compile Include="Module\Npc.cs" />
+    <Compile Include="Logic\Randomizer.cs" />
+    <Compile Include="Setup\ConditionFactory.cs" />
+    <Compile Include="Setup\MapFactory.cs" />
+    <Compile Include="Setup\ObjectTypeFactory.cs" />
+    <Compile Include="Setup\SystemVariable.cs" />
+    <Compile Include="Util\DataTypeSerializer.cs" />
+    <Compile Include="Util\LargeIdGenerator.cs" />
+    <Compile Include="Util\ListDictionary.cs" />
+    <Compile Include="Util\SmallIdGenerator.cs" />
+    <Compile Include="Util\SystemClock.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logic\Requirements\RequirementFormulas\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Persistance\Persistance.csproj">
+      <Project>{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}</Project>
+      <Name>Persistance</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"
+
+if exist "$(TargetPath)" if not exist "$(TargetPath).locked" move "$(TargetPath)" "$(TargetPath).locked"</PreBuildEvent>
+  </PropertyGroup>
+</Project>

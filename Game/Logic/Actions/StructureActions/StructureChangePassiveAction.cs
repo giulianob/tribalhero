@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -75,7 +76,8 @@ namespace Game.Logic.Actions
 
             cityId = obj.City.Id;
             objectId = obj.ObjectId;
-            ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
+
+            ts = Formula.ReadCsvTimeFormat(parms[0]);
             type = ushort.Parse(parms[1]);
             lvl = byte.Parse(parms[2]);            
 

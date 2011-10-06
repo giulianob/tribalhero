@@ -68,7 +68,7 @@ package src.UI.Sidebars.ForestInfo.Buttons {
 			// This is kind of a hack since we need to know the campType.
 			var campTypes: Array = ObjectFactory.getList("ForestCamp");
 			
-			Global.mapComm.Object.createForestCamp(dlg.getForest().objectId , dlg.city.id, campTypes[0], dlg.getCount());
+			Global.mapComm.Objects.createForestCamp(dlg.getForest().objectId , dlg.city.id, campTypes[0], dlg.getCount());
 
 			dlg.getFrame().dispose();
 		}

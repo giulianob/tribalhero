@@ -3,7 +3,7 @@ package src
 	public class Constants
 	{
 		public static var version: int = 0;
-		public static var revision: int = 18;
+		public static var revision: int = 19;
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";

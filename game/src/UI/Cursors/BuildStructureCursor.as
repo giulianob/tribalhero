@@ -121,7 +121,7 @@ package src.UI.Cursors {
 			event.stopImmediatePropagation();
 
 			var pos: Point = MapUtil.getMapCoord(objX, objY);
-			Global.mapComm.Object.buildStructure(parentObj.groupId, parentObj.objectId, type, level, pos.x, pos.y);
+			Global.mapComm.Objects.buildStructure(parentObj.groupId, parentObj.objectId, type, level, pos.x, pos.y);
 
 			src.Global.gameContainer.setOverlaySprite(null);
 			src.Global.gameContainer.setSidebar(null);

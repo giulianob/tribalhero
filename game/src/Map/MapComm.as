@@ -10,7 +10,7 @@
 		public var Battle: BattleComm;
 		public var City: CityComm;
 		public var General: GeneralComm;
-		public var Object: ObjectComm;
+		public var Objects: ObjectComm;
 		public var Region: RegionComm;
 		public var Troop: TroopComm;
 		public var Market: MarketComm;
@@ -30,7 +30,7 @@
 			Battle = new BattleComm(this);
 			City = new CityComm(this);
 			General = new GeneralComm(this);
-			Object = new ObjectComm(this);
+			Objects = new ObjectComm(this);
 			Region = new RegionComm(this);
 			Troop = new TroopComm(this);
 			Market = new MarketComm(this);
@@ -46,7 +46,7 @@
 				Battle.dispose();
 				City.dispose();
 				General.dispose();
-				Object.dispose();
+				Objects.dispose();
 				Region.dispose();
 				Troop.dispose();
 				Market.dispose();
@@ -87,8 +87,7 @@
 			if (custom != null) {
 				if (custom is Function)
 					custom();			
-				
-				if (!hasError && custom.message)
+				else if (custom is Object && !hasError && (custom as Object).hasOwnProperty("message"))
 					InfoDialog.showMessageDialog(custom.message.title, custom.message.content);
 			}
 		}

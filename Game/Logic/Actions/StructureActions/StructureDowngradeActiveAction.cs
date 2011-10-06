@@ -84,7 +84,7 @@ namespace Game.Logic.Actions
             Structure structure;
 
             // Block structure
-            using (new MultiObjectLock(cityId, structureId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, structureId, out city, out structure))
             {
                 if (!IsValid())
                     return;
@@ -117,7 +117,7 @@ namespace Game.Logic.Actions
 
             structure.City.Worker.Remove(structure, new GameAction[] {this});
 
-            using (new MultiObjectLock(cityId, structureId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, structureId, out city, out structure))
             {
                 city.BeginUpdate();
                 structure.BeginUpdate();
@@ -167,7 +167,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;

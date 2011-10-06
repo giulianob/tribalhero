@@ -9,11 +9,10 @@ using Game.Logic;
 using Game.Module;
 using Game.Setup;
 using Ninject;
+using Ninject.Extensions.Interception;
 using Ninject.Extensions.Logging;
 using Ninject.Extensions.Logging.Log4net;
 using Persistance;
-using log4net;
-using log4net.Repository.Hierarchy;
 
 #endregion
 
@@ -138,13 +137,13 @@ _________ _______ _________ ______   _______  _
 
         public static void CreateDefaultKernel()
         {
-            Ioc.Kernel = new StandardKernel(new GameModule());
+            Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = false }, new DynamicProxy2Module(), new Log4NetModule(), new GameModule());
         }
 
         private void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = (Exception)e.ExceptionObject;
-            logger.Error("Unhandled Exception", ex);
+            logger.Error(ex, "Unhandled Exception");
         }
 
         public void Stop()

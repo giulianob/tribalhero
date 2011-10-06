@@ -92,7 +92,7 @@ namespace ConsoleSimulator
             attack.AddFormation(FormationType.Normal);
             obj = new TroopObject(attack);
             attack.TroopObject = obj;
-            using (new MultiObjectLock(city))
+            using (new MultiObjectLock().Lock(city))
             {
                 //attack.City = city;
                 city.Troops.Add(attack);
@@ -139,7 +139,7 @@ namespace ConsoleSimulator
 
         public void AddToLocal(ushort type, byte lvl, ushort count, FormationType formation)
         {
-            using (new MultiObjectLock(city))
+            using (new MultiObjectLock().Lock(city))
             {
                 city.BeginUpdate();
                 city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);
@@ -168,7 +168,7 @@ namespace ConsoleSimulator
 
         public void AddToAttack(ushort type, byte lvl, ushort count, FormationType formation)
         {
-            using (new MultiObjectLock(city))
+            using (new MultiObjectLock().Lock(city))
             {
                 city.BeginUpdate();
                 city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);

@@ -4,8 +4,10 @@ using System;
 using System.Linq;
 using Game.Data;
 using Game.Module;
+using Game.Setup;
 using Game.Util;
 using NDesk.Options;
+using Ninject;
 
 #endregion
 
@@ -36,7 +38,7 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (new MultiObjectLock(playerId, out player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player))
             {
                 if (player == null)
                     return "Player not found";
@@ -115,7 +117,7 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (new MultiObjectLock(playerId, out player)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player)) {
                 if (player == null)
                     return "Player not found";
 

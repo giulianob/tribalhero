@@ -30,7 +30,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player)) {
                 City city = session.Player.GetCity(cityId);
 
                 if (city == null) {
@@ -61,7 +61,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player)) {
                 City city = session.Player.GetCity(cityId);
 
                 if (city == null) {

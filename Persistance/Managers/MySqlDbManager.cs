@@ -57,8 +57,13 @@ namespace Persistance.Managers
             persistantTransaction = null;
         }
 
-        public DbTransaction GetThreadTransaction()
+        public DbTransaction GetThreadTransaction(bool returnOnly = false)
         {
+            if (returnOnly)
+            {
+                return persistantTransaction;
+            }
+
             if (persistantTransaction != null)
             {
                 persistantTransaction.ReferenceCount++;
@@ -381,7 +386,7 @@ namespace Persistance.Managers
                 }
                 catch(Exception ex)
                 {
-                    logger.Error("An exception of type " + ex.GetType() + " was encountered while attempting to open the connection.", ex);
+                    logger.Error(ex, "An exception was encountered while attempting to open the connection.");
                     Environment.Exit(-1);
                 }
                 return connection;
@@ -747,7 +752,7 @@ namespace Persistance.Managers
 
         internal void HandleGeneralException(Exception e, DbCommand command = null)
         {
-            logger.Error("(" + Thread.CurrentThread.ManagedThreadId + ") ", e);
+            logger.Error(e, "General database error on thread {0}", Thread.CurrentThread.ManagedThreadId);
 
             if (command != null)
                 LogCommand(command, false);

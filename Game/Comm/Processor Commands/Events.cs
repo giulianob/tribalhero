@@ -21,7 +21,7 @@ namespace Game.Comm
             if (session == null || session.Player == null)
                 return;
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 Global.Channel.Unsubscribe(session);
 

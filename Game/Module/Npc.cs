@@ -56,7 +56,7 @@ namespace Game.Module
             {
                 Intelligence intelligence = playerList[rand.Next(0, playerList.Count - 1)];
 
-                using (new MultiObjectLock(intelligence.player))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(intelligence.player))
                 {
                     if (intelligence.savingUp > 0)
                     {
@@ -260,7 +260,7 @@ namespace Game.Module
                 var npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, string.Empty, false);
                 var intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()), Math.Max(0.5, rand.NextDouble()));
 
-                using (new MultiObjectLock(npc))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(npc))
                 {
                     if (!Global.World.Players.ContainsKey(idx))
                     {

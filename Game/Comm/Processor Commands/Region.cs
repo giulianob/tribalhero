@@ -50,7 +50,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -151,7 +151,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -268,7 +268,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -307,7 +307,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -343,7 +343,7 @@ namespace Game.Comm
             }
 
             //check to make sure that the city belongs to us
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null && session.Player.GetCity(srcCityId) == null)
                 {
@@ -353,7 +353,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, City> cities;
-            using (new MultiObjectLock(out cities, srcCityId, cityId))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, srcCityId, cityId))
             {
                 if (cities == null)
                 {

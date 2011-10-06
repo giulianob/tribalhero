@@ -233,7 +233,7 @@ namespace Game.Logic
 
             // Cancel Active actions
             List<ActiveAction> activeList;
-            using (new MultiObjectLock(City))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(City))
             {
                 activeList = active.FindAll(actionStub => actionStub.WorkerObject == workerObject);
             }
@@ -248,7 +248,7 @@ namespace Game.Logic
 
             // Cancel Passive actions
             List<PassiveAction> passiveList;
-            using (new MultiObjectLock(City))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(City))
             {
                 passiveList = passive.FindAll(action => action.WorkerObject == workerObject);
             }
@@ -261,7 +261,7 @@ namespace Game.Logic
                 stub.WorkerRemoved(false);
             }
 
-            using (new MultiObjectLock(City))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(City))
             {
                 references.Remove(workerObject);
             }
@@ -456,7 +456,7 @@ namespace Game.Logic
             action.ActionId = (ushort)actionId;
             passive.Add(action.ActionId, action);
 
-            using (new MultiObjectLock(city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city))
             {
                 action.Execute();
             }

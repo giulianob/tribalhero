@@ -5,6 +5,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -24,7 +25,7 @@ namespace Game.Logic.Actions.ResourceActions
 
         public void Callback(object custom)
         {
-            using (new MultiObjectLock(Global.World.Forests))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(Global.World.Forests))
             {
                 for (byte i = 0; i < Config.forest_count.Length; i++)
                 {

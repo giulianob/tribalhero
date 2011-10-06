@@ -37,9 +37,10 @@ namespace Game.Battle
             BaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];
             var groupSize = (from effect in stub.City.Technologies.GetEffects(EffectCode.UnitStatMod, EffectInheritance.All)
-                             where effect.Id == EffectCode.UnitStatMod
-                             where BattleFormulas.UnitStatModCheck(stats.Base, TroopBattleGroup.Defense, (string)effect.Value[3])
-                             select (int)effect.Value[2]).Max() + stats.Base.GroupSize;
+                        where ((string)effect.Value[0]).ToLower()=="groupsize" &&
+                            BattleFormulas.UnitStatModCheck(stats.Base, TroopBattleGroup.Defense, (string)effect.Value[3])
+                        select (int)effect.Value[2]).DefaultIfEmpty().Max()+stats.Base.GroupSize;
+
 
             var units = new DefenseCombatUnit[(count - 1) / groupSize + 1];
             DefenseCombatUnit newUnit;

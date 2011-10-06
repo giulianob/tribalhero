@@ -37,7 +37,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(cityId, objectId, out city, out troop))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out troop))
             {
                 if (city == null || troop == null || troop.Stub == null)
                 {
@@ -101,7 +101,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -163,7 +163,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -206,7 +206,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -251,7 +251,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
                 {
@@ -261,7 +261,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, City> cities;
-            using (new MultiObjectLock(out cities, cityId, targetCityId))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {
@@ -329,7 +329,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
                 {
@@ -339,7 +339,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, City> cities;
-            using (new MultiObjectLock(out cities, cityId, targetCityId))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
             {
                 City city = cities[cityId];
 
@@ -381,7 +381,7 @@ namespace Game.Comm
             City stationedCity;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -400,7 +400,7 @@ namespace Game.Comm
                 stationedCity = stub.StationedCity;
             }
 
-            using (new MultiObjectLock(city, stationedCity))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city, stationedCity))
             {
                 TroopStub stub;
 

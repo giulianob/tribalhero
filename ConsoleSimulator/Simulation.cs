@@ -33,7 +33,7 @@ namespace ConsoleSimulator
             bm = Ioc.Kernel.Get<BattleManager.Factory>()(Defender.City);
             bm.BattleReport.Battle = bm;
             bv = new BattleViewer(bm);
-            using (new MultiObjectLock(Defender.Local)) {
+            using (new MultiObjectLock().Lock(Defender.Local)) {
                 Defender.Local.BeginUpdate();
                 Defender.Local.AddFormation(FormationType.InBattle);
                 Defender.Local.Template.LoadStats(TroopBattleGroup.Local);
@@ -43,7 +43,7 @@ namespace ConsoleSimulator
                 Defender.Local.EndUpdate();
             }
 
-            using (new MultiObjectLock(Attacker.AttackStub)) {
+            using (new MultiObjectLock().Lock(Attacker.AttackStub)) {
                 Attacker.AttackStub.BeginUpdate();
                 Attacker.AttackStub.Template.LoadStats(TroopBattleGroup.Attack);
                 Attacker.AttackStub.EndUpdate();
@@ -60,7 +60,8 @@ namespace ConsoleSimulator
 
         public void RunTill(int round = int.MaxValue)
         {
-            using (new MultiObjectLock(Attacker.AttackStub, Defender.Local)) {
+            using (new MultiObjectLock().Lock(Attacker.AttackStub, Defender.Local))
+            {
                 while (bm.ExecuteTurn()) {
                     CurrentRound = bm.Round;
                     if ((CurrentRound = bm.Round) >= round) return;

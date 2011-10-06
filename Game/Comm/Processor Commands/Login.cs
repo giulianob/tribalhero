@@ -160,7 +160,7 @@ namespace Game.Comm
                 }
             }
 
-            using (new MultiObjectLock(player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(player))
             {
                 if (!newPlayer)
                 {
@@ -221,7 +221,7 @@ namespace Game.Comm
 
         public void CmdCreateInitialCity(Session session, Packet packet)
         {
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 string cityName;
                 try

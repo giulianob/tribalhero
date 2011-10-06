@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -65,7 +66,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
-            using (new CallbackLock(GetTroopLockList, new[] {city}, city))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetTroopLockList, new[] {city}, city))
             {
                 if (!IsValid())
                     return;

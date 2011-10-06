@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -109,7 +110,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
@@ -120,7 +121,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             Dictionary<uint, City> cities;
-            using (new MultiObjectLock(out cities, cityId, targetCityId))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
             {
                 if (!IsValid())
                     return;

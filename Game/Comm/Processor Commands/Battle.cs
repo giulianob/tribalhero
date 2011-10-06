@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -39,7 +40,7 @@ namespace Game.Comm
                     return toBeLocked.ToArray();
                 };
 
-            using (new CallbackLock(lockHandler, null, city))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(lockHandler, null, city))
             {
                 if (city.Battle == null)
                 {
@@ -78,7 +79,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null || city.Battle == null)
                 {

@@ -187,7 +187,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return;
 
-            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
             {
                 if (!IsValid())
                     return;
@@ -255,7 +255,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
-            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
             {
                 if (!IsValid())
                     return;

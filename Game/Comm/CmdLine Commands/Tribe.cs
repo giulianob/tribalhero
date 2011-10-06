@@ -58,7 +58,7 @@ namespace Game.Comm
 
             Player player;
             string result;
-            using (new MultiObjectLock(playerId, out player)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player)) {
                 if (player == null)
                     return "Player not found";
                 if (player.Tribesman == null)
@@ -104,7 +104,7 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (new MultiObjectLock(playerId, out player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player))
             {
                 if (player.Tribesman != null) {
                     return Enum.GetName(typeof(Error), Error.TribesmanAlreadyInTribe);
@@ -154,7 +154,7 @@ namespace Game.Comm
             if(!Global.Tribes.TryGetValue(tribeId, out tribe))
                 return "Tribe not found seriously";
 
-            using (new CallbackLock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
                 foreach (var tribesman in new List<Tribesman>(tribe))
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
@@ -191,7 +191,7 @@ namespace Game.Comm
                 return "Tribe not found";
 
             Tribe tribe;
-            using (new MultiObjectLock(tribeId, out tribe)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribeId, out tribe)) {
                 tribe.Description = desc;
                 Ioc.Kernel.Get<IDbManager>().Save(tribe);
             }
@@ -228,7 +228,7 @@ namespace Game.Comm
                 return "Tribe not found";
 
             Dictionary<uint, Player> players;
-            using (new MultiObjectLock( out players,playerId,tribeId))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock( out players,playerId,tribeId))
             {
                 Tribe tribe = players[tribeId].Tribesman.Tribe;
                 Tribesman tribesman = new Tribesman(tribe, players[playerId],2);
@@ -267,7 +267,7 @@ namespace Game.Comm
                 return "Tribe not found";
 
             Dictionary<uint, Player> players;
-            using (new MultiObjectLock(out players, playerId, tribeId)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out players, playerId, tribeId)) {
                 Tribe tribe = players[tribeId].Tribesman.Tribe;
                 Error ret;
                 if((ret=tribe.RemoveTribesman(playerId))!=Error.Ok)
@@ -306,7 +306,7 @@ namespace Game.Comm
                 return "Player not found2";
 
             if(player.Tribesman==null) return "Player not in tribe";
-            using (new MultiObjectLock(player,player.Tribesman.Tribe)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(player,player.Tribesman.Tribe)) {
                 player.Tribesman.Tribe.SetRank(playerId, byte.Parse(rank));
             }
             return "OK";
@@ -336,7 +336,7 @@ namespace Game.Comm
 
             Tribe tribe;
             StringBuilder result = new StringBuilder("Incomings:\n");
-            using (new MultiObjectLock(tribeId, out tribe)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribeId, out tribe)) {
                 //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));
                 foreach (var city in ((IEnumerable<Tribesman>)tribe).SelectMany(tribesman => tribesman.Player.GetCityList()))
                 {

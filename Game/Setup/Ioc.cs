@@ -11,6 +11,7 @@ namespace Game.Setup
         #region Fields
 
         private static IKernel _kernel;
+        private static object lck = new object();
 
         #endregion
 
@@ -27,12 +28,15 @@ namespace Game.Setup
             }
             set
             {
-                if (_kernel != null)
+                lock (lck)
                 {
-                    throw new NotSupportedException("The static container already has a kernel associated with it!");
-                }
+                    if (_kernel != null)
+                    {
+                        throw new NotSupportedException("The static container already has a kernel associated with it!");
+                    }
 
-                _kernel = value;
+                    _kernel = value;
+                }
             }
         }
 
@@ -52,7 +56,10 @@ namespace Game.Setup
                         String.Format("The type {0} requested an injection, but no kernel has been registered for the application." + instance.GetType()));
             }
 
-            _kernel.Inject(instance);
+            lock (lck)
+            {
+                _kernel.Inject(instance);
+            }
         }
 
         #endregion

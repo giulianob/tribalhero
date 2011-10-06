@@ -31,7 +31,7 @@ namespace Game.Module {
                                      new DbColumn[] { })) {
                 while (reader.Read()) {
                     Player player;
-                    using (new MultiObjectLock((uint)reader["id"], out player)) {
+                    using (Ioc.Kernel.Get<MultiObjectLock>().Lock((uint)reader["id"], out player)) {
                         foreach (City city in player.GetCityList()) {
                             CityRemover cr = new CityRemover(city.Id);
                             cr.Start();

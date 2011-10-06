@@ -31,7 +31,7 @@ namespace Game.Comm
                 return;
             }
             
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 if (description.Length > Player.MAX_DESCRIPTION_LENGTH)
                 {
@@ -73,7 +73,7 @@ namespace Game.Comm
             }
 
             Player player;
-            using (new MultiObjectLock(playerId, out player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player))
             {
                 if (player == null)
                 {
@@ -187,7 +187,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 reply.AddString(city.Owner.Name);
             }
@@ -230,7 +230,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
                 {
@@ -240,7 +240,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, City> cities;
-            using (new MultiObjectLock(out cities, cityId, targetCityId))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {

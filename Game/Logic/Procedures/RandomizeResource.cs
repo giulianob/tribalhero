@@ -38,7 +38,7 @@ namespace Game.Logic.Procedures
 
         public static bool RandomizeResource(City city)
         {
-            using (new MultiObjectLock(city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city))
             {
                 byte radius = city.Radius;
                 TileLocator.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, Work, city);

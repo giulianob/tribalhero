@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -26,7 +28,8 @@ namespace Game.Logic.Actions.ResourceActions
 
         public void Callback(object custom)
         {
-            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] {Forest.ObjectId}, Global.World.Forests))
+            var lck = Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {Forest.ObjectId}, Global.World.Forests);
+            using (lck)
             {
                 Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
 
@@ -53,6 +56,7 @@ namespace Game.Logic.Actions.ResourceActions
                 }
 
                 Global.World.Forests.RemoveForest(Forest);
+                lck.Dispose();
             }
         }
 

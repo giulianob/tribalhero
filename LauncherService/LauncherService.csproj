@@ -67,7 +67,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\Lib\ninject.logging\log4net\lib\log4net.dll</HintPath>
+      <HintPath>..\Lib\ninject\log4net\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NDesk.Options">
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>

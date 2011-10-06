@@ -87,7 +87,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
             }
@@ -103,9 +103,9 @@ namespace Game.Logic.Actions
         }
 
         public override void Callback(object custom)
-        {
+        {            
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;

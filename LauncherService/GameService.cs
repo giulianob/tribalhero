@@ -38,17 +38,17 @@ namespace LauncherService
             {
                 Environment.Exit(0);
             }
-
-            Config.LoadConfigFile(settingsFile);
-            Engine.CreateDefaultKernel();
+            
+            Config.LoadConfigFile(settingsFile);            
             Factory.CompileConfigFiles();
+            Engine.CreateDefaultKernel();
+            Factory.InitAll();
+            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
 
             engine = Ioc.Kernel.Get<Engine>();
 
             if (!engine.Start())
-                throw new Exception("Failed to load server");
-
-            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+                throw new Exception("Failed to load server");            
         }
 
         protected override void OnStop()

@@ -150,7 +150,7 @@ namespace Game.Logic.Actions
                 if (!Global.World.TryGetObjects(targetCityId, out targetCity))
                 {
                     //If the target is missing, walk back
-                    using (new MultiObjectLock(city))
+                    using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city))
                     {
                         TroopStub stub = city.Troops[stubId];
                         TroopMovePassiveAction tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.X, city.Y, true, true);
@@ -169,7 +169,7 @@ namespace Game.Logic.Actions
                         return toBeLocked.ToArray();
                     };
 
-                using (new CallbackLock(lockAllStationed, null, city, targetCity))
+                using (Ioc.Kernel.Get<CallbackLock>().Lock(lockAllStationed, null, city, targetCity))
                 {
                     var bea = new EngageAttackPassiveAction(cityId, stubId, targetCityId, mode);
                     ExecuteChainAndWait(bea, AfterBattle);
@@ -182,7 +182,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 Dictionary<uint, City> cities;
-                using (new MultiObjectLock(out cities, cityId, targetCityId))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
                 {
                     City city = cities[cityId];
                     TroopStub stub;
@@ -237,7 +237,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 City city;
-                using (new MultiObjectLock(cityId, out city))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
                 {
                     TroopStub stub;
 
@@ -268,7 +268,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 City city;
-                using (new MultiObjectLock(cityId, out city))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
                 {
                     TroopStub stub;
 

@@ -95,7 +95,7 @@ namespace Game.Logic.Actions
             Structure structure;
 
             // Block structure
-            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                     return;
@@ -107,7 +107,7 @@ namespace Game.Logic.Actions
 
             structure.City.Worker.Remove(structure, new GameAction[] { this });
 
-            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                     return;
@@ -136,7 +136,7 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
+            endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds, false));
             BeginTime = SystemClock.Now;
 
             if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
@@ -153,7 +153,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                     return;                

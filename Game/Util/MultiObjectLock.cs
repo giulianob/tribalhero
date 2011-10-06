@@ -7,9 +7,11 @@ using System.Threading;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Data.Tribe;
+using Game.Interceptor;
+using Game.Interceptor.ForceProxyReturn;
+using Game.Interceptor.TransactionEnd;
 using Game.Setup;
 using Ninject;
-using Persistance;
 
 #endregion
 
@@ -30,18 +32,15 @@ namespace Game.Util
 
     public class MultiObjectLock : IDisposable
     {
+        public delegate MultiObjectLock Factory();
+
         [ThreadStatic]
         private static MultiObjectLock currentLock;
 
         private object[] lockedObjects = new object[] {};
-        private DbTransaction transaction;
 
-        public MultiObjectLock(params ILockable[] list)
-        {
-            Lock(list);
-        }
-
-        public MultiObjectLock(out Dictionary<uint, City> result, params uint[] cityIds)
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(out Dictionary<uint, City> result, params uint[] cityIds)
         {
             result = new Dictionary<uint, City>(cityIds.Length);
 
@@ -54,17 +53,18 @@ namespace Game.Util
                 if (!Global.World.TryGetObjects(cityId, out city))
                 {
                     result = null;
-                    return;
+                    return this;
                 }
 
                 result[cityId] = city;
                 cities[i++] = city;
             }
 
-            Lock(cities);
+            return Lock(cities);
         }
 
-        public MultiObjectLock(out Dictionary<uint, Player> result, params uint[] playerIds) {
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(out Dictionary<uint, Player> result, params uint[] playerIds) {
             result = new Dictionary<uint, Player>(playerIds.Length);
             var players = new Player[playerIds.Length];
 
@@ -73,37 +73,42 @@ namespace Game.Util
                 Player player;
                 if (!Global.World.TryGetObjects(playerId, out player)) {
                     result = null;
-                    return;
+                    return this;
                 }
 
                 result[playerId] = player;
                 players[i++] = player;
             }
 
-            Lock(players);
+            return Lock(players);
         }
 
-        public MultiObjectLock(uint tribeId, out Tribe tribe) {
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(uint tribeId, out Tribe tribe) {
             TryGetTribe(tribeId, out tribe);
+            return this;
         }
-        
-        public MultiObjectLock(uint playerId, out Player player)
+
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(uint playerId, out Player player)
         {
             TryGetPlayer(playerId, out player);
+            return this;
         }
 
-        public MultiObjectLock(uint playerId, out Player player, out Tribe tribe)
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(uint playerId, out Player player, out Tribe tribe)
         {
             if (!Global.World.TryGetObjects(playerId, out player))
             {
                 tribe = null;
-                return;
+                return this;
             }
 
             if (player.Tribesman == null)
             {
                 tribe = null;
-                return;
+                return this;
             }
            
             try {
@@ -114,6 +119,7 @@ namespace Game.Util
                 {
                     Lock(player);
                 }
+
                 tribe = player.Tribesman.Tribe;
             } catch (LockException) {
                 throw;
@@ -121,25 +127,34 @@ namespace Game.Util
                 tribe = null;
             }
 
+            return this;
         }
 
-        public MultiObjectLock(uint cityId, out City city)
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(uint cityId, out City city)
         {
             TryGetCity(cityId, out city);
+
+            return this;
         }
 
-        public MultiObjectLock(uint cityId, uint objectId, out City city, out Structure obj)
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(uint cityId, uint objectId, out City city, out Structure obj)
         {
             TryGetCityStructure(cityId, objectId, out city, out obj);
+
+            return this;
         }
 
-        public MultiObjectLock(uint cityId, uint objectId, out City city, out TroopObject obj)
+        [ForceProxyReturn]
+        public MultiObjectLock Lock(uint cityId, uint objectId, out City city, out TroopObject obj)
         {
             TryGetCityTroop(cityId, objectId, out city, out obj);
+            return this;
         }
 
         #region IDisposable Members
-
+        
         public void Dispose()
         {
             UnlockAll();
@@ -169,7 +184,9 @@ namespace Game.Util
             return x.Hash.CompareTo(y.Hash);
         }
 
-        private void Lock(params ILockable[] list)
+        [TransactionStart]
+        [ForceProxyReturn]
+        public virtual MultiObjectLock Lock(params ILockable[] list)
         {
             lockedObjects = new object[list.Length];
 
@@ -185,14 +202,12 @@ namespace Game.Util
                 lockedObjects[i] = list[i].Lock;
             }
 
-            transaction = Ioc.Kernel.Get<IDbManager>().GetThreadTransaction();
+            return this;
         }
 
-        private void UnlockAll()
+        [TransactionEnd]
+        public virtual void UnlockAll()
         {
-            if (transaction != null)
-                transaction.Dispose();
-
             for (int i = lockedObjects.Length - 1; i >= 0; --i)
                 Monitor.Exit(lockedObjects[i]);
 
@@ -299,16 +314,19 @@ namespace Game.Util
 
         public delegate ILockable[] CallbackLockHandler(object[] custom);
 
+        public delegate CallbackLock Factory();
+
         #endregion
 
-        private readonly MultiObjectLock currentLock;
+        private MultiObjectLock currentLock;
 
-        public CallbackLock(CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks)
+        [ForceProxyReturn]
+        public CallbackLock Lock(CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks)
         {
             int count = 0;
             while (currentLock == null)
             {
-                if ((++count)%5 == 0)
+                if ((++count)%10 == 0)
                     Global.Logger.Info(string.Format("CallbackLock has iterated {0} times from {1}", count, Environment.StackTrace));
 
                 if (count >= 10000)
@@ -317,14 +335,14 @@ namespace Game.Util
                 var toBeLocked = new List<ILockable>(baseLocks);
 
                 // Lock the base objects
-                using (new MultiObjectLock(baseLocks))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(baseLocks))
                 {
                     // Grab the list of objects we need to lock from the callback                    
                     toBeLocked.AddRange(lockHandler(lockHandlerParams));
                 }
 
                 // Lock all of the objects we believe should be locked
-                currentLock = new MultiObjectLock(toBeLocked.ToArray());
+                currentLock = Ioc.Kernel.Get<MultiObjectLock>().Lock(toBeLocked.ToArray());
 
                 // Grab the current list of objects we need to lock from the callback
                 var newToBeLocked = new List<ILockable>(baseLocks);
@@ -346,6 +364,8 @@ namespace Game.Util
                 currentLock = null;
                 Thread.Sleep(0);
             }
+
+            return this;
         }
 
         #region IDisposable Members

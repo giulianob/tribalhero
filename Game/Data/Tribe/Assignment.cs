@@ -138,7 +138,7 @@ namespace Game.Data.Tribe {
         public void Callback(object custom)
         {
             var now = DateTime.UtcNow;
-            using (new CallbackLock(c => stubs.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe)) {
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(c => stubs.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe)) {
                 for (int i = stubs.Count-1; i >= 0; i--)
                 {
                     var assignmentTroop = stubs[i];

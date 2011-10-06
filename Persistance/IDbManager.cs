@@ -16,7 +16,7 @@ namespace Persistance
 
         void LogCommand(DbCommand command, bool onlyIfVerbose = true);
 
-        DbTransaction GetThreadTransaction();
+        DbTransaction GetThreadTransaction(bool returnOnly = false);
         void ClearThreadTransaction();
 
         bool Save(params IPersistable[] objects);

@@ -99,5 +99,15 @@ namespace Game.Logic.Formulas
 
             return (int)((43200 / (-6.845 * Math.Log(laborTotal) + 55)) * rateBonus);
         }
+
+        public static TimeSpan ReadCsvTimeFormat(string time)
+        {
+            if (time.StartsWith("!"))
+            {
+                return TimeSpan.FromSeconds(int.Parse(time.Remove(0, 1))/Config.seconds_per_unit);
+            }
+
+            return TimeSpan.FromSeconds(int.Parse(time));
+        }
     }
 }

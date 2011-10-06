@@ -47,7 +47,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		public function onMouseClick(event: Event):void
 		{
 			if (isEnabled())			
-				Global.mapComm.Object.gatherResource(parentObj.groupId, parentObj.objectId);
+				Global.mapComm.Objects.gatherResource(parentObj.groupId, parentObj.objectId);
 
 			event.stopImmediatePropagation();
 		}

@@ -317,11 +317,11 @@
 					obj.setSelected(true);
 
 					if (obj is StructureObject)
-						Global.mapComm.Object.getStructureInfo(obj as StructureObject);
+						Global.mapComm.Objects.getStructureInfo(obj as StructureObject);
 					else if (obj is TroopObject)
 						Global.mapComm.Troop.getTroopInfo(obj as TroopObject);
 					else if (obj is Forest)
-						Global.mapComm.Object.getForestInfo(obj as Forest);
+						Global.mapComm.Objects.getForestInfo(obj as Forest);
 					else
 						doSelectedObject(obj);
 				}

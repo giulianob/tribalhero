@@ -60,7 +60,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.Object.upgradeStructure(parentObj.groupId, parentObj.objectId);
+				Global.mapComm.Objects.upgradeStructure(parentObj.groupId, parentObj.objectId);
 			}
 		}
 

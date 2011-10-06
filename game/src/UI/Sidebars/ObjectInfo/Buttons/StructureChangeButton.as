@@ -53,7 +53,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 		{
 			if (isEnabled())
 			{
-				Global.mapComm.Object.changeStructure(parentObj.groupId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
+				Global.mapComm.Objects.changeStructure(parentObj.groupId, parentObj.objectId, nextStructPrototype.type, nextStructPrototype.level);
 			}
 		}
 

@@ -48,7 +48,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			
 			InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\n" + (Action.costsToCancelActions.indexOf(actionType) >= 0 ? "You will only receive half of the action cost if cancelling after 60 seconds." : ""), function(result: int) : void {
 				if (result == JOptionPane.YES) {
-					Global.mapComm.Object.cancelAction(parentObj.cityId, parentObj.objectId, id);
+					Global.mapComm.Objects.cancelAction(parentObj.cityId, parentObj.objectId, id);
 				}
 			}, null, true, false, JOptionPane.YES | JOptionPane.NO);
 		}

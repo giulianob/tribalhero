@@ -14,9 +14,9 @@
 		
 		public function UsernameManager() 
 		{			
-			cities = new UsernameList(Global.mapComm.Object.getCityUsername);
-			players = new UsernameList(Global.mapComm.Object.getPlayerUsername);
-			tribes = new UsernameList(Global.mapComm.Object.getTribeUsername);
+			cities = new UsernameList(Global.mapComm.Objects.getCityUsername);
+			players = new UsernameList(Global.mapComm.Objects.getPlayerUsername);
+			tribes = new UsernameList(Global.mapComm.Objects.getTribeUsername);
 		}		
 	}	
 }

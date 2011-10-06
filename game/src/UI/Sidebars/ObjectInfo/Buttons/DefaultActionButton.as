@@ -44,7 +44,7 @@
 		
 		public function onMouseClick(MouseEvent: Event):void
 		{
-			Global.mapComm.Object.defaultAction(parentObj.groupId, parentObj.objectId, command);			
+			Global.mapComm.Objects.defaultAction(parentObj.groupId, parentObj.objectId, command);			
 		}
 		
 		public override function validateButton():Boolean 

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Setup;
 
 #endregion
 
@@ -81,9 +82,12 @@ namespace Game.Logic.Formulas
             return effects.Min(x => (int)x.Value[0]);
         }
 
-        public static Resource GetInitialCityResources()
+        public static LazyResource GetInitialCityResources()
         {
-            return new Resource(700, 0, 0, 700, 35);
+            LazyResource resource = new LazyResource(700, 0, 0, 700, 35);
+            resource.Wood.Rate = Config.resource_base_bonus;
+            resource.Crop.Rate = Config.resource_base_bonus;
+            return resource;
         }
 
         public static byte GetInitialCityRadius()

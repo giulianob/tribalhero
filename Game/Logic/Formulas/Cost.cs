@@ -147,7 +147,7 @@ namespace Game.Logic.Formulas
         internal static int GetCropRate(City city)
         {
             double[] lvlBonus = {1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5};
-            return (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor*lvlBonus[x.Lvl] : 0);
+            return (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor*lvlBonus[x.Lvl] : 0) + Config.resource_base_bonus;
         }
 
         public static ushort CalculateCityValue(City city)

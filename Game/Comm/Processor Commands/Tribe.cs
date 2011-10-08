@@ -33,7 +33,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 if (session.Player.Tribesman == null)
                 {
@@ -107,7 +107,7 @@ namespace Game.Comm
             }
             var tribe = session.Player.Tribesman.Tribe;
 
-            using (new MultiObjectLock(tribe))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribe))
             {
                 reply.AddUInt32(tribe.Id);
                 reply.AddUInt32(tribe.Owner.PlayerId);
@@ -181,7 +181,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 if (session.Player.Tribesman != null)
                 {
@@ -226,7 +226,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = session.Player.Tribesman.Tribe;
-            using (new CallbackLock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {
@@ -259,7 +259,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = session.Player.Tribesman.Tribe;
-            using (new MultiObjectLock(tribe))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribe))
             {
                 if(tribe.Level>=20)
                 {

@@ -309,12 +309,13 @@ namespace Game.Data.Tribe
                 return Error.AssignmentCantAttackFriend;
             }
 
-            // Player creating the assignment cannot be late
+            // Player creating the assignment cannot be late (Give a few minutes lead)
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
             DateTime reachTime =
                     DateTime.UtcNow.AddSeconds((int)(Formula.MoveTime(Formula.GetTroopSpeed(stub))*Formula.MoveTimeMod(stub.City, distance, true))*distance*
                                                Config.seconds_per_unit);
-            if (reachTime > time)
+
+            if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
                 return Error.AssignmentUnitsTooSlow;
             }

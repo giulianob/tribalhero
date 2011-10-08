@@ -87,7 +87,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            using (new MultiObjectLock(structure.City))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(structure.City))
             {
                 if (!IsValid())
                     return;

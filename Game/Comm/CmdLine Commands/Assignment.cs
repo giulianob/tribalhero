@@ -55,7 +55,7 @@ namespace Game.Comm
             Player player;
             Tribe tribe;
             string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
-            using (new MultiObjectLock(playerId, out player, out tribe))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player, out tribe))
             {
                 if (player == null)
                     return "Player not found";
@@ -119,7 +119,7 @@ namespace Game.Comm
                 return "Could not find a structure for the given coordinates";
             }
 
-            using (new MultiObjectLock(city, tribe, targetStructure.City))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city, tribe, targetStructure.City))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -184,7 +184,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = city.Owner.Tribesman.Tribe;
-            using (new MultiObjectLock(city, tribe))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city, tribe))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {

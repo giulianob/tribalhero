@@ -69,7 +69,7 @@ namespace Game
                     bm.BattleReport.Battle = bm;
                     return bm;
                 });
-
+            
             #endregion
         }
     }

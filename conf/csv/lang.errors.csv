@@ -30,6 +30,9 @@ ERROR_400,The selected object no longer exists
 ERROR_401,The specified structure does not exist
 ERROR_402,The specified player does not exist
 ERROR_403,The specified city was not found
+ERROR_404`,Structure not found
+ERROR_405,Technology not found
+ERROR_406,Technology is already at the maximum level
 ERROR_410,The map is full!
 ERROR_411,Unable to build on the specified tile
 ERROR_412,A structure already exists there.
@@ -53,6 +56,8 @@ ERROR_702,You are not allowed to do this action because you aren't currently a m
 ERROR_703,Tribe name already taken
 ERROR_704,Tribe not found
 ERROR_705,Tribe name is invalid. You can only use alphanumeric characters for your tribe name.
+ERROR_706,Tribe is already at maximum level
+ERROR_707,Tribe cannot be delete while assignments exist.
 ERROR_721,Tribesman not found
 ERROR_722,This player is already a member of a tribe
 ERROR_723,This action cannot be performed on the tribe's chief
@@ -60,3 +65,8 @@ ERROR_724,This player is already part of a tribe
 ERROR_725,You are not authorized to do that
 ERROR_726,This tribesman already has a pending invitation from another tribe. They must decline the current request before you can invite them.
 ERROR_727,You don't currently have any invitations to join a tribe
+ERROR_741,It's too late to join this assignment
+ERROR_742,Assignment not found
+ERROR_743,Invalid assignment dispatch time.
+ERROR_744,You are not allowed to create an assignment to attack another member of your tribe
+ERROR_745,Your units are too slow for the specified attack time.

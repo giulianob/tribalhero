@@ -9,6 +9,7 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -164,7 +165,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
             }
@@ -175,7 +176,7 @@ namespace Game.Logic.Actions
             City city;
             TroopObject troopObj;
 
-            using (new MultiObjectLock(cityId, troopObjectId, out city, out troopObj))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, troopObjectId, out city, out troopObj))
             {
                 --distanceRemaining;
 

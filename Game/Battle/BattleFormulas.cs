@@ -25,18 +25,17 @@ namespace Game.Battle
             return Math.Min(delta * 2, 25);*/
 
             double delta = isAttacker ? Math.Max(0, (double)attackersUpkeep / defendersUpkeep) : Math.Max(0, (double)defendersUpkeep / attackersUpkeep);
-            double effectiveness = isAttacker ? (attackersUpkeep > 100 ? 1 : (double)attackersUpkeep / 100) : (defendersUpkeep > 100 ? 1 : (double)defendersUpkeep / 100);
-          //  double effectiveness = 1;
-
+            double effectiveness = isAttacker ? (attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200) : (defendersUpkeep > 200 ? 1 : (double)defendersUpkeep / 200);
+         //   double effectiveness = 1;
             if (delta < 1) return (int)(0 * effectiveness);
             if (delta < 1.25) return (int)(10 * effectiveness);
             if (delta < 1.5) return (int)(17 * effectiveness);
             if (delta < 2) return (int)(22 * effectiveness);
             if (delta < 3.5) return (int)(30 * effectiveness);
-            if (delta < 5) return (int)(55 * effectiveness);
-            if (delta < 7) return (int)(67 * effectiveness);
-            if (delta < 10) return (int)(74 * effectiveness);
-            return (int)(85 * effectiveness);
+            if (delta < 5) return (int)(40 * effectiveness);
+            if (delta < 7) return (int)(48 * effectiveness);
+            if (delta < 10) return (int)(55 * effectiveness);
+            return (int)(60 * effectiveness);
         }
 
         public static int GetUnitsPerStructure(Structure structure)

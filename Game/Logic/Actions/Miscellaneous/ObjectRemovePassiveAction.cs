@@ -7,6 +7,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -83,7 +84,7 @@ namespace Game.Logic.Actions
             City city;
             GameObject obj;            
 
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null)
                     throw new Exception("City is missing");
@@ -98,7 +99,7 @@ namespace Game.Logic.Actions
             {
                 GameAction action;
 
-                using (new MultiObjectLock(cityId, out city))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
                 {
                     if (city == null)
                         throw new Exception("City is missing");
@@ -123,7 +124,7 @@ namespace Game.Logic.Actions
             {
                 GameAction action;
 
-                using (new MultiObjectLock(cityId, out city))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
                 {
                     if (city == null)
                         throw new Exception("City is missing");
@@ -146,7 +147,7 @@ namespace Game.Logic.Actions
             foreach (var actionId in cancelActions)
             {
                 GameAction action;
-                using (new MultiObjectLock(cityId, out city))
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
                 {
                     if (city == null)
                         throw new Exception("City is missing");
@@ -160,7 +161,7 @@ namespace Game.Logic.Actions
                 action.WorkerRemoved(wasKilled);
             }
 
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city == null)
                     throw new Exception("City is missing");

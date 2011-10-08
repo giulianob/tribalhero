@@ -46,7 +46,7 @@ namespace Game.Comm
             // First need to find all the objects that should be locked
             uint[] playerIds;
             Dictionary<uint, City> cities;
-            using (new MultiObjectLock(out cities, cityId, targetCityId))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {
@@ -68,7 +68,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, Player> players;
-            using (new MultiObjectLock(out players, playerIds)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out players, playerIds)) {
                 City city;
                 City targetCity;
                 if (players == null || !Global.World.TryGetObjects(cityId, out city) || !Global.World.TryGetObjects(targetCityId, out targetCity))
@@ -129,7 +129,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = session.Player.Tribesman.Tribe;
-            using (new MultiObjectLock(session.Player, tribe)) {
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player, tribe)) {
                 City city = session.Player.GetCity(cityId);
                 if (city == null)
                 {

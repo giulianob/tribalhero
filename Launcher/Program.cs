@@ -2,11 +2,15 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using CSVToXML;
 using Game;
+using Game.Data;
 using Game.Setup;
+using Game.Util;
 using NDesk.Options;
 using Ninject;
+using Persistance;
 using log4net;
 using log4net.Config;
 
@@ -39,11 +43,13 @@ namespace Launcher
                 Console.Out.WriteLine("Usage: launcher [--settings=settings.ini]");
                 Environment.Exit(0);
             }
-
-            Config.LoadConfigFile(settingsFile);
-            Engine.CreateDefaultKernel();
-            Factory.CompileConfigFiles();                       
             
+            Config.LoadConfigFile(settingsFile);
+            Factory.CompileConfigFiles();
+            Engine.CreateDefaultKernel();
+            Factory.InitAll();
+            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);            
+
 #if DEBUG
             if (Config.database_empty)
             {
@@ -56,9 +62,7 @@ namespace Launcher
             var engine = Ioc.Kernel.Get<Engine>();
 
             if (!engine.Start())
-                throw new Exception("Failed to load server");
-
-            Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);
+                throw new Exception("Failed to load server");            
 
             while (true)
             {

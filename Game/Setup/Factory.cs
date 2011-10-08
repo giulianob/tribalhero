@@ -1,7 +1,9 @@
 #region
 
 using System.IO;
+using Game.Battle;
 using Game.Data;
+using Ninject;
 
 #endregion
 
@@ -56,6 +58,23 @@ namespace Game.Setup
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit.csv"), Config.csv_folder, "*unit.csv");
             BuildFiles(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"), Config.csv_folder, "*unit_modifier.csv");
             File.Copy(Path.Combine(Config.csv_folder, "object_type.csv"), Path.Combine(Config.csv_compiled_folder, "object_type.csv"), true);
+        }
+
+        public static void InitAll()
+        {
+            // These can be removed once they are injected as dependencies
+            Ioc.Kernel.Get<ActionFactory>();
+            Ioc.Kernel.Get<StructureFactory>();
+            Ioc.Kernel.Get<EffectRequirementFactory>();
+            Ioc.Kernel.Get<InitFactory>();
+            Ioc.Kernel.Get<PropertyFactory>();
+            Ioc.Kernel.Get<RequirementFactory>();
+            Ioc.Kernel.Get<TechnologyFactory>();
+            Ioc.Kernel.Get<UnitFactory>();
+            Ioc.Kernel.Get<ObjectTypeFactory>();
+            Ioc.Kernel.Get<UnitModFactory>();
+            Ioc.Kernel.Get<MapFactory>();
+            Ioc.Kernel.Get<CombatUnitFactory>();
         }
     }
 }

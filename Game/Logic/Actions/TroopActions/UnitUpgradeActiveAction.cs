@@ -102,7 +102,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             City city;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;

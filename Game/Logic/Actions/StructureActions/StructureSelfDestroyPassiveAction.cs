@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -77,7 +78,7 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                     return;
@@ -135,7 +136,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                     return;                

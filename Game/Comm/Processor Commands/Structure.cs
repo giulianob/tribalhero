@@ -33,7 +33,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(cityId, objectId, out city, out structure))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
             {
                 if (city == null || structure == null)
                 {
@@ -123,7 +123,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(Global.World.Forests))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(Global.World.Forests))
             {
                 if (!Global.World.Forests.TryGetValue(forestId, out forest))
                 {
@@ -198,7 +198,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 city = session.Player.GetCity(cityId);
 
@@ -269,7 +269,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -308,7 +308,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -349,7 +349,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -395,7 +395,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -453,7 +453,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -500,7 +500,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -543,7 +543,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new MultiObjectLock(session.Player))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -596,7 +596,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (new CallbackLock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
             {
                 // Get the lumbermill
                 Structure lumbermill = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Wood", structure));

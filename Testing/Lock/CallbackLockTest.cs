@@ -28,7 +28,7 @@ namespace Testing.Lock
         {
             var obj = new DummyLockable(1);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {};
-            var lck = new CallbackLock(lockFunc, null, obj);
+            var lck = new CallbackLock().Lock(lockFunc, null, obj);
             Assert.IsTrue(MultiObjectLock.IsLocked(obj));
             lck.Dispose();
             Assert.IsFalse(MultiObjectLock.IsLocked(obj));
@@ -40,7 +40,7 @@ namespace Testing.Lock
             var obj = new DummyLockable(1);
             var obj2 = new DummyLockable(2);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {obj2};
-            var lck = new CallbackLock(lockFunc, null, obj);
+            var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
             Assert.IsTrue(MultiObjectLock.IsLocked(obj));
             Assert.IsTrue(MultiObjectLock.IsLocked(obj2));
@@ -58,7 +58,7 @@ namespace Testing.Lock
             var obj2 = new DummyLockable(2);
             var obj3 = new DummyLockable(3);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {obj3, obj2};
-            var lck = new CallbackLock(lockFunc, null, obj);
+            var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
             Assert.IsTrue(MultiObjectLock.IsLocked(obj));
             Assert.IsTrue(MultiObjectLock.IsLocked(obj2));
@@ -77,7 +77,7 @@ namespace Testing.Lock
             var obj = new DummyLockable(1);
             var obj2 = new DummyLockable(2);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {};
-            var lck = new CallbackLock(lockFunc, null, obj, obj2);
+            var lck = new CallbackLock().Lock(lockFunc, null, obj, obj2);
 
             Assert.IsTrue(MultiObjectLock.IsLocked(obj));
             Assert.IsTrue(MultiObjectLock.IsLocked(obj2));
@@ -107,7 +107,7 @@ namespace Testing.Lock
                     callCount++;
                     return new ILockable[] {obj3, obj2};
                 };
-            var lck = new CallbackLock(lockFunc, null, obj);
+            var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
             Assert.IsTrue(MultiObjectLock.IsLocked(obj));
             Assert.IsTrue(MultiObjectLock.IsLocked(obj2));
@@ -139,7 +139,7 @@ namespace Testing.Lock
                     callCount++;
                     return new ILockable[] {obj2};
                 };
-            var lck = new CallbackLock(lockFunc, null, obj);
+            var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
             Assert.IsTrue(MultiObjectLock.IsLocked(obj));
             Assert.IsTrue(MultiObjectLock.IsLocked(obj2));

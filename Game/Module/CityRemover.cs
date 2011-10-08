@@ -81,7 +81,7 @@ namespace Game.Module {
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
-            using (new CallbackLock(GetForeignTroopLockList, new[] { city }, city))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetForeignTroopLockList, new[] { city }, city))
             {
                 if (city == null)
                     return;
@@ -116,7 +116,7 @@ namespace Game.Module {
                 }
             }
 
-            using (new CallbackLock(GetLocalTroopLockList, new[] { city }, city))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetLocalTroopLockList, new[] { city }, city))
             {
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
@@ -164,7 +164,7 @@ namespace Game.Module {
                 }
             }
 
-            using (new MultiObjectLock(cityId, out city))
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
             {
                 if (city.Worker.Notifications.Count > 0)
                 {

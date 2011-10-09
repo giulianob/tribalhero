@@ -13,6 +13,8 @@ package src.UI.Tooltips {
 	import org.aswing.event.AWEvent;
 	import org.aswing.geom.IntPoint;
 	import org.aswing.Insets;
+	import src.Global;
+	import src.Map.Camera;
 	import src.UI.GameJBox;
 
 	public class Tooltip
@@ -22,7 +24,7 @@ package src.UI.Tooltips {
 		protected var viewObj: DisplayObject;
 
 		public function Tooltip() {
-			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));
+			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
 		}
 
 		public function getUI(): GameJBox {
@@ -40,6 +42,8 @@ package src.UI.Tooltips {
 
 		public function show(obj: DisplayObject):void
 		{
+			Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
+			
 			if (this.viewObj == null || this.viewObj != obj)
 			{
 				hide();
@@ -60,6 +64,11 @@ package src.UI.Tooltips {
 				adjustPosition();
 			}
 		}
+		
+		private function onCameraMove(e: Event): void {
+			// Hide if camera is moving
+			hide();
+		}
 
 		// We need this function since the size is wrong of the component until it has been painted
 		private function onPaint(e: AWEvent): void {
@@ -68,6 +77,7 @@ package src.UI.Tooltips {
 		}
 
 		private function parentHidden(e: Event) : void {
+			Global.map.camera.removeEventListener(Camera.ON_MOVE, onCameraMove);
 			hide();
 		}
 

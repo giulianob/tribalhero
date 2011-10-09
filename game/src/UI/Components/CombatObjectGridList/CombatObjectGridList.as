@@ -52,7 +52,7 @@
 			}
 			else if (prototype is StructurePrototype)
 			{
-				var structureTooltip: StructureTooltip = new StructureTooltip(prototype);
+				var structureTooltip: StructureTooltip = new StructureTooltip(null, prototype);
 				structureTooltip.show(event.getCell().getCellComponent());
 
 				this.tooltip = structureTooltip;

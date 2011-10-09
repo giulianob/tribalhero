@@ -46,6 +46,11 @@ class ReportsController extends AppController {
 
         $this->set('battle_reports', $reports);
     }
+	
+	function mark_all_as_read()
+	{	
+		$this->Report->markAllAsRead($this->params['form']['playerId']);
+	}
 
     function view_local() {
         if (empty($this->params['form']['id'])) {

@@ -37,7 +37,43 @@ class Report extends AppModel {
 
         return $localUnread + $remoteUnread;
     }
+	
+    function markAllAsRead($playerId) {
 
+        $City = & ClassRegistry::init('City');
+        $Battle = & ClassRegistry::init('Battle');
+
+        // Get list of cities for given player
+        $cities = $City->find('all', array(
+                    'contain' => array(),
+                    'conditions' => array(
+                        'player_id' => $playerId
+                    )
+                ));
+
+        $cityIds = Set::extract('{n}.City.id', $cities);
+
+		// Local
+		$Battle->updateAll(array(
+			'Battle.read' => true
+				),
+				array(
+					'Battle.city_id' => $cityIds,
+					'NOT' => array(
+						'Battle.ended' => null
+				))
+		);
+
+		// Remote
+		$Battle->BattleReportView->updateAll(array(
+			'BattleReportView.read' => true
+				),
+				array(
+					'BattleReportView.city_id' => $cityIds,
+				)
+		);        
+    }
+	
     function markAsRead($playerId, $local, $id) {
 
         $City = & ClassRegistry::init('City');

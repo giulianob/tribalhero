@@ -101,7 +101,7 @@
 			
 			var infoPanel: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			infoPanel.append(new JLabel(Util.formatTime(tradeTime), new AssetIcon(new ICON_CLOCK()), AsWingConstants.RIGHT));
-			infoPanel.append(new JLabel("You have chosen to send " + amount().toNiceString() + " to " + playerName + "'s " + txtCityName.getText() + "\n\nAre you sure?"));			
+			infoPanel.append(new JLabel("You have chosen to send " + amount().toNiceString() + " to " + playerName + " " + txtCityName.getText() + "\n\nAre you sure?"));			
 			
 			InfoDialog.showMessageDialog("Confirm", infoPanel, onUserConfirms, null, true, false, JOptionPane.YES | JOptionPane.NO);
 		}

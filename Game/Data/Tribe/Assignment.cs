@@ -110,16 +110,19 @@ namespace Game.Data.Tribe {
             Structure structure = (Structure)Global.World.GetObjects(X, Y).Find(z => z is Structure);
             if (structure == null) {
                 Procedure.TroopStubDelete(stub.City, stub);
-                stub.City.Owner.SendSystemMessage(null, "Assignment Failed", string.Format(@"Assigned target({0},{1}) is already destroyed.
-                                                                                           The reserved troops has already returned to the city", X, Y));
+                stub.City.Owner.SendSystemMessage(null, "Assignment Failed", string.Format(@"Assigned target({0},{1}) has already been destroyed. The reserved troops have been returned to the city.", X, Y));
                 return false;
             }
+
             // Create troop object
-            if (!Procedure.TroopObjectCreate(stub.City, stub)) {
-                throw new Exception("fail to create troop object?!?");
+            Procedure.TroopObjectCreate(stub.City, stub);
+
+            var action = new AttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
+            if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
+            {
+                Procedure.TroopObjectDelete(stub.TroopObject, true);
+                return false;
             }
-            var aa = new AttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
-            stub.City.Worker.DoPassive(stub.City, aa, true);
 
             return true;
         }

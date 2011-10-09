@@ -105,7 +105,7 @@ package src.UI.Dialog{
 			
 			if (resource)
 			{				
-				var newRate: int = LazyResources.getHourlyRate(resource, laborDelta);
+				var newRate: int = LazyResources.getHourlyRate(Formula.getResourceRateWithBonus(resource, structure.level, resourceType, laborDelta));
 
 				lblRate.setText((newRate == 0 ? "0" : "+" + newRate) + " per hour");
 			}

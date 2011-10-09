@@ -33,7 +33,7 @@
 
 		private var highlightedObj: GameObject;
 
-		private var tooltip: TextTooltip;
+		private var tooltip: StructureTooltip;
 
 		public function GroundAttackCursor(onAccept: Function, troop: TroopStub = null):void
 		{
@@ -204,16 +204,11 @@
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance, true);
 
-			var username: Username = Global.map.usernames.cities.getUsername(structObj.cityId, showTooltip, structObj);
-			if (username) showTooltip(username, structObj);
+			if (tooltip) tooltip.hide();
+			tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
+			tooltip.show(structObj);
 
 			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to attack.");
-		}
-
-		private function showTooltip(username: Username, custom: * = null) : void {
-			if (tooltip) tooltip.hide();
-			tooltip = new TextTooltip(username.name);
-			tooltip.show(custom as DisplayObject);
 		}
 	}
 

@@ -22,6 +22,10 @@
 			loader.load("/reports/index_local", [ { key: "page", value: page }, { key: "playerNameFilter", value: playerNameFilter } ]);
 		}
 		
+		public function markAllAsRead(loader: GameURLLoader) : void {
+			loader.load("/reports/mark_all_as_read", []);
+		}		
+		
 		public function viewLocal(loader: GameURLLoader, id: int, playerNameFilter: String) : void {
 			loader.load("/reports/view_local", [ { key: "id", value: id }, { key: "playerNameFilter", value: playerNameFilter } ]);
 		}

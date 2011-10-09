@@ -8,6 +8,7 @@
 	import src.UI.GameJPanel;
 	import src.Objects.Troop.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
+	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -23,14 +24,24 @@
 		private var pnlSubject:JPanel;
 		private var lblSubject:JLabel;
 		private var txtSubject:JTextField;
+		
+		private var originalMsg: String;
+		
 		private var pnlMessage:JPanel;
 		private var lblMessage:JLabel;
 		private var txtMessage:JTextArea;
+		
+		private var pnlOrigMessage:JPanel;
+		private var lblOrigMessage:JLabel;
+		private var txtOrigMessage:JTextArea;		
+		
 		private var pnlFooter:JPanel;
 		private var btnSend:JButton;
 
-		public function MessageCreateDialog(onSent: Function, to: String = "", subject: String = "", isReply: Boolean = false)
+		public function MessageCreateDialog(onSent: Function, to: String = "", subject: String = "", isReply: Boolean = false, originalMsg: String = "")
 		{
+			this.originalMsg = originalMsg;
+			
 			createUI();				
 
 			txtTo.setText(to);
@@ -153,15 +164,9 @@
 			txtSubject.setPreferredSize(new IntDimension(355, 25));
 
 			pnlMessage = new JPanel();
-			var layout3:SoftBoxLayout = new SoftBoxLayout();
-			layout3.setAxis(AsWingConstants.VERTICAL);
-			layout3.setAlign(AsWingConstants.LEFT);
-			layout3.setGap(0);
-			pnlMessage.setLayout(layout3);
+			pnlMessage.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.LEFT));
 
-			lblMessage = new JLabel();
-			lblMessage.setText("Message");
-			lblMessage.setHorizontalAlignment(AsWingConstants.LEFT);
+			lblMessage = new JLabel("Message", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblMessage, "Form.label");
 
 			var scrollMessage: JScrollPane = new JScrollPane();
@@ -180,10 +185,31 @@
 			btnSend = new JButton();
 			btnSend.setText("Send");
 
+			pnlOrigMessage = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL, 0, AsWingConstants.LEFT));
+			pnlOrigMessage.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
+			pnlOrigMessage.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));					
+			
+			lblOrigMessage = new JLabel("Original Message", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblOrigMessage, "Form.label");
+
+			var scrollOrigMessage: JScrollPane = new JScrollPane();
+			scrollOrigMessage.setPreferredSize(new IntDimension(400, 120));
+
+			txtOrigMessage = new MultilineLabel(originalMsg, 0, 50);			
+			GameLookAndFeel.changeClass(txtOrigMessage, "Message");
+
+			
 			//component layoution
 			append(pnlTo);
 			append(pnlSubject);
 			append(pnlMessage);
+			
+			if (originalMsg != "") {
+				pnlOrigMessage.appendAll(lblOrigMessage, scrollOrigMessage);
+				scrollOrigMessage.append(txtOrigMessage);				
+				append(pnlOrigMessage);
+			}						
+			
 			append(pnlFooter);
 
 			pnlTo.append(lblTo);
@@ -195,7 +221,7 @@
 			pnlMessage.append(lblMessage);
 			pnlMessage.append(scrollMessage);
 
-			scrollMessage.append(txtMessage);
+			scrollMessage.append(txtMessage);		
 
 			pnlFooter.append(btnSend);
 

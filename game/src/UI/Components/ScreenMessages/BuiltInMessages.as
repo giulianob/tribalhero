@@ -29,7 +29,7 @@ package src.UI.Components.ScreenMessages
 
 		public static function showTroopsStarving(city: City): void {
 			if (city.resources.crop.getRate() < city.resources.crop.getUpkeep()) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/STARVE", city.name + "'s troops may be starving to death", new AssetIcon(new ICON_CROP)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/STARVE", city.name + ": Troops may be starving to death", new AssetIcon(new ICON_CROP)));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/STARVE");

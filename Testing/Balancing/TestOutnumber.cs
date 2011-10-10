@@ -46,15 +46,39 @@ namespace Testing.Troop
         private static void TestMultiplier(int baseCount, double multiplier, double expectAdvantage)
         {            
             Group defender = new Group();
-            defender.AddToLocal(UnitType.TestSwordsman, 1, (ushort)(baseCount * multiplier));
+            defender.AddToLocal(UnitType.Swordsman, 1, (ushort)(baseCount * multiplier));
             Group attacker = new Group();
-            attacker.AddToAttack(UnitType.TestSwordsman, 1, (ushort)baseCount);
+            attacker.AddToAttack(UnitType.Swordsman, 1, (ushort)baseCount);
             Simulation sim = new Simulation(attacker,defender);
             sim.Run();
             
             double actualAdvantage = defender.Upkeep()/ ( multiplier * baseCount);
             if(double.IsNaN(actualAdvantage)) actualAdvantage = 0;
             Assert.IsTrue(expectAdvantage - ERROR_MARGIN < actualAdvantage && actualAdvantage < expectAdvantage + ERROR_MARGIN, "Multi[{0}] Base[{3}] \tLeft[{4}]'s actual advantage[{1}] is close to [{2}] expect left[{5}]", multiplier, actualAdvantage, expectAdvantage, baseCount * multiplier, defender.Upkeep(), multiplier * baseCount * expectAdvantage);
+        }
+        [TestMethod]
+        public void Test20X20() {
+            TestMultiplier(100, 0, 0);
+        }
+        [TestMethod]
+        public void Test20X25() {
+            TestMultiplier(20, 1.25, .35);
+        }
+        [TestMethod]
+        public void Test20X30() {
+            TestMultiplier(20, 1.5, .5);
+        }
+        [TestMethod]
+        public void Test20X40() {
+            TestMultiplier(20, 2, .75);
+        }
+        [TestMethod]
+        public void Test20X70() {
+            TestMultiplier(20, 3.5, .85);
+        }
+        [TestMethod]
+        public void Test20X100() {
+            TestMultiplier(20, 5, .90);
         }
 
         [TestMethod]

@@ -41,7 +41,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ConcurrencyType.Concurrent;
+                return ConcurrencyType.StandAlone;
             }
         }
 

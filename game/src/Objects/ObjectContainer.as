@@ -252,7 +252,7 @@ package src.Objects {
 			if (!objTooltip) {
 				if (highestObj is StructureObject) {
 					var structureObj: StructureObject = highestObj as StructureObject;
-					objTooltip = new StructureTooltip(StructureFactory.getPrototype(structureObj.type, structureObj.level));
+					objTooltip = new StructureTooltip(structureObj, StructureFactory.getPrototype(structureObj.type, structureObj.level));
 				}
 			}
 			

@@ -54,8 +54,6 @@
 		private var timeDelta: int = 0;
 
 		public var scrollRate: Number = 1;
-
-		private var pressedKeys:Object = {};
 		
 		public function Map()
 		{
@@ -112,8 +110,6 @@
 			if (disable) {
 				if (listenersDefined)
 				{
-					stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-					stage.removeEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
 					stage.removeEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 					stage.removeEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 					stage.removeEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
@@ -124,8 +120,6 @@
 			}
 			else {
 				if (!listenersDefined) {
-					stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
 					stage.addEventListener(MouseEvent.MOUSE_DOWN, eventMouseDown);
 					stage.addEventListener(MouseEvent.MOUSE_MOVE, eventMouseMove);
 					stage.addEventListener(MouseEvent.MOUSE_UP, eventMouseUp);
@@ -375,35 +369,6 @@
 		//###################################################################
 		//#################### Mouse/Keyboard Events ########################
 		//###################################################################
-
-		public function eventKeyUp(event: KeyboardEvent):void
-		{
-			// clear key press
-			delete pressedKeys[event.keyCode];
-		}
-
-		public function eventKeyDown(event: KeyboardEvent):void
-		{
-			// Key down
-
-			//end key down
-
-			// Key Press Handler
-			if(pressedKeys[event.keyCode]) return;
-			pressedKeys[event.keyCode] = 1;
-
-			// Key press
-			if (event.keyCode == Keyboard.ESCAPE) doSelectedObject(null);
-
-			camera.beginMove();
-			var keyScrollRate: int = Global.gameContainer.minimapZoomed ? 1150 : 500 * camera.getZoomFactorOverOne();
-			if (event.keyCode == Keyboard.LEFT) camera.MoveLeft(keyScrollRate);
-			if (event.keyCode == Keyboard.RIGHT) camera.MoveRight(keyScrollRate);
-			if (event.keyCode == Keyboard.UP) camera.MoveUp(keyScrollRate);
-			if (event.keyCode == Keyboard.DOWN) camera.MoveDown(keyScrollRate);
-			camera.endMove();
-			//end key press
-		}
 
 		public function eventMouseClick(event: MouseEvent):void
 		{

@@ -64,7 +64,7 @@
 
 		public function getHourlyRate(): int
 		{
-			return LazyResources.getHourlyRate(this, 0);
+			return LazyResources.getHourlyRate(this.getRate());
 		}
 	}
 

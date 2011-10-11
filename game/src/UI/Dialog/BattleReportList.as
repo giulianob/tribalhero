@@ -1,6 +1,8 @@
 ﻿package src.UI.Dialog
 {
+	import adobe.utils.CustomActions;
 	import flash.events.Event;
+	import src.Comm.GameURLLoader;
 	import src.Constants;
 	import src.Global;
 	import src.UI.Components.BattleReport.LocalReportList;
@@ -16,6 +18,8 @@
 
 	public class BattleReportList extends GameJPanel
 	{
+		private var btnMarkAsRead: JButton;
+		
 		private var pnlLocal: JPanel;
 		private var pnlRemote: JPanel;
 
@@ -27,6 +31,18 @@
 
 		public function BattleReportList() {
 			createUI();
+			
+			btnMarkAsRead.addActionListener(function(e: Event): void 
+			{
+				var loader: GameURLLoader = new GameURLLoader();
+				loader.addEventListener(Event.COMPLETE, function(e1: Event): void 
+				{
+					localReports.loadPage(0);
+					remoteReports.loadPage(0);
+				});				
+				Global.mapComm.BattleReport.markAllAsRead(loader);
+				
+			});
 			
 			btnAdminSearch.addActionListener(onAdminCitySearch);
 		}
@@ -49,12 +65,14 @@
 		}
 
 		public function createUI() : void {
-			setPreferredSize(new IntDimension(600, 520));
+			setPreferredWidth(600);
 
 			var layout0:SoftBoxLayout = new SoftBoxLayout();
 			layout0.setAxis(AsWingConstants.VERTICAL);
 			layout0.setGap(10);
 			setLayout(layout0);
+			
+			btnMarkAsRead = new JButton("Mark All as Read");
 
 			pnlLocal = new JPanel();
 			pnlLocal.setPreferredSize(new IntDimension(600, 230));
@@ -87,6 +105,7 @@
 			btnAdminSearch = new JButton("Search");											
 
 			// component layout			
+			append(AsWingUtils.createPaneToHold(btnMarkAsRead, new FlowLayout()));
 			append(pnlLocal);
 			append(pnlRemote);
 			

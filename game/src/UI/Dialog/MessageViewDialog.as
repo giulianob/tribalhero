@@ -66,7 +66,7 @@
 			btnReply.addActionListener(function(e: Event) : void {
 				var newMessageDialog : MessageCreateDialog = new MessageCreateDialog(function(dlg: MessageCreateDialog) : void {
 					dlg.getFrame().dispose();
-				}, message.name, message.subject, true);
+				}, message.name, message.subject, true, message.message);
 
 				newMessageDialog.show();
 			});
@@ -132,14 +132,9 @@
 			txtSubject = new MultilineLabel();
 			txtSubject.setColumns(44);
 
-			pnlMessage = new JPanel();
-			pnlMessage.setLocation(new IntPoint(0, 207));
-			pnlMessage.setSize(new IntDimension(400, 167));
-			var layout3:SoftBoxLayout = new SoftBoxLayout();
-			layout3.setAxis(AsWingConstants.VERTICAL);
-			layout3.setAlign(AsWingConstants.LEFT);
-			layout3.setGap(0);
-			pnlMessage.setLayout(layout3);
+			pnlMessage = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL));
+			pnlMessage.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
+			pnlMessage.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));		
 
 			lblMessage = new JLabel();
 			lblMessage.setText("Message");
@@ -150,8 +145,6 @@
 			scrollMessage.setPreferredSize(new IntDimension(400, 250));
 
 			txtMessage = new MultilineLabel();
-			txtMessage.setBackgroundDecorator(new GamePanelBackgroundDecorator("TabbedPane.top.contentRoundImage"));
-			txtMessage.setBorder(new EmptyBorder(null, UIManager.get("TabbedPane.contentMargin") as Insets));
 			txtMessage.setColumns(50);
 			GameLookAndFeel.changeClass(txtMessage, "Message");
 

@@ -54,9 +54,14 @@ public class NumberInputDialog extends GameJPanel {
 		sldAmount.setValues(initialValue, 0, minValue, maxValue);
 		
 		sldAmount.addStateListener(updateResources);
-		sldAmount.addStateListener(updateTime);
+		sldAmount.addStateListener(updateTime);	
 
-		var self: NumberInputDialog = this;
+		var self: NumberInputDialog = this;		
+		sldAmount.addEventListener(KeyboardEvent.KEY_UP, function(e: KeyboardEvent) : void { 
+			if (e.keyCode == Keyboard.ENTER) {
+				btnOk.doClick();
+			}
+		});
 		btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
 		
 		updateResources();

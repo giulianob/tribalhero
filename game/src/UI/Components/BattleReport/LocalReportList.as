@@ -79,11 +79,9 @@
 			loadPage(0);
 		}
 
-		private function loadPage(page: int) : void {
+		public function loadPage(page: int) : void {
 			btnPrevious.setVisible(false);
-			btnNext.setVisible(false);
-			lblPages.setText("Loading...");
-			lblPages.pack();
+			btnNext.setVisible(false);			
 
 			Global.mapComm.BattleReport.listLocal(loader, page, playerNameFilter);
 		}
@@ -112,6 +110,7 @@
 			btnPrevious.setVisible(page > 1);
 			btnNext.setVisible(page < data.pages);
 			lblPages.setText(data.page + " of " + data.pages);
+			lblPages.pack();
 
 			tblReports.clearSelection(true);
 			reportList.clear();
@@ -148,7 +147,7 @@
 
 			btnPrevious = new JLabelButton("< Newer");
 
-			lblPages = new JLabel();
+			lblPages = new JLabel("0 of 0");
 
 			btnNext = new JLabelButton("Older >");
 

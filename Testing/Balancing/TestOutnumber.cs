@@ -4,7 +4,6 @@ using System;
 using ConsoleSimulator;
 using Game.Data;
 using Game.Data.Stats;
-using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,7 +22,6 @@ namespace Testing.Troop
     [TestClass]
     public class TestOutnumber : TestBase
     {
-        private TroopStub stub;
         const double ERROR_MARGIN = .15;
 
         public TestOutnumber()

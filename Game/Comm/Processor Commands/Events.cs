@@ -25,11 +25,12 @@ namespace Game.Comm
             {
                 Global.Channel.Unsubscribe(session);
 
-                if (session.Player.Session == session)
-                    session.Player.Session = null;
+                // If player is logged in under new session already, then don't bother changing their session info
+                if (session.Player.Session != session)
+                    return;
 
+                session.Player.Session = null;
                 session.Player.SessionId = string.Empty;
-
                 Ioc.Kernel.Get<IDbManager>().Save(session.Player);
             }
         }

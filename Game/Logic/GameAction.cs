@@ -19,8 +19,11 @@ namespace Game.Logic
 
     public enum ConcurrencyType
     {
+        // Standalone - Can only do this action .. this action will be disabled if any other are in progress and if you kick this off, all other actions will be blocked
         StandAlone,
+        // Normal - Can only have 1 normal at a time .. Normal still allows you to do concurrent
         Normal,
+        // Concurrent - Can do as many as you want but only 1 of each type
         Concurrent
     }
 

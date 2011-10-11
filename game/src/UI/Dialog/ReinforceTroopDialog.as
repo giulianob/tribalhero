@@ -38,7 +38,13 @@
 			this.city = Global.gameContainer.selectedCity;
 
 			var self: ReinforceTroopDialog = this;
-			btnOk.addActionListener(function():void { if (onAccept != null) onAccept(self); } );
+			btnOk.addActionListener(function():void { 
+				if (getTroop().getIndividualUnitCount() == 0) {
+					InfoDialog.showMessageDialog("Error", "You have to assign units before continuing. Drag units from the local troop to assign them.");
+					return;
+				}
+				if (onAccept != null) onAccept(self); 
+			} );
 
 			//create local tile lists
 			var localTilelists: Array = SimpleTroopGridList.getGridList(city.troops.getDefaultTroop(), city.template, [Formation.Normal]);

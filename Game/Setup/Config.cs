@@ -80,7 +80,7 @@ namespace Game.Setup
 
         public static int[] forest_count = new[] {100, 100, 100, 100};
 
-        public static int newbie_protection = 259200; // Number of seconds for newbie protection
+        public static int newbie_protection = 432000; // Number of seconds for newbie protection, set to 5 days currently
 
         public static bool database_verbose;
         public static bool database_empty;

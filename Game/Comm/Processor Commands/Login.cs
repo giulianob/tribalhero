@@ -188,11 +188,13 @@ namespace Game.Comm
                 // Subscribe him to the player channel
                 Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
-                //Player Id
+                //Player Info
                 reply.AddUInt32(player.PlayerId);
                 reply.AddByte((byte)(player.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
+                reply.AddInt32(Config.newbie_protection);
+                reply.AddUInt32(UnixDateTime.DateTimeToUnix(player.Created.ToUniversalTime()));
 
                 //Server time
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.UtcNow.ToUniversalTime()));

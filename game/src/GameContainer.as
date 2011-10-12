@@ -81,7 +81,10 @@
 		private var cmdLine: CmdLineViewer;
 		
 		// Holds currently pressed keys
-		private var pressedKeys:Object = {};
+		private var pressedKeys:Object = { };
+		
+		// Shows built in messages on the game screen
+		private var builtInMessages: BuiltInMessages;
 
 		public function GameContainer()
 		{							
@@ -540,6 +543,10 @@
 			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
 			messageTimer.start();
+			
+			// Show built in messages
+			builtInMessages = new BuiltInMessages();
+			builtInMessages.start();
 		}
 
 		public function dispose() : void {
@@ -547,6 +554,10 @@
 				menu.dispose();
 				menu = null;
 				removeChild(menuDummyOverlay);
+			}
+			
+			if (builtInMessages) {
+				builtInMessages.stop();
 			}
 			
 			if (resourcesTimer) {

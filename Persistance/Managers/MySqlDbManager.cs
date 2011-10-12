@@ -235,10 +235,12 @@ namespace Persistance.Managers
                 return;
 
             var sqlwriter = new StringWriter();
+            sqlwriter.Write("({0} {1} (", Thread.CurrentThread.ManagedThreadId, command.CommandText);
             foreach (MySqlParameter param in command.Parameters)
-                sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
+                sqlwriter.Write("{0}={1},", param, ((param.Value != null) ? param.Value.ToString() : "NULL"));
+            sqlwriter.Write(")");
 
-            logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
+            logger.Info("{0}", sqlwriter.ToString());
         }
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
@@ -710,8 +712,10 @@ namespace Persistance.Managers
             command.Parameters.Add(parameter);
         }
 
-        private void ExecuteNonQuery(MySqlCommand command)
+        private int ExecuteNonQuery(MySqlCommand command)
         {
+            int affectedRows;
+
             Interlocked.Increment(ref queriesRan);
 
             LogCommand(command);
@@ -720,7 +724,7 @@ namespace Persistance.Managers
             {
                 try
                 {
-                    command.ExecuteNonQuery();
+                    affectedRows = command.ExecuteNonQuery();
                     break;
                 }
                 catch (MySqlException e)
@@ -748,6 +752,8 @@ namespace Persistance.Managers
 
             if (command.Transaction != null && command.Transaction == persistantTransaction.Transaction)
                 persistantTransaction.Commands.Add(command);
+
+            return affectedRows;
         }
 
         internal void HandleGeneralException(Exception e, DbCommand command = null)

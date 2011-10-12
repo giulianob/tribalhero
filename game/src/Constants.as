@@ -17,6 +17,8 @@ package src
 		public static var tribeId: int;
 		public static var tribeRank: int;
 		public static var tribeInviteId: int = 3;
+		public static var signupTime: Date;
+		public static var newbieProtectionSeconds: int;
 		
 		/* APP CONSTANTS */
 		public static const mainWebsite: String = "tribalhero.com";

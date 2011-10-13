@@ -285,40 +285,24 @@ namespace Persistance.Managers
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public void Query(string query, DbColumn[] parms, bool transactional)
+        public void Query(string query, DbColumn[] parms)
         {
             if (paused)
                 return;
 
-            MySqlCommand command;            
-
-            if (transactional && persistantTransaction == null)
+            if (persistantTransaction == null)
                 throw new Exception("Calling transactional query outside of transactional block");
 
-            if (!transactional)
-            {
-                MySqlConnection connection = GetConnection();
-                command = connection.CreateCommand();
-                command.Connection = connection;
-            }
-            else
-            {                
-                InitPersistantTransaction();
-                command = ((MySqlTransaction)persistantTransaction.Transaction).Connection.CreateCommand();
-                command.Connection = ((MySqlTransaction)persistantTransaction.Transaction).Connection;
-                command.Transaction = (persistantTransaction.Transaction as MySqlTransaction);
-            }
+            InitPersistantTransaction();
+            MySqlCommand command = ((MySqlTransaction)persistantTransaction.Transaction).Connection.CreateCommand();
+            command.Connection = ((MySqlTransaction)persistantTransaction.Transaction).Connection;
+            command.Transaction = (persistantTransaction.Transaction as MySqlTransaction);
 
             command.CommandText = query;
             foreach (var parm in parms)
                 AddParameter(command, parm);
 
             ExecuteNonQuery(command);
-
-            if (!transactional)
-            {
-                Close(command.Connection);
-            }
         }
 
         public void Rollback()

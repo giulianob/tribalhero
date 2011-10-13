@@ -36,13 +36,14 @@ namespace Game.Database
 
             DateTime now = DateTime.UtcNow;
 
-            // Set all players to offline
-            dbManager.Query("UPDATE `players` SET online = @online", new[] { new DbColumn("online", false, DbType.Boolean) }, false);
-
             using (Persistance.DbTransaction transaction = dbManager.GetThreadTransaction())
             {
                 try
                 {
+                    // Set all players to offline
+                    dbManager.Query("UPDATE `players` SET `online` = @online", new[] { new DbColumn("online", false, DbType.Boolean) });
+
+                    // Load sys vars
                     LoadSystemVariables(dbManager);
 
                     // Calculate how long server was down

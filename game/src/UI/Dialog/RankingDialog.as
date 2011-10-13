@@ -17,12 +17,13 @@ package src.UI.Dialog{
 	public class RankingDialog extends GameJPanel {
 
 		private var rankings: Array = [
-		{name: "Attack Points", cityBased: true},
-		{name: "Defense Points", cityBased: true},
-		{name: "Resources Stolen", cityBased: true},
-		{name: "Attack Points", cityBased: false},
-		{name: "Defense Points", cityBased: false},
-		{name: "Resources Stolen", cityBased: false},
+		{name: "Attack Points", baseOn: "city"},
+		{name: "Defense Points", baseOn: "city"},
+		{name: "Resources Stolen", baseOn: "city"},
+		{name: "Attack Points", baseOn: "player"},
+		{name: "Defense Points", baseOn: "player"},
+		{name: "Resources Stolen", baseOn: "player"},
+		{name: "Level", baseOn: "tribe"},
 		];
 
 		private var loader: GameURLLoader;		
@@ -44,6 +45,9 @@ package src.UI.Dialog{
 		private var playerAttackRanking: JToggleButton;
 		private var playerDefenseRanking: JToggleButton;
 		private var playerLootRanking: JToggleButton;
+
+		private var tribeRanking: JPanel;
+		private var tribeLevelRanking: JToggleButton;
 
 		private var txtSearch: JTextField;
 		private var btnSearch: JButton;
@@ -72,6 +76,7 @@ package src.UI.Dialog{
 			new SimpleTooltip(playerDefenseRanking, "Sort by attack points");
 			new SimpleTooltip(cityLootRanking, "Sort by total loot stolen");
 			new SimpleTooltip(playerLootRanking, "Sort by total loot stolen");
+			new SimpleTooltip(tribeLevelRanking, "Sort by Level");
 			
 			// Handle different buttons being pressed
 			cityAttackRanking.addActionListener(onChangeRanking);
@@ -82,13 +87,15 @@ package src.UI.Dialog{
 			playerDefenseRanking.addActionListener(onChangeRanking);
 			playerLootRanking.addActionListener(onChangeRanking);
 
+			tribeLevelRanking.addActionListener(onChangeRanking);
+			
 			btnSearch.addActionListener(onSearch);
 
 			tabs.addStateListener(onTabChanged);
 		}
 		
 		private function onSelectionChange(e: SelectionEvent) : void {			
-			if (rankings[type].cityBased) {
+			if (rankings[type].baseOn == "city") {
 				
 
 			}			
@@ -126,13 +133,19 @@ package src.UI.Dialog{
 				}
 			}
 			// Player ranking
-			else {
+			else if(tabs.getSelectedIndex() == 1) {
 				if (playerAttackRanking.isSelected()) {
 					type = 3;
 				} else if (playerDefenseRanking.isSelected()) {
 					type = 4;
 				} else {
 					type = 5;
+				}
+			}
+			// Tribe ranking
+			else if (tabs.getSelectedIndex() == 2) {
+				if (tribeLevelRanking.isSelected()) {
+					type = 6;
 				}
 			}
 
@@ -144,10 +157,12 @@ package src.UI.Dialog{
 		}
 
 		private function loadPage(page: int) : void {
-			if (rankings[type].cityBased) {
+			if (rankings[type].baseOn == "city") {
 				Global.mapComm.Ranking.list(loader, Global.gameContainer.selectedCity.id, type, page);
-			} else {
+			} else if(rankings[type].baseOn == "player") {
 				Global.mapComm.Ranking.list(loader, Constants.playerId, type, page);
+			} else if (rankings[type].baseOn == "tribe") {
+				Global.mapComm.Ranking.list(loader, Constants.tribeId, type, page);
 			}
 		}
 
@@ -170,10 +185,12 @@ package src.UI.Dialog{
 			//Paging info
 			pagingBar.setData(data);
 
-			if (rankings[type].cityBased)
+			if (rankings[type].baseOn == "city")
 				onCityRanking(data);
-			else
+			else if (rankings[type].baseOn == "player")
 				onPlayerRanking(data);
+			else if (rankings[type].baseOn == "tribe")
+				onTribeRanking(data);
 		}
 
 		private function onPlayerRanking(data: Object) : void {
@@ -242,6 +259,37 @@ package src.UI.Dialog{
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
 			}
 		}
+		private function onTribeRanking(data: Object) : void {
+		/*	rankingList = new VectorListModel();
+
+			rankingModel = new PropertyTableModel(rankingList,
+			["Rank", "Player", rankings[type].name],
+			["rank", ".", "value"],
+			[null, null, null, null]
+			);
+
+			var selectIdx: int = -1;
+
+			for each(var rank: Object in data.rankings) {
+				rankingList.append( { "rank": rank.rank, "value": rank.value, "tribeId": rank.tribeId, "tribeName": rank.tribeName } );
+
+				if (rank.tribeId == Constants.tribeId)  {
+					selectIdx = rankingList.size() - 1;
+				}
+			}
+
+			rankingTable.setModel(rankingModel);
+
+			rankingTable.getColumnAt(0).setPreferredWidth(45);
+			rankingTable.getColumnAt(1).setPreferredWidth(220);
+			rankingTable.getColumnAt(2).setPreferredWidth(150);
+			
+			rankingTable.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
+
+			if (selectIdx > -1) {
+				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
+			}*/
+		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
 		{
@@ -286,9 +334,19 @@ package src.UI.Dialog{
 			playerButtonGroupHolder.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking);
 			playerRanking.append(playerButtonGroupHolder);
 
+			tribeRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			tribeLevelRanking = new JToggleButton("Level");
+			tribeLevelRanking.setSelected(true);
+			var tribeButtonGroup: ButtonGroup = new ButtonGroup();
+			tribeButtonGroup.appendAll(tribeLevelRanking);
+			var tribeButtonGroupHolder: JPanel = new JPanel();
+			tribeButtonGroupHolder.appendAll(tribeLevelRanking);
+			tribeRanking.append(tribeButtonGroupHolder);
+			
 			tabs = new JTabbedPane();
 			tabs.appendTab(cityRanking, "City");
 			tabs.appendTab(playerRanking, "Player");
+			tabs.appendTab(tribeRanking, "Tribe");
 
 			// Bottom bar
 			var pnlFooter: JPanel = new JPanel(new BorderLayout(10));

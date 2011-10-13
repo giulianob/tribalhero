@@ -64,7 +64,7 @@ namespace Game.Data
                 if (DbPersisted)
                 {
                     Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
-                                           new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) }, false);
+                                           new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) });
                 }
             }
         }
@@ -210,7 +210,7 @@ namespace Game.Data
                                            new DbColumn("recipient_player_id", PlayerId, DbType.UInt32), new DbColumn("subject", subject, DbType.String),
                                            new DbColumn("message", message, DbType.String), new DbColumn("sender_state", 2, DbType.Int16),
                                            new DbColumn("recipient_state", 0, DbType.Int16),
-                                   }, false);
+                                   });
         }
 
         public void TribeUpdate()

@@ -272,13 +272,13 @@ namespace Game.Battle
             battleId = (uint)BattleIdGenerator.GetNext();
 
             Ioc.Kernel.Get<IDbManager>().Query(string.Format("INSERT INTO `{0}` VALUES (@id, @city_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
-                                   new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) }, true);
+                                   new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) });
         }
 
         private static void SnapBattleEnd(uint battleId)
         {
             Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `ended` = UTC_TIMESTAMP() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB),
-                                   new[] { new DbColumn("battle_id", battleId, DbType.UInt32) }, true);
+                                   new[] { new DbColumn("battle_id", battleId, DbType.UInt32) });
         }
 
         private static void SnapReport(out uint reportId, uint battleId)
@@ -286,7 +286,7 @@ namespace Game.Battle
             reportId = (uint)ReportIdGenerator.GetNext();
 
             Ioc.Kernel.Get<IDbManager>().Query(string.Format("INSERT INTO `{0}` VALUES (@id, UTC_TIMESTAMP(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
-                                   new[] { new DbColumn("id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32) }, true);            
+                                   new[] { new DbColumn("id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32) });            
         }
 
         internal static void SnapEndReport(uint reportId, uint battleId, uint round, uint turn)
@@ -299,7 +299,7 @@ namespace Game.Battle
                                    {
                                            new DbColumn("report_id", reportId, DbType.UInt32), new DbColumn("round", round, DbType.UInt32),
                                            new DbColumn("turn", turn, DbType.UInt32),
-                                   }, true);
+                                   });
         }
 
         private void SnapTroopState(TroopStub stub, ReportState state)
@@ -310,7 +310,7 @@ namespace Game.Battle
             if (stub.TroopObject == null)
             {
                 Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `state` = @state WHERE `id` = @id LIMIT 1", BATTLE_REPORT_TROOPS_DB),
-                                       new[] { new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("id", id, DbType.UInt32), }, true);
+                                       new[] { new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("id", id, DbType.UInt32), });
             }
             else
             {
@@ -324,7 +324,7 @@ namespace Game.Battle
                                                new DbColumn("state", state, DbType.Byte), new DbColumn("gold", loot.Gold, DbType.Int32),
                                                new DbColumn("crop", loot.Crop, DbType.Int32), new DbColumn("iron", loot.Iron, DbType.Int32),
                                                new DbColumn("wood", loot.Wood, DbType.Int32), new DbColumn("id", id, DbType.UInt32),
-                                       }, true);
+                                       });
             }
         }
 
@@ -344,8 +344,7 @@ namespace Game.Battle
                                            new DbColumn("state", state, DbType.Byte), new DbColumn("is_attacker", isAttacker, DbType.Boolean),
                                            new DbColumn("gold", loot.Gold, DbType.Int32), new DbColumn("crop", loot.Crop, DbType.Int32),
                                            new DbColumn("iron", loot.Iron, DbType.Int32), new DbColumn("wood", loot.Wood, DbType.Int32),
-                                   },
-                                   true);
+                                   });
 
             // Log any troops that are entering the battle to the view table so they are able to see this report
             // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
@@ -360,8 +359,7 @@ namespace Game.Battle
                                                new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
                                                new DbColumn("battle_id", Battle.BattleId, DbType.UInt32), new DbColumn("object_id", objectId, DbType.UInt32),
                                                new DbColumn("is_attacker", isAttacker, DbType.Boolean)
-                                       },
-                                       true);
+                                       });
             }
         }
 
@@ -382,8 +380,7 @@ namespace Game.Battle
                                            new DbColumn("formation", (byte)(unit == null ? FormationType.Structure : unit.Formation), DbType.Byte),
                                            new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16), new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32),
                                            new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),
-                                   },
-                                   true);
+                                   });
         }
 
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
@@ -401,8 +398,7 @@ namespace Game.Battle
                                            new DbColumn("bonus_iron", bonusResource.Iron, DbType.Int32), new DbColumn("bonus_gold", bonusResource.Gold, DbType.Int32),
                                            new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32),
                                            new DbColumn("troop_stub_id", troopId, DbType.Byte),
-                                   },
-                                   true);
+                                   });
         }
     }
 }

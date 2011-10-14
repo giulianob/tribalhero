@@ -185,7 +185,6 @@
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangePassiveAction.cs" />
-    <Compile Include="Logic\Actions\ResourceActions\CityReloadProductionRatePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceGatherActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureSelfDestroyActiveAction.cs" />
     <Compile Include="Logic\Actions\StructureActions\StructureChangePassiveAction.cs" />

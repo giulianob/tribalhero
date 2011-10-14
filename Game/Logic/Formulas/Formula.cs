@@ -84,10 +84,7 @@ namespace Game.Logic.Formulas
 
         public static LazyResource GetInitialCityResources()
         {
-            LazyResource resource = new LazyResource(700, 0, 0, 700, 35);
-            resource.Wood.Rate = Config.resource_base_bonus;
-            resource.Crop.Rate = Config.resource_base_bonus;
-            return resource;
+            return new LazyResource(700, 0, 0, 700, 35);
         }
 
         public static byte GetInitialCityRadius()

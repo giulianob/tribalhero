@@ -159,7 +159,7 @@
 			if (effects.length > 1)
 				rateBonus *= Math.pow(0.92, effects.length - 1); // for every extra tribal gathering, you gain 10 % each
 			
-			return (43200 / (-6.845 * Math.log(laborTotal) + 55)) * rateBonus;
+			return (43200 / ( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55)) * rateBonus;
 		}
 		
 		// Returns the new resource rate and accounts for any resource bonus

@@ -49,7 +49,7 @@
 			ui.append(resourceLabelMaker("Crop", city.resources.crop, new AssetIcon(new ICON_CROP())));
 			ui.append(resourceLabelMaker("Iron", city.resources.iron, new AssetIcon(new ICON_IRON())));
 			ui.append(simpleLabelMaker("Laborers", city.resources.labor.getValue().toString() + " idle, " + city.getBusyLaborCount().toString() + " working", false, "", false, new AssetIcon(new ICON_LABOR())));
-			ui.append(simpleLabelMaker("Upkeep", city.resources.crop.getUpkeep().toString(), true, "crop", true, new AssetIcon(new ICON_CROP())));
+			ui.append(simpleLabelMaker("Upkeep", city.resources.crop.getHourlyUpkeep().toString(), true, "crop", true, new AssetIcon(new ICON_CROP())));
 		}
 
 		private function simpleLabelMaker(name: String, value: String, hourly: Boolean = false, unit: String = "", negative: Boolean = false, icon: Icon = null) : JLabel {

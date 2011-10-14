@@ -1,7 +1,13 @@
 #region
 
+using System;
+using System.Threading;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Logic.Formulas;
+using Game.Setup;
+using Game.Util;
+using Ninject;
 
 #endregion
 
@@ -18,7 +24,17 @@ namespace Game.Logic.Procedures
         /// <param name = "endTroopValue"></param>
         public static void GiveAttackPoints(City city, int attackPoints, int initialTroopValue, int endTroopValue)
         {
-            city.AttackPoint += Formula.GetAttackPoint(attackPoints, initialTroopValue - endTroopValue);
+            var point = Formula.GetAttackPoint(attackPoints, initialTroopValue - endTroopValue);
+            city.AttackPoint += point;
+            if (city.Owner.Tribesman == null)
+                return;
+            var id = city.Owner.Tribesman.Tribe.Id;
+            ThreadPool.QueueUserWorkItem(delegate {
+                Tribe tribe;
+                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(id, out tribe)) {
+                    tribe.AttackPoint += point;
+                }
+            });
         }
     }
 }

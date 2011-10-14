@@ -25,6 +25,8 @@ namespace Game.Logic.Procedures
             structure.Technologies.EndUpdate();
             structure.IsBlocked = false;
             Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnConvert, structure, structure.Type, structure.Lvl);
+            
+            OnStructureUpgradeDowngrade(structure);
         }
     }
 }

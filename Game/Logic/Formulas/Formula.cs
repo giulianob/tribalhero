@@ -3,6 +3,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Stats;
+using Game.Logic.Actions;
+using Game.Setup;
+using Ninject;
 
 #endregion
 
@@ -56,14 +60,58 @@ namespace Game.Logic.Formulas
         }
 
         /// <summary>
-        ///   Returns the amount of iron the user will get from the specified structure
+        ///   Returns the amount of iron the user should get for the specified city
         /// </summary>
-        /// <param name = "structure"></param>
+        /// <param name="city">City to recalculate resources for.</param>
         /// <returns></returns>
-        public static int GetIronRate(Structure structure)
+        public static int GetIronRate(City city)
         {
             int[] multiplier = {int.MaxValue, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 5, 5, 5, 5, 4};
-            return structure.Stats.Labor / multiplier[structure.Lvl];
+
+            return city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Iron", x) ? x.Stats.Labor / multiplier[x.Lvl] : 0);
+        }
+
+        /// <summary>
+        /// Returns the amount of crop the user should get for the specified city
+        /// </summary>
+        /// <param name="city">City to recalculate resources for</param>
+        /// <returns></returns>
+        public static int GetCropRate(City city)
+        {
+            double[] lvlBonus = { 1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5 };
+            return 40 + city.Lvl * 5 + (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor * lvlBonus[x.Lvl] : 0);
+        }
+
+        /// <summary>
+        /// Returns the amount of wood the user should get for the specified city.
+        /// Notice: This function looks at all the Forest Camps Rate property and adds them up. 
+        /// It doesn't actually go into the Forest to recalculate the values. See <see cref="GetWoodRateForForest"/> for
+        /// a calculation that factors the Forest.
+        /// </summary>
+        /// <param name="city">City to recalculate resources for</param>
+        /// <returns></returns>
+        public static int GetWoodRate(City city)
+        {
+            return 40 + city.Lvl * 5 + city.Sum(x =>
+                {
+                    object rate;
+                    if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("ForestCamp", x) || x.Lvl == 0 || !x.Properties.TryGet("Rate", out rate))
+                        return 0;
+
+                    return (int)rate;
+                });
+        }
+
+        /// <summary>
+        /// Returns the rate that the specified structure should gather from the given forest.
+        /// </summary>
+        /// <param name="forest"></param>
+        /// <param name="stats"></param>
+        /// <param name="efficiency"></param>
+        /// <returns></returns>
+        public static int GetWoodRateForForest(Forest forest, StructureStats stats, double efficiency)
+        {
+            return (int)(stats.Labor * forest.Rate * (1d + efficiency));
         }
 
         /// <summary>

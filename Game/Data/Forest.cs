@@ -9,6 +9,7 @@ using System.Linq;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -164,7 +165,7 @@ namespace Game.Data
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 var oldRate = (int)obj["Rate"];
 
-                var newRate = (int)(obj.Stats.Labor*Rate*(1d + efficiency));
+                var newRate = Formula.GetWoodRateForForest(this, obj.Stats, efficiency);
 
                 if (newRate != oldRate)
                 {

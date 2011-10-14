@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Setup;
 using Game.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,6 +22,7 @@ namespace Testing.Resources
         public void TestInitialize()
         {
             SystemClock.SetClock(begin);
+            Config.seconds_per_unit = 1;
         }
 
         [TestCleanup]
@@ -193,6 +195,38 @@ namespace Testing.Resources
 
             SystemClock.SetClock(begin.AddMinutes(300));
             Assert.AreEqual(resource.Value, 50);
+        }
+
+        /// <summary>
+        ///   Tests having positive rate but no upkeep and secs per unit modified
+        /// </summary>
+        [TestMethod]
+        public void TestPositiveRateWithSecsPerUnit()
+        {
+            Config.seconds_per_unit = 0.1;
+
+            var resource = new LazyValue(0, begin, 100, 0);
+            SystemClock.SetClock(begin.AddMinutes(30));
+            Assert.AreEqual(resource.Value, 500);
+
+            SystemClock.SetClock(begin.AddMinutes(60));
+            Assert.AreEqual(resource.Value, 1000);
+        }
+
+        /// <summary>
+        ///   Tests having rate higher than upkeep and secs per unit
+        /// </summary>
+        [TestMethod]
+        public void TestPositiveRateGreaterThanUpkeepWithSecsPerUnit()
+        {
+            Config.seconds_per_unit = 0.01;
+
+            var resource = new LazyValue(0, begin, 100, 50);
+            SystemClock.SetClock(begin.AddMinutes(30));
+            Assert.AreEqual(resource.Value, 2500);
+
+            SystemClock.SetClock(begin.AddMinutes(60));
+            Assert.AreEqual(resource.Value, 5000);
         }
     }
 }

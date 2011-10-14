@@ -11,19 +11,17 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public static void AdjustCityResourceRates(Structure structure, int laborDelta)
+        public static void RecalculateCityResourceRates(City city)
         {
-            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", structure))
-                structure.City.Resource.Crop.Rate = Formula.GetCropRate(structure.City);
-            else if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Iron", structure))
-                structure.City.Resource.Iron.Rate = Formula.GetIronRate(structure);
+            city.Resource.Crop.Rate = Formula.GetCropRate(city);
+            city.Resource.Iron.Rate = Formula.GetIronRate(city);
+            city.Resource.Wood.Rate = Formula.GetWoodRate(city);
         }
 
-        public static void OnStructureUpgrade(Structure structure)
+        public static void OnStructureUpgradeDowngrade(Structure structure)
         {
-            structure.City.BeginUpdate();
             SetResourceCap(structure.City);
-            structure.City.EndUpdate();
+            RecalculateCityResourceRates(structure.City);
         }
     }
 }

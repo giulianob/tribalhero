@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -22,11 +23,11 @@ namespace Persistance.Managers
 
         private readonly string connectionString;
 
-        private readonly Dictionary<Type, String> createCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> createListCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> deleteCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> deleteListCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> saveCommands = new Dictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> createCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> createListCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> deleteCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> deleteListCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> saveCommands = new ConcurrentDictionary<Type, String>();
 
         private readonly bool verbose;
 

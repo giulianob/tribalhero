@@ -131,7 +131,9 @@ namespace Game.Logic.Actions
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnUpgrade, structure, structure.Type, structure.Lvl);
                 structure.EndUpdate();
 
-                Procedure.OnStructureUpgrade(structure);
+                structure.City.BeginUpdate();
+                Procedure.OnStructureUpgradeDowngrade(structure);
+                structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);
             }

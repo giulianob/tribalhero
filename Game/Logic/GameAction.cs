@@ -58,7 +58,6 @@ namespace Game.Logic
 
         CityPassive = 502,
         CityRadiusChangePassive = 503,
-        CityReloadProductionRatePassive = 504,
         CityCreatePassive = 505,
         RoadBuildActive = 510,
         RoadDestroyActive = 511,

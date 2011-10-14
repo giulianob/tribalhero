@@ -522,6 +522,7 @@ namespace Game.Data
             {
                 mainBuilding.ObjectId = 1;
                 Add(1, mainBuilding, false);
+                Procedure.RecalculateCityResourceRates(this);
                 Procedure.SetResourceCap(this);
             }
 

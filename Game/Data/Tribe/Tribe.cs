@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Game.Data.Troop;
 using Game.Logic.Actions;
@@ -50,7 +49,7 @@ namespace Game.Data.Tribe
                 if (DbPersisted)
                 {
                     Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
-                                           new[] { new DbColumn("desc", description, DbType.String), new DbColumn("id", Id, DbType.UInt32) }, false);
+                                           new[] { new DbColumn("desc", description, DbType.String, Player.MAX_DESCRIPTION_LENGTH), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
         }

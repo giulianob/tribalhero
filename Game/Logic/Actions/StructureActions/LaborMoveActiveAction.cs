@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.AdjustCityResourceRates(structure, -1*ActionCount);
+                Procedure.RecalculateCityResourceRates(structure.City);
                 // labor got taken out immediately                
                 structure.City.EndUpdate();
             }
@@ -134,7 +134,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.AdjustCityResourceRates(structure, 1*ActionCount);
+                    Procedure.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
 
@@ -178,7 +178,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.AdjustCityResourceRates(structure, ActionCount); // labor got put in here
+                    Procedure.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
                 else

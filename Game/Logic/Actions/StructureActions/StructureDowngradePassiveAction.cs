@@ -91,9 +91,10 @@ namespace Game.Logic.Actions
                 Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                 structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                 structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
-                Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
+                
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
-                Procedure.SetResourceCap(structure.City);
+
+                Procedure.OnStructureUpgradeDowngrade(structure);
 
                 structure.EndUpdate();
                 city.EndUpdate();

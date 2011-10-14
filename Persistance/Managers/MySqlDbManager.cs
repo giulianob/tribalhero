@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -22,11 +23,11 @@ namespace Persistance.Managers
 
         private readonly string connectionString;
 
-        private readonly Dictionary<Type, String> createCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> createListCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> deleteCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> deleteListCommands = new Dictionary<Type, String>();
-        private readonly Dictionary<Type, String> saveCommands = new Dictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> createCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> createListCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> deleteCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> deleteListCommands = new ConcurrentDictionary<Type, String>();
+        private readonly ConcurrentDictionary<Type, String> saveCommands = new ConcurrentDictionary<Type, String>();
 
         private readonly bool verbose;
 
@@ -235,10 +236,12 @@ namespace Persistance.Managers
                 return;
 
             var sqlwriter = new StringWriter();
+            sqlwriter.Write("({0} {1} (", Thread.CurrentThread.ManagedThreadId, command.CommandText);
             foreach (MySqlParameter param in command.Parameters)
-                sqlwriter.Write(param + "=" + ((param.Value != null) ? param.Value.ToString() : "NULL") + ",");
+                sqlwriter.Write("{0}={1},", param, ((param.Value != null) ? param.Value.ToString() : "NULL"));
+            sqlwriter.Write(")");
 
-            logger.Info("(" + Thread.CurrentThread.ManagedThreadId + ") " + command.CommandText + " {" + sqlwriter + "}");
+            logger.Info("{0}", sqlwriter.ToString());
         }
 
         DbDataReader IDbManager.SelectList(string table, params DbColumn[] primaryKeyValues)
@@ -283,40 +286,24 @@ namespace Persistance.Managers
             return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        public void Query(string query, DbColumn[] parms, bool transactional)
+        public void Query(string query, DbColumn[] parms)
         {
             if (paused)
                 return;
 
-            MySqlCommand command;            
-
-            if (transactional && persistantTransaction == null)
+            if (persistantTransaction == null)
                 throw new Exception("Calling transactional query outside of transactional block");
 
-            if (!transactional)
-            {
-                MySqlConnection connection = GetConnection();
-                command = connection.CreateCommand();
-                command.Connection = connection;
-            }
-            else
-            {                
-                InitPersistantTransaction();
-                command = ((MySqlTransaction)persistantTransaction.Transaction).Connection.CreateCommand();
-                command.Connection = ((MySqlTransaction)persistantTransaction.Transaction).Connection;
-                command.Transaction = (persistantTransaction.Transaction as MySqlTransaction);
-            }
+            InitPersistantTransaction();
+            MySqlCommand command = ((MySqlTransaction)persistantTransaction.Transaction).Connection.CreateCommand();
+            command.Connection = ((MySqlTransaction)persistantTransaction.Transaction).Connection;
+            command.Transaction = (persistantTransaction.Transaction as MySqlTransaction);
 
             command.CommandText = query;
             foreach (var parm in parms)
                 AddParameter(command, parm);
 
             ExecuteNonQuery(command);
-
-            if (!transactional)
-            {
-                Close(command.Connection);
-            }
         }
 
         public void Rollback()
@@ -710,8 +697,10 @@ namespace Persistance.Managers
             command.Parameters.Add(parameter);
         }
 
-        private void ExecuteNonQuery(MySqlCommand command)
+        private int ExecuteNonQuery(MySqlCommand command)
         {
+            int affectedRows;
+
             Interlocked.Increment(ref queriesRan);
 
             LogCommand(command);
@@ -720,7 +709,7 @@ namespace Persistance.Managers
             {
                 try
                 {
-                    command.ExecuteNonQuery();
+                    affectedRows = command.ExecuteNonQuery();
                     break;
                 }
                 catch (MySqlException e)
@@ -748,6 +737,8 @@ namespace Persistance.Managers
 
             if (command.Transaction != null && command.Transaction == persistantTransaction.Transaction)
                 persistantTransaction.Commands.Add(command);
+
+            return affectedRows;
         }
 
         internal void HandleGeneralException(Exception e, DbCommand command = null)

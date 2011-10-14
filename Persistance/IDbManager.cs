@@ -29,7 +29,7 @@ namespace Persistance
         DbDataReader SelectList(IPersistableList obj);
         DbDataReader SelectList(string table, params DbColumn[] primaryKeyValues);
 
-        void Query(string query, DbColumn[] parms, bool transactional);
+        void Query(string query, DbColumn[] parms);
         DbDataReader ReaderQuery(string query, DbColumn[] parms = null);
 
         void EmptyDatabase();

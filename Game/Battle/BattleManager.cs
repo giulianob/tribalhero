@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using Game.Comm;
 using Game.Comm.Channel;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
@@ -862,24 +864,29 @@ namespace Game.Battle
                 // If the defender killed someone then give the city defense points
                 if (attackPoints > 0)
                 {
-                    if (!city.IsUpdating)
-                        city.BeginUpdate();
-
-                    city.DefensePoint += attackPoints;
-
                     // Give anyone stationed defense points as well
                     // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
                     var uniqueCities = new List<City>();
+
                     foreach (var co in defenders)
                     {
-                        if (co.City == city || uniqueCities.Contains(co.City))
+                        if (uniqueCities.Contains(co.City))
                             continue;
-                        co.City.BeginUpdate();
+                        if (!co.City.IsUpdating)
+                            co.City.BeginUpdate();
                         co.City.DefensePoint += attackPoints;
                         co.City.EndUpdate();
-
                         uniqueCities.Add(co.City);
                     }
+
+                    var tribes = new List<Tribe>(uniqueCities.Where(w=>w.Owner.Tribesman!=null).Select(s => s.Owner.Tribesman.Tribe).Distinct());
+                    ThreadPool.QueueUserWorkItem(delegate {
+                        foreach (var tribe in tribes) {
+                            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribe)) {
+                                tribe.DefensePoint += attackPoints;
+                            }
+                        }
+                    });
                 }
 
                 if (city.IsUpdating)

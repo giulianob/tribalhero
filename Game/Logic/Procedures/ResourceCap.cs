@@ -15,8 +15,7 @@ namespace Game.Logic.Procedures
         /// </summary>
         /// <param name = "city"></param>
         public static void SetResourceCap(City city)
-        {
-            
+        {            
             if (Config.resource_cap)
             {
                 city.Resource.SetLimits(Formula.ResourceCropCap(city.Lvl),

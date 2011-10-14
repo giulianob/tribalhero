@@ -10,11 +10,6 @@ Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
 3004,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
 3005,1,ON_INIT,structure_self_destroy,time=604800,,,,,,
 3005,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
-2106,7,ON_UPGRADE,city_reload_production_rate,,,,,,,
-2106,9,ON_UPGRADE,city_reload_production_rate,,,,,,,
-2106,11,ON_UPGRADE,city_reload_production_rate,,,,,,,
-2106,13,ON_UPGRADE,city_reload_production_rate,,,,,,,
-2106,15,ON_UPGRADE,city_reload_production_rate,,,,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
 3011,1,ON_INIT,structure_change,time=!14400,type=3012,lvl=1,,,FARMING_LABEL,//changing to mature

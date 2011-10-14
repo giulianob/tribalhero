@@ -104,7 +104,7 @@ namespace Game.Logic.Actions
 
             // Can't attack if target is under newbie protection
 #if !DEBUG
-            if (targetCity.AttackPoint == 0 && SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
+            if (SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
                 return Error.PlayerNewbieProtection;
 #endif
 

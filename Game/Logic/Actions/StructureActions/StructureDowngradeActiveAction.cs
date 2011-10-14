@@ -62,6 +62,12 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
+            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("MainBuilding", structure))
+                return Error.StructureUndowngradable;
+
+            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Unattackable", structure))
+                return Error.StructureUndowngradable;
+
             if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
                 return Error.StructureUndestroyable;
 
@@ -137,11 +143,11 @@ namespace Game.Logic.Actions
                     Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
                     structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
                     structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
-                    Procedure.AdjustCityResourceRates(structure, structure.Stats.Labor - oldLabor);
+                    
                     if (oldLabor > structure.Stats.Base.MaxLabor)
                         city.Resource.Labor.Add(oldLabor - structure.Stats.Base.MaxLabor);
 
-                    Procedure.SetResourceCap(structure.City);
+                    Procedure.OnStructureUpgradeDowngrade(structure);
 
                     if (structure.Lvl > 0)
                         Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);

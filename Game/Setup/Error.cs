@@ -60,6 +60,7 @@ namespace Game.Setup
         NotWithinWalls = 416,
         PlayerNewbieProtection = 417,
         StructureUndestroyable = 418,
+        StructureUndowngradable = 419,
 
         RoadNotAround = 420,
         RoadAlreadyExists = 421,

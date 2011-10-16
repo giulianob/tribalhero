@@ -46,7 +46,7 @@
 			}
 			overtime = Math.min(100, overtime);
 			
-            return (int)((100 - overtime*10) * count * 300 * Constants.secondsPerUnit / 100);
+            return (int)((100 - overtime*10) * count * 180 * Constants.secondsPerUnit / 100);
 		}
 		
 		public static function trainTime(parentObj: StructureObject, baseValue: int, techManager: TechnologyManager): int

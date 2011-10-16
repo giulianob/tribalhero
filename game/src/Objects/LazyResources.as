@@ -74,19 +74,12 @@ package src.Objects {
 			return true;
 		}
 		
-		public static function getHourlyRate(laborers: int): int
+		public static function getHourlyRate(rate: int): int
 		{			
-			if (laborers == 0) return 0;
+			if (rate <= 0) return 0;
 			
-			return int(Math.max(0, (int)(3600000 / ((3600000 / laborers) * Constants.secondsPerUnit))));
+			return (int)(rate * (1.0 / Constants.secondsPerUnit));
 		}
-		
-		public static function getHourlyUpkeep(resource: LazyValue): int
-		{			
-			if (resource.getUpkeep() == 0) return 0;
-			
-			return -1 * int(3600000 / (3600000 / resource.getUpkeep()) * Constants.secondsPerUnit);
-		}		
 		
 		public function toString(): String
 		{

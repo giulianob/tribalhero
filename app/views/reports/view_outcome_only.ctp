@@ -33,7 +33,7 @@ foreach ($battle_reports as $battle_report) {
     $snapshot['eventsRaw'][] = array('groupId' => $battle_troop['group_id'], 'type' => $battle_troop['state']);
 
     //Save the main troop info
-    $troop = array('cityId' => $battle_troop['City']['id'], 'groupId' => $battle_troop['group_id'], 'name' => $battle_troop['City']['name'] . '(' . ($battle_troop['troop_stub_id'] == 1 ? 'Local' : $battle_troop['troop_stub_id']) . ')', 'units' => array());
+    $troop = array('playerId' => $battle_troop['City']['Player']['id'], 'playerName' => $battle_troop['City']['Player']['name'], 'cityId' => $battle_troop['City']['id'], 'groupId' => $battle_troop['group_id'], 'name' => $battle_troop['City']['name'] . '(' . ($battle_troop['troop_stub_id'] == 1 ? 'Local' : $battle_troop['troop_stub_id']) . ')', 'units' => array());
 
     //Only attackers have resources
     if ($battle_troop['is_attacker'])

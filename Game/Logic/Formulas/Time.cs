@@ -29,7 +29,7 @@ namespace Game.Logic.Formulas
             if (effects.Count > 0)
                 overtime = effects.Max(x => (int)x.Value[0]);
 
-            return (100 - overtime*10) * count * 300 / 100;
+            return (100 - overtime*10) * count * 180 / 100;
         }
 
         private static int TimeDiscount(int lvl)

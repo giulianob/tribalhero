@@ -85,7 +85,7 @@ class Battle extends AppModel {
                 'BattleReportTroop' => array(
                     'order' => array('BattleReportTroop.group_id ASC'),
                     'City' => array('fields' => array('id', 'name'),
-                        'Player' => array('fields' => array('name')),
+                        'Player' => array('fields' => array('id', 'name')),
                     ),
                     'BattleReportObject' => array('order' => array('BattleReportObject.type ASC', 'BattleReportObject.object_id ASC'))
                 )

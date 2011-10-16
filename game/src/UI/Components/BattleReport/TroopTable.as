@@ -10,6 +10,7 @@
 	import org.aswing.table.GeneralTableCellFactory;
 	import org.aswing.table.PropertyTableModel;
 	import src.Objects.Factories.ObjectFactory;
+	import src.UI.Components.PlayerLabel;
 	import src.UI.Components.SimpleTooltip;
 		
 	public class TroopTable extends JPanel
@@ -18,6 +19,8 @@
 		private var tableModel: PropertyTableModel;
 		private var tblUnits: JTable;
 		private var pnlResources: JPanel;
+		private var pnlHeader: JPanel;
+		private var lblPlayer: PlayerLabel;
 		
 		private var troop: Object;
 		
@@ -48,17 +51,15 @@
 				
 				unitList.append({type: unit.type, icon: icon, delta: unit.delta, level: unit.level, count: unit.count, hp: unit.hp, hitsTaken: unit.hitsTaken, dmgTaken: unit.dmgTaken, hitsDealt: unit.hitsDealt, dmgDealt: unit.dmgDealt});			
 			}
-					
+				
 			if (troop.resources != null) {
 				pnlResources.append(resourceLabelMaker(troop.resources.gold, "Gold", new AssetIcon(new ICON_GOLD())));
 				pnlResources.append(resourceLabelMaker(troop.resources.wood, "Wood", new AssetIcon(new ICON_WOOD())));
 				pnlResources.append(resourceLabelMaker(troop.resources.crop, "Crop", new AssetIcon(new ICON_CROP())));
 				pnlResources.append(resourceLabelMaker(troop.resources.iron, "Iron", new AssetIcon(new ICON_IRON())));								
 				
-				append(pnlResources);
-			}
-			
-			append(tblUnits);
+				pnlHeader.append(pnlResources);
+			}					
 		}
 		
 		private function createUI() : void {
@@ -77,8 +78,18 @@
 			tblUnits.getColumn("Unit").setCellFactory(new GeneralTableCellFactory(UnitIconCell));		
 			tblUnits.getColumn("Unit").setPreferredWidth(82);
 			tblUnits.getColumn("Lvl").setPreferredWidth(34);
-			
+						
 			pnlResources = new JPanel(new FlowLayout(AsWingConstants.LEFT, 12, 5, false));			
+			pnlResources.setConstraints("East");
+			
+			lblPlayer = new PlayerLabel(troop.playerId, troop.playerName);
+			
+			pnlHeader = new JPanel(new BorderLayout());
+			
+			pnlHeader.append(AsWingUtils.createPaneToHold(lblPlayer, new FlowLayout(AsWingConstants.LEFT, 0, 0, false), "Center"));
+			
+			append(pnlHeader);
+			append(tblUnits);
 		}	
 		
 		private function resourceLabelMaker(value: int, tooltip: String, icon: Icon = null) : JLabel {

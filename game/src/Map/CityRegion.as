@@ -31,6 +31,15 @@
 
 			globalX = (id % Constants.miniMapRegionW) * Constants.cityRegionW;
 			globalY = int(id / Constants.miniMapRegionW) * (Constants.cityRegionH / 2);
+			
+			if (Constants.debug == 3)
+			{
+				/* adds an outline to this region */
+				graphics.beginFill(0x000000, 0);
+				graphics.lineStyle(1, 0xcccccc, 0.3);
+				graphics.drawRect(0, 0, Constants.cityRegionW * Constants.cityRegionTileW, Constants.cityRegionH * Constants.cityRegionTileH);
+				graphics.endFill();
+			}
 		}
 
 		public function disposeData():void

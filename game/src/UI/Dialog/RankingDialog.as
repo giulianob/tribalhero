@@ -24,6 +24,8 @@ package src.UI.Dialog{
 		{name: "Defense Points", baseOn: "player"},
 		{name: "Resources Stolen", baseOn: "player"},
 		{name: "Level", baseOn: "tribe"},
+		{name: "Attack Points", baseOn: "tribe"},
+		{name: "Defense Points", baseOn: "tribe"},
 		];
 
 		private var loader: GameURLLoader;		
@@ -48,6 +50,8 @@ package src.UI.Dialog{
 
 		private var tribeRanking: JPanel;
 		private var tribeLevelRanking: JToggleButton;
+		private var tribeAttackRanking: JToggleButton;
+		private var tribeDefenseRanking: JToggleButton;
 
 		private var txtSearch: JTextField;
 		private var btnSearch: JButton;
@@ -76,7 +80,9 @@ package src.UI.Dialog{
 			new SimpleTooltip(playerDefenseRanking, "Sort by attack points");
 			new SimpleTooltip(cityLootRanking, "Sort by total loot stolen");
 			new SimpleTooltip(playerLootRanking, "Sort by total loot stolen");
-			new SimpleTooltip(tribeLevelRanking, "Sort by Level");
+			new SimpleTooltip(tribeLevelRanking, "Sort by level");
+			new SimpleTooltip(tribeAttackRanking, "Sort by attack points");
+			new SimpleTooltip(tribeDefenseRanking, "Sort by defenese points");
 			
 			// Handle different buttons being pressed
 			cityAttackRanking.addActionListener(onChangeRanking);
@@ -88,6 +94,8 @@ package src.UI.Dialog{
 			playerLootRanking.addActionListener(onChangeRanking);
 
 			tribeLevelRanking.addActionListener(onChangeRanking);
+			tribeAttackRanking.addActionListener(onChangeRanking);
+			tribeDefenseRanking.addActionListener(onChangeRanking);
 			
 			btnSearch.addActionListener(onSearch);
 
@@ -146,6 +154,10 @@ package src.UI.Dialog{
 			else if (tabs.getSelectedIndex() == 2) {
 				if (tribeLevelRanking.isSelected()) {
 					type = 6;
+				} else if (tribeAttackRanking.isSelected()) {
+					type = 7;
+				} else if (tribeDefenseRanking.isSelected()) {
+					type = 8;
 				}
 			}
 
@@ -260,11 +272,12 @@ package src.UI.Dialog{
 			}
 		}
 		private function onTribeRanking(data: Object) : void {
-		/*	rankingList = new VectorListModel();
+			
+			rankingList = new VectorListModel();
 
 			rankingModel = new PropertyTableModel(rankingList,
-			["Rank", "Player", rankings[type].name],
-			["rank", ".", "value"],
+			["Rank", "Tribe", rankings[type].name],
+			["rank", "tribeName", "value"],
 			[null, null, null, null]
 			);
 
@@ -283,12 +296,10 @@ package src.UI.Dialog{
 			rankingTable.getColumnAt(0).setPreferredWidth(45);
 			rankingTable.getColumnAt(1).setPreferredWidth(220);
 			rankingTable.getColumnAt(2).setPreferredWidth(150);
-			
-			rankingTable.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);
-			}*/
+			}
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null) :JFrame
@@ -337,11 +348,14 @@ package src.UI.Dialog{
 			tribeRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			tribeLevelRanking = new JToggleButton("Level");
 			tribeLevelRanking.setSelected(true);
+			tribeAttackRanking = new JToggleButton("Attack");
+			tribeDefenseRanking = new JToggleButton("Defense");
 			var tribeButtonGroup: ButtonGroup = new ButtonGroup();
-			tribeButtonGroup.appendAll(tribeLevelRanking);
+			tribeButtonGroup.appendAll(tribeLevelRanking,tribeAttackRanking,tribeDefenseRanking);
 			var tribeButtonGroupHolder: JPanel = new JPanel();
-			tribeButtonGroupHolder.appendAll(tribeLevelRanking);
-			tribeRanking.append(tribeButtonGroupHolder);
+			tribeButtonGroupHolder.appendAll(tribeLevelRanking, tribeAttackRanking, tribeDefenseRanking);
+			tribeRanking.appendAll(tribeButtonGroupHolder);
+			
 			
 			tabs = new JTabbedPane();
 			tabs.appendTab(cityRanking, "City");

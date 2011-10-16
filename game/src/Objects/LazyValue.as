@@ -66,6 +66,11 @@
 		{
 			return LazyResources.getHourlyRate(this.getRate());
 		}
+		
+		public function getHourlyUpkeep(): int
+		{
+			return LazyResources.getHourlyRate(this.getUpkeep());
+		}		
 	}
 
 }

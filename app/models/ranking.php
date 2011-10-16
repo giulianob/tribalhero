@@ -6,14 +6,20 @@ class Ranking extends AppModel {
     var $belongsTo = array(
         'Player',
         'City',
+    	'Tribe',
     );
     var $rankingTypes = array(
-        array('name' => 'RANKING_ATTACK_CITY', 'field' => 'attack_point', 'order' => 'desc', 'cityBased' => true),
-        array('name' => 'RANKING_DEFENSE_CITY', 'field' => 'defense_point', 'order' => 'desc', 'cityBased' => true),
-        array('name' => 'RANKING_LOOT_CITY', 'field' => 'loot_stolen', 'order' => 'desc', 'cityBased' => true),
-        array('name' => 'RANKING_ATTACK_PLAYER', 'field' => 'attack_point', 'order' => 'desc', 'cityBased' => false),
-        array('name' => 'RANKING_DEFENSE_PLAYER', 'field' => 'defense_point', 'order' => 'desc', 'cityBased' => false),
-        array('name' => 'RANKING_LOOT_PLAYER', 'field' => 'loot_stolen', 'order' => 'desc', 'cityBased' => false),
+        array('name' => 'RANKING_ATTACK_CITY', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'city'),
+        array('name' => 'RANKING_DEFENSE_CITY', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'city'),
+        array('name' => 'RANKING_LOOT_CITY', 'field' => 'loot_stolen', 'order' => 'desc', 'group' => 'city'),
+        
+        array('name' => 'RANKING_ATTACK_PLAYER', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'player'),
+        array('name' => 'RANKING_DEFENSE_PLAYER', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'player'),
+        array('name' => 'RANKING_LOOT_PLAYER', 'field' => 'loot_stolen', 'order' => 'desc', 'group' => 'player'),
+        
+        array('name' => 'RANKING_LEVEL_TRIBE', 'field' => 'level', 'order' => 'desc', 'group' => 'tribe'),
+        array('name' => 'RANKING_ATTACK_TRIBE', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'tribe'),
+        array('name' => 'RANKING_DEFENSE_TRIBE', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'tribe'),
     );
     var $rankingsPerPage = 100;
 
@@ -41,7 +47,7 @@ class Ranking extends AppModel {
             $page = intval(($this->getRanking($type, $id) - 1) / $this->rankingsPerPage) + 1;
         }
 
-        if ($this->rankingTypes[$type]['cityBased']) {
+        if ($this->rankingTypes[$type]['group']=='city') {
             $options = array(
                 'link' => array(
                     'City' => array('fields' => array('City.id', 'City.name')),
@@ -53,7 +59,7 @@ class Ranking extends AppModel {
                 'fields' => array('Ranking.rank', 'Ranking.value'),
                 'order' => 'Ranking.rank ASC'
             );
-        } else {
+        } else if ($this->rankingTypes[$type]['group']=='player') {
             $options = array(
                 'link' => array('Player'),
                 'conditions' => array('type' => $type),
@@ -62,6 +68,15 @@ class Ranking extends AppModel {
                 'fields' => array('Ranking.rank', 'Ranking.value', 'Player.id', 'Player.name'),
                 'order' => 'Ranking.rank ASC'
             );
+        } else if ($this->rankingTypes[$type]['group']=='tribe') {
+             $options = array(
+                'link' => array('Tribe'),
+                'conditions' => array('type' => $type),
+                'limit' => $this->rankingsPerPage,
+                'page' => $page,
+                'fields' => array('Ranking.rank', 'Ranking.value', 'Tribe.player_id', 'Tribe.name'),
+                'order' => 'Ranking.rank ASC'
+            );       
         }
 
         if ($returnOptions)
@@ -98,19 +113,27 @@ class Ranking extends AppModel {
         if (!isset($this->rankingTypes[$type]))
             return false;
 
-        if ($this->rankingTypes[$type]['cityBased']) {
+        if ($this->rankingTypes[$type]['group']=='city') {
             // For city based ranking we allow searching for both cities and player
             $city = $this->City->findByName($search);
             if (!empty($city)) {
                 return $this->getCityRanking($type, $city['City']['id']);
             }
+        } else if($this->rankingTypes[$type]['group']=='player') {
+
+	        $player = $this->Player->findByName($search);
+	        if (empty($player))
+	            return false;
+	
+	        return $player['Player']['id'];
+        } else if($this->rankingTypes[$type]['group']=='tribe') {
+
+	        $tribe = $this->Tribe->findByName($search);
+	        if (empty($tribe))
+	            return false;
+	
+	        return $tribe['Tribe']['id'];
         }
-
-        $player = $this->Player->findByName($search);
-        if (empty($player))
-            return false;
-
-        return $player['Player']['id'];
     }
 
     /**
@@ -122,12 +145,35 @@ class Ranking extends AppModel {
      * @return mixed
      */
     public function getRanking($type, $id) {
-        if ($this->rankingTypes[$type]['cityBased'])
+        if ($this->rankingTypes[$type]['group']=='city')
             return $this->getCityRanking($type, $id);
-        else
+        else if ($this->rankingTypes[$type]['group']=='player')
             return $this->getPlayerRanking($type, $id);
+        else if ($this->rankingTypes[$type]['group']=='tribe')
+        	return $this->getTribeRanking($type, $id);
     }
 
+    /**
+     * Return the ranking of the tribe specified.
+     * @param int $type Type index
+     * @param int $tribe_id Tribe id to find
+     * @return int Tribe's rank or 1 if not found
+     */
+    public function getTribeRanking($type, $tribe_id) {
+        if (empty($tribe_id) || !is_numeric($tribe_id))
+            return 1;
+
+        $ranking = $this->find('first', array(
+                    'contain' => array(),
+                    'conditions' => array('type' => $type, 'tribe_id' => $tribe_id)
+                ));
+
+        if (empty($ranking))
+            return 1;
+
+        return $ranking['Ranking']['rank'];
+    }
+    
     /**
      * Return the ranking of the player specified.
      * @param int $type Type index
@@ -179,10 +225,12 @@ class Ranking extends AppModel {
 
         for ($i = 0; $i < count($this->rankingTypes); $i++) {
             $type = $this->rankingTypes[$i];
-            if ($type['cityBased']) {
+            if ($type['group']=='city') {
                 $this->rankCity($i, $type['field'], $type['order']);
-            } else {
+            } else if($type['group']=='player') {
                 $this->rankPlayer($i, $type['field'], $type['order']);
+            } else if($type['group']=='tribe') {
+            	$this->rankTribe($i, $type['field'], $type['order']);
             }
         }
     }
@@ -249,5 +297,34 @@ class Ranking extends AppModel {
             }
         }
     }
+     /**
+     * Inserts all of the tribe ranking into the rankings table
+     * @param type int The ranking type
+     * @param field string The field used by this ranking to aggregate on
+     * @param order string The order of ranking (asc or desc)
+     */
+    public function rankTribe($type, $field, $order) {
+        $tribes = $this->Tribe->find('all', array(
+                    'contain' => array(),
+                    'conditions' => array(),
+                    'order' => array($field . ' ' . $order, 'player_id ASC'),
+                    'fields' => array('player_id', $field ),
+                ));
 
+        $itemsPerInsert = 500;
+        $fields = array( 'tribe_id', 'player_id', 'city_id', 'rank', 'type', 'value');
+
+        $tribeCount = count($tribes);
+        $rankings = array();
+
+        for ($i = 0; $i < $tribeCount; ++$i) {
+            $tribe = $tribes[$i];
+            $rankings[] = '(' . $tribe['Tribe']['player_id'] . ",0,0," . ($i + 1) . "," . $type . "," . $tribe['Tribe'][$field] . ')';
+
+            if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($tribes) - 1) {
+                $this->getDataSource()->insertMulti($this->table, $fields, $rankings);
+                $rankings = array();
+            }
+        }
+    }
 }

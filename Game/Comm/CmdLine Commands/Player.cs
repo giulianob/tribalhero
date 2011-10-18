@@ -8,6 +8,7 @@ using Game.Setup;
 using Game.Util;
 using NDesk.Options;
 using Ninject;
+using Persistance;
 
 #endregion
 
@@ -15,6 +16,42 @@ namespace Game.Comm
 {
     partial class CmdLineProcessor
     {
+        public string CmdSystemBroadcast(Session session, String[] parms)
+        {
+            bool help = false;
+            string message = string.Empty;
+            string subject = string.Empty;
+
+            try {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true },
+                                { "subject=", v => subject = v.TrimMatchingQuotes() },
+                                { "message=", v => message = v.TrimMatchingQuotes() },
+                        };
+                p.Parse(parms);
+            } catch (Exception) {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(message) || string.IsNullOrEmpty(subject))
+                return "broadcast --subject=\"SUBJECT\" --message=\"MESSAGE\"";
+
+            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(
+                                     string.Format(
+                                                   "SELECT * FROM `{0}`",
+                                                   Player.DB_TABLE),
+                         new DbColumn[] { })) {
+                while (reader.Read()) {
+                    Player player;
+                    using (Ioc.Kernel.Get<MultiObjectLock>().Lock((uint)reader["id"], out player)) {
+                        player.SendSystemMessage(null, subject, message);
+                    }
+                }
+            }
+            return "OK!";
+        }
+
         public string CmdPlayerClearDescription(Session session, string[] parms)
         {
             bool help = false;

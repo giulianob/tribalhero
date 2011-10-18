@@ -81,7 +81,10 @@
 		private var cmdLine: CmdLineViewer;
 		
 		// Holds currently pressed keys
-		private var pressedKeys:Object = {};
+		private var pressedKeys:Object = { };
+		
+		// Shows built in messages on the game screen
+		private var builtInMessages: BuiltInMessages;
 
 		public function GameContainer()
 		{							
@@ -378,6 +381,11 @@
 			delete pressedKeys[event.keyCode];
 		}		
 		
+		public function isKeyDown(keyCode: int) : Boolean
+		{
+			return pressedKeys[keyCode];
+		}
+		
 		public function eventKeyDown(e: KeyboardEvent):void
 		{
 			// Key down handler
@@ -388,16 +396,36 @@
 			if(pressedKeys[e.keyCode]) return;
 			pressedKeys[e.keyCode] = 1;
 			
+			// Escape key functions
 			if (e.charCode == Keyboard.ESCAPE)
-			{
-				if (map != null) map.selectObject(null);				
-				if (miniMap != null) zoomIntoMinimap(false);
+			{						
+				// Unzoom map
+				if (miniMap != null) zoomIntoMinimap(false, false);
+				
+				// Deselect objects
 				clearAllSelections();
+				
+				// Close top most frame if possible
+				closeTopmostFrame();
 			}
 			
-			if (!minimapZoomed && !Util.textfieldHasFocus(stage)) {
-				if (e.keyCode == 187 || e.keyCode == Keyboard.NUMPAD_ADD) onZoomIn(e);							
-				if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
+			// Keys that should only apply if we are on the map w/o any dialogs open
+			if (frames.length == 0) {
+				
+				// Moving around with arrow keys
+				map.camera.beginMove();
+				var keyScrollRate: int = minimapZoomed ? 1150 : 500 * map.camera.getZoomFactorOverOne();
+				if (e.keyCode == Keyboard.LEFT) map.camera.MoveLeft(keyScrollRate);
+				if (e.keyCode == Keyboard.RIGHT) map.camera.MoveRight(keyScrollRate);
+				if (e.keyCode == Keyboard.UP) map.camera.MoveUp(keyScrollRate);
+				if (e.keyCode == Keyboard.DOWN) map.camera.MoveDown(keyScrollRate);
+				map.camera.endMove();
+				
+				// Zoom into minimap with +/- keys
+				if (!minimapZoomed && !Util.textfieldHasFocus(stage)) {
+					if (e.keyCode == 187 || e.keyCode == Keyboard.NUMPAD_ADD) onZoomIn(e);							
+					if (e.keyCode == 189 || e.keyCode == Keyboard.NUMPAD_SUBTRACT) onZoomOut(e);
+				}
 			}
 		}
 		
@@ -515,6 +543,10 @@
 			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
 			messageTimer.start();
+			
+			// Show built in messages
+			builtInMessages = new BuiltInMessages();
+			builtInMessages.start();
 		}
 
 		public function dispose() : void {
@@ -522,6 +554,10 @@
 				menu.dispose();
 				menu = null;
 				removeChild(menuDummyOverlay);
+			}
+			
+			if (builtInMessages) {
+				builtInMessages.stop();
 			}
 			
 			if (resourcesTimer) {
@@ -615,6 +651,17 @@
 			
 			stage.focus = map;
 		}
+		
+		public function closeTopmostFrame(onlyIfClosable: Boolean = true) : void {
+			if (frames.length == 0)
+				return;
+			
+			var frame: JFrame = frames[frames.length-1] as JFrame;
+			if (onlyIfClosable && !frame.isClosable())
+				return;
+			
+			frame.dispose();
+		}
 
 		public function closeAllFrames(onlyClosableFrames: Boolean = false) : void {
 			var framesCopy: Array = frames.concat();
@@ -689,7 +736,7 @@
 				var disposeTmp: IDisposable = this.mapOverlayTarget as IDisposable;
 
 				if (disposeTmp != null)
-				disposeTmp.dispose();
+					disposeTmp.dispose();
 
 				mapHolder.removeChild(this.mapOverlayTarget);
 				this.mapOverlayTarget = null;

@@ -1,21 +1,51 @@
 package src.UI.Components.ScreenMessages
 {
+	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import org.aswing.AssetIcon;
+	import src.Constants;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.Actions.Notification;
 	import src.Objects.Actions.PassiveAction;
-	/**
-	 * ...
-	 * @author Giuliano Barberi
-	 */
+	import src.Util.Util;
+
 	public class BuiltInMessages
 	{
-
+		private var timer: Timer;
+		
+		public function BuiltInMessages() {
+			timer = new Timer(5 * 60 * 1000);
+			timer.addEventListener(TimerEvent.TIMER, periodicMessages);
+		}
+		
+		public function start(): void {
+			timer.start();
+			periodicMessages();
+		}
+		
+		public function stop(): void {
+			timer.stop();
+		}
+		
 		public static function processAll(city: City) : void {
 			showInBattle(city);
 			showTroopsStarving(city);
-			showIncomingAttack(city);			
+			showIncomingAttack(city);
+		}
+		
+		private function periodicMessages(e: Event = null): void {
+			showNewbieProtection();
+		}
+		
+		public static function showNewbieProtection() : void {
+			if (Constants.signupTime.time/1000 + Constants.newbieProtectionSeconds > Global.map.getServerTime()) {
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", "Under Newbie Protection: You cannot be attacked for the first " + (Constants.newbieProtectionSeconds / 86400) + " days.", new AssetIcon(new ICON_STAR)));
+			}
+			else {
+				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");
+			}			
 		}
 		
 		public static function showInBattle(city: City) : void {
@@ -29,7 +59,7 @@ package src.UI.Components.ScreenMessages
 
 		public static function showTroopsStarving(city: City): void {
 			if (city.resources.crop.getRate() < city.resources.crop.getUpkeep()) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/STARVE", city.name + "'s troops may be starving to death", new AssetIcon(new ICON_CROP)));
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/CITY/" + city.id + "/STARVE", city.name + ": Troops may be starving to death", new AssetIcon(new ICON_CROP)));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/STARVE");

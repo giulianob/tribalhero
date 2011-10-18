@@ -1,12 +1,15 @@
 ﻿package src.UI.Components.SimpleTroopGridList
 {
 	import flash.events.Event;
+	import flash.ui.Keyboard;
+	import flash.ui.KeyLocation;
 	import org.aswing.Component;
 	import org.aswing.dnd.DragListener;
 	import org.aswing.dnd.DragManager;
 	import org.aswing.dnd.RejectedMotion;
 	import org.aswing.event.DragAndDropEvent;
 	import org.aswing.VectorListModel;
+	import src.Global;
 	import src.UI.Dialog.NumberInputDialog;
 
 	/**
@@ -66,7 +69,7 @@
 				var targetGrid: SimpleTroopGridList = SimpleTroopGridList(targetComponent);
 				var cellValue: * = cell.getCellValue();
 
-				if (cellValue.data.count > 1)
+				if (!Global.gameContainer.isKeyDown(Keyboard.SHIFT) && cellValue.data.count > 1)
 				{
 					var numberInput: NumberInputDialog = new NumberInputDialog("Enter amount of troops to transfer", 1, cellValue.data.count, function():void {
 						numberInput.getFrame().dispose();
@@ -106,7 +109,7 @@
 					sourceGrid.dispatchEvent(new Event(SimpleTroopGridList.UNIT_CHANGED));
 					
 					// Add to target
-					var newTroopCell: SimpleTroopGridCell = targetGrid.addUnit(cellValue.data.type, 1);
+					var newTroopCell: SimpleTroopGridCell = targetGrid.addUnit(cellValue.data.type, cellValue.data.count);
 
 					// Bind drag handler to new cell item
 					if (newTroopCell != null)

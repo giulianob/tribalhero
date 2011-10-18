@@ -1,23 +1,16 @@
 ﻿package src.UI.Cursors {
-	import flash.display.DisplayObject;
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.Username;
-	import src.Objects.Effects.Formula;
-	import src.Objects.GameObject;
-	import src.Objects.ObjectContainer;
-	import src.Objects.SimpleGameObject;
-	import src.Map.MapUtil;
-	import src.Objects.IDisposable;
-	import src.Objects.StructureObject;
-	import src.UI.Components.GroundCircle;
-	import src.UI.Tooltips.TextTooltip;
-	import src.Util.Util;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Effects.*;
+	import src.Objects.Factories.*;
 	import src.Objects.Troop.*;
+	import src.UI.Components.*;
+	import src.UI.Tooltips.*;
+	import src.Util.*;
 
 	public class GroundReinforceCursor extends MovieClip implements IDisposable
 	{
@@ -37,7 +30,7 @@
 
 		private var highlightedObj: GameObject;
 
-		private var tooltip: TextTooltip;
+		private var tooltip: StructureTooltip;
 		
 		private var onAccept: Function;
 
@@ -170,10 +163,11 @@
 
 			var objects: Array = Global.map.regions.getObjectsAt(objX, objY);
 
+			if (tooltip) tooltip.hide();
+			tooltip = null;
+			
 			if (objects.length == 0 || objects[0].objectId != 1) {
-				Global.gameContainer.message.showMessage("Choose a town center to defend");
-				if (tooltip) tooltip.hide();
-				tooltip = null;
+				Global.gameContainer.message.showMessage("Choose a town center to defend");								
 				return;
 			}
 
@@ -188,17 +182,11 @@
 			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance, false);
-
-			var username: Username = Global.map.usernames.cities.getUsername(structObj.cityId, showTooltip, structObj);
-			if (username) showTooltip(username, structObj);
+			
+			tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
+			tooltip.show(structObj);
 
 			Global.gameContainer.message.showMessage("About " + Util.niceTime(timeAwayInSeconds) + " away. Double click to defend.");
-		}
-
-		private function showTooltip(username: Username, custom: * = null) : void {
-			if (tooltip) tooltip.hide();
-			tooltip = new TextTooltip(username.name);
-			tooltip.show(custom as DisplayObject);
 		}
 	}
 

@@ -271,7 +271,7 @@
 		private function getCombatObjectPanel(cityName: Username, combatObj: CombatObject) : Component {
 			var name: String = "";
 			if (cityName != null) name += cityName.name;
-			name += "(" + combatObj.troopStubId + ")'s " + combatObj.name;
+			name += "(" + combatObj.troopStubId + "): " + combatObj.name;
 
 			var icon: DisplayObjectContainer = ObjectFactory.getSpriteEx(combatObj.type, combatObj.level, true);
 			if (ObjectFactory.getClassType(combatObj.type) == ObjectFactory.TYPE_STRUCTURE) icon = ObjectFactory.makeSpriteSmall(icon);

@@ -4,8 +4,11 @@
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
+	import src.Objects.Actions.StructureChangeAction;
 	import src.Objects.Factories.ObjectFactory;
 	import src.Objects.GameObject;
+	import src.Objects.LazyResources;
+	import src.Objects.LazyValue;
 	import src.Objects.Prototypes.EffectPrototype;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.Prototypes.UnitPrototype;
@@ -43,7 +46,7 @@
 			}
 			overtime = Math.min(100, overtime);
 			
-            return (int)((100 - overtime*10) * count * 300 * Constants.secondsPerUnit / 100);
+            return (int)((100 - overtime*10) * count * 180 * Constants.secondsPerUnit / 100);
 		}
 		
 		public static function trainTime(parentObj: StructureObject, baseValue: int, techManager: TechnologyManager): int
@@ -156,7 +159,26 @@
 			if (effects.length > 1)
 				rateBonus *= Math.pow(0.92, effects.length - 1); // for every extra tribal gathering, you gain 10 % each
 			
-			return (43200 / (-6.845 * Math.log(laborTotal) + 55)) * rateBonus;
+			return (43200 / ( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55)) * rateBonus;
+		}
+		
+		// Returns the new resource rate and accounts for any resource bonus
+		public static function getResourceRateWithBonus(resource: LazyValue, buildingLevel: int, resourceType: int, laborDelta: int) : int
+		{
+			var bonus: Array;
+			
+			switch (resourceType) 
+			{
+				case Resources.TYPE_CROP:
+					bonus = [1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5];
+					break;
+				default:
+					bonus = [1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1, 1, 1, 1, 1, 1, 1];
+			}
+			
+			// The rate includes the bonus so dividing it by the bonus and taking the ceil gives
+			// the actual number of laborers then we add the new number and remultiple by bonus to get the true value
+			return (Math.ceil(resource.getRate() / Number(bonus[buildingLevel])) + (laborDelta)) * bonus[buildingLevel];
 		}
 	}
 }

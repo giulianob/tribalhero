@@ -62,6 +62,8 @@
 			Constants.admin = packet.readByte() == 1;
 			Constants.sessionId = packet.readString();			
 			Constants.playerName = packet.readString();			
+			Constants.newbieProtectionSeconds = packet.readInt();
+			Constants.signupTime = new Date(packet.readUInt() * 1000);
 			
 			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();

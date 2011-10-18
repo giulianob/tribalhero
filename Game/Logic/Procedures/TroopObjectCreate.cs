@@ -40,7 +40,7 @@ namespace Game.Logic.Procedures
 
         public static bool TroopObjectCreateFromCity(City city, TroopStub stub, uint x, uint y)
         {
-            if (!RemoveFromNormal(city.DefaultTroop, stub))
+            if (stub.TotalCount == 0 || !RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
 
             var troop = new TroopObject(stub) {X = x, Y = y + 1};

@@ -20,6 +20,9 @@ namespace Game.Logic.Formulas
 
         public static byte GetTroopSpeed(TroopStub stub)
         {
+            if (stub.TotalCount == 0)
+                return 0;
+
             int count = 0;
             int totalSpeed = 0;
             int machineSpeed = int.MaxValue;

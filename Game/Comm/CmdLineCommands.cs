@@ -9,6 +9,7 @@
 
         PlayerClearDescription = 120,
         DeleteInactives = 121,
+        BroadCast = 122,
 
         TribeInfo = 201,
         TribeCreate = 202,

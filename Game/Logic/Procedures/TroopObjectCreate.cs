@@ -21,14 +21,13 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        public static bool TroopStubDelete(City city, TroopStub stub)
+        public static void TroopStubDelete(City city, TroopStub stub)
         {
             AddToNormal(stub, city.DefaultTroop);
             city.Troops.Remove(stub.TroopId);
-            return true;
         }
 
-        public static bool TroopObjectCreate(City city, TroopStub stub)
+        public static void TroopObjectCreate(City city, TroopStub stub)
         {
             var troop = new TroopObject(stub) { X = city.X, Y = city.Y };
             city.Add(troop);
@@ -36,13 +35,12 @@ namespace Game.Logic.Procedures
             troop.BeginUpdate();
             troop.Stats = new TroopStats(Formula.GetTroopRadius(stub, null), Formula.GetTroopSpeed(stub));
             Global.World.Add(troop);
-            troop.EndUpdate();
-            return true;
+            troop.EndUpdate();            
         }
 
         public static bool TroopObjectCreateFromCity(City city, TroopStub stub, uint x, uint y)
         {
-            if (!RemoveFromNormal(city.DefaultTroop, stub))
+            if (stub.TotalCount == 0 || !RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
 
             var troop = new TroopObject(stub) {X = x, Y = y + 1};

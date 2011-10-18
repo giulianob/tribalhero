@@ -153,9 +153,11 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                city.BeginUpdate();
                 structure.BeginUpdate();
                 Procedures.Procedure.StructureChange(structure, (ushort)type, lvl);
                 structure.EndUpdate();
+                city.EndUpdate();
 
                 StateChange(ActionState.Completed);
             }

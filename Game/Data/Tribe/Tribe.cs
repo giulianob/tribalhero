@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Game.Data.Troop;
 using Game.Logic.Actions;
@@ -36,6 +35,38 @@ namespace Game.Data.Tribe
         public string Name { get; set; }
         public byte Level { get; set; }
 
+        private int attackPoint = 0;
+        public int AttackPoint {
+            get {
+                return attackPoint;
+            }
+            set {
+                attackPoint = value;
+                if (DbPersisted) {
+                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                                           new[] { new DbColumn("attack_point", attackPoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
+                }
+            }
+        }
+
+        private int defensePoint = 0;
+        public int DefensePoint
+        {
+            get
+            {
+                return defensePoint;
+            }
+            set
+            {
+                defensePoint = value;
+
+                if (DbPersisted) {
+                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                                           new[] { new DbColumn("defense_point", defensePoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
+                } 
+            }
+        }
+
         private string description = string.Empty;
         public string Description
         {
@@ -50,7 +81,7 @@ namespace Game.Data.Tribe
                 if (DbPersisted)
                 {
                     Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
-                                           new[] { new DbColumn("desc", description, DbType.String), new DbColumn("id", Id, DbType.UInt32) }, false);
+                                           new[] { new DbColumn("desc", description, DbType.String, Player.MAX_DESCRIPTION_LENGTH), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
         }

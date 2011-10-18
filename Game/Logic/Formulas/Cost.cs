@@ -144,12 +144,6 @@ namespace Game.Logic.Formulas
             return new Resource(sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl]);
         }
 
-        internal static int GetCropRate(City city)
-        {
-            double[] lvlBonus = {1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5};
-            return (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor*lvlBonus[x.Lvl] : 0);
-        }
-
         public static ushort CalculateCityValue(City city)
         {
             return (ushort)city.Sum(x => x.Lvl);

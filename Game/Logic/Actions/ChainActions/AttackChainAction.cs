@@ -99,12 +99,12 @@ namespace Game.Logic.Actions
                 !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.ObjectNotFound;
 
-            if (city.Troops.MyStubs().Count() >= 30)
+            if (city.Troops.MyStubs().Count() >= 20)
                 return Error.TooManyTroops;
 
             // Can't attack if target is under newbie protection
 #if !DEBUG
-            if (targetCity.AttackPoint == 0 && SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
+            if (SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
                 return Error.PlayerNewbieProtection;
 #endif
 

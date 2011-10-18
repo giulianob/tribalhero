@@ -4,7 +4,7 @@ class ReportsController extends AppController {
 
     var $uses = array('Report', 'Battle');
     var $helpers = array('TimeAdv', 'Time');
-    var $allowedFromGame = array('index_local', 'view_local', 'index_remote', 'view_remote');
+    var $allowedFromGame = array('index_local', 'view_local', 'index_remote', 'view_remote', 'mark_all_as_read');
     var $troop_states_pst = array(
         'joined the battle',
         'stayed',
@@ -50,6 +50,11 @@ class ReportsController extends AppController {
 	function mark_all_as_read()
 	{	
 		$this->Report->markAllAsRead($this->params['form']['playerId']);
+		
+        $data = array('success' => true);
+
+        $this->set('data', $data);
+        $this->render('/elements/to_json');		
 	}
 
     function view_local() {

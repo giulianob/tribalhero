@@ -1,4 +1,7 @@
 ﻿package src.UI.Tooltips {
+	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import org.aswing.JLabel;
 	import org.aswing.JPanel;
 	import org.aswing.SoftBoxLayout;
@@ -21,6 +24,7 @@
 	
 		private var lblName: JLabel;
 		private var lblLevel: JLabel;
+		private var lblCity: JLabel;
 
 		// If structObj is passed then city and player name are shown. Bit dirty.
 		public function StructureTooltip(structObj: StructureObject, structurePrototype: StructurePrototype) {
@@ -48,17 +52,21 @@
 			lblLevel.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLevel, "Tooltip.text");
 			lblLevel.setConstraints("East");
+			
+			lblCity = new JLabel(" ", null, AsWingConstants.LEFT);
+			GameLookAndFeel.changeClass(lblCity, "header");
+			lblCity.setConstraints("North");			
 
 			ui.append(lblName);
-			ui.append(lblLevel);
+			ui.append(lblLevel);			
 		}
 		
 		private function setCityName(username: Username, custom: * = null): void
 		{						
-			var lbl: JLabel = new JLabel(username.name, null, AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lbl, "header");
-			lbl.setConstraints("North");
-			ui.append(lbl);
+			lblCity.setText(username.name);
+			ui.append(lblCity);
+			if (ui.getFrame())
+				ui.getFrame().pack();
 		}
 	}
 }

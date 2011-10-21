@@ -45,7 +45,17 @@
 					onAccept(self);
 				});
 
-				pnlObject.append(new AssetPane(icon));
+				var lblCity: JLabel = new JLabel(" ", null, AsWingConstants.CENTER);				
+				var pnlHolder: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5, AsWingConstants.CENTER));
+				pnlHolder.append(new AssetPane(icon));
+				pnlHolder.append(lblCity);
+				
+				if (obj is GameObject) 
+				{
+					Global.map.usernames.cities.setLabelUsername((obj as GameObject).cityId, lblCity);
+				}
+				
+				pnlObject.append(pnlHolder);
 			}
 
 		}

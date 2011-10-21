@@ -1,4 +1,6 @@
 ﻿package src.Map {
+	import org.aswing.Component;
+	import org.aswing.Container;
 	import org.aswing.JLabel;
 	import src.Objects.Troop.*;
 	import src.Util.BinaryList.*;
@@ -92,8 +94,17 @@
 
 		public function onGetLabelUsername(username: Username, custom: *):void
 		{
-			(custom as JLabel).setText(username.name);
-			(custom as JLabel).pack();
+			var lbl: JLabel = custom as JLabel;
+			if (!custom)
+				return;
+				
+			lbl.setText(username.name);			
+			
+			// Pack parent if it's available otherwise pack current component
+			if (lbl.parent && lbl.parent is Component)
+				(lbl.parent as Component).pack();
+			else
+				lbl.pack();
 		}
 
 	}

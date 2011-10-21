@@ -57,6 +57,7 @@ package src.UI.Tooltips {
 				ui.getFrame().pack();
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
+				ui.getFrame().parent.tabEnabled = false;
 
 				adjustPosition();
 			}

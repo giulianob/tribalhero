@@ -116,6 +116,7 @@ package src.Comm {
         public static const TRIBE_UPDATE: int = 1004;
         public static const TRIBE_UPGRADE: int = 1005;
 		public static const TRIBE_DESCRIPTION_SET: int = 1006;
+		public static const TRIBE_PUBLIC_INFO: int = 1007;
         public static const TRIBESMAN_ADD: int = 1011;
         public static const TRIBESMAN_REMOVE: int = 1012;
         public static const TRIBESMAN_UPDATE: int = 1013;

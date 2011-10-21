@@ -277,7 +277,7 @@ package src.UI.Dialog{
 
 			rankingModel = new PropertyTableModel(rankingList,
 			["Rank", "Tribe", rankings[type].name],
-			["rank", "tribeName", "value"],
+			["rank", ".", "value"],
 			[null, null, null, null]
 			);
 
@@ -296,6 +296,9 @@ package src.UI.Dialog{
 			rankingTable.getColumnAt(0).setPreferredWidth(45);
 			rankingTable.getColumnAt(1).setPreferredWidth(220);
 			rankingTable.getColumnAt(2).setPreferredWidth(150);
+			
+			rankingTable.getColumnAt(1).setCellFactory(new GeneralTableCellFactory(TribeLabelCell));
+
 
 			if (selectIdx > -1) {
 				rankingTable.setRowSelectionInterval(selectIdx, selectIdx, true);

@@ -18,6 +18,7 @@
 	import src.UI.Components.CityLabel;
 	import src.UI.Components.GoToCityIcon;
 	import src.UI.Components.SimpleTooltip;
+	import src.UI.Components.TribeLabel;
 	import src.UI.GameJPanel;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
@@ -80,6 +81,7 @@
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
 		{
 			super.showSelf(owner, modal, onClose);
+			Global.gameContainer.closeAllFramesByType(PlayerProfileDialog);
 			Global.gameContainer.showFrame(frame);
 			return frame;
 		}		
@@ -140,9 +142,13 @@
 			pnlHeader.append(pnlHeaderFirstRow);
 			
 			if (profileData.tribeId > 0) {
+				var tribeLabel: TribeLabel = new TribeLabel(profileData.tribeId, profileData.tribeName);
 				var lblTribe: MultilineLabel = new MultilineLabel("", 1);
-				lblTribe.setHtmlText("<b>" + profileData.tribeName + "</b> (" + Locale.loadString("TRIBE_RANK_" + profileData.tribeRank) + ")");
-				pnlHeader.append(lblTribe);
+				lblTribe.setHtmlText("(" + Locale.loadString("TRIBE_RANK_" + profileData.tribeRank) + ")");
+				
+				var pnlLblNameHolder: JPanel = new JPanel(new FlowLayout());						
+				pnlLblNameHolder.appendAll(tribeLabel, lblTribe);
+				pnlHeader.append(pnlLblNameHolder);
 			}
 			
 			pnlHeader.appendAll(new JLabel(" "), pnlActions);

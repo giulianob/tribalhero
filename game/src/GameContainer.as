@@ -674,6 +674,18 @@
 				frame.dispose();
 			}
 		}
+	
+		public function closeAllFramesByType(type:Class, onlyClosableFrames: Boolean = false) : void {
+			var framesCopy: Array = frames.concat();
+
+			for (var i: int = framesCopy.length - 1; i >= 0; --i) {
+				var frame: JFrame = framesCopy[i] as JFrame;
+				if (onlyClosableFrames && !frame.isClosable())
+					break;
+				if(frame.getContentPane() is type)
+					frame.dispose();
+			}
+		}
 
 		public function showFrame(frame: JFrame):void {						
 			if (map != null) {

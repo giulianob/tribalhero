@@ -96,8 +96,9 @@ namespace Game.Logic.Formulas
                 if (effects.Count > 1)
                     rateBonus *= Math.Pow(0.92, effects.Count - 1); // for every extra tribal gathering, you gain 8 % each
             }
-
-            return (int)((43200 / (-6.845 * Math.Log(laborTotal / 1.3 - 100) + 55)) * rateBonus);
+            double newMultiplier = Math.Min(2, 3- (double)laborTotal/400);
+            newMultiplier = Math.Max(1,newMultiplier);
+            return (int)((43200 / ((-6.845 * Math.Log(laborTotal / 1.3 - 100) + 55) * newMultiplier)) * rateBonus);
         }
 
         public static TimeSpan ReadCsvTimeFormat(string time)

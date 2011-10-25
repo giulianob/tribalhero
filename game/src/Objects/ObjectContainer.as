@@ -150,8 +150,6 @@ package src.Objects {
 			if (tilePos.x < 0 || tilePos.y < 0) return;
 
 			tilePos = MapUtil.getMapCoord(tilePos.x, tilePos.y);
-			
-			resetDimmedObjects();			
 
 			var selectableCnt: int = 0;
 			var overlapping: Array = new Array();
@@ -202,12 +200,12 @@ package src.Objects {
 			// If we still have the same highest obj then stop here
 			if (highlightedObject == highestObj) {
 				// Adjust tooltip to current mouse position
-				if (objTooltip) objTooltip.show(highestObj);
-				
+				if (objTooltip) 
+					objTooltip.show(highestObj);				
 				return;
 			}
 			
-			// Reset the highlighted obj since it might have changed
+			// Reset the highlighted obj since it has changed
 			resetHighlightedObject();
 
 			var highestObjMapPos: Point = MapUtil.getMapCoord(highestObj.getX(), highestObj.getY());
@@ -223,9 +221,8 @@ package src.Objects {
 				
 				if (Math.abs(highestObj.getX() - obj.getX()) < Constants.tileW)
 				{
-					// Split this into 2 ifs for performance
 					objMapPos = MapUtil.getMapCoord(obj.getX(), obj.getY());				
-					if (MapUtil.distance(highestObjMapPos.x, highestObjMapPos.y, objMapPos.x, objMapPos.y) == 1)
+					if (MapUtil.distance(highestObjMapPos.x, highestObjMapPos.y, objMapPos.x, objMapPos.y) <= 1)
 					{
 						dimmedObjects.push(obj);
 						obj.alpha = 0.25;
@@ -249,11 +246,12 @@ package src.Objects {
 				}
 			}
 
+			// Show tooltip for hovered obj
 			if (!objTooltip) {
 				if (highestObj is StructureObject) {
 					var structureObj: StructureObject = highestObj as StructureObject;
 					objTooltip = new StructureTooltip(structureObj, StructureFactory.getPrototype(structureObj.type, structureObj.level));
-				}
+				}				
 			}
 			
 			highlightedObject = highestObj;

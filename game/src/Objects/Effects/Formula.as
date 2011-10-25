@@ -1,21 +1,11 @@
 ﻿package src.Objects.Effects {
 
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Map.CityObject;
-	import src.Objects.Actions.StructureChangeAction;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.GameObject;
-	import src.Objects.LazyResources;
-	import src.Objects.LazyValue;
-	import src.Objects.Prototypes.EffectPrototype;
-	import src.Objects.Prototypes.StructurePrototype;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.Resources;
-	import src.Objects.StructureObject;
-	import src.Objects.TechnologyManager;
-	import src.Objects.Troop.TroopStub;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Factories.*;
+	import src.Objects.Prototypes.*;
+	import src.Objects.Troop.*;
 
 	public class Formula {
 		
@@ -159,7 +149,9 @@
 			if (effects.length > 1)
 				rateBonus *= Math.pow(0.92, effects.length - 1); // for every extra tribal gathering, you gain 10 % each
 			
-			return (43200 / ( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55)) * rateBonus;
+			var newMultiplier:Number = Math.min(2, 3 - laborTotal / 400);
+            newMultiplier = Math.max(1,newMultiplier);
+			return (43200 / (( -6.845 * Math.log(laborTotal / 1.3 - 100) + 55) * newMultiplier)) * rateBonus;
 		}
 		
 		// Returns the new resource rate and accounts for any resource bonus

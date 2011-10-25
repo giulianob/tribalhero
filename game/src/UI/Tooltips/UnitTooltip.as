@@ -10,44 +10,37 @@
 	
 	public class UnitTooltip extends Tooltip{
 		
-				
 		private var pnlHeader: JPanel;
 		private var lblName: JLabel;
 		private var lblLevel: JLabel;
-		private var lblCount: JLabel;
 		
 		public function UnitTooltip(unitPrototype: UnitPrototype, count: int = -1) {		
 			
 			createUI();
 			
-			lblName.setText(unitPrototype.getName(count));
-			lblLevel.setText("Level " + unitPrototype.level.toString());
 			if (count > -1)
-				lblCount.setText(count.toString());
+				lblName.setText(count + " " + unitPrototype.getName(0));
+			else	
+				lblName.setText(unitPrototype.getName(0));
+				
+			lblLevel.setText("Level " + unitPrototype.level.toString());
 		}
 		
 		private function createUI() : void {
-			ui.setLayout(new SoftBoxLayout(AsWingConstants.VERTICAL, 5));
-			pnlHeader = new JPanel(new BorderLayout(20));
+			ui.setLayout(new BorderLayout(20));
 			
 			lblName = new JLabel();							
 			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblName, "header");
+			GameLookAndFeel.changeClass(lblName, "Tooltip.text");
+			lblName.setConstraints("Center");
 			
 			lblLevel = new JLabel();				
 			lblLevel.setHorizontalAlignment(AsWingConstants.LEFT);
-			GameLookAndFeel.changeClass(lblLevel, "Tooltip.text");			
-			
-			lblCount = new JLabel();
-			lblCount.setConstraints("East");
-			lblCount.setHorizontalAlignment(AsWingConstants.RIGHT);
-			GameLookAndFeel.changeClass(lblCount, "header");			
-			
-			pnlHeader.append(lblLevel);
-			pnlHeader.append(lblCount);					
-			
+			GameLookAndFeel.changeClass(lblLevel, "Tooltip.text");
+			lblLevel.setConstraints("East");
+					
 			ui.append(lblName);
-			ui.append(pnlHeader);
+			ui.append(lblLevel);
 		}		
 		
 	}	

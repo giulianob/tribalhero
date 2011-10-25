@@ -19,6 +19,7 @@
 	import src.Constants;
 	import src.Global;
 	import src.Map.City;
+	import src.UI.Dialog.CityEventDialog;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.Tooltips.ResourcesTooltip;
 
@@ -30,19 +31,25 @@
 		public function ResourcesContainer()
 		{
 			var me: JPanel = this;
+			
+			addEventListener(MouseEvent.CLICK, function(e: Event): void {
+				var cityDialog: CityEventDialog = new CityEventDialog(Global.gameContainer.selectedCity);
+				cityDialog.show();
+			});
 
 			addEventListener(MouseEvent.MOUSE_MOVE, function(e: Event) : void {
 				if (!tooltip)
-				tooltip = new ResourcesTooltip(Global.gameContainer.selectedCity);
+					tooltip = new ResourcesTooltip(Global.gameContainer.selectedCity);
 
 				tooltip.show(me);
 			});
 
 			addEventListener(MouseEvent.MOUSE_OUT, function(e: Event) : void {
-				if (tooltip) {
-					tooltip.hide();
-					tooltip = null;
-				}
+				if (!tooltip)
+					return;
+				
+				tooltip.hide();
+				tooltip = null;
 			});
 		}
 

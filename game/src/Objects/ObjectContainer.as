@@ -207,6 +207,7 @@ package src.Objects {
 			
 			// Reset the highlighted obj since it has changed
 			resetHighlightedObject();
+			resetDimmedObjects();
 
 			var highestObjMapPos: Point = MapUtil.getMapCoord(highestObj.getX(), highestObj.getY());
 			

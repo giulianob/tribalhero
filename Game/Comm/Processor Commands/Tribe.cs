@@ -168,6 +168,31 @@ namespace Game.Comm
             }
         }
 
+        public void CmdTribePublicInfo(Session session, Packet packet) {
+            var reply = new Packet(packet);
+            uint id;
+            try {
+                id = packet.GetUInt32();
+            } catch (Exception) {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            Tribe tribe;
+
+            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(id,out tribe)) {
+                reply.AddInt16((short)tribe.Count);
+                foreach (var tribesman in tribe) {
+                    reply.AddUInt32(tribesman.Player.PlayerId);
+                    reply.AddString(tribesman.Player.Name);
+                    reply.AddInt32(tribesman.Player.GetCityCount());
+                    reply.AddByte(tribesman.Rank);
+                }
+
+                session.Write(reply);
+            }
+        }
+
         public void CmdTribeCreate(Session session, Packet packet)
         {
             string name;

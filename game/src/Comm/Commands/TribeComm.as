@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 
+	import flash.utils.ByteArray;
 	import src.Comm.*;
 	import src.Constants;
 	import src.Map.*;
@@ -189,7 +190,38 @@
 			
 			custom.callback(profileData);
 		}
+		
+		public function viewTribePublicProfile(tribeId: uint, callback: Function):void {
+			var packet: Packet = new Packet();
+			
+			packet.cmd = Commands.TRIBE_PUBLIC_INFO;
+			packet.writeUInt(tribeId);
 
+			session.write(packet, onReceiveTribePublicProfile, { tribeId: tribeId, callback: callback } );
+		}	
+		
+		public function onReceiveTribePublicProfile(packet: Packet, custom: *):void {
+			if (MapComm.tryShowError(packet)) {
+				custom.callback(null);
+				return;
+			}
+			
+			var profileData: * = new Object();
+			profileData.tribeId = custom.tribeId;
+			profileData.members = [];
+			var memberCount: int = packet.readShort();
+			for (var i: int = 0; i < memberCount; i++)
+				profileData.members.push({
+					playerId: packet.readUInt(),
+					playerName: packet.readString(),
+					cityCount: packet.readInt(),
+					rank: packet.readUByte()
+				});
+				
+			(profileData.members as Array).sortOn("rank", [Array.NUMERIC]);
+			custom.callback(profileData);
+		}
+		
 		public function setRank(playerId: int, newRank: int) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBESMAN_SET_RANK;

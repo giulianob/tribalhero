@@ -20,6 +20,7 @@
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
+	import src.Map.Username;
 	
 	public class TribePublicProfileDialog extends GameJPanel
 	{
@@ -27,6 +28,7 @@
 		
 		private var pnlHeader: JPanel;
 		private var pnlInfoContainer: JPanel;
+		private var lblTribeName: JLabel;
 		
 		private var pnlTabs: JTabbedPane;
 		private var pnlInfoTabs: JTabbedPane;
@@ -48,13 +50,16 @@
 		
 		private function createUI():void {
 			setPreferredSize(new IntDimension(Math.min(375, Constants.screenW - GameJImagePanelBackground.getFrameWidth()) , Math.min(600, Constants.screenH - GameJImagePanelBackground.getFrameHeight())));
-			title = "Tribe Profile - " + Global.map.usernames.tribes.getUsername(profileData.tribeId).name;
+			
+			title = "Tribe Profile - " + profileData.tribeName;
 			setLayout(new BorderLayout(10, 10));
 			
 			// Header panel
 			pnlHeader = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			pnlHeader.setConstraints("North");		
-
+			lblTribeName = new JLabel();
+			pnlHeader.append(lblTribeName);
+			
 			// Tab panel
 			pnlTabs = new JTabbedPane();
 			pnlTabs.setPreferredSize(new IntDimension(375, 600));
@@ -66,7 +71,7 @@
 			// Append main panels
 			appendAll(pnlHeader, pnlTabs);
 		}
-				
+		
 		private function createMembersTab() : Container {
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(

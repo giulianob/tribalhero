@@ -8,6 +8,7 @@ using Game.Database;
 using Game.Logic;
 using Game.Module;
 using Game.Setup;
+using Game.Util;
 using Ninject;
 using Ninject.Extensions.Interception;
 using Ninject.Extensions.Logging;
@@ -43,6 +44,10 @@ namespace Game
 
         public bool Start()
         {
+            using (Ioc.Kernel.Get<MultiObjectLock>())
+            {                
+            }
+
             if (!System.Diagnostics.Debugger.IsAttached)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
 

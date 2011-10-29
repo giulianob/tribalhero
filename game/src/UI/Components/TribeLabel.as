@@ -19,6 +19,7 @@ package src.UI.Components
 	public class TribeLabel extends JLabelButton
 	{
 		private var tribeId: int = 0;
+		private var tribeName: String = "Not Loaded";
 		
 		private var loadingPanel: InfoDialog;
 		
@@ -33,9 +34,10 @@ package src.UI.Components
 			
 			this.tribeId = tribeId;			
 			
-			if (tribeName)
+			if (tribeName) {
 				setText(tribeName);
-			else
+				this.tribeName = tribeName;
+			} else
 				Global.map.usernames.tribes.getUsername(tribeId, onReceiveUsername);
 			
 			if (tribeId > 0) {
@@ -46,7 +48,7 @@ package src.UI.Components
 		
 		private function onClick(e: Event = null) : void {
 			loadingPanel = InfoDialog.showMessageDialog("TribalHero", "Loading...", null, null, true, false, 0);
-			Global.mapComm.Tribe.viewTribePublicProfile(tribeId, onReceiveProfile);
+			Global.mapComm.Tribe.viewTribePublicProfile({tribeId: tribeId, tribeName: tribeName}, onReceiveProfile);
 		}
 		
 		private function onReceiveProfile(profileData: * ) : void {

@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseGenerator", "Databa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistance", "Persistance\Persistance.csproj", "{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battle", "Battle\Battle.csproj", "{51E3064F-22C3-4B5C-A386-29F61A8CEA94}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Game10.vsmdi
@@ -213,6 +215,21 @@ Global
 		{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}.Release|Mixed Platforms.Build.0 = Release|x86
 		{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}.Release|x86.ActiveCfg = Release|x86
 		{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}.Release|x86.Build.0 = Release|x86
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release w. Check Locks|Any CPU.ActiveCfg = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release w. Check Locks|Any CPU.Build.0 = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release w. Check Locks|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release w. Check Locks|Mixed Platforms.Build.0 = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release w. Check Locks|x86.ActiveCfg = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{51E3064F-22C3-4B5C-A386-29F61A8CEA94}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

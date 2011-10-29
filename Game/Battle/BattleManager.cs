@@ -392,7 +392,12 @@ namespace Game.Battle
                     obj.State = GameObjectState.BattleState(obj.City.Id);
                     obj.EndUpdate();
 
-                    CombatObject combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj)) {Id = (uint)idGen.GetNext(), GroupId = 1};
+                    CombatObject combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj))
+                                                {
+                                                        Id = (uint)idGen.GetNext(), 
+                                                        GroupId = 1,
+                                                        LastRound = round
+                                                };
                     defenders.Add(combatObject);
                     list.Add(combatObject);
                 }

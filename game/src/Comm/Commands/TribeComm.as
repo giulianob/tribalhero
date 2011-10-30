@@ -11,6 +11,7 @@
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.TribeProfileDialog;
+	import src.Util.*;
 
 	public class TribeComm {
 
@@ -112,6 +113,7 @@
 					playerName: packet.readString(),
 					cityCount: packet.readInt(),
 					rank: packet.readUByte(),
+					date: Util.simpleTime(Global.map.getServerTime()-packet.readUInt()) + " ago",
 					contribution: new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0)
 				});
 				

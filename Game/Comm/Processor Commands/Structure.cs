@@ -609,10 +609,13 @@ namespace Game.Comm
 
                 var buildaction = new ForestCampBuildActiveAction(cityId, lumbermill.ObjectId, forestId, type, labor);
                 Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(lumbermill), lumbermill, buildaction, lumbermill.Technologies);
-                if (ret != 0)
+                if(ret== Error.ActionTotalMaxReached)
+                    ReplyError(session, packet, Error.LumbermillBusy);
+                else if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
                     ReplySuccess(session, packet);
+                
                 return;
             }
         }

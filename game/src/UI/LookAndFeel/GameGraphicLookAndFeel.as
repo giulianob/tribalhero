@@ -445,7 +445,7 @@ package src.UI.LookAndFeel
 		[Embed(source="assets/Frame_maximizeIcon_rolloverImage.png")]
 		private var Frame_maximizeIcon_rolloverImage:Class;
 
-		//========= Down Arrow Images =======
+		//========= Close Icon Images =======
 		[Embed(source="assets/Frame_closeIcon_defaultImage.png")]
 		private var Frame_closeIcon_defaultImage:Class;
 
@@ -457,6 +457,19 @@ package src.UI.LookAndFeel
 
 		[Embed(source="assets/Frame_closeIcon_rolloverImage.png")]
 		private var Frame_closeIcon_rolloverImage:Class;
+		
+		//========= Chat Image =======
+		[Embed(source="assets/chat_defaultImage.png")]
+		private var Frame_chatIcon_defaultImage:Class;
+
+		[Embed(source="assets/chat_defaultImage.png")]
+		private var Frame_chatIcon_pressedImage:Class;
+
+		[Embed(source="assets/chat_defaultImage.png")]
+		private var Frame_chatIcon_disabledImage:Class;
+
+		[Embed(source="assets/chat_rolloverImage.png")]
+		private var Frame_chatIcon_rolloverImage:Class;		
 
 		//----------------------------------------------------------------------
 		//___________________________ ToolTip scale-9 __________________________
@@ -1194,7 +1207,12 @@ package src.UI.LookAndFeel
 			"Frame.closeIcon.defaultImage", Frame_closeIcon_defaultImage,
 			"Frame.closeIcon.pressedImage", Frame_closeIcon_pressedImage,
 			"Frame.closeIcon.disabledImage", Frame_closeIcon_disabledImage,
-			"Frame.closeIcon.rolloverImage", Frame_closeIcon_rolloverImage
+			"Frame.closeIcon.rolloverImage", Frame_closeIcon_rolloverImage,
+			
+			"Frame.chatIcon.defaultImage", Frame_chatIcon_defaultImage,
+			"Frame.chatIcon.pressedImage", Frame_chatIcon_pressedImage,
+			"Frame.chatIcon.disabledImage", Frame_chatIcon_disabledImage,
+			"Frame.chatIcon.rolloverImage", Frame_chatIcon_rolloverImage			
 			];
 			table.putDefaults(comDefaults);
 

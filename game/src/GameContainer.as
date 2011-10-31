@@ -63,6 +63,9 @@
 		//Timer to load unread message count
 		public var messageTimer: MessageTimer;
 
+		//Timer to load incoming count
+		public var incomingTimer: IncomingTimer;
+		
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
 
@@ -117,6 +120,10 @@
 			txtUnreadReports.visible = false;
 			txtUnreadReports.mouseChildren = false;
 			txtUnreadReports.mouseEnabled = false;
+			
+			txtIncoming.visible = false;
+			txtIncoming.mouseChildren = false;
+			txtIncoming.mouseEnabled = false;
 
 			// Add key down listener to stage
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
@@ -543,6 +550,7 @@
 			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
 			messageTimer.start();
+			incomingTimer = new IncomingTimer();
 			
 			// Show built in messages
 			builtInMessages = new BuiltInMessages();
@@ -569,6 +577,11 @@
 			
 			if (minimapRefreshTimer) {
 				minimapRefreshTimer.stop();
+			}
+			
+			if (incomingTimer) {
+				incomingTimer.stop();
+				incomingTimer = null;
 			}
 
 			if (messageTimer) {

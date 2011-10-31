@@ -127,6 +127,7 @@ package src.Comm {
 		public static const TRIBESMAN_CONTRIBUTE: int = 1018;
 		public static const TRIBE_ASSIGNMENT_CREATE: int = 1022;
 		public static const TRIBE_ASSIGNMENT_JOIN: int = 1023;
+		public static const TRIBE_INCOMING_COUNT: int = 1031;
 		public static const TRIBE_UPDATE_CHANNEL: int = 1051;
 		
 	}

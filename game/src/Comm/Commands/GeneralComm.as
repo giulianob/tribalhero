@@ -88,8 +88,10 @@
 			Global.gameContainer.tribeInviteRequest.visible = Constants.tribeInviteId > 0;			
 			
 			var tribeName: String = packet.readString();
-			if (Constants.tribeId > 0)
+			if (Constants.tribeId > 0) {
 				Global.map.usernames.tribes.add(new Username(Constants.tribeId, tribeName));
+				Global.gameContainer.incomingTimer.start();
+			}
 				
 			// Cities
 			var cityCnt: int = packet.readUByte();

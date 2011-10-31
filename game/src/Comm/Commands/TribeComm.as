@@ -65,7 +65,12 @@
 			packet.writeString(name);
 
 			session.write(packet, mapComm.catchAllErrors);
-		}				
+		}	
+		
+		public function onCreateTribe(packet:Packet, custom:*) : void {
+			if (MapComm.tryShowError(packet)) return;
+			Global.gameContainer.incomingTimer.start();
+		}
 
 		public function invitationConfirm(response: Boolean) : void {
 			var packet: Packet = new Packet();
@@ -73,6 +78,7 @@
 			packet.writeByte(response ? 1 : 0);
 
 			session.write(packet, showErrorOrRefreshTribePanel);
+			Global.gameContainer.incomingTimer.start();
 		}		
 		
 		public function viewTribeProfile(callback: Function):void {
@@ -255,7 +261,7 @@
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_DELETE;
 			
-			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe dismantled", content: "Your tribe has been dismantled" }, close: true });
+			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe dismantled", content: "Your tribe has been dismantled" }, close: true } );
 		}	
 
 		public function leave() : void {
@@ -291,6 +297,19 @@
 			
 			if (custom.message)
 				InfoDialog.showMessageDialog(custom.message.title, custom.message.content);
+		}
+		
+		public function incomingCount(callback : Function):void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_INCOMING_COUNT;
+			session.write(packet, onReceiveIncomingCount, { callback: callback } );
+		}
+		public function onReceiveIncomingCount(packet: Packet, custom: * ):void {
+			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
+				Global.gameContainer.incomingTimer.stop();
+				return;
+			}
+			custom.callback(packet.readInt());
 		}
 	}
 

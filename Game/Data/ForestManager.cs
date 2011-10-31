@@ -7,6 +7,7 @@ using Game.Logic.Actions.ResourceActions;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -156,7 +157,7 @@ namespace Game.Data
 
         public ILockable[] GetListOfLocks(uint forestId)
         {
-            MultiObjectLock.ThrowExceptionIfNotLocked(Global.World.Forests);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(Global.World.Forests);
 
             Forest forest;
 

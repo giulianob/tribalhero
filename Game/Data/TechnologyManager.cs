@@ -8,6 +8,7 @@ using System.Linq;
 using Game.Logic;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -227,13 +228,13 @@ namespace Game.Data
             switch(OwnerLocation)
             {
                 case EffectLocation.City:
-                    MultiObjectLock.ThrowExceptionIfNotLocked((City)Owner);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((City)Owner);
                     break;
                 case EffectLocation.Object:
-                    MultiObjectLock.ThrowExceptionIfNotLocked(((Structure)Owner).City);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((Structure)Owner).City);
                     break;
                 case EffectLocation.Player:
-                    MultiObjectLock.ThrowExceptionIfNotLocked((Player)Owner);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((Player)Owner);
                     break;
             }
         }

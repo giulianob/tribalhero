@@ -8,6 +8,7 @@ using Game;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
 using Persistance;
@@ -45,11 +46,12 @@ namespace Launcher
             }
             
             Config.LoadConfigFile(settingsFile);
-            Factory.CompileConfigFiles();
-            Engine.CreateDefaultKernel();
+            Factory.CompileConfigFiles();            
+            var kernel = Engine.CreateDefaultKernel();
             Factory.InitAll();
             Converter.Go(Config.data_folder, Config.csv_compiled_folder, Config.csv_folder);            
 
+            // Empty db
 #if DEBUG
             if (Config.database_empty)
             {
@@ -59,11 +61,13 @@ namespace Launcher
             }
 #endif
 
+            // Start game engine
             var engine = Ioc.Kernel.Get<Engine>();
 
             if (!engine.Start())
                 throw new Exception("Failed to load server");            
 
+            // Quit if press alt+q
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey();

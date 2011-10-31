@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -55,7 +56,7 @@ namespace Game.Logic.Actions
 
         public void Reschedule()
         {
-            MultiObjectLock.ThrowExceptionIfNotLocked(WorkerObject.City);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(WorkerObject.City);
 
             Forest forest;
             if (!Global.World.Forests.TryGetValue(forestId, out forest))

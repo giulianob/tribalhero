@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
 using Persistance;
@@ -44,7 +45,7 @@ namespace Game.Comm
                          new DbColumn[] { })) {
                 while (reader.Read()) {
                     Player player;
-                    using (Ioc.Kernel.Get<MultiObjectLock>().Lock((uint)reader["id"], out player)) {
+                    using (Concurrency.Current.Lock((uint)reader["id"], out player)) {
                         player.SendSystemMessage(null, subject, message);
                     }
                 }
@@ -75,7 +76,7 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player))
+            using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
                     return "Player not found";
@@ -154,7 +155,7 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player)) {
+            using (Concurrency.Current.Lock(playerId, out player)) {
                 if (player == null)
                     return "Player not found";
 

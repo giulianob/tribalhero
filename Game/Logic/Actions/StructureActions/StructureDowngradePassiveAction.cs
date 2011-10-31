@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -58,7 +59,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
             }
@@ -70,7 +71,7 @@ namespace Game.Logic.Actions
             Structure structure;
 
             // Block structure
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, structureId, out city, out structure))
+            using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
             {
                 if (!IsValid())
                     return;
@@ -82,7 +83,7 @@ namespace Game.Logic.Actions
 
             structure.City.Worker.Remove(structure);
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, structureId, out city, out structure))
+            using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
             {
                 city.BeginUpdate();
                 structure.BeginUpdate();

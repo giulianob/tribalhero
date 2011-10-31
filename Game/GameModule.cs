@@ -5,6 +5,7 @@ using Game.Comm;
 using Game.Comm.Channel;
 using Game.Data;
 using Game.Setup;
+using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
@@ -21,6 +22,10 @@ namespace Game
             #region General Comms
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
+            #endregion
+
+            #region Locking
+            Bind<ILocker>().To<DefaultLocker>().InSingletonScope();
             #endregion
 
             #region CSV Factories

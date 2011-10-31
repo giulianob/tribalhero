@@ -8,6 +8,7 @@ using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
 using Persistance;
@@ -55,7 +56,7 @@ namespace Game.Comm
             Player player;
             Tribe tribe;
             string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player, out tribe))
+            using (Concurrency.Current.Lock(playerId, out player, out tribe))
             {
                 if (player == null)
                     return "Player not found";
@@ -119,7 +120,7 @@ namespace Game.Comm
                 return "Could not find a structure for the given coordinates";
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city, tribe, targetStructure.City))
+            using (Concurrency.Current.Lock(city, tribe, targetStructure.City))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {
@@ -184,7 +185,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = city.Owner.Tribesman.Tribe;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city, tribe))
+            using (Concurrency.Current.Lock(city, tribe))
             {
                 if (city.DefaultTroop.Upkeep == 0)
                 {

@@ -10,6 +10,7 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -33,7 +34,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 if (session.Player.Tribesman == null)
                 {
@@ -107,7 +108,7 @@ namespace Game.Comm
             }
             var tribe = session.Player.Tribesman.Tribe;
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribe))
+            using (Concurrency.Current.Lock(tribe))
             {
                 reply.AddUInt32(tribe.Id);
                 reply.AddUInt32(tribe.Owner.PlayerId);
@@ -180,7 +181,7 @@ namespace Game.Comm
 
             Tribe tribe;
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(id,out tribe)) {
+            using (Concurrency.Current.Lock(id,out tribe)) {
                 reply.AddInt16((short)tribe.Count);
                 foreach (var tribesman in tribe) {
                     reply.AddUInt32(tribesman.Player.PlayerId);
@@ -206,7 +207,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 if (session.Player.Tribesman != null)
                 {
@@ -284,7 +285,7 @@ namespace Game.Comm
             }
 
             Tribe tribe = session.Player.Tribesman.Tribe;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribe))
+            using (Concurrency.Current.Lock(tribe))
             {
                 if(tribe.Level>=20)
                 {

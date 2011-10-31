@@ -124,6 +124,7 @@ namespace Game.Comm
                     reply.AddString(tribesman.Player.Name);
                     reply.AddInt32(tribesman.Player.GetCityCount());
                     reply.AddByte(tribesman.Rank);
+                    reply.AddUInt32(UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
                     PacketHelper.AddToPacket(tribesman.Contribution, reply);
                 }
 

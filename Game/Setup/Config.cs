@@ -60,7 +60,8 @@ namespace Game.Setup
         public static bool battle_instant_watch;
         public static double battle_turn_interval = 20.0f;
         public static int battle_min_rounds = 5;
-        public static int battle_loot_per_round = 10; // percentage of total carry
+        public static int battle_loot_per_round = 7; // percentage of total carry, 15 round to fill up.
+        public static int battle_loot_begin_round = 5; 
         public static int battle_stamina_initial = 20;
         public static ushort battle_stamina_destroyed_deduction = 5;
         public static bool battle_instant_move;
@@ -80,7 +81,9 @@ namespace Game.Setup
 
         public static int[] forest_count = new[] {100, 100, 100, 100};
 
-        public static int newbie_protection = 432000; // Number of seconds for newbie protection, set to 5 days currently
+        public static int newbie_protection = 259200; /* Number of seconds for newbie protection, set back to 3 days, which is more than enough
+                                                       * 1) everyone around you should be the same lvls with the way we spawn.
+                                                       * 2) low level skirmishers should begin shortly */
 
         public static bool database_verbose;
         public static bool database_empty;

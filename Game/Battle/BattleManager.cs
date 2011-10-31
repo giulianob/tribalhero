@@ -845,10 +845,14 @@ namespace Game.Battle
                 // Only give loot if we are attacking the first target in the list
                 if (attackIndex == 0)
                 {
-                    Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                    Resource loot=null;
                     city.BeginUpdate();
-                    city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
-                    attacker.ReceiveReward(attackPoints, loot);
+                    if (round >= Config.battle_loot_begin_round)
+                    {
+                        loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                        city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
+                    } 
+                    attacker.ReceiveReward(attackPoints, loot ?? new Resource() );
                     city.EndUpdate();
                 }
                 else

@@ -7,6 +7,7 @@ using Game.Data.Tribe;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -31,7 +32,7 @@ namespace Game.Logic.Procedures
             var id = city.Owner.Tribesman.Tribe.Id;
             ThreadPool.QueueUserWorkItem(delegate {
                 Tribe tribe;
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(id, out tribe)) {
+                using (Concurrency.Current.Lock(id, out tribe)) {
                     tribe.AttackPoint += point;
                 }
             });

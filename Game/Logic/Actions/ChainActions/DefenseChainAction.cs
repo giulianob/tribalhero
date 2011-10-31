@@ -7,6 +7,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -98,7 +99,7 @@ namespace Game.Logic.Actions
             {
                 Dictionary<uint, City> cities;
 
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
+                using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
                     City city = cities[cityId];
                     City targetCity = cities[targetCityId];

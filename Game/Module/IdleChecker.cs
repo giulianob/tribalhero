@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -31,7 +32,7 @@ namespace Game.Module {
                                      new DbColumn[] { })) {
                 while (reader.Read()) {
                     Player player;
-                    using (Ioc.Kernel.Get<MultiObjectLock>().Lock((uint)reader["id"], out player)) {
+                    using (Concurrency.Current.Lock((uint)reader["id"], out player)) {
                         foreach (City city in player.GetCityList()) {
                             CityRemover cr = new CityRemover(city.Id);
                             cr.Start();

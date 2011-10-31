@@ -9,6 +9,7 @@ using Game.Logic;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Interception;
 using Ninject.Extensions.Logging;
@@ -43,11 +44,7 @@ namespace Game
         }
 
         public bool Start()
-        {
-            using (Ioc.Kernel.Get<MultiObjectLock>())
-            {                
-            }
-
+        {            
             if (!System.Diagnostics.Debugger.IsAttached)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
 
@@ -140,9 +137,11 @@ _________ _______ _________ ______   _______  _
             return true;
         }
 
-        public static void CreateDefaultKernel()
+        public static IKernel CreateDefaultKernel()
         {
             Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = false }, new DynamicProxy2Module(), new Log4NetModule(), new GameModule());
+            
+            return Ioc.Kernel;
         }
 
         private void CurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)

@@ -6,6 +6,7 @@ using Game.Logic.Actions;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -50,7 +51,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -108,7 +109,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 

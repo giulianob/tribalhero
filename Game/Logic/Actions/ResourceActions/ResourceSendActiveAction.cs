@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -46,7 +47,7 @@ namespace Game.Logic.Actions
                                     int.Parse(properties["labor"]));
         }
 
-        public override ConcurrencyType Concurrency
+        public override ConcurrencyType ActionConcurrency
         {
             get
             {
@@ -110,7 +111,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
@@ -121,7 +122,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             Dictionary<uint, City> cities;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
+            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
             {
                 if (!IsValid())
                     return;

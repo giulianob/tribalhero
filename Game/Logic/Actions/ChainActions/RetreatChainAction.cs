@@ -7,6 +7,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -74,7 +75,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 City city;
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+                using (Concurrency.Current.Lock(cityId, out city))
                 {
                     TroopStub stub;
 
@@ -102,7 +103,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 City city;
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+                using (Concurrency.Current.Lock(cityId, out city))
                 {
                     TroopStub stub;
 

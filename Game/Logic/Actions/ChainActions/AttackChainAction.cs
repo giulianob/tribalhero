@@ -8,6 +8,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -150,7 +151,7 @@ namespace Game.Logic.Actions
                 if (!Global.World.TryGetObjects(targetCityId, out targetCity))
                 {
                     //If the target is missing, walk back
-                    using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city))
+                    using (Concurrency.Current.Lock(city))
                     {
                         TroopStub stub = city.Troops[stubId];
                         TroopMovePassiveAction tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.X, city.Y, true, true);
@@ -182,7 +183,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 Dictionary<uint, City> cities;
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
+                using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
                     City city = cities[cityId];
                     TroopStub stub;
@@ -237,7 +238,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 City city;
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+                using (Concurrency.Current.Lock(cityId, out city))
                 {
                     TroopStub stub;
 
@@ -268,7 +269,7 @@ namespace Game.Logic.Actions
             if (state == ActionState.Completed)
             {
                 City city;
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+                using (Concurrency.Current.Lock(cityId, out city))
                 {
                     TroopStub stub;
 

@@ -7,6 +7,7 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -87,7 +88,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
             }
@@ -105,7 +106,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {            
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;

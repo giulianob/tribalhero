@@ -11,6 +11,7 @@ using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -160,7 +161,7 @@ namespace Game.Comm
                 }
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(player))
+            using (Concurrency.Current.Lock(player))
             {
                 if (!newPlayer)
                 {
@@ -223,7 +224,7 @@ namespace Game.Comm
 
         public void CmdCreateInitialCity(Session session, Packet packet)
         {
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 string cityName;
                 try

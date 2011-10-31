@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -87,7 +88,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(structure.City))
+            using (Concurrency.Current.Lock(structure.City))
             {
                 if (!IsValid())
                     return;

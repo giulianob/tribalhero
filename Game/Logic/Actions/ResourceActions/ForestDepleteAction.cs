@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion

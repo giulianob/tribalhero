@@ -69,7 +69,7 @@
 		
 		public function onCreateTribe(packet:Packet, custom:*) : void {
 			if (MapComm.tryShowError(packet)) return;
-			Global.gameContainer.incomingTimer.start();
+			Global.gameContainer.tribeTimer.start();
 		}
 
 		public function invitationConfirm(response: Boolean) : void {
@@ -78,7 +78,7 @@
 			packet.writeByte(response ? 1 : 0);
 
 			session.write(packet, showErrorOrRefreshTribePanel);
-			Global.gameContainer.incomingTimer.start();
+			Global.gameContainer.tribeTimer.start();
 		}		
 		
 		public function viewTribeProfile(callback: Function):void {
@@ -306,7 +306,7 @@
 		}
 		public function onReceiveIncomingCount(packet: Packet, custom: * ):void {
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
-				Global.gameContainer.incomingTimer.stop();
+				Global.gameContainer.tribeTimer.stop();
 				return;
 			}
 			custom.callback(packet.readInt());

@@ -157,6 +157,27 @@ package src.Util {
 			return (hours <= 9 ? "0" + hours : hours) + ":" + (minutes <= 9 ? "0" + minutes : minutes) + ":" + (seconds <= 9 ? "0" + seconds : seconds);
 		}
 
+		public static function simpleTime(time: int)
+		{
+			if ( time < 60 ) return "1 min";
+			var days: int = int(time / (60 * 60 * 24));
+			time -= days * 60 * 60 * 24;
+			var hours: int = int(time / (60 * 60));
+			time -= hours * 60 * 60;
+			var minutes: int = int(time / 60);
+			time -= minutes * 60;
+			var seconds: int = time;
+
+			var simple: String = "";
+
+			if ( days > 0 ) 
+				simple += days + "d ";
+			if ( days > 0 || hours > 0)
+				simple += hours + "h ";
+			simple += minutes + "m";
+			return simple;
+		}
+		
 		public static function niceTime(time: int, conj: Boolean = true): String
 		{
 			if (time < 60) {

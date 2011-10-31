@@ -11,6 +11,7 @@
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.TribeProfileDialog;
+	import src.Util.*;
 
 	public class TribeComm {
 
@@ -112,6 +113,7 @@
 					playerName: packet.readString(),
 					cityCount: packet.readInt(),
 					rank: packet.readUByte(),
+					date: Util.simpleTime(Global.map.getServerTime()-packet.readUInt()) + " ago",
 					contribution: new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0)
 				});
 				
@@ -191,13 +193,13 @@
 			custom.callback(profileData);
 		}
 		
-		public function viewTribePublicProfile(tribeId: uint, callback: Function):void {
+		public function viewTribePublicProfile(tribe: *, callback: Function):void {
 			var packet: Packet = new Packet();
 			
 			packet.cmd = Commands.TRIBE_PUBLIC_INFO;
-			packet.writeUInt(tribeId);
+			packet.writeUInt(tribe.tribeId);
 
-			session.write(packet, onReceiveTribePublicProfile, { tribeId: tribeId, callback: callback } );
+			session.write(packet, onReceiveTribePublicProfile, { tribe: tribe, callback: callback } );
 		}	
 		
 		public function onReceiveTribePublicProfile(packet: Packet, custom: *):void {
@@ -207,7 +209,8 @@
 			}
 			
 			var profileData: * = new Object();
-			profileData.tribeId = custom.tribeId;
+			profileData.tribeId = custom.tribe.tribeId;
+			profileData.tribeName = custom.tribe.tribeName;
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
 			for (var i: int = 0; i < memberCount; i++)

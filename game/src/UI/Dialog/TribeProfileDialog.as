@@ -197,8 +197,8 @@
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(
 				modelMembers, 
-				["Player", "Rank", ""],
-				[".", "rank", "."],
+				["Player", "Rank", "Last Login", ""],
+				[".", "rank", "date", "."],
 				[null, new TribeRankTranslator(), null]
 			));			
 			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
@@ -209,8 +209,9 @@
 			tableMembers.getColumnAt(0).setPreferredWidth(145);
 			tableMembers.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(PlayerLabelCell));
 			tableMembers.getColumnAt(1).setPreferredWidth(100);
-			tableMembers.getColumnAt(2).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
-			tableMembers.getColumnAt(2).setPreferredWidth(70);
+			tableMembers.getColumnAt(2).setPreferredWidth(100);
+			tableMembers.getColumnAt(3).setCellFactory(new GeneralTableCellFactory(TribeMemberActionCell));
+			tableMembers.getColumnAt(3).setPreferredWidth(70);
 			
 			var scrollMembers: JScrollPane = new JScrollPane(tableMembers, JScrollPane.SCROLLBAR_ALWAYS, JScrollPane.SCROLLBAR_NEVER);
 			

@@ -64,7 +64,7 @@
 		public var messageTimer: MessageTimer;
 
 		//Timer to load incoming count
-		public var incomingTimer: IncomingTimer;
+		public var tribeTimer: TribeTimer;
 		
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
@@ -550,7 +550,7 @@
 			// Create message timer to check for new msgs
 			messageTimer = new MessageTimer();
 			messageTimer.start();
-			incomingTimer = new IncomingTimer();
+			tribeTimer = new TribeTimer();
 			
 			// Show built in messages
 			builtInMessages = new BuiltInMessages();
@@ -579,9 +579,9 @@
 				minimapRefreshTimer.stop();
 			}
 			
-			if (incomingTimer) {
-				incomingTimer.stop();
-				incomingTimer = null;
+			if (tribeTimer) {
+				tribeTimer.stop();
+				tribeTimer = null;
 			}
 
 			if (messageTimer) {

@@ -90,7 +90,7 @@
 			var tribeName: String = packet.readString();
 			if (Constants.tribeId > 0) {
 				Global.map.usernames.tribes.add(new Username(Constants.tribeId, tribeName));
-				Global.gameContainer.incomingTimer.start();
+				Global.gameContainer.tribeTimer.start();
 			}
 				
 			// Cities

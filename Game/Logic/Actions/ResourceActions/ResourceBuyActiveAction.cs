@@ -7,6 +7,7 @@ using Game.Logic.Formulas;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -47,7 +48,7 @@ namespace Game.Logic.Actions
             resourceType = (ResourceType)Enum.Parse(typeof(ResourceType), properties["resource_type"]);
         }
 
-        public override ConcurrencyType Concurrency
+        public override ConcurrencyType ActionConcurrency
         {
             get
             {
@@ -114,7 +115,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
@@ -126,7 +127,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;

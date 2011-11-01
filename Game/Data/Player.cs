@@ -7,6 +7,7 @@ using System.Data;
 using Game.Comm;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 

@@ -3,6 +3,7 @@
 using System;
 using Game.Logic;
 using Game.Util;
+using Game.Util.Locking;
 
 #endregion
 
@@ -58,7 +59,7 @@ namespace Game.Data
             if (!updating)
                 throw new Exception("Changed state outside of begin/end update block");
 
-            MultiObjectLock.ThrowExceptionIfNotLocked(City);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(City);
         }
 
         public new void BeginUpdate()

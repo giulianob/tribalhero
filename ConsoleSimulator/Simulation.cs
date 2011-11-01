@@ -9,6 +9,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -33,7 +34,7 @@ namespace ConsoleSimulator
             bm = Ioc.Kernel.Get<BattleManager.Factory>()(Defender.City);
             bm.BattleReport.Battle = bm;
             bv = new BattleViewer(bm);
-            using (new MultiObjectLock().Lock(Defender.Local)) {
+            using (Concurrency.Current.Lock(Defender.Local)) {
                 Defender.Local.BeginUpdate();
                 Defender.Local.AddFormation(FormationType.InBattle);
                 Defender.Local.Template.LoadStats(TroopBattleGroup.Local);
@@ -43,7 +44,8 @@ namespace ConsoleSimulator
                 Defender.Local.EndUpdate();
             }
 
-            using (new MultiObjectLock().Lock(Attacker.AttackStub)) {
+            using (Concurrency.Current.Lock(Attacker.AttackStub))
+            {
                 Attacker.AttackStub.BeginUpdate();
                 Attacker.AttackStub.Template.LoadStats(TroopBattleGroup.Attack);
                 Attacker.AttackStub.EndUpdate();
@@ -60,7 +62,7 @@ namespace ConsoleSimulator
 
         public void RunTill(int round = int.MaxValue)
         {
-            using (new MultiObjectLock().Lock(Attacker.AttackStub, Defender.Local))
+            using (Concurrency.Current.Lock(Attacker.AttackStub, Defender.Local))
             {
                 while (bm.ExecuteTurn()) {
                     CurrentRound = bm.Round;

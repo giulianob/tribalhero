@@ -9,6 +9,7 @@ using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -124,7 +125,7 @@ namespace Game.Data.Tribe
             tribesmen.Add(tribesman.Player.PlayerId, tribesman);
             if (save)
             {
-                MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+                DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
                 Ioc.Kernel.Get<IDbManager>().Save(tribesman);
             }
             return Error.Ok;
@@ -136,7 +137,7 @@ namespace Game.Data.Tribe
             if (!tribesmen.TryGetValue(playerId, out tribesman))
                 return Error.TribesmanNotFound;
 
-            MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Player.Tribesman = null;
             Ioc.Kernel.Get<IDbManager>().Delete(tribesman);
             return !tribesmen.Remove(playerId) ? Error.TribesmanNotFound : Error.Ok;
@@ -157,7 +158,7 @@ namespace Game.Data.Tribe
             if (!tribesmen.TryGetValue(playerId, out tribesman))
                 return Error.TribesmanNotFound;
             
-            MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             
             if (IsOwner(tribesman.Player))
                 return Error.TribesmanIsOwner;
@@ -175,7 +176,7 @@ namespace Game.Data.Tribe
             if (!tribesmen.TryGetValue(playerId, out tribesman)) 
                 return Error.TribesmanNotFound;
             
-            MultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Contribution += resource;
             Resource += resource;
             Ioc.Kernel.Get<IDbManager>().Save(tribesman, this);

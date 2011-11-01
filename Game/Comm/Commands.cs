@@ -6,6 +6,8 @@ namespace Game.Comm
 
         CmdLine = 7,
 
+        MessageBox = 8,
+
         #region Internal Messages
 
         OnConnect = 10001,

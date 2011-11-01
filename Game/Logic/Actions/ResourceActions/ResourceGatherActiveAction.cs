@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -37,7 +38,7 @@ namespace Game.Logic.Actions
             objectId = uint.Parse(properties["object_id"]);
         }
 
-        public override ConcurrencyType Concurrency
+        public override ConcurrencyType ActionConcurrency
         {
             get
             {
@@ -67,7 +68,7 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
+            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                     return;
@@ -127,7 +128,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
+            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
                     return;                

@@ -8,6 +8,7 @@ using Game.Logic;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -50,7 +51,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -151,7 +152,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -268,7 +269,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -307,7 +308,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
                 {
@@ -343,7 +344,7 @@ namespace Game.Comm
             }
 
             //check to make sure that the city belongs to us
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null && session.Player.GetCity(srcCityId) == null)
                 {
@@ -353,7 +354,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, City> cities;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, srcCityId, cityId))
+            using (Concurrency.Current.Lock(out cities, srcCityId, cityId))
             {
                 if (cities == null)
                 {

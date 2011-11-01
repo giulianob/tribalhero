@@ -8,6 +8,7 @@ using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -82,7 +83,7 @@ namespace ConsoleSimulator
 
                     bm.ExitBattle += bm_ExitBattle;
                     bm.UnitRemoved += bm_UnitRemoved;
-                    using (new MultiObjectLock().Lock(defender.Local))
+                    using (Concurrency.Current.Lock(defender.Local))
                     {
                         defender.Local.BeginUpdate();
                         defender.Local.AddFormation(FormationType.InBattle);
@@ -92,7 +93,7 @@ namespace ConsoleSimulator
                         defender.Local.EndUpdate();
                     }
 
-                    using (new MultiObjectLock().Lock(attacker.AttackStub))
+                    using (Concurrency.Current.Lock(attacker.AttackStub))
                     {
                         attacker.AttackStub.BeginUpdate();
                         attacker.AttackStub.Template.LoadStats(TroopBattleGroup.Attack);
@@ -100,7 +101,7 @@ namespace ConsoleSimulator
                     }
                     bm.AddToAttack(attacker.AttackStub);
 
-                    using (new MultiObjectLock().Lock(attacker.AttackStub, defender.Local))
+                    using (Concurrency.Current.Lock(attacker.AttackStub, defender.Local))
                     {
                         while (bm.ExecuteTurn())
                         {
@@ -151,7 +152,7 @@ namespace ConsoleSimulator
                     bm.ExitBattle += bm_ExitBattle2;
                     bm.UnitRemoved += bm_UnitRemoved2;
 
-                    using (new MultiObjectLock().Lock(defender.Local))
+                    using (Concurrency.Current.Lock(defender.Local))
                     {
                         defender.Local.BeginUpdate();
                         defender.Local.AddFormation(FormationType.InBattle);
@@ -161,7 +162,7 @@ namespace ConsoleSimulator
                         defender.Local.EndUpdate();
                     }
 
-                    using (new MultiObjectLock().Lock(attacker.AttackStub))
+                    using (Concurrency.Current.Lock(attacker.AttackStub))
                     {
                         attacker.AttackStub.BeginUpdate();
                         attacker.AttackStub.Template.LoadStats(TroopBattleGroup.Attack);
@@ -169,7 +170,7 @@ namespace ConsoleSimulator
                     }
                     bm.AddToAttack(attacker.AttackStub);
 
-                    using (new MultiObjectLock().Lock(attacker.AttackStub, defender.Local))
+                    using (Concurrency.Current.Lock(attacker.AttackStub, defender.Local))
                     {
                         while (bm.ExecuteTurn())
                         {

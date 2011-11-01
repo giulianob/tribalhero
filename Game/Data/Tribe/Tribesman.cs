@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Game.Util;
+using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data.Tribe {

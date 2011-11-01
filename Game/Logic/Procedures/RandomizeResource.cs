@@ -5,6 +5,7 @@ using Game.Data;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -38,7 +39,7 @@ namespace Game.Logic.Procedures
 
         public static bool RandomizeResource(City city)
         {
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city))
+            using (Concurrency.Current.Lock(city))
             {
                 byte radius = city.Radius;
                 TileLocator.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, Work, city);

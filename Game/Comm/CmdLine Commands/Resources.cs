@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
 
@@ -46,7 +47,7 @@ namespace Game.Comm
                 return "City not found";
 
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
                     return "City not found";

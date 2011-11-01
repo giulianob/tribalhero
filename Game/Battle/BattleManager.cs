@@ -13,6 +13,7 @@ using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Ninject.Parameters;
 using Persistance;
@@ -844,10 +845,14 @@ namespace Game.Battle
                 // Only give loot if we are attacking the first target in the list
                 if (attackIndex == 0)
                 {
-                    Resource loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                    Resource loot=null;
                     city.BeginUpdate();
-                    city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
-                    attacker.ReceiveReward(attackPoints, loot);
+                    if (round >= Config.battle_loot_begin_round)
+                    {
+                        loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                        city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
+                    } 
+                    attacker.ReceiveReward(attackPoints, loot ?? new Resource() );
                     city.EndUpdate();
                 }
                 else
@@ -887,7 +892,7 @@ namespace Game.Battle
                     var tribes = new List<Tribe>(uniqueCities.Where(w=>w.Owner.Tribesman!=null).Select(s => s.Owner.Tribesman.Tribe).Distinct());
                     ThreadPool.QueueUserWorkItem(delegate {
                         foreach (var tribe in tribes) {
-                            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(tribe)) {
+                            using (Concurrency.Current.Lock(tribe)) {
                                 tribe.DefensePoint += attackPoints;
                             }
                         }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Util;
+using Game.Util.Locking;
 using Persistance;
 
 #endregion
@@ -393,10 +394,10 @@ namespace Game.Data.Troop
             if (!isUpdating)
                 throw new Exception("Changed state outside of begin/end update block");
 
-            MultiObjectLock.ThrowExceptionIfNotLocked(this);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
 
             if (checkStationedCity && stationedCity != null)
-                MultiObjectLock.ThrowExceptionIfNotLocked(stationedCity);
+                DefaultMultiObjectLock.ThrowExceptionIfNotLocked(stationedCity);
         }
 
         public void BeginUpdate()

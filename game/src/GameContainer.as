@@ -478,9 +478,7 @@
 			// Create and position command line if admin
 			if (Constants.admin) {
 				cmdLine = new CmdLineViewer();
-				cmdLine.show();
-				cmdLine.getFrame().hide();
-				cmdLine.getFrame().setLocationXY(300, Constants.screenH - cmdLine.getFrame().getHeight() + 22);
+				cmdLine.show();				
 			}
 
 			// Add objects to resize manager

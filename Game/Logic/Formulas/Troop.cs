@@ -5,6 +5,8 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Actions;
+using Game.Setup;
+using Game.Util;
 
 #endregion
 
@@ -60,6 +62,11 @@ namespace Game.Logic.Formulas
                     return 0;
             }
             return 0;
+        }
+
+        public static bool IsNewbieProtected(Player player)
+        {
+            return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
         }
     }
 }

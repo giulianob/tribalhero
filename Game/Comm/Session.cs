@@ -97,9 +97,9 @@ namespace Game.Comm
 
         #region IChannel Members
 
-        public void OnPost(object message)
+        public void OnPost(Packet message)
         {
-            Write(message as Packet);
+            Write(message);
         }
 
         #endregion

@@ -90,7 +90,7 @@
 		}	
 
 		public static function getTribeUpgradeCost(level: int) : Resources {
-			return new Resources(5000, 5000, 200, 10000, 0).multiplyByUnit(TRIBE_MEMBER_PER_LEVEL * level);
+			return new Resources(1000, 400, 40, 2000, 0).multiplyByUnit(TRIBE_MEMBER_PER_LEVEL * level * (1 + ( level * level / 20)));
 		}
 		
 		public static function marketBuyCost(price: int, amount: int, tax: Number): int

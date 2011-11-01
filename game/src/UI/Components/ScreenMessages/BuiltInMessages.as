@@ -40,8 +40,9 @@ package src.UI.Components.ScreenMessages
 		}
 		
 		public static function showNewbieProtection() : void {
-			if (Constants.signupTime.time/1000 + Constants.newbieProtectionSeconds > Global.map.getServerTime()) {
-				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", "Under Newbie Protection: You cannot be attacked for the first " + (Constants.newbieProtectionSeconds / 86400) + " days.", new AssetIcon(new ICON_STAR)));
+			if (Constants.signupTime.time / 1000 + Constants.newbieProtectionSeconds > Global.map.getServerTime()) {
+				var timediff :Number = Constants.newbieProtectionSeconds + Constants.signupTime.time / 1000 - Global.map.getServerTime();
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", " Under newbie protection: Expires in " + Util.niceTime(timediff), new AssetIcon(new ICON_STAR)));
 			}
 			else {
 				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");

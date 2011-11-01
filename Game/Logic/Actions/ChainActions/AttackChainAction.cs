@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
@@ -105,7 +106,7 @@ namespace Game.Logic.Actions
 
             // Can't attack if target is under newbie protection
 #if !DEBUG
-            if (SystemClock.Now.Subtract(targetStructure.City.Owner.Created).TotalSeconds < Config.newbie_protection)
+            if (Formula.IsNewbieProtected(targetCity.Owner))
                 return Error.PlayerNewbieProtection;
 #endif
 

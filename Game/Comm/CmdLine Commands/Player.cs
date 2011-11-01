@@ -17,7 +17,7 @@ namespace Game.Comm
 {
     partial class CmdLineProcessor
     {
-        public string CmdSystemBroadcast(Session session, String[] parms)
+        public string CmdSystemBroadcastMail(Session session, String[] parms)
         {
             bool help = false;
             string message = string.Empty;
@@ -36,13 +36,9 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(message) || string.IsNullOrEmpty(subject))
-                return "broadcast --subject=\"SUBJECT\" --message=\"MESSAGE\"";
+                return "broadcastmail --subject=\"SUBJECT\" --message=\"MESSAGE\"";
 
-            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(
-                                     string.Format(
-                                                   "SELECT * FROM `{0}`",
-                                                   Player.DB_TABLE),
-                         new DbColumn[] { })) {
+            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] { })) {
                 while (reader.Read()) {
                     Player player;
                     using (Concurrency.Current.Lock((uint)reader["id"], out player)) {
@@ -50,6 +46,35 @@ namespace Game.Comm
                     }
                 }
             }
+            return "OK!";
+        }
+
+        public string CmdSystemBroadcast(Session session, String[] parms)
+        {
+            bool help = false;
+            string message = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true },
+                                { "message=", v => message = v.TrimMatchingQuotes() },
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(message))
+                return "broadcast --message=\"MESSAGE\"";
+
+            var packet = new Packet(Command.MessageBox);
+            packet.AddString(message);
+
+            Global.Channel.Post("/GLOBAL", packet);
             return "OK!";
         }
 

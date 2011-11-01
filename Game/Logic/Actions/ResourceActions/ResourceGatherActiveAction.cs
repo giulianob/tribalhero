@@ -89,16 +89,39 @@ namespace Game.Logic.Actions
             city.BeginUpdate();
             city.Resource.BeginUpdate();
 
-            if(structure.Properties.TryGet("Crop", out value) )
+            structure.BeginUpdate();
+
+            if (structure.Properties.TryGet("Crop", out value))
+            {
                 city.Resource.Crop.Add((int)structure["Crop"]);
+                structure["Crop"] = 0;
+            }
+
             if (structure.Properties.TryGet("Gold", out value))
+            {
                 city.Resource.Gold.Add((int)structure["Gold"]);
+                structure["Gold"] = 0;
+            }
+
             if (structure.Properties.TryGet("Iron", out value))
+            {
                 city.Resource.Iron.Add((int)structure["Iron"]);
+                structure["Iron"] = 0;
+            }
+
             if (structure.Properties.TryGet("Wood", out value))
+            {
                 city.Resource.Wood.Add((int)structure["Wood"]);
-            if (structure.Properties.TryGet("Labor", out value)) 
+                structure["Wood"] = 0;
+            }
+
+            if (structure.Properties.TryGet("Labor", out value))
+            {
                 city.Resource.Labor.Add((int)structure["Labor"]);
+                structure["Labor"] = 0;
+            }
+
+            structure.EndUpdate();
 
             city.Resource.EndUpdate();
             city.EndUpdate();

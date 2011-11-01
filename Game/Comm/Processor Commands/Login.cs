@@ -189,6 +189,9 @@ namespace Game.Comm
                 // Subscribe him to the player channel
                 Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
+                // Subscribe to global channel
+                Global.Channel.Subscribe(session, "/GLOBAL");
+
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
                 reply.AddByte((byte)(player.Admin ? 1 : 0));

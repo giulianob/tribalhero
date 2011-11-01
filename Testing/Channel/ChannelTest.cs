@@ -1,5 +1,6 @@
 ﻿#region
 
+using Game.Comm;
 using Game.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -14,8 +15,8 @@ namespace Testing.Channel
     [TestClass]
     public class ChannelTest : TestBase
     {
-        private readonly object msg1 = new object();
-        private readonly object msg2 = new object();
+        private readonly Packet msg1 = new Packet();
+        private readonly Packet msg2 = new Packet();
         private Game.Util.Channel channel;
         private Mock<IChannel> session1;
         private Mock<IChannel> session2;

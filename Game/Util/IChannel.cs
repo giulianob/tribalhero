@@ -1,7 +1,9 @@
+using Game.Comm;
+
 namespace Game.Util
 {
     public interface IChannel
     {
-        void OnPost(object message);
+        void OnPost(Packet message);
     }
 }

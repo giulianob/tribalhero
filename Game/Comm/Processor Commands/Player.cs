@@ -9,6 +9,7 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -31,7 +32,7 @@ namespace Game.Comm
                 return;
             }
             
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 if (description.Length > Player.MAX_DESCRIPTION_LENGTH)
                 {
@@ -73,7 +74,7 @@ namespace Game.Comm
             }
 
             Player player;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player))
+            using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
                 {
@@ -187,7 +188,7 @@ namespace Game.Comm
             }
 
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 reply.AddString(city.Owner.Name);
             }
@@ -230,7 +231,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 if (session.Player.GetCity(cityId) == null)
                 {
@@ -240,7 +241,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, City> cities;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out cities, cityId, targetCityId))
+            using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
                 {

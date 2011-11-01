@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Game.Comm;
 
 #endregion
 
@@ -44,7 +45,7 @@ namespace Game.Util
 
         #region Methods
 
-        public void Post(string channelId, object message)
+        public void Post(string channelId, Packet message)
         {
             lock (channelLock)
             {

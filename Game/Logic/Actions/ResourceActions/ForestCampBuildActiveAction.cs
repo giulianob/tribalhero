@@ -8,6 +8,7 @@ using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -49,7 +50,7 @@ namespace Game.Logic.Actions
             forestId = uint.Parse(properties["forest_id"]);
         }
 
-        public override ConcurrencyType Concurrency
+        public override ConcurrencyType ActionConcurrency
         {
             get
             {

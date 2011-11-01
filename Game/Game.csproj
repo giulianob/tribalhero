@@ -176,10 +176,6 @@
     <Compile Include="GameModule.cs" />
     <Compile Include="Interceptor\ForceProxyReturn\ForceProxyReturn.cs" />
     <Compile Include="Interceptor\ForceProxyReturn\ForceProxyReturnAttribute.cs" />
-    <Compile Include="Interceptor\TransactionEnd\TransactionEndAttribute.cs" />
-    <Compile Include="Interceptor\TransactionEnd\TransactionEndInterceptor.cs" />
-    <Compile Include="Interceptor\TransactionStart\TransactionStartAttribute.cs" />
-    <Compile Include="Interceptor\TransactionStart\TransactionStartInterceptor.cs" />
     <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
@@ -255,8 +251,16 @@
     <Compile Include="Util\HexDump.cs" />
     <Compile Include="Util\IChannel.cs" />
     <Compile Include="Util\IdGenerator.cs" />
+    <Compile Include="Util\Locking\CallbackLock.cs" />
+    <Compile Include="Util\Locking\Concurrency.cs" />
+    <Compile Include="Util\Locking\ILockable.cs" />
+    <Compile Include="Util\Locking\ILocker.cs" />
+    <Compile Include="Util\Locking\DefaultLocker.cs" />
+    <Compile Include="Util\Locking\IMultiObjectLock.cs" />
+    <Compile Include="Util\Locking\LockException.cs" />
+    <Compile Include="Util\Locking\TransactionalMultiObjectLock.cs" />
     <Compile Include="Util\MathParser.cs" />
-    <Compile Include="Util\MultiObjectLock.cs" />
+    <Compile Include="Util\Locking\DefaultMultiObjectLock.cs" />
     <Compile Include="Util\UnixDateTime.cs" />
     <Compile Include="Util\XMLSerializer.cs" />
   </ItemGroup>

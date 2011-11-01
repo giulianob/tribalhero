@@ -7,6 +7,7 @@ using Game.Logic.Formulas;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 namespace Game.Logic.Actions {
@@ -170,7 +171,7 @@ namespace Game.Logic.Actions {
         public override void WorkerRemoved(bool wasKilled)
         {
             City city;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 CityRemover remover = new CityRemover(newCityId);
                 remover.Start();
@@ -188,7 +189,7 @@ namespace Game.Logic.Actions {
             City newCity;
             Structure structure;
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(newCityId, newStructureId, out newCity, out structure))
+            using (Concurrency.Current.Lock(newCityId, newStructureId, out newCity, out structure))
             {
                 if (!IsValid())
                     return;

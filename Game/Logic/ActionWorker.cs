@@ -7,6 +7,7 @@ using System.Threading;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -88,7 +89,7 @@ namespace Game.Logic
 
         private void NotifyPassive(GameAction action, ActionState state)
         {
-            MultiObjectLock.ThrowExceptionIfNotLocked(city);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(city);
 
             PassiveAction actionStub;
             if (!passive.TryGetValue(action.ActionId, out actionStub))
@@ -158,7 +159,7 @@ namespace Game.Logic
 
         private void NotifyActive(GameAction action, ActionState state)
         {
-            MultiObjectLock.ThrowExceptionIfNotLocked(city);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(city);
 
             ActiveAction actionStub;
             if (!active.TryGetValue(action.ActionId, out actionStub))
@@ -233,7 +234,7 @@ namespace Game.Logic
 
             // Cancel Active actions
             List<ActiveAction> activeList;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(City))
+            using (Concurrency.Current.Lock(City))
             {
                 activeList = active.FindAll(actionStub => actionStub.WorkerObject == workerObject);
             }
@@ -248,7 +249,7 @@ namespace Game.Logic
 
             // Cancel Passive actions
             List<PassiveAction> passiveList;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(City))
+            using (Concurrency.Current.Lock(City))
             {
                 passiveList = passive.FindAll(action => action.WorkerObject == workerObject);
             }
@@ -261,7 +262,7 @@ namespace Game.Logic
                 stub.WorkerRemoved(false);
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(City))
+            using (Concurrency.Current.Lock(City))
             {
                 references.Remove(workerObject);
             }
@@ -399,14 +400,14 @@ namespace Game.Logic
 
         private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, GameObject worker)
         {
-            switch(action.Concurrency)
+            switch(action.ActionConcurrency)
             {
                 case ConcurrencyType.StandAlone:
                     return !active.Any(x => x.Value.WorkerObject == worker);
                 case ConcurrencyType.Normal:
-                    return !active.Any(x => x.Value.WorkerObject == worker && (x.Value.Concurrency == ConcurrencyType.StandAlone || x.Value.Concurrency == ConcurrencyType.Normal));
+                    return !active.Any(x => x.Value.WorkerObject == worker && (x.Value.ActionConcurrency == ConcurrencyType.StandAlone || x.Value.ActionConcurrency == ConcurrencyType.Normal));
                 case ConcurrencyType.Concurrent:
-                    return !active.Any(x => x.Value.WorkerObject == worker && (x.Value.Type == actionReq.Type || x.Value.Concurrency == ConcurrencyType.StandAlone));
+                    return !active.Any(x => x.Value.WorkerObject == worker && (x.Value.Type == actionReq.Type || x.Value.ActionConcurrency == ConcurrencyType.StandAlone));
             }
 
             return false;
@@ -456,7 +457,7 @@ namespace Game.Logic
             action.ActionId = (ushort)actionId;
             passive.Add(action.ActionId, action);
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(city))
+            using (Concurrency.Current.Lock(city))
             {
                 action.Execute();
             }

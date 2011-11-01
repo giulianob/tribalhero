@@ -3,6 +3,7 @@
 using Game.Data;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -21,7 +22,7 @@ namespace Game.Comm
             if (session == null || session.Player == null)
                 return;
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 Global.Channel.Unsubscribe(session);
 

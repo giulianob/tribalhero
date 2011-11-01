@@ -7,6 +7,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -84,7 +85,7 @@ namespace Game.Logic.Actions
             City city;
             GameObject obj;            
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
                     throw new Exception("City is missing");
@@ -99,7 +100,7 @@ namespace Game.Logic.Actions
             {
                 GameAction action;
 
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+                using (Concurrency.Current.Lock(cityId, out city))
                 {
                     if (city == null)
                         throw new Exception("City is missing");
@@ -124,7 +125,7 @@ namespace Game.Logic.Actions
             {
                 GameAction action;
 
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+                using (Concurrency.Current.Lock(cityId, out city))
                 {
                     if (city == null)
                         throw new Exception("City is missing");
@@ -147,7 +148,7 @@ namespace Game.Logic.Actions
             foreach (var actionId in cancelActions)
             {
                 GameAction action;
-                using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+                using (Concurrency.Current.Lock(cityId, out city))
                 {
                     if (city == null)
                         throw new Exception("City is missing");
@@ -161,7 +162,7 @@ namespace Game.Logic.Actions
                 action.WorkerRemoved(wasKilled);
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
                     throw new Exception("City is missing");

@@ -17,6 +17,7 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -766,7 +767,7 @@ namespace Game.Data
             if (!IsUpdating)
                 throw new Exception("Changed state outside of begin/end update block");
 
-            MultiObjectLock.ThrowExceptionIfNotLocked(this);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(this);
         }
 
         public void BeginUpdate()

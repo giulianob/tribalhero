@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -75,7 +76,7 @@ namespace Game.Data.Troop
 
         private void CheckUpdateMode()
         {
-            MultiObjectLock.ThrowExceptionIfNotLocked(City);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(City);
         }
 
         private void FireUpdated(TroopStub stub)

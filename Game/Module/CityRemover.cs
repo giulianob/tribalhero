@@ -11,6 +11,7 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Util;
 using Game.Setup;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -164,7 +165,7 @@ namespace Game.Module {
                 }
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, out city))
+            using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city.Worker.Notifications.Count > 0)
                 {

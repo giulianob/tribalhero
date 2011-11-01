@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -33,7 +34,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(cityId, objectId, out city, out structure))
+            using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (city == null || structure == null)
                 {
@@ -123,7 +124,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(Global.World.Forests))
+            using (Concurrency.Current.Lock(Global.World.Forests))
             {
                 if (!Global.World.Forests.TryGetValue(forestId, out forest))
                 {
@@ -198,7 +199,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 city = session.Player.GetCity(cityId);
 
@@ -269,7 +270,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -308,7 +309,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -349,7 +350,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -395,7 +396,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -453,7 +454,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -500,7 +501,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -543,7 +544,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 City city = session.Player.GetCity(cityId);
 
@@ -609,10 +610,13 @@ namespace Game.Comm
 
                 var buildaction = new ForestCampBuildActiveAction(cityId, lumbermill.ObjectId, forestId, type, labor);
                 Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(lumbermill), lumbermill, buildaction, lumbermill.Technologies);
-                if (ret != 0)
+                if(ret== Error.ActionTotalMaxReached)
+                    ReplyError(session, packet, Error.LumbermillBusy);
+                else if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
                     ReplySuccess(session, packet);
+                
                 return;
             }
         }

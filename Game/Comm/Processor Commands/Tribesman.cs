@@ -9,6 +9,7 @@ using Game.Logic.Actions;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
+using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -40,7 +41,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, Player> players;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
+            using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
                 Tribe tribe = session.Player.Tribesman.Tribe;
                 if (!tribe.IsOwner(session.Player))
@@ -85,7 +86,7 @@ namespace Game.Comm
 
             Dictionary<uint, Player> players;
             Tribe tribe = session.Player.Tribesman.Tribe;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out players, playerId, tribe.Owner.PlayerId))
+            using (Concurrency.Current.Lock(out players, playerId, tribe.Owner.PlayerId))
             {
                 if (!tribe.HasRight(session.Player.PlayerId, "Request"))
                 {
@@ -125,7 +126,7 @@ namespace Game.Comm
 
             Tribe tribe;
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player))
+            using (Concurrency.Current.Lock(session.Player))
             {
                 if (session.Player.TribeRequest == 0)
                 {
@@ -151,7 +152,7 @@ namespace Game.Comm
                 }
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player, tribe))
+            using (Concurrency.Current.Lock(session.Player, tribe))
             {
                 Tribesman tribesman = new Tribesman(tribe, session.Player, 2);
                 var error = tribe.AddTribesman(tribesman);
@@ -182,7 +183,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, Player> players;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
+            using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
                 Tribesman tribesman = new Tribesman(session.Player.Tribesman.Tribe, players[playerId], 2);
                 session.Player.Tribesman.Tribe.AddTribesman(tribesman);
@@ -210,7 +211,7 @@ namespace Game.Comm
             }
 
             Dictionary<uint, Player> players;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
+            using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
                 if (!players.ContainsKey(playerId))
                 {
@@ -246,7 +247,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player.Tribesman.Tribe, session.Player))
+            using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe, session.Player))
             {
                 Tribe tribe = session.Player.Tribesman.Tribe;
 
@@ -281,7 +282,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(session.Player.Tribesman.Tribe, session.Player))
+            using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe, session.Player))
             {
                 City city = session.Player.GetCity(cityId);
                 Tribe tribe = session.Player.Tribesman.Tribe;

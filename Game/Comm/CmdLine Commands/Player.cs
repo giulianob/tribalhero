@@ -6,6 +6,7 @@ using Game.Data;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
 using Persistance;
@@ -16,7 +17,7 @@ namespace Game.Comm
 {
     partial class CmdLineProcessor
     {
-        public string CmdSystemBroadcast(Session session, String[] parms)
+        public string CmdSystemBroadcastMail(Session session, String[] parms)
         {
             bool help = false;
             string message = string.Empty;
@@ -35,20 +36,45 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(message) || string.IsNullOrEmpty(subject))
-                return "broadcast --subject=\"SUBJECT\" --message=\"MESSAGE\"";
+                return "broadcastmail --subject=\"SUBJECT\" --message=\"MESSAGE\"";
 
-            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(
-                                     string.Format(
-                                                   "SELECT * FROM `{0}`",
-                                                   Player.DB_TABLE),
-                         new DbColumn[] { })) {
+            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] { })) {
                 while (reader.Read()) {
                     Player player;
-                    using (Ioc.Kernel.Get<MultiObjectLock>().Lock((uint)reader["id"], out player)) {
+                    using (Concurrency.Current.Lock((uint)reader["id"], out player)) {
                         player.SendSystemMessage(null, subject, message);
                     }
                 }
             }
+            return "OK!";
+        }
+
+        public string CmdSystemBroadcast(Session session, String[] parms)
+        {
+            bool help = false;
+            string message = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true },
+                                { "message=", v => message = v.TrimMatchingQuotes() },
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(message))
+                return "broadcast --message=\"MESSAGE\"";
+
+            var packet = new Packet(Command.MessageBox);
+            packet.AddString(message);
+
+            Global.Channel.Post("/GLOBAL", packet);
             return "OK!";
         }
 
@@ -75,7 +101,7 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player))
+            using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
                     return "Player not found";
@@ -154,7 +180,7 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (Ioc.Kernel.Get<MultiObjectLock>().Lock(playerId, out player)) {
+            using (Concurrency.Current.Lock(playerId, out player)) {
                 if (player == null)
                     return "Player not found";
 

@@ -10,6 +10,7 @@ using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
+using Game.Util.Locking;
 using Ninject;
 
 #endregion
@@ -92,7 +93,7 @@ namespace ConsoleSimulator
             attack.AddFormation(FormationType.Normal);
             obj = new TroopObject(attack);
             attack.TroopObject = obj;
-            using (new MultiObjectLock().Lock(city))
+            using (Concurrency.Current.Lock(city))
             {
                 //attack.City = city;
                 city.Troops.Add(attack);
@@ -139,7 +140,7 @@ namespace ConsoleSimulator
 
         public void AddToLocal(ushort type, byte lvl, ushort count, FormationType formation)
         {
-            using (new MultiObjectLock().Lock(city))
+            using (Concurrency.Current.Lock(city))
             {
                 city.BeginUpdate();
                 city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);
@@ -168,7 +169,7 @@ namespace ConsoleSimulator
 
         public void AddToAttack(ushort type, byte lvl, ushort count, FormationType formation)
         {
-            using (new MultiObjectLock().Lock(city))
+            using (Concurrency.Current.Lock(city))
             {
                 city.BeginUpdate();
                 city.Template[type] = Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl);
@@ -179,7 +180,6 @@ namespace ConsoleSimulator
                 attack.EndUpdate();
             }
         }
-
 
         public int Upkeep(UnitType type)
         {

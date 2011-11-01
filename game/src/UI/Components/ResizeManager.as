@@ -64,7 +64,7 @@ package src.UI.Components
 				if (obj is JPanel) {
 					var frame: JFrame = (obj as JPanel).getParent() as JFrame;
 					if (frame) {
-						obj = frame.parent;
+						obj = frame;
 					} else {
 						continue;
 					}

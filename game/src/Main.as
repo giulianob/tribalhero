@@ -10,7 +10,6 @@
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	import org.aswing.*;
-	import org.aswing.skinbuilder.orange.*;
 	import src.Comm.*;
 	import src.Map.*;
 	import src.Objects.Factories.*;

@@ -157,7 +157,7 @@ package src.Util {
 			return (hours <= 9 ? "0" + hours : hours) + ":" + (minutes <= 9 ? "0" + minutes : minutes) + ":" + (seconds <= 9 ? "0" + seconds : seconds);
 		}
 
-		public static function simpleTime(time: int)
+		public static function simpleTime(time: int) : String
 		{
 			if ( time < 60 ) return "1 min";
 			var days: int = int(time / (60 * 60 * 24));

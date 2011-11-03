@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
@@ -78,7 +79,7 @@ namespace Game.Logic.Actions
         }
 
         public override Error Execute()
-        {
+        {            
             City city;
             Structure structure;
             object value;

@@ -136,6 +136,12 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
+                if (structure.IsBlocked)
+                {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
                 structure.BeginUpdate();
                 structure.IsBlocked = true;
                 structure.EndUpdate();

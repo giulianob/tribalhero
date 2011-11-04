@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @property Battle $Battle
+ * @property Report $Report
+ */
 class ReportsController extends AppController {
 
     var $uses = array('Report', 'Battle');
@@ -15,29 +19,33 @@ class ReportsController extends AppController {
         'run out of stamina'
     );
 
-    private function getPlayerId() {
+    /**
+     * Returns list of city ids
+     * @return mixed Null if user is admin and can see all cities, otherwise, list of city ids 
+     */
+    private function getCities() {
         $playerId = $this->params['form']['playerId'];
         if ($this->Auth->user('admin') && !empty($this->params['form']['playerNameFilter'])) {
+            if ($this->params['form']['playerNameFilter'] == '*')
+                return null;
+
             $Player = & ClassRegistry::init('Player');
             $player = $Player->findByName($this->params['form']['playerNameFilter']);
             if ($player)
                 $playerId = $player['Player']['id'];
         }
 
-        return $playerId;
+        return array_keys($this->Battle->City->find('list', array('conditions' => array(
+                        'player_id' => $playerId
+                        ))));
     }
 
     function index_local() {
-
-        $playerId = $this->getPlayerId();
-
-        $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $playerId
-                        )));
+        $cityIds = $this->getCities();
 
         $this->Battle = & ClassRegistry::init('Battle');
 
-        $this->paginate = $this->Battle->listInvasionReports(array_keys($cities), true) + array(
+        $this->paginate = $this->Battle->listInvasionReports($cityIds, true) + array(
             'limit' => 15,
             'page' => array_key_exists('page', $this->params['form']) ? $this->params['form']['page'] : 1
         );
@@ -46,16 +54,15 @@ class ReportsController extends AppController {
 
         $this->set('battle_reports', $reports);
     }
-	
-	function mark_all_as_read()
-	{	
-		$this->Report->markAllAsRead($this->params['form']['playerId']);
-		
+
+    function mark_all_as_read() {
+        $this->Report->markAllAsRead($this->params['form']['playerId']);
+
         $data = array('success' => true);
 
         $this->set('data', $data);
-        $this->render('/elements/to_json');		
-	}
+        $this->render('/elements/to_json');
+    }
 
     function view_local() {
         if (empty($this->params['form']['id'])) {
@@ -63,13 +70,9 @@ class ReportsController extends AppController {
             return;
         }
 
-        $playerId = $this->getPlayerId();
+        $cityIds = $this->getCities();
 
-        $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $playerId
-                        )));
-
-        $report = $this->Battle->viewInvasionReport(array_keys($cities), $this->params['form']['id']);
+        $report = $this->Battle->viewInvasionReport($cityIds, $this->params['form']['id']);
 
         if ($report === false) {
             $this->render(false);
@@ -77,7 +80,7 @@ class ReportsController extends AppController {
         }
 
         $refreshOnClose = false;
-        if (!$report['Battle']['read']) {
+        if (!is_null($cityIds) && !$report['Battle']['read']) {
             $this->Report->markAsRead($this->params['form']['playerId'], true, $this->params['form']['id']);
             $refreshOnClose = true;
         }
@@ -93,13 +96,9 @@ class ReportsController extends AppController {
     }
 
     function index_remote() {
-        $playerId = $this->getPlayerId();
+        $cityIds = $this->getCities();
 
-        $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $playerId
-                        )));
-
-        $options = $this->Battle->listAttackReports(array_keys($cities), true);
+        $options = $this->Battle->listAttackReports($cityIds, true);
 
         $this->paginate = $options + array(
             'recursive' => '-1',
@@ -118,13 +117,9 @@ class ReportsController extends AppController {
             return;
         }
 
-        $playerId = $this->getPlayerId();
+        $cityIds = $this->getCities();
 
-        $cities = $this->Battle->City->find('list', array('conditions' => array(
-                        'player_id' => $playerId
-                        )));
-
-        $report = $this->Battle->viewAttackReport(array_keys($cities), $this->params['form']['id']);
+        $report = $this->Battle->viewAttackReport($cityIds, $this->params['form']['id']);
 
         if ($report === false) {
             $this->render(false);
@@ -134,7 +129,8 @@ class ReportsController extends AppController {
         $reports = $this->Battle->viewBattle($report['BattleReportView']['battle_id']);
 
         $refreshOnClose = false;
-        if (!$report['BattleReportView']['read']) {
+        // Set to unread if we are not viewing all reports and 
+        if (!is_null($cityIds) && !$report['BattleReportView']['read']) {
             $this->Report->markAsRead($this->params['form']['playerId'], false, $this->params['form']['id']);
             $refreshOnClose = true;
         }
@@ -201,7 +197,8 @@ class ReportsController extends AppController {
         if ($renderOnlySnapshot == null) {
             $this->set('battle_reports', $reports);
             $this->render('view');
-        } else {
+        }
+        else {
             $this->set('battle_reports', $renderOnlySnapshot);
             $this->render('view_outcome_only');
         }

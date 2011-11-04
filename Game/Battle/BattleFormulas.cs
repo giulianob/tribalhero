@@ -164,24 +164,42 @@ namespace Game.Battle
         }
 
         internal static bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, string value) {
-            string[] conditions = value.Split('=', ',');
+            string[] conditions = value.Split('=', '|');
+            int success = 0;
             for (int i = 0; i < conditions.Length / 2; ++i) {
                 switch (conditions[i * 2]) {
                     case "ArmorEqual":
-                        return stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true);
+                        if (stats.Armor == (ArmorType)Enum.Parse(typeof(ArmorType), conditions[i * 2 + 1], true)) ++success;
+                        break;
                     case "ArmorClassEqual":
-                        return stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), conditions[i * 2 + 1], true);
+                        if (stats.ArmorClass == (ArmorClass)Enum.Parse(typeof(ArmorClass), conditions[i * 2 + 1], true)) ++success;
+                        break;
                     case "WeaponEqual":
-                        return stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), conditions[i * 2 + 1], true);
+                        if (stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), conditions[i * 2 + 1], true)) ++success;
+                        break;;
                     case "WeaponClassEqual":
-                        return stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), conditions[i * 2 + 1], true);
+                        if (stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), conditions[i * 2 + 1], true)) ++success;
+                        break;
                     case "GroupEqual":
-                        return group == (TroopBattleGroup)Enum.Parse(typeof(TroopBattleGroup), conditions[i * 2 + 1], true);
+                        switch((TroopBattleGroup)Enum.Parse(typeof(TroopBattleGroup), conditions[i * 2 + 1], true))
+                        {
+                            case TroopBattleGroup.Defense:
+                                if (group == TroopBattleGroup.Local || group == TroopBattleGroup.Defense) ++success;
+                                break;
+                            case TroopBattleGroup.Attack:
+                                if(group==TroopBattleGroup.Attack) ++success;
+                                break;
+                            case TroopBattleGroup.Local:
+                                if (group == TroopBattleGroup.Local) ++success;
+                                break;
+                        }
+                        break;;
                     case "TypeEqual":
-                        return stats.Type == ushort.Parse(conditions[i * 2 + 1]);
+                        if (stats.Type == ushort.Parse(conditions[i * 2 + 1])) ++success;
+                        break;
                 }
             }
-            return false;
+            return success == conditions.Length / 2;
         }
 
         internal static BattleStats LoadStats(BaseBattleStats stats, City city, TroopBattleGroup group)

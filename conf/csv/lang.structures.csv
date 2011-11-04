@@ -331,7 +331,7 @@ DEAD_FIELD_STRUCTURE_LVL_1,A field with a bunch of dead plants. You must harvest
 ,,
 GRAPE_FIELD_STRUCTURE_NAME,Vineyard,
 GRAPE_FIELD_STRUCTURE_NAME_PLURAL,Vineyards,
-GRAPE_FIELD_STRUCTURE_DESCRIPTION,"A plantation of grapevines, typically producing grapes used in winemaking.",
+GRAPE_FIELD_STRUCTURE_DESCRIPTION,"A plantation of grapevines, typically producing grapes used in winemaking.  Laborers are sacrificed to fertilize the grapes during the process and would be returned.",
 GRAPE_FIELD_STRUCTURE_LVL_1,Produces 48-72 crops in 4 hours.  The grapes turn bad in another 6 hours if not harvested.,
 GRAPE_FIELD_STRUCTURE_LVL_2,Produces 80-120 crops in 4 hours.  The grapes turn bad in another 6 hours if not harvested.,
 GRAPE_FIELD_STRUCTURE_LVL_3,Produces 112-168 crops in 4 hours.  The grapes turn bad in another 6 hours if not harvested.,

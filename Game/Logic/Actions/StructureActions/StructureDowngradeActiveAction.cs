@@ -96,12 +96,20 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                if (WorkerObject.WorkerId != structureId)
-                    city.Worker.References.Remove(structure, this);
-
                 if (structure == null)
                 {
                     StateChange(ActionState.Completed);
+                    return;
+                }
+
+                if (WorkerObject.WorkerId != structureId)
+                {
+                    city.Worker.References.Remove(structure, this);
+                }
+
+                if (structure.IsBlocked)
+                {
+                    StateChange(ActionState.Failed);
                     return;
                 }
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
@@ -101,13 +102,19 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
+                if (structure.IsBlocked)
+                {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
                 structure.BeginUpdate();
                 structure.IsBlocked = true;
                 structure.EndUpdate();
             }
 
             structure.City.Worker.Remove(structure, new GameAction[] { this });
-
+            
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
@@ -115,6 +122,7 @@ namespace Game.Logic.Actions
 
                 if (structure == null)
                 {
+                    Global.Logger.Warn("StructureChange did not find structure");
                     StateChange(ActionState.Completed);
                     return;
                 }

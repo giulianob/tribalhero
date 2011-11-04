@@ -61,6 +61,9 @@ namespace Game.Logic.Actions
             City city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
+                if (!IsValid())
+                    return;
+
                 StateChange(ActionState.Failed);
             }
         }
@@ -76,15 +79,24 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
+                if (structure.IsBlocked)
+                {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
                 structure.BeginUpdate();
                 structure.IsBlocked = true;
                 structure.EndUpdate();
             }
 
-            structure.City.Worker.Remove(structure);
+            structure.City.Worker.Remove(structure, new[] { this });
 
             using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
             {
+                if (!IsValid())
+                    return;
+
                 city.BeginUpdate();
                 structure.BeginUpdate();
                 structure.IsBlocked = false;

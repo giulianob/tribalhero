@@ -23,5 +23,12 @@ namespace Game.Logic.Procedures
             SetResourceCap(structure.City);
             RecalculateCityResourceRates(structure.City);
         }
+
+        public static void OnTechnologyChange(Structure structure)
+        {
+            structure.City.BeginUpdate();
+            SetResourceCap(structure.City);
+            structure.City.EndUpdate();
+        }
     }
 }

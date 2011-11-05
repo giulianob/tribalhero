@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Logic.Procedures;
 using Game.Setup;
 
 #endregion
@@ -16,7 +17,7 @@ namespace Game.Logic.Actions
         {
             get
             {
-                return ActionType.TechnologyCreatePassive;
+                return ActionType.TechnologyDeletePassive;
             }
         }
 
@@ -52,7 +53,7 @@ namespace Game.Logic.Actions
             obj.Technologies.BeginUpdate();
             obj.Technologies.Clear();
             obj.Technologies.EndUpdate();
-
+            Procedure.OnTechnologyChange(obj);
             StateChange(ActionState.Completed);
 
             return Error.Ok;

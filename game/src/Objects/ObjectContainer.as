@@ -8,6 +8,7 @@ package src.Objects {
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Factories.*;
+	import src.Objects.Troop.TroopObject;
 	import src.UI.Dialog.*;
 	import src.UI.Tooltips.*;
 	import src.Util.*;
@@ -251,8 +252,12 @@ package src.Objects {
 			if (!objTooltip) {
 				if (highestObj is StructureObject) {
 					var structureObj: StructureObject = highestObj as StructureObject;
-					objTooltip = new StructureTooltip(structureObj, StructureFactory.getPrototype(structureObj.type, structureObj.level));
+					objTooltip = new StructureTooltip(structureObj, StructureFactory.getPrototype(structureObj.type, structureObj.level));					
 				}				
+				else if (highestObj is TroopObject) {
+					var troopObj: TroopObject = highestObj as TroopObject;
+					objTooltip = new TroopObjectTooltip(troopObj);					
+				}								
 			}
 			
 			highlightedObject = highestObj;

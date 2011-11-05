@@ -46,16 +46,7 @@ public class GameJBoxBackground implements GroundDecorator, UIResource{
 	public function updateDecorator(c:Component, g:Graphics2D, b:IntRectangle):void{
 		shape.graphics.clear();
 		
-		if(c.isOpaque()){
-			var cl:ASColor = c.getMideground();
-			var style:StyleResult;
-			var adjuster:StyleTune = c.getStyleTune().mide;
-			
-			c.pack();
-			cl = c.getBackground();
-			adjuster = c.getStyleTune();
-			style = new StyleResult(cl, adjuster);
-			
+		if(c.isOpaque()){			
 			var g: Graphics2D = new Graphics2D(shape.graphics);
 			shape.alpha = 0.8;
 			g.fillRoundRect(new SolidBrush(ASColor.BLACK), b.x, b.y, b.width, b.height, 10);			

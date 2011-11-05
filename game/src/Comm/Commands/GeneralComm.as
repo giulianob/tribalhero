@@ -23,9 +23,27 @@
 		public function GeneralComm(mapComm: MapComm) {
 			this.mapComm = mapComm;
 			this.session = mapComm.session;
+			
+			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
 		}
 		
 		public function dispose() : void {
+			session.removeEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
+		}
+		
+		public function onChannelReceive(e: PacketEvent):void
+		{
+			switch(e.packet.cmd)
+			{
+				case Commands.MESSAGE_BOX:
+					onMessageBox(e.packet);
+				break;
+			}
+		}
+		
+		private function onMessageBox(packet: Packet): void
+		{
+			InfoDialog.showMessageDialog("Important Information", packet.readString());
 		}
 
 		public function queryXML(callback: Function, custom: * ):void

@@ -33,14 +33,15 @@
 		private var pnlFooter:JPanel;
 		private var btnDelete:JButton;
 		private var btnReply:JButton;
+		private var btnOk:JButton;
 
 		private var message: *;
 
 		public function MessageViewDialog(message: *, onDelete: Function)
 		{
 			this.message = message;
-
 			createUI();
+
 			
 			txtMessage.setText(message.message);
 			txtSubject.setText(message.subject);
@@ -53,6 +54,10 @@
 				title = "Message to " + message.name;
 				lblName.setText("To");
 			}
+			
+			btnOk.addActionListener(function(e: Event):void {
+				getFrame().dispose();
+			});
 
 			var self: MessageViewDialog = this;
 			btnDelete.addActionListener(function(e: Event) : void {
@@ -150,12 +155,13 @@
 
 			pnlFooter = new JPanel();
 			var layout5:FlowLayout = new FlowLayout();
-			layout5.setAlignment(AsWingConstants.LEFT);
+			layout5.setAlignment(AsWingConstants.RIGHT);
 			pnlFooter.setLayout(layout5);
 
-			btnDelete = new JButton();
-			btnDelete.setText("Delete");
+			btnDelete = new JButton("Delete");
 
+			btnOk = new JButton("Close");
+			
 			btnReply = new JButton("Reply");
 
 			//component layoution
@@ -183,6 +189,7 @@
 			}
 
 			pnlFooter.append(btnDelete);
+			pnlFooter.append(btnOk);
 
 		}
 	}

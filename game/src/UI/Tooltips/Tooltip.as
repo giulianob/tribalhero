@@ -46,20 +46,15 @@ package src.UI.Tooltips {
 			
 			if (this.viewObj == null || this.viewObj != obj)
 			{
-				hide();
-
 				this.viewObj = obj;
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
 				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);
 
 				ui.addEventListener(AWEvent.PAINT, onPaint);
-				ui.show();
-				ui.getFrame().pack();
+				ui.show();				
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().parent.tabEnabled = false;
-
-				adjustPosition();
 			}
 			else {
 				adjustPosition();
@@ -74,6 +69,7 @@ package src.UI.Tooltips {
 		// We need this function since the size is wrong of the component until it has been painted
 		private function onPaint(e: AWEvent): void {
 			ui.removeEventListener(AWEvent.PAINT, onPaint);
+			ui.getFrame().pack();
 			adjustPosition();
 		}
 
@@ -121,7 +117,6 @@ package src.UI.Tooltips {
 			}
 
 			ui.getFrame().setGlobalLocation(new IntPoint(boxX, boxY));
-			ui.getFrame().revalidate();			
 		}
 
 		public function hide():void

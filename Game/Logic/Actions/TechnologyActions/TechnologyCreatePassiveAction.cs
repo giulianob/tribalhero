@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Ninject;
 
@@ -67,6 +68,7 @@ namespace Game.Logic.Actions
                 obj.Technologies.BeginUpdate();
                 obj.Technologies.Add(tech);
                 obj.Technologies.EndUpdate();
+                Procedure.OnTechnologyChange(obj);
             }
 
             StateChange(ActionState.Completed);

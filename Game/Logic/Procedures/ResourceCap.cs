@@ -3,6 +3,8 @@
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
+using System.Linq;
+using Ninject;
 
 #endregion
 
@@ -15,13 +17,15 @@ namespace Game.Logic.Procedures
         /// </summary>
         /// <param name = "city"></param>
         public static void SetResourceCap(City city)
-        {            
+        {
+            var bonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.All).Sum(x => (int)x.Value[0]);
+            var resourceBonus = Formula.HiddenResource(city) * (double)bonus / 100;
             if (Config.resource_cap)
             {
-                city.Resource.SetLimits(Formula.ResourceCropCap(city.Lvl),
+                city.Resource.SetLimits(Formula.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
                                         0,
-                                        Formula.ResourceIronCap(city.Lvl),
-                                        Formula.ResourceWoodCap(city.Lvl),
+                                        Formula.ResourceIronCap(city.Lvl) + resourceBonus.Iron,
+                                        Formula.ResourceWoodCap(city.Lvl) + resourceBonus.Wood,
                                         0);
             }
             else

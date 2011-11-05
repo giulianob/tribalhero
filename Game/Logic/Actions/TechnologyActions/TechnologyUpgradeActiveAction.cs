@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -236,7 +237,7 @@ namespace Game.Logic.Actions
 
                     structure.Technologies.EndUpdate();
                 }
-
+                Procedure.OnTechnologyChange(structure);
                 StateChange(ActionState.Completed);
             }
         }

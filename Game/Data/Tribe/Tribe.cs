@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Game.Comm;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -358,6 +359,7 @@ namespace Game.Data.Tribe
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
 
+            Global.Channel.Post("/TRIBE/" + Id, new Packet(Command.TribeChannelAssignmentAdd));
             return Error.Ok;
         }
 
@@ -380,6 +382,7 @@ namespace Game.Data.Tribe
 
         internal void RemoveAssignment(Assignment assignment)
         {
+            Global.Channel.Post("/TRIBE/" + Id, new Packet(Command.TribeChannelAssignmentRemove));
             assignments.Remove(assignment.Id);
         }
 

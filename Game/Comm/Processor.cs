@@ -89,7 +89,7 @@ namespace Game.Comm
             RegisterCommand(Command.TribesmanContribute, CmdTribesmanContribute);            
             RegisterCommand(Command.TribeAssignmentCreate, CmdAssignmentCreate);
             RegisterCommand(Command.TribeAssignmentJoin, CmdAssignmentJoin);
-            RegisterCommand(Command.TribeIncomingList, CmdTribeIncomingList);            
+            RegisterCommand(Command.TribeNotificationsGet, CmdTribeNotificationsGet);            
 
 
             RegisterEvent(Command.OnDisconnect, EventOnDisconnect);

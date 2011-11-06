@@ -189,6 +189,10 @@ namespace Game.Comm
                 // Subscribe him to the player channel
                 Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
+                // Subscribe him to the tribe channel if available
+                if (player.Tribesman != null)
+                    Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+
                 // Subscribe to global channel
                 Global.Channel.Subscribe(session, "/GLOBAL");
 

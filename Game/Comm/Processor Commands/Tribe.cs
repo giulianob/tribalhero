@@ -240,6 +240,8 @@ namespace Game.Comm
 
                 Tribesman tribesman = new Tribesman(tribe, session.Player, 0);
                 tribe.AddTribesman(tribesman);
+
+                Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
                 ReplySuccess(session, packet);
             }
         }
@@ -306,15 +308,22 @@ namespace Game.Comm
             ReplySuccess(session, packet);
         }
 
-        public void CmdTribeIncomingList(Session session, Packet packet)
+        public void CmdTribeNotificationsGet(Session session, Packet packet)
         {
-            /* Tribe t;
-             List<NotificationManager.Notification> notifications;
-             //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));
-             foreach (var city in t.SelectMany(tribesman => tribesman.Player.GetCityList()))
-             {
-                 notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
-             }*/
+            var reply = new Packet(packet);
+            if (session.Player.Tribesman == null)
+            {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+            Tribe tribe;
+
+            using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe.Id,out tribe))
+            {
+                reply.AddInt32(tribe.GetIncomingList().Count());
+                reply.AddInt16(tribe.AssignmentCount);
+            }
+            session.Write(reply);
         }
 
     }

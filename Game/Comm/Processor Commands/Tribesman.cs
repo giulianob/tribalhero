@@ -159,7 +159,10 @@ namespace Game.Comm
                 if (error != Error.Ok)
                     ReplyError(session, packet, error);
                 else
+                {
+                    Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
                     ReplySuccess(session, packet);
+                }
             }
         }
 

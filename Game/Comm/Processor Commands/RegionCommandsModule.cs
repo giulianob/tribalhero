@@ -15,9 +15,20 @@ using Ninject;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class RegionCommandsModule : CommandModule
     {
-        public void CmdRoadCreate(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.RegionRoadBuild, CmdRoadCreate);
+            processor.RegisterCommand(Command.RegionRoadDestroy, CmdRoadDestroy);
+            processor.RegisterCommand(Command.NotificationLocate, CmdNotificationLocate);
+            processor.RegisterCommand(Command.CityLocate, CmdCityLocate);
+            processor.RegisterCommand(Command.CityLocateByName, CmdCityLocateByName);
+            processor.RegisterCommand(Command.RegionGet, CmdGetRegion);
+            processor.RegisterCommand(Command.CityRegionGet, CmdGetCityRegion);
+        }
+
+        private void CmdRoadCreate(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -125,7 +136,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdRoadDestroy(Session session, Packet packet)
+        private void CmdRoadDestroy(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -252,7 +263,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdCityLocate(Session session, Packet packet)
+        private void CmdCityLocate(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -284,7 +295,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdCityLocateByName(Session session, Packet packet)
+        private void CmdCityLocateByName(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -323,7 +334,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdNotificationLocate(Session session, Packet packet)
+        private void CmdNotificationLocate(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -379,7 +390,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdGetRegion(Session session, Packet packet)
+        private void CmdGetRegion(Session session, Packet packet)
         {
             var reply = new Packet(packet);
             reply.Option |= (ushort)Packet.Options.Compressed;
@@ -461,7 +472,7 @@ namespace Game.Comm
                 session.Write(reply);
         }
 
-        public void CmdGetCityRegion(Session session, Packet packet)
+        private void CmdGetCityRegion(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 

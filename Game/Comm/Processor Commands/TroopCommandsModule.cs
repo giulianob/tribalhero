@@ -9,7 +9,6 @@ using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 
@@ -17,9 +16,20 @@ using Ninject;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class TroopCommandsModule : CommandModule
     {
-        public void CmdGetTroopInfo(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.UnitTrain, TrainUnit);
+            processor.RegisterCommand(Command.UnitUpgrade, UnitUpgrade);
+            processor.RegisterCommand(Command.TroopInfo, GetTroopInfo);
+            processor.RegisterCommand(Command.TroopAttack, Attack);
+            processor.RegisterCommand(Command.TroopDefend, Defend);
+            processor.RegisterCommand(Command.TroopRetreat, Retreat);
+            processor.RegisterCommand(Command.TroopLocalSet, LocalTroopSet);
+        }
+
+        private void GetTroopInfo(Session session, Packet packet)
         {
             City city;
             TroopObject troop;
@@ -85,7 +95,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdLocalTroopSet(Session session, Packet packet)
+        private void LocalTroopSet(Session session, Packet packet)
         {
             uint cityId;            
             bool hideNewUnits;
@@ -146,7 +156,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdUnitUpgrade(Session session, Packet packet)
+        private void UnitUpgrade(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -187,7 +197,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTrainUnit(Session session, Packet packet)
+        private void TrainUnit(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -230,7 +240,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTroopAttack(Session session, Packet packet)
+        private void Attack(Session session, Packet packet)
         {
             uint cityId;
             uint targetCityId;
@@ -306,7 +316,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTroopDefend(Session session, Packet packet)
+        private void Defend(Session session, Packet packet)
         {
             uint cityId;
             uint targetCityId;
@@ -362,7 +372,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTroopRetreat(Session session, Packet packet)
+        private void Retreat(Session session, Packet packet)
         {
             uint cityId;
             byte troopId;

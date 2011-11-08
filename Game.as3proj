@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project>
+<project version="2">
   <!-- Output SWF options -->
   <output>
-    <movie disabled="False" />
+    <movie outputType="Application" />
     <movie input="" />
     <movie path="bin\Game.swf" />
     <movie fps="30" />
     <movie width="976" />
     <movie height="640" />
     <movie version="11" />
+    <movie minorVersion="0" />
+    <movie platform="Flash Player" />
     <movie background="#E8E2BE" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
@@ -25,6 +27,7 @@
     <option locale="" />
     <option loadConfig="" />
     <option optimize="True" />
+    <option omitTraces="True" />
     <option showActionScriptWarnings="True" />
     <option showBindingWarnings="True" />
     <option showInvalidCSS="True" />
@@ -40,7 +43,7 @@
     <option staticLinkRSL="True" />
     <option additional="-frame start src.Main" />
     <option compilerConstants="" />
-    <option customSDK="" />
+    <option minorVersion="" />
   </build>
   <!-- SWC Include Libraries -->
   <includeLibraries>
@@ -87,7 +90,9 @@
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
-    <option showHiddenPaths="False" />
+    <option showHiddenPaths="True" />
     <option testMovie="Default" />
   </options>
+  <!-- Plugin storage -->
+  <storage />
 </project>

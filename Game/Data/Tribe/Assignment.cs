@@ -135,7 +135,7 @@ namespace Game.Data.Tribe {
 
         public DateTime Time {
             get {
-                return stubs.Any() ? stubs.Min(x => x.DepartureTime) : TargetTime;
+                return stubs.Any(s => !s.Dispatched) ? stubs.Where(s => !s.Dispatched).Min(x => x.DepartureTime) : TargetTime;
             }
         }
 

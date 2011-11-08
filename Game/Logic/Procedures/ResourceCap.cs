@@ -18,10 +18,11 @@ namespace Game.Logic.Procedures
         /// <param name = "city"></param>
         public static void SetResourceCap(City city)
         {
-            var bonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.All).Sum(x => (int)x.Value[0]);
-            var resourceBonus = Formula.HiddenResource(city) * (double)bonus / 100;
             if (Config.resource_cap)
             {
+                var bonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.All).Sum(x => (int)x.Value[0]);
+                var resourceBonus = Formula.HiddenResource(city) * (double)bonus / 100;
+
                 city.Resource.SetLimits(Formula.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
                                         0,
                                         Formula.ResourceIronCap(city.Lvl) + resourceBonus.Iron,

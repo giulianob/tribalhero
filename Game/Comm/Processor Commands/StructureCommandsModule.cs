@@ -13,9 +13,25 @@ using Ninject;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class StructureCommandsModule : CommandModule
     {
-        public void CmdGetStructureInfo(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.StructureInfo, StructureInfo);
+            processor.RegisterCommand(Command.ForestInfo, ForestInfo);
+            processor.RegisterCommand(Command.ForestCampCreate, CreateForestCamp);
+            processor.RegisterCommand(Command.StructureBuild, CreateStructure);
+            processor.RegisterCommand(Command.StructureUpgrade, UpgradeStructure);
+            processor.RegisterCommand(Command.StructureDowngrade, DowngradeStructure);
+            processor.RegisterCommand(Command.StructureChange, ChangeStructure);
+            processor.RegisterCommand(Command.StructureLaborMove, LaborMove);
+            processor.RegisterCommand(Command.StructureSelfDestroy, SelfDestroyStructure);
+            processor.RegisterCommand(Command.ActionCancel, CancelAction);
+            processor.RegisterCommand(Command.TechUpgrade, TechnologyUpgrade);
+            processor.RegisterCommand(Command.CityUsernameGet, GetCityUsername);
+        }
+
+        private void StructureInfo(Session session, Packet packet)
         {
             City city;
             Structure structure;
@@ -107,7 +123,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdGetForestInfo(Session session, Packet packet)
+        private void ForestInfo(Session session, Packet packet)
         {
             var reply = new Packet(packet);
             Forest forest;
@@ -141,7 +157,7 @@ namespace Game.Comm
             session.Write(reply);
         }
 
-        public void CmdGetCityUsername(Session session, Packet packet)
+        private void GetCityUsername(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -179,7 +195,7 @@ namespace Game.Comm
             session.Write(reply);
         }
 
-        public void CmdLaborMove(Session session, Packet packet)
+        private void LaborMove(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -252,7 +268,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTechnologyUpgrade(Session session, Packet packet)
+        private void TechnologyUpgrade(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -291,7 +307,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdCancelAction(Session session, Packet packet)
+        private void CancelAction(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -334,7 +350,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdUpgradeStructure(Session session, Packet packet)
+        private void UpgradeStructure(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -378,7 +394,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdDowngradeStructure(Session session, Packet packet)
+        private void DowngradeStructure(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -424,7 +440,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdCreateStructure(Session session, Packet packet)
+        private void CreateStructure(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -481,7 +497,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdChangeStructure(Session session, Packet packet)
+        private void ChangeStructure(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -528,7 +544,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdSelfDestroyStructure(Session session, Packet packet)
+        private void SelfDestroyStructure(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -570,7 +586,8 @@ namespace Game.Comm
                 return;
             }
         }
-        public void CmdCreateForestCamp(Session session, Packet packet)
+
+        private void CreateForestCamp(Session session, Packet packet)
         {
             uint cityId;
             uint forestId;

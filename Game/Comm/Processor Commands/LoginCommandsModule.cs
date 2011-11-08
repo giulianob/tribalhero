@@ -3,8 +3,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using Game.Data;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -19,18 +17,25 @@ using Persistance;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class LoginCommandsModule : CommandModule
     {
         private readonly object loginLock = new object();
 
-        public void CmdQueryXml(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.Login, Login);
+            processor.RegisterCommand(Command.QueryXml, QueryXml);
+            processor.RegisterCommand(Command.CityCreateInitial, CreateInitialCity);
+        }
+
+        private void QueryXml(Session session, Packet packet)
         {
             var reply = new Packet(packet);
             reply.AddString(File.ReadAllText(Path.Combine(Config.data_folder, "data.xml")));
             session.Write(reply);
         }
 
-        public void CmdLogin(Session session, Packet packet)
+        private void Login(Session session, Packet packet)
         {
             Player player;
             var reply = new Packet(packet);
@@ -225,7 +230,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdCreateInitialCity(Session session, Packet packet)
+        private void CreateInitialCity(Session session, Packet packet)
         {
             using (Concurrency.Current.Lock(session.Player))
             {

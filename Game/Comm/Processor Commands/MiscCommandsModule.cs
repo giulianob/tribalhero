@@ -13,9 +13,15 @@ using Ninject;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class MiscCommandsModule : CommandModule
     {
-        public void CmdCityCreate(Session session, Packet packet) {
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.CityCreate, CreateCity);
+            processor.RegisterCommand(Command.ResourceGather, GatherResource);
+        }
+
+        private void CreateCity(Session session, Packet packet) {
             uint cityId;
             uint x;
             uint y;
@@ -49,7 +55,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdResourceGather(Session session, Packet packet)
+        private void GatherResource(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -85,6 +91,5 @@ namespace Game.Comm
                 return;
             }
         }
-
     }
 }

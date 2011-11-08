@@ -513,7 +513,6 @@
 		public function show() : void {
 			// Create popup menu now that we have all the player info
 			menu = new JPopupMenu();
-			menu.addMenuItem("Logged in as " + Constants.username);			
 			menu.addMenuItem("Account Options").addActionListener(onAccountOptionsClick);
 			menu.addMenuItem("Forums").addActionListener(onForumsClick);
 			menu.addMenuItem("Help").addActionListener(onHelpClick);			

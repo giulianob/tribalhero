@@ -4,11 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Tribe;
-using Game.Logic;
-using Game.Logic.Actions;
 using Game.Setup;
-using Game.Util;
-using System.Linq;
 using Game.Util.Locking;
 using Ninject;
 using Persistance;
@@ -17,9 +13,21 @@ using Persistance;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class TribesmanCommandsModule : CommandModule
     {
-        public void CmdTribesmanSetRank(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.TribesmanSetRank, SetRank);
+            processor.RegisterCommand(Command.TribesmanAdd, Add);
+            processor.RegisterCommand(Command.TribesmanRemove, Remove);
+            processor.RegisterCommand(Command.TribesmanUpdate, Update);
+            processor.RegisterCommand(Command.TribesmanRequest, Request);
+            processor.RegisterCommand(Command.TribesmanConfirm, Confirm);
+            processor.RegisterCommand(Command.TribesmanLeave, Leave);
+            processor.RegisterCommand(Command.TribesmanContribute, Contribute);            
+        }
+
+        private void SetRank(Session session, Packet packet)
         {
             uint playerId;
             byte rank;
@@ -58,7 +66,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribesmanRequest(Session session, Packet packet)
+        private void Request(Session session, Packet packet)
         {
             string playerName;
             try
@@ -111,12 +119,12 @@ namespace Game.Comm
 
         }
 
-        public void CmdTribesmanConfirm(Session session, Packet packet)
+        private void Confirm(Session session, Packet packet)
         {
             bool isAccepting;
             try
             {
-                isAccepting = packet.GetByte() == 0 ? false : true;
+                isAccepting = packet.GetByte() != 0;
             }
             catch (Exception)
             {
@@ -163,7 +171,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribesmanAdd(Session session, Packet packet)
+        private void Add(Session session, Packet packet)
         {
             uint playerId;
             try
@@ -191,7 +199,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribesmanRemove(Session session, Packet packet)
+        private void Remove(Session session, Packet packet)
         {
             uint playerId;
             try
@@ -235,11 +243,11 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribesmanUpdate(Session session, Packet packet)
+        private void Update(Session session, Packet packet)
         {
         }
 
-        public void CmdTribesmanLeave(Session session, Packet packet)
+        private void Leave(Session session, Packet packet)
         {
             if (session.Player.Tribesman == null)
             {
@@ -261,7 +269,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribesmanContribute(Session session, Packet packet)
+        private void Contribute(Session session, Packet packet)
         {
             uint cityId;
             Resource resource;

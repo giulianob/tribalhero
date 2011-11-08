@@ -18,10 +18,21 @@ using Persistance;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class TribeCommandsModule : CommandModule
     {
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.TribeIncomingList, GetIncomingList);
+            processor.RegisterCommand(Command.TribeNameGet, GetName);
+            processor.RegisterCommand(Command.TribeInfo, GetInfo);
+            processor.RegisterCommand(Command.TribeCreate, Create);
+            processor.RegisterCommand(Command.TribeDelete, Delete);
+            processor.RegisterCommand(Command.TribeUpgrade, Upgrade);
+            processor.RegisterCommand(Command.TribeSetDescription, SetDescription);
+            processor.RegisterCommand(Command.TribePublicInfo, GetPublicInfo);
+        }
 
-        public void CmdTribeSetDescription(Session session, Packet packet)
+        private void SetDescription(Session session, Packet packet)
         {
             string description;
             try
@@ -60,7 +71,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribeName(Session session, Packet packet)
+        private void GetName(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -98,7 +109,7 @@ namespace Game.Comm
             session.Write(reply);
         }
 
-        public void CmdTribeInfo(Session session, Packet packet)
+        private void GetInfo(Session session, Packet packet)
         {
             var reply = new Packet(packet);
             if (session.Player.Tribesman == null)
@@ -170,7 +181,8 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribePublicInfo(Session session, Packet packet) {
+        private void GetPublicInfo(Session session, Packet packet)
+        {
             var reply = new Packet(packet);
             uint id;
             try {
@@ -195,7 +207,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribeCreate(Session session, Packet packet)
+        private void Create(Session session, Packet packet)
         {
             string name;
             try
@@ -244,7 +256,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdTribeDelete(Session session, Packet packet)
+        private void Delete(Session session, Packet packet)
         {
             if (session.Player.Tribesman == null)
             {
@@ -277,7 +289,7 @@ namespace Game.Comm
             ReplySuccess(session, packet);
         }
 
-        public void CmdTribeUpgrade(Session session, Packet packet)
+        private void Upgrade(Session session, Packet packet)
         {
             if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
             {
@@ -306,7 +318,7 @@ namespace Game.Comm
             ReplySuccess(session, packet);
         }
 
-        public void CmdTribeIncomingList(Session session, Packet packet)
+        private void GetIncomingList(Session session, Packet packet)
         {
             /* Tribe t;
              List<NotificationManager.Notification> notifications;

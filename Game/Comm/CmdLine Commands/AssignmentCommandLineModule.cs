@@ -15,9 +15,16 @@ using Persistance;
 
 namespace Game.Comm
 {
-    partial class CmdLineProcessor
+    class AssignmentCommandLineModule : CommandLineModule
     {
-        public string CmdAssignmentList(Session session, string[] parms)
+        public override void RegisterCommands(CommandLineProcessor processor)
+        {
+            processor.RegisterCommand("assignmentlist", AssignmentList, true);
+            processor.RegisterCommand("assignmentcreate", AssignmentCreate, true);
+            processor.RegisterCommand("assignmentjoin", AssignmentJoin, true);
+        }
+
+        private string AssignmentList(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -69,7 +76,7 @@ namespace Game.Comm
             return result;
         }
 
-        public string CmdAssignmentCreate(Session session, string[] parms)
+        private string AssignmentCreate(Session session, string[] parms)
         {
             bool help = false;
             string cityName = string.Empty;
@@ -150,7 +157,7 @@ namespace Game.Comm
             }
         }
 
-        public string CmdAssignmentJoin(Session session, string[] parms)
+        private string AssignmentJoin(Session session, string[] parms)
         {
             bool help = false;
             string cityName = string.Empty;
@@ -205,6 +212,5 @@ namespace Game.Comm
                 return string.Format("OK");                
             }
         }
-
     }
 }

@@ -115,13 +115,10 @@ namespace Game.Logic.Formulas
             int[] rateGold = {0, 0, 0, 0, 0, 100, 150, 220, 330, 500, 740};
             int[] rateIron = {0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660};
 
-            int maxbonus =
-                    city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.SelfAll).DefaultIfEmpty(new Effect {Value = new object[] {100}}).
-                            Max(x => (int)x.Value[0]);
             var resource = new Resource();
             foreach (var structure in city.Where(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Basement", x)))
                 resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
-            return resource*maxbonus/100;
+            return resource;
         }
 
         /// <summary>

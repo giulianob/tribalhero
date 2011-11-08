@@ -27,11 +27,11 @@ SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all 
 SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP. (Stacks additively up to 100%)"
 ,
 LAST_STAND_TECHNOLOGY_NAME,Last Stand
-LAST_STAND_TECHNOLOGY_LVL_1,15% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_2,30% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_3,45% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_4,60% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_5,75% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_1,Hoplite receives 15% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_2,Hoplite receives 30% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_3,Hoplite receives 45% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_4,Hoplite receives 60% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_5,Hoplite receives 75% chance to completely ignore the attack when team is about to die. (Does not stack)
 ,
 ,
 RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack
@@ -68,12 +68,12 @@ HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry
 HIPPOSANDAL_TECHNOLOGY_LVL_2,Equips mounts with horseshoes.  Increase base Carry for mount unit by 30. (Does not stack)
 HIPPOSANDAL_TECHNOLOGY_LVL_3,Equips mounts with horseshoes.  Increase base Carry for mount unit by 45. (Does not stack)
 ,
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_NAME,Sword Units Defensive Boost
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman, Hoplite and Gladiator by 3% on defense mission . (Stacks compoundly)"
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman, Hoplite and Gladiator by 6% on defense mission . (Stacks compoundly)"
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, Hoplite and Gladiator by 9% on defense mission . (Stacks compoundly)"
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, Hoplite and Gladiator by 12% on defense mission . (Stacks compoundly)"
-GROUND_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman, Hoplite and Gladiator by 15% on defense mission . (Stacks compoundly)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_NAME,Sword Units Defensive Boost
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Fighter, Swordsman, and Hoplite by 3% on defense mission . (Stacks compoundly)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,"Increases damage of Fighter, Swordsman, and Hoplite by 6% on defense mission . (Stacks compoundly)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Fighter, Swordsman, and Hoplite by 9% on defense mission . (Stacks compoundly)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Fighter, Swordsman, and Hoplite by 12% on defense mission . (Stacks compoundly)"
+SWORD_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Fighter, Swordsman, and Hoplite by 15% on defense mission . (Stacks compoundly)"
 ,
 BOW_ARMOR_RESEARCH_TECHNOLOGY_NAME,Bow Units Defensive Boost
 BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,"Increases damage of Bowman, Archer and Helepolis by 3% on defense mission . (Stacks compoundly)"
@@ -82,19 +82,19 @@ BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,"Increases damage of Bowman, Archer and Hele
 BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,"Increases damage of Bowman, Archer and Helepolis by 12% on defense mission . (Stacks compoundly)"
 BOW_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,"Increases damage of Bowman, Archer and Helepolis by 15% on defense mission . (Stacks compoundly)"
 ,
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_NAME,Pike Units Defensive Boost
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 3% on defense mission . (Stacks compoundly)
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 6% on defense mission . (Stacks compoundly)
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 9% on defense mission . (Stacks compoundly)
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 12% on defense mission . (Stacks compoundly)
-MOUNT_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on defense mission . (Stacks compoundly)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Pike Units Defensive Boost
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Cavalry and Knight by 3% on defense mission . (Stacks compoundly)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Cavalry and Knight by 6% on defense mission . (Stacks compoundly)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Cavalry and Knight by 9% on defense mission . (Stacks compoundly)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Cavalry and Knight by 12% on defense mission . (Stacks compoundly)
+PIKE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Cavalry and Knight by 15% on defense mission . (Stacks compoundly)
 ,
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Siege Units Defensive Boost
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Calapult by 3% on defense mission . (Stacks compoundly)
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Calapult by 3% on defense mission . (Stacks compoundly)
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Calapult by 3% on defense mission . (Stacks compoundly)
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Calapult by 3% on defense mission . (Stacks compoundly)
-MACHINE_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Calapult by 3% on defense mission . (Stacks compoundly)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_NAME,Siege Units Defensive Boost
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of Gladiator and Calapult by 3% on defense mission . (Stacks compoundly)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_2,Increases damage of Gladiator and Calapult by 6% on defense mission . (Stacks compoundly)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_3,Increases damage of Gladiator and Calapult by 9% on defense mission . (Stacks compoundly)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Calapult by 12% on defense mission . (Stacks compoundly)
+BALL_ARMOR_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Calapult by 15% on defense mission . (Stacks compoundly)
 ,
 STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_NAME,Structure Defensive Boost
 STRUCTURE_ARMOR_RESEARCH_TECHNOLOGY_LVL_1,Increases damage of all structures by 3% on defense. (Stacks compoundly)
@@ -132,20 +132,23 @@ BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_4,Increases damage of Gladiator and Calapult
 BALL_WEAPON_RESEARCH_TECHNOLOGY_LVL_5,Increases damage of Gladiator and Calapult by 15% on attack mission . (Stacks compoundly)
 ,
 ATTIC_STORAGE_TECHNOLOGY_NAME,Attic Storage
-ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the basements by 10%. (Does not stack)
-ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the basements by 20%. (Does not stack)
-ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the basements by 30%. (Does not stack)
-ATTIC_STORAGE_TECHNOLOGY_LVL_4,Increase capacity of the basements by 40%. (Does not stack)
-ATTIC_STORAGE_TECHNOLOGY_LVL_5,Increase capacity of the basements by 50%. (Does not stack)
+ATTIC_STORAGE_TECHNOLOGY_LVL_1,Increase capacity of the city resources by 50% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_2,Increase capacity of the city resources by 100% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_3,Increase capacity of the city resources by 150% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_4,Increase capacity of the city resources by 200% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_5,Increase capacity of the city resources by 250% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_6,Increase capacity of the city resources by 300% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_7,Increase capacity of the city resources by 350% of basements' capacity.
+ATTIC_STORAGE_TECHNOLOGY_LVL_8,Increase capacity of the city resources by 400% of basements' capacity.
 ,
 FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
 FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained.
 FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
 FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained.
 THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
-THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3th unit free for every 2 units that are trained.
+THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3rd unit free for every 2 units that are trained.
 TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
-TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2th unit free for every 1 unit that is trained.
+TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 unit that is trained.
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
 HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%. (8% for every addition)

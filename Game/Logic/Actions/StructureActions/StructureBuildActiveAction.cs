@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -308,7 +309,9 @@ namespace Game.Logic.Actions
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
 
                 structure.EndUpdate();
-
+                city.BeginUpdate();
+                Procedure.OnStructureUpgradeDowngrade(structure);
+                city.EndUpdate();
                 StateChange(ActionState.Completed);
             }
         }

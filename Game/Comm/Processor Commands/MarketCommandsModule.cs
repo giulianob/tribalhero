@@ -13,9 +13,16 @@ using Ninject;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class MarketCommandsModule : CommandModule
     {
-        public void CmdMarketGetPrices(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.MarketBuy, MarketBuy);
+            processor.RegisterCommand(Command.MarketSell, MarketSell);
+            processor.RegisterCommand(Command.MarketPrices, MarketGetPrices);
+        }
+
+        private void MarketGetPrices(Session session, Packet packet)
         {
             var reply = new Packet(packet);
             reply.AddUInt16((ushort)Market.Crop.Price);
@@ -24,7 +31,7 @@ namespace Game.Comm
             session.Write(reply);
         }
 
-        public void CmdMarketBuy(Session session, Packet packet)
+        private void MarketBuy(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;
@@ -82,7 +89,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdMarketSell(Session session, Packet packet)
+        private void MarketSell(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;

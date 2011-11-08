@@ -12,9 +12,14 @@ using Ninject;
 
 namespace Game.Comm
 {
-    public partial class CmdLineProcessor
+    public class ResourcesCommandLineModule : CommandLineModule
     {
-        public string CmdSendResources(Session session, string[] parms)
+        public override void RegisterCommands(CommandLineProcessor processor)
+        {
+            processor.RegisterCommand("sendresources", SendResources, true);
+        }
+
+        private string SendResources(Session session, string[] parms)
         {
             var resource = new Resource();
             string cityName = string.Empty;

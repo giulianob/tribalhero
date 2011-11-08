@@ -10,18 +10,22 @@ using Ninject.Extensions.Logging;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class CommandLineCommandsModule : CommandModule
     {
-        private CmdLineProcessor cmdLineProcessor;
+        private readonly CommandLineProcessor commandLineProcessor;
 
-        public void CmdLineCommand(Session session, Packet packet)
+        public CommandLineCommandsModule(CommandLineProcessor commandLineProcessor)
         {
-            if (!session.Player.Admin)
-            {
-                ReplyError(session, packet, Error.Unexpected);
-                return;
-            }
+            this.commandLineProcessor = commandLineProcessor;
+        }
 
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.CmdLine, CommandLine);
+        }
+
+        private void CommandLine(Session session, Packet packet)
+        {
             var reply = new Packet(packet);
 
             string cmd;
@@ -49,7 +53,7 @@ namespace Game.Comm
 
             string parms = cmdParts.Length == 2 ? cmdParts[1] : string.Empty;
 
-            string output = cmdLineProcessor.Execute(session,cmdParts[0].Trim(), parms);
+            string output = commandLineProcessor.Execute(session,cmdParts[0].Trim(), parms);
 
             reply.AddString(output);
             session.Write(reply);

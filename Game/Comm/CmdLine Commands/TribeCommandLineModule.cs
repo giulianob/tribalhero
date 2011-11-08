@@ -19,9 +19,21 @@ using Persistance;
 
 namespace Game.Comm
 {
-    partial class CmdLineProcessor
+    class TribeCommandLineModule : CommandLineModule
     {
-        public string CmdTribeInfo(Session session, string[] parms)
+        public override void RegisterCommands(CommandLineProcessor processor)
+        {
+            processor.RegisterCommand("TribeInfo", CmdTribeInfo, true);
+            processor.RegisterCommand("TribeCreate", CmdTribeCreate, true);
+            processor.RegisterCommand("TribeUpdate", CmdTribeUpdate, true);
+            processor.RegisterCommand("TribeDelete", CmdTribeDelete, true);
+            processor.RegisterCommand("TribesmanAdd", CmdTribesmanAdd, true);
+            processor.RegisterCommand("TribesmanRemove", CmdTribesmanRemove, true);
+            processor.RegisterCommand("TribesmanUpdate", CmdTribesmanUpdate, true);
+            processor.RegisterCommand("TribeIncomingList", CmdTribeIncomingList, true);
+        }
+
+        private string CmdTribeInfo(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -78,7 +90,8 @@ namespace Game.Comm
             return result;
         }
 
-        public string CmdTribeCreate(Session session, string[] parms) {
+        private string CmdTribeCreate(Session session, string[] parms)
+        {
             bool help = false;
             string playerName = string.Empty;
             string tribeName = string.Empty;
@@ -128,7 +141,8 @@ namespace Game.Comm
             return "OK!";
         }
 
-        public string CmdTribeDelete(Session session, string[] parms) {
+        private string CmdTribeDelete(Session session, string[] parms)
+        {
             bool help = false;
             string tribeName = string.Empty;
 
@@ -166,7 +180,7 @@ namespace Game.Comm
             return "OK!";
         }
 
-        public string CmdTribeUpdate(Session session, string[] parms)
+        private string CmdTribeUpdate(Session session, string[] parms)
         {
             bool help = false;
             string desc = string.Empty;
@@ -199,7 +213,8 @@ namespace Game.Comm
             return "OK";
         }
 
-        public string CmdTribesmanAdd(Session session, string[] parms) {
+        private string CmdTribesmanAdd(Session session, string[] parms)
+        {
             bool help = false;
             string playerName = string.Empty;
             string tribeName = string.Empty;
@@ -238,7 +253,8 @@ namespace Game.Comm
             return "OK";
         }
 
-        public string CmdTribesmanRemove(Session session, string[] parms) {
+        private string CmdTribesmanRemove(Session session, string[] parms)
+        {
             bool help = false;
             string playerName = string.Empty;
             string tribeName = string.Empty;
@@ -279,7 +295,8 @@ namespace Game.Comm
             return "OK";
         }
 
-        public string CmdTribesmanUpdate(Session session, string[] parms) {
+        private string CmdTribesmanUpdate(Session session, string[] parms)
+        {
             bool help = false;
             string playerName = string.Empty;
             string rank = string.Empty;
@@ -313,7 +330,8 @@ namespace Game.Comm
             return "OK";
         }
 
-        public string CmdTribeIncomingList(Session session, string[] parms) {
+        private string CmdTribeIncomingList(Session session, string[] parms)
+        {
             bool help = false;
             string tribeName = string.Empty;
 
@@ -353,6 +371,5 @@ namespace Game.Comm
 
             return result.ToString();
         }
-
     }
 }

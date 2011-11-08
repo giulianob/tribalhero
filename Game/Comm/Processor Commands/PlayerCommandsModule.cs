@@ -17,9 +17,18 @@ using Persistance;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class PlayerCommandsModule : CommandModule
     {
-        public void CmdSetPlayerDescription(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.PlayerProfile, ViewProfile);
+            processor.RegisterCommand(Command.PlayerDescriptionSet, SetDescription);
+            processor.RegisterCommand(Command.PlayerUsernameGet, GetUsername);
+            processor.RegisterCommand(Command.PlayerNameFromCityName, GetCityOwnerName);
+            processor.RegisterCommand(Command.CityResourceSend, SendResources);                      
+        }
+
+        private void SetDescription(Session session, Packet packet)
         {
             string description;
             try
@@ -46,7 +55,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdGetProfile(Session session, Packet packet)
+        private void ViewProfile(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -129,7 +138,7 @@ namespace Game.Comm
             session.Write(reply);
         }
 
-        public void CmdGetUsername(Session session, Packet packet)
+        private void GetUsername(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -165,7 +174,7 @@ namespace Game.Comm
             session.Write(reply);
         }
 
-        public void CmdGetCityOwnerName(Session session, Packet packet)
+        private void GetCityOwnerName(Session session, Packet packet)
         {
             var reply = new Packet(packet);
 
@@ -196,7 +205,7 @@ namespace Game.Comm
             session.Write(reply);
         }
 
-        public void CmdSendResources(Session session, Packet packet)
+        private void SendResources(Session session, Packet packet)
         {
             uint cityId;
             uint objectId;

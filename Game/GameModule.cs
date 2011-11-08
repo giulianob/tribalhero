@@ -76,6 +76,33 @@ namespace Game
                 });
             
             #endregion
+
+            #region Processor
+
+            Bind<CommandLineProcessor>().ToMethod(
+                                              c =>
+                                              new CommandLineProcessor(new AssignmentCommandLineModule(),
+                                                                   new PlayerCommandLineModule(),
+                                                                   new ResourcesCommandLineModule(),
+                                                                   new TribeCommandLineModule())).InSingletonScope();
+
+            Bind<Processor>().ToMethod(
+                                       c =>
+                                       new Processor(new AssignmentCommandsModule(),
+                                                     new BattleCommandsModule(),
+                                                     new EventCommandsModule(),
+                                                     new CommandLineCommandsModule(Kernel.Get<CommandLineProcessor>()),
+                                                     new LoginCommandsModule(),
+                                                     new MarketCommandsModule(),
+                                                     new MiscCommandsModule(),
+                                                     new PlayerCommandsModule(),
+                                                     new RegionCommandsModule(),
+                                                     new StructureCommandsModule(),
+                                                     new TribeCommandsModule(),
+                                                     new TribesmanCommandsModule(),
+                                                     new TroopCommandsModule())).InSingletonScope();
+
+            #endregion
         }
     }
 }

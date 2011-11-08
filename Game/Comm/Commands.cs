@@ -1,6 +1,6 @@
 namespace Game.Comm
 {
-    enum Command : ushort
+    public enum Command : ushort
     {
         Invalid = 1,
 

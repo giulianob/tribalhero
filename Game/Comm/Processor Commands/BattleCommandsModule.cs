@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 
@@ -12,9 +11,15 @@ using Ninject;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class BattleCommandsModule : CommandModule
     {
-        public void CmdBattleSubscribe(Session session, Packet packet)
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.BattleSubscribe, Subscribe);
+            processor.RegisterCommand(Command.BattleUnsubscribe, Unsubscribe);
+        }
+
+        private void Subscribe(Session session, Packet packet)
         {
             uint cityId;
             City city;
@@ -66,7 +71,7 @@ namespace Game.Comm
             }
         }
 
-        public void CmdBattleUnsubscribe(Session session, Packet packet)
+        private void Unsubscribe(Session session, Packet packet)
         {
             uint cityId;
             City city;

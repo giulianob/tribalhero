@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using System.Linq;
 using Game.Data;
 using Game.Module;
 using Game.Module.Remover;
@@ -16,33 +15,50 @@ using Persistance;
 
 namespace Game.Comm
 {
-    partial class CmdLineProcessor
+    class PlayerCommandLineModule : CommandLineModule
     {
-        public string CmdSystemBroadcastMail(Session session, String[] parms)
+        public override void RegisterCommands(CommandLineProcessor processor)
+        {
+            processor.RegisterCommand("ban", BanPlayer, true);
+            processor.RegisterCommand("unban", UnbanPlayer, true);
+            processor.RegisterCommand("delete", DeletePlayer, true);
+            processor.RegisterCommand("playercleardescription", PlayerClearDescription, true);
+            processor.RegisterCommand("deleteinactives", DeleteInactives, true);
+            processor.RegisterCommand("broadcast", SystemBroadcast, true);
+            processor.RegisterCommand("broadcastmail", SystemBroadcastMail, true);
+        }
+
+        private string SystemBroadcastMail(Session session, String[] parms)
         {
             bool help = false;
             string message = string.Empty;
             string subject = string.Empty;
 
-            try {
+            try
+            {
                 var p = new OptionSet
                         {
-                                { "?|help|h", v => help = true },
-                                { "subject=", v => subject = v.TrimMatchingQuotes() },
-                                { "message=", v => message = v.TrimMatchingQuotes() },
+                                {"?|help|h", v => help = true},
+                                {"subject=", v => subject = v.TrimMatchingQuotes()},
+                                {"message=", v => message = v.TrimMatchingQuotes()},
                         };
                 p.Parse(parms);
-            } catch (Exception) {
+            }
+            catch(Exception)
+            {
                 help = true;
             }
 
             if (help || string.IsNullOrEmpty(message) || string.IsNullOrEmpty(subject))
                 return "broadcastmail --subject=\"SUBJECT\" --message=\"MESSAGE\"";
 
-            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] { })) {
-                while (reader.Read()) {
+            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] {}))
+            {
+                while (reader.Read())
+                {
                     Player player;
-                    using (Concurrency.Current.Lock((uint)reader["id"], out player)) {
+                    using (Concurrency.Current.Lock((uint)reader["id"], out player))
+                    {
                         player.SendSystemMessage(null, subject, message);
                     }
                 }
@@ -50,21 +66,17 @@ namespace Game.Comm
             return "OK!";
         }
 
-        public string CmdSystemBroadcast(Session session, String[] parms)
+        private string SystemBroadcast(Session session, String[] parms)
         {
             bool help = false;
             string message = string.Empty;
 
             try
             {
-                var p = new OptionSet
-                        {
-                                { "?|help|h", v => help = true },
-                                { "message=", v => message = v.TrimMatchingQuotes() },
-                        };
+                var p = new OptionSet {{"?|help|h", v => help = true}, {"message=", v => message = v.TrimMatchingQuotes()},};
                 p.Parse(parms);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 help = true;
             }
@@ -79,7 +91,7 @@ namespace Game.Comm
             return "OK!";
         }
 
-        public string CmdPlayerClearDescription(Session session, string[] parms)
+        private string PlayerClearDescription(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -115,7 +127,7 @@ namespace Game.Comm
             return "OK!";
         }
 
-        public string CmdBanPlayer(Session session, string[] parms)
+        private string BanPlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -138,7 +150,7 @@ namespace Game.Comm
             return response.Success ? "OK!" : response.ErrorMessage;
         }
 
-        public string CmdUnbanPlayer(Session session, string[] parms)
+        private string UnbanPlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -161,15 +173,18 @@ namespace Game.Comm
             return response.Success ? "OK!" : response.ErrorMessage;
         }
 
-        public string CmdDeletePlayer(Session session, string[] parms)
+        private string DeletePlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
 
-            try {
-                var p = new OptionSet { { "?|help|h", v => help = true }, { "player=", v => playerName = v.TrimMatchingQuotes() } };
+            try
+            {
+                var p = new OptionSet {{"?|help|h", v => help = true}, {"player=", v => playerName = v.TrimMatchingQuotes()}};
                 p.Parse(parms);
-            } catch (Exception) {
+            }
+            catch(Exception)
+            {
                 help = true;
             }
 
@@ -181,7 +196,8 @@ namespace Game.Comm
                 return "Player not found";
 
             Player player;
-            using (Concurrency.Current.Lock(playerId, out player)) {
+            using (Concurrency.Current.Lock(playerId, out player))
+            {
                 if (player == null)
                     return "Player not found";
 
@@ -207,14 +223,18 @@ namespace Game.Comm
 
         }
 
-        public string CmdDeleteInactives(Session session, string[] parms) {
+        private string DeleteInactives(Session session, string[] parms)
+        {
             bool help = false;
             string playerName = string.Empty;
 
-            try {
-                var p = new OptionSet { { "?|help|h", v => help = true } };
+            try
+            {
+                var p = new OptionSet {{"?|help|h", v => help = true}};
                 p.Parse(parms);
-            } catch (Exception) {
+            }
+            catch(Exception)
+            {
                 help = true;
             }
 

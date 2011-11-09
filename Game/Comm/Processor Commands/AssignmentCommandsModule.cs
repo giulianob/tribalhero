@@ -1,20 +1,15 @@
 #region
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
-using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
-using Game.Util;
-using System.Linq;
 using Game.Util.Locking;
-using NDesk.Options;
 using Ninject;
 using Persistance;
 
@@ -22,9 +17,15 @@ using Persistance;
 
 namespace Game.Comm
 {
-    public partial class Processor
+    class AssignmentCommandsModule : CommandModule
     {
-        public void CmdAssignmentCreate(Session session, Packet packet) {
+        public override void RegisterCommands(Processor processor)
+        {
+            processor.RegisterCommand(Command.TribeAssignmentCreate, Create);
+            processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
+        }
+
+        private void Create(Session session, Packet packet) {
             uint cityId;
             uint targetCityId;
             uint targetObjectId;
@@ -122,7 +123,7 @@ namespace Game.Comm
             }
         }
  
-        public void CmdAssignmentJoin(Session session, Packet packet) {
+        private void Join(Session session, Packet packet) {
             uint cityId;
             int assignmentId;
             TroopStub stub;

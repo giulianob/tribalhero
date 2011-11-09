@@ -3,6 +3,7 @@
 using System;
 using Game.Data;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -239,10 +240,8 @@ namespace Game.Comm
 
             if (help)
                 return "DeleteInactives";
-
-            IdleChecker.DeleteAllInactivePlayers();
-            return "OK!";
-
+            PlayersRemover playersRemover = new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector());
+            return string.Format("Deleted {0} Players", playersRemover.DeletePlayers());
         }
     }
 }

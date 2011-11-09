@@ -104,6 +104,8 @@ namespace Game.Setup
         public static int actions_free_cancel_interval_in_sec = 60;
         public static bool actions_ignore_requirements = false;
 
+        public static int idle_days = 14;
+
         public static Random Random { get; private set; }
 
         private static Dictionary<string, string> extraProperties = new Dictionary<string, string>();

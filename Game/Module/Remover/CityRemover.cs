@@ -234,7 +234,7 @@ namespace Game.Module
                     Reschedule(SHORT_RETRY);
                     return;
                 }
-
+                Global.Logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.", city.Owner.Name, city.Owner.PlayerId, city.Name, city.Id, city.Lvl));
                 Global.World.Remove(city);
             }
 

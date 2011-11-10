@@ -13,6 +13,7 @@ package src.UI.Dialog
 	import src.*;
 	import src.UI.*;
 	import src.UI.LookAndFeel.*;
+	import src.Util.StringHelper;
 
 	public class CmdLineViewer extends GameJBox
 	{
@@ -78,12 +79,25 @@ package src.UI.Dialog
 							txtConsole.setText("");
 						break;
 						default:
-							if (txtCommand.getText().length > 0) {
-								log(txtCommand.getText(), true);
-								//sendCallback(txtCommand.getText());
-								Global.mapComm.General.sendCommand(txtCommand.getText(), function(resp: String) : void {
-									log(resp, false);
-								});
+							if (txtCommand.getText().length > 0) {																
+								var message: String = StringHelper.trim(txtCommand.getText());
+								
+								if (message.charAt(0) == '/')
+								{								
+									log(txtCommand.getText(), true);
+									
+									Global.mapComm.General.sendCommand(message.substr(1), function(resp: String) : void {
+										log(resp, false);
+									});
+								}
+								else
+								{
+									Global.mapComm.General.sendChat(message, function(resp: String) : void {
+										log(resp, false);
+									});
+								}
+								
+								saveToHistory(message);
 								txtCommand.setText("");
 							}
 						break;
@@ -123,23 +137,29 @@ package src.UI.Dialog
 			return cmdIndex != -1 && cmdHistory[cmdIndex] == txtCommand.getText();
 		}
 
-		private function log(str: String, isCommand: Boolean = false) : void {
+		public function log(str: String, isCommand: Boolean = false) : void {
+			if (str.length == 0)
+				return;
+			
 			if (txtConsole.getLength() > 4000)
 				txtConsole.replaceText(0, txtConsole.getLength() - 4000, "");
 			
 			if (isCommand)
 			{
 				txtConsole.appendText("\n>" + str);
-				if (!inCmd()) { 
-					if (cmdHistory.length > 50)
-						cmdHistory.shift();
-						
-					cmdHistory.push(str);
-						
-					cmdIndex = cmdHistory.length - 1;
-				}
 			} else {
 				txtConsole.appendText("\n" + str);
+			}
+		}
+		
+		private function saveToHistory(str: String): void {
+			if (!inCmd()) {
+				if (cmdHistory.length > 50)
+					cmdHistory.shift();
+				
+				cmdHistory.push(str);
+				
+				cmdIndex = cmdHistory.length - 1;
 			}
 		}
 		
@@ -199,6 +219,7 @@ package src.UI.Dialog
 			txtCommand.setBackgroundDecorator(null);
 			txtCommand.setRestrict("^`");
 			txtCommand.setConstraints("Center");
+			txtCommand.setMaxChars(450);
 			
 			var lblCommandCursor: JLabel = new JLabel(">");
 			lblCommandCursor.setConstraints("West");

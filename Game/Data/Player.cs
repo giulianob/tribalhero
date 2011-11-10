@@ -34,6 +34,7 @@ namespace Game.Data
             Name = name;
             SessionId = sessionId;
             Admin = admin;
+            ChatFloodTime = DateTime.MinValue;
             this.description = description;
         }
 
@@ -50,6 +51,10 @@ namespace Game.Data
         public string SessionId { get; set; }
 
         public bool Admin { get; set; }
+
+        public DateTime ChatFloodTime { get; set; }
+
+        public int ChatFloodCount { get; set; }
 
         private string description = string.Empty;
         public string Description

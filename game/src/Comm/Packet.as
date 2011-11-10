@@ -140,6 +140,10 @@
 			return bytes.readUTF();
 		}
 		
+		public function hasData(): Boolean {
+			return bytes.bytesAvailable > 0;
+		}
+		
 		/******************************************************************/
 	
 		public function getBytes():ByteArray {

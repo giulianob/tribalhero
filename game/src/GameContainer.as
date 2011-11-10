@@ -78,7 +78,7 @@
 		private var barBg: DisplayObject;
 
 		// Command line
-		private var cmdLine: CmdLineViewer;
+		public var cmdLine: CmdLineViewer;
 		
 		// Holds currently pressed keys
 		private var pressedKeys:Object = { };
@@ -476,10 +476,8 @@
 			addChild(minimapTools);
 
 			// Create and position command line if admin
-			if (Constants.admin) {
-				cmdLine = new CmdLineViewer();
-				cmdLine.show();				
-			}
+			cmdLine = new CmdLineViewer();
+			cmdLine.show();				
 
 			// Add objects to resize manager
 			resizeManager = new ResizeManager(stage);

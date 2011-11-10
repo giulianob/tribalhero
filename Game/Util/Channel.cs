@@ -1,8 +1,8 @@
 #region
 
-using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using Game.Comm;
 
 #endregion
@@ -29,7 +29,7 @@ namespace Game.Util
 
         #region Members
 
-        private readonly object channelLock = new Object();
+        private readonly ReaderWriterLockSlim channelLock = new ReaderWriterLockSlim();
 
         private readonly Dictionary<string, List<Subscriber>> subscribersByChannel = new Dictionary<string, List<Subscriber>>();
 
@@ -47,18 +47,25 @@ namespace Game.Util
 
         public void Post(string channelId, Packet message)
         {
-            lock (channelLock)
+            channelLock.EnterReadLock();
+            try 
             {
                 if (!subscribersByChannel.ContainsKey(channelId))
                     return;
+
                 foreach (var sub in subscribersByChannel[channelId])
                     sub.Session.OnPost(message);
+            }
+            finally
+            {
+                channelLock.ExitReadLock();
             }
         }
 
         public void Subscribe(IChannel session, string channelId)
         {
-            lock (channelLock)
+            channelLock.EnterWriteLock();
+            try
             {
                 Subscriber sub;
                 List<Subscriber> sublist;
@@ -79,7 +86,7 @@ namespace Game.Util
 
                     sub.Channels.Add(channelId);
                 }
-                        // If not we need to make an object for this session
+                // If not we need to make an object for this session
                 else
                 {
                     sub = new Subscriber(session);
@@ -89,12 +96,16 @@ namespace Game.Util
 
                 sublist.Add(sub);
             }
-            return;
+            finally
+            {
+                channelLock.ExitWriteLock();            
+            }
         }
 
         public bool Unsubscribe(IChannel session, string channelId)
         {
-            lock (channelLock)
+            channelLock.EnterWriteLock();
+            try
             {
                 Subscriber sub;
                 if (subscribersBySession.TryGetValue(session, out sub))
@@ -115,12 +126,17 @@ namespace Game.Util
                     return true;
                 }
             }
+            finally
+            {
+                channelLock.ExitWriteLock();
+            }
             return false;
         }
 
         public int SubscriptionCount(IChannel session = null)
         {
-            lock (channelLock)
+            channelLock.EnterReadLock();
+            try
             {
                 if (session != null)
                 {
@@ -133,13 +149,17 @@ namespace Game.Util
                     return subscribersByChannel.Values.Sum(subscription => subscription.Count);
                 }
             }
-
+            finally
+            {
+                channelLock.ExitReadLock();
+            }
             return 0;
         }
 
         public bool Unsubscribe(IChannel session)
         {
-            lock (channelLock)
+            channelLock.EnterWriteLock();
+            try
             {
                 Subscriber sub;
                 if (subscribersBySession.TryGetValue(session, out sub))
@@ -162,12 +182,18 @@ namespace Game.Util
                     return true;
                 }
             }
+            finally
+            {
+                channelLock.ExitWriteLock();
+            }
+
             return false;
         }
 
         public bool Unsubscribe(string channelId)
         {
-            lock (channelLock)
+            channelLock.EnterWriteLock();
+            try
             {
                 List<Subscriber> subs;
                 if (subscribersByChannel.TryGetValue(channelId, out subs))
@@ -182,13 +208,14 @@ namespace Game.Util
                     return true;
                 }
             }
+            finally
+            {
+                channelLock.ExitWriteLock();
+            }
+
             return false;
         }
 
         #endregion
-    }
-
-    public class DuplicateSubscriptionException : Exception
-    {
     }
 }

@@ -7,21 +7,7 @@ namespace Game.Comm
         CmdLine = 7,
 
         MessageBox = 8,
-
-        #region Internal Messages
-
-        OnConnect = 10001,
-        OnDisconnect = 10002,
-
-        #endregion
-
-        #region Testing
-
-        PlaceObjects = 1001,
-        MoveObject = 1002,
-        FooRegionMoveRight = 1003,
-
-        #endregion
+        Chat = 9,
 
         #region Account Information
 
@@ -199,6 +185,21 @@ namespace Game.Comm
         TribeAssignmentJoin = 1023,        
         TribeIncomingList = 1031,
         TribeChannelUpdate = 1051,
+        #endregion
+
+        #region Internal Messages
+
+        OnConnect = 10001,
+        OnDisconnect = 10002,
+
+        #endregion
+
+        #region Testing
+
+        PlaceObjects = 1001,
+        MoveObject = 1002,
+        FooRegionMoveRight = 1003,
+
         #endregion
     }
 }

@@ -38,12 +38,24 @@
 				case Commands.MESSAGE_BOX:
 					onMessageBox(e.packet);
 				break;
+				case Commands.CHAT:
+					onChatMessage(e.packet);
+				break;				
 			}
 		}
 		
 		private function onMessageBox(packet: Packet): void
 		{
 			InfoDialog.showMessageDialog("Important Information", packet.readString());
+		}
+		
+		private function onChatMessage(packet: Packet): void
+		{
+			var type: int = packet.readByte();
+			var playerName: String = packet.readString();
+			var message: String = packet.readString();
+			
+			Global.gameContainer.cmdLine.log(playerName + ": " + message);
 		}
 
 		public function queryXML(callback: Function, custom: * ):void
@@ -229,6 +241,15 @@
 
 			session.write(packet, onReceiveCommandResponse, [callback]);
 		}
+		
+		public function sendChat(message: String, callback: Function) : void {			
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.CHAT;
+			packet.writeByte(1);
+			packet.writeString(message);
+
+			session.write(packet, onReceiveCommandResponse, [callback]);
+		}		
 
 		private function onReceiveCommandResponse(packet: Packet, custom: *) : void {
 			var callback: Function = custom[0];
@@ -238,8 +259,10 @@
 				return;
 			}
 
-			callback(packet.readString());
-		}		
+			if (packet.hasData()) {
+				callback(packet.readString());
+			}
+		}
 		
 		public function autoCompleteCity(name: String, callback: Function) : void {
 			var autocompleteLoader: GameURLLoader = new GameURLLoader();

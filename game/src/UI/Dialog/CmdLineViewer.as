@@ -141,8 +141,8 @@ package src.UI.Dialog
 			if (str.length == 0)
 				return;
 			
-			if (txtConsole.getLength() > 4000)
-				txtConsole.replaceText(0, txtConsole.getLength() - 4000, "");
+			if (txtConsole.getLength() > 8000)
+				txtConsole.replaceText(0, txtConsole.getLength() - 8000, "");
 			
 			if (isCommand)
 			{

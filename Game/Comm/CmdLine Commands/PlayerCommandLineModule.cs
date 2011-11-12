@@ -21,9 +21,9 @@ namespace Game.Comm
         {
             processor.RegisterCommand("ban", BanPlayer, true);
             processor.RegisterCommand("unban", UnbanPlayer, true);
-            processor.RegisterCommand("delete", DeletePlayer, true);
+            processor.RegisterCommand("deleteplayer", DeletePlayer, true);
             processor.RegisterCommand("playercleardescription", PlayerClearDescription, true);
-            processor.RegisterCommand("deleteinactives", DeleteInactives, true);
+            processor.RegisterCommand("deletenewbies", DeleteNewbies, true);
             processor.RegisterCommand("broadcast", SystemBroadcast, true);
             processor.RegisterCommand("broadcastmail", SystemBroadcastMail, true);
         }
@@ -189,7 +189,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
-                return "delete --player=player";
+                return "deleteplayer --player=player";
 
             uint playerId;
             if (!Global.World.FindPlayerId(playerName, out playerId))
@@ -223,10 +223,9 @@ namespace Game.Comm
 
         }
 
-        private string DeleteInactives(Session session, string[] parms)
+        private string DeleteNewbies(Session session, string[] parms)
         {
             bool help = false;
-            string playerName = string.Empty;
 
             try
             {
@@ -239,9 +238,11 @@ namespace Game.Comm
             }
 
             if (help)
-                return "DeleteInactives";
+                return "deletenewbies";
+
             PlayersRemover playersRemover = new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector());
-            return string.Format("Deleted {0} Players", playersRemover.DeletePlayers());
+
+            return string.Format("OK! Deleting {0} players.", playersRemover.DeletePlayers());
         }
     }
 }

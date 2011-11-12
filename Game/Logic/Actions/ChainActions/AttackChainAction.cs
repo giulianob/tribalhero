@@ -137,7 +137,7 @@ namespace Game.Logic.Actions
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
             if (targetCity.Owner.Tribesman != null)
-                Global.Channel.Post("/TRIBE/" + targetCity.Owner.Tribesman.Tribe.Id,new Packet(Command.TribeChannelIncomingAdd));
+                targetCity.Owner.Tribesman.Tribe.SendUpdate();
 
             return Error.Ok;
         }
@@ -198,7 +198,7 @@ namespace Game.Logic.Actions
 
                     //Remove Incoming Icon from the target's tribe
                     if (targetCity.Owner.Tribesman != null)
-                        Global.Channel.Post("/TRIBE/" + targetCity.Owner.Tribesman.Tribe.Id, new Packet(Command.TribeChannelIncomingRemove));
+                        targetCity.Owner.Tribesman.Tribe.SendUpdate();
 
 
                     if (!city.Troops.TryGetStub(stubId, out stub))

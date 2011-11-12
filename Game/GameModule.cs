@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Battle;
 using Game.Comm;
 using Game.Comm.Channel;
+using Game.Comm.Processor_Commands;
 using Game.Data;
 using Game.Setup;
 using Game.Util.Locking;
@@ -22,6 +23,11 @@ namespace Game
             #region General Comms
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
+            Bind<SocketSession.Factory>().ToMethod(c =>
+                {
+                    var processor = Kernel.Get<Processor>();
+                    return (name, socket) => new SocketSession(name, socket, processor);
+                }).InSingletonScope();
             #endregion
 
             #region Locking
@@ -91,6 +97,7 @@ namespace Game
                                        new Processor(new AssignmentCommandsModule(),
                                                      new BattleCommandsModule(),
                                                      new EventCommandsModule(),
+                                                     new ChatCommandsModule(),
                                                      new CommandLineCommandsModule(Kernel.Get<CommandLineProcessor>()),
                                                      new LoginCommandsModule(),
                                                      new MarketCommandsModule(),

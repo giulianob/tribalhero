@@ -22,9 +22,9 @@ namespace Game.Setup
         public static int server_port = 48888;
         public static string server_listen_address = "0.0.0.0";
         public static bool server_admin_only;
-        public static bool server_production;
+        public static bool server_production = true;
 
-        public static string flash_domain = "*.tribalhero.com";
+        public static string flash_domain = "tribalhero.com";
 
         public static string api_domain = "tribalhero.com";
         public static string api_id = string.Empty;
@@ -79,7 +79,7 @@ namespace Game.Setup
         public static int height_margin = 10;
         public static int width_margin = 10;
 
-        public static int[] forest_count = new[] {100, 100, 100, 100};
+        public static int[] forest_count = new[] {750, 750, 1600, 1500};
 
         public static int newbie_protection = 259200; /* Number of seconds for newbie protection, set back to 3 days, which is more than enough
                                                        * 1) everyone around you should be the same lvls with the way we spawn.
@@ -102,7 +102,7 @@ namespace Game.Setup
 
         public static bool actions_instant_time;
         public static int actions_free_cancel_interval_in_sec = 60;
-        public static bool actions_ignore_requirements = false;
+        public static bool actions_ignore_requirements;
 
         public static int idle_days = 14;
 

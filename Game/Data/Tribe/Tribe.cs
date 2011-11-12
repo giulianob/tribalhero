@@ -8,6 +8,7 @@ using Game.Comm;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -359,7 +360,7 @@ namespace Game.Data.Tribe
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
 
-            Global.Channel.Post("/TRIBE/" + Id, new Packet(Command.TribeChannelAssignmentAdd));
+            SendUpdate();
             return Error.Ok;
         }
 
@@ -382,7 +383,7 @@ namespace Game.Data.Tribe
 
         internal void RemoveAssignment(Assignment assignment)
         {
-            Global.Channel.Post("/TRIBE/" + Id, new Packet(Command.TribeChannelAssignmentRemove));
+            SendUpdate();
             assignments.Remove(assignment.Id);
         }
 
@@ -399,6 +400,14 @@ namespace Game.Data.Tribe
             Resource.Subtract(Formula.GetTribeUpgradeCost(Level));
             Level++;
             Ioc.Kernel.Get<IDbManager>().Save(this);
+        }
+
+        public void SendUpdate()
+        {
+            Packet packet = new Packet(Command.TribeChannelNotification);
+            packet.AddInt32(GetIncomingList().Count());
+            packet.AddInt16(AssignmentCount);
+            Global.Channel.Post("/TRIBE/" + Id, packet);
         }
     }
 }

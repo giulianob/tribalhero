@@ -210,6 +210,8 @@ namespace Game.Comm
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(player.Created.ToUniversalTime()));
+                reply.AddInt32(player.Tribesman == null ? 0 : player.Tribesman.Tribe.GetIncomingList().Count());
+                reply.AddInt16((short)(player.Tribesman == null ? 0 : player.Tribesman.Tribe.AssignmentCount));
 
                 //Server time
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.UtcNow.ToUniversalTime()));

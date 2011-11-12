@@ -7,6 +7,7 @@ using Game.Data.Tribe;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
@@ -22,7 +23,6 @@ namespace Game.Comm
     {
         public override void RegisterCommands(Processor processor)
         {
-            processor.RegisterCommand(Command.TribeNotificationsGet, GetNotifications);
             processor.RegisterCommand(Command.TribeNameGet, GetName);
             processor.RegisterCommand(Command.TribeInfo, GetInfo);
             processor.RegisterCommand(Command.TribeCreate, Create);
@@ -282,8 +282,12 @@ namespace Game.Comm
                 }
 
                 foreach (var tribesman in new List<Tribesman>(tribe))
+                {
+                    if (tribesman.Player.Session != null)
+                        Procedure.OnSessionTribesmanQuit(tribesman.Player.Session, tribe.Id, tribesman.Player.PlayerId, true);
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
-                
+                }
+
                 Global.Tribes.Remove(tribe.Id);
                 Ioc.Kernel.Get<IDbManager>().Delete(tribe);
             }
@@ -319,24 +323,5 @@ namespace Game.Comm
 
             ReplySuccess(session, packet);
         }
-
-        public void GetNotifications(Session session, Packet packet)
-        {
-            var reply = new Packet(packet);
-            if (session.Player.Tribesman == null)
-            {
-                ReplyError(session, packet, Error.TribeIsNull);
-                return;
-            }
-            Tribe tribe;
-
-            using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe.Id,out tribe))
-            {
-                reply.AddInt32(tribe.GetIncomingList().Count());
-                reply.AddInt16(tribe.AssignmentCount);
-            }
-            session.Write(reply);
-        }
-
     }
 }

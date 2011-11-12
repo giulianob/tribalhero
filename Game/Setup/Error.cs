@@ -14,6 +14,13 @@ namespace Game.Setup
 
         #endregion
 
+        #region Chat
+        
+        ChatFloodWarning = 20,
+        ChatMessageTooLong = 21,
+
+        #endregion
+
         #region Action Errors
 
         ActionTotalMaxReached = 100,

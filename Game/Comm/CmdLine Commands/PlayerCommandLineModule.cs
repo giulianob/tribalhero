@@ -145,6 +145,28 @@ namespace Game.Comm
             if (help || string.IsNullOrEmpty(playerName))
                 return "ban --player=player";
 
+            uint playerId;
+            if (!Global.World.FindPlayerId(playerName, out playerId))
+                return "Player not found";
+
+            Player player;
+            using (Concurrency.Current.Lock(playerId, out player))
+            {
+                if (player == null)
+                    return "Player not found";
+
+                if (player.Session != null)
+                {
+                    try
+                    {
+                        player.Session.CloseSession();
+                    }
+                    catch(Exception)
+                    {
+                    }
+                }
+            }
+
             ApiResponse response = ApiCaller.Ban(playerName);
 
             return response.Success ? "OK!" : response.ErrorMessage;

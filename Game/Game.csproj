@@ -130,6 +130,8 @@
     <Compile Include="Comm\CommandLineProcessor.cs" />
     <Compile Include="Comm\Commands.cs" />
     <Compile Include="Comm\CommandLineModule.cs" />
+    <Compile Include="Comm\ITcpServer.cs" />
+    <Compile Include="Comm\PacketMaker.cs" />
     <Compile Include="Comm\PolicyServer.cs" />
     <Compile Include="Comm\Packet.cs" />
     <Compile Include="Comm\PacketHelper.cs" />
@@ -252,6 +254,7 @@
     <Compile Include="Setup\RequirementFactory.cs" />
     <Compile Include="Setup\TechnologyFactory.cs" />
     <Compile Include="Util\Channel.cs" />
+    <Compile Include="Util\DuplicateSubscriptionException.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />
     <Compile Include="Util\CSVReader.cs" />

@@ -40,7 +40,7 @@ namespace Game.Comm
 
         #region Members
 
-        private readonly byte[] readBuffer;
+        private byte[] readBuffer;
         private ushort readOffset;
 
         private MemoryStream sendBuffer;
@@ -329,6 +329,8 @@ namespace Game.Comm
                 memory.Position = 0;
                 memory.Read(ret, 0, (int)memory.Length);
             }
+
+            readBuffer = ret;
 
             return ret;
         }

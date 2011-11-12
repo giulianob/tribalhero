@@ -179,7 +179,11 @@ namespace Game.Database
                             if (!Global.World.TryGetObjects((uint)listReader["city_id"], out city))
                                 throw new Exception("City not found");
 
-                            assignment.DbLoaderAdd(city.Troops[(byte)listReader["stub_id"]], (byte)listReader["dispatched"] == 1);
+                            TroopStub assignmentStub;
+                            if (!city.Troops.TryGetStub((byte)listReader["stub_id"], out assignmentStub))
+                                continue;
+
+                            assignment.DbLoaderAdd(assignmentStub, (byte)listReader["dispatched"] == 1);
                         }
                     }
                     assignment.DbPersisted = true;

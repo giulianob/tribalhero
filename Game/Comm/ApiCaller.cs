@@ -113,5 +113,25 @@ namespace Game.Comm
                         };
             return MakeCall("player", "ban", parms);
         }
+
+        public static ApiResponse RenamePlayer(string name, string newName)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+                        {
+                                new KeyValuePair<string, string>("name", name),                                
+                                new KeyValuePair<string, string>("new_name", newName),      
+                        };
+            return MakeCall("player", "rename", parms);
+        }
+
+        public static ApiResponse SetPassword(string name, string password)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+                        {
+                                new KeyValuePair<string, string>("name", name),                                
+                                new KeyValuePair<string, string>("password", password),      
+                        };
+            return MakeCall("player", "set_password ", parms);
+        }
     }
 }

@@ -142,13 +142,13 @@ ATTIC_STORAGE_TECHNOLOGY_LVL_7,Increase capacity of the city resources by 350% o
 ATTIC_STORAGE_TECHNOLOGY_LVL_8,Increase capacity of the city resources by 400% of basements' capacity.
 ,
 FIVE_FOR_FOUR_TECHNOLOGY_NAME,Five For Four
-FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained.
+FIVE_FOR_FOUR_TECHNOLOGY_LVL_1,Receive the 5th unit free for every 4 units that are trained for this structure only.
 FOUR_FOR_THREE_TECHNOLOGY_NAME,Four For Three
-FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained.
+FOUR_FOR_THREE_TECHNOLOGY_LVL_1,Receive the 4th unit free for every 3 units that are trained for this structure only.
 THREE_FOR_TWO_TECHNOLOGY_NAME,Three For Two
-THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3rd unit free for every 2 units that are trained.
+THREE_FOR_TWO_TECHNOLOGY_LVL_1,Receive the 3rd unit free for every 2 units that are trained for this structure only.
 TWO_FOR_ONE_TECHNOLOGY_NAME,Two For One
-TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 unit that is trained.
+TWO_FOR_ONE_TECHNOLOGY_LVL_1,Receive the 2nd unit free for every 1 unit that is trained for this structure only.
 ,
 HAPPYHOUR_TECHNOLOGY_NAME,Happy Hour
 HAPPYHOUR_TECHNOLOGY_LVL_1,Increases the laborer production rate by 30%. (8% for every addition)
@@ -182,11 +182,11 @@ COORDINATED_ATTACK_TECHNOLOGY_LVL_4,Offensive Troops gains 8% Max HP at the cost
 COORDINATED_ATTACK_TECHNOLOGY_LVL_5,Offensive Troops gains 10% Max HP at the cost of 15% of travel speed. (Stacks additively)
 ,
 REINVENT_WHEEL_TECHNOLOGY_NAME,Reinvent the Wheel
-REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for the structure.
-REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 16% for the structure.
-REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 24% for the structure.
-REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for the structure.
-REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for the structure.
+REINVENT_WHEEL_TECHNOLOGY_LVL_1,Increase send/trade resource speed by 8% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_2,Increase send/trade resource speed by 16% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_3,Increase send/trade resource speed by 24% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_4,Increase send/trade resource speed by 32% for this structure only.
+REINVENT_WHEEL_TECHNOLOGY_LVL_5,Increase send/trade resource speed by 40% for this structure only.
 ,
 WEAPON_EXPORT_TECHNOLOGY_NAME,Weapon Export
 WEAPON_EXPORT_TECHNOLOGY_LVL_1,Every 3 idle laborers produce 1 gold per hour and all Markets produce 1 gold per its level per hour.  Production stops when Gold Reserve is higher than 500.  (Does not stack)

@@ -54,11 +54,11 @@
 				
 				var unreadMessages: int = data.unreadMessages;								
 				Global.gameContainer.txtUnreadMessages.visible = unreadMessages > 0;				
-				if (unreadMessages > 0) Global.gameContainer.txtUnreadMessages.txtUnreadCount.text = unreadMessages > 9 ? "!" : unreadMessages.toString();				
+				if (unreadMessages > 0) Global.gameContainer.txtUnreadMessages.txtCount.text = unreadMessages > 9 ? "!" : unreadMessages.toString();				
 				
 				var unreadReports: int = data.unreadReports;
 				Global.gameContainer.txtUnreadReports.visible = unreadReports > 0;				
-				if (unreadReports > 0) Global.gameContainer.txtUnreadReports.txtUnreadCount.text = unreadReports > 9 ? "!" : unreadReports.toString();								
+				if (unreadReports > 0) Global.gameContainer.txtUnreadReports.txtCount.text = unreadReports > 9 ? "!" : unreadReports.toString();								
 			}
 			catch (e: Error) { }
 		}

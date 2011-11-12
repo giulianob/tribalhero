@@ -3,8 +3,10 @@
 using System;
 using System.IO;
 using System.Linq;
+// ReSharper disable RedundantUsingDirective
 using System.Security.Cryptography;
 using System.Text;
+// ReSharper restore RedundantUsingDirective
 using Game.Data;
 using Game.Logic;
 using Game.Logic.Actions;

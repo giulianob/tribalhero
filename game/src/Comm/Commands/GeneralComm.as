@@ -14,6 +14,7 @@
 	import src.UI.Components.ScreenMessages.BuiltInMessages;
 	import src.UI.Components.ScreenMessages.ScreenMessageItem;
 	import src.UI.Dialog.InfoDialog;
+	import src.UI.Components.ScreenMessages.BuiltInMessages;
 
 	public class GeneralComm {
 
@@ -82,7 +83,9 @@
 			Constants.playerName = packet.readString();			
 			Constants.newbieProtectionSeconds = packet.readInt();
 			Constants.signupTime = new Date(packet.readUInt() * 1000);
-			
+			Constants.tribeIncoming = packet.readInt();
+			Constants.tribeAssignment = packet.readShort();
+
 			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();
 			Constants.secondsPerUnit = Number(packet.readString());
@@ -108,7 +111,6 @@
 			var tribeName: String = packet.readString();
 			if (Constants.tribeId > 0) {
 				Global.map.usernames.tribes.add(new Username(Constants.tribeId, tribeName));
-				Global.gameContainer.tribeTimer.start();
 			}
 				
 			// Cities

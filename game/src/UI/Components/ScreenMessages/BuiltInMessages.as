@@ -23,6 +23,7 @@ package src.UI.Components.ScreenMessages
 		public function start(): void {
 			timer.start();
 			periodicMessages();
+			showTribeAssignmentIncoming(Constants.tribeAssignment, Constants.tribeIncoming, true);
 		}
 		
 		public function stop(): void {
@@ -96,7 +97,19 @@ package src.UI.Components.ScreenMessages
 				Global.gameContainer.screenMessage.removeMessage("/CITY/" + city.id + "/INDEF");
 			}
 		}
-
+		
+		public static function showTribeAssignmentIncoming(assignment:int, incoming:int, firstTime:Boolean = false):void {
+			if (incoming > 0 || assignment > 0) {
+				Global.gameContainer.screenMessage.removeMessage("Tribe");
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("Tribe", "Tribe: " + incoming + " invasion alert(s) and " + assignment + " pending assignment(s)", new AssetIcon(new ICON_ALERT), 0));
+			} else if(!firstTime) {
+				Global.gameContainer.screenMessage.removeMessage("Tribe");
+				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("Tribe", "Tribe: no more invasion alert or pending assignment", new AssetIcon(new ICON_ALERT), 10000));
+			}
+		}
+		public static function hideTribeAssignmentIncoming() : void {
+				Global.gameContainer.screenMessage.removeMessage("Tribe");		
+		}
 	}
 
 }

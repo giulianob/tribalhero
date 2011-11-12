@@ -37,9 +37,16 @@ package src.UI.Dialog
 				resizeAndReposition();
 			});
 		
-			scrollConsole.addAdjustmentListener(function(e: InteractiveEvent) : void {
-				if (e.isProgrammatic()) {					
-					scrollConsole.getVerticalScrollBar().setValue(scrollConsole.getVerticalScrollBar().getMaximum(), false);
+			var stickScroll: Boolean = true;
+			var lastScrollValue: int = 0;
+			scrollConsole.addAdjustmentListener(function(e: InteractiveEvent) : void {				
+				if (e.isProgrammatic()) {															
+					scrollConsole.getVerticalScrollBar().setValue(stickScroll ? scrollConsole.getVerticalScrollBar().getMaximum() : lastScrollValue, false);
+				}
+				else
+				{
+					stickScroll = scrollConsole.getVerticalScrollBar().getValue() == scrollConsole.getVerticalScrollBar().getModel().getMaximum() - scrollConsole.getVerticalScrollBar().getModel().getExtent();
+					lastScrollValue = scrollConsole.getVerticalScrollBar().getValue();
 				}
 			});
 

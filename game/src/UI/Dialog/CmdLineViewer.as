@@ -217,7 +217,7 @@ package src.UI.Dialog
 			btnOpen = new JButton("", new SkinCustomIcon("Frame.chatIcon"));
 			btnOpen.setBackgroundDecorator(null);
 
-			txtConsole = new JTextArea("Welcome to Tribal Hero v" + Constants.version + "." + Constants.revision, 15, 0);
+			txtConsole = new JTextArea("Welcome to Tribal Hero v" + Constants.version + "." + Constants.revision + "\nRemember to keep it classy.", 15, 0);
 			txtConsole.setWordWrap(true);
 			txtConsole.setBackgroundDecorator(null);
 			txtConsole.setEditable(false);			

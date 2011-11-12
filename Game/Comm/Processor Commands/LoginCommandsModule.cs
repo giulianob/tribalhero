@@ -164,7 +164,8 @@ namespace Game.Comm
                 else
                 {
                     Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
-                    
+
+                    player.Name = playerName;
                     player.Admin = admin;
                     player.LastLogin = SystemClock.Now;
                 }

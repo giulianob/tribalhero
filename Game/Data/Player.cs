@@ -40,7 +40,7 @@ namespace Game.Data
 
         public Session Session { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         public uint PlayerId { get; private set; }
 

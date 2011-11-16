@@ -372,6 +372,8 @@
 
 		public function eventMouseClick(event: MouseEvent):void
 		{
+			stage.focus = Global.map;
+			
 			if (Point.distance(new Point(event.stageX, event.stageY), originPoint) < 4)
 				doSelectedObject(null);
 		}

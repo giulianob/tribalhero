@@ -2,6 +2,7 @@
 	import flash.geom.Point;
 	import src.Comm.*;
 	import src.Global;
+	import src.UI.Dialog.PlayerProfileDialog;
 	import src.Util.Util;
 	import src.Map.*;
 	import src.Objects.*;
@@ -250,7 +251,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 		
-		public function viewPlayerProfile(playerId: int, callback: Function):void {
+		public function viewPlayerProfile(playerId: int, callback: Function = null):void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.PLAYER_PROFILE;
 			packet.writeUInt(playerId);
@@ -302,7 +303,16 @@
 					name: packet.readString()
 				});
 			
-			custom.callback(profileData);
+			if (custom.callback)
+				custom.callback(profileData);
+			else
+			{			
+				if (!profileData) 
+					return;
+			
+				var dialog: PlayerProfileDialog = new PlayerProfileDialog(profileData);
+				dialog.show();		
+			}
 		}
 
 		public function onReceiveTechnologyCleared(packet: Packet):void {

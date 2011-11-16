@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 	import flash.events.Event;
+	import mx.formatters.DateFormatter;
 	import org.aswing.AssetIcon;
 	import src.Comm.*;
 	import src.Constants;
@@ -52,10 +53,11 @@
 		private function onChatMessage(packet: Packet): void
 		{
 			var type: int = packet.readByte();
+			var playerId: int = packet.readUInt();
 			var playerName: String = packet.readString();
-			var message: String = packet.readString();
+			var message: String = packet.readString();		
 			
-			Global.gameContainer.cmdLine.log(playerName + ": " + message);
+			Global.gameContainer.cmdLine.logChat(playerId, playerName, message);					
 		}
 
 		public function queryXML(callback: Function, custom: * ):void

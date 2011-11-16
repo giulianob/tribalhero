@@ -34,9 +34,9 @@
 			
 			createUI();
 
-			title = "Create Assignment";		
+			title = "Create Assignment";
 			
-			chooserArrivalTime.setMinimum(Math.max(1, troopTravelTime));
+			chooserArrivalTime.setMinimum(troopTravelTime + 900);
 			chooserArrivalTime.setMaximum(162000);
 			chooserArrivalTime.setValue(Math.floor(troopTravelTime / 60) * 60);
 			
@@ -64,7 +64,7 @@
 		public function createUI(): void {		
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 
-			var lblDescription: MultilineLabel = new MultilineLabel("Specify in how long you would like the troops in this assignment to begin attacking.", 3);			
+			var lblDescription: MultilineLabel = new MultilineLabel("Specify in how long you would like the troops to reach the target.\nAll troops will be dispatched automatically in order to reach the target at the selected time. If you make the assignment arrive too early then other members may arrive late to the battle.", 8);
 			lblDescription.setPreferredWidth(300);			
 			
 			chooserArrivalTime = new TimeAdjuster();

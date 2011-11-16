@@ -15,17 +15,11 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
-        
-        public static int MissChance(bool isAttacker, CombatList defenders, CombatList attackers)
-        {
-            
-            int defendersUpkeep = defenders.Sum(x => x.Upkeep);
-            int attackersUpkeep = attackers.Sum(x => x.Upkeep);
-            /*int delta = isAttacker ? Math.Max(0, attackersUpkeep - defendersUpkeep) : Math.Max(0, defendersUpkeep - attackersUpkeep);
-            return Math.Min(delta * 2, 25);*/
 
-            double delta = isAttacker ? Math.Max(0, (double)attackersUpkeep / defendersUpkeep) : Math.Max(0, (double)defendersUpkeep / attackersUpkeep);
-            double effectiveness = isAttacker ? (attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200) : (defendersUpkeep > 200 ? 1 : (double)defendersUpkeep / 200);
+        public static int MissChance(int attackersUpkeep, int defendersUpkeep)
+        {
+            double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
+            double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
          //   double effectiveness = 1;
             if (delta < 1) return (int)(0 * effectiveness);
             if (delta < 1.25) return (int)(10 * effectiveness);

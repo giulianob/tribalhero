@@ -742,24 +742,6 @@ namespace Game.Battle
 
                 #endregion
 
-                #region Miss Chance
-
-                int missChance = BattleFormulas.MissChance(currentAttacker.CombatList == attackers, defenders, attackers);
-                if (missChance > 0)
-                {
-                    var rand = (int)(Config.Random.NextDouble()*100);
-
-                    if (rand <= missChance)
-                    {
-                        currentAttacker.ParticipatedInRound();
-                        dbManager.Save(currentAttacker);
-                        EventSkippedAttacker(currentAttacker);
-                        return true;
-                    }
-                }
-
-                #endregion
-
                 bool killedADefender = false;
 
                 int attackIndex = 0;
@@ -821,6 +803,15 @@ namespace Game.Battle
             ushort actualDmg;
             Resource lostResource;
             int attackPoints;
+
+            #region Miss Chance
+            var missChance = BattleFormulas.MissChance(attacker.CombatList.Sum(x => x.Upkeep), defender.CombatList.Sum(x => x.Upkeep));
+            if (missChance > 0) {
+                var rand = (int)(Config.Random.NextDouble() * 100);
+                if (rand <= missChance)
+                    dmg /= 2;
+            }
+            #endregion
 
             defender.CalculateDamage(dmg, out actualDmg);
             defender.TakeDamage(actualDmg, out lostResource, out attackPoints);

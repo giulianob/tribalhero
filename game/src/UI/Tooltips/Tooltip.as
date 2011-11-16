@@ -56,9 +56,9 @@ package src.UI.Tooltips {
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().parent.tabEnabled = false;
 			}
-			else {
-				adjustPosition();
-			}
+			
+			
+			adjustPosition();
 		}
 		
 		private function onCameraMove(e: Event): void {

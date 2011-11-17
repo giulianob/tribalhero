@@ -113,6 +113,24 @@ namespace Game.Battle
         }
     }
 
+    public class AtkDmgModCalculator : ModCalculator<double> {
+        private readonly double baseValue;
+        
+        public AtkDmgModCalculator(double baseValue) {
+            this.baseValue = baseValue;
+        }
+
+        public override double GetResult() {
+            return (baseValue + parameters["RAW_BONUS"].Sum) * parameters["CALL_TO_ARM_BONUS"].Max / 100 * parameters["PERCENT_BONUS"].Product / Math.Pow(100, parameters["PERCENT_BONUS"].Count);
+        }
+
+        protected override void SetParameters() {
+            parameters.Add("RAW_BONUS", new ModParameter(0));
+            parameters.Add("PERCENT_BONUS", new ModParameter(100));
+            parameters.Add("CALL_TO_ARM_BONUS", new ModParameter(100));
+        }
+    }
+
     public class BattleStatsModCalculator
     {
         private readonly BaseBattleStats baseStats;
@@ -120,7 +138,7 @@ namespace Game.Battle
         public BattleStatsModCalculator(BaseBattleStats baseStats)
         {
             MaxHp = new IntStatsModCalculator(baseStats.MaxHp);
-            Atk = new IntStatsModCalculator(baseStats.Atk);
+            Atk = new AtkDmgModCalculator((double)baseStats.Atk);
             Splash = new IntStatsModCalculator(baseStats.Splash);
             Rng = new IntStatsModCalculator(baseStats.Rng);
             Stl = new IntStatsModCalculator(baseStats.Stl);
@@ -130,7 +148,7 @@ namespace Game.Battle
         }
 
         public IntStatsModCalculator MaxHp { get; private set; }
-        public IntStatsModCalculator Atk { get; private set; }
+        public AtkDmgModCalculator Atk { get; private set; }
         public IntStatsModCalculator Splash { get; private set; }
         public IntStatsModCalculator Rng { get; private set; }
         public IntStatsModCalculator Stl { get; private set; }

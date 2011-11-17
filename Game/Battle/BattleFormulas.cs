@@ -226,8 +226,12 @@ namespace Game.Battle
                                 break;
                         }
                     }
-                } else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
-                    calculator.Atk.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
+                }
+                else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
+                {
+                    var bonus = (int)effect.Value[0] * Math.Min(city.Resource.Labor.Value, (int)effect.Value[1]) / ((int)effect.Value[1]);
+                    calculator.Atk.AddMod("CALL_TO_ARM_BONUS", 100 + bonus);
+                }
             }
             return calculator.GetStats();
         }

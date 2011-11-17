@@ -7,11 +7,11 @@ OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%
 OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%
 ,
 A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide a little more help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide a lot more help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide great help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide superb help defending when the town is under attack. (Stacks compoundly)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide up to 3% damage bonus with 60 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide up to 6% damage bonus with 110 laborerswhen the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide up to 9% damage bonus with 150 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide up to 12% damage bonus with 180 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide up to 15% damage bonus with 200 laborers when the town is under attack. (Does not stack)
 ,
 ,
 TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
@@ -49,11 +49,11 @@ RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense
 RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks additively)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
-DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 12% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 50 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 12% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 500 tiles. (Stacks additively)
 ,
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.

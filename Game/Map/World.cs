@@ -12,11 +12,12 @@ using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Ninject;
 using Persistance;
-
+using System.Linq;
 #endregion
 
 namespace Game.Map
@@ -57,18 +58,7 @@ namespace Game.Map
 
         public int GetActivePlayerCount()
         {
-            using (
-                    var reader =
-                            Ioc.Kernel.Get<IDbManager>().ReaderQuery(
-                                                         string.Format(
-                                                                       "SELECT COUNT(*) as active_count FROM `{0}` WHERE TIMEDIFF(UTC_TIMESTAMP(), `last_login`) < '{1}:00:00.000000'",
-                                                                       Player.DB_TABLE,
-                                                                       IdleChecker.IDLE_HOURS),
-                                                         new DbColumn[] {}))
-            {
-                reader.Read();
-                return (int)((long)reader.GetValue(0));
-            }
+            return new ActivePlayerSelector(Config.idle_days).GetPlayerIds().Count();
         }
 
         #endregion

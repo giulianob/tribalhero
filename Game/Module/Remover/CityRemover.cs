@@ -9,31 +9,54 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Map;
-using Game.Util;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
-namespace Game.Module {
-    class CityRemover:ISchedule {
-        const double SHORT_RETRY = 5;
-        const double LONG_RETRY = 90;
+namespace Game.Module
+{
+    class CityRemoverFactory : ICityRemoverFactory
+    {
+
+        #region ICityRemoverFactory Members
+
+        public ICityRemover CreateCityRemover(City city) {
+            return new CityRemover(city.Id);
+        }
+
+        #endregion
+    }
+
+    class CityRemover : ICityRemover, ISchedule
+    {
+        private const double SHORT_RETRY = 5;
+        private const double LONG_RETRY = 90;
 
         private readonly uint cityId;
 
-        public CityRemover(uint cityId) {
+        public CityRemover(uint cityId)
+        {
             this.cityId = cityId;
         }
 
-        public void Start(bool force = false)
+        #region ICityRemover Members
+
+        public bool Start()
+        {
+            return Start(false);
+        }
+
+        #endregion
+
+        public bool Start(bool force = false)
         {
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
             if (!force && city.Deleted != City.DeletedState.NotDeleted)
-                return;
+                return false;
 
             if (city.Deleted == City.DeletedState.NotDeleted)
             {
@@ -44,6 +67,7 @@ namespace Game.Module {
 
             Time = DateTime.UtcNow;
             Global.Scheduler.Put(this);
+            return true;
         }
 
         #region ISchedule Members
@@ -53,7 +77,7 @@ namespace Game.Module {
 
         private void Reschedule(double interval)
         {
-            Time = DateTime.UtcNow.AddSeconds(interval * Config.seconds_per_unit);
+            Time = DateTime.UtcNow.AddSeconds(interval*Config.seconds_per_unit);
             Global.Scheduler.Put(this);
         }
 
@@ -62,27 +86,32 @@ namespace Game.Module {
             return ((City)custom[0]).Troops.StationedHere().Select(stub => stub.City).Distinct().Cast<ILockable>().ToArray();
         }
 
-        private static ILockable[] GetLocalTroopLockList(object[] custom) {
-            return ((City)custom[0]).Troops.MyStubs().Where(x=>x.StationedCity!=null).Select(stub => stub.StationedCity).Distinct().Cast<ILockable>().ToArray();
+        private static ILockable[] GetLocalTroopLockList(object[] custom)
+        {
+            return
+                    ((City)custom[0]).Troops.MyStubs().Where(x => x.StationedCity != null).Select(stub => stub.StationedCity).Distinct().Cast<ILockable>().
+                            ToArray();
         }
 
         private static Error RemoveForeignTroop(City city, TroopStub stub)
         {
-            if (!Procedure.TroopObjectCreateFromStation(stub, city.X, city.Y)) {
+            if (!Procedure.TroopObjectCreateFromStation(stub, city.X, city.Y))
+            {
                 return Error.Unexpected;
             }
             var ra = new RetreatChainAction(stub.City.Id, stub.TroopId);
             return stub.City.Worker.DoPassive(stub.City, ra, true);
         }
 
-        public void Callback(object custom) {
+        public void Callback(object custom)
+        {
             City city;
             Structure mainBuilding;
 
             if (!Global.World.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetForeignTroopLockList, new[] { city }, city))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetForeignTroopLockList, new[] {city}, city))
             {
                 if (city == null)
                     return;
@@ -106,8 +135,9 @@ namespace Game.Module {
                 }
 
                 // If city is being targetted by an assignment, try again later
-                var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
-                                                          new[] {new DbColumn("cityId", city.Id, DbType.UInt32)});
+                var reader =
+                        Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
+                                                                 new[] {new DbColumn("cityId", city.Id, DbType.UInt32)});
                 bool beingTargetted = reader.HasRows;
                 reader.Close();
                 if (beingTargetted)
@@ -117,7 +147,7 @@ namespace Game.Module {
                 }
             }
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetLocalTroopLockList, new[] { city }, city))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetLocalTroopLockList, new[] {city}, city))
             {
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
@@ -147,17 +177,22 @@ namespace Game.Module {
                     }
 
                     // remove all customized tiles
-                    RadiusLocator.ForeachObject(city.X, city.Y, city.Radius, true,
-                                                delegate(uint origX, uint origY, uint x1, uint y1, object c) {
-                                                    Global.World.RevertTileType(x1, y1, true);
-                                                    return true;
-                                                }, null);
+                    RadiusLocator.ForeachObject(city.X,
+                                                city.Y,
+                                                city.Radius,
+                                                true,
+                                                delegate(uint origX, uint origY, uint x1, uint y1, object c)
+                                                    {
+                                                        Global.World.RevertTileType(x1, y1, true);
+                                                        return true;
+                                                    },
+                                                null);
 
                 }
             }
 
             // remove all remaining passive action
-            if (city.TryGetStructure(1,out mainBuilding))
+            if (city.TryGetStructure(1, out mainBuilding))
             {
                 foreach (var passiveAction in new List<PassiveAction>(city.Worker.PassiveActions.Values))
                 {
@@ -182,8 +217,8 @@ namespace Game.Module {
                     // remove city from the region
                     CityRegion region = Global.World.GetCityRegion(city.X, city.Y);
                     if (region != null)
-                        region.Remove(city);                    
-                    
+                        region.Remove(city);
+
                     mainBuilding.BeginUpdate();
                     Global.World.Remove(mainBuilding);
                     city.ScheduleRemove(mainBuilding, false);
@@ -194,17 +229,19 @@ namespace Game.Module {
                 }
 
                 // in the case of the OjectRemoveAction for mainbuilding is still there
-                if(city.Worker.PassiveActions.Count > 0)
+                if (city.Worker.PassiveActions.Count > 0)
                 {
                     Reschedule(SHORT_RETRY);
                     return;
                 }
-
+                Global.Logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.", city.Owner.Name, city.Owner.PlayerId, city.Name, city.Id, city.Lvl));
                 Global.World.Remove(city);
             }
 
         }
 
         #endregion
+
+
     }
 }

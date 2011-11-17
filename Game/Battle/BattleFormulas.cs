@@ -98,8 +98,9 @@ namespace Game.Battle
             }
         }
 
-        private static int GetLootPerRound(City city) {
-            return Config.battle_loot_per_round + city.Technologies.GetEffects(EffectCode.LootLoadMod, EffectInheritance.All).DefaultIfEmpty().Sum(x => x == null ? 0 : (int)x.Value[0]);
+        private static int GetLootPerRound(ICity city) {
+            double roundsRequired = Math.Max(5, Config.battle_loot_till_full - city.Technologies.GetEffects(EffectCode.LootLoadMod, EffectInheritance.All).DefaultIfEmpty().Sum(x => x == null ? 0 : (int)x.Value[0]));
+            return (int)Math.Ceiling(100 / roundsRequired);
         }
 
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)

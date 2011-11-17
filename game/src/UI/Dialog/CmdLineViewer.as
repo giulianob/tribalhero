@@ -19,6 +19,8 @@ package src.UI.Dialog
 
 	public class CmdLineViewer extends GameJBox
 	{
+		private const MAX_CHAT_LENGTH: int = 15000;
+		
 		private var pnlContent: JPanel;
 		private var txtConsole: JTextArea;
 		private var txtCommand: JTextField;
@@ -38,7 +40,8 @@ package src.UI.Dialog
 		public function CmdLineViewer() {
 			createUI();
 			
-			log("Welcome to Tribal Hero v" + Constants.version + "." + Constants.revision + "\nRemember to keep it classy.");
+			log("Welcome to Tribal Hero v" + Constants.version + "." + Constants.revision);
+			log("Remember to keep it classy.");
 			
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event): void
 			{
@@ -191,20 +194,26 @@ package src.UI.Dialog
 		public function log(str: String, isCommand: Boolean = false, escapeStr: Boolean = true) : void {
 			if (str.length == 0)
 				return;
+				
+			// Remove new lines
+			str = str.replace("\n", "");
 			
 			if (escapeStr)			
-				str = StringHelper.htmlEscape(str);				
+				str = StringHelper.htmlEscape(str);
 			
+			// This should be moved to the guy calling it w/ command response
 			if (isCommand)			
-				str = ">" + str;
+				str = "&gt;" + str;
 			
 			chat += "<p>" + str + "</p>";
-			
-			if (chat.length > 8000)
-				chat = chat.substr(chat.length - 8000);
+				
+			if (chat.length > MAX_CHAT_LENGTH)
+			{
+				var newlineIdx: int = chat.indexOf("</p>", chat.length - MAX_CHAT_LENGTH) + 4;
+				chat = chat.substr(newlineIdx);
+			}
 			
 			txtConsole.setHtmlText(chat);
-			trace(txtConsole.getHtmlText());
 		}
 		
 		private function saveToHistory(str: String): void {

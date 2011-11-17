@@ -59,9 +59,9 @@ ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 ,
 BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield  Research
-BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP 5. (Does not stack)"
-BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP 10. (Does not stack)"
-BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP 15. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP by 4%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP by 8%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP by 12%. (Does not stack)"
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
 HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15. (Does not stack)

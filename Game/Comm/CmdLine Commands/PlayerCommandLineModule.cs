@@ -2,7 +2,9 @@
 
 using System;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Module;
+using Game.Module.Remover;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -20,14 +22,122 @@ namespace Game.Comm
         {
             processor.RegisterCommand("ban", BanPlayer, true);
             processor.RegisterCommand("unban", UnbanPlayer, true);
-            processor.RegisterCommand("delete", DeletePlayer, true);
-            processor.RegisterCommand("playercleardescription", PlayerClearDescription, true);
-            processor.RegisterCommand("deleteinactives", DeleteInactives, true);
+            processor.RegisterCommand("deleteplayer", DeletePlayer, true);
+            processor.RegisterCommand("clearplayerdescription", PlayerClearDescription, true);
+            processor.RegisterCommand("deletenewbies", DeleteNewbies, true);
             processor.RegisterCommand("broadcast", SystemBroadcast, true);
             processor.RegisterCommand("broadcastmail", SystemBroadcastMail, true);
+            processor.RegisterCommand("renamecity", RenameCity, true);
+            processor.RegisterCommand("setpassword", SetPassword, true);
+            processor.RegisterCommand("renameplayer", RenamePlayer, true);
+            processor.RegisterCommand("renametribe", RenameTribe, true);
         }
 
-        private string SystemBroadcastMail(Session session, String[] parms)
+        public string RenameTribe(Session session, String[] parms)
+        {
+            bool help = false;
+            string tribeName = string.Empty;
+            string newTribeName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "tribe=", v => tribeName = v.TrimMatchingQuotes() },
+                                { "newname=", v => newTribeName = v.TrimMatchingQuotes() }
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(tribeName) || string.IsNullOrEmpty(newTribeName))
+                return "renametribe --tribe=name --newname=name";
+
+            uint tribeId;
+            if (!Global.World.FindTribeId(tribeName, out tribeId))
+                return "Tribe not found";
+
+            Tribe tribe;
+            using (Concurrency.Current.Lock(tribeId, out tribe))
+            {
+                if (tribe == null)
+                    return "Tribe not found";
+
+                if (!Tribe.IsNameValid(newTribeName))
+                    return "New tribe name is not allowed";
+
+                if (Global.World.TribeNameTaken(newTribeName))
+                    return "New tribe name is already taken";
+
+                tribe.Name = newTribeName;
+                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+            }
+
+            return "OK!";
+        }
+
+        public string RenameCity(Session session, String[] parms)
+        {
+            bool help = false;
+            string cityName = string.Empty;
+            string newCityName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "city=", v => cityName = v.TrimMatchingQuotes() },
+                                { "newname=", v => newCityName = v.TrimMatchingQuotes() }
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(cityName) || string.IsNullOrEmpty(newCityName))
+                return "renamecity --cityr=city --newname=name";
+
+            uint cityId;
+            if (!Global.World.FindCityId(cityName, out cityId))
+                return "City not found";
+
+            City city;
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
+                if (city == null)
+                    return "City not found";
+
+                // Verify city name is valid
+                if (!City.IsNameValid(newCityName))
+                {                    
+                    return "City name is invalid";
+                }
+
+                lock (Global.World.Lock)
+                {
+                    // Verify city name is unique
+                    if (Global.World.CityNameTaken(newCityName))
+                    {
+                        return "City name is already taken";
+                    }
+
+                    city.BeginUpdate();
+                    city.Name = newCityName;
+                    city.EndUpdate();
+                }
+            }
+
+            return "OK!";
+        }
+
+        public string SystemBroadcastMail(Session session, String[] parms)
         {
             bool help = false;
             string message = string.Empty;
@@ -65,7 +175,7 @@ namespace Game.Comm
             return "OK!";
         }
 
-        private string SystemBroadcast(Session session, String[] parms)
+        public string SystemBroadcast(Session session, String[] parms)
         {
             bool help = false;
             string message = string.Empty;
@@ -90,7 +200,7 @@ namespace Game.Comm
             return "OK!";
         }
 
-        private string PlayerClearDescription(Session session, string[] parms)
+        public string PlayerClearDescription(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -126,7 +236,97 @@ namespace Game.Comm
             return "OK!";
         }
 
-        private string BanPlayer(Session session, string[] parms)
+        public string RenamePlayer(Session session, string[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            string newPlayerName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "player=", v => playerName = v.TrimMatchingQuotes() },
+                                { "newname=", v => newPlayerName = v.TrimMatchingQuotes() }
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName) || string.IsNullOrEmpty(newPlayerName))
+                return "renameplayer --player=player --newname=name";
+
+            uint playerId;
+            var foundLocally = Global.World.FindPlayerId(playerName, out playerId);
+
+            ApiResponse response = ApiCaller.RenamePlayer(playerName, newPlayerName);
+
+            if (!response.Success)
+                return response.ErrorMessage;
+
+            if (!foundLocally)
+            {
+                return "Player not found on this server but renamed on main site";
+            }
+
+            Player player;
+            using (Concurrency.Current.Lock(playerId, out player))
+            {
+                if (player == null)
+                    return "Player not found";
+
+                if (player.Session != null)
+                {
+                    try
+                    {
+                        player.Session.CloseSession();
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+
+                player.Name = newPlayerName;
+                Ioc.Kernel.Get<IDbManager>().Save(player);
+            }
+
+            return "OK!";
+        }
+
+        public string SetPassword(Session session, string[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            string password = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "player=", v => playerName = v.TrimMatchingQuotes() },
+                                { "password=", v => password = v.TrimMatchingQuotes() }
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName) || string.IsNullOrEmpty(password))
+                return "setpassword --player=player --password=password";
+
+            ApiResponse response = ApiCaller.SetPassword(playerName, password);
+
+            return response.Success ? "OK!" : response.ErrorMessage;
+        }
+
+        public string BanPlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -171,7 +371,7 @@ namespace Game.Comm
             return response.Success ? "OK!" : response.ErrorMessage;
         }
 
-        private string UnbanPlayer(Session session, string[] parms)
+        public string UnbanPlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -194,7 +394,7 @@ namespace Game.Comm
             return response.Success ? "OK!" : response.ErrorMessage;
         }
 
-        private string DeletePlayer(Session session, string[] parms)
+        public string DeletePlayer(Session session, string[] parms)
         {
             bool help = false;
             string playerName = string.Empty;
@@ -210,7 +410,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
-                return "delete --player=player";
+                return "deleteplayer --player=player";
 
             uint playerId;
             if (!Global.World.FindPlayerId(playerName, out playerId))
@@ -244,10 +444,9 @@ namespace Game.Comm
 
         }
 
-        private string DeleteInactives(Session session, string[] parms)
+        public string DeleteNewbies(Session session, string[] parms)
         {
             bool help = false;
-            string playerName = string.Empty;
 
             try
             {
@@ -260,11 +459,11 @@ namespace Game.Comm
             }
 
             if (help)
-                return "DeleteInactives";
+                return "deletenewbies";
 
-            IdleChecker.DeleteAllInactivePlayers();
-            return "OK!";
+            PlayersRemover playersRemover = new PlayersRemover(new CityRemoverFactory(), new NewbieIdleSelector());
 
+            return string.Format("OK! Deleting {0} players.", playersRemover.DeletePlayers());
         }
     }
 }

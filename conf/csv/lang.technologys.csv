@@ -161,11 +161,11 @@ SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stacks additively)
 SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stacks additively)
 ,
 GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
-GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to load up loot bonus by 1% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_2,Increase efficiency to load up loot bonus by 2% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_3,Increase efficiency to load up loot bonus by 3% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to load up loot bonus by 4% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to load up loot bonus by 5% (Stacks additively)
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Reduce time to load up loot by 1 Round (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Reduce time to load up loot by 2 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Reduce time to load up loot by 3 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 Rounds (Stacks additively up to 10 Rounds)
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
 COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP at the cost of 3% of travel speed. (Stacks additively)

@@ -12,8 +12,6 @@ using Game.Util.Locking;
 using NDesk.Options;
 using Ninject;
 using Persistance;
-using log4net;
-using log4net.Config;
 
 #endregion
 
@@ -23,8 +21,6 @@ namespace Launcher
     {
         public static void Main(string[] args)
         {
-            XmlConfigurator.Configure();
-
             bool help = false;
             string settingsFile = string.Empty;
 

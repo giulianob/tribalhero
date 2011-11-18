@@ -3,6 +3,9 @@
 using System;
 using System.Linq;
 using System.Threading;
+// ReSharper disable RedundantUsingDirective
+using Game.Data;
+// ReSharper restore RedundantUsingDirective
 
 #endregion
 

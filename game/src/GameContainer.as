@@ -117,6 +117,10 @@
 			txtUnreadReports.visible = false;
 			txtUnreadReports.mouseChildren = false;
 			txtUnreadReports.mouseEnabled = false;
+			
+			txtIncoming.visible = false;
+			txtIncoming.mouseChildren = false;
+			txtIncoming.mouseEnabled = false;
 
 			// Add key down listener to stage
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {

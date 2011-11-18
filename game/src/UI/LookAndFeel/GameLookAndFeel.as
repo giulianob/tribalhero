@@ -106,11 +106,11 @@
 			],
 			
 			"Class.Console.text", [
-			"Label.font", new ASFontUIResource("Courier New", 12, false),
+			"Label.font", new ASFontUIResource("Arial", 13, false),
 			"Label.foreground", new ASColorUIResource(0xFFFFFF),
-			"TextArea.font", new ASFontUIResource("Courier New", 12, false),
+			"TextArea.font", new ASFontUIResource("Arial", 13, false),
 			"TextArea.foreground", new ASColorUIResource(0xFFFFFF),
-			"TextField.font", new ASFontUIResource("Courier New", 12, false),
+			"TextField.font", new ASFontUIResource("Arial", 13, false),
 			"TextField.foreground", new ASColorUIResource(0xFFFFFF)
 			],			
 

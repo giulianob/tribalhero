@@ -1,6 +1,8 @@
 ﻿package src.Comm.Commands {
 
 	import flash.utils.ByteArray;
+	import org.aswing.AssetIcon;
+	import org.aswing.Icon;
 	import src.Comm.*;
 	import src.Constants;
 	import src.Map.*;
@@ -8,10 +10,12 @@
 	import src.Objects.Actions.*;
 	import src.Objects.Troop.*;
 	import src.Global;
+	import src.UI.Components.ScreenMessages.ScreenMessageItem;
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.TribeProfileDialog;
 	import src.Util.*;
+	import src.UI.Components.ScreenMessages.BuiltInMessages;
 
 	public class TribeComm {
 
@@ -35,7 +39,13 @@
 			{
 				case Commands.TRIBE_UPDATE_CHANNEL:
 					onReceiveTribeUpdate(e.packet);
-				break;
+					break;
+				case Commands.TRIBE_UPDATE_NOTIFICATIONS:
+					onReceiveNotifications(e.packet, null);
+					break;
+				case Commands.TRIBESMAN_GOT_KICKED:
+					onTribeLeave();
+					break;
 			}
 		}
 
@@ -65,15 +75,24 @@
 			packet.writeString(name);
 
 			session.write(packet, mapComm.catchAllErrors);
-		}				
-
+		}	
+		
 		public function invitationConfirm(response: Boolean) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBESMAN_CONFIRM;
 			packet.writeByte(response ? 1 : 0);
-
-			session.write(packet, showErrorOrRefreshTribePanel);
-		}		
+			session.write(packet, onInvitationConfirm,{response:response});
+		}
+		
+		public function onInvitationConfirm(packet: Packet, custom: * ):void {
+			if (MapComm.tryShowError(packet))
+				return;
+			if(custom.response) {
+				var incoming: int = packet.readInt();
+				var assignment: int = packet.readShort();
+				onTribeJoin(assignment, incoming);
+			}
+		}
 		
 		public function viewTribeProfile(callback: Function):void {
 			var packet: Packet = new Packet();
@@ -255,14 +274,15 @@
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_DELETE;
 			
-			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe dismantled", content: "Your tribe has been dismantled" }, close: true });
+			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe dismantled", content: "Your tribe has been dismantled" }, close: true } );
 		}	
 
 		public function leave() : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBESMAN_LEAVE;
 			
-			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe", content: "You have left the tribe" }, close: true });
+			session.write(packet, showErrorOrRefreshTribePanel, { message: { title: "Tribe", content: "You have left the tribe" }, close: true } );
+			BuiltInMessages.hideTribeAssignmentIncoming();
 		}			
 		
 		public function upgrade() : void {
@@ -291,6 +311,19 @@
 			
 			if (custom.message)
 				InfoDialog.showMessageDialog(custom.message.title, custom.message.content);
+		}
+		
+		public function onReceiveNotifications(packet: Packet, custom: * ):void {
+			var incoming:int = packet.readInt();
+			var assignment:int = packet.readShort();
+			BuiltInMessages.showTribeAssignmentIncoming(assignment, incoming);
+		}
+		
+		public function onTribeJoin(assignment:int, incoming:int):void {
+			BuiltInMessages.showTribeAssignmentIncoming(assignment, incoming);
+		}
+		public function onTribeLeave():void {
+			BuiltInMessages.hideTribeAssignmentIncoming();
 		}
 	}
 

@@ -1,5 +1,6 @@
 ﻿
 package src.UI.Sidebars.ObjectInfo.Buttons {
+	import fl.lang.Locale;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import org.aswing.AssetIcon;
@@ -104,8 +105,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 						currentCount++;
 				}
 				
-				if (currentCount >= 2)
-					missingReqs.push(EffectReqPrototype.asMessage("You can only build/upgrade two structures at a time"));
+				var concurrentUpgrades: int = Formula.concurrentBuildUpgrades(city.MainBuilding.level);				
+				if (currentCount >= concurrentUpgrades)
+					missingReqs.push(EffectReqPrototype.asMessage(Locale.loadString("CONCURRENT_UPGRADE_" + concurrentUpgrades)));
 			}			
 			
 			upgradeToolTip.missingRequirements = missingReqs;

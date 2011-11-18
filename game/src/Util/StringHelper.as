@@ -1,13 +1,18 @@
-/**
-* ...
-* @author Default
-* @version 0.1
-*/
-
 package src.Util {
+	import flash.xml.*;
 
 	public class StringHelper {
 		public function StringHelper() {
+		}
+		
+		public static function htmlUnescape(str:String):String
+		{
+			return new XML(str).firstChild.nodeValue;
+		}
+
+		public static function htmlEscape(str:String):String
+		{
+			return XML(new XMLNode(XMLNodeType.TEXT_NODE, str)).toXMLString();
 		}
 
 		public static function replace(str:String, oldSubStr:String, newSubStr:String):String {

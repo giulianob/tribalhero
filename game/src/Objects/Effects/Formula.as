@@ -12,6 +12,11 @@
 		public static const RESOURCE_CHUNK: int = 100;
 		public static const RESOURCE_MAX_TRADE: int = 1500;
 		public static const TRIBE_MEMBER_PER_LEVEL: int = 5;
+
+		public static function concurrentBuildUpgrades(mainStructureLevel: int) : int
+		{
+			return mainStructureLevel >= 11 ? 3 : 2;
+		}
 		
 		public static function sendCapacity(level: int) : int {
 			var rate: Array = [0, 200, 200, 400, 400, 600, 600, 800, 1000, 1200, 1200, 1400, 1600, 1800, 1800, 2000];

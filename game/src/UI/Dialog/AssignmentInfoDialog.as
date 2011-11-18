@@ -68,24 +68,8 @@ package src.UI.Dialog {
 				var lblPlayerCity: PlayerCityLabel = new PlayerCityLabel(troop.playerId, troop.cityId, troop.playerName, troop.cityName);
 				lblPlayerCity.setConstraints("Center");
 				
-				var lblUnits: JLabelButton = new JLabelButton("View Units");
+				var lblUnits: JLabelButton = new SimpleTroopStubLabel("View Units", troop.stub);
 				lblUnits.setConstraints("East");
-				
-				lblUnits.addEventListener(MouseEvent.MOUSE_OVER, function(e: Event): void {
-					if (tooltip) {
-						tooltip.hide();
-					}
-					
-					tooltip = new SimpleTroopStubTooltip(troop.stub);
-					tooltip.show(lblUnits);
-				});
-				
-				lblUnits.addEventListener(MouseEvent.MOUSE_OUT, function(e: Event): void {
-					if (tooltip) {
-						tooltip.hide();
-						tooltip = null;
-					}
-				});
 				
 				troopHolder.appendAll(lblPlayerCity, lblUnits);
 				pnlTroops.append(troopHolder);

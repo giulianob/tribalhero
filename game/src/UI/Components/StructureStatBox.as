@@ -22,7 +22,7 @@
 		private var lblArmor: JLabel; //Armor is not currently used
 		private var lblWeapon: JLabel;
 		private var lblHp: JLabel;
-		private var lblAttack: StarRating;
+		private var lblAttack: JLabel;
 		private var lblMaxLabor: JLabel;
 		private var lblStealth: JLabel;
 		private var lblRange: JLabel;
@@ -48,7 +48,7 @@
 			createUI();
 
 			lblMaxLabor.setText(structurePrototype.maxlabor.toString());
-			lblAttack.setValue(structurePrototype.defense);
+			lblAttack.setText(structurePrototype.defense.toString());
 			lblRange.setText(Constants.stealthRangeNames[structurePrototype.range]);
 			lblStealth.setText(Constants.stealthRangeNames[structurePrototype.stealth]);
 			lblHp.setText(structurePrototype.hp.toString());
@@ -75,7 +75,7 @@
 			lblWeapon = valueLabelMaker();
 			lblHp = valueLabelMaker();
 			lblMaxLabor = valueLabelMaker();
-			lblAttack = new StarRating(Constants.structureStatRanges.attack.min, Constants.structureStatRanges.attack.max, 0, 5);
+			lblAttack = valueLabelMaker();
 			lblStealth = valueLabelMaker();
 			lblRange = valueLabelMaker();
 			lblRadius = valueLabelMaker();

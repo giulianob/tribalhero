@@ -177,7 +177,7 @@ namespace Game.Database
                         while (listReader.Read())
                         {
                             if (!Global.World.TryGetObjects((uint)listReader["city_id"], out city))
-                                throw new Exception("City not found");
+                                continue;
 
                             TroopStub assignmentStub;
                             if (!city.Troops.TryGetStub((byte)listReader["stub_id"], out assignmentStub))

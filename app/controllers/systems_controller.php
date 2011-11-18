@@ -39,37 +39,23 @@ class SystemsController extends AppController {
 
     function admin_battle_stats() {
 
-        // Aggregate of unit stats
-        $BattleReportObject = & ClassRegistry::init('BattleReportObject');
+        // Unit counts
+        $TroopStubList = & ClassRegistry::init('TroopStubList');
 
-        $stats = $BattleReportObject->find('all', array(
+        $stats = $TroopStubList->find('all', array(
                     'link' => array(
-                        'BattleReportTroop' => array(
-                            'type' => 'INNER',
-                            'conditions' => array(
-                                'BattleReportTroop.state' => array(TROOP_STATE_EXITING, TROOP_STATE_DYING, TROOP_STATE_RETREATING, TROOP_STATE_OUT_OF_STAMINA)
-                            ),
-                            'fields' => array()
-                        )
                     ),
                     'fields' => array(
-                        'BattleReportObject.type',
-                        'BattleReportObject.level',
-                        'BattleReportObject.formation_type',
-                        'AVG(IF(hits_dealt_by_unit=0,0,damage_dealt/hits_dealt_by_unit)) as damage_average',
-                        'MAX(IF(hits_dealt_by_unit=0,0,damage_dealt/hits_dealt_by_unit)) as damage_max',
-                        'AVG(damage_taken) as damage_taken_average',
-                        'AVG(hits_dealt) as hits_dealt_average',
-                        'AVG(count) as count_average'
+                        'type',
+                        'SUM(`count`) as count',
                     ),
-                    'group' => array('BattleReportObject.type', 'BattleReportObject.level', 'BattleReportObject.formation_type'),
-                    'order' => array('BattleReportObject.type', 'BattleReportObject.formation_type', 'BattleReportObject.level'),
+                    'group' => array('TroopStubList.type'),
+                    'order' => array('TroopStubList.type ASC'),
                 ));
 
         $this->set('stats', $stats);
 
-        // Top player by troop size
-        $TroopStubList = & ClassRegistry::init('TroopStubList');
+        // Top player by troop size        
 
         $troopSizeStats = $TroopStubList->find('all', array(
                     'link' => array(

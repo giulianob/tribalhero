@@ -52,7 +52,6 @@ package
 			var url:String = "http://" + Constants.mainWebsite + "/stacktraces/game_submit";
 			var request:URLRequest = new URLRequest(url);
 			var requestVars:URLVariables = new URLVariables();
-			var a: UncaughtErrorEvent;
 			
 			requestVars.stacktrace = error.message + "\n" + getStacktrace();
 			requestVars.playerId = Constants.playerId;

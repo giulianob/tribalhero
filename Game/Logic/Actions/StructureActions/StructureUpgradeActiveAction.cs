@@ -71,6 +71,8 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
+            int maxConcurrentUpgrades = Formula.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
+
             if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
                                                            action =>
@@ -78,7 +80,7 @@ namespace Game.Logic.Actions
                                                            (action.Type == ActionType.StructureUpgradeActive ||
                                                             (action.Type == ActionType.StructureBuildActive &&
                                                              !Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding",
-                                                                                                ((StructureBuildActiveAction)action).BuildType)))) >= 2)
+                                                                                                ((StructureBuildActiveAction)action).BuildType)))) >= maxConcurrentUpgrades)
                 return Error.ActionTotalMaxReached;
 
             cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));

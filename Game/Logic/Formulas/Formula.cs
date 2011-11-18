@@ -27,6 +27,16 @@ namespace Game.Logic.Formulas
         }
 
         /// <summary>
+        /// Returns maximum number of concurrent build/upgrades allowed for the given structure level
+        /// </summary>
+        /// <param name="mainstructureLevel"></param>
+        /// <returns></returns>
+        public static int ConcurrentBuildUpgrades(int mainstructureLevel)
+        {
+            return mainstructureLevel >= 11 ? 3 : 2;
+        }
+
+        /// <summary>
         ///   Returns the crop cap based on the main building level
         /// </summary>
         /// <param name = "lvl"></param>

@@ -1,21 +1,18 @@
 package src.UI.Dialog
 {
 	import flash.events.*;
-	import flash.sampler.NewObjectSample;
-	import flash.text.StyleSheet;
+	import flash.text.*;
 	import flash.ui.*;
 	import flash.utils.*;
-	import mx.formatters.DateFormatter;
+	import mx.formatters.*;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.event.*;
-	import org.aswing.skinbuilder.SkinCustomIcon;
-	import org.aswing.skinbuilder.SkinFrameCloseIcon;
-	import org.aswing.skinbuilder.SkinFrameMaximizeIcon;
+	import org.aswing.skinbuilder.*;
 	import src.*;
 	import src.UI.*;
 	import src.UI.LookAndFeel.*;
-	import src.Util.StringHelper;
+	import src.Util.*;
 
 	public class CmdLineViewer extends GameJBox
 	{

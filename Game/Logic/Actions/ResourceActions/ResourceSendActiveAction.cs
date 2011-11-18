@@ -135,7 +135,7 @@ namespace Game.Logic.Actions
                 City sender = cities[cityId];
                 target.Owner.SendSystemMessage(sender.Owner,
                                                string.Format("{0} has sent you resources", sender.Name),
-                                               string.Format("{0} has sent you {1}.", sender.Owner.Name, resource.ToNiceString()));
+                                               string.Format("{0} has sent you {1} to {2}.", sender.Owner.Name, resource.ToNiceString(), target.Name));
 
                 StateChange(ActionState.Completed);
             }

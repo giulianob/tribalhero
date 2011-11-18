@@ -8,7 +8,7 @@ OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%
 ,
 A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide up to 3% damage bonus with 60 laborers when the town is under attack. (Does not stack)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide up to 6% damage bonus with 110 laborerswhen the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide up to 6% damage bonus with 110 laborers when the town is under attack. (Does not stack)
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide up to 9% damage bonus with 150 laborers when the town is under attack. (Does not stack)
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide up to 12% damage bonus with 180 laborers when the town is under attack. (Does not stack)
 A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide up to 15% damage bonus with 200 laborers when the town is under attack. (Does not stack)

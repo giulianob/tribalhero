@@ -410,9 +410,10 @@ namespace Game.Database
                     if (forest.InWorld)
                     {
                         // Create deplete time
-                        Global.Scheduler.Put(new ForestDepleteAction(forest, forest.DepleteTime));
+                        forest.DepleteAction = new ForestDepleteAction(forest, forest.DepleteTime);
+                        Global.Scheduler.Put(forest.DepleteAction);
                         Global.World.DbLoaderAdd(forest);
-                        Global.World.Forests.DbLoaderAdd(forest);
+                        Global.World.Forests.DbLoaderAdd(forest);                        
                     }
 
                     // Resave to include new time

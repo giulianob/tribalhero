@@ -46,10 +46,11 @@ namespace Game.Comm
 
         public static byte[] ToBytes(string value)
         {
-            int length = sizeof(ushort) + value.Length;
+            byte[] stringBytes = Encoding.UTF8.GetBytes(value);
+            int length = sizeof(ushort) + stringBytes.Length;
             byte[] bytes = new byte[2 + length];
             Buffer.BlockCopy(BitConverter.GetBytes((ushort)length), 0, bytes, 0, 2);
-            Buffer.BlockCopy(Encoding.UTF8.GetBytes(value), 0, bytes, 2, value.Length);
+            Buffer.BlockCopy(stringBytes, 0, bytes, 2, stringBytes.Length);
 
             return bytes;
         }

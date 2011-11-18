@@ -215,7 +215,7 @@ namespace Game.Data
             if (DepleteAction != null)
                 Global.Scheduler.Remove(DepleteAction);
 
-            double hours = 2*24 + Config.Random.NextDouble()*5;
+            double hours = 2*24 + Config.Random.NextDouble()*24;
 
             if (Wood.Upkeep != 0)
                 hours = Wood.Value/(Wood.Upkeep/Config.seconds_per_unit);

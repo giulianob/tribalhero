@@ -107,6 +107,7 @@ package src.UI.Components.ScreenMessages
 				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("Tribe", "Tribe: no more invasion alert or pending assignment", new AssetIcon(new ICON_ALERT), 10000));
 			}
 		}
+		
 		public static function hideTribeAssignmentIncoming() : void {
 				Global.gameContainer.screenMessage.removeMessage("Tribe");		
 		}

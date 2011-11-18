@@ -71,14 +71,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\Lib\ninject\log4net\lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="NDesk.Options">
       <HintPath>..\Lib\ndesk.options\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\Lib\ninject\Ninject.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging.Log4Net, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\Lib\ninject\log4net\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

@@ -62,6 +62,7 @@ namespace Game.Comm.Processor_Commands
 
                 chatPacket = new Packet(Command.Chat);
                 chatPacket.AddByte(1);
+                chatPacket.AddUInt32(session.Player.PlayerId);
                 chatPacket.AddString(session.Player.Name);
                 chatPacket.AddString(message);
 

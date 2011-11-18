@@ -1,5 +1,6 @@
 ﻿#region
 
+using Game.Comm;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Setup;
@@ -29,6 +30,18 @@ namespace Game.Logic.Procedures
             structure.City.BeginUpdate();
             SetResourceCap(structure.City);
             structure.City.EndUpdate();
+        }
+
+        public static void OnSessionTribesmanQuit(Session session, uint tribeId, uint playerId, bool isKicked)
+        {
+            if (session != null)
+            {
+                Global.Channel.Unsubscribe(session, "/TRIBE/" + tribeId);
+                if(isKicked)
+                {
+                    session.Write(new Packet(Command.TribesmanKicked));
+                }
+            }
         }
     }
 }

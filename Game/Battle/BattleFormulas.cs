@@ -15,17 +15,11 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
-        
-        public static int MissChance(bool isAttacker, CombatList defenders, CombatList attackers)
-        {
-            
-            int defendersUpkeep = defenders.Sum(x => x.Upkeep);
-            int attackersUpkeep = attackers.Sum(x => x.Upkeep);
-            /*int delta = isAttacker ? Math.Max(0, attackersUpkeep - defendersUpkeep) : Math.Max(0, defendersUpkeep - attackersUpkeep);
-            return Math.Min(delta * 2, 25);*/
 
-            double delta = isAttacker ? Math.Max(0, (double)attackersUpkeep / defendersUpkeep) : Math.Max(0, (double)defendersUpkeep / attackersUpkeep);
-            double effectiveness = isAttacker ? (attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200) : (defendersUpkeep > 200 ? 1 : (double)defendersUpkeep / 200);
+        public static int MissChance(int attackersUpkeep, int defendersUpkeep)
+        {
+            double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
+            double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
          //   double effectiveness = 1;
             if (delta < 1) return (int)(0 * effectiveness);
             if (delta < 1.25) return (int)(10 * effectiveness);
@@ -104,8 +98,9 @@ namespace Game.Battle
             }
         }
 
-        private static int GetLootPerRound(City city) {
-            return Config.battle_loot_per_round + city.Technologies.GetEffects(EffectCode.LootLoadMod, EffectInheritance.All).DefaultIfEmpty().Sum(x => x == null ? 0 : (int)x.Value[0]);
+        private static int GetLootPerRound(ICity city) {
+            double roundsRequired = Math.Max(5, Config.battle_loot_till_full - city.Technologies.GetEffects(EffectCode.LootLoadMod, EffectInheritance.All).DefaultIfEmpty().Sum(x => x == null ? 0 : (int)x.Value[0]));
+            return (int)Math.Ceiling(100 / roundsRequired);
         }
 
         internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
@@ -232,8 +227,12 @@ namespace Game.Battle
                                 break;
                         }
                     }
-                } else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
-                    calculator.Atk.AddMod("PERCENT_BONUS", 100 + (((int)effect.Value[0] * city.Resource.Labor.Value) / (city.Lvl * 100)));
+                }
+                else if (effect.Id == EffectCode.ACallToArmMod && group == TroopBattleGroup.Local)
+                {
+                    var bonus = (int)effect.Value[0] * Math.Min(city.Resource.Labor.Value, (int)effect.Value[1]) / ((int)effect.Value[1]);
+                    calculator.Atk.AddMod("CALL_TO_ARM_BONUS", 100 + bonus);
+                }
             }
             return calculator.GetStats();
         }

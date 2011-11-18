@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -18,8 +20,7 @@ namespace Game.Comm
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.TribesmanSetRank, SetRank);
-            processor.RegisterCommand(Command.TribesmanAdd, Add);
-            processor.RegisterCommand(Command.TribesmanRemove, Remove);
+            processor.RegisterCommand(Command.TribesmanAdd, Add);            
             processor.RegisterCommand(Command.TribesmanUpdate, Update);
             processor.RegisterCommand(Command.TribesmanRequest, Request);
             processor.RegisterCommand(Command.TribesmanConfirm, Confirm);
@@ -27,7 +28,7 @@ namespace Game.Comm
             processor.RegisterCommand(Command.TribesmanContribute, Contribute);            
         }
 
-        private void SetRank(Session session, Packet packet)
+        public void SetRank(Session session, Packet packet)
         {
             uint playerId;
             byte rank;
@@ -66,7 +67,7 @@ namespace Game.Comm
             }
         }
 
-        private void Request(Session session, Packet packet)
+        public void Request(Session session, Packet packet)
         {
             string playerName;
             try
@@ -119,7 +120,7 @@ namespace Game.Comm
 
         }
 
-        private void Confirm(Session session, Packet packet)
+        public void Confirm(Session session, Packet packet)
         {
             bool isAccepting;
             try
@@ -167,11 +168,17 @@ namespace Game.Comm
                 if (error != Error.Ok)
                     ReplyError(session, packet, error);
                 else
-                    ReplySuccess(session, packet);
+                {
+                    var reply = new Packet(packet);
+                    Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
+                    reply.AddInt32(tribe.GetIncomingList().Count());
+                    reply.AddInt16(tribe.AssignmentCount);
+                    session.Write(reply);
+                }
             }
         }
 
-        private void Add(Session session, Packet packet)
+        public void Add(Session session, Packet packet)
         {
             uint playerId;
             try
@@ -195,59 +202,17 @@ namespace Game.Comm
             {
                 Tribesman tribesman = new Tribesman(session.Player.Tribesman.Tribe, players[playerId], 2);
                 session.Player.Tribesman.Tribe.AddTribesman(tribesman);
+                packet.AddInt32(session.Player.Tribesman.Tribe.GetIncomingList().Count());
+                packet.AddInt16(session.Player.Tribesman.Tribe.AssignmentCount);
                 ReplySuccess(session, packet);
             }
         }
 
-        private void Remove(Session session, Packet packet)
-        {
-            uint playerId;
-            try
-            {
-                playerId = packet.GetUInt32();
-            }
-            catch (Exception)
-            {
-                ReplyError(session, packet, Error.Unexpected);
-                return;
-            }
-
-            if (session.Player.Tribesman == null)
-            {
-                ReplyError(session, packet, Error.TribeIsNull);
-                return;
-            }
-
-            Dictionary<uint, Player> players;
-            using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
-            {
-                if (!players.ContainsKey(playerId))
-                {
-                    ReplyError(session, packet, Error.PlayerNotFound);
-                    return;
-                }
-
-                Tribe tribe = session.Player.Tribesman.Tribe;
-                if (!tribe.HasRight(session.Player.PlayerId, "Kick"))
-                {
-                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
-                    return;
-                }
-                if (tribe.IsOwner(players[playerId]))
-                {
-                    ReplyError(session, packet, Error.TribesmanIsOwner);
-                    return;
-                }
-                session.Player.Tribesman.Tribe.RemoveTribesman(playerId);
-                ReplySuccess(session, packet);
-            }
-        }
-
-        private void Update(Session session, Packet packet)
+        public void Update(Session session, Packet packet)
         {
         }
 
-        private void Leave(Session session, Packet packet)
+        public void Leave(Session session, Packet packet)
         {
             if (session.Player.Tribesman == null)
             {
@@ -265,11 +230,12 @@ namespace Game.Comm
                     return;
                 }
                 tribe.RemoveTribesman(session.Player.PlayerId);
+                Procedure.OnSessionTribesmanQuit(session, tribe.Id, session.Player.PlayerId,false);
                 ReplySuccess(session, packet);
             }
         }
 
-        private void Contribute(Session session, Packet packet)
+        public void Contribute(Session session, Packet packet)
         {
             uint cityId;
             Resource resource;

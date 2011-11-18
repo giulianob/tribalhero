@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Comm;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
@@ -135,6 +136,8 @@ namespace Game.Logic.Actions
             var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, targetStructure.X, targetStructure.Y, false, true);
 
             ExecuteChainAndWait(tma, AfterTroopMoved);
+            if (targetCity.Owner.Tribesman != null)
+                targetCity.Owner.Tribesman.Tribe.SendUpdate();
 
             return Error.Ok;
         }
@@ -192,6 +195,11 @@ namespace Game.Logic.Actions
 
                     //Remove notification to target city once battle is over
                     city.Worker.Notifications.Remove(this);
+
+                    //Remove Incoming Icon from the target's tribe
+                    if (targetCity.Owner.Tribesman != null)
+                        targetCity.Owner.Tribesman.Tribe.SendUpdate();
+
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");

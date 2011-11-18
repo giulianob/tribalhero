@@ -177,7 +177,7 @@ namespace Game.Database
                         while (listReader.Read())
                         {
                             if (!Global.World.TryGetObjects((uint)listReader["city_id"], out city))
-                                throw new Exception("City not found");
+                                continue;
 
                             TroopStub assignmentStub;
                             if (!city.Troops.TryGetStub((byte)listReader["stub_id"], out assignmentStub))
@@ -410,9 +410,10 @@ namespace Game.Database
                     if (forest.InWorld)
                     {
                         // Create deplete time
-                        Global.Scheduler.Put(new ForestDepleteAction(forest, forest.DepleteTime));
+                        forest.DepleteAction = new ForestDepleteAction(forest, forest.DepleteTime);
+                        Global.Scheduler.Put(forest.DepleteAction);
                         Global.World.DbLoaderAdd(forest);
-                        Global.World.Forests.DbLoaderAdd(forest);
+                        Global.World.Forests.DbLoaderAdd(forest);                        
                     }
 
                     // Resave to include new time

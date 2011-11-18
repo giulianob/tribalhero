@@ -7,11 +7,11 @@ OVERTIME_TECHNOLOGY_LVL_4,Decrease laborer assigning time by 40%
 OVERTIME_TECHNOLOGY_LVL_5,Decrease laborer assigning time by 50%
 ,
 A_CALL_TO_ARMS_TECHNOLOGY_NAME,A Call To Arms
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide little help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide a little more help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide a lot more help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide great help defending when the town is under attack. (Stacks compoundly)
-A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide superb help defending when the town is under attack. (Stacks compoundly)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_1,Order idle laborers to provide up to 3% damage bonus with 60 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_2,Order idle laborers to provide up to 6% damage bonus with 110 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_3,Order idle laborers to provide up to 9% damage bonus with 150 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_4,Order idle laborers to provide up to 12% damage bonus with 180 laborers when the town is under attack. (Does not stack)
+A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide up to 15% damage bonus with 200 laborers when the town is under attack. (Does not stack)
 ,
 ,
 TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
@@ -49,19 +49,19 @@ RUSH_DEFENSE_TECHNOLOGY_LVL_4,Increases troops' travel speed by 16% on a defense
 RUSH_DEFENSE_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% on a defense mission. (Stacks additively)
 ,
 DOUBLE_TIME_TECHNOLOGY_NAME,Double Time
-DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 12% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance is greater than 50 tiles. (Stacks additively)
-DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 50 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_1,Increases troop's travel speed by 4% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_2,Increases troop's travel speed by 8% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_3,Increases troop's travel speed by 12% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_4,Increases troop's travel speed by 16% when distance is greater than 500 tiles. (Stacks additively)
+DOUBLE_TIME_TECHNOLOGY_LVL_5,Increases troop's travel speed by 20% when distance is greater than 500 tiles. (Stacks additively)
 ,
 ARCHERY_RESEARCH_TECHNOLOGY_NAME,Archery Research
 ARCHERY_RESEARCH_TECHNOLOGY_LVL_1,Enables training bow yielding units.
 ,
 BOW_RESEARCH_TECHNOLOGY_NAME,Bowshield  Research
-BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP 5. (Does not stack)"
-BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP 10. (Does not stack)"
-BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP 15. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_1,"Increases Bowman, Archer and Helepolis's Max HP by 4%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_2,"Increases Bowman, Archer and Helepolis's Max HP by 8%. (Does not stack)"
+BOW_RESEARCH_TECHNOLOGY_LVL_3,"Increases Bowman, Archer and Helepolis's Max HP by 12%. (Does not stack)"
 ,
 HIPPOSANDAL_TECHNOLOGY_NAME,Hipposandal
 HIPPOSANDAL_TECHNOLOGY_LVL_1,Equips mounts with horseshoes.  Increase base Carry for mount unit by 15. (Does not stack)
@@ -161,11 +161,11 @@ SUNDANCE_TECHNOLOGY_LVL_4,Increase maximum loot bonus by 40% (Stacks additively)
 SUNDANCE_TECHNOLOGY_LVL_5,Increase maximum loot bonus by 50% (Stacks additively)
 ,
 GREED_IS_GOOD_TECHNOLOGY_NAME,Greed Is Good
-GREED_IS_GOOD_TECHNOLOGY_LVL_1,Increase efficiency to load up loot bonus by 1% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_2,Increase efficiency to load up loot bonus by 2% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_3,Increase efficiency to load up loot bonus by 3% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_4,Increase efficiency to load up loot bonus by 4% (Stacks additively)
-GREED_IS_GOOD_TECHNOLOGY_LVL_5,Increase efficiency to load up loot bonus by 5% (Stacks additively)
+GREED_IS_GOOD_TECHNOLOGY_LVL_1,Reduce time to load up loot by 1 Round (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_2,Reduce time to load up loot by 2 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_3,Reduce time to load up loot by 3 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_4,Reduce time to load up loot by 4 Rounds (Stacks additively up to 10 Rounds)
+GREED_IS_GOOD_TECHNOLOGY_LVL_5,Reduce time to load up loot by 5 Rounds (Stacks additively up to 10 Rounds)
 ,
 COORDINATED_DEFENSE_TECHNOLOGY_NAME,Coordinated Defense
 COORDINATED_DEFENSE_TECHNOLOGY_LVL_1,Defensive Reinforcement Troops gain 2% Max HP at the cost of 3% of travel speed. (Stacks additively)

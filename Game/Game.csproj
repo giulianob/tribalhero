@@ -68,12 +68,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\Lib\ninject\DynamicProxy\lib\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CSScriptLibrary">
-      <HintPath>..\Lib\csscript\CSScriptLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\Lib\jsonfx\JsonFx.dll</HintPath>
     </Reference>
@@ -341,7 +335,6 @@
     <Compile Include="Map\RoadManager.cs" />
     <Compile Include="Module\Npc.cs" />
     <Compile Include="Logic\Randomizer.cs" />
-    <Compile Include="Setup\ConditionFactory.cs" />
     <Compile Include="Setup\MapFactory.cs" />
     <Compile Include="Setup\ObjectTypeFactory.cs" />
     <Compile Include="Setup\SystemVariable.cs" />

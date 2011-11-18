@@ -60,7 +60,7 @@ namespace Game.Setup
         public static bool battle_instant_watch;
         public static double battle_turn_interval = 20.0f;
         public static int battle_min_rounds = 5;
-        public static int battle_loot_per_round = 7; // percentage of total carry, 15 round to fill up.
+        public static int battle_loot_till_full = 15; // percentage of total carry, 15 round to fill up. This number cannot be set 10 or under.
         public static int battle_loot_begin_round = 5; 
         public static int battle_stamina_initial = 20;
         public static ushort battle_stamina_destroyed_deduction = 5;

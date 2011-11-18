@@ -129,7 +129,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         internal static Resource GetActionCancelResource(DateTime beginTime, Resource cost)
         {
-            if (DateTime.UtcNow.Subtract(beginTime).Seconds <= Config.actions_free_cancel_interval_in_sec)
+            if (DateTime.UtcNow.Subtract(beginTime).TotalSeconds <= Config.actions_free_cancel_interval_in_sec)
                 return cost;
             return new Resource(cost/2);
         }

@@ -48,6 +48,11 @@ namespace Game.Logic.Actions
             resourceType = (ResourceType)Enum.Parse(typeof(ResourceType), properties["resource_type"]);
         }
 
+        private Resource GetCost(Structure structure)
+        {
+            return new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.MarketTax(structure))), 0, 0, 0); ;
+        }
+
         public override ConcurrencyType ActionConcurrency
         {
             get
@@ -91,7 +96,7 @@ namespace Game.Logic.Actions
                     break;
             }
 
-            var cost = new Resource(0, (int)Math.Round(price*(quantity/TRADE_SIZE)*(1.0 + Formula.MarketTax(structure))), 0, 0, 0);
+            var cost = GetCost(structure);
             if (!structure.City.Resource.HasEnough(cost))
             {
                 Market.Crop.Supply(quantity);
@@ -110,15 +115,44 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
+            InterruptCatchAll(false);
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
+            InterruptCatchAll(wasKilled);
+        }
+
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
-            using (Concurrency.Current.Lock(cityId, out city))
-            {
+            Structure structure;
+            using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
                     return;
+
+                if (!city.TryGetStructure(structureId, out structure)) {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
+                if (!wasKilled) {
+                    city.BeginUpdate();
+                    switch (resourceType) {
+                        case ResourceType.Crop:
+                            Market.Crop.Supply(quantity);
+                            break;
+                        case ResourceType.Wood:
+                            Market.Wood.Supply(quantity);
+                            break;
+                        case ResourceType.Iron:
+                            Market.Iron.Supply(quantity);
+                            break;
+                    }
+                    var cost = GetCost(structure);
+                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, cost));
+                    city.EndUpdate();
+                }
+
                 StateChange(ActionState.Failed);
             }
         }

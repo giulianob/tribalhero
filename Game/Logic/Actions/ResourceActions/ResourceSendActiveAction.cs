@@ -106,15 +106,32 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
+            InterruptCatchAll(false);
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
+            InterruptCatchAll(wasKilled);
+        }
+
+        private void InterruptCatchAll(bool wasKilled) {
             City city;
-            using (Concurrency.Current.Lock(cityId, out city))
-            {
+            Structure structure;
+            using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
                     return;
+
+                if (!city.TryGetStructure(structureId, out structure)) {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
+                if (!wasKilled) {
+                    city.BeginUpdate();
+                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, resource));
+                    city.EndUpdate();
+                }
+
                 StateChange(ActionState.Failed);
             }
         }

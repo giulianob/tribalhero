@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -167,7 +169,13 @@ namespace Game.Comm
                 if (error != Error.Ok)
                     ReplyError(session, packet, error);
                 else
-                    ReplySuccess(session, packet);
+                {
+                    var reply = new Packet(packet);
+                    Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
+                    reply.AddInt32(tribe.GetIncomingList().Count());
+                    reply.AddInt16(tribe.AssignmentCount);
+                    session.Write(reply);
+                }
             }
         }
 
@@ -195,6 +203,8 @@ namespace Game.Comm
             {
                 Tribesman tribesman = new Tribesman(session.Player.Tribesman.Tribe, players[playerId], 2);
                 session.Player.Tribesman.Tribe.AddTribesman(tribesman);
+                packet.AddInt32(session.Player.Tribesman.Tribe.GetIncomingList().Count());
+                packet.AddInt16(session.Player.Tribesman.Tribe.AssignmentCount);
                 ReplySuccess(session, packet);
             }
         }
@@ -239,6 +249,7 @@ namespace Game.Comm
                     return;
                 }
                 session.Player.Tribesman.Tribe.RemoveTribesman(playerId);
+                Procedure.OnSessionTribesmanQuit(players[playerId].Session, tribe.Id, playerId,true);
                 ReplySuccess(session, packet);
             }
         }
@@ -265,6 +276,7 @@ namespace Game.Comm
                     return;
                 }
                 tribe.RemoveTribesman(session.Player.PlayerId);
+                Procedure.OnSessionTribesmanQuit(session, tribe.Id, session.Player.PlayerId,false);
                 ReplySuccess(session, packet);
             }
         }

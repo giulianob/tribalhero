@@ -199,6 +199,10 @@ namespace Game.Comm
                 // Subscribe him to the player channel
                 Global.Channel.Subscribe(session, "/PLAYER/" + player.PlayerId);
 
+                // Subscribe him to the tribe channel if available
+                if (player.Tribesman != null)
+                    Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+
                 // Subscribe to global channel
                 Global.Channel.Subscribe(session, "/GLOBAL");
 
@@ -209,6 +213,8 @@ namespace Game.Comm
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(player.Created.ToUniversalTime()));
+                reply.AddInt32(player.Tribesman == null ? 0 : player.Tribesman.Tribe.GetIncomingList().Count());
+                reply.AddInt16((short)(player.Tribesman == null ? 0 : player.Tribesman.Tribe.AssignmentCount));
 
                 //Server time
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.UtcNow.ToUniversalTime()));

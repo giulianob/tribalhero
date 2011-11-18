@@ -2,6 +2,8 @@
 
 using System;
 using Game.Data;
+using Game.Data.Troop;
+using Game.Logic;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -17,9 +19,10 @@ namespace Game.Comm
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("sendresources", SendResources, true);
+            processor.RegisterCommand("trainunits", TrainUnits, true);
         }
 
-        private string SendResources(Session session, string[] parms)
+        public string SendResources(Session session, string[] parms)
         {
             var resource = new Resource();
             string cityName = string.Empty;
@@ -60,6 +63,56 @@ namespace Game.Comm
                 city.BeginUpdate();
                 city.Resource.Add(resource);
                 city.EndUpdate();
+            }
+
+            return "OK!";
+        }
+    
+        public string TrainUnits(Session session, string[] parms)
+        {
+            ushort type = 0;
+            ushort count = 0;
+            string cityName = string.Empty;
+            bool help = false;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                {"?|help|h", v => help = true},
+                                {"city=", v => cityName = v.TrimMatchingQuotes()},
+                                {"type=", v => type = ushort.Parse(v)},
+                                {"count=", v => count = ushort.Parse(v)},
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(cityName))
+                return "trainunits --city=city --type=type --count=count";
+
+            uint cityId;
+            if (!Global.World.FindCityId(cityName, out cityId))
+                return "City not found";
+
+            City city;
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
+                if (city == null)
+                    return "City not found";
+
+                if (Ioc.Kernel.Get<UnitFactory>().GetName(type, 1) == null)                
+                    return "Unit type does not exist";
+
+                if (count <= 0)
+                    return "Invalid count";
+
+                city.DefaultTroop.BeginUpdate();
+                city.DefaultTroop.AddUnit(FormationType.Normal, type, count);
+                city.DefaultTroop.EndUpdate();
             }
 
             return "OK!";

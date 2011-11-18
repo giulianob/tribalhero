@@ -7,6 +7,7 @@ using Game.Data.Tribe;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
@@ -22,7 +23,6 @@ namespace Game.Comm
     {
         public override void RegisterCommands(Processor processor)
         {
-            processor.RegisterCommand(Command.TribeIncomingList, GetIncomingList);
             processor.RegisterCommand(Command.TribeNameGet, GetName);
             processor.RegisterCommand(Command.TribeInfo, GetInfo);
             processor.RegisterCommand(Command.TribeCreate, Create);
@@ -252,6 +252,8 @@ namespace Game.Comm
 
                 Tribesman tribesman = new Tribesman(tribe, session.Player, 0);
                 tribe.AddTribesman(tribesman);
+
+                Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
                 ReplySuccess(session, packet);
             }
         }
@@ -280,8 +282,12 @@ namespace Game.Comm
                 }
 
                 foreach (var tribesman in new List<Tribesman>(tribe))
+                {
+                    if (tribesman.Player.Session != null)
+                        Procedure.OnSessionTribesmanQuit(tribesman.Player.Session, tribe.Id, tribesman.Player.PlayerId, true);
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
-                
+                }
+
                 Global.Tribes.Remove(tribe.Id);
                 Ioc.Kernel.Get<IDbManager>().Delete(tribe);
             }
@@ -317,17 +323,5 @@ namespace Game.Comm
 
             ReplySuccess(session, packet);
         }
-
-        private void GetIncomingList(Session session, Packet packet)
-        {
-            /* Tribe t;
-             List<NotificationManager.Notification> notifications;
-             //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));
-             foreach (var city in t.SelectMany(tribesman => tribesman.Player.GetCityList()))
-             {
-                 notifications = new List<NotificationManager.Notification>(city.Worker.Notifications.Where(x => x.Action is AttackChainAction && x.Subscriptions.Any(y => y == city)));
-             }*/
-        }
-
     }
 }

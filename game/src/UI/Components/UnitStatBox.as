@@ -31,11 +31,11 @@
 		private var lblCarry: JLabel;
 		private var lblUnitClass: JLabel;
 		private var lblWeaponClass: JLabel;
-		private var lblAttack: StarRating;
-		private var lblDefense: StarRating;
+		private var lblAttack: JLabel;
+		private var lblDefense: JLabel;
 		private var lblStealth: JLabel;
 		private var lblRange: JLabel;
-		private var lblSpeed: StarRating;
+		private var lblSpeed: JLabel;
 		private var lblUpkeep: JLabel;
 
 		private var lblArmorTitle: JLabel;
@@ -89,9 +89,9 @@
 		}
 
 		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, splash: int, defense: int, stealth: int, range: int, speed: int) : void {
-			lblAttack.setValue(attack / upkeep);
+			lblAttack.setText(attack.toString());
 			lblCarry.setText(carry.toString());		
-			lblSpeed.setValue(speed);
+			lblSpeed.setText(speed.toString());
 			lblRange.setText(Constants.stealthRangeNames[range]);
 			lblStealth.setText(Constants.stealthRangeNames[stealth]);
 			lblHp.setText(hp.toString());
@@ -119,10 +119,10 @@
 
 			lblCarry = valueLabelMaker();
 			lblHp = valueLabelMaker();
-			lblAttack = new StarRating(Constants.unitStatRanges.attack.min, Constants.unitStatRanges.attack.max, 0, 5);
+			lblAttack = valueLabelMaker();
 			lblStealth = valueLabelMaker();
 			lblRange = valueLabelMaker();
-			lblSpeed = new StarRating(Constants.unitStatRanges.speed.min, Constants.unitStatRanges.speed.max, 0, 5);
+			lblSpeed = valueLabelMaker();
 			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
 
 			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());

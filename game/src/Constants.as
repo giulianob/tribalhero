@@ -3,7 +3,7 @@ package src
 	public class Constants
 	{
 		public static var version: int = 0;
-		public static var revision: int = 29;
+		public static var revision: int = 30;
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";
@@ -19,6 +19,8 @@ package src
 		public static var tribeInviteId: int = 3;
 		public static var signupTime: Date;
 		public static var newbieProtectionSeconds: int;
+		public static var tribeAssignment: int;
+		public static var tribeIncoming: int;
 		
 		/* APP CONSTANTS */
 		public static const mainWebsite: String = "tribalhero.com";

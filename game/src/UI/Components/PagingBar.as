@@ -73,7 +73,7 @@ package src.UI.Components
 		public function setData(data: * ) : void {
 			page = data.page;
 			totalPages = data.pages;
-			btnFirst.setEnabled(page > 2);
+			btnFirst.setEnabled(page > 1);
 			btnPrevious.setEnabled(page > 1);
 			btnNext.setEnabled(page < data.pages);
 			btnLast.setEnabled(page < (data.pages - 1));

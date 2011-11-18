@@ -1,5 +1,6 @@
 ﻿package src.Comm.Commands {
 	import flash.events.Event;
+	import mx.formatters.DateFormatter;
 	import org.aswing.AssetIcon;
 	import src.Comm.*;
 	import src.Constants;
@@ -14,6 +15,7 @@
 	import src.UI.Components.ScreenMessages.BuiltInMessages;
 	import src.UI.Components.ScreenMessages.ScreenMessageItem;
 	import src.UI.Dialog.InfoDialog;
+	import src.UI.Components.ScreenMessages.BuiltInMessages;
 
 	public class GeneralComm {
 
@@ -52,10 +54,11 @@
 		private function onChatMessage(packet: Packet): void
 		{
 			var type: int = packet.readByte();
+			var playerId: int = packet.readUInt();
 			var playerName: String = packet.readString();
-			var message: String = packet.readString();
+			var message: String = packet.readString();		
 			
-			Global.gameContainer.cmdLine.log(playerName + ": " + message);
+			Global.gameContainer.cmdLine.logChat(playerId, playerName, message);					
 		}
 
 		public function queryXML(callback: Function, custom: * ):void
@@ -94,7 +97,9 @@
 			Constants.playerName = packet.readString();			
 			Constants.newbieProtectionSeconds = packet.readInt();
 			Constants.signupTime = new Date(packet.readUInt() * 1000);
-			
+			Constants.tribeIncoming = packet.readInt();
+			Constants.tribeAssignment = packet.readShort();
+
 			var now: Date = new Date();
 			var serverTime: int = packet.readUInt();
 			Constants.secondsPerUnit = Number(packet.readString());
@@ -118,8 +123,9 @@
 			Global.gameContainer.tribeInviteRequest.visible = Constants.tribeInviteId > 0;			
 			
 			var tribeName: String = packet.readString();
-			if (Constants.tribeId > 0)
+			if (Constants.tribeId > 0) {
 				Global.map.usernames.tribes.add(new Username(Constants.tribeId, tribeName));
+			}
 				
 			// Cities
 			var cityCnt: int = packet.readUByte();

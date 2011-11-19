@@ -201,6 +201,6 @@ SPIKE_BARRICADE_TECHNOLOGY_LVL_2,Increases building's splash damage by 2.
 SPIKE_BARRICADE_TECHNOLOGY_LVL_3,Increases building's splash damage by 3.
 ,
 HANZO_SWORD_TECHNOLOGY_NAME,Hanzo Formation
-HANZO_SWORD_TECHNOLOGY_LVL_1,"Increase Fighter, Swordsman and gladiator's Group Size by 5"
-HANZO_SWORD_TECHNOLOGY_LVL_2,"Increase Fighter, Swordsman and gladiator's Group Size by 10"
-HANZO_SWORD_TECHNOLOGY_LVL_3,"Increase Fighter, Swordsman and gladiator's Group Size by 15"
+HANZO_SWORD_TECHNOLOGY_LVL_1,"Reduce splash damage received by 5% for Fighter, Swordsman and gladiator."
+HANZO_SWORD_TECHNOLOGY_LVL_2,"Reduce splash damage received by 10% for Fighter, Swordsman and gladiator."
+HANZO_SWORD_TECHNOLOGY_LVL_3,"Reduce splash damage received by 15% for Fighter, Swordsman and gladiator."

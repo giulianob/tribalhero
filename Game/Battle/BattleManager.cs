@@ -813,6 +813,15 @@ namespace Game.Battle
             }
             #endregion
 
+            #region Splash Damage Reduction
+            if (attackIndex > 0)
+            {
+                double reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.UnitStatModCheck(defender.BaseStats, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+                reduction = (100 - reduction) / 100;
+                dmg = (ushort)(reduction * dmg);
+            }
+            #endregion
+
             defender.CalculateDamage(dmg, out actualDmg);
             defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
 

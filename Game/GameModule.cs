@@ -90,7 +90,8 @@ namespace Game
                                               new CommandLineProcessor(new AssignmentCommandLineModule(),
                                                                    new PlayerCommandLineModule(),
                                                                    new ResourcesCommandLineModule(),
-                                                                   new TribeCommandLineModule())).InSingletonScope();
+                                                                   new TribeCommandLineModule(),
+                                                                   new TroopsCommandLineModule())).InSingletonScope();
 
             Bind<Processor>().ToMethod(
                                        c =>

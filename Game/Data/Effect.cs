@@ -63,6 +63,7 @@ namespace Game.Data
         LootLoadMod = 23,
         WeaponExport = 24,
         LastStand = 25,
+        SplashReduction= 26,
 
         BattleStatsArmoryMod = 101,
         BattleStatsBlacksmithMod = 102

@@ -20,7 +20,8 @@ namespace Game.Comm
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.TribesmanSetRank, SetRank);
-            processor.RegisterCommand(Command.TribesmanAdd, Add);            
+            processor.RegisterCommand(Command.TribesmanAdd, Add);
+            processor.RegisterCommand(Command.TribesmanRemove, Remove);
             processor.RegisterCommand(Command.TribesmanUpdate, Update);
             processor.RegisterCommand(Command.TribesmanRequest, Request);
             processor.RegisterCommand(Command.TribesmanConfirm, Confirm);
@@ -208,7 +209,52 @@ namespace Game.Comm
             }
         }
 
-        public void Update(Session session, Packet packet)
+        public void Remove(Session session, Packet packet)
+        {
+            uint playerId;
+            try
+            {
+                playerId = packet.GetUInt32();
+            }
+            catch (Exception)
+            {
+                ReplyError(session, packet, Error.Unexpected);
+                return;
+            }
+
+            if (session.Player.Tribesman == null)
+            {
+                ReplyError(session, packet, Error.TribeIsNull);
+                return;
+            }
+
+            Dictionary<uint, Player> players;
+            using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
+            {
+                if (!players.ContainsKey(playerId))
+                {
+                    ReplyError(session, packet, Error.PlayerNotFound);
+                    return;
+                }
+
+                Tribe tribe = session.Player.Tribesman.Tribe;
+                if (!tribe.HasRight(session.Player.PlayerId, "Kick"))
+                {
+                    ReplyError(session, packet, Error.TribesmanNotAuthorized);
+                    return;
+                }
+                if (tribe.IsOwner(players[playerId]))
+                {
+                    ReplyError(session, packet, Error.TribesmanIsOwner);
+                    return;
+                }
+                session.Player.Tribesman.Tribe.RemoveTribesman(playerId);
+                Procedure.OnSessionTribesmanQuit(players[playerId].Session, tribe.Id, playerId,true);
+                ReplySuccess(session, packet);
+            }
+        }
+
+        private void Update(Session session, Packet packet)
         {
         }
 

@@ -82,10 +82,14 @@ namespace Game.Logic.Actions
                 return Error.ActionAlreadyInProgress;
 
             BaseUnitStats unitStats = city.Template[UnitType];
+            if (unitStats == null)
+                return Error.Unexpected;
+
             Resource cost = Formula.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
 
             if (cost == null)
-                return Error.ObjectNotFound;
+                return Error.Unexpected;
+
             if (!city.Resource.HasEnough(cost))
                 return Error.ResourceNotEnough;
 

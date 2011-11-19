@@ -73,9 +73,20 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            {
                 return Error.ObjectStructureNotFound;
+            }
 
-            byte unitLvl = structure.City.Template[type].Lvl;
+            var template = structure.City.Template[type];
+
+            if (template == null)
+            {
+                return Error.Unexpected;                
+            }
+
+            var unitLvl = template.Lvl;
+            var unitTime = Ioc.Kernel.Get<UnitFactory>().GetTime(type, unitLvl);
+            
             cost = Formula.UnitTrainCost(structure.City, type, unitLvl);
             Resource totalCost = cost*count;
             ActionCount = (ushort)(count + count/Formula.GetXForOneCount(structure.Technologies));
@@ -87,7 +98,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            timePerUnit = (int)CalculateTime(Formula.TrainTime(Ioc.Kernel.Get<UnitFactory>().GetTime(type, unitLvl), structure.Lvl, structure.Technologies));
+            timePerUnit = (int)CalculateTime(Formula.TrainTime(unitTime, structure.Lvl, structure.Technologies));
 
             // add to queue for completion
             nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);
@@ -115,6 +126,12 @@ namespace Game.Logic.Actions
                     return;
 
                 if (!city.TryGetStructure(structureId, out structure))
+                {
+                    StateChange(ActionState.Failed);
+                    return;
+                }
+
+                if (Ioc.Kernel.Get<UnitFactory>().GetName(type, 1) == null)
                 {
                     StateChange(ActionState.Failed);
                     return;

@@ -482,12 +482,12 @@ namespace Game.Map
 
         internal void LockRegion(uint x, uint y)
         {
-            Monitor.Enter(GetRegion(x, y).Lock);
+            GetRegion(x, y).Lock.EnterWriteLock();
         }
 
         internal void UnlockRegion(uint x, uint y)
         {
-            Monitor.Exit(GetRegion(x, y).Lock);
+            GetRegion(x, y).Lock.ExitWriteLock();
         }
 
         private bool GetObjectsForeach(uint ox, uint oy, uint x, uint y, object custom)

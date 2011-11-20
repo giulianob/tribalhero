@@ -39,6 +39,8 @@ namespace Game.Data.Troop
         private bool isDirty;
         private bool isUpdating;
 
+
+
         #region Properties
 
         private TroopState state = TroopState.Idle;
@@ -522,20 +524,7 @@ namespace Game.Data.Troop
 
                 return 0;
             }
-        }
-
-        public void RemoveAllUnits()
-        {
-            lock (objLock)
-            {
-                CheckUpdateMode();
-
-                foreach (var formation in data.Values)
-                    formation.Clear();
-
-                FireUpdated();
-            }
-        }
+        }   
 
         public void RemoveAllUnits(params FormationType[] formations)
         {
@@ -545,7 +534,7 @@ namespace Game.Data.Troop
 
                 foreach (var formation in data.Values)
                 {
-                    if (!formations.Contains(formation.Type))
+                    if (formations != null && formations.Length > 0 && !formations.Contains(formation.Type))
                         continue;
 
                     formation.Clear();

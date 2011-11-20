@@ -39,7 +39,17 @@ namespace Game.Data.Troop
         private bool isDirty;
         private bool isUpdating;
 
+        #region Events
 
+        public delegate void StateSwitched(TroopStub stub, TroopState newState);
+        public event StateSwitched OnStateSwitched = delegate { };
+        
+        public delegate void Removed(TroopStub stub);
+        public event Removed OnRemoved = delegate { };
+
+        public delegate void OnUnitUpdate(TroopStub stub);
+        public event OnUnitUpdate UnitUpdate = delegate { };
+        #endregion
 
         #region Properties
 
@@ -72,9 +82,10 @@ namespace Game.Data.Troop
             }
             set
             {
-                CheckUpdateMode();
+                CheckUpdateMode();                
                 state = value;
                 isDirty = true;
+                OnStateSwitched(this, value);
             }
         }
 
@@ -253,18 +264,6 @@ namespace Game.Data.Troop
                 FireUpdated();
             }
         }      
-
-        #endregion
-
-        #region Events
-
-        #region Delegates
-
-        public delegate void OnUnitUpdate(TroopStub stub);
-
-        #endregion
-
-        public event OnUnitUpdate UnitUpdate;
 
         #endregion
 
@@ -503,6 +502,11 @@ namespace Game.Data.Troop
         public bool HasFormation(FormationType formation)
         {
             return data.ContainsKey(formation);
+        }
+
+        public void FireRemoved()
+        {
+            OnRemoved(this);
         }
 
         public ushort RemoveUnit(FormationType formationType, ushort type, ushort count)

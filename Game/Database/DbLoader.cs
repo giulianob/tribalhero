@@ -177,18 +177,26 @@ namespace Game.Database
                         while (listReader.Read())
                         {
                             if (!Global.World.TryGetObjects((uint)listReader["city_id"], out city))
-                                continue;
+                                throw new Exception("City not found");
 
                             TroopStub assignmentStub;
                             if (!city.Troops.TryGetStub((byte)listReader["stub_id"], out assignmentStub))
-                                continue;
+                                throw new Exception("Stub not found");
 
                             assignment.DbLoaderAdd(assignmentStub, (byte)listReader["dispatched"] == 1);
                         }
                     }
+
                     assignment.DbPersisted = true;
+                    
+                    // Recalculates the time the assignment should run next
+                    assignment.ResetNextTime();
+
+                    // Add assignment to tribe
                     tribe.DbLoaderAddAssignment(assignment);
+                    
                     dbManager.Save(assignment);
+
                     Global.Scheduler.Put(assignment);
                 }
             }

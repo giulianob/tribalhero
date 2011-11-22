@@ -1,74 +1,63 @@
 ﻿#region
 
-using Game.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using Xunit;
 
 #endregion
 
-namespace Testing.Channel
+namespace Testing.City
 {
     /// <summary>
     ///   Summary description for ChannelTest
     /// </summary>
-    [TestClass]
     public class CityTest : TestBase
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestValidName()
         {
-            Assert.IsTrue(City.IsNameValid("Ab 1c d1 2"));
+            Game.Data.City.IsNameValid("Ab 1c d1 2").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestLowerCase()
         {
-            Assert.IsTrue(City.IsNameValid("ab 1c d1 2"));
+            Game.Data.City.IsNameValid("ab 1c d1 2").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestStartWithNumber()
         {
-            Assert.IsFalse(City.IsNameValid("1Hello World"));
+            Game.Data.City.IsNameValid("1Hello World").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestTooShort()
         {
-            Assert.IsFalse(City.IsNameValid("a"));
+            Game.Data.City.IsNameValid("a").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestJustShortEnough()
         {
-            Assert.IsTrue(City.IsNameValid("xxx"));
+            Game.Data.City.IsNameValid("xxx").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestTooLong()
         {
-            Assert.IsFalse(City.IsNameValid("xxxxxxxxxxxxxxxxx"));
+            Game.Data.City.IsNameValid("xxxxxxxxxxxxxxxxx").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestJustLongEnough()
         {
-            Assert.IsTrue(City.IsNameValid("xxxxxxxxxxxxxxxx"));
+            Game.Data.City.IsNameValid("xxxxxxxxxxxxxxxx").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestNewLine()
         {
-            Assert.IsFalse(City.IsNameValid("xx\nxxx"));
+            Game.Data.City.IsNameValid("xx\nxxx").Should().BeFalse();
         }
     }
 }

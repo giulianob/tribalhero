@@ -23,27 +23,12 @@ namespace Game.Map
         #region Members
 
         private readonly byte[] map;
-        private readonly object objLock = new object();
+        private readonly ReaderWriterLockSlim objLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         private readonly ObjectList objlist = new ObjectList();
         private bool isDirty;
         private byte[] objects;
 
-        public ushort Count
-        {
-            get
-            {
-                ushort count;
-
-                lock (objlist)
-                {
-                    count = objlist.Count;
-                }
-
-                return count;
-            }
-        }
-
-        public object Lock
+        public ReaderWriterLockSlim Lock
         {
             get
             {
@@ -66,152 +51,150 @@ namespace Game.Map
 
         public bool Add(SimpleGameObject obj)
         {
-            lock (objlist)
-            {
-                objlist.AddGameObject(obj);
-                isDirty = true;
-            }
+            objLock.EnterWriteLock();
+            objlist.AddGameObject(obj);
+            isDirty = true;
+            objLock.ExitWriteLock();
 
             return true;
         }
 
         public void Remove(SimpleGameObject obj)
         {
-            lock (objlist)
-            {
-                objlist.Remove(obj);
-                isDirty = true;
-            }
+            objLock.EnterWriteLock();
+            objlist.Remove(obj);
+            isDirty = true;
+            objLock.ExitWriteLock();
         }
 
         public void Remove(SimpleGameObject obj, uint origX, uint origY)
         {
-            lock (objlist)
-            {
-                objlist.Remove(obj, origX, origY);
-                isDirty = true;
-            }
+            objLock.EnterWriteLock();
+            objlist.Remove(obj, origX, origY);
+            isDirty = true;
+            objLock.ExitWriteLock();
         }
 
         public void Update(SimpleGameObject obj, uint origX, uint origY)
         {
-            lock (objlist)
+            objLock.EnterWriteLock();
+            if (obj.X != origX || obj.Y != origY)
             {
-                if (obj.X != origX || obj.Y != origY)
-                {
-                    if (!objlist.Remove(obj, origX, origY))
-                        throw new Exception("WTF");
-                    objlist.AddGameObject(obj);
-                }
-                isDirty = true;
+                if (!objlist.Remove(obj, origX, origY))
+                    throw new Exception("WTF");
+
+                objlist.AddGameObject(obj);
             }
+            isDirty = true;
+            objLock.ExitWriteLock();
         }
 
         public List<SimpleGameObject> GetObjects(uint x, uint y)
         {
-            lock (objlist)
-            {
-                return objlist.Get(x, y);
-            }
+            objLock.EnterReadLock();
+            var gameObjects = objlist.Get(x, y);
+            objLock.ExitReadLock();
+            return gameObjects;
         }
 
         public IEnumerable<SimpleGameObject> GetObjects()
         {
-            return objlist;
+            objLock.EnterReadLock();
+            foreach (var obj in objlist)
+            {
+                yield return obj;
+            }
+            objLock.ExitReadLock();
         }
 
         public byte[] GetObjectBytes()
         {
+            if (!isDirty && objects != null)
+                return objects;
+
+            objLock.EnterWriteLock();
             if (isDirty || objects == null)
             {
-                lock (objlist)
+                using (var ms = new MemoryStream())
                 {
-                    if (isDirty || objects == null)
+                    var bw = new BinaryWriter(ms);
+
+                    // Write map tiles
+                    bw.Write(map);
+
+                    // Write objects
+                    bw.Write(objlist.Count);
+                    foreach (SimpleGameObject obj in objlist)
                     {
-                        using (var ms = new MemoryStream())
+                        bw.Write(obj.Type);
+                        bw.Write((ushort)(obj.RelX));
+                        bw.Write((ushort)(obj.RelY));
+
+                        bw.Write(obj.GroupId);
+                        bw.Write(obj.ObjectId);
+
+                        if (obj is GameObject)
+                            bw.Write(((GameObject)obj).City.Owner.PlayerId);
+
+                        if (obj is IHasLevel)
+                            bw.Write(((IHasLevel)obj).Lvl);
+
+                        bw.Write((byte)obj.State.Type);
+                        foreach (var parameter in obj.State.Parameters)
                         {
-                            var bw = new BinaryWriter(ms);
-                            bw.Write(Count);
-                            foreach (SimpleGameObject obj in objlist)
-                            {                                
-                                bw.Write(obj.Type);
-                                bw.Write((ushort)(obj.RelX));
-                                bw.Write((ushort)(obj.RelY));
+                            if (parameter is byte)
+                                bw.Write((byte)parameter);
+                            else if (parameter is short)
+                                bw.Write((short)parameter);
+                            else if (parameter is int)
+                                bw.Write((int)parameter);
+                            else if (parameter is ushort)
+                                bw.Write((ushort)parameter);
+                            else if (parameter is uint)
+                                bw.Write((uint)parameter);
+                            else if (parameter is string)
+                                bw.Write((string)parameter);
+                        }
 
-                                bw.Write(obj.GroupId);
-                                bw.Write(obj.ObjectId);
+                        //if this is the main building then include radius
+                        if (obj is Structure)
+                        {
+                            var structure = obj as Structure;
 
-                                if (obj is GameObject)
-                                    bw.Write(((GameObject)obj).City.Owner.PlayerId);                                
-
-                                if (obj is IHasLevel)
-                                    bw.Write(((IHasLevel)obj).Lvl);
-                                                                
-                                bw.Write((byte)obj.State.Type);
-                                foreach (var parameter in obj.State.Parameters)
-                                {
-                                    if (parameter is byte)
-                                        bw.Write((byte)parameter);
-                                    else if (parameter is short)
-                                        bw.Write((short)parameter);
-                                    else if (parameter is int)
-                                        bw.Write((int)parameter);
-                                    else if (parameter is ushort)
-                                        bw.Write((ushort)parameter);
-                                    else if (parameter is uint)
-                                        bw.Write((uint)parameter);
-                                    else if (parameter is string)
-                                        bw.Write((string)parameter);
-                                }
-
-                                //if this is the main building then include radius
-                                if (obj is Structure)
-                                {
-                                    var structure = obj as Structure;
-
-                                    if (structure.IsMainBuilding)
-                                        bw.Write(structure.City.Radius);
-                                }
-                            }
-
-                            isDirty = false;
-
-                            ms.Position = 0;
-                            objects = ms.ToArray();
+                            if (structure.IsMainBuilding)
+                                bw.Write(structure.City.Radius);
                         }
                     }
 
-                }                
+                    isDirty = false;
+
+                    ms.Position = 0;
+                    objects = ms.ToArray();
+                }
             }
+            objLock.ExitWriteLock();
 
             return objects;
         }
 
-        public byte[] GetBytes()
-        {
-            lock (objlist)
-            {
-                return map;
-            }
-        }
-
         public ushort GetTileType(uint x, uint y)
         {
-            lock (objlist)
-            {
-                return BitConverter.ToUInt16(map, GetTileIndex(x, y)*2);
-            }
+            objLock.EnterReadLock();
+            var tileType = BitConverter.ToUInt16(map, GetTileIndex(x, y)*2);
+            objLock.ExitReadLock();
+            return tileType;
         }
 
         public void SetTileType(uint x, uint y, ushort tileType)
         {
-            lock (objlist)
-            {
-                int idx = GetTileIndex(x, y)*TILE_SIZE;
-                byte[] ushortArr = BitConverter.GetBytes(tileType);
-                map[idx] = ushortArr[0];
-                map[idx + 1] = ushortArr[1];
-            }
+            objLock.EnterWriteLock();
+            int idx = GetTileIndex(x, y)*TILE_SIZE;
+            byte[] ushortArr = BitConverter.GetBytes(tileType);
+            map[idx] = ushortArr[0];
+            map[idx + 1] = ushortArr[1];
+
+            isDirty = true;
+            objLock.ExitWriteLock();
         }
 
         #endregion

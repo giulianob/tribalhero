@@ -1,41 +1,30 @@
 ﻿#region
 
-using Game.Util;
+using FluentAssertions;
 using Game.Util.Locking;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 #endregion
 
 namespace Testing.Lock
 {
     /// <summary>
-    ///   Summary description for TroopProcedureTest
-    /// </summary>
-    [TestClass]
+    /// Summary description for TroopProcedureTest
+    /// </summary>    
     public class CallbackLockTest : TestBase
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestEmptyListFromCallback()
         {
             var obj = new DummyLockable(1);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {};
             var lck = new CallbackLock().Lock(lockFunc, null, obj);
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             lck.Dispose();
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestSingleItemFromCallback()
         {
             var obj = new DummyLockable(1);
@@ -43,16 +32,16 @@ namespace Testing.Lock
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {obj2};
             var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj2));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
 
             lck.Dispose();
 
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj2));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestMultiItemFromCallback()
         {
             var obj = new DummyLockable(1);
@@ -61,18 +50,18 @@ namespace Testing.Lock
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {obj3, obj2};
             var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj2));
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj3));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj3).Should().BeTrue();
 
             lck.Dispose();
 
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj2));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj3));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj3).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestMultiBaseItems()
         {
             var obj = new DummyLockable(1);
@@ -80,16 +69,16 @@ namespace Testing.Lock
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {};
             var lck = new CallbackLock().Lock(lockFunc, null, obj, obj2);
 
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj2));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
 
             lck.Dispose();
 
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj2));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestChangingCallbackAddLocks()
         {
             var obj = new DummyLockable(1);
@@ -110,18 +99,18 @@ namespace Testing.Lock
                 };
             var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj2));
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj3));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj3).Should().BeTrue();
 
             lck.Dispose();
 
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj2));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj3));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj3).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestChangingCallbackRemoveLocks()
         {
             var obj = new DummyLockable(1);
@@ -142,15 +131,15 @@ namespace Testing.Lock
                 };
             var lck = new CallbackLock().Lock(lockFunc, null, obj);
 
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsTrue(DefaultMultiObjectLock.IsLocked(obj2));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj3));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
+            DefaultMultiObjectLock.IsLocked(obj3).Should().BeFalse();
 
             lck.Dispose();
 
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj2));
-            Assert.IsFalse(DefaultMultiObjectLock.IsLocked(obj3));
+            DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj2).Should().BeFalse();
+            DefaultMultiObjectLock.IsLocked(obj3).Should().BeFalse();
         }
 
         #region Nested type: DummyLockable

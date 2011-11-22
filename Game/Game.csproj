@@ -219,10 +219,14 @@
     <Compile Include="Logic\ScheduledPassiveAction.cs" />
     <Compile Include="Logic\Scheduler.cs" />
     <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
     <Compile Include="Map\ObjectList.cs" />
+    <Compile Include="Map\RadiusLocator.cs" />
+    <Compile Include="Map\ReverseTileLocator.cs" />
     <Compile Include="Map\RoadPathFinder.cs" />
+    <Compile Include="Map\TileLocator.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
     <Compile Include="Module\Remover\NewbieIdleSelector.cs" />

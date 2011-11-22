@@ -3,14 +3,7 @@
 using System;
 using System.Linq;
 using ConsoleSimulator;
-using Game.Data;
-using Game.Logic.Procedures;
-using Game.Setup;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Game.Battle;
-using Ninject;
-using Persistance;
-using Testing.Balancing;
+using Xunit;
 
 #endregion
 
@@ -19,21 +12,11 @@ namespace Testing.Troop
     /// <summary>
     ///   Summary description for TroopProcedureTest
     /// </summary>
-    [TestClass]
+
     public class TestUserBattles : TestBase
     {
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestBrennenGotOwned()
         {
             Group defender = new Group();
@@ -57,21 +40,25 @@ namespace Testing.Troop
             sim.RunTill(20);
 
             double actualAdvantage;
-            if (attacker.Upkeep() == 0) {
-                actualAdvantage = ((double)defender.Upkeep() / defUpkeep);
-            } else {
-                actualAdvantage = -1 * ((double)attacker.Upkeep() / atkUpkeep);
+            if (attacker.Upkeep() == 0)
+            {
+                actualAdvantage = ((double)defender.Upkeep()/defUpkeep);
             }
-            if (double.IsNaN(actualAdvantage)) actualAdvantage = 0;
-            Assert.IsTrue(actualAdvantage == 0,
-                                        "Def[{0}/{1}] Structures[{4}/{5}] vs Atk[{2}/{3}]",
-                                                    defender.Upkeep(),
-                                                    defUpkeep,
-                                                    attacker.Upkeep(),
-                                                    atkUpkeep,
-                                                    defender.Structures.Sum(x => x.Stats.Hp),
-                                                    defender.Structures.Sum(x => x.Stats.Base.Battle.MaxHp));
-        }
+            else
+            {
+                actualAdvantage = -1*((double)attacker.Upkeep()/atkUpkeep);
+            }
+            if (double.IsNaN(actualAdvantage))
+                actualAdvantage = 0;
 
+            Assert.True(Math.Abs(actualAdvantage - 0) < double.Epsilon,
+                        string.Format("Def[{0}/{1}] Structures[{4}/{5}] vs Atk[{2}/{3}]",
+                                      defender.Upkeep(),
+                                      defUpkeep,
+                                      attacker.Upkeep(),
+                                      atkUpkeep,
+                                      defender.Structures.Sum(x => x.Stats.Hp),
+                                      defender.Structures.Sum(x => x.Stats.Base.Battle.MaxHp)));
+        }
     }
 }

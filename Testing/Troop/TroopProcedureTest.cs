@@ -2,7 +2,7 @@
 
 using Game.Data.Troop;
 using Game.Logic.Procedures;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 #endregion
 
@@ -11,13 +11,11 @@ namespace Testing.Troop
     /// <summary>
     ///   Summary description for TroopProcedureTest
     /// </summary>
-    [TestClass]
     public class TroopProcedureTest : TestBase
     {
         private TroopStub stub;
 
-        [TestInitialize]
-        public void TestInitialize()
+        public TroopProcedureTest()
         {
             stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
@@ -25,12 +23,7 @@ namespace Testing.Troop
             stub.AddFormation(FormationType.InBattle);
         }
 
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestMoveFromBattleToNormal()
         {
             stub.AddUnit(FormationType.Normal, 101, 10);
@@ -38,8 +31,8 @@ namespace Testing.Troop
             Procedure.MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
             Procedure.MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
 
-            Assert.IsTrue(stub[FormationType.Normal].Type == FormationType.Normal);
-            Assert.IsTrue(stub[FormationType.InBattle].Type == FormationType.InBattle);
+            Assert.True(stub[FormationType.Normal].Type == FormationType.Normal);
+            Assert.True(stub[FormationType.InBattle].Type == FormationType.InBattle);
         }
     }
 }

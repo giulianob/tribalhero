@@ -63,7 +63,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="FluentAssertions">
+      <HintPath>..\Lib\fluentassertions\FluentAssertions.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\Lib\moq\Moq.dll</HintPath>
     </Reference>
@@ -74,9 +76,12 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>..\Lib\xunit\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\Lib\xunit\xunit.extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Balancing\TestUserBattles.cs" />
@@ -87,9 +92,9 @@
     <Compile Include="Balancing\TestArcher.cs" />
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
-    <Compile Include="Fixtures\SimpleFixture.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />
     <Compile Include="MapMath\ForeachTest.cs" />
+    <Compile Include="MapMath\MapMathTest.cs" />
     <Compile Include="MapMath\RadiusTest.cs" />
     <Compile Include="Misc\XmlSerializerTest.cs" />
     <Compile Include="Resources\AggressiveLazyResourceTest.cs" />
@@ -142,6 +147,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Database\" />

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Game.Logic.Formulas;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
@@ -165,6 +166,14 @@ namespace Game.Data.Troop
                 }
 
                 return count;
+            }
+        }
+
+        public byte Speed
+        {
+            get
+            {
+                return Formula.GetTroopSpeed(this);
             }
         }
 

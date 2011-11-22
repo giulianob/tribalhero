@@ -431,8 +431,7 @@ namespace Game.Comm
                     return;
                 }
 
-                reply.AddUInt16(regionId);
-                reply.AddBytes(Global.World.GetRegion(regionId).GetBytes());
+                reply.AddUInt16(regionId);                
                 reply.AddBytes(Global.World.GetRegion(regionId).GetObjectBytes());
                 Global.World.SubscribeRegion(session, regionId);
             }

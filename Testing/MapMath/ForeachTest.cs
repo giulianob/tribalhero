@@ -1,8 +1,9 @@
 ﻿#region
 
 using System.Collections.Generic;
+using FluentAssertions;
 using Game.Map;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 #endregion
 
@@ -11,81 +12,70 @@ namespace Testing.MapMath
     /// <summary>
     ///   Summary description for ChannelTest
     /// </summary>
-    [TestClass]
     public class ForeachTest : TestBase
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestEven()
         {
             var validPoints = new List<Point>();
 
             TileLocator.ForeachObject(10,
-                                       10,
-                                       2,
-                                       true,
-                                       delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                           {
-                                               ((List<Point>)custom).Add(new Point(x, y));
-                                               return true;
-                                           },
-                                       validPoints);
+                                      10,
+                                      2,
+                                      true,
+                                      delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                          {
+                                              ((List<Point>)custom).Add(new Point(x, y));
+                                              return true;
+                                          },
+                                      validPoints);
 
             var reversePoints = new List<Point>();
 
             ReverseTileLocator.ForeachObject(10,
-                                              10,
-                                              2,
-                                              true,
-                                              delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                                  {
-                                                      ((List<Point>)custom).Add(new Point(x, y));
-                                                      return true;
-                                                  },
-                                              reversePoints);
+                                             10,
+                                             2,
+                                             true,
+                                             delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                                 {
+                                                     ((List<Point>)custom).Add(new Point(x, y));
+                                                     return true;
+                                                 },
+                                             reversePoints);
 
-            CollectionAssert.AreEquivalent(validPoints, reversePoints);
+            validPoints.Should().BeEquivalentTo(reversePoints);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestOdd()
         {
             var validPoints = new List<Point>();
 
             TileLocator.ForeachObject(10,
-                                       11,
-                                       2,
-                                       true,
-                                       delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                           {
-                                               ((List<Point>)custom).Add(new Point(x, y));
-                                               return true;
-                                           },
-                                       validPoints);
+                                      11,
+                                      2,
+                                      true,
+                                      delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                          {
+                                              ((List<Point>)custom).Add(new Point(x, y));
+                                              return true;
+                                          },
+                                      validPoints);
 
             var reversePoints = new List<Point>();
 
             ReverseTileLocator.ForeachObject(10,
-                                              11,
-                                              2,
-                                              true,
-                                              delegate(uint origX, uint origY, uint x, uint y, object custom)
-                                                  {
-                                                      ((List<Point>)custom).Add(new Point(x, y));
-                                                      return true;
-                                                  },
-                                              reversePoints);
+                                             11,
+                                             2,
+                                             true,
+                                             delegate(uint origX, uint origY, uint x, uint y, object custom)
+                                                 {
+                                                     ((List<Point>)custom).Add(new Point(x, y));
+                                                     return true;
+                                                 },
+                                             reversePoints);
 
-            CollectionAssert.AreEquivalent(validPoints, reversePoints);
+            validPoints.Should().BeEquivalentTo(reversePoints);
         }
 
         #region Nested type: Point

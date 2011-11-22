@@ -1,55 +1,37 @@
 ﻿#region
 
-using System;
 using ConsoleSimulator;
-using Game.Data;
-using Game.Logic.Procedures;
-using Game.Setup;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Game.Battle;
-using Testing.Balancing;
+using Xunit;
 
 #endregion
 
-namespace Testing.Troop
+namespace Testing.Balancing
 {
     /// <summary>
     ///   Summary description for TroopProcedureTest
     /// </summary>
-    [TestClass]
     public class TestSwordsman {
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestDefSwordsman() {
             TestUtility.TestUnitPerUpkeep(UnitType.Swordsman, UnitType.Swordsman, 10, -0.3);
         }
-        [TestMethod]
+        [Fact]
         public void TestDefArcher() {
             TestUtility.TestUnitPerUpkeep(UnitType.Swordsman, UnitType.Archer, 10, .3);
         }
-        [TestMethod]
+        [Fact]
         public void TestDefPikeman() {
             TestUtility.TestUnitPerUpkeep(UnitType.Swordsman, UnitType.Pikeman, 10, .3);
         }
-        [TestMethod]
+        [Fact]
         public void TestDefGladiator() {
             TestUtility.TestUnitPerUpkeep(UnitType.Swordsman, UnitType.Gladiator, 10, -.1);
         }
-        [TestMethod]
+        [Fact]
         public void TestDefCavalry() {
             TestUtility.TestUnitPerUpkeep(UnitType.Swordsman, UnitType.Cavalry, 5, -0.7);
         }
-        [TestMethod]
+        [Fact]
         public void Test10SwordsmanDef10Knight() {
             TestUtility.TestUnitPerUpkeep(UnitType.Swordsman, UnitType.Knight, 10, -0.4);
         }

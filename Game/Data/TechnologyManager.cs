@@ -291,7 +291,7 @@ namespace Game.Data
 
         #region IHasEffect Members
 
-        public IEnumerable<Effect> GetAllEffects(EffectInheritance inherit)
+        public IEnumerable<Effect> GetAllEffects(EffectInheritance inherit = EffectInheritance.All)
         {
             var list = new List<Effect>();
             foreach (var tech in technologies)

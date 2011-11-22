@@ -131,7 +131,7 @@ namespace Game.Logic.Actions
 
             distanceRemaining = troopObj.TileDistance(x, y);
 
-            moveTime = (int)Math.Max(1, Formula.MoveTime(troopObj.Stats.Speed)*Formula.MoveTimeMod(city, distanceRemaining, isAttacking));
+            moveTime = Formula.MoveTimeTotal(troopObj.Stub.Speed, distanceRemaining, isAttacking, new List<Effect>(city.Technologies.GetAllEffects()));
 
             if (Config.battle_instant_move)
                 moveTime = 0;

@@ -1,8 +1,11 @@
 #region
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Setup;
 using Ninject;
 
@@ -49,32 +52,50 @@ namespace Game.Logic.Formulas
             return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
         }
 
-        internal static double MoveTimeMod(City city, int distance, bool isAttacking)
-        {
-            int mod = 0;
-            foreach (Effect effect in city.Technologies.GetEffects(EffectCode.TroopSpeedMod, EffectInheritance.All))
-            {
-                if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) || (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
-                {
-                    mod += (int)effect.Value[0];
-                }
-                else if (((string)effect.Value[1]).ToUpper() == "DISTANCE" && distance > (int)effect.Value[2])
-                {
-                    mod += (int)effect.Value[0];
-                }
-            }
-            return (double)100 / (Math.Max(1, mod + 100));
-        }
-
         /// <summary>
         /// Get number of seconds it takes to move object by 1 tile
         /// </summary>
         /// <param name="speed">Objects speed</param>
         /// <returns></returns>
-        internal static int MoveTime(byte speed) {      
+        public static int MoveTime(byte speed) {      
             // 60 is second per square, 12 is the average speed for all troops
             // second per square is lowered from 80 to 60. 3/9/2011
             return 60 * (100 - ((speed - 12) * 5)) / 100;
+        }
+
+        private static int DoubleTimeTotal(int moveTime, int distance, double bonusPercentage, int forEveryDistance)
+        {
+            int total = 0;
+            int index = 0;
+            int tiles = 0;
+            while (distance > 0)
+            {
+                tiles = distance > forEveryDistance ? forEveryDistance : distance;
+                total += (int)(moveTime * tiles * Config.seconds_per_unit / (1 + bonusPercentage * index++));
+                distance -= tiles;
+            }
+            return total;
+        }
+
+        public static int MoveTimeTotal(byte speed, int distance, bool isAttacking, List<Effect> effects) {
+            int moveTime = MoveTime(speed);
+            // getting double time bonus
+            double bonus = effects.DefaultIfEmpty().Max(x => 
+                                                    x != null && 
+                                                    x.Id == EffectCode.TroopSpeedMod && 
+                                                    ((string)x.Value[1]).ToUpper() == "DISTANCE" ? (int)x.Value[0] : 0);
+            double bonusPercentage = bonus / 100;
+
+            // getting rush attack/defense bonus;
+            double rushMod = effects.DefaultIfEmpty().Sum(effect => 
+                                                    effect != null && 
+                                                    effect.Id == EffectCode.TroopSpeedMod && 
+                                                    ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) || 
+                                                    (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking)) ? (int)effect.Value[0] : 0);
+
+            rushMod = 100 / (Math.Max(1, rushMod + 100));
+
+            return (int)(DoubleTimeTotal(moveTime, distance, bonusPercentage, 500) * rushMod);
         }
 
         /// <summary>

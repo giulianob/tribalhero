@@ -72,5 +72,5 @@ ERROR_727,You don't currently have any invitations to join a tribe
 ERROR_741,It's too late to join this assignment
 ERROR_742,Assignment not found
 ERROR_743,Invalid assignment dispatch time.
-ERROR_744,You are not allowed to create an assignment to attack another member of your tribe
+ERROR_744,You are not allowed to attack a member of your own tribe.
 ERROR_745,Your units are too slow for the specified attack time.

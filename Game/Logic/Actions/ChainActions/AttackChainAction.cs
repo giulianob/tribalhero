@@ -123,6 +123,10 @@ namespace Game.Logic.Actions
             if (targetStructure.Lvl <= 1 && Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", targetStructure))
                 return Error.StructureUndestroyable;
 
+            // Can't attack tribes mate
+            if (city.Owner.Tribesman != null && targetCity.Owner.Tribesman != null && city.Owner.Tribesman.Tribe == targetCity.Owner.Tribesman.Tribe)
+                return Error.AssignmentCantAttackFriend;
+
             //Load the units stats into the stub
             stub.BeginUpdate();
             stub.Template.LoadStats(TroopBattleGroup.Attack);

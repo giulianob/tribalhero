@@ -31,15 +31,19 @@
 			if (!originalBorder) {
 				originalBorder = getBorder();
 			}
-			
-			frame = new GameJFrame(owner, title, modal, onDispose);
+
+			var self: JPanel = this;
+			frame = new GameJFrame(owner, title, modal, function(): void {
+				if (onClose != null) 
+					onClose(self);
+				
+				if (onDispose != null)
+					onDispose();
+			});
 			setBorder(new EmptyBorder(originalBorder, new Insets(15, 22, 30, 25)));
 
 			frame.setContentPane(this);
-
-			var self: JPanel = this;
-			frame.addEventListener(FrameEvent.FRAME_CLOSING, function(e: FrameEvent):void { if (onClose != null) onClose(self); });
-
+			
 			frame.pack();
 			Util.centerFrame(frame);
 			frame.setResizable(false);

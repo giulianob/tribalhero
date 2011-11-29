@@ -126,6 +126,8 @@ namespace Game.Database
                                           (string)reader["name"],
                                           (string)reader["desc"],
                                           (byte)reader["level"],
+                                          (int)reader["attack_point"],
+                                          (int)reader["defense_point"],
                                           resource) {DbPersisted = true};
                     Global.Tribes.Add(tribe.Id, tribe);
                 }

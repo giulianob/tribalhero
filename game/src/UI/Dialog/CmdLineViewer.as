@@ -68,15 +68,7 @@ package src.UI.Dialog
 			addEventListener(MouseEvent.MOUSE_DOWN, function(e: Event) : void {
 				e.stopImmediatePropagation();
 			});
-
-			addEventListener(Event.ADDED_TO_STAGE, function(e: Event) : void {
-				stage.addEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
-			});
-
-			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
-				stage.removeEventListener(KeyboardEvent.KEY_DOWN, stageKeyDown);
-			});
-			
+		
 			btnClose.addActionListener(onClose);
 			btnOpen.addActionListener(onOpen);
 
@@ -160,13 +152,6 @@ package src.UI.Dialog
 
 				e.stopImmediatePropagation();
 			});
-		}
-
-		private function stageKeyDown(e: KeyboardEvent) : void {			
-			if (e.keyCode == 192) {
-				getFrame().show();
-				txtCommand.makeFocus();
-			}
 		}
 
 		private function getCurrentCmd(): String {
@@ -285,7 +270,6 @@ package src.UI.Dialog
 
 			txtCommand = new JTextField();
 			txtCommand.setBackgroundDecorator(null);
-			txtCommand.setRestrict("^`");
 			txtCommand.setConstraints("Center");
 			txtCommand.setMaxChars(450);
 			

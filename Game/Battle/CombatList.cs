@@ -55,6 +55,8 @@ namespace Game.Battle
 
             var objectsByScore = new List<CombatScoreItem>(Count);
 
+            uint lowestRow = this.Where(obj => obj.InRange(attacker)).Min(obj => obj.Stats.Stl);
+
             foreach (var obj in this)
             {
                 if (!obj.InRange(attacker) || !attacker.InRange(obj) || obj.IsDead)
@@ -62,7 +64,7 @@ namespace Game.Battle
 
                 hasInRange = true;
 
-                if (!attacker.CanSee(obj,this.Min(x=>x.Stats.Stl)))
+                if (!attacker.CanSee(obj, lowestRow))
                     continue;
 
                 int score = 0;

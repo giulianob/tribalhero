@@ -184,7 +184,7 @@ namespace Game.Module
                     }
 
                     // remove all customized tiles
-                    RadiusLocator.ForeachObject(city.X,
+                    TileLocator.ForeachObject(city.X,
                                                 city.Y,
                                                 city.Radius,
                                                 true,

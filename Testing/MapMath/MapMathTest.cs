@@ -13,10 +13,15 @@ namespace Testing.MapMath
         [Fact]
         public void Generate()
         {
-            using (var file = new StreamWriter(File.Create(@"c:\out.txt")))
+            using (var file = new StreamWriter(File.Create(@"C:\Users\OscarMike\out.txt")))
             {
                 file.WriteLine("X1,Y1,R1,X2,Y2,R2,OVERLAPPING,DISTANCE,EQUALSUMTODISTANCE");
-                Location even = new Location(1671, 1720);
+                Location even = new Location(1671, 1721);
+          /*      RadiusLocator.ForeachObject(even.X,even.Y,3, true, (x,y,u,u1,custom)=>
+                    {
+                        file.WriteLine("{0},{1}", u, u1);
+                        return true;
+                    },null);*/
                 RadiusLocator.ForeachObject(even.X,
                                             even.Y,
                                             8,
@@ -24,29 +29,31 @@ namespace Testing.MapMath
                                             (x, y, u, u1, custom) =>
                                                 {
                                                     var location = new Location(u, u1);
-                                                    for (byte i = 0; i <= 6; i++)
+                                                    for (byte i = 0; i <= 8; i++)
                                                     {
-                                                        for (byte j = 0; j <= 6; j++)
+                                                        for (byte j = 0; j <= 8; j++)
                                                         {
                                                             var overlapping = Game.Map.MapMath.IsOverlapping(even, i, location, j);
-                                                            var distance = SimpleGameObject.RadiusToPointFiveStyle(SimpleGameObject.RadiusDistance(even.X, even.Y, location.X, location.Y));
-                                                            var sumEqualToDistance = distance <= i + j;
+                                                            var distance = SimpleGameObject.RadiusDistance(even.X, even.Y, location.X, location.Y);
+                                                            var sumEqualToDistance = distance - 1 == i + j;
+                                                            var lessThan = distance - 1 < i + j;
 
-                                                            if (!sumEqualToDistance && overlapping)
+                                                            if (!sumEqualToDistance)
                                                             {
-                                                                file.WriteLine("Anthony was right");
+                                                                continue;
                                                             }
 
-                                                            file.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
+                                                            file.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
                                                                            even.X,
                                                                            even.Y,
-                                                                           SimpleGameObject.RadiusToPointFiveStyle(i),
+                                                                           i,
                                                                            location.X,
                                                                            location.Y,
-                                                                           SimpleGameObject.RadiusToPointFiveStyle(j),
+                                                                           j,
                                                                            overlapping ? "Y" : "N",
                                                                            distance,
-                                                                           sumEqualToDistance ? "Y" : "N");
+                                                                           sumEqualToDistance ? "Y" : "N",
+                                                                           lessThan ? "Y" : "N");
                                                         }
                                                     }
 

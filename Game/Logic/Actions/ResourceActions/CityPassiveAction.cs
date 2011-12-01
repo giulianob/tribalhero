@@ -111,6 +111,12 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
+                if (Config.actions_skip_city_actions && city.Owner.Session == null)
+                {
+                    StateChange(ActionState.Completed);
+                    return;
+                }
+
                 everyOther = !everyOther;
 
                 city.BeginUpdate();

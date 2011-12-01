@@ -871,6 +871,7 @@ namespace Game.Database
                 {
                     var actionType = (ActionType)((int)reader["type"]);
                     Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
+
                     ConstructorInfo cInfo = type.GetConstructor(types);
 
                     DateTime beginTime = DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc).Add(downTime);

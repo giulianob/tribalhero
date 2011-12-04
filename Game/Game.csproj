@@ -118,6 +118,7 @@
     <Compile Include="Battle\CombatUnitFactory.cs" />
     <Compile Include="Comm\ApiCaller.cs" />
     <Compile Include="Comm\CmdLine Commands\AssignmentCommandLineModule.cs" />
+    <Compile Include="Comm\CmdLine Commands\CityCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\TribeCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\PlayerCommandLineModule.cs" />
     <Compile Include="Comm\CmdLine Commands\ResourcesCommandLineModule.cs" />

@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Battle;
 using Game.Comm;
 using Game.Comm.Channel;
+using Game.Comm.CmdLine_Commands;
 using Game.Comm.Processor_Commands;
 using Game.Data;
 using Game.Setup;
@@ -89,6 +90,7 @@ namespace Game
                                               c =>
                                               new CommandLineProcessor(new AssignmentCommandLineModule(),
                                                                    new PlayerCommandLineModule(),
+                                                                   new CityCommandLineModule(),
                                                                    new ResourcesCommandLineModule(),
                                                                    new TribeCommandLineModule())).InSingletonScope();
 

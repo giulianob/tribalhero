@@ -20,7 +20,7 @@ package src.Objects.Actions {
 
 		public function toString(): String
 		{
-			return "Downgrading structure";
+			return "Destroying structure";
 		}
 
 		public function getButton(parentObj: SimpleGameObject, sender: StructurePrototype): ActionButton

@@ -100,7 +100,6 @@ namespace Game.Battle
             city = (City)owner;
             this.dbManager = dbManager;
             report = battleReport;  
-            channel = battleChannel;
             groupIdGen.Set(1);
 
             ActionAttacked += battleChannel.BattleActionAttacked;
@@ -110,8 +109,6 @@ namespace Game.Battle
             ExitBattle += battleChannel.BattleExitBattle;
             EnterRound += battleChannel.BattleEnterRound;
         }
-
-        private readonly IBattleChannel channel;
 
         public uint BattleId
         {

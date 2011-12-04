@@ -105,19 +105,15 @@ namespace Game.Logic.Actions
             return true;
         }
 
-        private bool CalculateNext(TroopObject obj)
+        private bool CalculateNextPosition(TroopObject obj)
         {
             if (distanceRemaining <= 0)
                 return false;
 
-            RecordForeach recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
+            var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
             TileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
             nextX = recordForeach.X;
             nextY = recordForeach.Y;            
-
-            nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false));
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false) * distanceRemaining);
-
             return true;
         }
 
@@ -131,17 +127,19 @@ namespace Game.Logic.Actions
 
             distanceRemaining = troopObj.TileDistance(x, y);
 
-            moveTime = Formula.MoveTimeTotal(troopObj.Stub.Speed, distanceRemaining, isAttacking, new List<Effect>(city.Technologies.GetAllEffects()));
 
-            if (Config.battle_instant_move)
-                moveTime = 0;
+            var moveTimeTotal = Formula.MoveTimeTotal(troopObj.Stub.Speed, distanceRemaining, isAttacking, new List<Effect>(city.Technologies.GetAllEffects()));
+
+            moveTime = Config.battle_instant_move ? 0 : moveTime = moveTimeTotal/distanceRemaining;
             
             beginTime = DateTime.UtcNow;
+            endTime = DateTime.UtcNow.AddSeconds(moveTimeTotal);
+            nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false));
 
             troopObj.Stub.BeginUpdate();
             troopObj.Stub.State = !isReturningHome ? TroopState.Moving : TroopState.ReturningHome;
 
-            if (!CalculateNext(troopObj))
+            if (!CalculateNextPosition(troopObj))
             {
                 troopObj.Stub.State = TroopState.Idle;
                 StateChange(ActionState.Completed);
@@ -191,7 +189,7 @@ namespace Game.Logic.Actions
                 troopObj.Stub.FireUpdated();
                 troopObj.Stub.EndUpdate();
 
-                if (!CalculateNext(troopObj))
+                if (!CalculateNextPosition(troopObj))
                 {
                     troopObj.Stub.BeginUpdate();
                     troopObj.Stub.State = TroopState.Idle;
@@ -204,6 +202,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
+                nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false));
                 StateChange(ActionState.Rescheduled);
             }
         }

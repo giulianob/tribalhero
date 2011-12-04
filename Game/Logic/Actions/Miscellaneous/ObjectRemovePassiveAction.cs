@@ -175,9 +175,20 @@ namespace Game.Logic.Actions
 
                 // Finish cleaning object
                 if (obj is TroopObject)
-                    city.DoRemove(obj as TroopObject);
+                    city.DoRemove((TroopObject)obj);
                 else if (obj is Structure)
-                    city.DoRemove(obj as Structure);
+                {
+                    if (!wasKilled)
+                    {
+                        // Give laborers back to the city if obj was not killed off
+                        ushort laborers = ((Structure)obj).Stats.Labor;
+                        city.BeginUpdate();
+                        city.Resource.Labor.Add(laborers);
+                        city.EndUpdate();
+                    }
+
+                    city.DoRemove(((Structure)obj));
+                }
 
                 StateChange(ActionState.Completed);
             }

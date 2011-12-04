@@ -113,13 +113,13 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
+                if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", structure))
                 {
                     StateChange(ActionState.Failed);
                     return;
                 }
 
-                if (structure.State.Type == ObjectState.Battle && structure.Lvl <= 1)
+                if (structure.State.Type == ObjectState.Battle)
                 {
                     StateChange(ActionState.Failed);
                     return;
@@ -137,35 +137,12 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                // We need to unblock the structure here because the ScheduleRemove won't work if it's already blocked. Sort of a hack.
+                // Unblock structure since we're done with it in this action and ObjectRemoveAction will take it from here
                 structure.IsBlocked = false;
 
-                // If structure is level 0 then we don't even try to give any laborers back or anything, just remove it
-                if (structure.Lvl == 0)
-                {
-                    Global.World.Remove(structure);
-                    city.ScheduleRemove(structure, false);
-                }
-                else
-                {
-                    ushort oldLabor = structure.Stats.Labor;
-                    Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, structure.Type, (byte)(structure.Lvl - 1));
-                    structure.Stats.Hp = structure.Stats.Base.Battle.MaxHp;
-                    structure.Stats.Labor = Math.Min(oldLabor, structure.Stats.Base.MaxLabor);
-                    
-                    if (oldLabor > structure.Stats.Base.MaxLabor)
-                        city.Resource.Labor.Add(oldLabor - structure.Stats.Base.MaxLabor);
-
-                    Procedure.OnStructureUpgradeDowngrade(structure);
-
-                    if (structure.Lvl > 0)
-                        Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
-                    else
-                    {
-                        Global.World.Remove(structure);
-                        city.ScheduleRemove(structure, false);
-                    }
-                }
+                // Destroy structure
+                Global.World.Remove(structure);
+                city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
                 city.EndUpdate();

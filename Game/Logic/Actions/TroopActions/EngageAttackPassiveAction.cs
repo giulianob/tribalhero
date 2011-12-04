@@ -295,7 +295,7 @@ namespace Game.Logic.Actions
                         Ioc.Kernel.Get<IDbManager>().Save(this);
                     }
 
-                    ReduceStamina(stub, BattleFormulas.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina));
+                    ReduceStamina(stub, BattleFormulas.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina, target as CombatStructure));
                 }                
             }
             // Check if the unit being attacked belongs to us

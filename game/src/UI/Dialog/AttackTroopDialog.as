@@ -89,8 +89,7 @@
 				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
 			}
 			else {
-				var secsPerTile: int = Formula.moveTime(city, stub.getSpeed(city), 1, true);
-				lblTroopSpeed.setText("Troop will move a tile about every " + Util.niceTime(secsPerTile, false));
+				lblTroopSpeed.setText("Troop speed will be: " + Formula.moveTimeString(stub.getSpeed(city)));
 			}
 		}
 

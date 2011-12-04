@@ -72,27 +72,50 @@
 
 			return buildTime * Constants.secondsPerUnit;
 		}
+
+		public static function doubleTimeTotal(moveTime : int, distance :int, bonusPercentage: Number, forEveryDistance: int ):int {
+			var total: int = 0;
+            var index: int = 0;
+            var tiles: int = 0;
+            while (distance > 0) {
+                tiles = distance > forEveryDistance ? forEveryDistance : distance;
+                total += (int)(moveTime * tiles / (1 + bonusPercentage * index++));
+                distance -= tiles;
+            }
+            return total;
+		}
 		
-		public static function moveTime(city: City, speed: int, distance: int, isAttacking: Boolean) : int {
-			
-			// MoveTimeMod
-			var mod: Number = 0;
+		public static function moveTimeTotal(city: City, speed: int, distance: int, isAttacking: Boolean) : int {
+			var moveTime: int = 60 * (100 - ((speed - 12) * 5)) / 100;
+			var bonus: Number = 0;
+			var rushMod: Number = 0;
+
 			for each (var tech: EffectPrototype in city.techManager.getEffects(EffectPrototype.EFFECT_TROOP_SPEED_MOD, EffectPrototype.INHERIT_ALL)) {
 				if ( (tech.param2.toUpperCase() == "ATTACK" && isAttacking) || (tech.param2.toUpperCase() == "DEFENSE" && !isAttacking)) {
-					mod += (int) (tech.param1);				
-				} else if (tech.param2.toUpperCase() == "DISTANCE" && distance > (int)(tech.param3)) {
-					mod += (int) (tech.param1);
+					rushMod += (int) (tech.param1);				
+				} else if (tech.param2.toUpperCase() == "DISTANCE") {
+					bonus = (int) (tech.param1) > bonus? (int) (tech.param1): bonus;
 				}
 			}
 
-			mod = 100 / Math.max(1, (mod + 100));
-
-			// MoveTime
-			var moveTime: int = 60 * (100 - ((speed - 12) * 5)) / 100;
-
-			// Calculate total
-			return Math.max(1, moveTime * mod) * distance * Constants.secondsPerUnit;
-		}	
+            var bonusPercentage: Number = bonus / 100;
+            rushMod = 100 / (Math.max(1, rushMod + 100));
+			return (int)(doubleTimeTotal(moveTime, distance, bonusPercentage, 500) * rushMod) * Constants.secondsPerUnit;
+		}
+		
+		public static function moveTimeString(speed: int): String{
+			if (speed <= 5) {
+				return "Very slow";
+			} else if (speed <= 10) {
+				return "Slow";
+			} else if (speed <= 15) {
+				return "Normal";
+			} else if (speed <= 20) {
+				return "Fast";
+			} else {
+				return "Very Fast";
+			}
+		}
 
 		public static function getTribeUpgradeCost(level: int) : Resources {
 			return new Resources(1000, 400, 40, 2000, 0).multiplyByUnit(TRIBE_MEMBER_PER_LEVEL * level * (1 + ( level * level / 20)));

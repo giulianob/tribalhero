@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Common;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Util;
 using System.Linq;
+
 #endregion
 
 namespace Game.Setup

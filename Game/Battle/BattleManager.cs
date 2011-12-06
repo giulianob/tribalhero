@@ -22,52 +22,6 @@ using Persistance;
 
 namespace Game.Battle
 {
-    public interface IBattleManager : IPersistableObject
-    {
-        uint BattleId { get; set; }
-        bool BattleStarted { get; set; }
-        uint Round { get; set; }
-        uint Turn { get; set; }
-        City City { get; set; }
-        CombatList Attacker { get; }
-        CombatList Defender { get; }
-        IBattleReport BattleReport { get; }
-        ReportedObjects ReportedObjects { get; }
-        ReportedTroops ReportedTroops { get; }
-        City[] LockList { get; }
-        void Subscribe(Session session);
-        void Unsubscribe(Session session);
-        CombatObject GetCombatObject(uint id);
-        bool CanWatchBattle(Player player, out int roundsLeft);
-        void DbLoaderAddToLocal(CombatStructure structure, uint id);
-        void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
-        void AddToLocal(IEnumerable<TroopStub> objects, ReportState state);
-        void AddToLocal(IEnumerable<Structure> objects);
-        void AddToAttack(TroopStub stub);
-        void AddToAttack(IEnumerable<TroopStub> objects);
-        void AddToDefense(IEnumerable<TroopStub> objects);
-        void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state);
-        void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state);
-        void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state);
-        void RefreshBattleOrder();
-        bool GroupIsDead(CombatObject co, CombatList combatList);
-        bool ExecuteTurn();
-        event BattleManager.OnBattle EnterBattle;
-        event BattleManager.OnBattle ExitBattle;
-        event BattleManager.OnRound EnterRound;
-        event BattleManager.OnTurn EnterTurn;
-        event BattleManager.OnTurn ExitTurn;
-        event BattleManager.OnReinforce ReinforceAttacker;
-        event BattleManager.OnReinforce ReinforceDefender;
-        event BattleManager.OnReinforce WithdrawAttacker;
-        event BattleManager.OnReinforce WithdrawDefender;
-        event BattleManager.OnUnitUpdate UnitAdded;
-        event BattleManager.OnUnitUpdate UnitRemoved;
-        event BattleManager.OnUnitUpdate UnitUpdated;
-        event BattleManager.OnUnitUpdate SkippedAttacker;
-        event BattleManager.OnAttack ActionAttacked;
-    }
-
     public class BattleManager : IBattleManager
     {
         public delegate IBattleManager Factory(City owner);
@@ -76,6 +30,7 @@ namespace Game.Battle
         private readonly CombatList attackers;
         private readonly object battleLock = new object();
         private readonly CombatList defenders;
+        private readonly ICombatUnitFactory combatUnitFactory;
         private readonly LargeIdGenerator groupIdGen;
         private readonly LargeIdGenerator idGen;
 
@@ -89,17 +44,17 @@ namespace Game.Battle
         private uint round;
         private uint turn;
 
-        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport)
-        {
-            attackers = Ioc.Kernel.Get<CombatList>();
-            defenders = Ioc.Kernel.Get<CombatList>();
-
+        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport, CombatList attackers, CombatList defenders, ICombatUnitFactory combatUnitFactory)
+        {            
             groupIdGen = new LargeIdGenerator(ushort.MaxValue);
             idGen = new LargeIdGenerator(ushort.MaxValue);
-
+            
+            this.dbManager = dbManager;            
+            this.attackers = attackers;
+            this.defenders = defenders;
+            this.combatUnitFactory = combatUnitFactory;
             city = (City)owner;
-            this.dbManager = dbManager;
-            report = battleReport;  
+            report = battleReport;
             groupIdGen.Set(1);
 
             ActionAttacked += battleChannel.BattleActionAttacked;
@@ -390,12 +345,11 @@ namespace Game.Battle
                     obj.State = GameObjectState.BattleState(obj.City.Id);
                     obj.EndUpdate();
 
-                    CombatObject combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj))
-                                                {
-                                                        Id = (uint)idGen.GetNext(), 
-                                                        GroupId = 1,
-                                                        LastRound = round
-                                                };
+                    CombatObject combatObject = combatUnitFactory.CreateStructureCombatUnit(this, obj);
+                    combatObject.Id = (uint)idGen.GetNext();
+                    combatObject.GroupId = 1;
+                    combatObject.LastRound = round;
+                
                     defenders.Add(combatObject);
                     list.Add(combatObject);
                 }
@@ -485,9 +439,9 @@ namespace Game.Battle
                         {
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
-                                combatObjects = Ioc.Kernel.Get<CombatUnitFactory>().CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
+                                combatObjects = combatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
                             else
-                                combatObjects = Ioc.Kernel.Get<CombatUnitFactory>().CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
+                                combatObjects = combatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
 
                             foreach (var unit in combatObjects)
                             {

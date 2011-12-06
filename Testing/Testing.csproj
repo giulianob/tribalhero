@@ -95,7 +95,6 @@
     <Compile Include="Formulas\MoveTimeTotalTest.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />
     <Compile Include="MapMath\ForeachTest.cs" />
-    <Compile Include="MapMath\MapMathTest.cs" />
     <Compile Include="MapMath\RadiusTest.cs" />
     <Compile Include="Misc\XmlSerializerTest.cs" />
     <Compile Include="Resources\AggressiveLazyResourceTest.cs" />
@@ -109,6 +108,10 @@
     <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.Testing\Common.Testing.csproj">
+      <Project>{07693ED0-7EB9-4AE4-AF3B-F36EC85BE962}</Project>
+      <Name>Common.Testing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ConsoleSimulator\ConsoleSimulator.csproj">
       <Project>{831301A1-D65D-4DD6-AB67-23FBBE59145A}</Project>
       <Name>ConsoleSimulator</Name>
@@ -147,6 +150,9 @@
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="MapMath\overlapping_test_data.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

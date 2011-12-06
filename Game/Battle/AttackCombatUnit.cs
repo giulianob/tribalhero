@@ -7,6 +7,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using System.Linq;
 using Ninject;
@@ -236,9 +237,10 @@ namespace Game.Battle
             if (obj is CombatStructure)
             {
                 Structure structure = (obj as CombatStructure).Structure;
-                return SimpleGameObject.RadiusToPointFiveStyle(TroopStub.TroopObject.RadiusDistance(structure)) <=
-                       SimpleGameObject.RadiusToPointFiveStyle(structure.Stats.Base.Radius) +
-                       SimpleGameObject.RadiusToPointFiveStyle(TroopStub.TroopObject.Stats.AttackRadius);
+                return RadiusLocator.Current.IsOverlapping(new Location(TroopStub.TroopObject.X, TroopStub.TroopObject.Y),
+                                                           TroopStub.TroopObject.Stats.AttackRadius,
+                                                           new Location(structure.X, structure.Y),
+                                                           structure.Stats.Base.Radius);
             }
 
             throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));

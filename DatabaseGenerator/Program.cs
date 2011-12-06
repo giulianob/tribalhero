@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using CSVToXML;
+using Common;
 using Game;
 using Game.Data;
 using Game.Data.Stats;

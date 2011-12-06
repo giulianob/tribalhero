@@ -106,6 +106,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Battle\CombatObjectFactory.cs" />
+    <Compile Include="Battle\IBattleManager.cs" />
+    <Compile Include="Battle\ICombatUnitFactory.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />
@@ -256,7 +259,6 @@
     <Compile Include="Util\DuplicateSubscriptionException.cs" />
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\CmdParserExtension.cs" />
-    <Compile Include="Util\CSVReader.cs" />
     <Compile Include="Util\HexDump.cs" />
     <Compile Include="Util\IChannel.cs" />
     <Compile Include="Util\IdGenerator.cs" />
@@ -370,6 +372,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{A5302ED1-2B78-4FD4-B0C8-C19C3299AB59}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Persistance\Persistance.csproj">
       <Project>{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}</Project>
       <Name>Persistance</Name>

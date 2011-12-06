@@ -167,7 +167,7 @@ namespace Game.Logic.Actions
 
                     // Make sure all neighboring roads have a diff path
                     bool allNeighborsHaveOtherPaths = true;
-                    RadiusLocator.ForeachObject(x,
+                    RadiusLocator.Current.ForeachObject(x,
                                                 y,
                                                 1,
                                                 false,
@@ -205,7 +205,7 @@ namespace Game.Logic.Actions
 
                 bool hasRoad = false;
 
-                RadiusLocator.ForeachObject(x,
+                RadiusLocator.Current.ForeachObject(x,
                                             y,
                                             1,
                                             false,

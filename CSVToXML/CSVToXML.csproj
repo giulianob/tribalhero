@@ -74,11 +74,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSVReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{A5302ED1-2B78-4FD4-B0C8-C19C3299AB59}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Game\Game.csproj">
       <Project>{93D46B65-B2E0-46C9-8BAA-518B3DB64DC0}</Project>
       <Name>Game</Name>

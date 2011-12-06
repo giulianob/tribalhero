@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Setup;

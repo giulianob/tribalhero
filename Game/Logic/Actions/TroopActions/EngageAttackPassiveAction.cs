@@ -9,6 +9,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -107,14 +108,17 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private static IEnumerable<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject obj)
+        private static IEnumerable<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject troopObject)
         {
+            Location troopLocation = new Location(troopObject.X, troopObject.Y);
+
             return
                     structures.Where(
                                      structure =>
-                                     SimpleGameObject.RadiusToPointFiveStyle(structure.RadiusDistance(obj)) <=
-                                     SimpleGameObject.RadiusToPointFiveStyle(obj.Stats.AttackRadius) +
-                                     SimpleGameObject.RadiusToPointFiveStyle(structure.Stats.Base.Radius));
+                                     RadiusLocator.Current.IsOverlapping(troopLocation,
+                                                                         troopObject.Stats.AttackRadius,
+                                                                         new Location(structure.X, structure.Y),
+                                                                         structure.Stats.Base.Radius));
         }
 
         public override Error Execute()

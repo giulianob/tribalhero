@@ -6,20 +6,33 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace CSVToXML
+namespace Common
 {
     public class CsvReader : IDisposable
     {
         private readonly StreamReader sr;
 
-        public CsvReader(StreamReader sr)
+        private bool initialized;
+
+        public bool HasHeader { get; set; }
+
+        public CsvReader(StreamReader sr, bool hasHeader = true)
         {
             this.sr = sr;
 
-            Columns = TokenizeCsvLine(sr.ReadLine());
+            HasHeader = hasHeader;            
         }
 
-        public string[] Columns { get; private set; }
+        private string[] columns;
+        public string[] Columns
+        {
+            get
+            {
+                Initialize();
+
+                return columns;
+            }
+        }
 
         #region IDisposable Members
 
@@ -32,6 +45,8 @@ namespace CSVToXML
 
         public string[] ReadRow()
         {
+            Initialize();
+
             string line;
             while (true)
             {
@@ -46,6 +61,20 @@ namespace CSVToXML
             }
 
             return RegexTokenizeCsvLine(line);
+        }
+
+        private void Initialize()
+        {
+            if (initialized)
+            {
+                return;
+            }
+
+            if (HasHeader)
+            {
+                initialized = true;
+                columns = TokenizeCsvLine(sr.ReadLine());
+            }
         }
 
         private static string[] RegexTokenizeCsvLine(string line)

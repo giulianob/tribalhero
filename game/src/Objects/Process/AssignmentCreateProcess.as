@@ -65,7 +65,7 @@ package src.Objects.Process
 			var targetMapDistance: Point = MapUtil.getMapCoord(target.getX(), target.getY());
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
 			
-			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTime(city, troop.getSpeed(city), distance, true), onChoseTime);
+			var assignmentDialog: AssignmentCreateDialog = new AssignmentCreateDialog(Formula.moveTimeTotal(city, troop.getSpeed(city), distance, true), onChoseTime);
 			assignmentDialog.show();
 		}
 		

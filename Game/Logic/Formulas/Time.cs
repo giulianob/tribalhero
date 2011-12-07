@@ -71,31 +71,35 @@ namespace Game.Logic.Formulas
             while (distance > 0)
             {
                 tiles = distance > forEveryDistance ? forEveryDistance : distance;
-                total += (int)(moveTime * tiles * Config.seconds_per_unit / (1 + bonusPercentage * index++));
+                total += (int)(moveTime * tiles / (1 + bonusPercentage * index++));
                 distance -= tiles;
             }
             return total;
         }
 
-        public static int MoveTimeTotal(byte speed, int distance, bool isAttacking, List<Effect> effects) {
-            int moveTime = MoveTime(speed);
-            // getting double time bonus
-            double bonus = effects.DefaultIfEmpty().Max(x => 
-                                                    x != null && 
-                                                    x.Id == EffectCode.TroopSpeedMod && 
-                                                    ((string)x.Value[1]).ToUpper() == "DISTANCE" ? (int)x.Value[0] : 0);
-            double bonusPercentage = bonus / 100;
+        public static int MoveTimeTotal(byte speed, int distance, bool isAttacking, List<Effect> effects)
+        {
+            var moveTime = MoveTime(speed);
+            double bonus = 0;
+            double rushMod = 0;
 
-            // getting rush attack/defense bonus;
-            double rushMod = effects.DefaultIfEmpty().Sum(effect => 
-                                                    effect != null && 
-                                                    effect.Id == EffectCode.TroopSpeedMod && 
-                                                    ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) || 
-                                                    (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking)) ? (int)effect.Value[0] : 0);
+            foreach (var effect in effects.Where(x => x.Id == EffectCode.TroopSpeedMod))
+            {
+                // getting rush attack/defense bonus;
+                if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) || (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))
+                {
+                    rushMod += (int)effect.Value[0];
+                }
+                        // getting double time bonus
+                else if (((string)effect.Value[1]).ToUpper() == "DISTANCE")
+                {
+                    bonus = (int)effect.Value[0] > bonus ? (int)effect.Value[0] : bonus;
+                }
+            }
 
-            rushMod = 100 / (Math.Max(1, rushMod + 100));
-
-            return (int)(DoubleTimeTotal(moveTime, distance, bonusPercentage, 500) * rushMod);
+            var bonusPercentage = bonus/100;
+            rushMod = 100/(Math.Max(1, rushMod + 100));
+            return (int)(DoubleTimeTotal(moveTime, distance, bonusPercentage, 500)*rushMod*Config.seconds_per_unit);
         }
 
         /// <summary>

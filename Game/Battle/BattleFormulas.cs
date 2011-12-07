@@ -137,8 +137,11 @@ namespace Game.Battle
             return --stamina;
         }
 
-        internal static short GetStaminaStructureDestroyed(short stamina)
+        internal static short GetStaminaStructureDestroyed(short stamina, CombatStructure combatStructure)
         {
+            if (combatStructure.BaseStats.Armor != ArmorType.Building3)
+                return stamina;
+
             if (stamina < Config.battle_stamina_destroyed_deduction)
                 return 0;
 

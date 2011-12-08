@@ -11,12 +11,16 @@ package src.UI.Dialog
 	import org.aswing.skinbuilder.*;
 	import src.*;
 	import src.UI.*;
+	import src.UI.Components.SimpleTooltip;
 	import src.UI.LookAndFeel.*;
 	import src.Util.*;
 
 	public class CmdLineViewer extends GameJBox
 	{
 		private const MAX_CHAT_LENGTH: int = 15000;
+		
+		public const TYPE_GLOBAL: int = 0;
+		public const TYPE_TRIBE: int = 1;
 		
 		private var pnlContent: JPanel;
 		private var txtConsole: JTextArea;
@@ -27,6 +31,8 @@ package src.UI.Dialog
 		private var btnMinimize: JButton;
 		private var btnClose: JButton;
 		private var btnOpen: JButton;
+		private var btnSendChat: JButton;
+		private var btnSendTribeChat: JButton;
 		
 		private var sizeMode: int;
 		
@@ -102,37 +108,8 @@ package src.UI.Dialog
 
 			txtCommand.addEventListener(KeyboardEvent.KEY_DOWN, function(e: KeyboardEvent): void {
 				if (e.keyCode == Keyboard.ENTER) {
-					switch (txtCommand.getText()) {
-						case "/clr":
-						case "/clear":
-						case "/cls":
-							chat = "";
-							txtConsole.setHtmlText("");
-						break;
-						default:
-							if (txtCommand.getText().length > 0) {																
-								var message: String = StringHelper.trim(txtCommand.getText());
-								
-								if (message.charAt(0) == '/')
-								{								
-									log(txtCommand.getText(), true);
-									
-									Global.mapComm.General.sendCommand(message.substr(1), function(resp: String) : void {
-										log(resp, false);
-									});
-								}
-								else
-								{
-									Global.mapComm.General.sendChat(message, function(resp: String) : void {
-										log(resp, false);
-									});
-								}
-								
-								saveToHistory(message);
-								txtCommand.setText("");
-							}
-						break;
-					}
+					sendChat(e.shiftKey ? TYPE_TRIBE : TYPE_GLOBAL, txtCommand.getText());
+					txtCommand.setText("");
 				}
 				else if (e.keyCode == Keyboard.UP) {
 					if (cmdIndex == -1) cmdIndex = cmdHistory.length - 1;
@@ -152,6 +129,51 @@ package src.UI.Dialog
 
 				e.stopImmediatePropagation();
 			});
+			
+			btnSendTribeChat.addActionListener(function(e: Event): void {
+				sendChat(TYPE_TRIBE, txtCommand.getText());
+				txtCommand.setText("");
+			});
+			
+			btnSendChat.addActionListener(function(e: Event): void {
+				sendChat(TYPE_GLOBAL, txtCommand.getText());
+				txtCommand.setText("");
+			});
+		}
+		
+		private function sendChat(type: int, message: String) : void {
+			switch (message) {
+				case "/clr":
+				case "/clear":
+				case "/cls":
+					chat = "";
+					txtConsole.setHtmlText("");
+				break;
+				default:
+					if (message.length == 0) {																
+						return;
+					}
+					
+					message = StringHelper.trim(message);
+					
+					if (message.charAt(0) == '/')
+					{								
+						log(message, true);
+						
+						Global.mapComm.General.sendCommand(message.substr(1), function(resp: String) : void {
+							log(resp, false);
+						});
+					}
+					else
+					{
+						Global.mapComm.General.sendChat(type, message, function(resp: String) : void {
+							log(resp, false);
+						});
+					}
+					
+					saveToHistory(message);						
+				break;
+			}
 		}
 
 		private function getCurrentCmd(): String {
@@ -164,13 +186,26 @@ package src.UI.Dialog
 			return cmdIndex != -1 && cmdHistory[cmdIndex] == txtCommand.getText();
 		}
 		
-		public function logChat(playerId: int, playerName: String, str: String): void {			
+		public function logChat(type: int, playerId: int, playerName: String, str: String): void {			
 			var f: DateFormatter = new DateFormatter();
             f.formatString = "LL:NN";
 			
-			var color: String = playerId == Constants.playerId ? '#aef64f' : '#8ecafe';
+			var color: String = '#8ecafe';
 			
-			log("[" + f.format(new Date()) + "] <font color=\"" + color + "\"><a href=\"event:viewProfile:" + playerId + "\">" + StringHelper.htmlEscape(playerName) + "</a></font>" + ": " + StringHelper.htmlEscape(str), false, false);
+			if (playerId == Constants.playerId)
+			{
+				color = '#aef64f';
+			}			
+			else
+			{
+				switch (type)
+				{
+					case TYPE_TRIBE:
+						color = '#ffff06';
+				}
+			}
+			
+			log("[" + f.format(new Date()) + "] " + (type == TYPE_TRIBE ? "(Tribe) " : "") + "<font color=\"" + color + "\"><a href=\"event:viewProfile:" + playerId + "\">" + StringHelper.htmlEscape(playerName) + "</a></font>" + ": " + StringHelper.htmlEscape(str), false, false);
 		}
 
 		public function log(str: String, isCommand: Boolean = false, escapeStr: Boolean = true) : void {
@@ -281,9 +316,21 @@ package src.UI.Dialog
 			GameLookAndFeel.changeClass(txtCommand, "Console.text");			
 			GameLookAndFeel.changeClass(lblCommandCursor, "Tooltip.text");
 
+			btnSendChat = new JButton("G");
+			btnSendChat.setPreferredHeight(20);
+			new SimpleTooltip(btnSendChat, "Send to Global Chat");
+			
+			btnSendTribeChat = new JButton("T");
+			btnSendTribeChat.setPreferredHeight(20);
+			new SimpleTooltip(btnSendTribeChat, "Send to Tribe Chat (Shift+Enter)");
+			
+			var pnlCommandButtons: JPanel = new JPanel();
+			pnlCommandButtons.setConstraints("East");
+			pnlCommandButtons.appendAll(btnSendChat, btnSendTribeChat);
+			
 			var pnlCommandHolder: JPanel = new JPanel(new BorderLayout());
 			
-			pnlCommandHolder.appendAll(lblCommandCursor, txtCommand);
+			pnlCommandHolder.appendAll(lblCommandCursor, txtCommand, pnlCommandButtons);
 			
 			pnlToolbar.appendAll(btnMinimize, btnClose);
 			

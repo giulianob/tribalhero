@@ -58,7 +58,7 @@
 			var playerName: String = packet.readString();
 			var message: String = packet.readString();		
 			
-			Global.gameContainer.cmdLine.logChat(playerId, playerName, message);					
+			Global.gameContainer.cmdLine.logChat(type, playerId, playerName, message);					
 		}
 
 		public function queryXML(callback: Function, custom: * ):void
@@ -248,10 +248,10 @@
 			session.write(packet, onReceiveCommandResponse, [callback]);
 		}
 		
-		public function sendChat(message: String, callback: Function) : void {			
+		public function sendChat(type: int, message: String, callback: Function) : void {			
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.CHAT;
-			packet.writeByte(1);
+			packet.writeByte(type);
 			packet.writeString(message);
 
 			session.write(packet, onReceiveCommandResponse, [callback]);

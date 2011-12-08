@@ -69,6 +69,7 @@ ERROR_724,This player is already part of a tribe
 ERROR_725,You are not authorized to do that
 ERROR_726,This tribesman already has a pending invitation from another tribe. They must decline the current request before you can invite them.
 ERROR_727,You don't currently have any invitations to join a tribe
+ERROR_728,You must be part of a tribe to use this feature.
 ERROR_741,It's too late to join this assignment
 ERROR_742,Assignment not found
 ERROR_743,Invalid assignment dispatch time.

@@ -15,7 +15,7 @@
 			
 			this.text = text;
 
-			if (text.length < 30) {
+			if (text.length < 40) {
 				label = new JLabel(text);
 			} else {
 				label = new MultilineLabel(text, 0, 20);

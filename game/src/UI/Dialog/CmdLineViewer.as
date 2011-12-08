@@ -133,11 +133,13 @@ package src.UI.Dialog
 			btnSendTribeChat.addActionListener(function(e: Event): void {
 				sendChat(TYPE_TRIBE, txtCommand.getText());
 				txtCommand.setText("");
+				txtCommand.requestFocus();
 			});
 			
 			btnSendChat.addActionListener(function(e: Event): void {
 				sendChat(TYPE_GLOBAL, txtCommand.getText());
 				txtCommand.setText("");
+				txtCommand.requestFocus();
 			});
 		}
 		

@@ -24,7 +24,7 @@ namespace Game.Battle
         {
             return kernel.Get<CombatStructure>(new ConstructorArgument("owner", battleManager),
                                                new ConstructorArgument("structure", structure),
-                                               new ConstructorArgument("stats", BattleFormulas.LoadStats(structure)));
+                                               new ConstructorArgument("stats", BattleFormulas.Current.LoadStats(structure)));
         }
 
         public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager owner, TroopObject troop, FormationType formation, ushort type, ushort count)
@@ -33,7 +33,7 @@ namespace Game.Battle
             BattleStats stats = troop.Stub.Template[type];
             var groupSize = (from effect in troop.City.Technologies.GetEffects(EffectCode.UnitStatMod, EffectInheritance.All)
                          where ((string)effect.Value[0]).ToLower()=="groupsize" &&
-                               BattleFormulas.UnitStatModCheck(stats.Base, TroopBattleGroup.Attack, (string)effect.Value[3])
+                               BattleFormulas.Current.UnitStatModCheck(stats.Base, TroopBattleGroup.Attack, (string)effect.Value[3])
                          select (int)effect.Value[2]).DefaultIfEmpty<int>(0).Max() + stats.Base.GroupSize;
             
             var units = new AttackCombatUnit[(count - 1) / groupSize + 1];
@@ -62,7 +62,7 @@ namespace Game.Battle
             BattleStats stats = stub.Template[type];
             var groupSize = (from effect in stub.City.Technologies.GetEffects(EffectCode.UnitStatMod, EffectInheritance.All)
                         where ((string)effect.Value[0]).ToLower()=="groupsize" &&
-                            BattleFormulas.UnitStatModCheck(stats.Base, TroopBattleGroup.Defense, (string)effect.Value[3])
+                            BattleFormulas.Current.UnitStatModCheck(stats.Base, TroopBattleGroup.Defense, (string)effect.Value[3])
                         select (int)effect.Value[2]).DefaultIfEmpty().Max()+stats.Base.GroupSize;
 
             var units = new DefenseCombatUnit[(count - 1) / groupSize + 1];

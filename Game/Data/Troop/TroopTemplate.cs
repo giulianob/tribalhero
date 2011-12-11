@@ -142,7 +142,7 @@ namespace Game.Data.Troop
                     if (stats.ContainsKey(type))
                         continue;
 
-                    BattleStats stat = BattleFormulas.LoadStats(type, stub.City.Template[type].Lvl, stub.City, group);
+                    BattleStats stat = BattleFormulas.Current.LoadStats(type, stub.City.Template[type].Lvl, stub.City, group);
                     stats.Add(type, stat);
                 }
             }

@@ -159,7 +159,7 @@ namespace Game.Logic.Actions
 
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.BattleState(targetCity.Id);
-            stub.TroopObject.Stats.Stamina = BattleFormulas.GetStamina(stub, targetCity);
+            stub.TroopObject.Stats.Stamina = BattleFormulas.Current.GetStamina(stub, targetCity);
             stub.TroopObject.EndUpdate();
 
             stub.TroopObject.Stub.BeginUpdate();
@@ -222,7 +222,7 @@ namespace Game.Logic.Actions
                 return;
             
             // Calculate bonus
-            Resource resource = BattleFormulas.GetBonusResources(stub.TroopObject, originalUnitCount, remainingUnitCount);
+            Resource resource = BattleFormulas.Current.GetBonusResources(stub.TroopObject, originalUnitCount, remainingUnitCount);
 
             // Destroyed Structure bonus
             resource.Add(bonus);
@@ -299,7 +299,7 @@ namespace Game.Logic.Actions
                         Ioc.Kernel.Get<IDbManager>().Save(this);
                     }
 
-                    ReduceStamina(stub, BattleFormulas.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina, target as CombatStructure));
+                    ReduceStamina(stub, BattleFormulas.Current.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina, target as CombatStructure));
                 }                
             }
             // Check if the unit being attacked belongs to us

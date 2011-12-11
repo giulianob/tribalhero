@@ -3,6 +3,7 @@
 	import flash.display.*;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.text.TextField;
 	import src.Constants;
 	import src.Global;
 	import src.Map.Camera;
@@ -161,8 +162,17 @@
 					var drawTo:Point = new Point(xcoord + tileWDiv2, (ycoord + tileHDiv2) - (Constants.tileH));
 					var srcRect:Rectangle = new Rectangle(tilesetsrcX, tilesetsrcY, Constants.tileW, tileHTimes2);
 
-					//Util.log(aX + "," + bY + " Tile Id:" + tileid + " draw to " + drawTo.x + "," + drawTo.y + " src " + srcRect.x + "," + srcRect.y + " " + srcRect.width + "," + srcRect.height);
 					bg.bitmapData.copyPixels(tileset, srcRect, drawTo, null, null, true);
+					
+					if (Constants.debug >= 2)
+					{
+						var txtCoords: TextField = new TextField();
+						txtCoords.text = (tileX + regionStartingX) + "," + (tileY + regionStartingY);
+						var coordsBitmap:BitmapData = new BitmapData(txtCoords.width, txtCoords.height, true, 0);
+						coordsBitmap.draw(txtCoords);
+						bg.bitmapData.copyPixels(coordsBitmap, new Rectangle(0, 0, txtCoords.width, txtCoords.height), new Point(drawTo.x, drawTo.y + Constants.tileH), null, null, true);
+						coordsBitmap.dispose();
+					}
 				}
 			}
 

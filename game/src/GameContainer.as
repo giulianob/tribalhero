@@ -36,6 +36,9 @@
 
 		//Container for sidebar
 		private var sidebarHolder: Sprite;
+		
+		//Container for cmd line
+		private var cmdLineHolder: Sprite;
 
 		public var map: Map;
 		public var miniMap: MiniMap;				
@@ -181,6 +184,10 @@
 			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
 			sidebarHolder.y = 60;
 			addChildAt(sidebarHolder, 1);
+			
+			// Set up cmd line holder
+			cmdLineHolder = new Sprite();
+			addChildAt(cmdLineHolder, 1);		
 
 			// Set up minimap refresh timer
 			minimapRefreshTimer.addEventListener(TimerEvent.TIMER, minimapRefresh);
@@ -481,7 +488,7 @@
 
 			// Create and position command line if admin
 			cmdLine = new CmdLineViewer();
-			cmdLine.show();				
+			cmdLine.show(cmdLineHolder);
 
 			// Add objects to resize manager
 			resizeManager = new ResizeManager(stage);

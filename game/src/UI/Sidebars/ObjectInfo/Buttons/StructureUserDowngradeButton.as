@@ -14,9 +14,9 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	{
 		public function StructureUserDowngradeButton(parentObj: SimpleGameObject)
 		{
-			super(parentObj, "Downgrade Structure");
+			super(parentObj, "Destroy Structures");
 
-			new SimpleTooltip(this, "Downgrades any structures in your city to one level lower.\n\nStructures may be completely removed by downgrading them back to level 0.");
+			new SimpleTooltip(this, "Destroy other structures. You will not receive back any resources for destroying structures.");
 
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}

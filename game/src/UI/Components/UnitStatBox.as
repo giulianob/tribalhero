@@ -32,7 +32,6 @@
 		private var lblUnitClass: JLabel;
 		private var lblWeaponClass: JLabel;
 		private var lblAttack: JLabel;
-		private var lblDefense: JLabel;
 		private var lblStealth: JLabel;
 		private var lblRange: JLabel;
 		private var lblSpeed: JLabel;
@@ -45,7 +44,6 @@
 		private var lblUnitClassTitle: JLabel;
 		private var lblWeaponClassTitle: JLabel;
 		private var lblAttackTitle: JLabel;
-		private var lblDefenseTitle: JLabel;
 		private var lblStealthTitle: JLabel;
 		private var lblRangeTitle: JLabel;
 		private var lblSpeedTitle: JLabel;
@@ -111,7 +109,6 @@
 			lblWeaponClassTitle = titleLabelMaker("Weapon Class");
 			lblUnitClassTitle = titleLabelMaker("Unit Class");
 			lblAttackTitle = titleLabelMaker("Attack");
-			lblDefenseTitle = titleLabelMaker("Defense");
 			lblStealthTitle = titleLabelMaker("Position");
 			lblRangeTitle = titleLabelMaker("Range");
 			lblSpeedTitle = titleLabelMaker("Speed");

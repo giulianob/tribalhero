@@ -72,30 +72,31 @@
 		private function createUI():void
 		{
 			//component creation
-			setSize(new IntDimension(256, 72));
 			var layout0:BorderLayout = new BorderLayout();
 			setLayout(layout0);
 
 			lblTitle = new JLabel();
-			lblTitle.setSize(new IntDimension(200, 30));
-			lblTitle.setPreferredSize(new IntDimension(200, 30));
 			lblTitle.setConstraints("North");
 			lblTitle.setText("Select an object...");
 			lblTitle.setHorizontalAlignment(AsWingConstants.LEFT);
 
 			pnlObject = new JPanel();
-			pnlObject.setLocation(new IntPoint(0, 52));
-			pnlObject.setSize(new IntDimension(256, 20));
-			pnlObject.setConstraints("South");
 			var layout1:FlowLayout = new FlowLayout();
 			layout1.setAlignment(AsWingConstants.CENTER);
 			layout1.setHgap(25);
-			layout1.setVgap(20);
 			pnlObject.setLayout(layout1);
 
+			var viewPort: JViewport = new JViewport(pnlObject, false, true);
+			viewPort.setHorizontalAlignment(AsWingConstants.CENTER);
+			viewPort.setVerticalAlignment(AsWingConstants.TOP);
+			
+			var scrollPnl: JScrollPane = new JScrollPane(viewPort, JScrollPane.SCROLLBAR_NEVER, JScrollPane.SCROLLBAR_AS_NEEDED);			
+			scrollPnl.setConstraints("South");
+			scrollPnl.setPreferredSize(new IntDimension(400, 125));
+			
 			//component layout
 			append(lblTitle);
-			append(pnlObject);
+			append(scrollPnl);
 		}
 
 	}

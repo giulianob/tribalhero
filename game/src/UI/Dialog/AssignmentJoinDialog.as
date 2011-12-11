@@ -40,8 +40,8 @@
 				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
 			}
 			else {				
-				var secsPerTile: int = Formula.moveTime(city, stub.getSpeed(city), 1, true);
-				if (Global.map.getServerTime() + (secsPerTile * distance) > assignment.endTime) {
+				var moveTime: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, true);
+				if (Global.map.getServerTime() + moveTime > assignment.endTime) {
 					lblTroopSpeed.setText("Your units will arrive late. Choose faster units to arrive on time.");
 				}
 				else {

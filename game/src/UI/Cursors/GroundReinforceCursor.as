@@ -181,7 +181,7 @@
 
 			var targetMapDistance: Point = MapUtil.getMapCoord(structObj.getX(), structObj.getY());
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
-			var timeAwayInSeconds: int = Formula.moveTime(city, troopSpeed, distance, false);
+			var timeAwayInSeconds: int = Formula.moveTimeTotal(city, troopSpeed, distance, false);
 			
 			tooltip = new StructureTooltip(structObj, StructureFactory.getPrototype(structObj.type, structObj.level));
 			tooltip.show(structObj);

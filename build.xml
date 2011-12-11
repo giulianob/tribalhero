@@ -11,11 +11,12 @@
 	
 	<target name="compile" depends="init">
 		<dn:msbuild buildfile="${basedir}\Game.sln">
+			<target name="Common:Rebuild" />
 			<target name="Persistance:Rebuild" />
 			<target name="Game:Rebuild" />
 			<target name="CSVToXML:Rebuild" />
-			<target name="DatabaseGenerator:Rebuild" />
-			<target name="GraphGenerator:Rebuild" />
+			<target name="Tools\DatabaseGenerator:Rebuild" />
+			<target name="Tools\GraphGenerator:Rebuild" />
 			<target name="Launcher:Rebuild" />
 			<target name="LauncherService:Rebuild" />			
 			

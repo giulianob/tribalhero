@@ -38,7 +38,7 @@ namespace Game.Data.Tribe
         public string Name { get; set; }
         public byte Level { get; set; }
 
-        private int attackPoint = 0;
+        private int attackPoint;
         public int AttackPoint {
             get {
                 return attackPoint;
@@ -52,7 +52,7 @@ namespace Game.Data.Tribe
             }
         }
 
-        private int defensePoint = 0;
+        private int defensePoint;
         public int DefensePoint
         {
             get
@@ -96,18 +96,20 @@ namespace Game.Data.Tribe
         public short AssignmentCount { get { return (short)assignments.Count; } }
 
         public Tribe(Player owner, string name) :
-            this(owner, name, string.Empty, 1, new Resource())
+            this(owner, name, string.Empty, 1, 0, 0, new Resource())
         {
 
         }
 
-        public Tribe(Player owner, string name, string desc, byte level, Resource resource)
+        public Tribe(Player owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource)
         {
             Owner = owner;
             Level = level;
             Resource = resource;
             Description = desc;
             Name = name;
+            AttackPoint = attackPoints;
+            DefensePoint = defensePoints;
         }
 
         public bool IsOwner(Player player)
@@ -346,8 +348,7 @@ namespace Game.Data.Tribe
             // Player creating the assignment cannot be late (Give a few minutes lead)
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
             DateTime reachTime =
-                    DateTime.UtcNow.AddSeconds((int)(Formula.MoveTime(Formula.GetTroopSpeed(stub))*Formula.MoveTimeMod(stub.City, distance, true))*distance*
-                                               Config.seconds_per_unit);
+                    DateTime.UtcNow.AddSeconds(Formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects())));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {

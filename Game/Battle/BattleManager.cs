@@ -22,52 +22,6 @@ using Persistance;
 
 namespace Game.Battle
 {
-    public interface IBattleManager : IPersistableObject
-    {
-        uint BattleId { get; set; }
-        bool BattleStarted { get; set; }
-        uint Round { get; set; }
-        uint Turn { get; set; }
-        City City { get; set; }
-        CombatList Attacker { get; }
-        CombatList Defender { get; }
-        IBattleReport BattleReport { get; }
-        ReportedObjects ReportedObjects { get; }
-        ReportedTroops ReportedTroops { get; }
-        City[] LockList { get; }
-        void Subscribe(Session session);
-        void Unsubscribe(Session session);
-        CombatObject GetCombatObject(uint id);
-        bool CanWatchBattle(Player player, out int roundsLeft);
-        void DbLoaderAddToLocal(CombatStructure structure, uint id);
-        void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
-        void AddToLocal(IEnumerable<TroopStub> objects, ReportState state);
-        void AddToLocal(IEnumerable<Structure> objects);
-        void AddToAttack(TroopStub stub);
-        void AddToAttack(IEnumerable<TroopStub> objects);
-        void AddToDefense(IEnumerable<TroopStub> objects);
-        void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state);
-        void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state);
-        void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state);
-        void RefreshBattleOrder();
-        bool GroupIsDead(CombatObject co, CombatList combatList);
-        bool ExecuteTurn();
-        event BattleManager.OnBattle EnterBattle;
-        event BattleManager.OnBattle ExitBattle;
-        event BattleManager.OnRound EnterRound;
-        event BattleManager.OnTurn EnterTurn;
-        event BattleManager.OnTurn ExitTurn;
-        event BattleManager.OnReinforce ReinforceAttacker;
-        event BattleManager.OnReinforce ReinforceDefender;
-        event BattleManager.OnReinforce WithdrawAttacker;
-        event BattleManager.OnReinforce WithdrawDefender;
-        event BattleManager.OnUnitUpdate UnitAdded;
-        event BattleManager.OnUnitUpdate UnitRemoved;
-        event BattleManager.OnUnitUpdate UnitUpdated;
-        event BattleManager.OnUnitUpdate SkippedAttacker;
-        event BattleManager.OnAttack ActionAttacked;
-    }
-
     public class BattleManager : IBattleManager
     {
         public delegate IBattleManager Factory(City owner);
@@ -76,6 +30,7 @@ namespace Game.Battle
         private readonly CombatList attackers;
         private readonly object battleLock = new object();
         private readonly CombatList defenders;
+        private readonly ICombatUnitFactory combatUnitFactory;
         private readonly LargeIdGenerator groupIdGen;
         private readonly LargeIdGenerator idGen;
 
@@ -89,18 +44,17 @@ namespace Game.Battle
         private uint round;
         private uint turn;
 
-        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport)
-        {
-            attackers = Ioc.Kernel.Get<CombatList>();
-            defenders = Ioc.Kernel.Get<CombatList>();
-
+        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport, CombatList attackers, CombatList defenders, ICombatUnitFactory combatUnitFactory)
+        {            
             groupIdGen = new LargeIdGenerator(ushort.MaxValue);
             idGen = new LargeIdGenerator(ushort.MaxValue);
-
+            
+            this.dbManager = dbManager;            
+            this.attackers = attackers;
+            this.defenders = defenders;
+            this.combatUnitFactory = combatUnitFactory;
             city = (City)owner;
-            this.dbManager = dbManager;
-            report = battleReport;  
-            channel = battleChannel;
+            report = battleReport;
             groupIdGen.Set(1);
 
             ActionAttacked += battleChannel.BattleActionAttacked;
@@ -110,8 +64,6 @@ namespace Game.Battle
             ExitBattle += battleChannel.BattleExitBattle;
             EnterRound += battleChannel.BattleEnterRound;
         }
-
-        private readonly IBattleChannel channel;
 
         public uint BattleId
         {
@@ -393,12 +345,11 @@ namespace Game.Battle
                     obj.State = GameObjectState.BattleState(obj.City.Id);
                     obj.EndUpdate();
 
-                    CombatObject combatObject = new CombatStructure(this, obj, BattleFormulas.LoadStats(obj))
-                                                {
-                                                        Id = (uint)idGen.GetNext(), 
-                                                        GroupId = 1,
-                                                        LastRound = round
-                                                };
+                    CombatObject combatObject = combatUnitFactory.CreateStructureCombatUnit(this, obj);
+                    combatObject.Id = (uint)idGen.GetNext();
+                    combatObject.GroupId = 1;
+                    combatObject.LastRound = round;
+                
                     defenders.Add(combatObject);
                     list.Add(combatObject);
                 }
@@ -488,9 +439,9 @@ namespace Game.Battle
                         {
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
-                                combatObjects = Ioc.Kernel.Get<CombatUnitFactory>().CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
+                                combatObjects = combatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
                             else
-                                combatObjects = Ioc.Kernel.Get<CombatUnitFactory>().CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
+                                combatObjects = combatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
 
                             foreach (var unit in combatObjects)
                             {
@@ -686,7 +637,7 @@ namespace Game.Battle
                 #region Targeting
 
                 CombatObject currentAttacker;
-                List<CombatObject> currentDefenders;
+                IList<CombatObject> currentDefenders;
 
                 do
                 {
@@ -716,13 +667,13 @@ namespace Game.Battle
                     CombatList.BestTargetResult targetResult;
 
                     if (currentAttacker.CombatList == attackers)
-                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
+                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
                     else if (currentAttacker.CombatList == defenders)
-                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
+                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
                     else
                         throw new Exception("How can this happen");
 
-                    if (currentDefenders == null || currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
+                    if (currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
                     {
                         currentAttacker.ParticipatedInRound();
                         dbManager.Save(currentAttacker);
@@ -799,17 +750,26 @@ namespace Game.Battle
         {
             #region Damage
 
-            ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
+            ushort dmg = BattleFormulas.Current.GetDamage(attacker, defender, attacker.CombatList == defenders);
             ushort actualDmg;
             Resource lostResource;
             int attackPoints;
 
             #region Miss Chance
-            var missChance = BattleFormulas.MissChance(attacker.CombatList.Sum(x => x.Upkeep), defender.CombatList.Sum(x => x.Upkeep));
+            var missChance = BattleFormulas.Current.MissChance(attacker.CombatList.Sum(x => x.Upkeep), defender.CombatList.Sum(x => x.Upkeep));
             if (missChance > 0) {
                 var rand = (int)(Config.Random.NextDouble() * 100);
                 if (rand <= missChance)
                     dmg /= 2;
+            }
+            #endregion
+
+            #region Splash Damage Reduction
+            if (attackIndex > 0)
+            {
+                double reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.BaseStats, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+                reduction = (100 - reduction) / 100;
+                dmg = (ushort)(reduction * dmg);
             }
             #endregion
 
@@ -840,7 +800,7 @@ namespace Game.Battle
                     city.BeginUpdate();
                     if (round >= Config.battle_loot_begin_round)
                     {
-                        loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                        loot = BattleFormulas.Current.GetRewardResource(attacker, defender, actualDmg);
                         city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
                     } 
                     attacker.ReceiveReward(attackPoints, loot ?? new Resource() );

@@ -17,7 +17,7 @@ namespace Game.Logic.Formulas
         public static byte GetTroopRadius(TroopStub stub, TechnologyManager em)
         {
             // The radius is based on the sum of levels of the structures in the city, from 0 to 4
-            return (byte)Math.Min((int)Math.Ceiling((decimal)stub.City.Value / 40) - 1, 4);
+            return (byte)Math.Min(stub.City.Value / 40, 4);
         }
 
         public static byte GetTroopSpeed(TroopStub stub)

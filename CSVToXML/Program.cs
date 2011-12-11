@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Common;
 using Game.Data;
 using Game.Logic;
 using Game.Setup;
@@ -537,7 +538,7 @@ namespace CSVToXML {
 
             writer.WriteStartElement("body");
 
-            string[] files = Directory.GetFiles(langDataFolder, "lang.*", SearchOption.TopDirectoryOnly);
+            string[] files = Directory.GetFiles(langDataFolder, "lang.*.csv", SearchOption.TopDirectoryOnly);
             foreach (string file in files) {
 
                 String fullFilename = file;

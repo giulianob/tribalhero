@@ -11,6 +11,12 @@ namespace Game.Comm.Processor_Commands
 {
     class ChatCommandsModule : CommandModule
     {
+        enum ChatType
+        {
+            GLOBAL = 0,
+            TRIBE = 1
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.Chat, Chat);
@@ -20,12 +26,12 @@ namespace Game.Comm.Processor_Commands
         {
             var reply = new Packet(packet);
 
-            byte type;
+            ChatType type;
             string message;
 
             try
             {
-                type = packet.GetByte();
+                type = (ChatType)packet.GetByte();
                 message = packet.GetString().Trim();
             }
             catch (Exception)
@@ -41,6 +47,8 @@ namespace Game.Comm.Processor_Commands
             }
 
             Packet chatPacket;
+
+            string channel;
 
             using (Concurrency.Current.Lock(session.Player))
             {
@@ -60,8 +68,25 @@ namespace Game.Comm.Processor_Commands
                     }
                 }
 
+                
+
+                switch (type)
+                {
+                    case ChatType.TRIBE:
+                        if (session.Player.Tribesman == null)
+                        {
+                            ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
+                            return;
+                        }
+                        channel = string.Format("/TRIBE/{0}", session.Player.Tribesman.Tribe.Id);
+                        break;
+                    default:
+                        channel = "/GLOBAL";
+                        break;
+                }
+
                 chatPacket = new Packet(Command.Chat);
-                chatPacket.AddByte(1);
+                chatPacket.AddByte((byte)type);
                 chatPacket.AddUInt32(session.Player.PlayerId);
                 chatPacket.AddString(session.Player.Name);
                 chatPacket.AddString(message);
@@ -69,7 +94,7 @@ namespace Game.Comm.Processor_Commands
                 ReplySuccess(session, packet);
             }
 
-            Global.Channel.Post("/GLOBAL", chatPacket);
+            Global.Channel.Post(channel, chatPacket);
         }
     }
 }

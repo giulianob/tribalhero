@@ -17,6 +17,13 @@ namespace Game.Comm
 {
     class RegionCommandsModule : CommandModule
     {
+        private readonly RadiusLocator radiusLocator;
+
+        public RegionCommandsModule(RadiusLocator radiusLocator)
+        {
+            this.radiusLocator = radiusLocator;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.RegionRoadBuild, CmdRoadCreate);
@@ -89,7 +96,7 @@ namespace Game.Comm
 
                 // Make sure there is a road next to this tile
                 bool hasRoad = false;
-                RadiusLocator.ForeachObject(x,
+                radiusLocator.ForeachObject(x,
                                             y,
                                             1,
                                             false,
@@ -220,7 +227,7 @@ namespace Game.Comm
 
                 // Make sure all neighboring roads have a diff path
                 bool allNeighborsHaveOtherPaths = true;
-                RadiusLocator.ForeachObject(x,
+                radiusLocator.ForeachObject(x,
                                             y,
                                             1,
                                             false,
@@ -431,8 +438,7 @@ namespace Game.Comm
                     return;
                 }
 
-                reply.AddUInt16(regionId);
-                reply.AddBytes(Global.World.GetRegion(regionId).GetBytes());
+                reply.AddUInt16(regionId);                
                 reply.AddBytes(Global.World.GetRegion(regionId).GetObjectBytes());
                 Global.World.SubscribeRegion(session, regionId);
             }

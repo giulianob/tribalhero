@@ -3,8 +3,10 @@ using System.Linq;
 using Game.Battle;
 using Game.Comm;
 using Game.Comm.Channel;
+using Game.Comm.CmdLine_Commands;
 using Game.Comm.Processor_Commands;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -45,8 +47,11 @@ namespace Game
             Bind<UnitFactory>().ToMethod(ctx => new UnitFactory(Path.Combine(Config.csv_compiled_folder, "unit.csv"))).InSingletonScope();
             Bind<ObjectTypeFactory>().ToMethod(ctx => new ObjectTypeFactory(Path.Combine(Config.csv_compiled_folder, "object_type.csv"))).InSingletonScope();
             Bind<UnitModFactory>().ToMethod(ctx => new UnitModFactory(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"))).InSingletonScope();
-            Bind<MapFactory>().ToMethod(ctx => new MapFactory(Path.Combine(Config.maps_folder, "CityLocations.txt"))).InSingletonScope();
-            Bind<CombatUnitFactory>().ToSelf().InSingletonScope();
+            Bind<MapFactory>().ToMethod(ctx => new MapFactory(Path.Combine(Config.maps_folder, "CityLocations.txt"))).InSingletonScope();                       
+            #endregion
+
+            #region Factories
+            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
             #endregion
 
             #region Database
@@ -86,28 +91,35 @@ namespace Game
             #region Processor
 
             Bind<CommandLineProcessor>().ToMethod(
-                                              c =>
-                                              new CommandLineProcessor(new AssignmentCommandLineModule(),
-                                                                   new PlayerCommandLineModule(),
-                                                                   new ResourcesCommandLineModule(),
-                                                                   new TribeCommandLineModule())).InSingletonScope();
+                                                  c =>
+                                                  new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
+                                                                           c.Kernel.Get<PlayerCommandLineModule>(),
+                                                                           c.Kernel.Get<CityCommandLineModule>(),
+                                                                           c.Kernel.Get<ResourcesCommandLineModule>(),
+                                                                           c.Kernel.Get<TribeCommandLineModule>())).InSingletonScope();
 
             Bind<Processor>().ToMethod(
                                        c =>
-                                       new Processor(new AssignmentCommandsModule(),
-                                                     new BattleCommandsModule(),
-                                                     new EventCommandsModule(),
-                                                     new ChatCommandsModule(),
-                                                     new CommandLineCommandsModule(Kernel.Get<CommandLineProcessor>()),
-                                                     new LoginCommandsModule(),
-                                                     new MarketCommandsModule(),
-                                                     new MiscCommandsModule(),
-                                                     new PlayerCommandsModule(),
-                                                     new RegionCommandsModule(),
-                                                     new StructureCommandsModule(),
-                                                     new TribeCommandsModule(),
-                                                     new TribesmanCommandsModule(),
-                                                     new TroopCommandsModule())).InSingletonScope();
+                                       new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
+                                                     c.Kernel.Get<BattleCommandsModule>(),
+                                                     c.Kernel.Get<EventCommandsModule>(),
+                                                     c.Kernel.Get<ChatCommandsModule>(),
+                                                     c.Kernel.Get<CommandLineCommandsModule>(),
+                                                     c.Kernel.Get<LoginCommandsModule>(),
+                                                     c.Kernel.Get<MarketCommandsModule>(),
+                                                     c.Kernel.Get<MiscCommandsModule>(),
+                                                     c.Kernel.Get<PlayerCommandsModule>(),
+                                                     c.Kernel.Get<RegionCommandsModule>(),
+                                                     c.Kernel.Get<StructureCommandsModule>(),
+                                                     c.Kernel.Get<TribeCommandsModule>(),
+                                                     c.Kernel.Get<TribesmanCommandsModule>(),
+                                                     c.Kernel.Get<TroopCommandsModule>())).InSingletonScope();
+
+            #endregion
+
+            #region Utils
+
+            Bind<RadiusLocator>().ToSelf().InSingletonScope();
 
             #endregion
         }

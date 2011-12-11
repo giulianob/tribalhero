@@ -23,6 +23,12 @@ namespace Game.Logic.Actions
         {
         }
 
+        public StructureSelfDestroyPassiveAction(uint cityId, uint objectId)
+        {
+            this.cityId = cityId;
+            this.objectId = objectId;
+        }
+
         public StructureSelfDestroyPassiveAction(uint id,
                                           DateTime beginTime,
                                           DateTime nextTime,

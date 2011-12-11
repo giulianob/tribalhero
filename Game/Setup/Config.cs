@@ -101,6 +101,7 @@ namespace Game.Setup
         public static int ai_count = 100;
 
         public static bool actions_instant_time;
+        public static bool actions_skip_city_actions;
         public static int actions_free_cancel_interval_in_sec = 60;
         public static bool actions_ignore_requirements;
 

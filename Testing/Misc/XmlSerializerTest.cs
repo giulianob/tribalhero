@@ -1,8 +1,9 @@
 ﻿#region
 
 using System.Collections.Generic;
+using FluentAssertions;
 using Game.Util;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 #endregion
 
@@ -10,45 +11,34 @@ namespace Testing.MapMath
 {
     /// <summary>
     ///   Summary description for ChannelTest
-    /// </summary>
-    [TestClass]
+    /// </summary>    
     public class XmlSerializerTest : TestBase
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestDeserializeComplexEmpty()
         {
             List<object[]> list = XmlSerializer.DeserializeComplexList("<List />");
 
-            Assert.AreEqual(0, list.Count);
+            list.Count.Should().Be(0);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestDeserializeComplexEmptyProperty()
         {
             List<object[]> list = XmlSerializer.DeserializeComplexList("<List><Properties /></List>");
 
-            Assert.AreEqual(1, list.Count);
-            Assert.AreEqual(0, list[0].Length);
+            list.Count.Should().Be(1);
+            list[0].Length.Should().Be(0);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestDeserializeComplexEmptyPropertyMultiple()
         {
             List<object[]> list = XmlSerializer.DeserializeComplexList("<List><Properties /><Properties /></List>");
 
-            Assert.AreEqual(2, list.Count);
-            Assert.AreEqual(0, list[0].Length);
-            Assert.AreEqual(0, list[1].Length);
+            list.Count.Should().Be(2);
+            list[0].Length.Should().Be(0);
+            list[1].Length.Should().Be(0);
         }
     }
 }

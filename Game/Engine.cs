@@ -2,10 +2,12 @@
 
 using System;
 using System.IO;
+using Game.Battle;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
 using Game.Logic;
+using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
@@ -141,6 +143,10 @@ _________ _______ _________ ______   _______  _
         {
             Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = false }, new DynamicProxy2Module(), new Log4NetModule(), new GameModule());
             
+            // Instantiate singletons here for now
+            RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
+            BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
+
             return Ioc.Kernel;
         }
 

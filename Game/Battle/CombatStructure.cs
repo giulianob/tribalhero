@@ -7,6 +7,7 @@ using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Map;
 using Persistance;
 
 #endregion
@@ -135,7 +136,7 @@ namespace Game.Battle
         {
             get
             {
-                return BattleFormulas.GetUnitsPerStructure(Structure) / 5;
+                return BattleFormulas.Current.GetUnitsPerStructure(Structure) / 5;
             }
         }
 
@@ -195,8 +196,10 @@ namespace Game.Battle
             if (obj is AttackCombatUnit)
             {
                 TroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
-                return SimpleGameObject.RadiusToPointFiveStyle(troop.RadiusDistance(Structure)) <=
-                       SimpleGameObject.RadiusToPointFiveStyle(Structure.Stats.Base.Radius) + SimpleGameObject.RadiusToPointFiveStyle(troop.Stats.AttackRadius);
+                return RadiusLocator.Current.IsOverlapping(new Location(troop.X, troop.Y),
+                                                           troop.Stats.AttackRadius,
+                                                           new Location(Structure.X, Structure.Y),
+                                                           Structure.Stats.Base.Radius);
             }
 
             throw new Exception(string.Format("Why is a structure trying to kill a unit of type {0}?", obj.GetType().FullName));

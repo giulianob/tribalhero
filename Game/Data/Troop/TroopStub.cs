@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Game.Logic.Formulas;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
@@ -39,6 +40,18 @@ namespace Game.Data.Troop
         private bool isDirty;
         private bool isUpdating;
 
+        #region Events
+
+        public delegate void StateSwitched(TroopStub stub, TroopState newState);
+        public event StateSwitched OnStateSwitched = delegate { };
+        
+        public delegate void Removed(TroopStub stub);
+        public event Removed OnRemoved = delegate { };
+
+        public delegate void OnUnitUpdate(TroopStub stub);
+        public event OnUnitUpdate UnitUpdate = delegate { };
+        #endregion
+
         #region Properties
 
         private TroopState state = TroopState.Idle;
@@ -70,9 +83,10 @@ namespace Game.Data.Troop
             }
             set
             {
-                CheckUpdateMode();
+                CheckUpdateMode();                
                 state = value;
                 isDirty = true;
+                OnStateSwitched(this, value);
             }
         }
 
@@ -168,6 +182,14 @@ namespace Game.Data.Troop
             }
         }
 
+        public byte Speed
+        {
+            get
+            {
+                return Formula.GetTroopSpeed(this);
+            }
+        }
+
         /// <summary>
         ///   Returns the sum of the upkeep for all units in troop stub
         /// </summary>
@@ -251,18 +273,6 @@ namespace Game.Data.Troop
                 FireUpdated();
             }
         }      
-
-        #endregion
-
-        #region Events
-
-        #region Delegates
-
-        public delegate void OnUnitUpdate(TroopStub stub);
-
-        #endregion
-
-        public event OnUnitUpdate UnitUpdate;
 
         #endregion
 
@@ -503,6 +513,11 @@ namespace Game.Data.Troop
             return data.ContainsKey(formation);
         }
 
+        public void FireRemoved()
+        {
+            OnRemoved(this);
+        }
+
         public ushort RemoveUnit(FormationType formationType, ushort type, ushort count)
         {
             lock (objLock)
@@ -522,20 +537,7 @@ namespace Game.Data.Troop
 
                 return 0;
             }
-        }
-
-        public void RemoveAllUnits()
-        {
-            lock (objLock)
-            {
-                CheckUpdateMode();
-
-                foreach (var formation in data.Values)
-                    formation.Clear();
-
-                FireUpdated();
-            }
-        }
+        }   
 
         public void RemoveAllUnits(params FormationType[] formations)
         {
@@ -545,7 +547,7 @@ namespace Game.Data.Troop
 
                 foreach (var formation in data.Values)
                 {
-                    if (!formations.Contains(formation.Type))
+                    if (formations != null && formations.Length > 0 && !formations.Contains(formation.Type))
                         continue;
 
                     formation.Clear();

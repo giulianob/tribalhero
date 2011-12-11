@@ -7,6 +7,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using System.Linq;
 using Ninject;
@@ -236,9 +237,10 @@ namespace Game.Battle
             if (obj is CombatStructure)
             {
                 Structure structure = (obj as CombatStructure).Structure;
-                return SimpleGameObject.RadiusToPointFiveStyle(TroopStub.TroopObject.RadiusDistance(structure)) <=
-                       SimpleGameObject.RadiusToPointFiveStyle(structure.Stats.Base.Radius) +
-                       SimpleGameObject.RadiusToPointFiveStyle(TroopStub.TroopObject.Stats.AttackRadius);
+                return RadiusLocator.Current.IsOverlapping(new Location(TroopStub.TroopObject.X, TroopStub.TroopObject.Y),
+                                                           TroopStub.TroopObject.Stats.AttackRadius,
+                                                           new Location(structure.X, structure.Y),
+                                                           structure.Stats.Base.Radius);
             }
 
             throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
@@ -257,8 +259,8 @@ namespace Game.Battle
             if (stats.MaxHp/5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
                 return;
 
-            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
-            if( BattleFormulas.IsAttackMissed((byte)percent) )
+            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.Current.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+            if (BattleFormulas.Current.IsAttackMissed((byte)percent))
             {
                 actualDmg = 1;
             }

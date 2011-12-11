@@ -1,23 +1,12 @@
-﻿using Game.Data;
+﻿
 using Game.Data.Troop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Testing.Troop
 {
-    [TestClass]
     public class TroopStubTest : TestBase
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {                        
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestUnitListsNoUnitsInStub()
         {
             TroopStub stub = new TroopStub();
@@ -26,10 +15,10 @@ namespace Testing.Troop
 
             var units = stub.ToUnitList();
             
-            Assert.IsTrue(units.Count == 0);
+            Assert.True(units.Count == 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestUnitListNoConflictingTypes()
         {
             TroopStub stub = new TroopStub();
@@ -41,14 +30,14 @@ namespace Testing.Troop
 
             var units = stub.ToUnitList();
 
-            Assert.IsTrue(units.Count == 2);
-            Assert.IsTrue(units[0].Type == 1);
-            Assert.IsTrue(units[0].Count == 4);
-            Assert.IsTrue(units[1].Type == 2);
-            Assert.IsTrue(units[1].Count == 5);
+            Assert.True(units.Count == 2);
+            Assert.True(units[0].Type == 1);
+            Assert.True(units[0].Count == 4);
+            Assert.True(units[1].Type == 2);
+            Assert.True(units[1].Count == 5);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestUnitListConflictingTypes()
         {
             TroopStub stub = new TroopStub();
@@ -60,12 +49,12 @@ namespace Testing.Troop
 
             var units = stub.ToUnitList();
 
-            Assert.IsTrue(units.Count == 1);
-            Assert.IsTrue(units[0].Type == 1);
-            Assert.IsTrue(units[0].Count == 9);
+            Assert.True(units.Count == 1);
+            Assert.True(units[0].Type == 1);
+            Assert.True(units[0].Count == 9);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestUnitListConflictingAndNonConflictingTypes()
         {
             TroopStub stub = new TroopStub();
@@ -78,14 +67,14 @@ namespace Testing.Troop
 
             var units = stub.ToUnitList();
 
-            Assert.IsTrue(units.Count == 2);
-            Assert.IsTrue(units[0].Type == 1);
-            Assert.IsTrue(units[0].Count == 9);
-            Assert.IsTrue(units[1].Type == 2);
-            Assert.IsTrue(units[1].Count == 10);
+            Assert.True(units.Count == 2);
+            Assert.True(units[0].Type == 1);
+            Assert.True(units[0].Count == 9);
+            Assert.True(units[1].Type == 2);
+            Assert.True(units[1].Count == 10);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestUnitListSpecificFormations()
         {
             TroopStub stub = new TroopStub();
@@ -98,11 +87,11 @@ namespace Testing.Troop
 
             var units = stub.ToUnitList(FormationType.Attack);
 
-            Assert.IsTrue(units.Count == 2);
-            Assert.IsTrue(units[0].Type == 1);
-            Assert.IsTrue(units[0].Count == 5);
-            Assert.IsTrue(units[1].Type == 2);
-            Assert.IsTrue(units[1].Count == 10);
+            Assert.True(units.Count == 2);
+            Assert.True(units[0].Type == 1);
+            Assert.True(units[0].Count == 5);
+            Assert.True(units[1].Type == 2);
+            Assert.True(units[1].Count == 10);
         }
     }
 }

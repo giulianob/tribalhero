@@ -31,6 +31,8 @@ namespace Game.Data.Tribe {
             }
         }
 
+        private readonly object lck = new object();
+
         public static readonly LargeIdGenerator IdGen = new LargeIdGenerator(long.MaxValue);
         public const string DB_TABLE = "Assignments";
 
@@ -46,12 +48,7 @@ namespace Game.Data.Tribe {
         private readonly List<AssignmentTroop> stubs = new List<AssignmentTroop>();
 
         public delegate void OnComplete(Assignment assignment);
-        public event OnComplete AssignmentComplete;
-        public void InvokeAssignmentComplete() {
-            OnComplete handler = AssignmentComplete;
-            if (handler != null)
-                handler(this);
-        }
+        public event OnComplete AssignmentComplete = delegate { }; 
 
         public Assignment(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount) {
             Id = id;
@@ -80,31 +77,79 @@ namespace Game.Data.Tribe {
         }
 
         public string ToNiceString() {
-            string result = string.Format("Id[{0}] Time[{1}] x[{2}] y[{3}] mode[{4}] # of stubs[{5}] pispatched[{6}]\n", Id, TargetTime, X, Y, Enum.GetName(typeof(AttackMode), AttackMode), stubs.Count, DispatchCount);
-            foreach (var obj in stubs) {
-                TroopStub stub = obj.Stub;
-                result += string.Format("\tTime[{0}] Player[{1}] City[{2}] Stub[{3}] Upkeep[{4}]\n",
-                    obj.DepartureTime, stub.City.Owner.Name, stub.City.Name, stub.TroopId, stub.Upkeep);
-            }
-            return result;
+            lock (lck)
+            {
+                string result = string.Format("Id[{0}] Time[{1}] x[{2}] y[{3}] mode[{4}] # of stubs[{5}] pispatched[{6}]\n",
+                                              Id,
+                                              TargetTime,
+                                              X,
+                                              Y,
+                                              Enum.GetName(typeof(AttackMode), AttackMode),
+                                              stubs.Count,
+                                              DispatchCount);
+                foreach (var obj in stubs)
+                {
+                    TroopStub stub = obj.Stub;
+                    result += string.Format("\tTime[{0}] Player[{1}] City[{2}] Stub[{3}] Upkeep[{4}]\n",
+                                            obj.DepartureTime,
+                                            stub.City.Owner.Name,
+                                            stub.City.Name,
+                                            stub.TroopId,
+                                            stub.Upkeep);
+                }
+
+                return result;
+            }            
         }
 
         public Error Add(TroopStub stub) {
-            if (!stubs.Any()) return Error.AssignmentDone;
+            lock (lck)
+            {
+                if (stubs.All(s => s.Dispatched))
+                    return Error.AssignmentDone;
 
-            stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
+                stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
+                stub.OnRemoved += RemoveStub;
+                stub.OnStateSwitched += StubOnStateSwitched;
 
-            if (Global.Scheduler.Remove(this)) {
-                Global.Scheduler.Put(this);
+                if (Global.Scheduler.Remove(this))
+                {
+                    Global.Scheduler.Put(this);
+                }
+
+                Ioc.Kernel.Get<IDbManager>().Save(this);
             }
-            Ioc.Kernel.Get<IDbManager>().Save(this);
-            return Error.Ok;
 
+            return Error.Ok;
+        }
+
+        private void StubOnStateSwitched(TroopStub stub, TroopState newState)
+        {
+            if (newState == TroopState.Battle)
+            {
+                RemoveStub(stub);
+            }
+        }
+
+        private void RemoveStub(TroopStub stub)
+        {
+            lock (lck)
+            {
+                foreach (var assignmentTroop in stubs.Where(assignmentTroop => assignmentTroop.Stub == stub))
+                {
+                    stub.OnRemoved -= RemoveStub;
+                    stub.OnStateSwitched -= StubOnStateSwitched;
+                    stubs.Remove(assignmentTroop);
+
+                    Reschedule();
+                    break;
+                }
+            }
         }
 
         private DateTime DepartureTime(TroopStub stub) {
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, X, Y);
-            return TargetTime.Subtract(new TimeSpan(0, 0, (int)(Formula.MoveTime(Formula.GetTroopSpeed(stub)) * Formula.MoveTimeMod(stub.City, distance, true) * distance * Config.seconds_per_unit)));
+            return TargetTime.Subtract(new TimeSpan(0, 0, Formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects()))));
         }
 
         private bool Dispatch(TroopStub stub) {
@@ -128,42 +173,64 @@ namespace Game.Data.Tribe {
             return true;
         }
 
-
         #region ISchedule Members
 
         public bool IsScheduled { get; set; }
 
-        public DateTime Time {
-            get {
-                return stubs.Any(s => !s.Dispatched) ? stubs.Where(s => !s.Dispatched).Min(x => x.DepartureTime) : TargetTime;
-            }
-        }
+        public DateTime Time { get; private set; }
 
         public void Callback(object custom)
         {
             var now = DateTime.UtcNow;
             using (Ioc.Kernel.Get<CallbackLock>().Lock(c => stubs.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe)) {
-                for (int i = stubs.Count-1; i >= 0; i--)
+                lock (lck)
                 {
-                    var assignmentTroop = stubs[i];
-                    if (assignmentTroop.Dispatched || assignmentTroop.DepartureTime > now)
-                        continue;
+                    for (int i = stubs.Count - 1; i >= 0; i--)
+                    {
+                        var assignmentTroop = stubs[i];
+                        if (assignmentTroop.Dispatched || assignmentTroop.DepartureTime > now)
+                            continue;
 
-                    if (Dispatch(assignmentTroop.Stub))
-                        assignmentTroop.Dispatched = true;
-                    else                    
-                        stubs.RemoveAt(i);                    
+                        if (Dispatch(assignmentTroop.Stub))
+                            assignmentTroop.Dispatched = true;
+                        else
+                            stubs.RemoveAt(i);
+                    }
+                    
+                    Reschedule();
                 }
+            }
+        }
 
+        /// <summary>
+        /// Recalculates the action time. This doesn't reschedule the action.
+        /// </summary>
+        public void ResetNextTime()
+        {
+            Time = stubs.Any(s => !s.Dispatched) ? stubs.Where(s => !s.Dispatched).Min(x => x.DepartureTime) : TargetTime;
+        }
+
+        /// <summary>
+        /// Reschedules the assignment on the actual scheduler.
+        /// If there are no troops left, it will remove it.
+        /// </summary>
+        private void Reschedule()
+        {
+            if (IsScheduled)
+                Global.Scheduler.Remove(this);
+
+            ResetNextTime();
+
+            if (stubs.Count > 0 && (stubs.Any(x => !x.Dispatched) || TargetTime.CompareTo(DateTime.UtcNow) > 0))
+            {
                 Ioc.Kernel.Get<IDbManager>().Save(this);
-
-                if (stubs.Any(x => !x.Dispatched) || TargetTime.CompareTo(DateTime.UtcNow) > 0) {
-                    Global.Scheduler.Put(this);
-                } else {
-                    InvokeAssignmentComplete();
-                    IdGen.Release(Id);
-                    Ioc.Kernel.Get<IDbManager>().Delete(this);
-                }
+                Global.Scheduler.Put(this);
+            }
+            else
+            {                
+                AssignmentComplete(this);
+                IdGen.Release(Id);
+                Ioc.Kernel.Get<IDbManager>().Delete(this);
             }
         }
 
@@ -252,7 +319,8 @@ namespace Game.Data.Tribe {
 
         internal void DbLoaderAdd(TroopStub stub, bool dispatched) {
             stubs.Add(new AssignmentTroop(stub, DepartureTime(stub), dispatched));
-
+            stub.OnRemoved += RemoveStub;
+            stub.OnStateSwitched += StubOnStateSwitched;            
         }
     }
 }

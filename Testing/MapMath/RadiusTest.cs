@@ -1,7 +1,11 @@
 ﻿#region
 
-using Game.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Common.Testing;
+using FluentAssertions;
+using Game.Map;
+using Moq;
+using Xunit;
+using Xunit.Extensions;
 
 #endregion
 
@@ -9,85 +13,74 @@ namespace Testing.MapMath
 {
     /// <summary>
     ///   Summary description for ChannelTest
-    /// </summary>
-    [TestClass]
+    /// </summary>    
     public class RadiusTest : TestBase
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-        }
-
-        [TestMethod]
+        [Fact]
         public void TestSelf()
         {
-            Assert.AreEqual(0, SimpleGameObject.RadiusDistance(13, 13, 13, 13));
-            Assert.AreEqual(0, SimpleGameObject.RadiusDistance(13, 14, 13, 14));
-            Assert.AreEqual(0, SimpleGameObject.RadiusDistance(14, 13, 14, 13));
-            Assert.AreEqual(0, SimpleGameObject.RadiusDistance(14, 14, 14, 14));
+            new RadiusLocator().RadiusDistance(13, 13, 13, 13).Should().Be(0);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 14).Should().Be(0);
+            new RadiusLocator().RadiusDistance(14, 13, 14, 13).Should().Be(0);
+            new RadiusLocator().RadiusDistance(14, 14, 14, 14).Should().Be(0);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestEvenyEveny1()
         {
             //Even y Even y1
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 14, 12, 14));
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 14, 14, 14));
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 14, 13, 12));
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 14, 13, 16));
-            Assert.AreEqual(3, SimpleGameObject.RadiusDistance(13, 14, 14, 16));
-            Assert.AreEqual(5, SimpleGameObject.RadiusDistance(13, 14, 13, 18));
-            Assert.AreEqual(8, SimpleGameObject.RadiusDistance(13, 14, 16, 14));
+            new RadiusLocator().RadiusDistance(13, 14, 12, 14).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 14, 14, 14).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 12).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 16).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 14, 14, 16).Should().Be(3);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 18).Should().Be(5);
+            new RadiusLocator().RadiusDistance(13, 14, 16, 14).Should().Be(8);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestOddyOddy1()
         {
             //Odd y Odd y1
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 15, 12, 15));
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 15, 14, 15));
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 15, 13, 13));
-            Assert.AreEqual(2, SimpleGameObject.RadiusDistance(13, 15, 13, 17));
-            Assert.AreEqual(3, SimpleGameObject.RadiusDistance(13, 15, 14, 17));
-            Assert.AreEqual(5, SimpleGameObject.RadiusDistance(13, 15, 13, 19));
-            Assert.AreEqual(8, SimpleGameObject.RadiusDistance(13, 15, 16, 15));
+            new RadiusLocator().RadiusDistance(13, 15, 12, 15).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 15, 14, 15).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 15, 13, 13).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 15, 13, 17).Should().Be(2);
+            new RadiusLocator().RadiusDistance(13, 15, 14, 17).Should().Be(3);
+            new RadiusLocator().RadiusDistance(13, 15, 13, 19).Should().Be(5);
+            new RadiusLocator().RadiusDistance(13, 15, 16, 15).Should().Be(8);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestEvenyOddy1()
         {
             //Even y Odd y1
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 14, 12, 13));
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 14, 13, 13));
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 14, 12, 15));
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 14, 13, 15));
+            new RadiusLocator().RadiusDistance(13, 14, 12, 13).Should().Be(1);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 13).Should().Be(1);
+            new RadiusLocator().RadiusDistance(13, 14, 12, 15).Should().Be(1);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 15).Should().Be(1);
 
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 13, 17));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 14, 13, 19));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 14, 15));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 14, 15, 15));
+            new RadiusLocator().RadiusDistance(13, 14, 13, 17).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 19).Should().Be(7);
+            new RadiusLocator().RadiusDistance(13, 14, 14, 15).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 14, 15, 15).Should().Be(7);
 
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 14, 13));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 14, 15, 13));
-            Assert.AreEqual(5, SimpleGameObject.RadiusDistance(13, 14, 11, 17));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 13, 11));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 14, 13, 9));
+            new RadiusLocator().RadiusDistance(13, 14, 14, 13).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 14, 15, 13).Should().Be(7);
+            new RadiusLocator().RadiusDistance(13, 14, 11, 17).Should().Be(5);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 11).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 14, 13, 9).Should().Be(7);
+            
+            new RadiusLocator().RadiusDistance(13, 14, 11, 13).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 14, 10, 13).Should().Be(7);
+            new RadiusLocator().RadiusDistance(13, 14, 12, 11).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 14, 12, 9).Should().Be(7);
 
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 11, 13));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 14, 10, 13));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 12, 11));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 14, 12, 9));
-
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 12, 17));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 14, 11, 13));
+            new RadiusLocator().RadiusDistance(13, 14, 12, 17).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 14, 11, 13).Should().Be(4);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestTileRadius()
         {
             /***********************************************************
@@ -100,24 +93,78 @@ namespace Testing.MapMath
                          13,18     14,18
              *********************************************************/
 
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 15, 13, 14));
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 15, 14, 14));
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 15, 14, 16));
-            Assert.AreEqual(1, SimpleGameObject.RadiusDistance(13, 15, 13, 16));
+            new RadiusLocator().RadiusDistance(12, 16, 11, 13).Should().Be(4);
+            new RadiusLocator().RadiusDistance(12, 16, 12, 13).Should().Be(4);
 
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 13, 12));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 12, 14));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 14, 12));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 15, 14));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 12, 16));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 13, 18));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 14, 18));
-            Assert.AreEqual(4, SimpleGameObject.RadiusDistance(13, 15, 15, 16));
+            new RadiusLocator().RadiusDistance(13, 15, 13, 14).Should().Be(1);
+            new RadiusLocator().RadiusDistance(13, 15, 14, 14).Should().Be(1);
+            new RadiusLocator().RadiusDistance(13, 15, 14, 16).Should().Be(1);
+            new RadiusLocator().RadiusDistance(13, 15, 13, 16).Should().Be(1);
 
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 15, 16, 14));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 15, 14, 20));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 15, 13, 20));
-            Assert.AreEqual(7, SimpleGameObject.RadiusDistance(13, 15, 11, 14));
+            new RadiusLocator().RadiusDistance(13, 15, 13, 12).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 15, 12, 14).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 15, 14, 12).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 15, 15, 14).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 15, 12, 16).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 15, 13, 18).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 15, 14, 18).Should().Be(4);
+            new RadiusLocator().RadiusDistance(13, 15, 15, 16).Should().Be(4);
+
+            new RadiusLocator().RadiusDistance(13, 15, 16, 14).Should().Be(7);
+            new RadiusLocator().RadiusDistance(13, 15, 14, 20).Should().Be(7);
+            new RadiusLocator().RadiusDistance(13, 15, 13, 20).Should().Be(7);
+            new RadiusLocator().RadiusDistance(13, 15, 11, 14).Should().Be(7);
+        }
+
+        [Theory]
+        [CsvData("MapMath/overlapping_test_data.csv")]
+        public void TestGeneratedValues(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
+        {
+            new RadiusLocator().RadiusDistance(x1, y1, x2, y2).Should().Be(distance);
+        }
+
+        [Theory]
+        [CsvData("MapMath/overlapping_test_data.csv")]
+        public void TestIsOverlapping(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
+        {
+            new RadiusLocator().IsOverlapping(new Location(x1, y1), r1, new Location(x2, y2), r2).Should().Be(overlapping);
+        }
+
+        private readonly RadiusLocator cacheForTestIsOverlappingWithCache = new RadiusLocator();
+        [Theory]
+        [CsvData("MapMath/overlapping_test_data.csv")]
+        public void TestIsOverlappingAllPointsWithCache(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
+        {
+            cacheForTestIsOverlappingWithCache.IsOverlapping(new Location(x1, y1), r1, new Location(x2, y2), r2).Should().Be(overlapping);
+        }
+
+        [Fact]
+        public void TestIsOverlappingWithCache()
+        {
+            Mock<RadiusLocator> radiusLocator = new Mock<RadiusLocator> { CallBase = true };
+
+            int called = 0;
+
+            radiusLocator.Object.IsOverlapping(new Location(50, 50), 1, new Location(50, 48), 0);            
+
+            radiusLocator.Setup(
+                                m =>
+                                m.ForeachObject(It.IsAny<uint>(),
+                                                It.IsAny<uint>(),
+                                                It.IsAny<byte>(),
+                                                It.IsAny<bool>(),
+                                                It.IsAny<RadiusLocator.DoWork>(),
+                                                It.IsAny<object>())).Callback<uint, uint, byte, bool, RadiusLocator.DoWork, object>(
+                                                                                                                                    (ox,
+                                                                                                                                     oy,
+                                                                                                                                     radius,
+                                                                                                                                     self,
+                                                                                                                                     work,
+                                                                                                                                     custom) =>
+                                                                                                                                    { called++; });
+
+            radiusLocator.Object.IsOverlapping(new Location(50, 50), 1, new Location(50, 48), 0);
+            called.Should().Be(0);
         }
     }
 }

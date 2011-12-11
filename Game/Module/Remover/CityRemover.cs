@@ -151,6 +151,13 @@ namespace Game.Module
             {
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
+                    // don't continue unless all troops are either idle or stationed
+                    if (city.Troops.Any(s => s.State != TroopState.Idle || s.State != TroopState.Stationed))
+                    {
+                        Reschedule(LONG_RETRY);
+                        return;
+                    }
+
                     // starve all troops)
                     city.Troops.Starve(100, true);
 
@@ -177,7 +184,7 @@ namespace Game.Module
                     }
 
                     // remove all customized tiles
-                    RadiusLocator.ForeachObject(city.X,
+                    TileLocator.ForeachObject(city.X,
                                                 city.Y,
                                                 city.Radius,
                                                 true,

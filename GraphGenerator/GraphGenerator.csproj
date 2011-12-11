@@ -74,6 +74,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{A5302ED1-2B78-4FD4-B0C8-C19C3299AB59}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSVToXML\CSVToXML.csproj">
       <Project>{FAAE202A-B5DA-495F-A059-FCB229C5D151}</Project>
       <Name>CSVToXML</Name>

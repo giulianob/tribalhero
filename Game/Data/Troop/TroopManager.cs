@@ -205,6 +205,8 @@ namespace Game.Data.Troop
             if (!dict.Remove(id))
                 return false;
 
+            stub.FireRemoved();
+
             idGen.Release(id);
             stub.UnitUpdate -= StubUpdateEvent;
 
@@ -248,7 +250,7 @@ namespace Game.Data.Troop
                         stationedCity.Troops.RemoveStationed(stub.StationedTroopId);
                     }
 
-                    City.Troops.Remove(stub.TroopId);
+                    Remove(stub.TroopId);
                 }
             }
         }

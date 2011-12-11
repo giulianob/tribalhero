@@ -15,12 +15,13 @@ namespace Game.Battle
 {
     public class BattleFormulas
     {
+        public static BattleFormulas Current { get; set; }
 
-        public static int MissChance(int attackersUpkeep, int defendersUpkeep)
+        public virtual int MissChance(int attackersUpkeep, int defendersUpkeep)
         {
             double delta = Math.Max(0, (double)attackersUpkeep / defendersUpkeep);
             double effectiveness = attackersUpkeep > 200 ? 1 : (double)attackersUpkeep / 200;
-         //   double effectiveness = 1;
+         
             if (delta < 1) return (int)(0 * effectiveness);
             if (delta < 1.25) return (int)(10 * effectiveness);
             if (delta < 1.5) return (int)(17 * effectiveness);
@@ -32,23 +33,23 @@ namespace Game.Battle
             return (int)(60 * effectiveness);
         }
 
-        public static int GetUnitsPerStructure(Structure structure)
+        public virtual int GetUnitsPerStructure(Structure structure)
         {
             var units = new[] { 20, 20, 23, 28, 34, 39, 45, 52, 59, 67, 76, 85, 95, 106, 117, 130 };
             return units[structure.Lvl];
         }
 
-        public static ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
+        public virtual ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
             ushort atk = attacker.Stats.Atk;
             int rawDmg = (atk*attacker.Count);
-            double modifier = BattleFormulas.GetDmgModifier(attacker, target);
+            double modifier = GetDmgModifier(attacker, target);
             rawDmg = (int)(modifier * rawDmg);
 
             return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
         }
 
-        public static double GetDmgModifier(CombatObject attacker, CombatObject target) {
+        public virtual double GetDmgModifier(CombatObject attacker, CombatObject target) {
             switch(attacker.BaseStats.Weapon)
             {
                 case WeaponType.Tower:
@@ -98,12 +99,12 @@ namespace Game.Battle
             }
         }
 
-        private static int GetLootPerRound(ICity city) {
+        private int GetLootPerRound(ICity city) {
             double roundsRequired = Math.Max(5, Config.battle_loot_till_full - city.Technologies.GetEffects(EffectCode.LootLoadMod, EffectInheritance.All).DefaultIfEmpty().Sum(x => x == null ? 0 : (int)x.Value[0]));
             return (int)Math.Ceiling(100 / roundsRequired);
         }
 
-        internal static Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
+        public virtual Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
         {
             int totalCarry = attacker.Stats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
             int count = Math.Max(1, totalCarry* GetLootPerRound(attacker.City) / 100); // if carry is 100 and % is 5, then count = 5;
@@ -120,24 +121,24 @@ namespace Game.Battle
                                 0);
         }
 
-        internal static short GetStamina(TroopStub stub, City city)
+        public virtual short GetStamina(TroopStub stub, City city)
         {
             return (short)Config.battle_stamina_initial;
         }
 
-        internal static ushort GetStaminaReinforced(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaReinforced(City city, ushort stamina, uint round)
         {
             return stamina;
         }
 
-        internal static ushort GetStaminaRoundEnded(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaRoundEnded(City city, ushort stamina, uint round)
         {
             if (stamina == 0)
                 return 0;
             return --stamina;
         }
 
-        internal static short GetStaminaStructureDestroyed(short stamina, CombatStructure combatStructure)
+        public virtual short GetStaminaStructureDestroyed(short stamina, CombatStructure combatStructure)
         {
             if (combatStructure.BaseStats.Armor != ArmorType.Building3)
                 return stamina;
@@ -148,7 +149,7 @@ namespace Game.Battle
             return (short)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
-        internal static ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round)
         {
             if (stamina == 0)
                 return 0;
@@ -156,12 +157,12 @@ namespace Game.Battle
             return --stamina;
         }
 
-        internal static bool IsAttackMissed(byte stealth)
+        public virtual bool IsAttackMissed(byte stealth)
         {
             return 100 - stealth < Config.Random.Next(0, 100);
         }
 
-        internal static bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, string value) {
+        public virtual bool UnitStatModCheck(BaseBattleStats stats, TroopBattleGroup group, string value) {
             string[] conditions = value.Split('=', '|');
             int success = 0;
             for (int i = 0; i < conditions.Length / 2; ++i) {
@@ -174,7 +175,7 @@ namespace Game.Battle
                         break;
                     case "WeaponEqual":
                         if (stats.Weapon == (WeaponType)Enum.Parse(typeof(WeaponType), conditions[i * 2 + 1], true)) ++success;
-                        break;;
+                        break;
                     case "WeaponClassEqual":
                         if (stats.WeaponClass == (WeaponClass)Enum.Parse(typeof(WeaponClass), conditions[i * 2 + 1], true)) ++success;
                         break;
@@ -191,7 +192,7 @@ namespace Game.Battle
                                 if (group == TroopBattleGroup.Local) ++success;
                                 break;
                         }
-                        break;;
+                        break;
                     case "TypeEqual":
                         if (stats.Type == ushort.Parse(conditions[i * 2 + 1])) ++success;
                         break;
@@ -200,10 +201,10 @@ namespace Game.Battle
             return success == conditions.Length / 2;
         }
 
-        internal static BattleStats LoadStats(BaseBattleStats stats, City city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(BaseBattleStats stats, City city, TroopBattleGroup group)
         {
             var calculator = new BattleStatsModCalculator(stats);
-            foreach (var effect in city.Technologies.GetAllEffects(EffectInheritance.All)) {
+            foreach (var effect in city.Technologies.GetAllEffects()) {
                 if (effect.Id == EffectCode.UnitStatMod) {
                     if (UnitStatModCheck(stats, group, (string)effect.Value[3])) {
                         switch ((string)effect.Value[0]) {
@@ -240,17 +241,17 @@ namespace Game.Battle
             return calculator.GetStats();
         }
 
-        internal static BattleStats LoadStats(Structure structure)
+        public virtual BattleStats LoadStats(Structure structure)
         {
             return LoadStats(structure.Stats.Base.Battle,structure.City,TroopBattleGroup.Local);
         }
 
-        internal static BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
         {
             return LoadStats(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle,city,group);
         }
 
-        public static Resource GetBonusResources(TroopObject troop, int originalCount, int remainingCount)
+        public virtual Resource GetBonusResources(TroopObject troop, int originalCount, int remainingCount)
         {
             if (originalCount == 0)
                 return new Resource();
@@ -260,7 +261,7 @@ namespace Game.Battle
             return new Resource(troop.Stats.Loot)*(troopsLostPercentage)*(1f+(Config.Random.Next(max)/100f));
         }
 
-        public static int GetNumberOfHits(CombatObject currentAttacker)
+        public virtual int GetNumberOfHits(CombatObject currentAttacker)
         {
             return currentAttacker.Stats.Splash == 0 ? 1 : currentAttacker.Stats.Splash;
         }

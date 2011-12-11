@@ -136,7 +136,7 @@ namespace Game.Battle
         {
             get
             {
-                return BattleFormulas.GetUnitsPerStructure(Structure) / 5;
+                return BattleFormulas.Current.GetUnitsPerStructure(Structure) / 5;
             }
         }
 

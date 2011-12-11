@@ -236,7 +236,7 @@ namespace Game.Comm
 
             if (cityId == targetCityId)
             {
-                ReplyError(session, packet, Error.Unexpected);
+                ReplyError(session, packet, Error.ActionSelf);
                 return;
             }
 

@@ -39,33 +39,33 @@ namespace Game.Data
     {
         #region Base Stats
 
-        public ushort Type { get; private set; }
+        public virtual ushort Type { get; private set; }
 
-        public byte Lvl { get; private set; }
+        public virtual byte Lvl { get; private set; }
 
-        public ushort GroupSize { get; private set; }
+        public virtual ushort GroupSize { get; private set; }
 
-        public WeaponType Weapon { get; private set; }
+        public virtual WeaponType Weapon { get; private set; }
 
-        public WeaponClass WeaponClass { get; private set; }
+        public virtual WeaponClass WeaponClass { get; private set; }
 
-        public ArmorType Armor { get; private set; }
+        public virtual ArmorType Armor { get; private set; }
 
-        public ArmorClass ArmorClass { get; private set; }
+        public virtual ArmorClass ArmorClass { get; private set; }
 
-        public ushort MaxHp { get; private set; }
+        public virtual ushort MaxHp { get; private set; }
 
-        public ushort Atk { get; private set; }
+        public virtual ushort Atk { get; private set; }
 
-        public byte Splash { get; private set; }
+        public virtual byte Splash { get; private set; }
 
-        public byte Rng { get; private set; }
+        public virtual byte Rng { get; private set; }
 
-        public byte Stl { get; private set; }
+        public virtual byte Stl { get; private set; }
 
-        public byte Spd { get; private set; }
+        public virtual byte Spd { get; private set; }
 
-        public ushort Carry { get; private set; }
+        public virtual ushort Carry { get; private set; }
 
         #endregion
 

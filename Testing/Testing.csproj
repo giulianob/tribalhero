@@ -90,6 +90,7 @@
     <Compile Include="Balancing\TestCavalry.cs" />
     <Compile Include="Balancing\TestOutnumber.cs" />
     <Compile Include="Balancing\TestArcher.cs" />
+    <Compile Include="Battle\CombatListTest.cs" />
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
     <Compile Include="Formulas\MoveTimeTotalTest.cs" />

@@ -108,8 +108,6 @@ package src.UI.Dialog{
 			var ids: Array = new Array();
 			ids.push(id);
 			Global.mapComm.Messaging.del(actionLoader, ids);
-			
-			refreshOnClose = true;
 		}
 
 		private function markAsRead(e: Event = null) : void {
@@ -121,6 +119,8 @@ package src.UI.Dialog{
 			}
 
 			Global.mapComm.Messaging.markAsRead(actionLoader, ids);
+			
+			refreshOnClose = true;
 		}
 
 		// Use the cell editing ability to decide if the user clicked the preview box which then we show the message

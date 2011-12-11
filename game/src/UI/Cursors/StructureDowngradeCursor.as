@@ -3,6 +3,7 @@
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import org.aswing.JOptionPane;
 	import src.Global;
 	import src.Map.City;
 	import src.Objects.GameObject;
@@ -12,6 +13,7 @@
 	import src.Objects.IDisposable;
 	import src.Objects.StructureObject;
 	import src.UI.Components.GroundCircle;
+	import src.UI.Dialog.InfoDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	import src.Objects.Troop.*;
 
@@ -104,7 +106,11 @@
 
 			if (gameObj.cityId != parentObj.cityId) return;
 
-			Global.mapComm.Objects.downgrade(city.id, parentObj.objectId, gameObj.objectId);
+			InfoDialog.showMessageDialog("Confirm", "Are you sure? Your structure is about to be completely removed.", function(result: int): void {				
+				if (result == JOptionPane.YES)						
+					Global.mapComm.Objects.downgrade(city.id, parentObj.objectId, gameObj.objectId);
+					
+			}, null, true, true, JOptionPane.YES | JOptionPane.NO);
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
@@ -159,7 +165,7 @@
 			var objects: Array = Global.map.regions.getObjectsAt(objX, objY, StructureObject);
 
 			if (objects.length == 0 || objects[0].cityId != parentObj.cityId) {
-				Global.gameContainer.message.showMessage("Choose a structure to downgrade");
+				Global.gameContainer.message.showMessage("Choose a structure to remove");
 				return;
 			}
 
@@ -167,7 +173,7 @@
 			gameObj.setHighlighted(true);
 			highlightedObj = gameObj;
 
-			Global.gameContainer.message.showMessage("Double click to downgrade this structure.");
+			Global.gameContainer.message.showMessage("Double click to remove this structure.");
 		}
 	}
 

@@ -48,7 +48,7 @@
 			createUI();
 
 			lblMaxLabor.setText(structurePrototype.maxlabor.toString());
-			lblAttack.setText(structurePrototype.defense.toString());
+			lblAttack.setText(structurePrototype.attack.toString());
 			lblRange.setText(Constants.stealthRangeNames[structurePrototype.range]);
 			lblStealth.setText(Constants.stealthRangeNames[structurePrototype.stealth]);
 			lblHp.setText(structurePrototype.hp.toString());

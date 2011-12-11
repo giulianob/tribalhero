@@ -4,25 +4,29 @@ namespace Game.Data.Stats
     {
         #region Base Stats
 
-        public ushort MaxHp { get; set; }
+        public virtual ushort MaxHp { get; set; }
 
-        public ushort Atk { get; set; }
+        public virtual ushort Atk { get; set; }
 
-        public byte Splash { get; set; }
+        public virtual byte Splash { get; set; }
 
-        public byte Rng { get; set; }
+        public virtual byte Rng { get; set; }
 
-        public byte Stl { get; set; }
+        public virtual byte Stl { get; set; }
 
-        public byte Spd { get; set; }
+        public virtual byte Spd { get; set; }
 
-        public ushort Carry { get; set; }
+        public virtual ushort Carry { get; set; }
 
-        public BaseBattleStats Base { get; private set; }
+        public virtual BaseBattleStats Base { get; private set; }
 
         #endregion
 
         #region Constructors
+
+        public BattleStats()
+        {            
+        }
 
         public BattleStats(BaseBattleStats baseStats)
         {

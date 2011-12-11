@@ -14,6 +14,7 @@ ERROR_105,The specified action is invalid
 ERROR_106,The specified action is already in progress
 ERROR_107,Invalid action count specified
 ERROR_108,This action cannot be cancelled
+ERROR_109,You cannot perform this action on yourself
 ERROR_200,You do not have enough resources to do that
 ERROR_201,The specified resource is not tradable
 ERROR_202,Not enough laborers to do that

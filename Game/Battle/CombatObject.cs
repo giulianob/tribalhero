@@ -251,18 +251,7 @@ namespace Game.Battle
 
         public bool CanSee(CombatObject obj, uint lowestSteath)
         {
-            if (Visibility >= obj.Stats.Stl || lowestSteath >= obj.Stats.Stl)
-            {
-#if DEBUG
-                Global.Logger.Debug(string.Format("Total Vision[{2}] CanSee [{0}] Stl[{1}]",
-                                                        obj.ClassType == BattleClass.Unit ? Ioc.Kernel.Get<UnitFactory>().GetName(obj.Type, 1) : Ioc.Kernel.Get<StructureFactory>().GetName(obj.Type, 1),
-                                                        obj.Stats.Stl,
-                                                        Visibility));
-#endif
-                return true;
-            }
-
-            return false;
+            return Visibility >= obj.Stats.Stl || lowestSteath >= obj.Stats.Stl;
         }
 
         public void ParticipatedInRound()

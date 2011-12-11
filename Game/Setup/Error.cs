@@ -31,6 +31,7 @@ namespace Game.Setup
         ActionAlreadyInProgress = 106,
         ActionCountInvalid = 107,
         ActionUncancelable = 108,
+        ActionSelf = 109,
 
         #endregion
 

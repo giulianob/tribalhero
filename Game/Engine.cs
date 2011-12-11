@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using Game.Battle;
 using Game.Comm;
 using Game.Data;
 using Game.Database;
@@ -144,6 +145,7 @@ _________ _______ _________ ______   _______  _
             
             // Instantiate singletons here for now
             RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
+            BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
 
             return Ioc.Kernel;
         }

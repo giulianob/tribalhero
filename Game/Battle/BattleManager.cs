@@ -637,7 +637,7 @@ namespace Game.Battle
                 #region Targeting
 
                 CombatObject currentAttacker;
-                List<CombatObject> currentDefenders;
+                IList<CombatObject> currentDefenders;
 
                 do
                 {
@@ -667,13 +667,13 @@ namespace Game.Battle
                     CombatList.BestTargetResult targetResult;
 
                     if (currentAttacker.CombatList == attackers)
-                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
+                        targetResult = defenders.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
                     else if (currentAttacker.CombatList == defenders)
-                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.GetNumberOfHits(currentAttacker));
+                        targetResult = attackers.GetBestTargets(currentAttacker, out currentDefenders, BattleFormulas.Current.GetNumberOfHits(currentAttacker));
                     else
                         throw new Exception("How can this happen");
 
-                    if (currentDefenders == null || currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
+                    if (currentDefenders.Count == 0 || currentAttacker.Stats.Atk == 0)
                     {
                         currentAttacker.ParticipatedInRound();
                         dbManager.Save(currentAttacker);
@@ -750,13 +750,13 @@ namespace Game.Battle
         {
             #region Damage
 
-            ushort dmg = BattleFormulas.GetDamage(attacker, defender, attacker.CombatList == defenders);
+            ushort dmg = BattleFormulas.Current.GetDamage(attacker, defender, attacker.CombatList == defenders);
             ushort actualDmg;
             Resource lostResource;
             int attackPoints;
 
             #region Miss Chance
-            var missChance = BattleFormulas.MissChance(attacker.CombatList.Sum(x => x.Upkeep), defender.CombatList.Sum(x => x.Upkeep));
+            var missChance = BattleFormulas.Current.MissChance(attacker.CombatList.Sum(x => x.Upkeep), defender.CombatList.Sum(x => x.Upkeep));
             if (missChance > 0) {
                 var rand = (int)(Config.Random.NextDouble() * 100);
                 if (rand <= missChance)
@@ -767,7 +767,7 @@ namespace Game.Battle
             #region Splash Damage Reduction
             if (attackIndex > 0)
             {
-                double reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.UnitStatModCheck(defender.BaseStats, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+                double reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.BaseStats, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
                 reduction = (100 - reduction) / 100;
                 dmg = (ushort)(reduction * dmg);
             }
@@ -800,7 +800,7 @@ namespace Game.Battle
                     city.BeginUpdate();
                     if (round >= Config.battle_loot_begin_round)
                     {
-                        loot = BattleFormulas.GetRewardResource(attacker, defender, actualDmg);
+                        loot = BattleFormulas.Current.GetRewardResource(attacker, defender, actualDmg);
                         city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
                     } 
                     attacker.ReceiveReward(attackPoints, loot ?? new Resource() );

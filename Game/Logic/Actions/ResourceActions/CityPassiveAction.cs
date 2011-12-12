@@ -173,7 +173,7 @@ namespace Game.Logic.Actions
 
             PostFirstLoop += city =>
                 {
-                    if (city.Owner.Session == null && DateTime.Now.Subtract(city.Owner.LastLogin).TotalDays > 2)
+                    if (city.Owner.Session == null && DateTime.UtcNow.Subtract(city.Owner.LastLogin).TotalDays > 2)
                         return;
 
                     laborTimeRemains += INTERVAL;

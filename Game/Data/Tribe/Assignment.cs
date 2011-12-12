@@ -72,8 +72,7 @@ namespace Game.Data.Tribe {
             AttackMode = mode;
             DispatchCount = 0;
             stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
-            Ioc.Kernel.Get<IDbManager>().Save(this);
-            Global.Scheduler.Put(this);
+            ResetNextTime();
         }
 
         public string ToNiceString() {

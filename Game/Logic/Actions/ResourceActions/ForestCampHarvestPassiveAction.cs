@@ -113,10 +113,9 @@ namespace Game.Logic.Actions
                     forest.EndUpdate();
                 }
 
-                // Give back the labors to the city
+                // Reset the rate
                 city.BeginUpdate();
-                city.Resource.Wood.Rate -= (int)structure["Rate"];
-                city.Resource.Labor.Add(structure.Stats.Labor);
+                city.Resource.Wood.Rate -= (int)structure["Rate"];                
                 city.EndUpdate();
 
                 // Remove ourselves
@@ -152,10 +151,9 @@ namespace Game.Logic.Actions
                     forest.EndUpdate();
                 }
 
-                // Give back the labors to the city
+                // Reset the rate
                 city.BeginUpdate();
-                city.Resource.Wood.Rate -= (int)structure["Rate"];
-                city.Resource.Labor.Add(structure.Stats.Labor);
+                city.Resource.Wood.Rate -= (int)structure["Rate"];                
                 city.EndUpdate();
 
                 StateChange(ActionState.Failed);

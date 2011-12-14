@@ -135,5 +135,11 @@ namespace Game.Logic.Formulas
 
             return TimeSpan.FromSeconds(int.Parse(time));
         }
+
+        public static double GetBattleInterval(int count)
+        {
+            // at 400 objects, the reduction is cap'ed at 20% of the original speed.
+            return Config.battle_turn_interval*100/(100 + Math.Min(500, count));
+        }
     }
 }

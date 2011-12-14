@@ -197,7 +197,7 @@
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(
 				modelMembers, 
-				["Player", "Rank", "Last Login", ""],
+				["Player", "Rank", "Last Seen", ""],
 				[".", "rank", "date", "."],
 				[null, new TribeRankTranslator(), null]
 			));			

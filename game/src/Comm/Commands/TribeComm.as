@@ -126,15 +126,24 @@
 			
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
-			for (var i: int = 0; i < memberCount; i++)
-				profileData.members.push({
-					playerId: packet.readUInt(),
-					playerName: packet.readString(),
-					cityCount: packet.readInt(),
-					rank: packet.readUByte(),
-					date: Util.simpleTime(Global.map.getServerTime()-packet.readUInt()) + " ago",
-					contribution: new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0)
-				});
+			for (var i: int = 0; i < memberCount; i++) {
+				var memberData: * = new Object();
+				
+				memberData.playerId = packet.readUInt();
+				memberData.playerName = packet.readString();
+				memberData.cityCount = packet.readInt();
+				memberData.rank = packet.readUByte();
+				var lastLogin: uint = packet.readUInt();
+				if (lastLogin == 0) {
+					memberData.date = "Now";
+				} else {
+					memberData.date = Util.simpleTime(Global.map.getServerTime() - lastLogin) + " ago";
+				}
+				memberData.contribution = new Resources(packet.readUInt(), packet.readUInt(), packet.readUInt(), packet.readUInt(), 0);
+
+				profileData.members.push(memberData);
+			
+			}
 				
 			(profileData.members as Array).sortOn("rank", [Array.NUMERIC]);
 			

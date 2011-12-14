@@ -13,7 +13,7 @@ namespace Game.Logic
     {
         public override bool Validate(Structure builder, ushort type, uint x, uint y)
         {
-            var effects = builder.Technologies.GetAllEffects(EffectInheritance.SelfAll);
+            var effects = builder.Technologies.GetAllEffects(EffectInheritance.Upward);
 
             foreach (var req in requirements)
             {

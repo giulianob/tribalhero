@@ -72,8 +72,7 @@ namespace Game.Data.Tribe {
             AttackMode = mode;
             DispatchCount = 0;
             stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
-            Ioc.Kernel.Get<IDbManager>().Save(this);
-            Global.Scheduler.Put(this);
+            ResetNextTime();
         }
 
         public string ToNiceString() {
@@ -102,27 +101,33 @@ namespace Game.Data.Tribe {
             }            
         }
 
+        /// <summary>
+        /// Add a stub and reschedule's the assignment
+        /// </summary>
+        /// <param name="stub"></param>
+        /// <returns></returns>
         public Error Add(TroopStub stub) {
             lock (lck)
             {
-                if (stubs.All(s => s.Dispatched))
+                // Don't allow ppl to join in the last minute
+                if (DateTime.UtcNow.AddMinutes(1) >= TargetTime)
                     return Error.AssignmentDone;
 
                 stubs.Add(new AssignmentTroop(stub, DepartureTime(stub)));
                 stub.OnRemoved += RemoveStub;
                 stub.OnStateSwitched += StubOnStateSwitched;
 
-                if (Global.Scheduler.Remove(this))
-                {
-                    Global.Scheduler.Put(this);
-                }
-
-                Ioc.Kernel.Get<IDbManager>().Save(this);
+                Reschedule();
             }
 
             return Error.Ok;
         }
 
+        /// <summary>
+        /// Handler when an event switches state. This is how we know to remove a stub from the assignment once it joins the battle.
+        /// </summary>
+        /// <param name="stub"></param>
+        /// <param name="newState"></param>
         private void StubOnStateSwitched(TroopStub stub, TroopState newState)
         {
             if (newState == TroopState.Battle)
@@ -131,6 +136,10 @@ namespace Game.Data.Tribe {
             }
         }
 
+        /// <summary>
+        /// Removes a stub from the assignment and reschedules the action.
+        /// </summary>
+        /// <param name="stub"></param>
         private void RemoveStub(TroopStub stub)
         {
             lock (lck)
@@ -147,11 +156,21 @@ namespace Game.Data.Tribe {
             }
         }
 
+        /// <summary>
+        /// Calculates the departure time for a given troop stub
+        /// </summary>
+        /// <param name="stub"></param>
+        /// <returns></returns>
         private DateTime DepartureTime(TroopStub stub) {
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, X, Y);
             return TargetTime.Subtract(new TimeSpan(0, 0, Formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects()))));
         }
 
+        /// <summary>
+        /// Called to dispatch a unit
+        /// </summary>
+        /// <param name="stub"></param>
+        /// <returns></returns>
         private bool Dispatch(TroopStub stub) {
             Structure structure = (Structure)Global.World.GetObjects(X, Y).Find(z => z is Structure);
             if (structure == null) {
@@ -192,12 +211,17 @@ namespace Game.Data.Tribe {
                             continue;
 
                         if (Dispatch(assignmentTroop.Stub))
+                        {
                             assignmentTroop.Dispatched = true;
+                            Reschedule();
+                        }                            
                         else
-                            stubs.RemoveAt(i);
-                    }
-                    
-                    Reschedule();
+                        {
+                            RemoveStub(assignmentTroop.Stub);                            
+                        }
+
+                        break;
+                    }                                       
                 }
             }
         }
@@ -207,6 +231,7 @@ namespace Game.Data.Tribe {
         /// </summary>
         public void ResetNextTime()
         {
+            // Take the quickest stub or the final target time.
             Time = stubs.Any(s => !s.Dispatched) ? stubs.Where(s => !s.Dispatched).Min(x => x.DepartureTime) : TargetTime;
         }
 
@@ -216,11 +241,14 @@ namespace Game.Data.Tribe {
         /// </summary>
         private void Reschedule()
         {
+            // If this has been scheduled then remove
             if (IsScheduled)
                 Global.Scheduler.Remove(this);
 
+            // Resets the Time of the action which is what the scheduler uses to look it up
             ResetNextTime();
 
+            // If there are stubs that have not been dispatched or we haven't reached the time that the assignment should be over then we just reschedule it.
             if (stubs.Count > 0 && (stubs.Any(x => !x.Dispatched) || TargetTime.CompareTo(DateTime.UtcNow) > 0))
             {
                 Ioc.Kernel.Get<IDbManager>().Save(this);

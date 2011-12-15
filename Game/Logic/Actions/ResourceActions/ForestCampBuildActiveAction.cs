@@ -211,11 +211,6 @@ namespace Game.Logic.Actions
                 Forest forest;
                 if (!Global.World.Forests.TryGetValue(forestId, out forest))
                 {
-                    // Give back the labors to the city
-                    city.BeginUpdate();
-                    city.Resource.Labor.Add(labors);
-                    city.EndUpdate();
-
                     // Remove the camp
                     structure.BeginUpdate();
                     Global.World.Remove(structure);
@@ -262,8 +257,7 @@ namespace Game.Logic.Actions
                     return;
 
                 // Give laborers back
-                city.BeginUpdate();
-                city.Resource.Labor.Add(labors);
+                city.BeginUpdate();                
                 city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Formula.StructureCost(city, campType, 1)));
                 city.EndUpdate();
 

@@ -117,6 +117,14 @@ namespace Game.Data
             }
         }
 
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return Session != null;
+            }
+        }
+
         #region ILockable Members
 
         public int Hash

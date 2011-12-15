@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util;
@@ -131,7 +132,7 @@ namespace Game.Logic.Actions
                 else
                 {
                     Ioc.Kernel.Get<IDbManager>().Save(city.Battle);
-                    endTime = DateTime.UtcNow.AddSeconds(Config.battle_turn_interval);
+                    endTime = DateTime.UtcNow.AddSeconds(Formula.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
                     StateChange(ActionState.Fired);
                 }
             }
@@ -170,7 +171,7 @@ namespace Game.Logic.Actions
 
             city.Battle.AddToDefense(list);
             beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(Config.battle_turn_interval);
+            endTime = DateTime.UtcNow;
 
             return Error.Ok;
         }

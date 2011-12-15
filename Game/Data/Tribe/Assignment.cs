@@ -217,9 +217,10 @@ namespace Game.Data.Tribe {
                         }                            
                         else
                         {
-                            RemoveStub(assignmentTroop.Stub);
-                            break;
+                            RemoveStub(assignmentTroop.Stub);                            
                         }
+
+                        break;
                     }                                       
                 }
             }

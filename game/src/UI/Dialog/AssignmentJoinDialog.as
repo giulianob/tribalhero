@@ -1,0 +1,55 @@
+﻿package src.UI.Dialog {
+
+	import flash.events.Event;
+	import org.aswing.*;
+	import org.aswing.border.*;
+	import org.aswing.geom.*;
+	import org.aswing.colorchooser.*;
+	import org.aswing.ext.*;
+	import src.Global;
+	import src.Map.City;
+	import src.Map.MapUtil;
+	import src.Objects.Effects.Formula;
+	import src.Objects.GameError;
+	import src.UI.Components.SimpleTooltip;
+	import src.UI.Components.SimpleTroopGridList.*;
+	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
+	import src.UI.GameJPanel;
+	import src.Objects.Troop.*;
+	import src.Util.Util;
+
+	public class AssignmentJoinDialog extends AttackTroopDialog {
+
+		protected var assignment: *;
+		protected var distance: int;
+	
+		public function AssignmentJoinDialog(onAccept: Function, assignment: *):void
+		{
+			super(onAccept, false);
+			
+			title = "Join Assignment";
+			
+			this.assignment = assignment;
+			this.distance = MapUtil.distance(city.MainBuilding.x, city.MainBuilding.y, assignment.x, assignment.y);
+		}
+
+		override protected function updateSpeedInfo(e:Event = null):void 
+		{
+			var stub: TroopStub = getTroop();			
+			if (stub.getIndividualUnitCount() == 0) {
+				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
+			}
+			else {				
+				var moveTime: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, true);
+				if (Global.map.getServerTime() + moveTime > assignment.endTime) {
+					lblTroopSpeed.setText("Your units will arrive late. Choose faster units to arrive on time.");
+				}
+				else {
+					lblTroopSpeed.setText("Hint: Drag units to assign to the different troops");
+				}
+			}
+		}
+	}
+
+}
+

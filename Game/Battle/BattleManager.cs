@@ -55,6 +55,8 @@ namespace Game.Battle
             this.combatUnitFactory = combatUnitFactory;
             city = (City)owner;
             report = battleReport;
+
+            // Group id 1 is reserved for local troop
             groupIdGen.Set(1);
 
             ActionAttacked += battleChannel.BattleActionAttacked;
@@ -418,10 +420,7 @@ namespace Game.Battle
 
                 foreach (var obj in objects)
                 {
-                    uint id = 1;
-
-                    if (!isLocal)
-                        id = (uint)idGen.GetNext();
+                    uint groupId = isLocal ? 1 : (uint)groupIdGen.GetNext();
 
                     foreach (var formation in obj)
                     {
@@ -448,7 +447,7 @@ namespace Game.Battle
                                 added = true;
                                 unit.LastRound = round;
                                 unit.Id = (uint)idGen.GetNext();
-                                unit.GroupId = id;
+                                unit.GroupId = groupId;
                                 combatList.Add(unit);
                                 list.Add(unit);
                             }

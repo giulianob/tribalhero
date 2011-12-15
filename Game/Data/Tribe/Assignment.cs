@@ -211,12 +211,16 @@ namespace Game.Data.Tribe {
                             continue;
 
                         if (Dispatch(assignmentTroop.Stub))
+                        {
                             assignmentTroop.Dispatched = true;
+                            Reschedule();
+                        }                            
                         else
-                            stubs.RemoveAt(i);
-                    }
-                    
-                    Reschedule();
+                        {
+                            RemoveStub(assignmentTroop.Stub);
+                            break;
+                        }
+                    }                                       
                 }
             }
         }

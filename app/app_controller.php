@@ -3,10 +3,22 @@
 /**
  * @property EmailComponent $Email
  * @property SessionComponent $Session
+ * @property ThriftComponent $Thrift
  */
 class AppController extends Controller {
 
-    var $components = array('Auth', 'Security', 'Session', 'DebugKit.Toolbar');
+    var $components = array(
+        'Auth', 
+        'Security', 
+        'Session', 
+        'DebugKit.Toolbar',
+        'Thrift.Thrift' => array(
+            'host' => '127.0.0.1',
+            'services' => array(
+                'Notification' => array('port' => 46000)
+            ),
+        ),        
+    );
     var $helpers = array('Html', 'Js', 'Form', 'Session', 'Cache');
 
     function beforeFilter() {

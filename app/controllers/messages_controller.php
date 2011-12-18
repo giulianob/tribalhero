@@ -88,7 +88,7 @@ class MessagesController extends AppController {
         // Only allow 1 message every x seconds
         $lastMessage = $this->Message->find('first', array(
                     'contain' => array(),
-                    'field' => array('Message.created'),
+                    'fields' => array('Message.created'),
                     'conditions' => array(
                         'Message.sender_player_id' => $playerId
                     ),
@@ -98,9 +98,40 @@ class MessagesController extends AppController {
         if (!empty($lastMessage) && time() - strtotime($lastMessage['Message']['created']) < 10) {
             $data = array('error' => 'You are sending messages too fast. Please wait a few more seconds and try again.');
         } else {
-            $data = $this->Message->send($playerId, $to, $subject, $message);
-        }
+            $Recipient =& ClassRegistry::init('Recipient');
+            
+            // Find recipient
+            $recipient = $Recipient->findByName($to);
 
+            if (empty($recipient)) {
+                $data = array('error' => 'Recipient not found.');
+            }
+            else
+            {
+                $data = $this->Message->send($playerId, $recipient, $subject, $message);                               
+                
+                // If successful, then send RPC w/ new message count
+                if (get_value($data, 'success'))
+                {
+                    $unreadMessages = $this->Message->getUnreadCount($recipient['Recipient']['id']);
+                    
+                    try
+                    {
+                        $transport = $this->Thrift->getTransportFor('Notification');
+                        $protocol = $this->Thrift->getProtocol($transport);
+                        $notificationRpc = new NotificationClient($protocol);
+                        $transport->open();                                                     
+                        $notificationRpc->NewMessage(new PlayerUnreadCount(array('id' => $recipient['Recipient']['id'], 'unreadCount' => $unreadMessages)));
+                        $transport->close();
+                    }
+                    catch (Exception $e)
+                    {
+                        debug($e);
+                    }
+                }                
+            }
+        }
+        
         $this->set(compact('data'));
         $this->render('/elements/to_json');
     }

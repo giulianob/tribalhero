@@ -13,10 +13,10 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
-using Ninject.Extensions.Interception;
 using Ninject.Extensions.Logging;
 using Ninject.Extensions.Logging.Log4net;
 using Persistance;
+using Thrift.Server;
 
 #endregion
 
@@ -34,15 +34,17 @@ namespace Game
     {
         private readonly ILogger logger;
         private readonly IPolicyServer policyServer;
+        private readonly TServer thriftServer;
         private readonly ITcpServer server;        
 
         public EngineState State { get; private set; }
 
-        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer)
+        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer, TServer thriftServer)
         {
             this.logger = logger;
             this.server = server;
             this.policyServer = policyServer;
+            this.thriftServer = thriftServer;
         }
 
         public bool Start()
@@ -134,6 +136,9 @@ _________ _______ _________ ______   _______  _
             // Start policy server
             policyServer.Start();
 
+            // Start thrift server
+            thriftServer.Serve();
+
             State = EngineState.Started;
 
             return true;
@@ -141,7 +146,7 @@ _________ _______ _________ ______   _______  _
 
         public static IKernel CreateDefaultKernel()
         {
-            Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = false }, new DynamicProxy2Module(), new Log4NetModule(), new GameModule());
+            Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new GameModule());
             
             // Instantiate singletons here for now
             RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();

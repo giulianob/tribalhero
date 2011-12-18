@@ -5,16 +5,24 @@ using Game.Comm;
 using Game.Comm.Channel;
 using Game.Comm.CmdLine_Commands;
 using Game.Comm.Processor_Commands;
+using Game.Comm.Protocol;
+using Game.Comm.Thrift;
 using Game.Data;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
+using Ninject.Extensions.Conventions;
+using Ninject.Extensions.Conventions.BindingGenerators;
+using Ninject.Extensions.Factory;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
 using Ninject.Parameters;
 using Persistance;
 using Persistance.Managers;
+using Thrift.Protocol;
+using Thrift.Server;
+using Thrift.Transport;
 
 namespace Game
 {
@@ -30,6 +38,8 @@ namespace Game
                     var processor = Kernel.Get<Processor>();
                     return (name, socket) => new SocketSession(name, socket, processor);
                 }).InSingletonScope();
+            Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
+            Bind<IProtocol>().To<PacketProtocol>();
             #endregion
 
             #region Locking
@@ -120,6 +130,12 @@ namespace Game
             #region Utils
 
             Bind<RadiusLocator>().ToSelf().InSingletonScope();
+
+            #endregion
+
+            #region Factories
+
+            Bind<IProtocolFactory>().ToFactory();
 
             #endregion
         }

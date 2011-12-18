@@ -68,6 +68,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\Lib\ninject\DynamicProxy\lib\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\Lib\jsonfx\JsonFx.dll</HintPath>
     </Reference>
@@ -82,11 +85,11 @@
     <Reference Include="Ninject">
       <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Interception">
-      <HintPath>..\Lib\ninject\Ninject.Extensions.Interception.dll</HintPath>
+    <Reference Include="Ninject.Extensions.Conventions">
+      <HintPath>..\Lib\ninject\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Interception.DynamicProxy">
-      <HintPath>..\Lib\ninject\DynamicProxy\Ninject.Extensions.Interception.DynamicProxy.dll</HintPath>
+    <Reference Include="Ninject.Extensions.Factory">
+      <HintPath>..\Lib\ninject\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Logging">
       <HintPath>..\Lib\ninject\Ninject.Extensions.Logging.dll</HintPath>
@@ -101,6 +104,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="Thrift">
+      <HintPath>..\Lib\thrift\Thrift.dll</HintPath>
+    </Reference>
     <Reference Include="zlib.net">
       <HintPath>..\Lib\zlib\zlib.net.dll</HintPath>
     </Reference>
@@ -148,10 +154,16 @@
     <Compile Include="Comm\Processor Commands\StructureCommandsModule.cs" />
     <Compile Include="Comm\Processor Commands\TroopCommandsModule.cs" />
     <Compile Include="Comm\CommandModule.cs" />
+    <Compile Include="Comm\Protocol\IProtocol.cs" />
+    <Compile Include="Comm\Protocol\PacketProtocol.cs" />
+    <Compile Include="Comm\Protocol\IProtocolFactory.cs" />
     <Compile Include="Comm\Session.cs" />
     <Compile Include="Comm\SocketSession.cs" />
     <Compile Include="Comm\TcpServer.cs" />
     <Compile Include="Comm\TcpWorker.cs" />
+    <Compile Include="Comm\Thrift\NotificationHandler.cs" />
+    <Compile Include="Comm\Thrift\Notification.cs" />
+    <Compile Include="Comm\Thrift\PlayerUnreadCount.cs" />
     <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -176,8 +188,6 @@
     <Compile Include="Engine.cs" />
     <Compile Include="Data\SimpleGameObject.cs" />
     <Compile Include="GameModule.cs" />
-    <Compile Include="Interceptor\ForceProxyReturn\ForceProxyReturn.cs" />
-    <Compile Include="Interceptor\ForceProxyReturn\ForceProxyReturnAttribute.cs" />
     <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />

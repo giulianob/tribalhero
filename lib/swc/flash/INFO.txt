@@ -1,0 +1,4 @@
+The flash.swc file is required for fl.lang.Locale and was originally found in 
+C:\Program Files (x86)\Adobe\Adobe Flash CS4\Common\Configuration\ActionScript 3.0\libs\
+
+I copied it here so we could build w/o having Flash installed.

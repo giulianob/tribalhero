@@ -21,8 +21,8 @@ namespace Game.Comm
     {
         public override void RegisterCommands(Processor processor)
         {
-            processor.RegisterCommand(Command.TribeAssignmentCreate, Create);
-            processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
+/*            processor.RegisterCommand(Command.TribeAssignmentCreate, Create);
+            processor.RegisterCommand(Command.TribeAssignmentJoin, Join);*/
         }
 
         private void Create(Session session, Packet packet) {

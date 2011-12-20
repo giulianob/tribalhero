@@ -23,7 +23,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public static int GetAwayFromRadius(IEnumerable<Effect> effects, byte radius, ushort type)
         {
-            return radius + effects.Sum(x => (x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type) ? (int)x.Value[1] : 0);
+            return radius + effects.DefaultIfEmpty().Min(x => (x!=null && x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type) ? (int)x.Value[1] : 0);
         }
 
         /// <summary>

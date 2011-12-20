@@ -118,7 +118,7 @@ namespace Game.Battle
             }
         }
 
-        public virtual uint Hp
+        public virtual decimal Hp
         {
             get
             {
@@ -225,12 +225,12 @@ namespace Game.Battle
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void TakeDamage(int dmg, out Resource returning, out int attackPoints)
+        public virtual void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
         {
             throw new Exception("NOT IMPLEMENTED");
         }
 
-        public virtual void CalculateDamage(ushort dmg, out ushort actualDmg)
+        public virtual void CalculateDamage(decimal dmg, out decimal actualDmg)
         {
             throw new Exception("NOT IMPLEMENTED");
         }

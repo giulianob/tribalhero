@@ -632,8 +632,8 @@ namespace Game.Database
                             //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
                             var battleStats = new BattleStats(Ioc.Kernel.Get<UnitFactory>().GetBattleStats((ushort)listReader["type"], (byte)listReader["level"]))
                                               {
-                                                      MaxHp = (ushort)listReader["max_hp"],
-                                                      Atk = (ushort)listReader["attack"],
+                                                      MaxHp = (decimal)listReader["max_hp"],
+                                                      Atk = (decimal)listReader["attack"],
                                                       Splash = (byte)listReader["splash"],
                                                       Rng = (byte)listReader["range"],
                                                       Stl = (byte)listReader["stealth"],
@@ -734,8 +734,8 @@ namespace Game.Database
                             //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
                             var battleStats = new BattleStats(structure.Stats.Base.Battle)
                                               {
-                                                      MaxHp = (ushort)listReader["max_hp"],
-                                                      Atk = (ushort)listReader["attack"],
+                                                      MaxHp = (decimal)listReader["max_hp"],
+                                                      Atk = (decimal)listReader["attack"],
                                                       Splash = (byte)listReader["splash"],
                                                       Rng = (byte)listReader["range"],
                                                       Stl = (byte)listReader["stealth"],
@@ -745,7 +745,7 @@ namespace Game.Database
                             var combatStructure = new CombatStructure(bm,
                                                                       structure,
                                                                       battleStats,
-                                                                      (uint)listReader["hp"],
+                                                                      (decimal)listReader["hp"],
                                                                       (ushort)listReader["type"],
                                                                       (byte)listReader["level"])
                                                   {
@@ -780,7 +780,7 @@ namespace Game.Database
                                                                   (ushort)listReader["type"],
                                                                   (byte)listReader["level"],
                                                                   (ushort)listReader["count"],
-                                                                  (ushort)listReader["left_over_hp"]);
+                                                                  (decimal)listReader["left_over_hp"]);
                             }
                             else
                             {
@@ -790,7 +790,7 @@ namespace Game.Database
                                                                  (ushort)listReader["type"],
                                                                  (byte)listReader["level"],
                                                                  (ushort)listReader["count"],
-                                                                 (ushort)listReader["left_over_hp"],
+                                                                 (decimal)listReader["left_over_hp"],
                                                                  new Resource((int)listReader["loot_crop"],
                                                                               (int)listReader["loot_gold"],
                                                                               (int)listReader["loot_iron"],

@@ -20,7 +20,7 @@ namespace Game.Battle
         private readonly byte lvl;
         private readonly BattleStats stats;
         private readonly ushort type;
-        private uint hp; //need to keep a copy track of the hp for reporting
+        private decimal hp; //need to keep a copy track of the hp for reporting
 
         public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats)
         {
@@ -32,7 +32,7 @@ namespace Game.Battle
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats, uint hp, ushort type, byte lvl)
+        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats, decimal hp, ushort type, byte lvl)
         {
             battleManager = owner;
             Structure = structure;
@@ -124,7 +124,7 @@ namespace Game.Battle
             }
         }
 
-        public override uint Hp
+        public override decimal Hp
         {
             get
             {
@@ -181,9 +181,9 @@ namespace Game.Battle
                                new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                                new DbColumn("damage_dealt", DmgDealt, DbType.Int32), new DbColumn("damage_received", DmgRecv, DbType.Int32),
                                new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
-                               new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32), new DbColumn("hp", hp, DbType.UInt16),
+                               new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32), new DbColumn("hp", hp, DbType.Decimal),
                                new DbColumn("type", type, DbType.UInt16), new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.UInt16),
-                               new DbColumn("attack", stats.Atk, DbType.UInt16), new DbColumn("splash", stats.Splash, DbType.Byte),
+                               new DbColumn("attack", stats.Atk, DbType.Decimal), new DbColumn("splash", stats.Splash, DbType.Byte),
                                new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
                                new DbColumn("hits_received", HitRecv, DbType.UInt16),
@@ -211,12 +211,12 @@ namespace Game.Battle
             y = Structure.Y;
         }
 
-        public override void CalculateDamage(ushort dmg, out ushort actualDmg)
+        public override void CalculateDamage(decimal dmg, out decimal actualDmg)
         {
-            actualDmg = (ushort)Math.Min(Hp, dmg);
+            actualDmg = Math.Min(Hp, dmg);
         }
 
-        public override void TakeDamage(int dmg, out Resource returning, out int attackPoints)
+        public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
         {
             attackPoints = 0;
 
@@ -224,7 +224,7 @@ namespace Game.Battle
             Structure.Stats.Hp = (dmg > Structure.Stats.Hp) ? (ushort)0 : (ushort)(Structure.Stats.Hp - (ushort)dmg);
             Structure.EndUpdate();
 
-            hp = (dmg > hp) ? 0 : hp - (ushort)dmg;
+            hp = (dmg > hp) ? 0 : hp - dmg;
 
             if (hp == 0)
                 attackPoints = Formula.GetStructureKilledAttackPoint(type, lvl);

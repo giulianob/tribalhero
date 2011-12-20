@@ -749,8 +749,8 @@ namespace Game.Battle
         {
             #region Damage
 
-            ushort dmg = BattleFormulas.Current.GetDamage(attacker, defender, attacker.CombatList == defenders);
-            ushort actualDmg;
+            decimal dmg = BattleFormulas.Current.GetDamage(attacker, defender, attacker.CombatList == defenders);
+            decimal actualDmg;
             Resource lostResource;
             int attackPoints;
 
@@ -766,24 +766,24 @@ namespace Game.Battle
             #region Splash Damage Reduction
             if (attackIndex > 0)
             {
-                double reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.BaseStats, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
-                reduction = (100 - reduction) / 100;
-                dmg = (ushort)(reduction * dmg);
+                decimal reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.BaseStats, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+                reduction = (100 - reduction)/100;
+                dmg = reduction*dmg;
             }
             #endregion
 
             defender.CalculateDamage(dmg, out actualDmg);
             defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
 
-            attacker.DmgDealt += actualDmg;
-            attacker.MaxDmgDealt = Math.Max(attacker.MaxDmgDealt, actualDmg);
-            attacker.MinDmgDealt = Math.Min(attacker.MinDmgDealt, actualDmg);
+            attacker.DmgDealt += (int)actualDmg;
+            attacker.MaxDmgDealt = (ushort)Math.Max(attacker.MaxDmgDealt, actualDmg);
+            attacker.MinDmgDealt = (ushort)Math.Min(attacker.MinDmgDealt, actualDmg);
             ++attacker.HitDealt;
             attacker.HitDealtByUnit += attacker.Count;
 
-            defender.DmgRecv += actualDmg;
-            defender.MaxDmgRecv = Math.Max(defender.MaxDmgRecv, actualDmg);
-            defender.MinDmgRecv = Math.Min(defender.MinDmgRecv, actualDmg);
+            defender.DmgRecv += (int)actualDmg;
+            defender.MaxDmgRecv = (ushort)Math.Max(defender.MaxDmgRecv, actualDmg);
+            defender.MinDmgRecv = (ushort)Math.Min(defender.MinDmgRecv, actualDmg);
             ++defender.HitRecv;
 
             #endregion
@@ -799,7 +799,7 @@ namespace Game.Battle
                     city.BeginUpdate();
                     if (round >= Config.battle_loot_begin_round)
                     {
-                        loot = BattleFormulas.Current.GetRewardResource(attacker, defender, actualDmg);
+                        loot = BattleFormulas.Current.GetRewardResource(attacker, defender);
                         city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
                     } 
                     attacker.ReceiveReward(attackPoints, loot ?? new Resource() );
@@ -896,7 +896,7 @@ namespace Game.Battle
         #endregion
 
         #region Events
-        public delegate void OnAttack(CombatObject source, CombatObject target, ushort damage);
+        public delegate void OnAttack(CombatObject source, CombatObject target, decimal damage);
         public delegate void OnBattle(CombatList atk, CombatList def);
         public delegate void OnReinforce(IEnumerable<CombatObject> list);
         public delegate void OnRound(CombatList atk, CombatList def, uint round);
@@ -990,7 +990,7 @@ namespace Game.Battle
                 UnitUpdated(obj);
         }
 
-        private void EventActionAttacked(CombatObject source, CombatObject target, ushort dmg)
+        private void EventActionAttacked(CombatObject source, CombatObject target, decimal dmg)
         {
             if (ActionAttacked != null)
                 ActionAttacked(source, target, dmg);

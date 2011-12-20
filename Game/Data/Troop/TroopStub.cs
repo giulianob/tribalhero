@@ -163,18 +163,18 @@ namespace Game.Data.Troop
             }
         }
 
-        public int TotalHp
+        public decimal TotalHp
         {
             get
             {
-                int count = 0;
+                decimal count = 0;
 
                 lock (objLock)
                 {
                     foreach (var formation in data.Values)
                     {
                         foreach (var kvp in formation)
-                            count += (kvp.Value*City.Template[kvp.Key].Battle.MaxHp);
+                            count += (kvp.Value*Template[kvp.Key].MaxHp);
                     }
                 }
 
@@ -237,7 +237,7 @@ namespace Game.Data.Troop
                     foreach (var formation in data.Values)
                     {
                         foreach (var kvp in formation)
-                            count += (kvp.Value*City.Template[kvp.Key].Battle.Carry);
+                            count += (kvp.Value*Template[kvp.Key].Carry);
                     }
                 }
 

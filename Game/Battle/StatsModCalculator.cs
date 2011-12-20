@@ -113,6 +113,27 @@ namespace Game.Battle
         }
     }
 
+    public class DoubleStatsModCalculator : ModCalculator<double>
+    {
+        private readonly double baseValue;
+
+        public DoubleStatsModCalculator(double baseValue)
+        {
+            this.baseValue = baseValue;
+        }
+
+        public override double GetResult()
+        {
+            return (baseValue + parameters["RAW_BONUS"].Sum)*parameters["PERCENT_BONUS"].Product/Math.Pow(100, parameters["PERCENT_BONUS"].Count);
+        }
+
+        protected override void SetParameters()
+        {
+            parameters.Add("RAW_BONUS", new ModParameter(0));
+            parameters.Add("PERCENT_BONUS", new ModParameter(100));
+        }
+    }
+
     public class AtkDmgModCalculator : ModCalculator<double> {
         private readonly double baseValue;
         
@@ -137,8 +158,8 @@ namespace Game.Battle
 
         public BattleStatsModCalculator(BaseBattleStats baseStats)
         {
-            MaxHp = new IntStatsModCalculator(baseStats.MaxHp);
-            Atk = new AtkDmgModCalculator((double)baseStats.Atk);
+            MaxHp = new DoubleStatsModCalculator((double)baseStats.MaxHp);
+            Atk = new AtkDmgModCalculator(baseStats.Atk);
             Splash = new IntStatsModCalculator(baseStats.Splash);
             Rng = new IntStatsModCalculator(baseStats.Rng);
             Stl = new IntStatsModCalculator(baseStats.Stl);
@@ -147,7 +168,7 @@ namespace Game.Battle
             this.baseStats = baseStats;
         }
 
-        public IntStatsModCalculator MaxHp { get; private set; }
+        public DoubleStatsModCalculator MaxHp { get; private set; }
         public AtkDmgModCalculator Atk { get; private set; }
         public IntStatsModCalculator Splash { get; private set; }
         public IntStatsModCalculator Rng { get; private set; }
@@ -193,13 +214,13 @@ namespace Game.Battle
         {
             var stats = new BattleStats(baseStats)
                         {
-                                Atk = (ushort)Atk.GetResult(),
+                                Atk = (decimal)Atk.GetResult(),
                                 Splash = (byte)Splash.GetResult(),
                                 Rng = (byte)Rng.GetResult(),
                                 Spd = (byte)Spd.GetResult(),
                                 Stl = (byte)Stl.GetResult(),
                                 Carry = (ushort)Carry.GetResult(),
-                                MaxHp = (ushort)MaxHp.GetResult()
+                                MaxHp =(decimal)MaxHp.GetResult()
                         };
             return stats;
         }

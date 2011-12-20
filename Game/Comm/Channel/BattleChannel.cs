@@ -15,7 +15,7 @@ namespace Game.Comm.Channel
         void BattleReinforceDefender(IEnumerable<CombatObject> list);
         void BattleReinforceAttacker(IEnumerable<CombatObject> list);
         void BattleSkippedAttacker(CombatObject source);
-        void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage);
+        void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage);
     }
 
     public class BattleChannel : IBattleChannel
@@ -63,12 +63,12 @@ namespace Game.Comm.Channel
             Global.Channel.Post(channelName, packet);
         }
 
-        public void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        public void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
         {
             var packet = new Packet(Command.BattleAttack);
             packet.AddUInt32(source.Id);
             packet.AddUInt32(target.Id);
-            packet.AddUInt16(damage);
+            packet.AddUInt16((ushort)damage);
             Global.Channel.Post(channelName, packet);
         }
     }

@@ -176,7 +176,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        private void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
         {
             var cu = target as DefenseCombatUnit;
 
@@ -192,7 +192,7 @@ namespace Game.Logic.Actions
         private void BattleUnitRemoved(CombatObject obj) {
             // Keep track of our buildings destroyed HP
             if (obj.ClassType == BattleClass.Structure && obj.City.Id == cityId) {
-                destroyedHp += obj.Stats.MaxHp;
+                destroyedHp += (uint)obj.Stats.MaxHp;
             }
         }
 

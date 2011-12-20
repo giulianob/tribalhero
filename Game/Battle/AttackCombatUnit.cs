@@ -47,7 +47,7 @@ namespace Game.Battle
                                 ushort type,
                                 byte lvl,
                                 ushort count,
-                                ushort leftOverHp,
+                                decimal leftOverHp,
                                 Resource loot) : this(owner, stub, formation, type, lvl, count)
         {
             LeftOverHp = leftOverHp;
@@ -55,7 +55,7 @@ namespace Game.Battle
             this.loot = loot;
         }
 
-        public ushort LeftOverHp { get; set; }
+        public decimal LeftOverHp { get; set; }
 
         public override BattleClass ClassType
         {
@@ -153,7 +153,7 @@ namespace Game.Battle
             }
         }
 
-        public override uint Hp
+        public override decimal Hp
         {
             get
             {
@@ -193,7 +193,7 @@ namespace Game.Battle
                        {
                                new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("formation_type", (byte)formation, DbType.Byte),
                                new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
-                               new DbColumn("is_local", false, DbType.Boolean), new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16),
+                               new DbColumn("is_local", false, DbType.Boolean), new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
                                new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                                new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32), new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte),
                                new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16), new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
@@ -251,10 +251,10 @@ namespace Game.Battle
             y = TroopStub.TroopObject.Y;
         }
 
-        public override void CalculateDamage(ushort dmg, out ushort actualDmg)
+        public override void CalculateDamage(decimal dmg, out decimal actualDmg)
         {
 
-            actualDmg = (ushort)Math.Min(Hp, dmg);
+            actualDmg = Math.Min(Hp, dmg);
 
             if (stats.MaxHp/5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
                 return;
@@ -266,7 +266,7 @@ namespace Game.Battle
             }
         }
 
-        public override void TakeDamage(int dmg, out Resource returning, out int attackPoints)
+        public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
         {
             attackPoints = 0;
             returning = null;
@@ -280,7 +280,7 @@ namespace Game.Battle
             }
 
             dead += (ushort)(dmg/stats.MaxHp);
-            LeftOverHp -= (ushort)(dmg%stats.MaxHp);
+            LeftOverHp -= dmg%stats.MaxHp;
 
             if (dead > 0)
             {

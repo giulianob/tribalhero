@@ -17,8 +17,8 @@ namespace Game.Logic.Actions
     {
         private readonly uint cityId;
         private readonly byte stubId;
-        private int originalHp;
-        private int remainingHp;
+        private decimal originalHp;
+        private decimal remainingHp;
 
         public EngageDefensePassiveAction(uint cityId, byte stubId)
         {
@@ -30,8 +30,8 @@ namespace Game.Logic.Actions
         {
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
-            originalHp = int.Parse(properties["original_hp"]);
-            remainingHp = int.Parse(properties["remaining_hp"]);
+            originalHp = decimal.Parse(properties["original_hp"]);
+            remainingHp = decimal.Parse(properties["remaining_hp"]);
 
             City city;
             if (!Global.World.TryGetObjects(cityId, out city))
@@ -100,7 +100,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        private void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
         {
             if (target.City.Id != cityId)
                 return;

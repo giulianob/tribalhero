@@ -39,14 +39,14 @@ namespace Game.Battle
             return units[structure.Lvl];
         }
 
-        public virtual ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
+        public virtual decimal GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
-            ushort atk = attacker.Stats.Atk;
-            int rawDmg = (atk*attacker.Count);
-            double modifier = GetDmgModifier(attacker, target);
-            rawDmg = (int)(modifier * rawDmg);
+            decimal atk = attacker.Stats.Atk;
+            decimal rawDmg = (atk * attacker.Count);
+            decimal modifier = (decimal)GetDmgModifier(attacker, target);
+            rawDmg = modifier*rawDmg;
 
-            return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
+            return rawDmg > ushort.MaxValue ? ushort.MaxValue : rawDmg;
         }
 
         public virtual double GetDmgModifier(CombatObject attacker, CombatObject target) {
@@ -104,7 +104,7 @@ namespace Game.Battle
             return (int)Math.Ceiling(100 / roundsRequired);
         }
 
-        public virtual Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
+        public virtual Resource GetRewardResource(CombatObject attacker, CombatObject defender)
         {
             int totalCarry = attacker.Stats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
             int count = Math.Max(1, totalCarry* GetLootPerRound(attacker.City) / 100); // if carry is 100 and % is 5, then count = 5;

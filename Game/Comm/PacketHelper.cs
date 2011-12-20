@@ -210,8 +210,8 @@ namespace Game.Comm
                 packet.AddUInt16(stats.Key);
                 packet.AddByte(stats.Value.Base.Lvl);
 
-                packet.AddUInt16(stats.Value.MaxHp);
-                packet.AddUInt16(stats.Value.Atk);
+                packet.AddUInt16((ushort)stats.Value.MaxHp);
+                packet.AddUInt16((ushort)stats.Value.Atk);
                 packet.AddByte(stats.Value.Splash);
                 // Await client update
                 packet.AddUInt16(0);
@@ -280,8 +280,8 @@ namespace Game.Comm
                     packet.AddByte(1);
                 packet.AddUInt16(obj.Type);
                 packet.AddByte(obj.Lvl);
-                packet.AddUInt32(obj.Hp);
-                packet.AddUInt16(obj.Stats.MaxHp);
+                packet.AddUInt32((uint)obj.Hp);
+                packet.AddUInt16((ushort)obj.Stats.MaxHp);
             }
         }
 

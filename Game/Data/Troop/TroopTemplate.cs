@@ -107,7 +107,7 @@ namespace Game.Data.Troop
                         new[]
                         {
                                 new DbColumn("type", battleStats.Base.Type, DbType.UInt16), new DbColumn("level", battleStats.Base.Lvl, DbType.Byte),
-                                new DbColumn("max_hp", battleStats.MaxHp, DbType.UInt16), new DbColumn("attack", battleStats.Atk, DbType.UInt16),
+                                new DbColumn("max_hp", battleStats.MaxHp, DbType.Decimal), new DbColumn("attack", battleStats.Atk, DbType.Decimal),
                                 new DbColumn("splash", battleStats.Splash, DbType.Byte), new DbColumn("range", battleStats.Rng, DbType.Byte), new DbColumn("stealth", battleStats.Stl, DbType.Byte),
                                 new DbColumn("speed", battleStats.Spd, DbType.Byte), new DbColumn("carry", battleStats.Carry, DbType.UInt16), 
                         };

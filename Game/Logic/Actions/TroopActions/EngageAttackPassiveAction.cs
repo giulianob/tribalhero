@@ -264,7 +264,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        private void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
         {
             City city;
             City targetCity;

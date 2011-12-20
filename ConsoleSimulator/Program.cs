@@ -88,7 +88,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private static void bm_UnitRemoved(CombatObject co)
+       /* private static void bm_UnitRemoved(CombatObject co)
         {
             co.Print();
         }
@@ -127,6 +127,6 @@ namespace ConsoleSimulator
             Console.WriteLine("attackers:");
             foreach (var co in atk)
                 co.Print();
-        }
+        }*/
     }
 }

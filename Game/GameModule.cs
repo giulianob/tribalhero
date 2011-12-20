@@ -75,25 +75,25 @@ namespace Game
 
             #region Battle
 
-            Bind<IBattleChannel>().To<BattleChannel>().WhenInjectedInto<BattleManager>().WithConstructorArgument("city",
-                                                                                                                 ctx =>
-                                                                                                                 ctx.Request.ParentRequest.Parameters.OfType
-                                                                                                                         <ConstructorArgument>().First(
-                                                                                                                                                       p =>
-                                                                                                                                                       p.Name ==
-                                                                                                                                                       "owner").
-                                                                                                                         GetValue(ctx, ctx.Request.Target));
+            Bind<IBattleChannel>()
+                .To<BattleChannel>()
+                .WhenInjectedInto<BattleManager>()
+                .WithConstructorArgument("city", ctx => ctx.Request.ParentRequest.Parameters.OfType<ConstructorArgument>()
+                    .First(p => p.Name == "owner")
+                    .GetValue(ctx, ctx.Request.Target));
 
             Bind<ICity>().To<City>();
 
             Bind<IBattleReport>().To<BattleReport>();
-            
+
             Bind<BattleManager.Factory>().ToMethod(ctx => delegate(City city)
                 {
                     var bm = Kernel.Get<BattleManager>(new ConstructorArgument("owner", city));
                     bm.BattleReport.Battle = bm;
                     return bm;
                 });
+
+            Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
             
             #endregion
 
@@ -131,10 +131,11 @@ namespace Game
 
             #endregion
 
-            #region Factories
+            #region Misc. Factories
 
             Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
             Bind<IProtocolFactory>().ToFactory();
+            Bind<ICombatListFactory>().ToFactory();
 
             #endregion
         }

@@ -14,8 +14,6 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
-using Ninject.Parameters;
 using Persistance;
 
 #endregion
@@ -31,6 +29,7 @@ namespace Game.Battle
         private readonly object battleLock = new object();
         private readonly CombatList defenders;
         private readonly ICombatUnitFactory combatUnitFactory;
+        private readonly ObjectTypeFactory objectTypeFactory;
         private readonly LargeIdGenerator groupIdGen;
         private readonly LargeIdGenerator idGen;
 
@@ -44,15 +43,17 @@ namespace Game.Battle
         private uint round;
         private uint turn;
 
-        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport, CombatList attackers, CombatList defenders, ICombatUnitFactory combatUnitFactory)
-        {            
+        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport, ICombatListFactory combatListFactory, ICombatUnitFactory combatUnitFactory, ObjectTypeFactory objectTypeFactory)
+        {
+            attackers = combatListFactory.CreateCombatList();
+            defenders = combatListFactory.CreateCombatList();
+
             groupIdGen = new LargeIdGenerator(ushort.MaxValue);
             idGen = new LargeIdGenerator(ushort.MaxValue);
             
             this.dbManager = dbManager;            
-            this.attackers = attackers;
-            this.defenders = defenders;
             this.combatUnitFactory = combatUnitFactory;
+            this.objectTypeFactory = objectTypeFactory;
             city = (City)owner;
             report = battleReport;
 
@@ -333,13 +334,17 @@ namespace Game.Battle
 
                 foreach (var obj in objects)
                 {
-                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Unattackable", obj) || obj.IsBlocked)
+                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || objectTypeFactory.IsStructureType("Unattackable", obj) || obj.IsBlocked)
+                    {
                         continue;
+                    }
 
                     // Don't add main building if lvl 1 or if a building is lvl 0
-                    if ((Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", obj) && obj.Lvl <= 1) || (obj.Lvl == 0) ||
-                        Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Noncombatstructure", obj))
+                    if ((objectTypeFactory.IsStructureType("Undestroyable", obj) && obj.Lvl <= 1) || (obj.Lvl == 0) ||
+                        objectTypeFactory.IsStructureType("Noncombatstructure", obj))
+                    {
                         continue;
+                    }
 
                     added = true;
 
@@ -425,22 +430,32 @@ namespace Game.Battle
                     foreach (var formation in obj)
                     {
                         if (formation.Type == FormationType.Garrison || formation.Type == FormationType.InBattle)
+                        {
                             continue;
+                        }
 
                         //if it's our local troop then it should be in the battle formation since 
                         //it will be moved by the battle manager (who is calling this function) to the in battle formation
                         //There should be a better way to do this but I cant figure it out right now
                         FormationType formationType = formation.Type;
                         if (isLocal)
+                        {
                             formationType = FormationType.InBattle;
+                        }
 
                         foreach (var kvp in formation)
                         {
+                            // ReSharper disable CoVariantArrayConversion
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
+                            {
                                 combatObjects = combatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
+                            }
                             else
+                            {
                                 combatObjects = combatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
+                            }
+                            // ReSharper restore CoVariantArrayConversion
 
                             foreach (var unit in combatObjects)
                             {
@@ -573,8 +588,6 @@ namespace Game.Battle
         {
             if (writeReport)
             {
-                report.WriteBeginReport();
-                report.CompleteReport(ReportState.Exiting);
                 report.CompleteBattle();
             }
 
@@ -610,7 +623,7 @@ namespace Game.Battle
             lock (battleLock)
             {
                 // This will finalize any reports already started.
-                report.WriteReport(ReportState.Staying);
+                report.CompleteReport(ReportState.Staying);
 
                 #region Battle Start
 

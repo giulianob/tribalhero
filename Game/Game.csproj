@@ -108,9 +108,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Battle\BattleClass.cs" />
+    <Compile Include="Battle\CombatListFactory.cs" />
     <Compile Include="Battle\CombatObjectFactory.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
+    <Compile Include="Battle\IBattleReport.cs" />
+    <Compile Include="Battle\IBattleReportWriter.cs" />
     <Compile Include="Battle\ICombatUnitFactory.cs" />
+    <Compile Include="Battle\ReportState.cs" />
+    <Compile Include="Battle\SqlBattleReportWriter.cs" />
     <Compile Include="Comm\Channel\BattleChannel.cs" />
     <Compile Include="Battle\BattleFormulas.cs" />
     <Compile Include="Battle\BattleManager.cs" />

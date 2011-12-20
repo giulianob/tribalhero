@@ -15,9 +15,9 @@ A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide up to 15% damage 
 ,
 ,
 TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Reduces distance requirement by 1 for underground structures. (Stacks additively)
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Reduces distance requirement by 2 for underground structures. (Stacks additively)
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Reduces distance requirement by 3 for underground structures. (Stacks additively)
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,"Reduces distance requirement by 1 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,"Reduces distance requirement by 2 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,"Reduces distance requirement by 3 for Tower, Cannon Tower and Basement. (Does not stack)"
 ,
 SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
 SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP. (Stacks additively up to 100%)"

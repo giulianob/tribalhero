@@ -12,13 +12,13 @@ namespace Game.Comm
 {
     public class TcpServer : ITcpServer
     {
-        private readonly SocketSession.Factory socketFactory;
+        private readonly ISocketSessionFactory socketFactory;
         private readonly TcpListener listener;
         private readonly Thread listeningThread;
         private readonly int port = Config.server_port;        
         private bool isStopped = true;
 
-        public TcpServer(SocketSession.Factory socketFactory)
+        public TcpServer(ISocketSessionFactory socketFactory)
         {
             this.socketFactory = socketFactory;            
             IPAddress localAddr = IPAddress.Parse(Config.server_listen_address);
@@ -59,7 +59,7 @@ namespace Game.Comm
 
                 s.Blocking = false;
 
-                var session = socketFactory(s.LocalEndPoint.ToString(), s);
+                var session = socketFactory.CreateSocketSession(s.LocalEndPoint.ToString(), s);
 
                 TcpWorker.Add(session);
             }

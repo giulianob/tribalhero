@@ -12,15 +12,12 @@ using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
-using Ninject.Extensions.Conventions;
-using Ninject.Extensions.Conventions.BindingGenerators;
 using Ninject.Extensions.Factory;
 using Ninject.Extensions.Logging.Log4net.Infrastructure;
 using Ninject.Modules;
 using Ninject.Parameters;
 using Persistance;
 using Persistance.Managers;
-using Thrift.Protocol;
 using Thrift.Server;
 using Thrift.Transport;
 
@@ -31,22 +28,23 @@ namespace Game
         public override void Load()
         {
             #region General Comms
+
             Bind<IPolicyServer>().To<PolicyServer>().InSingletonScope();
             Bind<ITcpServer>().To<TcpServer>().InSingletonScope();
-            Bind<SocketSession.Factory>().ToMethod(c =>
-                {
-                    var processor = Kernel.Get<Processor>();
-                    return (name, socket) => new SocketSession(name, socket, processor);
-                }).InSingletonScope();
+            Bind<ISocketSessionFactory>().ToFactory();
             Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
+
             #endregion
 
             #region Locking
+            
             Bind<ILocker>().To<DefaultLocker>().InSingletonScope();
+
             #endregion
 
             #region CSV Factories
+
             Bind<ActionFactory>().ToMethod(ctx => new ActionFactory(Path.Combine(Config.csv_compiled_folder, "action.csv"))).InSingletonScope();
             Bind<StructureFactory>().ToMethod(ctx => new StructureFactory(Path.Combine(Config.csv_compiled_folder, "structure.csv"))).InSingletonScope();
             Bind<EffectRequirementFactory>().ToMethod(ctx => new EffectRequirementFactory(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"))).InSingletonScope();
@@ -58,32 +56,33 @@ namespace Game
             Bind<ObjectTypeFactory>().ToMethod(ctx => new ObjectTypeFactory(Path.Combine(Config.csv_compiled_folder, "object_type.csv"))).InSingletonScope();
             Bind<UnitModFactory>().ToMethod(ctx => new UnitModFactory(Path.Combine(Config.csv_compiled_folder, "unit_modifier.csv"))).InSingletonScope();
             Bind<MapFactory>().ToMethod(ctx => new MapFactory(Path.Combine(Config.maps_folder, "CityLocations.txt"))).InSingletonScope();                       
-            #endregion
-
-            #region Factories
-            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
+            
             #endregion
 
             #region Database
-            Bind<IDbManager>()
-                    .ToMethod(context => new MySqlDbManager(
-                                                 new Log4NetLoggerFactory().GetLogger(typeof(IDbManager)),
-                                                 Config.database_host,
-                                                 Config.database_username,
-                                                 Config.database_password,
-                                                 Config.database_database,
-                                                 Config.database_timeout,
-                                                 Config.database_verbose)
-                    )
-                    .InSingletonScope();
+
+            Bind<IDbManager>().ToMethod(
+                                        context =>
+                                        new MySqlDbManager(new Log4NetLoggerFactory().GetLogger(typeof(IDbManager)),
+                                                           Config.database_host,
+                                                           Config.database_username,
+                                                           Config.database_password,
+                                                           Config.database_database,
+                                                           Config.database_timeout,
+                                                           Config.database_verbose)).InSingletonScope();
 
             #endregion
 
             #region Battle
-            Bind<IBattleChannel>()
-                    .To<BattleChannel>()
-                    .WhenInjectedInto<BattleManager>()
-                    .WithConstructorArgument("city", ctx => ctx.Request.ParentRequest.Parameters.OfType<ConstructorArgument>().First(p => p.Name == "owner").GetValue(ctx, ctx.Request.Target));
+
+            Bind<IBattleChannel>().To<BattleChannel>().WhenInjectedInto<BattleManager>().WithConstructorArgument("city",
+                                                                                                                 ctx =>
+                                                                                                                 ctx.Request.ParentRequest.Parameters.OfType
+                                                                                                                         <ConstructorArgument>().First(
+                                                                                                                                                       p =>
+                                                                                                                                                       p.Name ==
+                                                                                                                                                       "owner").
+                                                                                                                         GetValue(ctx, ctx.Request.Target));
 
             Bind<ICity>().To<City>();
 
@@ -107,7 +106,6 @@ namespace Game
                                                                            c.Kernel.Get<CityCommandLineModule>(),
                                                                            c.Kernel.Get<ResourcesCommandLineModule>(),
                                                                            c.Kernel.Get<TribeCommandLineModule>())).InSingletonScope();
-
             Bind<Processor>().ToMethod(
                                        c =>
                                        new Processor(c.Kernel.Get<AssignmentCommandsModule>(),
@@ -135,6 +133,7 @@ namespace Game
 
             #region Factories
 
+            Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
             Bind<IProtocolFactory>().ToFactory();
 
             #endregion

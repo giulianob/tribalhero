@@ -237,7 +237,7 @@ namespace Game.Data.Troop
                     foreach (var formation in data.Values)
                     {
                         foreach (var kvp in formation)
-                            count += (kvp.Value*City.Template[kvp.Key].Battle.Carry);
+                            count += (kvp.Value*Template[kvp.Key].Carry);
                     }
                 }
 

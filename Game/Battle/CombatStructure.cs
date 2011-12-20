@@ -84,6 +84,14 @@ namespace Game.Battle
             }
         }
 
+        public override TroopStub TroopStub
+        {
+            get
+            {
+                return City.DefaultTroop;
+            }
+        }
+
         public override BattleClass ClassType
         {
             get
@@ -121,6 +129,14 @@ namespace Game.Battle
             get
             {
                 return type;
+            }
+        }
+
+        public override Resource Loot
+        {
+            get
+            {
+                return new Resource();
             }
         }
 

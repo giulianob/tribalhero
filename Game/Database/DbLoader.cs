@@ -108,12 +108,13 @@ namespace Game.Database
 
         private static void LoadReportIds(IDbManager dbManager)
         {
-            BattleReport.BattleIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_DB));
-            BattleReport.ReportIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_REPORTS_DB));
-            BattleReport.BattleTroopIdGenerator.Set(GetMaxId(dbManager, BattleReport.BATTLE_REPORT_TROOPS_DB));
+            BattleReport.BattleIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_DB));
+            BattleReport.ReportIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_REPORTS_DB));
+            BattleReport.BattleTroopIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_REPORT_TROOPS_DB));
         }
 
-        private static void LoadTribes(IDbManager dbManager) {
+        private static void LoadTribes(IDbManager dbManager) 
+        {
             #region Tribes
 
             Global.Logger.Info("Loading tribes...");

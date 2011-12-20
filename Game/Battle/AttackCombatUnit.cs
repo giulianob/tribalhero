@@ -1,7 +1,6 @@
 #region
 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using Game.Data;
 using Game.Data.Stats;
@@ -25,11 +24,12 @@ namespace Game.Battle
         private readonly byte lvl;
         private readonly BattleStats stats;
         private readonly ushort type;
+        private readonly TroopStub troopStub;
         private ushort count;
 
         public AttackCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
         {
-            TroopStub = stub;
+            troopStub = stub;
             this.formation = formation;
             this.type = type;
             this.count = count;
@@ -48,7 +48,8 @@ namespace Game.Battle
                                 byte lvl,
                                 ushort count,
                                 ushort leftOverHp,
-                                Resource loot) : this(owner, stub, formation, type, lvl, count)
+                                Resource loot)
+            : this(owner, stub, formation, type, lvl, count)
         {
             LeftOverHp = leftOverHp;
 
@@ -93,7 +94,7 @@ namespace Game.Battle
         {
             get
             {
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
+                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep * count;
             }
         }
 
@@ -157,7 +158,7 @@ namespace Game.Battle
         {
             get
             {
-                return (uint)(Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp));
+                return (uint)(Math.Max(0, stats.MaxHp * (count - 1) + LeftOverHp));
             }
         }
 
@@ -173,7 +174,7 @@ namespace Game.Battle
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32), new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)};
+                return new[] { new DbColumn("id", Id, DbType.UInt32), new DbColumn("city_id", battleManager.City.Id, DbType.UInt32) };
             }
         }
 
@@ -181,7 +182,7 @@ namespace Game.Battle
         {
             get
             {
-                return new DbDependency[] {};
+                return new DbDependency[] { };
             }
         }
 
@@ -209,9 +210,15 @@ namespace Game.Battle
 
         #region ICombatUnit Members
 
-        public TroopStub TroopStub { get; private set; }
+        public override TroopStub TroopStub
+        {
+            get
+            {
+                return troopStub;
+            }
+        }
 
-        public Resource Loot
+        public override Resource Loot
         {
             get
             {
@@ -246,7 +253,8 @@ namespace Game.Battle
             throw new Exception(string.Format("Why is an attack combat unit trying to kill a unit of type {0}?", obj.GetType().FullName));
         }
 
-        public override void Location(out uint x, out uint y) {
+        public override void Location(out uint x, out uint y)
+        {
             x = TroopStub.TroopObject.X;
             y = TroopStub.TroopObject.Y;
         }
@@ -256,11 +264,15 @@ namespace Game.Battle
 
             actualDmg = (ushort)Math.Min(Hp, dmg);
 
-            if (stats.MaxHp/5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
+            if (stats.MaxHp / 5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
                 return;
 
-            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.Current.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
-            if (BattleFormulas.Current.IsAttackMissed((byte)percent))
+            byte percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All)
+                .Where(tech => BattleFormulas.Current.UnitStatModCheck(BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1]))
+                .DefaultIfEmpty()
+                .Max(x => x == null ? (byte)0 : (byte)x.Value[0]);
+
+            if (BattleFormulas.Current.IsAttackMissed(percent))
             {
                 actualDmg = 1;
             }
@@ -279,8 +291,8 @@ namespace Game.Battle
                 dead++;
             }
 
-            dead += (ushort)(dmg/stats.MaxHp);
-            LeftOverHp -= (ushort)(dmg%stats.MaxHp);
+            dead += (ushort)(dmg / stats.MaxHp);
+            LeftOverHp -= (ushort)(dmg % stats.MaxHp);
 
             if (dead > 0)
             {
@@ -299,7 +311,7 @@ namespace Game.Battle
                 TroopStub.EndUpdate();
 
                 // Figure out how much loot we have to return to the city
-                int totalCarry = Stats.Carry*Count;
+                int totalCarry = Stats.Carry * Count;
                 returning = new Resource(loot.Crop > totalCarry / Config.resource_crop_ratio ? loot.Crop - totalCarry / Config.resource_crop_ratio : 0,
                                          loot.Gold > totalCarry / Config.resource_gold_ratio ? loot.Gold - totalCarry / Config.resource_gold_ratio : 0,
                                          loot.Iron > totalCarry / Config.resource_iron_ratio ? loot.Iron - totalCarry / Config.resource_iron_ratio : 0,

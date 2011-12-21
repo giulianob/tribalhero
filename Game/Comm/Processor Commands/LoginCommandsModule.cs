@@ -11,6 +11,7 @@ using Game.Data;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -150,7 +151,7 @@ namespace Game.Comm
             bool newPlayer;
             lock (loginLock)
             {
-                newPlayer = !Global.World.Players.TryGetValue(playerId, out player);
+                newPlayer = !World.Current.Players.TryGetValue(playerId, out player);
 
                 //If it's a new player then add him to our session
                 if (newPlayer)
@@ -159,7 +160,7 @@ namespace Game.Comm
 
                     player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, admin, sessionId);
 
-                    Global.World.Players.Add(player.PlayerId, player);
+                    World.Current.Players.Add(player.PlayerId, player);
                 }
                 else
                 {
@@ -265,16 +266,16 @@ namespace Game.Comm
 
                 City city;
 
-                lock (Global.World.Lock)
+                lock (World.Current.Lock)
                 {
                     // Verify city name is unique
-                    if (Global.World.CityNameTaken(cityName))
+                    if (World.Current.CityNameTaken(cityName))
                     {
                         ReplyError(session, packet, Error.CityNameTaken);
                         return;
                     }
 
-                    if (!Procedure.CreateCity(session.Player, cityName, out city))
+                    if (!Procedure.Current.CreateCity(session.Player, cityName, out city))
                     {
                         ReplyError(session, packet, Error.MapFull);
                         return;

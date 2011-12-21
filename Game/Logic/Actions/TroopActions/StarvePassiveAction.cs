@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -64,7 +65,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
             using (Ioc.Kernel.Get<CallbackLock>().Lock(GetTroopLockList, new[] {city}, city))

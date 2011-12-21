@@ -178,7 +178,7 @@ namespace Game.Module
 
         private bool BuildStructure(City city, uint x, uint y)
         {
-            List<SimpleGameObject> objects = Global.World.GetObjects(x, y);
+            List<SimpleGameObject> objects = World.Current.GetObjects(x, y);
             if (objects.Count > 0)
                 return false;
 
@@ -217,7 +217,7 @@ namespace Game.Module
 
         private static bool UpgradeStructure(City city, uint x, uint y)
         {
-            List<SimpleGameObject> objects = Global.World.GetObjects(x, y);
+            List<SimpleGameObject> objects = World.Current.GetObjects(x, y);
             Structure structure = null;
 
             foreach (GameObject obj in objects)
@@ -263,15 +263,15 @@ namespace Game.Module
 
                 using (Concurrency.Current.Lock(npc))
                 {
-                    if (!Global.World.Players.ContainsKey(idx))
+                    if (!World.Current.Players.ContainsKey(idx))
                     {
-                        Global.World.Players.Add(idx, npc);
+                        World.Current.Players.Add(idx, npc);
                         Ioc.Kernel.Get<IDbManager>().Save(npc);
                         Global.Ai.playerList.Add(intelligence);
                     }
                     else
                     {
-                        intelligence.player = Global.World.Players[idx];
+                        intelligence.player = World.Current.Players[idx];
                         Global.Ai.playerList.Add(intelligence);
                         continue;
                     }
@@ -288,9 +288,9 @@ namespace Game.Module
                     var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure);
                     npc.Add(city);
 
-                    Global.World.Add(city);
+                    World.Current.Add(city);
                     structure.BeginUpdate();
-                    Global.World.Add(structure);
+                    World.Current.Add(structure);
                     structure.EndUpdate();
 
                     var defaultTroop = new TroopStub();
@@ -319,7 +319,7 @@ namespace Game.Module
         {
             var city = (custom as City);
 
-            ushort tileType = Global.World.GetTileType(x, y);
+            ushort tileType = World.Current.GetTileType(x, y);
             if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileTree", tileType))
             {
                 // Lumber mill
@@ -329,7 +329,7 @@ namespace Game.Module
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.Add(structure);
-                Global.World.Add(structure);
+                World.Current.Add(structure);
             }
             else if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileCrop", tileType))
             {
@@ -340,7 +340,7 @@ namespace Game.Module
                 structure.Stats.Labor = structure.Stats.Base.MaxLabor;
 
                 city.Add(structure);
-                Global.World.Add(structure);
+                World.Current.Add(structure);
             }
             else if (x == origX - 1 && y == origY - 1)
             {
@@ -350,7 +350,7 @@ namespace Game.Module
                 structure.Y = y;
 
                 city.Add(structure);
-                Global.World.Add(structure);
+                World.Current.Add(structure);
             }
 
             return true;

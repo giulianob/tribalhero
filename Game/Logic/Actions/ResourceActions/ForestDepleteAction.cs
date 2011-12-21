@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -29,7 +30,7 @@ namespace Game.Logic.Actions.ResourceActions
 
         public void Callback(object custom)
         {
-            var lck = Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {Forest.ObjectId}, Global.World.Forests);
+            var lck = Ioc.Kernel.Get<CallbackLock>().Lock(World.Current.Forests.CallbackLockHandler, new object[] {Forest.ObjectId}, World.Current.Forests);
             using (lck)
             {
                 Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
@@ -51,12 +52,12 @@ namespace Game.Logic.Actions.ResourceActions
 
                     // Remove structure from city
                     obj.BeginUpdate();
-                    Global.World.Remove(obj);
+                    World.Current.Remove(obj);
                     obj.City.ScheduleRemove(obj, false, true);
                     obj.EndUpdate();
                 }
 
-                Global.World.Forests.RemoveForest(Forest);
+                World.Current.Forests.RemoveForest(Forest);
                 lck.Dispose();
             }
         }

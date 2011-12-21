@@ -8,6 +8,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -28,7 +29,7 @@ namespace Game.Logic.Actions
             this.cityId = cityId;
 
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -42,7 +43,7 @@ namespace Game.Logic.Actions
             destroyedHp = uint.Parse(properties["destroyed_hp"]);
 
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -70,7 +71,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
@@ -92,7 +93,7 @@ namespace Game.Logic.Actions
 
                     city.DefaultTroop.BeginUpdate();
                     city.DefaultTroop.Template.ClearStats();
-                    Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
+                    Procedure.Current.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                     city.DefaultTroop.EndUpdate();
 
                     //Copy troop stubs from city since the foreach loop below will modify it during the loop
@@ -125,7 +126,7 @@ namespace Game.Logic.Actions
                     }
 					
                     if(destroyedHp>0)                    
-                        Procedure.SenseOfUrgency(city, destroyedHp);                    
+                        Procedure.Current.SenseOfUrgency(city, destroyedHp);                    
 					
                     StateChange(ActionState.Completed);
                 }
@@ -146,13 +147,13 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
             Ioc.Kernel.Get<IDbManager>().Save(city.Battle);
 
             //Add local troop
-            Procedure.AddLocalToBattle(city.Battle, city, ReportState.Entering);
+            Procedure.Current.AddLocalToBattle(city.Battle, city, ReportState.Entering);
 
             var list = new List<TroopStub>();
 
@@ -184,7 +185,7 @@ namespace Game.Logic.Actions
                 return;
 
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return;
 
         }

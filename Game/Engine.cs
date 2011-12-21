@@ -8,6 +8,7 @@ using Game.Data;
 using Game.Database;
 using Game.Logic;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -92,7 +93,7 @@ _________ _______ _________ ______   _______  _
                 FileStream regionChanges = File.Open(regionChangesPath, createRegionChanges ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite);
 
                 // Load map
-                Global.World.Load(map,
+                World.Current.Load(map,
                                   regionChanges,
                                   createRegionChanges,
                                   Config.map_width,
@@ -154,6 +155,8 @@ _________ _______ _________ ______   _______  _
             BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
             Concurrency.Current = Ioc.Kernel.Get<ILocker>();
             Formula.Current = Ioc.Kernel.Get<Formula>();
+            World.Current = Ioc.Kernel.Get<World>();
+            Procedure.Current = Ioc.Kernel.Get<Procedure>();            
 
             return Ioc.Kernel;
         }
@@ -178,7 +181,7 @@ _________ _______ _________ ______   _______  _
             policyServer.Stop();
             logger.Info("Waiting for scheduler to end...");
             Scheduler.Current.Pause();
-            Global.World.Unload();
+            World.Current.Unload();
             Global.Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;

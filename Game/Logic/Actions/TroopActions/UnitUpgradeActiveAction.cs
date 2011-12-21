@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -62,7 +63,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ActionInvalid;
 
             if (ushort.Parse(parms[0]) != UnitType || byte.Parse(parms[1]) <= city.Template[UnitType].Lvl)
@@ -75,7 +76,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             if (city.Worker.ActiveActions.Exists(action => (action.Type == Type) && (UnitType == ((UnitUpgradeActiveAction)action).UnitType) && (action != this)))

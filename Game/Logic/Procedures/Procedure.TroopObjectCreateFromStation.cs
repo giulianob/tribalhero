@@ -4,6 +4,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Map;
 
 #endregion
 
@@ -11,7 +12,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public static bool TroopObjectCreateFromStation(TroopStub stub, uint x, uint y)
+        public virtual bool TroopObjectCreateFromStation(TroopStub stub, uint x, uint y)
         {
             if (!stub.StationedCity.Troops.RemoveStationed(stub.StationedTroopId))
                 return false;
@@ -22,7 +23,7 @@ namespace Game.Logic.Procedures
 
             troop.BeginUpdate();
             troop.Stats = new TroopStats(Formula.Current.GetTroopRadius(stub, null), Formula.Current.GetTroopSpeed(stub));
-            Global.World.Add(troop);
+            World.Current.Add(troop);
             troop.EndUpdate();
 
             return true;

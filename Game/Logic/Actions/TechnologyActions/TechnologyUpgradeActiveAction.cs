@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -84,7 +85,7 @@ namespace Game.Logic.Actions
 
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             Technology tech;
@@ -101,7 +102,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             Technology tech;
@@ -144,7 +145,7 @@ namespace Game.Logic.Actions
                     return;
 
                 Structure structure;
-                if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+                if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                     return;
 
                 Technology tech;
@@ -237,7 +238,7 @@ namespace Game.Logic.Actions
 
                     structure.Technologies.EndUpdate();
                 }
-                Procedure.OnTechnologyChange(structure);
+                Procedure.Current.OnTechnologyChange(structure);
                 StateChange(ActionState.Completed);
             }
         }

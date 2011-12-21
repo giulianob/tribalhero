@@ -7,6 +7,7 @@ using System.Data.Common;
 using System.Dynamic;
 using Game.Data;
 using Game.Logic.Actions;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -75,7 +76,7 @@ namespace Game.Comm
 
             if (playerId == 0)
             {
-                if (!Global.World.FindPlayerId(playerName, out playerId))
+                if (!World.Current.FindPlayerId(playerName, out playerId))
                 {
                     ReplyError(session, packet, Error.PlayerNotFound);
                     return;
@@ -161,7 +162,7 @@ namespace Game.Comm
             foreach (var playerId in playerIds)
             {
                 Player player;
-                if (!Global.World.Players.TryGetValue(playerId, out player))
+                if (!World.Current.Players.TryGetValue(playerId, out player))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -190,7 +191,7 @@ namespace Game.Comm
             }
 
             uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId))
+            if (!World.Current.FindCityId(cityName, out cityId))
             {
                 ReplyError(session, packet, Error.CityNotFound);
                 return;
@@ -228,7 +229,7 @@ namespace Game.Comm
             }
 
             uint targetCityId;
-            if (!Global.World.FindCityId(targetCityName, out targetCityId))
+            if (!World.Current.FindCityId(targetCityName, out targetCityId))
             {
                 ReplyError(session, packet, Error.CityNotFound);
                 return;

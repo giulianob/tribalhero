@@ -6,6 +6,7 @@ using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 
@@ -34,7 +35,7 @@ namespace Game.Logic.Actions
             remainingHp = int.Parse(properties["remaining_hp"]);
 
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -71,7 +72,7 @@ namespace Game.Logic.Actions
         {
             City city;
             TroopStub stub;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
 
             if (city.Battle == null)
@@ -95,7 +96,7 @@ namespace Game.Logic.Actions
             stub.TroopObject.Stub.EndUpdate();
 
             // Add any units in local troop to battle
-            Procedure.AddLocalToBattle(city.Battle, city, ReportState.Reinforced);
+            Procedure.Current.AddLocalToBattle(city.Battle, city, ReportState.Reinforced);
 
             return Error.Ok;
         }
@@ -111,7 +112,7 @@ namespace Game.Logic.Actions
 
             City city;
             TroopStub stub;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
             if (unit.TroopStub != stub)
@@ -135,7 +136,7 @@ namespace Game.Logic.Actions
         {
             City city;
             TroopStub stub;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
             city.Battle.ActionAttacked -= BattleActionAttacked;

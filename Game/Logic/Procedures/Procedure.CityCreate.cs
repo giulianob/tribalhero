@@ -5,6 +5,7 @@ using System.Text;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -20,13 +21,13 @@ namespace Game.Logic.Procedures
         /// <param name="cityName"></param>
         /// <param name="city"></param>
         /// <returns></returns>
-        public static bool CreateCity(Player player, string cityName, out City city)
+        public virtual bool CreateCity(Player player, string cityName, out City city)
         {
             city = null;
             Structure mainBuilding;
             if (!Randomizer.MainBuilding(out mainBuilding, Formula.Current.GetInitialCityRadius(), 1))
             {
-                Global.World.Players.Remove(player.PlayerId);
+                World.Current.Players.Remove(player.PlayerId);
                 Ioc.Kernel.Get<IDbManager>().Rollback();
                 // If this happens I'll be a very happy game developer
                 return false;
@@ -35,9 +36,9 @@ namespace Game.Logic.Procedures
             city = new City(player, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), mainBuilding);
             player.Add(city);
 
-            Global.World.Add(city);
+            World.Current.Add(city);
             mainBuilding.BeginUpdate();
-            Global.World.Add(mainBuilding);
+            World.Current.Add(mainBuilding);
             mainBuilding.EndUpdate();
 
             var defaultTroop = new TroopStub();

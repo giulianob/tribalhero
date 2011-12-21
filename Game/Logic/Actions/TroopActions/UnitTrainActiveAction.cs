@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -72,7 +73,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectStructureNotFound;
             }

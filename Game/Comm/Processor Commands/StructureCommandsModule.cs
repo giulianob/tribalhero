@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Game.Data;
 using Game.Logic.Actions;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -140,9 +141,9 @@ namespace Game.Comm
                 return;
             }
 
-            using (Concurrency.Current.Lock(Global.World.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests))
             {
-                if (!Global.World.Forests.TryGetValue(forestId, out forest))
+                if (!World.Current.Forests.TryGetValue(forestId, out forest))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
@@ -182,7 +183,7 @@ namespace Game.Comm
                 uint cityId = cityIds[i];
                 City city;
 
-                if (!Global.World.TryGetObjects(cityId, out city))
+                if (!World.Current.TryGetObjects(cityId, out city))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -464,7 +465,7 @@ namespace Game.Comm
                 return;
             }
 
-            if (!Global.World.IsValidXandY(x, y))
+            if (!World.Current.IsValidXandY(x, y))
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -614,7 +615,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 // Get the lumbermill
                 Structure lumbermill = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Wood", structure));

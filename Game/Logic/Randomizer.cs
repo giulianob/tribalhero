@@ -51,7 +51,7 @@ namespace Game.Logic
             if (Config.Random.Next()%4 == 0)
             {
                 Structure structure;
-                Global.World.LockRegion(x, y);
+                World.Current.LockRegion(x, y);
                 if (Config.Random.Next()%2 == 0)
                     structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2402, 1);
                 else
@@ -59,11 +59,11 @@ namespace Game.Logic
                 structure.X = x;
                 structure.Y = y;
                 feObj.City.Add(structure);
-                if (!Global.World.Add(structure))
+                if (!World.Current.Add(structure))
                     feObj.City.ScheduleRemove(structure, false);
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
                 Ioc.Kernel.Get<IDbManager>().Save(structure);
-                Global.World.UnlockRegion(x, y);
+                World.Current.UnlockRegion(x, y);
             }
             return true;
         }

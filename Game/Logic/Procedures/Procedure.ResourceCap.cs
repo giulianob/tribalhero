@@ -16,7 +16,7 @@ namespace Game.Logic.Procedures
         ///   Sets the resource caps for the given city
         /// </summary>
         /// <param name = "city"></param>
-        public static void SetResourceCap(City city)
+        public virtual void SetResourceCap(City city)
         {
             if (Config.resource_cap)
             {

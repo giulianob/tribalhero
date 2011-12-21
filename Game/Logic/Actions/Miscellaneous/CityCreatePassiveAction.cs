@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
@@ -62,7 +63,7 @@ namespace Game.Logic.Actions {
 
         public override Error Validate(string[] parms)
         {
-            ushort tileType = Global.World.GetTileType(x, y);
+            ushort tileType = World.Current.GetTileType(x, y);
             if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("CityStartTile", tileType))
                 return Error.TileMismatch;
             return Error.Ok;
@@ -73,13 +74,13 @@ namespace Game.Logic.Actions {
             City city, newCity;
             Structure structure;
 
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
             if (!City.IsNameValid(cityName))
                 return Error.CityNameInvalid;
 
-            if (!Global.World.IsValidXandY(x, y))
+            if (!World.Current.IsValidXandY(x, y))
                 return Error.ActionInvalid;
 
             // cost requirement uses town center lvl 1 for cost
@@ -91,25 +92,25 @@ namespace Game.Logic.Actions {
             if (city.Owner.GetCityList().Any(c => c.Lvl < 10))
                 return Error.EffectRequirementNotMet;
 
-            Global.World.LockRegion(x, y);
+            World.Current.LockRegion(x, y);
 
-            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("CityStartTile", Global.World.GetTileType(x, y)))
+            if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("CityStartTile", World.Current.GetTileType(x, y)))
             {
-                Global.World.UnlockRegion(x, y);
+                World.Current.UnlockRegion(x, y);
                 return Error.TileMismatch;
             }
 
             // check if tile is occupied
-            if (Global.World[x, y].Exists(obj => obj is Structure)) {
-                Global.World.UnlockRegion(x, y);
+            if (World.Current[x, y].Exists(obj => obj is Structure)) {
+                World.Current.UnlockRegion(x, y);
                 return Error.StructureExists;
             }
 
             // create new city
-            lock (Global.World.Lock) {
+            lock (World.Current.Lock) {
                 // Verify city name is unique
-                if (Global.World.CityNameTaken(cityName)) {
-                    Global.World.UnlockRegion(x, y);
+                if (World.Current.CityNameTaken(cityName)) {
+                    World.Current.UnlockRegion(x, y);
                     return Error.CityNameTaken;
                 }
 
@@ -122,11 +123,11 @@ namespace Game.Logic.Actions {
                 newCity = new City(city.Owner, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure);
                 city.Owner.Add(newCity);
 
-                Global.World.SetTileType(x, y, 0, true);
+                World.Current.SetTileType(x, y, 0, true);
 
-                Global.World.Add(newCity);
+                World.Current.Add(newCity);
                 structure.BeginUpdate();
-                Global.World.Add(structure);
+                World.Current.Add(structure);
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Stats.Base.Lvl);
                 structure.EndUpdate();
 
@@ -159,7 +160,7 @@ namespace Game.Logic.Actions {
             EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
-            Global.World.UnlockRegion(x, y);
+            World.Current.UnlockRegion(x, y);
             
             return Error.Ok;
         }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
+using Game.Map;
 using Ninject;
 using Persistance;
 
@@ -50,7 +51,7 @@ namespace Game.Setup
                 index += SKIP;
                 
                 // Check if objects already on that point
-                List<SimpleGameObject> objects = Global.World.GetObjects(point.X, point.Y);
+                List<SimpleGameObject> objects = World.Current.GetObjects(point.X, point.Y);
 
                 if (objects == null)
                     continue;

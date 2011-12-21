@@ -122,7 +122,7 @@ namespace Game.Logic.Actions
             City city;
             TroopObject troopObj;
 
-            if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
+            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.ObjectNotFound;
 
             distanceRemaining = troopObj.TileDistance(x, y);

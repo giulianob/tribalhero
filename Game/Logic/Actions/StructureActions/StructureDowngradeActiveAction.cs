@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -60,7 +61,7 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("MainBuilding", structure))
@@ -141,7 +142,7 @@ namespace Game.Logic.Actions
                 structure.IsBlocked = false;
 
                 // Destroy structure
-                Global.World.Remove(structure);
+                World.Current.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();

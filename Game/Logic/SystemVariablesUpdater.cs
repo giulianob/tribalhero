@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -101,9 +102,9 @@ namespace Game.Logic
                                             new SystemVariable("Process.memory_usage", Process.GetCurrentProcess().WorkingSet64),
                                             new SystemVariable("Process.peak_memory_usage", Process.GetCurrentProcess().PeakWorkingSet64),
                                             new SystemVariable("Database.queries_per_second", (int)(queriesRan/now.Subtract(lastDbProbe).TotalSeconds)),
-                                            new SystemVariable("Players.count", Global.World.Players.Count),
+                                            new SystemVariable("Players.count", World.Current.Players.Count),
                                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
-                                            new SystemVariable("Cities.count", Global.World.CityCount),
+                                            new SystemVariable("Cities.count", World.Current.CityCount),
                                             new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
                                             new SystemVariable("Tribes.count", Global.Tribes.Count),
                                     };
@@ -137,7 +138,7 @@ namespace Game.Logic
                     }
 
                     // Forest cnt
-                    variables.AddRange(Global.World.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    
+                    variables.AddRange(World.Current.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    
 
                     // Update vars
                     foreach (var variable in variables)

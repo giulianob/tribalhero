@@ -8,6 +8,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -98,8 +99,8 @@ namespace Game.Logic.Actions
             City targetCity;
             Structure targetStructure;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
-                !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) ||
+                !World.Current.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.ObjectNotFound;
 
             if (city.Troops.MyStubs().Count() >= 20)
@@ -153,10 +154,10 @@ namespace Game.Logic.Actions
                 City city;
                 City targetCity;
 
-                if (!Global.World.TryGetObjects(cityId, out city))
+                if (!World.Current.TryGetObjects(cityId, out city))
                     throw new Exception("City is missing");
 
-                if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+                if (!World.Current.TryGetObjects(targetCityId, out targetCity))
                 {
                     //If the target is missing, walk back
                     using (Concurrency.Current.Lock(city))
@@ -213,7 +214,7 @@ namespace Game.Logic.Actions
                     {
                         // Calculate how many attack points to give to the city
                         city.BeginUpdate();
-                        Procedure.GiveAttackPoints(city, stub.TroopObject.Stats.AttackPoint, initialTroopValue, stub.Value);
+                        Procedure.Current.GiveAttackPoints(city, stub.TroopObject.Stats.AttackPoint, initialTroopValue, stub.Value);
                         city.EndUpdate();
 
                         // Send troop back home
@@ -235,7 +236,7 @@ namespace Game.Logic.Actions
                         city.Worker.References.Remove(stub.TroopObject, this);
 
                         // Remove troop since he's dead
-                        Procedure.TroopObjectDelete(stub.TroopObject, false);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, false);
 
                         targetCity.EndUpdate();
                         city.EndUpdate();
@@ -265,7 +266,7 @@ namespace Game.Logic.Actions
                     if (city.Battle == null)
                     {
                         city.Worker.References.Remove(stub.TroopObject, this);
-                        Procedure.TroopObjectDelete(stub.TroopObject, true);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
                         StateChange(ActionState.Completed);
                     }
                     else
@@ -292,9 +293,9 @@ namespace Game.Logic.Actions
                     city.Worker.References.Remove(stub.TroopObject, this);
 
                     if (stub.TotalCount == 0)
-                        Procedure.TroopObjectDelete(stub.TroopObject, false);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, false);
                     else
-                        Procedure.TroopObjectDelete(stub.TroopObject, true);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
 
                     StateChange(ActionState.Completed);
                 }

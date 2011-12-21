@@ -176,7 +176,7 @@ namespace Game.Data
             if (updating)
                 return;
 
-            Global.World.ObjectUpdateEvent(this, origX, origY);
+            World.Current.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion

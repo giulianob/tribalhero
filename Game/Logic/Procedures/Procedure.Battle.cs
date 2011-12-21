@@ -12,13 +12,13 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public static void MoveUnitFormation(TroopStub stub, FormationType source, FormationType target)
+        public virtual void MoveUnitFormation(TroopStub stub, FormationType source, FormationType target)
         {
             stub[target].Add(stub[source]);
             stub[source].Clear();
         }
 
-        public static void AddLocalToBattle(IBattleManager bm, City city, ReportState state)
+        public virtual void AddLocalToBattle(IBattleManager bm, City city, ReportState state)
         {
             if (city.DefaultTroop[FormationType.Normal].Count == 0)
                 return;
@@ -38,7 +38,7 @@ namespace Game.Logic.Procedures
         /// </summary>
         /// <param name="city"></param>
         /// <param name="maxHp"></param>
-        internal static void SenseOfUrgency(City city, uint maxHp)
+        internal virtual void SenseOfUrgency(City city, uint maxHp)
         {
             // Prevent overflow, just to be safe
             maxHp = Math.Min(50000, maxHp);

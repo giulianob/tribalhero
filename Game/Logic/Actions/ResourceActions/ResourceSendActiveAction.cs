@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -68,10 +69,10 @@ namespace Game.Logic.Actions
             City city, targetCity;
             Structure structure;
 
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!World.Current.TryGetObjects(targetCityId, out targetCity))
                 return Error.ObjectNotFound;
 
             // Can't send to cities that are being deleted

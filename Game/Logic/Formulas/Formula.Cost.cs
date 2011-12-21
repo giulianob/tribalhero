@@ -20,7 +20,7 @@ namespace Game.Logic.Formulas
         /// <param name = "type"></param>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public static Resource StructureCost(City city, uint type, byte lvl)
+        public virtual Resource StructureCost(City city, uint type, byte lvl)
         {
             if (city.Battle == null)
                 return Ioc.Kernel.Get<StructureFactory>().GetCost((int)type, lvl);
@@ -35,7 +35,7 @@ namespace Game.Logic.Formulas
         /// <param name = "type"></param>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public static Resource UnitTrainCost(City city, ushort type, byte lvl)
+        public virtual Resource UnitTrainCost(City city, ushort type, byte lvl)
         {
             if (city.Battle == null)
                 return Ioc.Kernel.Get<UnitFactory>().GetCost(type, lvl);
@@ -50,7 +50,7 @@ namespace Game.Logic.Formulas
         /// <param name = "type"></param>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public static Resource UnitUpgradeCost(City city, ushort type, byte lvl)
+        public virtual Resource UnitUpgradeCost(City city, ushort type, byte lvl)
         {
             if (city.Battle == null)
                 return Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(type, lvl);
@@ -63,7 +63,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public static ushort RepairRate(Structure structure)
+        public virtual ushort RepairRate(Structure structure)
         {
             return (ushort)(structure.Stats.Labor*5);
         }
@@ -74,7 +74,7 @@ namespace Game.Logic.Formulas
         /// <param name = "city"></param>
         /// <param name = "repairPower"></param>
         /// <returns></returns>
-        public static Resource RepairCost(City city, ushort repairPower)
+        public virtual Resource RepairCost(City city, ushort repairPower)
         {
             int lumber = repairPower;
             foreach (var effect in city.Technologies.GetEffects(EffectCode.RepairSaving, EffectInheritance.All))
@@ -88,7 +88,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public static ushort LaborMoveMax(Structure structure)
+        public virtual ushort LaborMoveMax(Structure structure)
         {
             return (ushort)Math.Max(5, Math.Ceiling(structure.Stats.Base.MaxLabor/2.0));
         }
@@ -97,7 +97,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public static double MarketTax(Structure structure)
+        public virtual double MarketTax(Structure structure)
         {
             double[] rate = {0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12};
             return rate[structure.Lvl];
@@ -108,7 +108,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "city"></param>
         /// <returns></returns>
-        public static Resource HiddenResource(City city)
+        public virtual Resource HiddenResource(City city)
         {
             int[] rateCrop = {0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100};
             int[] rateWood = {0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100};
@@ -127,26 +127,26 @@ namespace Game.Logic.Formulas
         /// <param name = "beginTime"></param>
         /// <param name = "cost"></param>
         /// <returns></returns>
-        internal static Resource GetActionCancelResource(DateTime beginTime, Resource cost)
+        public virtual Resource GetActionCancelResource(DateTime beginTime, Resource cost)
         {
             if (DateTime.UtcNow.Subtract(beginTime).TotalSeconds <= Config.actions_free_cancel_interval_in_sec)
                 return cost;
             return new Resource(cost/2);
         }
 
-        internal static Resource GetSendCapacity(Structure structure)
+        public virtual Resource GetSendCapacity(Structure structure)
         {
             //Maximum amount of resources that can be sent from the specified structure        
             int[] sendRate = {0, 200, 200, 400, 400, 600, 600, 800, 1000, 1200, 1200, 1400, 1600, 1800, 1800, 2000};
             return new Resource(sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl]);
         }
 
-        public static ushort CalculateCityValue(City city)
+        public virtual ushort CalculateCityValue(City city)
         {
             return (ushort)city.Sum(x => x.Lvl);
         }
 
-        internal static int GetWeaponExportLaborProduce(int weaponExport, int labor) {
+        public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor) {
             switch(weaponExport) 
             {
                 case 1:
@@ -162,8 +162,7 @@ namespace Game.Logic.Formulas
             }
         }
 
-
-        public static Resource GetTribeUpgradeCost(byte level)
+        public virtual Resource GetTribeUpgradeCost(byte level)
         {
             return new Resource(1000, 400, 40, 2000, 0) * Tribe.MEMBERS_PER_LEVEL * level * (1 + ((double)level * level / 20));
         }

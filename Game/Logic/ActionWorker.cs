@@ -127,7 +127,7 @@ namespace Game.Logic
                     notifications.Remove(actionStub);
 
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Remove(action as ScheduledPassiveAction);
+                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
                         Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
@@ -149,7 +149,7 @@ namespace Game.Logic
                     notifications.Remove(actionStub);
 
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Remove(action as ScheduledPassiveAction);
+                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
                         Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
@@ -197,7 +197,7 @@ namespace Game.Logic
                     if (action is ScheduledActiveAction)
                     {
                         Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
-                        Global.Scheduler.Remove(action as ISchedule);
+                        Scheduler.Current.Remove(action as ISchedule);
                     }
                     break;
                 case ActionState.Fired:
@@ -217,7 +217,7 @@ namespace Game.Logic
                     if (action is ScheduledActiveAction)
                     {
                         Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
-                        Global.Scheduler.Remove(action as ISchedule);
+                        Scheduler.Current.Remove(action as ISchedule);
                     }
                     break;
             }
@@ -527,12 +527,12 @@ namespace Game.Logic
 
         private static void Schedule(ScheduledActiveAction action)
         {
-            Global.Scheduler.Put(action);
+            Scheduler.Current.Put(action);
         }
 
         private static void Schedule(ScheduledPassiveAction action)
         {
-            Global.Scheduler.Put(action);
+            Scheduler.Current.Put(action);
         }
 
         #endregion

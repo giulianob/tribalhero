@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            int maxConcurrentUpgrades = Formula.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
+            int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
 
             if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
@@ -83,7 +83,7 @@ namespace Game.Logic.Actions
                                                                                                 ((StructureBuildActiveAction)action).BuildType)))) >= maxConcurrentUpgrades)
                 return Error.ActionTotalMaxReached;
 
-            cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
+            cost = Formula.Current.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
             type = structure.Type;
 
             if (cost == null)
@@ -106,7 +106,7 @@ namespace Game.Logic.Actions
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                               CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
                                                                                city,
                                                                                structure.Technologies)));
             BeginTime = DateTime.UtcNow;
@@ -165,7 +165,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 

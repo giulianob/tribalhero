@@ -40,7 +40,7 @@ namespace Game.Module
             quantityPerChangePerPlayer = QUANTITY_PER_CHANGE_PER_PLAYER;
             time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
             this.resource = resource;
-            Global.Scheduler.Put(this);
+            Scheduler.Current.Put(this);
         }
 
         public static Market Crop
@@ -159,7 +159,7 @@ namespace Game.Module
                     }
                     time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
                     Ioc.Kernel.Get<IDbManager>().Save(this);
-                    Global.Scheduler.Put(this);
+                    Scheduler.Current.Put(this);
                 }
             }
         }

@@ -74,7 +74,7 @@ namespace Game.Logic.Actions
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                               CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
                                                                                city,
                                                                                structure.Technologies)));
             BeginTime = DateTime.UtcNow;

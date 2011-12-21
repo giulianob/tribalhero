@@ -88,7 +88,7 @@ namespace Game.Logic.Actions
             if (!Global.World.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            int maxConcurrentUpgrades = Formula.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
+            int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
 
             if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
@@ -106,7 +106,7 @@ namespace Game.Logic.Actions
             Global.World.LockRegion(x, y);
 
             // cost requirement
-            cost = Formula.StructureCost(city, type, level);
+            cost = Formula.Current.StructureCost(city, type, level);
             if (!city.Resource.HasEnough(cost))
             {
                 Global.World.UnlockRegion(x, y);
@@ -279,7 +279,7 @@ namespace Game.Logic.Actions
             structureId = structure.ObjectId;
 
             // add to queue for completion
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(type, level), city, city.Technologies)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(type, level), city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             city.Worker.References.Add(structure, this);
@@ -378,7 +378,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 

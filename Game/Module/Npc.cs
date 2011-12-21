@@ -43,7 +43,7 @@ namespace Game.Module
             if (playerList.Count == 0)
             {
                 time = DateTime.UtcNow.AddSeconds(5);
-                Global.Scheduler.Put(this);
+                Scheduler.Current.Put(this);
                 return;
             }
 
@@ -111,7 +111,7 @@ namespace Game.Module
             Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms", timeTaken, successCount, (double)timeTaken/successCount));
 
             time = DateTime.UtcNow.AddSeconds(30*Config.seconds_per_unit);
-            Global.Scheduler.Put(this);
+            Scheduler.Current.Put(this);
         }
 
         #endregion
@@ -245,7 +245,7 @@ namespace Game.Module
 
         public static void Init()
         {
-            Global.Scheduler.Pause();
+            Scheduler.Current.Pause();
 
             var rand = new Random();
 
@@ -279,13 +279,13 @@ namespace Game.Module
                     IEnumerable<City> cities = npc.GetCityList();
 
                     Structure structure;
-                    if (!Randomizer.MainBuilding(out structure, Formula.GetInitialCityRadius(), 2))
+                    if (!Randomizer.MainBuilding(out structure, Formula.Current.GetInitialCityRadius(), 2))
                     {
                         Global.Logger.Info(npc.Name);
                         break;
                     }
 
-                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
+                    var city = new City(npc, string.Format("{0} {1}", npc.Name, npc.GetCityCount() + 1), Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure);
                     npc.Add(city);
 
                     Global.World.Add(city);
@@ -312,7 +312,7 @@ namespace Game.Module
 
             Global.Logger.Info("Loading AI finished.");
 
-            Global.Scheduler.Resume();
+            Scheduler.Current.Resume();
         }
 
         private static bool BuildBasicStructures(uint origX, uint origY, uint x, uint y, object custom)

@@ -32,7 +32,6 @@ namespace Game.Data
 
         public static readonly Ai Ai = new Ai();
 
-        public static readonly Scheduler Scheduler = new Scheduler();
         public static readonly Channel Channel = new Channel();
 
         static Global()

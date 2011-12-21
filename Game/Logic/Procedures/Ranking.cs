@@ -25,7 +25,7 @@ namespace Game.Logic.Procedures
         /// <param name = "endTroopValue"></param>
         public static void GiveAttackPoints(City city, int attackPoints, int initialTroopValue, int endTroopValue)
         {
-            var point = Formula.GetAttackPoint(attackPoints, initialTroopValue - endTroopValue);
+            var point = Formula.Current.GetAttackPoint(attackPoints, initialTroopValue - endTroopValue);
             city.AttackPoint += point;
             if (city.Owner.Tribesman == null)
                 return;

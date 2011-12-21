@@ -14,13 +14,13 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        public static byte GetTroopRadius(TroopStub stub, TechnologyManager em)
+        public virtual byte GetTroopRadius(TroopStub stub, TechnologyManager em)
         {
             // The radius is based on the sum of levels of the structures in the city, from 0 to 4
             return (byte)Math.Min(stub.City.Value / 40, 4);
         }
 
-        public static byte GetTroopSpeed(TroopStub stub)
+        public virtual byte GetTroopSpeed(TroopStub stub)
         {
             if (stub.TotalCount == 0)
                 return 0;
@@ -50,7 +50,7 @@ namespace Game.Logic.Formulas
             return (byte)(machineSpeed == int.MaxValue ? totalSpeed / count : machineSpeed);
         }
 
-        public static int GetAttackModeTolerance(int totalCount, AttackMode mode)
+        public virtual int GetAttackModeTolerance(int totalCount, AttackMode mode)
         {
             switch(mode)
             {
@@ -64,7 +64,7 @@ namespace Game.Logic.Formulas
             return 0;
         }
 
-        public static bool IsNewbieProtected(Player player)
+        public virtual bool IsNewbieProtected(Player player)
         {
             return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
         }

@@ -180,6 +180,7 @@
     <Compile Include="Data\Technology.cs" />
     <Compile Include="Data\TechnologyManager.cs" />
     <Compile Include="Data\Tribe\Assignment.cs" />
+    <Compile Include="Data\Tribe\IAssignmentFactory.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
@@ -330,16 +331,16 @@
     <Compile Include="Logic\Actions\StructureActions\PropertyCreatePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\StarvePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\EngageDefensePassiveAction.cs" />
-    <Compile Include="Logic\Formulas\Forest.cs" />
-    <Compile Include="Logic\Formulas\Ranking.cs" />
+    <Compile Include="Logic\Formulas\Formula.Forest.cs" />
+    <Compile Include="Logic\Formulas\Formula.Ranking.cs" />
     <Compile Include="Logic\Conditons\IBaseBattleStatsCondition.cs" />
     <Compile Include="Logic\Conditons\ICombatObject.cs" />
     <Compile Include="Logic\Conditons\ICityCondition.cs" />
     <Compile Include="Logic\Conditons\IICombatUnitCondition.cs" />
     <Compile Include="Logic\Conditons\IStructureCondition.cs" />
-    <Compile Include="Logic\Formulas\Cost.cs" />
-    <Compile Include="Logic\Formulas\Troop.cs" />
-    <Compile Include="Logic\Formulas\Time.cs" />
+    <Compile Include="Logic\Formulas\Formula.Cost.cs" />
+    <Compile Include="Logic\Formulas\Formula.Troop.cs" />
+    <Compile Include="Logic\Formulas\Formula.Time.cs" />
     <Compile Include="Logic\NotificationManager.cs" />
     <Compile Include="Logic\Procedures\BattleProcedures.cs" />
     <Compile Include="Logic\Procedures\Ranking.cs" />
@@ -393,6 +394,9 @@
       <Project>{75C1FE1A-4872-44A0-ADE1-FEA01DFBB082}</Project>
       <Name>Persistance</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Tribe\Assignment.AssignmentTroop.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

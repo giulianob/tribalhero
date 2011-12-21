@@ -243,7 +243,7 @@ namespace Game.Battle
             hp = (dmg > hp) ? 0 : hp - (ushort)dmg;
 
             if (hp == 0)
-                attackPoints = Formula.GetStructureKilledAttackPoint(type, lvl);
+                attackPoints = Formula.Current.GetStructureKilledAttackPoint(type, lvl);
 
             returning = null;
         }

@@ -83,7 +83,7 @@ namespace Game.Logic.Actions {
                 return Error.ActionInvalid;
 
             // cost requirement uses town center lvl 1 for cost
-            var cost = Formula.StructureCost(city, Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("MainBuilding")[0], 1);
+            var cost = Formula.Current.StructureCost(city, Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("MainBuilding")[0], 1);
             if (!city.Resource.HasEnough(cost))            
                 return Error.ResourceNotEnough;            
 
@@ -119,7 +119,7 @@ namespace Game.Logic.Actions {
                 structure.Y = y;
 
                 // Creating New City
-                newCity = new City(city.Owner, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), structure);
+                newCity = new City(city.Owner, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), structure);
                 city.Owner.Add(newCity);
 
                 Global.World.SetTileType(x, y, 0, true);
@@ -156,7 +156,7 @@ namespace Game.Logic.Actions {
 
             // add to queue for completion            
             int baseBuildTime = Ioc.Kernel.Get<StructureFactory>().GetBaseStats(Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("MainBuilding")[0], 1).BuildTime;
-            EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.BuildTime(baseBuildTime, city, city.Technologies)));
+            EndTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.BuildTime(baseBuildTime, city, city.Technologies)));
             BeginTime = DateTime.UtcNow;
 
             Global.World.UnlockRegion(x, y);

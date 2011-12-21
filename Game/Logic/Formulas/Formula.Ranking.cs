@@ -16,7 +16,7 @@ namespace Game.Logic.Formulas
         /// <param name = "enemiesKilled">Value of enemy units killed</param>
         /// <param name = "unitsKilled">Value of units in the troop killed</param>
         /// <returns></returns>
-        public static int GetAttackPoint(int enemiesKilled, int unitsKilled)
+        public virtual int GetAttackPoint(int enemiesKilled, int unitsKilled)
         {
             return Math.Max(0, enemiesKilled);
         }
@@ -28,7 +28,7 @@ namespace Game.Logic.Formulas
         /// <param name = "lvl">Level of unit killed</param>
         /// <param name = "count">Number of enemies killed</param>
         /// <returns></returns>
-        public static int GetUnitKilledAttackPoint(ushort type, byte lvl, int count)
+        public virtual int GetUnitKilledAttackPoint(ushort type, byte lvl, int count)
         {
             return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
         }
@@ -39,7 +39,7 @@ namespace Game.Logic.Formulas
         /// <param name = "type">Type of structure destroyed</param>
         /// <param name = "lvl">Level of structure destroyed</param>
         /// <returns></returns>
-        public static int GetStructureKilledAttackPoint(ushort type, byte lvl)
+        public virtual int GetStructureKilledAttackPoint(ushort type, byte lvl)
         {
             return lvl*20;
         }

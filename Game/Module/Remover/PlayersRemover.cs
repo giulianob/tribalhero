@@ -54,7 +54,7 @@ namespace Game.Module {
             if (!started) return;
             DeletePlayers();
             Time = DateTime.UtcNow.AddHours(intervalInHours);
-            Global.Scheduler.Put(this);
+            Scheduler.Current.Put(this);
         }
 
         #endregion

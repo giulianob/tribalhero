@@ -283,7 +283,7 @@ namespace Game.Battle
 
                 count -= dead;
 
-                attackPoints = Formula.GetUnitKilledAttackPoint(type, lvl, dead);
+                attackPoints = Formula.Current.GetUnitKilledAttackPoint(type, lvl, dead);
 
                 // Remove dead units from troop stub
                 TroopStub.BeginUpdate();

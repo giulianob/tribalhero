@@ -86,10 +86,10 @@ namespace Game.Logic.Actions
 
             var unitLvl = template.Lvl;
             var unitTime = Ioc.Kernel.Get<UnitFactory>().GetTime(type, unitLvl);
-            
-            cost = Formula.UnitTrainCost(structure.City, type, unitLvl);
+
+            cost = Formula.Current.UnitTrainCost(structure.City, type, unitLvl);
             Resource totalCost = cost*count;
-            ActionCount = (ushort)(count + count/Formula.GetXForOneCount(structure.Technologies));
+            ActionCount = (ushort)(count + count/Formula.Current.GetXForOneCount(structure.Technologies));
 
             if (!structure.City.Resource.HasEnough(totalCost))
                 return Error.ResourceNotEnough;
@@ -98,7 +98,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(totalCost);
             structure.City.EndUpdate();
 
-            timePerUnit = (int)CalculateTime(Formula.TrainTime(unitTime, structure.Lvl, structure.Technologies));
+            timePerUnit = (int)CalculateTime(Formula.Current.TrainTime(unitTime, structure.Lvl, structure.Technologies));
 
             // add to queue for completion
             nextTime = DateTime.UtcNow.AddSeconds(timePerUnit);
@@ -172,7 +172,7 @@ namespace Game.Logic.Actions
 
                 if (!wasKilled)
                 {
-                    int xfor1 = Formula.GetXForOneCount(structure.Technologies);
+                    int xfor1 = Formula.Current.GetXForOneCount(structure.Technologies);
                     int totalordered = count + count/xfor1;
                     int totaltrained = totalordered - ActionCount;
                     int totalpaidunit = totaltrained - (totaltrained - 1)/xfor1;
@@ -180,7 +180,7 @@ namespace Game.Logic.Actions
                     Resource totalCost = cost*totalrefund;
 
                     structure.City.BeginUpdate();
-                    structure.City.Resource.Add(Formula.GetActionCancelResource(BeginTime, totalCost));
+                    structure.City.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, totalCost));
                     structure.City.EndUpdate();
                 }
 

@@ -68,7 +68,7 @@ namespace Game.Logic
                     DateTime lastProbe;
                     DateTime nextFire;
 
-                    Global.Scheduler.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
+                    Scheduler.Current.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
 
                     int workerThreads;
                     int completionThreads;

@@ -24,7 +24,7 @@ namespace Game.Logic.Procedures
         {
             city = null;
             Structure mainBuilding;
-            if (!Randomizer.MainBuilding(out mainBuilding, Formula.GetInitialCityRadius(), 1))
+            if (!Randomizer.MainBuilding(out mainBuilding, Formula.Current.GetInitialCityRadius(), 1))
             {
                 Global.World.Players.Remove(player.PlayerId);
                 Ioc.Kernel.Get<IDbManager>().Rollback();
@@ -32,7 +32,7 @@ namespace Game.Logic.Procedures
                 return false;
             }
 
-            city = new City(player, cityName, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), mainBuilding);
+            city = new City(player, cityName, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), mainBuilding);
             player.Add(city);
 
             Global.World.Add(city);

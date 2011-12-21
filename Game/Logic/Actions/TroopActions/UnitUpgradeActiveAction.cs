@@ -85,7 +85,7 @@ namespace Game.Logic.Actions
             if (unitStats == null)
                 return Error.Unexpected;
 
-            Resource cost = Formula.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
+            Resource cost = Formula.Current.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
 
             if (cost == null)
                 return Error.Unexpected;
@@ -97,7 +97,7 @@ namespace Game.Logic.Actions
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            var upgradeTime = Formula.BuildTime(Ioc.Kernel.Get<UnitFactory>().GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)), city, structure.Technologies);
+            var upgradeTime = Formula.Current.BuildTime(Ioc.Kernel.Get<UnitFactory>().GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)), city, structure.Technologies);
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(upgradeTime));
             BeginTime = DateTime.UtcNow;
 
@@ -115,7 +115,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
                     city.EndUpdate();
                 }
 

@@ -63,7 +63,7 @@ namespace Game.Logic.Actions
                 throw new Exception("Forest is missing");
 
             if (IsScheduled)
-                Global.Scheduler.Remove(this);
+                Scheduler.Current.Remove(this);
 
             endTime = forest.DepleteTime.AddSeconds(30);
             StateChange(ActionState.Rescheduled);

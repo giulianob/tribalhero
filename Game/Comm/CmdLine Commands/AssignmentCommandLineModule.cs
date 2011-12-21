@@ -70,7 +70,7 @@ namespace Game.Comm
                 if (tribe == null)
                     return "Player does not own a tribe";
 
-                result = ((IEnumerable<Assignment>)tribe).Aggregate(result, (current, assignment) => current + assignment.ToNiceString());
+                result = ((IEnumerable<Assignment>)tribe).Aggregate(result, (current, assignment) => current + assignment.ToString());
             }
 
             return result;

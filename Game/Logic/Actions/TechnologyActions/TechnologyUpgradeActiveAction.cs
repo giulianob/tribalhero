@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, techBase.Resources));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, techBase.Resources));
                     city.EndUpdate();
                 }
 

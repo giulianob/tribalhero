@@ -50,7 +50,7 @@ namespace Game.Logic.Actions
 
         private Resource GetCost(Structure structure)
         {
-            return new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.MarketTax(structure))), 0, 0, 0); ;
+            return new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.Current.MarketTax(structure))), 0, 0, 0); ;
         }
 
         public override ConcurrencyType ActionConcurrency
@@ -107,7 +107,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.TradeTime(structure, quantity)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.TradeTime(structure, quantity)));
             BeginTime = DateTime.UtcNow;
 
             return Error.Ok;
@@ -149,7 +149,7 @@ namespace Game.Logic.Actions
                             break;
                     }
                     var cost = GetCost(structure);
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 

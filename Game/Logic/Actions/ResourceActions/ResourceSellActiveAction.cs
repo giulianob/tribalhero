@@ -108,7 +108,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.TradeTime(structure, quantity)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.TradeTime(structure, quantity)));
             BeginTime = DateTime.UtcNow;
 
             return Error.Ok;
@@ -155,7 +155,7 @@ namespace Game.Logic.Actions
                             break;
                     }
                     
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, resource));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, resource));
                     city.EndUpdate();
                 }
 
@@ -179,7 +179,7 @@ namespace Game.Logic.Actions
                 }
 
                 structure.City.BeginUpdate();
-                structure.City.Resource.Add(0, (int)Math.Round(price*(quantity/TRADE_SIZE)*(1.0 - Formula.MarketTax(structure))), 0, 0, 0);
+                structure.City.Resource.Add(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 - Formula.Current.MarketTax(structure))), 0, 0, 0);
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);

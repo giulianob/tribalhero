@@ -87,9 +87,9 @@ namespace Game.Logic.Actions
             BeginTime = DateTime.UtcNow;
 
             if (cityToStructure)
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)));
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)));
             else
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)/20));
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies) / 20));
 
             return Error.Ok;
         }
@@ -151,7 +151,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
             if (cityToStructure)
             {
-                if (ActionCount > Formula.LaborMoveMax(structure))
+                if (ActionCount > Formula.Current.LaborMoveMax(structure))
                     return Error.ActionCountInvalid;
             }
             return Error.Ok;

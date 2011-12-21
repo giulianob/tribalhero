@@ -9,9 +9,6 @@ using Xunit;
 
 namespace Testing.MapMath
 {
-    /// <summary>
-    ///   Summary description for ChannelTest
-    /// </summary>
     public class ForeachTest : TestBase
     {
         [Fact]

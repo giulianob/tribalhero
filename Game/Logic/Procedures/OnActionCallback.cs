@@ -14,9 +14,9 @@ namespace Game.Logic.Procedures
     {
         public static void RecalculateCityResourceRates(City city)
         {
-            city.Resource.Crop.Rate = Formula.GetCropRate(city);
-            city.Resource.Iron.Rate = Formula.GetIronRate(city);
-            city.Resource.Wood.Rate = Formula.GetWoodRate(city);
+            city.Resource.Crop.Rate = Formula.Current.GetCropRate(city);
+            city.Resource.Iron.Rate = Formula.Current.GetIronRate(city);
+            city.Resource.Wood.Rate = Formula.Current.GetWoodRate(city);
         }
 
         public static void OnStructureUpgradeDowngrade(Structure structure)

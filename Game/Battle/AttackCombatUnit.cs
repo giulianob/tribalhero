@@ -267,12 +267,12 @@ namespace Game.Battle
             if (stats.MaxHp / 5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
                 return;
 
-            byte percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All)
+            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All)
                 .Where(tech => BattleFormulas.Current.UnitStatModCheck(BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1]))
                 .DefaultIfEmpty()
-                .Max(x => x == null ? (byte)0 : (byte)x.Value[0]);
+                .Max(x => x == null ? 0 : (int)x.Value[0]);
 
-            if (BattleFormulas.Current.IsAttackMissed(percent))
+            if (BattleFormulas.Current.IsAttackMissed((byte)percent))
             {
                 actualDmg = 1;
             }
@@ -300,7 +300,7 @@ namespace Game.Battle
                     dead = count;
 
                 // Find out how many points the defender should get
-                attackPoints = Formula.GetUnitKilledAttackPoint(type, lvl, dead);
+                attackPoints = Formula.Current.GetUnitKilledAttackPoint(type, lvl, dead);
 
                 // Remove troops that died from the count
                 count -= dead;

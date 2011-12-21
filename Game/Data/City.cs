@@ -882,8 +882,8 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            
-            Value = Formula.CalculateCityValue(this);
+
+            Value = Formula.Current.CalculateCityValue(this);
             
             if (!doUpdate)
                 EndUpdate();
@@ -902,8 +902,8 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            
-            Value = Formula.CalculateCityValue(this);
+
+            Value = Formula.Current.CalculateCityValue(this);
 
             if (!doUpdate)
                 EndUpdate();
@@ -922,8 +922,8 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            
-            Value = Formula.CalculateCityValue(this);
+
+            Value = Formula.Current.CalculateCityValue(this);
 
             if (!doUpdate)
                 EndUpdate();

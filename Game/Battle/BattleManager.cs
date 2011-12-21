@@ -813,7 +813,7 @@ namespace Game.Battle
                     if (round >= Config.battle_loot_begin_round)
                     {
                         loot = BattleFormulas.Current.GetRewardResource(attacker, defender, actualDmg);
-                        city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
+                        city.Resource.Subtract(loot, Formula.Current.HiddenResource(city), out loot);
                     } 
                     attacker.ReceiveReward(attackPoints, loot ?? new Resource() );
                     city.EndUpdate();

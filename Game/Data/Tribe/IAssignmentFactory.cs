@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Game.Data.Troop;
+using Game.Logic.Actions;
+
+namespace Game.Data.Tribe
+{
+    public interface IAssignmentFactory
+    {
+        Assignment CreateAssignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub);
+
+        Assignment CreateAssignmentFromDb(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount);
+    }
+}

@@ -7,7 +7,7 @@ using Xunit;
 
 #endregion
 
-namespace Testing.Troop
+namespace Testing.Balancing
 {
     /// <summary>
     ///   Summary description for TroopProcedureTest

@@ -84,7 +84,7 @@ namespace ConsoleSimulator
                                                                       0,
                                                                       0,
                                                                       ClassId.Structure)));
-            city = new City(player, "city " + city_id, Formula.GetInitialCityResources(), Formula.GetInitialCityRadius(), main);
+            city = new City(player, "city " + city_id, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), main);
             player.Add(city);
             city_id++;
 

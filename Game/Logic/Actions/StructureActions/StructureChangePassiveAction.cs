@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
             cityId = obj.City.Id;
             objectId = obj.ObjectId;
 
-            ts = Formula.ReadCsvTimeFormat(parms[0]);
+            ts = Formula.Current.ReadCsvTimeFormat(parms[0]);
             type = ushort.Parse(parms[1]);
             lvl = byte.Parse(parms[2]);            
 

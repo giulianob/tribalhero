@@ -19,6 +19,8 @@ namespace Game.Logic
 
     public class Scheduler
     {
+        public static Scheduler Current { get; set; }
+
         private readonly ScheduleComparer comparer = new ScheduleComparer();
         private readonly Dictionary<int, ManualResetEvent> doneEvents = new Dictionary<int, ManualResetEvent>();
         private readonly List<ISchedule> schedules = new List<ISchedule>();
@@ -61,12 +63,12 @@ namespace Game.Logic
         {
             if (ms == Timeout.Infinite)
             {
-                Global.Logger.Debug(string.Format("Timer sleeping"));
+                Global.Logger.Debug(String.Format("Timer sleeping"));
                 nextFire = DateTime.MinValue;
             }
             else
             {
-                Global.Logger.Debug(string.Format("Next schedule in {0} milliseconds.", ms));
+                Global.Logger.Debug(String.Format("Next schedule in {0} milliseconds.", ms));
                 nextFire = DateTime.UtcNow.AddMilliseconds(ms);
             }
 
@@ -119,7 +121,7 @@ namespace Game.Logic
 
                 schedule.IsScheduled = true;
 
-                Global.Logger.Debug(string.Format("Schedule inserted at position {0}.", index));
+                Global.Logger.Debug(String.Format("Schedule inserted at position {0}.", index));
 
                 if (index == 0)
                     SetNextActionTime();
@@ -167,7 +169,7 @@ namespace Game.Logic
                 var job = new ScheduledJob {Id = nextId, ResetEvent = new ManualResetEvent(false), Schedule = next};
 
                 // Wrap around if the id is getting large
-                if (nextId == int.MaxValue - 1)
+                if (nextId == Int32.MaxValue - 1)
                     nextId = 0;
                 else
                     ++nextId;
@@ -175,7 +177,7 @@ namespace Game.Logic
                 doneEvents.Add(job.Id, job.ResetEvent);
                 ThreadPool.QueueUserWorkItem(DispatchThread, job);
 
-                Global.Logger.Debug(string.Format("Action dispatched. Delta {0} ms", (next.Time - SystemClock.Now).TotalMilliseconds));
+                Global.Logger.Debug(String.Format("Action dispatched. Delta {0} ms", (next.Time - SystemClock.Now).TotalMilliseconds));
 
                 SetNextActionTime();
             }

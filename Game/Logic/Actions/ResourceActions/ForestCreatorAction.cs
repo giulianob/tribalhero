@@ -34,12 +34,12 @@ namespace Game.Logic.Actions.ResourceActions
                     int delta = Config.forest_count[i] - Global.World.Forests.ForestCount[i];
 
                     for (int j = 0; j < delta; j++)
-                        Global.World.Forests.CreateForest(lvl, Formula.GetMaxForestCapacity(lvl), Formula.GetMaxForestRate(lvl));
+                        Global.World.Forests.CreateForest(lvl, Formula.Current.GetMaxForestCapacity(lvl), Formula.Current.GetMaxForestRate(lvl));
                 }
 
                 // Reschedule ourselves
                 Time = SystemClock.Now.AddMinutes(5);
-                Global.Scheduler.Put(this);
+                Scheduler.Current.Put(this);
             }
         }
 

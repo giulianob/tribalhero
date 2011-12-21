@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
 
             // Make sure we aren't exceeding our trade capacity
-            if (!Formula.GetSendCapacity(structure).HasEnough(resource))
+            if (!Formula.Current.GetSendCapacity(structure).HasEnough(resource))
                 return Error.ResourceExceedTradeLimit;
 
             // Gotta send something
@@ -101,7 +101,7 @@ namespace Game.Logic.Actions
 
         public int CalculateTradeTime(Structure structure, City targetCity)
         {
-            return (int)CalculateTime(Formula.SendTime(structure, SimpleGameObject.TileDistance(structure.X, structure.Y, targetCity.X, targetCity.Y)));
+            return (int)CalculateTime(Formula.Current.SendTime(structure, SimpleGameObject.TileDistance(structure.X, structure.Y, targetCity.X, targetCity.Y)));
         }
 
         public override void UserCancelled()
@@ -128,7 +128,7 @@ namespace Game.Logic.Actions
 
                 if (!wasKilled) {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, resource));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, resource));
                     city.EndUpdate();
                 }
 

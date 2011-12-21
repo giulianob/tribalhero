@@ -42,14 +42,14 @@ namespace Game.Logic.Actions
             {
                 case ActionState.Completed:
                 case ActionState.Failed:
-                    Global.Scheduler.Put(new ChainExecuter(this.chainCallback, chainState));
+                    Scheduler.Current.Put(new ChainExecuter(this.chainCallback, chainState));
                     break;
                 default:
                     current.IsChain = true;
                     current.OnNotify += ChainNotify;
 
                     if (current is ScheduledPassiveAction)
-                        Global.Scheduler.Put((ScheduledPassiveAction)current);
+                        Scheduler.Current.Put((ScheduledPassiveAction)current);
                     break;
             }
         }
@@ -150,9 +150,9 @@ namespace Game.Logic.Actions
                 case ActionState.Rescheduled:
                     Ioc.Kernel.Get<IDbManager>().Save(action);
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Put((ScheduledPassiveAction)action);
+                        Scheduler.Current.Put((ScheduledPassiveAction)action);
                     else if (action is ScheduledActiveAction)
-                        Global.Scheduler.Put((ScheduledActiveAction)action);
+                        Scheduler.Current.Put((ScheduledActiveAction)action);
 
                     Ioc.Kernel.Get<IDbManager>().Save(this);
 
@@ -173,7 +173,7 @@ namespace Game.Logic.Actions
             ChainCallback currentChain = chainCallback;
             Ioc.Kernel.Get<IDbManager>().Save(this);
 
-            Global.Scheduler.Put(new ChainExecuter(currentChain, state));
+            Scheduler.Current.Put(new ChainExecuter(currentChain, state));
         }
 
         public override void UserCancelled()

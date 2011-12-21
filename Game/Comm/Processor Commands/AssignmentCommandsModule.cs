@@ -68,7 +68,7 @@ namespace Game.Comm
                 City targetCity = cities[targetCityId];
 
                 // Make sure they are not in newbie protection
-                if (Formula.IsNewbieProtected(targetCity.Owner))
+                if (Formula.Current.IsNewbieProtected(targetCity.Owner))
                 {
                     ReplyError(session, packet, Error.PlayerNewbieProtection);
                     return;

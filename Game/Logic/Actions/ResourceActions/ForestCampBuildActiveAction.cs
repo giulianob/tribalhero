@@ -77,7 +77,7 @@ namespace Game.Logic.Actions
 
             // Count number of camps and verify there's enough space left                
             int campCount = city.Count(s => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("ForestCamp", s));
-            if (campCount >= Formula.GetMaxForestCount(lumbermill.Lvl))
+            if (campCount >= Formula.Current.GetMaxForestCount(lumbermill.Lvl))
                 return Error.ForestCampMaxReached;
 
             // Make sure some labors are being put in
@@ -89,11 +89,11 @@ namespace Game.Logic.Actions
                 return Error.AlreadyInForest;
 
             // Verify user has access to this forest
-            if (forest.Lvl > Formula.GetMaxForestLevel(lumbermill.Lvl))
+            if (forest.Lvl > Formula.Current.GetMaxForestLevel(lumbermill.Lvl))
                 return Error.ForestInaccessible;
 
             // Cost requirement
-            Resource cost = Formula.StructureCost(city, campType, 1);
+            Resource cost = Formula.Current.StructureCost(city, campType, 1);
 
             // Add labor count to the total cost
             cost.Labor += labors;
@@ -102,7 +102,7 @@ namespace Game.Logic.Actions
                 return Error.ResourceNotEnough;
 
             // Make sure we can fit this many laborers in the forest and that this user isn't trying to insert more into forest than he can
-            if (labors + forest.Labor > forest.MaxLabor || labors > Formula.GetForestMaxLaborPerUser(forest))
+            if (labors + forest.Labor > forest.MaxLabor || labors > Formula.Current.GetForestMaxLaborPerUser(forest))
                 return Error.ForestFull;
 
             // find an open space around the forest
@@ -171,7 +171,7 @@ namespace Game.Logic.Actions
             // add to queue for completion
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(campType, 1), city, city.Technologies) +
+                                               CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(campType, 1), city, city.Technologies) +
                                                              lumbermill.TileDistance(forest) * 30));
             BeginTime = DateTime.UtcNow;
 
@@ -258,7 +258,7 @@ namespace Game.Logic.Actions
 
                 // Give laborers back
                 city.BeginUpdate();                
-                city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Formula.StructureCost(city, campType, 1)));
+                city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, Formula.Current.StructureCost(city, campType, 1)));
                 city.EndUpdate();
 
                 // Get camp

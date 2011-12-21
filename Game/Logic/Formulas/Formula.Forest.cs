@@ -13,7 +13,7 @@ namespace Game.Logic.Formulas
         ///   Returns the maximum number of forests the lumbermill can be harvesting from at one time.
         /// </summary>
         /// <param name = "level"></param>
-        public static int GetMaxForestCount(byte level)
+        public virtual int GetMaxForestCount(byte level)
         {
             if (level <= 3)
                 return 1;
@@ -32,12 +32,12 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "level"></param>
         /// <returns></returns>
-        public static ushort GetForestMaxLabor(byte level)
+        public virtual ushort GetForestMaxLabor(byte level)
         {
             return (ushort)(level*240);
         }
 
-        public static ushort GetForestMaxLaborPerUser(Forest forest)
+        public virtual ushort GetForestMaxLaborPerUser(Forest forest)
         {
             return (ushort)(GetForestMaxLabor(forest.Lvl)/6);
         }
@@ -47,7 +47,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "level">Level of the lumbermill</param>
         /// <returns></returns>
-        public static byte GetMaxForestLevel(byte level)
+        public virtual byte GetMaxForestLevel(byte level)
         {
             if (level <= 2)
                 return 1;
@@ -66,7 +66,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "level"></param>
         /// <returns></returns>
-        public static int GetMaxForestCapacity(byte level)
+        public virtual int GetMaxForestCapacity(byte level)
         {
             return (int)((9000 + Config.Random.Next(-1000, 1000))*level*(1.0/Config.seconds_per_unit));
         }
@@ -76,7 +76,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "level"></param>
         /// <returns></returns>
-        public static double GetMaxForestRate(byte level)
+        public virtual double GetMaxForestRate(byte level)
         {
             return 0.75 + (level - 1)*0.25;
         }

@@ -66,7 +66,7 @@ namespace Game.Module
             }
 
             Time = DateTime.UtcNow;
-            Global.Scheduler.Put(this);
+            Scheduler.Current.Put(this);
             return true;
         }
 
@@ -78,7 +78,7 @@ namespace Game.Module
         private void Reschedule(double interval)
         {
             Time = DateTime.UtcNow.AddSeconds(interval*Config.seconds_per_unit);
-            Global.Scheduler.Put(this);
+            Scheduler.Current.Put(this);
         }
 
         private static ILockable[] GetForeignTroopLockList(object[] custom)

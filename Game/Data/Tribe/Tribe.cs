@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Comm;
 using Game.Data.Troop;
+using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -348,7 +349,7 @@ namespace Game.Data.Tribe
             // Player creating the assignment cannot be late (Give a few minutes lead)
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
             DateTime reachTime =
-                    DateTime.UtcNow.AddSeconds(Formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects())));
+                    DateTime.UtcNow.AddSeconds(Formula.Current.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects())));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
@@ -356,12 +357,13 @@ namespace Game.Data.Tribe
             }
 
             // Create assignment
-            Assignment assignment = new Assignment(this, x, y, targetCity, mode, time, stub);
+            Assignment assignment = Ioc.Kernel.Get<IAssignmentFactory>().CreateAssignment(this, x, y, targetCity, mode, time, stub);
             Ioc.Kernel.Get<IDbManager>().Save(assignment);
-            Global.Scheduler.Put(assignment);
+            Scheduler.Current.Put(assignment);
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
+            assignment.Reschedule();
 
             SendUpdate();
             return Error.Ok;
@@ -386,8 +388,9 @@ namespace Game.Data.Tribe
 
         internal void RemoveAssignment(Assignment assignment)
         {
-            SendUpdate();
+            assignment.AssignmentComplete -= RemoveAssignment;
             assignments.Remove(assignment.Id);
+            SendUpdate();            
         }
 
         internal void DbLoaderAddAssignment(Assignment assignment) {
@@ -400,7 +403,7 @@ namespace Game.Data.Tribe
             if (Level >= 20)
                 return;
 
-            Resource.Subtract(Formula.GetTribeUpgradeCost(Level));
+            Resource.Subtract(Formula.Current.GetTribeUpgradeCost(Level));
             Level++;
             Ioc.Kernel.Get<IDbManager>().Save(this);
         }

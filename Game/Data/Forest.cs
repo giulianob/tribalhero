@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
 using Game.Logic.Formulas;
@@ -77,7 +78,7 @@ namespace Game.Data
         {
             get
             {
-                return Formula.GetForestMaxLabor(lvl);
+                return Formula.Current.GetForestMaxLabor(lvl);
             }
         }
 
@@ -166,7 +167,7 @@ namespace Game.Data
                 // Get the current rate. This will be figure out how much we need to adjust the rate.
                 var oldRate = (int)obj["Rate"];
 
-                var newRate = Formula.GetWoodRateForForest(this, obj.Stats, efficiency);
+                var newRate = Formula.Current.GetWoodRateForForest(this, obj.Stats, efficiency);
 
                 if (newRate != oldRate)
                 {
@@ -213,7 +214,7 @@ namespace Game.Data
         private void SetDepleteAction()
         {
             if (DepleteAction != null)
-                Global.Scheduler.Remove(DepleteAction);
+                Scheduler.Current.Remove(DepleteAction);
 
             double hours = 2*24 + Config.Random.NextDouble()*24;
 
@@ -226,7 +227,7 @@ namespace Game.Data
 
             DepleteAction = new ForestDepleteAction(this, DepleteTime);
 
-            Global.Scheduler.Put(DepleteAction);
+            Scheduler.Current.Put(DepleteAction);
         }
 
         #endregion

@@ -186,7 +186,7 @@ namespace Game.Data.Troop
         {
             get
             {
-                return Formula.GetTroopSpeed(this);
+                return Formula.Current.GetTroopSpeed(this);
             }
         }
 

@@ -8,6 +8,8 @@ using Game.Comm.Processor_Commands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
+using Game.Data.Tribe;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
@@ -39,7 +41,13 @@ namespace Game
 
             #region Locking
             
-            Bind<ILocker>().To<DefaultLocker>().InSingletonScope();
+            Bind<ILocker>().ToMethod(c => new DefaultLocker(() => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()))).InSingletonScope();
+
+            #endregion
+
+            #region Formulas
+
+            Bind<Formula>().ToSelf().InSingletonScope();
 
             #endregion
 
@@ -136,6 +144,7 @@ namespace Game
             Bind<ICombatUnitFactory>().ToMethod(c => new CombatUnitFactory(c.Kernel));
             Bind<IProtocolFactory>().ToFactory();
             Bind<ICombatListFactory>().ToFactory();
+            Bind<IAssignmentFactory>().ToFactory();
 
             #endregion
         }

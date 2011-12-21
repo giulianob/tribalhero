@@ -12,15 +12,17 @@ namespace Testing
     {
         public TestBase()
         {
-            if (Ioc.Kernel == null)
+            if (Ioc.Kernel != null)
             {
-                LoadConfigFile();
-                Engine.CreateDefaultKernel();
-                Factory.CompileConfigFiles();
-                Config.seconds_per_unit = 1;
-                Global.FireEvents = false;
-                Ioc.Kernel.Get<IDbManager>().Pause();
+                return;
             }
+
+            LoadConfigFile();
+            Engine.CreateDefaultKernel();
+            Factory.CompileConfigFiles();
+            Config.seconds_per_unit = 1;
+            Global.FireEvents = false;
+            Ioc.Kernel.Get<IDbManager>().Pause();
         }
 
         protected void LoadConfigFile(string settingsFile = null)

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Troop;
+using Game.Logic;
 using Game.Logic.Actions.ResourceActions;
 using Game.Map;
 using Game.Setup;
@@ -53,7 +54,7 @@ namespace Game.Data
 
         public void StartForestCreator()
         {
-            Global.Scheduler.Put(new ForestCreatorAction());
+            Scheduler.Current.Put(new ForestCreatorAction());
         }
 
         public void DbLoaderAdd(Forest forest)

@@ -7,6 +7,7 @@ using Game.Comm;
 using Game.Data;
 using Game.Database;
 using Game.Logic;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -151,6 +152,8 @@ _________ _______ _________ ______   _______  _
             // Instantiate singletons here for now
             RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
             BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
+            Concurrency.Current = Ioc.Kernel.Get<ILocker>();
+            Formula.Current = Ioc.Kernel.Get<Formula>();
 
             return Ioc.Kernel;
         }
@@ -174,7 +177,7 @@ _________ _______ _________ ______   _______  _
             logger.Info("Stopping policy server...");
             policyServer.Stop();
             logger.Info("Waiting for scheduler to end...");
-            Global.Scheduler.Pause();
+            Scheduler.Current.Pause();
             Global.World.Unload();
             Global.Logger.Info("Goodbye!");
 

@@ -21,12 +21,12 @@ namespace Game.Logic.Procedures
             if (Config.resource_cap)
             {
                 var bonus = city.Technologies.GetEffects(EffectCode.AtticStorageMod, EffectInheritance.All).Sum(x => (int)x.Value[0]);
-                var resourceBonus = Formula.HiddenResource(city) * (double)bonus / 100;
+                var resourceBonus = Formula.Current.HiddenResource(city) * (double)bonus / 100;
 
-                city.Resource.SetLimits(Formula.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
+                city.Resource.SetLimits(Formula.Current.ResourceCropCap(city.Lvl) + resourceBonus.Crop,
                                         0,
-                                        Formula.ResourceIronCap(city.Lvl) + resourceBonus.Iron,
-                                        Formula.ResourceWoodCap(city.Lvl) + resourceBonus.Wood,
+                                        Formula.Current.ResourceIronCap(city.Lvl) + resourceBonus.Iron,
+                                        Formula.Current.ResourceWoodCap(city.Lvl) + resourceBonus.Wood,
                                         0);
             }
             else

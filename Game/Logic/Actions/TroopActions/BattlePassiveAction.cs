@@ -132,7 +132,7 @@ namespace Game.Logic.Actions
                 else
                 {
                     Ioc.Kernel.Get<IDbManager>().Save(city.Battle);
-                    endTime = DateTime.UtcNow.AddSeconds(Formula.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
+                    endTime = DateTime.UtcNow.AddSeconds(Formula.Current.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
                     StateChange(ActionState.Fired);
                 }
             }

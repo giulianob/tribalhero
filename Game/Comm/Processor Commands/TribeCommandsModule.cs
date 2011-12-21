@@ -311,7 +311,7 @@ namespace Game.Comm
                     ReplyError(session, packet, Error.TribeMaxLevel);
                     return;
                 }
-                Resource cost = Formula.GetTribeUpgradeCost(tribe.Level);
+                Resource cost = Formula.Current.GetTribeUpgradeCost(tribe.Level);
                 if (!tribe.Resource.HasEnough(cost))
                 {
                     ReplyError(session, packet, Error.ResourceNotEnough);

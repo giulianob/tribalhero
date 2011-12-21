@@ -15,17 +15,17 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        internal static int SendTime(Structure structure, int distance)
+        public virtual int SendTime(Structure structure, int distance)
         {
             return MoveTime(11) * distance * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x==null?0:(int)x.Value[0]));
         }
 
-        internal static int TradeTime(Structure structure, int quantity)
+        public virtual int TradeTime(Structure structure, int quantity)
         {
             return quantity * 15 * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 
-        internal static int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager)
+        public virtual int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager)
         {
             var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod, EffectInheritance.All);
             int overtime = 0;
@@ -35,18 +35,18 @@ namespace Game.Logic.Formulas
             return (100 - overtime*10) * count * 180 / 100;
         }
 
-        private static int TimeDiscount(int lvl)
+        private int TimeDiscount(int lvl)
         {
             int[] discount = {0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 15, 15, 20, 30, 40};
             return discount[lvl];
         }
 
-        public static int TrainTime(int baseValue, int structureLvl, TechnologyManager em)
+        public virtual int TrainTime(int baseValue, int structureLvl, TechnologyManager em)
         {
             return baseValue*(100 - TimeDiscount(structureLvl))/100;
         }
 
-        public static int BuildTime(int baseValue, City city, TechnologyManager em)
+        public virtual int BuildTime(int baseValue, City city, TechnologyManager em)
         {
             Structure university = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("University", structure));
             return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
@@ -57,13 +57,13 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="speed">Objects speed</param>
         /// <returns></returns>
-        public static int MoveTime(byte speed) {      
+        public virtual int MoveTime(byte speed) {      
             // 60 is second per square, 12 is the average speed for all troops
             // second per square is lowered from 80 to 60. 3/9/2011
             return 60 * (100 - ((speed - 12) * 5)) / 100;
         }
 
-        private static int DoubleTimeTotal(int moveTime, int distance, double bonusPercentage, int forEveryDistance)
+        private int DoubleTimeTotal(int moveTime, int distance, double bonusPercentage, int forEveryDistance)
         {
             int total = 0;
             int index = 0;
@@ -77,7 +77,7 @@ namespace Game.Logic.Formulas
             return total;
         }
 
-        public static int MoveTimeTotal(byte speed, int distance, bool isAttacking, List<Effect> effects)
+        public virtual int MoveTimeTotal(byte speed, int distance, bool isAttacking, List<Effect> effects)
         {
             var moveTime = MoveTime(speed);
             double bonus = 0;
@@ -108,7 +108,7 @@ namespace Game.Logic.Formulas
         /// <param name = "laborTotal"></param>
         /// <param name = "city"></param>
         /// <returns></returns>
-        public static int GetLaborRate(int laborTotal, City city)
+        public virtual int GetLaborRate(int laborTotal, City city)
         {
             if (laborTotal < 140)
                 laborTotal = 140;
@@ -126,7 +126,7 @@ namespace Game.Logic.Formulas
             return (int)((43200 / ((-6.845 * Math.Log(laborTotal / 1.3 - 100) + 55) * newMultiplier)) * rateBonus);
         }
 
-        public static TimeSpan ReadCsvTimeFormat(string time)
+        public virtual TimeSpan ReadCsvTimeFormat(string time)
         {
             if (time.StartsWith("!"))
             {
@@ -136,7 +136,7 @@ namespace Game.Logic.Formulas
             return TimeSpan.FromSeconds(int.Parse(time));
         }
 
-        public static double GetBattleInterval(int count)
+        public virtual double GetBattleInterval(int count)
         {
             // at 400 objects, the reduction is cap'ed at 20% of the original speed.
             var ret = Config.battle_turn_interval*100/(100 + Math.Min(500, count));

@@ -29,7 +29,7 @@ namespace Game.Database
         public static bool LoadFromDatabase(IDbManager dbManager)
         {
             SystemVariablesUpdater.Pause();
-            Global.Scheduler.Pause();
+            Scheduler.Current.Pause();
             Global.FireEvents = false;
 
             Global.Logger.Info("Loading database...");
@@ -90,7 +90,7 @@ namespace Game.Database
 
             SystemVariablesUpdater.Resume();
             Global.FireEvents = true;
-            Global.Scheduler.Resume();
+            Scheduler.Current.Resume();
             return true;
         }
 
@@ -156,6 +156,8 @@ namespace Game.Database
         {
             #region Assignments
 
+            IAssignmentFactory assignmentFactory = Ioc.Kernel.Get<IAssignmentFactory>();
+
             Global.Logger.Info("Loading assignements...");
             using (var reader = dbManager.Select(Assignment.DB_TABLE))
             {
@@ -166,7 +168,7 @@ namespace Game.Database
                     if (!Global.World.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    Assignment assignment = new Assignment((int)reader["id"],
+                    Assignment assignment = assignmentFactory.CreateAssignmentFromDb((int)reader["id"],
                                                            tribe,
                                                            (uint)reader["x"],
                                                            (uint)reader["y"],
@@ -192,15 +194,11 @@ namespace Game.Database
 
                     assignment.DbPersisted = true;
                     
-                    // Recalculates the time the assignment should run next
-                    assignment.ResetNextTime();
-
                     // Add assignment to tribe
                     tribe.DbLoaderAddAssignment(assignment);
-                    
-                    dbManager.Save(assignment);
 
-                    Global.Scheduler.Put(assignment);
+                    // Reschedule and save assignment
+                    assignment.Reschedule();
                 }
             }
 
@@ -422,7 +420,7 @@ namespace Game.Database
                     {
                         // Create deplete time
                         forest.DepleteAction = new ForestDepleteAction(forest, forest.DepleteTime);
-                        Global.Scheduler.Put(forest.DepleteAction);
+                        Scheduler.Current.Put(forest.DepleteAction);
                         Global.World.DbLoaderAdd(forest);
                         Global.World.Forests.DbLoaderAdd(forest);                        
                     }

@@ -298,7 +298,7 @@ namespace Game.Comm
                 }
 
                 // Create troop object                
-                if (!Procedure.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
@@ -308,7 +308,7 @@ namespace Game.Comm
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
-                    Procedure.TroopObjectDelete(stub.TroopObject, true);
+                    Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -354,7 +354,7 @@ namespace Game.Comm
             {
                 City city = cities[cityId];
 
-                if (!Procedure.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
+                if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
                 {
                     ReplyError(session, packet, Error.ObjectNotFound);
                     return;
@@ -364,7 +364,7 @@ namespace Game.Comm
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {
-                    Procedure.TroopObjectDelete(stub.TroopObject, true);
+                    Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -436,7 +436,7 @@ namespace Game.Comm
 
                 stationedCity = stub.StationedCity;
 
-                if (!Procedure.TroopObjectCreateFromStation(stub, stub.StationedCity.X, stub.StationedCity.Y))
+                if (!Procedure.Current.TroopObjectCreateFromStation(stub, stub.StationedCity.X, stub.StationedCity.Y))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -447,7 +447,7 @@ namespace Game.Comm
                 Error ret = city.Worker.DoPassive(city, ra, true);
                 if (ret != 0)
                 {
-                    Procedure.TroopObjectStation(stub.TroopObject, stationedCity);
+                    Procedure.Current.TroopObjectStation(stub.TroopObject, stationedCity);
                     ReplyError(session, packet, ret);
                 }
                 else

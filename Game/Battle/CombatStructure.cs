@@ -257,7 +257,7 @@ namespace Game.Battle
             {
                 City city = Structure.City;
 
-                Global.World.LockRegion(Structure.X, Structure.Y);
+                World.Current.LockRegion(Structure.X, Structure.Y);
                 if (Structure.Lvl > 1)
                 {
                     Structure.BeginUpdate();
@@ -269,11 +269,11 @@ namespace Game.Battle
                 else
                 {
                     Structure.BeginUpdate();
-                    Global.World.Remove(Structure);
+                    World.Current.Remove(Structure);
                     city.ScheduleRemove(Structure, true);
                     Structure.EndUpdate();
                 }
-                Global.World.UnlockRegion(Structure.X, Structure.Y);
+                World.Current.UnlockRegion(Structure.X, Structure.Y);
             }           
         }
 

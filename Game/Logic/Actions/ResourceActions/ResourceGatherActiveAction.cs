@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -84,7 +85,7 @@ namespace Game.Logic.Actions
             Structure structure;
             object value;
 
-            if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
                 return Error.ObjectNotFound;
 
             city.BeginUpdate();
@@ -138,7 +139,7 @@ namespace Game.Logic.Actions
         {
             City city;
 
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
             return Error.Ok;

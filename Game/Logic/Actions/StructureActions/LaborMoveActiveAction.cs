@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -62,7 +63,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             if (cityToStructure)
@@ -78,7 +79,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.RecalculateCityResourceRates(structure.City);
+                Procedure.Current.RecalculateCityResourceRates(structure.City);
                 // labor got taken out immediately                
                 structure.City.EndUpdate();
             }
@@ -135,7 +136,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.RecalculateCityResourceRates(structure.City);
+                    Procedure.Current.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
 
@@ -147,7 +148,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
             if (cityToStructure)
             {
@@ -179,7 +180,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.RecalculateCityResourceRates(structure.City);
+                    Procedure.Current.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
                 else

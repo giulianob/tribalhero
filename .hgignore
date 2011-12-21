@@ -16,3 +16,4 @@ glob:output/
 syntax: glob
 ratio.csv
 *.ReSharper
+NDependOut/

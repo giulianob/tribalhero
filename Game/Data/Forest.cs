@@ -242,7 +242,7 @@ namespace Game.Data
             if (!updating)
                 throw new Exception("Changed state outside of begin/end update block");
 
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(Global.World.Forests);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
         }
 
         public override void EndUpdate()

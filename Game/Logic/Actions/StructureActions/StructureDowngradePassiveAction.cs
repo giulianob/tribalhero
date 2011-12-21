@@ -107,7 +107,7 @@ namespace Game.Logic.Actions
                 
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
 
-                Procedure.OnStructureUpgradeDowngrade(structure);
+                Procedure.Current.OnStructureUpgradeDowngrade(structure);
 
                 structure.EndUpdate();
                 city.EndUpdate();

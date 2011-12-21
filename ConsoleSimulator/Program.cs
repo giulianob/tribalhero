@@ -8,6 +8,7 @@ using ConsoleSimulator.UserBattle;
 using Game;
 using Game.Battle;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 using log4net;
@@ -41,7 +42,7 @@ namespace ConsoleSimulator
                                                      FileAccess.ReadWrite);
 
                 // Load map
-                Global.World.Load(map,
+                World.Current.Load(map,
                                   regionChanges,
                                   createRegionChanges,
                                   Config.map_width,

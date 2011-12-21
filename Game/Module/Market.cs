@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using Game.Data;
 using Game.Logic;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -148,9 +149,9 @@ namespace Game.Module
                 using (Ioc.Kernel.Get<IDbManager>().GetThreadTransaction())
                 {
                     int flow = outgoing - incoming;
-                    if (Global.World.Players.Count > 0)
+                    if (World.Current.Players.Count > 0)
                     {
-                        price += (flow/Math.Max(1,quantityPerChangePerPlayer*Global.World.GetActivePlayerCount()));
+                        price += (flow/Math.Max(1,quantityPerChangePerPlayer*World.Current.GetActivePlayerCount()));
                         if (price < MIN_PRICE)
                             price = MIN_PRICE;
                         if (price > MAX_PRICE)

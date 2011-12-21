@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Map;
 
 namespace Game.Util.Locking
 {
@@ -25,7 +26,7 @@ namespace Game.Util.Locking
             foreach (var cityId in cityIds)
             {
                 City city;
-                if (!Global.World.TryGetObjects(cityId, out city))
+                if (!World.Current.TryGetObjects(cityId, out city))
                 {
                     result = null;
                     return null;
@@ -46,7 +47,7 @@ namespace Game.Util.Locking
             int i = 0;
             foreach (var playerId in playerIds) {
                 Player player;
-                if (!Global.World.TryGetObjects(playerId, out player)) {
+                if (!World.Current.TryGetObjects(playerId, out player)) {
                     result = null;
                     return null;
                 }
@@ -70,7 +71,7 @@ namespace Game.Util.Locking
 
         public IMultiObjectLock Lock(uint playerId, out Player player, out Tribe tribe)
         {
-            if (!Global.World.TryGetObjects(playerId, out player))
+            if (!World.Current.TryGetObjects(playerId, out player))
             {
                 player = null;
                 tribe = null;
@@ -124,7 +125,7 @@ namespace Game.Util.Locking
 
         private IMultiObjectLock TryGetCity(uint cityId, out City city)
         {
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return null;
 
             try
@@ -144,7 +145,7 @@ namespace Game.Util.Locking
 
         private IMultiObjectLock TryGetPlayer(uint playerId, out Player player)
         {
-            if (!Global.World.TryGetObjects(playerId, out player))
+            if (!World.Current.TryGetObjects(playerId, out player))
                 return null;
 
             try

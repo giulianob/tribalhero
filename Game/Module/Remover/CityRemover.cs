@@ -52,7 +52,7 @@ namespace Game.Module
         public bool Start(bool force = false)
         {
             City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
             if (!force && city.Deleted != City.DeletedState.NotDeleted)
@@ -95,7 +95,7 @@ namespace Game.Module
 
         private static Error RemoveForeignTroop(City city, TroopStub stub)
         {
-            if (!Procedure.TroopObjectCreateFromStation(stub, city.X, city.Y))
+            if (!Procedure.Current.TroopObjectCreateFromStation(stub, city.X, city.Y))
             {
                 return Error.Unexpected;
             }
@@ -108,7 +108,7 @@ namespace Game.Module
             City city;
             Structure mainBuilding;
 
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
             using (Ioc.Kernel.Get<CallbackLock>().Lock(GetForeignTroopLockList, new[] {city}, city))
@@ -174,7 +174,7 @@ namespace Game.Module
                         foreach (Structure structure in new List<Structure>(city).Where(structure => !structure.IsBlocked && !structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
-                            Global.World.Remove(structure);
+                            World.Current.Remove(structure);
                             city.ScheduleRemove(structure, false);
                             structure.EndUpdate();
                         }
@@ -190,7 +190,7 @@ namespace Game.Module
                                                 true,
                                                 delegate(uint origX, uint origY, uint x1, uint y1, object c)
                                                     {
-                                                        Global.World.RevertTileType(x1, y1, true);
+                                                        World.Current.RevertTileType(x1, y1, true);
                                                         return true;
                                                     },
                                                 null);
@@ -222,12 +222,12 @@ namespace Game.Module
                     city.Troops.Remove(1);
 
                     // remove city from the region
-                    CityRegion region = Global.World.GetCityRegion(city.X, city.Y);
+                    CityRegion region = World.Current.GetCityRegion(city.X, city.Y);
                     if (region != null)
                         region.Remove(city);
 
                     mainBuilding.BeginUpdate();
-                    Global.World.Remove(mainBuilding);
+                    World.Current.Remove(mainBuilding);
                     city.ScheduleRemove(mainBuilding, false);
                     mainBuilding.EndUpdate();
 
@@ -242,7 +242,7 @@ namespace Game.Module
                     return;
                 }
                 Global.Logger.Info(string.Format("Player {0}:{1} City {2}:{3} Lvl {4} is deleted.", city.Owner.Name, city.Owner.PlayerId, city.Name, city.Id, city.Lvl));
-                Global.World.Remove(city);
+                World.Current.Remove(city);
             }
 
         }

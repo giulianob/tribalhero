@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -76,7 +77,7 @@ namespace Game.Logic.Actions
         {
             City city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             cost = Formula.Current.StructureCost(structure.City, type, lvl);
@@ -162,7 +163,7 @@ namespace Game.Logic.Actions
 
                 city.BeginUpdate();
                 structure.BeginUpdate();
-                Procedures.Procedure.StructureChange(structure, (ushort)type, lvl);
+                Procedures.Procedure.Current.StructureChange(structure, (ushort)type, lvl);
                 structure.EndUpdate();
                 city.EndUpdate();
 

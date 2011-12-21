@@ -97,7 +97,7 @@ namespace Game.Map
 
                 TileUpdate update;
                 if (i == 0)
-                    update = new TileUpdate(tiles[i].X, tiles[i].Y, Global.World.RevertTileType(tiles[i].X, tiles[i].Y, false));
+                    update = new TileUpdate(tiles[i].X, tiles[i].Y, World.Current.RevertTileType(tiles[i].X, tiles[i].Y, false));
                 else
                     update = new TileUpdate(tiles[i].X, tiles[i].Y, CalculateRoad(tiles[i].X, tiles[i].Y, false));
                 if (update.TileType == ushort.MaxValue)
@@ -120,7 +120,7 @@ namespace Game.Map
             if (x <= 1 || y <= 1 || x >= Config.map_width || y >= Config.map_height)
                 return ushort.MaxValue;
 
-            if (!createHere && !IsRoad(Global.World.GetTileType(x, y)))
+            if (!createHere && !IsRoad(World.Current.GetTileType(x, y)))
                 return ushort.MaxValue;
 
             // Create array of neighbor roads
@@ -181,7 +181,7 @@ namespace Game.Map
             // Grab the list of actual tiles based on the road type we need.
             ushort[] types;
 
-            if (Global.World[x, y].Exists(s => s is Structure))
+            if (World.Current[x, y].Exists(s => s is Structure))
                 types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSetStructures");
             else
             {
@@ -190,14 +190,14 @@ namespace Game.Map
             }
 
             // Set the new road tile
-            Global.World.SetTileType(x, y, types[roadType], false);
+            World.Current.SetTileType(x, y, types[roadType], false);
 
             return types[roadType];
         }
 
         public static bool IsRoad(uint x, uint y)
         {
-            return IsRoad(Global.World.GetTileType(x, y));
+            return IsRoad(World.Current.GetTileType(x, y));
         }
 
         public static bool IsRoad(ushort tileId)

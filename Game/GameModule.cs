@@ -10,6 +10,7 @@ using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
@@ -136,6 +137,16 @@ namespace Game
             #region Utils
 
             Bind<RadiusLocator>().ToSelf().InSingletonScope();
+            Bind<Procedure>().ToSelf().InSingletonScope();
+
+            #endregion
+
+            #region World/Map
+
+            Bind<World>().ToSelf().InSingletonScope();
+
+            // Bind IGameObjectLocator to the World binding
+            Bind<IGameObjectLocator>().ToMethod(c => c.Kernel.Get<World>());
 
             #endregion
 

@@ -23,7 +23,7 @@ namespace Game.Logic.Procedures
         /// <param name = "attackPoints"></param>
         /// <param name = "initialTroopValue"></param>
         /// <param name = "endTroopValue"></param>
-        public static void GiveAttackPoints(City city, int attackPoints, int initialTroopValue, int endTroopValue)
+        public virtual void GiveAttackPoints(City city, int attackPoints, int initialTroopValue, int endTroopValue)
         {
             var point = Formula.Current.GetAttackPoint(attackPoints, initialTroopValue - endTroopValue);
             city.AttackPoint += point;

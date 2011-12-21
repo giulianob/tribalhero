@@ -170,6 +170,7 @@
     <Compile Include="Database\DbLoader.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
+    <Compile Include="Data\ICity.cs" />
     <Compile Include="Data\IHasLevel.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
@@ -217,9 +218,10 @@
     </Compile>
     <Compile Include="Logic\ActiveAction.cs" />
     <Compile Include="Logic\IActionTime.cs" />
+    <Compile Include="Logic\IScheduler.cs" />
     <Compile Include="Logic\PassiveAction.cs" />
-    <Compile Include="Logic\Procedures\CityCreate.cs" />
-    <Compile Include="Logic\Procedures\Structure.cs" />
+    <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />
+    <Compile Include="Logic\Procedures\Procedure.Structure.cs" />
     <Compile Include="Logic\Requirements\EffectRequirement.cs" />
     <Compile Include="Logic\Formulas\Formula.cs" />
     <Compile Include="Logic\ICanDo.cs" />
@@ -227,8 +229,8 @@
     <Compile Include="Logic\IHasEffect.cs" />
     <Compile Include="Logic\ISchedule.cs" />
     <Compile Include="Logic\Procedures\Procedure.cs" />
-    <Compile Include="Logic\Procedures\TroopObjectCreate.cs" />
-    <Compile Include="Logic\Procedures\TroopObjectDelete.cs" />
+    <Compile Include="Logic\Procedures\Procedure.TroopObjectCreate.cs" />
+    <Compile Include="Logic\Procedures\Procedure.TroopObjectDelete.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\LayoutRequirement.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\Requirement.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\SimpleLayout.cs" />
@@ -236,7 +238,9 @@
     <Compile Include="Logic\ScheduledActiveAction.cs" />
     <Compile Include="Logic\ScheduledPassiveAction.cs" />
     <Compile Include="Logic\Scheduler.cs" />
+    <Compile Include="Logic\ThreadedScheduler.cs" />
     <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
@@ -342,13 +346,13 @@
     <Compile Include="Logic\Formulas\Formula.Troop.cs" />
     <Compile Include="Logic\Formulas\Formula.Time.cs" />
     <Compile Include="Logic\NotificationManager.cs" />
-    <Compile Include="Logic\Procedures\BattleProcedures.cs" />
-    <Compile Include="Logic\Procedures\Ranking.cs" />
-    <Compile Include="Logic\Procedures\OnActionCallback.cs" />
-    <Compile Include="Logic\Procedures\RandomizeResource.cs" />
-    <Compile Include="Logic\Procedures\ResourceCap.cs" />
-    <Compile Include="Logic\Procedures\TroopObjectCreateFromStation.cs" />
-    <Compile Include="Logic\Procedures\TroopObjectStation.cs" />
+    <Compile Include="Logic\Procedures\Procedure.Battle.cs" />
+    <Compile Include="Logic\Procedures\Procedure.Ranking.cs" />
+    <Compile Include="Logic\Procedures\Procedure.OnActionCallback.cs" />
+    <Compile Include="Logic\Procedures\Procedure.RandomizeResource.cs" />
+    <Compile Include="Logic\Procedures\Procedure.ResourceCap.cs" />
+    <Compile Include="Logic\Procedures\Procedure.TroopObjectCreateFromStation.cs" />
+    <Compile Include="Logic\Procedures\Procedure.TroopObjectStation.cs" />
     <Compile Include="Logic\ReferenceManager.cs" />
     <Compile Include="Logic\Requirements\LayoutRequirements\AwayFromLayout.cs" />
     <Compile Include="Logic\SystemVariablesUpdater.cs" />

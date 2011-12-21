@@ -37,12 +37,9 @@ namespace Game.Data
         static Global()
         {
             FireEvents = true;
-            SystemVariables = new Dictionary<string, SystemVariable>();
-            World = new World();
+            SystemVariables = new Dictionary<string, SystemVariable>();            
             Tribes = new Dictionary<uint, Tribe.Tribe>();
         }
-
-        public static World World { get; private set; }
 
         public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
 

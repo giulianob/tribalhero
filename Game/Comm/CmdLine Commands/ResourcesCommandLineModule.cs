@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -51,7 +52,7 @@ namespace Game.Comm
                 return "sendresources --city=city [--crop=###] [--wood=###] [--iron=###] [--labor=###] [--gold=###]";
 
             uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId))
+            if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
             City city;
@@ -95,7 +96,7 @@ namespace Game.Comm
                 return "trainunits --city=city --type=type --count=count";
 
             uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId))
+            if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
             City city;

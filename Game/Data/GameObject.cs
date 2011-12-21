@@ -2,6 +2,7 @@
 
 using System;
 using Game.Logic;
+using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
 
@@ -84,7 +85,7 @@ namespace Game.Data
                 return;
 
             City.ObjUpdateEvent(this, origX, origY);
-            Global.World.ObjectUpdateEvent(this, origX, origY);
+            World.Current.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion

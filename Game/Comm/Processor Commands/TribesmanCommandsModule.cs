@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -88,7 +89,7 @@ namespace Game.Comm
             }
 
             uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
             {
                 ReplyError(session, packet, Error.PlayerNotFound);
                 return;
@@ -249,7 +250,7 @@ namespace Game.Comm
                     return;
                 }
                 session.Player.Tribesman.Tribe.RemoveTribesman(playerId);
-                Procedure.OnSessionTribesmanQuit(players[playerId].Session, tribe.Id, playerId,true);
+                Procedure.Current.OnSessionTribesmanQuit(players[playerId].Session, tribe.Id, playerId,true);
                 ReplySuccess(session, packet);
             }
         }
@@ -276,7 +277,7 @@ namespace Game.Comm
                     return;
                 }
                 tribe.RemoveTribesman(session.Player.PlayerId);
-                Procedure.OnSessionTribesmanQuit(session, tribe.Id, session.Player.PlayerId,false);
+                Procedure.Current.OnSessionTribesmanQuit(session, tribe.Id, session.Player.PlayerId,false);
                 ReplySuccess(session, packet);
             }
         }

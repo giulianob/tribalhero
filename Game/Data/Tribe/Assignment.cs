@@ -8,17 +8,25 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
-namespace Game.Data.Tribe {
+namespace Game.Data.Tribe
+{
 
     public partial class Assignment : ISchedule, IPersistableList, IEnumerable<Assignment.AssignmentTroop>
     {
         public delegate void OnComplete(Assignment assignment);
+
+        private readonly Formula formula;
+        private readonly IDbManager dbManager;
+        private readonly IGameObjectLocator gameObjectLocator;
+        private readonly IScheduler scheduler;
+        private readonly Procedure procedure;
 
         /// <summary>
         /// List of stubs in this assignment
@@ -26,12 +34,7 @@ namespace Game.Data.Tribe {
         private readonly List<AssignmentTroop> assignmentTroops = new List<AssignmentTroop>();
 
         /// <summary>
-        /// Formulas dependency to use for calculating time
-        /// </summary>
-        private readonly Formula formula;
-
-        /// <summary>
-        /// 
+        /// Lock for the assignment when adding/removing stubs
         /// </summary>
         private readonly object assignmentLock = new object();
 
@@ -89,11 +92,11 @@ namespace Game.Data.Tribe {
         /// Number of troops in this assignment (some might have been dispatched already)
         /// </summary>
         public int TroopCount { get { return assignmentTroops.Count; } }
-        
+
         /// <summary>
         /// Event fired when assignment completes (all stubs should be gone by this time)
         /// </summary>
-        public event OnComplete AssignmentComplete = delegate { }; 
+        public event OnComplete AssignmentComplete = delegate { };
 
         /// <summary>
         /// Creates a new assignment. 
@@ -108,8 +111,18 @@ namespace Game.Data.Tribe {
         /// <param name="targetTime"></param>
         /// <param name="dispatchCount"></param>
         /// <param name="formula"></param>
-        public Assignment(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula) {
+        /// <param name="dbManager"> </param>
+        /// <param name="gameObjectLocator"> </param>
+        /// <param name="scheduler"> </param>
+        /// <param name="procedure"> </param>
+        public Assignment(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure)
+        {
             this.formula = formula;
+            this.dbManager = dbManager;
+            this.gameObjectLocator = gameObjectLocator;
+            this.scheduler = scheduler;
+            this.procedure = procedure;
+
             Id = id;
             Tribe = tribe;
             TargetTime = targetTime;
@@ -118,6 +131,7 @@ namespace Game.Data.Tribe {
             Y = y;
             AttackMode = mode;
             DispatchCount = dispatchCount;
+
             IdGen.Set(id);
         }
 
@@ -133,8 +147,18 @@ namespace Game.Data.Tribe {
         /// <param name="targetTime"></param>
         /// <param name="stub"></param>
         /// <param name="formula"> </param>
-        public Assignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub, Formula formula) {
+        /// <param name="dbManager"> </param>
+        /// <param name="gameObjectLocator"> </param>
+        /// <param name="scheduler"> </param>
+        /// <param name="procedure"> </param>
+        public Assignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure)
+        {
             this.formula = formula;
+            this.dbManager = dbManager;
+            this.gameObjectLocator = gameObjectLocator;
+            this.scheduler = scheduler;
+            this.procedure = procedure;
+
             Id = IdGen.GetNext();
             Tribe = tribe;
             TargetTime = targetTime;
@@ -143,14 +167,16 @@ namespace Game.Data.Tribe {
             Y = y;
             AttackMode = mode;
             DispatchCount = 0;
+
             assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             StringBuilder stringBuilder = new StringBuilder();
 
             lock (assignmentLock)
-            {                
+            {
                 stringBuilder.Append(string.Format("Id[{0}] Time[{1}] x[{2}] y[{3}] mode[{4}] # of stubs[{5}] pispatched[{6}]\n",
                                               Id,
                                               TargetTime,
@@ -180,11 +206,12 @@ namespace Game.Data.Tribe {
         /// </summary>
         /// <param name="stub"></param>
         /// <returns></returns>
-        public Error Add(TroopStub stub) {
+        public Error Add(TroopStub stub)
+        {
             lock (assignmentLock)
             {
                 // Don't allow ppl to join in the last minute
-                if (DateTime.UtcNow.AddMinutes(1) >= TargetTime)
+                if (SystemClock.Now.AddMinutes(1) >= TargetTime)
                     return Error.AssignmentDone;
 
                 assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
@@ -237,7 +264,8 @@ namespace Game.Data.Tribe {
         /// </summary>
         /// <param name="stub"></param>
         /// <returns></returns>
-        private DateTime DepartureTime(TroopStub stub) {
+        private DateTime DepartureTime(TroopStub stub)
+        {
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, X, Y);
             return TargetTime.Subtract(new TimeSpan(0, 0, formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects()))));
         }
@@ -247,21 +275,23 @@ namespace Game.Data.Tribe {
         /// </summary>
         /// <param name="stub"></param>
         /// <returns></returns>
-        private bool Dispatch(TroopStub stub) {
-            Structure structure = (Structure)Global.World.GetObjects(X, Y).Find(z => z is Structure);
-            if (structure == null) {
-                Procedure.TroopStubDelete(stub.City, stub);
+        private bool Dispatch(TroopStub stub)
+        {
+            Structure structure = (Structure)gameObjectLocator.GetObjects(X, Y).Find(z => z is Structure);
+            if (structure == null)
+            {
+                procedure.TroopStubDelete(stub.City, stub);
                 stub.City.Owner.SendSystemMessage(null, "Assignment Failed", string.Format(@"Assigned target({0},{1}) has already been destroyed. The reserved troops have been returned to the city.", X, Y));
                 return false;
             }
 
             // Create troop object
-            Procedure.TroopObjectCreate(stub.City, stub);
+            procedure.TroopObjectCreate(stub.City, stub);
 
             var action = new AttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
             if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
             {
-                Procedure.TroopObjectDelete(stub.TroopObject, true);
+                procedure.TroopObjectDelete(stub.TroopObject, true);
                 return false;
             }
 
@@ -276,8 +306,9 @@ namespace Game.Data.Tribe {
 
         public void Callback(object custom)
         {
-            var now = DateTime.UtcNow;
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe)) {
+            var now = SystemClock.Now;
+            using (Ioc.Kernel.Get<CallbackLock>().Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe))
+            {
                 lock (assignmentLock)
                 {
                     var troopToDispatch = assignmentTroops.FirstOrDefault(x => !x.Dispatched && x.DepartureTime <= now);
@@ -293,7 +324,7 @@ namespace Game.Data.Tribe {
                         else
                         {
                             RemoveStub(troopToDispatch.Stub);
-                        }                        
+                        }
                     }
 
                     Reschedule();
@@ -309,21 +340,21 @@ namespace Game.Data.Tribe {
         {
             // If this has been scheduled then remove
             if (IsScheduled)
-                Scheduler.Current.Remove(this);
+                scheduler.Remove(this);
 
             // Take the quickest stub or the final target time.
             Time = assignmentTroops.Any(s => !s.Dispatched) ? assignmentTroops.Where(s => !s.Dispatched).Min(x => x.DepartureTime) : TargetTime;
 
             // If there are stubs that have not been dispatched or we haven't reached the time that the assignment should be over then we just reschedule it.
-            if (assignmentTroops.Count > 0 && (assignmentTroops.Any(x => !x.Dispatched) || TargetTime.CompareTo(DateTime.UtcNow) > 0))
+            if (assignmentTroops.Count > 0 && (assignmentTroops.Any(x => !x.Dispatched) || TargetTime.CompareTo(SystemClock.Now) > 0))
             {
-                Ioc.Kernel.Get<IDbManager>().Save(this);
-                Scheduler.Current.Put(this);
+                dbManager.Save(this);
+                scheduler.Put(this);
             }
             else
-            {                
+            {
                 AssignmentComplete(this);
-                Ioc.Kernel.Get<IDbManager>().Delete(this);
+                dbManager.Delete(this);
             }
         }
 
@@ -331,8 +362,10 @@ namespace Game.Data.Tribe {
 
         #region IPersistableList Members
 
-        public DbColumn[] DbListColumns {
-            get {
+        public DbColumn[] DbListColumns
+        {
+            get
+            {
                 return new[] { new DbColumn("city_id", DbType.UInt32), new DbColumn("stub_id", DbType.Byte), new DbColumn("dispatched", DbType.Byte) };
             }
         }
@@ -347,24 +380,31 @@ namespace Game.Data.Tribe {
 
         #region IPersistable Members
 
-        public string DbTable {
+        public string DbTable
+        {
             get { return DB_TABLE; }
         }
 
-        public DbColumn[] DbPrimaryKey {
-            get {
+        public DbColumn[] DbPrimaryKey
+        {
+            get
+            {
                 return new[] { new DbColumn("id", Id, DbType.Int32) };
             }
         }
 
-        public DbDependency[] DbDependencies {
-            get {
+        public DbDependency[] DbDependencies
+        {
+            get
+            {
                 return new DbDependency[] { };
             }
         }
 
-        public DbColumn[] DbColumns {
-            get {
+        public DbColumn[] DbColumns
+        {
+            get
+            {
                 return new[]
                        {
                               new DbColumn("tribe_id", Tribe.Id, DbType.UInt32),
@@ -382,9 +422,11 @@ namespace Game.Data.Tribe {
 
         #region IEnumerable<DbColumn[]> Members
 
-        public IEnumerator<DbColumn[]> GetEnumerator() {
+        public IEnumerator<DbColumn[]> GetEnumerator()
+        {
             var itr = assignmentTroops.GetEnumerator();
-            while (itr.MoveNext()) {
+            while (itr.MoveNext())
+            {
                 if (itr.Current == null)
                 {
                     throw new NullReferenceException("itr.current should not be null");
@@ -404,7 +446,8 @@ namespace Game.Data.Tribe {
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
             return assignmentTroops.GetEnumerator();
         }
 
@@ -415,10 +458,11 @@ namespace Game.Data.Tribe {
 
         #endregion
 
-        internal void DbLoaderAdd(TroopStub stub, bool dispatched) {
+        internal void DbLoaderAdd(TroopStub stub, bool dispatched)
+        {
             assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub), dispatched));
             stub.OnRemoved += RemoveStub;
-            stub.OnStateSwitched += StubOnStateSwitched;            
+            stub.OnStateSwitched += StubOnStateSwitched;
         }
     }
 }

@@ -67,7 +67,7 @@ namespace Game.Data
 
         public static bool HasForestNear(uint x, uint y, int radius)
         {
-            return Global.World.GetRegion(x, y).GetObjects().Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
+            return World.Current.GetRegion(x, y).GetObjects().Any(forest => forest is Forest && forest.TileDistance(x, y) <= radius);
         }
 
         public void CreateForest(byte lvl, int capacity, double rate)
@@ -86,24 +86,24 @@ namespace Game.Data
                     x = (uint)Config.Random.Next(15, (int)Config.map_width - 15);
                     y = (uint)Config.Random.Next(15, (int)Config.map_height - 15);
 
-                    if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", Global.World.GetTileType(x, y)))
+                    if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.GetTileType(x, y)))
                         continue;
 
                     // check if tile is safe
-                    List<ushort> tiles = Global.World.GetTilesWithin(x, y, 7);
+                    List<ushort> tiles = World.Current.GetTilesWithin(x, y, 7);
                     if (Ioc.Kernel.Get<ObjectTypeFactory>().HasTileType("CityStartTile", tiles))
                         continue;
 
                     if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsAllTileType("TileBuildable", tiles))
                         continue;
 
-                    Global.World.LockRegion(x, y);
+                    World.Current.LockRegion(x, y);
 
                     // check if near any other objects
-                    if (Global.World.GetObjects(x, y).Exists(obj => !(obj is TroopObject)) ||
-                        Global.World.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is TroopObject)))
+                    if (World.Current.GetObjects(x, y).Exists(obj => !(obj is TroopObject)) ||
+                        World.Current.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is TroopObject)))
                     {
-                        Global.World.UnlockRegion(x, y);
+                        World.Current.UnlockRegion(x, y);
                         continue;
                     }
 
@@ -111,15 +111,15 @@ namespace Game.Data
                 }
             }
             else
-                Global.World.LockRegion(x, y);
+                World.Current.LockRegion(x, y);
             
             forest.X = x;
             forest.Y = y;
 
             forest.ObjectId = (uint)objectIdGenerator.GetNext();
 
-            Global.World.Add(forest);
-            Global.World.UnlockRegion(x, y);
+            World.Current.Add(forest);
+            World.Current.UnlockRegion(x, y);
 
             forests.Add(forest.ObjectId, forest);
 
@@ -137,7 +137,7 @@ namespace Game.Data
             forests.Remove(forest.ObjectId);
 
             forest.BeginUpdate();
-            Global.World.Remove(forest);
+            World.Current.Remove(forest);
             forest.EndUpdate();
 
             Ioc.Kernel.Get<IDbManager>().Delete(forest);
@@ -158,7 +158,7 @@ namespace Game.Data
 
         public ILockable[] GetListOfLocks(uint forestId)
         {
-            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(Global.World.Forests);
+            DefaultMultiObjectLock.ThrowExceptionIfNotLocked(World.Current.Forests);
 
             Forest forest;
 

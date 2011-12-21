@@ -2,6 +2,7 @@
 
 using Game.Data;
 using Game.Data.Troop;
+using Game.Map;
 
 #endregion
 
@@ -9,12 +10,12 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public static bool TroopObjectDelete(TroopObject troop)
+        public virtual bool TroopObjectDelete(TroopObject troop)
         {
             return TroopObjectDelete(troop, true);
         }
 
-        public static bool TroopObjectDelete(TroopObject troop, bool addBackToNormal)
+        public virtual bool TroopObjectDelete(TroopObject troop, bool addBackToNormal)
         {
             if (addBackToNormal)
             {
@@ -29,7 +30,7 @@ namespace Game.Logic.Procedures
             troop.City.Troops.Remove(troop.Stub.TroopId);
 
             troop.BeginUpdate();
-            Global.World.Remove(troop);
+            World.Current.Remove(troop);
             troop.City.ScheduleRemove(troop, false);
             troop.Stub = null;
             troop.EndUpdate();
@@ -37,7 +38,7 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        private static void AddToNormal(TroopStub source, TroopStub target)
+        private void AddToNormal(TroopStub source, TroopStub target)
         {
             target.BeginUpdate();
             foreach (var formation in source)

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
@@ -74,7 +75,7 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             if (quantity == 0 || quantity%TRADE_SIZE != 0 || quantity/TRADE_SIZE > 15)

@@ -8,6 +8,7 @@ using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using System.Linq;
@@ -146,7 +147,7 @@ namespace Game.Comm
                 {
                     // Target
                     City targetCity;
-                    if (Global.World.TryGetObjects(incoming.Action.To, out targetCity))
+                    if (World.Current.TryGetObjects(incoming.Action.To, out targetCity))
                     {                        
                         reply.AddUInt32(targetCity.Owner.PlayerId);
                         reply.AddUInt32(targetCity.Id);
@@ -228,7 +229,7 @@ namespace Game.Comm
                     return;
                 }
 
-                if (Global.World.TribeNameTaken(name))
+                if (World.Current.TribeNameTaken(name))
                 {
                     ReplyError(session, packet, Error.TribeAlreadyExists);
                     return;
@@ -284,7 +285,7 @@ namespace Game.Comm
                 foreach (var tribesman in new List<Tribesman>(tribe))
                 {
                     if (tribesman.Player.Session != null)
-                        Procedure.OnSessionTribesmanQuit(tribesman.Player.Session, tribe.Id, tribesman.Player.PlayerId, true);
+                        Procedure.Current.OnSessionTribesmanQuit(tribesman.Player.Session, tribe.Id, tribesman.Player.PlayerId, true);
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
 

@@ -8,6 +8,7 @@ using Game.Data.Troop;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -81,7 +82,7 @@ namespace Game.Comm
             using (Concurrency.Current.Lock(out players, playerIds)) {
                 City city;
                 City targetCity;
-                if (players == null || !Global.World.TryGetObjects(cityId, out city) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+                if (players == null || !World.Current.TryGetObjects(cityId, out city) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -103,7 +104,7 @@ namespace Game.Comm
                 }
 
                 // Create troop stub                                
-                if (!Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment)) {
+                if (!Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment)) {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;
                 }
@@ -113,7 +114,7 @@ namespace Game.Comm
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(stub, targetStructure.X, targetStructure.Y, targetCity, time, mode, out id);
                 if (ret != 0) {
-                    Procedure.TroopStubDelete(city, stub);
+                    Procedure.Current.TroopStubDelete(city, stub);
                     ReplyError(session, packet, ret);
                 }
                 else
@@ -148,7 +149,7 @@ namespace Game.Comm
                 }
 
                 // Create stub
-                if (!Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
+                if (!Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
                 {
                     ReplyError(session, packet, Error.TroopChanged);
                     return;                        
@@ -158,7 +159,7 @@ namespace Game.Comm
 
                 Error error = tribe.JoinAssignment(assignmentId, stub);
                 if (error != Error.Ok) {
-                    Procedure.TroopStubDelete(city, stub);                    
+                    Procedure.Current.TroopStubDelete(city, stub);                    
                     ReplyError(session, packet, error);
                 }
                 else

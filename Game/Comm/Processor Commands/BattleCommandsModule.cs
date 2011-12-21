@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -33,7 +34,7 @@ namespace Game.Comm
                 return;
             }
 
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 ReplyError(session, packet, Error.CityNotFound);
 
             CallbackLock.CallbackLockHandler lockHandler = delegate

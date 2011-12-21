@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -68,7 +69,7 @@ namespace Game.Logic.Actions
             City city;
             Structure structure;
 
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
@@ -135,7 +136,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.OnStructureUpgradeDowngrade(structure);
+                Procedure.Current.OnStructureUpgradeDowngrade(structure);
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);

@@ -89,7 +89,7 @@ namespace ConsoleSimulator
                         defender.Local.AddFormation(FormationType.InBattle);
                         defender.Local.Template.LoadStats(TroopBattleGroup.Local);
                         bm.AddToLocal(new List<TroopStub> {defender.Local}, ReportState.Entering);
-                        Procedure.MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
+                        Procedure.Current.MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
                         defender.Local.EndUpdate();
                     }
 
@@ -158,7 +158,7 @@ namespace ConsoleSimulator
                         defender.Local.AddFormation(FormationType.InBattle);
                         defender.Local.Template.LoadStats(TroopBattleGroup.Local);
                         bm.AddToLocal(new List<TroopStub> {defender.Local}, ReportState.Entering);
-                        Procedure.MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
+                        Procedure.Current.MoveUnitFormation(defender.Local, FormationType.Normal, FormationType.InBattle);
                         defender.Local.EndUpdate();
                     }
 

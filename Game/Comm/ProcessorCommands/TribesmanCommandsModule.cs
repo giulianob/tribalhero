@@ -14,7 +14,7 @@ using Persistance;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class TribesmanCommandsModule : CommandModule
     {

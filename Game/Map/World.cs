@@ -500,7 +500,7 @@ namespace Game.Map
         public List<SimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius)
         {
             var list = new List<SimpleGameObject>();
-            TileLocator.ForeachObject(x, y, radius, false, GetObjectsForeach, list);
+            TileLocator.Current.ForeachObject(x, y, radius, false, GetObjectsForeach, list);
             return list;
         }
 
@@ -514,7 +514,7 @@ namespace Game.Map
         public List<ushort> GetTilesWithin(uint x, uint y, byte radius)
         {
             var list = new List<ushort>();
-            TileLocator.ForeachObject(x, y, radius, false, GetTilesForeach, list);
+            TileLocator.Current.ForeachObject(x, y, radius, false, GetTilesForeach, list);
             return list;
         }
 

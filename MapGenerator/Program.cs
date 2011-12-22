@@ -68,12 +68,12 @@ namespace MapGenerator
             uint x;
             uint y;
 
-            TileLocator.ForeachObject(cityLocation.X, cityLocation.Y, Formula.Current.GetInitialCityRadius(), true, AreaClear, map);
+            TileLocator.Current.ForeachObject(cityLocation.X, cityLocation.Y, Formula.Current.GetInitialCityRadius(), true, AreaClear, map);
             for (int i = 0; i < numberOfFarm; ++i)
             {
                 do
                 {
-                    TileLocator.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
+                    TileLocator.Current.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
                 } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
                          map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE);
                 map[y*region_width + x] = FARM_TILE;
@@ -83,7 +83,7 @@ namespace MapGenerator
             {
                 do
                 {
-                    TileLocator.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
+                    TileLocator.Current.RandomPoint(cityLocation.X, cityLocation.Y, (byte)(Formula.Current.GetInitialCityRadius() - 1), false, out x, out y);
                 } while (SimpleGameObject.TileDistance(x, y, cityLocation.X, cityLocation.Y) <= 1 ||
                          map[y*region_width + x] == FARM_TILE || map[y*region_width + x] == WOODLAND_TILE);
                 map[y*region_width + x] = WOODLAND_TILE;

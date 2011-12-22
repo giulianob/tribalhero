@@ -14,7 +14,7 @@ using Ninject;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class TroopCommandsModule : CommandModule
     {

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 
-namespace Game.Comm.Processor_Commands
+namespace Game.Comm.ProcessorCommands
 {
     class ChatCommandsModule : CommandModule
     {

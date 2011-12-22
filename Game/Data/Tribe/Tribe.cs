@@ -357,9 +357,8 @@ namespace Game.Data.Tribe
             }
 
             // Create assignment
-            Assignment assignment = Ioc.Kernel.Get<IAssignmentFactory>().CreateAssignment(this, x, y, targetCity, mode, time, stub);
-            Ioc.Kernel.Get<IDbManager>().Save(assignment);
-            Scheduler.Current.Put(assignment);
+            Assignment assignment = Ioc.Kernel.Get<IAssignmentFactory>().CreateAssignment(this, x, y, targetCity, mode, time, stub);            
+            assignment.Reschedule();
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;

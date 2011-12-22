@@ -111,7 +111,7 @@ namespace Game.Logic.Actions
                 return false;
 
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
-            TileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
+            TileLocator.Current.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
             nextX = recordForeach.X;
             nextY = recordForeach.Y;            
             return true;

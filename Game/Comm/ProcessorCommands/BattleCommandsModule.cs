@@ -10,7 +10,7 @@ using Ninject;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class BattleCommandsModule : CommandModule
     {
@@ -47,7 +47,7 @@ namespace Game.Comm
                     return toBeLocked.ToArray();
                 };
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(lockHandler, null, city))
+            using (Concurrency.Current.Lock(lockHandler, null, city))
             {
                 if (city.Battle == null)
                 {

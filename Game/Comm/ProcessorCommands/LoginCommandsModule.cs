@@ -3,10 +3,6 @@
 using System;
 using System.IO;
 using System.Linq;
-// ReSharper disable RedundantUsingDirective
-using System.Security.Cryptography;
-using System.Text;
-// ReSharper restore RedundantUsingDirective
 using Game.Data;
 using Game.Logic;
 using Game.Logic.Actions;
@@ -17,10 +13,12 @@ using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Persistance;
+        // ReSharper disable RedundantUsingDirective
+        // ReSharper restore RedundantUsingDirective
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class LoginCommandsModule : CommandModule
     {

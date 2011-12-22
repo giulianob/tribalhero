@@ -42,7 +42,7 @@ namespace Game.Logic.Procedures
             using (Concurrency.Current.Lock(city))
             {
                 byte radius = city.Radius;
-                TileLocator.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, Work, city);
+                TileLocator.Current.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, Work, city);
             }
 
             return true;

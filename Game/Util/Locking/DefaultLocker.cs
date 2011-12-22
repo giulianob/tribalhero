@@ -10,10 +10,12 @@ namespace Game.Util.Locking
     public class DefaultLocker : ILocker
     {
         private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
+        private readonly CallbackLock.Factory callbackLockFactory;
 
-        public DefaultLocker(DefaultMultiObjectLock.Factory multiObjectLockFactory)
+        public DefaultLocker(DefaultMultiObjectLock.Factory multiObjectLockFactory, CallbackLock.Factory callbackLockFactory)
         {
             this.multiObjectLockFactory = multiObjectLockFactory;
+            this.callbackLockFactory = callbackLockFactory;
         }
 
         public IMultiObjectLock Lock(out Dictionary<uint, City> result, params uint[] cityIds)
@@ -216,6 +218,11 @@ namespace Game.Util.Locking
             }
 
             return lck;
+        }
+    
+        public CallbackLock Lock(CallbackLock.CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks)
+        {
+            return callbackLockFactory().Lock(lockHandler, lockHandlerParams, baseLocks);
         }
     }
 }

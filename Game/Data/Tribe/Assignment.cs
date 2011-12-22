@@ -27,6 +27,7 @@ namespace Game.Data.Tribe
         private readonly IGameObjectLocator gameObjectLocator;
         private readonly IScheduler scheduler;
         private readonly Procedure procedure;
+        private readonly TileLocator tileLocator;
 
         /// <summary>
         /// List of stubs in this assignment
@@ -115,13 +116,15 @@ namespace Game.Data.Tribe
         /// <param name="gameObjectLocator"> </param>
         /// <param name="scheduler"> </param>
         /// <param name="procedure"> </param>
-        public Assignment(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure)
+        /// <param name="tileLocator"> </param>
+        public Assignment(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator)
         {
             this.formula = formula;
             this.dbManager = dbManager;
             this.gameObjectLocator = gameObjectLocator;
             this.scheduler = scheduler;
             this.procedure = procedure;
+            this.tileLocator = tileLocator;
 
             Id = id;
             Tribe = tribe;
@@ -151,13 +154,15 @@ namespace Game.Data.Tribe
         /// <param name="gameObjectLocator"> </param>
         /// <param name="scheduler"> </param>
         /// <param name="procedure"> </param>
-        public Assignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure)
+        /// <param name="tileLocator"> </param>
+        public Assignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator)
         {
             this.formula = formula;
             this.dbManager = dbManager;
             this.gameObjectLocator = gameObjectLocator;
             this.scheduler = scheduler;
             this.procedure = procedure;
+            this.tileLocator = tileLocator;
 
             Id = IdGen.GetNext();
             Tribe = tribe;
@@ -266,7 +271,7 @@ namespace Game.Data.Tribe
         /// <returns></returns>
         private DateTime DepartureTime(TroopStub stub)
         {
-            int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, X, Y);
+            int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, X, Y);
             return TargetTime.Subtract(new TimeSpan(0, 0, formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects()))));
         }
 
@@ -307,7 +312,7 @@ namespace Game.Data.Tribe
         public void Callback(object custom)
         {
             var now = SystemClock.Now;
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe))
+            using (Concurrency.Current.Lock(c => assignmentTroops.Select(troop => troop.Stub).ToArray(), new object[] { }, Tribe))
             {
                 lock (assignmentLock)
                 {
@@ -354,7 +359,11 @@ namespace Game.Data.Tribe
             else
             {
                 AssignmentComplete(this);
-                dbManager.Delete(this);
+
+                if (DbPersisted)
+                {
+                    dbManager.Delete(this);
+                }
             }
         }
 

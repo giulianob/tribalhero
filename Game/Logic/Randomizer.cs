@@ -72,7 +72,7 @@ namespace Game.Logic
         {
             byte radius = city.Radius;
             var feObject = new RandomForeach(city);
-            TileLocator.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, RandomizeNpcResourceWork, feObject);
+            TileLocator.Current.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, RandomizeNpcResourceWork, feObject);
         }
 
         #region Nested type: RandomForeach

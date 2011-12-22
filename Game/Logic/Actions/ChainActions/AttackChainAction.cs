@@ -179,7 +179,7 @@ namespace Game.Logic.Actions
                         return toBeLocked.ToArray();
                     };
 
-                using (Ioc.Kernel.Get<CallbackLock>().Lock(lockAllStationed, null, city, targetCity))
+                using (Concurrency.Current.Lock(lockAllStationed, null, city, targetCity))
                 {
                     var bea = new EngageAttackPassiveAction(cityId, stubId, targetCityId, mode);
                     ExecuteChainAndWait(bea, AfterBattle);

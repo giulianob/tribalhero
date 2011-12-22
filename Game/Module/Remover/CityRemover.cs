@@ -111,7 +111,7 @@ namespace Game.Module
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetForeignTroopLockList, new[] {city}, city))
+            using (Concurrency.Current.Lock(GetForeignTroopLockList, new[] {city}, city))
             {
                 if (city == null)
                     return;
@@ -147,7 +147,7 @@ namespace Game.Module
                 }
             }
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetLocalTroopLockList, new[] {city}, city))
+            using (Concurrency.Current.Lock(GetLocalTroopLockList, new[] {city}, city))
             {
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
@@ -184,7 +184,7 @@ namespace Game.Module
                     }
 
                     // remove all customized tiles
-                    TileLocator.ForeachObject(city.X,
+                    TileLocator.Current.ForeachObject(city.X,
                                                 city.Y,
                                                 city.Radius,
                                                 true,

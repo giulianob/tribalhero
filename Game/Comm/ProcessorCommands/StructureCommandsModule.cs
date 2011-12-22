@@ -12,7 +12,7 @@ using Ninject;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class StructureCommandsModule : CommandModule
     {
@@ -615,7 +615,7 @@ namespace Game.Comm
                 return;
             }
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 // Get the lumbermill
                 Structure lumbermill = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Wood", structure));

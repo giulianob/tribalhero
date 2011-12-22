@@ -1,14 +1,11 @@
 #region
 
 using System;
-using System.Reflection;
 using Game.Setup;
-using Ninject;
-using Ninject.Extensions.Logging;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class CommandLineCommandsModule : CommandModule
     {

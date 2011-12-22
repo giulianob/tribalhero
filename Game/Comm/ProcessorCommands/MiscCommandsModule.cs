@@ -1,17 +1,15 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Actions;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class MiscCommandsModule : CommandModule
     {

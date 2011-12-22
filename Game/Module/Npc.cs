@@ -72,7 +72,7 @@ namespace Game.Module
                         uint x;
                         uint y;
 
-                        TileLocator.RandomPoint(city.X, city.Y, (byte)(city.Radius - 1), true, out x, out y);
+                        TileLocator.Current.RandomPoint(city.X, city.Y, (byte)(city.Radius - 1), true, out x, out y);
 
                         var step = (byte)rand.Next(0, 4);
 
@@ -303,7 +303,7 @@ namespace Game.Module
 
                     city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
 
-                    //TileLocator.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false, BuildBasicStructures, city);
+                    //TileLocator.Current.foreach_object(structure.X, structure.Y, (byte) (city.Radius - 1), false, BuildBasicStructures, city);
                 }
             }
 

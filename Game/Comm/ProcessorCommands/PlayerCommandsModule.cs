@@ -9,14 +9,13 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class PlayerCommandsModule : CommandModule
     {

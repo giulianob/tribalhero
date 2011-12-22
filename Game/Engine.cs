@@ -150,13 +150,16 @@ _________ _______ _________ ______   _______  _
         {
             Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new GameModule());
             
-            // Instantiate singletons here for now
+            // Instantiate singletons here for now until all classes are properly being injected
             RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
+            TileLocator.Current = Ioc.Kernel.Get<TileLocator>();
+            ReverseTileLocator.Current = Ioc.Kernel.Get<ReverseTileLocator>();
             BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
             Concurrency.Current = Ioc.Kernel.Get<ILocker>();
             Formula.Current = Ioc.Kernel.Get<Formula>();
             World.Current = Ioc.Kernel.Get<World>();
-            Procedure.Current = Ioc.Kernel.Get<Procedure>();            
+            Procedure.Current = Ioc.Kernel.Get<Procedure>();
+            Scheduler.Current = Ioc.Kernel.Get<IScheduler>();                        
 
             return Ioc.Kernel;
         }

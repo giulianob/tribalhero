@@ -82,7 +82,7 @@ namespace Game.Logic.Actions
                     return toBeLocked.ToArray();
                 };
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(lockHandler, null, city))
+            using (Concurrency.Current.Lock(lockHandler, null, city))
             {
                 if (!city.Battle.ExecuteTurn())
                 {

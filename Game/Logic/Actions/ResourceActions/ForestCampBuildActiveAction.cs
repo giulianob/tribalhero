@@ -108,7 +108,7 @@ namespace Game.Logic.Actions
             // find an open space around the forest
             uint emptyX = 0;
             uint emptyY = 0;
-            ReverseTileLocator.ForeachObject(forest.X,
+            ReverseTileLocator.Current.ForeachObject(forest.X,
                                              forest.Y,
                                              1,
                                              false,
@@ -188,7 +188,7 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, out city))
                 return;
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 if (!IsValid())
                     return;
@@ -251,7 +251,7 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 if (!IsValid())
                     return;

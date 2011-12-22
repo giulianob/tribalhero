@@ -170,7 +170,7 @@ namespace Game.Comm
             if(!Global.Tribes.TryGetValue(tribeId, out tribe))
                 return "Tribe not found seriously";
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
+            using (Concurrency.Current.Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
                 foreach (var tribesman in new List<Tribesman>(tribe))
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);

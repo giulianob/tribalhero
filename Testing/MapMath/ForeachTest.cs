@@ -16,7 +16,7 @@ namespace Testing.MapMath
         {
             var validPoints = new List<Point>();
 
-            TileLocator.ForeachObject(10,
+            TileLocator.Current.ForeachObject(10,
                                       10,
                                       2,
                                       true,
@@ -29,7 +29,7 @@ namespace Testing.MapMath
 
             var reversePoints = new List<Point>();
 
-            ReverseTileLocator.ForeachObject(10,
+            ReverseTileLocator.Current.ForeachObject(10,
                                              10,
                                              2,
                                              true,
@@ -48,7 +48,7 @@ namespace Testing.MapMath
         {
             var validPoints = new List<Point>();
 
-            TileLocator.ForeachObject(10,
+            TileLocator.Current.ForeachObject(10,
                                       11,
                                       2,
                                       true,
@@ -61,7 +61,7 @@ namespace Testing.MapMath
 
             var reversePoints = new List<Point>();
 
-            ReverseTileLocator.ForeachObject(10,
+            ReverseTileLocator.Current.ForeachObject(10,
                                              11,
                                              2,
                                              true,

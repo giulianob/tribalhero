@@ -68,7 +68,7 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(GetTroopLockList, new[] {city}, city))
+            using (Concurrency.Current.Lock(GetTroopLockList, new[] {city}, city))
             {
                 if (!IsValid())
                     return;

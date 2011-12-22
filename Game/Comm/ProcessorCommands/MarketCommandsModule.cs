@@ -5,13 +5,12 @@ using Game.Data;
 using Game.Logic.Actions;
 using Game.Module;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class MarketCommandsModule : CommandModule
     {

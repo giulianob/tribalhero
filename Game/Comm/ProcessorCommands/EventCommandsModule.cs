@@ -2,14 +2,13 @@
 
 using Game.Data;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
 #endregion
 
-namespace Game.Comm
+namespace Game.Comm.ProcessorCommands
 {
     class EventCommandsModule : CommandModule
     {

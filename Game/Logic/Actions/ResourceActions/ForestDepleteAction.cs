@@ -30,7 +30,7 @@ namespace Game.Logic.Actions.ResourceActions
 
         public void Callback(object custom)
         {
-            var lck = Ioc.Kernel.Get<CallbackLock>().Lock(World.Current.Forests.CallbackLockHandler, new object[] {Forest.ObjectId}, World.Current.Forests);
+            var lck = Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {Forest.ObjectId}, World.Current.Forests);
             using (lck)
             {
                 Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));

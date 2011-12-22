@@ -1,14 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Game.Battle;
 using Game.Comm;
 using Game.Comm.Channel;
 using Game.Comm.CmdLine_Commands;
-using Game.Comm.Processor_Commands;
+using Game.Comm.ProcessorCommands;
 using Game.Comm.Protocol;
 using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Logic;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -42,7 +44,7 @@ namespace Game
 
             #region Locking
             
-            Bind<ILocker>().ToMethod(c => new DefaultLocker(() => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()))).InSingletonScope();
+            Bind<ILocker>().ToMethod(c => new DefaultLocker(() => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()), () => new CallbackLock())).InSingletonScope();
 
             #endregion
 
@@ -136,7 +138,10 @@ namespace Game
 
             #region Utils
 
-            Bind<RadiusLocator>().ToSelf().InSingletonScope();
+            Bind<IScheduler>().To<ThreadedScheduler>().InSingletonScope();
+            Bind<RadiusLocator>().ToSelf().InSingletonScope();            
+            Bind<TileLocator>().ToMethod(c => new TileLocator(new Random().Next)).InSingletonScope();
+            Bind<ReverseTileLocator>().ToMethod(c => new ReverseTileLocator(new Random().Next)).InSingletonScope();
             Bind<Procedure>().ToSelf().InSingletonScope();
 
             #endregion

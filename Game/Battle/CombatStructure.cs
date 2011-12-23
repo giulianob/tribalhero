@@ -220,11 +220,14 @@ namespace Game.Battle
         {
             attackPoints = 0;
 
-            Structure.BeginUpdate();
-            Structure.Stats.Hp = (dmg > Structure.Stats.Hp) ? (ushort)0 : (ushort)(Structure.Stats.Hp - (ushort)dmg);
-            Structure.EndUpdate();
+            int extra = Math.Max(0, Structure.Stats.Hp - (int)Math.Ceiling(hp));
 
             hp = (dmg > hp) ? 0 : hp - dmg;
+
+
+            Structure.BeginUpdate();
+            Structure.Stats.Hp = (ushort)(Math.Ceiling(hp) + extra);
+            Structure.EndUpdate();
 
             if (hp == 0)
                 attackPoints = Formula.GetStructureKilledAttackPoint(type, lvl);

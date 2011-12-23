@@ -8,7 +8,7 @@ namespace Game.Logic
 {
     public interface ICanDo
     {
-        City City { get; }
+        ICity City { get; }
         uint WorkerId { get; }
     }
 }

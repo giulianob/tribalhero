@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -65,13 +66,13 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
 
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            int maxConcurrentUpgrades = Formula.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
+            int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
 
             if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
@@ -83,7 +84,7 @@ namespace Game.Logic.Actions
                                                                                                 ((StructureBuildActiveAction)action).BuildType)))) >= maxConcurrentUpgrades)
                 return Error.ActionTotalMaxReached;
 
-            cost = Formula.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
+            cost = Formula.Current.StructureCost(city, structure.Type, (byte)(structure.Lvl + 1));
             type = structure.Type;
 
             if (cost == null)
@@ -106,7 +107,7 @@ namespace Game.Logic.Actions
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                               CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
                                                                                city,
                                                                                structure.Technologies)));
             BeginTime = DateTime.UtcNow;
@@ -116,7 +117,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
@@ -135,7 +136,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.OnStructureUpgradeDowngrade(structure);
+                Procedure.Current.OnStructureUpgradeDowngrade(structure);
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);
@@ -149,7 +150,7 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
@@ -165,7 +166,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 

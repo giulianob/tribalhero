@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -150,7 +151,7 @@ namespace Game.Logic
 
             var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Ioc.Kernel.Get<IDbManager>().Save(newReference);
+            DbPersistance.Current.Save(newReference);
 
             SendAddReference(newReference);
         }
@@ -163,7 +164,7 @@ namespace Game.Logic
 
             var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Ioc.Kernel.Get<IDbManager>().Save(newReference);
+            DbPersistance.Current.Save(newReference);
 
             SendAddReference(newReference);
         }
@@ -176,7 +177,7 @@ namespace Game.Logic
 
                     if (ret)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(referenceStub);
+                        DbPersistance.Current.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }
@@ -193,7 +194,7 @@ namespace Game.Logic
 
                     if (ret)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(referenceStub);
+                        DbPersistance.Current.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }

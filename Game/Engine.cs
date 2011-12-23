@@ -7,16 +7,18 @@ using Game.Comm;
 using Game.Data;
 using Game.Database;
 using Game.Logic;
+using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
-using Ninject.Extensions.Interception;
 using Ninject.Extensions.Logging;
 using Ninject.Extensions.Logging.Log4net;
 using Persistance;
+using Thrift.Server;
 
 #endregion
 
@@ -34,15 +36,17 @@ namespace Game
     {
         private readonly ILogger logger;
         private readonly IPolicyServer policyServer;
+        private readonly TServer thriftServer;
         private readonly ITcpServer server;        
 
         public EngineState State { get; private set; }
 
-        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer)
+        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer, TServer thriftServer)
         {
             this.logger = logger;
             this.server = server;
             this.policyServer = policyServer;
+            this.thriftServer = thriftServer;
         }
 
         public bool Start()
@@ -89,7 +93,7 @@ _________ _______ _________ ______   _______  _
                 FileStream regionChanges = File.Open(regionChangesPath, createRegionChanges ? FileMode.Create : FileMode.Open, FileAccess.ReadWrite);
 
                 // Load map
-                Global.World.Load(map,
+                World.Current.Load(map,
                                   regionChanges,
                                   createRegionChanges,
                                   Config.map_width,
@@ -111,11 +115,11 @@ _________ _______ _________ ______   _______  _
             // Empty database if specified
 #if DEBUG
             if (Config.database_empty)
-                Ioc.Kernel.Get<IDbManager>().EmptyDatabase();
+                DbPersistance.Current.EmptyDatabase();
 #endif
 
             // Load database
-            if (!DbLoader.LoadFromDatabase(Ioc.Kernel.Get<IDbManager>()))
+            if (!DbLoader.LoadFromDatabase(DbPersistance.Current))
             {
                 logger.Error("Failed to load database");
                 return false;
@@ -134,6 +138,9 @@ _________ _______ _________ ______   _______  _
             // Start policy server
             policyServer.Start();
 
+            // Start thrift server
+            thriftServer.Serve();
+
             State = EngineState.Started;
 
             return true;
@@ -141,11 +148,19 @@ _________ _______ _________ ______   _______  _
 
         public static IKernel CreateDefaultKernel()
         {
-            Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = false }, new DynamicProxy2Module(), new Log4NetModule(), new GameModule());
+            Ioc.Kernel = new StandardKernel(new NinjectSettings { LoadExtensions = true }, new GameModule());
             
-            // Instantiate singletons here for now
+            // Instantiate singletons here for now until all classes are properly being injected
             RadiusLocator.Current = Ioc.Kernel.Get<RadiusLocator>();
+            TileLocator.Current = Ioc.Kernel.Get<TileLocator>();
+            ReverseTileLocator.Current = Ioc.Kernel.Get<ReverseTileLocator>();
             BattleFormulas.Current = Ioc.Kernel.Get<BattleFormulas>();
+            Concurrency.Current = Ioc.Kernel.Get<ILocker>();
+            Formula.Current = Ioc.Kernel.Get<Formula>();
+            World.Current = Ioc.Kernel.Get<World>();
+            Procedure.Current = Ioc.Kernel.Get<Procedure>();
+            Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
+            DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
 
             return Ioc.Kernel;
         }
@@ -169,8 +184,8 @@ _________ _______ _________ ______   _______  _
             logger.Info("Stopping policy server...");
             policyServer.Stop();
             logger.Info("Waiting for scheduler to end...");
-            Global.Scheduler.Pause();
-            Global.World.Unload();
+            Scheduler.Current.Pause();
+            World.Current.Unload();
             Global.Logger.Info("Goodbye!");
 
             State = EngineState.Stopped;

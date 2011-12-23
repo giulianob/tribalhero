@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -60,12 +62,12 @@ namespace Game.Comm
             uint playerId;
             if (!string.IsNullOrEmpty(playerName))
             {
-                if (!Global.World.FindPlayerId(playerName, out playerId))
+                if (!World.Current.FindPlayerId(playerName, out playerId))
                     return "Player not found";
             }
             else
             {
-                if (!Global.World.FindTribeId(tribeName, out playerId))
+                if (!World.Current.FindTribeId(tribeName, out playerId))
                     return "Tribe not found";               
             }
 
@@ -114,7 +116,7 @@ namespace Game.Comm
 
             
             uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
             Player player;
@@ -133,7 +135,7 @@ namespace Game.Comm
                 Tribe tribe = new Tribe(player, tribeName);
                 
                 Global.Tribes.Add(tribe.Id, tribe);
-                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+                DbPersistance.Current.Save(tribe);
 
                 Tribesman tribesman = new Tribesman(tribe, player, 0);
                 tribe.AddTribesman(tribesman);
@@ -162,20 +164,20 @@ namespace Game.Comm
 
 
             uint tribeId;
-            if (!Global.World.FindTribeId(tribeName, out tribeId))
+            if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
             Tribe tribe;
             if(!Global.Tribes.TryGetValue(tribeId, out tribe))
                 return "Tribe not found seriously";
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
+            using (Concurrency.Current.Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
                 foreach (var tribesman in new List<Tribesman>(tribe))
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
                 Global.Tribes.Remove(tribe.Id);
-                Ioc.Kernel.Get<IDbManager>().Delete(tribe);
+                DbPersistance.Current.Delete(tribe);
             }
             return "OK!";
         }
@@ -202,13 +204,13 @@ namespace Game.Comm
                 return "TribesmanAdd --tribe=tribe_name --desc=desc";
 
             uint tribeId;
-            if (!Global.World.FindTribeId(tribeName, out tribeId))
+            if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
             Tribe tribe;
             using (Concurrency.Current.Lock(tribeId, out tribe)) {
                 tribe.Description = desc;
-                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+                DbPersistance.Current.Save(tribe);
             }
             return "OK";
         }
@@ -236,11 +238,11 @@ namespace Game.Comm
 
 
             uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
             uint tribeId;
-            if (!Global.World.FindTribeId(tribeName, out tribeId))
+            if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
             Dictionary<uint, Player> players;
@@ -276,11 +278,11 @@ namespace Game.Comm
 
 
             uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
             uint tribeId;
-            if (!Global.World.FindTribeId(tribeName, out tribeId))
+            if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
             Dictionary<uint, Player> players;
@@ -318,9 +320,9 @@ namespace Game.Comm
 
             uint playerId;
             Player player;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
-            if (!Global.World.Players.TryGetValue(playerId, out player))
+            if (!World.Current.Players.TryGetValue(playerId, out player))
                 return "Player not found2";
 
             if(player.Tribesman==null) return "Player not in tribe";
@@ -350,7 +352,7 @@ namespace Game.Comm
                 return "TribesmanRemove --tribe=tribe_name";
 
             uint tribeId;
-            if (!Global.World.FindTribeId(tribeName, out tribeId))
+            if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
             Tribe tribe;

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
@@ -68,10 +69,10 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
 
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             Market market;
@@ -108,7 +109,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.TradeTime(structure, quantity)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.TradeTime(structure, quantity)));
             BeginTime = DateTime.UtcNow;
 
             return Error.Ok;
@@ -125,7 +126,7 @@ namespace Game.Logic.Actions
         }
 
         private void InterruptCatchAll(bool wasKilled) {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
@@ -155,7 +156,7 @@ namespace Game.Logic.Actions
                             break;
                     }
                     
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, resource));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, resource));
                     city.EndUpdate();
                 }
 
@@ -165,7 +166,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
@@ -179,7 +180,7 @@ namespace Game.Logic.Actions
                 }
 
                 structure.City.BeginUpdate();
-                structure.City.Resource.Add(0, (int)Math.Round(price*(quantity/TRADE_SIZE)*(1.0 - Formula.MarketTax(structure))), 0, 0, 0);
+                structure.City.Resource.Add(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 - Formula.Current.MarketTax(structure))), 0, 0, 0);
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);

@@ -8,6 +8,6 @@ namespace Game.Logic.Conditons
 {
     public interface ICityCondition
     {
-        bool Check(City obj);
+        bool Check(ICity obj);
     }
 }

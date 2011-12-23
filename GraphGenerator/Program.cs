@@ -201,7 +201,7 @@ namespace GraphGenerator
 
             Console.Out.WriteLine("Parsing " + structureBaseStats.Name + " " + structureBaseStats.Lvl);
 
-            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(structureBaseStats.WorkerId);
+            ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(structureBaseStats.WorkerId);
 
             processedStructures.Add(hash);
 

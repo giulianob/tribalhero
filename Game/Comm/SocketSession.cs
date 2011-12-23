@@ -10,8 +10,6 @@ namespace Game.Comm
 {
     public class SocketSession : Session
     {
-        public delegate SocketSession Factory(string name, Socket socket);
-
         public SocketSession(string name, Socket socket, Processor processor) : base(name, processor)
         {
             Socket = socket;

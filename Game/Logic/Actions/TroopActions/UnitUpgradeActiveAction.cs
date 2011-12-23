@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -60,9 +61,9 @@ namespace Game.Logic.Actions
 
         public override Error Validate(string[] parms)
         {
-            City city;
+            ICity city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ActionInvalid;
 
             if (ushort.Parse(parms[0]) != UnitType || byte.Parse(parms[1]) <= city.Template[UnitType].Lvl)
@@ -73,9 +74,9 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             if (city.Worker.ActiveActions.Exists(action => (action.Type == Type) && (UnitType == ((UnitUpgradeActiveAction)action).UnitType) && (action != this)))
@@ -85,7 +86,7 @@ namespace Game.Logic.Actions
             if (unitStats == null)
                 return Error.Unexpected;
 
-            Resource cost = Formula.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
+            Resource cost = Formula.Current.UnitUpgradeCost(city, UnitType, (byte)(unitStats.Lvl + 1));
 
             if (cost == null)
                 return Error.Unexpected;
@@ -97,7 +98,7 @@ namespace Game.Logic.Actions
             city.Resource.Subtract(cost);
             city.EndUpdate();
 
-            var upgradeTime = Formula.BuildTime(Ioc.Kernel.Get<UnitFactory>().GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)), city, structure.Technologies);
+            var upgradeTime = Formula.Current.BuildTime(Ioc.Kernel.Get<UnitFactory>().GetUpgradeTime(UnitType, (byte)(unitStats.Lvl + 1)), city, structure.Technologies);
             endTime = DateTime.UtcNow.AddSeconds(CalculateTime(upgradeTime));
             BeginTime = DateTime.UtcNow;
 
@@ -106,7 +107,7 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -115,7 +116,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(UnitType, city.Template[UnitType].Lvl + 1)));
                     city.EndUpdate();
                 }
 
@@ -135,7 +136,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {

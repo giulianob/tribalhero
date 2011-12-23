@@ -1,0 +1,1 @@
+..\..\cake\console\cake.bat -app ..\ ranking

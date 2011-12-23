@@ -99,7 +99,7 @@ namespace Game.Comm.ProcessorCommands
         {
             uint cityId;            
             bool hideNewUnits;
-            TroopStub stub;
+            ITroopStub stub;
             try
             {
                 cityId = packet.GetUInt32();
@@ -400,7 +400,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                TroopStub stub;
+                ITroopStub stub;
 
                 if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null)
                 {
@@ -413,7 +413,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(city, stationedCity))
             {
-                TroopStub stub;
+                ITroopStub stub;
 
                 if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null)
                 {

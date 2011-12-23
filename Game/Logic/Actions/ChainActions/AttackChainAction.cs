@@ -95,7 +95,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            TroopStub stub;
+            ITroopStub stub;
             ICity targetCity;
             Structure targetStructure;
 
@@ -162,7 +162,7 @@ namespace Game.Logic.Actions
                     //If the target is missing, walk back
                     using (Concurrency.Current.Lock(city))
                     {
-                        TroopStub stub = city.Troops[stubId];
+                        ITroopStub stub = city.Troops[stubId];
                         TroopMovePassiveAction tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
@@ -195,7 +195,7 @@ namespace Game.Logic.Actions
                 using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
                     ICity city = cities[cityId];
-                    TroopStub stub;
+                    ITroopStub stub;
                     ICity targetCity = cities[targetCityId];
 
                     //Remove notification to target city once battle is over
@@ -254,7 +254,7 @@ namespace Game.Logic.Actions
                 ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");
@@ -285,7 +285,7 @@ namespace Game.Logic.Actions
                 ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");

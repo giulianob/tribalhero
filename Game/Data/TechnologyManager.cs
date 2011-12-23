@@ -355,15 +355,11 @@ namespace Game.Data
 
         public bool DbPersisted { get; set; }
 
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
-            foreach (var tech in technologies)
-            {
-                if (tech.OwnerLocation != OwnerLocation || tech.OwnerId != OwnerId)
-                    continue;
-
-                yield return new[] {new DbColumn("type", tech.Type, DbType.UInt16), new DbColumn("level", tech.Level, DbType.Byte)};
-            }
+            return from tech in technologies
+                   where tech.OwnerLocation == OwnerLocation && tech.OwnerId == OwnerId
+                   select new[] {new DbColumn("type", tech.Type, DbType.UInt16), new DbColumn("level", tech.Level, DbType.Byte)};
         }
 
         #endregion

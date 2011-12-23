@@ -12,7 +12,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopObjectCreateFromStation(TroopStub stub, uint x, uint y)
+        public virtual bool TroopObjectCreateFromStation(ITroopStub stub, uint x, uint y)
         {
             if (!stub.StationedCity.Troops.RemoveStationed(stub.StationedTroopId))
                 return false;

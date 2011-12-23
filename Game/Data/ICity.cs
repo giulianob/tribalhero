@@ -56,7 +56,7 @@ namespace Game.Data
         /// <summary>
         ///   Returns the local troop
         /// </summary>
-        TroopStub DefaultTroop { get; set; }
+        ITroopStub DefaultTroop { get; set; }
 
         /// <summary>
         ///   Returns unit template. Unit template holds levels for all units in the city.

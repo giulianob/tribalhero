@@ -507,7 +507,7 @@ namespace Persistance.Managers
             bool startColumnsComma = false;
             bool empty = true;
 
-            foreach (var columns in obj)
+            foreach (var columns in obj.DbListValues())
             {
                 empty = false;
 

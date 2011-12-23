@@ -185,7 +185,7 @@ namespace Game.Database
                             if (!World.Current.TryGetObjects((uint)listReader["city_id"], out city))
                                 throw new Exception("City not found");
 
-                            TroopStub assignmentStub;
+                            ITroopStub assignmentStub;
                             if (!city.Troops.TryGetStub((byte)listReader["stub_id"], out assignmentStub))
                                 throw new Exception("Stub not found");
 
@@ -621,7 +621,7 @@ namespace Game.Database
                     ICity city;
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
-                    TroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
+                    ITroopStub stub = city.Troops[(byte)reader["troop_stub_id"]];
                     stub.Template.DbPersisted = true;
 
                     using (DbDataReader listReader = dbManager.SelectList(stub.Template))
@@ -662,7 +662,7 @@ namespace Game.Database
                     ICity city;
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
-                    TroopStub stub = (byte)reader["troop_stub_id"] != 0 ? city.Troops[(byte)reader["troop_stub_id"]] : null;
+                    ITroopStub stub = (byte)reader["troop_stub_id"] != 0 ? city.Troops[(byte)reader["troop_stub_id"]] : null;
                     var obj = new TroopObject(stub)
                               {
                                       X = (uint)reader["x"],
@@ -769,7 +769,7 @@ namespace Game.Database
                             ICity troopStubCity;
                             if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
                                 throw new Exception("City not found");
-                            TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
+                            ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                             CombatObject combatObj;
                             if ((bool)listReader["is_local"])
@@ -824,7 +824,7 @@ namespace Game.Database
                             ICity troopStubCity;
                             if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
                                 throw new Exception("City not found");
-                            TroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
+                            ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
                             if (troopStub == null)
                                 continue;

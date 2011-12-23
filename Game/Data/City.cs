@@ -168,7 +168,7 @@ namespace Game.Data
         /// <summary>
         ///   Returns the local troop
         /// </summary>
-        public TroopStub DefaultTroop
+        public ITroopStub DefaultTroop
         {
             get
             {
@@ -868,7 +868,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TroopManagerTroopUpdated(TroopStub stub)
+        private void TroopManagerTroopUpdated(ITroopStub stub)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -886,7 +886,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TroopManagerTroopAdded(TroopStub stub)
+        private void TroopManagerTroopAdded(ITroopStub stub)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -904,7 +904,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TroopManagerTroopRemoved(TroopStub stub)
+        private void TroopManagerTroopRemoved(ITroopStub stub)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;

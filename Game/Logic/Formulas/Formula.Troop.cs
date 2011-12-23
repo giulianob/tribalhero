@@ -14,13 +14,13 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        public virtual byte GetTroopRadius(TroopStub stub, TechnologyManager em)
+        public virtual byte GetTroopRadius(ITroopStub stub, TechnologyManager em)
         {
             // The radius is based on the sum of levels of the structures in the city, from 0 to 4
             return (byte)Math.Min(stub.City.Value / 40, 4);
         }
 
-        public virtual byte GetTroopSpeed(TroopStub stub)
+        public virtual byte GetTroopSpeed(ITroopStub stub)
         {
             if (stub.TotalCount == 0)
                 return 0;

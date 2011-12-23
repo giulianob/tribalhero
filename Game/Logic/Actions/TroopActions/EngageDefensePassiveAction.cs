@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            TroopStub stub;
+            ITroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
 
@@ -81,7 +81,7 @@ namespace Game.Logic.Actions
                 return Error.Ok;
             }
 
-            var list = new List<TroopStub> {stub};
+            var list = new List<ITroopStub> {stub};
             originalHp = remainingHp = stub.TotalHp;
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -111,7 +111,7 @@ namespace Game.Logic.Actions
                 return;
 
             ICity city;
-            TroopStub stub;
+            ITroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
@@ -135,7 +135,7 @@ namespace Game.Logic.Actions
         private void BattleExitBattle(CombatList atk, CombatList def)
         {
             ICity city;
-            TroopStub stub;
+            ITroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 

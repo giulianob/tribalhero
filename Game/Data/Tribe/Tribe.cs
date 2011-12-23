@@ -321,7 +321,7 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        public Error CreateAssignment(TroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, out int id)
+        public Error CreateAssignment(ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, out int id)
         {
             id = 0;
 

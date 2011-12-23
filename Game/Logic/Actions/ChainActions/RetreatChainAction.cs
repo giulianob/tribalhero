@@ -57,7 +57,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            TroopStub stub;
+            ITroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
@@ -78,7 +78,7 @@ namespace Game.Logic.Actions
                 ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();
@@ -106,7 +106,7 @@ namespace Game.Logic.Actions
                 ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();

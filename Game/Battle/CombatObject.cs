@@ -74,7 +74,7 @@ namespace Game.Battle
 
         public abstract Resource Loot { get; }
 
-        public abstract TroopStub TroopStub { get; }
+        public abstract ITroopStub TroopStub { get; }
 
         public abstract BattleClass ClassType { get; }
 

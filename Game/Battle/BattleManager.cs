@@ -319,7 +319,7 @@ namespace Game.Battle
 
         #region Adding/Removing from Battle
 
-        public void AddToLocal(IEnumerable<TroopStub> objects, ReportState state)
+        public void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state)
         {
             AddToCombatList(objects, defenders, true, state);
         }
@@ -370,23 +370,23 @@ namespace Game.Battle
             }
         }
 
-        public void AddToAttack(TroopStub stub)
+        public void AddToAttack(ITroopStub stub)
         {
-            var list = new List<TroopStub> {stub};
+            var list = new List<ITroopStub> {stub};
             AddToAttack(list);
         }
 
-        public void AddToAttack(IEnumerable<TroopStub> objects)
+        public void AddToAttack(IEnumerable<ITroopStub> objects)
         {
             AddToCombatList(objects, attackers, false, ReportState.Entering);
         }
 
-        public void AddToDefense(IEnumerable<TroopStub> objects)
+        public void AddToDefense(IEnumerable<ITroopStub> objects)
         {
             AddToCombatList(objects, defenders, false, ReportState.Entering);
         }
 
-        public void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state)
+        public void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state)
         {
             RemoveFromCombatList(objects, attackers, state);
         }
@@ -410,12 +410,12 @@ namespace Game.Battle
             }
         }
 
-        public void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state)
+        public void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state)
         {
             RemoveFromCombatList(objects, defenders, state);
         }
 
-        private void AddToCombatList(IEnumerable<TroopStub> objects, CombatList combatList, bool isLocal, ReportState state)
+        private void AddToCombatList(IEnumerable<ITroopStub> objects, CombatList combatList, bool isLocal, ReportState state)
         {
             lock (battleLock)
             {
@@ -488,7 +488,7 @@ namespace Game.Battle
             }
         }
 
-        private void RemoveFromCombatList(IEnumerable<TroopStub> objects, CombatList combatList, ReportState state)
+        private void RemoveFromCombatList(IEnumerable<ITroopStub> objects, CombatList combatList, ReportState state)
         {
             lock (battleLock)
             {
@@ -743,7 +743,7 @@ namespace Game.Battle
                         {
                             co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
                             if (co != null)
-                                RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.Exiting);
+                                RemoveFromAttack(new List<ITroopStub> {(co).TroopStub}, ReportState.Exiting);
                         } while (co != null);
                     }
                 }

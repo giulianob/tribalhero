@@ -301,15 +301,9 @@ namespace Game.Logic
                 }
             }
 
-            IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+            public IEnumerable<DbColumn[]> DbListValues()
             {
-                foreach (var city in subscriptions)
-                    yield return new[] {new DbColumn("subscription_city_id", city.Id, DbType.UInt32)};
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return subscriptions.GetEnumerator();
+                return subscriptions.Select(city => new[] {new DbColumn("subscription_city_id", city.Id, DbType.UInt32)});
             }
 
             #endregion

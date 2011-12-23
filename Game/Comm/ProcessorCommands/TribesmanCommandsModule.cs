@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Database;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -116,7 +117,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 players[playerId].TribeRequest = tribe.Id;
-                Ioc.Kernel.Get<IDbManager>().Save(players[playerId]);
+                DbPersistance.Current.Save(players[playerId]);
                 ReplySuccess(session, packet);
             }
 
@@ -148,7 +149,7 @@ namespace Game.Comm.ProcessorCommands
                 var tribeRequestId = session.Player.TribeRequest;
 
                 session.Player.TribeRequest = 0;
-                Ioc.Kernel.Get<IDbManager>().Save(session.Player);
+                DbPersistance.Current.Save(session.Player);
 
                 if (!isAccepting)
                 {
@@ -305,7 +306,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe, session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
                 Tribe tribe = session.Player.Tribesman.Tribe;
 
                 if (city == null)

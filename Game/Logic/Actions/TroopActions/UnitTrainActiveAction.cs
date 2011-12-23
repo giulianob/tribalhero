@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
             {
@@ -119,7 +119,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
@@ -158,7 +158,7 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {

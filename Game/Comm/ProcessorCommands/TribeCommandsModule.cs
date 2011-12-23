@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Database;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -144,7 +145,7 @@ namespace Game.Comm.ProcessorCommands
                 foreach (var incoming in incomingList)
                 {
                     // Target
-                    City targetCity;
+                    ICity targetCity;
                     if (World.Current.TryGetObjects(incoming.Action.To, out targetCity))
                     {                        
                         reply.AddUInt32(targetCity.Owner.PlayerId);
@@ -247,7 +248,7 @@ namespace Game.Comm.ProcessorCommands
 
                 Tribe tribe = new Tribe(session.Player, name);
                 Global.Tribes.Add(tribe.Id, tribe);
-                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+                DbPersistance.Current.Save(tribe);
 
                 Tribesman tribesman = new Tribesman(tribe, session.Player, 0);
                 tribe.AddTribesman(tribesman);
@@ -288,7 +289,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 Global.Tribes.Remove(tribe.Id);
-                Ioc.Kernel.Get<IDbManager>().Delete(tribe);
+                DbPersistance.Current.Delete(tribe);
             }
 
             ReplySuccess(session, packet);

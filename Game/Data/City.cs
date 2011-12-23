@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Game.Battle;
 using Game.Comm;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -25,7 +26,7 @@ using Persistance;
 
 namespace Game.Data
 {
-    public class City : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject, ICity
+    public class City : ICity
     {
         public enum DeletedState
         {
@@ -427,7 +428,7 @@ namespace Game.Data
                     nextObjectId = objId;
 
                 if (save)
-                    Ioc.Kernel.Get<IDbManager>().Save(troop);
+                    DbPersistance.Current.Save(troop);
 
                 ObjAddEvent(troop);
             }
@@ -460,7 +461,7 @@ namespace Game.Data
                     nextObjectId = objId;
 
                 if (save)
-                    Ioc.Kernel.Get<IDbManager>().Save(structure);
+                    DbPersistance.Current.Save(structure);
 
                 structure.Technologies.TechnologyCleared += TechnologiesTechnologyCleared;
                 structure.Technologies.TechnologyAdded += TechnologiesTechnologyAdded;
@@ -549,7 +550,7 @@ namespace Game.Data
                 obj.Technologies.TechnologyRemoved -= TechnologiesTechnologyRemoved;
                 obj.Technologies.TechnologyUpgraded -= TechnologiesTechnologyUpgraded;
 
-                Ioc.Kernel.Get<IDbManager>().Delete(obj);
+                DbPersistance.Current.Delete(obj);
 
                 ObjRemoveEvent(obj);
             }
@@ -565,7 +566,7 @@ namespace Game.Data
             {
                 troopobjects.Remove(obj.ObjectId);
 
-                Ioc.Kernel.Get<IDbManager>().Delete(obj);
+                DbPersistance.Current.Delete(obj);
 
                 obj.City = null;
 
@@ -618,7 +619,7 @@ namespace Game.Data
             if (!IsUpdating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
-            Ioc.Kernel.Get<IDbManager>().Save(this);
+            DbPersistance.Current.Save(this);
             IsUpdating = false;
         }
 
@@ -927,7 +928,7 @@ namespace Game.Data
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
-            Ioc.Kernel.Get<IDbManager>().Save(sender);
+            DbPersistance.Current.Save(sender);
 
             var packet = new Packet(Command.UnitTemplateUpgraded);
             packet.AddUInt32(Id);
@@ -955,7 +956,7 @@ namespace Game.Data
 
         #region ICanDo Members
 
-        City ICanDo.City
+        ICity ICanDo.City
         {
             get
             {

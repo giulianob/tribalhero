@@ -121,17 +121,17 @@ namespace Game.Battle
                                 0);
         }
 
-        public virtual short GetStamina(TroopStub stub, City city)
+        public virtual short GetStamina(TroopStub stub, ICity city)
         {
             return (short)Config.battle_stamina_initial;
         }
 
-        public virtual ushort GetStaminaReinforced(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)
         {
             return stamina;
         }
 
-        public virtual ushort GetStaminaRoundEnded(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaRoundEnded(ICity city, ushort stamina, uint round)
         {
             if (stamina == 0)
                 return 0;
@@ -149,7 +149,7 @@ namespace Game.Battle
             return (short)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
-        public virtual ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaDefenseCombatObject(ICity city, ushort stamina, uint round)
         {
             if (stamina == 0)
                 return 0;
@@ -201,7 +201,7 @@ namespace Game.Battle
             return success == conditions.Length / 2;
         }
 
-        public virtual BattleStats LoadStats(BaseBattleStats stats, City city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(BaseBattleStats stats, ICity city, TroopBattleGroup group)
         {
             var calculator = new BattleStatsModCalculator(stats);
             foreach (var effect in city.Technologies.GetAllEffects()) {
@@ -246,7 +246,7 @@ namespace Game.Battle
             return LoadStats(structure.Stats.Base.Battle,structure.City,TroopBattleGroup.Local);
         }
 
-        public virtual BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(ushort type, byte lvl, ICity city, TroopBattleGroup group)
         {
             return LoadStats(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle,city,group);
         }

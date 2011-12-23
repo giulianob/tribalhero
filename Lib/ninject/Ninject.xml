@@ -537,6 +537,12 @@
             </summary>
             <typeparam name="T">The type of instances the provider creates.</typeparam>
         </member>
+        <member name="T:Ninject.Activation.IProvider`1">
+            <summary>
+            Provides instances ot the type T
+            </summary>
+            <typeparam name="T">The type provides by this implementation.</typeparam>
+        </member>
         <member name="T:Ninject.Activation.IProvider">
             <summary>
             Creates instances of services.
@@ -1524,11 +1530,11 @@
             <param name="context">The context.</param>
             <returns>The exception message.</returns>
         </member>
-        <member name="M:Ninject.Infrastructure.Introspection.ExceptionFormatter.InvalidAttributeTypeUsedInBindingCondition(Ninject.Planning.Bindings.IBinding,System.String,System.Type)">
+        <member name="M:Ninject.Infrastructure.Introspection.ExceptionFormatter.InvalidAttributeTypeUsedInBindingCondition(System.String,System.String,System.Type)">
             <summary>
             Generates a message saying that an invalid attribute type is used in the binding condition.
             </summary>
-            <param name="binding">The binding.</param>
+            <param name="serviceNames">The names of the services.</param>
             <param name="methodName">Name of the method.</param>
             <param name="type">The type.</param>
             <returns>The exception message.</returns>
@@ -1569,6 +1575,28 @@
             </summary>
             <param name="context">The context.</param>
             <returns>The exception message.</returns>
+        </member>
+        <member name="M:Ninject.Infrastructure.Introspection.ExceptionFormatter.ConstructorsAmbiguous(Ninject.Activation.IContext,System.Linq.IGrouping{System.Int32,Ninject.Planning.Directives.ConstructorInjectionDirective})">
+            <summary>
+            Generates a message saying that the constructor is ambiguous.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="bestDirectives">The best constructor directives.</param>
+            <returns>The exception message.</returns>
+        </member>
+        <member name="M:Ninject.Infrastructure.Introspection.ExceptionFormatter.FormatConstructor(System.Reflection.ConstructorInfo,System.IO.StringWriter)">
+            <summary>
+            Formats the constructor.
+            </summary>
+            <param name="constructor">The constructor.</param>
+            <param name="sw">The string writer.</param>
+        </member>
+        <member name="M:Ninject.Infrastructure.Introspection.ExceptionFormatter.FormatAttribute(System.IO.StringWriter,System.Attribute)">
+            <summary>
+            Formats the attribute.
+            </summary>
+            <param name="sw">The string writer.</param>
+            <param name="attribute">The attribute.</param>
         </member>
         <member name="T:Ninject.Infrastructure.Introspection.FormatExtensions">
             <summary>
@@ -1714,12 +1742,12 @@
             Gets the callback that will be called to resolve the value.
             </summary>
         </member>
-        <member name="T:Ninject.Infrastructure.IHaveBinding">
+        <member name="T:Ninject.Infrastructure.IHaveBindingConfiguration">
             <summary>
             Indicates the object has a reference to a <see cref="T:Ninject.Planning.Bindings.IBinding"/>.
             </summary>
         </member>
-        <member name="P:Ninject.Infrastructure.IHaveBinding.Binding">
+        <member name="P:Ninject.Infrastructure.IHaveBindingConfiguration.BindingConfiguration">
             <summary>
             Gets the binding.
             </summary>
@@ -2148,12 +2176,41 @@
             Declares a binding for the specified service.
             </summary>
             <typeparam name="T">The service to bind.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Syntax.IBindingRoot.Bind(System.Type)">
+        <member name="M:Ninject.Syntax.IBindingRoot.Bind``2">
+            <summary>
+            Declares a binding for the specified service.
+            </summary>
+            <typeparam name="T1">The first service to bind.</typeparam>
+            <typeparam name="T2">The second service to bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingRoot.Bind``3">
+            <summary>
+            Declares a binding for the specified service.
+            </summary>
+            <typeparam name="T1">The first service to bind.</typeparam>
+            <typeparam name="T2">The second service to bind.</typeparam>
+            <typeparam name="T3">The third service to bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingRoot.Bind``4">
+            <summary>
+            Declares a binding for the specified service.
+            </summary>
+            <typeparam name="T1">The first service to bind.</typeparam>
+            <typeparam name="T2">The second service to bind.</typeparam>
+            <typeparam name="T3">The third service to bind.</typeparam>
+            <typeparam name="T4">The fourth service to bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingRoot.Bind(System.Type[])">
             <summary>
             Declares a binding from the service to itself.
             </summary>
-            <param name="service">The service to bind.</param>
+            <param name="services">The services to bind.</param>
+            <returns>The fluent syntax.</returns>
         </member>
         <member name="M:Ninject.Syntax.IBindingRoot.Unbind``1">
             <summary>
@@ -2171,13 +2228,42 @@
             <summary>
             Removes any existing bindings for the specified service, and declares a new one.
             </summary>
-            <typeparam name="T">The service to re-bind.</typeparam>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Syntax.IBindingRoot.Rebind(System.Type)">
+        <member name="M:Ninject.Syntax.IBindingRoot.Rebind``2">
             <summary>
-            Removes any existing bindings for the specified service, and declares a new one.
+            Removes any existing bindings for the specified services, and declares a new one.
             </summary>
-            <param name="service">The service to re-bind.</param>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <typeparam name="T2">The second service to re-bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingRoot.Rebind``3">
+            <summary>
+            Removes any existing bindings for the specified services, and declares a new one.
+            </summary>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <typeparam name="T2">The second service to re-bind.</typeparam>
+            <typeparam name="T3">The third service to re-bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingRoot.Rebind``4">
+            <summary>
+            Removes any existing bindings for the specified services, and declares a new one.
+            </summary>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <typeparam name="T2">The second service to re-bind.</typeparam>
+            <typeparam name="T3">The third service to re-bind.</typeparam>
+            <typeparam name="T4">The fourth service to re-bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingRoot.Rebind(System.Type[])">
+            <summary>
+            Removes any existing bindings for the specified services, and declares a new one.
+            </summary>
+            <param name="services">The services to re-bind.</param>
+            <returns>The fluent syntax.</returns>
         </member>
         <member name="M:Ninject.Syntax.IBindingRoot.AddBinding(Ninject.Planning.Bindings.IBinding)">
             <summary>
@@ -2196,12 +2282,41 @@
             Declares a binding for the specified service.
             </summary>
             <typeparam name="T">The service to bind.</typeparam>
+            <returns>The fluent syntax</returns>
         </member>
-        <member name="M:Ninject.Syntax.BindingRoot.Bind(System.Type)">
+        <member name="M:Ninject.Syntax.BindingRoot.Bind``2">
             <summary>
             Declares a binding for the specified service.
             </summary>
-            <param name="service">The service to bind.</param>
+            <typeparam name="T1">The first service to bind.</typeparam>
+            <typeparam name="T2">The second service to bind.</typeparam>
+            <returns>The fluent syntax</returns>
+        </member>
+        <member name="M:Ninject.Syntax.BindingRoot.Bind``3">
+            <summary>
+            Declares a binding for the specified service.
+            </summary>
+            <typeparam name="T1">The first service to bind.</typeparam>
+            <typeparam name="T2">The second service to bind.</typeparam>
+            <typeparam name="T3">The third service to bind.</typeparam>
+            <returns>The fluent syntax</returns>
+        </member>
+        <member name="M:Ninject.Syntax.BindingRoot.Bind``4">
+            <summary>
+            Declares a binding for the specified service.
+            </summary>
+            <typeparam name="T1">The first service to bind.</typeparam>
+            <typeparam name="T2">The second service to bind.</typeparam>
+            <typeparam name="T3">The third service to bind.</typeparam>
+            <typeparam name="T4">The fourth service to bind.</typeparam>
+            <returns>The fluent syntax</returns>
+        </member>
+        <member name="M:Ninject.Syntax.BindingRoot.Bind(System.Type[])">
+            <summary>
+            Declares a binding for the specified service.
+            </summary>
+            <param name="services">The services to bind.</param>
+            <returns>The fluent syntax</returns>
         </member>
         <member name="M:Ninject.Syntax.BindingRoot.Unbind``1">
             <summary>
@@ -2219,13 +2334,42 @@
             <summary>
             Removes any existing bindings for the specified service, and declares a new one.
             </summary>
-            <typeparam name="T">The service to re-bind.</typeparam>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <returns>The fluent syntax</returns>
         </member>
-        <member name="M:Ninject.Syntax.BindingRoot.Rebind(System.Type)">
+        <member name="M:Ninject.Syntax.BindingRoot.Rebind``2">
+            <summary>
+            Removes any existing bindings for the specified services, and declares a new one.
+            </summary>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <typeparam name="T2">The second service to re-bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.BindingRoot.Rebind``3">
+            <summary>
+            Removes any existing bindings for the specified services, and declares a new one.
+            </summary>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <typeparam name="T2">The second service to re-bind.</typeparam>
+            <typeparam name="T3">The third service to re-bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.BindingRoot.Rebind``4">
+            <summary>
+            Removes any existing bindings for the specified services, and declares a new one.
+            </summary>
+            <typeparam name="T1">The first service to re-bind.</typeparam>
+            <typeparam name="T2">The second service to re-bind.</typeparam>
+            <typeparam name="T3">The third service to re-bind.</typeparam>
+            <typeparam name="T4">The fourth service to re-bind.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.BindingRoot.Rebind(System.Type[])">
             <summary>
             Removes any existing bindings for the specified service, and declares a new one.
             </summary>
-            <param name="service">The service to re-bind.</param>
+            <param name="services">The services to re-bind.</param>
+            <returns>The fluent syntax</returns>
         </member>
         <member name="M:Ninject.Syntax.BindingRoot.AddBinding(Ninject.Planning.Bindings.IBinding)">
             <summary>
@@ -2239,13 +2383,11 @@
             </summary>
             <param name="binding">The binding to remove.</param>
         </member>
-        <member name="M:Ninject.Syntax.BindingRoot.CreateBindingBuilder``1(Ninject.Planning.Bindings.IBinding)">
+        <member name="P:Ninject.Syntax.BindingRoot.KernelInstance">
             <summary>
-            Creates a new builder for the specified binding.
+            Gets the kernel.
             </summary>
-            <typeparam name="T">The type restriction to apply to the binding builder.</typeparam>
-            <param name="binding">The binding that will be built.</param>
-            <returns>The created builder.</returns>
+            <value>The kernel.</value>
         </member>
         <member name="M:Ninject.Modules.NinjectModule.#ctor">
             <summary>
@@ -2302,14 +2444,6 @@
             </summary>
             <param name="binding">The binding to remove.</param>
         </member>
-        <member name="M:Ninject.Modules.NinjectModule.CreateBindingBuilder``1(Ninject.Planning.Bindings.IBinding)">
-            <summary>
-            Creates a new builder for the specified binding.
-            </summary>
-            <typeparam name="T">The type restriction to apply to the binding builder.</typeparam>
-            <param name="binding">The binding that will be built.</param>
-            <returns>The created builder.</returns>
-        </member>
         <member name="P:Ninject.Modules.NinjectModule.Kernel">
             <summary>
             Gets the kernel that the module is loaded into.
@@ -2324,6 +2458,12 @@
             <summary>
             Gets the bindings that were registered by the module.
             </summary>
+        </member>
+        <member name="P:Ninject.Modules.NinjectModule.KernelInstance">
+            <summary>
+            Gets the kernel.
+            </summary>
+            <value>The kernel.</value>
         </member>
         <member name="T:Ninject.Parameters.ConstructorArgument">
             <summary>
@@ -2461,6 +2601,30 @@
             </summary>
             <param name="name">The name of the argument to override.</param>
             <param name="valueCallback">The callback to invoke to get the value that should be injected.</param>
+        </member>
+        <member name="M:Ninject.Parameters.ConstructorArgument.#ctor(System.String,System.Object,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Parameters.ConstructorArgument"/> class.
+            </summary>
+            <param name="name">The name of the argument to override.</param>
+            <param name="value">The value to inject into the property.</param>
+            <param name="shouldInherit">Whether the parameter should be inherited into child requests.</param>
+        </member>
+        <member name="M:Ninject.Parameters.ConstructorArgument.#ctor(System.String,System.Func{Ninject.Activation.IContext,System.Object},System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Parameters.ConstructorArgument"/> class.
+            </summary>
+            <param name="name">The name of the argument to override.</param>
+            <param name="valueCallback">The callback to invoke to get the value that should be injected.</param>
+            <param name="shouldInherit">if set to <c>true</c> [should inherit].</param>
+        </member>
+        <member name="M:Ninject.Parameters.ConstructorArgument.#ctor(System.String,System.Func{Ninject.Activation.IContext,Ninject.Planning.Targets.ITarget,System.Object},System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Parameters.ConstructorArgument"/> class.
+            </summary>
+            <param name="name">The name of the argument to override.</param>
+            <param name="valueCallback">The callback to invoke to get the value that should be injected.</param>
+            <param name="shouldInherit">if set to <c>true</c> [should inherit].</param>
         </member>
         <member name="M:Ninject.Parameters.ConstructorArgument.AppliesToTarget(Ninject.Activation.IContext,Ninject.Planning.Targets.ITarget)">
             <summary>
@@ -2793,45 +2957,641 @@
             </summary>
             <value></value>
         </member>
-        <member name="T:Ninject.Planning.Bindings.BindingBuilder`1">
+        <member name="T:Ninject.Planning.Bindings.BindingBuilder">
             <summary>
-            Provides a root for the fluent syntax associated with an <see cref="P:Ninject.Planning.Bindings.BindingBuilder`1.Binding"/>.
+            Provides a root for the fluent syntax associated with an <see cref="P:Ninject.Planning.Bindings.BindingBuilder.BindingConfiguration"/>.
             </summary>
         </member>
-        <member name="T:Ninject.Planning.Bindings.IBindingSyntax`1">
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder.#ctor(Ninject.Planning.Bindings.IBindingConfiguration,Ninject.IKernel)">
             <summary>
-            The syntax to define bindings.
+            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.BindingBuilder"/> class.
             </summary>
-            <typeparam name="T">The type of the service.</typeparam>
+            <param name="bindingConfiguration">The binding to build.</param>
+            <param name="kernel">The kernel.</param>
         </member>
-        <member name="T:Ninject.Syntax.IBindingToSyntax`1">
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder.AddConstructorArguments(System.Linq.Expressions.NewExpression,System.Linq.Expressions.ParameterExpression)">
+            <summary>
+            Adds the constructor arguments for the specified constructor expression.
+            </summary>
+            <param name="ctorExpression">The ctor expression.</param>
+            <param name="constructorArgumentSyntaxParameterExpression">The constructor argument syntax parameter expression.</param>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder.AddConstructorArgument(System.Linq.Expressions.Expression,System.String,System.Linq.Expressions.ParameterExpression)">
+            <summary>
+            Adds a constructor argument for the specified argument expression.
+            </summary>
+            <param name="argument">The argument.</param>
+            <param name="argumentName">Name of the argument.</param>
+            <param name="constructorArgumentSyntaxParameterExpression">The constructor argument syntax parameter expression.</param>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingBuilder.BindingConfiguration">
+            <summary>
+            Gets the binding being built.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingBuilder.Kernel">
+            <summary>
+            Gets the kernel.
+            </summary>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.BindingBuilder.ConstructorArgumentSyntax">
+            <summary>
+            Passed to ToConstructor to specify that a constructor value is Injected.
+            </summary>
+        </member>
+        <member name="T:Ninject.Syntax.IConstructorArgumentSyntax">
+            <summary>
+            Passed to ToConstructor to specify that a constructor value is Injected.
+            </summary>
+        </member>
+        <member name="M:Ninject.Syntax.IConstructorArgumentSyntax.Inject``1">
+            <summary>
+            Specifies that the argument is injected.
+            </summary>
+            <typeparam name="T">The type of the parameter</typeparam>
+            <returns>Not used. This interface has no implementation.</returns>
+        </member>
+        <member name="P:Ninject.Syntax.IConstructorArgumentSyntax.Context">
+            <summary>
+            Gets the context.
+            </summary>
+            <value>The context.</value>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder.ConstructorArgumentSyntax.#ctor(Ninject.Activation.IContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.BindingBuilder.ConstructorArgumentSyntax"/> class.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder.ConstructorArgumentSyntax.Inject``1">
+            <summary>
+            Specifies that the argument is injected.
+            </summary>
+            <typeparam name="T1">The type of the parameter</typeparam>
+            <returns>Not used. This interface has no implementation.</returns>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingBuilder.ConstructorArgumentSyntax.Context">
+            <summary>
+            Gets the context.
+            </summary>
+            <value>The context.</value>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.BindingBuilder`4">
+            <summary>
+            Provides a root for the fluent syntax associated with an <see cref="P:Ninject.Planning.Bindings.BindingBuilder.BindingConfiguration"/>.
+            </summary>
+            <typeparam name="T1">The first service type.</typeparam>
+            <typeparam name="T2">The second service type.</typeparam>
+            <typeparam name="T3">The third service type.</typeparam>
+            <typeparam name="T4">The fourth service type.</typeparam>
+        </member>
+        <member name="T:Ninject.Syntax.IBindingToSyntax`4">
             <summary>
             Used to define the target of a binding.
             </summary>
-            <typeparam name="T">The service being bound.</typeparam>
+            <typeparam name="T1">The first service type to be bound.</typeparam>
+            <typeparam name="T2">The second service type to be bound.</typeparam>
+            <typeparam name="T3">The third service type to be bound.</typeparam>
+            <typeparam name="T4">The fourth service type to be bound.</typeparam>
         </member>
         <member name="T:Ninject.Syntax.IBindingSyntax">
             <summary>
             Used to define a basic binding syntax builder.
             </summary>
         </member>
-        <member name="T:Ninject.Syntax.IFluentSyntax">
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.To``1">
             <summary>
-            A hack to hide methods defined on <see cref="T:System.Object"/> for IntelliSense
-            on fluent interfaces. Credit to Daniel Cazzulino.
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <typeparam name="TImplementation">The implementation type.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.To(System.Type)">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <param name="implementation">The implementation type.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.ToProvider``1">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.ToProvider``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.ToProvider(System.Type)">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <param name="providerType">The type of provider to activate.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.ToProvider``1(Ninject.Activation.IProvider{``0})">
+            <summary>
+            Indicates that the service should be bound to the specified provider.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.ToConstant``1(``0)">
+            <summary>
+            Indicates that the service should be bound to the specified constant value.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="value">The constant value.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`4.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
+            <summary>
+            Indicates that the service should be bound to the speecified constructor.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="newExpression">The expression that specifies the constructor.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="F:Ninject.Planning.Bindings.BindingBuilder`4.serviceNames">
+            <summary>
+            The names of the services.
             </summary>
         </member>
-        <member name="M:Ninject.Syntax.IFluentSyntax.GetType">
-            <inheritdoc/>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.#ctor(Ninject.Planning.Bindings.IBindingConfiguration,Ninject.IKernel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.BindingBuilder`4"/> class.
+            </summary>
+            <param name="bindingConfigurationConfiguration">The binding to build.</param>
+            <param name="kernel">The kernel.</param>
+            <param name="serviceNames">The names of the services.</param>
         </member>
-        <member name="M:Ninject.Syntax.IFluentSyntax.GetHashCode">
-            <inheritdoc/>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.To``1">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <typeparam name="TImplementation">The implementation type.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Syntax.IFluentSyntax.ToString">
-            <inheritdoc/>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.To(System.Type)">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <param name="implementation">The implementation type.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Syntax.IFluentSyntax.Equals(System.Object)">
-            <inheritdoc/>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
+            <summary>
+            Indicates that the service should be bound to the speecified constructor.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="newExpression">The expression that specifies the constructor.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToProvider``1">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToProvider``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToProvider(System.Type)">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <param name="providerType">The type of provider to activate.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToProvider``1(Ninject.Activation.IProvider{``0})">
+            <summary>
+            Indicates that the service should be bound to the specified provider.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToConstant``1(``0)">
+            <summary>
+            Indicates that the service should be bound to the specified constant value.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="value">The constant value.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`4.ToProviderInternal``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.BindingBuilder`3">
+            <summary>
+            Provides a root for the fluent syntax associated with an <see cref="P:Ninject.Planning.Bindings.BindingBuilder.BindingConfiguration"/>.
+            </summary>
+            <typeparam name="T1">The first service type.</typeparam>
+            <typeparam name="T2">The second service type.</typeparam>
+            <typeparam name="T3">The third service type.</typeparam>
+        </member>
+        <member name="T:Ninject.Syntax.IBindingToSyntax`3">
+            <summary>
+            Used to define the target of a binding.
+            </summary>
+            <typeparam name="T1">The first service type to be bound.</typeparam>
+            <typeparam name="T2">The second service type to be bound.</typeparam>
+            <typeparam name="T3">The third service type to be bound.</typeparam>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.To``1">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <typeparam name="TImplementation">The implementation type.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.To(System.Type)">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <param name="implementation">The implementation type.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.ToProvider``1">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.ToProvider``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.ToProvider(System.Type)">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <param name="providerType">The type of provider to activate.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.ToProvider``1(Ninject.Activation.IProvider{``0})">
+            <summary>
+            Indicates that the service should be bound to the specified provider.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.ToConstant``1(``0)">
+            <summary>
+            Indicates that the service should be bound to the specified constant value.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="value">The constant value.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`3.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
+            <summary>
+            Indicates that the service should be bound to the speecified constructor.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="newExpression">The expression that specifies the constructor.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="F:Ninject.Planning.Bindings.BindingBuilder`3.serviceNames">
+            <summary>
+            The names of the services.
+            </summary>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.#ctor(Ninject.Planning.Bindings.IBindingConfiguration,Ninject.IKernel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.BindingBuilder`3"/> class.
+            </summary>
+            <param name="bindingConfigurationConfiguration">The binding to build.</param>
+            <param name="kernel">The kernel.</param>
+            <param name="serviceNames">The names of the services.</param>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.To``1">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <typeparam name="TImplementation">The implementation type.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.To(System.Type)">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <param name="implementation">The implementation type.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
+            <summary>
+            Indicates that the service should be bound to the speecified constructor.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="newExpression">The expression that specifies the constructor.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToProvider``1">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToProvider``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToProvider(System.Type)">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <param name="providerType">The type of provider to activate.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToProvider``1(Ninject.Activation.IProvider{``0})">
+            <summary>
+            Indicates that the service should be bound to the specified provider.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToConstant``1(``0)">
+            <summary>
+            Indicates that the service should be bound to the specified constant value.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="value">The constant value.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`3.ToProviderInternal``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.BindingBuilder`2">
+            <summary>
+            Provides a root for the fluent syntax associated with an <see cref="P:Ninject.Planning.Bindings.BindingBuilder.BindingConfiguration"/>.
+            </summary>
+            <typeparam name="T1">The first service type.</typeparam>
+            <typeparam name="T2">The second service type.</typeparam>
+        </member>
+        <member name="T:Ninject.Syntax.IBindingToSyntax`2">
+            <summary>
+            Used to define the target of a binding.
+            </summary>
+            <typeparam name="T1">The first service type to be bound.</typeparam>
+            <typeparam name="T2">The second service type to be bound.</typeparam>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.To``1">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <typeparam name="TImplementation">The implementation type.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.To(System.Type)">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <param name="implementation">The implementation type.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.ToProvider``1">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.ToProvider``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.ToProvider(System.Type)">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <param name="providerType">The type of provider to activate.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.ToProvider``1(Ninject.Activation.IProvider{``0})">
+            <summary>
+            Indicates that the service should be bound to the specified provider.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.ToConstant``1(``0)">
+            <summary>
+            Indicates that the service should be bound to the specified constant value.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="value">The constant value.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`2.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
+            <summary>
+            Indicates that the service should be bound to the speecified constructor.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="newExpression">The expression that specifies the constructor.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="F:Ninject.Planning.Bindings.BindingBuilder`2.serviceNames">
+            <summary>
+            The names of the services.
+            </summary>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.#ctor(Ninject.Planning.Bindings.IBindingConfiguration,Ninject.IKernel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.BindingBuilder`2"/> class.
+            </summary>
+            <param name="bindingConfigurationConfiguration">The binding to build.</param>
+            <param name="kernel">The kernel.</param>
+            <param name="serviceNames">The names of the services.</param>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.To``1">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <typeparam name="TImplementation">The implementation type.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.To(System.Type)">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <param name="implementation">The implementation type.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
+            <summary>
+            Indicates that the service should be bound to the speecified constructor.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="newExpression">The expression that specifies the constructor.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToProvider``1">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToProvider``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToProvider(System.Type)">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <param name="providerType">The type of provider to activate.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToProvider``1(Ninject.Activation.IProvider{``0})">
+            <summary>
+            Indicates that the service should be bound to the specified provider.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToConstant``1(``0)">
+            <summary>
+            Indicates that the service should be bound to the specified constant value.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="value">The constant value.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`2.ToProviderInternal``2">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.BindingBuilder`1">
+            <summary>
+            Provides a root for the fluent syntax associated with an <see cref="P:Ninject.Planning.Bindings.BindingBuilder`1.Binding"/>.
+            </summary>
+            <typeparam name="T1">The service type.</typeparam>
+        </member>
+        <member name="T:Ninject.Syntax.IBindingToSyntax`1">
+            <summary>
+            Used to define the target of a binding.
+            </summary>
+            <typeparam name="T1">The service being bound.</typeparam>
         </member>
         <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToSelf">
             <summary>
@@ -2869,10 +3629,11 @@
             <param name="providerType">The type of provider to activate.</param>
             <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToProvider(Ninject.Activation.IProvider)">
+        <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToProvider``1(Ninject.Activation.IProvider{``0})">
             <summary>
             Indicates that the service should be bound to the specified provider.
             </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
             <param name="provider">The provider.</param>
             <returns>The fluent syntax.</returns>
         </member>
@@ -2883,19 +3644,215 @@
             <param name="method">The method.</param>
             <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToConstant(`0)">
+        <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToConstant``1(``0)">
             <summary>
             Indicates that the service should be bound to the specified constant value.
             </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
             <param name="value">The constant value.</param>
             <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToConstructor(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,`0}})">
+        <member name="M:Ninject.Syntax.IBindingToSyntax`1.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
             <summary>
             Indicates that the service should be bound to the speecified constructor.
             </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
             <param name="newExpression">The expression that specifies the constructor.</param>
             <returns>The fluent syntax.</returns>
+        </member>
+        <member name="F:Ninject.Planning.Bindings.BindingBuilder`1.serviceNames">
+            <summary>
+            The names of the services.
+            </summary>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.#ctor(Ninject.Planning.Bindings.IBinding,Ninject.IKernel,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.BindingBuilder`1"/> class.
+            </summary>
+            <param name="binding">The binding to build.</param>
+            <param name="kernel">The kernel.</param>
+            <param name="serviceNames">The names of the services.</param>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToSelf">
+            <summary>
+            Indicates that the service should be self-bound.
+            </summary>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.To``1">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <typeparam name="TImplementation">The implementation type.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.To(System.Type)">
+            <summary>
+            Indicates that the service should be bound to the specified implementation type.
+            </summary>
+            <param name="implementation">The implementation type.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToConstructor``1(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,``0}})">
+            <summary>
+            Indicates that the service should be bound to the speecified constructor.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="newExpression">The expression that specifies the constructor.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToProvider``1">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <typeparam name="TProvider">The type of provider to activate.</typeparam>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToProvider(System.Type)">
+            <summary>
+            Indicates that the service should be bound to an instance of the specified provider type.
+            The instance will be activated via the kernel when an instance of the service is activated.
+            </summary>
+            <param name="providerType">The type of provider to activate.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToProvider``1(Ninject.Activation.IProvider{``0})">
+            <summary>
+            Indicates that the service should be bound to the specified provider.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="provider">The provider.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToMethod(System.Func{Ninject.Activation.IContext,`0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToMethod``1(System.Func{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the service should be bound to the specified callback method.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="method">The method.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToConstant``1(``0)">
+            <summary>
+            Indicates that the service should be bound to the specified constant value.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="value">The constant value.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingBuilder`1.Binding">
+            <summary>
+            Gets the binding being built.
+            </summary>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.BindingConfiguration">
+            <summary>
+            The configuration of a binding.
+            </summary>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.BindingConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.GetProvider(Ninject.Activation.IContext)">
+            <summary>
+            Gets the provider for the binding.
+            </summary>
+            <param name="context">The context.</param>
+            <returns>The provider to use.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.GetScope(Ninject.Activation.IContext)">
+            <summary>
+            Gets the scope for the binding, if any.
+            </summary>
+            <param name="context">The context.</param>
+            <returns>The object that will act as the scope, or <see langword="null"/> if the service is transient.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.Matches(Ninject.Activation.IRequest)">
+            <summary>
+            Determines whether the specified request satisfies the conditions defined on this binding.
+            </summary>
+            <param name="request">The request.</param>
+            <returns><c>True</c> if the request satisfies the conditions; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Metadata">
+            <summary>
+            Gets the binding's metadata.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.IsImplicit">
+            <summary>
+            Gets or sets a value indicating whether the binding was implicitly registered.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.IsConditional">
+            <summary>
+            Gets a value indicating whether the binding has a condition associated with it.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Target">
+            <summary>
+            Gets or sets the type of target for the binding.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Condition">
+            <summary>
+            Gets or sets the condition defined for the binding.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.ProviderCallback">
+            <summary>
+            Gets or sets the callback that returns the provider that should be used by the binding.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.ScopeCallback">
+            <summary>
+            Gets or sets the callback that returns the object that will act as the binding's scope.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Parameters">
+            <summary>
+            Gets the parameters defined for the binding.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.ActivationActions">
+            <summary>
+            Gets the actions that should be called after instances are activated via the binding.
+            </summary>
+        </member>
+        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.DeactivationActions">
+            <summary>
+            Gets the actions that should be called before instances are deactivated via the binding.
+            </summary>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.BindingConfigurationBuilder`1">
+            <summary>
+            Provides a root for the fluent syntax associated with an <see cref="P:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.BindingConfiguration"/>.
+            </summary>
+            <typeparam name="T">The implementation type of the built binding.</typeparam>
+        </member>
+        <member name="T:Ninject.Planning.Bindings.IBindingConfigurationSyntax`1">
+            <summary>
+            The syntax to define bindings.
+            </summary>
+            <typeparam name="T">The type of the service.</typeparam>
         </member>
         <member name="T:Ninject.Syntax.IBindingWhenInNamedWithOrOnSyntax`1">
             <summary>
@@ -3215,267 +4172,231 @@
             </summary>
             <typeparam name="T">The service being bound.</typeparam>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.#ctor(Ninject.Planning.Bindings.IBinding,Ninject.IKernel)">
+        <member name="F:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.serviceNames">
+            <summary>
+            The names of the services added to the exceptions.
+            </summary>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.#ctor(Ninject.Planning.Bindings.IBindingConfiguration,System.String,Ninject.IKernel)">
             <summary>
             Initializes a new instance of the BindingBuilder&lt;T&gt; class.
             </summary>
-            <param name="binding">The binding to build.</param>
+            <param name="bindingConfiguration">The binding configuration to build.</param>
+            <param name="serviceNames">The names of the configured services.</param>
             <param name="kernel">The kernel.</param>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToSelf">
-            <summary>
-            Indicates that the service should be self-bound.
-            </summary>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.To``1">
-            <summary>
-            Indicates that the service should be bound to the specified implementation type.
-            </summary>
-            <typeparam name="TImplementation">The implementation type.</typeparam>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.To(System.Type)">
-            <summary>
-            Indicates that the service should be bound to the specified implementation type.
-            </summary>
-            <param name="implementation">The implementation type.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToConstructor(System.Linq.Expressions.Expression{System.Func{Ninject.Syntax.IConstructorArgumentSyntax,`0}})">
-            <summary>
-            Indicates that the service should be bound to the speecified constructor.
-            </summary>
-            <param name="newExpression">The expression that specifies the constructor.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToProvider``1">
-            <summary>
-            Indicates that the service should be bound to an instance of the specified provider type.
-            The instance will be activated via the kernel when an instance of the service is activated.
-            </summary>
-            <typeparam name="TProvider">The type of provider to activate.</typeparam>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToProvider(System.Type)">
-            <summary>
-            Indicates that the service should be bound to an instance of the specified provider type.
-            The instance will be activated via the kernel when an instance of the service is activated.
-            </summary>
-            <param name="providerType">The type of provider to activate.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToProvider(Ninject.Activation.IProvider)">
-            <summary>
-            Indicates that the service should be bound to the specified provider.
-            </summary>
-            <param name="provider">The provider.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToMethod(System.Func{Ninject.Activation.IContext,`0})">
-            <summary>
-            Indicates that the service should be bound to the specified callback method.
-            </summary>
-            <param name="method">The method.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.ToConstant(`0)">
-            <summary>
-            Indicates that the service should be bound to the specified constant value.
-            </summary>
-            <param name="value">The constant value.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.When(System.Func{Ninject.Activation.IRequest,System.Boolean})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.When(System.Func{Ninject.Activation.IRequest,System.Boolean})">
             <summary>
             Indicates that the binding should be used only for requests that support the specified condition.
             </summary>
             <param name="condition">The condition.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenInjectedInto``1">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenInjectedInto``1">
             <summary>
             Indicates that the binding should be used only for injections on the specified type.
             Types that derive from the specified type are considered as valid targets.
             </summary>
             <typeparam name="TParent">The type.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenInjectedInto(System.Type)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenInjectedInto(System.Type)">
             <summary>
             Indicates that the binding should be used only for injections on the specified type.
             Types that derive from the specified type are considered as valid targets.
             </summary>
             <param name="parent">The type.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenInjectedExactlyInto``1">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenInjectedExactlyInto``1">
             <summary>
             Indicates that the binding should be used only for injections on the specified type.
             The type must match exactly the specified type. Types that derive from the specified type
             will not be considered as valid target.  
             </summary>
             <typeparam name="TParent">The type.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenInjectedExactlyInto(System.Type)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenInjectedExactlyInto(System.Type)">
             <summary>
             Indicates that the binding should be used only for injections on the specified type.
             The type must match exactly the specified type. Types that derive from the specified type
             will not be considered as valid target.  
             </summary>
             <param name="parent">The type.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenClassHas``1">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenClassHas``1">
             <summary>
             Indicates that the binding should be used only when the class being injected has
             an attribute of the specified type.
             </summary>
             <typeparam name="TAttribute">The type of attribute.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenMemberHas``1">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenMemberHas``1">
             <summary>
             Indicates that the binding should be used only when the member being injected has
             an attribute of the specified type.
             </summary>
             <typeparam name="TAttribute">The type of attribute.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenTargetHas``1">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenTargetHas``1">
             <summary>
             Indicates that the binding should be used only when the target being injected has
             an attribute of the specified type.
             </summary>
             <typeparam name="TAttribute">The type of attribute.</typeparam>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenClassHas(System.Type)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenClassHas(System.Type)">
             <summary>
             Indicates that the binding should be used only when the class being injected has
             an attribute of the specified type.
             </summary>
             <param name="attributeType">The type of attribute.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenMemberHas(System.Type)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenMemberHas(System.Type)">
             <summary>
             Indicates that the binding should be used only when the member being injected has
             an attribute of the specified type.
             </summary>
             <param name="attributeType">The type of attribute.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenTargetHas(System.Type)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenTargetHas(System.Type)">
             <summary>
             Indicates that the binding should be used only when the target being injected has
             an attribute of the specified type.
             </summary>
             <param name="attributeType">The type of attribute.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenParentNamed(System.String)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenParentNamed(System.String)">
             <summary>
             Indicates that the binding should be used only when the service is being requested
             by a service bound with the specified name.
             </summary>
             <param name="name">The name to expect.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WhenAnyAnchestorNamed(System.String)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WhenAnyAnchestorNamed(System.String)">
             <summary>
             Indicates that the binding should be used only when the service is being requested
             by a service bound with the specified name or any of its anchestor services bound with the specified name. 
             </summary>
             <param name="name">The name to expect.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.Named(System.String)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.Named(System.String)">
             <summary>
             Indicates that the binding should be registered with the specified name. Names are not
             necessarily unique; multiple bindings for a given service may be registered with the same name.
             </summary>
             <param name="name">The name to give the binding.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.InSingletonScope">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.InSingletonScope">
             <summary>
             Indicates that only a single instance of the binding should be created, and then
             should be re-used for all subsequent requests.
             </summary>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.InTransientScope">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.InTransientScope">
             <summary>
             Indicates that instances activated via the binding should not be re-used, nor have
             their lifecycle managed by Ninject.
             </summary>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.InThreadScope">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.InThreadScope">
             <summary>
             Indicates that instances activated via the binding should be re-used within the same thread.
             </summary>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.InScope(System.Func{Ninject.Activation.IContext,System.Object})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.InScope(System.Func{Ninject.Activation.IContext,System.Object})">
             <summary>
             Indicates that instances activated via the binding should be re-used as long as the object
             returned by the provided callback remains alive (that is, has not been garbage collected).
             </summary>
             <param name="scope">The callback that returns the scope.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithConstructorArgument(System.String,System.Object)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithConstructorArgument(System.String,System.Object)">
             <summary>
             Indicates that the specified constructor argument should be overridden with the specified value.
             </summary>
             <param name="name">The name of the argument to override.</param>
             <param name="value">The value for the argument.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithConstructorArgument(System.String,System.Func{Ninject.Activation.IContext,System.Object})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithConstructorArgument(System.String,System.Func{Ninject.Activation.IContext,System.Object})">
             <summary>
             Indicates that the specified constructor argument should be overridden with the specified value.
             </summary>
             <param name="name">The name of the argument to override.</param>
             <param name="callback">The callback to invoke to get the value for the argument.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithConstructorArgument(System.String,System.Func{Ninject.Activation.IContext,Ninject.Planning.Targets.ITarget,System.Object})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithConstructorArgument(System.String,System.Func{Ninject.Activation.IContext,Ninject.Planning.Targets.ITarget,System.Object})">
             <summary>
             Indicates that the specified constructor argument should be overridden with the specified value.
             </summary>
             <param name="name">The name of the argument to override.</param>
             <param name="callback">The callback to invoke to get the value for the argument.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithPropertyValue(System.String,System.Object)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithPropertyValue(System.String,System.Object)">
             <summary>
             Indicates that the specified property should be injected with the specified value.
             </summary>
             <param name="name">The name of the property to override.</param>
             <param name="value">The value for the property.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithPropertyValue(System.String,System.Func{Ninject.Activation.IContext,System.Object})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithPropertyValue(System.String,System.Func{Ninject.Activation.IContext,System.Object})">
             <summary>
             Indicates that the specified property should be injected with the specified value.
             </summary>
             <param name="name">The name of the property to override.</param>
             <param name="callback">The callback to invoke to get the value for the property.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithPropertyValue(System.String,System.Func{Ninject.Activation.IContext,Ninject.Planning.Targets.ITarget,System.Object})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithPropertyValue(System.String,System.Func{Ninject.Activation.IContext,Ninject.Planning.Targets.ITarget,System.Object})">
             <summary>
             Indicates that the specified property should be injected with the specified value.
             </summary>
             <param name="name">The name of the property to override.</param>
             <param name="callback">The callback to invoke to get the value for the property.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithParameter(Ninject.Parameters.IParameter)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithParameter(Ninject.Parameters.IParameter)">
             <summary>
             Adds a custom parameter to the binding.
             </summary>
             <param name="parameter">The parameter.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.WithMetadata(System.String,System.Object)">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.WithMetadata(System.String,System.Object)">
             <summary>
             Sets the value of a piece of metadata on the binding.
             </summary>
             <param name="key">The metadata key.</param>
             <param name="value">The metadata value.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnActivation(System.Action{`0})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnActivation(System.Action{`0})">
             <summary>
             Indicates that the specified callback should be invoked when instances are activated.
             </summary>
-            <param name="action">The action callback.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnActivation``1(System.Action{``0})">
-            <summary>
-            Indicates that the specified callback should be invoked when instances are activated.
-            </summary>
-            <typeparam name="TImplementation">The type of the implementation.</typeparam>
             <param name="action">The action callback.</param>
             <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnActivation(System.Action{Ninject.Activation.IContext,`0})">
-            <summary>
-            Indicates that the specified callback should be invoked when instances are activated.
-            </summary>
-            <param name="action">The action callback.</param>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnActivation``1(System.Action{Ninject.Activation.IContext,``0})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnActivation``1(System.Action{``0})">
             <summary>
             Indicates that the specified callback should be invoked when instances are activated.
             </summary>
@@ -3483,13 +4404,29 @@
             <param name="action">The action callback.</param>
             <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnDeactivation(System.Action{`0})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnActivation(System.Action{Ninject.Activation.IContext,`0})">
+            <summary>
+            Indicates that the specified callback should be invoked when instances are activated.
+            </summary>
+            <param name="action">The action callback.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnActivation``1(System.Action{Ninject.Activation.IContext,``0})">
+            <summary>
+            Indicates that the specified callback should be invoked when instances are activated.
+            </summary>
+            <typeparam name="TImplementation">The type of the implementation.</typeparam>
+            <param name="action">The action callback.</param>
+            <returns>The fluent syntax.</returns>
+        </member>
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnDeactivation(System.Action{`0})">
             <summary>
             Indicates that the specified callback should be invoked when instances are deactivated.
             </summary>
             <param name="action">The action callback.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnDeactivation``1(System.Action{``0})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnDeactivation``1(System.Action{``0})">
             <summary>
             Indicates that the specified callback should be invoked when instances are deactivated.
             </summary>
@@ -3497,13 +4434,14 @@
             <param name="action">The action callback.</param>
             <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnDeactivation(System.Action{Ninject.Activation.IContext,`0})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnDeactivation(System.Action{Ninject.Activation.IContext,`0})">
             <summary>
             Indicates that the specified callback should be invoked when instances are deactivated.
             </summary>
             <param name="action">The action callback.</param>
+            <returns>The fluent syntax.</returns>
         </member>
-        <member name="M:Ninject.Planning.Bindings.BindingBuilder`1.OnDeactivation``1(System.Action{Ninject.Activation.IContext,``0})">
+        <member name="M:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.OnDeactivation``1(System.Action{Ninject.Activation.IContext,``0})">
             <summary>
             Indicates that the specified callback should be invoked when instances are deactivated.
             </summary>
@@ -3511,113 +4449,14 @@
             <param name="action">The action callback.</param>
             <returns>The fluent syntax.</returns>
         </member>
-        <member name="P:Ninject.Planning.Bindings.BindingBuilder`1.Binding">
+        <member name="P:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.BindingConfiguration">
             <summary>
             Gets the binding being built.
             </summary>
         </member>
-        <member name="P:Ninject.Planning.Bindings.BindingBuilder`1.Kernel">
+        <member name="P:Ninject.Planning.Bindings.BindingConfigurationBuilder`1.Kernel">
             <summary>
             Gets the kernel.
-            </summary>
-        </member>
-        <member name="T:Ninject.Syntax.IConstructorArgumentSyntax">
-            <summary>
-            Passed to ToConstructor to specify that a constructor value is Injected.
-            </summary>
-        </member>
-        <member name="M:Ninject.Syntax.IConstructorArgumentSyntax.Inject``1">
-            <summary>
-            Specifies that the argument is injected.
-            </summary>
-            <typeparam name="T">The type of the parameter</typeparam>
-            <returns>Not used. This interface has no implementation.</returns>
-        </member>
-        <member name="P:Ninject.Syntax.IConstructorArgumentSyntax.Context">
-            <summary>
-            Gets the context.
-            </summary>
-            <value>The context.</value>
-        </member>
-        <member name="T:Ninject.Planning.Bindings.BindingConfiguration">
-            <summary>
-            The configuration of a binding.
-            </summary>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Ninject.Planning.Bindings.Binding"/> class.
-            </summary>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.GetProvider(Ninject.Activation.IContext)">
-            <summary>
-            Gets the provider for the binding.
-            </summary>
-            <param name="context">The context.</param>
-            <returns>The provider to use.</returns>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.GetScope(Ninject.Activation.IContext)">
-            <summary>
-            Gets the scope for the binding, if any.
-            </summary>
-            <param name="context">The context.</param>
-            <returns>The object that will act as the scope, or <see langword="null"/> if the service is transient.</returns>
-        </member>
-        <member name="M:Ninject.Planning.Bindings.BindingConfiguration.Matches(Ninject.Activation.IRequest)">
-            <summary>
-            Determines whether the specified request satisfies the conditions defined on this binding.
-            </summary>
-            <param name="request">The request.</param>
-            <returns><c>True</c> if the request satisfies the conditions; otherwise <c>false</c>.</returns>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Metadata">
-            <summary>
-            Gets the binding's metadata.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.IsImplicit">
-            <summary>
-            Gets or sets a value indicating whether the binding was implicitly registered.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.IsConditional">
-            <summary>
-            Gets a value indicating whether the binding has a condition associated with it.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Target">
-            <summary>
-            Gets or sets the type of target for the binding.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Condition">
-            <summary>
-            Gets or sets the condition defined for the binding.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.ProviderCallback">
-            <summary>
-            Gets or sets the callback that returns the provider that should be used by the binding.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.ScopeCallback">
-            <summary>
-            Gets or sets the callback that returns the object that will act as the binding's scope.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.Parameters">
-            <summary>
-            Gets the parameters defined for the binding.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.ActivationActions">
-            <summary>
-            Gets the actions that should be called after instances are activated via the binding.
-            </summary>
-        </member>
-        <member name="P:Ninject.Planning.Bindings.BindingConfiguration.DeactivationActions">
-            <summary>
-            Gets the actions that should be called before instances are deactivated via the binding.
             </summary>
         </member>
         <member name="T:Ninject.Planning.Bindings.BindingMetadata">
@@ -4263,6 +5102,14 @@
             <param name="type">The type for which a plan should be created.</param>
             <returns>The created plan.</returns>
         </member>
+        <member name="M:Ninject.Planning.Planner.CreateNewPlan(System.Type)">
+            <summary>
+            Creates a new plan for the specified type.
+            This method requires an active reader lock!
+            </summary>
+            <param name="type">The type.</param>
+            <returns>The newly created plan.</returns>
+        </member>
         <member name="P:Ninject.Planning.Planner.Strategies">
             <summary>
             Gets the strategies that contribute to the planning process.
@@ -4428,6 +5275,43 @@
             <summary>
             Gets the property injection heuristics.
             </summary>
+        </member>
+        <member name="T:Ninject.Syntax.IFluentSyntax">
+            <summary>
+            A hack to hide methods defined on <see cref="T:System.Object"/> for IntelliSense
+            on fluent interfaces. Credit to Daniel Cazzulino.
+            </summary>
+        </member>
+        <member name="M:Ninject.Syntax.IFluentSyntax.GetType">
+            <summary>
+            Gets the type of this instance.
+            </summary>
+            <returns>The type of this instance.</returns>
+        </member>
+        <member name="M:Ninject.Syntax.IFluentSyntax.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:Ninject.Syntax.IFluentSyntax.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:Ninject.Syntax.IFluentSyntax.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="other">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+                <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="T:Ninject.ModuleLoadExtensions">
             <summary>
@@ -5056,14 +5940,6 @@
             <param name="request">The request/</param>
             <returns>A predicate that can determine if a given IBinding matches the request.</returns>
         </member>
-        <member name="M:Ninject.KernelBase.CreateBindingBuilder``1(Ninject.Planning.Bindings.IBinding)">
-            <summary>
-            Creates a new builder for the specified binding.
-            </summary>
-            <typeparam name="T">The type restriction to apply to the binding builder.</typeparam>
-            <param name="binding">The binding that will be built.</param>
-            <returns>The created builder.</returns>
-        </member>
         <member name="M:Ninject.KernelBase.AddComponents">
             <summary>
             Adds components to the kernel during startup.
@@ -5212,6 +6088,12 @@
             <summary>
             Adds components to the kernel during startup.
             </summary>
+        </member>
+        <member name="P:Ninject.StandardKernel.KernelInstance">
+            <summary>
+            Gets the kernel.
+            </summary>
+            <value>The kernel.</value>
         </member>
     </members>
 </doc>

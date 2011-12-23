@@ -76,7 +76,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="city">City to recalculate resources for.</param>
         /// <returns></returns>
-        public virtual int GetIronRate(City city)
+        public virtual int GetIronRate(ICity city)
         {
             int[] multiplier = { int.MaxValue, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 5, 5, 5, 5, 4 };
 
@@ -88,7 +88,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="city">City to recalculate resources for</param>
         /// <returns></returns>
-        public virtual int GetCropRate(City city)
+        public virtual int GetCropRate(ICity city)
         {
             double[] lvlBonus = { 1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5 };
             return 40 + city.Lvl * 5 + (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor * lvlBonus[x.Lvl] : 0);
@@ -102,7 +102,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="city">City to recalculate resources for</param>
         /// <returns></returns>
-        public virtual int GetWoodRate(City city)
+        public virtual int GetWoodRate(ICity city)
         {
             return 40 + city.Lvl * 5 + city.Sum(x =>
             {

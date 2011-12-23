@@ -12,7 +12,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopStubCreate(City city, TroopStub stub, TroopState initialState = TroopState.Idle) {
+        public virtual bool TroopStubCreate(ICity city, TroopStub stub, TroopState initialState = TroopState.Idle) {
             if (!RemoveFromNormal(city.DefaultTroop, stub))
                 return false;
 
@@ -22,13 +22,13 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        public virtual void TroopStubDelete(City city, TroopStub stub)
+        public virtual void TroopStubDelete(ICity city, TroopStub stub)
         {
             AddToNormal(stub, city.DefaultTroop);
             city.Troops.Remove(stub.TroopId);
         }
 
-        public virtual void TroopObjectCreate(City city, TroopStub stub)
+        public virtual void TroopObjectCreate(ICity city, TroopStub stub)
         {
             var troop = new TroopObject(stub) { X = city.X, Y = city.Y };
             city.Add(troop);
@@ -39,7 +39,7 @@ namespace Game.Logic.Procedures
             troop.EndUpdate();            
         }
 
-        public virtual bool TroopObjectCreateFromCity(City city, TroopStub stub, uint x, uint y)
+        public virtual bool TroopObjectCreateFromCity(ICity city, TroopStub stub, uint x, uint y)
         {
             if (stub.TotalCount == 0 || !RemoveFromNormal(city.DefaultTroop, stub))
                 return false;

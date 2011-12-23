@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -70,7 +70,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
 
             // Block structure

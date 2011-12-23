@@ -18,7 +18,7 @@ namespace Game.Logic.Procedures
             stub[source].Clear();
         }
 
-        public virtual void AddLocalToBattle(IBattleManager bm, City city, ReportState state)
+        public virtual void AddLocalToBattle(IBattleManager bm, ICity city, ReportState state)
         {
             if (city.DefaultTroop[FormationType.Normal].Count == 0)
                 return;
@@ -38,7 +38,7 @@ namespace Game.Logic.Procedures
         /// </summary>
         /// <param name="city"></param>
         /// <param name="maxHp"></param>
-        internal virtual void SenseOfUrgency(City city, uint maxHp)
+        internal virtual void SenseOfUrgency(ICity city, uint maxHp)
         {
             // Prevent overflow, just to be safe
             maxHp = Math.Min(50000, maxHp);

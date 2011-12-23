@@ -4,11 +4,12 @@ using Game.Data.Troop;
 using Game.Logic;
 using Game.Map;
 using Game.Util;
+using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity
+    public interface ICity : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject
     {
         /// <summary>
         ///   Enumerates only through structures in this city
@@ -103,23 +104,12 @@ namespace Game.Data
         int DefensePoint { get; set; }
 
         ushort Value { get; set; }
+
         bool IsUpdating { get; }
+
         City.DeletedState Deleted { get; set; }
+
         ActionWorker Worker { get; }
-        uint WorkerId { get; }
-        int Hash { get; }
-        object Lock { get; }
-        string DbTable { get; }
-        DbColumn[] DbColumns { get; }
-        DbColumn[] DbPrimaryKey { get; }
-        DbDependency[] DbDependencies { get; }
-        bool DbPersisted { get; set; }
-        Location CityRegionLocation { get; }
-        CityRegion.ObjectType CityRegionType { get; }
-        ushort CityRegionRelX { get; }
-        ushort CityRegionRelY { get; }
-        uint CityRegionGroupId { get; }
-        uint CityRegionObjectId { get; }
 
         /// <summary>
         ///   Enumerates through all structures and troops in this city
@@ -129,16 +119,27 @@ namespace Game.Data
         GameObject this[uint objectId] { get; }
 
         TroopObject GetTroop(uint objectId);
+
         bool TryGetObject(uint objectId, out GameObject obj);
+
         bool TryGetStructure(uint objectId, out Structure structure);
+
         bool TryGetTroop(uint objectId, out TroopObject troop);
+
         bool Add(uint objId, TroopObject troop, bool save);
+
         bool Add(TroopObject troop);
+
         bool Add(uint objId, Structure structure, bool save);
+
         bool Add(uint objId, Structure structure);
+
         bool Add(Structure structure);
+
         bool ScheduleRemove(TroopObject obj, bool wasKilled);
+
         bool ScheduleRemove(Structure obj, bool wasKilled);
+
         bool ScheduleRemove(Structure obj, bool wasKilled, bool cancelReferences);
 
         /// <summary>
@@ -154,21 +155,35 @@ namespace Game.Data
         void DoRemove(TroopObject obj);
 
         List<GameObject> GetInRange(uint x, uint y, uint inRadius);
+
         void BeginUpdate();
+
         void EndUpdate();
+
         void Subscribe(IChannel s);
+
         void Unsubscribe(IChannel s);
+
         void ResourceUpdateEvent();
+
         void RadiusUpdateEvent();
+
         void DefenseAttackPointUpdate();
+
         void HideNewUnitsUpdate();
+
         void NewCityUpdate();
+
         void ObjAddEvent(GameObject obj);
+
         void ObjRemoveEvent(GameObject obj);
+
         void ObjUpdateEvent(GameObject sender, uint origX, uint origY);
+
         void UnitTemplateUnitUpdated(UnitTemplate sender);
+
         void BattleStarted();
+
         void BattleEnded();
-        byte[] GetCityRegionObjectBytes();
     }
 }

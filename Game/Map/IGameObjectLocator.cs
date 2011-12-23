@@ -6,15 +6,15 @@ namespace Game.Map
 {
     public interface IGameObjectLocator
     {
-        bool TryGetObjects(uint cityId, out City city);
+        bool TryGetObjects(uint cityId, out ICity city);
 
         bool TryGetObjects(uint playerId, out Player player);
 
-        bool TryGetObjects(uint cityId, byte troopStubId, out City city, out TroopStub troopStub);
+        bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out TroopStub troopStub);
 
-        bool TryGetObjects(uint cityId, uint structureId, out City city, out Structure structure);
+        bool TryGetObjects(uint cityId, uint structureId, out ICity city, out Structure structure);
 
-        bool TryGetObjects(uint cityId, uint troopObjectId, out City city, out TroopObject troopObject);
+        bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out TroopObject troopObject);
 
         List<SimpleGameObject> this[uint x, uint y] { get; }
 

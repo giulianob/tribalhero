@@ -9,6 +9,7 @@ using Game.Comm;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Procedures;
 using Game.Module.Remover;
 using Game.Setup;
@@ -41,7 +42,7 @@ namespace Game.Map
 
         public ForestManager Forests { get; private set; }
 
-        private Dictionary<uint, City> Cities { get; set; }
+        private Dictionary<uint, ICity> Cities { get; set; }
 
         private int RegionsCount { get; set; }
         private uint RegionSize { get; set; }
@@ -65,7 +66,7 @@ namespace Game.Map
 
         public World()
         {
-            Cities = new Dictionary<uint, City>();
+            Cities = new Dictionary<uint, ICity>();
             RoadManager = new RoadManager();
             Lock = new object();
             Players = new Dictionary<uint, Player>();
@@ -74,7 +75,7 @@ namespace Game.Map
 
         #region Object Getters
 
-        public bool TryGetObjects(uint cityId, out City city)
+        public bool TryGetObjects(uint cityId, out ICity city)
         {
             return Cities.TryGetValue(cityId, out city);
         }
@@ -84,21 +85,21 @@ namespace Game.Map
             return Players.TryGetValue(playerId, out player);
         }
 
-        public bool TryGetObjects(uint cityId, byte troopStubId, out City city, out TroopStub troopStub)
+        public bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out TroopStub troopStub)
         {
             troopStub = null;
 
             return Cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
         }
 
-        public bool TryGetObjects(uint cityId, uint structureId, out City city, out Structure structure)
+        public bool TryGetObjects(uint cityId, uint structureId, out ICity city, out Structure structure)
         {
             structure = null;
 
             return Cities.TryGetValue(cityId, out city) && city.TryGetStructure(structureId, out structure);
         }
 
-        public bool TryGetObjects(uint cityId, uint troopObjectId, out City city, out TroopObject troopObject)
+        public bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out TroopObject troopObject)
         {
             troopObject = null;
 
@@ -202,7 +203,7 @@ namespace Game.Map
                 cityRegions[regionId] = new CityRegion();
         }
 
-        public bool Add(City city)
+        public bool Add(ICity city)
         {
             lock (Lock)
             {
@@ -212,16 +213,16 @@ namespace Game.Map
                 Cities[city.Id] = city;
 
                 //Initial save of these objects
-                Ioc.Kernel.Get<IDbManager>().Save((Structure)city[1]);
+                DbPersistance.Current.Save((Structure)city[1]);
                 foreach (var stub in city.Troops)
-                    Ioc.Kernel.Get<IDbManager>().Save(stub);
+                    DbPersistance.Current.Save(stub);
 
                 CityRegion region = GetCityRegion(city.X, city.Y);
                 return region != null && region.Add(city);
             }
         }
 
-        public void DbLoaderAdd(uint id, City city)
+        public void DbLoaderAdd(uint id, ICity city)
         {
             city.Id = id;
             cityIdGen.Set((int)id);
@@ -232,11 +233,11 @@ namespace Game.Map
 
         public void AfterDbLoaded()
         {
-            IEnumerator<City> iter = Cities.Values.GetEnumerator();
+            IEnumerator<ICity> iter = Cities.Values.GetEnumerator();
             while (iter.MoveNext())
             {
                 // Resave city to update times
-                Ioc.Kernel.Get<IDbManager>().Save(iter.Current);
+                DbPersistance.Current.Save(iter.Current);
 
                 //Set resource cap
                 Procedure.Current.SetResourceCap(iter.Current);
@@ -251,12 +252,12 @@ namespace Game.Map
             Current.Forests.StartForestCreator();
         }
 
-        public void Remove(City city)
+        public void Remove(ICity city)
         {
             lock (Lock)
             {
                 city.BeginUpdate();
-                Ioc.Kernel.Get<IDbManager>().DeleteDependencies(city);
+                DbPersistance.Current.DeleteDependencies(city);
                 city.Deleted = City.DeletedState.Deleted;
                 city.EndUpdate();
 
@@ -522,7 +523,7 @@ namespace Game.Map
         {
             playerId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Player.DB_TABLE),
                                                                        new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
@@ -537,7 +538,7 @@ namespace Game.Map
         {
             cityId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
                                                                        new[] {new DbColumn("name", name, DbType.String)}))
             {
                 if (!reader.HasRows)
@@ -551,7 +552,7 @@ namespace Game.Map
         public bool FindTribeId(string name, out uint tribeId) {
             tribeId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(String.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
                                                                        new[] { new DbColumn("name", name, DbType.String) })) {
                 if (!reader.HasRows)
                     return false;
@@ -564,7 +565,7 @@ namespace Game.Map
         public bool CityNameTaken(string name)
         {
             using (
-                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", City.DB_TABLE),
                                                                        new[] {new DbColumn("name", name, DbType.String)}))
             {
                 return reader.HasRows;
@@ -574,7 +575,7 @@ namespace Game.Map
         public bool TribeNameTaken(string name)
         {
             using (
-                    DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(String.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
                                                                        new[] { new DbColumn("name", name, DbType.String) }))
             {
                 return reader.HasRows;

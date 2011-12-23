@@ -13,17 +13,21 @@ namespace Game.Data
         public enum Types : ushort
         {
             Troop = 100,
+
             Forest = 200,
         }
 
         public enum SystemGroupIds : uint
         {
             NewCityStartTile = 10000001,
+
             Forest = 10000002,
         }
 
         protected uint objectId;
+
         protected uint x;
+
         protected uint y;
 
         #region Properties
@@ -59,6 +63,7 @@ namespace Game.Data
         }
 
         public abstract ushort Type { get; }
+
         public abstract uint GroupId { get; }
 
         public virtual uint ObjectId
@@ -153,7 +158,9 @@ namespace Game.Data
         #region Update Events
 
         protected uint origX;
+
         protected uint origY;
+
         protected bool updating;
 
         public void BeginUpdate()
@@ -166,6 +173,7 @@ namespace Game.Data
         }
 
         public abstract void CheckUpdateMode();
+
         public abstract void EndUpdate();
 
         protected void Update()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Formulas;
 using Game.Map;
 using Game.Setup;
@@ -21,14 +22,14 @@ namespace Game.Logic.Procedures
         /// <param name="cityName"></param>
         /// <param name="city"></param>
         /// <returns></returns>
-        public virtual bool CreateCity(Player player, string cityName, out City city)
+        public virtual bool CreateCity(Player player, string cityName, out ICity city)
         {
             city = null;
             Structure mainBuilding;
             if (!Randomizer.MainBuilding(out mainBuilding, Formula.Current.GetInitialCityRadius(), 1))
             {
                 World.Current.Players.Remove(player.PlayerId);
-                Ioc.Kernel.Get<IDbManager>().Rollback();
+                DbPersistance.Current.Rollback();
                 // If this happens I'll be a very happy game developer
                 return false;
             }

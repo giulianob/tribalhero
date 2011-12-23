@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -54,7 +55,7 @@ namespace Game.Logic.Actions
                                  int.Parse(properties["iron"]),
                                  int.Parse(properties["wood"]),
                                  int.Parse(properties["labor"]));
-            City targetCity;
+            ICity targetCity;
             World.Current.TryGetObjects(targetCityId, out targetCity);
             RegisterBattleListeners(targetCity);
         }
@@ -83,7 +84,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void RegisterBattleListeners(City targetCity)
+        private void RegisterBattleListeners(ICity targetCity)
         {
             targetCity.Battle.ActionAttacked += BattleActionAttacked;
             targetCity.Battle.ExitBattle += BattleExitBattle;
@@ -93,7 +94,7 @@ namespace Game.Logic.Actions
             targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
-        private void DeregisterBattleListeners(City targetCity)
+        private void DeregisterBattleListeners(ICity targetCity)
         {
             targetCity.Battle.ActionAttacked -= BattleActionAttacked;
             targetCity.Battle.ExitBattle -= BattleExitBattle;
@@ -123,8 +124,8 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            City targetCity;
+            ICity city;
+            ICity targetCity;
             TroopStub stub;
 
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
@@ -172,8 +173,8 @@ namespace Game.Logic.Actions
         private void BattleWithdrawAttacker(IEnumerable<CombatObject> list)
         {
             TroopStub stub;
-            City targetCity;
-            City city;
+            ICity targetCity;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
@@ -198,8 +199,8 @@ namespace Game.Logic.Actions
         private void BattleUnitRemoved(CombatObject co)
         {
             TroopStub stub;
-            City targetCity;
-            City city;
+            ICity targetCity;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
@@ -247,7 +248,7 @@ namespace Game.Logic.Actions
 
         private void BattleExitTurn(CombatList atk, CombatList def, int turn)
         {
-            City city;            
+            ICity city;            
             TroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new ArgumentException();
@@ -256,7 +257,7 @@ namespace Game.Logic.Actions
             // some stamina after knocking down a building
             if (stub.TroopObject.Stats.Stamina == 0)
             {
-                City targetCity;
+                ICity targetCity;
                 if (!World.Current.TryGetObjects(targetCityId, out targetCity))
                     throw new ArgumentException();
 
@@ -266,8 +267,8 @@ namespace Game.Logic.Actions
 
         private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
         {
-            City city;
-            City targetCity;
+            ICity city;
+            ICity targetCity;
             TroopStub stub;
 
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
@@ -296,7 +297,7 @@ namespace Game.Logic.Actions
                         if (structure.Properties.TryGet("Labor", out value))
                             bonus.Labor += (int)value;
 
-                        Ioc.Kernel.Get<IDbManager>().Save(this);
+                        DbPersistance.Current.Save(this);
                     }
 
                     ReduceStamina(stub, BattleFormulas.Current.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina, target as CombatStructure));
@@ -318,8 +319,8 @@ namespace Game.Logic.Actions
 
         private void BattleExitBattle(CombatList atk, CombatList def)
         {
-            City city;
-            City targetCity;
+            ICity city;
+            ICity targetCity;
             TroopStub stub;
 
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
@@ -340,9 +341,9 @@ namespace Game.Logic.Actions
         
         private void BattleEnterRound(CombatList atk, CombatList def, uint round)
         {
-            City city;
+            ICity city;
             TroopStub stub;
-            City targetCity;
+            ICity targetCity;
 
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();

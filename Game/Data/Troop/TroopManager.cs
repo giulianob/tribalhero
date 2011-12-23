@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -55,13 +56,13 @@ namespace Game.Data.Troop
             }
         }
 
-        public City City { get; set; }
+        public ICity City { get; set; }
 
         #endregion
 
         #region Methods
 
-        public TroopManager(City city)
+        public TroopManager(ICity city)
         {
             City = city;
         }
@@ -86,7 +87,7 @@ namespace Game.Data.Troop
 
             CheckUpdateMode();
 
-            Ioc.Kernel.Get<IDbManager>().Save(stub);
+            DbPersistance.Current.Save(stub);
 
             if (TroopUpdated != null)
                 TroopUpdated(stub);
@@ -112,7 +113,7 @@ namespace Game.Data.Troop
 
             //We don't want to delete a troopstub that doesn't belong to us.
             if (stub.City == City)
-                Ioc.Kernel.Get<IDbManager>().Delete(stub);
+                DbPersistance.Current.Delete(stub);
 
             if (TroopRemoved != null)
                 TroopRemoved(stub);
@@ -246,7 +247,7 @@ namespace Game.Data.Troop
                 {
                     if (stub.StationedCity != null)
                     {
-                        City stationedCity = stub.StationedCity;
+                        ICity stationedCity = stub.StationedCity;
                         stationedCity.Troops.RemoveStationed(stub.StationedTroopId);
                     }
 

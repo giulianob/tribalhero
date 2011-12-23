@@ -50,7 +50,7 @@ namespace ConsoleSimulator
         private readonly TroopStub attack;
         private List<Structure> structures = new List<Structure>();
 
-        private readonly City city;
+        private readonly ICity city;
         private readonly TroopObject obj;
         private readonly Player player;
 
@@ -117,7 +117,7 @@ namespace ConsoleSimulator
             }
         }
 
-        public City City
+        public ICity City
         {
             get
             {

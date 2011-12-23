@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.Common;
 using System.Dynamic;
 using Game.Data;
+using Game.Database;
 using Game.Logic.Actions;
 using Game.Map;
 using Game.Setup;
@@ -103,7 +104,7 @@ namespace Game.Comm.ProcessorCommands
                 List<dynamic> ranks = new List<dynamic>();
 
                 using (DbDataReader reader =
-                        Ioc.Kernel.Get<IDbManager>().ReaderQuery(
+                        DbPersistance.Current.ReaderQuery(
                                                      string.Format("SELECT `city_id`, `rank`, `type` FROM `rankings` WHERE player_id = @playerId ORDER BY `type` ASC"),
                                                      new[] { new DbColumn("playerId", player.PlayerId, DbType.String) }))
                 {                    
@@ -196,7 +197,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 reply.AddString(city.Owner.Name);
@@ -249,7 +250,7 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            Dictionary<uint, City> cities;
+            Dictionary<uint, ICity> cities;
             using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
@@ -258,7 +259,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                City city = cities[cityId];
+                ICity city = cities[cityId];
 
                 Structure structure;
                 if (!city.TryGetStructure(objectId, out structure))

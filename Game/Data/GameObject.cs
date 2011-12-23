@@ -29,7 +29,7 @@ namespace Game.Data
 
         #region ICanDo Members
 
-        public City City { get; set; }
+        public ICity City { get; set; }
 
         public override uint GroupId
         {

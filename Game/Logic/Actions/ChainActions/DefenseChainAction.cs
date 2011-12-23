@@ -59,7 +59,7 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             TroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
@@ -67,7 +67,7 @@ namespace Game.Logic.Actions
             if (city.Troops.Size > 12)
                 return Error.TooManyTroops;
 
-            City targetCity;
+            ICity targetCity;
             if (!World.Current.TryGetObjects(targetCityId, out targetCity))
                 return Error.ObjectNotFound;
 
@@ -98,12 +98,12 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                Dictionary<uint, City> cities;
+                Dictionary<uint, ICity> cities;
 
                 using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
-                    City city = cities[cityId];
-                    City targetCity = cities[targetCityId];
+                    ICity city = cities[cityId];
+                    ICity targetCity = cities[targetCityId];
 
                     TroopStub stub;
                     if (!city.Troops.TryGetStub(stubId, out stub))

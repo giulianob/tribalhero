@@ -32,7 +32,7 @@ namespace Game.Data.Troop
         Defense = 2,
     }
 
-    public class TroopStub : IEnumerable<Formation>, IPersistableList, ILockable
+    public class TroopStub : ITroopStub
     {
         public const string DB_TABLE = "troop_stubs";
         private readonly object objLock = new object();
@@ -55,7 +55,7 @@ namespace Game.Data.Troop
         #region Properties
 
         private TroopState state = TroopState.Idle;
-        private City stationedCity;
+        private ICity stationedCity;
         private byte troopId;
         private TroopObject troopObject;
         public TroopTemplate Template { get; private set; }
@@ -90,7 +90,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public City City
+        public ICity City
         {
             get
             {
@@ -100,7 +100,7 @@ namespace Game.Data.Troop
 
         public byte StationedTroopId { get; set; }
 
-        public City StationedCity
+        public ICity StationedCity
         {
             get
             {

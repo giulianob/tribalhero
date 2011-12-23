@@ -56,7 +56,7 @@ namespace Game
 
             #region CSV Factories
 
-            Bind<ActionFactory>().ToMethod(ctx => new ActionFactory(Path.Combine(Config.csv_compiled_folder, "action.csv"))).InSingletonScope();
+            Bind<ActionRequirementFactory>().ToMethod(ctx => new ActionRequirementFactory(Path.Combine(Config.csv_compiled_folder, "action.csv"))).InSingletonScope();
             Bind<StructureFactory>().ToMethod(ctx => new StructureFactory(Path.Combine(Config.csv_compiled_folder, "structure.csv"))).InSingletonScope();
             Bind<EffectRequirementFactory>().ToMethod(ctx => new EffectRequirementFactory(Path.Combine(Config.csv_compiled_folder, "effect_requirement.csv"))).InSingletonScope();
             Bind<InitFactory>().ToMethod(ctx => new InitFactory(Path.Combine(Config.csv_compiled_folder, "init.csv"))).InSingletonScope();
@@ -93,11 +93,11 @@ namespace Game
                     .First(p => p.Name == "owner")
                     .GetValue(ctx, ctx.Request.Target));
 
-            Bind<ICity>().To<City>();
+            Bind<ICity>().To<ICity>();
 
             Bind<IBattleReport>().To<BattleReport>();
 
-            Bind<BattleManager.Factory>().ToMethod(ctx => delegate(City city)
+            Bind<BattleManager.Factory>().ToMethod(ctx => delegate(ICity city)
                 {
                     var bm = Kernel.Get<BattleManager>(new ConstructorArgument("owner", city));
                     bm.BattleReport.Battle = bm;

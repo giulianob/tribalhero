@@ -1,4 +1,5 @@
-﻿using Game.Setup;
+﻿using Game.Database;
+using Game.Setup;
 using Ninject;
 using Persistance;
 
@@ -16,12 +17,12 @@ namespace Game.Util.Locking
         public void Lock(params ILockable[] list)
         {            
             lck.Lock(list);
-            Ioc.Kernel.Get<IDbManager>().GetThreadTransaction();
+            DbPersistance.Current.GetThreadTransaction();
         }
 
         public void UnlockAll()
         {
-            var transaction = Ioc.Kernel.Get<IDbManager>().GetThreadTransaction(true);
+            var transaction = DbPersistance.Current.GetThreadTransaction(true);
             if (transaction != null)
             {
                 transaction.Dispose();

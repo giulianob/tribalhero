@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -80,7 +81,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             structure[name] = value;
-            Ioc.Kernel.Get<IDbManager>().Save(structure);
+            DbPersistance.Current.Save(structure);
             StateChange(ActionState.Completed);
 
             return Error.Ok;

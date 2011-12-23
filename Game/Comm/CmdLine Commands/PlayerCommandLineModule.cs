@@ -3,6 +3,7 @@
 using System;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Database;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
@@ -74,7 +75,7 @@ namespace Game.Comm
                     return "New tribe name is already taken";
 
                 tribe.Name = newTribeName;
-                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+                DbPersistance.Current.Save(tribe);
             }
 
             return "OK!";
@@ -104,7 +105,7 @@ namespace Game.Comm
             if (help || string.IsNullOrEmpty(message) || string.IsNullOrEmpty(subject))
                 return "broadcastmail --subject=\"SUBJECT\" --message=\"MESSAGE\"";
 
-            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] {}))
+            using (var reader = DbPersistance.Current.ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] {}))
             {
                 while (reader.Read())
                 {
@@ -234,7 +235,7 @@ namespace Game.Comm
                 }
 
                 player.Name = newPlayerName;
-                Ioc.Kernel.Get<IDbManager>().Save(player);
+                DbPersistance.Current.Save(player);
             }
 
             return "OK!";
@@ -376,7 +377,7 @@ namespace Game.Comm
                     }
                 }
 
-                foreach (City city in player.GetCityList())
+                foreach (ICity city in player.GetCityList())
                 {
                     CityRemover cr = new CityRemover(city.Id);
                     cr.Start();

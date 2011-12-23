@@ -12,7 +12,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 namespace Game.Data.Tribe
@@ -28,6 +27,8 @@ namespace Game.Data.Tribe
         private readonly IScheduler scheduler;
         private readonly Procedure procedure;
         private readonly TileLocator tileLocator;
+
+        private readonly IActionFactory actionFactory;
 
         /// <summary>
         /// List of stubs in this assignment
@@ -62,7 +63,7 @@ namespace Game.Data.Tribe
         /// <summary>
         /// City this assignment is targetting
         /// </summary>
-        public City TargetCity { get; private set; }
+        public ICity TargetCity { get; private set; }
 
         /// <summary>
         /// Time that the assignment will end (time it should reach its target)
@@ -117,7 +118,8 @@ namespace Game.Data.Tribe
         /// <param name="scheduler"> </param>
         /// <param name="procedure"> </param>
         /// <param name="tileLocator"> </param>
-        public Assignment(int id, Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator)
+        /// <param name="actionFactory"> </param>
+        public Assignment(int id, Tribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -125,6 +127,7 @@ namespace Game.Data.Tribe
             this.scheduler = scheduler;
             this.procedure = procedure;
             this.tileLocator = tileLocator;
+            this.actionFactory = actionFactory;
 
             Id = id;
             Tribe = tribe;
@@ -155,7 +158,8 @@ namespace Game.Data.Tribe
         /// <param name="scheduler"> </param>
         /// <param name="procedure"> </param>
         /// <param name="tileLocator"> </param>
-        public Assignment(Tribe tribe, uint x, uint y, City targetCity, AttackMode mode, DateTime targetTime, TroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator)
+        /// <param name="actionFactory"> </param>
+        public Assignment(Tribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, TroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -163,6 +167,7 @@ namespace Game.Data.Tribe
             this.scheduler = scheduler;
             this.procedure = procedure;
             this.tileLocator = tileLocator;
+            this.actionFactory = actionFactory;
 
             Id = IdGen.GetNext();
             Tribe = tribe;
@@ -236,10 +241,13 @@ namespace Game.Data.Tribe
         /// <param name="newState"></param>
         private void StubOnStateSwitched(TroopStub stub, TroopState newState)
         {
-            if (newState == TroopState.Battle)
+            lock (assignmentLock)
             {
-                RemoveStub(stub);
-                Reschedule();
+                if (newState == TroopState.Battle)
+                {
+                    RemoveStub(stub);
+                    Reschedule();
+                }
             }
         }
 
@@ -293,7 +301,7 @@ namespace Game.Data.Tribe
             // Create troop object
             procedure.TroopObjectCreate(stub.City, stub);
 
-            var action = new AttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
+            var action = actionFactory.CreateAttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
             if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
             {
                 procedure.TroopObjectDelete(stub.TroopObject, true);
@@ -358,8 +366,18 @@ namespace Game.Data.Tribe
             }
             else
             {
+                // Remove all stubs from the assignment before removing it completely                
+                var stubs = assignmentTroops.Select(x => x.Stub).ToList();
+
+                foreach (var stub in stubs)
+                {
+                    RemoveStub(stub);
+                }
+
+                // Call assignment complete
                 AssignmentComplete(this);
 
+                // Delete the obj
                 if (DbPersisted)
                 {
                     dbManager.Delete(this);

@@ -12,7 +12,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual void RecalculateCityResourceRates(City city)
+        public virtual void RecalculateCityResourceRates(ICity city)
         {
             city.Resource.Crop.Rate = Formula.Current.GetCropRate(city);
             city.Resource.Iron.Rate = Formula.Current.GetIronRate(city);

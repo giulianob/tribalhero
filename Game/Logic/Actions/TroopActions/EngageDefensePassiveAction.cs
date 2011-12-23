@@ -34,7 +34,7 @@ namespace Game.Logic.Actions
             originalHp = int.Parse(properties["original_hp"]);
             remainingHp = int.Parse(properties["remaining_hp"]);
 
-            City city;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception();
 
@@ -70,7 +70,7 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             TroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
@@ -110,7 +110,7 @@ namespace Game.Logic.Actions
             if (unit == null)
                 return;
 
-            City city;
+            ICity city;
             TroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
@@ -134,7 +134,7 @@ namespace Game.Logic.Actions
 
         private void BattleExitBattle(CombatList atk, CombatList def)
         {
-            City city;
+            ICity city;
             TroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();

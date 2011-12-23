@@ -13,9 +13,9 @@ namespace Game.Battle
     public class ReportedTroops : Dictionary<TroopStub, uint>, IPersistableList
     {
         public const string DB_TABLE = "reported_troops";
-        private readonly City city;
+        private readonly ICity city;
 
-        public ReportedTroops(City city)
+        public ReportedTroops(ICity city)
         {
             this.city = city;
         }
@@ -94,9 +94,9 @@ namespace Game.Battle
     public class ReportedObjects : List<CombatObject>, IPersistableList
     {
         public const string DB_TABLE = "reported_objects";
-        private readonly City city;
+        private readonly ICity city;
 
-        public ReportedObjects(City city)
+        public ReportedObjects(ICity city)
         {
             this.city = city;
         }

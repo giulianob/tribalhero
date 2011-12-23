@@ -4,6 +4,7 @@ using System;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -85,7 +86,7 @@ namespace Game.Battle
 
         public abstract uint PlayerId { get; }
 
-        public abstract City City { get; }
+        public abstract ICity City { get; }
 
         public abstract byte Lvl { get; }
 
@@ -137,7 +138,7 @@ namespace Game.Battle
         {
             Disposed = true;
 
-            Ioc.Kernel.Get<IDbManager>().Delete(this);
+            DbPersistance.Current.Delete(this);
         }
 
         public bool CanSee(CombatObject obj, uint lowestSteath)

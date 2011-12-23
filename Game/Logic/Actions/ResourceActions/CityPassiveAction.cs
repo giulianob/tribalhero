@@ -17,10 +17,10 @@ namespace Game.Logic.Actions
     class CityPassiveAction : ScheduledPassiveAction
     {
 
-        private delegate void Init(City city);
-        private delegate void PreLoop(City city);
-        private delegate void PostLoop(City city);
-        private delegate void StructureLoop(City city, Structure structure);
+        private delegate void Init(ICity city);
+        private delegate void PreLoop(ICity city);
+        private delegate void PostLoop(ICity city);
+        private delegate void StructureLoop(ICity city, Structure structure);
 
         private event Init InitVars;
         private event PreLoop PreFirstLoop;
@@ -87,7 +87,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
@@ -105,7 +105,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {            
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())

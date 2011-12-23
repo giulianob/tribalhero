@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -110,7 +111,7 @@ namespace Game.Comm
             if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
@@ -137,7 +138,7 @@ namespace Game.Comm
 
                 TroopStub stub = new TroopStub { city.DefaultTroop };
                 Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                Ioc.Kernel.Get<IDbManager>().Save(stub);
+                DbPersistance.Current.Save(stub);
 
                 targetStructure = World.Current.GetObjects(x, y).OfType<Structure>().First();
 
@@ -180,7 +181,7 @@ namespace Game.Comm
             if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
+            ICity city;
             TroopStub stub = new TroopStub();
             if (!World.Current.TryGetObjects(cityId, out city))
             {
@@ -201,7 +202,7 @@ namespace Game.Comm
                 }
                 stub.Add(city.DefaultTroop);
                 Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                Ioc.Kernel.Get<IDbManager>().Save(stub);
+                DbPersistance.Current.Save(stub);
 
                 Error error = tribe.JoinAssignment(id, stub);
                 if (error != Error.Ok)

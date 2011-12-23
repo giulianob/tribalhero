@@ -22,7 +22,7 @@ namespace Game.Battle
 {
     public class BattleManager : IBattleManager
     {
-        public delegate IBattleManager Factory(City owner);
+        public delegate IBattleManager Factory(ICity owner);
 
         public const string DB_TABLE = "battle_managers";
         private readonly CombatList attackers;
@@ -39,7 +39,7 @@ namespace Game.Battle
         private uint battleId;
         private BattleOrder battleOrder = new BattleOrder(0);
         private bool battleStarted;
-        private City city;
+        private ICity city;
         private uint round;
         private uint turn;
 
@@ -54,7 +54,7 @@ namespace Game.Battle
             this.dbManager = dbManager;            
             this.combatUnitFactory = combatUnitFactory;
             this.objectTypeFactory = objectTypeFactory;
-            city = (City)owner;
+            city = (ICity)owner;
             report = battleReport;
 
             // Group id 1 is reserved for local troop
@@ -116,7 +116,7 @@ namespace Game.Battle
             }
         }
 
-        public City City
+        public ICity City
         {
             get
             {
@@ -168,11 +168,11 @@ namespace Game.Battle
             }
         }
 
-        public City[] LockList
+        public ICity[] LockList
         {
             get
             {
-                var cities = new Dictionary<uint, City> {{city.Id, city}};
+                var cities = new Dictionary<uint, ICity> {{city.Id, city}};
 
                 foreach (var co in attackers)
                     cities[co.City.Id] = co.City;
@@ -839,7 +839,7 @@ namespace Game.Battle
                 {
                     // Give anyone stationed defense points as well
                     // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
-                    var uniqueCities = new List<City>();
+                    var uniqueCities = new List<ICity>();
 
                     foreach (var co in defenders)
                     {

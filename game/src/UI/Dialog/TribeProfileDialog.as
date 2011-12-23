@@ -189,6 +189,7 @@
 				var assignmentCreate: AssignmentCreateProcess = new AssignmentCreateProcess();
 				assignmentCreate.execute();
 			});
+			new SimpleTooltip(btnCreate, "An assignment is an organized attack used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
 			
 			return pnlAssignmentHolder;
 		}
@@ -197,7 +198,7 @@
 			var modelMembers: VectorListModel = new VectorListModel(profileData.members);
 			var tableMembers: JTable = new JTable(new PropertyTableModel(
 				modelMembers, 
-				["Player", "Rank", "Last Login", ""],
+				["Player", "Rank", "Last Seen", ""],
 				[".", "rank", "date", "."],
 				[null, new TribeRankTranslator(), null]
 			));			

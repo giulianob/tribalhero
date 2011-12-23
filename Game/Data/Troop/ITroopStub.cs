@@ -32,7 +32,7 @@ namespace Game.Data.Troop
 
         ushort TotalCount { get; }
 
-        int TotalHp { get; }
+        decimal TotalHp { get; }
 
         byte Speed { get; }
 

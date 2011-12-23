@@ -130,20 +130,6 @@ namespace Game.Data.Tribe
         /// Creates a new assignment.
         /// An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
         /// </summary>
-        /// <param name="tribe"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="targetCity"></param>
-        /// <param name="mode"></param>
-        /// <param name="targetTime"></param>
-        /// <param name="stub"></param>
-        /// <param name="formula"> </param>
-        /// <param name="dbManager"> </param>
-        /// <param name="gameObjectLocator"> </param>
-        /// <param name="scheduler"> </param>
-        /// <param name="procedure"> </param>
-        /// <param name="tileLocator"> </param>
-        /// <param name="actionFactory"> </param>
         public Assignment(Tribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;

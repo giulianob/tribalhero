@@ -66,7 +66,7 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city, targetCity;
+            ICity city, targetCity;
             Structure structure;
 
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
@@ -100,7 +100,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        public int CalculateTradeTime(Structure structure, City targetCity)
+        public int CalculateTradeTime(Structure structure, ICity targetCity)
         {
             return (int)CalculateTime(Formula.Current.SendTime(structure, SimpleGameObject.TileDistance(structure.X, structure.Y, targetCity.X, targetCity.Y)));
         }
@@ -116,7 +116,7 @@ namespace Game.Logic.Actions
         }
 
         private void InterruptCatchAll(bool wasKilled) {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
@@ -139,18 +139,18 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            Dictionary<uint, City> cities;
+            Dictionary<uint, ICity> cities;
             using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
             {
                 if (!IsValid())
                     return;
                 // what if city is not there anymore?
-                City target = cities[targetCityId];
+                ICity target = cities[targetCityId];
                 target.BeginUpdate();
                 target.Resource.Add(resource);
                 target.EndUpdate();
 
-                City sender = cities[cityId];
+                ICity sender = cities[cityId];
                 target.Owner.SendSystemMessage(sender.Owner,
                                                string.Format("{0} has sent you resources", sender.Name),
                                                string.Format("{0} has sent you {1} to {2}.", sender.Owner.Name, resource.ToNiceString(), target.Name));

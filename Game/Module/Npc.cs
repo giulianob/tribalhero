@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -20,7 +21,7 @@ namespace Game.Module
 {
     public class Ai : ISchedule
     {
-        private static readonly List<ushort> allowedBuildings = new List<ushort>(new ushort[] {2110, 2202, 2301, 2302, 2501, 2502, 2402});
+        private static readonly List<ushort> allowedBuildings = new List<ushort>(new ushort[] { 2110, 2202, 2301, 2302, 2501, 2502, 2402 });
 
         private readonly List<Intelligence> playerList = new List<Intelligence>();
         private readonly Random rand = new Random();
@@ -48,7 +49,7 @@ namespace Game.Module
             }
 
             //we want there to be relatively 
-            var cnt = (int)(playerList.Count*0.25);
+            var cnt = (int)(playerList.Count * 0.25);
 
             DateTime now = DateTime.UtcNow;
             int successCount = 0;
@@ -76,25 +77,25 @@ namespace Game.Module
 
                         var step = (byte)rand.Next(0, 4);
 
-                        switch(step)
+                        switch (step)
                         {
                             case 0:
-                                if (rand.Next(0, 100) < 100*intelligence.builder)
+                                if (rand.Next(0, 100) < 100 * intelligence.builder)
                                     ret = UpgradeStructure(city, x, y);
                                 break;
                             case 1:
-                                if (rand.Next(0, 100) < 100*intelligence.builder)
+                                if (rand.Next(0, 100) < 100 * intelligence.builder)
                                     ret = BuildStructure(city, x, y);
                                 break;
                             case 2:
-                                if (rand.Next(0, 1000) < 100*intelligence.military)
+                                if (rand.Next(0, 1000) < 100 * intelligence.military)
                                     ret = TrainUnit(intelligence, city);
                                 break;
                             case 3:
                                 ret = SetLabor(city);
                                 break;
                             case 4:
-                                intelligence.savingUp = (byte)(rand.Next(5, 20)*intelligence.builder);
+                                intelligence.savingUp = (byte)(rand.Next(5, 20) * intelligence.builder);
                                 ret = true;
                                 break;
                             default:
@@ -108,15 +109,15 @@ namespace Game.Module
             }
 
             var timeTaken = (int)DateTime.UtcNow.Subtract(now).TotalMilliseconds;
-            Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms", timeTaken, successCount, (double)timeTaken/successCount));
+            Global.Logger.Info(String.Format("Took {0} ms for {1} actions. Average: {2}ms", timeTaken, successCount, (double)timeTaken / successCount));
 
-            time = DateTime.UtcNow.AddSeconds(30*Config.seconds_per_unit);
+            time = DateTime.UtcNow.AddSeconds(30 * Config.seconds_per_unit);
             Scheduler.Current.Put(this);
         }
 
         #endregion
 
-        private static bool SetLabor(City city)
+        private static bool SetLabor(ICity city)
         {
             if (city.Resource.Labor.Value == 0)
                 return true;
@@ -140,7 +141,7 @@ namespace Game.Module
             return true;
         }
 
-        private bool TrainUnit(Intelligence intelligence, City city)
+        private bool TrainUnit(Intelligence intelligence, ICity city)
         {
             Dictionary<uint, Structure>.Enumerator enumerator = city.Structures;
             while (enumerator.MoveNext())
@@ -148,7 +149,7 @@ namespace Game.Module
                 Structure structure = enumerator.Current.Value;
 
                 int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
-                ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(workerType);
+                ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
 
@@ -161,7 +162,7 @@ namespace Game.Module
                     {
                         ushort unitType = ushort.Parse(req.Parms[0]);
                         Resource costPerUnit = city.Template[unitType].Cost;
-                        ushort count = Math.Min((ushort)15, (ushort)(city.Resource.FindMaxAffordable(costPerUnit)*intelligence.military));
+                        ushort count = Math.Min((ushort)15, (ushort)(city.Resource.FindMaxAffordable(costPerUnit) * intelligence.military));
 
                         var action = new UnitTrainActiveAction(city.Id, structure.ObjectId, unitType, count);
                         if (city.Worker.DoActive(workerType, structure, action, structure.Technologies) == Error.Ok)
@@ -176,7 +177,7 @@ namespace Game.Module
             return false;
         }
 
-        private bool BuildStructure(City city, uint x, uint y)
+        private bool BuildStructure(ICity city, uint x, uint y)
         {
             List<SimpleGameObject> objects = World.Current.GetObjects(x, y);
             if (objects.Count > 0)
@@ -187,7 +188,7 @@ namespace Game.Module
             {
                 Structure structure = enumerator.Current.Value;
                 int workerType = Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure);
-                ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(workerType);
+                ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
                 if (record == null)
                     continue;
 
@@ -215,7 +216,7 @@ namespace Game.Module
             return false;
         }
 
-        private static bool UpgradeStructure(City city, uint x, uint y)
+        private static bool UpgradeStructure(ICity city, uint x, uint y)
         {
             List<SimpleGameObject> objects = World.Current.GetObjects(x, y);
             Structure structure = null;
@@ -253,7 +254,7 @@ namespace Game.Module
 
             for (uint i = 1; i <= Config.ai_count; ++i)
             {
-                if (i%100 == 0)
+                if (i % 100 == 0)
                     Global.Logger.Info(String.Format("Creating NPC {0}/{1}...", i, Config.ai_count));
 
                 uint idx = 50000 + i;
@@ -266,7 +267,7 @@ namespace Game.Module
                     if (!World.Current.Players.ContainsKey(idx))
                     {
                         World.Current.Players.Add(idx, npc);
-                        Ioc.Kernel.Get<IDbManager>().Save(npc);
+                        DbPersistance.Current.Save(npc);
                         Global.Ai.playerList.Add(intelligence);
                     }
                     else
@@ -276,7 +277,7 @@ namespace Game.Module
                         continue;
                     }
 
-                    IEnumerable<City> cities = npc.GetCityList();
+                    IEnumerable<ICity> cities = npc.GetCityList();
 
                     Structure structure;
                     if (!Randomizer.MainBuilding(out structure, Formula.Current.GetInitialCityRadius(), 2))
@@ -317,7 +318,7 @@ namespace Game.Module
 
         private static bool BuildBasicStructures(uint origX, uint origY, uint x, uint y, object custom)
         {
-            var city = (custom as City);
+            var city = (custom as ICity);
 
             ushort tileType = World.Current.GetTileType(x, y);
             if (Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileTree", tileType))

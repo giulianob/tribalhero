@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Game.Data;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -183,13 +184,13 @@ namespace Game.Comm.ProcessorCommands
 
                     player.Session = session;
                     player.SessionId = sessionId;
-                    Ioc.Kernel.Get<IDbManager>().Save(player);
+                    DbPersistance.Current.Save(player);
                 }
                 else
                 {
                     player.SessionId = sessionId;
                     player.Session = session;
-                    Ioc.Kernel.Get<IDbManager>().Save(player);
+                    DbPersistance.Current.Save(player);
                 }
 
                 //User session backreference
@@ -262,7 +263,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                City city;
+                ICity city;
 
                 lock (World.Current.Lock)
                 {

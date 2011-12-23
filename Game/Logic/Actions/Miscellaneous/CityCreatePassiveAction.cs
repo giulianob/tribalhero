@@ -71,7 +71,8 @@ namespace Game.Logic.Actions {
 
         public override Error Execute()
         {
-            City city, newCity;
+            ICity city;
+            ICity newCity;
             Structure structure;
 
             if (!World.Current.TryGetObjects(cityId, out city))
@@ -171,7 +172,7 @@ namespace Game.Logic.Actions {
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 CityRemover remover = new CityRemover(newCityId);
@@ -187,7 +188,7 @@ namespace Game.Logic.Actions {
 
         public override void Callback(object custom)
         {
-            City newCity;
+            ICity newCity;
             Structure structure;
 
             using (Concurrency.Current.Lock(newCityId, newStructureId, out newCity, out structure))

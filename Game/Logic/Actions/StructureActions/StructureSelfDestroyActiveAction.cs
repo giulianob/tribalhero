@@ -66,7 +66,7 @@ namespace Game.Logic.Actions
         
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
             
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
@@ -102,7 +102,7 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
 
             endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
@@ -116,7 +116,7 @@ namespace Game.Logic.Actions
 
         public override Error Validate(string[] parms)
         {
-            City city;
+            ICity city;
 
             if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
@@ -128,7 +128,7 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
@@ -141,7 +141,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {

@@ -5,6 +5,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
@@ -21,7 +22,7 @@ namespace Game.Module
 
         #region ICityRemoverFactory Members
 
-        public ICityRemover CreateCityRemover(City city) {
+        public ICityRemover CreateCityRemover(ICity city) {
             return new CityRemover(city.Id);
         }
 
@@ -51,7 +52,7 @@ namespace Game.Module
 
         public bool Start(bool force = false)
         {
-            City city;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 
@@ -83,17 +84,17 @@ namespace Game.Module
 
         private static ILockable[] GetForeignTroopLockList(object[] custom)
         {
-            return ((City)custom[0]).Troops.StationedHere().Select(stub => stub.City).Distinct().Cast<ILockable>().ToArray();
+            return ((ICity)custom[0]).Troops.StationedHere().Select(stub => stub.City).Distinct().Cast<ILockable>().ToArray();
         }
 
         private static ILockable[] GetLocalTroopLockList(object[] custom)
         {
             return
-                    ((City)custom[0]).Troops.MyStubs().Where(x => x.StationedCity != null).Select(stub => stub.StationedCity).Distinct().Cast<ILockable>().
+                    ((ICity)custom[0]).Troops.MyStubs().Where(x => x.StationedCity != null).Select(stub => stub.StationedCity).Distinct().Cast<ILockable>().
                             ToArray();
         }
 
-        private static Error RemoveForeignTroop(City city, TroopStub stub)
+        private static Error RemoveForeignTroop(ICity city, TroopStub stub)
         {
             if (!Procedure.Current.TroopObjectCreateFromStation(stub, city.X, city.Y))
             {
@@ -105,7 +106,7 @@ namespace Game.Module
 
         public void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure mainBuilding;
 
             if (!World.Current.TryGetObjects(cityId, out city))
@@ -136,7 +137,7 @@ namespace Game.Module
 
                 // If city is being targetted by an assignment, try again later
                 var reader =
-                        Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
+                        DbPersistance.Current.ReaderQuery(string.Format("SELECT id FROM `{0}` WHERE `city_id` = @cityId  LIMIT 1", Assignment.DB_TABLE),
                                                                  new[] {new DbColumn("cityId", city.Id, DbType.UInt32)});
                 bool beingTargetted = reader.HasRows;
                 reader.Close();

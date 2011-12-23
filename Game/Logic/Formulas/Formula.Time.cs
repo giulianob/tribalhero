@@ -46,7 +46,7 @@ namespace Game.Logic.Formulas
             return baseValue*(100 - TimeDiscount(structureLvl))/100;
         }
 
-        public virtual int BuildTime(int baseValue, City city, TechnologyManager em)
+        public virtual int BuildTime(int baseValue, ICity city, TechnologyManager em)
         {
             Structure university = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("University", structure));
             return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
@@ -108,7 +108,7 @@ namespace Game.Logic.Formulas
         /// <param name = "laborTotal"></param>
         /// <param name = "city"></param>
         /// <returns></returns>
-        public virtual int GetLaborRate(int laborTotal, City city)
+        public virtual int GetLaborRate(int laborTotal, ICity city)
         {
             if (laborTotal < 140)
                 laborTotal = 140;

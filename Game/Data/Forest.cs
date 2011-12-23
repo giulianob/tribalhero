@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
@@ -266,7 +267,7 @@ namespace Game.Data
                 return;
 
             if (objectId > 0)
-                Ioc.Kernel.Get<IDbManager>().Save(this);
+                DbPersistance.Current.Save(this);
         }
 
         #endregion

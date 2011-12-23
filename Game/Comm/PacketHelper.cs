@@ -294,7 +294,7 @@ namespace Game.Comm
             packet.AddString(session.Player.Tribesman == null ? string.Empty : session.Player.Tribesman.Tribe.Name);
 
             //Cities
-            IEnumerable<City> list = session.Player.GetCityList();
+            IEnumerable<ICity> list = session.Player.GetCityList();
             packet.AddByte((byte)session.Player.GetCityCount());
             foreach (var city in list)
             {
@@ -303,7 +303,7 @@ namespace Game.Comm
             }
         }
 
-        public static void AddToPacket(City city, Packet packet)
+        public static void AddToPacket(ICity city, Packet packet)
         {
             packet.AddUInt32(city.Id);
             packet.AddString(city.Name);

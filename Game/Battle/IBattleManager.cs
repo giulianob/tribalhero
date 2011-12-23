@@ -12,13 +12,13 @@ namespace Game.Battle
         bool BattleStarted { get; set; }
         uint Round { get; set; }
         uint Turn { get; set; }
-        City City { get; set; }
+        ICity City { get; set; }
         CombatList Attacker { get; }
         CombatList Defender { get; }
         IBattleReport BattleReport { get; }
         ReportedObjects ReportedObjects { get; }
         ReportedTroops ReportedTroops { get; }
-        City[] LockList { get; }
+        ICity[] LockList { get; }
         void Subscribe(Session session);
         void Unsubscribe(Session session);
         CombatObject GetCombatObject(uint id);

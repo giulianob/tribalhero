@@ -227,7 +227,7 @@ namespace DatabaseGenerator
                 {
                     structureLevel++;
 
-                    ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(stats.WorkerId);
+                    ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;
@@ -245,7 +245,7 @@ namespace DatabaseGenerator
 
         private static IEnumerable<string> GetTechnologyRequirements(uint type, byte level, StructureBaseStats trainer)
         {
-            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(trainer.WorkerId);
+            ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(trainer.WorkerId);
 
             ActionRequirement foundAction = record.List.FirstOrDefault(action => action.Type == ActionType.TechnologyUpgradeActive && ushort.Parse(action.Parms[0]) == type && ushort.Parse(action.Parms[1]) >= level);
 
@@ -372,7 +372,7 @@ namespace DatabaseGenerator
                 {
                     structureLevel++;
 
-                    ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(stats.WorkerId);
+                    ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;
@@ -401,7 +401,7 @@ namespace DatabaseGenerator
 
         private static IEnumerable<string> GetUnitRequirements(ushort type, byte level, StructureBaseStats trainer)
         {
-            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(trainer.WorkerId);
+            ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(trainer.WorkerId);
 
             ActionRequirement foundAction;
             
@@ -518,7 +518,7 @@ namespace DatabaseGenerator
 
         private static IEnumerable<string> GetStructureRequirements(ushort type, byte level, StructureBaseStats builder)
         {
-            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(builder.WorkerId);
+            ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(builder.WorkerId);
 
             ActionRequirement foundAction = null;
             foreach (var action in record.List)
@@ -574,7 +574,7 @@ namespace DatabaseGenerator
                 {
                     structureLevel++;
 
-                    ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(stats.WorkerId);
+                    ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(stats.WorkerId);
 
                     if (record == null)
                         continue;

@@ -59,7 +59,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -117,7 +117,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {

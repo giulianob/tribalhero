@@ -95,7 +95,7 @@ namespace Game.Comm.CmdLine_Commands
             if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)

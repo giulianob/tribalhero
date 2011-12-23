@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -30,13 +31,13 @@ namespace Game.Logic
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
 
         private readonly ListDictionary<uint, ActiveAction> active = new ListDictionary<uint, ActiveAction>();
-        private readonly City city;
+        private readonly ICity city;
 
         private readonly NotificationManager notifications;
         private readonly ListDictionary<uint, PassiveAction> passive = new ListDictionary<uint, PassiveAction>();
         private readonly ReferenceManager references;
 
-        public ActionWorker(City owner)
+        public ActionWorker(ICity owner)
         {
             city = owner;
             notifications = new NotificationManager(this);
@@ -77,7 +78,7 @@ namespace Game.Logic
             }
         }
 
-        public City City
+        public ICity City
         {
             get
             {
@@ -102,7 +103,7 @@ namespace Game.Logic
                         ActionRescheduled(actionStub, state);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -112,7 +113,7 @@ namespace Game.Logic
                         ActionStarted(actionStub, state);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -130,11 +131,11 @@ namespace Game.Logic
                         Scheduler.Current.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
+                        DbPersistance.Current.Delete(actionStub);
                     break;
                 case ActionState.Fired:
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -152,7 +153,7 @@ namespace Game.Logic
                         Scheduler.Current.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
+                        DbPersistance.Current.Delete(actionStub);
                     break;
             }
         }
@@ -173,7 +174,7 @@ namespace Game.Logic
 
                     if (actionStub is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -183,7 +184,7 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -196,14 +197,14 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
+                        DbPersistance.Current.Delete(actionStub);
                         Scheduler.Current.Remove(action as ISchedule);
                     }
                     break;
                 case ActionState.Fired:
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -216,7 +217,7 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
+                        DbPersistance.Current.Delete(actionStub);
                         Scheduler.Current.Remove(action as ISchedule);
                     }
                     break;
@@ -283,7 +284,7 @@ namespace Game.Logic
             ActiveAction activeAction;
             if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.IsDone)
             {
-                var actionRequirements = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(activeAction.WorkerType);
+                var actionRequirements = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(activeAction.WorkerType);
                 var actionRequirement = actionRequirements.List.FirstOrDefault(x => x.Index == activeAction.WorkerIndex);
                 if (actionRequirement == null || (actionRequirement.Option & ActionOption.Uncancelable) == ActionOption.Uncancelable)
                     return Error.ActionUncancelable;
@@ -348,7 +349,7 @@ namespace Game.Logic
             if (actionId == -1)
                 return Error.ActionTotalMaxReached;
 
-            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(workerType);
+            ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
 
             if (record == null)
                 return Error.ActionNotFound;

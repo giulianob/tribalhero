@@ -23,7 +23,7 @@ namespace Game.Comm.ProcessorCommands
         private void Subscribe(Session session, Packet packet)
         {
             uint cityId;
-            City city;
+            ICity city;
             try
             {
                 cityId = packet.GetUInt32();
@@ -75,7 +75,7 @@ namespace Game.Comm.ProcessorCommands
         private void Unsubscribe(Session session, Packet packet)
         {
             uint cityId;
-            City city;
+            ICity city;
             try
             {
                 cityId = packet.GetUInt32();

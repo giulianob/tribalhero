@@ -16,7 +16,7 @@ namespace Game.Logic.Procedures
     {
         private bool Work(uint ox, uint oy, uint x, uint y, object custom)
         {
-            var city = (City)custom;
+            var city = (ICity)custom;
             if (Config.Random.Next()%4 == 0)
             {
                 World.Current.LockRegion(x, y);
@@ -37,7 +37,7 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        public virtual bool RandomizeResource(City city)
+        public virtual bool RandomizeResource(ICity city)
         {
             using (Concurrency.Current.Lock(city))
             {

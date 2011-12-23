@@ -72,7 +72,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
@@ -93,7 +93,7 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
-            City city;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
@@ -131,7 +131,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 

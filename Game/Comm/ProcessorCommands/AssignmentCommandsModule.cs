@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -49,7 +50,7 @@ namespace Game.Comm.ProcessorCommands
 
             // First need to find all the objects that should be locked
             uint[] playerIds;
-            Dictionary<uint, City> cities;
+            Dictionary<uint, ICity> cities;
             using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
@@ -66,7 +67,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                City targetCity = cities[targetCityId];
+                ICity targetCity = cities[targetCityId];
 
                 // Make sure they are not in newbie protection
                 if (Formula.Current.IsNewbieProtected(targetCity.Owner))
@@ -80,8 +81,8 @@ namespace Game.Comm.ProcessorCommands
 
             Dictionary<uint, Player> players;
             using (Concurrency.Current.Lock(out players, playerIds)) {
-                City city;
-                City targetCity;
+                ICity city;
+                ICity targetCity;
                 if (players == null || !World.Current.TryGetObjects(cityId, out city) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -109,7 +110,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Ioc.Kernel.Get<IDbManager>().Save(stub);
+                DbPersistance.Current.Save(stub);
 
                 int id;
                 Error ret = session.Player.Tribesman.Tribe.CreateAssignment(stub, targetStructure.X, targetStructure.Y, targetCity, time, mode, out id);
@@ -141,7 +142,7 @@ namespace Game.Comm.ProcessorCommands
 
             Tribe tribe = session.Player.Tribesman.Tribe;
             using (Concurrency.Current.Lock(session.Player, tribe)) {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
                 if (city == null)
                 {
                     ReplyError(session, packet, Error.CityNotFound);
@@ -155,7 +156,7 @@ namespace Game.Comm.ProcessorCommands
                     return;                        
                 }
 
-                Ioc.Kernel.Get<IDbManager>().Save(stub);
+                DbPersistance.Current.Save(stub);
 
                 Error error = tribe.JoinAssignment(assignmentId, stub);
                 if (error != Error.Ok) {

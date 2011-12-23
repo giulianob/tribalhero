@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using Game.Comm;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -55,7 +56,7 @@ namespace Game.Logic
 
         #endregion
 
-        public void Add(GameObject obj, PassiveAction action, params City[] targetCities)
+        public void Add(GameObject obj, PassiveAction action, params ICity[] targetCities)
         {
             DbLoaderAdd(true, new Notification(obj, action, targetCities));
         }
@@ -79,7 +80,7 @@ namespace Game.Logic
                 targetCity.Worker.Notifications.AddNotification(notification);
 
             if (persist)
-                Ioc.Kernel.Get<IDbManager>().Save(notification);
+                DbPersistance.Current.Save(notification);
         }
 
         private void AddNotification(Notification notification)
@@ -176,11 +177,11 @@ namespace Game.Logic
             lock (objLock)
             {
                 RemoveNotification(action);
-                Ioc.Kernel.Get<IDbManager>().Delete(notification);
+                DbPersistance.Current.Delete(notification);
             }
         }    
 
-        public bool TryGetValue(City city, ushort actionId, out Notification notification)
+        public bool TryGetValue(ICity city, ushort actionId, out Notification notification)
         {
             notification = notifications.FirstOrDefault(n => n.Action.WorkerObject.City == city && n.Action.ActionId == actionId);
 
@@ -194,11 +195,11 @@ namespace Game.Logic
             public const string DB_TABLE = "notifications";
             private readonly PassiveAction action;
             private readonly GameObject obj;
-            private readonly List<City> subscriptions = new List<City>();
+            private readonly List<ICity> subscriptions = new List<ICity>();
 
             #region Properties
 
-            public List<City> Subscriptions
+            public List<ICity> Subscriptions
             {
                 get
                 {
@@ -224,7 +225,7 @@ namespace Game.Logic
 
             #endregion
 
-            public Notification(GameObject obj, PassiveAction action, params City[] subscriptions)
+            public Notification(GameObject obj, PassiveAction action, params ICity[] subscriptions)
             {
                 DbPersisted = false;
                 if (obj.City != action.WorkerObject.City)

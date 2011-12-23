@@ -119,7 +119,7 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             TroopObject troopObj;
 
             if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
@@ -172,7 +172,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             TroopObject troopObj;
 
             using (Concurrency.Current.Lock(cityId, troopObjectId, out city, out troopObj))

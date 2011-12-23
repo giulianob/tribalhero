@@ -31,7 +31,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void GetTroopInfo(Session session, Packet packet)
         {
-            City city;
+            ICity city;
             TroopObject troop;
 
             uint cityId;
@@ -114,7 +114,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -176,7 +176,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -219,7 +219,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -271,7 +271,7 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            Dictionary<uint, City> cities;
+            Dictionary<uint, ICity> cities;
             using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
             {
                 if (cities == null)
@@ -280,9 +280,9 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                City city = cities[cityId];
+                ICity city = cities[cityId];
 
-                City targetCity = cities[targetCityId];
+                ICity targetCity = cities[targetCityId];
                 Structure targetStructure;
 
                 if (city.Owner.PlayerId == targetCity.Owner.PlayerId)
@@ -349,10 +349,10 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            Dictionary<uint, City> cities;
+            Dictionary<uint, ICity> cities;
             using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
             {
-                City city = cities[cityId];
+                ICity city = cities[cityId];
 
                 if (!Procedure.Current.TroopObjectCreateFromCity(city, stub, city.X, city.Y))
                 {
@@ -388,8 +388,8 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            City city;
-            City stationedCity;
+            ICity city;
+            ICity stationedCity;
 
             //we need to find out the stationed city first then reacquire local + stationed city locks            
             using (Concurrency.Current.Lock(cityId, out city))

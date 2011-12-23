@@ -127,7 +127,7 @@ namespace Game.Battle
             }
         }
 
-        public override City City
+        public override ICity City
         {
             get
             {

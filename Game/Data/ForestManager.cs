@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions.ResourceActions;
 using Game.Map;
@@ -140,7 +141,7 @@ namespace Game.Data
             World.Current.Remove(forest);
             forest.EndUpdate();
 
-            Ioc.Kernel.Get<IDbManager>().Delete(forest);
+            DbPersistance.Current.Delete(forest);
         }
 
         /// <summary>

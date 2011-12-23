@@ -28,17 +28,17 @@ namespace Game.Data.Troop
         #endregion
 
         public const string DB_TABLE = "unit_templates";
-        private readonly City city;
+        private readonly ICity city;
         private readonly Dictionary<ushort, BaseUnitStats> dict = new Dictionary<ushort, BaseUnitStats>();
 
         private bool isUpdating;
 
-        public UnitTemplate(City city)
+        public UnitTemplate(ICity city)
         {
             this.city = city;
         }
 
-        public City City
+        public ICity City
         {
             get
             {

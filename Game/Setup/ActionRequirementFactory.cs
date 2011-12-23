@@ -13,17 +13,17 @@ using System.Linq;
 
 namespace Game.Setup
 {
-    public class ActionRecord
+    public class ActionRequirementFactory : IEnumerable<ActionRequirementFactory.ActionRecord>
     {
-        public int Id { get; set; }
-        public List<ActionRequirement> List { get; set; }
-    }
+        public class ActionRecord
+        {
+            public int Id { get; set; }
+            public List<ActionRequirement> List { get; set; }
+        }
 
-    public class ActionFactory : IEnumerable<ActionRecord>
-    {
         private readonly Dictionary<int, ActionRecord> dict;
 
-        public ActionFactory(string filename)
+        public ActionRequirementFactory(string filename)
         {            
             dict = new Dictionary<int, ActionRecord> {{0, new ActionRecord {Id = 0, List = new List<ActionRequirement>()}}};
 

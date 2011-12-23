@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Map;
@@ -134,7 +135,7 @@ namespace Game.Comm
                 Tribe tribe = new Tribe(player, tribeName);
                 
                 Global.Tribes.Add(tribe.Id, tribe);
-                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+                DbPersistance.Current.Save(tribe);
 
                 Tribesman tribesman = new Tribesman(tribe, player, 0);
                 tribe.AddTribesman(tribesman);
@@ -176,7 +177,7 @@ namespace Game.Comm
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
                 Global.Tribes.Remove(tribe.Id);
-                Ioc.Kernel.Get<IDbManager>().Delete(tribe);
+                DbPersistance.Current.Delete(tribe);
             }
             return "OK!";
         }
@@ -209,7 +210,7 @@ namespace Game.Comm
             Tribe tribe;
             using (Concurrency.Current.Lock(tribeId, out tribe)) {
                 tribe.Description = desc;
-                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+                DbPersistance.Current.Save(tribe);
             }
             return "OK";
         }

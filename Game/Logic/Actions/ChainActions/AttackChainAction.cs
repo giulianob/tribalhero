@@ -94,9 +94,9 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             TroopStub stub;
-            City targetCity;
+            ICity targetCity;
             Structure targetStructure;
 
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) ||
@@ -151,8 +151,8 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
-                City targetCity;
+                ICity city;
+                ICity targetCity;
 
                 if (!World.Current.TryGetObjects(cityId, out city))
                     throw new Exception("City is missing");
@@ -191,12 +191,12 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                Dictionary<uint, City> cities;
+                Dictionary<uint, ICity> cities;
                 using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
-                    City city = cities[cityId];
+                    ICity city = cities[cityId];
                     TroopStub stub;
-                    City targetCity = cities[targetCityId];
+                    ICity targetCity = cities[targetCityId];
 
                     //Remove notification to target city once battle is over
                     city.Worker.Notifications.Remove(this);
@@ -251,7 +251,7 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
+                ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
                     TroopStub stub;
@@ -282,7 +282,7 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
+                ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
                     TroopStub stub;

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Game.Database;
 using Game.Logic;
 using Game.Setup;
 using Game.Util;
@@ -228,7 +229,7 @@ namespace Game.Data
             switch(OwnerLocation)
             {
                 case EffectLocation.City:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((City)Owner);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((ICity)Owner);
                     break;
                 case EffectLocation.Object:
                     DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((Structure)Owner).City);
@@ -252,7 +253,7 @@ namespace Game.Data
             if (!updating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
-            Ioc.Kernel.Get<IDbManager>().Save(this);
+            DbPersistance.Current.Save(this);
             updating = false;
         }
 
@@ -322,7 +323,7 @@ namespace Game.Data
             {
                 return new[]
                        {
-                               new DbColumn("city_id", Owner is Structure ? (Owner as Structure).City.Id : (Owner is City ? (Owner as City).Id : 0), DbType.UInt32),
+                               new DbColumn("city_id", Owner is Structure ? (Owner as Structure).City.Id : (Owner is ICity ? (Owner as ICity).Id : 0), DbType.UInt32),
                                new DbColumn("owner_id", OwnerId, DbType.UInt32), new DbColumn("owner_location", (byte)OwnerLocation, DbType.Byte)
                        };
             }

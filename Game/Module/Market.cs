@@ -3,6 +3,7 @@
 using System;
 using System.Data;
 using Game.Data;
+using Game.Database;
 using Game.Logic;
 using Game.Map;
 using Game.Setup;
@@ -146,7 +147,7 @@ namespace Game.Module
         {
             lock (marketLock)
             {
-                using (Ioc.Kernel.Get<IDbManager>().GetThreadTransaction())
+                using (DbPersistance.Current.GetThreadTransaction())
                 {
                     int flow = outgoing - incoming;
                     if (World.Current.Players.Count > 0)
@@ -159,7 +160,7 @@ namespace Game.Module
                         outgoing = incoming = 0;
                     }
                     time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
-                    Ioc.Kernel.Get<IDbManager>().Save(this);
+                    DbPersistance.Current.Save(this);
                     Scheduler.Current.Put(this);
                 }
             }

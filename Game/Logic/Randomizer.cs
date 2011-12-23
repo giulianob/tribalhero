@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Database;
 using Game.Map;
 using Game.Setup;
 using Ninject;
@@ -62,13 +63,13 @@ namespace Game.Logic
                 if (!World.Current.Add(structure))
                     feObj.City.ScheduleRemove(structure, false);
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
-                Ioc.Kernel.Get<IDbManager>().Save(structure);
+                DbPersistance.Current.Save(structure);
                 World.Current.UnlockRegion(x, y);
             }
             return true;
         }
 
-        public static void RandomizeNpcResource(City city, DbTransaction transaction)
+        public static void RandomizeNpcResource(ICity city, DbTransaction transaction)
         {
             byte radius = city.Radius;
             var feObject = new RandomForeach(city);
@@ -79,12 +80,12 @@ namespace Game.Logic
 
         private class RandomForeach
         {
-            public RandomForeach(City city)
+            public RandomForeach(ICity city)
             {
                 City = city;
             }
 
-            public City City { get; private set; }
+            public ICity City { get; private set; }
         }
 
         #endregion

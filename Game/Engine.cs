@@ -115,11 +115,11 @@ _________ _______ _________ ______   _______  _
             // Empty database if specified
 #if DEBUG
             if (Config.database_empty)
-                Ioc.Kernel.Get<IDbManager>().EmptyDatabase();
+                DbPersistance.Current.EmptyDatabase();
 #endif
 
             // Load database
-            if (!DbLoader.LoadFromDatabase(Ioc.Kernel.Get<IDbManager>()))
+            if (!DbLoader.LoadFromDatabase(DbPersistance.Current))
             {
                 logger.Error("Failed to load database");
                 return false;
@@ -159,7 +159,8 @@ _________ _______ _________ ______   _______  _
             Formula.Current = Ioc.Kernel.Get<Formula>();
             World.Current = Ioc.Kernel.Get<World>();
             Procedure.Current = Ioc.Kernel.Get<Procedure>();
-            Scheduler.Current = Ioc.Kernel.Get<IScheduler>();                        
+            Scheduler.Current = Ioc.Kernel.Get<IScheduler>();
+            DbPersistance.Current = Ioc.Kernel.Get<IDbManager>();
 
             return Ioc.Kernel;
         }

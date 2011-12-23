@@ -1,6 +1,7 @@
 #region
 
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util.Locking;
 using Ninject;
@@ -37,7 +38,7 @@ namespace Game.Comm.ProcessorCommands
 
                 session.Player.Session = null;
                 session.Player.SessionId = string.Empty;
-                Ioc.Kernel.Get<IDbManager>().Save(session.Player);
+                DbPersistance.Current.Save(session.Player);
             }
         }
     }

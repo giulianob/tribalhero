@@ -64,7 +64,7 @@ namespace Game.Setup
                     {
                         workerId = byte.Parse(toks[col["Lvl"]]) == 0
                                         ? 0
-                                        : Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
+                                        : Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecordBestFit(int.Parse(toks[col["Type"]]), byte.Parse(toks[col["Lvl"]])).Id;
                     }
 
 
@@ -140,7 +140,6 @@ namespace Game.Setup
             }
             else
                 throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
-            return;
         }
 
         public int GetActionWorkerType(Structure structure)

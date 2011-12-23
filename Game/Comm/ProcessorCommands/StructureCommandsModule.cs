@@ -34,7 +34,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void StructureInfo(Session session, Packet packet)
         {
-            City city;
+            ICity city;
             Structure structure;
 
             uint cityId;
@@ -181,7 +181,7 @@ namespace Game.Comm.ProcessorCommands
             for (int i = 0; i < count; i++)
             {
                 uint cityId = cityIds[i];
-                City city;
+                ICity city;
 
                 if (!World.Current.TryGetObjects(cityId, out city))
                 {
@@ -202,7 +202,7 @@ namespace Game.Comm.ProcessorCommands
             uint objectId;
             ushort count;
             Structure obj;
-            City city;
+            ICity city;
 
             try
             {
@@ -289,7 +289,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 Structure obj;
 
@@ -328,7 +328,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -369,7 +369,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -415,7 +415,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -473,7 +473,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -520,7 +520,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -563,7 +563,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null)
                 {
@@ -608,7 +608,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            City city = session.Player.GetCity(cityId);
+            ICity city = session.Player.GetCity(cityId);
             if (city == null)
             {
                 ReplyError(session, packet, Error.CityNotFound);

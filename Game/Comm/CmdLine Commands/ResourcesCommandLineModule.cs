@@ -55,7 +55,7 @@ namespace Game.Comm
             if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
@@ -99,7 +99,7 @@ namespace Game.Comm
             if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)

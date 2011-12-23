@@ -1108,6 +1108,16 @@
             <param name="syntax">The syntax.</param>
             <returns>The <see cref="T:Ninject.Syntax.IBindingWhenInNamedWithOrOnSyntax`1"/> to configure more things for the binding.</returns>
         </member>
+        <member name="M:Ninject.Extensions.Factory.BindToExtensions.ToFactory(Ninject.Syntax.IBindingToSyntax{System.Object},System.Type)">
+            <summary>
+            Defines that the interface shall be bound to an automatically created factory proxy.
+            </summary>
+            <param name="syntax">The syntax.</param>
+            <param name="factoryType">The type of the factory.</param>
+            <returns>
+            The <see cref="T:Ninject.Syntax.IBindingWhenInNamedWithOrOnSyntax`1"/> to configure more things for the binding.
+            </returns>
+        </member>
         <member name="M:Ninject.Extensions.Factory.BindToExtensions.ToFactory``1(Ninject.Syntax.IBindingToSyntax{``0},System.Func{Ninject.Extensions.Factory.IInstanceProvider})">
             <summary>
             Defines that the interface shall be bound to an automatically created factory proxy.
@@ -1119,13 +1129,25 @@
             The <see cref="T:Ninject.Syntax.IBindingWhenInNamedWithOrOnSyntax`1"/> to configure more things for the binding.
             </returns>
         </member>
-        <member name="M:Ninject.Extensions.Factory.BindToExtensions.ToFactory``1(Ninject.Syntax.IBindingToSyntax{``0},System.Func{Ninject.Activation.IContext,Ninject.Extensions.Factory.IInstanceProvider})">
+        <member name="M:Ninject.Extensions.Factory.BindToExtensions.ToFactory(Ninject.Syntax.IBindingToSyntax{System.Object},System.Func{Ninject.Extensions.Factory.IInstanceProvider},System.Type)">
+            <summary>
+            Defines that the interface shall be bound to an automatically created factory proxy.
+            </summary>
+            <param name="syntax">The syntax.</param>
+            <param name="instanceProvider">The instance provider.</param>
+            <param name="factoryType">Type of the factory.</param>
+            <returns>
+            The <see cref="T:Ninject.Syntax.IBindingWhenInNamedWithOrOnSyntax`1"/> to configure more things for the binding.
+            </returns>
+        </member>
+        <member name="M:Ninject.Extensions.Factory.BindToExtensions.ToFactory``1(Ninject.Syntax.IBindingToSyntax{``0},System.Func{Ninject.Activation.IContext,Ninject.Extensions.Factory.IInstanceProvider},System.Type)">
             <summary>
             Defines that the interface shall be bound to an automatically created factory proxy.
             </summary>
             <typeparam name="TInterface">The type of the interface.</typeparam>
             <param name="syntax">The syntax.</param>
             <param name="instanceProvider">The instance provider.</param>
+            <param name="factoryType">Type of the factory.</param>
             <returns>
             The <see cref="T:Ninject.Syntax.IBindingWhenInNamedWithOrOnSyntax`1"/> to configure more things for the binding.
             </returns>

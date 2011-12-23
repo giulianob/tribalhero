@@ -71,7 +71,7 @@ namespace Game.Logic.Actions
 
         public void ScriptInit(GameObject obj, string[] parms)
         {
-            City city;
+            ICity city;
             Structure structure;
 
             if (!(obj is Structure))
@@ -94,7 +94,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
 
             // Block structure
@@ -145,7 +145,7 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
 
             endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds, false));
@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {

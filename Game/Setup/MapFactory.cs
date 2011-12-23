@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
+using Game.Database;
 using Game.Map;
 using Ninject;
 using Persistance;
@@ -71,7 +72,7 @@ namespace Game.Setup
             if (mapStartIndex != null)
             {
                 mapStartIndex.Value = index;
-                Ioc.Kernel.Get<IDbManager>().Save(mapStartIndex);
+                DbPersistance.Current.Save(mapStartIndex);
             }
 
             return true;

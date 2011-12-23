@@ -40,7 +40,7 @@ namespace Game.Logic.Actions
         {
             var toBeLocked = new List<ILockable>();
 
-            foreach (var stub in ((City)custom[0]).Troops)
+            foreach (var stub in ((ICity)custom[0]).Troops)
             {
                 if (stub.StationedCity != null)
                     toBeLocked.Add(stub.StationedCity);
@@ -64,7 +64,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
 

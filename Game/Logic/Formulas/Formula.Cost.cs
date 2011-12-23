@@ -20,7 +20,7 @@ namespace Game.Logic.Formulas
         /// <param name = "type"></param>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public virtual Resource StructureCost(City city, uint type, byte lvl)
+        public virtual Resource StructureCost(ICity city, uint type, byte lvl)
         {
             if (city.Battle == null)
                 return Ioc.Kernel.Get<StructureFactory>().GetCost((int)type, lvl);
@@ -35,7 +35,7 @@ namespace Game.Logic.Formulas
         /// <param name = "type"></param>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public virtual Resource UnitTrainCost(City city, ushort type, byte lvl)
+        public virtual Resource UnitTrainCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
                 return Ioc.Kernel.Get<UnitFactory>().GetCost(type, lvl);
@@ -50,7 +50,7 @@ namespace Game.Logic.Formulas
         /// <param name = "type"></param>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public virtual Resource UnitUpgradeCost(City city, ushort type, byte lvl)
+        public virtual Resource UnitUpgradeCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
                 return Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(type, lvl);
@@ -74,7 +74,7 @@ namespace Game.Logic.Formulas
         /// <param name = "city"></param>
         /// <param name = "repairPower"></param>
         /// <returns></returns>
-        public virtual Resource RepairCost(City city, ushort repairPower)
+        public virtual Resource RepairCost(ICity city, ushort repairPower)
         {
             int lumber = repairPower;
             foreach (var effect in city.Technologies.GetEffects(EffectCode.RepairSaving, EffectInheritance.All))
@@ -108,7 +108,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "city"></param>
         /// <returns></returns>
-        public virtual Resource HiddenResource(City city)
+        public virtual Resource HiddenResource(ICity city)
         {
             int[] rateCrop = {0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100};
             int[] rateWood = {0, 100, 150, 220, 330, 500, 740, 1100, 1100, 1100, 1100};
@@ -141,7 +141,7 @@ namespace Game.Logic.Formulas
             return new Resource(sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl], sendRate[structure.Lvl]);
         }
 
-        public virtual ushort CalculateCityValue(City city)
+        public virtual ushort CalculateCityValue(ICity city)
         {
             return (ushort)city.Sum(x => x.Lvl);
         }

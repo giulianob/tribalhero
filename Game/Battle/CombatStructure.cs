@@ -76,7 +76,7 @@ namespace Game.Battle
             }
         }
 
-        public override City City
+        public override ICity City
         {
             get
             {
@@ -255,7 +255,7 @@ namespace Game.Battle
             // Remove structure if our combat object died
             if (hp <= 0)
             {
-                City city = Structure.City;
+                ICity city = Structure.City;
 
                 World.Current.LockRegion(Structure.X, Structure.Y);
                 if (Structure.Lvl > 1)

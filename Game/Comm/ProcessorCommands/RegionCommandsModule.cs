@@ -67,7 +67,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
@@ -168,7 +168,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
@@ -285,7 +285,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
@@ -324,7 +324,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
@@ -370,7 +370,7 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            Dictionary<uint, City> cities;
+            Dictionary<uint, ICity> cities;
             using (Concurrency.Current.Lock(out cities, srcCityId, cityId))
             {
                 if (cities == null)
@@ -379,8 +379,8 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                City srcCity = cities[srcCityId];
-                City city = cities[cityId];
+                ICity srcCity = cities[srcCityId];
+                ICity city = cities[cityId];
 
                 NotificationManager.Notification notification;
                 if (!srcCity.Worker.Notifications.TryGetValue(city, actionId, out notification))

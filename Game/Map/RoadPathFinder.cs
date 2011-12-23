@@ -10,7 +10,7 @@ namespace Game.Map
 {
     public class RoadPathFinder
     {
-        public static bool HasPath(Location start, Location end, City city, Location excludedPoint)
+        public static bool HasPath(Location start, Location end, ICity city, Location excludedPoint)
         {
             bool fromStructure = World.Current[start.X, start.Y].Exists(s => s is Structure);
 

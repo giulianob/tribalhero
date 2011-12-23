@@ -36,7 +36,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             using (Concurrency.Current.Lock(session.Player)) {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.Unexpected);
@@ -67,7 +67,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             using (Concurrency.Current.Lock(session.Player)) {
-                City city = session.Player.GetCity(cityId);
+                ICity city = session.Player.GetCity(cityId);
 
                 if (city == null) {
                     ReplyError(session, packet, Error.Unexpected);

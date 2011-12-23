@@ -156,14 +156,7 @@ class Message extends AppModel {
         ));
     }
 
-    function send($playerId, $to, $subject, $message) {
-        // Find recipient
-        $recipient = $this->Recipient->findByName($to);
-
-        if (empty($recipient)) {
-            return array('error' => 'Recipient not found.');
-        }
-
+    function send($playerId, $recipient, $subject, $message) {
         if ($recipient['Recipient']['id'] == $playerId) {
             return array('error' => 'You aren\'t allowed to send messages to yourself.');
         }

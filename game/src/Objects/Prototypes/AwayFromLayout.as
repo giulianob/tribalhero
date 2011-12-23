@@ -25,15 +25,16 @@ package src.Objects.Prototypes {
 		public function validate(builder: CityObject, city: City, x: int, y: int): Boolean
 		{		
 			var radius: int = mindist;
-
-			var effects: Array = builder.techManager.getAllEffects(EffectPrototype.INHERIT_SELF_ALL);
+			var reduction: int = 0;
+			
+			var effects: Array = builder.techManager.getAllEffects(EffectPrototype.INHERIT_UPWARD);
 			for each (var effect: EffectPrototype in effects) {
 				if (effect.effectCode == EffectPrototype.EFFECT_AWAY_FROM_STRUCTURE_MOD && effect.param1 == type) {
-					radius += int(effect.param2);
+					reduction = Math.min(int(effect.param2), reduction);
 				}
 			}			
 
-			var objects: Array = city.nearObjectsByRadius(0, radius, x, y, type);
+			var objects: Array = city.nearObjectsByRadius(0, radius + reduction, x, y, type);
 			
 			for each (var obj: CityObject in objects)
 			{

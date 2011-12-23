@@ -14,8 +14,6 @@ using Game.Logic.Formulas;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
-using Ninject.Parameters;
 using Persistance;
 
 #endregion
@@ -24,13 +22,14 @@ namespace Game.Battle
 {
     public class BattleManager : IBattleManager
     {
-        public delegate IBattleManager Factory(City owner);
+        public delegate IBattleManager Factory(ICity owner);
 
         public const string DB_TABLE = "battle_managers";
         private readonly CombatList attackers;
         private readonly object battleLock = new object();
         private readonly CombatList defenders;
         private readonly ICombatUnitFactory combatUnitFactory;
+        private readonly ObjectTypeFactory objectTypeFactory;
         private readonly LargeIdGenerator groupIdGen;
         private readonly LargeIdGenerator idGen;
 
@@ -40,20 +39,22 @@ namespace Game.Battle
         private uint battleId;
         private BattleOrder battleOrder = new BattleOrder(0);
         private bool battleStarted;
-        private City city;
+        private ICity city;
         private uint round;
         private uint turn;
 
-        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport, CombatList attackers, CombatList defenders, ICombatUnitFactory combatUnitFactory)
-        {            
+        public BattleManager(ICity owner, IDbManager dbManager, IBattleChannel battleChannel, IBattleReport battleReport, ICombatListFactory combatListFactory, ICombatUnitFactory combatUnitFactory, ObjectTypeFactory objectTypeFactory)
+        {
+            attackers = combatListFactory.CreateCombatList();
+            defenders = combatListFactory.CreateCombatList();
+
             groupIdGen = new LargeIdGenerator(ushort.MaxValue);
             idGen = new LargeIdGenerator(ushort.MaxValue);
             
             this.dbManager = dbManager;            
-            this.attackers = attackers;
-            this.defenders = defenders;
             this.combatUnitFactory = combatUnitFactory;
-            city = (City)owner;
+            this.objectTypeFactory = objectTypeFactory;
+            city = (ICity)owner;
             report = battleReport;
 
             // Group id 1 is reserved for local troop
@@ -115,7 +116,7 @@ namespace Game.Battle
             }
         }
 
-        public City City
+        public ICity City
         {
             get
             {
@@ -167,11 +168,11 @@ namespace Game.Battle
             }
         }
 
-        public City[] LockList
+        public ICity[] LockList
         {
             get
             {
-                var cities = new Dictionary<uint, City> {{city.Id, city}};
+                var cities = new Dictionary<uint, ICity> {{city.Id, city}};
 
                 foreach (var co in attackers)
                     cities[co.City.Id] = co.City;
@@ -318,7 +319,7 @@ namespace Game.Battle
 
         #region Adding/Removing from Battle
 
-        public void AddToLocal(IEnumerable<TroopStub> objects, ReportState state)
+        public void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state)
         {
             AddToCombatList(objects, defenders, true, state);
         }
@@ -333,13 +334,17 @@ namespace Game.Battle
 
                 foreach (var obj in objects)
                 {
-                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Unattackable", obj) || obj.IsBlocked)
+                    if (obj.Stats.Hp == 0 || defenders.Contains(obj) || objectTypeFactory.IsStructureType("Unattackable", obj) || obj.IsBlocked)
+                    {
                         continue;
+                    }
 
                     // Don't add main building if lvl 1 or if a building is lvl 0
-                    if ((Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", obj) && obj.Lvl <= 1) || (obj.Lvl == 0) ||
-                        Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Noncombatstructure", obj))
+                    if ((objectTypeFactory.IsStructureType("Undestroyable", obj) && obj.Lvl <= 1) || (obj.Lvl == 0) ||
+                        objectTypeFactory.IsStructureType("Noncombatstructure", obj))
+                    {
                         continue;
+                    }
 
                     added = true;
 
@@ -365,23 +370,23 @@ namespace Game.Battle
             }
         }
 
-        public void AddToAttack(TroopStub stub)
+        public void AddToAttack(ITroopStub stub)
         {
-            var list = new List<TroopStub> {stub};
+            var list = new List<ITroopStub> {stub};
             AddToAttack(list);
         }
 
-        public void AddToAttack(IEnumerable<TroopStub> objects)
+        public void AddToAttack(IEnumerable<ITroopStub> objects)
         {
             AddToCombatList(objects, attackers, false, ReportState.Entering);
         }
 
-        public void AddToDefense(IEnumerable<TroopStub> objects)
+        public void AddToDefense(IEnumerable<ITroopStub> objects)
         {
             AddToCombatList(objects, defenders, false, ReportState.Entering);
         }
 
-        public void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state)
+        public void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state)
         {
             RemoveFromCombatList(objects, attackers, state);
         }
@@ -405,12 +410,12 @@ namespace Game.Battle
             }
         }
 
-        public void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state)
+        public void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state)
         {
             RemoveFromCombatList(objects, defenders, state);
         }
 
-        private void AddToCombatList(IEnumerable<TroopStub> objects, CombatList combatList, bool isLocal, ReportState state)
+        private void AddToCombatList(IEnumerable<ITroopStub> objects, CombatList combatList, bool isLocal, ReportState state)
         {
             lock (battleLock)
             {
@@ -425,22 +430,32 @@ namespace Game.Battle
                     foreach (var formation in obj)
                     {
                         if (formation.Type == FormationType.Garrison || formation.Type == FormationType.InBattle)
+                        {
                             continue;
+                        }
 
                         //if it's our local troop then it should be in the battle formation since 
                         //it will be moved by the battle manager (who is calling this function) to the in battle formation
                         //There should be a better way to do this but I cant figure it out right now
                         FormationType formationType = formation.Type;
                         if (isLocal)
+                        {
                             formationType = FormationType.InBattle;
+                        }
 
                         foreach (var kvp in formation)
                         {
+                            // ReSharper disable CoVariantArrayConversion
                             CombatObject[] combatObjects;
                             if (combatList == defenders)
+                            {
                                 combatObjects = combatUnitFactory.CreateDefenseCombatUnit(this, obj, formationType, kvp.Key, kvp.Value);
+                            }
                             else
+                            {
                                 combatObjects = combatUnitFactory.CreateAttackCombatUnit(this, obj.TroopObject, formationType, kvp.Key, kvp.Value);
+                            }
+                            // ReSharper restore CoVariantArrayConversion
 
                             foreach (var unit in combatObjects)
                             {
@@ -473,7 +488,7 @@ namespace Game.Battle
             }
         }
 
-        private void RemoveFromCombatList(IEnumerable<TroopStub> objects, CombatList combatList, ReportState state)
+        private void RemoveFromCombatList(IEnumerable<ITroopStub> objects, CombatList combatList, ReportState state)
         {
             lock (battleLock)
             {
@@ -573,8 +588,6 @@ namespace Game.Battle
         {
             if (writeReport)
             {
-                report.WriteBeginReport();
-                report.CompleteReport(ReportState.Exiting);
                 report.CompleteBattle();
             }
 
@@ -610,7 +623,7 @@ namespace Game.Battle
             lock (battleLock)
             {
                 // This will finalize any reports already started.
-                report.WriteReport(ReportState.Staying);
+                report.CompleteReport(ReportState.Staying);
 
                 #region Battle Start
 
@@ -730,7 +743,7 @@ namespace Game.Battle
                         {
                             co = attackers.OfType<AttackCombatUnit>().FirstOrDefault(x => !defenders.HasInRange(x));
                             if (co != null)
-                                RemoveFromAttack(new List<TroopStub> {(co).TroopStub}, ReportState.Exiting);
+                                RemoveFromAttack(new List<ITroopStub> {(co).TroopStub}, ReportState.Exiting);
                         } while (co != null);
                     }
                 }
@@ -800,7 +813,7 @@ namespace Game.Battle
                     if (round >= Config.battle_loot_begin_round)
                     {
                         loot = BattleFormulas.Current.GetRewardResource(attacker, defender, actualDmg);
-                        city.Resource.Subtract(loot, Formula.HiddenResource(city), out loot);
+                        city.Resource.Subtract(loot, Formula.Current.HiddenResource(city), out loot);
                     } 
                     attacker.ReceiveReward(attackPoints, loot ?? new Resource() );
                     city.EndUpdate();
@@ -826,7 +839,7 @@ namespace Game.Battle
                 {
                     // Give anyone stationed defense points as well
                     // DONT convert this to LINQ because I'm not sure how it might affect the list inside of the loop that keeps changing
-                    var uniqueCities = new List<City>();
+                    var uniqueCities = new List<ICity>();
 
                     foreach (var co in defenders)
                     {

@@ -3,7 +3,9 @@
 using System;
 using System.Data;
 using Game.Data;
+using Game.Database;
 using Game.Logic;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -40,7 +42,7 @@ namespace Game.Module
             quantityPerChangePerPlayer = QUANTITY_PER_CHANGE_PER_PLAYER;
             time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
             this.resource = resource;
-            Global.Scheduler.Put(this);
+            Scheduler.Current.Put(this);
         }
 
         public static Market Crop
@@ -145,12 +147,12 @@ namespace Game.Module
         {
             lock (marketLock)
             {
-                using (Ioc.Kernel.Get<IDbManager>().GetThreadTransaction())
+                using (DbPersistance.Current.GetThreadTransaction())
                 {
                     int flow = outgoing - incoming;
-                    if (Global.World.Players.Count > 0)
+                    if (World.Current.Players.Count > 0)
                     {
-                        price += (flow/Math.Max(1,quantityPerChangePerPlayer*Global.World.GetActivePlayerCount()));
+                        price += (flow/Math.Max(1,quantityPerChangePerPlayer*World.Current.GetActivePlayerCount()));
                         if (price < MIN_PRICE)
                             price = MIN_PRICE;
                         if (price > MAX_PRICE)
@@ -158,8 +160,8 @@ namespace Game.Module
                         outgoing = incoming = 0;
                     }
                     time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
-                    Ioc.Kernel.Get<IDbManager>().Save(this);
-                    Global.Scheduler.Put(this);
+                    DbPersistance.Current.Save(this);
+                    Scheduler.Current.Put(this);
                 }
             }
         }

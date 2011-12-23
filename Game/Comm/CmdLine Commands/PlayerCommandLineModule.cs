@@ -3,6 +3,8 @@
 using System;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Database;
+using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
 using Game.Setup;
@@ -57,7 +59,7 @@ namespace Game.Comm
                 return "renametribe --tribe=name --newname=name";
 
             uint tribeId;
-            if (!Global.World.FindTribeId(tribeName, out tribeId))
+            if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
             Tribe tribe;
@@ -69,11 +71,11 @@ namespace Game.Comm
                 if (!Tribe.IsNameValid(newTribeName))
                     return "New tribe name is not allowed";
 
-                if (Global.World.TribeNameTaken(newTribeName))
+                if (World.Current.TribeNameTaken(newTribeName))
                     return "New tribe name is already taken";
 
                 tribe.Name = newTribeName;
-                Ioc.Kernel.Get<IDbManager>().Save(tribe);
+                DbPersistance.Current.Save(tribe);
             }
 
             return "OK!";
@@ -103,7 +105,7 @@ namespace Game.Comm
             if (help || string.IsNullOrEmpty(message) || string.IsNullOrEmpty(subject))
                 return "broadcastmail --subject=\"SUBJECT\" --message=\"MESSAGE\"";
 
-            using (var reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] {}))
+            using (var reader = DbPersistance.Current.ReaderQuery(string.Format("SELECT * FROM `{0}`", Player.DB_TABLE), new DbColumn[] {}))
             {
                 while (reader.Read())
                 {
@@ -161,7 +163,7 @@ namespace Game.Comm
                 return "playercleardescription --player=player";
 
             uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
             Player player;
@@ -203,7 +205,7 @@ namespace Game.Comm
                 return "renameplayer --player=player --newname=name";
 
             uint playerId;
-            var foundLocally = Global.World.FindPlayerId(playerName, out playerId);
+            var foundLocally = World.Current.FindPlayerId(playerName, out playerId);
 
             ApiResponse response = ApiCaller.RenamePlayer(playerName, newPlayerName);
 
@@ -233,7 +235,7 @@ namespace Game.Comm
                 }
 
                 player.Name = newPlayerName;
-                Ioc.Kernel.Get<IDbManager>().Save(player);
+                DbPersistance.Current.Save(player);
             }
 
             return "OK!";
@@ -287,7 +289,7 @@ namespace Game.Comm
                 return "ban --player=player";
 
             uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
             Player player;
@@ -355,7 +357,7 @@ namespace Game.Comm
                 return "deleteplayer --player=player";
 
             uint playerId;
-            if (!Global.World.FindPlayerId(playerName, out playerId))
+            if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
             Player player;
@@ -375,7 +377,7 @@ namespace Game.Comm
                     }
                 }
 
-                foreach (City city in player.GetCityList())
+                foreach (ICity city in player.GetCityList())
                 {
                     CityRemover cr = new CityRemover(city.Id);
                     cr.Start();

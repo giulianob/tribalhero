@@ -6,8 +6,10 @@ using System.Linq;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -27,8 +29,8 @@ namespace Game.Logic.Actions
         {
             this.cityId = cityId;
 
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -41,8 +43,8 @@ namespace Game.Logic.Actions
             cityId = uint.Parse(properties["city_id"]);
             destroyedHp = uint.Parse(properties["destroyed_hp"]);
 
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception();
 
             city.Battle.ActionAttacked += BattleActionAttacked;
@@ -69,8 +71,8 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
@@ -81,22 +83,22 @@ namespace Game.Logic.Actions
                     return toBeLocked.ToArray();
                 };
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(lockHandler, null, city))
+            using (Concurrency.Current.Lock(lockHandler, null, city))
             {
                 if (!city.Battle.ExecuteTurn())
                 {
                     city.Battle.ActionAttacked -= BattleActionAttacked;
                     city.Battle.UnitRemoved -= BattleUnitRemoved;
-                    Ioc.Kernel.Get<IDbManager>().Delete(city.Battle);
+                    DbPersistance.Current.Delete(city.Battle);
                     city.Battle = null;
 
                     city.DefaultTroop.BeginUpdate();
                     city.DefaultTroop.Template.ClearStats();
-                    Procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
+                    Procedure.Current.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                     city.DefaultTroop.EndUpdate();
 
                     //Copy troop stubs from city since the foreach loop below will modify it during the loop
-                    var stubsCopy = new List<TroopStub>(city.Troops);
+                    var stubsCopy = new List<ITroopStub>(city.Troops);
 
                     foreach (var stub in stubsCopy)
                     {
@@ -125,14 +127,14 @@ namespace Game.Logic.Actions
                     }
 					
                     if(destroyedHp>0)                    
-                        Procedure.SenseOfUrgency(city, destroyedHp);                    
+                        Procedure.Current.SenseOfUrgency(city, destroyedHp);                    
 					
                     StateChange(ActionState.Completed);
                 }
                 else
                 {
-                    Ioc.Kernel.Get<IDbManager>().Save(city.Battle);
-                    endTime = DateTime.UtcNow.AddSeconds(Formula.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
+                    DbPersistance.Current.Save(city.Battle);
+                    endTime = DateTime.UtcNow.AddSeconds(Formula.Current.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
                     StateChange(ActionState.Fired);
                 }
             }
@@ -145,16 +147,16 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            Ioc.Kernel.Get<IDbManager>().Save(city.Battle);
+            DbPersistance.Current.Save(city.Battle);
 
             //Add local troop
-            Procedure.AddLocalToBattle(city.Battle, city, ReportState.Entering);
+            Procedure.Current.AddLocalToBattle(city.Battle, city, ReportState.Entering);
 
-            var list = new List<TroopStub>();
+            var list = new List<ITroopStub>();
 
             //Add reinforcement
             foreach (var stub in city.Troops)
@@ -183,8 +185,8 @@ namespace Game.Logic.Actions
             if (cu == null)
                 return;
 
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return;
 
         }

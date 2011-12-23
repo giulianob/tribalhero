@@ -7,6 +7,7 @@ using Game.Battle;
 using Game.Comm.Channel;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -54,8 +55,8 @@ namespace Game.Logic.Actions
                                  int.Parse(properties["iron"]),
                                  int.Parse(properties["wood"]),
                                  int.Parse(properties["labor"]));
-            City targetCity;
-            Global.World.TryGetObjects(targetCityId, out targetCity);
+            ICity targetCity;
+            World.Current.TryGetObjects(targetCityId, out targetCity);
             RegisterBattleListeners(targetCity);
         }
 
@@ -83,7 +84,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void RegisterBattleListeners(City targetCity)
+        private void RegisterBattleListeners(ICity targetCity)
         {
             targetCity.Battle.ActionAttacked += BattleActionAttacked;
             targetCity.Battle.ExitBattle += BattleExitBattle;
@@ -93,7 +94,7 @@ namespace Game.Logic.Actions
             targetCity.Battle.ExitTurn += BattleExitTurn;
         }
 
-        private void DeregisterBattleListeners(City targetCity)
+        private void DeregisterBattleListeners(ICity targetCity)
         {
             targetCity.Battle.ActionAttacked -= BattleActionAttacked;
             targetCity.Battle.ExitBattle -= BattleExitBattle;
@@ -123,21 +124,21 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            City targetCity;
-            TroopStub stub;
+            ICity city;
+            ICity targetCity;
+            ITroopStub stub;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 return Error.ObjectNotFound;
 
-            var list = new List<TroopStub> {stub};
+            var list = new List<ITroopStub> {stub};
             originalUnitCount = stub.TotalCount;
 
             if (targetCity.Battle != null)
             {
                 RegisterBattleListeners(targetCity);
 
-                Procedure.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.Reinforced);
+                Procedure.Current.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.Reinforced);
 
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 
@@ -171,10 +172,10 @@ namespace Game.Logic.Actions
 
         private void BattleWithdrawAttacker(IEnumerable<CombatObject> list)
         {
-            TroopStub stub;
-            City targetCity;
-            City city;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+            ITroopStub stub;
+            ICity targetCity;
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
             bool retreat = list.Any(co => co is AttackCombatUnit && ((AttackCombatUnit)co).TroopStub == stub);
@@ -197,10 +198,10 @@ namespace Game.Logic.Actions
         /// </summary>
         private void BattleUnitRemoved(CombatObject co)
         {
-            TroopStub stub;
-            City targetCity;
-            City city;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+            ITroopStub stub;
+            ICity targetCity;
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
             // If this combat object is ours and all the units are dead, then remove it
@@ -216,7 +217,7 @@ namespace Game.Logic.Actions
             StateChange(ActionState.Completed);
         }
 
-        private void SetLootedResources(IBattleManager battle, TroopStub stub)
+        private void SetLootedResources(IBattleManager battle, ITroopStub stub)
         {
             if (!battle.BattleStarted)
                 return;
@@ -247,30 +248,30 @@ namespace Game.Logic.Actions
 
         private void BattleExitTurn(CombatList atk, CombatList def, int turn)
         {
-            City city;            
-            TroopStub stub;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+            ICity city;            
+            ITroopStub stub;
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new ArgumentException();
 
             // Remove troop from battle if he is out of stamina, we need to check here because he might have lost
             // some stamina after knocking down a building
             if (stub.TroopObject.Stats.Stamina == 0)
             {
-                City targetCity;
-                if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+                ICity targetCity;
+                if (!World.Current.TryGetObjects(targetCityId, out targetCity))
                     throw new ArgumentException();
 
-                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, ReportState.OutOfStamina);
+                targetCity.Battle.RemoveFromAttack(new List<ITroopStub> {stub}, ReportState.OutOfStamina);
             }
         }
 
         private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
         {
-            City city;
-            City targetCity;
-            TroopStub stub;
+            ICity city;
+            ICity targetCity;
+            ITroopStub stub;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
             var unit = target as AttackCombatUnit;
@@ -296,7 +297,7 @@ namespace Game.Logic.Actions
                         if (structure.Properties.TryGet("Labor", out value))
                             bonus.Labor += (int)value;
 
-                        Ioc.Kernel.Get<IDbManager>().Save(this);
+                        DbPersistance.Current.Save(this);
                     }
 
                     ReduceStamina(stub, BattleFormulas.Current.GetStaminaStructureDestroyed(stub.TroopObject.Stats.Stamina, target as CombatStructure));
@@ -309,20 +310,20 @@ namespace Game.Logic.Actions
                 remainingUnitCount = stub.TotalCount;
 
                 // Don't return if we haven't fulfilled the minimum rounds or not below the threshold
-                if (unit.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount == 0 || remainingUnitCount > Formula.GetAttackModeTolerance(originalUnitCount, mode))
+                if (unit.RoundsParticipated < Config.battle_min_rounds || remainingUnitCount == 0 || remainingUnitCount > Formula.Current.GetAttackModeTolerance(originalUnitCount, mode))
                     return;
 
-                targetCity.Battle.RemoveFromAttack(new List<TroopStub> {stub}, ReportState.Retreating);
+                targetCity.Battle.RemoveFromAttack(new List<ITroopStub> {stub}, ReportState.Retreating);
             }
         }
 
         private void BattleExitBattle(CombatList atk, CombatList def)
         {
-            City city;
-            City targetCity;
-            TroopStub stub;
+            ICity city;
+            ICity targetCity;
+            ITroopStub stub;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
             DeregisterBattleListeners(targetCity);
@@ -340,11 +341,11 @@ namespace Game.Logic.Actions
         
         private void BattleEnterRound(CombatList atk, CombatList def, uint round)
         {
-            City city;
-            TroopStub stub;
-            City targetCity;
+            ICity city;
+            ITroopStub stub;
+            ICity targetCity;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) || !Global.World.TryGetObjects(targetCityId, out targetCity))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
             // if battle lasts more than 5 rounds, attacker gets 3 attack points.
@@ -359,10 +360,10 @@ namespace Game.Logic.Actions
             ReduceStamina(stub, (short)(stub.TroopObject.Stats.Stamina - 1));
 
             if (stub.TroopObject.Stats.Stamina == 0)
-                targetCity.Battle.RemoveFromAttack(new List<TroopStub> { stub }, ReportState.OutOfStamina);
+                targetCity.Battle.RemoveFromAttack(new List<ITroopStub> { stub }, ReportState.OutOfStamina);
         }
 
-        private static void ReduceStamina(TroopStub stub, short stamina)
+        private static void ReduceStamina(ITroopStub stub, short stamina)
         {
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.Stats.Stamina = Math.Max((short)0, stamina);

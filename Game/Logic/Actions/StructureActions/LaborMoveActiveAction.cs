@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -60,9 +61,9 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             if (cityToStructure)
@@ -78,7 +79,7 @@ namespace Game.Logic.Actions
                 structure.EndUpdate();
 
                 structure.City.BeginUpdate();
-                Procedure.RecalculateCityResourceRates(structure.City);
+                Procedure.Current.RecalculateCityResourceRates(structure.City);
                 // labor got taken out immediately                
                 structure.City.EndUpdate();
             }
@@ -87,16 +88,16 @@ namespace Game.Logic.Actions
             BeginTime = DateTime.UtcNow;
 
             if (cityToStructure)
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)));
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)));
             else
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies)/20));
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.LaborMoveTime(structure, (byte)ActionCount, structure.Technologies) / 20));
 
             return Error.Ok;
         }
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -108,7 +109,7 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
-            City city;
+            ICity city;
             Structure structure;
 
             using (Concurrency.Current.Lock(cityId, out city))
@@ -135,7 +136,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.RecalculateCityResourceRates(structure.City);
+                    Procedure.Current.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
 
@@ -145,13 +146,13 @@ namespace Game.Logic.Actions
 
         public override Error Validate(string[] parms)
         {
-            City city;
+            ICity city;
             Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
             if (cityToStructure)
             {
-                if (ActionCount > Formula.LaborMoveMax(structure))
+                if (ActionCount > Formula.Current.LaborMoveMax(structure))
                     return Error.ActionCountInvalid;
             }
             return Error.Ok;
@@ -159,7 +160,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
@@ -179,7 +180,7 @@ namespace Game.Logic.Actions
                     structure.EndUpdate();
 
                     structure.City.BeginUpdate();
-                    Procedure.RecalculateCityResourceRates(structure.City);
+                    Procedure.Current.RecalculateCityResourceRates(structure.City);
                     structure.City.EndUpdate();
                 }
                 else

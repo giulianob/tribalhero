@@ -8,6 +8,7 @@ using ConsoleSimulator.UserBattle;
 using Game;
 using Game.Battle;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Ninject;
 using log4net;
@@ -41,7 +42,7 @@ namespace ConsoleSimulator
                                                      FileAccess.ReadWrite);
 
                 // Load map
-                Global.World.Load(map,
+                World.Current.Load(map,
                                   regionChanges,
                                   createRegionChanges,
                                   Config.map_width,
@@ -88,7 +89,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private static void bm_UnitRemoved(CombatObject co)
+       /* private static void bm_UnitRemoved(CombatObject co)
         {
             co.Print();
         }
@@ -127,6 +128,6 @@ namespace ConsoleSimulator
             Console.WriteLine("attackers:");
             foreach (var co in atk)
                 co.Print();
-        }
+        }*/
     }
 }

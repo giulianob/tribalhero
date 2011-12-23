@@ -8,6 +8,7 @@ using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -93,13 +94,13 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            TroopStub stub;
-            City targetCity;
+            ICity city;
+            ITroopStub stub;
+            ICity targetCity;
             Structure targetStructure;
 
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub) ||
-                !Global.World.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) ||
+                !World.Current.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.ObjectNotFound;
 
             if (city.Troops.MyStubs().Count() >= 20)
@@ -150,18 +151,18 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
-                City targetCity;
+                ICity city;
+                ICity targetCity;
 
-                if (!Global.World.TryGetObjects(cityId, out city))
+                if (!World.Current.TryGetObjects(cityId, out city))
                     throw new Exception("City is missing");
 
-                if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+                if (!World.Current.TryGetObjects(targetCityId, out targetCity))
                 {
                     //If the target is missing, walk back
                     using (Concurrency.Current.Lock(city))
                     {
-                        TroopStub stub = city.Troops[stubId];
+                        ITroopStub stub = city.Troops[stubId];
                         TroopMovePassiveAction tma = new TroopMovePassiveAction(stub.City.Id, stub.TroopObject.ObjectId, city.X, city.Y, true, true);
                         ExecuteChainAndWait(tma, AfterTroopMovedHome);
                         return;
@@ -178,7 +179,7 @@ namespace Game.Logic.Actions
                         return toBeLocked.ToArray();
                     };
 
-                using (Ioc.Kernel.Get<CallbackLock>().Lock(lockAllStationed, null, city, targetCity))
+                using (Concurrency.Current.Lock(lockAllStationed, null, city, targetCity))
                 {
                     var bea = new EngageAttackPassiveAction(cityId, stubId, targetCityId, mode);
                     ExecuteChainAndWait(bea, AfterBattle);
@@ -190,12 +191,12 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                Dictionary<uint, City> cities;
+                Dictionary<uint, ICity> cities;
                 using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
-                    City city = cities[cityId];
-                    TroopStub stub;
-                    City targetCity = cities[targetCityId];
+                    ICity city = cities[cityId];
+                    ITroopStub stub;
+                    ICity targetCity = cities[targetCityId];
 
                     //Remove notification to target city once battle is over
                     city.Worker.Notifications.Remove(this);
@@ -213,7 +214,7 @@ namespace Game.Logic.Actions
                     {
                         // Calculate how many attack points to give to the city
                         city.BeginUpdate();
-                        Procedure.GiveAttackPoints(city, stub.TroopObject.Stats.AttackPoint, initialTroopValue, stub.Value);
+                        Procedure.Current.GiveAttackPoints(city, stub.TroopObject.Stats.AttackPoint, initialTroopValue, stub.Value);
                         city.EndUpdate();
 
                         // Send troop back home
@@ -235,7 +236,7 @@ namespace Game.Logic.Actions
                         city.Worker.References.Remove(stub.TroopObject, this);
 
                         // Remove troop since he's dead
-                        Procedure.TroopObjectDelete(stub.TroopObject, false);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, false);
 
                         targetCity.EndUpdate();
                         city.EndUpdate();
@@ -250,10 +251,10 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
+                ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");
@@ -265,7 +266,7 @@ namespace Game.Logic.Actions
                     if (city.Battle == null)
                     {
                         city.Worker.References.Remove(stub.TroopObject, this);
-                        Procedure.TroopObjectDelete(stub.TroopObject, true);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
                         StateChange(ActionState.Completed);
                     }
                     else
@@ -281,10 +282,10 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
+                ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception("Stub should still exist");
@@ -292,9 +293,9 @@ namespace Game.Logic.Actions
                     city.Worker.References.Remove(stub.TroopObject, this);
 
                     if (stub.TotalCount == 0)
-                        Procedure.TroopObjectDelete(stub.TroopObject, false);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, false);
                     else
-                        Procedure.TroopObjectDelete(stub.TroopObject, true);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
 
                     StateChange(ActionState.Completed);
                 }

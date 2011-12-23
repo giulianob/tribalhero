@@ -9,7 +9,7 @@ namespace Testing.Troop
         [Fact]
         public void TestUnitListsNoUnitsInStub()
         {
-            TroopStub stub = new TroopStub();
+            ITroopStub stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -21,7 +21,7 @@ namespace Testing.Troop
         [Fact]
         public void TestUnitListNoConflictingTypes()
         {
-            TroopStub stub = new TroopStub();
+            ITroopStub stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -40,7 +40,7 @@ namespace Testing.Troop
         [Fact]
         public void TestUnitListConflictingTypes()
         {
-            TroopStub stub = new TroopStub();
+            ITroopStub stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -57,7 +57,7 @@ namespace Testing.Troop
         [Fact]
         public void TestUnitListConflictingAndNonConflictingTypes()
         {
-            TroopStub stub = new TroopStub();
+            ITroopStub stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 
@@ -77,7 +77,7 @@ namespace Testing.Troop
         [Fact]
         public void TestUnitListSpecificFormations()
         {
-            TroopStub stub = new TroopStub();
+            ITroopStub stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
             stub.AddFormation(FormationType.Attack);
 

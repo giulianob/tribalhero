@@ -71,7 +71,7 @@ namespace Game.Map
 
         public virtual void ForeachObject(uint ox, uint oy, byte radius, bool doSelf, DoWork work, object custom)
         {
-            TileLocator.ForeachObject(ox,
+            TileLocator.Current.ForeachObject(ox,
                                       oy,
                                       radius,
                                       doSelf,

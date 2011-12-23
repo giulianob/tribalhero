@@ -3,6 +3,8 @@
 using System;
 using Game.Data;
 using Game.Data.Stats;
+using Game.Data.Troop;
+using Game.Database;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -11,12 +13,6 @@ using Persistance;
 
 namespace Game.Battle
 {
-    public enum BattleClass : byte
-    {
-        Structure = 0,
-        Unit = 1
-    }
-
     public abstract class CombatObject : IComparable<object>, IPersistableObject
     {
         protected IBattleManager battleManager;
@@ -26,6 +22,8 @@ namespace Game.Battle
             MinDmgDealt = ushort.MaxValue;
             MinDmgRecv = ushort.MaxValue;
         }
+
+        #region Properties
 
         public ushort MaxDmgRecv { get; set; }
         public ushort MinDmgRecv { get; set; }
@@ -38,9 +36,7 @@ namespace Game.Battle
         public uint HitDealtByUnit { get; set; }
 
         public int DmgRecv { get; set; }
-        public int DmgDealt { get; set; }
-
-        public abstract int Upkeep { get; }
+        public int DmgDealt { get; set; }        
 
         public CombatList CombatList { get; set; }
 
@@ -62,109 +58,57 @@ namespace Game.Battle
             }
         }
 
-        public virtual bool IsDead
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        #endregion
 
-        public virtual BaseBattleStats BaseStats
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-            set
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        #region Abstract Properties
 
-        public virtual BattleStats Stats
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-            set
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract int Upkeep { get; }
 
-        public virtual ushort Type
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract bool IsDead { get; }
 
-        public virtual BattleClass ClassType
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract BaseBattleStats BaseStats { get; }
 
-        public virtual ushort Count
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract BattleStats Stats { get; }
 
-        public virtual uint Hp
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract ushort Type { get; }
 
-        public virtual uint Visibility
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract Resource Loot { get; }
 
-        public virtual uint PlayerId
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract ITroopStub TroopStub { get; }
 
-        public virtual City City
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract BattleClass ClassType { get; }
 
-        public virtual byte Lvl
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract ushort Count { get; }
 
-        public virtual short Stamina
-        {
-            get
-            {
-                throw new Exception("NOT IMPLEMENTED");
-            }
-        }
+        public abstract uint Hp { get; }
+
+        public abstract uint Visibility { get; }
+
+        public abstract uint PlayerId { get; }
+
+        public abstract ICity City { get; }
+
+        public abstract byte Lvl { get; }
+
+        public abstract short Stamina { get; }
+
+        #endregion
+
+        #region Abstract Methods
+
+        public abstract void ExitBattle();
+
+        public abstract void TakeDamage(int dmg, out Resource returning, out int attackPoints);
+
+        public abstract void CalculateDamage(ushort dmg, out ushort actualDmg);
+
+        public abstract bool InRange(CombatObject obj);
+
+        public abstract void Location(out uint x, out uint y);
+
+        public abstract void ReceiveReward(int reward, Resource resource);
+
+        #endregion
 
         #region IComparable<object> Members
 
@@ -175,78 +119,26 @@ namespace Game.Battle
 
         #endregion
 
-        #region IPersistableObject Members
+        #region Persistable Members
 
         public bool DbPersisted { get; set; }
 
-        public virtual string DbTable
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
+        public abstract string DbTable { get; }
 
-        public virtual DbColumn[] DbPrimaryKey
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
+        public abstract DbColumn[] DbPrimaryKey { get; }
 
-        public virtual DbDependency[] DbDependencies
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
+        public abstract DbDependency[] DbDependencies { get; }
 
-        public virtual DbColumn[] DbColumns
-        {
-            get
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-        }
+        public abstract DbColumn[] DbColumns { get; }
 
         #endregion
 
+        #region Public Methods
         public virtual void CleanUp()
         {
             Disposed = true;
 
-            Ioc.Kernel.Get<IDbManager>().Delete(this);
-        }
-
-        public virtual void ExitBattle()
-        {
-            throw new Exception("NOT IMPLEMENTED");
-        }
-
-        public virtual void TakeDamage(int dmg, out Resource returning, out int attackPoints)
-        {
-            throw new Exception("NOT IMPLEMENTED");
-        }
-
-        public virtual void CalculateDamage(ushort dmg, out ushort actualDmg)
-        {
-            throw new Exception("NOT IMPLEMENTED");
-        }
-
-        public virtual bool InRange(CombatObject obj)
-        {
-            throw new Exception("NOT IMPLEMENTED");
-        }
-
-        public virtual void Location(out uint x, out uint y) {
-            throw new Exception("NOT IMPLEMENTED");
-        }
-
-        public virtual void ReceiveReward(int reward, Resource resource)
-        {
-            throw new Exception("NOT IMPLEMENTED");
+            DbPersistance.Current.Delete(this);
         }
 
         public bool CanSee(CombatObject obj, uint lowestSteath)
@@ -259,10 +151,6 @@ namespace Game.Battle
             LastRound++;
             RoundsParticipated++;
         }
-
-        public void Print()
-        {
-            //  throw new NotImplementedException();
-        }
+        #endregion
     }
 }

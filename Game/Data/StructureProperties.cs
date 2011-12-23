@@ -79,10 +79,10 @@ namespace Game.Data
 
         public bool DbPersisted { get; set; }
 
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
             IDictionaryEnumerator itr = properties.GetEnumerator();
-
+            
             while (itr.MoveNext())
             {
                 byte datatype = DataTypeSerializer.Serialize(itr.Value);
@@ -94,11 +94,6 @@ namespace Game.Data
                                 new DbColumn("datatype", datatype, DbType.Byte)
                         };
             }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return properties.GetEnumerator();
         }
 
         #endregion

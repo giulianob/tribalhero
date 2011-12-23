@@ -3,6 +3,7 @@
 using System;
 using System.Data;
 using Game.Data.Stats;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -189,7 +190,7 @@ namespace Game.Data
             if (updating)
                 return;
 
-            Ioc.Kernel.Get<IDbManager>().Save(this);
+            DbPersistance.Current.Save(this);
         }
     }
 }

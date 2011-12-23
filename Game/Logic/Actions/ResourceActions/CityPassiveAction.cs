@@ -17,10 +17,10 @@ namespace Game.Logic.Actions
     class CityPassiveAction : ScheduledPassiveAction
     {
 
-        private delegate void Init(City city);
-        private delegate void PreLoop(City city);
-        private delegate void PostLoop(City city);
-        private delegate void StructureLoop(City city, Structure structure);
+        private delegate void Init(ICity city);
+        private delegate void PreLoop(ICity city);
+        private delegate void PostLoop(ICity city);
+        private delegate void StructureLoop(ICity city, Structure structure);
 
         private event Init InitVars;
         private event PreLoop PreFirstLoop;
@@ -87,7 +87,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
@@ -105,7 +105,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {            
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -177,7 +177,7 @@ namespace Game.Logic.Actions
                         return;
 
                     laborTimeRemains += INTERVAL;
-                    int laborRate = Formula.GetLaborRate(laborTotal, city);
+                    int laborRate = Formula.Current.GetLaborRate(laborTotal, city);
                     int laborProduction = laborTimeRemains/laborRate;
                     if (laborProduction <= 0)
                         return;
@@ -196,7 +196,7 @@ namespace Game.Logic.Actions
             FirstLoop += (city, structure) =>
                 {
                     if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("RepairBuilding", structure))
-                        repairPower += Formula.RepairRate(structure);
+                        repairPower += Formula.Current.RepairRate(structure);
                 };
 
             SecondLoop += (city, structure) =>
@@ -277,7 +277,7 @@ namespace Game.Logic.Actions
                 {
                     if (city.Resource.Gold.Value > weaponExportMax * 500) return;
                     int gold = weaponExportMax*weaponExportMarket;
-                    gold += Formula.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
+                    gold += Formula.Current.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
                     if (gold <= 0)
                         return;
                     city.Resource.Gold.Add(gold);

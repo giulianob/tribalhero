@@ -20,8 +20,10 @@ namespace Persistance
         bool DbPersisted { get; set; }
     }
 
-    public interface IPersistableList : IPersistableObject, IEnumerable<DbColumn[]>
+    public interface IPersistableList : IPersistableObject
     {
         DbColumn[] DbListColumns { get; } //Meta data of list columns. No value.
+
+        IEnumerable<DbColumn[]> DbListValues();
     }
 }

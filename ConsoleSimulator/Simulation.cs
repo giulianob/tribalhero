@@ -38,9 +38,9 @@ namespace ConsoleSimulator
                 Defender.Local.BeginUpdate();
                 Defender.Local.AddFormation(FormationType.InBattle);
                 Defender.Local.Template.LoadStats(TroopBattleGroup.Local);
-                bm.AddToLocal(new List<TroopStub> { Defender.Local }, ReportState.Entering);
+                bm.AddToLocal(new List<ITroopStub> { Defender.Local }, ReportState.Entering);
                 bm.AddToLocal(Defender.City);
-                Procedure.MoveUnitFormation(Defender.Local, FormationType.Normal, FormationType.InBattle);
+                Procedure.Current.MoveUnitFormation(Defender.Local, FormationType.Normal, FormationType.InBattle);
                 Defender.Local.EndUpdate();
             }
 

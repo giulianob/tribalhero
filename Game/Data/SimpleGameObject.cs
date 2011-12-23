@@ -13,17 +13,21 @@ namespace Game.Data
         public enum Types : ushort
         {
             Troop = 100,
+
             Forest = 200,
         }
 
         public enum SystemGroupIds : uint
         {
             NewCityStartTile = 10000001,
+
             Forest = 10000002,
         }
 
         protected uint objectId;
+
         protected uint x;
+
         protected uint y;
 
         #region Properties
@@ -59,6 +63,7 @@ namespace Game.Data
         }
 
         public abstract ushort Type { get; }
+
         public abstract uint GroupId { get; }
 
         public virtual uint ObjectId
@@ -153,7 +158,9 @@ namespace Game.Data
         #region Update Events
 
         protected uint origX;
+
         protected uint origY;
+
         protected bool updating;
 
         public void BeginUpdate()
@@ -166,6 +173,7 @@ namespace Game.Data
         }
 
         public abstract void CheckUpdateMode();
+
         public abstract void EndUpdate();
 
         protected void Update()
@@ -176,7 +184,7 @@ namespace Game.Data
             if (updating)
                 return;
 
-            Global.World.ObjectUpdateEvent(this, origX, origY);
+            World.Current.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion
@@ -188,36 +196,14 @@ namespace Game.Data
             return base.ToString() + "[" + X + "," + Y + "]";
         }
 
-        internal static bool IsDiagonal(uint x, uint y, uint x1, uint y1)
+        public static bool IsDiagonal(uint x, uint y, uint x1, uint y1)
         {
             return y%2 != y1%2;
         }
 
-        public static int GetOffset(uint x, uint y, uint x1, uint y1)
-        {
-            if (y%2 == 1 && y1%2 == 0 && x1 <= x)
-                return 1;
-            if (y%2 == 0 && y1%2 == 1 && x1 >= x)
-                return 1;
-
-            return 0;
-        }
-
         public static int TileDistance(uint x, uint y, uint x1, uint y1)
         {
-            /***********************************************************
-					     13,12  |  14,12 
-			        12,13  |  13,13  |  14,13  |  15,13
-               12,14  | (13,14) |  14,14  |  15,14  | 16,14
-          11,15  |  12,15  |  13,15  |  14,15
-               12,16  |  13,16  |  14,16
-                    12,17  |  13,17  | 14,17
-			             13,18     14,18
-             *********************************************************/
-            int offset = GetOffset(x, y, x1, y1);
-            var dist = (int)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1)/2 + offset);
-
-            return dist;
+            return TileLocator.Current.TileDistance(x, y, x1, y1);
         }
 
         public int TileDistance(uint x1, uint y1)

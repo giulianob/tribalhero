@@ -13,7 +13,7 @@ namespace Game.Battle
 
         void SnapEndReport(uint reportId, uint battleId, uint round, uint turn);
 
-        void SnapTroopState(uint reportTroopId, TroopStub stub, ReportState state);
+        void SnapTroopState(uint reportTroopId, ITroopStub stub, ReportState state);
 
         uint SnapTroop(uint reportId, ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, Resource loot);
 

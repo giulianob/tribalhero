@@ -45,8 +45,8 @@ namespace ConsoleSimulator
 
     public class Group
     {
-        private static uint player_id;
-        private static uint city_id;
+        private static uint playerId;
+        private static uint cityId;
         private readonly TroopStub attack;
         private List<Structure> structures = new List<Structure>();
 
@@ -56,8 +56,8 @@ namespace ConsoleSimulator
 
         public Group()
         {
-            player = new Player(player_id, DateTime.MinValue, SystemClock.Now, "player " + player_id, string.Empty, false);
-            player_id++;
+            player = new Player(playerId, DateTime.MinValue, SystemClock.Now, "player " + playerId, string.Empty, false);
+            playerId++;
             var main =
                     new Structure(
                             new StructureStats(new StructureBaseStats("MainBuilding",
@@ -84,9 +84,9 @@ namespace ConsoleSimulator
                                                                       0,
                                                                       0,
                                                                       ClassId.Structure)));
-            city = new City(player, "city " + city_id, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), main);
+            city = new City(player, "city " + cityId, Formula.Current.GetInitialCityResources(), Formula.Current.GetInitialCityRadius(), main);
             player.Add(city);
-            city_id++;
+            cityId++;
 
             attack = new TroopStub();
             attack = new TroopStub();
@@ -101,7 +101,7 @@ namespace ConsoleSimulator
             }
         }
 
-        public TroopStub Local
+        public ITroopStub Local
         {
             get
             {
@@ -109,7 +109,7 @@ namespace ConsoleSimulator
             }
         }
 
-        public TroopStub AttackStub
+        public ITroopStub AttackStub
         {
             get
             {

@@ -130,7 +130,7 @@ namespace Game.Data.Troop
 
         public bool DbPersisted { get; set; }
 
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
             Dictionary<ushort, BaseUnitStats>.Enumerator itr = dict.GetEnumerator();
             while (itr.MoveNext())

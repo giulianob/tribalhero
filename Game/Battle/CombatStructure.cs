@@ -84,7 +84,7 @@ namespace Game.Battle
             }
         }
 
-        public override TroopStub TroopStub
+        public override ITroopStub TroopStub
         {
             get
             {

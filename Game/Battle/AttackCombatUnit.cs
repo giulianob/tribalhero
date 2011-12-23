@@ -24,10 +24,10 @@ namespace Game.Battle
         private readonly byte lvl;
         private readonly BattleStats stats;
         private readonly ushort type;
-        private readonly TroopStub troopStub;
+        private readonly ITroopStub troopStub;
         private ushort count;
 
-        public AttackCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
+        public AttackCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
         {
             troopStub = stub;
             this.formation = formation;
@@ -42,7 +42,7 @@ namespace Game.Battle
 
         // Used by the db loader
         public AttackCombatUnit(IBattleManager owner,
-                                TroopStub stub,
+                                ITroopStub stub,
                                 FormationType formation,
                                 ushort type,
                                 byte lvl,
@@ -210,7 +210,7 @@ namespace Game.Battle
 
         #region ICombatUnit Members
 
-        public override TroopStub TroopStub
+        public override ITroopStub TroopStub
         {
             get
             {
@@ -344,7 +344,7 @@ namespace Game.Battle
 
         public override int CompareTo(object other)
         {
-            if (other is TroopStub)
+            if (other is ITroopStub)
                 return other == TroopStub ? 0 : 1;
 
             return -1;

@@ -42,10 +42,10 @@ namespace Game.Data.Troop
 
         #region Events
 
-        public delegate void StateSwitched(TroopStub stub, TroopState newState);
+        public delegate void StateSwitched(ITroopStub stub, TroopState newState);
         public event StateSwitched OnStateSwitched = delegate { };
         
-        public delegate void Removed(TroopStub stub);
+        public delegate void Removed(ITroopStub stub);
         public event Removed OnRemoved = delegate { };
 
         public delegate void OnUnitUpdate(TroopStub stub);
@@ -363,7 +363,7 @@ namespace Game.Data.Troop
 
         public bool DbPersisted { get; set; }
 
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
             lock (objLock)
             {
@@ -442,13 +442,13 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool Add(TroopStub stub)
+        public bool Add(ITroopStub stub)
         {
             lock (objLock)
             {
                 CheckUpdateMode();
 
-                foreach (var stubFormation in stub)
+                foreach (Formation stubFormation in stub)
                 {
                     Formation targetFormation;
                     if (!data.TryGetValue(stubFormation.Type, out targetFormation))
@@ -483,7 +483,7 @@ namespace Game.Data.Troop
             return false;
         }
 
-        public bool Remove(TroopStub troop)
+        public bool Remove(ITroopStub troop)
         {
             lock (objLock)
             {
@@ -492,7 +492,7 @@ namespace Game.Data.Troop
                 if (!HasEnough(troop))
                     return false;
 
-                foreach (var formation in troop)
+                foreach (Formation formation in troop)
                 {
                     Formation targetFormation;
                     if (!data.TryGetValue(formation.Type, out targetFormation))
@@ -557,7 +557,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public bool HasEnough(TroopStub troop)
+        public bool HasEnough(ITroopStub troop)
         {
             lock (objLock)
             {

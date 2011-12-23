@@ -55,7 +55,7 @@ namespace Game.Battle
                             });
         }
 
-        public void SnapTroopState(uint reportTroopId, TroopStub stub, ReportState state)
+        public void SnapTroopState(uint reportTroopId, ITroopStub stub, ReportState state)
         {
             // If there's a troop object we also want to update its loot
             if (stub.TroopObject == null)

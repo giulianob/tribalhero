@@ -121,7 +121,7 @@ namespace Game.Battle
                                 0);
         }
 
-        public virtual short GetStamina(TroopStub stub, ICity city)
+        public virtual short GetStamina(ITroopStub stub, ICity city)
         {
             return (short)Config.battle_stamina_initial;
         }

@@ -24,9 +24,9 @@ namespace Game.Battle
         private readonly BattleStats stats;
         private readonly ushort type;
         private ushort count;
-        private readonly TroopStub troopStub;
+        private readonly ITroopStub troopStub;
 
-        public DefenseCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
+        public DefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
         {
             troopStub = stub;
             this.formation = formation;
@@ -39,7 +39,7 @@ namespace Game.Battle
             LeftOverHp = stats.MaxHp;
         }
 
-        public DefenseCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, ushort leftOverHp)
+        public DefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, ushort leftOverHp)
             : this(owner, stub, formation, type, lvl, count)
         {
             LeftOverHp = leftOverHp;
@@ -197,7 +197,7 @@ namespace Game.Battle
 
         #region ICombatUnit Members
 
-        public override TroopStub TroopStub
+        public override ITroopStub TroopStub
         {
             get
             {
@@ -300,7 +300,7 @@ namespace Game.Battle
 
         public override int CompareTo(object other)
         {
-            if (other is TroopStub)
+            if (other is ITroopStub)
                 return other == TroopStub ? 0 : 1;
 
             return -1;

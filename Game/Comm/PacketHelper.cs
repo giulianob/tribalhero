@@ -194,7 +194,7 @@ namespace Game.Comm
             }
         }
 
-        internal static void AddToPacket(TroopStub stub, Packet packet)
+        internal static void AddToPacket(ITroopStub stub, Packet packet)
         {
             packet.AddUInt32(stub.City.Owner.PlayerId);
             packet.AddUInt32(stub.City.Id);

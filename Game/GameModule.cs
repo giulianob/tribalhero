@@ -11,6 +11,7 @@ using Game.Comm.Thrift;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Logic;
+using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
@@ -161,6 +162,7 @@ namespace Game
             Bind<IProtocolFactory>().ToFactory();
             Bind<ICombatListFactory>().ToFactory();
             Bind<IAssignmentFactory>().ToFactory();
+            Bind<IActionFactory>().ToFactory();
 
             #endregion
         }

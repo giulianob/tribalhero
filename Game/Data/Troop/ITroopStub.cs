@@ -59,11 +59,11 @@ namespace Game.Data.Troop
 
         bool AddFormation(FormationType type);
 
-        bool Add(TroopStub stub);
+        bool Add(ITroopStub stub);
 
         bool AddUnit(FormationType formationType, ushort type, ushort count);
 
-        bool Remove(TroopStub troop);
+        bool Remove(ITroopStub troop);
 
         bool HasFormation(FormationType formation);
 
@@ -73,7 +73,7 @@ namespace Game.Data.Troop
 
         void RemoveAllUnits(params FormationType[] formations);
 
-        bool HasEnough(TroopStub troop);
+        bool HasEnough(ITroopStub troop);
 
         void Print();
 

@@ -12,7 +12,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual void MoveUnitFormation(TroopStub stub, FormationType source, FormationType target)
+        public virtual void MoveUnitFormation(ITroopStub stub, FormationType source, FormationType target)
         {
             stub[target].Add(stub[source]);
             stub[source].Clear();
@@ -23,7 +23,7 @@ namespace Game.Logic.Procedures
             if (city.DefaultTroop[FormationType.Normal].Count == 0)
                 return;
 
-            var list = new List<TroopStub>(1) {city.DefaultTroop};
+            var list = new List<ITroopStub>(1) {city.DefaultTroop};
 
             city.DefaultTroop.BeginUpdate();
             city.DefaultTroop.State = TroopState.Battle;

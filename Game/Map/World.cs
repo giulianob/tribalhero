@@ -85,7 +85,7 @@ namespace Game.Map
             return Players.TryGetValue(playerId, out player);
         }
 
-        public bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out TroopStub troopStub)
+        public bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub)
         {
             troopStub = null;
 

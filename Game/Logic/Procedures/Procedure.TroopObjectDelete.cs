@@ -38,7 +38,7 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        private void AddToNormal(TroopStub source, TroopStub target)
+        private void AddToNormal(ITroopStub source, ITroopStub target)
         {
             target.BeginUpdate();
             foreach (var formation in source)

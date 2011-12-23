@@ -71,6 +71,8 @@ namespace Game.Data
 
         #region Constructors
 
+        public BaseBattleStats() { }
+
         public BaseBattleStats(ushort type,
                                byte lvl,
                                WeaponType weapon,

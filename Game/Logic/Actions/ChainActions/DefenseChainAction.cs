@@ -60,7 +60,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            TroopStub stub;
+            ITroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
 
@@ -105,7 +105,7 @@ namespace Game.Logic.Actions
                     ICity city = cities[cityId];
                     ICity targetCity = cities[targetCityId];
 
-                    TroopStub stub;
+                    ITroopStub stub;
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();
 
@@ -120,7 +120,7 @@ namespace Game.Logic.Actions
                         stub.State = TroopState.BattleStationed;
                         stub.EndUpdate();
 
-                        targetCity.Battle.AddToDefense(new List<TroopStub> { stub });
+                        targetCity.Battle.AddToDefense(new List<ITroopStub> { stub });
                     }
 
                     StateChange(ActionState.Completed);

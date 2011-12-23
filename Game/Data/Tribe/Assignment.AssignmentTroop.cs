@@ -10,11 +10,11 @@ namespace Game.Data.Tribe
 	{
         public class AssignmentTroop
         {
-            public TroopStub Stub { get; set; }
+            public ITroopStub Stub { get; set; }
             public DateTime DepartureTime { get; set; }
             public bool Dispatched { get; set; }
 
-            public AssignmentTroop(TroopStub stub, DateTime departureTime, bool dispatched = false)
+            public AssignmentTroop(ITroopStub stub, DateTime departureTime, bool dispatched = false)
             {
                 Stub = stub;
                 DepartureTime = departureTime;

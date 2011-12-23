@@ -159,7 +159,7 @@ namespace Game.Data.Tribe
         /// <param name="procedure"> </param>
         /// <param name="tileLocator"> </param>
         /// <param name="actionFactory"> </param>
-        public Assignment(Tribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, TroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(Tribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -197,7 +197,7 @@ namespace Game.Data.Tribe
                                               DispatchCount));
                 foreach (var obj in assignmentTroops)
                 {
-                    TroopStub stub = obj.Stub;
+                    ITroopStub stub = obj.Stub;
                     stringBuilder.Append(string.Format("\tTime[{0}] Player[{1}] City[{2}] Stub[{3}] Upkeep[{4}]\n",
                                             obj.DepartureTime,
                                             stub.City.Owner.Name,
@@ -239,7 +239,7 @@ namespace Game.Data.Tribe
         /// </summary>
         /// <param name="stub"></param>
         /// <param name="newState"></param>
-        private void StubOnStateSwitched(TroopStub stub, TroopState newState)
+        private void StubOnStateSwitched(ITroopStub stub, TroopState newState)
         {
             lock (assignmentLock)
             {
@@ -255,7 +255,7 @@ namespace Game.Data.Tribe
         /// Removes a stub from the assignment
         /// </summary>
         /// <param name="stub"></param>
-        private void RemoveStub(TroopStub stub)
+        private void RemoveStub(ITroopStub stub)
         {
             lock (assignmentLock)
             {
@@ -277,7 +277,7 @@ namespace Game.Data.Tribe
         /// </summary>
         /// <param name="stub"></param>
         /// <returns></returns>
-        private DateTime DepartureTime(TroopStub stub)
+        private DateTime DepartureTime(ITroopStub stub)
         {
             int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, X, Y);
             return TargetTime.Subtract(new TimeSpan(0, 0, formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects()))));
@@ -288,7 +288,7 @@ namespace Game.Data.Tribe
         /// </summary>
         /// <param name="stub"></param>
         /// <returns></returns>
-        private bool Dispatch(TroopStub stub)
+        private bool Dispatch(ITroopStub stub)
         {
             Structure structure = (Structure)gameObjectLocator.GetObjects(X, Y).Find(z => z is Structure);
             if (structure == null)
@@ -447,9 +447,7 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        #region IEnumerable<DbColumn[]> Members
-
-        public IEnumerator<DbColumn[]> GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
             var itr = assignmentTroops.GetEnumerator();
             while (itr.MoveNext())
@@ -469,8 +467,6 @@ namespace Game.Data.Tribe
             }
         }
 
-        #endregion
-
         #region IEnumerable Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -485,7 +481,7 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        internal void DbLoaderAdd(TroopStub stub, bool dispatched)
+        internal void DbLoaderAdd(ITroopStub stub, bool dispatched)
         {
             assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub), dispatched));
             stub.OnRemoved += RemoveStub;

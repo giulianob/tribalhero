@@ -22,7 +22,7 @@ namespace Game.Data.Troop
         private uint targetX;
 
         private uint targetY;
-        public TroopStub Stub { get; set; }
+        public ITroopStub Stub { get; set; }
 
         public uint TargetX
         {
@@ -89,7 +89,7 @@ namespace Game.Data.Troop
 
         #region Constructors
 
-        public TroopObject(TroopStub stub)
+        public TroopObject(ITroopStub stub)
         {
             Stub = stub;
         }

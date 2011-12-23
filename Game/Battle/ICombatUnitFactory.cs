@@ -7,6 +7,6 @@ namespace Game.Battle
     {
         CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, Structure structure);
         AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager owner, TroopObject troop, FormationType formation, ushort type, ushort count);
-        DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, ushort count);
+        DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, ushort count);
     }
 }

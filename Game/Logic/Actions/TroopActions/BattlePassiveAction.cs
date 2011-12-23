@@ -98,7 +98,7 @@ namespace Game.Logic.Actions
                     city.DefaultTroop.EndUpdate();
 
                     //Copy troop stubs from city since the foreach loop below will modify it during the loop
-                    var stubsCopy = new List<TroopStub>(city.Troops);
+                    var stubsCopy = new List<ITroopStub>(city.Troops);
 
                     foreach (var stub in stubsCopy)
                     {
@@ -156,7 +156,7 @@ namespace Game.Logic.Actions
             //Add local troop
             Procedure.Current.AddLocalToBattle(city.Battle, city, ReportState.Entering);
 
-            var list = new List<TroopStub>();
+            var list = new List<ITroopStub>();
 
             //Add reinforcement
             foreach (var stub in city.Troops)

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Comm;
 using Game.Data.Troop;
+using Game.Database;
+using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
@@ -21,7 +23,7 @@ namespace Game.Data.Tribe
     {
         public class IncomingListItem
         {
-            public City City { get; set; }
+            public ICity City { get; set; }
             public AttackChainAction Action { get; set; }
         }
 
@@ -46,7 +48,7 @@ namespace Game.Data.Tribe
             set {
                 attackPoint = value;
                 if (DbPersisted) {
-                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("attack_point", attackPoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -64,7 +66,7 @@ namespace Game.Data.Tribe
                 defensePoint = value;
 
                 if (DbPersisted) {
-                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("defense_point", defensePoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
                 } 
             }
@@ -83,7 +85,7 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("desc", description, DbType.String, Player.MAX_DESCRIPTION_LENGTH), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -130,7 +132,7 @@ namespace Game.Data.Tribe
             if (save)
             {
                 DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
-                Ioc.Kernel.Get<IDbManager>().Save(tribesman);
+                DbPersistance.Current.Save(tribesman);
             }
             return Error.Ok;
         }
@@ -143,7 +145,7 @@ namespace Game.Data.Tribe
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Player.Tribesman = null;
-            Ioc.Kernel.Get<IDbManager>().Delete(tribesman);
+            DbPersistance.Current.Delete(tribesman);
             return !tribesmen.Remove(playerId) ? Error.TribesmanNotFound : Error.Ok;
         }
 
@@ -168,7 +170,7 @@ namespace Game.Data.Tribe
                 return Error.TribesmanIsOwner;
 
             tribesman.Rank = rank;
-            Ioc.Kernel.Get<IDbManager>().Save(tribesman);
+            DbPersistance.Current.Save(tribesman);
             tribesman.Player.TribeUpdate();
 
             return Error.Ok;
@@ -183,7 +185,7 @@ namespace Game.Data.Tribe
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Contribution += resource;
             Resource += resource;
-            Ioc.Kernel.Get<IDbManager>().Save(tribesman, this);
+            DbPersistance.Current.Save(tribesman, this);
 
             return Error.Ok;
         }
@@ -319,7 +321,7 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        public Error CreateAssignment(TroopStub stub, uint x, uint y, City targetCity, DateTime time, AttackMode mode, out int id)
+        public Error CreateAssignment(ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, out int id)
         {
             id = 0;
 
@@ -348,7 +350,7 @@ namespace Game.Data.Tribe
             // Player creating the assignment cannot be late (Give a few minutes lead)
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
             DateTime reachTime =
-                    DateTime.UtcNow.AddSeconds(Formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects())));
+                    DateTime.UtcNow.AddSeconds(Formula.Current.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects())));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
@@ -356,12 +358,11 @@ namespace Game.Data.Tribe
             }
 
             // Create assignment
-            Assignment assignment = new Assignment(this, x, y, targetCity, mode, time, stub);
-            Ioc.Kernel.Get<IDbManager>().Save(assignment);
-            Global.Scheduler.Put(assignment);
+            Assignment assignment = Ioc.Kernel.Get<IAssignmentFactory>().CreateAssignment(this, x, y, targetCity, mode, time, stub);                        
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
+            assignment.Reschedule();
 
             SendUpdate();
             return Error.Ok;
@@ -386,8 +387,9 @@ namespace Game.Data.Tribe
 
         internal void RemoveAssignment(Assignment assignment)
         {
-            SendUpdate();
+            assignment.AssignmentComplete -= RemoveAssignment;
             assignments.Remove(assignment.Id);
+            SendUpdate();            
         }
 
         internal void DbLoaderAddAssignment(Assignment assignment) {
@@ -400,9 +402,9 @@ namespace Game.Data.Tribe
             if (Level >= 20)
                 return;
 
-            Resource.Subtract(Formula.GetTribeUpgradeCost(Level));
+            Resource.Subtract(Formula.Current.GetTribeUpgradeCost(Level));
             Level++;
-            Ioc.Kernel.Get<IDbManager>().Save(this);
+            DbPersistance.Current.Save(this);
         }
 
         public void SendUpdate()

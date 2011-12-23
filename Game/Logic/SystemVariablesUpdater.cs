@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading;
 using Game.Comm;
 using Game.Data;
+using Game.Database;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -45,7 +47,7 @@ namespace Game.Logic
         {
             lock (objLock)
             {
-                using (Ioc.Kernel.Get<IDbManager>().GetThreadTransaction())
+                using (DbPersistance.Current.GetThreadTransaction())
                 {                    
                     DateTime now = DateTime.UtcNow;
 
@@ -54,7 +56,7 @@ namespace Game.Logic
 
                     //System time
                     Global.SystemVariables["System.time"].Value = now;
-                    Ioc.Kernel.Get<IDbManager>().Save(Global.SystemVariables["System.time"]);
+                    DbPersistance.Current.Save(Global.SystemVariables["System.time"]);
 
                     if (DateTime.UtcNow.Subtract(lastUpdateScheduler).TotalMilliseconds < 5000)
                         return;
@@ -68,7 +70,7 @@ namespace Game.Logic
                     DateTime lastProbe;
                     DateTime nextFire;
 
-                    Global.Scheduler.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
+                    Scheduler.Current.Probe(out lastProbe, out actionsFired, out schedulerSize, out schedulerDelta, out nextFire);
 
                     int workerThreads;
                     int completionThreads;
@@ -81,7 +83,7 @@ namespace Game.Logic
                     // Database info
                     int queriesRan;
                     DateTime lastDbProbe;
-                    Ioc.Kernel.Get<IDbManager>().Probe(out queriesRan, out lastDbProbe);
+                    DbPersistance.Current.Probe(out queriesRan, out lastDbProbe);
 
                     var uptime = now.Subtract(systemStartTime);
 
@@ -101,15 +103,15 @@ namespace Game.Logic
                                             new SystemVariable("Process.memory_usage", Process.GetCurrentProcess().WorkingSet64),
                                             new SystemVariable("Process.peak_memory_usage", Process.GetCurrentProcess().PeakWorkingSet64),
                                             new SystemVariable("Database.queries_per_second", (int)(queriesRan/now.Subtract(lastDbProbe).TotalSeconds)),
-                                            new SystemVariable("Players.count", Global.World.Players.Count),
+                                            new SystemVariable("Players.count", World.Current.Players.Count),
                                             new SystemVariable("Players.logged_in", TcpWorker.GetSessionCount()),
-                                            new SystemVariable("Cities.count", Global.World.CityCount),
+                                            new SystemVariable("Cities.count", World.Current.CityCount),
                                             new SystemVariable("Channel.subscriptions", Global.Channel.SubscriptionCount()),
                                             new SystemVariable("Tribes.count", Global.Tribes.Count),
                                     };
 
                     // Max player logged in ever
-                    using (DbDataReader reader = Ioc.Kernel.Get<IDbManager>().ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE `name` = 'Players.max_logged_in' LIMIT 1", SystemVariable.DB_TABLE),
+                    using (DbDataReader reader = DbPersistance.Current.ReaderQuery(string.Format("SELECT * FROM `{0}` WHERE `name` = 'Players.max_logged_in' LIMIT 1", SystemVariable.DB_TABLE),
                                                  new DbColumn[] {}))
                     {
                         if (reader.HasRows)
@@ -137,7 +139,7 @@ namespace Game.Logic
                     }
 
                     // Forest cnt
-                    variables.AddRange(Global.World.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    
+                    variables.AddRange(World.Current.Forests.ForestCount.Select((t, i) => new SystemVariable("Forests.lvl" + (i + 1) + "_count", t)));                    
 
                     // Update vars
                     foreach (var variable in variables)
@@ -147,7 +149,7 @@ namespace Game.Logic
                         else
                             Global.SystemVariables[variable.Key].Value = variable.Value;
 
-                        Ioc.Kernel.Get<IDbManager>().Save(Global.SystemVariables[variable.Key]);
+                        DbPersistance.Current.Save(Global.SystemVariables[variable.Key]);
                     }
                 }
             }

@@ -10,9 +10,9 @@ namespace Game.Map
 {
     public class RoadPathFinder
     {
-        public static bool HasPath(Location start, Location end, City city, Location excludedPoint)
+        public static bool HasPath(Location start, Location end, ICity city, Location excludedPoint)
         {
-            bool fromStructure = Global.World[start.X, start.Y].Exists(s => s is Structure);
+            bool fromStructure = World.Current[start.X, start.Y].Exists(s => s is Structure);
 
             return BreadthFirst(new Location(end.X, end.Y),
                                 new List<Location> {new Location(start.X, start.Y)},
@@ -42,7 +42,7 @@ namespace Game.Map
                                             {
                                                 if (!location.Equals(end))
                                                 {
-                                                    if (Global.World[location.X, location.Y].Exists(s => s is Structure))
+                                                    if (World.Current[location.X, location.Y].Exists(s => s is Structure))
                                                         return false;
                                                     if (!RoadManager.IsRoad(location.X, location.Y))
                                                         return false;

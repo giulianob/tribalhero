@@ -7,18 +7,6 @@ namespace Game.Util.Locking
 {
     public static class Concurrency
     {
-        private static ILocker locker = new DefaultLocker(() => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()));
-
-        public static ILocker Current
-        {
-            get
-            {
-                return locker;
-            }
-            set
-            {
-                locker = value;
-            }
-        }
+        public static ILocker Current { get; set; }
     }
 }

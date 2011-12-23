@@ -14,7 +14,7 @@ namespace Game.Data.Stats
             hp = baseStats.Battle.MaxHp;
         }
 
-        public ushort Hp
+        public virtual ushort Hp
         {
             get
             {
@@ -27,7 +27,7 @@ namespace Game.Data.Stats
             }
         }
 
-        public ushort Labor
+        public virtual ushort Labor
         {
             get
             {
@@ -40,6 +40,6 @@ namespace Game.Data.Stats
             }
         }
 
-        public StructureBaseStats Base { get; private set; }
+        public virtual StructureBaseStats Base { get; private set; }
     }
 }

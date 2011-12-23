@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -62,7 +63,7 @@ namespace Game.Logic.Actions
 
         public void ScriptInit(GameObject obj, string[] parms)
         {
-            City city;
+            ICity city;
             Structure structure;
 
             if (!(obj is Structure))
@@ -72,7 +73,7 @@ namespace Game.Logic.Actions
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
             NlsDescription = parms[1];
 
-            if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
                 return;
 
             city.Worker.DoPassive(structure, this, true);
@@ -82,7 +83,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             Structure structure;
 
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
@@ -106,7 +107,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                Global.World.Remove(structure);
+                World.Current.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
@@ -123,13 +124,13 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
+            ICity city;
             Structure structure;
 
             endTime = SystemClock.Now.AddSeconds(ts.TotalSeconds);
             BeginTime = SystemClock.Now;
 
-            if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
                 return Error.ObjectNotFound;
 
             return Error.Ok;
@@ -141,7 +142,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             Structure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {

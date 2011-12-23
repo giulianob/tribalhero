@@ -22,7 +22,7 @@ namespace Game.Comm.Channel
     {
         private readonly string channelName;
 
-        public BattleChannel(City city)
+        public BattleChannel(ICity city)
         {
             channelName = "/BATTLE/" + city.Id;
         }

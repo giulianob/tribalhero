@@ -82,7 +82,7 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
+            ICity city;
             GameObject obj;            
 
             using (Concurrency.Current.Lock(cityId, out city))

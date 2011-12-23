@@ -11,7 +11,7 @@ namespace Game.Battle
     {
         Resource Loot { get; }
 
-        TroopStub TroopStub { get; }
+        ITroopStub TroopStub { get; }
 
         FormationType Formation { get; }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -19,7 +20,7 @@ namespace Game.Module.Remover {
         public IEnumerable<uint> GetPlayerIds()
         {
             using (var reader =
-                            Ioc.Kernel.Get<IDbManager>().ReaderQuery(
+                            DbPersistance.Current.ReaderQuery(
                                                                     string.Format(
                                                                        "SELECT players.id player_id FROM `{0}` WHERE TIMEDIFF(UTC_TIMESTAMP(), `last_login`) < '{1}:00:00.000000'",
                                                                        Player.DB_TABLE,

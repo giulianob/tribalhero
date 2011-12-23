@@ -113,7 +113,7 @@ namespace Game.Battle
             item.CombatList = this;
         }
 
-        public bool Contains(TroopStub obj)
+        public bool Contains(ITroopStub obj)
         {
             return this.Any(currObj => currObj.CompareTo(obj) == 0);
         }

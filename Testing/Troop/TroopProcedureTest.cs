@@ -13,7 +13,7 @@ namespace Testing.Troop
     /// </summary>
     public class TroopProcedureTest : TestBase
     {
-        private TroopStub stub;
+        private ITroopStub stub;
 
         public TroopProcedureTest()
         {
@@ -28,8 +28,8 @@ namespace Testing.Troop
         {
             stub.AddUnit(FormationType.Normal, 101, 10);
 
-            Procedure.MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
-            Procedure.MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
+            Procedure.Current.MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
+            Procedure.Current.MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
 
             Assert.True(stub[FormationType.Normal].Type == FormationType.Normal);
             Assert.True(stub[FormationType.InBattle].Type == FormationType.InBattle);

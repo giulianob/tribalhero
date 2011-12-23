@@ -22,9 +22,9 @@ namespace Game.Data.Troop
 
     public class Formation : Dictionary<ushort, ushort>
     {
-        private readonly TroopStub parent;
+        private readonly ITroopStub parent;
 
-        public Formation(FormationType type, TroopStub parent)
+        public Formation(FormationType type, ITroopStub parent)
         {
             Type = type;
             this.parent = parent;

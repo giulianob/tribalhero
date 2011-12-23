@@ -30,7 +30,7 @@
 		protected var pnlButton:JPanel;
 		protected var btnOk:JButton;
 		protected var radioGroup: ButtonGroup;
-		protected var lblTroopSpeed: JLabel;
+		protected var lblTroopSpeed: MultilineLabel;
 
 		protected var city: City;
 		
@@ -174,7 +174,7 @@
 			btnOk.setSize(new IntDimension(22, 22));
 			btnOk.setText("Ok");
 
-			lblTroopSpeed = new JLabel("", null, AsWingConstants.LEFT);
+			lblTroopSpeed = new MultilineLabel();
 			
 			//component layoution
 			if (hasAttackStrength) {

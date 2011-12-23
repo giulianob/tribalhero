@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -19,7 +20,7 @@ namespace Game.Data
     {
         public const string DB_TABLE = "players";
         public const int MAX_DESCRIPTION_LENGTH = 3000;
-        private readonly List<City> list = new List<City>();
+        private readonly List<ICity> list = new List<ICity>();
 
         public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin)
                 : this(playerid, created, lastLogin, name, description, admin, string.Empty)
@@ -69,7 +70,7 @@ namespace Game.Data
 
                 if (DbPersisted)
                 {
-                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
+                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) });
                 }
             }
@@ -189,7 +190,7 @@ namespace Game.Data
 
         #endregion
 
-        public void Add(City city)
+        public void Add(ICity city)
         {
             list.Add(city);
         }
@@ -199,12 +200,12 @@ namespace Game.Data
             return list.Count(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        internal IEnumerable<City> GetCityList(bool includeDeleted = false)
+        internal IEnumerable<ICity> GetCityList(bool includeDeleted = false)
         {
             return list.Where(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        internal City GetCity(uint id)
+        internal ICity GetCity(uint id)
         {
             return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
         }
@@ -216,7 +217,7 @@ namespace Game.Data
         public void SendSystemMessage(Player from, String subject, String message)
         {
             subject = String.Format("(System) {0}", subject);
-            Ioc.Kernel.Get<IDbManager>().Query(
+            DbPersistance.Current.Query(
                                    "INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES (@sender_player_id, @recipient_player_id, @subject, @message, @sender_state, @recipient_state, UTC_TIMESTAMP())",
                                    new[]
                                    {

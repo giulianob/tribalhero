@@ -12,7 +12,7 @@ namespace Testing.Troop
     /// </summary>
     public class TroopStarveTest : TestBase
     {
-        public TroopStub CreateSimpleStub()
+        public ITroopStub CreateSimpleStub()
         {
             var stub = new TroopStub();
             stub.AddFormation(FormationType.Normal);
@@ -22,7 +22,7 @@ namespace Testing.Troop
         [Fact]
         public void TestStarveSingleUnit()
         {
-            TroopStub stub = CreateSimpleStub();
+            ITroopStub stub = CreateSimpleStub();
             stub.AddUnit(FormationType.Normal, 0, 10);
 
             stub.Starve();
@@ -32,7 +32,7 @@ namespace Testing.Troop
         [Fact]
         public void TestStarveMultiUnit()
         {
-            TroopStub stub = CreateSimpleStub();
+            ITroopStub stub = CreateSimpleStub();
             stub.AddUnit(FormationType.Normal, 0, 10);
             stub.AddUnit(FormationType.Normal, 1, 100);
 
@@ -44,7 +44,7 @@ namespace Testing.Troop
         [Fact]
         public void TestStarveMultiFormation()
         {
-            TroopStub stub = CreateSimpleStub();
+            ITroopStub stub = CreateSimpleStub();
             stub.AddFormation(FormationType.Attack);
             stub.AddUnit(FormationType.Normal, 0, 10);
             stub.AddUnit(FormationType.Attack, 0, 100);
@@ -57,7 +57,7 @@ namespace Testing.Troop
         [Fact]
         public void TestStarveToZero()
         {
-            TroopStub stub = CreateSimpleStub();
+            ITroopStub stub = CreateSimpleStub();
             stub.AddUnit(FormationType.Normal, 0, 1);
 
             stub.Starve();
@@ -67,7 +67,7 @@ namespace Testing.Troop
         [Fact]
         public void TestStarveToZeroBypassProtection()
         {
-            TroopStub stub = CreateSimpleStub();
+            ITroopStub stub = CreateSimpleStub();
             stub.AddUnit(FormationType.Normal, 0, 1);
 
             stub.Starve(5,true);

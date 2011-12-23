@@ -3,6 +3,7 @@
 using System;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -26,20 +27,20 @@ namespace Game.Logic.Actions.ResourceActions
 
         public void Callback(object custom)
         {
-            using (Concurrency.Current.Lock(Global.World.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests))
             {
                 for (byte i = 0; i < Config.forest_count.Length; i++)
                 {
                     var lvl = (byte)(i + 1);
-                    int delta = Config.forest_count[i] - Global.World.Forests.ForestCount[i];
+                    int delta = Config.forest_count[i] - World.Current.Forests.ForestCount[i];
 
                     for (int j = 0; j < delta; j++)
-                        Global.World.Forests.CreateForest(lvl, Formula.GetMaxForestCapacity(lvl), Formula.GetMaxForestRate(lvl));
+                        World.Current.Forests.CreateForest(lvl, Formula.Current.GetMaxForestCapacity(lvl), Formula.Current.GetMaxForestRate(lvl));
                 }
 
                 // Reschedule ourselves
                 Time = SystemClock.Now.AddMinutes(5);
-                Global.Scheduler.Put(this);
+                Scheduler.Current.Put(this);
             }
         }
 

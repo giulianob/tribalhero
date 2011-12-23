@@ -53,7 +53,7 @@ namespace Game.Logic.Actions
             obj.Technologies.BeginUpdate();
             obj.Technologies.Clear();
             obj.Technologies.EndUpdate();
-            Procedure.OnTechnologyChange(obj);
+            Procedure.Current.OnTechnologyChange(obj);
             StateChange(ActionState.Completed);
 
             return Error.Ok;

@@ -116,14 +116,14 @@ namespace Testing.MapMath
             new RadiusLocator().RadiusDistance(13, 15, 11, 14).Should().Be(7);
         }
 
-        [Theory]
+        [Theory(Skip="Intensive test.. only run if you need to")]
         [CsvData("MapMath/overlapping_test_data.csv")]
         public void TestGeneratedValues(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
         {
             new RadiusLocator().RadiusDistance(x1, y1, x2, y2).Should().Be(distance);
         }
 
-        [Theory]
+        [Theory(Skip = "Intensive test.. only run if you need to")]
         [CsvData("MapMath/overlapping_test_data.csv")]
         public void TestIsOverlapping(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
         {
@@ -131,14 +131,14 @@ namespace Testing.MapMath
         }
 
         private readonly RadiusLocator cacheForTestIsOverlappingWithCache = new RadiusLocator();
-        [Theory]
+        [Theory(Skip = "Intensive test.. only run if you need to")]
         [CsvData("MapMath/overlapping_test_data.csv")]
         public void TestIsOverlappingAllPointsWithCache(uint x1, uint y1, byte r1, uint x2, uint y2, byte r2, bool overlapping, byte distance)
         {
             cacheForTestIsOverlappingWithCache.IsOverlapping(new Location(x1, y1), r1, new Location(x2, y2), r2).Should().Be(overlapping);
         }
 
-        [Fact]
+        [Fact(Skip = "Intensive test.. only run if you need to")]
         public void TestIsOverlappingWithCache()
         {
             Mock<RadiusLocator> radiusLocator = new Mock<RadiusLocator> { CallBase = true };

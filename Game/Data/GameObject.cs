@@ -2,6 +2,7 @@
 
 using System;
 using Game.Logic;
+using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
 
@@ -28,7 +29,7 @@ namespace Game.Data
 
         #region ICanDo Members
 
-        public City City { get; set; }
+        public ICity City { get; set; }
 
         public override uint GroupId
         {
@@ -84,7 +85,7 @@ namespace Game.Data
                 return;
 
             City.ObjUpdateEvent(this, origX, origY);
-            Global.World.ObjectUpdateEvent(this, origX, origY);
+            World.Current.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion

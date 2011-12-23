@@ -186,4 +186,7 @@ Global
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Launcher\Launcher.csproj
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\Game.ndproj"
+	EndGlobalSection
 EndGlobal

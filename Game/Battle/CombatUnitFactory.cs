@@ -56,7 +56,7 @@ namespace Game.Battle
             return units;
         }
 
-        public DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, ushort count)
+        public DefenseCombatUnit[] CreateDefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, ushort count)
         {
             BaseUnitStats template = stub.City.Template[type];
             BattleStats stats = stub.Template[type];

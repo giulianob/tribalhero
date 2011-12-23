@@ -76,11 +76,19 @@ namespace Game.Battle
             }
         }
 
-        public override City City
+        public override ICity City
         {
             get
             {
                 return Structure.City;
+            }
+        }
+
+        public override ITroopStub TroopStub
+        {
+            get
+            {
+                return City.DefaultTroop;
             }
         }
 
@@ -121,6 +129,14 @@ namespace Game.Battle
             get
             {
                 return type;
+            }
+        }
+
+        public override Resource Loot
+        {
+            get
+            {
+                return new Resource();
             }
         }
 
@@ -227,7 +243,7 @@ namespace Game.Battle
             hp = (dmg > hp) ? 0 : hp - (ushort)dmg;
 
             if (hp == 0)
-                attackPoints = Formula.GetStructureKilledAttackPoint(type, lvl);
+                attackPoints = Formula.Current.GetStructureKilledAttackPoint(type, lvl);
 
             returning = null;
         }
@@ -239,9 +255,9 @@ namespace Game.Battle
             // Remove structure if our combat object died
             if (hp <= 0)
             {
-                City city = Structure.City;
+                ICity city = Structure.City;
 
-                Global.World.LockRegion(Structure.X, Structure.Y);
+                World.Current.LockRegion(Structure.X, Structure.Y);
                 if (Structure.Lvl > 1)
                 {
                     Structure.BeginUpdate();
@@ -253,11 +269,11 @@ namespace Game.Battle
                 else
                 {
                     Structure.BeginUpdate();
-                    Global.World.Remove(Structure);
+                    World.Current.Remove(Structure);
                     city.ScheduleRemove(Structure, true);
                     Structure.EndUpdate();
                 }
-                Global.World.UnlockRegion(Structure.X, Structure.Y);
+                World.Current.UnlockRegion(Structure.X, Structure.Y);
             }           
         }
 

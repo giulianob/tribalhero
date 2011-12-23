@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Database;
 using Game.Map;
 using Game.Setup;
 using Ninject;
@@ -51,7 +52,7 @@ namespace Game.Logic
             if (Config.Random.Next()%4 == 0)
             {
                 Structure structure;
-                Global.World.LockRegion(x, y);
+                World.Current.LockRegion(x, y);
                 if (Config.Random.Next()%2 == 0)
                     structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2402, 1);
                 else
@@ -59,32 +60,32 @@ namespace Game.Logic
                 structure.X = x;
                 structure.Y = y;
                 feObj.City.Add(structure);
-                if (!Global.World.Add(structure))
+                if (!World.Current.Add(structure))
                     feObj.City.ScheduleRemove(structure, false);
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, structure, structure.Type, structure.Lvl);
-                Ioc.Kernel.Get<IDbManager>().Save(structure);
-                Global.World.UnlockRegion(x, y);
+                DbPersistance.Current.Save(structure);
+                World.Current.UnlockRegion(x, y);
             }
             return true;
         }
 
-        public static void RandomizeNpcResource(City city, DbTransaction transaction)
+        public static void RandomizeNpcResource(ICity city, DbTransaction transaction)
         {
             byte radius = city.Radius;
             var feObject = new RandomForeach(city);
-            TileLocator.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, RandomizeNpcResourceWork, feObject);
+            TileLocator.Current.ForeachObject(city.X, city.Y, (byte)Math.Max(radius - 1, 0), false, RandomizeNpcResourceWork, feObject);
         }
 
         #region Nested type: RandomForeach
 
         private class RandomForeach
         {
-            public RandomForeach(City city)
+            public RandomForeach(ICity city)
             {
                 City = city;
             }
 
-            public City City { get; private set; }
+            public ICity City { get; private set; }
         }
 
         #endregion

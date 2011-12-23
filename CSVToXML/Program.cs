@@ -167,7 +167,7 @@ namespace CSVToXML {
                         else
                             writer.WriteAttributeString("workerid", byte.Parse(obj[2]) == 0
                                                             ? "0"
-                                                            : Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString());
+                                                            : Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecordBestFit(int.Parse(obj[1]), byte.Parse(obj[2])).Id.ToString());
                         writer.WriteAttributeString("weapon", obj[20]);
                         writer.WriteAttributeString("weaponclass", obj[21]);
                         writer.WriteAttributeString("unitclass", obj[22]);
@@ -286,7 +286,7 @@ namespace CSVToXML {
             writer.WriteAttributeString("max", "0");
             writer.WriteEndElement();
 
-            foreach (ActionRecord record in Ioc.Kernel.Get<ActionFactory>())
+            foreach (ActionRequirementFactory.ActionRecord record in Ioc.Kernel.Get<ActionRequirementFactory>())
             {
                     writer.WriteStartElement("Worker");
                     writer.WriteAttributeString("type", record.Id.ToString());

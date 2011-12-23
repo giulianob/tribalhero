@@ -32,18 +32,14 @@ namespace Game.Data
 
         public static readonly Ai Ai = new Ai();
 
-        public static readonly Scheduler Scheduler = new Scheduler();
         public static readonly Channel Channel = new Channel();
 
         static Global()
         {
             FireEvents = true;
-            SystemVariables = new Dictionary<string, SystemVariable>();
-            World = new World();
+            SystemVariables = new Dictionary<string, SystemVariable>();            
             Tribes = new Dictionary<uint, Tribe.Tribe>();
         }
-
-        public static World World { get; private set; }
 
         public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
 

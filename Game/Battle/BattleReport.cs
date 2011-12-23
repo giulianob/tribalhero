@@ -1,61 +1,25 @@
 #region
 
 using System.Collections.Generic;
-using System.Data;
 using Game.Data;
-using Game.Data.Troop;
-using Game.Setup;
 using Game.Util;
-using Ninject;
-using Persistance;
 
 #endregion
 
 namespace Game.Battle
 {
-    public enum ReportState
-    {
-        Entering = 0,
-        Staying = 1,
-        Exiting = 2,
-        Dying = 3,
-        Retreating = 4,
-        Reinforced = 5,
-        OutOfStamina = 6
-    }
-
-    public interface IBattleReport
-    {
-        IBattleManager Battle { get; set; }
-        bool ReportStarted { get; set; }
-        bool ReportFlag { get; set; }
-        uint ReportId { get; set; }
-        ReportedObjects ReportedObjects { get; }
-        ReportedTroops ReportedTroops { get; }
-        void WriteBeginReport();
-        void CreateBattleReport();
-        void CompleteBattle();
-        void WriteReportObject(CombatObject co, bool isAttacker, ReportState state);
-        void WriteReportObjects(List<CombatObject> list, bool isAttacker, ReportState state);
-        void CompleteReport(ReportState state);
-        void WriteReport(ReportState state);
-        void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource);
-    }
-
     public class BattleReport : IBattleReport
     {
+        private readonly IBattleReportWriter battleReportWriter;
         public static readonly LargeIdGenerator BattleIdGenerator = new LargeIdGenerator(uint.MaxValue);
         public static readonly LargeIdGenerator ReportIdGenerator = new LargeIdGenerator(uint.MaxValue);
         public static readonly LargeIdGenerator BattleTroopIdGenerator = new LargeIdGenerator(uint.MaxValue);
 
-        public const string BATTLE_DB = "battles";
-        public const string BATTLE_REPORTS_DB = "battle_reports";
-        public const string BATTLE_REPORT_TROOPS_DB = "battle_report_troops";
-        public const string BATTLE_REPORT_OBJECTS_DB = "battle_report_objects";
-        public const string BATTLE_REPORT_VIEWS_DB = "battle_report_views";
-
         private IBattleManager battle;
 
+        /// <summary>
+        /// The battle manager that this report belongs to
+        /// </summary>
         public IBattleManager Battle
         {
             get
@@ -70,335 +34,166 @@ namespace Game.Battle
             }
         }
 
-        private bool reportFlag;
-        private uint reportId;
+        /// <summary>
+        /// Indicates whether we've already begun a snapshot or not.
+        /// </summary>
+        public bool ReportStarted { get; set; }
 
-        private bool reportStarted;
+        /// <summary>
+        /// Not sure what this report flag is actually doing at the moment. I think it may be removed and only ReportStarted may be used.
+        /// </summary>
+        public bool ReportFlag { get; set; }
 
-        public bool ReportStarted
-        {
-            get
-            {
-                return reportStarted;
-            }
-            set
-            {
-                reportStarted = value;
-            }
-        }
+        /// <summary>
+        /// Id of the current report. This will change as each new snapshot is taken.
+        /// </summary>
+        public uint ReportId { get; set; }
 
-        public bool ReportFlag
-        {
-            get
-            {
-                return reportFlag;
-            }
-            set
-            {
-                reportFlag = value;
-            }
-        }
-
-        public uint ReportId
-        {
-            get
-            {
-                return reportId;
-            }
-            set
-            {
-                reportId = value;
-            }
-        }
-
+        /// <summary>
+        /// Persistable list of the objects that have been reported for this snapshot.
+        /// </summary>
         public ReportedObjects ReportedObjects { get; private set; }
 
+        /// <summary>
+        /// Persistable list of troops that have been reported for this snapshot.
+        /// </summary>
         public ReportedTroops ReportedTroops { get; private set; }
 
-        public void WriteBeginReport()
+        public BattleReport(IBattleReportWriter battleReportWriter)
         {
-            if (reportStarted)
-                return;
-
-            SnapReport(out reportId, Battle.BattleId);
-            reportStarted = true;
+            this.battleReportWriter = battleReportWriter;
         }
 
+        /// <summary>
+        /// Starts the battle report if it hasn't yet.
+        /// This will snap all of the current troops.
+        /// </summary>
+        public void WriteBeginReport()
+        {
+            if (ReportStarted)
+                return;
+
+            uint newReportId;
+            battleReportWriter.SnapReport(out newReportId, Battle.BattleId);
+
+            ReportId = newReportId;
+            ReportStarted = true;
+        }
+
+        /// <summary>
+        /// Starts the battle report. This should only be called once per battle when it starts.
+        /// </summary>
         public void CreateBattleReport()
         {
             uint battleId;
-            SnapBattle(out battleId, Battle.City.Id);
+            battleReportWriter.SnapBattle(out battleId, Battle.City.Id);
             Battle.BattleId = battleId;
             WriteBeginReport();
-            reportFlag = true;
-            WriteReport(ReportState.Entering);
+            ReportFlag = true;
+            CompleteReport(ReportState.Entering);
         }
 
+        /// <summary>
+        /// Completes the report. This should only be called once per battle when it ends.
+        /// </summary>
         public void CompleteBattle()
         {
-            SnapBattleEnd(Battle.BattleId);
+            WriteBeginReport();
+            ReportFlag = true;
+            CompleteReport(ReportState.Exiting);
+            battleReportWriter.SnapBattleEnd(Battle.BattleId);
         }
 
-        public void WriteReportObject(CombatObject co, bool isAttacker, ReportState state)
+        /// <summary>
+        /// Writes the specified combat object (if it hasn't yet) to the report
+        /// </summary>
+        /// <param name="combatObject"></param>
+        /// <param name="isAttacker"></param>
+        /// <param name="state"></param>
+        public void WriteReportObject(CombatObject combatObject, bool isAttacker, ReportState state)
         {
             uint combatTroopId;
 
+            // Start the report incase it hasn't yet
             WriteBeginReport();
-            if (co.ClassType == BattleClass.Unit)
-            {
-                var cu = co as ICombatUnit;
-                if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId))
-                {
-                    SnapTroop(state,
-                              cu.TroopStub.City.Id,
-                              cu.TroopStub.TroopId,
-                              co.GroupId,
-                              isAttacker,
-                              out combatTroopId,
-                              cu.TroopStub.TroopObject != null ? cu.TroopStub.TroopObject.Stats.Loot : new Resource());
-                    ReportedTroops[cu.TroopStub] = combatTroopId;
-                }
-                else if (state != ReportState.Staying)
-                    SnapTroopState(cu.TroopStub, state);
 
-                if (!ReportedObjects.Contains(co))
+            // Check if we've already snapped this troop
+            if (!ReportedTroops.TryGetValue(combatObject.TroopStub, out combatTroopId))
+            {
+                // Snap the troop
+                combatTroopId = battleReportWriter.SnapTroop(ReportId,
+                                             state,
+                                             combatObject.City.Id,
+                                             combatObject.TroopStub.TroopId,
+                                             combatObject.GroupId,
+                                             isAttacker,
+                                             combatObject.Loot);
+
+                // Log any troops that are entering the battle to the view table so they are able to see this report
+                // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
+                if (Battle.City != combatObject.City && (state == ReportState.Entering || state == ReportState.Reinforced))
                 {
-                    SnapCombatObject(combatTroopId, co);
-                    ReportedObjects.Add(co);
+                    battleReportWriter.SnapBattleReportView(combatObject.City.Id, combatObject.TroopStub.TroopId, Battle.BattleId, combatObject.Id, isAttacker);
                 }
+
+                ReportedTroops[combatObject.TroopStub] = combatTroopId;
             }
-            else
+            // If object has already been snapped, then we just update the state if it's not Staying (Staying is the default state basically.. anything else overrides it)
+            else if (state != ReportState.Staying)
             {
-                TroopStub stub = ((CombatStructure)co).Structure.City.DefaultTroop;
-                if (!ReportedTroops.TryGetValue(stub, out combatTroopId))
-                {
-                    SnapTroop(state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId, new Resource());
-                    ReportedTroops[stub] = combatTroopId;
-                }
-                else if (state != ReportState.Staying)
-                    SnapTroopState(stub, state);
+                battleReportWriter.SnapTroopState(combatTroopId, combatObject.TroopStub, state);
+            }
 
-                if (!ReportedObjects.Contains(co))
-                {
-                    SnapCombatObject(combatTroopId, co);
-                    ReportedObjects.Add(co);
-                }
+            // Check if we've already snapped the combat object
+            if (!ReportedObjects.Contains(combatObject))
+            {
+                // Snap the combat objects
+                battleReportWriter.SnapCombatObject(combatTroopId, combatObject);
+                ReportedObjects.Add(combatObject);
             }
         }
 
+        /// <summary>
+        /// Writes a list of combat objects
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="isAttacker"></param>
+        /// <param name="state"></param>
         public void WriteReportObjects(List<CombatObject> list, bool isAttacker, ReportState state)
         {
-            var updatedObj = new List<TroopStub>();
-
             WriteBeginReport();
 
-            reportFlag = true;
+            ReportFlag = true;
 
             foreach (var co in list)
             {
-                bool snapObj = ReportedObjects.Contains(co);
-
-                uint combatTroopId;
-                if (co.ClassType == BattleClass.Unit)
-                {
-                    var cu = co as ICombatUnit;
-
-                    if (!ReportedTroops.TryGetValue(cu.TroopStub, out combatTroopId))
-                    {
-                        SnapTroop(state,
-                                  cu.TroopStub.City.Id,
-                                  cu.TroopStub.TroopId,
-                                  co.GroupId,
-                                  isAttacker,
-                                  out combatTroopId,
-                                  cu.TroopStub.TroopObject != null ? cu.TroopStub.TroopObject.Stats.Loot : new Resource());
-                        ReportedTroops[cu.TroopStub] = combatTroopId;
-                    }
-                    else if (state != ReportState.Staying && !updatedObj.Contains(cu.TroopStub))
-                    {
-                        //Exiting state should override anything else
-                        SnapTroopState(cu.TroopStub, state);
-                        updatedObj.Add(cu.TroopStub);
-                    }
-                }
-                else
-                {
-                    TroopStub stub = ((CombatStructure)co).Structure.City.DefaultTroop;
-                    if (!ReportedTroops.TryGetValue(stub, out combatTroopId))
-                    {
-                        SnapTroop(state, co.City.Id, 1, co.GroupId, isAttacker, out combatTroopId, new Resource());
-                        ReportedTroops[stub] = combatTroopId;
-                    }
-                    else if (state != ReportState.Staying && !updatedObj.Contains(stub))
-                    {
-                        SnapTroopState(stub, state);
-                        updatedObj.Add(stub);
-                    }
-                }
-
-                if (snapObj)
-                    continue;
-
-                SnapCombatObject(combatTroopId, co);
-                ReportedObjects.Add(co);
+                WriteReportObject(co, isAttacker, state);
             }
         }
 
+        /// <summary>
+        /// Completes the current snapshot if it has been started.
+        /// </summary>
+        /// <param name="state"></param>
         public void CompleteReport(ReportState state)
         {
-            if (!reportStarted)
+            if (!ReportStarted || !ReportFlag)
+            {
                 return;
-
-            reportFlag = true;
-            WriteReport(state);
-        }
-
-        public void WriteReport(ReportState state)
-        {
-            if (!reportStarted || !reportFlag)
-                return;
+            }
 
             WriteReportObjects(Battle.Attacker, true, state);
             WriteReportObjects(Battle.Defender, false, state);
-            SnapEndReport(reportId, Battle.BattleId, Battle.Round, Battle.Turn);
+            battleReportWriter.SnapEndReport(ReportId, Battle.BattleId, Battle.Round, Battle.Turn);
             ReportedObjects.Clear();
             ReportedTroops.Clear();
-            reportStarted = false;
-            reportFlag = false;
-        }
-
-        private static void SnapBattle(out uint battleId, uint cityId)
-        {
-            battleId = (uint)BattleIdGenerator.GetNext();
-
-            Ioc.Kernel.Get<IDbManager>().Query(string.Format("INSERT INTO `{0}` VALUES (@id, @city_id, UTC_TIMESTAMP(), NULL, '0')", BATTLE_DB),
-                                   new[] { new DbColumn("id", battleId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32) });
-        }
-
-        private static void SnapBattleEnd(uint battleId)
-        {
-            Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `ended` = UTC_TIMESTAMP() WHERE `id` = @battle_id LIMIT 1", BATTLE_DB),
-                                   new[] { new DbColumn("battle_id", battleId, DbType.UInt32) });
-        }
-
-        private static void SnapReport(out uint reportId, uint battleId)
-        {
-            reportId = (uint)ReportIdGenerator.GetNext();
-
-            Ioc.Kernel.Get<IDbManager>().Query(string.Format("INSERT INTO `{0}` VALUES (@id, UTC_TIMESTAMP(), @battle_id, '0', '0', '0')", BATTLE_REPORTS_DB),
-                                   new[] { new DbColumn("id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32) });            
-        }
-
-        internal static void SnapEndReport(uint reportId, uint battleId, uint round, uint turn)
-        {
-            Ioc.Kernel.Get<IDbManager>().Query(
-                                   string.Format(
-                                                 "UPDATE `{0}` SET `ready` = 1, `round` = @round, turn = @turn, `created` = UTC_TIMESTAMP() WHERE id = @report_id LIMIT 1",
-                                                 BATTLE_REPORTS_DB),
-                                   new[]
-                                   {
-                                           new DbColumn("report_id", reportId, DbType.UInt32), new DbColumn("round", round, DbType.UInt32),
-                                           new DbColumn("turn", turn, DbType.UInt32),
-                                   });
-        }
-
-        private void SnapTroopState(TroopStub stub, ReportState state)
-        {
-            uint id = ReportedTroops[stub];
-
-            // If there's a troop object we also want to update its loot
-            if (stub.TroopObject == null)
-            {
-                Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `state` = @state WHERE `id` = @id LIMIT 1", BATTLE_REPORT_TROOPS_DB),
-                                       new[] { new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("id", id, DbType.UInt32), });
-            }
-            else
-            {
-                Resource loot = stub.TroopObject.Stats.Loot;
-                Ioc.Kernel.Get<IDbManager>().Query(
-                                       string.Format(
-                                                     "UPDATE `{0}` SET `state` = @state, `gold` = @gold, `crop` = @crop, `iron` = @iron, `wood` = @wood WHERE `id` = @id LIMIT 1",
-                                                     BATTLE_REPORT_TROOPS_DB),
-                                       new[]
-                                       {
-                                               new DbColumn("state", state, DbType.Byte), new DbColumn("gold", loot.Gold, DbType.Int32),
-                                               new DbColumn("crop", loot.Crop, DbType.Int32), new DbColumn("iron", loot.Iron, DbType.Int32),
-                                               new DbColumn("wood", loot.Wood, DbType.Int32), new DbColumn("id", id, DbType.UInt32),
-                                       });
-            }
-        }
-
-        private void SnapTroop(ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, out uint battleTroopId, Resource loot)
-        {
-            battleTroopId = (uint)BattleTroopIdGenerator.GetNext();
-
-            Ioc.Kernel.Get<IDbManager>().Query(
-                                   string.Format(
-                                                 "INSERT INTO `{0}` VALUES (@id, @report_id, @city_id, @object_id, @troop_id, @state, @is_attacker, @gold, @crop, @iron, @wood)",
-                                                 BATTLE_REPORT_TROOPS_DB),
-                                   new[]
-                                   {
-                                           new DbColumn("id", battleTroopId, DbType.UInt32),
-                                           new DbColumn("report_id", reportId, DbType.UInt32), new DbColumn("city_id", cityId, DbType.UInt32),
-                                           new DbColumn("object_id", objectId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
-                                           new DbColumn("state", state, DbType.Byte), new DbColumn("is_attacker", isAttacker, DbType.Boolean),
-                                           new DbColumn("gold", loot.Gold, DbType.Int32), new DbColumn("crop", loot.Crop, DbType.Int32),
-                                           new DbColumn("iron", loot.Iron, DbType.Int32), new DbColumn("wood", loot.Wood, DbType.Int32),
-                                   });
-
-            // Log any troops that are entering the battle to the view table so they are able to see this report
-            // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
-            if (Battle.City.Id != cityId && (state == ReportState.Entering || state == ReportState.Reinforced))
-            {
-                Ioc.Kernel.Get<IDbManager>().Query(
-                                       string.Format(
-                                                     "INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP())",
-                                                     BATTLE_REPORT_VIEWS_DB),
-                                       new[]
-                                       {
-                                               new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
-                                               new DbColumn("battle_id", Battle.BattleId, DbType.UInt32), new DbColumn("object_id", objectId, DbType.UInt32),
-                                               new DbColumn("is_attacker", isAttacker, DbType.Boolean)
-                                       });
-            }
-        }
-
-        private void SnapCombatObject(uint troopId, CombatObject co)
-        {
-            var unit = co as ICombatUnit;
-
-            Ioc.Kernel.Get<IDbManager>().Query(
-                                   string.Format(
-                                                 "INSERT INTO `{0}` VALUES ('', @object_id, @troop_id, @type, @lvl, @hp, @count, @dmg_recv, @dmg_dealt, @formation, @hit_dealt, @hit_dealt_by_unit, @hit_recv)",
-                                                 BATTLE_REPORT_OBJECTS_DB),
-                                   new[]
-                                   {
-                                           new DbColumn("object_id", co.Id, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.UInt32),
-                                           new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte),
-                                           new DbColumn("hp", co.Hp, DbType.UInt32), new DbColumn("count", co.Count, DbType.UInt16),
-                                           new DbColumn("dmg_recv", co.DmgRecv, DbType.Int32), new DbColumn("dmg_dealt", co.DmgDealt, DbType.Int32),
-                                           new DbColumn("formation", (byte)(unit == null ? FormationType.Structure : unit.Formation), DbType.Byte),
-                                           new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16), new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32),
-                                           new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),
-                                   });
+            ReportStarted = false;
+            ReportFlag = false;
         }
 
         public void SetLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource)
         {
-            Ioc.Kernel.Get<IDbManager>().Query(
-                                   string.Format(
-                                                 @"UPDATE `{0}` SET `loot_wood` = @wood, `loot_gold` = @gold, `loot_crop` = @crop, `loot_iron` = @iron, `bonus_wood` = @bonus_wood, `bonus_gold` = @bonus_gold, `bonus_crop` = @bonus_crop, `bonus_iron` = @bonus_iron 
-                      WHERE `city_id` = @city_id AND `battle_id` = @battle_id AND `troop_stub_id` = @troop_stub_id LIMIT 1",
-                                                 BATTLE_REPORT_VIEWS_DB),
-                                   new[]
-                                   {
-                                           new DbColumn("wood", lootResource.Wood, DbType.Int32), new DbColumn("crop", lootResource.Crop, DbType.Int32),
-                                           new DbColumn("iron", lootResource.Iron, DbType.Int32), new DbColumn("gold", lootResource.Gold, DbType.Int32),
-                                           new DbColumn("bonus_wood", bonusResource.Wood, DbType.Int32), new DbColumn("bonus_crop", bonusResource.Crop, DbType.Int32),
-                                           new DbColumn("bonus_iron", bonusResource.Iron, DbType.Int32), new DbColumn("bonus_gold", bonusResource.Gold, DbType.Int32),
-                                           new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32),
-                                           new DbColumn("troop_stub_id", troopId, DbType.Byte),
-                                   });
+            battleReportWriter.SnapLootedResources(cityId, troopId, battleId, lootResource, bonusResource);
         }
     }
 }

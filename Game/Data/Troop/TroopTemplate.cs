@@ -14,10 +14,10 @@ namespace Game.Data.Troop
     public class TroopTemplate : IPersistableList, IEnumerable<KeyValuePair<ushort, BattleStats>>
     {
         public const string DB_TABLE = "troop_templates";
-        private readonly TroopStub stub;
+        private readonly ITroopStub stub;
         private Dictionary<ushort, BattleStats> stats = new Dictionary<ushort, BattleStats>();
 
-        public TroopTemplate(TroopStub stub)
+        public TroopTemplate(ITroopStub stub)
         {
             this.stub = stub;
         }
@@ -97,7 +97,7 @@ namespace Game.Data.Troop
 
         public bool DbPersisted { get; set; }
 
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
             Dictionary<ushort, BattleStats>.Enumerator itr = stats.GetEnumerator();
             while (itr.MoveNext())

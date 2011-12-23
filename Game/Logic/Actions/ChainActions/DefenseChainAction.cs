@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -58,16 +59,16 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            TroopStub stub;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+            ICity city;
+            ITroopStub stub;
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
 
             if (city.Troops.Size > 12)
                 return Error.TooManyTroops;
 
-            City targetCity;
-            if (!Global.World.TryGetObjects(targetCityId, out targetCity))
+            ICity targetCity;
+            if (!World.Current.TryGetObjects(targetCityId, out targetCity))
                 return Error.ObjectNotFound;
 
             // Can't defend cities that are being deleted
@@ -97,21 +98,21 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                Dictionary<uint, City> cities;
+                Dictionary<uint, ICity> cities;
 
                 using (Concurrency.Current.Lock(out cities, cityId, targetCityId))
                 {
-                    City city = cities[cityId];
-                    City targetCity = cities[targetCityId];
+                    ICity city = cities[cityId];
+                    ICity targetCity = cities[targetCityId];
 
-                    TroopStub stub;
+                    ITroopStub stub;
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();
 
                     city.Worker.References.Remove(stub.TroopObject, this);
                     city.Worker.Notifications.Remove(this);
 
-                    Procedure.TroopObjectStation(stub.TroopObject, targetCity);
+                    Procedure.Current.TroopObjectStation(stub.TroopObject, targetCity);
 
                     if (targetCity.Battle != null)
                     {
@@ -119,7 +120,7 @@ namespace Game.Logic.Actions
                         stub.State = TroopState.BattleStationed;
                         stub.EndUpdate();
 
-                        targetCity.Battle.AddToDefense(new List<TroopStub> { stub });
+                        targetCity.Battle.AddToDefense(new List<ITroopStub> { stub });
                     }
 
                     StateChange(ActionState.Completed);

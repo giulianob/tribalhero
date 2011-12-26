@@ -131,7 +131,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "tech"></param>
         /// <returns></returns>
-        public virtual int GetXForOneCount(TechnologyManager tech)
+        public virtual int GetXForOneCount(ITechnologyManager tech)
         {
             var effects = tech.GetEffects(EffectCode.XFor1, EffectInheritance.Invisible);
 

@@ -14,7 +14,7 @@ namespace Game.Data
     public class Structure : GameObject, IStructure
     {
         public const string DB_TABLE = "structures";
-        private readonly TechnologyManager techmanager;
+        private readonly ITechnologyManager techmanager;
         private StructureProperties properties;
 
         private StructureStats stats;
@@ -46,7 +46,7 @@ namespace Game.Data
 
         #region Properties
 
-        public TechnologyManager Technologies
+        public ITechnologyManager Technologies
         {
             get
             {

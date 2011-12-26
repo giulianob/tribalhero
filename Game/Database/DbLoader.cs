@@ -513,7 +513,7 @@ namespace Game.Database
                 {
                     var ownerLocation = (EffectLocation)((byte)reader["owner_location"]);
 
-                    TechnologyManager manager;
+                    ITechnologyManager manager;
 
                     switch(ownerLocation)
                     {

@@ -345,8 +345,7 @@ namespace Game.Data.Tribe
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
-            DateTime reachTime =
-                    DateTime.UtcNow.AddSeconds(Formula.Current.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects())));
+            DateTime reachTime = DateTime.UtcNow.AddSeconds(Formula.Current.MoveTimeTotal(stub, distance, true));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {

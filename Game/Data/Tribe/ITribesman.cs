@@ -15,19 +15,5 @@ namespace Game.Data.Tribe
         Resource Contribution { get; set; }
 
         byte Rank { get; set; }
-
-        bool DbPersisted { get; set; }
-
-        string DbTable { get; }
-
-        DbColumn[] DbPrimaryKey { get; }
-
-        DbDependency[] DbDependencies { get; }
-
-        DbColumn[] DbColumns { get; }
-
-        int Hash { get; }
-
-        object Lock { get; }
     }
 }

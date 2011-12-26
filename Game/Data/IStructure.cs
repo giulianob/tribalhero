@@ -8,7 +8,7 @@ namespace Game.Data
     {
         object this[string name] { get; set; }
 
-        TechnologyManager Technologies { get; }
+        ITechnologyManager Technologies { get; }
 
         StructureProperties Properties { get; set; }
 

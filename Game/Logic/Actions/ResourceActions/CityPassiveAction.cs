@@ -20,7 +20,7 @@ namespace Game.Logic.Actions
         private delegate void Init(ICity city);
         private delegate void PreLoop(ICity city);
         private delegate void PostLoop(ICity city);
-        private delegate void StructureLoop(ICity city, Structure structure);
+        private delegate void StructureLoop(ICity city, IStructure structure);
 
         private event Init InitVars;
         private event PreLoop PreFirstLoop;

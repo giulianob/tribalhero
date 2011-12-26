@@ -49,7 +49,7 @@ namespace Game.Logic.Actions
             resourceType = (ResourceType)Enum.Parse(typeof(ResourceType), properties["resource_type"]);
         }
 
-        private Resource GetCost(Structure structure)
+        private Resource GetCost(IStructure structure)
         {
             return new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.Current.MarketTax(structure))), 0, 0, 0); ;
         }
@@ -73,7 +73,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
 
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
@@ -126,7 +126,7 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled) {
             ICity city;
-            Structure structure;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
                     return;
@@ -161,7 +161,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())

@@ -52,7 +52,7 @@ namespace Game.Setup
                 index += SKIP;
                 
                 // Check if objects already on that point
-                List<SimpleGameObject> objects = World.Current.GetObjects(point.X, point.Y);
+                List<ISimpleGameObject> objects = World.Current.GetObjects(point.X, point.Y);
 
                 if (objects == null)
                     continue;

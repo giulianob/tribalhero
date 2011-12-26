@@ -12,13 +12,13 @@ namespace Game.Data.Tribe {
     public class Tribesman: IPersistableObject,ILockable  {
         public const string DB_TABLE = "tribesmen";
 
-        public Tribe Tribe { get; private set; }
+        public ITribe Tribe { get; private set; }
         public Player Player { get; private set; }
 	    public DateTime JoinDate { get; private set; }
         public Resource Contribution { get; set; }
         public byte Rank { get; set; }
 
-        public Tribesman(Tribe tribe, Player player, byte rank)
+        public Tribesman(ITribe tribe, Player player, byte rank)
         {
             Tribe = tribe;
             Player = player;
@@ -27,7 +27,7 @@ namespace Game.Data.Tribe {
             Contribution = new Resource();
         }
 
-        public Tribesman(Tribe tribe, Player player, DateTime joinDate, Resource contribution, byte rank) {
+        public Tribesman(ITribe tribe, Player player, DateTime joinDate, Resource contribution, byte rank) {
             Tribe = tribe;
             Player = player;
             JoinDate = joinDate;

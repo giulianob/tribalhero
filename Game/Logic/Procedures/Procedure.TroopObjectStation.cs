@@ -10,7 +10,7 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual void TroopObjectStation(TroopObject troop, ICity target)
+        public virtual void TroopObjectStation(ITroopObject troop, ICity target)
         {
             troop.Stub.BeginUpdate();
             target.Troops.AddStationed(troop.Stub);

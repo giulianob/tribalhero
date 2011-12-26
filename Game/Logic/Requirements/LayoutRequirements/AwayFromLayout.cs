@@ -11,7 +11,7 @@ namespace Game.Logic
 {
     public class AwayFromLayout : LayoutRequirement
     {
-        public override bool Validate(Structure builder, ushort type, uint x, uint y)
+        public override bool Validate(IStructure builder, ushort type, uint x, uint y)
         {
             var effects = builder.Technologies.GetAllEffects(EffectInheritance.Upward);
 

@@ -88,7 +88,7 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
-            int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((Structure)city[1]).Lvl);
+            int maxConcurrentUpgrades = Formula.Current.ConcurrentBuildUpgrades(((IStructure)city[1]).Lvl);
 
             if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("UnlimitedBuilding", type) &&
                     city.Worker.ActiveActions.Values.Count(
@@ -121,14 +121,14 @@ namespace Game.Logic.Actions
             }
 
             // layout requirement
-            if (!Ioc.Kernel.Get<RequirementFactory>().GetLayoutRequirement(type, level).Validate(WorkerObject as Structure, type, x, y))
+            if (!Ioc.Kernel.Get<RequirementFactory>().GetLayoutRequirement(type, level).Validate(WorkerObject as IStructure, type, x, y))
             {
                 World.Current.UnlockRegion(x, y);
                 return Error.LayoutNotFullfilled;
             }
 
             // check if tile is occupied
-            if (World.Current[x, y].Exists(obj => obj is Structure))
+            if (World.Current[x, y].Exists(obj => obj is IStructure))
             {
                 World.Current.UnlockRegion(x, y);
                 return Error.StructureExists;
@@ -211,11 +211,10 @@ namespace Game.Logic.Actions
                                             false,
                                             delegate(uint origX, uint origY, uint x1, uint y1, object custom)
                                                 {
-                                                    // TODO: Fix radius locator for each
                                                     if (SimpleGameObject.RadiusDistance(origX, origY, x1, y1) != 1)
                                                         return true;
 
-                                                    var curStruct = (Structure)World.Current[x1, y1].Where(obj => obj is Structure).FirstOrDefault();
+                                                    var curStruct = (IStructure)World.Current[x1, y1].FirstOrDefault(obj => obj is IStructure);
 
                                                     bool hasStructure = curStruct != null;
 
@@ -251,7 +250,7 @@ namespace Game.Logic.Actions
             }
 
             // add structure to the map                    
-            Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, 0);
+            IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, 0);
             structure.X = x;
             structure.Y = y;
 
@@ -297,7 +296,7 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                Structure structure;
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -364,7 +363,7 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                Structure structure;
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                     return;
 

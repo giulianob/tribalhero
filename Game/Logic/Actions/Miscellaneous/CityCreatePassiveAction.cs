@@ -73,7 +73,7 @@ namespace Game.Logic.Actions {
         {
             ICity city;
             ICity newCity;
-            Structure structure;
+            IStructure structure;
 
             if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
@@ -102,7 +102,7 @@ namespace Game.Logic.Actions {
             }
 
             // check if tile is occupied
-            if (World.Current[x, y].Exists(obj => obj is Structure)) {
+            if (World.Current[x, y].Exists(obj => obj is IStructure)) {
                 World.Current.UnlockRegion(x, y);
                 return Error.StructureExists;
             }
@@ -189,7 +189,7 @@ namespace Game.Logic.Actions {
         public override void Callback(object custom)
         {
             ICity newCity;
-            Structure structure;
+            IStructure structure;
 
             using (Concurrency.Current.Lock(newCityId, newStructureId, out newCity, out structure))
             {

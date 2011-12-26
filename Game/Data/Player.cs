@@ -8,7 +8,6 @@ using Game.Comm;
 using Game.Database;
 using Game.Setup;
 using Game.Util;
-using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -16,18 +15,18 @@ using Persistance;
 
 namespace Game.Data
 {
-    public class Player : ILockable, IPersistableObject
+    public class Player : IPlayer
     {
         public const string DB_TABLE = "players";
         public const int MAX_DESCRIPTION_LENGTH = 3000;
         private readonly List<ICity> list = new List<ICity>();
 
         public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin)
-                : this(playerid, created, lastLogin, name, description, admin, string.Empty)
+            : this(playerid, created, lastLogin, name, description, admin, string.Empty)
         {
         }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description,bool admin, string sessionId)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin, string sessionId)
         {
             PlayerId = playerid;
             LastLogin = lastLogin;
@@ -77,12 +76,13 @@ namespace Game.Data
         }
 
         private Tribe.Tribesman tribesman;
-        public Tribe.Tribesman Tribesman {
+        public Tribe.Tribesman Tribesman
+        {
             get
             {
                 return tribesman;
             }
-            set 
+            set
             {
                 tribesman = value;
                 TribeUpdate();
@@ -95,7 +95,7 @@ namespace Game.Data
             get
             {
                 return tribeRequest;
-            }  
+            }
             set
             {
                 tribeRequest = value;
@@ -113,7 +113,8 @@ namespace Game.Data
 
         public int DefensePoint
         {
-            get {
+            get
+            {
                 return list.Sum(x => x.DefensePoint);
             }
         }
@@ -174,7 +175,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbColumn("id", PlayerId, DbType.UInt32)};
+                return new[] { new DbColumn("id", PlayerId, DbType.UInt32) };
             }
         }
 
@@ -182,7 +183,7 @@ namespace Game.Data
         {
             get
             {
-                return new DbDependency[] {};
+                return new DbDependency[] { };
             }
         }
 
@@ -195,22 +196,23 @@ namespace Game.Data
             list.Add(city);
         }
 
-        internal int GetCityCount(bool includeDeleted = false)
+        public int GetCityCount(bool includeDeleted = false)
         {
             return list.Count(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        internal IEnumerable<ICity> GetCityList(bool includeDeleted = false)
+        public IEnumerable<ICity> GetCityList(bool includeDeleted = false)
         {
             return list.Where(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        internal ICity GetCity(uint id)
+        public ICity GetCity(uint id)
         {
             return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return Name;
         }
 
@@ -230,7 +232,7 @@ namespace Game.Data
 
         public void TribeUpdate()
         {
-            if (!Global.FireEvents )
+            if (!Global.FireEvents)
                 return;
 
             var packet = new Packet(Command.TribeChannelUpdate);

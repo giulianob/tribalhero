@@ -48,7 +48,7 @@ namespace ConsoleSimulator
         private static uint playerId;
         private static uint cityId;
         private readonly TroopStub attack;
-        private List<Structure> structures = new List<Structure>();
+        private List<IStructure> structures = new List<IStructure>();
 
         private readonly ICity city;
         private readonly TroopObject obj;
@@ -125,7 +125,7 @@ namespace ConsoleSimulator
             }
         }
 
-        public List<Structure> Structures
+        public List<IStructure> Structures
         {
             get
             {
@@ -157,7 +157,7 @@ namespace ConsoleSimulator
         }
         public void AddStructure(ushort type, byte lvl)
         {
-            Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, lvl);
+            IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(type, lvl);
             city.Add(structure);
             structures.Add(structure);
         }

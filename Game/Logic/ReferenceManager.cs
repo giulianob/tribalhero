@@ -143,7 +143,7 @@ namespace Game.Logic
             }
         }
 
-        public void Add(GameObject referenceObject, PassiveAction action)
+        public void Add(IGameObject referenceObject, PassiveAction action)
         {
 
             PassiveAction workingStub;
@@ -156,7 +156,7 @@ namespace Game.Logic
             SendAddReference(newReference);
         }
 
-        public void Add(GameObject referenceObject, ActiveAction action)
+        public void Add(IGameObject referenceObject, ActiveAction action)
         {
             ActiveAction workingStub = actionWorker.ActiveActions[action.ActionId];
             if (workingStub == null)
@@ -169,7 +169,7 @@ namespace Game.Logic
             SendAddReference(newReference);
         }
 
-        public void Remove(GameObject referenceObject, GameAction action)
+        public void Remove(IGameObject referenceObject, GameAction action)
         {
             reference.RemoveAll(referenceStub =>
                 {
@@ -186,7 +186,7 @@ namespace Game.Logic
                 });
         }
 
-        public void Remove(GameObject referenceObject)
+        public void Remove(IGameObject referenceObject)
         {
             reference.RemoveAll(referenceStub =>
                 {

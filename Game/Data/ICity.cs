@@ -2,19 +2,18 @@ using System.Collections.Generic;
 using Game.Battle;
 using Game.Data.Troop;
 using Game.Logic;
-using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
 using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject
+    public interface ICity : IEnumerable<IStructure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject
     {
         /// <summary>
         ///   Enumerates only through structures in this city
         /// </summary>
-        Dictionary<uint, Structure>.Enumerator Structures { get; }
+        Dictionary<uint, IStructure>.Enumerator Structures { get; }
 
         /// <summary>
         ///   Radius of city. This affects city wall and where user can build.
@@ -41,7 +40,7 @@ namespace Game.Data
         /// <summary>
         ///   Enumerates through all troop objects in this city
         /// </summary>
-        IEnumerable<TroopObject> TroopObjects { get; }
+        IEnumerable<ITroopObject> TroopObjects { get; }
 
         /// <summary>
         ///   Troop manager which manages all troop stubs in city
@@ -116,45 +115,45 @@ namespace Game.Data
         /// </summary>
         /// <param name = "objectId"></param>
         /// <returns></returns>
-        GameObject this[uint objectId] { get; }
+        IGameObject this[uint objectId] { get; }
 
-        TroopObject GetTroop(uint objectId);
+        ITroopObject GetTroop(uint objectId);
 
-        bool TryGetObject(uint objectId, out GameObject obj);
+        bool TryGetObject(uint objectId, out IGameObject obj);
 
-        bool TryGetStructure(uint objectId, out Structure structure);
+        bool TryGetStructure(uint objectId, out IStructure structure);
 
-        bool TryGetTroop(uint objectId, out TroopObject troop);
+        bool TryGetTroop(uint objectId, out ITroopObject troop);
 
-        bool Add(uint objId, TroopObject troop, bool save);
+        bool Add(uint objId, ITroopObject troop, bool save);
 
-        bool Add(TroopObject troop);
+        bool Add(ITroopObject troop);
 
-        bool Add(uint objId, Structure structure, bool save);
+        bool Add(uint objId, IStructure structure, bool save);
 
-        bool Add(uint objId, Structure structure);
+        bool Add(uint objId, IStructure structure);
 
-        bool Add(Structure structure);
+        bool Add(IStructure structure);
 
-        bool ScheduleRemove(TroopObject obj, bool wasKilled);
+        bool ScheduleRemove(ITroopObject obj, bool wasKilled);
 
-        bool ScheduleRemove(Structure obj, bool wasKilled);
+        bool ScheduleRemove(IStructure obj, bool wasKilled);
 
-        bool ScheduleRemove(Structure obj, bool wasKilled, bool cancelReferences);
-
-        /// <summary>
-        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
-        /// </summary>
-        /// <param name = "obj"></param>
-        void DoRemove(Structure obj);
+        bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences);
 
         /// <summary>
         ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
         /// <param name = "obj"></param>
-        void DoRemove(TroopObject obj);
+        void DoRemove(IStructure obj);
 
-        List<GameObject> GetInRange(uint x, uint y, uint inRadius);
+        /// <summary>
+        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
+        /// </summary>
+        /// <param name = "obj"></param>
+        void DoRemove(ITroopObject obj);
+
+        List<IGameObject> GetInRange(uint x, uint y, uint inRadius);
 
         void BeginUpdate();
 
@@ -174,11 +173,11 @@ namespace Game.Data
 
         void NewCityUpdate();
 
-        void ObjAddEvent(GameObject obj);
+        void ObjAddEvent(IGameObject obj);
 
-        void ObjRemoveEvent(GameObject obj);
+        void ObjRemoveEvent(IGameObject obj);
 
-        void ObjUpdateEvent(GameObject sender, uint origX, uint origY);
+        void ObjUpdateEvent(IGameObject sender, uint origX, uint origY);
 
         void UnitTemplateUnitUpdated(UnitTemplate sender);
 

@@ -281,7 +281,7 @@ namespace Game.Comm.ProcessorCommands
                     }
                 }
 
-                Structure mainBuilding = (Structure)city[1];
+                IStructure mainBuilding = (IStructure)city[1];
 
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnInit, mainBuilding, mainBuilding.Type, mainBuilding.Stats.Base.Lvl);
 

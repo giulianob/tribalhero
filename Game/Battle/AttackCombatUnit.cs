@@ -243,7 +243,7 @@ namespace Game.Battle
 
             if (obj is CombatStructure)
             {
-                Structure structure = (obj as CombatStructure).Structure;
+                IStructure structure = (obj as CombatStructure).Structure;
                 return RadiusLocator.Current.IsOverlapping(new Location(TroopStub.TroopObject.X, TroopStub.TroopObject.Y),
                                                            TroopStub.TroopObject.Stats.AttackRadius,
                                                            new Location(structure.X, structure.Y),

@@ -56,7 +56,7 @@ namespace Game.Logic
 
         #endregion
 
-        public void Add(GameObject obj, PassiveAction action, params ICity[] targetCities)
+        public void Add(IGameObject obj, PassiveAction action, params ICity[] targetCities)
         {
             DbLoaderAdd(true, new Notification(obj, action, targetCities));
         }
@@ -194,7 +194,7 @@ namespace Game.Logic
         {
             public const string DB_TABLE = "notifications";
             private readonly PassiveAction action;
-            private readonly GameObject obj;
+            private readonly IGameObject obj;
             private readonly List<ICity> subscriptions = new List<ICity>();
 
             #region Properties
@@ -215,7 +215,7 @@ namespace Game.Logic
                 }
             }
 
-            public GameObject GameObject
+            public IGameObject GameObject
             {
                 get
                 {
@@ -225,7 +225,7 @@ namespace Game.Logic
 
             #endregion
 
-            public Notification(GameObject obj, PassiveAction action, params ICity[] subscriptions)
+            public Notification(IGameObject obj, PassiveAction action, params ICity[] subscriptions)
             {
                 DbPersisted = false;
                 if (obj.City != action.WorkerObject.City)

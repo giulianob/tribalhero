@@ -46,7 +46,7 @@ namespace Game.Comm.CmdLine_Commands
             if (region == null)
                 return "Invalid coordinates";
 
-            var structure = region.GetObjects(x, y).OfType<Structure>().FirstOrDefault();
+            var structure = region.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
             
             if (structure == null)
             {                

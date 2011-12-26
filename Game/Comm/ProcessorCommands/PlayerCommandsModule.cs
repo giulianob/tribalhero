@@ -261,7 +261,7 @@ namespace Game.Comm.ProcessorCommands
 
                 ICity city = cities[cityId];
 
-                Structure structure;
+                IStructure structure;
                 if (!city.TryGetStructure(objectId, out structure))
                     ReplyError(session, packet, Error.Unexpected);
 

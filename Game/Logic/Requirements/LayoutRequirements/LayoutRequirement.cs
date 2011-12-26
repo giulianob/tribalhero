@@ -16,7 +16,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
     public abstract class LayoutRequirement
     {
         protected List<Requirement> requirements = new List<Requirement>();
-        public abstract bool Validate(Structure builder, ushort type, uint x, uint y);
+        public abstract bool Validate(IStructure builder, ushort type, uint x, uint y);
 
         public void Add(Requirement req)
         {

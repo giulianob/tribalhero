@@ -63,7 +63,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public virtual ushort RepairRate(Structure structure)
+        public virtual ushort RepairRate(IStructure structure)
         {
             return (ushort)(structure.Stats.Labor*5);
         }
@@ -88,7 +88,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public virtual ushort LaborMoveMax(Structure structure)
+        public virtual ushort LaborMoveMax(IStructure structure)
         {
             return (ushort)Math.Max(5, Math.Ceiling(structure.Stats.Base.MaxLabor/2.0));
         }
@@ -97,7 +97,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public virtual double MarketTax(Structure structure)
+        public virtual double MarketTax(IStructure structure)
         {
             double[] rate = {0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12};
             return rate[structure.Lvl];
@@ -134,7 +134,7 @@ namespace Game.Logic.Formulas
             return new Resource(cost/2);
         }
 
-        public virtual Resource GetSendCapacity(Structure structure)
+        public virtual Resource GetSendCapacity(IStructure structure)
         {
             //Maximum amount of resources that can be sent from the specified structure        
             int[] sendRate = {0, 200, 200, 400, 400, 600, 600, 800, 1000, 1200, 1200, 1400, 1600, 1800, 1800, 2000};

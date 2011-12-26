@@ -4,16 +4,14 @@ using System;
 using System.Data;
 using Game.Data.Stats;
 using Game.Database;
-using Game.Setup;
 using Game.Util;
-using Ninject;
 using Persistance;
 
 #endregion
 
 namespace Game.Data
 {
-    public class Structure : GameObject, IHasLevel, IPersistableObject
+    public class Structure : GameObject, IStructure
     {
         public const string DB_TABLE = "structures";
         private readonly TechnologyManager techmanager;

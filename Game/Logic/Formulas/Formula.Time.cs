@@ -15,17 +15,17 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
-        public virtual int SendTime(Structure structure, int distance)
+        public virtual int SendTime(IStructure structure, int distance)
         {
             return MoveTime(11) * distance * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x==null?0:(int)x.Value[0]));
         }
 
-        public virtual int TradeTime(Structure structure, int quantity)
+        public virtual int TradeTime(IStructure structure, int quantity)
         {
             return quantity * 15 * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 
-        public virtual int LaborMoveTime(Structure structure, byte count, TechnologyManager technologyManager)
+        public virtual int LaborMoveTime(IStructure structure, byte count, TechnologyManager technologyManager)
         {
             var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod, EffectInheritance.All);
             int overtime = 0;
@@ -48,7 +48,7 @@ namespace Game.Logic.Formulas
 
         public virtual int BuildTime(int baseValue, ICity city, TechnologyManager em)
         {
-            Structure university = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("University", structure));
+            IStructure university = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("University", structure));
             return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
         }
 

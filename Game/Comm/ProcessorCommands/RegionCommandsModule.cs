@@ -61,7 +61,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             // Make sure there is no structure at this point that has no road requirement
-            if (World.Current[x, y].Any(s => s is Structure && Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", (Structure)s)))
+            if (World.Current[x, y].Any(s => s is IStructure && Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("NoRoadRequired", (IStructure)s)))
             {
                 ReplyError(session, packet, Error.StructureExists);
                 return;
@@ -110,7 +110,7 @@ namespace Game.Comm.ProcessorCommands
                                                         return false;
                                                     }
 
-                                                    if (RoadManager.IsRoad(x1, y1) && !World.Current[x1, y1].Exists(s => s is Structure))
+                                                    if (RoadManager.IsRoad(x1, y1) && !World.Current[x1, y1].Exists(s => s is IStructure))
                                                     {
                                                         hasRoad = true;
                                                         return false;
@@ -195,7 +195,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Make sure there is no structure at this point
-                if (World.Current[x, y].Exists(s => s is Structure))
+                if (World.Current[x, y].Exists(s => s is IStructure))
                 {
                     World.Current.UnlockRegion(x, y);
                     ReplyError(session, packet, Error.StructureExists);

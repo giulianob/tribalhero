@@ -102,7 +102,7 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                var structure = (Structure)WorkerObject;
+                var structure = (IStructure)WorkerObject;
 
                 Forest forest;
                 if (World.Current.Forests.TryGetValue(forestId, out forest))
@@ -140,7 +140,7 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                var structure = (Structure)WorkerObject;
+                var structure = (IStructure)WorkerObject;
 
                 Forest forest;
                 if (World.Current.Forests.TryGetValue(forestId, out forest))

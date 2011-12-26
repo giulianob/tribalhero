@@ -67,7 +67,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city, targetCity;
-            Structure structure;
+            IStructure structure;
 
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
@@ -100,7 +100,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        public int CalculateTradeTime(Structure structure, ICity targetCity)
+        public int CalculateTradeTime(IStructure structure, ICity targetCity)
         {
             return (int)CalculateTime(Formula.Current.SendTime(structure, SimpleGameObject.TileDistance(structure.X, structure.Y, targetCity.X, targetCity.Y)));
         }
@@ -117,7 +117,7 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled) {
             ICity city;
-            Structure structure;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
                     return;

@@ -23,7 +23,7 @@ using Persistance;
 
 namespace Game.Data
 {
-    public class Forest : SimpleGameObject, IHasLevel, IPersistableObject, IEnumerable<Structure>, ICityRegionObject
+    public class Forest : SimpleGameObject, IHasLevel, IPersistableObject, IEnumerable<IStructure>, ICityRegionObject
     {
         public const string DB_TABLE = "forests";
         private readonly byte lvl = 1;
@@ -31,7 +31,7 @@ namespace Game.Data
         /// <summary>
         ///   The structures currently getting wood from this forest
         /// </summary>
-        private readonly List<Structure> structures = new List<Structure>();
+        private readonly List<IStructure> structures = new List<IStructure>();
 
         public ForestDepleteAction DepleteAction { get; set; }
 
@@ -120,7 +120,7 @@ namespace Game.Data
 
         #region Methods
 
-        public void AddLumberjack(Structure structure)
+        public void AddLumberjack(IStructure structure)
         {
             CheckUpdateMode();
             structures.Add(structure);
@@ -135,7 +135,7 @@ namespace Game.Data
         ///   Removes structure from forest
         /// </summary>
         /// <param name = "structure">Structure to remove</param>
-        public void RemoveLumberjack(Structure structure)
+        public void RemoveLumberjack(IStructure structure)
         {
             CheckUpdateMode();
             structures.Remove(structure);
@@ -274,7 +274,7 @@ namespace Game.Data
 
         #region IEnumerable<Structure> Members
 
-        public IEnumerator<Structure> GetEnumerator()
+        public IEnumerator<IStructure> GetEnumerator()
         {
             return structures.GetEnumerator();
         }

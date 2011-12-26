@@ -324,7 +324,7 @@ namespace Game.Battle
             AddToCombatList(objects, defenders, true, state);
         }
 
-        public void AddToLocal(IEnumerable<Structure> objects)
+        public void AddToLocal(IEnumerable<IStructure> objects)
         {
             lock (battleLock)
             {
@@ -391,7 +391,7 @@ namespace Game.Battle
             RemoveFromCombatList(objects, attackers, state);
         }
 
-        public void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state)
+        public void RemoveFromLocal(IEnumerable<IStructure> objects, ReportState state)
         {
             lock (battleLock)
             {
@@ -852,7 +852,7 @@ namespace Game.Battle
                         uniqueCities.Add(co.City);
                     }
 
-                    var tribes = new List<Tribe>(uniqueCities.Where(w=>w.Owner.Tribesman!=null).Select(s => s.Owner.Tribesman.Tribe).Distinct());
+                    var tribes = new List<ITribe>(uniqueCities.Where(w=>w.Owner.Tribesman!=null).Select(s => s.Owner.Tribesman.Tribe).Distinct());
                     ThreadPool.QueueUserWorkItem(delegate {
                         foreach (var tribe in tribes) {
                             using (Concurrency.Current.Lock(tribe)) {

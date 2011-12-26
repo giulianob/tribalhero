@@ -68,7 +68,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
 
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
@@ -82,7 +82,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {            
             ICity city;
-            Structure structure;
+            IStructure structure;
             object value;
 
             if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
@@ -152,7 +152,7 @@ namespace Game.Logic.Actions
         public override void WorkerRemoved(bool wasKilled)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())

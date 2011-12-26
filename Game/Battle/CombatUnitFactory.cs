@@ -20,14 +20,14 @@ namespace Game.Battle
             this.kernel = kernel;
         }
 
-        public CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, Structure structure)
+        public CombatStructure CreateStructureCombatUnit(IBattleManager battleManager, IStructure structure)
         {
             return kernel.Get<CombatStructure>(new ConstructorArgument("owner", battleManager),
                                                new ConstructorArgument("structure", structure),
                                                new ConstructorArgument("stats", BattleFormulas.Current.LoadStats(structure)));
         }
 
-        public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager owner, TroopObject troop, FormationType formation, ushort type, ushort count)
+        public AttackCombatUnit[] CreateAttackCombatUnit(IBattleManager owner, ITroopObject troop, FormationType formation, ushort type, ushort count)
         {
             BaseUnitStats template = troop.City.Template[type];
             BattleStats stats = troop.Stub.Template[type];

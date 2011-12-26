@@ -22,7 +22,7 @@ namespace Game.Battle
         private readonly ushort type;
         private decimal hp; //need to keep a copy track of the hp for reporting
 
-        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats)
+        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats)
         {
             battleManager = owner;
             this.stats = stats;
@@ -32,7 +32,7 @@ namespace Game.Battle
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats, decimal hp, ushort type, byte lvl)
+        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl)
         {
             battleManager = owner;
             Structure = structure;
@@ -42,7 +42,7 @@ namespace Game.Battle
             this.lvl = lvl;
         }
 
-        public Structure Structure { get; private set; }
+        public IStructure Structure { get; private set; }
 
         public override BaseBattleStats BaseStats
         {
@@ -211,7 +211,7 @@ namespace Game.Battle
         {
             if (obj is AttackCombatUnit)
             {
-                TroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
+                ITroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
                 return RadiusLocator.Current.IsOverlapping(new Location(troop.X, troop.Y),
                                                            troop.Stats.AttackRadius,
                                                            new Location(Structure.X, Structure.Y),
@@ -289,12 +289,11 @@ namespace Game.Battle
 
         public override void ReceiveReward(int reward, Resource resource)
         {
-            return;
         }
 
         public override int CompareTo(object other)
         {
-            if (other is Structure)
+            if (other is IStructure)
                 return other == Structure ? 0 : 1;
 
             return -1;

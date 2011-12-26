@@ -57,7 +57,7 @@ namespace Game.Data.Troop
         private TroopState state = TroopState.Idle;
         private ICity stationedCity;
         private byte troopId;
-        private TroopObject troopObject;
+        private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
 
         public TroopManager TroopManager { get; set; }
@@ -113,7 +113,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public TroopObject TroopObject
+        public ITroopObject TroopObject
         {
             get
             {

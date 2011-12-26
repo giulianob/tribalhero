@@ -76,7 +76,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
@@ -129,7 +129,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
 
             // Block structure
             using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))

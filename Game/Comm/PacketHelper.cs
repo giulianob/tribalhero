@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Battle;
 using Game.Data;
-using Game.Data.Stats;
 using Game.Data.Tribe;
 using Game.Data.Troop;
 using Game.Logic;
@@ -53,7 +52,7 @@ namespace Game.Comm
         //will be accepting it as a CityObject
         //
         //These add to packet methods might need to be broken up a bit since this one has too many "cases"
-        public static void AddToPacket(SimpleGameObject obj, Packet packet, bool sendRegularObject)
+        public static void AddToPacket(ISimpleGameObject obj, Packet packet, bool sendRegularObject)
         {
             packet.AddUInt16(obj.Type);
             packet.AddUInt16((ushort)(obj.RelX));
@@ -62,7 +61,7 @@ namespace Game.Comm
             packet.AddUInt32(obj.GroupId);
             packet.AddUInt32(obj.ObjectId);
 
-            var gameObj = obj as GameObject;
+            var gameObj = obj as IGameObject;
             if (gameObj != null)
                 packet.AddUInt32(gameObj.City.Owner.PlayerId);
 
@@ -88,13 +87,13 @@ namespace Game.Comm
                         packet.AddString((string)parameter);
                 }
 
-                if (gameObj is Structure && ((Structure)gameObj).IsMainBuilding)
+                if (gameObj is IStructure && ((IStructure)gameObj).IsMainBuilding)
                     packet.AddByte(gameObj.City.Radius);
             }
-            else if (obj is Structure)
+            else if (obj is IStructure)
             {
                 //if obj is a structure and we are sending it as CityObj we include the labor
-                packet.AddUInt16((obj as Structure).Stats.Labor);
+                packet.AddUInt16((obj as IStructure).Stats.Labor);
             }
         }
 
@@ -204,8 +203,7 @@ namespace Game.Comm
 
             //Add troop template
             packet.AddByte(stub.Template.Count);
-            foreach (var stats in
-                    stub.Template as IEnumerable<KeyValuePair<ushort, BattleStats>>)
+            foreach (var stats in stub.Template)
             {
                 packet.AddUInt16(stats.Key);
                 packet.AddByte(stats.Value.Base.Lvl);
@@ -333,7 +331,7 @@ namespace Game.Comm
             }
 
             //Structures
-            var structs = new List<Structure>(city);
+            var structs = new List<IStructure>(city);
             packet.AddUInt16((ushort)structs.Count);
             foreach (var structure in structs)
             {
@@ -351,7 +349,7 @@ namespace Game.Comm
             }
 
             //Troop objects
-            var troops = new List<TroopObject>(city.TroopObjects);
+            var troops = new List<ITroopObject>(city.TroopObjects);
             packet.AddUInt16((ushort)troops.Count);
             foreach (var troop in troops)
             {

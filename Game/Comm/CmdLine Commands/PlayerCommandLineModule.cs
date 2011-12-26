@@ -62,7 +62,7 @@ namespace Game.Comm
             if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
-            Tribe tribe;
+            ITribe tribe;
             using (Concurrency.Current.Lock(tribeId, out tribe))
             {
                 if (tribe == null)

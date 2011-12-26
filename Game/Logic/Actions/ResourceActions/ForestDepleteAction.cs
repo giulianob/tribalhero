@@ -35,7 +35,7 @@ namespace Game.Logic.Actions.ResourceActions
             {
                 Global.Logger.Debug(string.Format("Destroying forest[{0}]", Forest.ObjectId));
 
-                var camps = new List<Structure>(Forest);
+                var camps = new List<IStructure>(Forest);
 
                 if (!Forest.InWorld)
                     Global.Logger.Warn("Trying to remove forest that isnt even in the world");

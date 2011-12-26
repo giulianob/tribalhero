@@ -32,7 +32,7 @@ namespace Game.Comm.ProcessorCommands
         private void GetTroopInfo(Session session, Packet packet)
         {
             ICity city;
-            TroopObject troop;
+            ITroopObject troop;
 
             uint cityId;
             uint objectId;
@@ -184,7 +184,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure barrack;
+                IStructure barrack;
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
@@ -227,7 +227,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure barrack;
+                IStructure barrack;
                 if (!city.TryGetStructure(objectId, out barrack))
                     ReplyError(session, packet, Error.Unexpected);
 
@@ -283,7 +283,7 @@ namespace Game.Comm.ProcessorCommands
                 ICity city = cities[cityId];
 
                 ICity targetCity = cities[targetCityId];
-                Structure targetStructure;
+                IStructure targetStructure;
 
                 if (city.Owner.PlayerId == targetCity.Owner.PlayerId)
                 {

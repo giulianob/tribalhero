@@ -12,7 +12,7 @@ namespace Game.Map
     {
         public static bool HasPath(Location start, Location end, ICity city, Location excludedPoint)
         {
-            bool fromStructure = World.Current[start.X, start.Y].Exists(s => s is Structure);
+            bool fromStructure = World.Current[start.X, start.Y].Exists(s => s is IStructure);
 
             return BreadthFirst(new Location(end.X, end.Y),
                                 new List<Location> {new Location(start.X, start.Y)},
@@ -42,7 +42,7 @@ namespace Game.Map
                                             {
                                                 if (!location.Equals(end))
                                                 {
-                                                    if (World.Current[location.X, location.Y].Exists(s => s is Structure))
+                                                    if (World.Current[location.X, location.Y].Exists(s => s is IStructure))
                                                         return false;
                                                     if (!RoadManager.IsRoad(location.X, location.Y))
                                                         return false;

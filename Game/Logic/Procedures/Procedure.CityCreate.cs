@@ -25,7 +25,7 @@ namespace Game.Logic.Procedures
         public virtual bool CreateCity(Player player, string cityName, out ICity city)
         {
             city = null;
-            Structure mainBuilding;
+            IStructure mainBuilding;
             if (!Randomizer.MainBuilding(out mainBuilding, Formula.Current.GetInitialCityRadius(), 1))
             {
                 World.Current.Players.Remove(player.PlayerId);

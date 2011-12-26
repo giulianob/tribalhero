@@ -69,7 +69,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            Structure lumbermill;
+            IStructure lumbermill;
             Forest forest;
 
             if (!World.Current.TryGetObjects(cityId, lumbermillId, out city, out lumbermill) || !World.Current.Forests.TryGetValue(forestId, out forest))
@@ -135,7 +135,7 @@ namespace Game.Logic.Actions
             World.Current.LockRegion(emptyX, emptyY);
 
             // add structure to the map                    
-            Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(campType, 0);
+            IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(campType, 0);
             structure["Rate"] = 0; // Set initial rate for camp
             structure.X = emptyX;
             structure.Y = emptyY;
@@ -193,7 +193,7 @@ namespace Game.Logic.Actions
                 if (!IsValid())
                     return;
 
-                Structure structure;
+                IStructure structure;
                 if (!city.TryGetStructure(campId, out structure))
                 {
                     // Give back the labors to the city
@@ -262,7 +262,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
 
                 // Get camp
-                Structure structure;
+                IStructure structure;
                 if (!city.TryGetStructure(campId, out structure))
                 {
                     StateChange(ActionState.Failed);

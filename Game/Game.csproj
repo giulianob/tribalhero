@@ -172,7 +172,10 @@
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
     <Compile Include="Data\ICity.cs" />
+    <Compile Include="Data\IGameObject.cs" />
     <Compile Include="Data\IHasLevel.cs" />
+    <Compile Include="Data\ISimpleGameObject.cs" />
+    <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />
@@ -183,8 +186,10 @@
     <Compile Include="Data\TechnologyManager.cs" />
     <Compile Include="Data\Tribe\Assignment.cs" />
     <Compile Include="Data\Tribe\IAssignmentFactory.cs" />
+    <Compile Include="Data\Tribe\ITribe.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
+    <Compile Include="Data\Troop\ITroopObject.cs" />
     <Compile Include="Data\Troop\ITroopStub.cs" />
     <Compile Include="Data\Troop\Unit.cs" />
     <Compile Include="Data\Troop\Formation.cs" />
@@ -247,6 +252,7 @@
     <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />
     <Compile Include="Map\ObjectLink.cs" />
+    <Compile Include="Map\ObjectList.AllObjectEnum.cs" />
     <Compile Include="Map\ObjectList.cs" />
     <Compile Include="Map\RadiusLocator.cs" />
     <Compile Include="Map\ReverseTileLocator.cs" />

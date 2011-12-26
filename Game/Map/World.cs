@@ -92,14 +92,14 @@ namespace Game.Map
             return Cities.TryGetValue(cityId, out city) && city.Troops.TryGetStub(troopStubId, out troopStub);
         }
 
-        public bool TryGetObjects(uint cityId, uint structureId, out ICity city, out Structure structure)
+        public bool TryGetObjects(uint cityId, uint structureId, out ICity city, out IStructure structure)
         {
             structure = null;
 
             return Cities.TryGetValue(cityId, out city) && city.TryGetStructure(structureId, out structure);
         }
 
-        public bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out TroopObject troopObject)
+        public bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out ITroopObject troopObject)
         {
             troopObject = null;
 
@@ -110,12 +110,12 @@ namespace Game.Map
 
         #region Properties
 
-        public List<SimpleGameObject> this[uint x, uint y]
+        public List<ISimpleGameObject> this[uint x, uint y]
         {
             get
             {
                 Region region = GetRegion(x, y);
-                return region == null ? new List<SimpleGameObject>() : region.GetObjects(x, y);
+                return region == null ? new List<ISimpleGameObject>() : region.GetObjects(x, y);
             }
         }
 
@@ -213,7 +213,7 @@ namespace Game.Map
                 Cities[city.Id] = city;
 
                 //Initial save of these objects
-                DbPersistance.Current.Save((Structure)city[1]);
+                DbPersistance.Current.Save((IStructure)city[1]);
                 foreach (var stub in city.Troops)
                     DbPersistance.Current.Save(stub);
 
@@ -265,7 +265,7 @@ namespace Game.Map
             }
         }
 
-        public bool Add(SimpleGameObject obj)
+        public bool Add(ISimpleGameObject obj)
         {
             Region region = GetRegion(obj.X, obj.Y);
             if (region == null)
@@ -306,7 +306,7 @@ namespace Game.Map
             return false;
         }
 
-        public void DbLoaderAdd(SimpleGameObject obj)
+        public void DbLoaderAdd(ISimpleGameObject obj)
         {
             Region region = GetRegion(obj.X, obj.Y);
             if (region == null)
@@ -324,12 +324,12 @@ namespace Game.Map
             }
         }
 
-        public void Remove(SimpleGameObject obj)
+        public void Remove(ISimpleGameObject obj)
         {
             Remove(obj, obj.X, obj.Y);
         }
 
-        private void Remove(SimpleGameObject obj, uint origX, uint origY)
+        private void Remove(ISimpleGameObject obj, uint origX, uint origY)
         {
             obj.InWorld = false;
 
@@ -362,17 +362,17 @@ namespace Game.Map
             }
         }
 
-        public List<SimpleGameObject> GetObjects(uint x, uint y)
+        public List<ISimpleGameObject> GetObjects(uint x, uint y)
         {
             Region region = GetRegion(x, y);
-            return region == null ? new List<SimpleGameObject>() : region.GetObjects(x, y);
+            return region == null ? new List<ISimpleGameObject>() : region.GetObjects(x, y);
         }
 
         #endregion
 
         #region Events
 
-        public void ObjectUpdateEvent(SimpleGameObject sender, uint origX, uint origY)
+        public void ObjectUpdateEvent(ISimpleGameObject sender, uint origX, uint origY)
         {
             // If object is a city region object, we need to update that
             if (sender is ICityRegionObject)
@@ -494,13 +494,13 @@ namespace Game.Map
         private bool GetObjectsForeach(uint ox, uint oy, uint x, uint y, object custom)
         {
             if (x < WorldWidth && y < WorldHeight)
-                ((List<SimpleGameObject>)custom).AddRange(GetObjects(x, y));
+                ((List<ISimpleGameObject>)custom).AddRange(GetObjects(x, y));
             return true;
         }
 
-        public List<SimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius)
+        public List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius)
         {
-            var list = new List<SimpleGameObject>();
+            var list = new List<ISimpleGameObject>();
             TileLocator.Current.ForeachObject(x, y, radius, false, GetObjectsForeach, list);
             return list;
         }

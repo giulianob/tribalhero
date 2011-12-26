@@ -24,7 +24,7 @@ namespace Game.Data.Troop
 
         ICity StationedCity { get; set; }
 
-        TroopObject TroopObject { get; set; }
+        ITroopObject TroopObject { get; set; }
 
         byte TroopId { get; set; }
 

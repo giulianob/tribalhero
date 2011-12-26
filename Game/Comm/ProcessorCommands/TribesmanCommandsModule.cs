@@ -55,7 +55,7 @@ namespace Game.Comm.ProcessorCommands
             Dictionary<uint, Player> players;
             using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
-                Tribe tribe = session.Player.Tribesman.Tribe;
+                ITribe tribe = session.Player.Tribesman.Tribe;
                 if (!tribe.IsOwner(session.Player))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
@@ -97,7 +97,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             Dictionary<uint, Player> players;
-            Tribe tribe = session.Player.Tribesman.Tribe;
+            ITribe tribe = session.Player.Tribesman.Tribe;
             using (Concurrency.Current.Lock(out players, playerId, tribe.Owner.PlayerId))
             {
                 if (!tribe.HasRight(session.Player.PlayerId, "Request"))
@@ -136,7 +136,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Tribe tribe;
+            ITribe tribe;
 
             using (Concurrency.Current.Lock(session.Player))
             {
@@ -239,7 +239,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Tribe tribe = session.Player.Tribesman.Tribe;
+                ITribe tribe = session.Player.Tribesman.Tribe;
                 if (!tribe.HasRight(session.Player.PlayerId, "Kick"))
                 {
                     ReplyError(session, packet, Error.TribesmanNotAuthorized);
@@ -270,7 +270,7 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe, session.Player))
             {
-                Tribe tribe = session.Player.Tribesman.Tribe;
+                ITribe tribe = session.Player.Tribesman.Tribe;
 
                 if (tribe.IsOwner(session.Player))
                 {
@@ -307,7 +307,7 @@ namespace Game.Comm.ProcessorCommands
             using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe, session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
-                Tribe tribe = session.Player.Tribesman.Tribe;
+                ITribe tribe = session.Player.Tribesman.Tribe;
 
                 if (city == null)
                 {

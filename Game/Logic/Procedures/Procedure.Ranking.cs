@@ -31,7 +31,7 @@ namespace Game.Logic.Procedures
                 return;
             var id = city.Owner.Tribesman.Tribe.Id;
             ThreadPool.QueueUserWorkItem(delegate {
-                Tribe tribe;
+                ITribe tribe;
                 using (Concurrency.Current.Lock(id, out tribe)) {
                     tribe.AttackPoint += point;
                 }

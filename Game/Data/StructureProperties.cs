@@ -16,14 +16,14 @@ namespace Game.Data
         public const string DB_TABLE = "structure_properties";
         private readonly ListDictionary properties = new ListDictionary();
 
-        private Structure structure;
+        private IStructure structure;
 
-        public StructureProperties(Structure owner)
+        public StructureProperties(IStructure owner)
         {
             structure = owner;
         }
 
-        public Structure Owner
+        public IStructure Owner
         {
             get
             {

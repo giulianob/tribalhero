@@ -19,13 +19,13 @@ namespace Game.Logic.Procedures
             city.Resource.Wood.Rate = Formula.Current.GetWoodRate(city);
         }
 
-        public virtual void OnStructureUpgradeDowngrade(Structure structure)
+        public virtual void OnStructureUpgradeDowngrade(IStructure structure)
         {
             SetResourceCap(structure.City);
             RecalculateCityResourceRates(structure.City);
         }
 
-        public virtual void OnTechnologyChange(Structure structure)
+        public virtual void OnTechnologyChange(IStructure structure)
         {
             structure.City.BeginUpdate();
             SetResourceCap(structure.City);

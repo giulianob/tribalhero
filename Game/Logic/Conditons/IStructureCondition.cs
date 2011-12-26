@@ -8,6 +8,6 @@ namespace Game.Logic.Conditons
 {
     public interface IStructureCondition
     {
-        bool Check(Structure obj);
+        bool Check(IStructure obj);
     }
 }

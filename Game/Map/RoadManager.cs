@@ -181,7 +181,7 @@ namespace Game.Map
             // Grab the list of actual tiles based on the road type we need.
             ushort[] types;
 
-            if (World.Current[x, y].Exists(s => s is Structure))
+            if (World.Current[x, y].Exists(s => s is IStructure))
                 types = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("RoadSetStructures");
             else
             {

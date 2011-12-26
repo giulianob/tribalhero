@@ -15,7 +15,7 @@ using Persistance;
 
 namespace Game.Data.Troop
 {
-    public class TroopObject : GameObject, IPersistableObject, ICityRegionObject
+    public class TroopObject : GameObject, ITroopObject
     {
         public const string DB_TABLE = "troops";
         private TroopStats stats = new TroopStats(0, 0);

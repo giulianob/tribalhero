@@ -79,11 +79,11 @@ namespace Game.Comm
                 if (player.Tribesman == null)
                     return "Player does not own a tribe";
 
-                Tribe tribe = player.Tribesman.Tribe;
+                ITribe tribe = player.Tribesman.Tribe;
                 result = string.Format("Id[{0}] Owner[{1}] Lvl[{2}] Name[{3}] Desc[{4}] \n",tribe.Id,tribe.Owner.Name,tribe.Level,tribe.Name,tribe.Description);
                 result += tribe.Resource.ToNiceString();
                 result += string.Format("Member Count[{0}]\n", tribe.Count);
-                foreach (var tribesman in tribe) {
+                foreach (var tribesman in tribe.Tribesmen) {
                     result += string.Format("Tribesman[{0}] CityCount[{1}] Rank[{2}] \n", tribesman.Player.Name, tribesman.Player.GetCityCount(),tribesman.Rank);
                 }
                 
@@ -132,7 +132,7 @@ namespace Game.Comm
 
                 if (Global.Tribes.ContainsKey(player.PlayerId)) return "Tribe already exists!";
 
-                Tribe tribe = new Tribe(player, tribeName);
+                ITribe tribe = new Tribe(player, tribeName);
                 
                 Global.Tribes.Add(tribe.Id, tribe);
                 DbPersistance.Current.Save(tribe);
@@ -167,12 +167,12 @@ namespace Game.Comm
             if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
-            Tribe tribe;
+            ITribe tribe;
             if(!Global.Tribes.TryGetValue(tribeId, out tribe))
                 return "Tribe not found seriously";
 
-            using (Concurrency.Current.Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe)) {
-                foreach (var tribesman in new List<Tribesman>(tribe))
+            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe)) {
+                foreach (var tribesman in new List<Tribesman>(tribe.Tribesmen))
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
@@ -207,7 +207,7 @@ namespace Game.Comm
             if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
-            Tribe tribe;
+            ITribe tribe;
             using (Concurrency.Current.Lock(tribeId, out tribe)) {
                 tribe.Description = desc;
                 DbPersistance.Current.Save(tribe);
@@ -248,7 +248,7 @@ namespace Game.Comm
             Dictionary<uint, Player> players;
             using (Concurrency.Current.Lock( out players,playerId,tribeId))
             {
-                Tribe tribe = players[tribeId].Tribesman.Tribe;
+                ITribe tribe = players[tribeId].Tribesman.Tribe;
                 Tribesman tribesman = new Tribesman(tribe, players[playerId],2);
                 tribe.AddTribesman(tribesman);
             }
@@ -287,7 +287,7 @@ namespace Game.Comm
 
             Dictionary<uint, Player> players;
             using (Concurrency.Current.Lock(out players, playerId, tribeId)) {
-                Tribe tribe = players[tribeId].Tribesman.Tribe;
+                ITribe tribe = players[tribeId].Tribesman.Tribe;
                 Error ret;
                 if((ret=tribe.RemoveTribesman(playerId))!=Error.Ok)
                 {
@@ -355,7 +355,7 @@ namespace Game.Comm
             if (!World.Current.FindTribeId(tribeName, out tribeId))
                 return "Tribe not found";
 
-            Tribe tribe;
+            ITribe tribe;
             StringBuilder result = new StringBuilder("Incomings:\n");
             using (Concurrency.Current.Lock(tribeId, out tribe)) {
                 //t.Where(x => x.Player.GetCityList().Where(y => y.Worker.Notifications.Where(z => z.Action is AttackChainAction && z.Subscriptions.Any(city => city == y))));

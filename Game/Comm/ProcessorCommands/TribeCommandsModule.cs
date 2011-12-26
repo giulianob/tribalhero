@@ -12,8 +12,6 @@ using Game.Setup;
 using Game.Util;
 using System.Linq;
 using Game.Util.Locking;
-using Ninject;
-using Persistance;
 
 #endregion
 
@@ -94,7 +92,7 @@ namespace Game.Comm.ProcessorCommands
             for (int i = 0; i < count; i++)
             {
                 uint tribeId = tribeIds[i];
-                Tribe tribe;
+                ITribe tribe;
 
                 if (!Global.Tribes.TryGetValue(tribeId, out tribe))
                 {
@@ -129,13 +127,13 @@ namespace Game.Comm.ProcessorCommands
                 PacketHelper.AddToPacket(tribe.Resource, reply);
 
                 reply.AddInt16((short)tribe.Count);
-                foreach (var tribesman in tribe)
+                foreach (var tribesman in tribe.Tribesmen)
                 {
                     reply.AddUInt32(tribesman.Player.PlayerId);
                     reply.AddString(tribesman.Player.Name);
                     reply.AddInt32(tribesman.Player.GetCityCount());
                     reply.AddByte(tribesman.Rank);
-                    reply.AddUInt32(tribesman.Player.IsLoggedIn?0:UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
+                    reply.AddUInt32(tribesman.Player.IsLoggedIn ? 0 : UnixDateTime.DateTimeToUnix(tribesman.Player.LastLogin));
                     PacketHelper.AddToPacket(tribesman.Contribution, reply);
                 }
 
@@ -147,7 +145,7 @@ namespace Game.Comm.ProcessorCommands
                     // Target
                     ICity targetCity;
                     if (World.Current.TryGetObjects(incoming.Action.To, out targetCity))
-                    {                        
+                    {
                         reply.AddUInt32(targetCity.Owner.PlayerId);
                         reply.AddUInt32(targetCity.Id);
                         reply.AddString(targetCity.Owner.Name);
@@ -158,7 +156,7 @@ namespace Game.Comm.ProcessorCommands
                         reply.AddUInt32(0);
                         reply.AddUInt32(0);
                         reply.AddString("N/A");
-                        reply.AddString("N/A");                        
+                        reply.AddString("N/A");
                     }
 
                     // Attacker
@@ -185,18 +183,23 @@ namespace Game.Comm.ProcessorCommands
         {
             var reply = new Packet(packet);
             uint id;
-            try {
+            try
+            {
                 id = packet.GetUInt32();
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
             }
 
-            Tribe tribe;
+            ITribe tribe;
 
-            using (Concurrency.Current.Lock(id,out tribe)) {
+            using (Concurrency.Current.Lock(id, out tribe))
+            {
                 reply.AddInt16((short)tribe.Count);
-                foreach (var tribesman in tribe) {
+                foreach (var tribesman in tribe.Tribesmen)
+                {
                     reply.AddUInt32(tribesman.Player.PlayerId);
                     reply.AddString(tribesman.Player.Name);
                     reply.AddInt32(tribesman.Player.GetCityCount());
@@ -246,7 +249,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Tribe tribe = new Tribe(session.Player, name);
+                ITribe tribe = new Tribe(session.Player, name);
                 Global.Tribes.Add(tribe.Id, tribe);
                 DbPersistance.Current.Save(tribe);
 
@@ -266,7 +269,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Tribe tribe = session.Player.Tribesman.Tribe;
+            ITribe tribe = session.Player.Tribesman.Tribe;
             using (Concurrency.Current.Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
@@ -275,13 +278,13 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if( tribe.AssignmentCount>0 )
+                if (tribe.AssignmentCount > 0)
                 {
                     ReplyError(session, packet, Error.TribeHasAssignment);
-                    return;                    
+                    return;
                 }
 
-                foreach (var tribesman in new List<Tribesman>(tribe))
+                foreach (var tribesman in new List<Tribesman>(tribe.Tribesmen))
                 {
                     if (tribesman.Player.Session != null)
                         Procedure.Current.OnSessionTribesmanQuit(tribesman.Player.Session, tribe.Id, tribesman.Player.PlayerId, true);
@@ -303,10 +306,10 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Tribe tribe = session.Player.Tribesman.Tribe;
+            ITribe tribe = session.Player.Tribesman.Tribe;
             using (Concurrency.Current.Lock(tribe))
             {
-                if(tribe.Level>=20)
+                if (tribe.Level >= 20)
                 {
                     ReplyError(session, packet, Error.TribeMaxLevel);
                     return;

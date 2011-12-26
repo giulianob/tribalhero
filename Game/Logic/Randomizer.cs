@@ -32,7 +32,7 @@ namespace Game.Logic
             }
         }
 
-        public static bool MainBuilding(out Structure structure, byte radius, byte lvl)
+        public static bool MainBuilding(out IStructure structure, byte radius, byte lvl)
         {
             structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2000, lvl);
             uint x, y;
@@ -51,7 +51,7 @@ namespace Game.Logic
             var feObj = (RandomForeach)custom;
             if (Config.Random.Next()%4 == 0)
             {
-                Structure structure;
+                IStructure structure;
                 World.Current.LockRegion(x, y);
                 if (Config.Random.Next()%2 == 0)
                     structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2402, 1);

@@ -63,7 +63,7 @@ namespace Game.Comm
             }
 
             Player player;
-            Tribe tribe;
+            ITribe tribe;
             string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
             using (Concurrency.Current.Lock(playerId, out player, out tribe))
             {
@@ -122,8 +122,8 @@ namespace Game.Comm
                 return "Not in tribe";
             }
 
-            Tribe tribe = city.Owner.Tribesman.Tribe;
-            Structure targetStructure = World.Current.GetObjects(x, y).OfType<Structure>().First();           
+            ITribe tribe = city.Owner.Tribesman.Tribe;
+            IStructure targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();           
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
@@ -140,7 +140,7 @@ namespace Game.Comm
                 Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
                 DbPersistance.Current.Save(stub);
 
-                targetStructure = World.Current.GetObjects(x, y).OfType<Structure>().First();
+                targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
                 {
@@ -193,7 +193,7 @@ namespace Game.Comm
                 return "Not in tribe";
             }
 
-            Tribe tribe = city.Owner.Tribesman.Tribe;
+            ITribe tribe = city.Owner.Tribesman.Tribe;
             using (Concurrency.Current.Lock(city, tribe))
             {
                 if (city.DefaultTroop.Upkeep == 0)

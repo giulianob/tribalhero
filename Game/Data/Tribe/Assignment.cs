@@ -58,7 +58,7 @@ namespace Game.Data.Tribe
         /// <summary>
         /// Tribe assignment belongs to
         /// </summary>
-        public Tribe Tribe { get; private set; }
+        public ITribe Tribe { get; private set; }
 
         /// <summary>
         /// City this assignment is targetting
@@ -104,7 +104,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment. 
         /// NOTE: This constructor is used by the db loader. Use the other constructor when creating a new assignment from scratch.
         /// </summary>
-        public Assignment(int id, Tribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -130,7 +130,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment.
         /// An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
         /// </summary>
-        public Assignment(Tribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -187,7 +187,7 @@ namespace Game.Data.Tribe
         /// </summary>
         /// <param name="stub"></param>
         /// <returns></returns>
-        public Error Add(TroopStub stub)
+        public Error Add(ITroopStub stub)
         {
             lock (assignmentLock)
             {
@@ -261,7 +261,7 @@ namespace Game.Data.Tribe
         /// <returns></returns>
         private bool Dispatch(ITroopStub stub)
         {
-            Structure structure = (Structure)gameObjectLocator.GetObjects(X, Y).Find(z => z is Structure);
+            IStructure structure = (IStructure)gameObjectLocator.GetObjects(X, Y).Find(z => z is IStructure);
             if (structure == null)
             {
                 procedure.TroopStubDelete(stub.City, stub);

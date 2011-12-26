@@ -11,17 +11,17 @@ namespace Game.Util.Locking
 
         IMultiObjectLock Lock(out Dictionary<uint, Player> result, params uint[] playerIds);
 
-        IMultiObjectLock Lock(uint tribeId, out Tribe tribe);
+        IMultiObjectLock Lock(uint tribeId, out ITribe tribe);
 
         IMultiObjectLock Lock(uint playerId, out Player player);
 
-        IMultiObjectLock Lock(uint playerId, out Player player, out Tribe tribe);
+        IMultiObjectLock Lock(uint playerId, out Player player, out ITribe tribe);
 
         IMultiObjectLock Lock(uint cityId, out ICity city);
 
-        IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out Structure obj);
+        IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out IStructure obj);
 
-        IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out TroopObject obj);
+        IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out ITroopObject obj);
 
         IMultiObjectLock Lock(params ILockable[] list);
 

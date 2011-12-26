@@ -224,12 +224,12 @@ namespace Game.Logic
             }
         }
 
-        public PassiveAction FindAction(GameObject workerObject, Type type)
+        public PassiveAction FindAction(IGameObject workerObject, Type type)
         {
             return passive.Values.FirstOrDefault(action => action.WorkerObject == workerObject && action.GetType() == type);
         }
 
-        public void Remove(GameObject workerObject, params GameAction[] ignoreActions)
+        public void Remove(IGameObject workerObject, params GameAction[] ignoreActions)
         {
             var ignoreActionList = new List<GameAction>(ignoreActions);
 
@@ -339,7 +339,7 @@ namespace Game.Logic
 
         #region Scheduling
 
-        public Error DoActive(int workerType, GameObject workerObject, ActiveAction action, IHasEffect effects)
+        public Error DoActive(int workerType, IGameObject workerObject, ActiveAction action, IHasEffect effects)
         {
             if (workerObject.IsBlocked)
                 return Error.ObjectNotFound;
@@ -399,7 +399,7 @@ namespace Game.Logic
             return Error.ActionInvalid;
         }
 
-        private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, GameObject worker)
+        private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, IGameObject worker)
         {
             switch(action.ActionConcurrency)
             {
@@ -416,7 +416,7 @@ namespace Game.Logic
 
         public Error DoPassive(ICanDo workerObject, PassiveAction action, bool visible)
         {
-            if (workerObject is GameObject && ((GameObject)workerObject).IsBlocked)
+            if (workerObject is IGameObject && ((IGameObject)workerObject).IsBlocked)
                 return Error.ObjectNotFound;
 
             action.IsVisible = visible;
@@ -444,7 +444,7 @@ namespace Game.Logic
             return ret;
         }
 
-        public void DoOnce(GameObject workerObject, PassiveAction action)
+        public void DoOnce(IGameObject workerObject, PassiveAction action)
         {
             if (passive.Exists(a => a.Type == action.Type))
                 return;
@@ -468,7 +468,7 @@ namespace Game.Logic
 
         #region Methods
 
-        public IEnumerable<GameAction> GetActions(GameObject gameObject)
+        public IEnumerable<GameAction> GetActions(IGameObject gameObject)
         {
             var actions = new List<GameAction>();
 

@@ -143,7 +143,7 @@ namespace Game.Database
             Global.Logger.Info("Loading tribesmen...");
             using (var reader = dbManager.Select(Tribesman.DB_TABLE)) {
                 while (reader.Read()) {
-                    Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    ITribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
                     var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
                     var tribesman = new Tribesman(tribe, World.Current.Players[(uint)reader["player_id"]], DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc), contribution, (byte)reader["rank"])
                                     {DbPersisted = true};
@@ -164,7 +164,7 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    Tribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    ITribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
                     ICity city;
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
@@ -410,7 +410,7 @@ namespace Game.Database
                         if (!World.Current.TryGetObjects((uint)vars[0], out city))
                             throw new Exception("City not found");
 
-                        Structure structure;
+                        IStructure structure;
                         if (!city.TryGetStructure((uint)vars[1], out structure))
                             throw new Exception("Structure not found");
 
@@ -444,7 +444,7 @@ namespace Game.Database
                     ICity city;
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
-                    Structure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
+                    IStructure structure = Ioc.Kernel.Get<StructureFactory>().GetNewStructure((ushort)reader["type"], (byte)reader["level"]);
                     structure.InWorld = (bool)reader["in_world"];
                     structure.Technologies.Parent = city.Technologies;
                     structure.X = (uint)reader["x"];
@@ -486,7 +486,7 @@ namespace Game.Database
                             throw new Exception("City not found");
                     }
 
-                    var structure = (Structure)city[(uint)reader["structure_id"]];
+                    var structure = (IStructure)city[(uint)reader["structure_id"]];
 
                     structure.Properties.DbPersisted = true;
 
@@ -523,7 +523,7 @@ namespace Game.Database
                             if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                                 throw new Exception("City not found");
 
-                            var structure = (Structure)city[(uint)reader["owner_id"]];
+                            var structure = (IStructure)city[(uint)reader["owner_id"]];
                             manager = structure.Technologies;
                         }
                             break;
@@ -728,7 +728,7 @@ namespace Game.Database
                             if (!World.Current.TryGetObjects((uint)listReader["structure_city_id"], out structureCity))
                                 throw new Exception("City not found");
 
-                            var structure = (Structure)structureCity[(uint)listReader["structure_id"]];
+                            var structure = (IStructure)structureCity[(uint)listReader["structure_id"]];
 
                             //First we load the BaseBattleStats and pass it into the BattleStats
                             //The BattleStats constructor will copy the basic values then we have to manually apply the values from the db
@@ -1106,7 +1106,7 @@ namespace Game.Database
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    GameObject obj = city[(uint)reader["object_id"]];
+                    IGameObject obj = city[(uint)reader["object_id"]];
                     PassiveAction action = city.Worker.PassiveActions[(uint)reader["action_id"]];
 
                     var notification = new NotificationManager.Notification(obj, action);

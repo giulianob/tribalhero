@@ -26,12 +26,12 @@ namespace Game.Battle
         void DbLoaderAddToLocal(CombatStructure structure, uint id);
         void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
         void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state);
-        void AddToLocal(IEnumerable<Structure> objects);
+        void AddToLocal(IEnumerable<IStructure> objects);
         void AddToAttack(ITroopStub stub);
         void AddToAttack(IEnumerable<ITroopStub> objects);
         void AddToDefense(IEnumerable<ITroopStub> objects);
         void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state);
-        void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state);
+        void RemoveFromLocal(IEnumerable<IStructure> objects, ReportState state);
         void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state);
         void RefreshBattleOrder();
         bool GroupIsDead(CombatObject co, CombatList combatList);

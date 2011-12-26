@@ -49,7 +49,6 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, ret);
                 else
                     ReplySuccess(session, packet);
-                return;
             }
         }
 
@@ -74,7 +73,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj)) {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -86,7 +85,6 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, ret);
                 else
                     ReplySuccess(session, packet);
-                return;
             }
         }
     }

@@ -61,7 +61,7 @@ namespace Game.Util.Locking
             return Lock(players);
         }
 
-        public IMultiObjectLock Lock(uint tribeId, out Tribe tribe)
+        public IMultiObjectLock Lock(uint tribeId, out ITribe tribe)
         {
             return TryGetTribe(tribeId, out tribe);
         }
@@ -71,7 +71,7 @@ namespace Game.Util.Locking
             return TryGetPlayer(playerId, out player);
         }
 
-        public IMultiObjectLock Lock(uint playerId, out Player player, out Tribe tribe)
+        public IMultiObjectLock Lock(uint playerId, out Player player, out ITribe tribe)
         {
             if (!World.Current.TryGetObjects(playerId, out player))
             {
@@ -108,12 +108,12 @@ namespace Game.Util.Locking
             return TryGetCity(cityId, out city);
         }
 
-        public IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out Structure obj)
+        public IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out IStructure obj)
         {
             return TryGetCityStructure(cityId, objectId, out city, out obj);
         }
 
-        public IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out TroopObject obj)
+        public IMultiObjectLock Lock(uint cityId, uint objectId, out ICity city, out ITroopObject obj)
         {
             return TryGetCityTroop(cityId, objectId, out city, out obj);
         }
@@ -165,7 +165,7 @@ namespace Game.Util.Locking
             }
         }
 
-        private IMultiObjectLock TryGetTribe(uint tribeId, out Tribe tribe)
+        private IMultiObjectLock TryGetTribe(uint tribeId, out ITribe tribe)
         {
             if (!Global.Tribes.TryGetValue(tribeId, out tribe))
                 return null;
@@ -180,7 +180,7 @@ namespace Game.Util.Locking
             }
         }
 
-        private IMultiObjectLock TryGetCityStructure(uint cityId, uint objectId, out ICity city, out Structure obj)
+        private IMultiObjectLock TryGetCityStructure(uint cityId, uint objectId, out ICity city, out IStructure obj)
         {
             obj = null;
 
@@ -200,7 +200,7 @@ namespace Game.Util.Locking
             return lck;
         }
 
-        private IMultiObjectLock TryGetCityTroop(uint cityId, uint objectId, out ICity city, out TroopObject obj)
+        private IMultiObjectLock TryGetCityTroop(uint cityId, uint objectId, out ICity city, out ITroopObject obj)
         {
             obj = null;
 

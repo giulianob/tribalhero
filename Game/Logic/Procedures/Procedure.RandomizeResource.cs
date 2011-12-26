@@ -20,7 +20,7 @@ namespace Game.Logic.Procedures
             if (Config.Random.Next()%4 == 0)
             {
                 World.Current.LockRegion(x, y);
-                Structure structure = Config.Random.Next()%2 == 0 ? Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2106, 1) : Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2107, 1);
+                IStructure structure = Config.Random.Next()%2 == 0 ? Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2106, 1) : Ioc.Kernel.Get<StructureFactory>().GetNewStructure(2107, 1);
                 structure.X = x;
                 structure.Y = y;
 

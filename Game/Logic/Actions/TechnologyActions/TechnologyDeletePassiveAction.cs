@@ -11,7 +11,7 @@ namespace Game.Logic.Actions
 {
     class TechnologyDeletePassiveAction : PassiveAction, IScriptable
     {
-        private Structure obj;
+        private IStructure obj;
 
         public override ActionType Type
         {
@@ -31,10 +31,11 @@ namespace Game.Logic.Actions
 
         #region IScriptable Members
 
-        public void ScriptInit(GameObject obj, string[] parms)
+        public void ScriptInit(IGameObject obj, string[] parms)
         {
-            if ((this.obj = obj as Structure) == null)
+            if ((this.obj = obj as IStructure) == null)
                 throw new Exception();
+
             Execute();
         }
 

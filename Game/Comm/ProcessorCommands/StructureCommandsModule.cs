@@ -35,7 +35,7 @@ namespace Game.Comm.ProcessorCommands
         private void StructureInfo(Session session, Packet packet)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
 
             uint cityId;
             uint objectId;
@@ -201,7 +201,7 @@ namespace Game.Comm.ProcessorCommands
             uint cityId;
             uint objectId;
             ushort count;
-            Structure obj;
+            IStructure obj;
             ICity city;
 
             try
@@ -291,7 +291,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 ICity city = session.Player.GetCity(cityId);
 
-                Structure obj;
+                IStructure obj;
 
                 if (city == null || !city.TryGetStructure(objectId, out obj))
                 {
@@ -336,7 +336,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.ActionUncancelable);
@@ -377,7 +377,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -423,7 +423,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -481,7 +481,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -528,7 +528,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -571,7 +571,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -618,7 +618,7 @@ namespace Game.Comm.ProcessorCommands
             using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 // Get the lumbermill
-                Structure lumbermill = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Wood", structure));
+                IStructure lumbermill = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Wood", structure));
 
                 if (lumbermill == null || lumbermill.Lvl == 0)
                 {

@@ -109,7 +109,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private static IEnumerable<Structure> GetStructuresInRadius(IEnumerable<Structure> structures, TroopObject troopObject)
+        private static IEnumerable<IStructure> GetStructuresInRadius(IEnumerable<IStructure> structures, ITroopObject troopObject)
         {
             Location troopLocation = new Location(troopObject.X, troopObject.Y);
 
@@ -284,7 +284,7 @@ namespace Game.Logic.Actions
                     {
                         bonus.Add(Ioc.Kernel.Get<StructureFactory>().GetCost(target.Type, target.Lvl)/2);
 
-                        Structure structure = ((CombatStructure)target).Structure;
+                        IStructure structure = ((CombatStructure)target).Structure;
                         object value;
                         if(structure.Properties.TryGet("Crop",out value))
                             bonus.Crop+=(int)value;

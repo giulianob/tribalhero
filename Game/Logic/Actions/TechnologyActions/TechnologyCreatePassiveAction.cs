@@ -13,7 +13,7 @@ namespace Game.Logic.Actions
     class TechnologyCreatePassiveAction : PassiveAction, IScriptable
     {
         private byte lvl;
-        private Structure obj;
+        private IStructure obj;
         private uint techId;
         private TimeSpan ts;
 
@@ -35,9 +35,9 @@ namespace Game.Logic.Actions
 
         #region IScriptable Members
 
-        public void ScriptInit(GameObject obj, string[] parms)
+        public void ScriptInit(IGameObject obj, string[] parms)
         {
-            if ((this.obj = obj as Structure) == null)
+            if ((this.obj = obj as IStructure) == null)
                 throw new Exception();
             techId = uint.Parse(parms[0]);
             lvl = byte.Parse(parms[1]);

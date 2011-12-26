@@ -104,7 +104,7 @@ namespace Game.Setup
             return -1;
         }
 
-        public Structure GetNewStructure(ushort type, byte lvl)
+        public IStructure GetNewStructure(ushort type, byte lvl)
         {
             if (dict == null)
                 return null;
@@ -116,7 +116,7 @@ namespace Game.Setup
             throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
         }
 
-        public void GetUpgradedStructure(Structure structure, ushort type, byte lvl)
+        public void GetUpgradedStructure(IStructure structure, ushort type, byte lvl)
         {
             if (dict == null)
                 return;
@@ -142,7 +142,7 @@ namespace Game.Setup
                 throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
         }
 
-        public int GetActionWorkerType(Structure structure)
+        public int GetActionWorkerType(IStructure structure)
         {
             if (dict == null)
                 return 0;

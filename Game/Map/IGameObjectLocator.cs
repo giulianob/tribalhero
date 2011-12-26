@@ -12,14 +12,14 @@ namespace Game.Map
 
         bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub);
 
-        bool TryGetObjects(uint cityId, uint structureId, out ICity city, out Structure structure);
+        bool TryGetObjects(uint cityId, uint structureId, out ICity city, out IStructure structure);
 
-        bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out TroopObject troopObject);
+        bool TryGetObjects(uint cityId, uint troopObjectId, out ICity city, out ITroopObject troopObject);
 
-        List<SimpleGameObject> this[uint x, uint y] { get; }
+        List<ISimpleGameObject> this[uint x, uint y] { get; }
 
-        List<SimpleGameObject> GetObjects(uint x, uint y);
+        List<ISimpleGameObject> GetObjects(uint x, uint y);
 
-        List<SimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius);
+        List<ISimpleGameObject> GetObjectsWithin(uint x, uint y, byte radius);
     }
 }

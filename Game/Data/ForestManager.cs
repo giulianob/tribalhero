@@ -101,8 +101,8 @@ namespace Game.Data
                     World.Current.LockRegion(x, y);
 
                     // check if near any other objects
-                    if (World.Current.GetObjects(x, y).Exists(obj => !(obj is TroopObject)) ||
-                        World.Current.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is TroopObject)))
+                    if (World.Current.GetObjects(x, y).Exists(obj => !(obj is ITroopObject)) ||
+                        World.Current.GetObjectsWithin(x, y, 4).Exists(obj => !(obj is ITroopObject)))
                     {
                         World.Current.UnlockRegion(x, y);
                         continue;

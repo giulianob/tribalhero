@@ -8,7 +8,7 @@ using Game.Setup;
 
 namespace Game.Data
 {
-    public abstract class SimpleGameObject
+    public abstract class SimpleGameObject : ISimpleGameObject
     {
         public enum Types : ushort
         {
@@ -163,10 +163,11 @@ namespace Game.Data
 
         protected bool updating;
 
-        public void BeginUpdate()
+        public virtual void BeginUpdate()
         {
             if (updating)
                 throw new Exception("Nesting beginupdate");
+
             updating = true;
             origX = x;
             origY = y;
@@ -176,7 +177,7 @@ namespace Game.Data
 
         public abstract void EndUpdate();
 
-        protected void Update()
+        protected virtual void Update()
         {
             if (!Global.FireEvents)
                 return;
@@ -211,9 +212,9 @@ namespace Game.Data
             return TileDistance(x, y, x1, y1);
         }
 
-        public int TileDistance(SimpleGameObject obj)
+        public int TileDistance(ISimpleGameObject obj)
         {
-            return TileDistance(obj.x, obj.y);
+            return TileDistance(obj.X, obj.Y);
         }
 
         public int RadiusDistance(uint x1, uint y1)
@@ -221,9 +222,9 @@ namespace Game.Data
             return RadiusDistance(x, y, x1, y1);
         }
 
-        public int RadiusDistance(SimpleGameObject obj)
+        public int RadiusDistance(ISimpleGameObject obj)
         {
-            return RadiusDistance(obj.x, obj.y);
+            return RadiusDistance(obj.X, obj.Y);
         }
 
         public static int RadiusDistance(uint x, uint y, uint x1, uint y1)

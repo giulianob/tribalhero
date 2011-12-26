@@ -107,7 +107,7 @@ namespace Game.Module
         public void Callback(object custom)
         {
             ICity city;
-            Structure mainBuilding;
+            IStructure mainBuilding;
 
             if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City not found");
@@ -173,7 +173,7 @@ namespace Game.Module
                     if (city.Any(structure => !structure.IsMainBuilding))
                     {
                         city.BeginUpdate();
-                        foreach (Structure structure in new List<Structure>(city).Where(structure => !structure.IsBlocked && !structure.IsMainBuilding))
+                        foreach (IStructure structure in new List<IStructure>(city).Where(structure => !structure.IsBlocked && !structure.IsMainBuilding))
                         {
                             structure.BeginUpdate();
                             World.Current.Remove(structure);

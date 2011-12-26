@@ -9,7 +9,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
 {
     class SimpleLayout : LayoutRequirement
     {
-        public override bool Validate(Structure builder, ushort type, uint x, uint y)
+        public override bool Validate(IStructure builder, ushort type, uint x, uint y)
         {
             foreach (var req in requirements)
             {
@@ -30,7 +30,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
             return true;
         }
 
-        private bool HaveNoBuilding(Requirement req, IEnumerable<Structure> objects, uint x, uint y)
+        private bool HaveNoBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y)
         {
             foreach (var obj in objects)
             {
@@ -55,7 +55,7 @@ namespace Game.Logic.Requirements.LayoutRequirements
             return true;
         }
 
-        private bool HaveBuilding(Requirement req, IEnumerable<Structure> objects, uint x, uint y)
+        private bool HaveBuilding(Requirement req, IEnumerable<IStructure> objects, uint x, uint y)
         {
             foreach (var obj in objects)
             {

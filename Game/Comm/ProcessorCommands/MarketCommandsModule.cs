@@ -67,7 +67,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.Unexpected);
@@ -125,7 +125,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                Structure obj;
+                IStructure obj;
                 if (!city.TryGetStructure(objectId, out obj))
                 {
                     ReplyError(session, packet, Error.Unexpected);

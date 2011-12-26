@@ -10,7 +10,7 @@ namespace Game.Logic.Actions
 {
     public class CityRadiusChangePassiveAction : PassiveAction, IScriptable
     {
-        private Structure obj;
+        private IStructure obj;
         private byte radius;
 
         public override ActionType Type
@@ -31,10 +31,11 @@ namespace Game.Logic.Actions
 
         #region IScriptable Members
 
-        public void ScriptInit(GameObject obj, string[] parms)
+        public void ScriptInit(IGameObject obj, string[] parms)
         {
-            if ((this.obj = obj as Structure) == null)
+            if ((this.obj = obj as IStructure) == null)
                 throw new Exception();
+
             radius = byte.Parse(parms[0]);
             Execute();
         }

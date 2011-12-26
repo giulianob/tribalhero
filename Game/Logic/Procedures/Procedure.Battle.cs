@@ -50,7 +50,7 @@ namespace Game.Logic.Procedures
 
             ushort restore = (ushort)(maxHp * (healPercent / 100f));
 
-            foreach (Structure structure in city) {
+            foreach (IStructure structure in city) {
                 if (structure.State.Type == ObjectState.Battle || structure.Stats.Hp == structure.Stats.Base.Battle.MaxHp)
                     continue;
 

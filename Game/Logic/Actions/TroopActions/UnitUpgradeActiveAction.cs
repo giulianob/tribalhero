@@ -62,7 +62,7 @@ namespace Game.Logic.Actions
         public override Error Validate(string[] parms)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ActionInvalid;
 
@@ -75,7 +75,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
@@ -137,7 +137,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())

@@ -97,7 +97,7 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopStub stub;
             ICity targetCity;
-            Structure targetStructure;
+            IStructure targetStructure;
 
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) ||
                 !World.Current.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))

@@ -105,7 +105,7 @@ namespace Game.Logic.Actions
             return true;
         }
 
-        private bool CalculateNextPosition(TroopObject obj)
+        private bool CalculateNextPosition(ITroopObject obj)
         {
             if (distanceRemaining <= 0)
                 return false;
@@ -120,7 +120,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            TroopObject troopObj;
+            ITroopObject troopObj;
 
             if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.ObjectNotFound;
@@ -173,7 +173,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            TroopObject troopObj;
+            ITroopObject troopObj;
 
             using (Concurrency.Current.Lock(cityId, troopObjectId, out city, out troopObj))
             {

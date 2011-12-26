@@ -16,7 +16,7 @@ namespace Game.Logic.Actions
     public class PropertyCreatePassiveAction : PassiveAction, IScriptable
     {
         private string name;
-        private Structure structure;
+        private IStructure structure;
         private object value;
 
         public override ActionType Type
@@ -37,9 +37,9 @@ namespace Game.Logic.Actions
 
         #region IScriptable Members
 
-        public void ScriptInit(GameObject obj, string[] parms)
+        public void ScriptInit(IGameObject obj, string[] parms)
         {
-            if ((structure = obj as Structure) == null)
+            if ((structure = obj as IStructure) == null)
                 throw new Exception();
             name = parms[0];
 

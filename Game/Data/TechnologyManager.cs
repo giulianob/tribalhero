@@ -232,7 +232,7 @@ namespace Game.Data
                     DefaultMultiObjectLock.ThrowExceptionIfNotLocked((ICity)Owner);
                     break;
                 case EffectLocation.Object:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((Structure)Owner).City);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((IStructure)Owner).City);
                     break;
                 case EffectLocation.Player:
                     DefaultMultiObjectLock.ThrowExceptionIfNotLocked((Player)Owner);
@@ -323,7 +323,7 @@ namespace Game.Data
             {
                 return new[]
                        {
-                               new DbColumn("city_id", Owner is Structure ? (Owner as Structure).City.Id : (Owner is ICity ? (Owner as ICity).Id : 0), DbType.UInt32),
+                               new DbColumn("city_id", Owner is IStructure ? (Owner as IStructure).City.Id : (Owner is ICity ? (Owner as ICity).Id : 0), DbType.UInt32),
                                new DbColumn("owner_id", OwnerId, DbType.UInt32), new DbColumn("owner_location", (byte)OwnerLocation, DbType.Byte)
                        };
             }

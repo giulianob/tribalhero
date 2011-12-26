@@ -12,7 +12,7 @@ namespace Game.Logic.Procedures
         /// <param name="structure">Current structure obj</param>
         /// <param name="newType">New type</param>
         /// <param name="newLvl">New lvl</param>
-        public virtual void StructureChange(Structure structure, ushort newType, byte newLvl)
+        public virtual void StructureChange(IStructure structure, ushort newType, byte newLvl)
         {
             Ioc.Kernel.Get<StructureFactory>().GetUpgradedStructure(structure, newType, newLvl);
             structure.Technologies.BeginUpdate();

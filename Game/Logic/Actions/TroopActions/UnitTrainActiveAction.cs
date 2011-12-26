@@ -72,7 +72,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
             {
                 return Error.ObjectStructureNotFound;
@@ -120,7 +120,7 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -159,7 +159,7 @@ namespace Game.Logic.Actions
         private void InterruptCatchAll(bool wasKilled)
         {
             ICity city;
-            Structure structure;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())

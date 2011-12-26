@@ -37,7 +37,7 @@ namespace Game.Logic
 
         #endregion
 
-        public Error Validate(GameObject obj, IEnumerable<Effect> effects)
+        public Error Validate(IGameObject obj, IEnumerable<Effect> effects)
         {
             foreach (var req in list)
             {

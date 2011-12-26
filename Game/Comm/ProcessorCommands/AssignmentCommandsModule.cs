@@ -12,8 +12,6 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
-using Ninject;
-using Persistance;
 
 #endregion
 
@@ -97,7 +95,7 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 // Get target structure
-                Structure targetStructure;
+                IStructure targetStructure;
                 if (!targetCity.TryGetStructure(targetObjectId, out targetStructure))
                 {
                     ReplyError(session, packet, Error.ObjectStructureNotFound);
@@ -140,7 +138,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Tribe tribe = session.Player.Tribesman.Tribe;
+            ITribe tribe = session.Player.Tribesman.Tribe;
             using (Concurrency.Current.Lock(session.Player, tribe)) {
                 ICity city = session.Player.GetCity(cityId);
                 if (city == null)

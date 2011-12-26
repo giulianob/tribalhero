@@ -46,7 +46,7 @@ namespace Game.Setup
             }
         }
 
-        public bool IsStructureType(string type, Structure structure)
+        public bool IsStructureType(string type, IStructure structure)
         {
             if (dict == null)
                 return false;

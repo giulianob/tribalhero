@@ -33,7 +33,7 @@ namespace Game.Battle
             return (int)(60 * effectiveness);
         }
 
-        public virtual int GetUnitsPerStructure(Structure structure)
+        public virtual int GetUnitsPerStructure(IStructure structure)
         {
             var units = new[] { 20, 20, 23, 28, 34, 39, 45, 52, 59, 67, 76, 85, 95, 106, 117, 130 };
             return units[structure.Lvl];
@@ -241,7 +241,7 @@ namespace Game.Battle
             return calculator.GetStats();
         }
 
-        public virtual BattleStats LoadStats(Structure structure)
+        public virtual BattleStats LoadStats(IStructure structure)
         {
             return LoadStats(structure.Stats.Base.Battle,structure.City,TroopBattleGroup.Local);
         }
@@ -251,7 +251,7 @@ namespace Game.Battle
             return LoadStats(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle,city,group);
         }
 
-        public virtual Resource GetBonusResources(TroopObject troop, int originalCount, int remainingCount)
+        public virtual Resource GetBonusResources(ITroopObject troop, int originalCount, int remainingCount)
         {
             if (originalCount == 0)
                 return new Resource();

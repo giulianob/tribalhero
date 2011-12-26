@@ -101,32 +101,6 @@ namespace Game.Data.Tribe
         public event OnComplete AssignmentComplete = delegate { };
 
         /// <summary>
-        /// Creates a new assignment. 
-        /// NOTE: This constructor is used by the db loader. Use the other constructor when creating a new assignment from scratch.
-        /// </summary>
-        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
-        {
-            this.formula = formula;
-            this.dbManager = dbManager;
-            this.gameObjectLocator = gameObjectLocator;
-            this.scheduler = scheduler;
-            this.procedure = procedure;
-            this.tileLocator = tileLocator;
-            this.actionFactory = actionFactory;
-
-            Id = id;
-            Tribe = tribe;
-            TargetTime = targetTime;
-            TargetCity = targetCity;
-            X = x;
-            Y = y;
-            AttackMode = mode;
-            DispatchCount = dispatchCount;
-
-            IdGen.Set(id);
-        }
-
-        /// <summary>
         /// Creates a new assignment.
         /// An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
         /// </summary>
@@ -150,6 +124,32 @@ namespace Game.Data.Tribe
             DispatchCount = 0;
 
             assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
+        }
+
+        /// <summary>
+        /// Creates a new assignment. 
+        /// NOTE: This constructor is used by the db loader. Use the other constructor when creating a new assignment from scratch.
+        /// </summary>
+        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        {
+            this.formula = formula;
+            this.dbManager = dbManager;
+            this.gameObjectLocator = gameObjectLocator;
+            this.scheduler = scheduler;
+            this.procedure = procedure;
+            this.tileLocator = tileLocator;
+            this.actionFactory = actionFactory;
+
+            Id = id;
+            Tribe = tribe;
+            TargetTime = targetTime;
+            TargetCity = targetCity;
+            X = x;
+            Y = y;
+            AttackMode = mode;
+            DispatchCount = dispatchCount;
+
+            IdGen.Set(id);
         }
 
         public override string ToString()
@@ -214,10 +214,12 @@ namespace Game.Data.Tribe
         {
             lock (assignmentLock)
             {
-                if (newState == TroopState.Battle)
+                switch (newState)
                 {
-                    RemoveStub(stub);
-                    Reschedule();
+                    case TroopState.Battle:
+                        RemoveStub(stub);
+                        Reschedule();
+                        break;
                 }
             }
         }
@@ -251,7 +253,7 @@ namespace Game.Data.Tribe
         private DateTime DepartureTime(ITroopStub stub)
         {
             int distance = tileLocator.TileDistance(stub.City.X, stub.City.Y, X, Y);
-            return TargetTime.Subtract(new TimeSpan(0, 0, formula.MoveTimeTotal(stub.Speed, distance, true, new List<Effect>(stub.City.Technologies.GetAllEffects()))));
+            return TargetTime.Subtract(TimeSpan.FromSeconds(formula.MoveTimeTotal(stub, distance, true)));
         }
 
         /// <summary>
@@ -330,7 +332,7 @@ namespace Game.Data.Tribe
             Time = assignmentTroops.Any(s => !s.Dispatched) ? assignmentTroops.Where(s => !s.Dispatched).Min(x => x.DepartureTime) : TargetTime;
 
             // If there are stubs that have not been dispatched or we haven't reached the time that the assignment should be over then we just reschedule it.
-            if (assignmentTroops.Count > 0 && (assignmentTroops.Any(x => !x.Dispatched) || TargetTime.CompareTo(SystemClock.Now) > 0))
+            if (assignmentTroops.Any(x => !x.Dispatched) || TargetTime.CompareTo(SystemClock.Now) > 0)
             {
                 dbManager.Save(this);
                 scheduler.Put(this);

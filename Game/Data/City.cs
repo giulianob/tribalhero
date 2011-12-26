@@ -163,7 +163,7 @@ namespace Game.Data
         /// <summary>
         ///   Technology manager for city
         /// </summary>
-        public TechnologyManager Technologies { get; private set; }
+        public ITechnologyManager Technologies { get; private set; }
 
         /// <summary>
         ///   Returns the local troop
@@ -842,7 +842,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TechnologiesTechnologyCleared(TechnologyManager manager)
+        private void TechnologiesTechnologyCleared(ITechnologyManager manager)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;

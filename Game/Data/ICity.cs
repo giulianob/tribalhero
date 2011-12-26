@@ -50,7 +50,7 @@ namespace Game.Data
         /// <summary>
         ///   Technology manager for city
         /// </summary>
-        TechnologyManager Technologies { get; }
+        ITechnologyManager Technologies { get; }
 
         /// <summary>
         ///   Returns the local troop

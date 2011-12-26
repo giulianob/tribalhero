@@ -16,6 +16,11 @@ namespace Game.Map
 
         private readonly GetRandom getRandom;
 
+        public TileLocator()
+        {
+            
+        }
+
         public TileLocator(GetRandom getRandom)
         {
             this.getRandom = getRandom;

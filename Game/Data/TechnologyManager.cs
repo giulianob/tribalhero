@@ -6,18 +6,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Game.Database;
-using Game.Logic;
-using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion
 
 namespace Game.Data
 {
-    public class TechnologyManager : IHasEffect, IEnumerable<Technology>, IPersistableList
+    public class TechnologyManager : ITechnologyManager
     {
         public const string DB_TABLE = "technologies";
         private readonly List<Technology> technologies = new List<Technology>();
@@ -51,7 +47,7 @@ namespace Game.Data
             }
         }
 
-        public TechnologyManager Parent { get; set; }
+        public ITechnologyManager Parent { get; set; }
 
         public uint Id
         {
@@ -67,7 +63,7 @@ namespace Game.Data
 
         #region Add/Remove
 
-        private void AddChildCopy(Technology tech)
+        public void AddChildCopy(Technology tech)
         {
             //only add tech if it applies to this tech manager
             if (!tech.Effects.Exists(effect => effect.Location == OwnerLocation))
@@ -159,7 +155,7 @@ namespace Game.Data
             return true;
         }
 
-        private void RemoveChildCopy(Technology tech, bool notify)
+        public void RemoveChildCopy(Technology tech, bool notify)
         {
             if (!technologies.Remove(tech))
                 return;
@@ -172,7 +168,7 @@ namespace Game.Data
 
         #region Utilities
 
-        public List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit)
+        public List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit = EffectInheritance.All)
         {
             var list = new List<Effect>();
             foreach (var tech in technologies)
@@ -263,7 +259,7 @@ namespace Game.Data
 
         #region Delegates
 
-        public delegate void TechnologyClearedCallback(TechnologyManager manager);
+        public delegate void TechnologyClearedCallback(ITechnologyManager manager);
 
         public delegate void TechnologyUpdatedCallback(Technology tech);
 

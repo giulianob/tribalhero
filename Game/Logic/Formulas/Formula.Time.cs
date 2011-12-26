@@ -25,7 +25,7 @@ namespace Game.Logic.Formulas
             return quantity * 15 * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 
-        public virtual int LaborMoveTime(IStructure structure, byte count, TechnologyManager technologyManager)
+        public virtual int LaborMoveTime(IStructure structure, byte count, ITechnologyManager technologyManager)
         {
             var effects = structure.City.Technologies.GetEffects(EffectCode.LaborMoveTimeMod, EffectInheritance.All);
             int overtime = 0;
@@ -41,12 +41,12 @@ namespace Game.Logic.Formulas
             return discount[lvl];
         }
 
-        public virtual int TrainTime(int baseValue, int structureLvl, TechnologyManager em)
+        public virtual int TrainTime(int baseValue, int structureLvl, ITechnologyManager em)
         {
             return baseValue*(100 - TimeDiscount(structureLvl))/100;
         }
 
-        public virtual int BuildTime(int baseValue, ICity city, TechnologyManager em)
+        public virtual int BuildTime(int baseValue, ICity city, ITechnologyManager em)
         {
             IStructure university = city.FirstOrDefault(structure => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("University", structure));
             return (int)(baseValue*(100 - (university == null ? 0 : university.Stats.Labor)*0.25)/100);
@@ -77,13 +77,13 @@ namespace Game.Logic.Formulas
             return total;
         }
 
-        public virtual int MoveTimeTotal(byte speed, int distance, bool isAttacking, List<Effect> effects)
+        public virtual int MoveTimeTotal(ITroopStub stub, int distance, bool isAttacking)
         {
-            var moveTime = MoveTime(speed);
+            var moveTime = MoveTime(stub.Speed);
             double bonus = 0;
             double rushMod = 0;
 
-            foreach (var effect in effects.Where(x => x.Id == EffectCode.TroopSpeedMod))
+            foreach (var effect in stub.City.Technologies.GetEffects(EffectCode.TroopSpeedMod))
             {
                 // getting rush attack/defense bonus;
                 if ((((string)effect.Value[1]).ToUpper() == "ATTACK" && isAttacking) || (((string)effect.Value[1]).ToUpper() == "DEFENSE" && !isAttacking))

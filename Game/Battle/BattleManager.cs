@@ -249,7 +249,7 @@ namespace Game.Battle
             return attackers.FirstOrDefault(co => co.Id == id) ?? defenders.FirstOrDefault(co => co.Id == id);
         }
 
-        public bool CanWatchBattle(Player player, out int roundsLeft)
+        public bool CanWatchBattle(IPlayer player, out int roundsLeft)
         {
             roundsLeft = 0;
 

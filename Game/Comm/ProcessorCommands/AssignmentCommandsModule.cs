@@ -77,7 +77,7 @@ namespace Game.Comm.ProcessorCommands
                 playerIds = new[] {city.Owner.PlayerId, city.Owner.Tribesman.Tribe.Owner.PlayerId, targetCity.Owner.PlayerId};
             }
 
-            Dictionary<uint, Player> players;
+            Dictionary<uint, IPlayer> players;
             using (Concurrency.Current.Lock(out players, playerIds)) {
                 ICity city;
                 ICity targetCity;

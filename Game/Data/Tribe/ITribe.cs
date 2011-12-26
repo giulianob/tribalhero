@@ -12,7 +12,7 @@ namespace Game.Data.Tribe
     {
         uint Id { get; }
 
-        Player Owner { get; }
+        IPlayer Owner { get; }
 
         string Name { get; set; }
 
@@ -30,17 +30,17 @@ namespace Game.Data.Tribe
 
         IEnumerable<Assignment> Assignments { get; }
 
-        IEnumerable<Tribesman> Tribesmen { get; }
+        IEnumerable<ITribesman> Tribesmen { get; }
 
         int Count { get; }
 
-        bool IsOwner(Player player);
+        bool IsOwner(IPlayer player);
 
-        Error AddTribesman(Tribesman tribesman, bool save = true);
+        Error AddTribesman(ITribesman tribesman, bool save = true);
 
         Error RemoveTribesman(uint playerId);
 
-        bool TryGetTribesman(uint playerId, out Tribesman tribesman);
+        bool TryGetTribesman(uint playerId, out ITribesman tribesman);
 
         Error SetRank(uint playerId, byte rank);
 

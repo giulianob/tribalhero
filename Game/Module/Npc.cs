@@ -363,10 +363,10 @@ namespace Game.Module
         {
             public readonly double builder;
             public readonly double military;
-            public Player player;
+            public IPlayer player;
             public byte savingUp; // how many rounds it's saving up for
 
-            public Intelligence(Player player, double builder, double military)
+            public Intelligence(IPlayer player, double builder, double military)
             {
                 this.player = player;
                 this.builder = builder;

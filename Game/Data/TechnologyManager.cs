@@ -235,7 +235,7 @@ namespace Game.Data
                     DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((IStructure)Owner).City);
                     break;
                 case EffectLocation.Player:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((Player)Owner);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((IPlayer)Owner);
                     break;
             }
         }

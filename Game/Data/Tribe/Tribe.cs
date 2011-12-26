@@ -32,7 +32,7 @@ namespace Game.Data.Tribe
                 return Owner.PlayerId;
             }
         }
-        public Player Owner { get; private set; }
+        public IPlayer Owner { get; private set; }
         public string Name { get; set; }
         public byte Level { get; set; }
 
@@ -92,7 +92,7 @@ namespace Game.Data.Tribe
             }
         }
 
-        readonly Dictionary<uint, Tribesman> tribesmen = new Dictionary<uint, Tribesman>();
+        readonly Dictionary<uint, ITribesman> tribesmen = new Dictionary<uint, ITribesman>();
         readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
 
         public Resource Resource { get; private set; }
@@ -106,7 +106,7 @@ namespace Game.Data.Tribe
             }
         }
 
-        public IEnumerable<Tribesman> Tribesmen
+        public IEnumerable<ITribesman> Tribesmen
         {
             get
             {
@@ -114,13 +114,13 @@ namespace Game.Data.Tribe
             }
         }
 
-        public Tribe(Player owner, string name) :
+        public Tribe(IPlayer owner, string name) :
             this(owner, name, string.Empty, 1, 0, 0, new Resource())
         {
 
         }
 
-        public Tribe(Player owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource)
+        public Tribe(IPlayer owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource)
         {
             Owner = owner;
             Level = level;
@@ -131,12 +131,12 @@ namespace Game.Data.Tribe
             DefensePoint = defensePoints;
         }
 
-        public bool IsOwner(Player player)
+        public bool IsOwner(IPlayer player)
         {
             return player.PlayerId == Id;
         }
 
-        public Error AddTribesman(Tribesman tribesman, bool save = true)
+        public Error AddTribesman(ITribesman tribesman, bool save = true)
         {
             if (tribesmen.ContainsKey(tribesman.Player.PlayerId))
                 return Error.TribesmanAlreadyExists;
@@ -156,7 +156,7 @@ namespace Game.Data.Tribe
 
         public Error RemoveTribesman(uint playerId)
         {
-            Tribesman tribesman;
+            ITribesman tribesman;
             if (!tribesmen.TryGetValue(playerId, out tribesman))
                 return Error.TribesmanNotFound;
 
@@ -166,14 +166,14 @@ namespace Game.Data.Tribe
             return !tribesmen.Remove(playerId) ? Error.TribesmanNotFound : Error.Ok;
         }
 
-        public bool TryGetTribesman(uint playerId, out Tribesman tribesman)
+        public bool TryGetTribesman(uint playerId, out ITribesman tribesman)
         {
             return tribesmen.TryGetValue(playerId, out tribesman);
         }
 
         public Error SetRank(uint playerId, byte rank)
         {
-            Tribesman tribesman;
+            ITribesman tribesman;
 
             if (rank == 0)
                 return Error.TribesmanNotAuthorized;
@@ -195,7 +195,7 @@ namespace Game.Data.Tribe
 
         public Error Contribute(uint playerId, Resource resource)
         {
-            Tribesman tribesman;
+            ITribesman tribesman;
             if (!tribesmen.TryGetValue(playerId, out tribesman))
                 return Error.TribesmanNotFound;
 
@@ -209,7 +209,7 @@ namespace Game.Data.Tribe
 
         public IEnumerable<IncomingListItem> GetIncomingList()
         {
-            return from tribesmen in ((IEnumerable<Tribesman>)this)
+            return from tribesmen in ((IEnumerable<ITribesman>)this)
                    from city in tribesmen.Player.GetCityList()
                    from notification in city.Worker.Notifications
                    where notification.Action is AttackChainAction && notification.Action.WorkerObject.City != city && notification.Subscriptions.Count > 0
@@ -219,8 +219,11 @@ namespace Game.Data.Tribe
 
         public bool HasRight(uint playerId, string action)
         {
-            Tribesman tribesman;
-            if (!TryGetTribesman(playerId, out tribesman)) return false;
+            ITribesman tribesman;
+            if (!TryGetTribesman(playerId, out tribesman))
+            {
+                return false;
+            }
 
             switch (action)
             {

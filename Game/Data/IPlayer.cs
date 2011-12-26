@@ -28,7 +28,7 @@ namespace Game.Data
 
         string Description { get; set; }
 
-        Tribe.Tribesman Tribesman { get; set; }
+        Tribe.ITribesman Tribesman { get; set; }
 
         uint TribeRequest { get; set; }
 
@@ -48,7 +48,7 @@ namespace Game.Data
 
         string ToString();
 
-        void SendSystemMessage(Player from, String subject, String message);
+        void SendSystemMessage(IPlayer from, String subject, String message);
 
         void TribeUpdate();
     }

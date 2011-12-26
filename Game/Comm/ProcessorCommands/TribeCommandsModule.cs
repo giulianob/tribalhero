@@ -253,7 +253,7 @@ namespace Game.Comm.ProcessorCommands
                 Global.Tribes.Add(tribe.Id, tribe);
                 DbPersistance.Current.Save(tribe);
 
-                Tribesman tribesman = new Tribesman(tribe, session.Player, 0);
+                var tribesman = new Tribesman(tribe, session.Player, 0);
                 tribe.AddTribesman(tribesman);
 
                 Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
@@ -270,7 +270,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(custom => ((IEnumerable<Tribesman>)tribe).ToArray(), new object[] { }, tribe))
+            using (Concurrency.Current.Lock(custom => ((IEnumerable<ITribesman>)tribe).ToArray(), new object[] { }, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {
@@ -284,7 +284,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                foreach (var tribesman in new List<Tribesman>(tribe.Tribesmen))
+                foreach (var tribesman in new List<ITribesman>(tribe.Tribesmen))
                 {
                     if (tribesman.Player.Session != null)
                         Procedure.Current.OnSessionTribesmanQuit(tribesman.Player.Session, tribe.Id, tribesman.Player.PlayerId, true);

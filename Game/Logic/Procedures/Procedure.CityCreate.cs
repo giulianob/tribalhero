@@ -22,7 +22,7 @@ namespace Game.Logic.Procedures
         /// <param name="cityName"></param>
         /// <param name="city"></param>
         /// <returns></returns>
-        public virtual bool CreateCity(Player player, string cityName, out ICity city)
+        public virtual bool CreateCity(IPlayer player, string cityName, out ICity city)
         {
             city = null;
             IStructure mainBuilding;

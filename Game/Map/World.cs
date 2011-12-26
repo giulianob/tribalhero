@@ -38,7 +38,7 @@ namespace Game.Map
 
         public object Lock { get; private set; }
 
-        public Dictionary<uint, Player> Players { get; private set; }
+        public Dictionary<uint, IPlayer> Players { get; private set; }
 
         public ForestManager Forests { get; private set; }
 
@@ -69,7 +69,7 @@ namespace Game.Map
             Cities = new Dictionary<uint, ICity>();
             RoadManager = new RoadManager();
             Lock = new object();
-            Players = new Dictionary<uint, Player>();
+            Players = new Dictionary<uint, IPlayer>();
             Forests = new ForestManager();
         }
 
@@ -80,7 +80,7 @@ namespace Game.Map
             return Cities.TryGetValue(cityId, out city);
         }
 
-        public bool TryGetObjects(uint playerId, out Player player)
+        public bool TryGetObjects(uint playerId, out IPlayer player)
         {
             return Players.TryGetValue(playerId, out player);
         }

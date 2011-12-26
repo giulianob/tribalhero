@@ -85,7 +85,7 @@ namespace Game.Data
         /// <summary>
         ///   Player that owns this city
         /// </summary>
-        Player Owner { get; }
+        IPlayer Owner { get; }
 
         /// <summary>
         ///   Whether to send new units to hiding or not

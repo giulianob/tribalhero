@@ -83,7 +83,7 @@ namespace Game.Comm.ProcessorCommands
                 }
             }
 
-            Player player;
+            IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
@@ -161,7 +161,7 @@ namespace Game.Comm.ProcessorCommands
             reply.AddByte(count);
             foreach (var playerId in playerIds)
             {
-                Player player;
+                IPlayer player;
                 if (!World.Current.Players.TryGetValue(playerId, out player))
                 {
                     ReplyError(session, packet, Error.Unexpected);

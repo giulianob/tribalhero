@@ -22,7 +22,7 @@ namespace Game.Battle
         void Subscribe(Session session);
         void Unsubscribe(Session session);
         CombatObject GetCombatObject(uint id);
-        bool CanWatchBattle(Player player, out int roundsLeft);
+        bool CanWatchBattle(IPlayer player, out int roundsLeft);
         void DbLoaderAddToLocal(CombatStructure structure, uint id);
         void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
         void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state);

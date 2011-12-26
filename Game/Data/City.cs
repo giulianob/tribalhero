@@ -230,7 +230,7 @@ namespace Game.Data
         /// <summary>
         ///   Player that owns this city
         /// </summary>
-        public Player Owner { get; private set; }
+        public IPlayer Owner { get; private set; }
 
         /// <summary>
         ///   Enumerates through all structures and troops in this city
@@ -303,7 +303,7 @@ namespace Game.Data
                 DefenseAttackPointUpdate();
             }
         }
-        
+
         public ushort Value
         {
             get
@@ -316,10 +316,10 @@ namespace Game.Data
                 this.value = value;
 
                 if (Global.FireEvents && id > 0)
-                {                    
+                {
                     World.Current.GetCityRegion(X, Y).MarkAsDirty();
                     DefenseAttackPointUpdate();
-                }                
+                }
             }
         }
 
@@ -327,17 +327,17 @@ namespace Game.Data
 
         #region Constructors
 
-        public City(Player owner, string name, Resource resource, byte radius, IStructure mainBuilding)
-                : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding)
+        public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding)
+            : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding)
         {
         }
 
-        public City(Player owner, string name, LazyResource resource, byte radius, IStructure mainBuilding)
+        public City(IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding)
         {
             Owner = owner;
             this.name = name;
             this.radius = radius;
-            Resource = resource;            
+            Resource = resource;
 
             Worker = new ActionWorker(this);
 
@@ -354,7 +354,7 @@ namespace Game.Data
 
             Worker.ActionRemoved += WorkerActionRemoved;
             Worker.ActionStarted += WorkerActionAdded;
-            Worker.ActionRescheduled += WorkerActionRescheduled;            
+            Worker.ActionRescheduled += WorkerActionRescheduled;
 
             if (mainBuilding != null)
             {
@@ -633,7 +633,7 @@ namespace Game.Data
             {
                 Global.Channel.Subscribe(s, "/CITY/" + id);
             }
-            catch(DuplicateSubscriptionException)
+            catch (DuplicateSubscriptionException)
             {
             }
         }
@@ -721,7 +721,7 @@ namespace Game.Data
                 BeginUpdate();
 
             Value = Formula.Current.CalculateCityValue(this);
-            
+
             if (!doUpdate)
                 EndUpdate();
 
@@ -735,7 +735,7 @@ namespace Game.Data
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
-            
+
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
@@ -1049,7 +1049,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32)};
+                return new[] { new DbColumn("id", Id, DbType.UInt32) };
             }
         }
 
@@ -1057,7 +1057,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbDependency("Technologies", false, true), new DbDependency("Template", false, true),};
+                return new[] { new DbDependency("Technologies", false, true), new DbDependency("Template", false, true), };
             }
         }
 
@@ -1087,7 +1087,7 @@ namespace Game.Data
             {
                 var bw = new BinaryWriter(ms);
                 bw.Write(Lvl);
-                bw.Write(Owner.PlayerId);                
+                bw.Write(Owner.PlayerId);
                 bw.Write(value);
                 ms.Position = 0;
                 return ms.ToArray();
@@ -1123,7 +1123,7 @@ namespace Game.Data
             get
             {
                 return Id;
-            }     
+            }
         }
 
         public uint CityRegionObjectId

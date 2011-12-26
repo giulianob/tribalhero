@@ -109,7 +109,7 @@ namespace Game.Comm
             {
                 while (reader.Read())
                 {
-                    Player player;
+                    IPlayer player;
                     using (Concurrency.Current.Lock((uint)reader["id"], out player))
                     {
                         player.SendSystemMessage(null, subject, message);
@@ -166,7 +166,7 @@ namespace Game.Comm
             if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
-            Player player;
+            IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
@@ -217,7 +217,7 @@ namespace Game.Comm
                 return "Player not found on this server but renamed on main site";
             }
 
-            Player player;
+            IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
@@ -292,7 +292,7 @@ namespace Game.Comm
             if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
-            Player player;
+            IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)
@@ -360,7 +360,7 @@ namespace Game.Comm
             if (!World.Current.FindPlayerId(playerName, out playerId))
                 return "Player not found";
 
-            Player player;
+            IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
                 if (player == null)

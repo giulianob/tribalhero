@@ -9,13 +9,13 @@ namespace Game.Util.Locking
     {
         IMultiObjectLock Lock(out Dictionary<uint, ICity> result, params uint[] cityIds);
 
-        IMultiObjectLock Lock(out Dictionary<uint, Player> result, params uint[] playerIds);
+        IMultiObjectLock Lock(out Dictionary<uint, IPlayer> result, params uint[] playerIds);
 
         IMultiObjectLock Lock(uint tribeId, out ITribe tribe);
 
-        IMultiObjectLock Lock(uint playerId, out Player player);
+        IMultiObjectLock Lock(uint playerId, out IPlayer player);
 
-        IMultiObjectLock Lock(uint playerId, out Player player, out ITribe tribe);
+        IMultiObjectLock Lock(uint playerId, out IPlayer player, out ITribe tribe);
 
         IMultiObjectLock Lock(uint cityId, out ICity city);
 

@@ -62,7 +62,7 @@ namespace Game.Comm
                     return "Tribe not found";
             }
 
-            Player player;
+            IPlayer player;
             ITribe tribe;
             string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
             using (Concurrency.Current.Lock(playerId, out player, out tribe))

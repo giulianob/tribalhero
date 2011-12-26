@@ -52,7 +52,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Dictionary<uint, Player> players;
+            Dictionary<uint, IPlayer> players;
             using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
                 ITribe tribe = session.Player.Tribesman.Tribe;
@@ -96,7 +96,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Dictionary<uint, Player> players;
+            Dictionary<uint, IPlayer> players;
             ITribe tribe = session.Player.Tribesman.Tribe;
             using (Concurrency.Current.Lock(out players, playerId, tribe.Owner.PlayerId))
             {
@@ -166,18 +166,19 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player, tribe))
             {
-                Tribesman tribesman = new Tribesman(tribe, session.Player, 2);
+                var tribesman = new Tribesman(tribe, session.Player, 2);
                 var error = tribe.AddTribesman(tribesman);
                 if (error != Error.Ok)
-                    ReplyError(session, packet, error);
-                else
                 {
-                    var reply = new Packet(packet);
-                    Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
-                    reply.AddInt32(tribe.GetIncomingList().Count());
-                    reply.AddInt16(tribe.AssignmentCount);
-                    session.Write(reply);
+                    ReplyError(session, packet, error);
+                    return;
                 }
+
+                var reply = new Packet(packet);
+                Global.Channel.Subscribe(session, "/TRIBE/" + tribe.Id);
+                reply.AddInt32(tribe.GetIncomingList().Count());
+                reply.AddInt16(tribe.AssignmentCount);
+                session.Write(reply);
             }
         }
 
@@ -200,10 +201,10 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Dictionary<uint, Player> players;
+            Dictionary<uint, IPlayer> players;
             using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
-                Tribesman tribesman = new Tribesman(session.Player.Tribesman.Tribe, players[playerId], 2);
+                var tribesman = new Tribesman(session.Player.Tribesman.Tribe, players[playerId], 2);
                 session.Player.Tribesman.Tribe.AddTribesman(tribesman);
                 packet.AddInt32(session.Player.Tribesman.Tribe.GetIncomingList().Count());
                 packet.AddInt16(session.Player.Tribesman.Tribe.AssignmentCount);
@@ -230,7 +231,7 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            Dictionary<uint, Player> players;
+            Dictionary<uint, IPlayer> players;
             using (Concurrency.Current.Lock(out players, playerId, session.Player.Tribesman.Tribe.Owner.PlayerId))
             {
                 if (!players.ContainsKey(playerId))

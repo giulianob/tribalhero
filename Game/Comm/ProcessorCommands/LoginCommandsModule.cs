@@ -41,7 +41,7 @@ namespace Game.Comm.ProcessorCommands
 
         private void Login(Session session, Packet packet)
         {
-            Player player;
+            IPlayer player;
             var reply = new Packet(packet);
             reply.Option |= (ushort)Packet.Options.Compressed;
 

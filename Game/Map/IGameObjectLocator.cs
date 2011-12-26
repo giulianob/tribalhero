@@ -8,7 +8,7 @@ namespace Game.Map
     {
         bool TryGetObjects(uint cityId, out ICity city);
 
-        bool TryGetObjects(uint playerId, out Player player);
+        bool TryGetObjects(uint playerId, out IPlayer player);
 
         bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub);
 

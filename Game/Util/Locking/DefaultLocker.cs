@@ -41,14 +41,14 @@ namespace Game.Util.Locking
             return Lock(cities);
         }
 
-        public IMultiObjectLock Lock(out Dictionary<uint, Player> result, params uint[] playerIds)
+        public IMultiObjectLock Lock(out Dictionary<uint, IPlayer> result, params uint[] playerIds)
         {
-            result = new Dictionary<uint, Player>(playerIds.Length);
-            var players = new Player[playerIds.Length];
+            result = new Dictionary<uint, IPlayer>(playerIds.Length);
+            var players = new ILockable[playerIds.Length];
 
             int i = 0;
             foreach (var playerId in playerIds) {
-                Player player;
+                IPlayer player;
                 if (!World.Current.TryGetObjects(playerId, out player)) {
                     result = null;
                     return null;
@@ -66,12 +66,12 @@ namespace Game.Util.Locking
             return TryGetTribe(tribeId, out tribe);
         }
 
-        public IMultiObjectLock Lock(uint playerId, out Player player)
+        public IMultiObjectLock Lock(uint playerId, out IPlayer player)
         {
             return TryGetPlayer(playerId, out player);
         }
 
-        public IMultiObjectLock Lock(uint playerId, out Player player, out ITribe tribe)
+        public IMultiObjectLock Lock(uint playerId, out IPlayer player, out ITribe tribe)
         {
             if (!World.Current.TryGetObjects(playerId, out player))
             {
@@ -145,7 +145,7 @@ namespace Game.Util.Locking
             }
         }
 
-        private IMultiObjectLock TryGetPlayer(uint playerId, out Player player)
+        private IMultiObjectLock TryGetPlayer(uint playerId, out IPlayer player)
         {
             if (!World.Current.TryGetObjects(playerId, out player))
                 return null;

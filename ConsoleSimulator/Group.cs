@@ -52,7 +52,7 @@ namespace ConsoleSimulator
 
         private readonly ICity city;
         private readonly TroopObject obj;
-        private readonly Player player;
+        private readonly IPlayer player;
 
         public Group()
         {

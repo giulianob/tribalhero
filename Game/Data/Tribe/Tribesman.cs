@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using Game.Util;
-using Game.Util.Locking;
 using Persistance;
 
-namespace Game.Data.Tribe {
-
-    public class Tribesman: IPersistableObject,ILockable  {
+namespace Game.Data.Tribe
+{
+    public class Tribesman : ITribesman
+    {
         public const string DB_TABLE = "tribesmen";
 
         public ITribe Tribe { get; private set; }
-        public Player Player { get; private set; }
-	    public DateTime JoinDate { get; private set; }
+        public IPlayer Player { get; private set; }
+        public DateTime JoinDate { get; private set; }
         public Resource Contribution { get; set; }
         public byte Rank { get; set; }
 
-        public Tribesman(ITribe tribe, Player player, byte rank)
+        public Tribesman(ITribe tribe, IPlayer player, byte rank)
         {
             Tribe = tribe;
             Player = player;
@@ -27,7 +23,8 @@ namespace Game.Data.Tribe {
             Contribution = new Resource();
         }
 
-        public Tribesman(ITribe tribe, Player player, DateTime joinDate, Resource contribution, byte rank) {
+        public Tribesman(ITribe tribe, IPlayer player, DateTime joinDate, Resource contribution, byte rank)
+        {
             Tribe = tribe;
             Player = player;
             JoinDate = joinDate;
@@ -43,23 +40,28 @@ namespace Game.Data.Tribe {
 
         #region IPersistable Members
 
-        public string DbTable {
+        public string DbTable
+        {
             get { return DB_TABLE; }
         }
 
-        public DbColumn[] DbPrimaryKey {
+        public DbColumn[] DbPrimaryKey
+        {
             get
             {
                 return new[] { new DbColumn("player_id", Player.PlayerId, DbType.UInt32), };
             }
         }
 
-        public DbDependency[] DbDependencies {
-            get { return new DbDependency[]{}; }
+        public DbDependency[] DbDependencies
+        {
+            get { return new DbDependency[] { }; }
         }
 
-        public DbColumn[] DbColumns {
-            get {
+        public DbColumn[] DbColumns
+        {
+            get
+            {
                 return new[]
                        {
                             new DbColumn("tribe_id", Tribe.Id, DbType.UInt32),
@@ -77,11 +79,13 @@ namespace Game.Data.Tribe {
 
         #region ILockable Members
 
-        public int Hash {
+        public int Hash
+        {
             get { return unchecked((int)Player.PlayerId); }
         }
 
-        public object Lock {
+        public object Lock
+        {
             get { return Player; }
         }
 

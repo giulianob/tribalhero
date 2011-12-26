@@ -17,7 +17,7 @@ namespace Game.Comm.Thrift
 
         public void NewMessage(PlayerUnreadCount playerUnreadCount)
         {
-            Player player;
+            IPlayer player;
             using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
             {
                 if (player.Session == null)
@@ -42,7 +42,7 @@ namespace Game.Comm.Thrift
         {
             foreach (var playerUnreadCount in playerUnreadCounts)
             {
-                Player player;
+                IPlayer player;
                 using (Concurrency.Current.Lock((uint)playerUnreadCount.Id, out player))
                 {
                     if (player.Session == null)

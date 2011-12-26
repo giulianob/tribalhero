@@ -64,7 +64,7 @@ namespace Game.Logic.Formulas
             return 0;
         }
 
-        public virtual bool IsNewbieProtected(Player player)
+        public virtual bool IsNewbieProtected(IPlayer player)
         {
             return SystemClock.Now.Subtract(player.Created).TotalSeconds < Config.newbie_protection;
         }

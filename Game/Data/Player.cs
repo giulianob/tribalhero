@@ -75,8 +75,8 @@ namespace Game.Data
             }
         }
 
-        private Tribe.Tribesman tribesman;
-        public Tribe.Tribesman Tribesman
+        private Tribe.ITribesman tribesman;
+        public Tribe.ITribesman Tribesman
         {
             get
             {
@@ -216,7 +216,7 @@ namespace Game.Data
             return Name;
         }
 
-        public void SendSystemMessage(Player from, String subject, String message)
+        public void SendSystemMessage(IPlayer from, String subject, String message)
         {
             subject = String.Format("(System) {0}", subject);
             DbPersistance.Current.Query(

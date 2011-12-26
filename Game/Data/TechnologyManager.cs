@@ -294,15 +294,21 @@ namespace Game.Data
 
         public IEnumerable<Effect> GetAllEffects(EffectInheritance inherit = EffectInheritance.All)
         {
-            var list = new List<Effect>();
-            foreach (var tech in technologies)
-                list.AddRange(tech.GetAllEffects(inherit, OwnerLocation));
+            foreach (var effect in technologies.SelectMany(tech => tech.GetAllEffects(inherit, OwnerLocation)))
+            {
+                yield return effect;
+            }
+
             if ((inherit & EffectInheritance.Upward) == EffectInheritance.Upward)
             {
                 if (Parent != null)
-                    list.AddRange(Parent.GetAllEffects(EffectInheritance.Upward | EffectInheritance.Self));
+                {
+                    foreach (var effect in Parent.GetAllEffects(EffectInheritance.Upward | EffectInheritance.Self))
+                    {
+                        yield return effect;
+                    }
+                }
             }
-            return list;
         }
 
         #endregion

@@ -108,7 +108,7 @@ namespace Game.Data
 
         City.DeletedState Deleted { get; set; }
 
-        ActionWorker Worker { get; }
+        IActionWorker Worker { get; }
 
         /// <summary>
         ///   Enumerates through all structures and troops in this city

@@ -78,11 +78,11 @@ namespace Game.Logic
 
     public class ReferenceManager : IEnumerable<ReferenceStub>
     {
-        private readonly ActionWorker actionWorker;
+        private readonly IActionWorker actionWorker;
         private readonly List<ReferenceStub> reference = new List<ReferenceStub>();
         private readonly LargeIdGenerator referenceIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        public ReferenceManager(ActionWorker actionWorker)
+        public ReferenceManager(IActionWorker actionWorker)
         {
             this.actionWorker = actionWorker;
         }

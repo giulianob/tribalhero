@@ -152,7 +152,7 @@ namespace Game.Data.Tribe
             IdGen.Set(id);
         }
 
-        public override string ToString()
+        public string ToNiceString()
         {
             StringBuilder stringBuilder = new StringBuilder();
 

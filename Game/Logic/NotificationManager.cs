@@ -19,11 +19,11 @@ namespace Game.Logic
 {
     public class NotificationManager : IEnumerable<NotificationManager.Notification>
     {
-        private readonly ActionWorker actionWorker;
+        private readonly IActionWorker actionWorker;
         private readonly List<Notification> notifications = new List<Notification>();
         private readonly object objLock = new object();
 
-        public NotificationManager(ActionWorker worker)
+        public NotificationManager(IActionWorker worker)
         {
             actionWorker = worker;
 

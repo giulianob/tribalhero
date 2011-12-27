@@ -203,6 +203,7 @@
     <Compile Include="Engine.cs" />
     <Compile Include="Data\SimpleGameObject.cs" />
     <Compile Include="GameModule.cs" />
+    <Compile Include="Logic\ActionRequirement.cs" />
     <Compile Include="Logic\Actions\ActionFactory.cs" />
     <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
@@ -229,6 +230,7 @@
     </Compile>
     <Compile Include="Logic\ActiveAction.cs" />
     <Compile Include="Logic\IActionTime.cs" />
+    <Compile Include="Logic\IActionWorker.cs" />
     <Compile Include="Logic\IScheduler.cs" />
     <Compile Include="Logic\PassiveAction.cs" />
     <Compile Include="Logic\Procedures\Procedure.CityCreate.cs" />

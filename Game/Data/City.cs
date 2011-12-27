@@ -952,7 +952,7 @@ namespace Game.Data
 
         #endregion
 
-        public ActionWorker Worker { get; private set; }
+        public IActionWorker Worker { get; private set; }
 
         #region ICanDo Members
 

@@ -1,0 +1,89 @@
+Type,Lvl,Condition,Action,P1,P2,P3,P4,P5,NlsDesc,Comments
+,,,,,,,,,,
+2204,1,ON_CONVERT,technology_create,techid=0,techlvl=0,time=0,,,,
+2000,8,ON_UPGRADE,city_radius_change,radius=5,,,,,,
+3002,1,ON_INIT,structure_self_destroy,time=28800,,,,,,
+3002,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+3003,1,ON_INIT,structure_self_destroy,time=86400,,,,,,
+3003,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+3004,1,ON_INIT,structure_self_destroy,time=259200,,,,,,
+3004,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+3005,1,ON_INIT,structure_self_destroy,time=604800,,,,,,
+3005,1,ON_INIT,technology_create,techid=30021,techlvl=1,time=0,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+3011,1,ON_INIT,structure_change,time=!14400,type=3012,lvl=1,,,FARMING_LABEL,//changing to mature
+3011,2,ON_INIT,structure_change,time=!14400,type=3012,lvl=2,,,FARMING_LABEL,//changing to mature
+3011,3,ON_INIT,structure_change,time=!14400,type=3012,lvl=3,,,FARMING_LABEL,//changing to mature
+3011,4,ON_INIT,structure_change,time=!14400,type=3012,lvl=4,,,FARMING_LABEL,//changing to mature
+3011,5,ON_INIT,structure_change,time=!14400,type=3012,lvl=5,,,FARMING_LABEL,//changing to mature
+3011,6,ON_INIT,structure_change,time=!14400,type=3012,lvl=6,,,FARMING_LABEL,//changing to mature
+3011,7,ON_INIT,structure_change,time=!14400,type=3012,lvl=7,,,FARMING_LABEL,//changing to mature
+3011,8,ON_INIT,structure_change,time=!14400,type=3012,lvl=8,,,FARMING_LABEL,//changing to mature
+3011,9,ON_INIT,structure_change,time=!14400,type=3012,lvl=9,,,FARMING_LABEL,//changing to mature
+3011,10,ON_INIT,structure_change,time=!14400,type=3012,lvl=10,,,FARMING_LABEL,//changing to mature
+3011,11,ON_INIT,structure_change,time=!14400,type=3012,lvl=11,,,FARMING_LABEL,//changing to mature
+3011,12,ON_INIT,structure_change,time=!14400,type=3012,lvl=12,,,FARMING_LABEL,//changing to mature
+3011,13,ON_INIT,structure_change,time=!14400,type=3012,lvl=13,,,FARMING_LABEL,//changing to mature
+3011,14,ON_INIT,structure_change,time=!14400,type=3012,lvl=14,,,FARMING_LABEL,//changing to mature
+3011,15,ON_INIT,structure_change,time=!14400,type=3012,lvl=15,,,FARMING_LABEL,//changing to mature
+3011,1,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,2,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,3,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,4,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,5,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,6,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,7,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,8,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,9,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,10,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,11,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,12,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,13,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,14,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3011,15,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,1,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,2,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,3,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,4,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,5,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,6,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,7,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,8,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,9,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,10,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,11,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,12,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,13,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,14,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,15,ON_CONVERT,structure_change,time=!21600,3010,1,,,TIME_LEFT_LABEL,//kill field
+3012,1,ON_CONVERT,property_create,name=Crop,RandomINT,48,72,,,//set crop property to how much player will get
+3012,2,ON_CONVERT,property_create,name=Crop,RandomINT,80,120,,,//set crop property to how much player will get
+3012,3,ON_CONVERT,property_create,name=Crop,RandomINT,112,168,,,//set crop property to how much player will get
+3012,4,ON_CONVERT,property_create,name=Crop,RandomINT,144,216,,,//set crop property to how much player will get
+3012,5,ON_CONVERT,property_create,name=Crop,RandomINT,176,264,,,//set crop property to how much player will get
+3012,6,ON_CONVERT,property_create,name=Crop,RandomINT,200,300,,,//set crop property to how much player will get
+3012,7,ON_CONVERT,property_create,name=Crop,RandomINT,224,336,,,//set crop property to how much player will get
+3012,8,ON_CONVERT,property_create,name=Crop,RandomINT,248,372,,,//set crop property to how much player will get
+3012,9,ON_CONVERT,property_create,name=Crop,RandomINT,272,408,,,//set crop property to how much player will get
+3012,10,ON_CONVERT,property_create,name=Crop,RandomINT,288,432,,,//set crop property to how much player will get
+3012,11,ON_CONVERT,property_create,name=Crop,RandomINT,304,456,,,//set crop property to how much player will get
+3012,12,ON_CONVERT,property_create,name=Crop,RandomINT,320,480,,,//set crop property to how much player will get
+3012,13,ON_CONVERT,property_create,name=Crop,RandomINT,328,492,,,//set crop property to how much player will get
+3012,14,ON_CONVERT,property_create,name=Crop,RandomINT,336,504,,,//set crop property to how much player will get
+3012,15,ON_CONVERT,property_create,name=Crop,RandomINT,344,516,,,//set crop property to how much player will get
+3012,1,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,2,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,3,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,4,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,5,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,6,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,7,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,8,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,9,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,10,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,11,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,12,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,13,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,14,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed
+3012,15,ON_DOWNGRADE,structure_change,time=0,3008,1,,,,//trashed

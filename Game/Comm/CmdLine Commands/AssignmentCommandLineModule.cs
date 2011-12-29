@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
@@ -12,8 +11,6 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
-using Ninject;
-using Persistance;
 
 namespace Game.Comm
 {
@@ -72,7 +69,7 @@ namespace Game.Comm
                 if (tribe == null)
                     return "Player does not own a tribe";
 
-                result = ((IEnumerable<Assignment>)tribe).Aggregate(result, (current, assignment) => current + assignment.ToNiceString());
+                result = tribe.Assignments.Aggregate(result, (current, assignment) => current + assignment.ToNiceString());
             }
 
             return result;

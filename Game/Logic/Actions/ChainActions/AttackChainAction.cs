@@ -108,7 +108,7 @@ namespace Game.Logic.Actions
 
             // Can't attack if target is under newbie protection
 #if !DEBUG
-            if (Formula.IsNewbieProtected(targetCity.Owner))
+            if (Formula.Current.IsNewbieProtected(targetCity.Owner))
                 return Error.PlayerNewbieProtection;
 #endif
 

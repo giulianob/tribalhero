@@ -11,7 +11,6 @@
 	import org.aswing.event.*;
 	import org.aswing.ext.*;
 	import org.aswing.geom.*;
-	import src.Components.*;
 	import src.Map.*;
 	import src.Objects.*;
 	import src.Objects.Effects.*;
@@ -62,9 +61,6 @@
 
 		//Resources timer that fires every second
 		public var resourcesTimer: Timer = new Timer(1000);
-
-		//Timer to load unread message count
-		public var messageTimer: MessageTimer;
 
 		//On screen message component
 		public var screenMessage: ScreenMessagePanel;
@@ -283,7 +279,7 @@
 			var battleReportDialog: BattleReportList = new BattleReportList();
 			battleReportDialog.show(null, true, function(dialog: BattleReportList) : void {
 				if (battleReportDialog.getRefreshOnClose()) {
-					messageTimer.check();
+					Global.mapComm.Messaging.refreshUnreadCounts();
 				}
 			});
 		}
@@ -293,7 +289,7 @@
 			var messagingDialog: MessagingDialog = new MessagingDialog();
 			messagingDialog.show(null, true, function(dialog: MessagingDialog) : void {
 				if (messagingDialog.getRefreshOnClose()) {
-					messageTimer.check();
+					Global.mapComm.Messaging.refreshUnreadCounts();
 				}
 			});
 		}
@@ -517,6 +513,9 @@
 			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
 			addChild(miniMap);
 			zoomIntoMinimap(false, false);
+			
+			// Refresh unread messages
+			Global.mapComm.Messaging.refreshUnreadCounts();
 		}
 
 		public function show() : void {
@@ -545,11 +544,7 @@
 			// Start timers
 			minimapRefreshTimer.start();
 			resourcesTimer.start();
-
-			// Create message timer to check for new msgs
-			messageTimer = new MessageTimer();
-			messageTimer.start();
-			
+		
 			// Show built in messages
 			builtInMessages = new BuiltInMessages();
 			builtInMessages.start();
@@ -575,11 +570,6 @@
 			
 			if (minimapRefreshTimer) {
 				minimapRefreshTimer.stop();
-			}
-
-			if (messageTimer) {
-				messageTimer.stop();
-				messageTimer = null;
 			}
 
 			if (resizeManager) {
@@ -793,8 +783,7 @@
 			if (lstCities.getSelectedIndex() == -1) return;
 			
 			selectedCity = lstCities.getSelectedItem().city;
-			displayResources();			
-			onGoToCity(e);
+			displayResources();						
 			
 			stage.focus = map;
 		}
@@ -805,6 +794,18 @@
 			}
 
 			Global.map.camera.ScrollToCenter(e.localX, e.localY);
+		}
+		
+		public function setUnreadMessageCount(unreadMessages: int): void
+		{
+			txtUnreadMessages.visible = unreadMessages > 0;
+			if (unreadMessages > 0) txtUnreadMessages.txtUnreadCount.text = unreadMessages > 9 ? "!" : unreadMessages.toString();
+		}
+		
+		public function setUnreadBattleReportCount(unreadReports: int): void 
+		{
+			txtUnreadReports.visible = unreadReports > 0;				
+			if (unreadReports > 0) txtUnreadReports.txtUnreadCount.text = unreadReports > 9 ? "!" : unreadReports.toString();		
 		}
 	}
 

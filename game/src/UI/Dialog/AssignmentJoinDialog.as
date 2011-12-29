@@ -42,7 +42,8 @@
 			else {				
 				var moveTime: int = Formula.moveTimeTotal(city, stub.getSpeed(city), distance, true);
 				if (Global.map.getServerTime() + moveTime > assignment.endTime) {
-					lblTroopSpeed.setText("Your units will arrive late. Choose faster units to arrive on time.");
+					var diff: int = Global.map.getServerTime() + moveTime - assignment.endTime;
+					lblTroopSpeed.setText("Your units will be "+ Util.niceTime(diff)+" late. Choose faster units to arrive on time.");
 				}
 				else {
 					lblTroopSpeed.setText("Hint: Drag units to assign to the different troops");

@@ -170,7 +170,7 @@ namespace Game.Comm.ProcessorCommands
 
                 // Assignment List
                 reply.AddInt16(tribe.AssignmentCount);
-                foreach (var assignment in (IEnumerable<Assignment>)tribe)
+                foreach (var assignment in tribe.Assignments)
                 {
                     PacketHelper.AddToPacket(assignment, reply);
                 }
@@ -270,7 +270,7 @@ namespace Game.Comm.ProcessorCommands
             }
 
             ITribe tribe = session.Player.Tribesman.Tribe;
-            using (Concurrency.Current.Lock(custom => ((IEnumerable<ITribesman>)tribe).ToArray(), new object[] { }, tribe))
+            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))
             {
                 if (!session.Player.Tribesman.Tribe.IsOwner(session.Player))
                 {

@@ -96,7 +96,14 @@ namespace Game.Data.Tribe
         readonly Dictionary<int, Assignment> assignments = new Dictionary<int, Assignment>();
 
         public Resource Resource { get; private set; }
-        public short AssignmentCount { get { return (short)assignments.Count; } }
+
+        public short AssignmentCount
+        {
+            get
+            {
+                return (short)assignments.Count;
+            }
+        }
 
         public IEnumerable<Assignment> Assignments
         {
@@ -209,7 +216,7 @@ namespace Game.Data.Tribe
 
         public IEnumerable<IncomingListItem> GetIncomingList()
         {
-            return from tribesmen in ((IEnumerable<ITribesman>)this)
+            return from tribesmen in Tribesmen
                    from city in tribesmen.Player.GetCityList()
                    from notification in city.Worker.Notifications
                    where notification.Action is AttackChainAction && notification.Action.WorkerObject.City != city && notification.Subscriptions.Count > 0

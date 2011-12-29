@@ -9,7 +9,6 @@ namespace Game.Logic
 {
     public interface IHasEffect
     {
-        IEnumerable<Effect> GetAllEffects(EffectInheritance inherit);
-        //   IEnumerable<Effect> GetEffects(EffectCode effect_code, EffectInheritance inherit);
+        IEnumerable<Effect> GetAllEffects(EffectInheritance inherit = EffectInheritance.All);        
     }
 }

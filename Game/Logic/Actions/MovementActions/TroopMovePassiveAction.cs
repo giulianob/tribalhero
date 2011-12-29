@@ -105,13 +105,13 @@ namespace Game.Logic.Actions
             return true;
         }
 
-        private bool CalculateNextPosition(TroopObject obj)
+        private bool CalculateNextPosition(ITroopObject obj)
         {
             if (distanceRemaining <= 0)
                 return false;
 
             var recordForeach = new RecordForeach {ShortestDistance = int.MaxValue, IsShortestDistanceDiagonal = false};
-            TileLocator.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
+            TileLocator.Current.ForeachObject(obj.X, obj.Y, 1, false, Work, recordForeach);
             nextX = recordForeach.X;
             nextY = recordForeach.Y;            
             return true;
@@ -119,16 +119,16 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            TroopObject troopObj;
+            ICity city;
+            ITroopObject troopObj;
 
-            if (!Global.World.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
+            if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.ObjectNotFound;
 
             distanceRemaining = troopObj.TileDistance(x, y);
 
 
-            var moveTimeTotal = Formula.MoveTimeTotal(troopObj.Stub.Speed, distanceRemaining, isAttacking, new List<Effect>(city.Technologies.GetAllEffects()));
+            var moveTimeTotal = Formula.Current.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 
             moveTime = Config.battle_instant_move ? 0 : moveTime = moveTimeTotal/distanceRemaining;
             
@@ -163,7 +163,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 StateChange(ActionState.Failed);
@@ -172,8 +172,8 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            TroopObject troopObj;
+            ICity city;
+            ITroopObject troopObj;
 
             using (Concurrency.Current.Lock(cityId, troopObjectId, out city, out troopObj))
             {

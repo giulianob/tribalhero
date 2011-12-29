@@ -42,11 +42,11 @@ namespace Game.Comm.CmdLine_Commands
             if (help || x == 0 || y == 0)
                 return "removestructure --x=### --y=###";
 
-            Region region = Global.World.GetRegion(x, y);
+            Region region = World.Current.GetRegion(x, y);
             if (region == null)
                 return "Invalid coordinates";
 
-            var structure = region.GetObjects(x, y).OfType<Structure>().FirstOrDefault();
+            var structure = region.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();
             
             if (structure == null)
             {                
@@ -92,10 +92,10 @@ namespace Game.Comm.CmdLine_Commands
                 return "renamecity --cityr=city --newname=name";
 
             uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId))
+            if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (city == null)
@@ -107,10 +107,10 @@ namespace Game.Comm.CmdLine_Commands
                     return "City name is invalid";
                 }
 
-                lock (Global.World.Lock)
+                lock (World.Current.Lock)
                 {
                     // Verify city name is unique
-                    if (Global.World.CityNameTaken(newCityName))
+                    if (World.Current.CityNameTaken(newCityName))
                     {
                         return "City name is already taken";
                     }

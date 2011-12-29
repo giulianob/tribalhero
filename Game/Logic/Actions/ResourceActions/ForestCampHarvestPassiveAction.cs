@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -44,7 +45,7 @@ namespace Game.Logic.Actions
         {
             Forest forest;
 
-            if (!Global.World.Forests.TryGetValue(forestId, out forest))
+            if (!World.Current.Forests.TryGetValue(forestId, out forest))
                 return Error.ObjectNotFound;
 
             // add to queue for completion
@@ -59,11 +60,11 @@ namespace Game.Logic.Actions
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(WorkerObject.City);
 
             Forest forest;
-            if (!Global.World.Forests.TryGetValue(forestId, out forest))
+            if (!World.Current.Forests.TryGetValue(forestId, out forest))
                 throw new Exception("Forest is missing");
 
             if (IsScheduled)
-                Global.Scheduler.Remove(this);
+                Scheduler.Current.Remove(this);
 
             endTime = forest.DepleteTime.AddSeconds(30);
             StateChange(ActionState.Rescheduled);
@@ -71,11 +72,11 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 if (!IsValid())
                     return;
@@ -92,19 +93,19 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 if (!IsValid())
                     return;
 
-                var structure = (Structure)WorkerObject;
+                var structure = (IStructure)WorkerObject;
 
                 Forest forest;
-                if (Global.World.Forests.TryGetValue(forestId, out forest))
+                if (World.Current.Forests.TryGetValue(forestId, out forest))
                 {
                     // Recalculate the forest
                     forest.BeginUpdate();
@@ -120,7 +121,7 @@ namespace Game.Logic.Actions
 
                 // Remove ourselves
                 structure.BeginUpdate();
-                Global.World.Remove(structure);
+                World.Current.Remove(structure);
                 city.ScheduleRemove(structure, false);
                 structure.EndUpdate();
 
@@ -130,19 +131,19 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
                 throw new Exception("City is missing");
 
-            using (Ioc.Kernel.Get<CallbackLock>().Lock(Global.World.Forests.CallbackLockHandler, new object[] {forestId}, city, Global.World.Forests))
+            using (Concurrency.Current.Lock(World.Current.Forests.CallbackLockHandler, new object[] {forestId}, city, World.Current.Forests))
             {
                 if (!IsValid())
                     return;
 
-                var structure = (Structure)WorkerObject;
+                var structure = (IStructure)WorkerObject;
 
                 Forest forest;
-                if (Global.World.Forests.TryGetValue(forestId, out forest))
+                if (World.Current.Forests.TryGetValue(forestId, out forest))
                 {
                     // Recalculate the forest
                     forest.BeginUpdate();

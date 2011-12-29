@@ -58,7 +58,7 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -70,8 +70,8 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
 
             // Block structure
             using (Concurrency.Current.Lock(cityId, structureId, out city, out structure))
@@ -107,7 +107,7 @@ namespace Game.Logic.Actions
                 
                 Ioc.Kernel.Get<InitFactory>().InitGameObject(InitCondition.OnDowngrade, structure, structure.Type, structure.Lvl);
 
-                Procedure.OnStructureUpgradeDowngrade(structure);
+                Procedure.Current.OnStructureUpgradeDowngrade(structure);
 
                 structure.EndUpdate();
                 city.EndUpdate();

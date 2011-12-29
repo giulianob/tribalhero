@@ -5,18 +5,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Game.Logic;
-using Game.Setup;
-using Game.Util;
+using Game.Database;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 #endregion
 
 namespace Game.Data
 {
-    public class TechnologyManager : IHasEffect, IEnumerable<Technology>, IPersistableList
+    public class TechnologyManager : ITechnologyManager
     {
         public const string DB_TABLE = "technologies";
         private readonly List<Technology> technologies = new List<Technology>();
@@ -50,7 +47,7 @@ namespace Game.Data
             }
         }
 
-        public TechnologyManager Parent { get; set; }
+        public ITechnologyManager Parent { get; set; }
 
         public uint Id
         {
@@ -66,7 +63,7 @@ namespace Game.Data
 
         #region Add/Remove
 
-        private void AddChildCopy(Technology tech)
+        public void AddChildCopy(Technology tech)
         {
             //only add tech if it applies to this tech manager
             if (!tech.Effects.Exists(effect => effect.Location == OwnerLocation))
@@ -158,7 +155,7 @@ namespace Game.Data
             return true;
         }
 
-        private void RemoveChildCopy(Technology tech, bool notify)
+        public void RemoveChildCopy(Technology tech, bool notify)
         {
             if (!technologies.Remove(tech))
                 return;
@@ -171,7 +168,7 @@ namespace Game.Data
 
         #region Utilities
 
-        public List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit)
+        public List<Effect> GetEffects(EffectCode effectCode, EffectInheritance inherit = EffectInheritance.All)
         {
             var list = new List<Effect>();
             foreach (var tech in technologies)
@@ -228,13 +225,13 @@ namespace Game.Data
             switch(OwnerLocation)
             {
                 case EffectLocation.City:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((City)Owner);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((ICity)Owner);
                     break;
                 case EffectLocation.Object:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((Structure)Owner).City);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked(((IStructure)Owner).City);
                     break;
                 case EffectLocation.Player:
-                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((Player)Owner);
+                    DefaultMultiObjectLock.ThrowExceptionIfNotLocked((IPlayer)Owner);
                     break;
             }
         }
@@ -252,7 +249,7 @@ namespace Game.Data
             if (!updating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
-            Ioc.Kernel.Get<IDbManager>().Save(this);
+            DbPersistance.Current.Save(this);
             updating = false;
         }
 
@@ -262,7 +259,7 @@ namespace Game.Data
 
         #region Delegates
 
-        public delegate void TechnologyClearedCallback(TechnologyManager manager);
+        public delegate void TechnologyClearedCallback(ITechnologyManager manager);
 
         public delegate void TechnologyUpdatedCallback(Technology tech);
 
@@ -293,15 +290,21 @@ namespace Game.Data
 
         public IEnumerable<Effect> GetAllEffects(EffectInheritance inherit = EffectInheritance.All)
         {
-            var list = new List<Effect>();
-            foreach (var tech in technologies)
-                list.AddRange(tech.GetAllEffects(inherit, OwnerLocation));
+            foreach (var effect in technologies.SelectMany(tech => tech.GetAllEffects(inherit, OwnerLocation)))
+            {
+                yield return effect;
+            }
+
             if ((inherit & EffectInheritance.Upward) == EffectInheritance.Upward)
             {
                 if (Parent != null)
-                    list.AddRange(Parent.GetAllEffects(EffectInheritance.Upward | EffectInheritance.Self));
+                {
+                    foreach (var effect in Parent.GetAllEffects(EffectInheritance.Upward | EffectInheritance.Self))
+                    {
+                        yield return effect;
+                    }
+                }
             }
-            return list;
         }
 
         #endregion
@@ -322,7 +325,7 @@ namespace Game.Data
             {
                 return new[]
                        {
-                               new DbColumn("city_id", Owner is Structure ? (Owner as Structure).City.Id : (Owner is City ? (Owner as City).Id : 0), DbType.UInt32),
+                               new DbColumn("city_id", Owner is IStructure ? (Owner as IStructure).City.Id : (Owner is ICity ? (Owner as ICity).Id : 0), DbType.UInt32),
                                new DbColumn("owner_id", OwnerId, DbType.UInt32), new DbColumn("owner_location", (byte)OwnerLocation, DbType.Byte)
                        };
             }
@@ -354,15 +357,11 @@ namespace Game.Data
 
         public bool DbPersisted { get; set; }
 
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
-            foreach (var tech in technologies)
-            {
-                if (tech.OwnerLocation != OwnerLocation || tech.OwnerId != OwnerId)
-                    continue;
-
-                yield return new[] {new DbColumn("type", tech.Type, DbType.UInt16), new DbColumn("level", tech.Level, DbType.Byte)};
-            }
+            return from tech in technologies
+                   where tech.OwnerLocation == OwnerLocation && tech.OwnerId == OwnerId
+                   select new[] {new DbColumn("type", tech.Type, DbType.UInt16), new DbColumn("level", tech.Level, DbType.Byte)};
         }
 
         #endregion

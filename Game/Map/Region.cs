@@ -49,7 +49,7 @@ namespace Game.Map
 
         #region Methods
 
-        public bool Add(SimpleGameObject obj)
+        public bool Add(ISimpleGameObject obj)
         {
             objLock.EnterWriteLock();
             objlist.AddGameObject(obj);
@@ -59,7 +59,7 @@ namespace Game.Map
             return true;
         }
 
-        public void Remove(SimpleGameObject obj)
+        public void Remove(ISimpleGameObject obj)
         {
             objLock.EnterWriteLock();
             objlist.Remove(obj);
@@ -67,7 +67,7 @@ namespace Game.Map
             objLock.ExitWriteLock();
         }
 
-        public void Remove(SimpleGameObject obj, uint origX, uint origY)
+        public void Remove(ISimpleGameObject obj, uint origX, uint origY)
         {
             objLock.EnterWriteLock();
             objlist.Remove(obj, origX, origY);
@@ -75,7 +75,7 @@ namespace Game.Map
             objLock.ExitWriteLock();
         }
 
-        public void Update(SimpleGameObject obj, uint origX, uint origY)
+        public void Update(ISimpleGameObject obj, uint origX, uint origY)
         {
             objLock.EnterWriteLock();
             if (obj.X != origX || obj.Y != origY)
@@ -89,7 +89,7 @@ namespace Game.Map
             objLock.ExitWriteLock();
         }
 
-        public List<SimpleGameObject> GetObjects(uint x, uint y)
+        public List<ISimpleGameObject> GetObjects(uint x, uint y)
         {
             objLock.EnterReadLock();
             var gameObjects = objlist.Get(x, y);
@@ -97,7 +97,7 @@ namespace Game.Map
             return gameObjects;
         }
 
-        public IEnumerable<SimpleGameObject> GetObjects()
+        public IEnumerable<ISimpleGameObject> GetObjects()
         {
             objLock.EnterReadLock();
             foreach (var obj in objlist)
@@ -124,7 +124,7 @@ namespace Game.Map
 
                     // Write objects
                     bw.Write(objlist.Count);
-                    foreach (SimpleGameObject obj in objlist)
+                    foreach (ISimpleGameObject obj in objlist)
                     {
                         bw.Write(obj.Type);
                         bw.Write((ushort)(obj.RelX));
@@ -133,8 +133,8 @@ namespace Game.Map
                         bw.Write(obj.GroupId);
                         bw.Write(obj.ObjectId);
 
-                        if (obj is GameObject)
-                            bw.Write(((GameObject)obj).City.Owner.PlayerId);
+                        if (obj is IGameObject)
+                            bw.Write(((IGameObject)obj).City.Owner.PlayerId);
 
                         if (obj is IHasLevel)
                             bw.Write(((IHasLevel)obj).Lvl);
@@ -157,9 +157,9 @@ namespace Game.Map
                         }
 
                         //if this is the main building then include radius
-                        if (obj is Structure)
+                        if (obj is IStructure)
                         {
-                            var structure = obj as Structure;
+                            var structure = obj as IStructure;
 
                             if (structure.IsMainBuilding)
                                 bw.Write(structure.City.Radius);
@@ -201,7 +201,7 @@ namespace Game.Map
 
         #region Static Util Methods
 
-        public static ushort GetRegionIndex(SimpleGameObject obj)
+        public static ushort GetRegionIndex(ISimpleGameObject obj)
         {
             return GetRegionIndex(obj.X, obj.Y);
         }
@@ -211,7 +211,7 @@ namespace Game.Map
             return (ushort)(x/Config.region_width + (y/Config.region_height)*Config.column);
         }
 
-        public static int GetTileIndex(SimpleGameObject obj)
+        public static int GetTileIndex(ISimpleGameObject obj)
         {
             return GetTileIndex(obj.X, obj.Y);
         }

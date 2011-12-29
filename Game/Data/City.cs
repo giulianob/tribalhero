@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Game.Battle;
 using Game.Comm;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
@@ -25,171 +26,7 @@ using Persistance;
 
 namespace Game.Data
 {
-    public interface ICity
-    {
-        /// <summary>
-        ///   Enumerates only through structures in this city
-        /// </summary>
-        Dictionary<uint, Structure>.Enumerator Structures { get; }
-
-        /// <summary>
-        ///   Radius of city. This affects city wall and where user can build.
-        /// </summary>
-        byte Radius { get; set; }
-
-        byte Lvl { get; }
-
-        /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint X { get; }
-
-        /// <summary>
-        ///   Returns the city's center point which is the town centers position
-        /// </summary>
-        uint Y { get; }
-
-        /// <summary>
-        ///   City's battle manager. Maybe null if city is not in battle.
-        /// </summary>
-        IBattleManager Battle { get; set; }
-
-        /// <summary>
-        ///   Enumerates through all troop objects in this city
-        /// </summary>
-        IEnumerable<TroopObject> TroopObjects { get; }
-
-        /// <summary>
-        ///   Troop manager which manages all troop stubs in city
-        /// </summary>
-        TroopManager Troops { get; }
-
-        /// <summary>
-        ///   Technology manager for city
-        /// </summary>
-        TechnologyManager Technologies { get; }
-
-        /// <summary>
-        ///   Returns the local troop
-        /// </summary>
-        TroopStub DefaultTroop { get; set; }
-
-        /// <summary>
-        ///   Returns unit template. Unit template holds levels for all units in the city.
-        /// </summary>
-        UnitTemplate Template { get; }
-
-        /// <summary>
-        ///   Resource available in the city
-        /// </summary>
-        LazyResource Resource { get; }
-
-        /// <summary>
-        ///   Amount of loot this city has stolen from other players
-        /// </summary>
-        uint LootStolen { get; set; }
-
-        /// <summary>
-        ///   Unique city id
-        /// </summary>
-        uint Id { get; set; }
-
-        /// <summary>
-        ///   City name
-        /// </summary>
-        string Name { get; set; }
-
-        /// <summary>
-        ///   Player that owns this city
-        /// </summary>
-        Player Owner { get; }
-
-        /// <summary>
-        ///   Whether to send new units to hiding or not
-        /// </summary>
-        bool HideNewUnits { get; set; }
-
-        /// <summary>
-        ///   Attack points earned by this city
-        /// </summary>
-        int AttackPoint { get; set; }
-
-        /// <summary>
-        ///   Defense points earned by this city
-        /// </summary>
-        int DefensePoint { get; set; }
-
-        ushort Value { get; set; }
-        bool IsUpdating { get; }
-        City.DeletedState Deleted { get; set; }
-        ActionWorker Worker { get; }
-        uint WorkerId { get; }
-        int Hash { get; }
-        object Lock { get; }
-        string DbTable { get; }
-        DbColumn[] DbColumns { get; }
-        DbColumn[] DbPrimaryKey { get; }
-        DbDependency[] DbDependencies { get; }
-        bool DbPersisted { get; set; }
-        Location CityRegionLocation { get; }
-        CityRegion.ObjectType CityRegionType { get; }
-        ushort CityRegionRelX { get; }
-        ushort CityRegionRelY { get; }
-        uint CityRegionGroupId { get; }
-        uint CityRegionObjectId { get; }
-
-        /// <summary>
-        ///   Enumerates through all structures and troops in this city
-        /// </summary>
-        /// <param name = "objectId"></param>
-        /// <returns></returns>
-        GameObject this[uint objectId] { get; }
-
-        TroopObject GetTroop(uint objectId);
-        bool TryGetObject(uint objectId, out GameObject obj);
-        bool TryGetStructure(uint objectId, out Structure structure);
-        bool TryGetTroop(uint objectId, out TroopObject troop);
-        bool Add(uint objId, TroopObject troop, bool save);
-        bool Add(TroopObject troop);
-        bool Add(uint objId, Structure structure, bool save);
-        bool Add(uint objId, Structure structure);
-        bool Add(Structure structure);
-        bool ScheduleRemove(TroopObject obj, bool wasKilled);
-        bool ScheduleRemove(Structure obj, bool wasKilled);
-        bool ScheduleRemove(Structure obj, bool wasKilled, bool cancelReferences);
-
-        /// <summary>
-        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
-        /// </summary>
-        /// <param name = "obj"></param>
-        void DoRemove(Structure obj);
-
-        /// <summary>
-        ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
-        /// </summary>
-        /// <param name = "obj"></param>
-        void DoRemove(TroopObject obj);
-
-        List<GameObject> GetInRange(uint x, uint y, uint inRadius);
-        void BeginUpdate();
-        void EndUpdate();
-        void Subscribe(IChannel s);
-        void Unsubscribe(IChannel s);
-        void ResourceUpdateEvent();
-        void RadiusUpdateEvent();
-        void DefenseAttackPointUpdate();
-        void HideNewUnitsUpdate();
-        void NewCityUpdate();
-        void ObjAddEvent(GameObject obj);
-        void ObjRemoveEvent(GameObject obj);
-        void ObjUpdateEvent(GameObject sender, uint origX, uint origY);
-        void UnitTemplateUnitUpdated(UnitTemplate sender);
-        void BattleStarted();
-        void BattleEnded();
-        byte[] GetCityRegionObjectBytes();
-    }
-
-    public class City : IEnumerable<Structure>, ICanDo, ILockable, IPersistableObject, ICityRegionObject, ICity
+    public class City : ICity
     {
         public enum DeletedState
         {
@@ -201,8 +38,8 @@ namespace Game.Data
         public const string DB_TABLE = "cities";
         private readonly object objLock = new object();
 
-        private readonly Dictionary<uint, Structure> structures = new Dictionary<uint, Structure>();
-        private readonly Dictionary<uint, TroopObject> troopobjects = new Dictionary<uint, TroopObject>();
+        private readonly Dictionary<uint, IStructure> structures = new Dictionary<uint, IStructure>();
+        private readonly Dictionary<uint, ITroopObject> troopobjects = new Dictionary<uint, ITroopObject>();
         private int attackPoint;
         private IBattleManager battle;
         private int defensePoint;
@@ -218,7 +55,7 @@ namespace Game.Data
         /// <summary>
         ///   Enumerates only through structures in this city
         /// </summary>
-        public Dictionary<uint, Structure>.Enumerator Structures
+        public Dictionary<uint, IStructure>.Enumerator Structures
         {
             get
             {
@@ -248,11 +85,11 @@ namespace Game.Data
         /// <summary>
         ///   Returns the town center
         /// </summary>
-        private Structure MainBuilding
+        private IStructure MainBuilding
         {
             get
             {
-                Structure mainBuilding;
+                IStructure mainBuilding;
                 return !structures.TryGetValue(1, out mainBuilding) ? null : mainBuilding;
             }
         }
@@ -310,7 +147,7 @@ namespace Game.Data
         /// <summary>
         ///   Enumerates through all troop objects in this city
         /// </summary>
-        public IEnumerable<TroopObject> TroopObjects
+        public IEnumerable<ITroopObject> TroopObjects
         {
             get
             {
@@ -326,12 +163,12 @@ namespace Game.Data
         /// <summary>
         ///   Technology manager for city
         /// </summary>
-        public TechnologyManager Technologies { get; private set; }
+        public ITechnologyManager Technologies { get; private set; }
 
         /// <summary>
         ///   Returns the local troop
         /// </summary>
-        public TroopStub DefaultTroop
+        public ITroopStub DefaultTroop
         {
             get
             {
@@ -393,22 +230,22 @@ namespace Game.Data
         /// <summary>
         ///   Player that owns this city
         /// </summary>
-        public Player Owner { get; private set; }
+        public IPlayer Owner { get; private set; }
 
         /// <summary>
         ///   Enumerates through all structures and troops in this city
         /// </summary>
         /// <param name = "objectId"></param>
         /// <returns></returns>
-        public GameObject this[uint objectId]
+        public IGameObject this[uint objectId]
         {
             get
             {
-                Structure structure;
+                IStructure structure;
                 if (structures.TryGetValue(objectId, out structure))
                     return structure;
 
-                TroopObject troop;
+                ITroopObject troop;
                 if (troopobjects.TryGetValue(objectId, out troop))
                     return troop;
 
@@ -466,7 +303,7 @@ namespace Game.Data
                 DefenseAttackPointUpdate();
             }
         }
-        
+
         public ushort Value
         {
             get
@@ -479,10 +316,10 @@ namespace Game.Data
                 this.value = value;
 
                 if (Global.FireEvents && id > 0)
-                {                    
-                    Global.World.GetCityRegion(X, Y).MarkAsDirty();
+                {
+                    World.Current.GetCityRegion(X, Y).MarkAsDirty();
                     DefenseAttackPointUpdate();
-                }                
+                }
             }
         }
 
@@ -490,17 +327,17 @@ namespace Game.Data
 
         #region Constructors
 
-        public City(Player owner, string name, Resource resource, byte radius, Structure mainBuilding)
-                : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding)
+        public City(IPlayer owner, string name, Resource resource, byte radius, IStructure mainBuilding)
+            : this(owner, name, new LazyResource(resource.Crop, resource.Gold, resource.Iron, resource.Wood, resource.Labor), radius, mainBuilding)
         {
         }
 
-        public City(Player owner, string name, LazyResource resource, byte radius, Structure mainBuilding)
+        public City(IPlayer owner, string name, LazyResource resource, byte radius, IStructure mainBuilding)
         {
             Owner = owner;
             this.name = name;
             this.radius = radius;
-            Resource = resource;            
+            Resource = resource;
 
             Worker = new ActionWorker(this);
 
@@ -517,14 +354,14 @@ namespace Game.Data
 
             Worker.ActionRemoved += WorkerActionRemoved;
             Worker.ActionStarted += WorkerActionAdded;
-            Worker.ActionRescheduled += WorkerActionRescheduled;            
+            Worker.ActionRescheduled += WorkerActionRescheduled;
 
             if (mainBuilding != null)
             {
                 mainBuilding.ObjectId = 1;
                 Add(1, mainBuilding, false);
-                Procedure.RecalculateCityResourceRates(this);
-                Procedure.SetResourceCap(this);
+                Procedure.Current.RecalculateCityResourceRates(this);
+                Procedure.Current.SetResourceCap(this);
             }
 
             resource.ResourcesUpdate += ResourceUpdateEvent;
@@ -534,21 +371,21 @@ namespace Game.Data
 
         #region Object Management
 
-        public TroopObject GetTroop(uint objectId)
+        public ITroopObject GetTroop(uint objectId)
         {
             return troopobjects[objectId];
         }
 
-        public bool TryGetObject(uint objectId, out GameObject obj)
+        public bool TryGetObject(uint objectId, out IGameObject obj)
         {
-            Structure structure;
+            IStructure structure;
             if (structures.TryGetValue(objectId, out structure))
             {
                 obj = structure;
                 return true;
             }
 
-            TroopObject troop;
+            ITroopObject troop;
             if (troopobjects.TryGetValue(objectId, out troop))
             {
                 obj = troop;
@@ -559,17 +396,17 @@ namespace Game.Data
             return false;
         }
 
-        public bool TryGetStructure(uint objectId, out Structure structure)
+        public bool TryGetStructure(uint objectId, out IStructure structure)
         {
             return structures.TryGetValue(objectId, out structure);
         }
 
-        public bool TryGetTroop(uint objectId, out TroopObject troop)
+        public bool TryGetTroop(uint objectId, out ITroopObject troop)
         {
             return troopobjects.TryGetValue(objectId, out troop);
         }
 
-        public bool Add(uint objId, TroopObject troop, bool save)
+        public bool Add(uint objId, ITroopObject troop, bool save)
         {
             lock (objLock)
             {
@@ -591,7 +428,7 @@ namespace Game.Data
                     nextObjectId = objId;
 
                 if (save)
-                    Ioc.Kernel.Get<IDbManager>().Save(troop);
+                    DbPersistance.Current.Save(troop);
 
                 ObjAddEvent(troop);
             }
@@ -599,7 +436,7 @@ namespace Game.Data
             return true;
         }
 
-        public bool Add(TroopObject troop)
+        public bool Add(ITroopObject troop)
         {
             lock (objLock)
             {
@@ -609,7 +446,7 @@ namespace Game.Data
             }
         }
 
-        public bool Add(uint objId, Structure structure, bool save)
+        public bool Add(uint objId, IStructure structure, bool save)
         {
             lock (objLock)
             {
@@ -624,7 +461,7 @@ namespace Game.Data
                     nextObjectId = objId;
 
                 if (save)
-                    Ioc.Kernel.Get<IDbManager>().Save(structure);
+                    DbPersistance.Current.Save(structure);
 
                 structure.Technologies.TechnologyCleared += TechnologiesTechnologyCleared;
                 structure.Technologies.TechnologyAdded += TechnologiesTechnologyAdded;
@@ -636,12 +473,12 @@ namespace Game.Data
             return true;
         }
 
-        public bool Add(uint objId, Structure structure)
+        public bool Add(uint objId, IStructure structure)
         {
             return Add(objId, structure, true);
         }
 
-        public bool Add(Structure structure)
+        public bool Add(IStructure structure)
         {
             lock (objLock)
             {
@@ -651,7 +488,7 @@ namespace Game.Data
             }
         }
 
-        public bool ScheduleRemove(TroopObject obj, bool wasKilled)
+        public bool ScheduleRemove(ITroopObject obj, bool wasKilled)
         {
             lock (objLock)
             {
@@ -665,12 +502,12 @@ namespace Game.Data
             }
         }
 
-        public bool ScheduleRemove(Structure obj, bool wasKilled)
+        public bool ScheduleRemove(IStructure obj, bool wasKilled)
         {
             return ScheduleRemove(obj, wasKilled, false);
         }
 
-        public bool ScheduleRemove(Structure obj, bool wasKilled, bool cancelReferences)
+        public bool ScheduleRemove(IStructure obj, bool wasKilled, bool cancelReferences)
         {
             lock (objLock)
             {
@@ -698,7 +535,7 @@ namespace Game.Data
         ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
         /// <param name = "obj"></param>
-        public void DoRemove(Structure obj)
+        public void DoRemove(IStructure obj)
         {
             lock (objLock)
             {
@@ -713,7 +550,7 @@ namespace Game.Data
                 obj.Technologies.TechnologyRemoved -= TechnologiesTechnologyRemoved;
                 obj.Technologies.TechnologyUpgraded -= TechnologiesTechnologyUpgraded;
 
-                Ioc.Kernel.Get<IDbManager>().Delete(obj);
+                DbPersistance.Current.Delete(obj);
 
                 ObjRemoveEvent(obj);
             }
@@ -723,13 +560,13 @@ namespace Game.Data
         ///   Removes the object from the city. This function should NOT be called directly. Use ScheduleRemove instead!
         /// </summary>
         /// <param name = "obj"></param>
-        public void DoRemove(TroopObject obj)
+        public void DoRemove(ITroopObject obj)
         {
             lock (objLock)
             {
                 troopobjects.Remove(obj.ObjectId);
 
-                Ioc.Kernel.Get<IDbManager>().Delete(obj);
+                DbPersistance.Current.Delete(obj);
 
                 obj.City = null;
 
@@ -744,9 +581,9 @@ namespace Game.Data
             }
         }
 
-        public List<GameObject> GetInRange(uint x, uint y, uint inRadius)
+        public List<IGameObject> GetInRange(uint x, uint y, uint inRadius)
         {
-            return this.Where(structure => structure.TileDistance(x, y) <= inRadius).Cast<GameObject>().ToList();
+            return this.Where(structure => structure.TileDistance(x, y) <= inRadius).Cast<IGameObject>().ToList();
         }
 
         #endregion
@@ -782,7 +619,7 @@ namespace Game.Data
             if (!IsUpdating)
                 throw new Exception("Called EndUpdate without first calling BeginUpdate");
 
-            Ioc.Kernel.Get<IDbManager>().Save(this);
+            DbPersistance.Current.Save(this);
             IsUpdating = false;
         }
 
@@ -796,7 +633,7 @@ namespace Game.Data
             {
                 Global.Channel.Subscribe(s, "/CITY/" + id);
             }
-            catch(DuplicateSubscriptionException)
+            catch (DuplicateSubscriptionException)
             {
             }
         }
@@ -826,7 +663,7 @@ namespace Game.Data
 
             var packet = new Packet(Command.CityRadiusUpdate);
 
-            Global.World.ObjectUpdateEvent(MainBuilding, X, Y);
+            World.Current.ObjectUpdateEvent(MainBuilding, X, Y);
 
             packet.AddUInt32(Id);
             packet.AddByte(radius);
@@ -874,7 +711,7 @@ namespace Game.Data
             Global.Channel.Post("/PLAYER/" + Owner.PlayerId, packet);
         }
 
-        public void ObjAddEvent(GameObject obj)
+        public void ObjAddEvent(IGameObject obj)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -882,9 +719,9 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            
-            Value = Formula.CalculateCityValue(this);
-            
+
+            Value = Formula.Current.CalculateCityValue(this);
+
             if (!doUpdate)
                 EndUpdate();
 
@@ -894,16 +731,16 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        public void ObjRemoveEvent(GameObject obj)
+        public void ObjRemoveEvent(IGameObject obj)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
-            
+
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            
-            Value = Formula.CalculateCityValue(this);
+
+            Value = Formula.Current.CalculateCityValue(this);
 
             if (!doUpdate)
                 EndUpdate();
@@ -914,7 +751,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        public void ObjUpdateEvent(GameObject sender, uint origX, uint origY)
+        public void ObjUpdateEvent(IGameObject sender, uint origX, uint origY)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -922,8 +759,8 @@ namespace Game.Data
             bool doUpdate = IsUpdating;
             if (!doUpdate)
                 BeginUpdate();
-            
-            Value = Formula.CalculateCityValue(this);
+
+            Value = Formula.Current.CalculateCityValue(this);
 
             if (!doUpdate)
                 EndUpdate();
@@ -1005,7 +842,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TechnologiesTechnologyCleared(TechnologyManager manager)
+        private void TechnologiesTechnologyCleared(ITechnologyManager manager)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -1031,7 +868,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TroopManagerTroopUpdated(TroopStub stub)
+        private void TroopManagerTroopUpdated(ITroopStub stub)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -1049,7 +886,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TroopManagerTroopAdded(TroopStub stub)
+        private void TroopManagerTroopAdded(ITroopStub stub)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -1067,7 +904,7 @@ namespace Game.Data
             Global.Channel.Post("/CITY/" + id, packet);
         }
 
-        private void TroopManagerTroopRemoved(TroopStub stub)
+        private void TroopManagerTroopRemoved(ITroopStub stub)
         {
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
@@ -1091,7 +928,7 @@ namespace Game.Data
             if (!Global.FireEvents || id == 0 || Deleted != DeletedState.NotDeleted)
                 return;
 
-            Ioc.Kernel.Get<IDbManager>().Save(sender);
+            DbPersistance.Current.Save(sender);
 
             var packet = new Packet(Command.UnitTemplateUpgraded);
             packet.AddUInt32(Id);
@@ -1115,11 +952,11 @@ namespace Game.Data
 
         #endregion
 
-        public ActionWorker Worker { get; private set; }
+        public IActionWorker Worker { get; private set; }
 
         #region ICanDo Members
 
-        City ICanDo.City
+        ICity ICanDo.City
         {
             get
             {
@@ -1144,9 +981,9 @@ namespace Game.Data
             return ((IEnumerable)structures.Values).GetEnumerator();
         }
 
-        IEnumerator<Structure> IEnumerable<Structure>.GetEnumerator()
+        IEnumerator<IStructure> IEnumerable<IStructure>.GetEnumerator()
         {
-            return ((IEnumerable<Structure>)structures.Values).GetEnumerator();
+            return ((IEnumerable<IStructure>)structures.Values).GetEnumerator();
         }
 
         #endregion
@@ -1212,7 +1049,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32)};
+                return new[] { new DbColumn("id", Id, DbType.UInt32) };
             }
         }
 
@@ -1220,7 +1057,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbDependency("Technologies", false, true), new DbDependency("Template", false, true),};
+                return new[] { new DbDependency("Technologies", false, true), new DbDependency("Template", false, true), };
             }
         }
 
@@ -1250,7 +1087,7 @@ namespace Game.Data
             {
                 var bw = new BinaryWriter(ms);
                 bw.Write(Lvl);
-                bw.Write(Owner.PlayerId);                
+                bw.Write(Owner.PlayerId);
                 bw.Write(value);
                 ms.Position = 0;
                 return ms.ToArray();
@@ -1286,7 +1123,7 @@ namespace Game.Data
             get
             {
                 return Id;
-            }     
+            }
         }
 
         public uint CityRegionObjectId

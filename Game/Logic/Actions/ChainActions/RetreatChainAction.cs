@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -55,9 +56,9 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            TroopStub stub;
-            if (!Global.World.TryGetObjects(cityId, stubId, out city, out stub))
+            ICity city;
+            ITroopStub stub;
+            if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 throw new Exception();
 
             var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, stub.City.X, stub.City.Y, true, false);
@@ -74,10 +75,10 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
+                ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();
@@ -86,7 +87,7 @@ namespace Game.Logic.Actions
                     {
                         stub.City.Worker.Notifications.Remove(this);
                         stub.City.Worker.References.Remove(stub.TroopObject, this);
-                        Procedure.TroopObjectDelete(stub.TroopObject, true);
+                        Procedure.Current.TroopObjectDelete(stub.TroopObject, true);
                         StateChange(ActionState.Completed);
                     }
                     else
@@ -102,17 +103,17 @@ namespace Game.Logic.Actions
         {
             if (state == ActionState.Completed)
             {
-                City city;
+                ICity city;
                 using (Concurrency.Current.Lock(cityId, out city))
                 {
-                    TroopStub stub;
+                    ITroopStub stub;
 
                     if (!city.Troops.TryGetStub(stubId, out stub))
                         throw new Exception();
 
                     stub.City.Worker.References.Remove(stub.TroopObject, this);
                     stub.City.Worker.Notifications.Remove(this);
-                    Procedure.TroopObjectDelete(stub.TroopObject, stub.TotalCount != 0);
+                    Procedure.Current.TroopObjectDelete(stub.TroopObject, stub.TotalCount != 0);
                     StateChange(ActionState.Completed);
                 }
             }

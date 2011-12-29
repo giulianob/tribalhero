@@ -24,10 +24,11 @@ namespace Game.Battle
         private readonly BattleStats stats;
         private readonly ushort type;
         private ushort count;
+        private readonly ITroopStub troopStub;
 
-        public DefenseCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
+        public DefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count)
         {
-            TroopStub = stub;
+            troopStub = stub;
             this.formation = formation;
             this.type = type;
             this.count = count;
@@ -38,13 +39,13 @@ namespace Game.Battle
             LeftOverHp = stats.MaxHp;
         }
 
-        public DefenseCombatUnit(IBattleManager owner, TroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, ushort leftOverHp)
+        public DefenseCombatUnit(IBattleManager owner, ITroopStub stub, FormationType formation, ushort type, byte lvl, ushort count, decimal leftOverHp)
                 : this(owner, stub, formation, type, lvl, count)
         {
             LeftOverHp = leftOverHp;
         }
 
-        public ushort LeftOverHp { set; get; }
+        public decimal LeftOverHp { set; get; }
 
         public override BattleClass ClassType
         {
@@ -98,7 +99,7 @@ namespace Game.Battle
         {
             get
             {
-                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
+                return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep * count;
             }
         }
 
@@ -126,7 +127,7 @@ namespace Game.Battle
             }
         }
 
-        public override City City
+        public override ICity City
         {
             get
             {
@@ -142,11 +143,11 @@ namespace Game.Battle
             }
         }
 
-        public override uint Hp
+        public override decimal Hp
         {
             get
             {
-                return (uint)(Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp));
+                return Math.Max(0, stats.MaxHp*(count - 1) + LeftOverHp);
             }
         }
 
@@ -162,7 +163,7 @@ namespace Game.Battle
         {
             get
             {
-                return new[] {new DbColumn("id", Id, DbType.UInt32), new DbColumn("city_id", battleManager.City.Id, DbType.UInt32)};
+                return new[] { new DbColumn("id", Id, DbType.UInt32), new DbColumn("city_id", battleManager.City.Id, DbType.UInt32) };
             }
         }
 
@@ -170,7 +171,7 @@ namespace Game.Battle
         {
             get
             {
-                return new DbDependency[] {};
+                return new DbDependency[] { };
             }
         }
 
@@ -184,7 +185,7 @@ namespace Game.Battle
                                new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("formation_type", (byte)formation, DbType.Byte),
                                new DbColumn("level", lvl, DbType.Byte), new DbColumn("count", count, DbType.UInt16), new DbColumn("type", type, DbType.UInt16),
                                new DbColumn("is_local", true, DbType.Boolean), new DbColumn("troop_stub_city_id", TroopStub.City.Id, DbType.UInt32),
-                               new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte), new DbColumn("left_over_hp", LeftOverHp, DbType.UInt16),
+                               new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte), new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
                                new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16), new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
                                new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16), new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
                                new DbColumn("damage_dealt", DmgDealt, DbType.Int32), new DbColumn("damage_received", DmgRecv, DbType.Int32),
@@ -196,7 +197,13 @@ namespace Game.Battle
 
         #region ICombatUnit Members
 
-        public TroopStub TroopStub { get; private set; }
+        public override ITroopStub TroopStub
+        {
+            get
+            {
+                return troopStub;
+            }
+        }
 
         public FormationType Formation
         {
@@ -206,7 +213,7 @@ namespace Game.Battle
             }
         }
 
-        public Resource Loot
+        public override Resource Loot
         {
             get
             {
@@ -221,8 +228,10 @@ namespace Game.Battle
             return true;
         }
 
-        public override void Location(out uint x, out uint y) {
-            if (TroopStub.TroopObject == null) {
+        public override void Location(out uint x, out uint y)
+        {
+            if (TroopStub.TroopObject == null)
+            {
                 x = City.X;
                 y = City.Y;
             }
@@ -233,21 +242,27 @@ namespace Game.Battle
             }
         }
 
-        public override void CalculateDamage(ushort dmg, out ushort actualDmg)
+        public override void ReceiveReward(int reward, Resource resource)
         {
-            actualDmg = (ushort)Math.Min(Hp, dmg);
-
-            if (this.stats.MaxHp / 5 <= Hp) // if hp is less than 20% of max, lastStand kicks in.
-                return;
-
-            int percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All).Where(tech => BattleFormulas.Current.UnitStatModCheck(this.BaseStats, TroopBattleGroup.Defense, (string)tech.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
-            if (BattleFormulas.Current.IsAttackMissed((byte)percent))
-            {
-                actualDmg = 1;
-            }
+            throw new Exception("Why is a defense combat unit receiving rewards dammit?");
         }
 
-        public override void TakeDamage(int dmg, out Resource returning, out int attackPoints)
+        public override void CalculateDamage(decimal dmg, out decimal actualDmg)
+        {
+            actualDmg = Math.Min(Hp, dmg);
+
+            if ((Hp + DmgRecv) / 5 <= Hp) // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
+                return;
+
+            var percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All)
+                .Where(tech => BattleFormulas.Current.UnitStatModCheck(BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1]))
+                .DefaultIfEmpty()
+                .Max(x => x == null ? 0 : (int)x.Value[0]);
+
+            actualDmg = actualDmg * (100 - percent) / 100;
+        }
+
+        public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
         {
             attackPoints = 0;
 
@@ -260,7 +275,7 @@ namespace Game.Battle
             }
 
             dead += (ushort)(dmg/stats.MaxHp);
-            LeftOverHp -= (ushort)(dmg%stats.MaxHp);
+            LeftOverHp -= dmg%stats.MaxHp;
 
             if (dead > 0)
             {
@@ -269,7 +284,7 @@ namespace Game.Battle
 
                 count -= dead;
 
-                attackPoints = Formula.GetUnitKilledAttackPoint(type, lvl, dead);
+                attackPoints = Formula.Current.GetUnitKilledAttackPoint(type, lvl, dead);
 
                 // Remove dead units from troop stub
                 TroopStub.BeginUpdate();
@@ -286,7 +301,7 @@ namespace Game.Battle
 
         public override int CompareTo(object other)
         {
-            if (other is TroopStub)
+            if (other is ITroopStub)
                 return other == TroopStub ? 0 : 1;
 
             return -1;

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -65,8 +66,8 @@ namespace Game.Logic.Actions
         
         public override void Callback(object custom)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
             
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
@@ -89,7 +90,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                Global.World.Remove(structure);
+                World.Current.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
@@ -101,13 +102,13 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
 
             endTime = SystemClock.Now.AddSeconds(CalculateTime(ts.TotalSeconds));
             BeginTime = SystemClock.Now;
 
-            if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
                 return Error.ObjectNotFound;
 
             return Error.Ok;
@@ -115,9 +116,9 @@ namespace Game.Logic.Actions
 
         public override Error Validate(string[] parms)
         {
-            City city;
+            ICity city;
 
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
                 return Error.ObjectNotFound;
 
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
@@ -127,8 +128,8 @@ namespace Game.Logic.Actions
 
         public override void UserCancelled()
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())
@@ -140,8 +141,8 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())

@@ -13,7 +13,7 @@ namespace Game.Logic
 {
     public class RequirementFormula
     {
-        public static Error DefensePoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public static Error DefensePoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             switch(parms[0])
             {
@@ -31,7 +31,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error AttackPoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public static Error AttackPoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             switch(parms[0])
             {
@@ -49,7 +49,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error PlayerDefensePoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
+        public static Error PlayerDefensePoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
             switch (parms[0]) {
                 case "lt":
                     if (obj.City.Owner.DefensePoint < int.Parse(parms[1]))
@@ -65,7 +65,7 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error PlayerAttackPoint(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
+        public static Error PlayerAttackPoint(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id) {
             switch (parms[0]) {
                 case "lt":
                     if (obj.City.Owner.AttackPoint < int.Parse(parms[1]))
@@ -82,7 +82,7 @@ namespace Game.Logic
         }
 
 
-        public static Error HaveUnit(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public static Error HaveUnit(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             ushort type = ushort.Parse(parms[0]);
             int sum = obj.City.Troops.MyStubs().Sum(stub => stub.Sum<Formation>(formation => formation.ContainsKey(type) ? formation[type] : 0));
@@ -102,28 +102,28 @@ namespace Game.Logic
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error CanBuild(GameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
+        public static Error CanBuild(IGameObject obj, IEnumerable<Effect> effects, String[] parms, uint id)
         {
             if (effects.Any(effect => (int)effect.Value[0] == int.Parse(parms[0])))
                 return Error.Ok;
             return Error.EffectRequirementNotMet;
         }
 
-        public static Error UniqueTechnology(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public static Error UniqueTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             if (obj.City.Any(s => s != obj && s.Technologies.Any<Technology>(t => t.Level > 0 && t.Type == uint.Parse(parms[0]))))
                 return Error.EffectRequirementNotMet;
             return Error.Ok;
         }
 
-        public static Error HaveTechnology(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public static Error HaveTechnology(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             int count = effects.Count(effect => effect.Id == EffectCode.HaveTechnology && (int)effect.Value[0] == int.Parse(parms[0]) && (int)effect.Value[1] >= int.Parse(parms[1]));
 
             return count >= int.Parse(parms[2]) ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
-        public static Error HaveStructure(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public static Error HaveStructure(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             ushort type = ushort.Parse(parms[0]);
             byte min = byte.Parse(parms[1]);
@@ -132,7 +132,7 @@ namespace Game.Logic
             return obj.City.Any(structure => structure.Type == type && structure.Lvl >= min && structure.Lvl <= max) ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
-        public static Error HaveNoStructure(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public static Error HaveNoStructure(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             ushort type = ushort.Parse(parms[0]);
             byte min = byte.Parse(parms[1]);
@@ -144,7 +144,7 @@ namespace Game.Logic
             return totalStructures < count ? Error.Ok : Error.EffectRequirementNotMet;
         }
 
-        public static Error CountLessThan(GameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
+        public static Error CountLessThan(IGameObject obj, IEnumerable<Effect> effects, string[] parms, uint id)
         {
             int effectCode = int.Parse(parms[0]);
             int maxCount = int.Parse(parms[1]);

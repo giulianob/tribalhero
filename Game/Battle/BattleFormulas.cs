@@ -33,20 +33,20 @@ namespace Game.Battle
             return (int)(60 * effectiveness);
         }
 
-        public virtual int GetUnitsPerStructure(Structure structure)
+        public virtual int GetUnitsPerStructure(IStructure structure)
         {
             var units = new[] { 20, 20, 23, 28, 34, 39, 45, 52, 59, 67, 76, 85, 95, 106, 117, 130 };
             return units[structure.Lvl];
         }
 
-        public virtual ushort GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
+        public virtual decimal GetDamage(CombatObject attacker, CombatObject target, bool useDefAsAtk)
         {
-            ushort atk = attacker.Stats.Atk;
-            int rawDmg = (atk*attacker.Count);
-            double modifier = GetDmgModifier(attacker, target);
-            rawDmg = (int)(modifier * rawDmg);
+            decimal atk = attacker.Stats.Atk;
+            decimal rawDmg = (atk * attacker.Count);
+            decimal modifier = (decimal)GetDmgModifier(attacker, target);
+            rawDmg = modifier*rawDmg;
 
-            return rawDmg > ushort.MaxValue ? ushort.MaxValue : (ushort)rawDmg;
+            return rawDmg > ushort.MaxValue ? ushort.MaxValue : rawDmg;
         }
 
         public virtual double GetDmgModifier(CombatObject attacker, CombatObject target) {
@@ -104,7 +104,7 @@ namespace Game.Battle
             return (int)Math.Ceiling(100 / roundsRequired);
         }
 
-        public virtual Resource GetRewardResource(CombatObject attacker, CombatObject defender, ushort actualDmg)
+        public virtual Resource GetRewardResource(CombatObject attacker, CombatObject defender)
         {
             int totalCarry = attacker.Stats.Carry*attacker.Count;  // calculate total carry, if 10 units with 10 carry, which should be 100
             int count = Math.Max(1, totalCarry* GetLootPerRound(attacker.City) / 100); // if carry is 100 and % is 5, then count = 5;
@@ -121,17 +121,17 @@ namespace Game.Battle
                                 0);
         }
 
-        public virtual short GetStamina(TroopStub stub, City city)
+        public virtual short GetStamina(ITroopStub stub, ICity city)
         {
             return (short)Config.battle_stamina_initial;
         }
 
-        public virtual ushort GetStaminaReinforced(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaReinforced(ICity city, ushort stamina, uint round)
         {
             return stamina;
         }
 
-        public virtual ushort GetStaminaRoundEnded(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaRoundEnded(ICity city, ushort stamina, uint round)
         {
             if (stamina == 0)
                 return 0;
@@ -149,7 +149,7 @@ namespace Game.Battle
             return (short)(stamina - Config.battle_stamina_destroyed_deduction);
         }
 
-        public virtual ushort GetStaminaDefenseCombatObject(City city, ushort stamina, uint round)
+        public virtual ushort GetStaminaDefenseCombatObject(ICity city, ushort stamina, uint round)
         {
             if (stamina == 0)
                 return 0;
@@ -201,7 +201,7 @@ namespace Game.Battle
             return success == conditions.Length / 2;
         }
 
-        public virtual BattleStats LoadStats(BaseBattleStats stats, City city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(BaseBattleStats stats, ICity city, TroopBattleGroup group)
         {
             var calculator = new BattleStatsModCalculator(stats);
             foreach (var effect in city.Technologies.GetAllEffects()) {
@@ -241,17 +241,17 @@ namespace Game.Battle
             return calculator.GetStats();
         }
 
-        public virtual BattleStats LoadStats(Structure structure)
+        public virtual BattleStats LoadStats(IStructure structure)
         {
             return LoadStats(structure.Stats.Base.Battle,structure.City,TroopBattleGroup.Local);
         }
 
-        public virtual BattleStats LoadStats(ushort type, byte lvl, City city, TroopBattleGroup group)
+        public virtual BattleStats LoadStats(ushort type, byte lvl, ICity city, TroopBattleGroup group)
         {
             return LoadStats(Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Battle,city,group);
         }
 
-        public virtual Resource GetBonusResources(TroopObject troop, int originalCount, int remainingCount)
+        public virtual Resource GetBonusResources(ITroopObject troop, int originalCount, int remainingCount)
         {
             if (originalCount == 0)
                 return new Resource();

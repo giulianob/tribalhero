@@ -45,7 +45,7 @@ namespace Game.Setup
         public PropertyOrigin Origin { get; private set; }
         public Visibility Visibility { get; private set; }
 
-        public object GetValue(Structure structure)
+        public object GetValue(IStructure structure)
         {
             if (!structure.Properties.Contains(Name))
                 return GetDefaultValue();

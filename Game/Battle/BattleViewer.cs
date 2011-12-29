@@ -56,7 +56,7 @@ namespace Game.Battle
             }
         }
 
-        private void BattleActionAttacked(CombatObject source, CombatObject target, ushort damage)
+        private void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
         {
             Append("**************************************");
             Append("Attacker: ");

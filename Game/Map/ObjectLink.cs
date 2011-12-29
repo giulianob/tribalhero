@@ -8,14 +8,14 @@ namespace Game.Map
 {
     class ObjectLink
     {
-        private readonly GameObject value;
+        private readonly IGameObject value;
 
-        public ObjectLink(GameObject gameObj)
+        public ObjectLink(IGameObject gameObj)
         {
             value = gameObj;
         }
 
-        public GameObject Value
+        public IGameObject Value
         {
             get
             {

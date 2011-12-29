@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Game.Data
 {
-    interface IHasLevel
+    public interface IHasLevel
     {
         byte Lvl { get; }
     }

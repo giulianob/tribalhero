@@ -4,9 +4,9 @@ namespace Game.Data.Stats
     {
         #region Base Stats
 
-        public virtual ushort MaxHp { get; set; }
+        public virtual decimal MaxHp { get; set; }
 
-        public virtual ushort Atk { get; set; }
+        public virtual decimal Atk { get; set; }
 
         public virtual byte Splash { get; set; }
 

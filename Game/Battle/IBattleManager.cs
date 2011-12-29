@@ -12,27 +12,27 @@ namespace Game.Battle
         bool BattleStarted { get; set; }
         uint Round { get; set; }
         uint Turn { get; set; }
-        City City { get; set; }
+        ICity City { get; set; }
         CombatList Attacker { get; }
         CombatList Defender { get; }
         IBattleReport BattleReport { get; }
         ReportedObjects ReportedObjects { get; }
         ReportedTroops ReportedTroops { get; }
-        City[] LockList { get; }
+        ICity[] LockList { get; }
         void Subscribe(Session session);
         void Unsubscribe(Session session);
         CombatObject GetCombatObject(uint id);
-        bool CanWatchBattle(Player player, out int roundsLeft);
+        bool CanWatchBattle(IPlayer player, out int roundsLeft);
         void DbLoaderAddToLocal(CombatStructure structure, uint id);
         void DbLoaderAddToCombatList(CombatObject obj, uint id, bool isLocal);
-        void AddToLocal(IEnumerable<TroopStub> objects, ReportState state);
-        void AddToLocal(IEnumerable<Structure> objects);
-        void AddToAttack(TroopStub stub);
-        void AddToAttack(IEnumerable<TroopStub> objects);
-        void AddToDefense(IEnumerable<TroopStub> objects);
-        void RemoveFromAttack(IEnumerable<TroopStub> objects, ReportState state);
-        void RemoveFromLocal(IEnumerable<Structure> objects, ReportState state);
-        void RemoveFromDefense(IEnumerable<TroopStub> objects, ReportState state);
+        void AddToLocal(IEnumerable<ITroopStub> objects, ReportState state);
+        void AddToLocal(IEnumerable<IStructure> objects);
+        void AddToAttack(ITroopStub stub);
+        void AddToAttack(IEnumerable<ITroopStub> objects);
+        void AddToDefense(IEnumerable<ITroopStub> objects);
+        void RemoveFromAttack(IEnumerable<ITroopStub> objects, ReportState state);
+        void RemoveFromLocal(IEnumerable<IStructure> objects, ReportState state);
+        void RemoveFromDefense(IEnumerable<ITroopStub> objects, ReportState state);
         void RefreshBattleOrder();
         bool GroupIsDead(CombatObject co, CombatList combatList);
         bool ExecuteTurn();

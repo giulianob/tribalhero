@@ -8,6 +8,11 @@ namespace Game.Data.Stats
 {
     public class StructureBaseStats
     {
+        public StructureBaseStats(BaseBattleStats baseBattleStats)
+        {
+            Battle = baseBattleStats;
+        }
+
         public StructureBaseStats(string name,
                                   string spriteClass,
                                   ushort type,
@@ -33,29 +38,29 @@ namespace Game.Data.Stats
             WorkerId = workerId;
         }
 
-        public string Name { get; private set; }
+        public virtual string Name { get; private set; }
 
-        public string SpriteClass { get; private set; }
+        public virtual string SpriteClass { get; private set; }
 
-        public ushort Type { get; private set; }
+        public virtual ushort Type { get; private set; }
 
-        public byte Lvl { get; private set; }
+        public virtual byte Lvl { get; private set; }
 
-        public Resource Cost { get; private set; }
+        public virtual Resource Cost { get; private set; }
 
-        public int BuildTime { get; private set; }
+        public virtual int BuildTime { get; private set; }
 
-        public ClassId BaseClass { get; private set; }
+        public virtual ClassId BaseClass { get; private set; }
 
-        public int WorkerId { get; private set; }
+        public virtual int WorkerId { get; private set; }
 
-        public ushort MaxLabor { get; private set; }
+        public virtual ushort MaxLabor { get; private set; }
 
-        public byte Radius { get; private set; }
+        public virtual byte Radius { get; private set; }
 
-        public BaseBattleStats Battle { get; private set; }
+        public virtual BaseBattleStats Battle { get; private set; }
 
-        public int StructureHash
+        public virtual int StructureHash
         {
             get
             {

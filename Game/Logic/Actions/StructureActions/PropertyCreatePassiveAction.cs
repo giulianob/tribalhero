@@ -2,6 +2,7 @@
 
 using System;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -15,7 +16,7 @@ namespace Game.Logic.Actions
     public class PropertyCreatePassiveAction : PassiveAction, IScriptable
     {
         private string name;
-        private Structure structure;
+        private IStructure structure;
         private object value;
 
         public override ActionType Type
@@ -36,9 +37,9 @@ namespace Game.Logic.Actions
 
         #region IScriptable Members
 
-        public void ScriptInit(GameObject obj, string[] parms)
+        public void ScriptInit(IGameObject obj, string[] parms)
         {
-            if ((structure = obj as Structure) == null)
+            if ((structure = obj as IStructure) == null)
                 throw new Exception();
             name = parms[0];
 
@@ -80,7 +81,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             structure[name] = value;
-            Ioc.Kernel.Get<IDbManager>().Save(structure);
+            DbPersistance.Current.Save(structure);
             StateChange(ActionState.Completed);
 
             return Error.Ok;

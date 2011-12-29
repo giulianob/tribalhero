@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Module;
 using Game.Setup;
 using Game.Util;
@@ -48,9 +49,9 @@ namespace Game.Logic.Actions
             resourceType = (ResourceType)Enum.Parse(typeof(ResourceType), properties["resource_type"]);
         }
 
-        private Resource GetCost(Structure structure)
+        private Resource GetCost(IStructure structure)
         {
-            return new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.MarketTax(structure))), 0, 0, 0); ;
+            return new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.Current.MarketTax(structure))), 0, 0, 0); ;
         }
 
         public override ConcurrencyType ActionConcurrency
@@ -71,10 +72,10 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
 
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             if (quantity == 0 || quantity%TRADE_SIZE != 0 || quantity/TRADE_SIZE > 15)
@@ -107,7 +108,7 @@ namespace Game.Logic.Actions
             structure.City.Resource.Subtract(cost);
             structure.City.EndUpdate();
 
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.TradeTime(structure, quantity)));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.TradeTime(structure, quantity)));
             BeginTime = DateTime.UtcNow;
 
             return Error.Ok;
@@ -124,8 +125,8 @@ namespace Game.Logic.Actions
         }
 
         private void InterruptCatchAll(bool wasKilled) {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
                     return;
@@ -149,7 +150,7 @@ namespace Game.Logic.Actions
                             break;
                     }
                     var cost = GetCost(structure);
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, cost));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
 
@@ -159,8 +160,8 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())

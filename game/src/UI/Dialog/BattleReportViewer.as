@@ -70,8 +70,7 @@
 
 			if (data.outcomeOnly == false) calculateCountDeltas();
 			
-			refreshOnClose = data.refreshOnClose;
-			renderSnapshots();
+			refreshOnClose = data.refreshOnClose;			
 
 			// Show resources gained if applicable
 			if (data.loot) {
@@ -82,7 +81,8 @@
 				pnlFooter.append(pnlResources);
 				new BattleLootTooltip(pnlResources, loot, bonus);
 			}
-			pack();
+			
+			renderSnapshots();
 		}
 
 		private function calculateCountDeltas() : void {
@@ -169,26 +169,18 @@
 
 				if (data.outcomeOnly)  {
 					pnlSnapshots.append(new OutcomeSnapshot(snapshot));
-
-					//Resize accordingly
-					setPreferredSize(new IntDimension(600, 520));
-					getFrame().pack();
-					Util.centerFrame(getFrame());
 				}
 				else {
 					pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, ""));
 					pnlSnapshots.append(new Snapshot(snapshot));
-
-					//Resize accordingly
-					setPreferredSize(new IntDimension(865, 520));
-					getFrame().pack();
-					Util.centerFrame(getFrame());
 				}
 			}
 			
 			var headerFont: ASFontUIResource = GameLookAndFeel.getClassAttribute("darkHeader", "Label.font");
 			if (data.outcomeOnly) {
 				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, "Your troop was unable to report the enemies. You can only see a partial report.", AsWingConstants.TOP, AsWingConstants.CENTER, 0, headerFont));
+				//Resize accordingly
+				setPreferredSize(new IntDimension(600, 520));
 			}
 			else if (showHiddenReportMessage) {
 				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, "You are currently viewing a summary of the battle report. To view the entire report, click 'View complete report' below", AsWingConstants.TOP, AsWingConstants.CENTER, 0, headerFont));
@@ -197,7 +189,16 @@
 				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, ""));
 			}
 			
+			if (!data.outcome)
+			{				
+				//Resize accordingly
+				setPreferredSize(new IntDimension(865, 520));
+			}
+			
 			chkViewAll.setVisible(showHiddenReportMessage);
+			
+			getFrame().pack();
+			Util.centerFrame(getFrame());							
 		}
 
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame

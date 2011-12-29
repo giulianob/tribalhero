@@ -45,12 +45,18 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 			if (currentAction == null) return;
 			
 			var actionType: int = currentAction.getType();		
+
+			var diff: int = new Date().time / 1000 - currentAction.startTime;
 			
-			InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\n" + (Action.costsToCancelActions.indexOf(actionType) >= 0 ? "You will only receive half of the action cost if cancelling after 60 seconds." : ""), function(result: int) : void {
-				if (result == JOptionPane.YES) {
-					Global.mapComm.Objects.cancelAction(parentObj.cityId, parentObj.objectId, id);
-				}
-			}, null, true, false, JOptionPane.YES | JOptionPane.NO);
+			if(diff > 60) {
+				InfoDialog.showMessageDialog("Cancel Action", "Are you sure?\n" + (Action.costsToCancelActions.indexOf(actionType) >= 0? "You will only receive half of the action cost if cancelling after 60 seconds." : ""), function(result: int) : void {
+					if (result == JOptionPane.YES) {
+						Global.mapComm.Objects.cancelAction(parentObj.cityId, parentObj.objectId, id);
+					}
+				}, null, true, false, JOptionPane.YES | JOptionPane.NO);
+			} else {
+				Global.mapComm.Objects.cancelAction(parentObj.cityId, parentObj.objectId, id);
+			}
 		}
 
 	}

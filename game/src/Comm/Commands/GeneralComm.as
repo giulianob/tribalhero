@@ -43,8 +43,24 @@
 				case Commands.CHAT:
 					onChatMessage(e.packet);
 				break;				
+				case Commands.BATTLE_REPORT_UNREAD:
+					onReportUnreadUpdate(e.packet);
+				break;
+				case Commands.MESSAGE_UNREAD:
+					onMessageUnreadUpdate(e.packet);
+				break;
 			}
 		}
+		
+		private function onReportUnreadUpdate(packet: Packet): void
+		{
+			Global.gameContainer.setUnreadBattleReportCount(packet.readInt());
+		}
+		
+		private function onMessageUnreadUpdate(packet: Packet): void
+		{
+			Global.gameContainer.setUnreadMessageCount(packet.readInt());
+		}		
 		
 		private function onMessageBox(packet: Packet): void
 		{

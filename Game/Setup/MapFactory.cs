@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Game.Data;
+using Game.Database;
+using Game.Map;
 using Ninject;
 using Persistance;
 
@@ -50,7 +52,7 @@ namespace Game.Setup
                 index += SKIP;
                 
                 // Check if objects already on that point
-                List<SimpleGameObject> objects = Global.World.GetObjects(point.X, point.Y);
+                List<ISimpleGameObject> objects = World.Current.GetObjects(point.X, point.Y);
 
                 if (objects == null)
                     continue;
@@ -70,7 +72,7 @@ namespace Game.Setup
             if (mapStartIndex != null)
             {
                 mapStartIndex.Value = index;
-                Ioc.Kernel.Get<IDbManager>().Save(mapStartIndex);
+                DbPersistance.Current.Save(mapStartIndex);
             }
 
             return true;

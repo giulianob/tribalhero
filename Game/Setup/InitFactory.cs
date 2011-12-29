@@ -73,7 +73,7 @@ namespace Game.Setup
             }
         }
 
-        public void InitGameObject(InitCondition condition, GameObject obj, int type, int lvl)
+        public void InitGameObject(InitCondition condition, IGameObject obj, int type, int lvl)
         {
             if (dict == null)
                 return;

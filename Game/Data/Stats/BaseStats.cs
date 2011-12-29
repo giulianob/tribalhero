@@ -9,12 +9,13 @@
 
         #endregion
 
-        public event OnStatsUpdate StatsUpdate;
+        public virtual event OnStatsUpdate StatsUpdate = delegate { };
 
         protected void FireStatsUpdate()
         {
-            if (StatsUpdate != null)
-                StatsUpdate();
+            // ReSharper disable PolymorphicFieldLikeEventInvocation
+            StatsUpdate();
+            // ReSharper restore PolymorphicFieldLikeEventInvocation
         }
     }
 }

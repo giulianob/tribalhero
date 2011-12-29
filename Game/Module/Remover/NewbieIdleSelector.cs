@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.Database;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -11,7 +12,7 @@ namespace Game.Module.Remover {
         public IEnumerable<uint> GetPlayerIds()
         {
             using (var reader =
-                            Ioc.Kernel.Get<IDbManager>().ReaderQuery(
+                            DbPersistance.Current.ReaderQuery(
                                                                      string.Format(@"
                                                                                 SELECT DISTINCT players.id player_id 
                                                                                 FROM   players 

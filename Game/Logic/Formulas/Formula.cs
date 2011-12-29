@@ -14,6 +14,8 @@ namespace Game.Logic.Formulas
 {
     public partial class Formula
     {
+        public static Formula Current { get; set; }
+
         /// <summary>
         ///   Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
         /// </summary>
@@ -21,9 +23,9 @@ namespace Game.Logic.Formulas
         /// <param name = "radius"></param>
         /// <param name = "type"></param>
         /// <returns></returns>
-        public static int GetAwayFromRadius(IEnumerable<Effect> effects, byte radius, ushort type)
+        public virtual int GetAwayFromRadius(IEnumerable<Effect> effects, byte radius, ushort type)
         {
-            return radius + effects.Sum(x => (x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type) ? (int)x.Value[1] : 0);
+            return radius + effects.DefaultIfEmpty().Min(x => (x!=null && x.Id == EffectCode.AwayFromStructureMod && (int)x.Value[0] == type) ? (int)x.Value[1] : 0);
         }
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="mainstructureLevel"></param>
         /// <returns></returns>
-        public static int ConcurrentBuildUpgrades(int mainstructureLevel)
+        public virtual int ConcurrentBuildUpgrades(int mainstructureLevel)
         {
             return mainstructureLevel >= 11 ? 3 : 2;
         }
@@ -41,7 +43,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public static int ResourceCropCap(byte lvl)
+        public virtual int ResourceCropCap(byte lvl)
         {
             int[] cap = { 700, 700, 880, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000 };
             return cap[lvl];
@@ -52,7 +54,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public static int ResourceWoodCap(byte lvl)
+        public virtual int ResourceWoodCap(byte lvl)
         {
             int[] cap = { 700, 700, 880, 1130, 1450, 1880, 2440, 3200, 4200, 5500, 7200, 9500, 12500, 16500, 21800, 25000 };
             return cap[lvl];
@@ -63,7 +65,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "lvl"></param>
         /// <returns></returns>
-        public static int ResourceIronCap(byte lvl)
+        public virtual int ResourceIronCap(byte lvl)
         {
             int[] cap = { 100, 100, 100, 100, 100, 100, 170, 380, 620, 900, 1240, 1630, 2090, 2620, 3260, 4000 };
             return cap[lvl];
@@ -74,7 +76,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="city">City to recalculate resources for.</param>
         /// <returns></returns>
-        public static int GetIronRate(City city)
+        public virtual int GetIronRate(ICity city)
         {
             int[] multiplier = { int.MaxValue, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 5, 5, 5, 5, 4 };
 
@@ -86,7 +88,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="city">City to recalculate resources for</param>
         /// <returns></returns>
-        public static int GetCropRate(City city)
+        public virtual int GetCropRate(ICity city)
         {
             double[] lvlBonus = { 1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5 };
             return 40 + city.Lvl * 5 + (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor * lvlBonus[x.Lvl] : 0);
@@ -100,7 +102,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name="city">City to recalculate resources for</param>
         /// <returns></returns>
-        public static int GetWoodRate(City city)
+        public virtual int GetWoodRate(ICity city)
         {
             return 40 + city.Lvl * 5 + city.Sum(x =>
             {
@@ -119,7 +121,7 @@ namespace Game.Logic.Formulas
         /// <param name="stats"></param>
         /// <param name="efficiency"></param>
         /// <returns></returns>
-        public static int GetWoodRateForForest(Forest forest, StructureStats stats, double efficiency)
+        public virtual int GetWoodRateForForest(Forest forest, StructureStats stats, double efficiency)
         {
             return (int)(stats.Labor * forest.Rate * (1d + efficiency));
         }
@@ -129,7 +131,7 @@ namespace Game.Logic.Formulas
         /// </summary>
         /// <param name = "tech"></param>
         /// <returns></returns>
-        public static int GetXForOneCount(TechnologyManager tech)
+        public virtual int GetXForOneCount(ITechnologyManager tech)
         {
             var effects = tech.GetEffects(EffectCode.XFor1, EffectInheritance.Invisible);
 
@@ -139,12 +141,12 @@ namespace Game.Logic.Formulas
             return effects.Min(x => (int)x.Value[0]);
         }
 
-        public static Resource GetInitialCityResources()
+        public virtual Resource GetInitialCityResources()
         {
             return new Resource(700, 0, 0, 700, 35);
         }
 
-        public static byte GetInitialCityRadius()
+        public virtual byte GetInitialCityRadius()
         {
             return 4;
         }

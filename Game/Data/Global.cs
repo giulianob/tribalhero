@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Game.Data.Tribe;
 using Game.Logic;
 using Game.Map;
 using Game.Module;
@@ -28,26 +29,22 @@ namespace Game.Data
 
         #endregion
 
-        public static readonly ILog Logger = LogManager.GetLogger(typeof(Global));        
+        public static readonly ILog Logger = LogManager.GetLogger(typeof(Global));
 
         public static readonly Ai Ai = new Ai();
 
-        public static readonly Scheduler Scheduler = new Scheduler();
         public static readonly Channel Channel = new Channel();
 
         static Global()
         {
             FireEvents = true;
             SystemVariables = new Dictionary<string, SystemVariable>();
-            World = new World();
-            Tribes = new Dictionary<uint, Tribe.Tribe>();
+            Tribes = new Dictionary<uint, ITribe>();
         }
-
-        public static World World { get; private set; }
 
         public static Dictionary<string, SystemVariable> SystemVariables { get; private set; }
 
-        public static Dictionary<uint,Tribe.Tribe> Tribes { get; private set; }
+        public static Dictionary<uint, ITribe> Tribes { get; private set; }
 
         public static bool FireEvents { get; set; }
 

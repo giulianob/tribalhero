@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -15,28 +16,18 @@ using Persistance;
 
 namespace Game.Logic
 {
-    public class ActionRequirement
-    {
-        public uint EffectReqId { get; set; }
-        public EffectInheritance EffectReqInherit { get; set; }
-        public byte Index { get; set; }
-        public ActionOption Option { get; set; }
-        public string[] Parms { get; set; }
-        public ActionType Type { get; set; }
-    }
-
-    public class ActionWorker
+    public class ActionWorker : IActionWorker
     {
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
 
         private readonly ListDictionary<uint, ActiveAction> active = new ListDictionary<uint, ActiveAction>();
-        private readonly City city;
+        private readonly ICity city;
 
         private readonly NotificationManager notifications;
         private readonly ListDictionary<uint, PassiveAction> passive = new ListDictionary<uint, PassiveAction>();
         private readonly ReferenceManager references;
 
-        public ActionWorker(City owner)
+        public ActionWorker(ICity owner)
         {
             city = owner;
             notifications = new NotificationManager(this);
@@ -77,7 +68,7 @@ namespace Game.Logic
             }
         }
 
-        public City City
+        public ICity City
         {
             get
             {
@@ -102,7 +93,7 @@ namespace Game.Logic
                         ActionRescheduled(actionStub, state);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -112,7 +103,7 @@ namespace Game.Logic
                         ActionStarted(actionStub, state);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -127,14 +118,14 @@ namespace Game.Logic
                     notifications.Remove(actionStub);
 
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Remove(action as ScheduledPassiveAction);
+                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
+                        DbPersistance.Current.Delete(actionStub);
                     break;
                 case ActionState.Fired:
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
 
                     if (action is ScheduledPassiveAction)
                         Schedule(action as ScheduledPassiveAction);
@@ -149,10 +140,10 @@ namespace Game.Logic
                     notifications.Remove(actionStub);
 
                     if (action is ScheduledPassiveAction)
-                        Global.Scheduler.Remove(action as ScheduledPassiveAction);
+                        Scheduler.Current.Remove(action as ScheduledPassiveAction);
 
                     if (action is PassiveAction)
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
+                        DbPersistance.Current.Delete(actionStub);
                     break;
             }
         }
@@ -173,7 +164,7 @@ namespace Game.Logic
 
                     if (actionStub is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -183,7 +174,7 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -196,14 +187,14 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
-                        Global.Scheduler.Remove(action as ISchedule);
+                        DbPersistance.Current.Delete(actionStub);
+                        Scheduler.Current.Remove(action as ISchedule);
                     }
                     break;
                 case ActionState.Fired:
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Save(actionStub);
+                        DbPersistance.Current.Save(actionStub);
                         Schedule(action as ScheduledActiveAction);
                     }
                     break;
@@ -216,19 +207,19 @@ namespace Game.Logic
 
                     if (action is ScheduledActiveAction)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(actionStub);
-                        Global.Scheduler.Remove(action as ISchedule);
+                        DbPersistance.Current.Delete(actionStub);
+                        Scheduler.Current.Remove(action as ISchedule);
                     }
                     break;
             }
         }
 
-        public PassiveAction FindAction(GameObject workerObject, Type type)
+        public PassiveAction FindAction(IGameObject workerObject, Type type)
         {
             return passive.Values.FirstOrDefault(action => action.WorkerObject == workerObject && action.GetType() == type);
         }
 
-        public void Remove(GameObject workerObject, params GameAction[] ignoreActions)
+        public void Remove(IGameObject workerObject, params GameAction[] ignoreActions)
         {
             var ignoreActionList = new List<GameAction>(ignoreActions);
 
@@ -283,7 +274,7 @@ namespace Game.Logic
             ActiveAction activeAction;
             if (ActiveActions.TryGetValue(id, out activeAction) && !activeAction.IsDone)
             {
-                var actionRequirements = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(activeAction.WorkerType);
+                var actionRequirements = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(activeAction.WorkerType);
                 var actionRequirement = actionRequirements.List.FirstOrDefault(x => x.Index == activeAction.WorkerIndex);
                 if (actionRequirement == null || (actionRequirement.Option & ActionOption.Uncancelable) == ActionOption.Uncancelable)
                     return Error.ActionUncancelable;
@@ -338,7 +329,7 @@ namespace Game.Logic
 
         #region Scheduling
 
-        public Error DoActive(int workerType, GameObject workerObject, ActiveAction action, IHasEffect effects)
+        public Error DoActive(int workerType, IGameObject workerObject, ActiveAction action, IHasEffect effects)
         {
             if (workerObject.IsBlocked)
                 return Error.ObjectNotFound;
@@ -348,7 +339,7 @@ namespace Game.Logic
             if (actionId == -1)
                 return Error.ActionTotalMaxReached;
 
-            ActionRecord record = Ioc.Kernel.Get<ActionFactory>().GetActionRequirementRecord(workerType);
+            ActionRequirementFactory.ActionRecord record = Ioc.Kernel.Get<ActionRequirementFactory>().GetActionRequirementRecord(workerType);
 
             if (record == null)
                 return Error.ActionNotFound;
@@ -398,7 +389,7 @@ namespace Game.Logic
             return Error.ActionInvalid;
         }
 
-        private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, GameObject worker)
+        private bool CanDoActiveAction(ActiveAction action, ActionRequirement actionReq, IGameObject worker)
         {
             switch(action.ActionConcurrency)
             {
@@ -415,7 +406,7 @@ namespace Game.Logic
 
         public Error DoPassive(ICanDo workerObject, PassiveAction action, bool visible)
         {
-            if (workerObject is GameObject && ((GameObject)workerObject).IsBlocked)
+            if (workerObject is IGameObject && ((IGameObject)workerObject).IsBlocked)
                 return Error.ObjectNotFound;
 
             action.IsVisible = visible;
@@ -443,7 +434,7 @@ namespace Game.Logic
             return ret;
         }
 
-        public void DoOnce(GameObject workerObject, PassiveAction action)
+        public void DoOnce(IGameObject workerObject, PassiveAction action)
         {
             if (passive.Exists(a => a.Type == action.Type))
                 return;
@@ -467,7 +458,7 @@ namespace Game.Logic
 
         #region Methods
 
-        public IEnumerable<GameAction> GetActions(GameObject gameObject)
+        public IEnumerable<GameAction> GetActions(IGameObject gameObject)
         {
             var actions = new List<GameAction>();
 
@@ -499,7 +490,7 @@ namespace Game.Logic
             return false;
         }
 
-        internal IEnumerable<GameAction> GetVisibleActions()
+        public IEnumerable<GameAction> GetVisibleActions()
         {
             foreach (var kvp in active)
                 yield return kvp.Value;
@@ -527,12 +518,12 @@ namespace Game.Logic
 
         private static void Schedule(ScheduledActiveAction action)
         {
-            Global.Scheduler.Put(action);
+            Scheduler.Current.Put(action);
         }
 
         private static void Schedule(ScheduledPassiveAction action)
         {
-            Global.Scheduler.Put(action);
+            Scheduler.Current.Put(action);
         }
 
         #endregion

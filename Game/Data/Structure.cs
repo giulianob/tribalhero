@@ -3,19 +3,18 @@
 using System;
 using System.Data;
 using Game.Data.Stats;
-using Game.Setup;
+using Game.Database;
 using Game.Util;
-using Ninject;
 using Persistance;
 
 #endregion
 
 namespace Game.Data
 {
-    public class Structure : GameObject, IHasLevel, IPersistableObject
+    public class Structure : GameObject, IStructure
     {
         public const string DB_TABLE = "structures";
-        private readonly TechnologyManager techmanager;
+        private readonly ITechnologyManager techmanager;
         private StructureProperties properties;
 
         private StructureStats stats;
@@ -47,7 +46,7 @@ namespace Game.Data
 
         #region Properties
 
-        public TechnologyManager Technologies
+        public ITechnologyManager Technologies
         {
             get
             {
@@ -189,7 +188,7 @@ namespace Game.Data
             if (updating)
                 return;
 
-            Ioc.Kernel.Get<IDbManager>().Save(this);
+            DbPersistance.Current.Save(this);
         }
     }
 }

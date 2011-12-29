@@ -4,29 +4,67 @@ namespace Game.Map
 {
     public class TileLocator
     {
+        public static TileLocator Current { get; set; }
+
         #region Delegates
 
         public delegate bool DoWork(uint origX, uint origY, uint x, uint y, object custom);
 
+        public delegate int GetRandom(int min, int max);
+
         #endregion
 
-        private static readonly Random rand = new Random();
+        private readonly GetRandom getRandom;
 
-        public static void RandomPoint(uint ox, uint oy, byte radius, bool doSelf, out uint x, out uint y)
+        public TileLocator()
         {
-            byte mode;
-            if (ox%2 == 0)            
-                mode = (byte)(oy%2 == 0 ? 0 : 1);            
-            else            
-                mode = (byte)(oy%2 == 0 ? 0 : 1);            
+            
+        }
+
+        public TileLocator(GetRandom getRandom)
+        {
+            this.getRandom = getRandom;
+        }
+
+        private int GetOffset(uint x, uint y, uint x1, uint y1)
+        {
+            if (y%2 == 1 && y1%2 == 0 && x1 <= x)
+                return 1;
+
+            if (y%2 == 0 && y1%2 == 1 && x1 >= x)
+                return 1;
+
+            return 0;
+        }
+
+        public virtual int TileDistance(uint x, uint y, uint x1, uint y1)
+        {
+            /*
+					             13,12  |  14,12 
+			                12,13  |  13,13  |  14,13  |  15,13
+                       12,14  | (13,14) |  14,14  |  15,14  | 16,14
+                  11,15  |  12,15  |  13,15  |  14,15
+                       12,16  |  13,16  |  14,16
+                            12,17  |  13,17  | 14,17
+			                     13,18     14,18
+            */
+            int offset = GetOffset(x, y, x1, y1);
+            var dist = (int)((x1 > x ? x1 - x : x - x1) + (y1 > y ? y1 - y : y - y1)/2 + offset);
+
+            return dist;
+        }
+
+        public virtual void RandomPoint(uint ox, uint oy, byte radius, bool doSelf, out uint x, out uint y)
+        {
+            byte mode = (byte)(oy%2 == 0 ? 0 : 1);
 
             do
             {
                 uint cx = ox;
                 uint cy = oy - (uint)(2*radius);
 
-                var row = (byte)rand.Next(0, radius*2 + 1);
-                var count = (byte)rand.Next(0, radius*2 + 1);
+                var row = (byte)getRandom(0, radius*2 + 1);
+                var count = (byte)getRandom(0, radius*2 + 1);
 
                 for (int i = 0; i < row; i++)
                 {
@@ -68,24 +106,10 @@ namespace Game.Map
             } while (!doSelf && (x == ox && y == oy));
         }
 
-        public static void ForeachObject(uint ox, uint oy, byte radius, bool doSelf, DoWork work, object custom)
+        public virtual void ForeachObject(uint ox, uint oy, byte radius, bool doSelf, DoWork work, object custom)
         {
-            byte mode;
-            if (ox%2 == 0)
-            {
-                if (oy%2 == 0)
-                    mode = 0;
-                else
-                    mode = 1;
-            }
-            else
-            {
-                if (oy%2 == 0)
-                    mode = 0;
-                else
-                    mode = 1;
-            }
-            //     Console.Out.WriteLine("offset:" + mode);
+            byte mode = (byte)(oy%2 == 0 ? 0 : 1);
+
             uint cx = ox;
             uint cy = oy - (uint)(2*radius);
             bool done = false;
@@ -135,12 +159,10 @@ namespace Game.Map
                 if (mode == 0)
                 {
                     cx -= (uint)((row + 1)%2);
-                    //     Console.Out.WriteLine("cx:" + cx);
                 }
                 else
                 {
                     cx -= (uint)((row)%2);
-                    //  Console.Out.WriteLine("cx:" + cx);
                 }
 
                 ++cy;

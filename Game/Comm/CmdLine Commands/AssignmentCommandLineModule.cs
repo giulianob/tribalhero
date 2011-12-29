@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
+using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
-using Ninject;
-using Persistance;
 
 namespace Game.Comm
 {
@@ -51,17 +50,17 @@ namespace Game.Comm
             uint playerId;
             if (!string.IsNullOrEmpty(playerName))
             {
-                if (!Global.World.FindPlayerId(playerName, out playerId))
+                if (!World.Current.FindPlayerId(playerName, out playerId))
                     return "Player not found";
             }
             else
             {
-                if (!Global.World.FindTribeId(tribeName, out playerId))
+                if (!World.Current.FindTribeId(tribeName, out playerId))
                     return "Tribe not found";
             }
 
-            Player player;
-            Tribe tribe;
+            IPlayer player;
+            ITribe tribe;
             string result = string.Format("Now[{0}] Assignments:\n", DateTime.UtcNow);
             using (Concurrency.Current.Lock(playerId, out player, out tribe))
             {
@@ -70,7 +69,7 @@ namespace Game.Comm
                 if (tribe == null)
                     return "Player does not own a tribe";
 
-                result = ((IEnumerable<Assignment>)tribe).Aggregate(result, (current, assignment) => current + assignment.ToNiceString());
+                result = tribe.Assignments.Aggregate(result, (current, assignment) => current + assignment.ToNiceString());
             }
 
             return result;
@@ -106,11 +105,11 @@ namespace Game.Comm
                 return "AssignmentCreate --city=city_name --x=x --y=y --timespan=0:0:0 [--mode=attack_mode]";
 
             uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId))
+            if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
-            if (!Global.World.TryGetObjects(cityId, out city))
+            ICity city;
+            if (!World.Current.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
             }
@@ -120,8 +119,8 @@ namespace Game.Comm
                 return "Not in tribe";
             }
 
-            Tribe tribe = city.Owner.Tribesman.Tribe;
-            Structure targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();           
+            ITribe tribe = city.Owner.Tribesman.Tribe;
+            IStructure targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();           
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
@@ -135,10 +134,10 @@ namespace Game.Comm
                 }
 
                 TroopStub stub = new TroopStub { city.DefaultTroop };
-                Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                Ioc.Kernel.Get<IDbManager>().Save(stub);
+                Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
+                DbPersistance.Current.Save(stub);
 
-                targetStructure = Global.World.GetObjects(x, y).OfType<Structure>().First();
+                targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
                 {
@@ -176,12 +175,12 @@ namespace Game.Comm
                 return "AssignementCreate --city=city_name --id=id";
 
             uint cityId;
-            if (!Global.World.FindCityId(cityName, out cityId))
+            if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            City city;
+            ICity city;
             TroopStub stub = new TroopStub();
-            if (!Global.World.TryGetObjects(cityId, out city))
+            if (!World.Current.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
             }
@@ -191,7 +190,7 @@ namespace Game.Comm
                 return "Not in tribe";
             }
 
-            Tribe tribe = city.Owner.Tribesman.Tribe;
+            ITribe tribe = city.Owner.Tribesman.Tribe;
             using (Concurrency.Current.Lock(city, tribe))
             {
                 if (city.DefaultTroop.Upkeep == 0)
@@ -199,13 +198,13 @@ namespace Game.Comm
                     return "No troops in the city!";
                 }
                 stub.Add(city.DefaultTroop);
-                Procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                Ioc.Kernel.Get<IDbManager>().Save(stub);
+                Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
+                DbPersistance.Current.Save(stub);
 
                 Error error = tribe.JoinAssignment(id, stub);
                 if (error != Error.Ok)
                 {
-                    Procedure.TroopStubDelete(city, stub);
+                    Procedure.Current.TroopStubDelete(city, stub);
                     return Enum.GetName(typeof(Error), error);
                 }
 

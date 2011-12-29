@@ -2,6 +2,7 @@
 using System.IO;
 using Game;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Ninject;
 using Persistance;
@@ -12,15 +13,17 @@ namespace Testing
     {
         public TestBase()
         {
-            if (Ioc.Kernel == null)
+            if (Ioc.Kernel != null)
             {
-                LoadConfigFile();
-                Engine.CreateDefaultKernel();
-                Factory.CompileConfigFiles();
-                Config.seconds_per_unit = 1;
-                Global.FireEvents = false;
-                Ioc.Kernel.Get<IDbManager>().Pause();
+                return;
             }
+
+            LoadConfigFile();
+            Engine.CreateDefaultKernel();
+            Factory.CompileConfigFiles();
+            Config.seconds_per_unit = 1;
+            Global.FireEvents = false;
+            DbPersistance.Current.Pause();
         }
 
         protected void LoadConfigFile(string settingsFile = null)

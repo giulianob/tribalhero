@@ -16,14 +16,14 @@ namespace Game.Data
         public const string DB_TABLE = "structure_properties";
         private readonly ListDictionary properties = new ListDictionary();
 
-        private Structure structure;
+        private IStructure structure;
 
-        public StructureProperties(Structure owner)
+        public StructureProperties(IStructure owner)
         {
             structure = owner;
         }
 
-        public Structure Owner
+        public IStructure Owner
         {
             get
             {
@@ -79,10 +79,10 @@ namespace Game.Data
 
         public bool DbPersisted { get; set; }
 
-        IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+        public IEnumerable<DbColumn[]> DbListValues()
         {
             IDictionaryEnumerator itr = properties.GetEnumerator();
-
+            
             while (itr.MoveNext())
             {
                 byte datatype = DataTypeSerializer.Serialize(itr.Value);
@@ -94,11 +94,6 @@ namespace Game.Data
                                 new DbColumn("datatype", datatype, DbType.Byte)
                         };
             }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return properties.GetEnumerator();
         }
 
         #endregion

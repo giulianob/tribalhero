@@ -38,7 +38,7 @@ namespace Game.Comm
             }
         }
 
-        public Player Player { get; set; }
+        public IPlayer Player { get; set; }
 
         #region IChannel Members
 

@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using Game.Comm;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -18,11 +19,11 @@ namespace Game.Logic
 {
     public class NotificationManager : IEnumerable<NotificationManager.Notification>
     {
-        private readonly ActionWorker actionWorker;
+        private readonly IActionWorker actionWorker;
         private readonly List<Notification> notifications = new List<Notification>();
         private readonly object objLock = new object();
 
-        public NotificationManager(ActionWorker worker)
+        public NotificationManager(IActionWorker worker)
         {
             actionWorker = worker;
 
@@ -55,7 +56,7 @@ namespace Game.Logic
 
         #endregion
 
-        public void Add(GameObject obj, PassiveAction action, params City[] targetCities)
+        public void Add(IGameObject obj, PassiveAction action, params ICity[] targetCities)
         {
             DbLoaderAdd(true, new Notification(obj, action, targetCities));
         }
@@ -79,7 +80,7 @@ namespace Game.Logic
                 targetCity.Worker.Notifications.AddNotification(notification);
 
             if (persist)
-                Ioc.Kernel.Get<IDbManager>().Save(notification);
+                DbPersistance.Current.Save(notification);
         }
 
         private void AddNotification(Notification notification)
@@ -176,11 +177,11 @@ namespace Game.Logic
             lock (objLock)
             {
                 RemoveNotification(action);
-                Ioc.Kernel.Get<IDbManager>().Delete(notification);
+                DbPersistance.Current.Delete(notification);
             }
         }    
 
-        public bool TryGetValue(City city, ushort actionId, out Notification notification)
+        public bool TryGetValue(ICity city, ushort actionId, out Notification notification)
         {
             notification = notifications.FirstOrDefault(n => n.Action.WorkerObject.City == city && n.Action.ActionId == actionId);
 
@@ -193,12 +194,12 @@ namespace Game.Logic
         {
             public const string DB_TABLE = "notifications";
             private readonly PassiveAction action;
-            private readonly GameObject obj;
-            private readonly List<City> subscriptions = new List<City>();
+            private readonly IGameObject obj;
+            private readonly List<ICity> subscriptions = new List<ICity>();
 
             #region Properties
 
-            public List<City> Subscriptions
+            public List<ICity> Subscriptions
             {
                 get
                 {
@@ -214,7 +215,7 @@ namespace Game.Logic
                 }
             }
 
-            public GameObject GameObject
+            public IGameObject GameObject
             {
                 get
                 {
@@ -224,7 +225,7 @@ namespace Game.Logic
 
             #endregion
 
-            public Notification(GameObject obj, PassiveAction action, params City[] subscriptions)
+            public Notification(IGameObject obj, PassiveAction action, params ICity[] subscriptions)
             {
                 DbPersisted = false;
                 if (obj.City != action.WorkerObject.City)
@@ -300,15 +301,9 @@ namespace Game.Logic
                 }
             }
 
-            IEnumerator<DbColumn[]> IEnumerable<DbColumn[]>.GetEnumerator()
+            public IEnumerable<DbColumn[]> DbListValues()
             {
-                foreach (var city in subscriptions)
-                    yield return new[] {new DbColumn("subscription_city_id", city.Id, DbType.UInt32)};
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return subscriptions.GetEnumerator();
+                return subscriptions.Select(city => new[] {new DbColumn("subscription_city_id", city.Id, DbType.UInt32)});
             }
 
             #endregion

@@ -1,26 +1,23 @@
 #region
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Game.Setup;
+using Game.Database;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
-using Persistance;
 
 #endregion
 
 namespace Game.Data.Troop
 {
-    public class TroopManager : IEnumerable<TroopStub>
+    public class TroopManager : IEnumerable<ITroopStub>
     {
         #region Event
 
         #region Delegates
 
-        public delegate void UpdateCallback(TroopStub stub);
+        public delegate void UpdateCallback(ITroopStub stub);
 
         #endregion
 
@@ -32,7 +29,7 @@ namespace Game.Data.Troop
 
         #region Properties
 
-        private readonly Dictionary<byte, TroopStub> dict = new Dictionary<byte, TroopStub>();
+        private readonly Dictionary<byte, ITroopStub> dict = new Dictionary<byte, ITroopStub>();
         private readonly SmallIdGenerator idGen = new SmallIdGenerator(byte.MaxValue, true);
 
         public byte Size
@@ -43,7 +40,7 @@ namespace Game.Data.Troop
             }
         }
 
-        public TroopStub this[byte index]
+        public ITroopStub this[byte index]
         {
             get
             {
@@ -55,13 +52,13 @@ namespace Game.Data.Troop
             }
         }
 
-        public City City { get; set; }
+        public ICity City { get; set; }
 
         #endregion
 
         #region Methods
 
-        public TroopManager(City city)
+        public TroopManager(ICity city)
         {
             City = city;
         }
@@ -86,13 +83,13 @@ namespace Game.Data.Troop
 
             CheckUpdateMode();
 
-            Ioc.Kernel.Get<IDbManager>().Save(stub);
+            DbPersistance.Current.Save(stub);
 
             if (TroopUpdated != null)
                 TroopUpdated(stub);
         }
 
-        private void FireAdded(TroopStub stub)
+        private void FireAdded(ITroopStub stub)
         {
             if (!Global.FireEvents)
                 return;
@@ -103,7 +100,7 @@ namespace Game.Data.Troop
                 TroopAdded(stub);
         }
 
-        private void FireRemoved(TroopStub stub)
+        private void FireRemoved(ITroopStub stub)
         {
             if (!Global.FireEvents)
                 return;
@@ -112,13 +109,13 @@ namespace Game.Data.Troop
 
             //We don't want to delete a troopstub that doesn't belong to us.
             if (stub.City == City)
-                Ioc.Kernel.Get<IDbManager>().Delete(stub);
+                DbPersistance.Current.Delete(stub);
 
             if (TroopRemoved != null)
                 TroopRemoved(stub);
         }
 
-        public bool DbLoaderAdd(byte id, TroopStub stub)
+        public bool DbLoaderAdd(byte id, ITroopStub stub)
         {
             if (dict.ContainsKey(id))
                 return false;
@@ -131,7 +128,7 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool Add(TroopStub stub, out byte id)
+        public bool Add(ITroopStub stub, out byte id)
         {
             int nextId = idGen.GetNext();
 
@@ -154,7 +151,7 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool AddStationed(TroopStub stub)
+        public bool AddStationed(ITroopStub stub)
         {
             int nextId = idGen.GetNext();
             if (nextId == -1)
@@ -169,7 +166,7 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool Add(TroopStub stub)
+        public bool Add(ITroopStub stub)
         {
             byte id;
             return Add(stub, out id);
@@ -177,7 +174,7 @@ namespace Game.Data.Troop
 
         public bool RemoveStationed(byte id)
         {
-            TroopStub stub;
+            ITroopStub stub;
             if (!dict.TryGetValue(id, out stub))
                 return false;
             if (!dict.Remove(id))
@@ -197,7 +194,7 @@ namespace Game.Data.Troop
 
         public bool Remove(byte id)
         {
-            TroopStub stub;
+            ITroopStub stub;
 
             if (!dict.TryGetValue(id, out stub))
                 return false;
@@ -214,7 +211,7 @@ namespace Game.Data.Troop
             return true;
         }
 
-        public bool TryGetStub(byte id, out TroopStub stub)
+        public bool TryGetStub(byte id, out ITroopStub stub)
         {
             return dict.TryGetValue(id, out stub);
         }
@@ -246,7 +243,7 @@ namespace Game.Data.Troop
                 {
                     if (stub.StationedCity != null)
                     {
-                        City stationedCity = stub.StationedCity;
+                        ICity stationedCity = stub.StationedCity;
                         stationedCity.Troops.RemoveStationed(stub.StationedTroopId);
                     }
 
@@ -268,7 +265,7 @@ namespace Game.Data.Troop
 
         #region IEnumerable<TroopStub> Members
 
-        public IEnumerator<TroopStub> GetEnumerator()
+        public IEnumerator<ITroopStub> GetEnumerator()
         {
             return dict.Values.GetEnumerator();
         }
@@ -286,7 +283,7 @@ namespace Game.Data.Troop
         ///   Returns all foreign troops that are stationed in this city.
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<TroopStub> StationedHere()
+        internal IEnumerable<ITroopStub> StationedHere()
         {
             return this.Where(stub => stub.StationedCity == City);
         }
@@ -295,7 +292,7 @@ namespace Game.Data.Troop
         ///   Only returns troops that belong to this city. Won't return troops that are stationed here but will return troops that may be stationed outside of the city.
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<TroopStub> MyStubs()
+        internal IEnumerable<ITroopStub> MyStubs()
         {
             return this.Where(stub => stub.City == City);
         }

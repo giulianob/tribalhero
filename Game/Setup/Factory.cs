@@ -63,7 +63,7 @@ namespace Game.Setup
         public static void InitAll()
         {
             // These can be removed once they are injected as dependencies
-            Ioc.Kernel.Get<ActionFactory>();
+            Ioc.Kernel.Get<ActionRequirementFactory>();
             Ioc.Kernel.Get<StructureFactory>();
             Ioc.Kernel.Get<EffectRequirementFactory>();
             Ioc.Kernel.Get<InitFactory>();

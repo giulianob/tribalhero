@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
 using Game.Data;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
 using Ninject;
@@ -77,11 +78,11 @@ namespace Game.Logic
 
     public class ReferenceManager : IEnumerable<ReferenceStub>
     {
-        private readonly ActionWorker actionWorker;
+        private readonly IActionWorker actionWorker;
         private readonly List<ReferenceStub> reference = new List<ReferenceStub>();
         private readonly LargeIdGenerator referenceIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        public ReferenceManager(ActionWorker actionWorker)
+        public ReferenceManager(IActionWorker actionWorker)
         {
             this.actionWorker = actionWorker;
         }
@@ -142,7 +143,7 @@ namespace Game.Logic
             }
         }
 
-        public void Add(GameObject referenceObject, PassiveAction action)
+        public void Add(IGameObject referenceObject, PassiveAction action)
         {
 
             PassiveAction workingStub;
@@ -150,12 +151,12 @@ namespace Game.Logic
 
             var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Ioc.Kernel.Get<IDbManager>().Save(newReference);
+            DbPersistance.Current.Save(newReference);
 
             SendAddReference(newReference);
         }
 
-        public void Add(GameObject referenceObject, ActiveAction action)
+        public void Add(IGameObject referenceObject, ActiveAction action)
         {
             ActiveAction workingStub = actionWorker.ActiveActions[action.ActionId];
             if (workingStub == null)
@@ -163,12 +164,12 @@ namespace Game.Logic
 
             var newReference = new ReferenceStub((ushort)referenceIdGen.GetNext(), referenceObject, workingStub);
             reference.Add(newReference);
-            Ioc.Kernel.Get<IDbManager>().Save(newReference);
+            DbPersistance.Current.Save(newReference);
 
             SendAddReference(newReference);
         }
 
-        public void Remove(GameObject referenceObject, GameAction action)
+        public void Remove(IGameObject referenceObject, GameAction action)
         {
             reference.RemoveAll(referenceStub =>
                 {
@@ -176,7 +177,7 @@ namespace Game.Logic
 
                     if (ret)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(referenceStub);
+                        DbPersistance.Current.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }
@@ -185,7 +186,7 @@ namespace Game.Logic
                 });
         }
 
-        public void Remove(GameObject referenceObject)
+        public void Remove(IGameObject referenceObject)
         {
             reference.RemoveAll(referenceStub =>
                 {
@@ -193,7 +194,7 @@ namespace Game.Logic
 
                     if (ret)
                     {
-                        Ioc.Kernel.Get<IDbManager>().Delete(referenceStub);
+                        DbPersistance.Current.Delete(referenceStub);
 
                         SendRemoveReference(referenceStub);
                     }

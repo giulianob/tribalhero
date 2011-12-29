@@ -37,7 +37,7 @@ namespace Game.Module {
             var list = iPlayerSelector.GetPlayerIds();
             int count = 0;
             foreach (var id in list) {
-                Player player;
+                IPlayer player;
                 using (Concurrency.Current.Lock(id, out player)) {
                     count += player.GetCityList().Count(city => iCityRemoverFactory.CreateCityRemover(city).Start());
                 }
@@ -54,7 +54,7 @@ namespace Game.Module {
             if (!started) return;
             DeletePlayers();
             Time = DateTime.UtcNow.AddHours(intervalInHours);
-            Global.Scheduler.Put(this);
+            Scheduler.Current.Put(this);
         }
 
         #endregion

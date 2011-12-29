@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -60,19 +61,19 @@ namespace Game.Logic.Actions
 
         #region IScriptable Members
 
-        public void ScriptInit(GameObject obj, string[] parms)
+        public void ScriptInit(IGameObject obj, string[] parms)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
 
-            if (!(obj is Structure))
+            if (!(obj is IStructure))
                 throw new Exception();
             cityId = obj.City.Id;
             objectId = obj.ObjectId;
             ts = TimeSpan.FromSeconds(int.Parse(parms[0]));
             NlsDescription = parms[1];
 
-            if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
                 return;
 
             city.Worker.DoPassive(structure, this, true);
@@ -82,8 +83,8 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
 
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
@@ -106,7 +107,7 @@ namespace Game.Logic.Actions
                 city.BeginUpdate();
                 structure.BeginUpdate();
 
-                Global.World.Remove(structure);
+                World.Current.Remove(structure);
                 city.ScheduleRemove(structure, false);
 
                 structure.EndUpdate();
@@ -123,13 +124,13 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
 
             endTime = SystemClock.Now.AddSeconds(ts.TotalSeconds);
             BeginTime = SystemClock.Now;
 
-            if (!Global.World.TryGetObjects(cityId, objectId, out city, out structure))
+            if (!World.Current.TryGetObjects(cityId, objectId, out city, out structure))
                 return Error.ObjectNotFound;
 
             return Error.Ok;
@@ -141,8 +142,8 @@ namespace Game.Logic.Actions
 
         public override void WorkerRemoved(bool wasKilled)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, objectId, out city, out structure))
             {
                 if (!IsValid())

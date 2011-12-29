@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Logic.Procedures;
+using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
@@ -82,9 +83,9 @@ namespace Game.Logic.Actions
             if (uint.Parse(parms[0]) != techId)
                 return Error.ActionInvalid;
 
-            City city;
-            Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            ICity city;
+            IStructure structure;
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             Technology tech;
@@ -99,9 +100,9 @@ namespace Game.Logic.Actions
 
         public override Error Execute()
         {
-            City city;
-            Structure structure;
-            if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+            ICity city;
+            IStructure structure;
+            if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
             Technology tech;
@@ -137,14 +138,14 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled)
         {
-            City city;
+            ICity city;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
 
-                Structure structure;
-                if (!Global.World.TryGetObjects(cityId, structureId, out city, out structure))
+                IStructure structure;
+                if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                     return;
 
                 Technology tech;
@@ -163,7 +164,7 @@ namespace Game.Logic.Actions
                 if (!wasKilled)
                 {
                     city.BeginUpdate();
-                    city.Resource.Add(Formula.GetActionCancelResource(BeginTime, techBase.Resources));
+                    city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, techBase.Resources));
                     city.EndUpdate();
                 }
 
@@ -183,8 +184,8 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            Structure structure;
+            ICity city;
+            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
@@ -237,7 +238,7 @@ namespace Game.Logic.Actions
 
                     structure.Technologies.EndUpdate();
                 }
-                Procedure.OnTechnologyChange(structure);
+                Procedure.Current.OnTechnologyChange(structure);
                 StateChange(ActionState.Completed);
             }
         }

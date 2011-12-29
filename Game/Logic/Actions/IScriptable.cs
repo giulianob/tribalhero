@@ -8,6 +8,6 @@ namespace Game.Logic
 {
     interface IScriptable
     {
-        void ScriptInit(GameObject obj, string[] parms);
+        void ScriptInit(IGameObject obj, string[] parms);
     }
 }

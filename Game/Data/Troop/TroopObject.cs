@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.IO;
 using Game.Data.Stats;
+using Game.Database;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -14,14 +15,14 @@ using Persistance;
 
 namespace Game.Data.Troop
 {
-    public class TroopObject : GameObject, IPersistableObject, ICityRegionObject
+    public class TroopObject : GameObject, ITroopObject
     {
         public const string DB_TABLE = "troops";
         private TroopStats stats = new TroopStats(0, 0);
         private uint targetX;
 
         private uint targetY;
-        public TroopStub Stub { get; set; }
+        public ITroopStub Stub { get; set; }
 
         public uint TargetX
         {
@@ -88,7 +89,7 @@ namespace Game.Data.Troop
 
         #region Constructors
 
-        public TroopObject(TroopStub stub)
+        public TroopObject(ITroopStub stub)
         {
             Stub = stub;
         }
@@ -123,7 +124,7 @@ namespace Game.Data.Troop
                 return;
 
             if (objectId > 0)
-                Ioc.Kernel.Get<IDbManager>().Save(this);
+                DbPersistance.Current.Save(this);
         }
 
         #endregion

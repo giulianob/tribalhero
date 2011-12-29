@@ -20,9 +20,9 @@ namespace Game.Battle
         private readonly byte lvl;
         private readonly BattleStats stats;
         private readonly ushort type;
-        private uint hp; //need to keep a copy track of the hp for reporting
+        private decimal hp; //need to keep a copy track of the hp for reporting
 
-        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats)
+        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats)
         {
             battleManager = owner;
             this.stats = stats;
@@ -32,7 +32,7 @@ namespace Game.Battle
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(IBattleManager owner, Structure structure, BattleStats stats, uint hp, ushort type, byte lvl)
+        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl)
         {
             battleManager = owner;
             Structure = structure;
@@ -42,7 +42,7 @@ namespace Game.Battle
             this.lvl = lvl;
         }
 
-        public Structure Structure { get; private set; }
+        public IStructure Structure { get; private set; }
 
         public override BaseBattleStats BaseStats
         {
@@ -76,11 +76,19 @@ namespace Game.Battle
             }
         }
 
-        public override City City
+        public override ICity City
         {
             get
             {
                 return Structure.City;
+            }
+        }
+
+        public override ITroopStub TroopStub
+        {
+            get
+            {
+                return City.DefaultTroop;
             }
         }
 
@@ -124,7 +132,15 @@ namespace Game.Battle
             }
         }
 
-        public override uint Hp
+        public override Resource Loot
+        {
+            get
+            {
+                return new Resource();
+            }
+        }
+
+        public override decimal Hp
         {
             get
             {
@@ -181,9 +197,9 @@ namespace Game.Battle
                                new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
                                new DbColumn("damage_dealt", DmgDealt, DbType.Int32), new DbColumn("damage_received", DmgRecv, DbType.Int32),
                                new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
-                               new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32), new DbColumn("hp", hp, DbType.UInt16),
+                               new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32), new DbColumn("hp", hp, DbType.Decimal),
                                new DbColumn("type", type, DbType.UInt16), new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.UInt16),
-                               new DbColumn("attack", stats.Atk, DbType.UInt16), new DbColumn("splash", stats.Splash, DbType.Byte),
+                               new DbColumn("attack", stats.Atk, DbType.Decimal), new DbColumn("splash", stats.Splash, DbType.Byte),
                                new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
                                new DbColumn("hits_received", HitRecv, DbType.UInt16),
@@ -195,7 +211,7 @@ namespace Game.Battle
         {
             if (obj is AttackCombatUnit)
             {
-                TroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
+                ITroopObject troop = (obj as AttackCombatUnit).TroopStub.TroopObject;
                 return RadiusLocator.Current.IsOverlapping(new Location(troop.X, troop.Y),
                                                            troop.Stats.AttackRadius,
                                                            new Location(Structure.X, Structure.Y),
@@ -211,23 +227,26 @@ namespace Game.Battle
             y = Structure.Y;
         }
 
-        public override void CalculateDamage(ushort dmg, out ushort actualDmg)
+        public override void CalculateDamage(decimal dmg, out decimal actualDmg)
         {
-            actualDmg = (ushort)Math.Min(Hp, dmg);
+            actualDmg = Math.Min(Hp, dmg);
         }
 
-        public override void TakeDamage(int dmg, out Resource returning, out int attackPoints)
+        public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)
         {
             attackPoints = 0;
 
+            int extra = Math.Max(0, Structure.Stats.Hp - (int)Math.Ceiling(hp));
+
+            hp = (dmg > hp) ? 0 : hp - dmg;
+
+
             Structure.BeginUpdate();
-            Structure.Stats.Hp = (dmg > Structure.Stats.Hp) ? (ushort)0 : (ushort)(Structure.Stats.Hp - (ushort)dmg);
+            Structure.Stats.Hp = (ushort)(Math.Ceiling(hp) + extra);
             Structure.EndUpdate();
 
-            hp = (dmg > hp) ? 0 : hp - (ushort)dmg;
-
             if (hp == 0)
-                attackPoints = Formula.GetStructureKilledAttackPoint(type, lvl);
+                attackPoints = Formula.Current.GetStructureKilledAttackPoint(type, lvl);
 
             returning = null;
         }
@@ -239,9 +258,9 @@ namespace Game.Battle
             // Remove structure if our combat object died
             if (hp <= 0)
             {
-                City city = Structure.City;
+                ICity city = Structure.City;
 
-                Global.World.LockRegion(Structure.X, Structure.Y);
+                World.Current.LockRegion(Structure.X, Structure.Y);
                 if (Structure.Lvl > 1)
                 {
                     Structure.BeginUpdate();
@@ -253,11 +272,11 @@ namespace Game.Battle
                 else
                 {
                     Structure.BeginUpdate();
-                    Global.World.Remove(Structure);
+                    World.Current.Remove(Structure);
                     city.ScheduleRemove(Structure, true);
                     Structure.EndUpdate();
                 }
-                Global.World.UnlockRegion(Structure.X, Structure.Y);
+                World.Current.UnlockRegion(Structure.X, Structure.Y);
             }           
         }
 
@@ -270,12 +289,11 @@ namespace Game.Battle
 
         public override void ReceiveReward(int reward, Resource resource)
         {
-            return;
         }
 
         public override int CompareTo(object other)
         {
-            if (other is Structure)
+            if (other is IStructure)
                 return other == Structure ? 0 : 1;
 
             return -1;

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using Game.Comm;
+using Game.Database;
 using Game.Setup;
 using Game.Util;
-using Game.Util.Locking;
 using Ninject;
 using Persistance;
 
@@ -15,18 +15,18 @@ using Persistance;
 
 namespace Game.Data
 {
-    public class Player : ILockable, IPersistableObject
+    public class Player : IPlayer
     {
         public const string DB_TABLE = "players";
         public const int MAX_DESCRIPTION_LENGTH = 3000;
-        private readonly List<City> list = new List<City>();
+        private readonly List<ICity> list = new List<ICity>();
 
         public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin)
-                : this(playerid, created, lastLogin, name, description, admin, string.Empty)
+            : this(playerid, created, lastLogin, name, description, admin, string.Empty)
         {
         }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description,bool admin, string sessionId)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin, string sessionId)
         {
             PlayerId = playerid;
             LastLogin = lastLogin;
@@ -69,19 +69,20 @@ namespace Game.Data
 
                 if (DbPersisted)
                 {
-                    Ioc.Kernel.Get<IDbManager>().Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
+                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `description` = @description WHERE `id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("description", description, DbType.String), new DbColumn("id", PlayerId, DbType.UInt32) });
                 }
             }
         }
 
-        private Tribe.Tribesman tribesman;
-        public Tribe.Tribesman Tribesman {
+        private Tribe.ITribesman tribesman;
+        public Tribe.ITribesman Tribesman
+        {
             get
             {
                 return tribesman;
             }
-            set 
+            set
             {
                 tribesman = value;
                 TribeUpdate();
@@ -94,7 +95,7 @@ namespace Game.Data
             get
             {
                 return tribeRequest;
-            }  
+            }
             set
             {
                 tribeRequest = value;
@@ -112,8 +113,17 @@ namespace Game.Data
 
         public int DefensePoint
         {
-            get {
+            get
+            {
                 return list.Sum(x => x.DefensePoint);
+            }
+        }
+
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return Session != null;
             }
         }
 
@@ -165,7 +175,7 @@ namespace Game.Data
         {
             get
             {
-                return new[] {new DbColumn("id", PlayerId, DbType.UInt32)};
+                return new[] { new DbColumn("id", PlayerId, DbType.UInt32) };
             }
         }
 
@@ -173,7 +183,7 @@ namespace Game.Data
         {
             get
             {
-                return new DbDependency[] {};
+                return new DbDependency[] { };
             }
         }
 
@@ -181,34 +191,35 @@ namespace Game.Data
 
         #endregion
 
-        public void Add(City city)
+        public void Add(ICity city)
         {
             list.Add(city);
         }
 
-        internal int GetCityCount(bool includeDeleted = false)
+        public int GetCityCount(bool includeDeleted = false)
         {
             return list.Count(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        internal IEnumerable<City> GetCityList(bool includeDeleted = false)
+        public IEnumerable<ICity> GetCityList(bool includeDeleted = false)
         {
             return list.Where(city => includeDeleted || city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        internal City GetCity(uint id)
+        public ICity GetCity(uint id)
         {
             return list.Find(city => city.Id == id && city.Deleted == City.DeletedState.NotDeleted);
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return Name;
         }
 
-        public void SendSystemMessage(Player from, String subject, String message)
+        public void SendSystemMessage(IPlayer from, String subject, String message)
         {
             subject = String.Format("(System) {0}", subject);
-            Ioc.Kernel.Get<IDbManager>().Query(
+            DbPersistance.Current.Query(
                                    "INSERT INTO `messages` (`sender_player_id`, `recipient_player_id`, `subject`, `message`, `sender_state`, `recipient_state`, `created`) VALUES (@sender_player_id, @recipient_player_id, @subject, @message, @sender_state, @recipient_state, UTC_TIMESTAMP())",
                                    new[]
                                    {
@@ -221,7 +232,7 @@ namespace Game.Data
 
         public void TribeUpdate()
         {
-            if (!Global.FireEvents )
+            if (!Global.FireEvents)
                 return;
 
             var packet = new Packet(Command.TribeChannelUpdate);

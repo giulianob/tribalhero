@@ -38,6 +38,10 @@ namespace Game.Comm
         NotificationUpdate = 63,
         NotificationLocate = 64,
 
+        MessageUnread = 65,
+        BattleReportUnread = 66,
+        ForumUnread = 67,
+
         #endregion
 
         #region Reference

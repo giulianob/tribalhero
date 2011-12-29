@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
@@ -62,7 +63,7 @@ namespace Game.Logic.Actions
                         XmlSerializer.Serialize(new[]
                                                 {
                                                         new XmlKvPair("city_id", cityId), new XmlKvPair("object_id", objectId), new XmlKvPair("was_killed", wasKilled),
-                                                        new XmlKvPair("cancel_references", string.Join(",", cancelActions.ConvertAll(t => t.ToString()).ToArray())),
+                                                        new XmlKvPair("cancel_references", string.Join(",", cancelActions.ConvertAll(t => t.ToString(CultureInfo.InvariantCulture)).ToArray())),
                                                 });
             }
         }
@@ -82,8 +83,8 @@ namespace Game.Logic.Actions
 
         public override void Callback(object custom)
         {
-            City city;
-            GameObject obj;            
+            ICity city;
+            IGameObject obj;            
 
             using (Concurrency.Current.Lock(cityId, out city))
             {
@@ -105,7 +106,7 @@ namespace Game.Logic.Actions
                     if (city == null)
                         throw new Exception("City is missing");
 
-                    GameObject obj1 = obj;
+                    IGameObject obj1 = obj;
                     action = city.Worker.ActiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
                     loopCount++;
@@ -130,7 +131,7 @@ namespace Game.Logic.Actions
                     if (city == null)
                         throw new Exception("City is missing");
 
-                    GameObject obj1 = obj;
+                    IGameObject obj1 = obj;
                     action = city.Worker.PassiveActions.Values.FirstOrDefault(x => x.WorkerObject == obj1);
 
                     loopCount++;
@@ -174,20 +175,20 @@ namespace Game.Logic.Actions
                     throw new Exception("Not all actions were cancelled for this obj");
 
                 // Finish cleaning object
-                if (obj is TroopObject)
+                if (obj is ITroopObject)
                     city.DoRemove((TroopObject)obj);
-                else if (obj is Structure)
+                else if (obj is IStructure)
                 {
                     if (!wasKilled)
                     {
                         // Give laborers back to the city if obj was not killed off
-                        ushort laborers = ((Structure)obj).Stats.Labor;
+                        ushort laborers = ((IStructure)obj).Stats.Labor;
                         city.BeginUpdate();
                         city.Resource.Labor.Add(laborers);
                         city.EndUpdate();
                     }
 
-                    city.DoRemove(((Structure)obj));
+                    city.DoRemove(((IStructure)obj));
                 }
 
                 StateChange(ActionState.Completed);

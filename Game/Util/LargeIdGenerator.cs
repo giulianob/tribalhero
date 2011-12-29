@@ -47,5 +47,10 @@ namespace Game.Util
                     last--;
             }
         }
+
+        public void Reset()
+        {
+            last = 0;
+        }
     }
 }

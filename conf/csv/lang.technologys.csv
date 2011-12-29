@@ -15,9 +15,9 @@ A_CALL_TO_ARMS_TECHNOLOGY_LVL_5,Order idle laborers to provide up to 15% damage 
 ,
 ,
 TUNNEL_EXCAVATION_TECHNOLOGY_NAME,Tunnel Excavation
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,Reduces distance requirement by 1 for underground structures. (Stacks additively)
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,Reduces distance requirement by 2 for underground structures. (Stacks additively)
-TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,Reduces distance requirement by 3 for underground structures. (Stacks additively)
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_1,"Reduces distance requirement by 1 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_2,"Reduces distance requirement by 2 for Tower, Cannon Tower and Basement. (Does not stack)"
+TUNNEL_EXCAVATION_TECHNOLOGY_LVL_3,"Reduces distance requirement by 3 for Tower, Cannon Tower and Basement. (Does not stack)"
 ,
 SENSE_OF_URGENCY_TECHNOLOGY_NAME,Sense of Urgency
 SENSE_OF_URGENCY_TECHNOLOGY_LVL_1,"If any structure is destroyed in battle, all other buildings are repaired by 4% of the destroyed buildings HP. (Stacks additively up to 100%)"
@@ -27,11 +27,11 @@ SENSE_OF_URGENCY_TECHNOLOGY_LVL_4,"If any structure is destroyed in battle, all 
 SENSE_OF_URGENCY_TECHNOLOGY_LVL_5,"If any structure is destroyed in battle, all other buildings are repaired by 20% of the destroyed buildings HP. (Stacks additively up to 100%)"
 ,
 LAST_STAND_TECHNOLOGY_NAME,Last Stand
-LAST_STAND_TECHNOLOGY_LVL_1,Hoplite receives 15% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_2,Hoplite receives 30% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_3,Hoplite receives 45% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_4,Hoplite receives 60% chance to completely ignore the attack when team is about to die. (Does not stack)
-LAST_STAND_TECHNOLOGY_LVL_5,Hoplite receives 75% chance to completely ignore the attack when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_1,Hoplite receives 10% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_2,Hoplite receives 20% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_3,Hoplite receives 30% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_4,Hoplite receives 40% less damage when team is about to die. (Does not stack)
+LAST_STAND_TECHNOLOGY_LVL_5,Hoplite receives 50% less damage when team is about to die. (Does not stack)
 ,
 ,
 RUSH_ATTACK_TECHNOLOGY_NAME,Rush Attack

@@ -1,7 +1,7 @@
 ﻿#region
 
 using System;
-using Game.Logic;
+using Game.Map;
 using Game.Util;
 using Game.Util.Locking;
 
@@ -9,7 +9,7 @@ using Game.Util.Locking;
 
 namespace Game.Data
 {
-    public abstract class GameObject : SimpleGameObject, ICanDo
+    public abstract class GameObject : SimpleGameObject, IGameObject
     {
         private bool isBlocked;
 
@@ -26,9 +26,7 @@ namespace Game.Data
             }
         }
 
-        #region ICanDo Members
-
-        public City City { get; set; }
+        public ICity City { get; set; }
 
         public override uint GroupId
         {
@@ -46,8 +44,6 @@ namespace Game.Data
             }
         }
 
-        #endregion
-
         #region Update Events
 
         public override void CheckUpdateMode()
@@ -62,17 +58,7 @@ namespace Game.Data
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(City);
         }
 
-        public new void BeginUpdate()
-        {
-            if (updating)
-                throw new Exception("Nesting beginupdate");
-            updating = true;
-
-            origX = x;
-            origY = y;
-        }
-
-        protected new void Update()
+        protected override void Update()
         {
             if (!Global.FireEvents)
                 return;
@@ -84,7 +70,7 @@ namespace Game.Data
                 return;
 
             City.ObjUpdateEvent(this, origX, origY);
-            Global.World.ObjectUpdateEvent(this, origX, origY);
+            World.Current.ObjectUpdateEvent(this, origX, origY);
         }
 
         #endregion

@@ -1,8 +1,10 @@
 #region
-
+// ReSharper disable RedundantUsingDirective
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Game.Data;
 using Game.Database;
 using Game.Logic;
@@ -14,8 +16,7 @@ using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Persistance;
-        // ReSharper disable RedundantUsingDirective
-        // ReSharper restore RedundantUsingDirective
+// ReSharper restore RedundantUsingDirective
 
 #endregion
 

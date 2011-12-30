@@ -261,17 +261,18 @@ namespace Game.Battle
 
         public override void CalculateDamage(decimal dmg, out decimal actualDmg)
         {
+            // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
+            if (Hp < (Hp + DmgRecv) / 5)
+            {
+                var percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
+                    .Where(tech => BattleFormulas.Current.UnitStatModCheck(BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1]))
+                    .DefaultIfEmpty()
+                    .Max(x => x == null ? 0 : (int)x.Value[0]);
+
+                dmg = dmg * (100 - percent) / 100;
+            }
+
             actualDmg = Math.Min(Hp, dmg);
-
-            if ((Hp+DmgRecv) / 5 <= Hp) // if hp is less than 20% of the original total HP(entire group), lastStand kicks in.
-                return;
-
-            var percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand, EffectInheritance.All)
-                .Where(tech => BattleFormulas.Current.UnitStatModCheck(BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1]))
-                .DefaultIfEmpty()
-                .Max(x => x == null ? 0 : (int)x.Value[0]);
-
-            actualDmg = actualDmg*(100 - percent)/100;
         }
 
         public override void TakeDamage(decimal dmg, out Resource returning, out int attackPoints)

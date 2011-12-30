@@ -99,7 +99,7 @@ namespace Game.Battle
             return battleTroopId;
         }
 
-        public void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint objectId, bool isAttacker)
+        public void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker)
         {
             dbManager.Query(
                 string.Format(@"INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP())",
@@ -107,7 +107,7 @@ namespace Game.Battle
                 new[]
                                 {
                                         new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
-                                        new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("object_id", objectId, DbType.UInt32),
+                                        new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("object_id", groupId, DbType.UInt32),
                                         new DbColumn("is_attacker", isAttacker, DbType.Boolean)
                                 });
         }

@@ -17,7 +17,7 @@ namespace Game.Battle
 
         uint SnapTroop(uint reportId, ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, Resource loot);
 
-        void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint objectId, bool isAttacker);
+        void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker);
 
         void SnapCombatObject(uint troopId, CombatObject co);
 

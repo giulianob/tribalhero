@@ -2,6 +2,7 @@
 
 using System;
 using System.ServiceProcess;
+using System.Threading;
 using CSVToXML;
 using Game;
 using Game.Setup;
@@ -47,8 +48,13 @@ namespace LauncherService
 
             engine = Ioc.Kernel.Get<Engine>();
 
-            if (!engine.Start())
-                throw new Exception("Failed to load server");            
+            ThreadPool.QueueUserWorkItem(o =>
+                {
+                    if (!engine.Start())
+                    {
+                        throw new Exception("Failed to load server");
+                    }
+                });
         }
 
         protected override void OnStop()

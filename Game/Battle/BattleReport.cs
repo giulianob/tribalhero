@@ -133,7 +133,7 @@ namespace Game.Battle
                 // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
                 if (Battle.City != combatObject.City && (state == ReportState.Entering || state == ReportState.Reinforced))
                 {
-                    battleReportWriter.SnapBattleReportView(combatObject.City.Id, combatObject.TroopStub.TroopId, Battle.BattleId, combatObject.Id, isAttacker);
+                    battleReportWriter.SnapBattleReportView(combatObject.City.Id, combatObject.TroopStub.TroopId, Battle.BattleId, combatObject.GroupId, isAttacker);
                 }
 
                 ReportedTroops[combatObject.TroopStub] = combatTroopId;

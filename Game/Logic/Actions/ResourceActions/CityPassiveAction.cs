@@ -240,7 +240,7 @@ namespace Game.Logic.Actions
                 if (!Config.resource_fast_income)
                     return;
 
-                var resource = new Resource(15000, city.Resource.Gold.Value < 99500 ? 250 : 0, 15000, 15000, 0);
+                var resource = new Resource(15000, city.Resource.Gold.Value < 99999 ? 99999 : 0, 15000, 15000, 0);
                 city.Resource.Add(resource);
             };
         }

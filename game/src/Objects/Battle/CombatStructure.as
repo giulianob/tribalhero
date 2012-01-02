@@ -15,7 +15,7 @@
 						
 			prototype = StructureFactory.getPrototype(type, level);
 		}
-				
+		
 		public override function get name(): String {
 			if (!prototype)
 				return "Unknown";

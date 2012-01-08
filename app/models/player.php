@@ -25,6 +25,9 @@ class Player extends AppModel {
             'dependent' => true
         )
     );
+    var $hasAndBelongsToMany = array(
+        'MessageBoardThread' => array('with' => 'MessageBoardRead'),
+    );
 
     public function getTribeId($playerId) {
         $tribesman = $this->Tribesman->findByPlayerId($playerId);

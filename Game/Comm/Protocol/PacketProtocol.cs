@@ -26,5 +26,12 @@ namespace Game.Comm.Protocol
 
             Global.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
         }
+
+        public void MessageBoardSendUnread()
+        {
+            var packet = new Packet(Command.ForumUnread);
+            Global.Channel.Post("/PLAYER/" + session.Player.PlayerId, packet);
+        }
+
     }
 }

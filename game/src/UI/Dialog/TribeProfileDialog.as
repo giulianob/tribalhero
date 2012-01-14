@@ -377,6 +377,10 @@
 			
 			return pnlInfoContainer;
 		}
+		
+		public function ReceiveNewMessage(): void{
+			messageBoard.showRefreshButton();
+		}
 	}
 	
 }

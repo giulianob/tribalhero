@@ -10,6 +10,7 @@ foreach ($messages as $message) {
         'id' => $message['MessageBoardThread']['id'],
         'lastPostAgoInWords' => $time->timeAgoInWords($message['MessageBoardThread']['last_post_date']),
         'lastPostDate' => $time->niceShort($message['MessageBoardThread']['last_post_date']),
+        'lastPostTimestamp' => strtotime($message['MessageBoardThread']['last_post_date']),
         'postCount' => $message['MessageBoardThread']['message_board_post_count'],        
         'subject' => $message['MessageBoardThread']['subject'],
         'playerId' => $message['Player']['id'],
@@ -17,6 +18,7 @@ foreach ($messages as $message) {
         'lastPostPlayerId' => $message['LastPostPlayer']['id'],
         'lastPostPlayerName' => $message['LastPostPlayer']['name'],
         'sticky' => $message['MessageBoardThread']['sticky'],        
+        'lastReadTimestamp' => strtotime($message['MessageBoardRead']['last_read']),       
     );
 }
 

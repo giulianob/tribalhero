@@ -22,6 +22,7 @@ package src.UI.Dialog
 		private var pnlPostBottomContainer: JPanel;
 		private var pnlPostContainer: JPanel;
 		private var scrollPosts: JScrollPane;
+		private var pnlNewMessage:JPanel;
 		
 		private var threadLoader: GameURLLoader;
 		private var postLoader: GameURLLoader;
@@ -155,7 +156,8 @@ package src.UI.Dialog
 				InfoDialog.showMessageDialog("Info", data.error);
 				return;
 			}			
-			
+
+			Global.gameContainer.setUnreadForumIcon(false);
 			threadPaging.setData(data);
 			
 			tableThreads.clearSelection();
@@ -173,6 +175,7 @@ package src.UI.Dialog
 					break;					
 				}
 			}
+			
 		}
 		
 		private function onReceivePosts(e: Event): void {
@@ -203,18 +206,20 @@ package src.UI.Dialog
 			
 			pnlPostBottomContainer.setVisible(true);
 			
+			var lastRead : Number = data.thread.lastReadTimestamp;
+			
 			// create main post item
 			if (postPaging.page <= 1)	
-				pnlPostItemContainer.append(createPostItem(data.thread));
-			
+				pnlPostItemContainer.append(createPostItem(data.thread,lastRead));
+						
 			// create children posts
 			for each (var message: * in data.posts)
-				pnlPostItemContainer.append(createPostItem(message));			
+				pnlPostItemContainer.append(createPostItem(message,lastRead));			
 			
 			lastThreadId = data.thread.id;
 		}
 		
-		private function createPostItem(postData: * ): JPanel {
+		private function createPostItem(postData: * ,lastRead: Number): JPanel {
 			var post: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
 			
 			if (postData.subject) {
@@ -229,6 +234,10 @@ package src.UI.Dialog
 			var pnlHeader: JPanel = new JPanel(new BorderLayout(5));
 			
 			var lblCreated: JLabel = new JLabel(postData.createdInWords, null, AsWingConstants.LEFT);
+			
+			if (!lastRead || lastRead < postData.createdTimestamp) {
+				GameLookAndFeel.changeClass(lblCreated, "Message.unread");
+			}
 			
 			var pnlTools: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 5));			
 			
@@ -343,7 +352,7 @@ package src.UI.Dialog
 			pnlThreadBottomContainer.setConstraints("South");
 			
 			// Thread paging 
-			threadPaging = new PagingBar(loadThreadPage, false, true, true, true, false);
+			threadPaging = new PagingBar(loadThreadPage, false, true, true, true, true, false);
 			threadPaging.setConstraints("Center");
 			
 			// New thread button
@@ -361,7 +370,7 @@ package src.UI.Dialog
 			pnlPostBottomContainer.setConstraints("South");
 			
 			// Post paging bar
-			postPaging = new PagingBar(loadPostPage, true);
+			postPaging = new PagingBar(loadPostPage, true, true, true, true, true, false);
 			postPaging.setConstraints("Center");			
 			
 			// New post button
@@ -412,6 +421,28 @@ package src.UI.Dialog
 			appendAll(pnlThreadContainer, pnlPostContainer);
 			
 			clearPostView();
+		}
+		
+		public function createRefreshPanel(): JPanel {
+			pnlNewMessage =  new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 5, SoftBoxLayout.CENTER));
+			
+			var lbl: JLabel = new JLabel("There is a new tribe message!");
+			
+			var btn: JLabelButton = new JLabelButton("Refresh");
+			btn.addActionListener(function(e: Event = null) : void {
+				clearPostView();
+				loadThreadPage(0);
+				remove(pnlNewMessage);
+			});
+
+			GameLookAndFeel.changeClass(lbl, "darkHeader");
+			pnlNewMessage.appendAll(lbl,btn);
+			pnlNewMessage.setConstraints("North");
+			return pnlNewMessage;
+		}
+		
+		public function showRefreshButton(): void{
+			append(createRefreshPanel());
 		}
 	}
 

@@ -15,8 +15,9 @@
 	import src.UI.Components.ScreenMessages.BuiltInMessages;
 	import src.UI.Components.ScreenMessages.ScreenMessageItem;
 	import src.UI.Dialog.InfoDialog;
+	import src.UI.Dialog.TribeProfileDialog;
 	import src.UI.Components.ScreenMessages.BuiltInMessages;
-
+	
 	public class GeneralComm {
 
 		private var mapComm: MapComm;
@@ -49,6 +50,9 @@
 				case Commands.MESSAGE_UNREAD:
 					onMessageUnreadUpdate(e.packet);
 				break;
+				case Commands.FORUM_UNREAD:
+					onForumUnreadUpdate(e.packet);
+				break;
 			}
 		}
 		
@@ -60,7 +64,16 @@
 		private function onMessageUnreadUpdate(packet: Packet): void
 		{
 			Global.gameContainer.setUnreadMessageCount(packet.readInt());
-		}		
+		}
+		
+		private function onForumUnreadUpdate(packet: Packet): void
+		{
+			Global.gameContainer.setUnreadForumIcon(true);
+			var tribeProfileDialog: TribeProfileDialog = Global.gameContainer.findDialog(TribeProfileDialog); 
+			if (tribeProfileDialog) {
+				tribeProfileDialog.ReceiveNewMessage();
+			}
+		}
 		
 		private function onMessageBox(packet: Packet): void
 		{

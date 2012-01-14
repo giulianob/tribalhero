@@ -807,6 +807,11 @@
 			txtUnreadReports.visible = unreadReports > 0;				
 			if (unreadReports > 0) txtUnreadReports.txtUnreadCount.text = unreadReports > 9 ? "!" : unreadReports.toString();		
 		}
+		
+		public function setUnreadForumIcon(flag: Boolean): void
+		{
+			tribeInviteRequest.visible = flag;
+		}
 	}
 
 }

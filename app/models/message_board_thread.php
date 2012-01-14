@@ -40,8 +40,11 @@ class MessageBoardThread extends AppModel {
             return null;
 
         $thread = $this->find('first', array(
-                    'link' => array('Player' => array('fields' => array('id', 'name'))),
-                    'conditions' => array('MessageBoardThread.id' => $threadId, 'MessageBoardThread.deleted' => 0)
+            'link' => array(
+                'Player' => array('fields' => array('id', 'name')),
+                'MessageBoardRead' => array('conditions' => array('MessageBoardRead.player_id' => $playerId), 'fields' => array('MessageBoardRead.last_read'))
+            ),
+            'conditions' => array('MessageBoardThread.id' => $threadId, 'MessageBoardThread.deleted' => 0)
                 ));
 
         if (empty($thread) || $thread['MessageBoardThread']['tribe_id'] !== $tribeId)
@@ -82,18 +85,19 @@ class MessageBoardThread extends AppModel {
             return null;
 
         return array(
-            'contain' => array(
-                'Player' => array('fields' => array('id', 'name')),
-                'LastPostPlayer' => array('fields' => array('id', 'name'))
-            ),
             'conditions' => array(
                 'MessageBoardThread.tribe_id' => $tribeId,
                 'MessageBoardThread.deleted' => 0,
             ),
+            'link' => array(
+                'Player' => array('fields' => array('Player.id', 'Player.name')),
+                'LastPostPlayer' => array('class' => 'Player', 'fields' => array('LastPostPlayer.id', 'LastPostPlayer.name'), 'conditions' => array('exactly' => 'LastPostPlayer.id = MessageBoardThread.last_post_player_id')),
+                'MessageBoardRead' => array('conditions' => array('MessageBoardRead.player_id' => $playerId), 'fields' => array('MessageBoardRead.last_read'))
+            ),
             'page' => $page,
             'limit' => $this->limitPerPage,
             'order' => array('MessageBoardThread.sticky DESC', 'MessageBoardThread.last_post_date DESC'),
-            'fields' => array('last_post_date', 'message_board_post_count', 'subject', 'sticky', 'id'),
+            'fields' => array('MessageBoardThread.last_post_date', 'MessageBoardThread.message_board_post_count', 'MessageBoardThread.subject', 'MessageBoardThread.sticky', 'MessageBoardThread.id'),
         );
     }
 
@@ -104,8 +108,8 @@ class MessageBoardThread extends AppModel {
             return false;
 
         $thread = $this->find('first', array(
-                    'link' => array('Player' => array('fields' => array('id', 'name'))),
-                    'conditions' => array('MessageBoardThread.id' => $threadId, 'MessageBoardThread.tribe_id' => $tribesman['Tribesman']['tribe_id'], 'MessageBoardThread.deleted' => 0)
+            'link' => array('Player' => array('fields' => array('id', 'name'))),
+            'conditions' => array('MessageBoardThread.id' => $threadId, 'MessageBoardThread.tribe_id' => $tribesman['Tribesman']['tribe_id'], 'MessageBoardThread.deleted' => 0)
                 ));
 
         if (empty($thread))
@@ -118,9 +122,18 @@ class MessageBoardThread extends AppModel {
         $this->id = $threadId;
         $this->save(array(
             'deleted' => true
-        ), false);
+                ), false);
 
         return true;
+    }
+    public function getUnreadMessage($playerId) {
+        $unreadMessageBoard = $this->query("select count(*) as thread from `message_board_threads` 
+            inner join `message_board_read`
+            on message_board_read.player_id=".$playerId."
+            and message_board_threads.id=message_board_read.message_board_thread_id
+            and message_board_threads.last_post_date>message_board_read.last_read");
+        return $unreadMessageBoard[0][0]['thread'];
+        
     }
 
 }

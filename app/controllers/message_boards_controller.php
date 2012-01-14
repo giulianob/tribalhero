@@ -7,7 +7,7 @@
 class MessageBoardsController extends AppController {
 
     var $helpers = array('Time', 'Text');
-    var $uses = array('MessageBoardThread', 'MessageBoardPost');
+    var $uses = array('MessageBoardThread', 'MessageBoardPost','MessageBoardRead','Player');
     var $allowedFromGame = array('listing', 'view', 'del_thread', 'del_post', 'add_thread', 'add_post', 'sticky_thread');
 
     function listing() {
@@ -42,6 +42,8 @@ class MessageBoardsController extends AppController {
 
         $this->paginate = $this->MessageBoardPost->getPostsForThread($id, $page);
 
+        $this->MessageBoardRead->updateLastRead($playerId, $id);
+        
         $this->set('thread', $thread);
         $this->set('posts', $this->paginate('MessageBoardPost'));
     }
@@ -69,6 +71,8 @@ class MessageBoardsController extends AppController {
         else
             $data = array('success' => true);
         
+        $this->MessageBoardRead->updateLastRead($playerId, $id);
+        
         $this->set('data', $data);
         $this->render('/elements/to_json');
     }
@@ -79,6 +83,9 @@ class MessageBoardsController extends AppController {
         $message = rtrim($this->params['form']['message']);
 
         $data = $this->MessageBoardThread->addThread($playerId, $subject, $message);
+        $this->MessageBoardRead->updateLastRead($playerId, $data['id']);
+ 
+        $this->signal_server($playerId);
 
         $this->set(compact('data'));
         $this->render('/elements/to_json');
@@ -91,11 +98,14 @@ class MessageBoardsController extends AppController {
 
         $thread = $this->MessageBoardThread->getThreadHeader($playerId, $threadId);
 
-        if (empty($thread))
+        if (empty($thread)) {
             $data = array('success' => false, 'error' => 'Thread specified does not exist');
-        else
+        } else {
             $data = $this->MessageBoardPost->addPost($playerId, $threadId, $message);
-
+            $this->MessageBoardRead->updateLastRead($playerId, $threadId);
+            $this->signal_server($playerId);
+        }
+        
         $this->set(compact('data'));
         $this->render('/elements/to_json');
     }
@@ -104,4 +114,19 @@ class MessageBoardsController extends AppController {
         
     }
 
+    private function signal_server($playerId) {
+        try
+        {
+            $transport = $this->Thrift->getTransportFor('Notification');
+            $protocol = $this->Thrift->getProtocol($transport);
+            $notificationRpc = new NotificationClient($protocol);
+            $transport->open();                                                     
+            $notificationRpc->NewTribeForumPost($this->Player->getTribeId($playerId), $playerId);
+            $transport->close();
+        }
+        catch (Exception $e)
+        {
+            debug($e);
+        }
+    }
 }

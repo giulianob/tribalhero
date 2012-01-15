@@ -100,16 +100,16 @@ namespace Game.Battle
             return battleTroopId;
         }
 
-        public void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker)
+        public void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId)
         {
             dbManager.Query(
-                string.Format(@"INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP(), null, null)",
+                string.Format(@"INSERT INTO `{0}` VALUES ('', @city_id, @troop_id, @battle_id, @object_id, @is_attacker, 0, 0, 0, 0, 0, 0, 0, 0, 0, UTC_TIMESTAMP(), @report_id, null)",
                               BATTLE_REPORT_VIEWS_DB),
                 new[]
                                 {
                                         new DbColumn("city_id", cityId, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.Byte),
                                         new DbColumn("battle_id", battleId, DbType.UInt32), new DbColumn("object_id", groupId, DbType.UInt32),
-                                        new DbColumn("is_attacker", isAttacker, DbType.Boolean)
+                                        new DbColumn("is_attacker", isAttacker, DbType.Boolean), new DbColumn("report_id", enterBattleReportId, DbType.UInt32)
                                 });
         }
 
@@ -183,6 +183,18 @@ namespace Game.Battle
                                     new DbColumn("bonus_wood", bonusResource.Wood, DbType.Int32), new DbColumn("bonus_crop", bonusResource.Crop, DbType.Int32),
                                     new DbColumn("bonus_iron", bonusResource.Iron, DbType.Int32), new DbColumn("bonus_gold", bonusResource.Gold, DbType.Int32),
                                     new DbColumn("id", reportViewId, DbType.UInt32)
+                            });
+        }
+
+        public void SnapBattleReportViewExit(uint battleId, uint groupId, uint reportId)
+        {
+            dbManager.Query(
+                            string.Format(@"UPDATE `{0}` SET `battle_report_exit_id` = @report_id WHERE `battle_id` = @battle_id AND `group_id` = @group_id",
+                                          BATTLE_REPORT_VIEWS_DB),
+                            new[]
+                            {
+                                    new DbColumn("report_id", reportId, DbType.UInt32), new DbColumn("battle_id", battleId, DbType.UInt32),
+                                    new DbColumn("group_id", groupId, DbType.UInt32),
                             });
         }
     }

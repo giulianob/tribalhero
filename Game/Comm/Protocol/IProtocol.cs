@@ -13,5 +13,11 @@ namespace Game.Comm.Protocol
         /// </summary>
         /// <param name="unreadCount"></param>
         void BattleReportSendUnreadCount(int unreadCount);
+
+        /// <summary>
+        /// Sends the forum unread command to the client
+        /// </summary>
+        /// <param name="unreadCount"></param>
+        void MessageBoardSendUnread();
     }
 }

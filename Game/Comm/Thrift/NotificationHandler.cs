@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Comm.Protocol;
 using Game.Data;
+using Game.Data.Tribe;
 using Game.Util.Locking;
 
 namespace Game.Comm.Thrift
@@ -33,9 +35,26 @@ namespace Game.Comm.Thrift
             }
         }
 
-        public void NewTribeForumPost(int tribeId, int unreadCount)
+        public void NewTribeForumPost(int tribeId, int playerId)
         {
-            throw new NotImplementedException();
+            ITribe tribe;
+            if (!Global.Tribes.TryGetValue((uint)tribeId, out tribe))
+                return;
+
+            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))
+            {
+                foreach (var tribesman in tribe.Tribesmen.Where(tribesman => tribesman.Player.Session != null && tribesman.Player.PlayerId!=playerId))
+                {
+                    try
+                    {
+                        protocolFactory.CreateProtocol(tribesman.Player.Session).MessageBoardSendUnread();
+                    }
+                    catch
+                    {
+                    }
+                }
+
+            }
         }
 
         public void NewBattleReport(List<PlayerUnreadCount> playerUnreadCounts)

@@ -218,6 +218,14 @@ namespace Game.Battle
             }
         }
 
+        public override Resource GroupLoot
+        {
+            get
+            {
+                return troopStub.TroopObject.Stats.Loot;
+            }
+        }
+
         public override Resource Loot
         {
             get

@@ -177,6 +177,7 @@
 					targetCityName: packet.readString(),
 					attackMode: packet.readByte(),
 					dispatchCount: packet.readUInt(),
+					description: packet.readString(),
 					troopCount: packet.readInt(),
 					troops: []
 				};

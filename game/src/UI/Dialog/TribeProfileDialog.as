@@ -20,6 +20,7 @@
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
+	import src.Util.*;
 	
 	public class TribeProfileDialog extends GameJPanel
 	{
@@ -142,9 +143,17 @@
 			btnJoin.setConstraints("East");
 			
 			var btnDetails: JLabelButton = new JLabelButton("Details", null, AsWingConstants.LEFT);
-			btnDetails.setConstraints("Center");						
+
+			var lblDescription: JLabel = new JLabel(StringHelper.truncate(assignment.description,75), null, AsWingConstants.LEFT);
+			lblDescription.setConstraints("Center");
+			if (assignment.description != "") 
+				new SimpleTooltip(lblDescription, assignment.description);
 			
-			pnlBottom.appendAll(btnDetails, btnJoin);
+			var pnlButtons: JPanel = new JPanel(new FlowLayout());
+			pnlButtons.appendAll(btnDetails, btnJoin);
+			pnlButtons.setConstraints("East");
+			
+			pnlBottom.appendAll(lblDescription, pnlButtons);
 			
 			pnlContainer.appendAll(pnlHeader, pnlBottom);
 			

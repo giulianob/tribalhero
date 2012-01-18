@@ -86,6 +86,11 @@ namespace Game.Data.Tribe
         public AttackMode AttackMode { get; private set; }
 
         /// <summary>
+        /// Description of assignement
+        /// </summary>
+        public string Description { get; private set; }
+
+        /// <summary>
         /// Number of stubs that have already been dispatched
         /// </summary>
         public uint DispatchCount { get; private set; }
@@ -104,7 +109,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment.
         /// An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
         /// </summary>
-        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, string description, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -122,6 +127,7 @@ namespace Game.Data.Tribe
             Y = y;
             AttackMode = mode;
             DispatchCount = 0;
+            Description = description;
 
             assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
         }
@@ -130,7 +136,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment. 
         /// NOTE: This constructor is used by the db loader. Use the other constructor when creating a new assignment from scratch.
         /// </summary>
-        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, string description, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -148,6 +154,7 @@ namespace Game.Data.Tribe
             Y = y;
             AttackMode = mode;
             DispatchCount = dispatchCount;
+            Description = description;
 
             IdGen.Set(id);
         }
@@ -407,13 +414,11 @@ namespace Game.Data.Tribe
             {
                 return new[]
                        {
-                              new DbColumn("tribe_id", Tribe.Id, DbType.UInt32),
-                              new DbColumn("city_id", TargetCity.Id, DbType.UInt32),
-                              new DbColumn("x", X, DbType.UInt32),
-                              new DbColumn("y", Y, DbType.UInt32),
-                              new DbColumn("mode",Enum.GetName(typeof(AttackMode),AttackMode),DbType.String),
-                              new DbColumn("attack_time",TargetTime,DbType.DateTime), 
-                              new DbColumn("dispatch_count", DispatchCount, DbType.UInt32),
+                               new DbColumn("tribe_id", Tribe.Id, DbType.UInt32), new DbColumn("city_id", TargetCity.Id, DbType.UInt32),
+                               new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.UInt32),
+                               new DbColumn("mode", Enum.GetName(typeof(AttackMode), AttackMode), DbType.String),
+                               new DbColumn("attack_time", TargetTime, DbType.DateTime), new DbColumn("dispatch_count", DispatchCount, DbType.UInt32),
+                               new DbColumn("description", Description, DbType.String, 250),
                        };
             }
         }

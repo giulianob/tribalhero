@@ -132,6 +132,14 @@ namespace Game.Battle
             }
         }
 
+        public override Resource GroupLoot
+        {
+            get
+            {
+                return new Resource();
+            }
+        }
+
         public override Resource Loot
         {
             get

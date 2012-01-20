@@ -6,11 +6,10 @@ using Game.Data.Troop;
 using Game.Logic.Actions;
 
 namespace Game.Data.Tribe
-{
+{ 
     public interface IAssignmentFactory
     {
-        Assignment CreateAssignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub);
-
-        Assignment CreateAssignmentFromDb(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount);
+        Assignment CreateAssignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, string description);
+        Assignment CreateAssignmentFromDb(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, string description);
     }
 }

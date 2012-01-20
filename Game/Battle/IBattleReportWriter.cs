@@ -17,10 +17,12 @@ namespace Game.Battle
 
         uint SnapTroop(uint reportId, ReportState state, uint cityId, byte troopId, uint objectId, bool isAttacker, Resource loot);
 
-        void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker);
+        void SnapBattleReportView(uint cityId, byte troopId, uint battleId, uint groupId, bool isAttacker, uint enterBattleReportId);
 
         void SnapCombatObject(uint troopId, CombatObject co);
 
         void SnapLootedResources(uint cityId, byte troopId, uint battleId, Resource lootResource, Resource bonusResource);
+
+        void SnapBattleReportViewExit(uint battleId, uint groupId, uint reportId);
     }
 }

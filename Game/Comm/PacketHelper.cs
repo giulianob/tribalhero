@@ -278,7 +278,7 @@ namespace Game.Comm
                     packet.AddByte(1);
                 packet.AddUInt16(obj.Type);
                 packet.AddByte(obj.Lvl);
-                packet.AddUInt32((uint)obj.Hp);
+                packet.AddUInt32((uint)Math.Ceiling(obj.Hp));
                 packet.AddUInt16((ushort)obj.Stats.MaxHp);
             }
         }
@@ -378,6 +378,7 @@ namespace Game.Comm
             packet.AddString(assignment.TargetCity.Name);
             packet.AddByte((byte)assignment.AttackMode);
             packet.AddUInt32(assignment.DispatchCount);
+            packet.AddString(assignment.Description);
             packet.AddInt32(assignment.TroopCount);
             foreach (var assignmentTroop in (IEnumerable<Assignment.AssignmentTroop>)assignment)
             {

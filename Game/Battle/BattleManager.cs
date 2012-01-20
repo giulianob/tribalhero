@@ -54,7 +54,7 @@ namespace Game.Battle
             this.dbManager = dbManager;            
             this.combatUnitFactory = combatUnitFactory;
             this.objectTypeFactory = objectTypeFactory;
-            city = (ICity)owner;
+            city = owner;
             report = battleReport;
 
             // Group id 1 is reserved for local troop
@@ -405,7 +405,8 @@ namespace Game.Battle
                     return;
 
                 report.WriteReportObjects(list, false, state);
-                EventWithdrawDefender(list);
+                EventWithdrawDefender(list);                               
+                
                 RefreshBattleOrder();
             }
         }

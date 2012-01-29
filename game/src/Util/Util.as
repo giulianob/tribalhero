@@ -184,7 +184,7 @@ package src.Util {
 				if (conj)
 				return "less than a minute";
 				else
-				return "minute";
+				return "1 minute";
 			}
 
 			var hours: int = int(time / (60 * 60));

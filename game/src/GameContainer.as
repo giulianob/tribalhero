@@ -231,13 +231,7 @@
 		public function onViewTribe(e: MouseEvent) :void
 		{			
 			if (Constants.tribeId != 0) {				
-				Global.mapComm.Tribe.viewTribeProfile(function(profileData: *): void {
-					if (!profileData) 
-						return;
-					
-					var dialog: TribeProfileDialog = new TribeProfileDialog(profileData);
-					dialog.show();
-				});
+				Global.mapComm.Tribe.viewTribeProfile();
 			}
 			else if (Constants.tribeInviteId != 0) {
 				var tribeInviteDialog: TribeInviteRequestDialog = new TribeInviteRequestDialog(function(sender: TribeInviteRequestDialog) : void {

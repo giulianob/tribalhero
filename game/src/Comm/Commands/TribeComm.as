@@ -14,6 +14,7 @@
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.TribeProfileDialog;
+	import src.UI.Dialog.TribePublicProfileDialog;
 	import src.Util.*;
 	import src.UI.Components.ScreenMessages.BuiltInMessages;
 
@@ -94,7 +95,7 @@
 			}
 		}
 		
-		public function viewTribeProfile(callback: Function):void {
+		public function viewTribeProfile(callback: Function = null):void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_INFO;
 
@@ -106,10 +107,12 @@
 			packet.cmd = Commands.TRIBE_DESCRIPTION_SET;
 			packet.writeString(description);
 
+			mapComm.showLoading();
 			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
 		}		
 		
-		public function onReceiveTribeProfile(packet: Packet, custom: *):void {
+		public function onReceiveTribeProfile(packet: Packet, custom: * ):void {
+			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
 				return;
@@ -218,27 +221,38 @@
 				profileData.assignments.push(assignment);
 			}
 			
-			custom.callback(profileData);
+			if (custom.callback)
+				custom.callback(profileData);
+			else
+			{			
+				if (!profileData) 
+					return;
+			
+				var dialog: TribeProfileDialog = new TribeProfileDialog(profileData);
+				dialog.show();		
+			}		
 		}
 		
-		public function viewTribePublicProfile(tribe: *, callback: Function):void {
+		public function viewTribePublicProfile(tribeId: int, callback: Function = null):void {
 			var packet: Packet = new Packet();
 			
 			packet.cmd = Commands.TRIBE_PUBLIC_INFO;
-			packet.writeUInt(tribe.tribeId);
+			packet.writeUInt(tribeId);
 
-			session.write(packet, onReceiveTribePublicProfile, { tribe: tribe, callback: callback } );
+			mapComm.showLoading();
+			session.write(packet, onReceiveTribePublicProfile, { callback: callback } );
 		}	
 		
-		public function onReceiveTribePublicProfile(packet: Packet, custom: *):void {
+		public function onReceiveTribePublicProfile(packet: Packet, custom: * ):void {
+			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
 				custom.callback(null);
 				return;
 			}
 			
 			var profileData: * = new Object();
-			profileData.tribeId = custom.tribe.tribeId;
-			profileData.tribeName = custom.tribe.tribeName;
+			profileData.tribeId = packet.readUInt();
+			profileData.tribeName = packet.readString();
 			profileData.members = [];
 			var memberCount: int = packet.readShort();
 			for (var i: int = 0; i < memberCount; i++)
@@ -250,7 +264,17 @@
 				});
 				
 			(profileData.members as Array).sortOn("rank", [Array.NUMERIC]);
-			custom.callback(profileData);
+			
+			if (custom.callback)
+				custom.callback(profileData);
+			else
+			{			
+				if (!profileData) 
+					return;
+			
+				var dialog: TribePublicProfileDialog = new TribePublicProfileDialog(profileData);
+				dialog.show();		
+			}			
 		}
 		
 		public function setRank(playerId: int, newRank: int) : void {

@@ -11,7 +11,7 @@ define('TROOP_STATE_RETREATING', 4);
 define('TROOP_STATE_REINFORCED', 5);
 define('TROOP_STATE_OUT_OF_STAMINA', 6);
 
-define('BATTLE_VIEW_MIN_ROUNDS', 5);
+define('BATTLE_VIEW_MIN_ROUND', 5);
 
 define('FLASH_DOMAIN', '*.tribalhero.com');
 

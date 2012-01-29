@@ -10,9 +10,6 @@ class MessageBoardThread extends AppModel {
     var $hasMany = array(
         'MessageBoardPost'
     );
-    var $hasAndBelongsToMany = array(
-        'Player' => array('with' => 'MessageBoardRead'),
-    );    
     var $validate = array(
         'message' => array(
             'maxLength' => array(

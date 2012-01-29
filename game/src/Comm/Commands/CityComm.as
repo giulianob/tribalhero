@@ -260,7 +260,7 @@
 			session.write(packet, onReceivePlayerProfile, {callback: callback});
 		}
 		
-		public function viewPlayerProfileByName(playerName: String, callback: Function):void {
+		public function viewPlayerProfileByName(playerName: String, callback: Function = null):void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.PLAYER_PROFILE;
 			packet.writeUInt(0);
@@ -273,7 +273,8 @@
 		public function onReceivePlayerProfile(packet: Packet, custom: * ):void {
 			mapComm.hideLoading();
 			if (MapComm.tryShowError(packet)) {
-				custom.callback(null);
+				if (custom.callback) 
+					custom.callback(null);
 				return;
 			}
 			

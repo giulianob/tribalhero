@@ -67,6 +67,7 @@
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
 		{
 			super.showSelf(owner, modal, onClose, dispose);
+			Global.gameContainer.closeAllFramesByType(TribeProfileDialog);
 			Global.gameContainer.showFrame(frame);
 			return frame;
 		}

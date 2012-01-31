@@ -247,37 +247,11 @@ namespace Game.Logic.Actions
 
         private void WeaponExport()
         {
-            int weaponExportMarket = 0;
-            int weaponExportMax = 0;
-
-            InitVars += city =>
-                {
-                    weaponExportMax = 0;
-                    weaponExportMarket = 0;
-                };
-
-            FirstLoop += (city, structure) =>
-                {
-                    if (!everyOther)
-                        return;
-
-                    var effects = structure.Technologies.GetEffects(EffectCode.WeaponExport, EffectInheritance.Self);
-
-                    if (effects.Count > 0)
-                    {
-                        int weaponExportLvl = effects.Max(x => (int)x.Value[0]);
-                        weaponExportMax = Math.Max(weaponExportMax, weaponExportLvl);
-                    }
-
-                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Market", structure))
-                        weaponExportMarket += structure.Lvl;
-                };
 
             PostFirstLoop += city =>
                 {
-                    if (city.Resource.Gold.Value > weaponExportMax * 500) return;
-                    int gold = weaponExportMax*weaponExportMarket;
-                    gold += Formula.Current.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
+                    var weaponExportMax = city.Technologies.GetEffects(EffectCode.WeaponExport).DefaultIfEmpty().Max(x =>x==null?0:(int)x.Value[0]);
+                    int gold = Formula.Current.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
                     if (gold <= 0)
                         return;
                     city.Resource.Gold.Add(gold);

@@ -146,7 +146,9 @@ namespace Game.Logic.Formulas
             return (ushort)city.Sum(x => x.Lvl);
         }
 
-        public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor) {
+        public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor)
+        {
+            labor = Math.Min(labor, weaponExport*60);
             switch(weaponExport) 
             {
                 case 1:

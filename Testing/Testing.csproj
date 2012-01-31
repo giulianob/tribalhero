@@ -102,6 +102,7 @@
     <Compile Include="Battle\StatsModCalculator.cs" />
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
+    <Compile Include="Formulas\WeaponExportTest.cs" />
     <Compile Include="Formulas\MoveTimeTotalTest.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />
     <Compile Include="MapMath\ForeachTest.cs" />

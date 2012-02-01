@@ -12,7 +12,7 @@ class MessageBoardThread extends AppModel {
     );
     var $hasAndBelongsToMany = array(
         'Player' => array('with' => 'MessageBoardRead'),
-    );    
+    );
     var $validate = array(
         'message' => array(
             'maxLength' => array(
@@ -31,7 +31,7 @@ class MessageBoardThread extends AppModel {
             )
         )
     );
-    var $limitPerPage = 40;
+    var $limitPerPage = 20;
 
     public function getThreadHeader($playerId, $threadId) {
         $tribeId = $this->Player->getTribeId($playerId);
@@ -72,7 +72,8 @@ class MessageBoardThread extends AppModel {
 
         if ($this->save($newMessage)) {
             return array('success' => true, 'id' => $this->id);
-        } else {
+        }
+        else {
             $errors = $this->invalidFields();
             return array('success' => false, 'error' => reset($errors));
         }
@@ -92,7 +93,7 @@ class MessageBoardThread extends AppModel {
             'link' => array(
                 'Player' => array('fields' => array('Player.id', 'Player.name')),
                 'LastPostPlayer' => array('class' => 'Player', 'fields' => array('LastPostPlayer.id', 'LastPostPlayer.name'), 'conditions' => array('exactly' => 'LastPostPlayer.id = MessageBoardThread.last_post_player_id')),
-                'MessageBoardRead' => array('conditions' => array('MessageBoardRead.player_id' => $playerId), 'fields' => array('MessageBoardRead.last_read'))
+                'MessageBoardRead' => array('conditions' => array('MessageBoardThread.last_post_date >' => $this->toSqlTime(strtotime('-2 weeks')), 'MessageBoardRead.player_id' => $playerId), 'fields' => array('MessageBoardRead.last_read'))
             ),
             'page' => $page,
             'limit' => $this->limitPerPage,
@@ -126,14 +127,17 @@ class MessageBoardThread extends AppModel {
 
         return true;
     }
+
     public function getUnreadMessage($playerId) {
-        $unreadMessageBoard = $this->query("select count(*) as thread from `message_board_threads` 
-            inner join `message_board_read`
-            on message_board_read.player_id=".$playerId."
-            and message_board_threads.id=message_board_read.message_board_thread_id
-            and message_board_threads.last_post_date>message_board_read.last_read");
-        return $unreadMessageBoard[0][0]['thread'];
-        
+        $someUnreadThread = $this->find('first', array(
+            'link' => array(
+                'MessageBoardRead' => array(
+                    'conditions' => array('MessageBoardRead.player_id' => $playerId, 'MessageBoardThread.last_post_date >' => 'MessageBoardRead.last_read')
+                )
+            ),
+            'conditions' => array('MessageBoardThread.last_post_date >' => $this->toSqlTime(strtotime('-2 weeks')))));
+
+        return !empty($someUnreadThread);
     }
 
 }

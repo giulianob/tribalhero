@@ -53,7 +53,7 @@
 			Constants.tribeId = packet.readUInt();
 			Constants.tribeInviteId = packet.readUInt();
 			Constants.tribeRank = packet.readUByte();
-			Global.gameContainer.tribeInviteRequest.visible = Constants.tribeInviteId > 0;
+			Global.gameContainer.tribeNotificationIcon.visible = Constants.tribeInviteId > 0;
 		}
 		
 		public function contribute(cityId: int, resources: Resources, callback: Function): void {

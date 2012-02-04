@@ -162,7 +162,7 @@ package src.UI.Dialog
 			
 			tableThreads.clearSelection();
 			
-			modelThreads.clear();
+			modelThreads.clear();			
 			modelThreads.appendAll(data.messages);
 			
 			// try to reselect the last selected thread
@@ -430,9 +430,10 @@ package src.UI.Dialog
 			
 			var btn: JLabelButton = new JLabelButton("Refresh");
 			btn.addActionListener(function(e: Event = null) : void {
-				clearPostView();
-				loadThreadPage(0);
 				remove(pnlNewMessage);
+				clearPostView();
+				lastThreadId = -1;				
+				threadPaging.refreshPage(0);
 			});
 
 			GameLookAndFeel.changeClass(lbl, "darkHeader");

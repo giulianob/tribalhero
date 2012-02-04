@@ -105,9 +105,9 @@
 			addChildAt(barBg, 1);
 
 			// Hide the menu bubbles
-			tribeInviteRequest.visible = false;
-			tribeInviteRequest.mouseChildren = false;
-			tribeInviteRequest.mouseEnabled = false;
+			tribeNotificationIcon.visible = false;
+			tribeNotificationIcon.mouseChildren = false;
+			tribeNotificationIcon.mouseEnabled = false;
 			
 			txtUnreadMessages.visible = false;
 			txtUnreadMessages.mouseChildren = false;
@@ -115,11 +115,7 @@
 
 			txtUnreadReports.visible = false;
 			txtUnreadReports.mouseChildren = false;
-			txtUnreadReports.mouseEnabled = false;
-			
-			txtIncoming.visible = false;
-			txtIncoming.mouseChildren = false;
-			txtIncoming.mouseEnabled = false;
+			txtUnreadReports.mouseEnabled = false;			
 
 			// Add key down listener to stage
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
@@ -810,7 +806,7 @@
 		
 		public function setUnreadForumIcon(flag: Boolean): void
 		{
-			tribeInviteRequest.visible = flag;
+			tribeNotificationIcon.visible = flag;
 		}
 	}
 

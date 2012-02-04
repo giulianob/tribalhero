@@ -32,10 +32,10 @@ package src.UI.Tooltips {
 		}
 		
 		public function bind(obj: DisplayObject) : void {
-			obj.addEventListener(MouseEvent.ROLL_OVER, function(e: Event): void {
+			obj.addEventListener(MouseEvent.MOUSE_MOVE, function(e: Event): void {
 				show(obj);
 			});
-			obj.addEventListener(MouseEvent.ROLL_OUT, function(e: Event): void {
+			obj.addEventListener(MouseEvent.MOUSE_OUT, function(e: Event): void {
 				hide();
 			});			
 		}

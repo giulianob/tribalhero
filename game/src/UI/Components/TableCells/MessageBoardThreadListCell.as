@@ -17,7 +17,6 @@
 		protected var wrapper: JPanel;
 		
 		private var lblSubject: JLabel;
-		private var isCleared: Boolean = false;
 		
 		public function MessageBoardThreadListCell()
 		{
@@ -32,20 +31,23 @@
 			super.setTableCellStatus(table, isSelected, row, column);
 			
 			if (isSelected) {
-				GameLookAndFeel.changeClass(lblSubject, "Message.read");
-				isCleared = true;
+				GameLookAndFeel.changeClass(lblSubject, "Message.read");			
 			}
 		}
 
 		override public function setCellValue(value:*):void
 		{
+			if (this.getCellValue() && this.getCellValue().id == value.id) {
+				return;
+			}
+			
 			super.setCellValue(value);
 			wrapper.removeAll();
 			
 			lblSubject = new JLabel(StringHelper.truncate(value.subject, 100), null, AsWingConstants.LEFT);
 			
 			// Change to unread if it has never been read or there have not been any new messages since last time we read it
-			if ((!value.lastReadTimestamp || value.lastReadTimestamp < value.lastPostTimestamp) && !isCleared) {
+			if ((!value.lastReadTimestamp || value.lastReadTimestamp < value.lastPostTimestamp)) {
 				GameLookAndFeel.changeClass(lblSubject, "Message.unread");
 			} else {
 				GameLookAndFeel.changeClass(lblSubject, "Message.read");

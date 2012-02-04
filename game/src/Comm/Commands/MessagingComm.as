@@ -39,7 +39,7 @@
 				
 				Global.gameContainer.setUnreadBattleReportCount(unreadReports);
 				Global.gameContainer.setUnreadMessageCount(unreadMessages);
-				if(unreadForum>0) {
+				if (unreadForum) {
 					Global.gameContainer.setUnreadForumIcon(true);
 				}
 			}

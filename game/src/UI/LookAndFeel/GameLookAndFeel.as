@@ -47,6 +47,10 @@
 
 			return null;
 		}
+		
+		public static function getDefaultAttribute(attribute: String) : * {
+			return UIManager.getDefaults().get(attribute);
+		}
 
 		override protected function initComponentDefaults(table:UIDefaults):void{
 			super.initComponentDefaults(table);
@@ -66,6 +70,11 @@
 			"Class.header", [
 			"Label.font", new ASFontUIResource("Arial", 13, true),
 			"Label.foreground", new ASColorUIResource(0xFFFFFF)
+			],
+			
+			"Class.darkSectionHeader", [
+			"Label.font", new ASFontUIResource("Arial", 15, true),
+			"Label.foreground", new ASColorUIResource(0x000000),
 			],
 
 			"Class.darkHeader", [

@@ -149,7 +149,7 @@
 			Constants.tribeId = packet.readUInt();
 			Constants.tribeInviteId = packet.readUInt();
 			Constants.tribeRank = packet.readUByte();
-			Global.gameContainer.tribeInviteRequest.visible = Constants.tribeInviteId > 0;			
+			Global.gameContainer.tribeNotificationIcon.visible = Constants.tribeInviteId > 0;			
 			
 			var tribeName: String = packet.readString();
 			if (Constants.tribeId > 0) {

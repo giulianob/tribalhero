@@ -141,13 +141,14 @@ namespace Game.Battle
             this.baseValue = baseValue;
         }
 
-        public override double GetResult() {
-            return (baseValue + parameters["RAW_BONUS"].Sum) * parameters["CALL_TO_ARM_BONUS"].Max / 100 * parameters["PERCENT_BONUS"].Product / Math.Pow(100, parameters["PERCENT_BONUS"].Count);
+        public override double GetResult()
+        {
+            return (baseValue + parameters["RAW_BONUS"].Sum)*parameters["CALL_TO_ARM_BONUS"].Max/100*(100 + Math.Min(parameters["PERCENT_BONUS"].Sum, 150))/100;
         }
 
         protected override void SetParameters() {
             parameters.Add("RAW_BONUS", new ModParameter(0));
-            parameters.Add("PERCENT_BONUS", new ModParameter(100));
+            parameters.Add("PERCENT_BONUS", new ModParameter(0));
             parameters.Add("CALL_TO_ARM_BONUS", new ModParameter(100));
         }
     }

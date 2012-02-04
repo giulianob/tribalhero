@@ -176,7 +176,8 @@ namespace Game.Database
                                                            city,
                                                            (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
                                                            DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
-                                                           (uint)reader["dispatch_count"]);
+                                                           (uint)reader["dispatch_count"],
+                                                           (string)reader["description"]);
 
                     using (DbDataReader listReader = dbManager.SelectList(assignment))
                     {

@@ -1,11 +1,8 @@
 ﻿package src.UI
 {
 	import org.aswing.JFrame;
+	import src.Constants;
 
-	/**
-	 * ...
-	 * @author Giuliano
-	 */
 	public class GameJFrame extends JFrame
 	{
 
@@ -22,6 +19,12 @@
 		{
 			super.dispose();
 			if (onDispose != null) onDispose();
+		}
+		
+		public function resizeToContents():void
+		{
+			setPreferredHeight(Math.min(getHeight(), Constants.screenH));
+			pack();
 		}
 	}
 }

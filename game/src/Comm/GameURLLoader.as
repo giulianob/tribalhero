@@ -33,29 +33,26 @@
 		}
 		
 		public function load(path: String, params: Array, includeLoginInfo: Boolean = true, showLoadingMessage: Boolean = true) : void {			
-			var request: URLRequest = new URLRequest("http://" + Constants.hostname + path);
-			
-			var first: Boolean = true;
+			var request: URLRequest = new URLRequest("http://" + Constants.hostname + path);			
+			var variables :URLVariables = new URLVariables();
 			
 			if (includeLoginInfo) {
-				first = false;
-				request.data = "sessionId=" + Constants.sessionId + "&playerId=" + Constants.playerId;
+				variables.sessionId = Constants.sessionId;
+				variables.playerId = Constants.playerId;
 			}
-			
+
 			for each (var obj: * in params) {
-				if (!first) request.data += "&";
-				first = false; 
 				if (obj.value is Array) {
 					for (var i: int = 0; i < (obj.value as Array).length; i++) {
-						if (i > 0) request.data += "&";
-						request.data += obj.key + "[]=" + obj.value[i];
+						variables[obj.key + "[]"] = obj.value[i];
 					}
 				}
 				else {
-					request.data += obj.key + "=" + obj.value;
+					variables[obj.key] = obj.value;
 				}
 			}
 			
+			request.data = variables;			
 			request.method = URLRequestMethod.POST;
 			
 			if (showLoadingMessage)

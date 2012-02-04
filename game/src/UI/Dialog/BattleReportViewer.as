@@ -17,227 +17,307 @@
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
 	import src.Util.*;
-
+	
 	public class BattleReportViewer extends GameJPanel
 	{
-
-		private var pnlSnapshotsScroll: JScrollPane;
-		private var pnlSnapshots: JPanel;
-		private var pnlFooter:JPanel;
-		private var chkViewAll:JCheckBox;
 		private var pnlResources:JPanel;
-
-		private var data: Object;
-
-		private var loader: GameURLLoader = new GameURLLoader();
-		private var id: int;
-		private var isLocal: Boolean;
-		private var playerNameFilter: String;
+		private var pnlGroupOutcomeTableHolder:JPanel;
 		
-		public var refreshOnClose: Boolean;
-
-		public function BattleReportViewer(id: int, playerNameFilter: String, isLocal: Boolean)
+		private var pnlBattleStatsLooted:JPanel;
+		private var lblBattleStatsTime:JLabel;
+		private var lblBattleStatsStructuresDestroyed:JLabel;
+		private var lblBattleStatsAttackUnits:JLabel;
+		private var lblBattleStatsDefenseUnits:JLabel;
+		private var lblBattleStatsTribes:JLabel;
+		private var tooltipBattleStatsTribes:Tooltip;
+		private var pnlBattleStatsTribesDefenders:JPanel;
+		private var pnlBattleStatsTribesAttackers:JPanel;
+		private var pnlImportantEvents:JPanel;
+		private var lblLoadMoreEvents:JLabelButton;		
+		
+		private var loader:GameURLLoader = new GameURLLoader();
+		private var eventLoader:GameURLLoader = new GameURLLoader();
+		private var id:int;
+		private var isLocal:Boolean;
+		private var playerNameFilter:String;
+		private var currentPage: int = 0;
+		private var pnlGroupOutcome:JPanel;
+		private var pnlBattleStats:JPanel;
+		private var pnlHolder:JPanel;
+		private var scrollPanel:JScrollPane;
+		private var lblOutcomeOnly:JLabel;
+		private var snapshotLoader: GameURLLoader;
+		
+		public var refreshOnClose:Boolean;
+		
+		public function BattleReportViewer(id:int, playerNameFilter:String, isLocal:Boolean)
 		{
 			this.id = id;
 			this.isLocal = isLocal;
-			this.playerNameFilter = playerNameFilter;
-
-			createUI();
-
-			chkViewAll.addActionListener(function(): void {
-				renderSnapshots();
-			});
-
-			loader.addEventListener(Event.COMPLETE, onLoaded);	
+			this.playerNameFilter = playerNameFilter;	
+			
+			snapshotLoader = new GameURLLoader();
+			snapshotLoader.addEventListener(Event.COMPLETE, onLoadSnapshot);
+			
+			loader.addEventListener(Event.COMPLETE, onLoadedReport);
+			eventLoader.addEventListener(Event.COMPLETE, onLoadedEvents);
 		}
-
-		private function load(playerNameFilter: String) : void {			
-			if (isLocal)
-				Global.mapComm.BattleReport.viewLocal(loader, id, playerNameFilter);
-			else
-				Global.mapComm.BattleReport.viewRemote(loader, id, playerNameFilter);
+		
+		private function load():void
+		{
+			Global.mapComm.BattleReport.viewReport(loader, id, playerNameFilter, isLocal);
 		}
-
-		private function onLoaded(e: Event) : void {
+		
+		private function onLoadSnapshot(e:Event):void 
+		{
+			var data:*;
 			try
-			{				
-				data = loader.getDataAsObject();
+			{
+				data = snapshotLoader.getDataAsObject();
 			}
-			catch (e: Error) {
+			catch (e:Error)
+			{
+				InfoDialog.showMessageDialog("Error", "Unable to query snapshot. Log out then back in if this problem persists.");
+				return;
+			}
+			
+			var snapshotDialog: Snapshot = new Snapshot(data);
+			snapshotDialog.show();
+		}		
+		
+		private function loadMoreEvents():void
+		{
+			Global.mapComm.BattleReport.viewMoreEvents(eventLoader, id, playerNameFilter, isLocal, currentPage);
+		}		
+		
+		private function onLoadedEvents(e:Event):void
+		{
+			var data:*;
+			try
+			{
+				data = eventLoader.getDataAsObject();
+			}
+			catch (e:Error)
+			{
 				InfoDialog.showMessageDialog("Error", "Unable to query report. Refresh the page if this problem persists");
 				return;
 			}
-
-			if (data.outcomeOnly == false) calculateCountDeltas();
 			
-			refreshOnClose = data.refreshOnClose;			
-
+			parseEvents(data);
+		}
+		
+		private function resizeToContents(): void {
+			getFrame().pack();
+			getFrame().resizeToContents();
+			Util.centerFrame(getFrame());
+		}
+		
+		private function onLoadedReport(e:Event):void
+		{
+			// We delay UI creation until there is data
+			createUI();
+			
+			var data:*;
+			try
+			{
+				data = loader.getDataAsObject();
+			}
+			catch (e:Error)
+			{
+				InfoDialog.showMessageDialog("Error", "Unable to query report. Refresh the page if this problem persists");
+				return;
+			}
+			
+			refreshOnClose = data.refreshOnClose;
+			
+			lblOutcomeOnly.setVisible(data.outcomeOnly);
+			
 			// Show resources gained if applicable
-			if (data.loot) {
-				var loot: Resources = new Resources(data.loot.crop, data.loot.gold, data.loot.iron, data.loot.wood, 0);
-				var bonus: Resources = new Resources(data.bonus.crop, data.bonus.gold, data.bonus.iron, data.bonus.wood, 0);
-				var total: Resources = Resources.sum(loot, bonus);
-				pnlResources.append(new ResourcesPanel(total, null, false, false));
-				pnlFooter.append(pnlResources);
+			if (data.loot)
+			{
+				var loot:Resources = new Resources(data.loot.crop, data.loot.gold, data.loot.iron, data.loot.wood, 0);
+				var bonus:Resources = new Resources(data.loot.bonus.crop, data.loot.bonus.gold, data.loot.bonus.iron, data.loot.bonus.wood, 0);
+				var total:Resources = Resources.sum(loot, bonus);
+				pnlResources.appendAll(new ResourcesPanel(total, null, false, false));
 				new BattleLootTooltip(pnlResources, loot, bonus);
 			}
 			
-			renderSnapshots();
-		}
-
-		private function calculateCountDeltas() : void {
-			var cache: Array = new Array();
-			for (var i: int = 0; i < data.snapshots.length; i++) {
-				for (var j: int = 0; j < data.snapshots[i].attackers.length; j++) setTroopDeltas(cache, data.snapshots[i].attackers[j], true);				
-				for (j = 0; j < data.snapshots[i].defenders.length; j++) setTroopDeltas(cache, data.snapshots[i].defenders[j], false);
-			}
-		}
-
-		private function setTroopDeltas(cache: Array, troopSnapshot: *, isAttack: Boolean) : void {
-			var troop: *;
-			for (var k: int = 0; k < cache.length; k++) {
-				if (cache[k].groupId == troopSnapshot.groupId) {
-					troop = cache[k];
-					break;
+			// Show overall battle stats
+			if (!data.outcomeOnly) {
+				var totalBattleLoot:Resources = new Resources(data.battleOutcome.totalCropLooted, data.battleOutcome.totalGoldLooted, data.battleOutcome.totalIronLooted, data.battleOutcome.totalWoodLooted, 0);
+				pnlBattleStatsLooted.appendAll(new JLabel("Total loot stolen", null, AsWingConstants.LEFT), new ResourcesPanel(totalBattleLoot, null, false, false));
+				lblBattleStatsAttackUnits.setText("Attack lost " + (data.battleOutcome.attackerJoinCount - data.battleOutcome.attackerLeaveCount) + " out of " + (data.battleOutcome.attackerJoinCount) + " units");
+				lblBattleStatsDefenseUnits.setText("Defender lost " + (data.battleOutcome.defenderJoinCount - data.battleOutcome.defenderLeaveCount) + " out of " + (data.battleOutcome.defenderJoinCount) + " units");
+				lblBattleStatsStructuresDestroyed.setText(StringHelper.makePlural(data.battleOutcome.destroyedStructures, "1 structure was", data.battleOutcome.destroyedStructures + " structures were", "No structures were") + " knocked down");
+				lblBattleStatsTime.setText("Battle lasted " + Util.niceTime(data.battleOutcome.timeLasted, false));
+				lblBattleStatsTribes.setText((data.battleOutcome.attackerTribes.length + data.battleOutcome.defenderTribes.length) + " tribes participated");
+				
+				for each (var defenderTribe:Object in data.battleOutcome.defenderTribes)
+				{
+					var lblTribeDefender:JLabel = new JLabel(defenderTribe.name, null, AsWingConstants.LEFT);
+					GameLookAndFeel.changeClass(lblTribeDefender, "Tooltip.text");
+					pnlBattleStatsTribesDefenders.append(lblTribeDefender);
 				}
-			}
-			
-			if (!troop) {
-				troop = findInitialTroop(isAttack, troopSnapshot.groupId);
-				if (troop == null) return;
-				cache.push(troop);
-			}
-
-			setDeltas(troop.units, troopSnapshot.units);
-		}
-
-		private function setDeltas(initial: * , ending: *) : void {
-			for (var i: int = 0; i < ending.length; i++) {
-				if (ending[i].id == 0) continue;
-
-				for (var j: int = 0; j < initial.length; j++) {
-					if (ending[i].id != initial[j].id) continue;
-
-					ending[i].delta = ending[i].count - initial[j].count;
-					break;
+				
+				for each (var attackerTribe:Object in data.battleOutcome.attackerTribes)
+				{
+					var lblTribeAttacker:JLabel = new JLabel(attackerTribe.name, null, AsWingConstants.LEFT);
+					GameLookAndFeel.changeClass(lblTribeAttacker, "Tooltip.text");
+					pnlBattleStatsTribesAttackers.append(lblTribeAttacker);
 				}
-			}
-		}
-
-		private function findInitialTroop(isAttack: Boolean, groupId: int) : * {
-			for (var i: int = 0; i < data.snapshots.length; i++) {
-				if (isAttack) {
-					for (var j: int = 0; j < data.snapshots[i].attackers.length; j++) {
-						if (data.snapshots[i].attackers[j].groupId == groupId) return data.snapshots[i].attackers[j];
-					}
-				} else {
-					for (j = 0; j < data.snapshots[i].defenders.length; j++) {
-						if (data.snapshots[i].defenders[j].groupId == groupId) return data.snapshots[i].defenders[j];
-					}
-				}
-			}
-
-			return null;
-		}
-
-		private function canSeeSnapshot(snapshot: Object) : Boolean {
-			
-			for each (var event: * in snapshot.eventsRaw) {
-				if (event.type != TroopStub.REPORT_STATE_STAYING && event.groupId == data.groupId) return true;
-			}
-
-			return false;
-		}
-
-		private function renderSnapshots() : void {
-
-			chkViewAll.setText("View complete report");
-
-			pnlSnapshots.removeAll();
-			var showHiddenReportMessage: Boolean = false;
-			for each (var snapshot: Object in data.snapshots) {
-				// Don't show this snapshot if we arent viewing them all
-				// if it doesnt pertain to this player OR show them all regardless if this is an outcome only reports
-				if (data.outcomeOnly == false && !chkViewAll.isSelected()) {
-					if (!canSeeSnapshot(snapshot)) {
-						if (!showHiddenReportMessage) {							
-							showHiddenReportMessage = true;
-						}
-						continue;
-					}
-				}
-
-				if (data.outcomeOnly)  {
-					pnlSnapshots.append(new OutcomeSnapshot(snapshot));
-				}
-				else {
-					pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, ""));
-					pnlSnapshots.append(new Snapshot(snapshot));
-				}
-			}
-			
-			var headerFont: ASFontUIResource = GameLookAndFeel.getClassAttribute("darkHeader", "Label.font");
-			if (data.outcomeOnly) {
-				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, "Your troop was unable to report the enemies. You can only see a partial report.", AsWingConstants.TOP, AsWingConstants.CENTER, 0, headerFont));
-				//Resize accordingly
-				setPreferredSize(new IntDimension(600, 520));
-			}
-			else if (showHiddenReportMessage) {
-				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, "You are currently viewing a summary of the battle report. To view the entire report, click 'View complete report' below", AsWingConstants.TOP, AsWingConstants.CENTER, 0, headerFont));
+				
+				tooltipBattleStatsTribes.getUI().pack();
 			}
 			else {
-				pnlSnapshotsScroll.setBorder(new SimpleTitledBorder(null, ""));
+				pnlHolder.remove(pnlBattleStats);
 			}
 			
-			if (!data.outcome)
-			{				
-				//Resize accordingly
-				setPreferredSize(new IntDimension(865, 520));
+			// Show group outcome
+			var groupOutcome:TroopTable = new TroopTable(data.playerOutcome);
+			pnlGroupOutcomeTableHolder.append(groupOutcome);
+			
+			// Show events
+			if (!data.outcomeOnly) {
+				parseEvents(data.battleEvents);
 			}
+			else {
+				pnlHolder.remove(pnlImportantEvents);
+			}			
 			
-			chkViewAll.setVisible(showHiddenReportMessage);
-			
-			getFrame().pack();
-			Util.centerFrame(getFrame());							
+			// Resize
+			resizeToContents();
 		}
-
-		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame
+		
+		private function parseEvents(battleEvents: *):void {
+			// Show important battle events
+			for each (var snapshot:* in battleEvents.reports) {				
+				var importantRound: BattleImportantRound = new BattleImportantRound(snapshot);
+				importantRound.addEventListener(BattleImportantRound.EVENT_VIEW_SNAPSHOT, function(e: ViewSnapshotEvent): void {
+					Global.mapComm.BattleReport.viewSnapshot(snapshotLoader, id, playerNameFilter, isLocal, e.reportId);
+				});
+				pnlImportantEvents.append(importantRound);
+			}
+			
+			// Decide whether there are more pages to load
+			currentPage++;
+			lblLoadMoreEvents.setVisible(currentPage < battleEvents.pages);
+		}
+		
+		public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
 		{
 			super.showSelf(owner, modal, onClose);
 			Global.gameContainer.showFrame(frame);
-			frame.setTitle("Battle Report Viewer");
+			frame.setTitle("Battle Report");
 			
-			load(playerNameFilter);
+			load();
 			
 			return frame;
 		}
-
-		public function createUI() : void {
-			var layout0:BorderLayout = new BorderLayout();
-			setLayout(layout0);
-
-			pnlSnapshots = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 25));
-
-			pnlSnapshotsScroll = new JScrollPane(pnlSnapshots);
-			pnlSnapshotsScroll.setConstraints("Center");
-
-			pnlFooter = new JPanel();
-			pnlFooter.setLayout(new BorderLayout(15));
-			pnlFooter.setConstraints("South");
-
-			pnlResources = new JPanel();
-			pnlResources.setLayout(new FlowLayout(AsWingConstants.LEFT, 8));
-			pnlResources.setConstraints("East");
-
-			chkViewAll = new JCheckBox("");
-			chkViewAll.setConstraints("West");
-
-			pnlFooter.append(chkViewAll);
-
-			//component layoution
-			append(pnlSnapshotsScroll);
-			append(pnlFooter);
-
+		
+		public function createUI():void
+		{
+			setLayout(new BorderLayout());
+			{
+				scrollPanel = new JScrollPane();
+				{
+					pnlHolder = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+					{
+						lblOutcomeOnly = new JLabel("Your troop wasn't in the battle long enough to scout the enemies. You can only see a partial report.");
+						
+						// Battle stats
+						pnlBattleStats = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+						{
+							var lblBattleStatsTitle:JLabel = new JLabel("Battle Statistics", null, AsWingConstants.LEFT);
+							GameLookAndFeel.changeClass(lblBattleStatsTitle, "darkSectionHeader");
+							
+							var pnlBattleStatsGrid:JPanel = new JPanel(new GridLayout(3, 2, 5, 0));
+							{
+								pnlBattleStatsLooted = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 0, AsWingConstants.LEFT));
+								lblBattleStatsTime = new JLabel("", null, AsWingConstants.LEFT);
+								lblBattleStatsStructuresDestroyed = new JLabel("", null, AsWingConstants.LEFT);
+								lblBattleStatsAttackUnits = new JLabel("", null, AsWingConstants.LEFT);
+								lblBattleStatsDefenseUnits = new JLabel("", null, AsWingConstants.LEFT);
+								lblBattleStatsTribes = new JLabel("", null, AsWingConstants.LEFT);
+								
+								pnlBattleStatsGrid.appendAll(pnlBattleStatsLooted, lblBattleStatsStructuresDestroyed);
+								pnlBattleStatsGrid.appendAll(lblBattleStatsTime, lblBattleStatsAttackUnits);
+								pnlBattleStatsGrid.appendAll(lblBattleStatsTribes, lblBattleStatsDefenseUnits);
+							}
+							
+							pnlBattleStats.appendAll(lblBattleStatsTitle, pnlBattleStatsGrid);
+						}
+						
+						// Group Outcome
+						pnlGroupOutcome = new JPanel(new BorderLayout());
+						{
+							var pnlGroupOutcomeHeader:JPanel = new JPanel(new BorderLayout(5));
+							pnlGroupOutcomeHeader.setConstraints("North");
+							{
+								var lblGroupOutcomeTitle:JLabel = new JLabel("Your Troops Outcome", null, AsWingConstants.LEFT);
+								lblGroupOutcomeTitle.setConstraints("Center");
+								GameLookAndFeel.changeClass(lblGroupOutcomeTitle, "darkSectionHeader");
+								
+								pnlResources = new JPanel();
+								pnlResources.setConstraints("East");
+								
+								pnlGroupOutcomeHeader.appendAll(lblGroupOutcomeTitle, pnlResources);
+							}
+							
+							pnlGroupOutcomeTableHolder = new JPanel();
+							pnlGroupOutcomeTableHolder.setConstraints("Center");
+							
+							pnlGroupOutcome.appendAll(pnlGroupOutcomeHeader, pnlGroupOutcomeTableHolder);
+						}
+						
+						// Battle Events
+						pnlImportantEvents = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+						{
+							var lblImportantEventsTitle:JLabel = new JLabel("Important Events", null, AsWingConstants.LEFT);
+							GameLookAndFeel.changeClass(lblImportantEventsTitle, "darkSectionHeader");
+							
+							pnlImportantEvents.appendAll(lblImportantEventsTitle, lblLoadMoreEvents);							
+						}
+						
+						// Load more events label
+						lblLoadMoreEvents = new JLabelButton("View more events", null, AsWingConstants.CENTER);
+						lblLoadMoreEvents.setVisible(false);
+						lblLoadMoreEvents.addActionListener(function(e: Event):void {
+							loadMoreEvents();
+						});						
+						
+						pnlHolder.appendAll(lblOutcomeOnly, pnlBattleStats, pnlGroupOutcome, pnlImportantEvents, lblLoadMoreEvents);
+					}
+				}
+				
+				// Tooltip that shows the battles that participated
+				tooltipBattleStatsTribes = new Tooltip();				
+				var pnlTooltipBattleStatsTribes:JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 15));
+				{
+					pnlBattleStatsTribesDefenders = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+					{
+						var lblBattleStatsTribesDefenders:JLabel = new JLabel("Defenders", null, AsWingConstants.LEFT);
+						GameLookAndFeel.changeClass(lblBattleStatsTribesDefenders, "Tooltip.text header");
+						pnlBattleStatsTribesDefenders.append(lblBattleStatsTribesDefenders);
+					}
+					pnlBattleStatsTribesAttackers = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+					{
+						var lblBattleStatsTribesAttackers:JLabel = new JLabel("Attackers", null, AsWingConstants.LEFT);
+						GameLookAndFeel.changeClass(lblBattleStatsTribesAttackers, "Tooltip.text header");
+						pnlBattleStatsTribesAttackers.append(lblBattleStatsTribesAttackers);
+					}
+					pnlTooltipBattleStatsTribes.appendAll(pnlBattleStatsTribesDefenders, pnlBattleStatsTribesAttackers);
+					
+					tooltipBattleStatsTribes.getUI().append(pnlTooltipBattleStatsTribes);
+				}
+				tooltipBattleStatsTribes.bind(lblBattleStatsTribes);			
+				
+				var viewport:JViewport = new JViewport(pnlHolder, true, false);
+				viewport.setBorder(new EmptyBorder(null, new Insets(0, 0, 0, 5)));
+				viewport.setVerticalAlignment(AsWingConstants.TOP);				
+				scrollPanel.setViewport(viewport);
+				scrollPanel.setConstraints("Center");
+				append(scrollPanel);
+			}
 		}
 	}
 

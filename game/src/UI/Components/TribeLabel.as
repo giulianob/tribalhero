@@ -1,4 +1,4 @@
-package src.UI.Components 
+package src.UI.Components
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -7,6 +7,7 @@ package src.UI.Components
 	import org.aswing.Insets;
 	import org.aswing.JLabelButton;
 	import org.aswing.JPanel;
+	import src.Constants;
 	import src.Global;
 	import src.Map.Username;
 	import src.UI.Dialog.InfoDialog;
@@ -18,12 +19,12 @@ package src.UI.Components
 	 */
 	public class TribeLabel extends JLabelButton
 	{
-		private var tribeId: int = 0;
-		private var tribeName: String = "Not Loaded";
+		private var tribeId:int = 0;
+		private var tribeName:String = "Not Loaded";
 		
-		private var loadingPanel: InfoDialog;
+		private var loadingPanel:InfoDialog;
 		
-		public function TribeLabel(tribeId: int, tribeName: String = null)
+		public function TribeLabel(tribeId:int, tribeName:String = null)
 		{
 			super("-");
 			
@@ -32,43 +33,41 @@ package src.UI.Components
 			setBorder(new EmptyBorder(null, new Insets()));
 			setMargin(new Insets());
 			
-			this.tribeId = tribeId;			
+			this.tribeId = tribeId;
 			
-			if (tribeName) {
+			if (tribeName)
+			{
 				setText(tribeName);
 				this.tribeName = tribeName;
-			} else
+			}
+			else
 				Global.map.usernames.tribes.getUsername(tribeId, onReceiveUsername);
 			
-			if (tribeId > 0) {
+			if (tribeId > 0)
+			{
 				new SimpleTooltip(this, "View profile");
 				addEventListener(MouseEvent.MOUSE_DOWN, onClick);
 			}
 		}
 		
-		private function onClick(e: Event = null) : void {
-			loadingPanel = InfoDialog.showMessageDialog("TribalHero", "Loading...", null, null, true, false, 0);
-			Global.mapComm.Tribe.viewTribePublicProfile({tribeId: tribeId, tribeName: tribeName}, onReceiveProfile);
+		private function onClick(e:Event = null):void
+		{
+			if (Constants.tribeId == tribeId)
+			{
+				Global.mapComm.Tribe.viewTribeProfile();
+			}
+			else
+			{
+				Global.mapComm.Tribe.viewTribePublicProfile(tribeId);
+			}
 		}
 		
-		private function onReceiveProfile(profileData: * ) : void {
-			if (loadingPanel)
-				loadingPanel.getFrame().dispose();
-				
-			loadingPanel = null;
-			
-			if (!profileData) 
-				return;
-			
-			var dialog: TribePublicProfileDialog = new TribePublicProfileDialog(profileData);
-			dialog.show();
-		}
-		
-		private function onReceiveUsername(username: Username, custom: *) : void {
+		private function onReceiveUsername(username:Username, custom:*):void
+		{
 			setText(username.name);
 			repaintAndRevalidate();
 		}
-		
+	
 	}
 
 }

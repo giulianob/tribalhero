@@ -197,8 +197,6 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(id, out tribe))
             {
-                reply.AddUInt32(tribe.Id);
-                reply.AddString(tribe.Name);
                 reply.AddInt16((short)tribe.Count);
                 foreach (var tribesman in tribe.Tribesmen)
                 {

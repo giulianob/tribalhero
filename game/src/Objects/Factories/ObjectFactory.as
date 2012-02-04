@@ -98,14 +98,14 @@
 			}
 		}
 
-		public static function getSpriteEx(type: int, level: int, centered: Boolean = false): DisplayObjectContainer
+		public static function getSpriteEx(type: int, level: int, centered: Boolean = false, forDarkBackground: Boolean = false): DisplayObjectContainer
 		{
 			if (type >= 1000)
 				return StructureFactory.getSprite(type, level, centered);
 			else if (type == 100)
 				return TroopFactory.getSprite(centered);
 			else
-				return UnitFactory.getSprite(type, level);
+				return UnitFactory.getSprite(type, level, forDarkBackground);
 		}
 		
 		public static function makeSpriteSmall(obj: DisplayObjectContainer, scale: Number = 0.5) : DisplayObjectContainer {

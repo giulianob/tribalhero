@@ -9,6 +9,7 @@
 	import src.Constants;
 	import src.Global;
 	import src.Map.City;
+	import src.Objects.Effects.Formula;
 	import src.Objects.Factories.UnitFactory;
 	import src.Objects.Prototypes.UnitPrototype;
 	import src.Objects.Troop.TroopTemplate;
@@ -89,7 +90,7 @@
 		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, splash: int, defense: int, stealth: int, range: int, speed: int) : void {
 			lblAttack.setText(attack.toString());
 			lblCarry.setText(carry.toString());		
-			lblSpeed.setText(speed.toString());
+			lblSpeed.setText(Formula.moveTimeString(speed));
 			lblRange.setText(Constants.stealthRangeNames[range]);
 			lblStealth.setText(Constants.stealthRangeNames[stealth]);
 			lblHp.setText(hp.toString());

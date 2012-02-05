@@ -25,6 +25,8 @@
 		private var objX: int;
 		private var objY: int;
 		
+		public var sprite: DisplayObject;
+		
 		public var extraProps: Object = new Object();
 		
 		public function CityRegionObject(type: int, groupId: int, objectId: int) {

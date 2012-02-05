@@ -80,6 +80,8 @@ package src.UI.Tooltips {
 			else {
 				ui.remove(pnlNextLvl);
 			}
+			
+			
 		}
 
 		private function createUI(): void {
@@ -96,10 +98,10 @@ package src.UI.Tooltips {
 			lblLevel.setHorizontalAlignment(AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblLevel, "Tooltip.text");
 
-			lblDescription = new MultilineLabel();
+			lblDescription = new MultilineLabel("", 0, 30);
 			GameLookAndFeel.changeClass(lblDescription, "Tooltip.text");
 			
-			lblNextLevelDescription = new MultilineLabel();
+			lblNextLevelDescription = new MultilineLabel("", 0, 30);
 			GameLookAndFeel.changeClass(lblNextLevelDescription, "Tooltip.text");			
 
 			pnlNextLvl = new JPanel(new SoftBoxLayout(AsWingConstants.VERTICAL));

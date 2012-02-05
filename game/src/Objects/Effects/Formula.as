@@ -9,9 +9,20 @@
 
 	public class Formula {
 		
-		public static const RESOURCE_CHUNK: int = 100;
-		public static const RESOURCE_MAX_TRADE: int = 1500;
+		public static const RESOURCE_CHUNK: int = 100;		
 		public static const TRIBE_MEMBER_PER_LEVEL: int = 5;
+		
+		public static function resourcesBuyable(marketLevel: int): Array {
+			return ["Wood", "Iron", "Crop"];
+		}
+		
+		public static function resourcesSellable(marketLevel: int): Array {
+			return ["Wood", "Iron", "Crop"];
+		}		
+		
+		public static function resourceMaxTrade(marketLevel: int): int {
+			return 1500;
+		}
 
 		public static function concurrentBuildUpgrades(mainStructureLevel: int) : int
 		{
@@ -121,14 +132,14 @@
 			return new Resources(1000, 400, 40, 2000, 0).multiplyByUnit(TRIBE_MEMBER_PER_LEVEL * level * (1 + ( level * level / 20)));
 		}
 		
-		public static function marketBuyCost(price: int, amount: int, tax: Number): int
+		public static function marketBuyCost(price: int, amount: int): int
 		{
-			return Math.round(((amount / RESOURCE_CHUNK) * price) * (1.0 + tax));
+			return Math.round(((amount / RESOURCE_CHUNK) * price));
 		}	
 
-		public static function marketSellCost(price: int, amount: int, tax: Number): int
+		public static function marketSellCost(price: int, amount: int): int
 		{
-			return Math.round(((amount / RESOURCE_CHUNK) * price) * (1.0 - tax));
+			return Math.round(((amount / RESOURCE_CHUNK) * price));
 		}
 
 		public static function buildCost(city: City, prototype: StructurePrototype) : Resources
@@ -144,12 +155,6 @@
 		public static function unitUpgradeCost(city: City, prototype: UnitPrototype) : Resources
 		{
 			return prototype.upgradeResources;
-		}
-
-		public static function marketTax(structure: StructureObject): Number
-		{
-			var rate: Array = [ 0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12 ];			
-			return rate[structure.level];
 		}
 
 		public static function maxForestLabor(level: int) : int {

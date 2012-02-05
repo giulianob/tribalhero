@@ -34,6 +34,8 @@ package src.Objects {
 		
 		public function SimpleGameObject(type: int, state: GameObjectState, objX: int, objY: int, groupId: int, objectId: int)
 		{
+			super();
+			
 			this.type = type;
 			this.groupId = groupId;
 			this.objectId = objectId;

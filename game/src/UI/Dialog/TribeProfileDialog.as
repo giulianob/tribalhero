@@ -264,10 +264,10 @@
 					pnlActions.appendAll(btnSetDescription, btnInvite, btnDonate, btnUpgrade, btnDismantle);
 					break;
 				case 1:
-					pnlActions.appendAll(btnInvite, btnDonate, btnLeave);
+					pnlActions.appendAll(btnInvite, btnDonate, btnUpgrade, btnLeave);
 					break;
 				default:
-					pnlActions.appendAll(btnDonate, btnLeave);
+					pnlActions.appendAll(btnDonate, btnUpgrade, btnLeave);
 					break;
 			}
 			
@@ -277,6 +277,8 @@
 			btnUpgrade.addActionListener(function(e: Event): void {
 				Global.mapComm.Tribe.upgrade();
 			});
+			btnUpgrade.setEnabled(Constants.tribeRank == 0);
+			btnUpgrade.mouseEnabled = true;
 			
 			// description
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;

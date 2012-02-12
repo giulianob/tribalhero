@@ -51,12 +51,6 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            if (type == ResourceType.Gold)
-            {
-                ReplyError(session, packet, Error.ResourceNotTradable);
-                return;
-            }
-
             using (Concurrency.Current.Lock(session.Player))
             {
                 ICity city = session.Player.GetCity(cityId);
@@ -106,12 +100,6 @@ namespace Game.Comm.ProcessorCommands
             catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
-                return;
-            }
-
-            if (type == ResourceType.Gold)
-            {
-                ReplyError(session, packet, Error.ResourceNotTradable);
                 return;
             }
 

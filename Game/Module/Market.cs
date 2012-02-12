@@ -149,16 +149,7 @@ namespace Game.Module
             {
                 using (DbPersistance.Current.GetThreadTransaction())
                 {
-                    int flow = outgoing - incoming;
-                    if (World.Current.Players.Count > 0)
-                    {
-                        price += (flow/Math.Max(1,quantityPerChangePerPlayer*World.Current.GetActivePlayerCount()));
-                        if (price < MIN_PRICE)
-                            price = MIN_PRICE;
-                        if (price > MAX_PRICE)
-                            price = MAX_PRICE;
-                        outgoing = incoming = 0;
-                    }
+                    outgoing = incoming = 0;
                     time = DateTime.UtcNow.AddSeconds(UPDATE_INTERVAL_IN_SECOND*Config.seconds_per_unit);
                     DbPersistance.Current.Save(this);
                     Scheduler.Current.Put(this);

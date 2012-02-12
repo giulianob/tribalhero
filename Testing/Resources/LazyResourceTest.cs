@@ -1,10 +1,12 @@
 ﻿#region
 
 using System;
+using FluentAssertions;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
 using Xunit;
+using Xunit.Extensions;
 
 #endregion
 
@@ -224,6 +226,27 @@ namespace Testing.Resources
 
             SystemClock.SetClock(begin.AddMinutes(60));
             Assert.Equal(resource.Value, 5000);
+        }
+
+        /// <summary>
+        ///   Tests get amount received with various scenarios
+        /// </summary>
+        [Theory]
+        [InlineData(3600000, 0, 0, 0)] // No rate or upkeep for 1 hr should return 0
+        [InlineData(600000, 0, 0, 0)] // No rate or upkeep for 10 min should return 0
+        [InlineData(600000, 10, 0, 1)] // Rate of 10 for 10 min should return 1
+        [InlineData(600000, 60, 0, 10)] // Rate of 60 for 10 min should return 10
+        [InlineData(3600000, 60, 0, 60)] // Rate of 60 for 1 hour should return 60
+        [InlineData(3600000, 60, 30, 30)] // Rate of 60 with 30 upkeep for 1 hour should return 30
+        [InlineData(1800000, 60, 30, 15)] // Rate of 60 with 30 upkeep for 30 min should return 15
+        [InlineData(1800000, 30, 60, -15)] // Rate of 30 with 60 upkeep for 30 min should return -15
+        [InlineData(1800000, 11, 60, -24)] // Rate of 11 with 60 upkeep for 30 min should return -24
+        [InlineData(3600000, 30, 60, -30)] // Rate of 60 with 30 upkeep for 1 hour should return -30
+        [InlineData(1800000, 30, 30, 0)] // Rate of 30 with 30 upkeep for 1 hour should return 0
+        public void TestGetAmountReceived(int interval, int rate, int upkeep, int expected)
+        {
+            var resource = new LazyValue(0, DateTime.MinValue, rate, upkeep);
+            resource.GetAmountReceived(interval).Should().Be(expected);
         }
     }
 }

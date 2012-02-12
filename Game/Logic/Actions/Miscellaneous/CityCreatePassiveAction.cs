@@ -85,13 +85,13 @@ namespace Game.Logic.Actions {
                 return Error.ActionInvalid;
 
             // cost requirement uses town center lvl 1 for cost
-            var cost = Formula.Current.StructureCost(city, Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("MainBuilding")[0], 1);
-            if (!city.Resource.HasEnough(cost))            
-                return Error.ResourceNotEnough;            
-
-            // make sure all cities are at least level 10
-            if (city.Owner.GetCityList().Any(c => c.Lvl < 10))
-                return Error.EffectRequirementNotMet;
+            int influencePoints, wagons;
+            ushort wagonType = Ioc.Kernel.Get<ObjectTypeFactory>().GetTypes("Wagon").First();
+            Formula.Current.GetNewCityCost(city.Owner.GetCityCount(), out influencePoints, out wagons);
+            if (city.Owner.Value < influencePoints)
+                return Error.ResourceNotEnough;
+            if (city.DefaultTroop.Sum(f => f.ContainsKey(wagonType)?f[wagonType]:0) < wagons)
+                return Error.ResourceNotEnough;
 
             World.Current.LockRegion(x, y);
 
@@ -142,7 +142,12 @@ namespace Game.Logic.Actions {
 
                 // taking resource from the old city
                 city.BeginUpdate();
-                city.Resource.Subtract(cost);
+                city.DefaultTroop.BeginUpdate();
+                if((wagons -= city.DefaultTroop.RemoveUnit(FormationType.Normal, wagonType, (ushort)wagons))>0)
+                {
+                    city.DefaultTroop.RemoveUnit(FormationType.Garrison, wagonType, (ushort)wagons);
+                }
+                city.DefaultTroop.EndUpdate();
                 city.EndUpdate();
 
                 // send new city channel notification

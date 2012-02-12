@@ -36,6 +36,8 @@ namespace Game.Data
 
         int DefensePoint { get; }
 
+        int Value { get; }
+
         bool IsLoggedIn { get; }
 
         void Add(ICity city);

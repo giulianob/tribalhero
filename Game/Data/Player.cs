@@ -119,6 +119,14 @@ namespace Game.Data
             }
         }
 
+        public int Value
+        {
+            get
+            {
+                return list.Sum(x => x.Value);
+            }
+        }
+
         public bool IsLoggedIn
         {
             get

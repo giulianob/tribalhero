@@ -168,5 +168,11 @@ namespace Game.Logic.Formulas
         {
             return new Resource(1000, 400, 40, 2000, 0) * Tribe.MEMBERS_PER_LEVEL * level * (1 + ((double)level * level / 20));
         }
+
+        public virtual void GetNewCityCost(int cityCount, out int influencePoints, out int wagons)
+        {
+            influencePoints = (100 + 20*(cityCount - 1))*cityCount;
+            wagons = 50*cityCount;
+        }
     }
 }

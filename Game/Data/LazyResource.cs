@@ -143,10 +143,6 @@ namespace Game.Data
                 int elapsed = Math.Max(0, (int)now.Subtract(LastRealizeTime).TotalMilliseconds);
                 int delta = elapsed/calculatedRate;
 
-                // Little ugly but just a check to make sure nothing bad is happening.
-                if (!(this is AggressiveLazyValue) && delta < 0)
-                    throw new Exception(string.Format("Delta is negative! elapsed[{0}] calculatedRate[{1}]", elapsed, calculatedRate));
-
                 RawValue += delta;
 
                 int leftOver = elapsed%calculatedRate;
@@ -175,9 +171,25 @@ namespace Game.Data
         protected virtual int GetCalculatedRate()
         {
             int deltaRate = rate - upkeep;
+            if (deltaRate <= 0)
+                return 0;
+            return (int)((3600000f/deltaRate)*Config.seconds_per_unit);
+        }
+
+        /// <summary>
+        /// Returns the amount of resources received for the given timeframe.
+        /// NOTE: This can return a negative amount if upkeep is higher than rate.
+        /// </summary>
+        /// <param name="millisecondInterval"></param>
+        /// <returns></returns>
+        public int GetAmountReceived(int millisecondInterval)
+        {
+            int deltaRate = rate - upkeep;
             if (deltaRate == 0)
                 return 0;
-            return Math.Max(0, (int)((3600000f/deltaRate)*Config.seconds_per_unit));
+
+            double effectiveRate = (3600000f / deltaRate) * Config.seconds_per_unit;
+            return (int)(millisecondInterval/effectiveRate);
         }
     }
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Map;
@@ -49,9 +50,9 @@ namespace Game.Logic.Actions
             resourceType = (ResourceType)Enum.Parse(typeof(ResourceType), properties["resource_type"]);
         }
 
-        private Resource GetCost(IStructure structure)
+        private Resource GetCost()
         {
-            return new Resource(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 + Formula.Current.MarketTax(structure))), 0, 0, 0); ;
+            return new Resource(0, (int)Math.Round((double)(price * (quantity / TRADE_SIZE))), 0, 0, 0); 
         }
 
         public override ConcurrencyType ActionConcurrency
@@ -78,8 +79,17 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (quantity == 0 || quantity%TRADE_SIZE != 0 || quantity/TRADE_SIZE > 15)
+            Formula formula = new Formula();
+
+            if (!formula.MarketResourceBuyable(structure).Contains(resourceType))
+            {
+                return Error.ResourceNotTradable;
+            }
+
+            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > formula.MarketTradeQuantity(structure))
+            {
                 return Error.MarketInvalidQuantity;
+            }
 
             switch(resourceType)
             {
@@ -97,7 +107,7 @@ namespace Game.Logic.Actions
                     break;
             }
 
-            var cost = GetCost(structure);
+            var cost = GetCost();
             if (!structure.City.Resource.HasEnough(cost))
             {
                 Market.Crop.Supply(quantity);
@@ -126,11 +136,11 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled) {
             ICity city;
-            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure)) {
                     StateChange(ActionState.Failed);
                     return;
@@ -149,7 +159,7 @@ namespace Game.Logic.Actions
                             Market.Iron.Supply(quantity);
                             break;
                     }
-                    var cost = GetCost(structure);
+                    var cost = GetCost();
                     city.Resource.Add(Formula.Current.GetActionCancelResource(BeginTime, cost));
                     city.EndUpdate();
                 }
@@ -161,12 +171,12 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);

@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
@@ -94,13 +95,34 @@ namespace Game.Logic.Formulas
         }
 
         /// <summary>
+        ///   Specifies which resources can be purchased in the market
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public virtual double MarketTax(IStructure structure)
+        public virtual IEnumerable<ResourceType> MarketResourceSellable(IStructure structure)
         {
-            double[] rate = {0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12};
-            return rate[structure.Lvl];
+            return new[] {ResourceType.Wood, ResourceType.Crop, ResourceType.Iron};
+        }
+
+        /// <summary>
+        ///   Specifies which resources can be sold in the market
+        /// </summary>
+        /// <param name = "structure"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<ResourceType> MarketResourceBuyable(IStructure structure)
+        {
+            return new[] { ResourceType.Wood, ResourceType.Crop, ResourceType.Iron };
+        }
+
+        /// <summary>
+        ///   Specifies which resources can be sold in the market
+        /// </summary>
+        /// <param name = "structure"></param>
+        /// <returns></returns>
+        public virtual int MarketTradeQuantity(IStructure structure)
+        {
+            int[] quantity = { 0, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500 };
+            return quantity[structure.Lvl];
         }
 
         /// <summary>

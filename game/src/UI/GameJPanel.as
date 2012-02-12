@@ -8,10 +8,6 @@
 	import org.aswing.JPanel;
 	import src.Util.Util;
 
-	/**
-	 * ...
-	 * @author
-	 */
 	public class GameJPanel extends JPanel
 	{
 		protected var frame: GameJFrame = null;

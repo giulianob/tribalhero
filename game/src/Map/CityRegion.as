@@ -3,6 +3,7 @@
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.*;
+	import flash.text.TextField;
 	import src.*;
 	import src.Map.*;
 	import src.Objects.Factories.*;
@@ -57,6 +58,7 @@
 			regionObject.setX(objX);
 			regionObject.setY(objY);
 			var img: DisplayObject = ObjectFactory.getIcon(sprite);
+			regionObject.sprite = img;
 			regionObject.addChild(img);
 
 			Global.gameContainer.miniMap.objContainer.addObject(regionObject);
@@ -107,9 +109,15 @@
 		{
 			//add object to map and objects list
 			var gameObj: CityRegionObject = createRegionObject("MINIMAP_FOREST_ICON", ObjectFactory.TYPE_FOREST, groupId, objectId, objX, objY);
+
 			if (!gameObj)
 				return null;
 				
+			var icon: MINIMAP_FOREST_ICON = gameObj.sprite as MINIMAP_FOREST_ICON;
+			
+			icon.lvlText.mouseEnabled = false;
+			icon.useHandCursor = true;
+			icon.lvlText.text = level.toString();
 			gameObj.alpha = 0.5;
 			gameObj.addEventListener(MouseEvent.MOUSE_OVER, onForestObjectMouseOver);
 			

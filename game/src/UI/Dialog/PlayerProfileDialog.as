@@ -107,7 +107,7 @@
 			// First row of header panel which contains player name + ranking
 			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
 			
-			var lblPlayerName: JLabel = new JLabel(profileData.username, null, AsWingConstants.LEFT);	
+			var lblPlayerName: JLabel = new JLabel(profileData.username + (Constants.admin ? '['+profileData.playerId+']' : ''), null, AsWingConstants.LEFT);	
 			lblPlayerName.setConstraints("Center");
 			GameLookAndFeel.changeClass(lblPlayerName, "darkHeader");			
 			

@@ -27,17 +27,19 @@ package src.Objects {
 		public var objY: int;
 		
 		private var onSelect: Function;
-		private var selected: Boolean;						
+		protected var selected: Boolean;						
 		
 		public var objectCount: DisplayObject;		
 		
 		public function SimpleObject() {
+			super();
+			
 			addEventListener(Event.REMOVED_FROM_STAGE, function(e: Event) : void {
 				if (objectCount != null) {
 					removeChild(objectCount);
 					objectCount = null;
 				}
-			});
+			});					
 		}
 		
 		public function setObjectCount(count: int) : void {
@@ -95,9 +97,16 @@ package src.Objects {
 		}
 
 		public function setSelected(bool: Boolean = false):void
-		{
-			filters = bool == false ? [] : [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
+		{			
+			if (bool) {
+				filters = [new GlowFilter(0xFFFFFF, 0.5, 16, 16, 3)];
+			}
+			
 			selected = bool;
+			
+			if (!bool) {
+				setHighlighted(false);
+			}
 		}
 
 		public function setHighlighted(bool: Boolean = false):void

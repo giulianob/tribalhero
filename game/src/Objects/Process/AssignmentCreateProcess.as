@@ -81,7 +81,7 @@ package src.Objects.Process
 		{
 			assignmentDialog.getFrame().dispose();
 			
-			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop());
+			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription());
 		}
 	}
 

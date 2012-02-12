@@ -148,7 +148,7 @@
 			lblUpkeep = simpleLabelMaker("Troop Upkeep\n\n" + Locale.loadString("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
 			lblDefensePoints = simpleLabelMaker("Defense Points\n\n" + Locale.loadString("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
 			lblAttackPoints = simpleLabelMaker("Attack Points\n\n" + Locale.loadString("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
-			lblValue = simpleLabelMaker("City Value\n\n", new AssetIcon(new ICON_UPGRADE()));
+			lblValue = simpleLabelMaker("City Value\n\n" + Locale.loadString("INFLUENCE_POINTS_DESC"), new AssetIcon(new ICON_UPGRADE()));
 
 			lblUpkeepMsg = new JLabel("Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.", new AssetIcon(new ICON_CROP()));
 			lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));

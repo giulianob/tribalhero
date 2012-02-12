@@ -9,6 +9,7 @@
 	import src.Objects.Prototypes.ILayout;
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.StructureObject;
+	import src.UI.Components.NewCityResourcesPanel;
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.Components.StructureStatBox;
 	import src.UI.LookAndFeel.GameLookAndFeel;
@@ -67,7 +68,8 @@
 			lblTime.setText(Util.formatTime(Formula.buildTime(city, structPrototype.buildTime, city.techManager)));
 
 			pnlResources.removeAll();
-			pnlResources.append(new ResourcesPanel(Formula.buildCost(city, structPrototype), city));
+			
+			pnlResources.append(new NewCityResourcesPanel());
 		}
 
 		private function createUI(): void {

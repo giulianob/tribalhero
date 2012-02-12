@@ -200,6 +200,20 @@
 			// the actual number of laborers then we add the new number and remultiple by bonus to get the true value
 			return (Math.ceil(resource.getRate() / Number(bonus[buildingLevel])) + (laborDelta)) * bonus[buildingLevel];
 		}
+		
+		public static function getResourceNewCity() : *
+		{
+			var size:Number = Global.map.cities.size();
+			var wagonRequired:Number = 50 * size;
+			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
+			var influenceRequired:Number = size * (100 + 20 * (size-1));
+			var influenceCurrent:Number = 0;
+			for each(var city: City in Global.map.cities.each())
+			{
+				influenceCurrent += city.value;
+			}
+			return { wagonRequired:wagonRequired, wagonCurrent:wagonCurrent, influenceRequired:influenceRequired, influenceCurrent:influenceCurrent };
+		}
 	}
 }
 

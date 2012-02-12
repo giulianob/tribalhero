@@ -20,9 +20,11 @@ package src.UI.Dialog{
 		{name: "Attack Points", baseOn: "city"},
 		{name: "Defense Points", baseOn: "city"},
 		{name: "Resources Stolen", baseOn: "city"},
+		{name: "Influence Points", baseOn: "city"},
 		{name: "Attack Points", baseOn: "player"},
 		{name: "Defense Points", baseOn: "player"},
 		{name: "Resources Stolen", baseOn: "player"},
+		{name: "Influence Points", baseOn: "player"},
 		{name: "Level", baseOn: "tribe"},
 		{name: "Attack Points", baseOn: "tribe"},
 		{name: "Defense Points", baseOn: "tribe"},
@@ -42,11 +44,13 @@ package src.UI.Dialog{
 		private var cityAttackRanking: JToggleButton;
 		private var cityDefenseRanking: JToggleButton;
 		private var cityLootRanking: JToggleButton;
+		private var cityInfluenceRanking: JToggleButton;
 
 		private var playerRanking: JPanel;
 		private var playerAttackRanking: JToggleButton;
 		private var playerDefenseRanking: JToggleButton;
 		private var playerLootRanking: JToggleButton;
+		private var playerInfluenceRanking: JToggleButton;
 
 		private var tribeRanking: JPanel;
 		private var tribeLevelRanking: JToggleButton;
@@ -75,11 +79,13 @@ package src.UI.Dialog{
 
 			// Tooltips
 			new SimpleTooltip(cityAttackRanking, "Sort by attack points");
-			new SimpleTooltip(playerAttackRanking, "Sort by attack points");
 			new SimpleTooltip(cityDefenseRanking, "Sort by defense points");
-			new SimpleTooltip(playerDefenseRanking, "Sort by attack points");
 			new SimpleTooltip(cityLootRanking, "Sort by total loot stolen");
+			new SimpleTooltip(cityInfluenceRanking, "Sort by influence points");
+			new SimpleTooltip(playerAttackRanking, "Sort by attack points");
+			new SimpleTooltip(playerDefenseRanking, "Sort by attack points");
 			new SimpleTooltip(playerLootRanking, "Sort by total loot stolen");
+			new SimpleTooltip(playerInfluenceRanking, "Sort by influence points");
 			new SimpleTooltip(tribeLevelRanking, "Sort by level");
 			new SimpleTooltip(tribeAttackRanking, "Sort by attack points");
 			new SimpleTooltip(tribeDefenseRanking, "Sort by defenese points");
@@ -88,10 +94,12 @@ package src.UI.Dialog{
 			cityAttackRanking.addActionListener(onChangeRanking);
 			cityDefenseRanking.addActionListener(onChangeRanking);
 			cityLootRanking.addActionListener(onChangeRanking);
+			cityInfluenceRanking.addActionListener(onChangeRanking);
 
 			playerAttackRanking.addActionListener(onChangeRanking);
 			playerDefenseRanking.addActionListener(onChangeRanking);
 			playerLootRanking.addActionListener(onChangeRanking);
+			playerInfluenceRanking.addActionListener(onChangeRanking);
 
 			tribeLevelRanking.addActionListener(onChangeRanking);
 			tribeAttackRanking.addActionListener(onChangeRanking);
@@ -136,28 +144,32 @@ package src.UI.Dialog{
 					type = 0;
 				} else if (cityDefenseRanking.isSelected()) {
 					type = 1;
-				} else {
+				} else if (cityLootRanking.isSelected()) {
 					type = 2;
+				} else {
+					type = 3;
 				}
 			}
 			// Player ranking
 			else if(tabs.getSelectedIndex() == 1) {
 				if (playerAttackRanking.isSelected()) {
-					type = 3;
-				} else if (playerDefenseRanking.isSelected()) {
 					type = 4;
-				} else {
+				} else if (playerDefenseRanking.isSelected()) {
 					type = 5;
+				} else if (playerLootRanking.isSelected()) {
+					type = 6;
+				} else {
+					type = 7;
 				}
 			}
 			// Tribe ranking
 			else if (tabs.getSelectedIndex() == 2) {
 				if (tribeLevelRanking.isSelected()) {
-					type = 6;
-				} else if (tribeAttackRanking.isSelected()) {
-					type = 7;
-				} else if (tribeDefenseRanking.isSelected()) {
 					type = 8;
+				} else if (tribeAttackRanking.isSelected()) {
+					type = 9;
+				} else if (tribeDefenseRanking.isSelected()) {
+					type = 10;
 				}
 			}
 
@@ -330,10 +342,11 @@ package src.UI.Dialog{
 			cityAttackRanking.setSelected(true);
 			cityDefenseRanking = new JToggleButton("Defense");
 			cityLootRanking = new JToggleButton("Loot");
+			cityInfluenceRanking = new JToggleButton("Influence");
 			var cityButtonGroup: ButtonGroup = new ButtonGroup();
-			cityButtonGroup.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking);
+			cityButtonGroup.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking,cityInfluenceRanking);
 			var cityButtonGroupHolder: JPanel = new JPanel();
-			cityButtonGroupHolder.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking);
+			cityButtonGroupHolder.appendAll(cityAttackRanking, cityDefenseRanking, cityLootRanking,cityInfluenceRanking);
 			cityRanking.append(cityButtonGroupHolder);			
 			cityRanking.append(rankingScroll);
 
@@ -342,10 +355,11 @@ package src.UI.Dialog{
 			playerAttackRanking.setSelected(true);
 			playerDefenseRanking = new JToggleButton("Defense");
 			playerLootRanking = new JToggleButton("Loot");
+			playerInfluenceRanking = new JToggleButton("Influence");
 			var playerButtonGroup: ButtonGroup = new ButtonGroup();
-			playerButtonGroup.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking);
+			playerButtonGroup.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking,playerInfluenceRanking);
 			var playerButtonGroupHolder: JPanel = new JPanel();
-			playerButtonGroupHolder.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking);
+			playerButtonGroupHolder.appendAll(playerAttackRanking, playerDefenseRanking, playerLootRanking,playerInfluenceRanking);
 			playerRanking.append(playerButtonGroupHolder);
 
 			tribeRanking = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));

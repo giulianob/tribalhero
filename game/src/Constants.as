@@ -144,9 +144,11 @@ package src
 			{desc: "City ranking by attack points", icon: ICON_BATTLE },
 			{desc: "City ranking by defense points", icon: ICON_SHIELD },
 			{desc: "City ranking by total loot stolen", icon: ICON_CROP },
+			{desc: "City ranking by influence points", icon: ICON_UPGRADE },
 			{desc: "Player ranking by attack points", icon: ICON_BATTLE },
 			{desc: "Player ranking by defense points", icon: ICON_SHIELD },
-			{desc: "Player ranking by total loot stolen", icon: ICON_CROP }
+			{desc: "Player ranking by total loot stolen", icon: ICON_CROP },
+			{desc: "Player ranking by influence points", icon: ICON_UPGRADE }
 		];
 		
 		/* Buffer for game XML data */

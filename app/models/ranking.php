@@ -12,10 +12,12 @@ class Ranking extends AppModel {
         array('name' => 'RANKING_ATTACK_CITY', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'city'),
         array('name' => 'RANKING_DEFENSE_CITY', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'city'),
         array('name' => 'RANKING_LOOT_CITY', 'field' => 'loot_stolen', 'order' => 'desc', 'group' => 'city'),
+        array('name' => 'RANKING_INFLUENCE_CITY', 'field' => 'value', 'order' => 'desc', 'group' => 'city'),
         
         array('name' => 'RANKING_ATTACK_PLAYER', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'player'),
         array('name' => 'RANKING_DEFENSE_PLAYER', 'field' => 'defense_point', 'order' => 'desc', 'group' => 'player'),
         array('name' => 'RANKING_LOOT_PLAYER', 'field' => 'loot_stolen', 'order' => 'desc', 'group' => 'player'),
+        array('name' => 'RANKING_INFLUENCE_PLAYER', 'field' => 'value', 'order' => 'desc', 'group' => 'player'),
         
         array('name' => 'RANKING_LEVEL_TRIBE', 'field' => 'level', 'order' => 'desc', 'group' => 'tribe'),
         array('name' => 'RANKING_ATTACK_TRIBE', 'field' => 'attack_point', 'order' => 'desc', 'group' => 'tribe'),

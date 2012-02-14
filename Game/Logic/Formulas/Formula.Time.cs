@@ -22,7 +22,7 @@ namespace Game.Logic.Formulas
 
         public virtual int TradeTime(IStructure structure, int quantity)
         {
-            return quantity * 15 * 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]));
+            return  14400* 100 / (100 + structure.Technologies.GetEffects(EffectCode.TradeSpeedMod, EffectInheritance.Self).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]));
         }
 
         public virtual int LaborMoveTime(IStructure structure, byte count, ITechnologyManager technologyManager)

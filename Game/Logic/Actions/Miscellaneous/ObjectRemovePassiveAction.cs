@@ -191,6 +191,9 @@ namespace Game.Logic.Actions
                     city.DoRemove(((IStructure)obj));
                 }
 
+                city.BeginUpdate();
+                Procedures.Procedure.Current.OnStructureUpgradeDowngrade((IStructure)obj);
+                city.EndUpdate();
                 StateChange(ActionState.Completed);
             }
         }

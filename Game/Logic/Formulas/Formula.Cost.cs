@@ -101,7 +101,9 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual IEnumerable<ResourceType> MarketResourceSellable(IStructure structure)
         {
-            return new[] {ResourceType.Wood, ResourceType.Crop, ResourceType.Iron};
+            if (structure.Lvl >= 8)
+                return new[] { ResourceType.Wood, ResourceType.Crop, ResourceType.Iron };
+            return new[] {ResourceType.Wood, ResourceType.Crop};
         }
 
         /// <summary>
@@ -111,7 +113,11 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual IEnumerable<ResourceType> MarketResourceBuyable(IStructure structure)
         {
-            return new[] { ResourceType.Wood, ResourceType.Crop, ResourceType.Iron };
+            if (structure.Lvl >= 8)
+                return new[] {ResourceType.Wood, ResourceType.Crop, ResourceType.Iron};
+            if (structure.Lvl >= 3)
+                return new[] {ResourceType.Wood, ResourceType.Crop};
+            return new ResourceType[] {};
         }
 
         /// <summary>
@@ -121,7 +127,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual int MarketTradeQuantity(IStructure structure)
         {
-            int[] quantity = { 0, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500, 1500 };
+            int[] quantity = { 0, 200, 400, 400, 400, 700, 700, 1100, 1100, 1800, 1800 };
             return quantity[structure.Lvl];
         }
 

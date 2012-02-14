@@ -115,6 +115,26 @@ namespace Game.Logic.Formulas
         }
 
         /// <summary>
+        /// Returns the amount of gold the user should get for the specified city
+        /// </summary>
+        /// <param name="city">City to recalculate resources for</param>
+        /// <returns></returns>
+        public virtual int GetGoldRate(ICity city)
+        {
+            int value = 0;
+            foreach(Structure structure in city.Where(x=> Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Market", x)))
+            {
+                if (structure.Lvl >= 10)
+                    value += 50;
+                else if (structure.Lvl >= 6)
+                    value += 18;
+                else if (structure.Lvl >= 4)
+                    value += 4;
+            }
+            return value;
+        }
+
+        /// <summary>
         /// Returns the rate that the specified structure should gather from the given forest.
         /// </summary>
         /// <param name="forest"></param>

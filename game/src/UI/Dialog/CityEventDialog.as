@@ -108,7 +108,7 @@
 		}
 
 		private function drawResources() : void {
-			lblGold.setText(resourceLabelText(city.resources.gold, false, false));
+			lblGold.setText(resourceLabelText(city.resources.gold, false, true));
 			lblWood.setText(resourceLabelText(city.resources.wood));
 			lblCrop.setText(resourceLabelText(city.resources.crop));
 			lblIron.setText(resourceLabelText(city.resources.iron));

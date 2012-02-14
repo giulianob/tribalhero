@@ -13,15 +13,22 @@
 		public static const TRIBE_MEMBER_PER_LEVEL: int = 5;
 		
 		public static function resourcesBuyable(marketLevel: int): Array {
-			return ["Wood", "Iron", "Crop"];
+			if (marketLevel >= 8)
+				return ["Wood", "Iron", "Crop"];
+			if (marketLevel >= 3)
+				return ["Wood", "Crop"];
+			return [];
 		}
 		
 		public static function resourcesSellable(marketLevel: int): Array {
-			return ["Wood", "Iron", "Crop"];
+			if (marketLevel >= 8)
+				return ["Wood", "Iron", "Crop"];
+			return ["Wood", "Crop"];
 		}		
 		
 		public static function resourceMaxTrade(marketLevel: int): int {
-			return 1500;
+			var rate: Array = [0, 200, 400, 400, 400, 700, 700, 1100, 1100, 1800, 1800];
+			return rate[marketLevel];
 		}
 
 		public static function concurrentBuildUpgrades(mainStructureLevel: int) : int

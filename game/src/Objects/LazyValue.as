@@ -54,7 +54,7 @@
 				return limit;
 			}
 
-			return Math.max(0, value + delta);
+			return Math.min(99999, Math.max(0, value + delta));
 		}
 
 		protected function getCalculatedRate(): int {

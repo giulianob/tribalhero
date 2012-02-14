@@ -6,6 +6,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 	import src.Global;
 	import src.Objects.Actions.ActionButton;
 	import src.Objects.*;
+	import src.Objects.Effects.Formula;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.MarketBuyDialog;
@@ -125,6 +126,13 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				(custom as GameJPanel).getFrame().dispose();
 			else
 				GameError.showMessage(status);
+		}
+		override public function validateButton():Boolean 
+		{
+			if (mode == "sell") {
+				return Formula.resourcesSellable((parentObj as StructureObject).level).length > 0;
+			}
+			return Formula.resourcesBuyable((parentObj as StructureObject).level).length > 0;
 		}
 	}
 

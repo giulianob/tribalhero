@@ -118,7 +118,9 @@ namespace Game.Battle
             WriteBeginReport();
 
             // Check if we've already snapped this troop
-            if (!ReportedTroops.TryGetValue(combatObject.TroopStub, out combatTroopId))
+            bool troopAlreadySnapped = ReportedTroops.TryGetValue(combatObject.TroopStub, out combatTroopId);
+
+            if (!troopAlreadySnapped)
             {
                 // Snap the troop
                 combatTroopId = battleReportWriter.SnapTroop(ReportId,
@@ -147,12 +149,15 @@ namespace Game.Battle
                     {
                             // When entering, we log the initial report id
                         case ReportState.Entering:
-                            battleReportWriter.SnapBattleReportView(combatObject.City.Id,
-                                                                    combatObject.TroopStub.TroopId,
-                                                                    Battle.BattleId,
-                                                                    combatObject.GroupId,
-                                                                    isAttacker,
-                                                                    ReportId);
+                            if (!troopAlreadySnapped)
+                            {
+                                battleReportWriter.SnapBattleReportView(combatObject.City.Id,
+                                                                        combatObject.TroopStub.TroopId,
+                                                                        Battle.BattleId,
+                                                                        combatObject.GroupId,
+                                                                        isAttacker,
+                                                                        ReportId);
+                            }
                             break;
                             // When exiting, we log the end report id
                         case ReportState.Exiting:

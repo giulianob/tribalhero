@@ -91,8 +91,8 @@ namespace Testing.Tribe
         {
             get
             {
-                yield return new object[] { new[] { 300, 150 }, targetTime.AddMinutes(-5) };
-                yield return new object[] { new[] { 150, 300 }, targetTime.AddMinutes(-5) };
+                yield return new object[] { new[] { 300, 150, 200 }, targetTime.AddMinutes(-5) };
+                yield return new object[] { new[] { 150, 300, 250 }, targetTime.AddMinutes(-5) };
                 yield return new object[] { new[] { 150, 300, 360 }, targetTime.AddMinutes(-6) };
             }
         }
@@ -120,10 +120,11 @@ namespace Testing.Tribe
             Mock<IActionFactory> actionFactory = new Mock<IActionFactory>();
             Mock<ICity> newCity;
             Mock<ITroopStub> newStub = CreateStub(out newCity);
+            Mock<ICity> newCity2;
+            Mock<ITroopStub> newStub2 = CreateStub(out newCity2);
 
             SystemClock.SetClock(startTime);
 
-            // first troop should be dispatched 5 minutes later
             Queue<int> moveTimeReturns = new Queue<int>();
             foreach (var moveTime in moveTimes)
             {
@@ -148,8 +149,9 @@ namespace Testing.Tribe
                                                    actionFactory.Object);
 
             assignment.Add(newStub.Object);
+            assignment.Add(newStub2.Object);
 
-            scheduler.Verify(m => m.Put(assignment), Times.Once());
+            scheduler.Verify(m => m.Put(assignment), Times.Exactly(2));
             assignment.Time.Should().Be(expectedTime);
         }
 

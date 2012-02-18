@@ -27,6 +27,7 @@ class Battle extends AppModel {
 
         $cacheKey = "battle_events_{$battle['Battle']['id']}_{$page}";
 
+        Cache::set(array('duration' => '+10 days'));
         $cachedEvents = Cache::read($cacheKey);
 
         if ($cachedEvents !== false) {
@@ -147,8 +148,8 @@ class Battle extends AppModel {
 
             $outcome['reports'][] = $reportOverview;
         }
-
-        Cache::set(array('duration' => '+7 days'));
+        
+        Cache::set(array('duration' => '+10 days'));
         Cache::write($cacheKey, $outcome);
 
         return $outcome;
@@ -244,6 +245,7 @@ class Battle extends AppModel {
     function viewBattleOutcome($battle) {
         $cacheKey = "battle_outcome_{$battle['Battle']['id']}";
 
+        Cache::set(array('duration' => '+10 days'));
         $cachedOutcome = Cache::read($cacheKey);
 
         if ($cachedOutcome !== false) {
@@ -333,7 +335,7 @@ class Battle extends AppModel {
             }
         }
 
-        Cache::set(array('duration' => '+7 days'));
+        Cache::set(array('duration' => '+10 days'));
         Cache::write($cacheKey, $outcome);
 
         return $outcome;

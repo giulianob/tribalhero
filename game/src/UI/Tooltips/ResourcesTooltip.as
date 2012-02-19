@@ -44,7 +44,7 @@
 		{
 			ui.removeAll();
 
-			ui.append(resourceLabelMaker("Gold", city.resources.gold, new AssetIcon(new ICON_GOLD()), false, false));
+			ui.append(resourceLabelMaker("Gold", city.resources.gold, new AssetIcon(new ICON_GOLD()), false, true));
 			ui.append(resourceLabelMaker("Wood", city.resources.wood, new AssetIcon(new ICON_WOOD())));
 			ui.append(resourceLabelMaker("Crop", city.resources.crop, new AssetIcon(new ICON_CROP())));
 			ui.append(resourceLabelMaker("Iron", city.resources.iron, new AssetIcon(new ICON_IRON())));

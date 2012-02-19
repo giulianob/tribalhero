@@ -35,9 +35,13 @@
 				
 				var unreadMessages: int = data.unreadMessages;			
 				var unreadReports: int = data.unreadReports;
+				var unreadForum: int = data.unreadForum;
 				
 				Global.gameContainer.setUnreadBattleReportCount(unreadReports);
 				Global.gameContainer.setUnreadMessageCount(unreadMessages);
+				if (unreadForum) {
+					Global.gameContainer.setUnreadForumIcon(true);
+				}
 			}
 			catch (e: Error) { }
 		}		

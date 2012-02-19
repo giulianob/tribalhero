@@ -26,10 +26,6 @@
 			this.maxHp = maxHp;
 		}
 		
-		public function get count(): Number {
-			return 1;
-		}
-		
 		public function get name(): String {
 			return "Unimplemented";
 		}

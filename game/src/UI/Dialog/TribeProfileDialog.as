@@ -20,6 +20,7 @@
 	import src.UI.Cursors.GroundAttackCursor;
 	import src.UI.LookAndFeel.*;
 	import src.UI.Tooltips.*;
+	import src.Util.*;
 	
 	public class TribeProfileDialog extends GameJPanel
 	{
@@ -67,6 +68,7 @@
 		public function show(owner:* = null, modal:Boolean = true, onClose: Function = null):JFrame 
 		{
 			super.showSelf(owner, modal, onClose, dispose);
+			Global.gameContainer.closeAllFramesByType(TribeProfileDialog);
 			Global.gameContainer.showFrame(frame);
 			return frame;
 		}
@@ -142,9 +144,17 @@
 			btnJoin.setConstraints("East");
 			
 			var btnDetails: JLabelButton = new JLabelButton("Details", null, AsWingConstants.LEFT);
-			btnDetails.setConstraints("Center");						
+
+			var lblDescription: JLabel = new JLabel(StringHelper.truncate(assignment.description,75), null, AsWingConstants.LEFT);
+			lblDescription.setConstraints("Center");
+			if (assignment.description != "") 
+				new SimpleTooltip(lblDescription, assignment.description);
 			
-			pnlBottom.appendAll(btnDetails, btnJoin);
+			var pnlButtons: JPanel = new JPanel(new FlowLayout());
+			pnlButtons.appendAll(btnDetails, btnJoin);
+			pnlButtons.setConstraints("East");
+			
+			pnlBottom.appendAll(lblDescription, pnlButtons);
 			
 			pnlContainer.appendAll(pnlHeader, pnlBottom);
 			
@@ -254,10 +264,10 @@
 					pnlActions.appendAll(btnSetDescription, btnInvite, btnDonate, btnUpgrade, btnDismantle);
 					break;
 				case 1:
-					pnlActions.appendAll(btnInvite, btnDonate, btnLeave);
+					pnlActions.appendAll(btnInvite, btnDonate, btnUpgrade, btnLeave);
 					break;
 				default:
-					pnlActions.appendAll(btnDonate, btnLeave);
+					pnlActions.appendAll(btnDonate, btnUpgrade, btnLeave);
 					break;
 			}
 			
@@ -267,6 +277,8 @@
 			btnUpgrade.addActionListener(function(e: Event): void {
 				Global.mapComm.Tribe.upgrade();
 			});
+			btnUpgrade.setEnabled(Constants.tribeRank == 0);
+			btnUpgrade.mouseEnabled = true;
 			
 			// description
 			var description: String = profileData.description == "" ? "The tribe chief hasn't set an announcement yet" : profileData.description;
@@ -376,6 +388,10 @@
 			pnlInfoContainer.repaintAndRevalidate();
 			
 			return pnlInfoContainer;
+		}
+		
+		public function ReceiveNewMessage(): void{
+			messageBoard.showRefreshButton();
 		}
 	}
 	

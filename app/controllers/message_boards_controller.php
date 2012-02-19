@@ -23,7 +23,9 @@ class MessageBoardsController extends AppController {
             return;
         }
 
-        $this->set('messages', $this->paginate('MessageBoardThread'));
+        $messages = $this->paginate('MessageBoardThread');       
+        
+        $this->set('messages', $messages);
     }
 
     function view() {
@@ -42,6 +44,8 @@ class MessageBoardsController extends AppController {
 
         $this->paginate = $this->MessageBoardPost->getPostsForThread($id, $page);
 
+        $this->MessageBoardThread->MessageBoardRead->updateLastRead($playerId, $id);
+        
         $this->set('thread', $thread);
         $this->set('posts', $this->paginate('MessageBoardPost'));
     }
@@ -69,6 +73,8 @@ class MessageBoardsController extends AppController {
         else
             $data = array('success' => true);
         
+        $this->MessageBoardThread->MessageBoardRead->updateLastRead($playerId, $id);
+        
         $this->set('data', $data);
         $this->render('/elements/to_json');
     }
@@ -79,6 +85,9 @@ class MessageBoardsController extends AppController {
         $message = rtrim($this->params['form']['message']);
 
         $data = $this->MessageBoardThread->addThread($playerId, $subject, $message);
+        $this->MessageBoardThread->MessageBoardRead->updateLastRead($playerId, $data['id']);
+ 
+        $this->_signalServerWithNewTribeForumPost($playerId);
 
         $this->set(compact('data'));
         $this->render('/elements/to_json');
@@ -91,11 +100,14 @@ class MessageBoardsController extends AppController {
 
         $thread = $this->MessageBoardThread->getThreadHeader($playerId, $threadId);
 
-        if (empty($thread))
+        if (empty($thread)) {
             $data = array('success' => false, 'error' => 'Thread specified does not exist');
-        else
+        } else {
             $data = $this->MessageBoardPost->addPost($playerId, $threadId, $message);
-
+            $this->MessageBoardThread->MessageBoardRead->updateLastRead($playerId, $threadId);
+            $this->_signalServerWithNewTribeForumPost($playerId);
+        }
+        
         $this->set(compact('data'));
         $this->render('/elements/to_json');
     }
@@ -104,4 +116,19 @@ class MessageBoardsController extends AppController {
         
     }
 
+    private function _signalServerWithNewTribeForumPost($playerId) {
+        try
+        {
+            $transport = $this->Thrift->getTransportFor('Notification');
+            $protocol = $this->Thrift->getProtocol($transport);
+            $notificationRpc = new NotificationClient($protocol);
+            $transport->open();                                                     
+            $notificationRpc->NewTribeForumPost($this->MessageBoardThread->Player->getTribeId($playerId), $playerId);
+            $transport->close();
+        }
+        catch (Exception $e)
+        {
+            debug($e);
+        }
+    }
 }

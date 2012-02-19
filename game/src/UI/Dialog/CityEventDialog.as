@@ -38,6 +38,7 @@
 		private var lblAttackPoints: JLabel;
 		private var lblDefensePoints: JLabel;
 		private var lblUpkeepMsg: JLabel;
+		private var lblValue: JLabel;
 
 		private var city: City;
 
@@ -107,7 +108,7 @@
 		}
 
 		private function drawResources() : void {
-			lblGold.setText(resourceLabelText(city.resources.gold, false, false));
+			lblGold.setText(resourceLabelText(city.resources.gold, false, true));
 			lblWood.setText(resourceLabelText(city.resources.wood));
 			lblCrop.setText(resourceLabelText(city.resources.crop));
 			lblIron.setText(resourceLabelText(city.resources.iron));
@@ -116,6 +117,7 @@
 			lblUpkeepMsg.setVisible(city.resources.crop.getRate() < city.resources.crop.getUpkeep());
 			lblAttackPoints.setText(city.attackPoint + " attack points");
 			lblDefensePoints.setText(city.defensePoint + " defense points");
+			lblValue.setText(city.value + " Influence points");
 
 			if (getFrame() != null) {
 				getFrame().pack();
@@ -129,7 +131,7 @@
 			layout0.setGap(10);
 			setLayout(layout0);
 
-			pnlResources = new JPanel(new GridLayout(4, 2, 20, 10));
+			pnlResources = new JPanel(new GridLayout(0, 3, 20, 10));
 
 			pnlLocalEvents = new JTabbedPane();
 			pnlLocalEvents.setPreferredSize(new IntDimension(540, 235));
@@ -146,6 +148,7 @@
 			lblUpkeep = simpleLabelMaker("Troop Upkeep\n\n" + Locale.loadString("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
 			lblDefensePoints = simpleLabelMaker("Defense Points\n\n" + Locale.loadString("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
 			lblAttackPoints = simpleLabelMaker("Attack Points\n\n" + Locale.loadString("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
+			lblValue = simpleLabelMaker("Influence Points\n\n" + Locale.loadString("INFLUENCE_POINTS_DESC"), new AssetIcon(new ICON_UPGRADE()));
 
 			lblUpkeepMsg = new JLabel("Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.", new AssetIcon(new ICON_CROP()));
 			lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));
@@ -158,6 +161,7 @@
 			pnlResources.append(lblUpkeep);
 			pnlResources.append(lblDefensePoints);
 			pnlResources.append(lblAttackPoints);
+			pnlResources.append(lblValue);
 
 			//component layoution
 			append(lblUpkeepMsg);

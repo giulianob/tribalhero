@@ -16,6 +16,7 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.SimpleObject;
 	import src.Objects.Troop.*;
+	import src.Objects.Effects.Formula;
 	import src.UI.Cursors.*;
 	import src.UI.Dialog.CreateCityDialog;
 	import src.UI.Dialog.ForestLaborDialog;
@@ -51,9 +52,10 @@ package src.UI.Sidebars.NewCityPlaceholder.Buttons {
 		
 		override public function validateButton():Boolean 
 		{
-			if (!Global.gameContainer.selectedCity.resources.GreaterThanOrEqual(mainBuildingPrototype.buildResources))
+			var data:* = Formula.getResourceNewCity();
+			if (data.influenceRequired > data.influenceCurrent || data.wagonRequired > data.wagonCurrent)
 				return false;
-			
+
 			return true;
 		}
 

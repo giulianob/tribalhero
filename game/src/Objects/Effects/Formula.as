@@ -9,9 +9,27 @@
 
 	public class Formula {
 		
-		public static const RESOURCE_CHUNK: int = 100;
-		public static const RESOURCE_MAX_TRADE: int = 1500;
+		public static const RESOURCE_CHUNK: int = 100;		
 		public static const TRIBE_MEMBER_PER_LEVEL: int = 5;
+		
+		public static function resourcesBuyable(marketLevel: int): Array {
+			if (marketLevel >= 8)
+				return ["Wood", "Iron", "Crop"];
+			if (marketLevel >= 3)
+				return ["Wood", "Crop"];
+			return [];
+		}
+		
+		public static function resourcesSellable(marketLevel: int): Array {
+			if (marketLevel >= 8)
+				return ["Wood", "Iron", "Crop"];
+			return ["Wood", "Crop"];
+		}		
+		
+		public static function resourceMaxTrade(marketLevel: int): int {
+			var rate: Array = [0, 200, 400, 400, 400, 700, 700, 1100, 1100, 1800, 1800];
+			return rate[marketLevel];
+		}
 
 		public static function concurrentBuildUpgrades(mainStructureLevel: int) : int
 		{
@@ -121,14 +139,14 @@
 			return new Resources(1000, 400, 40, 2000, 0).multiplyByUnit(TRIBE_MEMBER_PER_LEVEL * level * (1 + ( level * level / 20)));
 		}
 		
-		public static function marketBuyCost(price: int, amount: int, tax: Number): int
+		public static function marketBuyCost(price: int, amount: int): int
 		{
-			return Math.round(((amount / RESOURCE_CHUNK) * price) * (1.0 + tax));
+			return Math.round(((amount / RESOURCE_CHUNK) * price));
 		}	
 
-		public static function marketSellCost(price: int, amount: int, tax: Number): int
+		public static function marketSellCost(price: int, amount: int): int
 		{
-			return Math.round(((amount / RESOURCE_CHUNK) * price) * (1.0 - tax));
+			return Math.round(((amount / RESOURCE_CHUNK) * price));
 		}
 
 		public static function buildCost(city: City, prototype: StructurePrototype) : Resources
@@ -144,12 +162,6 @@
 		public static function unitUpgradeCost(city: City, prototype: UnitPrototype) : Resources
 		{
 			return prototype.upgradeResources;
-		}
-
-		public static function marketTax(structure: StructureObject): Number
-		{
-			var rate: Array = [ 0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12 ];			
-			return rate[structure.level];
 		}
 
 		public static function maxForestLabor(level: int) : int {
@@ -199,6 +211,20 @@
 			// The rate includes the bonus so dividing it by the bonus and taking the ceil gives
 			// the actual number of laborers then we add the new number and remultiple by bonus to get the true value
 			return (Math.ceil(resource.getRate() / Number(bonus[buildingLevel])) + (laborDelta)) * bonus[buildingLevel];
+		}
+		
+		public static function getResourceNewCity() : *
+		{
+			var size:Number = Global.map.cities.size();
+			var wagonRequired:Number = 50 * size;
+			var wagonCurrent:Number = Global.gameContainer.selectedCity.troops.getDefaultTroop().getIndividualUnitCount(ObjectFactory.getFirstType("Wagon"));
+			var influenceRequired:Number = size * (100 + 20 * (size-1));
+			var influenceCurrent:Number = 0;
+			for each(var city: City in Global.map.cities.each())
+			{
+				influenceCurrent += city.value;
+			}
+			return { wagonRequired:wagonRequired, wagonCurrent:wagonCurrent, influenceRequired:influenceRequired, influenceCurrent:influenceCurrent };
 		}
 	}
 }

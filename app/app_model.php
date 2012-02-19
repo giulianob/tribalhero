@@ -57,4 +57,12 @@ class AppModel extends Model {
         return empty($val) || strcmp($val, $this->data[$this->name][$matchField]) == 0;
     }
 
+    /**
+     * Returns SQL time string from sql time
+     * @param type $time
+     * @return type 
+     */
+    function toSqlTime($time) {
+        return date("Y-m-d H:i:s", $time);
+    }
 }

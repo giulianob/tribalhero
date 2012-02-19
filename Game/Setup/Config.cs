@@ -65,8 +65,7 @@ namespace Game.Setup
         public static int battle_stamina_initial = 20;
         public static ushort battle_stamina_destroyed_deduction = 5;
         public static bool battle_instant_move;
-        public static double battle_cost_penalty = 1;
-        public static bool resource_upkeep = true;
+        public static double battle_cost_penalty = 1;        
         public static bool resource_cap = true;
         public static bool resource_fast_income;        
         public static int resource_crop_ratio = 1;
@@ -74,6 +73,8 @@ namespace Game.Setup
         public static int resource_wood_ratio = 1;
         public static int resource_gold_ratio = 2;
         public static int resource_iron_ratio = 5;
+
+        public static bool troop_starve = true;
 
         public static byte minimum_distance_apart = 8;
         public static int height_margin = 10;

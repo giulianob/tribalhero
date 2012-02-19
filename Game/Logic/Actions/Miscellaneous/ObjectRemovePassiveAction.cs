@@ -179,18 +179,18 @@ namespace Game.Logic.Actions
                     city.DoRemove((TroopObject)obj);
                 else if (obj is IStructure)
                 {
+                    city.BeginUpdate();
                     if (!wasKilled)
                     {
                         // Give laborers back to the city if obj was not killed off
                         ushort laborers = ((IStructure)obj).Stats.Labor;
-                        city.BeginUpdate();
                         city.Resource.Labor.Add(laborers);
-                        city.EndUpdate();
                     }
 
                     city.DoRemove(((IStructure)obj));
+                    Procedures.Procedure.Current.OnStructureUpgradeDowngrade((IStructure)obj);
+                    city.EndUpdate();
                 }
-
                 StateChange(ActionState.Completed);
             }
         }

@@ -63,22 +63,18 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\Lib\ninject\DynamicProxy\lib\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\Lib\fluentassertions\FluentAssertions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Moq">
+    <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\moq\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
       <HintPath>..\Lib\ninject\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Factory, Version=2.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL" />
-    <Reference Include="Ninject.MockingKernel">
-      <HintPath>..\Lib\ninject\Ninject.MockingKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.MockingKernel.Moq">
-      <HintPath>..\Lib\ninject\Ninject.MockingKernel.Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -102,6 +98,8 @@
     <Compile Include="Battle\StatsModCalculator.cs" />
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
+    <Compile Include="Formulas\NewCityResourceTest.cs" />
+    <Compile Include="Formulas\WeaponExportTest.cs" />
     <Compile Include="Formulas\MoveTimeTotalTest.cs" />
     <Compile Include="Lock\CallbackLockTest.cs" />
     <Compile Include="MapMath\ForeachTest.cs" />

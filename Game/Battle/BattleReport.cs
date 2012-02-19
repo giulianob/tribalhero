@@ -118,7 +118,9 @@ namespace Game.Battle
             WriteBeginReport();
 
             // Check if we've already snapped this troop
-            if (!ReportedTroops.TryGetValue(combatObject.TroopStub, out combatTroopId))
+            bool troopAlreadySnapped = ReportedTroops.TryGetValue(combatObject.TroopStub, out combatTroopId);
+
+            if (!troopAlreadySnapped)
             {
                 // Snap the troop
                 combatTroopId = battleReportWriter.SnapTroop(ReportId,
@@ -127,21 +129,45 @@ namespace Game.Battle
                                              combatObject.TroopStub.TroopId,
                                              combatObject.GroupId,
                                              isAttacker,
-                                             combatObject.Loot);
-
-                // Log any troops that are entering the battle to the view table so they are able to see this report
-                // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table
-                if (Battle.City != combatObject.City && (state == ReportState.Entering || state == ReportState.Reinforced))
-                {
-                    battleReportWriter.SnapBattleReportView(combatObject.City.Id, combatObject.TroopStub.TroopId, Battle.BattleId, combatObject.GroupId, isAttacker);
-                }
+                                             combatObject.GroupLoot);
 
                 ReportedTroops[combatObject.TroopStub] = combatTroopId;
             }
-            // If object has already been snapped, then we just update the state if it's not Staying (Staying is the default state basically.. anything else overrides it)
-            else if (state != ReportState.Staying)
+
+            // Update the state if it's not Staying (Staying is the default state basically.. anything else overrides it)
+            // TODO: This is currently not very efficient since this logic can run several times for the same group
+            // We should really add the idea of groups into the battle so it can call this only once per group
+            if (state != ReportState.Staying)
             {
                 battleReportWriter.SnapTroopState(combatTroopId, combatObject.TroopStub, state);
+
+                // Log any troops that are entering the battle to the view table so they are able to see this report
+                // Notice that we don't log the local troop. This is because they can automatically see all of the battles that take place in their cities by using the battles table                    
+                if (Battle.City != combatObject.City)
+                {
+                    switch(state)
+                    {
+                            // When entering, we log the initial report id
+                        case ReportState.Entering:
+                            if (!troopAlreadySnapped)
+                            {
+                                battleReportWriter.SnapBattleReportView(combatObject.City.Id,
+                                                                        combatObject.TroopStub.TroopId,
+                                                                        Battle.BattleId,
+                                                                        combatObject.GroupId,
+                                                                        isAttacker,
+                                                                        ReportId);
+                            }
+                            break;
+                            // When exiting, we log the end report id
+                        case ReportState.Exiting:
+                        case ReportState.Dying:
+                        case ReportState.OutOfStamina:
+                        case ReportState.Retreating:
+                            battleReportWriter.SnapBattleReportViewExit(Battle.BattleId, combatObject.GroupId, ReportId);
+                            break;
+                    }
+                }
             }
 
             // Check if we've already snapped the combat object

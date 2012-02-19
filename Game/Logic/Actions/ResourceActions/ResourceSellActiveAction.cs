@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Logic.Formulas;
 using Game.Map;
@@ -9,7 +10,6 @@ using Game.Module;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -18,7 +18,6 @@ namespace Game.Logic.Actions
     class ResourceSellActiveAction : ScheduledActiveAction
     {
         private const int TRADE_SIZE = 100;
-        private const int MAX_TRADE = 15;
         private readonly uint cityId;
 
         private readonly ushort price;
@@ -77,9 +76,17 @@ namespace Game.Logic.Actions
 
             Market market;
             Resource cost;
+            Formula formula = new Formula();
 
-            if (quantity == 0 || quantity%TRADE_SIZE != 0 || (quantity/TRADE_SIZE) > MAX_TRADE)
+            if (!formula.MarketResourceSellable(structure).Contains(resourceType))
+            {
+                return Error.ResourceNotTradable;                
+            }
+
+            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > formula.MarketTradeQuantity(structure))
+            {
                 return Error.MarketInvalidQuantity;
+            }
 
             switch(resourceType)
             {
@@ -127,11 +134,11 @@ namespace Game.Logic.Actions
 
         private void InterruptCatchAll(bool wasKilled) {
             ICity city;
-            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city)) {
                 if (!IsValid())
                     return;
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure)) {
                     StateChange(ActionState.Failed);
                     return;
@@ -167,12 +174,12 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            IStructure structure;
             using (Concurrency.Current.Lock(cityId, out city))
             {
                 if (!IsValid())
                     return;
 
+                IStructure structure;
                 if (!city.TryGetStructure(structureId, out structure))
                 {
                     StateChange(ActionState.Failed);
@@ -180,7 +187,7 @@ namespace Game.Logic.Actions
                 }
 
                 structure.City.BeginUpdate();
-                structure.City.Resource.Add(0, (int)Math.Round(price * (quantity / TRADE_SIZE) * (1.0 - Formula.Current.MarketTax(structure))), 0, 0, 0);
+                structure.City.Resource.Add(0, (int)Math.Round((double)(price * (quantity / TRADE_SIZE))), 0, 0, 0);
                 structure.City.EndUpdate();
 
                 StateChange(ActionState.Completed);

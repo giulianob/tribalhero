@@ -17,6 +17,7 @@ namespace Game.Logic.Procedures
             city.Resource.Crop.Rate = Formula.Current.GetCropRate(city);
             city.Resource.Iron.Rate = Formula.Current.GetIronRate(city);
             city.Resource.Wood.Rate = Formula.Current.GetWoodRate(city);
+            city.Resource.Gold.Rate = Formula.Current.GetGoldRate(city);
         }
 
         public virtual void OnStructureUpgradeDowngrade(IStructure structure)

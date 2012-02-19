@@ -18,20 +18,16 @@ namespace Game.Logic.Actions
     {
 
         private delegate void Init(ICity city);
-        private delegate void PreLoop(ICity city);
         private delegate void PostLoop(ICity city);
         private delegate void StructureLoop(ICity city, IStructure structure);
 
         private event Init InitVars;
-        private event PreLoop PreFirstLoop;
+
         private event StructureLoop FirstLoop;
         private event PostLoop PostFirstLoop;
-        private event PreLoop PreSecondLoop;
         private event StructureLoop SecondLoop;
-        private event PostLoop PostSecondLoop;
 
-
-        private const int INTERVAL = 1800;
+        private const int INTERVAL_IN_SECONDS = 1800;
         private readonly uint cityId;
         
         private int laborTimeRemains;
@@ -77,7 +73,7 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(INTERVAL));
+            endTime = DateTime.UtcNow.AddSeconds(CalculateTime(INTERVAL_IN_SECONDS));
             return Error.Ok;
         }
 
@@ -124,9 +120,6 @@ namespace Game.Logic.Actions
                 if (InitVars != null)
                     InitVars(city);
 
-                if (PreFirstLoop != null)
-                    PreFirstLoop(city);
-
                 if (FirstLoop != null)
                     foreach (var structure in city)
                         FirstLoop(city, structure);
@@ -134,15 +127,9 @@ namespace Game.Logic.Actions
                 if (PostFirstLoop != null)
                     PostFirstLoop(city);
 
-                if (PreSecondLoop != null)
-                    PreSecondLoop(city);
-
                 if (SecondLoop != null)
                     foreach (var structure in city)
                         SecondLoop(city, structure);
-
-                if (PostSecondLoop != null)
-                    PostSecondLoop(city);
 
                 city.EndUpdate();
 
@@ -152,7 +139,7 @@ namespace Game.Logic.Actions
                 else
                 {
                     beginTime = DateTime.UtcNow;
-                    endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : INTERVAL * Config.seconds_per_unit);
+                    endTime = DateTime.UtcNow.AddSeconds(Config.actions_instant_time ? 3 : INTERVAL_IN_SECONDS * Config.seconds_per_unit);
                     StateChange(ActionState.Fired);
                 }
             }
@@ -176,7 +163,7 @@ namespace Game.Logic.Actions
                     if (city.Owner.Session == null && DateTime.UtcNow.Subtract(city.Owner.LastLogin).TotalDays > 2)
                         return;
 
-                    laborTimeRemains += INTERVAL;
+                    laborTimeRemains += INTERVAL_IN_SECONDS;
                     int laborRate = Formula.Current.GetLaborRate(laborTotal, city);
                     int laborProduction = laborTimeRemains/laborRate;
                     if (laborProduction <= 0)
@@ -218,18 +205,25 @@ namespace Game.Logic.Actions
         {
             PostFirstLoop += city =>
                 {
-                    if (!Config.resource_upkeep)
+                    if (!Config.troop_starve)
+                    {
                         return;
-                    
-                    if (city.Resource.Crop.Upkeep <= city.Resource.Crop.Rate)
+                    }
+
+                    Resource upkeepCost = new Resource(Math.Max(0, -1 * city.Resource.Crop.GetAmountReceived(INTERVAL_IN_SECONDS*1000)), 0, 0, 0, 0);
+
+                    if (upkeepCost.Empty)
+                    {
                         return;
+                    }
 
-                    int upkeepCost = Math.Max(1, (int)((INTERVAL/3600f)/Config.seconds_per_unit)*(city.Resource.Crop.Upkeep - city.Resource.Crop.Rate));
-
-                    if (city.Resource.Crop.Value < upkeepCost)
+                    if (!city.Resource.HasEnough(upkeepCost))
+                    {
                         city.Worker.DoPassive(city, new StarvePassiveAction(city.Id), false);
+                    }
 
-                    city.Resource.Crop.Subtract(upkeepCost);
+                    city.Resource.Subtract(upkeepCost);
+
                 };
         }
 
@@ -247,37 +241,11 @@ namespace Game.Logic.Actions
 
         private void WeaponExport()
         {
-            int weaponExportMarket = 0;
-            int weaponExportMax = 0;
-
-            InitVars += city =>
-                {
-                    weaponExportMax = 0;
-                    weaponExportMarket = 0;
-                };
-
-            FirstLoop += (city, structure) =>
-                {
-                    if (!everyOther)
-                        return;
-
-                    var effects = structure.Technologies.GetEffects(EffectCode.WeaponExport, EffectInheritance.Self);
-
-                    if (effects.Count > 0)
-                    {
-                        int weaponExportLvl = effects.Max(x => (int)x.Value[0]);
-                        weaponExportMax = Math.Max(weaponExportMax, weaponExportLvl);
-                    }
-
-                    if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Market", structure))
-                        weaponExportMarket += structure.Lvl;
-                };
 
             PostFirstLoop += city =>
                 {
-                    if (city.Resource.Gold.Value > weaponExportMax * 500) return;
-                    int gold = weaponExportMax*weaponExportMarket;
-                    gold += Formula.Current.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
+                    var weaponExportMax = city.Technologies.GetEffects(EffectCode.WeaponExport).DefaultIfEmpty().Max(x =>x==null?0:(int)x.Value[0]);
+                    int gold = Formula.Current.GetWeaponExportLaborProduce(weaponExportMax, city.Resource.Labor.Value);
                     if (gold <= 0)
                         return;
                     city.Resource.Gold.Add(gold);

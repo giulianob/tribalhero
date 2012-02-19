@@ -1,6 +1,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Setup;
@@ -94,13 +95,40 @@ namespace Game.Logic.Formulas
         }
 
         /// <summary>
+        ///   Specifies which resources can be purchased in the market
         /// </summary>
         /// <param name = "structure"></param>
         /// <returns></returns>
-        public virtual double MarketTax(IStructure structure)
+        public virtual IEnumerable<ResourceType> MarketResourceSellable(IStructure structure)
         {
-            double[] rate = {0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0, -0.03, -0.06, -0.09, -0.12};
-            return rate[structure.Lvl];
+            if (structure.Lvl >= 8)
+                return new[] { ResourceType.Wood, ResourceType.Crop, ResourceType.Iron };
+            return new[] {ResourceType.Wood, ResourceType.Crop};
+        }
+
+        /// <summary>
+        ///   Specifies which resources can be sold in the market
+        /// </summary>
+        /// <param name = "structure"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<ResourceType> MarketResourceBuyable(IStructure structure)
+        {
+            if (structure.Lvl >= 8)
+                return new[] {ResourceType.Wood, ResourceType.Crop, ResourceType.Iron};
+            if (structure.Lvl >= 3)
+                return new[] {ResourceType.Wood, ResourceType.Crop};
+            return new ResourceType[] {};
+        }
+
+        /// <summary>
+        ///   Specifies which resources can be sold in the market
+        /// </summary>
+        /// <param name = "structure"></param>
+        /// <returns></returns>
+        public virtual int MarketTradeQuantity(IStructure structure)
+        {
+            int[] quantity = { 0, 200, 400, 400, 400, 700, 700, 1100, 1100, 1800, 1800 };
+            return quantity[structure.Lvl];
         }
 
         /// <summary>
@@ -146,7 +174,9 @@ namespace Game.Logic.Formulas
             return (ushort)city.Sum(x => x.Lvl);
         }
 
-        public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor) {
+        public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor)
+        {
+            labor = Math.Min(labor, weaponExport*60);
             switch(weaponExport) 
             {
                 case 1:
@@ -165,6 +195,12 @@ namespace Game.Logic.Formulas
         public virtual Resource GetTribeUpgradeCost(byte level)
         {
             return new Resource(1000, 400, 40, 2000, 0) * Tribe.MEMBERS_PER_LEVEL * level * (1 + ((double)level * level / 20));
+        }
+
+        public virtual void GetNewCityCost(int cityCount, out int influencePoints, out int wagons)
+        {
+            influencePoints = (100 + 20*(cityCount - 1))*cityCount;
+            wagons = 50*cityCount;
         }
     }
 }

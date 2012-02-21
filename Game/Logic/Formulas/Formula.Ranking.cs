@@ -30,7 +30,7 @@ namespace Game.Logic.Formulas
         /// <returns></returns>
         public virtual int GetUnitKilledAttackPoint(ushort type, byte lvl, int count)
         {
-            return Ioc.Kernel.Get<UnitFactory>().GetUnitStats(type, lvl).Upkeep*count;
+            return unitFactory.GetUnitStats(type, lvl).Upkeep*count;
         }
 
         /// <summary>

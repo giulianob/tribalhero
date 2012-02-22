@@ -79,14 +79,12 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            Formula formula = new Formula();
-
-            if (!formula.MarketResourceBuyable(structure).Contains(resourceType))
+            if (!Formula.Current.MarketResourceBuyable(structure).Contains(resourceType))
             {
                 return Error.ResourceNotTradable;
             }
 
-            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > formula.MarketTradeQuantity(structure))
+            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > Formula.Current.MarketTradeQuantity(structure))
             {
                 return Error.MarketInvalidQuantity;
             }

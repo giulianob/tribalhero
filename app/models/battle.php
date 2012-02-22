@@ -148,7 +148,7 @@ class Battle extends AppModel {
 
             $outcome['reports'][] = $reportOverview;
         }
-        
+
         Cache::set(array('duration' => '+10 days'));
         Cache::write($cacheKey, $outcome);
 
@@ -304,8 +304,18 @@ class Battle extends AppModel {
         }
 
         // Find total loot stolen
-        $totalLoot = reset(reset($this->getBattleReportObjectJoinOrLeaveInfo($battleId, null, 'LEAVE', array('SUM(BattleReportTroop.wood) totalWoodLooted', 'SUM(BattleReportTroop.iron) totalIronLooted', 'SUM(BattleReportTroop.crop) totalCropLooted', 'SUM(BattleReportTroop.gold) totalGoldLooted'), array('BattleReportTroopJoin.is_attacker = 1'))));
-        $outcome = array_merge($outcome, $totalLoot);
+        $totalLoot = $this->BattleReport->BattleReportTroop->find('all', array(
+            'fields' => array('SUM(BattleReportTroop.wood) totalWoodLooted', 'SUM(BattleReportTroop.iron) totalIronLooted', 'SUM(BattleReportTroop.crop) totalCropLooted', 'SUM(BattleReportTroop.gold) totalGoldLooted'),
+            'conditions' => array(
+                'BattleReportTroop.is_attacker' => 1,
+                'BattleReportTroop.state' => array(TROOP_STATE_EXITING, TROOP_STATE_OUT_OF_STAMINA, TROOP_STATE_RETREATING)
+            ),
+            'link' => array('BattleReport' => array(
+                    'type' => 'INNER',
+                    'conditions' => array('BattleReport.battle_id' => $battleId)
+            ))));
+
+        $outcome = array_merge($outcome, reset(reset($totalLoot)));
 
         // Find tribes that participated in the battle
         $tribesParticipated = $this->BattleReport->BattleReportTroop->BattleReportObject->find('all', array(

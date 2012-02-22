@@ -16,6 +16,23 @@ namespace Game.Logic.Formulas
     {
         public static Formula Current { get; set; }
 
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly UnitFactory unitFactory;
+
+        private readonly StructureFactory structureFactory;
+
+        public Formula()
+        {
+        }
+
+        public Formula(ObjectTypeFactory objectTypeFactory, UnitFactory unitFactory, StructureFactory structureFactory)
+        {
+            this.objectTypeFactory = objectTypeFactory;
+            this.unitFactory = unitFactory;
+            this.structureFactory = structureFactory;
+        }
+
         /// <summary>
         ///   Applies the specified effects to the specified radius. This is used by AwayFromLayout for building validation.
         /// </summary>
@@ -80,7 +97,7 @@ namespace Game.Logic.Formulas
         {
             int[] multiplier = { int.MaxValue, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 5, 5, 5, 5, 4 };
 
-            return city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Iron", x) ? x.Stats.Labor / multiplier[x.Lvl] : 0);
+            return city.Sum(x => objectTypeFactory.IsStructureType("Iron", x) ? x.Stats.Labor / multiplier[x.Lvl] : 0);
         }
 
         /// <summary>
@@ -91,7 +108,7 @@ namespace Game.Logic.Formulas
         public virtual int GetCropRate(ICity city)
         {
             double[] lvlBonus = { 1, 1, 1, 1, 1, 1, 1, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5 };
-            return 40 + city.Lvl * 5 + (int)city.Sum(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Crop", x) ? x.Stats.Labor * lvlBonus[x.Lvl] : 0);
+            return 40 + city.Lvl * 5 + (int)city.Sum(x => objectTypeFactory.IsStructureType("Crop", x) ? x.Stats.Labor * lvlBonus[x.Lvl] : 0);
         }
 
         /// <summary>
@@ -107,7 +124,7 @@ namespace Game.Logic.Formulas
             return 40 + city.Lvl * 5 + city.Sum(x =>
             {
                 object rate;
-                if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("ForestCamp", x) || x.Lvl == 0 || !x.Properties.TryGet("Rate", out rate))
+                if (!objectTypeFactory.IsStructureType("ForestCamp", x) || x.Lvl == 0 || !x.Properties.TryGet("Rate", out rate))
                     return 0;
 
                 return (int)rate;
@@ -122,7 +139,7 @@ namespace Game.Logic.Formulas
         public virtual int GetGoldRate(ICity city)
         {
             int value = 0;
-            foreach(Structure structure in city.Where(x=> Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Market", x)))
+            foreach(Structure structure in city.Where(x=> objectTypeFactory.IsStructureType("Market", x)))
             {
                 if (structure.Lvl >= 10)
                     value += 50;

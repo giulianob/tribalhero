@@ -14,7 +14,9 @@ namespace Testing.Formulas
         [Fact]
         public void TestEmptyEffect()
         {
-            var formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
 
             formula.MoveTimeTotal(CreateMockedStub(4, new List<Effect>()), 400, true).Should().Be(((int)(formula.MoveTime(4) * 400 * Config.seconds_per_unit)));
             formula.MoveTimeTotal(CreateMockedStub(20, new List<Effect>()), 800, true).Should().Be((int)(formula.MoveTime(20) * 800 * Config.seconds_per_unit));
@@ -24,7 +26,9 @@ namespace Testing.Formulas
         [Fact]
         public void TestRushAttack()
         {
-            var formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
 
             Effect e = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 20, "ATTACK" } };
             Effect e1 = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 4, "ATTACK" } };
@@ -39,7 +43,9 @@ namespace Testing.Formulas
         [Fact]
         public void TestRushDefense()
         {
-            var formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
 
             Effect e = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 20, "DEFENSE" } };
             Effect e1 = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 4, "DEFENSE" } };
@@ -54,7 +60,9 @@ namespace Testing.Formulas
         [Fact]
         public void TestDoubleTime()
         {
-            var formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
 
             var dummy = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 20, "DEFENSE" } };
             Effect e = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 20, "DISTANCE" } };
@@ -83,7 +91,9 @@ namespace Testing.Formulas
         [Fact]
         public void TestDoubleTimeWithRush()
         {
-            var formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
 
             var dummy = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 20, "ATTACK" } };
             var e = new Effect { Id = EffectCode.TroopSpeedMod, IsPrivate = true, Location = EffectLocation.City, Value = new object[] { 20, "DISTANCE" } };

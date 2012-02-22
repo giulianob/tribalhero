@@ -22,12 +22,14 @@ namespace Game.Setup
 
     public class StructureFactory
     {
-        private readonly Dictionary<int, StructureBaseStats> dict;
+        private readonly Dictionary<int, StructureBaseStats> dict = new Dictionary<int, StructureBaseStats>();
+
+        public StructureFactory()
+        {
+        }
 
         public StructureFactory(string filename)
         {
-            dict = new Dictionary<int, StructureBaseStats>();
-            
             using (var reader = new CsvReader(new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))))
             {
                 String[] toks;
@@ -60,7 +62,7 @@ namespace Game.Setup
                                                     0);
                     int workerId = int.Parse(toks[col["Worker"]]);
 
-                    if( workerId==0 )
+                    if (workerId == 0)
                     {
                         workerId = byte.Parse(toks[col["Lvl"]]) == 0
                                         ? 0
@@ -80,88 +82,79 @@ namespace Game.Setup
                                                            workerId,
                                                            (ClassId)Enum.Parse(typeof(ClassId), (toks[col["Class"]]), true));
 
-                    Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
-                    dict[int.Parse(toks[col["Type"]])*100 + int.Parse(toks[col["Lvl"]])] = basestats;
+                    Global.Logger.Info(string.Format("{0}:{1}", int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]]), toks[col["Name"]]));
+                    dict[int.Parse(toks[col["Type"]]) * 100 + int.Parse(toks[col["Lvl"]])] = basestats;
                 }
             }
         }
 
         public Resource GetCost(int type, int lvl)
         {
-            if (dict == null)
-                return null;
             StructureBaseStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? new Resource(tmp.Cost) : null;
         }
 
         public int GetTime(ushort type, byte lvl)
         {
-            if (dict == null)
-                return -1;
             StructureBaseStats tmp;
-            if (dict.TryGetValue(type * 100 + lvl, out tmp))
-                return tmp.BuildTime;
-            return -1;
+            return dict.TryGetValue(type*100 + lvl, out tmp) ? tmp.BuildTime : -1;
         }
 
         public IStructure GetNewStructure(ushort type, byte lvl)
         {
-            if (dict == null)
-                return null;
-
             StructureBaseStats baseStats;
-            if (dict.TryGetValue(type * 100 + lvl, out baseStats))
-                return new Structure(new StructureStats(baseStats));
+            if (!dict.TryGetValue(type*100 + lvl, out baseStats))
+            {
+                throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
+            }
 
-            throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
+            return new Structure(new StructureStats(baseStats));
         }
 
         public void GetUpgradedStructure(IStructure structure, ushort type, byte lvl)
         {
-            if (dict == null)
-                return;
             StructureBaseStats baseStats;
-            if (dict.TryGetValue(type * 100 + lvl, out baseStats))
+            if (!dict.TryGetValue(type*100 + lvl, out baseStats))
             {
-                //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
-                StructureStats oldStats = structure.Stats;
-
-                ushort newHp = oldStats.Hp;
-                if (baseStats.Battle.MaxHp > oldStats.Base.Battle.MaxHp)
-                    newHp = (ushort)(oldStats.Hp + (baseStats.Battle.MaxHp - oldStats.Base.Battle.MaxHp));
-                else if (newHp > baseStats.Battle.MaxHp)
-                    newHp = baseStats.Battle.MaxHp;
-
-                ushort newLabor = oldStats.Labor;
-                if (baseStats.MaxLabor > 0 && newLabor > baseStats.MaxLabor)
-                    newLabor = baseStats.MaxLabor;
-
-                structure.Stats = new StructureStats(baseStats) { Hp = newHp, Labor = newLabor };
-            }
-            else
                 throw new Exception(String.Format("Structure not found in csv type[{0}] lvl[{1}]!", type, lvl));
+            }
+            
+            //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
+            StructureStats oldStats = structure.Stats;
+
+            ushort newHp = oldStats.Hp;
+            if (baseStats.Battle.MaxHp > oldStats.Base.Battle.MaxHp)
+            {
+                newHp = (ushort)(oldStats.Hp + (baseStats.Battle.MaxHp - oldStats.Base.Battle.MaxHp));
+            }
+            else if (newHp > baseStats.Battle.MaxHp)
+            {
+                newHp = baseStats.Battle.MaxHp;
+            }
+
+            ushort newLabor = oldStats.Labor;
+            if (baseStats.MaxLabor > 0 && newLabor > baseStats.MaxLabor)
+            {
+                newLabor = baseStats.MaxLabor;
+            }
+
+            structure.Stats = new StructureStats(baseStats) {Hp = newHp, Labor = newLabor};
         }
 
         public int GetActionWorkerType(IStructure structure)
         {
-            if (dict == null)
-                return 0;
             StructureBaseStats tmp;
             return dict.TryGetValue(structure.Type * 100 + structure.Lvl, out tmp) ? tmp.WorkerId : 0;
         }
 
         public string GetName(ushort type, byte lvl)
         {
-            if (dict == null)
-                return null;
             StructureBaseStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp.Name : null;
         }
 
         public StructureBaseStats GetBaseStats(ushort type, byte lvl)
         {
-            if (dict == null)
-                return null;
             StructureBaseStats tmp;
             return dict.TryGetValue(type * 100 + lvl, out tmp) ? tmp : null;
         }

@@ -75,15 +75,14 @@ namespace Game.Logic.Actions
                 return Error.ObjectNotFound;
 
             Market market;
-            Resource cost;
-            Formula formula = new Formula();
+            Resource cost;            
 
-            if (!formula.MarketResourceSellable(structure).Contains(resourceType))
+            if (!Formula.Current.MarketResourceSellable(structure).Contains(resourceType))
             {
                 return Error.ResourceNotTradable;                
             }
 
-            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > formula.MarketTradeQuantity(structure))
+            if (quantity <= 0 || quantity % TRADE_SIZE != 0 || quantity > Formula.Current.MarketTradeQuantity(structure))
             {
                 return Error.MarketInvalidQuantity;
             }

@@ -1,27 +1,17 @@
 ﻿package src.UI.Dialog 
 {
-	import com.adobe.images.JPGEncoder;
-	import fl.lang.Locale;
-	import flash.events.Event;
-	import flash.geom.Point;
+	import fl.lang.*;
+	import flash.events.*;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.event.AWEvent;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
-	import org.aswing.plaf.basic.background.TableBackground;
-	import org.aswing.plaf.basic.BasicTableUI;
-	import src.Constants;
-	import src.Global;
-	import src.Map.MapUtil;
-	import src.UI.Components.CityLabel;
-	import src.UI.Components.GoToCityIcon;
-	import src.UI.Components.SimpleTooltip;
-	import src.UI.Components.TribeLabel;
-	import src.UI.GameJPanel;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+	import org.aswing.geom.*;
+	import src.*;
+	import src.UI.*;
+	import src.UI.Components.*;
+	import src.UI.LookAndFeel.*;
 	
 	public class PlayerProfileDialog extends GameJPanel
 	{
@@ -89,14 +79,15 @@
 		private function createRanking(rank: * ): JLabel {
 			var iconClass: Class = Constants.rankings[rank.type].icon;
 			var icon: AssetIcon = new AssetIcon(new iconClass());
+			
 			var lblRanking: JLabel = new JLabel("#" + rank.rank, icon, AsWingConstants.LEFT);
-			lblRanking.setPreferredWidth(65);
+			lblRanking.setPreferredWidth(60);
 			new SimpleTooltip(lblRanking, Constants.rankings[rank.type].desc);
 			return lblRanking;
 		}
 		
 		private function createUI():void {
-			setPreferredSize(new IntDimension(775, 375));
+			setPreferredSize(new IntDimension(800, 375));
 			title = "User Profile - " + profileData.username;
 			setLayout(new BorderLayout(5));
 			
@@ -104,14 +95,11 @@
 			var pnlHeader: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			pnlHeader.setConstraints("North");
 			
-			// First row of header panel which contains player name + ranking
-			var pnlHeaderFirstRow: JPanel = new JPanel(new BorderLayout(5));
-			
 			var lblPlayerName: JLabel = new JLabel(profileData.username + (Constants.admin ? '['+profileData.playerId+']' : ''), null, AsWingConstants.LEFT);	
 			lblPlayerName.setConstraints("Center");
 			GameLookAndFeel.changeClass(lblPlayerName, "darkHeader");			
 			
-			var pnlRankings: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 10, 0, false));
+			var pnlRankings: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
 			pnlRankings.setConstraints("East");
 			
 			for each (var rank: * in profileData.ranks) {
@@ -122,8 +110,6 @@
 				var lblRanking: JLabel = createRanking(rank);
 				pnlRankings.append(lblRanking);
 			}
-			
-			pnlHeaderFirstRow.appendAll(lblPlayerName, pnlRankings);
 			
 			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
 			btnSendMessage = new JLabelButton("Send Message");
@@ -139,19 +125,14 @@
 					pnlActions.append(btnInviteTribe);
 			}
 			
-			pnlHeader.append(pnlHeaderFirstRow);
+			pnlHeader.appendAll(lblPlayerName);
 			
 			if (profileData.tribeId > 0) {
-				var tribeLabel: TribeLabel = new TribeLabel(profileData.tribeId, profileData.tribeName);
-				var lblTribe: MultilineLabel = new MultilineLabel("", 1);
-				lblTribe.setHtmlText("(" + Locale.loadString("TRIBE_RANK_" + profileData.tribeRank) + ")");
-				
-				var pnlLblNameHolder: JPanel = new JPanel(new FlowLayout());						
-				pnlLblNameHolder.appendAll(tribeLabel, lblTribe);
-				pnlHeader.append(pnlLblNameHolder);
+				var lblTribe: RichLabel = new RichLabel(StringUtil.substitute('<a href="event:viewTribeProfile:{0}">{1}</a> ({2})', profileData.tribeId, profileData.tribeName, Locale.loadString("TRIBE_RANK_" + profileData.tribeRank)));
+				pnlHeader.append(lblTribe);
 			}
 			
-			pnlHeader.appendAll(new JLabel(" "), pnlActions);
+			pnlHeader.appendAll(new JLabel(" "), pnlRankings, new JLabel(" "), pnlActions);
 			
 			// description
 			var description: String = profileData.description == "" ? "This player hasn't written anything about themselves yet" : profileData.description;
@@ -168,14 +149,14 @@
 			
 			// Create west panel
 			var pnlWest: JPanel = new JPanel(new BorderLayout());
-			pnlWest.setConstraints("Center");
+			pnlWest.setConstraints("West");
 			pnlWest.append(pnlHeader);
 			pnlWest.append(scrollDescription);
 			
 			// Tab panel
 			var pnlTabs: JTabbedPane = new JTabbedPane();
 			pnlTabs.setPreferredSize(new IntDimension(375, 350));
-			pnlTabs.setConstraints("East");
+			pnlTabs.setConstraints("Center");
 			
 			// Cities tab
 			var pnlCities: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
@@ -184,9 +165,9 @@
 				var pnlCity: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 5, false));
 				var lblCityName: CityLabel = new CityLabel(city.id, city.name);
 				GameLookAndFeel.changeClass(lblCityName, "darkHeader");					
-				lblCityName.setPreferredWidth(Math.max(100, AsWingUtils.computeStringSizeWithFont(lblCityName.getFont(), lblCityName.getText()).width));
+				lblCityName.setPreferredWidth(125);
 				
-				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));
+				var pnlCityRanking: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 5, 0, false));
 				for each (rank in profileData.ranks) {
 					if (rank.cityId != city.id) 
 						continue;

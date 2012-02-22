@@ -27,8 +27,8 @@
 				unitObj.level = unitNode.@level;
 				unitObj.baseClass = unitNode.@baseclass;
 				unitObj.spriteClass = unitNode.@spriteclass;
-				unitObj.hp = unitNode.@hp;
-				unitObj.attack = unitNode.@attack;
+				unitObj.hp = Util.roundNumber(unitNode.@hp);
+				unitObj.attack = Util.roundNumber(unitNode.@attack);
 				unitObj.defense = unitNode.@defense;
 				unitObj.splash = unitNode.@splash;
 				unitObj.vision = unitNode.@vision;

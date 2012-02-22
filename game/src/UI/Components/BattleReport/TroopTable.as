@@ -52,6 +52,9 @@
 			tblUnits.getColumn("Unit").setPreferredWidth(82);
 			tblUnits.getColumn("Level").setPreferredWidth(34);
 			
+			tblUnits.getColumn("HP").setCellFactory(new GeneralTableCellFactory(OneDecimalValueCell));
+			tblUnits.getColumn("Damage\nTaken").setCellFactory(new GeneralTableCellFactory(OneDecimalValueCell));
+			tblUnits.getColumn("Damage\nDealt").setCellFactory(new GeneralTableCellFactory(OneDecimalValueCell));
 			append(tblUnits);
 		}
 	}

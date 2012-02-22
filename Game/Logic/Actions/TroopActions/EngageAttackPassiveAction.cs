@@ -178,7 +178,7 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
-            bool retreat = list.Any(co => co is AttackCombatUnit && ((AttackCombatUnit)co).TroopStub == stub);
+            bool retreat = list.Any(co => co is AttackCombatUnit && co.TroopStub == stub);
 
             if (!retreat)
                 return;
@@ -348,8 +348,11 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub) || !World.Current.TryGetObjects(targetCityId, out targetCity))
                 throw new ArgumentException();
 
+            // Find our guy
+            var combatObject = atk.First(co => co is AttackCombatUnit && co.TroopStub == stub);
+
             // if battle lasts more than 5 rounds, attacker gets 3 attack points.
-            if(round==5)
+            if (combatObject != null && combatObject.RoundsParticipated == 5)
             {
                 stub.TroopObject.BeginUpdate();
                 stub.TroopObject.Stats.AttackPoint += 3;

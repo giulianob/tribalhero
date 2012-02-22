@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
-using Game.Data;
-using Game.Data.Troop;
+﻿using FluentAssertions;
 using Game.Setup;
 using Game.Logic.Formulas;
 using Moq;
@@ -16,7 +13,11 @@ namespace Testing.Formulas
         {
             int influencePoints;
             int wagons;
-            Formula formula = new Formula();
+            
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+
             formula.GetNewCityCost(1, out influencePoints, out wagons);
             influencePoints.Should().Be(100);
             wagons.Should().Be(50);

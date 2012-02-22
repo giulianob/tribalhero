@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using Game.Battle;
 using Game.Comm;
 using Game.Data;
@@ -139,7 +140,7 @@ _________ _______ _________ ______   _______  _
             policyServer.Start();
 
             // Start thrift server
-            thriftServer.Serve();
+            ThreadPool.QueueUserWorkItem(o => thriftServer.Serve());
 
             State = EngineState.Started;
 
@@ -184,6 +185,7 @@ _________ _______ _________ ______   _______  _
             logger.Info("Stopping policy server...");
             policyServer.Stop();
             logger.Info("Waiting for scheduler to end...");
+            //thriftServer.Stop();
             Scheduler.Current.Pause();
             World.Current.Unload();
             Global.Logger.Info("Goodbye!");

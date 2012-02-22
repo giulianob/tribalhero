@@ -69,145 +69,145 @@ namespace Testing.Balancing
                           multiplier*baseCount*expectAdvantage));
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test20X20()
         {
             TestMultiplier(100, 0, 0);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test20X25()
         {
             TestMultiplier(20, 1.25, .35);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test20X30()
         {
             TestMultiplier(20, 1.5, .5);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test20X40()
         {
             TestMultiplier(20, 2, .75);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test20X70()
         {
             TestMultiplier(20, 3.5, .85);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test20X100()
         {
             TestMultiplier(20, 5, .90);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test100X100()
         {
             TestMultiplier(100, 0, 0);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test100X125()
         {
             TestMultiplier(100, 1.25, .35);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test100X150()
         {
             TestMultiplier(100, 1.5, .5);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test100X200()
         {
             TestMultiplier(100, 2, .75);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test100X350()
         {
             TestMultiplier(100, 3.5, .85);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test100X500()
         {
             TestMultiplier(100, 5, .90);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test500X100()
         {
             TestMultiplier(500, 0, 0);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test500X125()
         {
             TestMultiplier(500, 1.25, .35);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test500X150()
         {
             TestMultiplier(500, 1.5, .5);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test500X200()
         {
             TestMultiplier(500, 2, .75);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test500X350()
         {
             TestMultiplier(500, 3.5, .85);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test500X500()
         {
             TestMultiplier(500, 5, .90);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test1000X100()
         {
             TestMultiplier(1000, 0, 0);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test1000X125()
         {
             TestMultiplier(1000, 1.25, .35);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test1000X150()
         {
             TestMultiplier(1000, 1.5, .5);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test1000X200()
         {
             TestMultiplier(1000, 2, .75);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test1000X350()
         {
             TestMultiplier(1000, 3.5, .85);
         }
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void Test1000X500()
         {
             TestMultiplier(1000, 5, .90);

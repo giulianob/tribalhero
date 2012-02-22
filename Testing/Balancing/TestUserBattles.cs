@@ -16,7 +16,7 @@ namespace Testing.Balancing
     public class TestUserBattles : TestBase
     {
 
-        [Fact]
+        [Fact(Skip = "For Anthony only")]
         public void TestBrennenGotOwned()
         {
             Group defender = new Group();

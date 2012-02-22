@@ -14,7 +14,10 @@ namespace Testing.Formulas
         [Fact]
         public void TestNoLaborer()
         {
-            Formula formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+
             formula.GetWeaponExportLaborProduce(1, 0).Should().Be(0);
             formula.GetWeaponExportLaborProduce(2, 0).Should().Be(0);
             formula.GetWeaponExportLaborProduce(3, 0).Should().Be(0);
@@ -25,7 +28,10 @@ namespace Testing.Formulas
         [Fact]
         public void TestHalfLaborers()
         {
-            Formula formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+
             formula.GetWeaponExportLaborProduce(1, 30).Should().Be(10);
             formula.GetWeaponExportLaborProduce(2, 60).Should().Be(20);
             formula.GetWeaponExportLaborProduce(3, 90).Should().Be(36);
@@ -36,7 +42,10 @@ namespace Testing.Formulas
         [Fact]
         public void TestTenLaborers()
         {
-            Formula formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+
             formula.GetWeaponExportLaborProduce(1, 10).Should().Be(3);
             formula.GetWeaponExportLaborProduce(2, 10).Should().Be(3);
             formula.GetWeaponExportLaborProduce(3, 10).Should().Be(4);
@@ -47,7 +56,10 @@ namespace Testing.Formulas
         [Fact]
         public void TestBadLevel()
         {
-            Formula formula = new Formula();
+            var formula = new Formula(new Mock<ObjectTypeFactory>(MockBehavior.Strict).Object,
+                                      new Mock<UnitFactory>(MockBehavior.Strict).Object,
+                                      new Mock<StructureFactory>(MockBehavior.Strict).Object);
+
             formula.GetWeaponExportLaborProduce(7, 30).Should().Be(0);
         }
     }

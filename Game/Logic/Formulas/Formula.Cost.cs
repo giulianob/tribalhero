@@ -24,9 +24,9 @@ namespace Game.Logic.Formulas
         public virtual Resource StructureCost(ICity city, uint type, byte lvl)
         {
             if (city.Battle == null)
-                return Ioc.Kernel.Get<StructureFactory>().GetCost((int)type, lvl);
+                return structureFactory.GetCost((int)type, lvl);
 
-            return Ioc.Kernel.Get<StructureFactory>().GetCost((int)type, lvl)*Config.battle_cost_penalty;
+            return structureFactory.GetCost((int)type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -39,9 +39,9 @@ namespace Game.Logic.Formulas
         public virtual Resource UnitTrainCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
-                return Ioc.Kernel.Get<UnitFactory>().GetCost(type, lvl);
+                return unitFactory.GetCost(type, lvl);
 
-            return Ioc.Kernel.Get<UnitFactory>().GetCost(type, lvl)*Config.battle_cost_penalty;
+            return unitFactory.GetCost(type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -54,9 +54,9 @@ namespace Game.Logic.Formulas
         public virtual Resource UnitUpgradeCost(ICity city, ushort type, byte lvl)
         {
             if (city.Battle == null)
-                return Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(type, lvl);
+                return unitFactory.GetUpgradeCost(type, lvl);
 
-            return Ioc.Kernel.Get<UnitFactory>().GetUpgradeCost(type, lvl)*Config.battle_cost_penalty;
+            return unitFactory.GetUpgradeCost(type, lvl) * Config.battle_cost_penalty;
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Game.Logic.Formulas
             int[] rateIron = {0, 0, 0, 0, 0, 0, 0, 0, 200, 360, 660};
 
             var resource = new Resource();
-            foreach (var structure in city.Where(x => Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Basement", x)))
+            foreach (var structure in city.Where(x => objectTypeFactory.IsStructureType("Basement", x)))
                 resource.Add(rateCrop[structure.Lvl], rateGold[structure.Lvl], rateIron[structure.Lvl], rateWood[structure.Lvl], 0);
             return resource;
         }
@@ -171,7 +171,7 @@ namespace Game.Logic.Formulas
 
         public virtual ushort CalculateCityValue(ICity city)
         {
-            return (ushort)city.Sum(x => x.Lvl);
+            return (ushort)city.Where(structure => !objectTypeFactory.IsStructureType("NoInfluencePoint", structure)).Sum(x => x.Lvl);
         }
 
         public virtual int GetWeaponExportLaborProduce(int weaponExport, int labor)

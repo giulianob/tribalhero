@@ -789,13 +789,13 @@ namespace Game.Battle
             defender.CalculateDamage(dmg, out actualDmg);
             defender.TakeDamage(actualDmg, out lostResource, out attackPoints);
 
-            attacker.DmgDealt += (int)actualDmg;
+            attacker.DmgDealt += actualDmg;
             attacker.MaxDmgDealt = (ushort)Math.Max(attacker.MaxDmgDealt, actualDmg);
             attacker.MinDmgDealt = (ushort)Math.Min(attacker.MinDmgDealt, actualDmg);
             ++attacker.HitDealt;
             attacker.HitDealtByUnit += attacker.Count;
 
-            defender.DmgRecv += (int)actualDmg;
+            defender.DmgRecv += actualDmg;
             defender.MaxDmgRecv = (ushort)Math.Max(defender.MaxDmgRecv, actualDmg);
             defender.MinDmgRecv = (ushort)Math.Min(defender.MinDmgRecv, actualDmg);
             ++defender.HitRecv;

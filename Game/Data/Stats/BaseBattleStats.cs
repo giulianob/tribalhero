@@ -53,9 +53,9 @@ namespace Game.Data
 
         public virtual ArmorClass ArmorClass { get; private set; }
 
-        public virtual ushort MaxHp { get; private set; }
+        public virtual decimal MaxHp { get; private set; }
 
-        public virtual ushort Atk { get; private set; }
+        public virtual decimal Atk { get; private set; }
 
         public virtual byte Splash { get; private set; }
 
@@ -79,8 +79,8 @@ namespace Game.Data
                                WeaponClass wpnClass,
                                ArmorType armor,
                                ArmorClass armrClass,
-                               ushort maxHp,
-                               ushort atk,
+                               decimal maxHp,
+                               decimal atk,
                                byte splash,
                                byte range,
                                byte stealth,

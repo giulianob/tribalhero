@@ -52,8 +52,8 @@ namespace Game.Setup
                                                     (WeaponClass)Enum.Parse(typeof(WeaponClass), toks[col["WpnClass"]].ToCamelCase()),
                                                     (ArmorType)Enum.Parse(typeof(ArmorType), toks[col["Armor"]].ToCamelCase()),
                                                     (ArmorClass)Enum.Parse(typeof(ArmorClass), toks[col["ArmrClass"]].ToCamelCase()),
-                                                    ushort.Parse(toks[col["Hp"]]),
-                                                    ushort.Parse(toks[col["Atk"]]),
+                                                    decimal.Parse(toks[col["Hp"]]),
+                                                    decimal.Parse(toks[col["Atk"]]),
                                                     byte.Parse(toks[col["Splash"]]),
                                                     byte.Parse(toks[col["Rng"]]),
                                                     byte.Parse(toks[col["Stl"]]),
@@ -122,10 +122,10 @@ namespace Game.Setup
             //Calculate the different in MAXHP between the new and old structures and Add it to the current hp if the new one is greater.
             StructureStats oldStats = structure.Stats;
 
-            ushort newHp = oldStats.Hp;
+            decimal newHp = oldStats.Hp;
             if (baseStats.Battle.MaxHp > oldStats.Base.Battle.MaxHp)
             {
-                newHp = (ushort)(oldStats.Hp + (baseStats.Battle.MaxHp - oldStats.Base.Battle.MaxHp));
+                newHp = oldStats.Hp + (baseStats.Battle.MaxHp - oldStats.Base.Battle.MaxHp);
             }
             else if (newHp > baseStats.Battle.MaxHp)
             {

@@ -203,10 +203,10 @@ namespace Game.Battle
                 return new[]
                        {
                                new DbColumn("last_round", LastRound, DbType.UInt32), new DbColumn("rounds_participated", RoundsParticipated, DbType.UInt32),
-                               new DbColumn("damage_dealt", DmgDealt, DbType.Int32), new DbColumn("damage_received", DmgRecv, DbType.Int32),
+                               new DbColumn("damage_dealt", DmgDealt, DbType.Decimal), new DbColumn("damage_received", DmgRecv, DbType.Decimal),
                                new DbColumn("group_id", GroupId, DbType.UInt32), new DbColumn("structure_city_id", Structure.City.Id, DbType.UInt32),
                                new DbColumn("structure_id", Structure.ObjectId, DbType.UInt32), new DbColumn("hp", hp, DbType.Decimal),
-                               new DbColumn("type", type, DbType.UInt16), new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.UInt16),
+                               new DbColumn("type", type, DbType.UInt16), new DbColumn("level", lvl, DbType.Byte), new DbColumn("max_hp", stats.MaxHp, DbType.Decimal),
                                new DbColumn("attack", stats.Atk, DbType.Decimal), new DbColumn("splash", stats.Splash, DbType.Byte),
                                new DbColumn("range", stats.Rng, DbType.Byte), new DbColumn("stealth", stats.Stl, DbType.Byte), new DbColumn("speed", stats.Spd, DbType.Byte),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
@@ -244,13 +244,10 @@ namespace Game.Battle
         {
             attackPoints = 0;
 
-            int extra = Math.Max(0, Structure.Stats.Hp - (int)Math.Ceiling(hp));
-
             hp = (dmg > hp) ? 0 : hp - dmg;
-
-
+            
             Structure.BeginUpdate();
-            Structure.Stats.Hp = (ushort)(Math.Ceiling(hp) + extra);
+            Structure.Stats.Hp = hp;
             Structure.EndUpdate();
 
             if (hp == 0)

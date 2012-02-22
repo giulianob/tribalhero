@@ -35,8 +35,8 @@ namespace Game.Battle
         public ushort HitDealt { get; set; }
         public uint HitDealtByUnit { get; set; }
 
-        public int DmgRecv { get; set; }
-        public int DmgDealt { get; set; }        
+        public decimal DmgRecv { get; set; }
+        public decimal DmgDealt { get; set; }        
 
         public CombatList CombatList { get; set; }
 

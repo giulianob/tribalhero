@@ -3,7 +3,7 @@ namespace Game.Data.Stats
 {
     public class StructureStats : BaseStats
     {
-        private ushort hp;
+        private decimal hp;
 
         private ushort labor;
 
@@ -14,7 +14,7 @@ namespace Game.Data.Stats
             hp = baseStats.Battle.MaxHp;
         }
 
-        public virtual ushort Hp
+        public virtual decimal Hp
         {
             get
             {

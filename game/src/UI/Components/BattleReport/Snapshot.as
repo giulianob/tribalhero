@@ -40,7 +40,7 @@
 		}		
 
 		private function createUI(): void {			
-			setPreferredWidth(800);
+			setPreferredWidth(1100);
 			
 			setLayout(new BorderLayout());
 			scrollPanel = new JScrollPane(viewport);

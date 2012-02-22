@@ -43,6 +43,7 @@ package src.UI.Components.ScreenMessages
 		public static function showNewbieProtection() : void {
 			if (Constants.signupTime.time / 1000 + Constants.newbieProtectionSeconds > Global.map.getServerTime()) {
 				var timediff :Number = Constants.newbieProtectionSeconds + Constants.signupTime.time / 1000 - Global.map.getServerTime();
+				Global.gameContainer.screenMessage.removeMessage("/NEWBIE_PROTECTION/");
 				Global.gameContainer.screenMessage.addMessage(new ScreenMessageItem("/NEWBIE_PROTECTION/", " Under newbie protection: Expires in " + Util.niceTime(timediff), new AssetIcon(new ICON_STAR)));
 			}
 			else {

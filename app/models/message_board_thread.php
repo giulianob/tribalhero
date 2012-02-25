@@ -132,6 +132,7 @@ class MessageBoardThread extends AppModel {
         $someUnreadThread = $this->find('first', array(
             'link' => array(
                 'MessageBoardRead' => array(
+                    'type' => 'INNER',
                     'conditions' => array('MessageBoardRead.player_id' => $playerId, 'MessageBoardThread.last_post_date >' => 'MessageBoardRead.last_read')
                 )
             ),

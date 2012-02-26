@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<application xmlns="http://ns.adobe.com/air/application/1.5">
+  <id>TribalHero</id>
+  <version>1.0</version>
+  <filename>TribalHero</filename>
+  <name>TribalHero</name>
+  <description>www.tribalhero.com</description>
+  <copyright>Tribal Hero. All Rights Reserved.</copyright>
+  <initialWindow>
+    <title>TribalHero</title>
+    <content>Game.swf</content>
+    <systemChrome>standard</systemChrome>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <minimizable>true</minimizable>
+    <maximizable>true</maximizable>
+    <resizable>true</resizable>
+  </initialWindow>
+  <!-- 
+	More options:
+	http://livedocs.adobe.com/flex/3/html/File_formats_1.html#1043413
+	-->
+</application>

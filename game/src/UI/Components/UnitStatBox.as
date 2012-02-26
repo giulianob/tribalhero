@@ -87,7 +87,7 @@
 			createUI();
 		}
 
-		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: int, upkeep: int, attack: int, splash: int, defense: int, stealth: int, range: int, speed: int) : void {
+		private function init(carry: int, armor: String, weapon: String, weaponClass: String, unitClass: String, hp: Number, upkeep: int, attack: Number, splash: int, defense: int, stealth: int, range: int, speed: int) : void {
 			lblAttack.setText(attack.toString());
 			lblCarry.setText(carry.toString());		
 			lblSpeed.setText(Formula.moveTimeString(speed));

@@ -16,6 +16,7 @@ import org.aswing.colorchooser.*;
 import org.aswing.ext.*;
 import src.Objects.Prototypes.StructurePrototype;
 import src.Objects.Prototypes.UnitPrototype;
+import src.Util.Util;
 
 public class CombatObjectGridCell extends JLabel implements GridListCell{
 		
@@ -51,7 +52,7 @@ public class CombatObjectGridCell extends JLabel implements GridListCell{
 		if (value.prototype is UnitPrototype)		
 			uiTextField.text = Math.ceil(Number(value.data.hp) / value.data.maxHp).toString();		
 		else if (value.prototype is StructurePrototype)
-			uiTextField.text = value.data.hp + "/" + value.data.maxHp;
+			uiTextField.text = Util.roundNumber(value.data.hp,0) + "/" + value.data.maxHp;
 			
 		uiTextField.x = (getPreferredWidth() / 2) - (uiTextField.textWidth / 2);
 	}

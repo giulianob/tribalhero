@@ -10,9 +10,9 @@
 		
 		public var combatObj: CombatObject;
 		public var destCombatObj: CombatObject;
-		public var dmg: int;
+		public var dmg: Number;
 		
-		public function BattleEvent(type: String, combatObj: CombatObject = null, destCombatObj: CombatObject = null, dmg: int = 0) {
+		public function BattleEvent(type: String, combatObj: CombatObject = null, destCombatObj: CombatObject = null, dmg: Number = 0) {
 			super(type);
 			
 			this.combatObj = combatObj;

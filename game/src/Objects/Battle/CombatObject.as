@@ -10,11 +10,11 @@
 		public var combatObjectId: int;
 		public var type: int;
 		public var level: int;
-		public var hp: int;
-		public var maxHp: int;
+		public var hp: Number;
+		public var maxHp: Number;
 		public var troopStubId: int;
 		
-		public function CombatObject(playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int, maxHp: int)
+		public function CombatObject(playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: Number, maxHp: Number)
 		{
 			this.playerId = playerId;
 			this.cityId = cityId;

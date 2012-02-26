@@ -8,6 +8,7 @@
 	import src.Objects.Troop.*;
 	import src.UI.LookAndFeel.GameLookAndFeel;
 	import src.UI.LookAndFeel.GamePanelBackgroundDecorator;
+	import src.Util.StringHelper;
 
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -41,9 +42,8 @@
 		{
 			this.message = message;
 			createUI();
-
 			
-			txtMessage.setText(message.message);
+			txtMessage.setHtmlText(StringHelper.linkify(message.message));
 			txtSubject.setText(message.subject);
 			txtDate.setText(message.date);
 

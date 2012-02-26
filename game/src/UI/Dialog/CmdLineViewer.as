@@ -213,7 +213,7 @@ package src.UI.Dialog
 				}
 			}
 			
-			log(StringUtil.substitute('[{0}] {1}<a href="event:viewProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), (type == TYPE_TRIBE ? "(Tribe) " : ""), cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.htmlEscape(str)), false, false);
+			log(StringUtil.substitute('[{0}] {1}<a href="event:viewProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), (type == TYPE_TRIBE ? "(Tribe) " : ""), cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.linkify(str)), false, false);
 		}
 
 		public function log(str: String, isCommand: Boolean = false, escapeStr: Boolean = true) : void {

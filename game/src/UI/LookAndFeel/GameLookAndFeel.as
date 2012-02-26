@@ -10,6 +10,8 @@
 
 	public class GameLookAndFeel extends GameGraphicLookAndFeel
 	{
+		public static const LINK_COLOR: String = "#0066cc";
+		
 		public function GameLookAndFeel()
 		{
 			super();

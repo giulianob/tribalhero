@@ -5,6 +5,7 @@ package src.UI.Components.BattleReport
 	import org.aswing.*;
 	import src.UI.Components.*;
 	import src.UI.Tooltips.*;
+	import src.Util.StringHelper;
 	
 	/**
 	 * Represents a single item in the battle overview event. E.g.
@@ -44,7 +45,7 @@ package src.UI.Components.BattleReport
 		{
 			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			{
-				var header: String = StringUtil.substitute(EVENT_STATES[event.state], event.player.id, event.city.name, event.groupId == 1 ? 'Local' : event.groupId, totalUnits);				
+				var header: String = StringUtil.substitute(EVENT_STATES[event.state], event.player.id, StringHelper.htmlEscape(event.city.name), event.groupId == 1 ? 'Local' : event.groupId, totalUnits);				
 				lblHeader = new RichLabel(header, 0, 30);
 				lblHeader.addEventListener(RichLabelCustomEvent.CUSTOM_EVENT_MOUSE_OVER, customEventMouseOver);
 				lblHeader.addEventListener(MouseEvent.MOUSE_OUT, eventMouseOut);

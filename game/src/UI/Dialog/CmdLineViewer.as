@@ -5,6 +5,7 @@ package src.UI.Dialog
 	import flash.ui.*;
 	import flash.utils.*;
 	import mx.formatters.*;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.event.*;
@@ -43,8 +44,9 @@ package src.UI.Dialog
 		public function CmdLineViewer() {
 			createUI();
 			
-			log("Welcome to Tribal Hero v" + Constants.version + "." + Constants.revision);
-			log("Remember to keep it classy.");
+			log('Welcome to Tribal Hero');
+			log('Not sure what to do? Visit the <a href="http://tribalhero.wikia.com" target="_blank">wiki</a>.', false, false);
+			log('Remember to keep it classy.');
 			
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event): void
 			{
@@ -192,22 +194,26 @@ package src.UI.Dialog
 			var f: DateFormatter = new DateFormatter();
             f.formatString = "LL:NN";
 			
-			var color: String = '#8ecafe';
+			var cssClass: String = '';
 			
 			if (playerId == Constants.playerId)
 			{
-				color = '#aef64f';
+				cssClass = 'self';								
 			}			
 			else
 			{
 				switch (type)
 				{
 					case TYPE_TRIBE:
-						color = '#ffff06';
+						cssClass = 'tribe';
+						break;
+					default:
+						cssClass = 'global';
+						break;
 				}
 			}
 			
-			log("[" + f.format(new Date()) + "] " + (type == TYPE_TRIBE ? "(Tribe) " : "") + "<font color=\"" + color + "\"><a href=\"event:viewProfile:" + playerId + "\">" + StringHelper.htmlEscape(playerName) + "</a></font>" + ": " + StringHelper.htmlEscape(str), false, false);
+			log(StringUtil.substitute('[{0}] {1}<a href="event:viewProfile:{3}"><span class="{2}">{4}</span></a>: {5}', f.format(new Date()), (type == TYPE_TRIBE ? "(Tribe) " : ""), cssClass, playerId, StringHelper.htmlEscape(playerName), StringHelper.htmlEscape(str)), false, false);
 		}
 
 		public function log(str: String, isCommand: Boolean = false, escapeStr: Boolean = true) : void {
@@ -300,8 +306,12 @@ package src.UI.Dialog
 			
 			var consoleCss: StyleSheet = new StyleSheet();
 			consoleCss.setStyle("p", { marginBottom:'3px', leading:3, fontFamily:'Arial', fontSize:12, color:'#FFFFFF' });
-			consoleCss.setStyle("a:link", { fontWeight:'bold', textDecoration:'none' });
+			consoleCss.setStyle("a:link", { fontWeight:'bold', textDecoration:'none', color:'#8ecafe' });
 			consoleCss.setStyle("a:hover", { textDecoration:'underline' } );
+			
+			consoleCss.setStyle(".global", { color:'#8ecafe' } );
+			consoleCss.setStyle(".self", { color:'#aef64f' } );
+			consoleCss.setStyle(".tribe", { color:'#ffff06' } );
 			
 			txtConsole.setCSS(consoleCss);
 

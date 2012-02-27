@@ -11,6 +11,7 @@ package src.UI.Tooltips {
 	import src.UI.Components.ResourcesPanel;
 	import src.UI.Components.StructureStatBox;
 	import src.UI.LookAndFeel.GameLookAndFeel;
+	import src.Util.StringHelper;
 	import src.Util.Util;
 	import src.Objects.Effects.Formula;
 
@@ -93,8 +94,9 @@ package src.UI.Tooltips {
 						pnlRequired.append(errorLabelMaker(RequirementFormula.getMessage(parentObj, req)));
 					}
 				}
-				else
-				pnlRequired.setVisible(false);
+				else {
+					pnlRequired.setVisible(false);
+				}
 
 				var city: City = Global.map.cities.get(parentObj.cityId);
 
@@ -181,7 +183,7 @@ package src.UI.Tooltips {
 
 			pnlFooter.append(pnlResources);
 			
-			lblTitle.setText("Upgrade " + structPrototype.getName());
+			lblTitle.setText("Upgrade " + StringHelper.wordsToUpper(structPrototype.getName()));
 			lblLevel.setText("Level " + structPrototype.level.toString());
 			lblLvlDescription.setText(structPrototype.getDescription());					
 		}	

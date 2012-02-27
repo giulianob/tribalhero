@@ -277,6 +277,10 @@
 
 		public function onReceiveCityUsername(packet: Packet, custom: *):void
 		{
+			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
+				return;
+			}
+			
 			packet.readUByte(); //just doing 1 username now
 
 			var id: int = packet.readUInt();

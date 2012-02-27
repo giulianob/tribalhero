@@ -12,7 +12,6 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 namespace Game.Module

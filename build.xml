@@ -6,10 +6,10 @@
 	
 		<tstamp />
 		
-		<fail unless="version">Version not specified</fail>
+		<fail unless="game.version">Version not specified</fail>
 		
-		<antcontrib:propertyregex property="major_version" input="${version}" regexp="^([0-9]*).([0-9]*)$" select="\1" />
-		<antcontrib:propertyregex property="revision" input="${version}" regexp="^([0-9]*).([0-9]*)$" select="\2" />
+		<antcontrib:propertyregex property="major_version" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\1" />
+		<antcontrib:propertyregex property="revision" input="${game.version}" regexp="^([0-9]*).([0-9]*)$" select="\2" />
 	</target>
 	
 	<target name="compile" depends="init">

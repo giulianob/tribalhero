@@ -128,14 +128,23 @@ class MessageBoardThread extends AppModel {
         return true;
     }
 
-    public function getUnreadMessage($playerId) {
+    public function getUnreadMessage($playerId, $tribeId) {
+        // This query works by bring in the matching records (w/ left outer the original record will NOT be skipped even if no matching record is found)
+        // We then only take the original record if the thread has never been read (MessageBoardRead.is is null) or if there has been a newer post since the player read the thread
         $someUnreadThread = $this->find('first', array(
             'link' => array(
                 'MessageBoardRead' => array(
-                    'conditions' => array('MessageBoardRead.player_id' => $playerId, 'MessageBoardThread.last_post_date >' => 'MessageBoardRead.last_read')
+                    'type' => 'LEFT OUTER',
+                    'conditions' => array(
+                        'MessageBoardRead.player_id' => $playerId                        
+                    )
                 )
             ),
-            'conditions' => array('MessageBoardThread.last_post_date >' => $this->toSqlTime(strtotime('-2 weeks')))));
+            'conditions' => array(
+                'MessageBoardThread.last_post_date >' => $this->toSqlTime(strtotime('-2 weeks')),
+                'MessageBoardThread.tribe_id' => $tribeId,                                
+                'OR' => array('MessageBoardRead.id' => null, 'MessageBoardThread.last_post_date > MessageBoardRead.last_read')
+        )));
 
         return !empty($someUnreadThread);
     }

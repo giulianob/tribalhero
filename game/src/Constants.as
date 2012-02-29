@@ -2,8 +2,8 @@ package src
 {
 	public class Constants
 	{
-		public static var version: int = 0;
-		public static var revision: int = 1;
+		public static var version: int;
+		public static var revision: int;
 		
 		/* SESSION VARIABLES */
 		public static var username: String = "1234";

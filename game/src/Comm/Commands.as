@@ -110,6 +110,8 @@ package src.Comm {
         public static const BATTLE_ENDED: int = 705;
 		public static const BATTLE_SKIPPED: int = 706;
 		public static const BATTLE_NEW_ROUND: int = 707;
+		public static const BATTLE_WITHDRAW_ATTACKER: int = 708;
+		public static const BATTLE_WITHDRAW_DEFENDER: int = 709;
 		
 		public static const RESOURCE_GATHER: int = 801;
 		

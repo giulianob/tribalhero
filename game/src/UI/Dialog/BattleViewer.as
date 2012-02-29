@@ -114,10 +114,18 @@
 
 				if (cityId != iteObj.cityId || troopStubId != iteObj.troopStubId) continue;
 
-				if (iteObj.defense)
-				tabDefensive.remove(iteObj.tab);
+				var index: int;
+				if (iteObj.defense) {
+					index = tabDefensive.getSelectedIndex();
+					tabDefensive.remove(iteObj.tab);
+					if (index == 0) tabDefensive.setSelectedIndex(0);
+				}
 				else
-				tabOffensive.remove(iteObj.tab);
+				{
+					index = tabDefensive.getSelectedIndex();
+					tabOffensive.remove(iteObj.tab);
+					if (index == 0) tabDefensive.setSelectedIndex(0);
+				}
 
 				combat.splice(i, 1);
 				return;

@@ -72,8 +72,8 @@ namespace Game.Comm.ProcessorCommands
                 session.CloseSession();
                 return;
             }
-
-            if (clientVersion < Config.client_min_version || clientRevision < Config.client_min_revision)
+            
+            if (clientVersion <= Config.client_min_version && clientRevision < Config.client_min_revision)
             {
                 ReplyError(session, packet, Error.ClientOldVersion);
                 session.CloseSession();

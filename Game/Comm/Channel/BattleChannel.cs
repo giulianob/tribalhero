@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using Game.Battle;
 using Game.Data;
+using System.Linq;
 
 #endregion
 
@@ -16,6 +17,8 @@ namespace Game.Comm.Channel
         void BattleReinforceAttacker(IEnumerable<CombatObject> list);
         void BattleSkippedAttacker(CombatObject source);
         void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage);
+        void BattleWithdrawDefender(IEnumerable<CombatObject> list);
+        void BattleWithdrawAtacker(IEnumerable<CombatObject> list);
     }
 
     public class BattleChannel : IBattleChannel
@@ -69,6 +72,26 @@ namespace Game.Comm.Channel
             packet.AddUInt32(source.Id);
             packet.AddUInt32(target.Id);
             packet.AddFloat((float)damage);
+            Global.Channel.Post(channelName, packet);
+        }
+
+        public void BattleWithdrawDefender(IEnumerable<CombatObject> list)
+        {
+            var combatObjectList = new List<CombatObject>(list);
+            var combatObject = combatObjectList.First();
+            var packet = new Packet(Command.BattleWithdrawDefender);
+            packet.AddUInt32(combatObject.TroopStub.City.Id);
+            packet.AddByte(combatObject.TroopStub.TroopId);
+            Global.Channel.Post(channelName, packet);
+        }
+
+        public void BattleWithdrawAtacker(IEnumerable<CombatObject> list)
+        {
+            var combatObjectList = new List<CombatObject>(list);
+            var combatObject = combatObjectList.First();
+            var packet = new Packet(Command.BattleWithdrawAttacker);
+            packet.AddUInt32(combatObject.TroopStub.City.Id);
+            packet.AddByte(combatObject.TroopStub.TroopId);
             Global.Channel.Post(channelName, packet);
         }
     }

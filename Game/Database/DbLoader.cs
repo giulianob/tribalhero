@@ -13,6 +13,7 @@ using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -748,7 +749,9 @@ namespace Game.Database
                                                                       battleStats,
                                                                       (decimal)listReader["hp"],
                                                                       (ushort)listReader["type"],
-                                                                      (byte)listReader["level"])
+                                                                      (byte)listReader["level"],
+                                                                      Formula.Current,
+                                                                      BattleFormulas.Current)                                                                      
                                                   {
                                                           GroupId = (uint)listReader["group_id"],
                                                           DmgDealt = (decimal)listReader["damage_dealt"],

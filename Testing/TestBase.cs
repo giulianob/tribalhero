@@ -4,8 +4,6 @@ using Game;
 using Game.Data;
 using Game.Database;
 using Game.Setup;
-using Ninject;
-using Persistance;
 
 namespace Testing
 {

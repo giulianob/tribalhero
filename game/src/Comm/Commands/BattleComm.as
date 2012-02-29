@@ -6,6 +6,7 @@
 	import src.Objects.Battle.BattleManager;
 	import src.Objects.GameError;
 	import src.UI.Dialog.InfoDialog;
+	import src.Util.Util;
 
 	public class BattleComm {
 
@@ -190,7 +191,7 @@
 
 			var attackerObjId: int = packet.readUInt();
 			var defenderObjId: int = packet.readUInt();
-			var dmg: int = packet.readUShort();
+			var dmg: Number = Util.roundNumber(packet.readFloat());
 
 			battle.attack(attackerObjId, defenderObjId, dmg);
 		}

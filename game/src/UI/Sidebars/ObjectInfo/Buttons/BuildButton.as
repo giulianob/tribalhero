@@ -99,7 +99,7 @@ package src.UI.Sidebars.ObjectInfo.Buttons {
 				
 				var concurrentUpgrades: int = Formula.concurrentBuildUpgrades(city.MainBuilding.level);				
 				if (currentCount >= concurrentUpgrades)
-					missingReqs.push(EffectReqPrototype.asMessage(Locale.loadString("CONCURRENT_UPGRADE" + concurrentUpgrades)));
+					missingReqs.push(EffectReqPrototype.asMessage(Locale.loadString("CONCURRENT_UPGRADE_" + concurrentUpgrades)));					
 			}
 
 			buildToolTip.missingRequirements = missingReqs;

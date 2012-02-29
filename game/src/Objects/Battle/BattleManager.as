@@ -86,7 +86,7 @@
 			dispatchEvent(new BattleEvent(OBJECT_SKIPPED, attacker, null, 0));		
 		}
 		
-		public function attack(attackerCombatId: int, defenderCombatId: int, dmg: int):void
+		public function attack(attackerCombatId: int, defenderCombatId: int, dmg: Number):void
 		{
 			var attacker: CombatObject = all.get(attackerCombatId);
 			var defender: CombatObject = all.get(defenderCombatId);
@@ -98,6 +98,7 @@
 			}
 				
 			defender.hp -= dmg;
+			defender.hp = Util.roundNumber(defender.hp);
 			
 			dispatchEvent(new BattleEvent(OBJECT_ATTACKED, attacker, defender, dmg));			
 			

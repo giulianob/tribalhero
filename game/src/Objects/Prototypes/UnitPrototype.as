@@ -16,8 +16,8 @@ package src.Objects.Prototypes {
 		public var baseClass: String;
 		public var spriteClass: String;
 		public var carry: int;
-		public var hp: int;
-		public var attack: int;
+		public var hp: Number;
+		public var attack: Number;
 		public var splash: int;
 		public var defense: int;
 		public var vision: int;

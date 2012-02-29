@@ -11,12 +11,18 @@
 	import src.Objects.Effects.Formula;
 	import src.UI.Components.SimpleTroopGridList.*;
 	import src.UI.GameJPanel;
+	import src.UI.Components.SimpleTooltip;
 	import src.Objects.Troop.*;
 	import src.Util.Util;
 
 	public class ReinforceTroopDialog extends GameJPanel {
 
 		//members define
+		protected var pnlAttackStrength:JPanel;
+		protected var lblAttackStrength:JLabel;
+		protected var rdAssault:JRadioButton;
+		protected var rdRaid:JRadioButton;
+		protected var rdSlaughter:JRadioButton;
 		private var pnlLocal:JTabbedPane;
 		private var pnlAttack:JTabbedPane;
 		private var panel9:JPanel;
@@ -26,16 +32,19 @@
 
 		private var city: City;
 
+		protected var hasAttackStrength: Boolean;
+		
 		private var tilelists: Array = new Array();
 		private var attackTilelists: Array = new Array();
 
-		public function ReinforceTroopDialog(onAccept: Function):void
+		public function ReinforceTroopDialog(onAccept: Function, hasAttackStrength: Boolean = true):void
 		{
-			createUI();
-
 			title = "Send Reinforcement";
 
 			this.city = Global.gameContainer.selectedCity;
+			this.hasAttackStrength = hasAttackStrength;
+
+			createUI();
 
 			var self: ReinforceTroopDialog = this;
 			btnOk.addActionListener(function():void { 
@@ -81,6 +90,14 @@
 			}
 		}		
 		
+		public function getMode(): int
+		{
+			if (rdAssault.isSelected()) return 1;
+			else if (rdRaid.isSelected()) return 0;
+			else if (rdSlaughter.isSelected()) return 2;
+			else return -1;
+		}
+	
 		public function getTroop(): TroopStub
 		{
 			var newTroop: TroopStub = new TroopStub();
@@ -107,6 +124,34 @@
 			layout0.setGap(10);
 			setLayout(layout0);
 
+			pnlAttackStrength = new JPanel();
+			pnlAttackStrength.setLocation(new IntPoint(5, 5));
+			pnlAttackStrength.setSize(new IntDimension(10, 10));
+
+			lblAttackStrength = new JLabel();
+			lblAttackStrength.setLocation(new IntPoint(5, 5));
+			lblAttackStrength.setSize(new IntDimension(80, 17));
+			lblAttackStrength.setText("Defense Strength:");
+
+			rdAssault = new JRadioButton();
+			rdAssault.setSelected(true);
+			rdAssault.setLocation(new IntPoint(5, 5));
+			rdAssault.setSize(new IntDimension(54, 17));
+			rdAssault.setText("Assault");
+			new SimpleTooltip(rdAssault, "Retreat if only 1/3 of the units remain");
+
+			rdRaid = new JRadioButton();
+			rdRaid.setLocation(new IntPoint(51, 5));
+			rdRaid.setSize(new IntDimension(40, 17));
+			rdRaid.setText("Raid");
+			new SimpleTooltip(rdRaid, "Retreat if only 2/3 of the units remain");
+
+			rdSlaughter = new JRadioButton();
+			rdSlaughter.setLocation(new IntPoint(97, 5));
+			rdSlaughter.setSize(new IntDimension(65, 17));
+			rdSlaughter.setText("Slaughter");
+			new SimpleTooltip(rdSlaughter, "Fight until death");
+			
 			pnlLocal = new JTabbedPane();
 			pnlLocal.setSize(new IntDimension(389, 35));
 
@@ -128,12 +173,28 @@
 			lblTroopSpeed = new JLabel("", null, AsWingConstants.LEFT);
 
 			//component layoution
-			append(new JLabel("Hint: Drag units from local troop to assign for reinforcement", null, AsWingConstants.LEFT));
+			if (hasAttackStrength) {
+				append(pnlAttackStrength);
+			} else {
+				append(new JLabel("Hint: Drag units from local troop to assign for reinforcement", null, AsWingConstants.LEFT));
+			}
+			
 			append(pnlLocal);
 			append(pnlAttack);
 			append(lblTroopSpeed);
 			append(panel9);
 
+			pnlAttackStrength.append(lblAttackStrength);
+
+			radioGroup = new ButtonGroup();
+			radioGroup.append(rdAssault);
+			radioGroup.append(rdRaid);
+			radioGroup.append(rdSlaughter);
+
+			pnlAttackStrength.append(rdRaid);
+			pnlAttackStrength.append(rdAssault);
+			pnlAttackStrength.append(rdSlaughter);
+			
 			panel9.append(btnOk);
 		}
 	}

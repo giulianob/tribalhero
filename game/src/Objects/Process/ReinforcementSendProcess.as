@@ -22,7 +22,7 @@ package src.Objects.Process
 		
 		public function execute(): void 
 		{
-			reinforceDialog = new ReinforceTroopDialog(onChoseUnits);
+			reinforceDialog = new ReinforceTroopDialog(onChoseUnits,true);
 			
 			reinforceDialog.show();
 		}
@@ -46,7 +46,7 @@ package src.Objects.Process
 			
 			var target: GameObject = sender.getTargetObject();
 			
-			Global.mapComm.Troop.troopReinforce(Global.gameContainer.selectedCity.id, target.cityId, reinforceDialog.getTroop());
+			Global.mapComm.Troop.troopReinforce(Global.gameContainer.selectedCity.id, target.cityId, reinforceDialog.getTroop(), reinforceDialog.getMode());
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);

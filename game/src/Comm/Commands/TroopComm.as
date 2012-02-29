@@ -263,13 +263,14 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 
-		public function troopReinforce(cityId: int, targetCityId: int, troop: TroopStub):void
+		public function troopReinforce(cityId: int, targetCityId: int, troop: TroopStub, mode: int):void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TROOP_REINFORCE;
 			packet.writeUInt(cityId);
 			packet.writeUInt(targetCityId);
 			writeTroop(troop, packet);
+			packet.writeUShort(mode);
 			
 			session.write(packet, mapComm.catchAllErrors);
 		}

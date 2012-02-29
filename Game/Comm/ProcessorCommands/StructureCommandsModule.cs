@@ -65,7 +65,7 @@ namespace Game.Comm.ProcessorCommands
                 if (session.Player == structure.City.Owner)
                 {
                     reply.AddUInt16(structure.Stats.Labor);
-                    reply.AddUInt16(structure.Stats.Hp);
+                    reply.AddUInt16((ushort)structure.Stats.Hp);
 
                     foreach (var prop in Ioc.Kernel.Get<PropertyFactory>().GetProperties(structure.Type))
                     {

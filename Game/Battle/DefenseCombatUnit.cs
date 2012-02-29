@@ -188,7 +188,7 @@ namespace Game.Battle
                                new DbColumn("troop_stub_id", TroopStub.TroopId, DbType.Byte), new DbColumn("left_over_hp", LeftOverHp, DbType.Decimal),
                                new DbColumn("damage_min_dealt", MinDmgDealt, DbType.UInt16), new DbColumn("damage_max_dealt", MaxDmgDealt, DbType.UInt16),
                                new DbColumn("damage_min_received", MinDmgRecv, DbType.UInt16), new DbColumn("damage_max_received", MaxDmgRecv, DbType.UInt16),
-                               new DbColumn("damage_dealt", DmgDealt, DbType.Int32), new DbColumn("damage_received", DmgRecv, DbType.Int32),
+                               new DbColumn("damage_dealt", DmgDealt, DbType.Decimal), new DbColumn("damage_received", DmgRecv, DbType.Decimal),
                                new DbColumn("hits_dealt", HitDealt, DbType.UInt16), new DbColumn("hits_dealt_by_unit", HitDealtByUnit, DbType.UInt32),
                                new DbColumn("hits_received", HitRecv, DbType.UInt16),
                        };

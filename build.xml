@@ -1,4 +1,4 @@
-<project name="gameserver" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant">
+<project name="gameserver" default="compile" basedir="." xmlns:dn="antlib:org.apache.ant.dotnet" xmlns="antlib:org.apache.tools.ant"  xmlns:antcontrib="antlib:net.sf.antcontrib">
 	<description>Game server build</description>
 	
 	<target name="init">
@@ -6,10 +6,16 @@
 	
 		<tstamp />
 		
-		<property name="src" location="game/src" />	
+		<fail unless="version">Version not specified</fail>
+		
+		<antcontrib:propertyregex property="major_version" input="${version}" regexp="^([0-9]*).([0-9]*)$" select="\1" />
+		<antcontrib:propertyregex property="revision" input="${version}" regexp="^([0-9]*).([0-9]*)$" select="\2" />
 	</target>
 	
 	<target name="compile" depends="init">
+		<replaceregexp file="${basedir}\Game\Setup\Config.cs" match="client_min_version(.*)" replace="client_min_version = ${major_version};" byline="true" />		
+		<replaceregexp file="${basedir}\Game\Setup\Config.cs" match="client_min_revision(.*)" replace="client_min_revision = ${revision};" byline="true" />				
+	
 		<dn:msbuild buildfile="${basedir}\Game.sln">
 			<target name="Common:Rebuild" />
 			<target name="Persistance:Rebuild" />

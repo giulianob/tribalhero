@@ -123,9 +123,9 @@ namespace Game.Battle
                             new[]
                             {
                                     new DbColumn("object_id", co.Id, DbType.UInt32), new DbColumn("troop_id", troopId, DbType.UInt32),
-                                    new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte), new DbColumn("hp", co.Hp, DbType.UInt32),
-                                    new DbColumn("count", co.Count, DbType.UInt16), new DbColumn("dmg_recv", co.DmgRecv, DbType.Int32),
-                                    new DbColumn("dmg_dealt", co.DmgDealt, DbType.Int32),
+                                    new DbColumn("type", co.Type, DbType.UInt16), new DbColumn("lvl", co.Lvl, DbType.Byte), new DbColumn("hp", co.Hp, DbType.Decimal),
+                                    new DbColumn("count", co.Count, DbType.UInt16), new DbColumn("dmg_recv", co.DmgRecv, DbType.Decimal),
+                                    new DbColumn("dmg_dealt", co.DmgDealt, DbType.Decimal),
                                     new DbColumn("formation", (byte)(unit == null ? FormationType.Structure : unit.Formation), DbType.Byte),
                                     new DbColumn("hit_dealt", co.HitDealt, DbType.UInt16), new DbColumn("hit_dealt_by_unit", co.HitDealtByUnit, DbType.UInt32),
                                     new DbColumn("hit_recv", co.HitRecv, DbType.UInt16),

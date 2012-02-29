@@ -68,7 +68,7 @@ namespace Game.Comm.Channel
             var packet = new Packet(Command.BattleAttack);
             packet.AddUInt32(source.Id);
             packet.AddUInt32(target.Id);
-            packet.AddUInt16((ushort)damage);
+            packet.AddFloat((float)damage);
             Global.Channel.Post(channelName, packet);
         }
     }

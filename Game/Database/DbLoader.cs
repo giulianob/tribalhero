@@ -13,6 +13,7 @@ using Game.Data.Troop;
 using Game.Logic;
 using Game.Logic.Actions;
 using Game.Logic.Actions.ResourceActions;
+using Game.Logic.Formulas;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
@@ -450,7 +451,7 @@ namespace Game.Database
                     structure.Technologies.Parent = city.Technologies;
                     structure.X = (uint)reader["x"];
                     structure.Y = (uint)reader["y"];
-                    structure.Stats.Hp = (ushort)reader["hp"];
+                    structure.Stats.Hp = (decimal)reader["hp"];
                     structure.ObjectId = (uint)reader["id"];
                     structure.Stats.Labor = (ushort)reader["labor"];
                     structure.DbPersisted = true;
@@ -748,11 +749,13 @@ namespace Game.Database
                                                                       battleStats,
                                                                       (decimal)listReader["hp"],
                                                                       (ushort)listReader["type"],
-                                                                      (byte)listReader["level"])
+                                                                      (byte)listReader["level"],
+                                                                      Formula.Current,
+                                                                      BattleFormulas.Current)                                                                      
                                                   {
                                                           GroupId = (uint)listReader["group_id"],
-                                                          DmgDealt = (int)listReader["damage_dealt"],
-                                                          DmgRecv = (int)listReader["damage_received"],
+                                                          DmgDealt = (decimal)listReader["damage_dealt"],
+                                                          DmgRecv = (decimal)listReader["damage_received"],
                                                           LastRound = (uint)listReader["last_round"],
                                                           RoundsParticipated = (int)listReader["rounds_participated"],
                                                           DbPersisted = true
@@ -807,8 +810,8 @@ namespace Game.Database
                             combatObj.HitDealtByUnit = (uint)listReader["hits_dealt_by_unit"];
                             combatObj.HitRecv = (ushort)listReader["hits_received"];
                             combatObj.GroupId = (uint)listReader["group_id"];
-                            combatObj.DmgDealt = (int)listReader["damage_dealt"];
-                            combatObj.DmgRecv = (int)listReader["damage_received"];
+                            combatObj.DmgDealt = (decimal)listReader["damage_dealt"];
+                            combatObj.DmgRecv = (decimal)listReader["damage_received"];
                             combatObj.LastRound = (uint)listReader["last_round"];
                             combatObj.RoundsParticipated = (int)listReader["rounds_participated"];
                             combatObj.DbPersisted = true;

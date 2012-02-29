@@ -160,7 +160,7 @@ namespace Game.Battle
         public BattleStatsModCalculator(BaseBattleStats baseStats)
         {
             MaxHp = new DoubleStatsModCalculator((double)baseStats.MaxHp);
-            Atk = new AtkDmgModCalculator(baseStats.Atk);
+            Atk = new AtkDmgModCalculator((double)baseStats.Atk);
             Splash = new IntStatsModCalculator(baseStats.Splash);
             Rng = new IntStatsModCalculator(baseStats.Rng);
             Stl = new IntStatsModCalculator(baseStats.Stl);

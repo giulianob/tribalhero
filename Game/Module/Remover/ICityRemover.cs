@@ -1,6 +1,6 @@
 namespace Game.Module
 {
     public interface ICityRemover {
-        bool Start();
+        bool Start(bool force = false);
     }
 }

@@ -12,7 +12,6 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 namespace Game.Module
@@ -40,15 +39,6 @@ namespace Game.Module
         {
             this.cityId = cityId;
         }
-
-        #region ICityRemover Members
-
-        public bool Start()
-        {
-            return Start(false);
-        }
-
-        #endregion
 
         public bool Start(bool force = false)
         {
@@ -154,7 +144,7 @@ namespace Game.Module
                 if (city.TryGetStructure(1, out mainBuilding))
                 {
                     // don't continue unless all troops are either idle or stationed
-                    if (city.Troops.Any(s => s.State != TroopState.Idle || s.State != TroopState.Stationed))
+                    if (city.Troops.Any(s => s.State != TroopState.Idle && s.State != TroopState.Stationed))
                     {
                         Reschedule(LONG_RETRY);
                         return;

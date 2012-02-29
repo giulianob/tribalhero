@@ -7,6 +7,7 @@ using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
 using Game.Logic.Actions;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
@@ -321,12 +322,14 @@ namespace Game.Comm.ProcessorCommands
             uint cityId;
             uint targetCityId;
             TroopStub stub;
+            AttackMode mode;
 
             try
             {
                 cityId = packet.GetUInt32();
                 targetCityId = packet.GetUInt32();
                 stub = PacketHelper.ReadStub(packet, FormationType.Defense);
+                mode = (AttackMode)packet.GetByte();
             }
             catch(Exception)
             {
@@ -360,7 +363,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var da = new DefenseChainAction(cityId, stub.TroopId, targetCityId);
+                var da = new DefenseChainAction(cityId, stub.TroopId, targetCityId, mode);
                 Error ret = city.Worker.DoPassive(city, da, true);
                 if (ret != 0)
                 {

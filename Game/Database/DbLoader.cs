@@ -574,7 +574,8 @@ namespace Game.Database
                                        TroopManager = city.Troops,
                                        TroopId = (byte)reader["id"],
                                        State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
-                                       DbPersisted = true
+                                       DbPersisted = true,
+                                       StationedRetreatCount = (ushort)reader["retreat_count"]
                                };
 
                     var formationMask = (ushort)reader["formations"];
@@ -594,7 +595,7 @@ namespace Game.Database
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
 
                     var stationedCityId = (uint)reader["stationed_city_id"];
-                    if (stationedCityId != 0)
+                    if (stationedCityId != 0) 
                         stationedTroops.Add(new {stub, stationedCityId}); 
                 }
             }

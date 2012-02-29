@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -20,12 +21,14 @@ namespace Game.Logic.Actions
         private readonly uint cityId;
         private readonly byte stubId;
         private readonly uint targetCityId;
+        private readonly AttackMode mode;
 
-        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId)
+        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode)
         {
             this.cityId = cityId;
             this.stubId = stubId;
             this.targetCityId = targetCityId;
+            this.mode = mode;
         }
 
         public DefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
@@ -82,6 +85,7 @@ namespace Game.Logic.Actions
             //Load the units stats into the stub
             stub.BeginUpdate();
             stub.Template.LoadStats(TroopBattleGroup.Defense);
+            stub.StationedRetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(stub.Upkeep, mode);
             stub.EndUpdate();
 
             city.Worker.References.Add(stub.TroopObject, this);

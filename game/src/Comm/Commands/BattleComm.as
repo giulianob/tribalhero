@@ -45,6 +45,12 @@
 				case Commands.BATTLE_NEW_ROUND:
 					onReceiveNewRound(e.packet);
 				break;
+				case Commands.BATTLE_WITHDRAW_ATTACKER:
+					onReceiveWithdrawAttacker(e.packet);
+				break;
+				case Commands.BATTLE_WITHDRAW_DEFENDER:
+					onReceiveWithdrawDefender(e.packet);
+				break;
 			}
 		}
 
@@ -211,7 +217,24 @@
 
 			battle.skipped(attackerObjId);
 		}
+		
+		public function onReceiveWithdrawAttacker(packet: Packet):void
+		{
+			if (battle == null) return;		
 
+			var cityId: int = packet.readUInt();
+			var stubId: int = packet.readByte();
+			battle.removeFromAttack(cityId, stubId);
+		}
+		
+		public function onReceiveWithdrawDefender(packet: Packet):void
+		{
+			if (battle == null) return;		
+
+			var cityId: int = packet.readUInt();
+			var stubId: int = packet.readByte();
+			battle.removeFromDefense(cityId, stubId);
+		}
 	}
 
 }

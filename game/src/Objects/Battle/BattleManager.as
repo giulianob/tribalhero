@@ -62,7 +62,7 @@
 				combatObj = new CombatStructure(playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
 			else
 				throw new Error("Unknown class type " + classType);
-				
+
 			list.add(combatObj);
 			all.add(combatObj);
 			
@@ -104,16 +104,40 @@
 			
 			if (defender.hp <= 0)
 			{
-				defender.hp = 0;	
-				all.remove(defenderCombatId);
-				
-				if (attackers.remove(defenderCombatId))
-					dispatchEvent(new BattleEvent(OBJECT_REMOVED_ATTACK, defender));
-				else if (defenders.remove(defenderCombatId))
-					dispatchEvent(new BattleEvent(OBJECT_REMOVED_DEFENSE, defender));
+				defender.hp = 0;
+				removeObject(defender);
 			}
 		}
 
+		public function removeFromAttack(cityId: int, troopId: int):void
+		{
+			remove(attackers, cityId, troopId);
+		}
+		
+		public function removeFromDefense(cityId: int, troopId: int):void
+		{
+			remove(defenders, cityId, troopId);
+		}
+		
+		private function remove(list: BinaryList, cityId: int, troopId: int):void
+		{
+			var objs: Array = new Array();
+			for each(var co:CombatObject in list.each())
+				if (co.cityId == cityId && co.troopStubId == troopId)
+					objs.push(co);
+
+			for each(var co2:CombatObject in objs)
+				removeObject(co2);
+		}
+		
+		private function removeObject(co: CombatObject):void
+		{
+			all.remove(co);
+			if (attackers.remove(co.combatObjectId))
+				dispatchEvent(new BattleEvent(OBJECT_REMOVED_ATTACK, co));
+			else if (defenders.remove(co.combatObjectId))
+				dispatchEvent(new BattleEvent(OBJECT_REMOVED_DEFENSE, co));
+		}
 	}
 	
 }

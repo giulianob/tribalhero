@@ -321,17 +321,17 @@
 		}			
 
 		public function onZoomIntoMinimap(e: Event):void {
+			zoomIntoMinimap(!minimapZoomed);
+		}
+
+		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
 			if (minimapZoomed == false) {
 				Global.map.camera.cue();
 			}
 			else {
 				Global.map.camera.goToCue();
-			}
-
-			zoomIntoMinimap(!minimapZoomed);
-		}
-
-		public function zoomIntoMinimap(zoom: Boolean, query: Boolean = true) : void {
+			}			
+			
 			clearAllSelections();
 			
 			if (zoom) {

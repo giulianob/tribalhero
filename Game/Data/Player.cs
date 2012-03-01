@@ -236,6 +236,12 @@ namespace Game.Data
                                            new DbColumn("message", message, DbType.String), new DbColumn("sender_state", 2, DbType.Int16),
                                            new DbColumn("recipient_state", 0, DbType.Int16),
                                    });
+
+            if (Session != null)
+            {
+                var packet = new Packet(Command.RefreshUnread);
+                Global.Channel.Post("/PLAYER/" + PlayerId, packet);
+            }
         }
 
         public void TribeUpdate()

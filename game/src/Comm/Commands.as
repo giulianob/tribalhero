@@ -39,6 +39,7 @@ package src.Comm {
         public static const MESSAGE_UNREAD: int = 65;
         public static const BATTLE_REPORT_UNREAD: int = 66;
         public static const FORUM_UNREAD: int = 67;
+		public static const REFRESH_UNREAD: int = 68;
 		
 		public static const REFERENCE_ADD: int = 71;
 		public static const REFERENCE_REMOVE: int = 72;

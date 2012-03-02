@@ -143,6 +143,7 @@ class MessageBoardThread extends AppModel {
             'conditions' => array(
                 'MessageBoardThread.last_post_date >' => $this->toSqlTime(strtotime('-2 weeks')),
                 'MessageBoardThread.tribe_id' => $tribeId,                                
+                'MessageBoardThread.deleted' => 0,        
                 'OR' => array('MessageBoardRead.id' => null, 'MessageBoardThread.last_post_date > MessageBoardRead.last_read')
         )));
 

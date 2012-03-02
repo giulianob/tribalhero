@@ -145,7 +145,7 @@ namespace Game.Comm
                 }
 
                 int id;
-                Error error = tribe.CreateAssignment(stub, x, y, targetStructure.City, DateTime.UtcNow.Add(time), mode, "", out id);
+                Error error = tribe.CreateAssignment(stub, x, y, targetStructure.City, DateTime.UtcNow.Add(time), mode, "", true, out id);
                 if (error != Error.Ok)
                 {
                     city.Troops.Remove(stub.TroopId);

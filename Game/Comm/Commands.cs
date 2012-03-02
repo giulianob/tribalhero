@@ -41,6 +41,7 @@ namespace Game.Comm
         MessageUnread = 65,
         BattleReportUnread = 66,
         ForumUnread = 67,
+        RefreshUnread = 68,
 
         #endregion
 

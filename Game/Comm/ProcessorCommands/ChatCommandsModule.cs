@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Game.Data;
 using Game.Setup;
 using Game.Util;
@@ -8,10 +9,17 @@ namespace Game.Comm.ProcessorCommands
 {
     class ChatCommandsModule : CommandModule
     {
+        private readonly StreamWriter writer;
+
         enum ChatType
         {
             GLOBAL = 0,
             TRIBE = 1
+        }
+
+        public ChatCommandsModule(StreamWriter writer)
+        {
+            this.writer = writer;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -64,9 +72,7 @@ namespace Game.Comm.ProcessorCommands
                         return;
                     }
                 }
-
-                
-
+               
                 switch (type)
                 {
                     case ChatType.TRIBE:
@@ -77,10 +83,14 @@ namespace Game.Comm.ProcessorCommands
                         }
                         channel = string.Format("/TRIBE/{0}", session.Player.Tribesman.Tribe.Id);
                         break;
-                    default:
+                    case ChatType.GLOBAL:
                         channel = "/GLOBAL";
                         break;
+                    default:
+                        return;
                 }
+
+                writer.WriteLine(string.Format("[{0} {1}] {2}:{3}", SystemClock.Now, channel, session.Player.Name, message));                
 
                 chatPacket = new Packet(Command.Chat);
                 chatPacket.AddByte((byte)type);

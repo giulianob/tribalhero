@@ -33,6 +33,7 @@ namespace Game.Comm.ProcessorCommands
             DateTime time;
             TroopStub stub;
             string description;
+            bool isAttack;
             try
             {
                 mode = (AttackMode)packet.GetByte();
@@ -42,6 +43,7 @@ namespace Game.Comm.ProcessorCommands
                 time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
                 stub = PacketHelper.ReadStub(packet, FormationType.Attack);
                 description = packet.GetString();
+                isAttack = packet.GetByte() == 1;
             }
             catch (Exception) {
                 ReplyError(session, packet, Error.Unexpected);
@@ -113,7 +115,15 @@ namespace Game.Comm.ProcessorCommands
                 DbPersistance.Current.Save(stub);
 
                 int id;
-                Error ret = session.Player.Tribesman.Tribe.CreateAssignment(stub, targetStructure.X, targetStructure.Y, targetCity, time, mode, description, out id);
+                Error ret = session.Player.Tribesman.Tribe.CreateAssignment(stub,
+                                                                            targetStructure.X,
+                                                                            targetStructure.Y,
+                                                                            targetCity,
+                                                                            time,
+                                                                            mode,
+                                                                            description,
+                                                                            isAttack,
+                                                                            out id);
                 if (ret != 0) {
                     Procedure.Current.TroopStubDelete(city, stub);
                     ReplyError(session, packet, ret);

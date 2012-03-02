@@ -19,23 +19,29 @@ namespace Game.Battle
         public const string DB_TABLE = "combat_structures";
         private readonly byte lvl;
         private readonly BattleStats stats;
+        private readonly Formula formula;
+        private readonly BattleFormulas battleFormula;
         private readonly ushort type;
         private decimal hp; //need to keep a copy track of the hp for reporting
 
-        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats)
+        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, Formula formula, BattleFormulas battleFormula)
         {
             battleManager = owner;
             this.stats = stats;
+            this.formula = formula;
+            this.battleFormula = battleFormula;
             Structure = structure;
             type = structure.Type;
             lvl = structure.Lvl;
             hp = structure.Stats.Hp;
         }
 
-        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl)
+        public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, decimal hp, ushort type, byte lvl, Formula formula, BattleFormulas battleFormula)
         {
             battleManager = owner;
             Structure = structure;
+            this.formula = formula;
+            this.battleFormula = battleFormula;
             this.stats = stats;
             this.hp = hp;
             this.type = type;
@@ -160,7 +166,7 @@ namespace Game.Battle
         {
             get
             {
-                return BattleFormulas.Current.GetUnitsPerStructure(Structure) / 5;
+                return battleFormula.GetUnitsPerStructure(Structure) / 5;
             }
         }
 
@@ -251,7 +257,7 @@ namespace Game.Battle
             Structure.EndUpdate();
 
             if (hp == 0)
-                attackPoints = Formula.Current.GetStructureKilledAttackPoint(type, lvl);
+                attackPoints = formula.GetStructureKilledAttackPoint(type, lvl);
 
             returning = null;
         }

@@ -41,9 +41,9 @@ namespace Game.Comm.ProcessorCommands
                 targetCityId = packet.GetUInt32();
                 targetObjectId = packet.GetUInt32();
                 time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
-                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
-                description = packet.GetString();
                 isAttack = packet.GetByte() == 1;
+                stub = PacketHelper.ReadStub(packet, isAttack?FormationType.Attack:FormationType.Defense);
+                description = packet.GetString();
             }
             catch (Exception) {
                 ReplyError(session, packet, Error.Unexpected);
@@ -143,7 +143,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 cityId = packet.GetUInt32();
                 assignmentId = packet.GetInt32();
-                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
+                stub = PacketHelper.ReadStub(packet, 1);
             }
             catch (Exception) {
                 ReplyError(session, packet, Error.Unexpected);

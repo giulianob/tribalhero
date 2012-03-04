@@ -178,7 +178,7 @@ namespace Game.Database
                                                            DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
                                                            (uint)reader["dispatch_count"],
                                                            (string)reader["description"],
-                                                           (bool)reader["is_attack"]);
+                                                           ((byte)reader["is_attack"])==1);
 
                     using (DbDataReader listReader = dbManager.SelectList(assignment))
                     {

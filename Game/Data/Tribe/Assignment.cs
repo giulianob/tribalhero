@@ -114,7 +114,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment.
         /// An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
         /// </summary>
-        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -134,8 +134,6 @@ namespace Game.Data.Tribe
             DispatchCount = 0;
             Description = description;
             IsAttack = isAttack;
-
-            assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
         }
 
         /// <summary>
@@ -210,7 +208,7 @@ namespace Game.Data.Tribe
                     return Error.AssignmentDone;
 
                 assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
-                stub.OnRemoved += RemoveStub;
+                stub.OnRemoved += OnStubRemoved;
                 stub.OnStateSwitched += StubOnStateSwitched;
 
                 Reschedule();
@@ -239,6 +237,16 @@ namespace Game.Data.Tribe
         }
 
         /// <summary>
+        /// Called when a stub is deleted for good
+        /// </summary>
+        /// <param name="stub"></param>         
+        private void OnStubRemoved(ITroopStub stub)
+        {
+            RemoveStub(stub);
+            Reschedule();
+        }
+
+        /// <summary>
         /// Removes a stub from the assignment
         /// </summary>
         /// <param name="stub"></param>
@@ -253,7 +261,7 @@ namespace Game.Data.Tribe
                     return;
                 }
 
-                stub.OnRemoved -= RemoveStub;
+                stub.OnRemoved -= OnStubRemoved;
                 stub.OnStateSwitched -= StubOnStateSwitched;
                 assignmentTroops.Remove(assignmentTroop);
             }
@@ -478,7 +486,7 @@ namespace Game.Data.Tribe
         internal void DbLoaderAdd(ITroopStub stub, bool dispatched)
         {
             assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub), dispatched));
-            stub.OnRemoved += RemoveStub;
+            stub.OnRemoved += OnStubRemoved;
             stub.OnStateSwitched += StubOnStateSwitched;
         }
     }

@@ -11,8 +11,6 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
-	import src.Objects.Process.AssignmentCreateProcess;
-	import src.Objects.Process.AssignmentJoinProcess;
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;

@@ -18,12 +18,12 @@
 	import src.Objects.Troop.*;
 	import src.Util.Util;
 
-	public class AssignmentJoinDialog extends AttackTroopDialog {
+	public class AssignmentJoinAtkDialog extends AttackTroopDialog {
 
 		protected var assignment: *;
 		protected var distance: int;
 	
-		public function AssignmentJoinDialog(onAccept: Function, assignment: *):void
+		public function AssignmentJoinAtkDialog(onAccept: Function, assignment: *):void
 		{
 			super(onAccept, false);
 			

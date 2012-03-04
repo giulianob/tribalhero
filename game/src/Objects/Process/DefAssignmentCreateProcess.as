@@ -14,37 +14,39 @@ package src.Objects.Process
 	import src.Objects.Troop.TroopStub;
 	import src.UI.Components.TroopStubGridList.TroopStubGridCell;
 	import src.UI.Cursors.GroundAttackCursor;
+	import src.UI.Cursors.GroundReinforceCursor;
 	import src.UI.Dialog.AssignmentCreateDialog;
 	import src.UI.Dialog.AttackTroopDialog;
+	import src.UI.Dialog.ReinforceTroopDialog;
 	import src.UI.Sidebars.CursorCancel.CursorCancelSidebar;
 	/**
 	 * ...
 	 * @author Giuliano Barberi
 	 */
-	public class AssignmentCreateProcess implements IProcess
+	public class DefAssignmentCreateProcess implements IProcess
 	{		
-		private var attackDialog: AttackTroopDialog;		
+		private var troopDialog: ReinforceTroopDialog;
 		private var target: GameObject;
 		
-		public function AssignmentCreateProcess() 
+		public function DefAssignmentCreateProcess() 
 		{
 			
 		}
 		
 		public function execute(): void
 		{
-			attackDialog = new AttackTroopDialog(onChoseUnits);
+			troopDialog = new ReinforceTroopDialog(onChoseUnits);
 			
-			attackDialog.show();
+			troopDialog.show();
 		}
 		
-		public function onChoseUnits(sender: AttackTroopDialog): void 
+		public function onChoseUnits(sender: ReinforceTroopDialog): void 
 		{			
 			Global.gameContainer.closeAllFrames(true);
 			
 			var sidebar: CursorCancelSidebar = new CursorCancelSidebar();
 			
-			var cursor: GroundAttackCursor = new GroundAttackCursor(onChoseTarget, attackDialog.getTroop());
+			var cursor: GroundReinforceCursor = new GroundReinforceCursor(onChoseTarget, troopDialog.getTroop());
 			
 			var changeTroop: JButton = new JButton("Change Troop");
 			changeTroop.addActionListener(onChangeTroop);
@@ -53,14 +55,14 @@ package src.Objects.Process
 			Global.gameContainer.setSidebar(sidebar);
 		}
 		
-		public function onChoseTarget(sender: GroundAttackCursor): void 
+		public function onChoseTarget(sender: GroundReinforceCursor): void 
 		{						
 			target = sender.getTargetObject();
 			
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 			
-			var troop: TroopStub = attackDialog.getTroop();
+			var troop: TroopStub = troopDialog.getTroop();
 			var city: City = Global.gameContainer.selectedCity;
 			var targetMapDistance: Point = MapUtil.getMapCoord(target.getX(), target.getY());
 			var distance: int = city.MainBuilding.distance(targetMapDistance.x, targetMapDistance.y);
@@ -74,14 +76,14 @@ package src.Objects.Process
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
 			
-			attackDialog.show();
+			troopDialog.show();
 		}
 		
 		public function onChoseTime(assignmentDialog: AssignmentCreateDialog): void
 		{
 			assignmentDialog.getFrame().dispose();
 			
-			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, assignmentDialog.getTime(), attackDialog.getMode(), attackDialog.getTroop(), assignmentDialog.getDescription());
+			Global.mapComm.Troop.assignmentCreate(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, assignmentDialog.getTime(), troopDialog.getMode(), troopDialog.getTroop(), assignmentDialog.getDescription(),false);
 		}
 	}
 

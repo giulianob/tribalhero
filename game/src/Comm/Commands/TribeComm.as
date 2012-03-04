@@ -181,6 +181,7 @@
 					attackMode: packet.readByte(),
 					dispatchCount: packet.readUInt(),
 					description: packet.readString(),
+					isAttack: packet.readByte(),
 					troopCount: packet.readInt(),
 					troops: []
 				};

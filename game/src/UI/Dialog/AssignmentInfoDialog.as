@@ -53,9 +53,16 @@ package src.UI.Dialog {
 			var pnlDetails: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
 			pnlDetails.setConstraints("Center");					
 			
-			pnlDetails.append(createRow(new JLabel("Organized by"), new PlayerLabel(assignment.troops[0].playerId, assignment.troops[0].playerName)));
-			pnlDetails.append(createRow(new JLabel("Attack"), new PlayerCityLabel(assignment.targetPlayerId, assignment.targetCityId, assignment.targetPlayerName, assignment.targetCityName)));
+			if(assignment.troops.length>0)
+				pnlDetails.append(createRow(new JLabel("Organized by"), new PlayerLabel(assignment.troops[0].playerId, assignment.troops[0].playerName)));
+			pnlDetails.append(createRow(new JLabel(assignment.isAttack?"Attack":"Defend"), new PlayerCityLabel(assignment.targetPlayerId, assignment.targetCityId, assignment.targetPlayerName, assignment.targetCityName)));
 			pnlDetails.append(createRow(new JLabel("Target"), new CoordLabel(assignment.x, assignment.y)));
+			if (assignment.attackMode == 0)
+				pnlDetails.append(createRow(new JLabel("Strength:"), new JLabel("Raid")));
+			else if (assignment.attackMode == 1)
+				pnlDetails.append(createRow(new JLabel("Strength:"), new JLabel("Assault")));
+			else if ( assignment.attackMode == 2)
+				pnlDetails.append(createRow(new JLabel("Strength:"), new JLabel("Slaughter")));
 			
 			var lblTroops: JLabel = new JLabel("Troops", null, AsWingConstants.LEFT);
 			GameLookAndFeel.changeClass(lblTroops, "darkHeader");

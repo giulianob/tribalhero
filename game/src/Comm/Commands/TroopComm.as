@@ -288,7 +288,7 @@
 			session.write(packet, mapComm.catchAllErrors);
 		}
 		
-		public function assignmentCreate(cityId: int, targetCityId: int, targetObjectId: int, time: int, mode: int, troop: TroopStub, description: String): void
+		public function assignmentCreate(cityId: int, targetCityId: int, targetObjectId: int, time: int, mode: int, troop: TroopStub, description: String, isAttack: Boolean): void
 		{
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBE_ASSIGNMENT_CREATE;
@@ -298,6 +298,7 @@
 			packet.writeUInt(targetCityId);
 			packet.writeUInt(targetObjectId);
 			packet.writeInt(time);			
+			packet.writeUByte(isAttack?1:0);
 			writeTroop(troop, packet);
 			packet.writeString(description);
 			

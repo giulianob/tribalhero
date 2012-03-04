@@ -827,9 +827,9 @@ namespace Game.Database
                             ICity troopStubCity;
                             if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
                                 throw new Exception("City not found");
-                            ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
-                            if (troopStub == null)
+                            ITroopStub troopStub;
+                            if (!troopStubCity.Troops.TryGetStub((byte)listReader["troop_stub_id"], out troopStub))
                                 continue;
 
                             bm.ReportedTroops[troopStub] = (uint)listReader["combat_troop_id"];

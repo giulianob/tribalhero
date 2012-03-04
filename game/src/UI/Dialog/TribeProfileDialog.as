@@ -11,7 +11,8 @@
 	import org.aswing.geom.*;
 	import org.aswing.table.*;
 	import src.*;
-	import src.Objects.Process.AssignmentCreateProcess;
+	import src.Objects.Process.AtkAssignmentCreateProcess;
+	import src.Objects.Process.DefAssignmentCreateProcess;
 	import src.Objects.Process.AssignmentJoinProcess;
 	import src.UI.*;
 	import src.UI.Components.*;
@@ -123,14 +124,14 @@
 			
 			var pnlName: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));			
 			pnlName.appendAll(				
-				new JLabel("Attack", null, AsWingConstants.LEFT),
+				new JLabel(assignment.isAttack?"Attack":"Defend", null, AsWingConstants.LEFT),
 				new PlayerCityLabel(assignment.targetPlayerId, assignment.targetCityId, assignment.targetPlayerName, assignment.targetCityName)
 			);						
 			pnlName.setConstraints("Center");
 			
 			var pnlStats: JPanel = new JPanel(new SoftBoxLayout(AsWingConstants.RIGHT, 5, AsWingConstants.RIGHT));
 			pnlStats.appendAll(
-				new JLabel(assignment.troopCount, new AssetIcon(new ICON_SINGLE_SWORD()), AsWingConstants.RIGHT),
+				new JLabel(assignment.troopCount, new AssetIcon(assignment.isAttack?new ICON_SINGLE_SWORD:new ICON_SHIELD), AsWingConstants.RIGHT),
 				new CountDownLabel(assignment.endTime, "Troops Dispatched")
 			);
 			pnlStats.setConstraints("East");
@@ -172,7 +173,8 @@
 		}		
 		
 		private function createAssignmentTab() : Container {
-			var btnCreate: JButton = new JButton("Create");
+			var btnAtkCreate: JButton = new JButton("Create Attack Assignemnt");
+			var btnDefCreate: JButton = new JButton("Create Defense Assignemnt");
 			
 			var pnlFooter: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			pnlFooter.setConstraints("South");			
@@ -192,14 +194,20 @@
 			pnlAssignmentHolder.appendAll(scrollAssignment, pnlFooter);
 			
 			if (Constants.tribeRank <= 1) {
-				pnlFooter.append(btnCreate);
+				pnlFooter.append(btnAtkCreate);
+				pnlFooter.append(btnDefCreate);
 			}
 			
-			btnCreate.addActionListener(function(e: Event): void {
-				var assignmentCreate: AssignmentCreateProcess = new AssignmentCreateProcess();
+			btnAtkCreate.addActionListener(function(e: Event): void {
+				var assignmentCreate: AtkAssignmentCreateProcess = new AtkAssignmentCreateProcess();
 				assignmentCreate.execute();
 			});
-			new SimpleTooltip(btnCreate, "An assignment is an organized attack used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
+			btnDefCreate.addActionListener(function(e: Event): void {
+				var assignmentCreate: DefAssignmentCreateProcess = new DefAssignmentCreateProcess();
+				assignmentCreate.execute();
+			});
+			new SimpleTooltip(btnAtkCreate, "An assignment is an organized attack used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
+			new SimpleTooltip(btnDefCreate, "An assignment is an organized defense used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
 			
 			return pnlAssignmentHolder;
 		}

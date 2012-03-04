@@ -23,14 +23,14 @@
 		protected var rdAssault:JRadioButton;
 		protected var rdRaid:JRadioButton;
 		protected var rdSlaughter:JRadioButton;
-		private var pnlLocal:JTabbedPane;
-		private var pnlAttack:JTabbedPane;
-		private var panel9:JPanel;
-		private var btnOk:JButton;
-		private var radioGroup: ButtonGroup;		
-		private var lblTroopSpeed: JLabel;
+		protected var pnlLocal:JTabbedPane;
+		protected var pnlAttack:JTabbedPane;
+		protected var panel9:JPanel;
+		protected var btnOk:JButton;
+		protected var radioGroup: ButtonGroup;		
+		protected var lblTroopSpeed: JLabel;
 
-		private var city: City;
+		protected var city: City;
 
 		protected var hasAttackStrength: Boolean;
 		
@@ -80,7 +80,7 @@
 			updateSpeedInfo();
 		}
 
-		public function updateSpeedInfo(e: Event = null): void {
+		protected function updateSpeedInfo(e: Event = null): void {
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
 				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops");
@@ -101,6 +101,7 @@
 		public function getTroop(): TroopStub
 		{
 			var newTroop: TroopStub = new TroopStub();
+			newTroop.cityId = city.id;
 
 			for (var i: int = 0; i < attackTilelists.length; i++)
 			{

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
 using Game.Logic.Procedures;
@@ -9,7 +10,6 @@ using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -64,8 +64,11 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
 
-            if (city.Troops.Size > 12)
+            int currentReinforcements = city.Worker.PassiveActions.Values.Count(action => action is DefenseChainAction);
+            if (currentReinforcements > 20)
+            {
                 return Error.TooManyTroops;
+            }
 
             ICity targetCity;
             if (!World.Current.TryGetObjects(targetCityId, out targetCity))

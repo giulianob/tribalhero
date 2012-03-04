@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Stats;
 using Game.Logic.Formulas;
@@ -79,8 +80,8 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (city.Worker.ActiveActions.Exists(action => (action.Type == Type) && (UnitType == ((UnitUpgradeActiveAction)action).UnitType) && (action != this)))
-                return Error.ActionAlreadyInProgress;
+            if (city.Worker.ActiveActions.Values.Any(action => action.Type == Type && UnitType == ((UnitUpgradeActiveAction)action).UnitType && action != this))
+                return Error.ActionAlreadyInProgress;            
 
             BaseUnitStats unitStats = city.Template[UnitType];
             if (unitStats == null)

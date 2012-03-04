@@ -103,8 +103,11 @@ namespace Game.Logic.Actions
                 !World.Current.TryGetObjects(targetCityId, targetStructureId, out targetCity, out targetStructure))
                 return Error.ObjectNotFound;
 
-            if (city.Troops.MyStubs().Count() >= 20)
+            int currentAttacks = city.Worker.PassiveActions.Values.Count(action => action is AttackChainAction);
+            if (currentAttacks > 20)
+            {
                 return Error.TooManyTroops;
+            }
 
             // Can't attack if target is under newbie protection
 #if !DEBUG

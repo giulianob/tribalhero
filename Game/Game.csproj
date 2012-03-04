@@ -379,7 +379,6 @@
     <Compile Include="Setup\SystemVariable.cs" />
     <Compile Include="Util\DataTypeSerializer.cs" />
     <Compile Include="Util\LargeIdGenerator.cs" />
-    <Compile Include="Util\ListDictionary.cs" />
     <Compile Include="Util\SmallIdGenerator.cs" />
     <Compile Include="Util\SystemClock.cs" />
   </ItemGroup>

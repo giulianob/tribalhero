@@ -208,6 +208,7 @@
     <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\TileChangeActiveAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceGatherActiveAction.cs" />

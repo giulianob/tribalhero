@@ -61,6 +61,7 @@ namespace Game.Logic
         CityCreatePassive = 505,
         RoadBuildActive = 510,
         RoadDestroyActive = 511,
+        TileChangeActive = 512,
 
         TechnologyCreatePassive = 400,
         TechnologyDeletePassive = 401,

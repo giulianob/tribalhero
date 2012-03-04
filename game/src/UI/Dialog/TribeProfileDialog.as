@@ -173,8 +173,7 @@
 		}		
 		
 		private function createAssignmentTab() : Container {
-			var btnAtkCreate: JButton = new JButton("Create Attack Assignemnt");
-			var btnDefCreate: JButton = new JButton("Create Defense Assignemnt");
+			var btnCreate: JButton = new JButton("Create");
 			
 			var pnlFooter: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			pnlFooter.setConstraints("South");			
@@ -194,20 +193,24 @@
 			pnlAssignmentHolder.appendAll(scrollAssignment, pnlFooter);
 			
 			if (Constants.tribeRank <= 1) {
-				pnlFooter.append(btnAtkCreate);
-				pnlFooter.append(btnDefCreate);
+				pnlFooter.append(btnCreate);
 			}
 			
-			btnAtkCreate.addActionListener(function(e: Event): void {
+			var menu : JPopupMenu = new JPopupMenu();
+			menu.addMenuItem("Offensive Assignment").addActionListener(function(e: Event): void {
 				var assignmentCreate: AtkAssignmentCreateProcess = new AtkAssignmentCreateProcess();
 				assignmentCreate.execute();
 			});
-			btnDefCreate.addActionListener(function(e: Event): void {
+			menu.addMenuItem("Defensive Assignment").addActionListener(function(e: Event): void {
 				var assignmentCreate: DefAssignmentCreateProcess = new DefAssignmentCreateProcess();
 				assignmentCreate.execute();
 			});
-			new SimpleTooltip(btnAtkCreate, "An assignment is an organized attack used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
-			new SimpleTooltip(btnDefCreate, "An assignment is an organized defense used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
+
+			btnCreate.addActionListener(function(e: Event): void {
+				menu.show(btnCreate, 0, 0);
+			});
+
+			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");
 			
 			return pnlAssignmentHolder;
 		}

@@ -79,7 +79,7 @@ namespace Testing.Tribe
                                                    procedure.Object,
                                                    tileLocator.Object,
                                                    actionFactory.Object);
-
+            assignment.Add(stub.Object);
             assignment.Reschedule();
 
             scheduler.Verify(m => m.Put(assignment));
@@ -147,11 +147,11 @@ namespace Testing.Tribe
                                                    procedure.Object,
                                                    tileLocator.Object,
                                                    actionFactory.Object);
-
+            assignment.Add(stub.Object);
             assignment.Add(newStub.Object);
             assignment.Add(newStub2.Object);
 
-            scheduler.Verify(m => m.Put(assignment), Times.Exactly(2));
+            scheduler.Verify(m => m.Put(assignment), Times.Exactly(3));
             assignment.Time.Should().Be(expectedTime);
         }
 
@@ -209,6 +209,7 @@ namespace Testing.Tribe
                                                    procedure.Object,
                                                    tileLocator.Object,
                                                    actionFactory.Object);
+            assignment.Add(stub.Object);
 
             SystemClock.SetClock(targetTime.AddSeconds(-90));
 
@@ -218,7 +219,7 @@ namespace Testing.Tribe
             // Add new troop
             assignment.Add(newStub.Object);
 
-            scheduler.Verify(m => m.Put(assignment), Times.Exactly(2));
+            scheduler.Verify(m => m.Put(assignment), Times.Exactly(3));
             assignment.Time.Should().Be(targetTime.AddSeconds(-120));
         }
 

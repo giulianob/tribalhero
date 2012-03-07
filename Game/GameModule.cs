@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Game.Battle;
 using Game.Comm;
 using Game.Comm.Channel;
@@ -40,12 +41,22 @@ namespace Game
             Bind<ISocketSessionFactory>().ToFactory();
             Bind<TServer>().ToMethod(c => new TSimpleServer(new Notification.Processor(c.Kernel.Get<NotificationHandler>()), new TServerSocket(46000)));
             Bind<IProtocol>().To<PacketProtocol>();
+            Bind<ChatCommandsModule>().ToMethod(c =>
+                {
+                    var writer = new StreamWriter("chat.log", true, Encoding.UTF8);
+                    writer.AutoFlush = true;
+                    return new ChatCommandsModule(writer);
+                });
 
             #endregion
 
             #region Locking
-            
-            Bind<ILocker>().ToMethod(c => new DefaultLocker(() => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()), () => new CallbackLock())).InSingletonScope();
+
+            Bind<ILocker>().ToMethod(c =>
+                {
+                    DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock());
+                    return new DefaultLocker(multiObjectLockFactory, () => new CallbackLock(multiObjectLockFactory));
+                }).InSingletonScope();
 
             #endregion
 

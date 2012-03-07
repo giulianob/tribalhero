@@ -13,7 +13,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class StarvePassiveAction : ScheduledPassiveAction
+    public class StarvePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
 

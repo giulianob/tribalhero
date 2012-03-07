@@ -17,7 +17,7 @@ namespace Game.Setup
     {
         // ReSharper disable InconsistentNaming        
         public static int client_min_version;
-        public static int client_min_revision = 14;
+        public static int client_min_revision;
 
         public static int server_port = 48888;
         public static string server_listen_address = "0.0.0.0";

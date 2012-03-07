@@ -7,6 +7,11 @@ namespace Game.Data.Stats
 
         private ushort labor;
 
+        public StructureStats()
+        {
+            
+        }
+
         public StructureStats(StructureBaseStats baseStats)
         {
             Base = baseStats;

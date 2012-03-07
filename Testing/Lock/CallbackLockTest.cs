@@ -11,14 +11,16 @@ namespace Testing.Lock
     /// <summary>
     /// Summary description for TroopProcedureTest
     /// </summary>    
-    public class CallbackLockTest : TestBase
+    public class CallbackLockTest
     {
+        readonly DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new DefaultMultiObjectLock();
+
         [Fact]
         public void TestEmptyListFromCallback()
         {
             var obj = new DummyLockable(1);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {};
-            var lck = new CallbackLock().Lock(lockFunc, null, obj);
+            var lck = new CallbackLock(multiObjectLockFactory).Lock(lockFunc, null, obj);
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             lck.Dispose();
             DefaultMultiObjectLock.IsLocked(obj).Should().BeFalse();
@@ -30,7 +32,7 @@ namespace Testing.Lock
             var obj = new DummyLockable(1);
             var obj2 = new DummyLockable(2);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {obj2};
-            var lck = new CallbackLock().Lock(lockFunc, null, obj);
+            var lck = new CallbackLock(multiObjectLockFactory).Lock(lockFunc, null, obj);
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
@@ -48,7 +50,7 @@ namespace Testing.Lock
             var obj2 = new DummyLockable(2);
             var obj3 = new DummyLockable(3);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {obj3, obj2};
-            var lck = new CallbackLock().Lock(lockFunc, null, obj);
+            var lck = new CallbackLock(multiObjectLockFactory).Lock(lockFunc, null, obj);
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
@@ -67,7 +69,7 @@ namespace Testing.Lock
             var obj = new DummyLockable(1);
             var obj2 = new DummyLockable(2);
             CallbackLock.CallbackLockHandler lockFunc = custom => new ILockable[] {};
-            var lck = new CallbackLock().Lock(lockFunc, null, obj, obj2);
+            var lck = new CallbackLock(multiObjectLockFactory).Lock(lockFunc, null, obj, obj2);
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
@@ -97,7 +99,7 @@ namespace Testing.Lock
                     callCount++;
                     return new ILockable[] {obj3, obj2};
                 };
-            var lck = new CallbackLock().Lock(lockFunc, null, obj);
+            var lck = new CallbackLock(multiObjectLockFactory).Lock(lockFunc, null, obj);
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();
@@ -129,7 +131,7 @@ namespace Testing.Lock
                     callCount++;
                     return new ILockable[] {obj2};
                 };
-            var lck = new CallbackLock().Lock(lockFunc, null, obj);
+            var lck = new CallbackLock(multiObjectLockFactory).Lock(lockFunc, null, obj);
 
             DefaultMultiObjectLock.IsLocked(obj).Should().BeTrue();
             DefaultMultiObjectLock.IsLocked(obj2).Should().BeTrue();

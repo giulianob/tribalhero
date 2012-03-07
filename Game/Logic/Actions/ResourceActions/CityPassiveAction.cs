@@ -14,7 +14,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class CityPassiveAction : ScheduledPassiveAction
+    public class CityPassiveAction : ScheduledPassiveAction
     {
 
         private delegate void Init(ICity city);

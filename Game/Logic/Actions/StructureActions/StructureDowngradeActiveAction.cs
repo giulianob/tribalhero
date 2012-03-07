@@ -15,7 +15,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class StructureDowngradeActiveAction : ScheduledActiveAction
+    public class StructureDowngradeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly uint structureId;

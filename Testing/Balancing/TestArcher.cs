@@ -10,7 +10,7 @@ namespace Testing.Balancing
     /// <summary>
     ///   Summary description for TroopProcedureTest
     /// </summary>
-    public class TestArcher : TestBase
+    public class TestArcher
     {
         [Fact(Skip = "For Anthony only")]
         public void Test10AcherDef10Swordsman()

@@ -51,8 +51,12 @@ namespace Game
             #endregion
 
             #region Locking
-            
-            Bind<ILocker>().ToMethod(c => new DefaultLocker(() => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()), () => new CallbackLock())).InSingletonScope();
+
+            Bind<ILocker>().ToMethod(c =>
+                {
+                    DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock());
+                    return new DefaultLocker(multiObjectLockFactory, () => new CallbackLock(multiObjectLockFactory));
+                }).InSingletonScope();
 
             #endregion
 

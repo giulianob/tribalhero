@@ -168,6 +168,7 @@
     <Compile Include="Comm\Thrift\Notification.cs" />
     <Compile Include="Comm\Thrift\PlayerUnreadCount.cs" />
     <Compile Include="Database\DbLoader.cs" />
+    <Compile Include="Database\DbLoaderActionFactory.cs" />
     <Compile Include="Database\Persistance.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />

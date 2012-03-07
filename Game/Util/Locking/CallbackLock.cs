@@ -10,16 +10,23 @@ namespace Game.Util.Locking
 {
     public class CallbackLock : IDisposable
     {
+        private readonly DefaultMultiObjectLock.Factory multiObjectLockFactory;
+
+        private IMultiObjectLock currentLock;
+
         #region Delegates
 
         public delegate ILockable[] CallbackLockHandler(object[] custom);
 
         public delegate CallbackLock Factory();
 
-        #endregion
+        #endregion        
 
-        private IMultiObjectLock currentLock;
-        
+        public CallbackLock(DefaultMultiObjectLock.Factory multiObjectLockFactory)
+        {
+            this.multiObjectLockFactory = multiObjectLockFactory;
+        }
+
         public CallbackLock Lock(CallbackLockHandler lockHandler, object[] lockHandlerParams, params ILockable[] baseLocks)
         {
             int count = 0;
@@ -34,14 +41,16 @@ namespace Game.Util.Locking
                 var toBeLocked = new List<ILockable>(baseLocks);
 
                 // Lock the base objects
-                using (Concurrency.Current.Lock(baseLocks))
+                using (var baseLock = multiObjectLockFactory())
                 {
+                    baseLock.Lock(baseLocks);
                     // Grab the list of objects we need to lock from the callback                    
                     toBeLocked.AddRange(lockHandler(lockHandlerParams));
                 }
 
                 // Lock all of the objects we believe should be locked
-                currentLock = Concurrency.Current.Lock(toBeLocked.ToArray());
+                currentLock = multiObjectLockFactory();
+                currentLock.Lock(toBeLocked.ToArray());
 
                 // Grab the current list of objects we need to lock from the callback
                 var newToBeLocked = new List<ILockable>(baseLocks);

@@ -79,7 +79,7 @@ namespace Game.Logic.Actions
             ICity city;
             if(!World.Current.TryGetObjects(cityId,out city)) return Error.ObjectNotFound;
 
-            // Make sure user is building road within city walls
+            // Make sure user is building road outsite city walls
             if (SimpleGameObject.TileDistance(city.X, city.Y, x, y) < city.Radius)
             {
                 return Error.NotWithinWalls;
@@ -115,13 +115,13 @@ namespace Game.Logic.Actions
             {
                 World.Current.LockRegion(x, y);
 
-                if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.GetTileType(x, y)))
+  /*              if (!Ioc.Kernel.Get<ObjectTypeFactory>().IsTileType("TileBuildable", World.Current.GetTileType(x, y)))
                 {
                     World.Current.UnlockRegion(x, y);
                     return;
-                }
+                }*/
 
-                World.Current.RoadManager.CreateRoad(x, y);
+                World.Current.SetTileType(x, y, type, true);
 
                 World.Current.UnlockRegion(x, y);
             }

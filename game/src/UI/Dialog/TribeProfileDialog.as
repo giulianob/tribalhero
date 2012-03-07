@@ -175,7 +175,7 @@
 		private function createAssignmentTab() : Container {
 			var btnCreate: JButton = new JButton("Create");
 			
-			var pnlFooter: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
+			var pnlFooter: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT));
 			pnlFooter.setConstraints("South");			
 			
 			// Set up tab
@@ -207,7 +207,7 @@
 			});
 
 			btnCreate.addActionListener(function(e: Event): void {
-				menu.show(btnCreate, 0, 0);
+				menu.show(btnCreate, 0, btnCreate.height);
 			});
 
 			new SimpleTooltip(btnCreate, "An assignment is an organized attack/defense used by the tribe to dispatch troops automatically at different times, so all of them can start the battle at the same time regardless of the distance/speed.");

@@ -254,6 +254,8 @@
     <Compile Include="Logic\Scheduler.cs" />
     <Compile Include="Logic\ThreadedScheduler.cs" />
     <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Map\CityTileManager.cs" />
+    <Compile Include="Map\TileManager.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />

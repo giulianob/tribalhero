@@ -9,14 +9,14 @@ using Xunit;
 
 namespace Testing.MapMath
 {
-    public class ForeachTest : TestBase
+    public class ForeachTest
     {
         [Fact]
         public void TestEven()
         {
             var validPoints = new List<Point>();
 
-            TileLocator.Current.ForeachObject(10,
+            new TileLocator().ForeachObject(10,
                                       10,
                                       2,
                                       true,
@@ -29,7 +29,7 @@ namespace Testing.MapMath
 
             var reversePoints = new List<Point>();
 
-            ReverseTileLocator.Current.ForeachObject(10,
+            new ReverseTileLocator().ForeachObject(10,
                                              10,
                                              2,
                                              true,
@@ -48,7 +48,7 @@ namespace Testing.MapMath
         {
             var validPoints = new List<Point>();
 
-            TileLocator.Current.ForeachObject(10,
+            new TileLocator().ForeachObject(10,
                                       11,
                                       2,
                                       true,
@@ -61,7 +61,7 @@ namespace Testing.MapMath
 
             var reversePoints = new List<Point>();
 
-            ReverseTileLocator.Current.ForeachObject(10,
+            new ReverseTileLocator().ForeachObject(10,
                                              11,
                                              2,
                                              true,

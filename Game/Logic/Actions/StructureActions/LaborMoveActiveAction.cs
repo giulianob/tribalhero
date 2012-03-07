@@ -15,7 +15,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class LaborMoveActiveAction : ScheduledActiveAction
+    public class LaborMoveActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly bool cityToStructure;

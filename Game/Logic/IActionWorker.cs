@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Setup;
-using Game.Util;
 
 namespace Game.Logic
 {
     public interface IActionWorker
     {
-        ListDictionary<uint, ActiveAction> ActiveActions { get; }
+        IDictionary<uint, ActiveAction> ActiveActions { get; }
 
-        ListDictionary<uint, PassiveAction> PassiveActions { get; }
+        IDictionary<uint, PassiveAction> PassiveActions { get; }
 
         NotificationManager Notifications { get; }
 

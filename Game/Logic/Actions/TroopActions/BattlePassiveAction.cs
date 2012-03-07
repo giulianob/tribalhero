@@ -20,7 +20,7 @@ using Persistance;
 
 namespace Game.Logic.Actions
 {
-    class BattlePassiveAction : ScheduledPassiveAction
+    public class BattlePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private uint destroyedHp;

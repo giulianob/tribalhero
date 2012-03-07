@@ -72,8 +72,8 @@ namespace Game.Comm.ProcessorCommands
                 session.CloseSession();
                 return;
             }
-
-            if (clientVersion < Config.client_min_version || clientRevision < Config.client_min_revision)
+            
+            if (clientVersion <= Config.client_min_version && clientRevision < Config.client_min_revision)
             {
                 ReplyError(session, packet, Error.ClientOldVersion);
                 session.CloseSession();
@@ -236,8 +236,7 @@ namespace Game.Comm.ProcessorCommands
                 session.Write(reply);
 
                 //Restart any city actions that may have been stopped due to inactivity
-                foreach (var city in
-                        player.GetCityList().Where(city => !city.Worker.PassiveActions.Exists(x => x.Type == ActionType.CityPassive)))
+                foreach (var city in player.GetCityList().Where(city => city.Worker.PassiveActions.Values.All(x => x.Type != ActionType.CityPassive)))
                     city.Worker.DoPassive(city, new CityPassiveAction(city.Id), false);
             }
         }

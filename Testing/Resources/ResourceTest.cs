@@ -10,7 +10,7 @@ namespace Testing.Resources
     /// <summary>
     ///   Summary description for LazyResourceTest
     /// </summary>
-    public class ResourceTest : TestBase
+    public class ResourceTest
     {
         /// <summary>
         ///   Tests main resource constructor

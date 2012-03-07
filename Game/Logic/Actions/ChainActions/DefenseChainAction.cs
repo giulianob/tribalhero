@@ -15,7 +15,7 @@ using Game.Util.Locking;
 
 namespace Game.Logic.Actions
 {
-    class DefenseChainAction : ChainAction
+    public class DefenseChainAction : ChainAction
     {
         private readonly uint cityId;
         private readonly byte stubId;

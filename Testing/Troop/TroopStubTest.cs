@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Testing.Troop
 {
-    public class TroopStubTest : TestBase
+    public class TroopStubTest
     {
         [Fact]
         public void TestUnitListsNoUnitsInStub()

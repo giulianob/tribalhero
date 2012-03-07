@@ -14,7 +14,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class ResourceSendActiveAction : ScheduledActiveAction
+    public class ResourceSendActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly Resource resource;

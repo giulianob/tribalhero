@@ -15,7 +15,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class ForestCampBuildActiveAction : ScheduledActiveAction
+    public class ForestCampBuildActiveAction : ScheduledActiveAction
     {
         private readonly ushort campType;
         private readonly uint cityId;

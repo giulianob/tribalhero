@@ -16,7 +16,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class ResourceBuyActiveAction : ScheduledActiveAction
+    public class ResourceBuyActiveAction : ScheduledActiveAction
     {
         private const int TRADE_SIZE = 100;
         private readonly uint cityId;

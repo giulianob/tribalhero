@@ -10,7 +10,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class TechnologyCreatePassiveAction : PassiveAction, IScriptable
+    public class TechnologyCreatePassiveAction : PassiveAction, IScriptable
     {
         private byte lvl;
         private IStructure obj;

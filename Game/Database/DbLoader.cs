@@ -186,7 +186,8 @@ namespace Game.Database
                                                            (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
                                                            DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
                                                            (uint)reader["dispatch_count"],
-                                                           (string)reader["description"]);
+                                                           (string)reader["description"],
+                                                           ((byte)reader["is_attack"])==1);
 
                     using (DbDataReader listReader = dbManager.SelectList(assignment))
                     {
@@ -583,7 +584,8 @@ namespace Game.Database
                                        TroopManager = city.Troops,
                                        TroopId = (byte)reader["id"],
                                        State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
-                                       DbPersisted = true
+                                       DbPersisted = true,
+                                       StationedRetreatCount = (ushort)reader["retreat_count"]
                                };
 
                     var formationMask = (ushort)reader["formations"];
@@ -603,7 +605,7 @@ namespace Game.Database
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
 
                     var stationedCityId = (uint)reader["stationed_city_id"];
-                    if (stationedCityId != 0)
+                    if (stationedCityId != 0) 
                         stationedTroops.Add(new {stub, stationedCityId}); 
                 }
             }
@@ -836,9 +838,9 @@ namespace Game.Database
                             ICity troopStubCity;
                             if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
                                 throw new Exception("City not found");
-                            ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
-                            if (troopStub == null)
+                            ITroopStub troopStub;
+                            if (!troopStubCity.Troops.TryGetStub((byte)listReader["troop_stub_id"], out troopStub))
                                 continue;
 
                             bm.ReportedTroops[troopStub] = (uint)listReader["combat_troop_id"];

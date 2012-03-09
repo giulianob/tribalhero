@@ -10,7 +10,6 @@ using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -18,6 +17,16 @@ namespace Game.Comm.ProcessorCommands
 {
     class TroopCommandsModule : CommandModule
     {
+        private readonly IActionFactory actionFactory;
+
+        private readonly StructureFactory structureFactory;
+
+        public TroopCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory)
+        {
+            this.actionFactory = actionFactory;
+            this.structureFactory = structureFactory;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.UnitTrain, TrainUnit);
@@ -189,7 +198,7 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, Error.Unexpected);
 
                 var upgradeAction = new UnitUpgradeActiveAction(cityId, objectId, type);
-                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
+                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, upgradeAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -232,7 +241,7 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, Error.Unexpected);
 
                 var trainAction = new UnitTrainActiveAction(cityId, objectId, type, count);
-                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
+                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(barrack), barrack, trainAction, barrack.Technologies);
                 if (ret != 0)
                     ReplyError(session, packet, ret);
                 else
@@ -285,12 +294,6 @@ namespace Game.Comm.ProcessorCommands
                 ICity targetCity = cities[targetCityId];
                 IStructure targetStructure;
 
-                if (city.Owner.PlayerId == targetCity.Owner.PlayerId)
-                {
-                    ReplyError(session, packet, Error.AttackSelf);
-                    return;
-                }
-
                 if (!targetCity.TryGetStructure(targetObjectId, out targetStructure))
                 {
                     ReplyError(session, packet, Error.ObjectStructureNotFound);
@@ -304,7 +307,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                var aa = new AttackChainAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
+                var aa = actionFactory.CreateAttackChainAction(cityId, stub.TroopId, targetCityId, targetObjectId, mode);
                 Error ret = city.Worker.DoPassive(city, aa, true);
                 if (ret != 0)
                 {
@@ -312,7 +315,9 @@ namespace Game.Comm.ProcessorCommands
                     ReplyError(session, packet, ret);
                 }
                 else
+                {
                     ReplySuccess(session, packet);
+                }
             }
         }
 

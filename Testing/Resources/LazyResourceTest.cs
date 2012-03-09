@@ -15,7 +15,7 @@ namespace Testing.Resources
     /// <summary>
     ///   Summary description for LazyResourceTest
     /// </summary>    
-    public class LazyResourceTest : TestBase, IDisposable
+    public class LazyResourceTest : IDisposable
     {
         private DateTime begin = DateTime.UtcNow;
 

@@ -12,7 +12,7 @@ namespace Testing.Resources
     /// <summary>
     ///   Summary description for LazyResourceTest
     /// </summary>    
-    public class AggressiveLazyResourceTest : TestBase, IDisposable
+    public class AggressiveLazyResourceTest : IDisposable
     {
         private DateTime begin = DateTime.UtcNow;
 

@@ -14,7 +14,7 @@ namespace Testing.Balancing
     /// <summary>
     ///   Summary description for TroopProcedureTest
     /// </summary>
-    public class TestOutnumber : TestBase
+    public class TestOutnumber
     {
         private const double ERROR_MARGIN = .15;
 

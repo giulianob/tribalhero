@@ -21,7 +21,7 @@ using Persistance;
 
 namespace Game.Logic.Actions
 {
-    class EngageAttackPassiveAction : PassiveAction
+    public class EngageAttackPassiveAction : PassiveAction
     {
         private readonly Resource bonus;
         private readonly uint cityId;

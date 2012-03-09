@@ -11,25 +11,8 @@ using Ninject;
 
 namespace Game.Map
 {
-    public class RoadManager
+    public class RoadManager : TileManager
     {
-        private void SendUpdate(Dictionary<ushort, List<TileUpdate>> updates)
-        {
-            foreach (var list in updates)
-            {
-                var packet = new Packet(Command.RegionSetTile);
-                packet.AddUInt16((ushort)list.Value.Count);
-                foreach (var update in list.Value)
-                {
-                    packet.AddUInt32(update.X);
-                    packet.AddUInt32(update.Y);
-                    packet.AddUInt16(update.TileType);
-                }
-
-                Global.Channel.Post("/WORLD/" + list.Key, packet);
-            }
-        }
-
         public void CreateRoad(uint x, uint y)
         {
             var tiles = new List<Location>(5) {new Location(x, y)};
@@ -205,25 +188,5 @@ namespace Game.Map
             return (tileId >= Config.road_start_tile_id && tileId <= Config.road_end_tile_id);
         }
 
-        #region Nested type: TileUpdate
-
-        /// <summary>
-        ///   Simple wrapper to keep track of tiles that were updated so we can send it in one shot to the client.
-        /// </summary>
-        private class TileUpdate
-        {
-            public TileUpdate(uint x, uint y, ushort tileType)
-            {
-                X = x;
-                Y = y;
-                TileType = tileType;
-            }
-
-            public uint X { get; set; }
-            public uint Y { get; set; }
-            public ushort TileType { get; set; }
-        }
-
-        #endregion
     }
 }

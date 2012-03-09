@@ -209,6 +209,7 @@
     <Compile Include="Logic\Actions\ChainActions\AttackChainAction.cs" />
     <Compile Include="Logic\Actions\ChainAction.cs" />
     <Compile Include="Logic\Actions\Miscellaneous\CityCreatePassiveAction.cs" />
+    <Compile Include="Logic\Actions\Miscellaneous\TileChangeActiveAction.cs" />
     <Compile Include="Logic\Actions\MovementActions\TroopMovePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\CityRadiusChangePassiveAction.cs" />
     <Compile Include="Logic\Actions\ResourceActions\ResourceGatherActiveAction.cs" />
@@ -254,6 +255,8 @@
     <Compile Include="Logic\Scheduler.cs" />
     <Compile Include="Logic\ThreadedScheduler.cs" />
     <Compile Include="Data\ICityRegionObject.cs" />
+    <Compile Include="Map\CityTileManager.cs" />
+    <Compile Include="Map\TileManager.cs" />
     <Compile Include="Map\IGameObjectLocator.cs" />
     <Compile Include="Map\Location.cs" />
     <Compile Include="Map\MapMath.cs" />

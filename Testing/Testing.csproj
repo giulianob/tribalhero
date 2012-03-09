@@ -69,6 +69,7 @@
     <Reference Include="FluentAssertions">
       <HintPath>..\Lib\fluentassertions\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\moq\Moq.dll</HintPath>
@@ -99,6 +100,7 @@
     <Compile Include="Battle\StatsModCalculator.cs" />
     <Compile Include="Channel\ChannelTest.cs" />
     <Compile Include="City\CityTest.cs" />
+    <Compile Include="Database\DbLoaderActionFactoryTest.cs" />
     <Compile Include="Formulas\CityValueTest.cs" />
     <Compile Include="Formulas\NewCityResourceTest.cs" />
     <Compile Include="Formulas\WeaponExportTest.cs" />
@@ -111,12 +113,10 @@
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\LazyResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestModule.cs" />
     <Compile Include="Tribe\AssignmentTest.cs" />
     <Compile Include="Troop\TroopStarveTest.cs" />
     <Compile Include="Troop\TroopProcedureTest.cs" />
     <Compile Include="Troop\TroopStubTest.cs" />
-    <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.Testing\Common.Testing.csproj">
@@ -167,9 +167,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Database\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

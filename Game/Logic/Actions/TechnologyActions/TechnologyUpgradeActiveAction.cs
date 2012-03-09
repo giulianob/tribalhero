@@ -15,7 +15,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class TechnologyUpgradeActiveAction : ScheduledActiveAction
+    public class TechnologyUpgradeActiveAction : ScheduledActiveAction
     {
         private uint cityId;
         private bool isSelfInit = false;

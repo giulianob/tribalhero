@@ -14,7 +14,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class StructureChangeActiveAction : ScheduledActiveAction
+    public class StructureChangeActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly byte lvl;

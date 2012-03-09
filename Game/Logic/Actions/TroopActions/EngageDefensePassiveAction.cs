@@ -14,7 +14,7 @@ using Game.Util;
 
 namespace Game.Logic.Actions
 {
-    class EngageDefensePassiveAction : PassiveAction
+    public class EngageDefensePassiveAction : PassiveAction
     {
         private readonly uint cityId;
         private readonly byte stubId;

@@ -13,11 +13,9 @@ using Game.Logic.Procedures;
 using Game.Map;
 using Game.Module;
 using Game.Setup;
-using Game.Util;
 using Game.Util.Locking;
 using Ninject;
 using Ninject.Extensions.Logging;
-using Ninject.Extensions.Logging.Log4net;
 using Persistance;
 using Thrift.Server;
 
@@ -38,16 +36,20 @@ namespace Game
         private readonly ILogger logger;
         private readonly IPolicyServer policyServer;
         private readonly TServer thriftServer;
+
+        private readonly DbLoader dbLoader;
+
         private readonly ITcpServer server;        
 
         public EngineState State { get; private set; }
 
-        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer, TServer thriftServer)
+        public Engine(ILogger logger, ITcpServer server, IPolicyServer policyServer, TServer thriftServer, DbLoader dbLoader)
         {
             this.logger = logger;
             this.server = server;
             this.policyServer = policyServer;
             this.thriftServer = thriftServer;
+            this.dbLoader = dbLoader;
         }
 
         public bool Start()
@@ -55,8 +57,7 @@ namespace Game
             if (!System.Diagnostics.Debugger.IsAttached)
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomainUnhandledException;
 
-            logger.Info(
-                        @"
+            logger.Info(@"
 _________ _______ _________ ______   _______  _       
 \__   __/(  ____ )\__   __/(  ___ \ (  ___  )( \      
    ) (   | (    )|   ) (   | (   ) )| (   ) || (      
@@ -120,7 +121,7 @@ _________ _______ _________ ______   _______  _
 #endif
 
             // Load database
-            if (!DbLoader.LoadFromDatabase(DbPersistance.Current))
+            if (!dbLoader.LoadFromDatabase())
             {
                 logger.Error("Failed to load database");
                 return false;

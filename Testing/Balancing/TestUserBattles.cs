@@ -13,7 +13,7 @@ namespace Testing.Balancing
     ///   Summary description for TroopProcedureTest
     /// </summary>
 
-    public class TestUserBattles : TestBase
+    public class TestUserBattles
     {
 
         [Fact(Skip = "For Anthony only")]

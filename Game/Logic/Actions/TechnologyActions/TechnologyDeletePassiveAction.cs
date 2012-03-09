@@ -9,7 +9,7 @@ using Game.Setup;
 
 namespace Game.Logic.Actions
 {
-    class TechnologyDeletePassiveAction : PassiveAction, IScriptable
+    public class TechnologyDeletePassiveAction : PassiveAction, IScriptable
     {
         private IStructure obj;
 

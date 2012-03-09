@@ -66,6 +66,8 @@ namespace Game.Battle
             ReinforceDefender += battleChannel.BattleReinforceDefender;
             ExitBattle += battleChannel.BattleExitBattle;
             EnterRound += battleChannel.BattleEnterRound;
+            WithdrawAttacker += battleChannel.BattleWithdrawAtacker;
+            WithdrawDefender += battleChannel.BattleWithdrawDefender;
         }
 
         public uint BattleId

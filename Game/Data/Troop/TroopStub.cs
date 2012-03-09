@@ -56,6 +56,7 @@ namespace Game.Data.Troop
 
         private TroopState state = TroopState.Idle;
         private ICity stationedCity;
+        private ushort stationedRetreatCount;
         private byte troopId;
         private ITroopObject troopObject;
         public TroopTemplate Template { get; private set; }
@@ -110,6 +111,19 @@ namespace Game.Data.Troop
             {
                 CheckUpdateMode();
                 stationedCity = value;
+            }
+        }
+
+        public ushort StationedRetreatCount
+        {
+            get
+            {
+                return stationedRetreatCount;
+            }
+            set
+            {
+                CheckUpdateMode();
+                stationedRetreatCount = value;
             }
         }
 
@@ -348,7 +362,8 @@ namespace Game.Data.Troop
                 return new[]
                        {
                                new DbColumn("stationed_city_id", stationedCity != null ? stationedCity.Id : 0, DbType.UInt32),
-                               new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("formations", GetFormationBits(), DbType.UInt16)
+                               new DbColumn("state", (byte)state, DbType.Byte), new DbColumn("formations", GetFormationBits(), DbType.UInt16),
+                               new DbColumn("retreat_count",stationedRetreatCount,DbType.UInt16)
                        };
             }
         }

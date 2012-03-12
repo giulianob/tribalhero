@@ -224,10 +224,11 @@ namespace Game.Logic
             var ignoreActionList = new List<GameAction>(ignoreActions);
 
             // Cancel Active actions
-            IEnumerable<ActiveAction> activeList;
+            IList<ActiveAction> activeList;
             using (Concurrency.Current.Lock(City))
             {
-                activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject);
+                // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
+                activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject).ToList();
             }
 
             foreach (var stub in activeList)
@@ -239,10 +240,11 @@ namespace Game.Logic
             }
 
             // Cancel Passive actions
-            IEnumerable<PassiveAction> passiveList;
+            IList<PassiveAction> passiveList;
             using (Concurrency.Current.Lock(City))
             {
-                passiveList = passive.Values.Where(action => action.WorkerObject == workerObject);
+                // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
+                passiveList = passive.Values.Where(action => action.WorkerObject == workerObject).ToList();
             }
 
             foreach (var stub in passiveList)

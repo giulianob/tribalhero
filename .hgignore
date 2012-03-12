@@ -19,3 +19,4 @@ syntax: glob
 vendors/ruckusing/logs/development.log
 .git/
 nbproject/
+.idea/

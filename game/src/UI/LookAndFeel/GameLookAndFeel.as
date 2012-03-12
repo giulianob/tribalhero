@@ -124,6 +124,12 @@
 			"TextField.font", new ASFontUIResource("Arial", 13, false),
 			"TextField.foreground", new ASColorUIResource(0xFFFFFF)
 			],			
+			
+			"Class.Console.combobox", [
+			"ComboBox.font", new ASFontUIResource("Arial", 13, false),
+			"ComboBox.foreground", new ASColorUIResource(0xFFFFFF),
+			"ComboBox.mideground", new ASColorUIResource(0xc0c0c0)
+			],
 
 			"Class.Message.preview", [
 			"TextField.foreground", new ASColorUIResource(0x707070),

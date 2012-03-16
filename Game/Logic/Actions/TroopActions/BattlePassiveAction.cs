@@ -188,7 +188,15 @@ namespace Game.Logic.Actions
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
                 return;
-
+            if (target.TroopStub.StationedCity == city && target.TroopStub.TotalCount <= target.TroopStub.StationedRetreatCount)
+            {
+                city.Battle.RemoveFromDefense(new List<ITroopStub> {target.TroopStub}, ReportState.Retreating);
+                ITroopStub stub = target.TroopStub;
+                if (!Procedure.Current.TroopObjectCreateFromStation(stub, stub.StationedCity.X, stub.StationedCity.Y)) return;
+                var ra = new RetreatChainAction(stub.City.Id, stub.TroopId);
+                Error ret = stub.City.Worker.DoPassive(stub.City, ra, true);
+                if (ret != 0) Procedure.Current.TroopObjectStation(stub.TroopObject, city);
+            }
         }
 
         private void BattleUnitRemoved(CombatObject obj) {

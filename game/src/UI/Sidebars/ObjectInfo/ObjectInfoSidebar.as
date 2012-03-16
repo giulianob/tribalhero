@@ -356,7 +356,7 @@ package src.UI.Sidebars.ObjectInfo {
 					continue;
 				}				
 				
-				if (!city.validateAction(button.parentAction, gameObject) || !button.validateButton())
+				if (!button.validateButton() || !city.validateAction(button.parentAction, gameObject))
 					button.disable();
 			}
 		}

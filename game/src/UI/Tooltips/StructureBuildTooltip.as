@@ -86,8 +86,9 @@
 					pnlRequired.append(errorLabelMaker(RequirementFormula.getMessage(parentObj, req)));
 				}
 			}
-			else
-			pnlRequired.setVisible(false);
+			else {
+				pnlRequired.setVisible(false);
+			}
 
 			pnlResources.removeAll();
 			pnlResources.append(new ResourcesPanel(Formula.buildCost(city, structPrototype), city));

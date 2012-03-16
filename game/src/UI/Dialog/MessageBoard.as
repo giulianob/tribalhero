@@ -12,6 +12,7 @@ package src.UI.Dialog
 	import src.UI.Components.*;
 	import src.UI.Components.TableCells.*;
 	import src.UI.LookAndFeel.*;
+	import src.Util.StringHelper;
 
 	public class MessageBoard extends GameJPanel
 	{
@@ -246,13 +247,14 @@ package src.UI.Dialog
 			lblPlayer.setConstraints("West");
 			pnlHeader.appendAll(lblPlayer, pnlTools, lblCreated);
 			
-			var message: MultilineLabel = new MultilineLabel(postData.message);
+			var message: MultilineLabel = new MultilineLabel();			
 			GameLookAndFeel.changeClass(message, "Message");			
 			message.setColumns(50);
+			message.setHtmlText(StringHelper.linkify(postData.message));
 			message.pack();			
 			
 			var scrollMessage: JScrollPane = new JScrollPane(message);						
-			scrollMessage.setPreferredHeight(Math.min(500, message.getHeight()));
+			scrollMessage.setPreferredHeight(Math.min(500, message.getHeight() + 20));
 			
 			var pnlPostTools: JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT));
 			

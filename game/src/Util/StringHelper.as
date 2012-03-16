@@ -1,5 +1,7 @@
 package src.Util {
 	import flash.xml.*;
+	import mx.utils.StringUtil;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class StringHelper {
 		public function StringHelper() {
@@ -13,6 +15,23 @@ package src.Util {
 		public static function htmlEscape(str:String):String
 		{
 			return XML(new XMLNode(XMLNodeType.TEXT_NODE, str)).toXMLString();
+		}
+		
+		public static function linkify(str:String, escape: Boolean = true):String
+		{
+			// http://stackoverflow.com/questions/247479/jquery-text-to-link-script
+			
+			if (escape) {
+				str = htmlEscape(str);
+			}
+			
+			var url1: RegExp = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/gi;
+			var url2: RegExp = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/gi;		
+			
+			str = str.replace(url1, '$1<font color="'+GameLookAndFeel.LINK_COLOR+'"><a href="http://$2" target="_blank">$2</a></font>$3');
+			str = str.replace(url2, '$1<font color="'+GameLookAndFeel.LINK_COLOR+'"><a href="$2" target="_blank">$2</a></font>$5');
+			
+			return str;
 		}
 
 		public static function replace(str:String, oldSubStr:String, newSubStr:String):String {

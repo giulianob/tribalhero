@@ -2,6 +2,7 @@ package src.UI.Dialog{
 
 	import src.Constants;
 	import src.Global;
+	import src.UI.Components.TribeLabel;
 	import src.UI.GameJPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
@@ -12,7 +13,7 @@ package src.UI.Dialog{
 
 	public class TribeInviteRequestDialog extends GameJPanel {
 
-		private var lblName:JLabel;
+		private var lblName:TribeLabel;
 		private var lblNameTitle:JLabel;		
 		private var btnAccept:JButton;
 		private var btnDecline:JButton;
@@ -23,7 +24,7 @@ package src.UI.Dialog{
 		public function TribeInviteRequestDialog(onAccept: Function) {
 			createUI();
 
-			Global.map.usernames.tribes.setLabelUsername(Constants.tribeInviteId, lblName);
+
 			
 			var self: TribeInviteRequestDialog = this;
 			btnAccept.addActionListener(function():void {				
@@ -68,8 +69,7 @@ package src.UI.Dialog{
 			lblNameTitle.setText("Tribe Name");
 			lblNameTitle.setHorizontalAlignment(AsWingConstants.RIGHT);
 
-			lblName = new JLabel();
-			lblName.setText("Loading...");
+			lblName = new TribeLabel(Constants.tribeInviteId);
 			GameLookAndFeel.changeClass(lblName, "Form.label");
 			lblName.setHorizontalAlignment(AsWingConstants.LEFT);
 

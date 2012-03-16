@@ -4,6 +4,7 @@
 	import src.Comm.*;
 	import src.Global;
 	import src.Map.MapComm;
+	import src.UI.Dialog.TribeProfileDialog;
 
 	public class MessagingComm
 	{
@@ -17,10 +18,62 @@
 			
 			unreadLoader = new GameURLLoader();
 			unreadLoader.addEventListener(Event.COMPLETE, onReceiveUnread);
-		}
+			
+			session.addEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
+		}		
 		
 		public function dispose() : void {			
+			session.removeEventListener(Commands.CHANNEL_NOTIFICATION, onChannelReceive);
 		}
+		
+		public function onChannelReceive(e: PacketEvent):void
+		{
+			switch(e.packet.cmd)
+			{				
+				case Commands.BATTLE_REPORT_UNREAD:
+					onReportUnreadUpdate(e.packet);
+				break;
+				case Commands.MESSAGE_UNREAD:
+					onMessageUnreadUpdate(e.packet);
+				break;
+				case Commands.FORUM_UNREAD:
+					onForumUnreadUpdate(e.packet);
+				break;
+				case Commands.REFRESH_UNREAD:
+					onRefreshUnread(e.packet);
+				break;
+			}
+		}				
+				
+		/**
+		 * Forces client to refresh unread.
+		 * This is only used right now for system notifications since server doesnt know 
+		 * how many messages the client should display so it just tells it to refresh.
+		 * @param	packet
+		 */
+		private function onRefreshUnread(packet: Packet): void 
+		{
+			refreshUnreadCounts();
+		}
+		
+		private function onReportUnreadUpdate(packet: Packet): void
+		{
+			Global.gameContainer.setUnreadBattleReportCount(packet.readInt());
+		}
+		
+		private function onMessageUnreadUpdate(packet: Packet): void
+		{
+			Global.gameContainer.setUnreadMessageCount(packet.readInt());
+		}
+		
+		private function onForumUnreadUpdate(packet: Packet): void
+		{
+			Global.gameContainer.setUnreadForumIcon(true);
+			var tribeProfileDialog: TribeProfileDialog = Global.gameContainer.findDialog(TribeProfileDialog); 
+			if (tribeProfileDialog) {
+				tribeProfileDialog.ReceiveNewMessage();
+			}
+		}		
 		
 		public function refreshUnreadCounts(): void {
 			try {

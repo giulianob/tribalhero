@@ -1,23 +1,19 @@
 ﻿package src.UI.Components
 {
-	import org.aswing.JPanel;
 	import org.aswing.*;
 	import org.aswing.border.*;
-	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
-	import src.Constants;
-	import src.Global;
-	import src.Map.City;
-	import src.Objects.Effects.Formula;
-	import src.Objects.Factories.UnitFactory;
-	import src.Objects.Prototypes.UnitPrototype;
-	import src.Objects.Troop.TroopTemplate;
-	import src.Objects.Troop.TroopTemplateManager;
-	import src.Objects.Troop.UnitTemplate;
-	import src.Objects.Troop.UnitTemplateManager;
-	import src.UI.LookAndFeel.GameLookAndFeel;
-	import src.Util.BinaryList.BinaryList;
+	import org.aswing.geom.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.Effects.*;
+	import src.Objects.Factories.*;
+	import src.Objects.Prototypes.*;
+	import src.Objects.Troop.*;
+	import src.UI.LookAndFeel.*;
+	import src.Util.BinaryList.*;
+	import src.Util.StringHelper;
 
 	public class UnitStatBox extends JPanel
 	{
@@ -28,6 +24,7 @@
 
 		private var lblArmor: JLabel;
 		private var lblWeapon: JLabel;
+		private var lblSplash: JLabel;
 		private var lblHp: JLabel;
 		private var lblCarry: JLabel;
 		private var lblUnitClass: JLabel;
@@ -39,6 +36,7 @@
 		private var lblUpkeep: JLabel;
 
 		private var lblArmorTitle: JLabel;
+		private var lblSplashTitle: JLabel;
 		private var lblWeaponTitle: JLabel;
 		private var lblHpTitle: JLabel;
 		private var lblCarryTitle: JLabel;
@@ -91,6 +89,7 @@
 			lblAttack.setText(attack.toString());
 			lblCarry.setText(carry.toString());		
 			lblSpeed.setText(Formula.moveTimeString(speed));
+			lblSplash.setText(splash.toString() + StringHelper.makePlural(splash, " hit", " hits"));
 			lblRange.setText(Constants.stealthRangeNames[range]);
 			lblStealth.setText(Constants.stealthRangeNames[stealth]);
 			lblHp.setText(hp.toString());
@@ -113,6 +112,7 @@
 			lblStealthTitle = titleLabelMaker("Position");
 			lblRangeTitle = titleLabelMaker("Range");
 			lblSpeedTitle = titleLabelMaker("Speed");
+			lblSplashTitle = titleLabelMaker("Splash");
 			lblUpkeepTitle = titleLabelMaker("Upkeep");
 
 			lblCarry = valueLabelMaker();
@@ -120,10 +120,11 @@
 			lblAttack = valueLabelMaker();
 			lblStealth = valueLabelMaker();
 			lblRange = valueLabelMaker();
+			lblSplash = valueLabelMaker();
 			lblSpeed = valueLabelMaker();
 			lblUpkeep = valueLabelMaker(new AssetIcon(new ICON_CROP()));
 
-			appendAll(lblHpTitle, lblHp, new JLabel(), new JLabel());
+			appendAll(lblHpTitle, lblHp, lblSplashTitle, lblSplash);
 			appendAll(lblAttackTitle, lblAttack, lblCarryTitle, lblCarry);
 			appendAll(lblRangeTitle, lblRange, lblStealthTitle, lblStealth);			
 			appendAll(lblSpeedTitle, lblSpeed, lblUpkeepTitle, lblUpkeep);

@@ -44,36 +44,8 @@
 				case Commands.CHAT:
 					onChatMessage(e.packet);
 				break;				
-				case Commands.BATTLE_REPORT_UNREAD:
-					onReportUnreadUpdate(e.packet);
-				break;
-				case Commands.MESSAGE_UNREAD:
-					onMessageUnreadUpdate(e.packet);
-				break;
-				case Commands.FORUM_UNREAD:
-					onForumUnreadUpdate(e.packet);
-				break;
 			}
-		}
-		
-		private function onReportUnreadUpdate(packet: Packet): void
-		{
-			Global.gameContainer.setUnreadBattleReportCount(packet.readInt());
-		}
-		
-		private function onMessageUnreadUpdate(packet: Packet): void
-		{
-			Global.gameContainer.setUnreadMessageCount(packet.readInt());
-		}
-		
-		private function onForumUnreadUpdate(packet: Packet): void
-		{
-			Global.gameContainer.setUnreadForumIcon(true);
-			var tribeProfileDialog: TribeProfileDialog = Global.gameContainer.findDialog(TribeProfileDialog); 
-			if (tribeProfileDialog) {
-				tribeProfileDialog.ReceiveNewMessage();
-			}
-		}
+		}				
 		
 		private function onMessageBox(packet: Packet): void
 		{

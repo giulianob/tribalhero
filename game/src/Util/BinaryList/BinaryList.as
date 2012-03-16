@@ -126,7 +126,7 @@
 			return Util.binarySearch(list, compareFunc, val);
 		}
 
-		public function getRange(val: * ): *
+		public function getRange(val: * ): Array
 		{
 			var idxs: Array = Util.binarySearchRange(list, compareFunc, val);
 
@@ -136,6 +136,21 @@
 				objs.push(list[idx]);
 
 			return objs;
+		}
+		
+		public function removeRange(val: * ): void
+		{
+			var idxs: Array = Util.binarySearchRange(list, compareFunc, val);
+			
+			if (!idxs || idxs.length == 0) {
+				return;
+			}
+			
+			// Sort the array so the smallest number is at the index 0 then splice the array so it removes
+			// the items in place
+			idxs.sort(Array.NUMERIC);
+			
+			list.splice(idxs[0], idxs.length);
 		}
 	}
 

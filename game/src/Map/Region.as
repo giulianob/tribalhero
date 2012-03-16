@@ -1,20 +1,14 @@
 ﻿package src.Map
 {
 	import flash.display.*;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.text.TextField;
-	import src.Constants;
-	import src.Global;
-	import src.Map.Camera;
-	import src.Map.Map;
-	import src.Objects.Factories.ObjectFactory;
-	import src.Objects.GameObject;
-	import src.Objects.NewCityPlaceholder;
-	import src.Objects.SimpleGameObject;
-	import src.Objects.SimpleObject;
+	import flash.geom.*;
+	import flash.text.*;
+	import src.*;
+	import src.Map.*;
+	import src.Objects.*;
+	import src.Objects.Factories.*;
+	import src.Util.*;
 	import src.Util.BinaryList.*;
-	import src.Util.Util;
 
 	public class Region extends Sprite
 	{
@@ -87,6 +81,9 @@
 		{			
 			if (Constants.debug >= 2)
 				Util.log("Creating region id: " + id + " " + globalX + "," + globalY);
+			
+			
+			clearAllPlaceholders();
 			
 			for (var a:int = 0; a < Math.ceil(Constants.regionW / Constants.regionBitmapW); a++)
 			{
@@ -198,10 +195,11 @@
 			var coord: Point = MapUtil.getScreenCoord(x, y);
 			var objs: Array = placeHolders.getRange([coord.x, coord.y]);
 			
-			for each (var obj: SimpleObject in objs)
-				map.objContainer.removeObject(obj);
+			for each (var obj: SimpleObject in objs) {
+				map.objContainer.removeObject(obj);							
+			}
 			
-			placeHolders.clear();
+			placeHolders.removeRange([coord.x, coord.y]);
 		}
 		
 		private function clearAllPlaceholders() : void
@@ -216,6 +214,11 @@
 		{	
 			if (tileId == Constants.cityStartTile) {
 				var coord: Point = MapUtil.getScreenCoord(x, y);
+				
+				if (getObjectsAt(coord.x, coord.y).length > 0) {
+					return;
+				}
+				
 				var obj: NewCityPlaceholder = ObjectFactory.getNewCityPlaceholderInstance();
 				obj.setX(coord.x);
 				obj.setY(coord.y);

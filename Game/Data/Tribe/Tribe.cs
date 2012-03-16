@@ -324,7 +324,7 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        public Error CreateAssignment(ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string desc, out int id)
+        public Error CreateAssignment(ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string desc, bool isAttack, out int id)
         {
             id = 0;
 
@@ -360,11 +360,11 @@ namespace Game.Data.Tribe
             }
 
             // Create assignment
-            Assignment assignment = Ioc.Kernel.Get<IAssignmentFactory>().CreateAssignment(this, x, y, targetCity, mode, time, stub, desc);
+            Assignment assignment = Ioc.Kernel.Get<IAssignmentFactory>().CreateAssignment(this, x, y, targetCity, mode, time, desc, isAttack);
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
-            assignment.Reschedule();
+            assignment.Add(stub);
 
             SendUpdate();
             return Error.Ok;

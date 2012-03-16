@@ -9,7 +9,7 @@ namespace Game.Data.Tribe
 { 
     public interface IAssignmentFactory
     {
-        Assignment CreateAssignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, string description);
-        Assignment CreateAssignmentFromDb(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, string description);
+        Assignment CreateAssignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, string description, bool isAttack);
+        Assignment CreateAssignmentFromDb(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, string description, bool isAttack);
     }
 }

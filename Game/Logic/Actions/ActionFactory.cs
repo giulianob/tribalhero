@@ -55,7 +55,7 @@ namespace Game.Logic.Actions
 
         ForestCampHarvestPassiveAction CreateForestCampHarvestPassiveAction(uint cityId, uint forestId);
 
-        DefenseChainAction CreateDefenseChainAction(uint cityId, byte stubId, uint targetCityId);
+        DefenseChainAction CreateDefenseChainAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode);
 
         TroopMovePassiveAction CreateTroopMovePassiveAction(uint cityId, uint troopObjectId, uint x, uint y, bool isReturningHome, bool isAttacking);
 

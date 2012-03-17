@@ -213,6 +213,14 @@ namespace Game.Battle
             }
         }
 
+        public bool IsAttacker
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override Resource GroupLoot
         {
             get

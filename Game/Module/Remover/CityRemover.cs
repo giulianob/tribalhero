@@ -84,12 +84,8 @@ namespace Game.Module
                             ToArray();
         }
 
-        private static Error RemoveForeignTroop(ICity city, ITroopStub stub)
+        private static Error RemoveForeignTroop(ITroopStub stub)
         {
-            if (!Procedure.Current.TroopObjectCreateFromStation(stub, city.X, city.Y))
-            {
-                return Error.Unexpected;
-            }
             var ra = new RetreatChainAction(stub.City.Id, stub.TroopId);
             return stub.City.Worker.DoPassive(stub.City, ra, true);
         }
@@ -121,7 +117,7 @@ namespace Game.Module
 
                     foreach (var stub in stationedTroops)
                     {
-                        if (RemoveForeignTroop(city, stub) != Error.Ok)
+                        if (RemoveForeignTroop(stub) != Error.Ok)
                             Global.Logger.Error(String.Format("removeForeignTroop failed! cityid[{0}] stubid[{1}]", city.Id, stub.StationedTroopId));
                     }
                 }

@@ -12,10 +12,25 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopObjectCreateFromStation(ITroopStub stub, uint x, uint y)
+        /// <summary>
+        /// Creates a troop object from the specified stationed troop and removes the stub from being stationed.
+        /// NOTE: This will fail if the stub is in a state besides Stationed (e.g. troop is in battle)
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool TroopObjectCreateFromStation(ITroopStub stub)
         {
-            if (!stub.StationedCity.Troops.RemoveStationed(stub.StationedTroopId))
+            if (stub.State != TroopState.Stationed)
+            {
                 return false;
+            }
+
+            uint x = stub.StationedCity.X;
+            uint y = stub.StationedCity.Y;
+
+            if (!stub.StationedCity.Troops.RemoveStationed(stub.StationedTroopId))
+            {
+                return false;
+            }
 
             var troop = new TroopObject(stub) {X = x, Y = y + 1};
 

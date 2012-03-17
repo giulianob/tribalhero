@@ -69,6 +69,6 @@ namespace Game.Logic.Actions
 
         CityPassiveAction CreateCityPassiveAction(uint cityId);
 
-        CityPassiveAction CreateRetreatChainAction(uint cityId, byte stubId);
+        RetreatChainAction CreateRetreatChainAction(uint cityId, byte stubId);
     }
 }

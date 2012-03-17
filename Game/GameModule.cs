@@ -109,12 +109,7 @@ namespace Game
 
             Bind<IBattleReport>().To<BattleReport>();
 
-            Bind<BattleManager.Factory>().ToMethod(ctx => delegate(ICity city)
-                {
-                    var bm = Kernel.Get<BattleManager>(new ConstructorArgument("owner", city));
-                    bm.BattleReport.Battle = bm;
-                    return bm;
-                });
+            Bind<IBattleManagerFactory>().To<BattleManagerFactory>();
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
             

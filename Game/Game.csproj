@@ -109,9 +109,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Battle\BattleClass.cs" />
+    <Compile Include="Battle\BattleManagerFactory.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
     <Compile Include="Battle\CombatObjectFactory.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
+    <Compile Include="Battle\IBattleManagerFactory.cs" />
     <Compile Include="Battle\IBattleReport.cs" />
     <Compile Include="Battle\IBattleReportWriter.cs" />
     <Compile Include="Battle\ICombatUnitFactory.cs" />

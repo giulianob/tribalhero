@@ -23,6 +23,10 @@ namespace Game.Logic.Actions
 {
     public class EngageAttackPassiveAction : PassiveAction
     {
+        private readonly IActionFactory actionFactory;
+
+        private readonly IBattleManagerFactory battleManagerFactory;
+
         private readonly Resource bonus;
         private readonly uint cityId;
         private readonly AttackMode mode;
@@ -31,17 +35,24 @@ namespace Game.Logic.Actions
         private int originalUnitCount;
         private int remainingUnitCount;
 
-        public EngageAttackPassiveAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode)
+        public EngageAttackPassiveAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode, IActionFactory actionFactory, IBattleManagerFactory battleManagerFactory)
         {
             this.cityId = cityId;
             this.stubId = stubId;
             this.targetCityId = targetCityId;
             this.mode = mode;
+            this.actionFactory = actionFactory;
+            this.battleManagerFactory = battleManagerFactory;
+
             bonus = new Resource();
         }
 
-        public EngageAttackPassiveAction(uint id, bool isVisible, IDictionary<string, string> properties) : base(id, isVisible)
+        public EngageAttackPassiveAction(uint id, bool isVisible, IDictionary<string, string> properties, IActionFactory actionFactory, IBattleManagerFactory battleManagerFactory)
+            : base(id, isVisible)
         {
+            this.actionFactory = actionFactory;
+            this.battleManagerFactory = battleManagerFactory;
+
             cityId = uint.Parse(properties["troop_city_id"]);
             stubId = byte.Parse(properties["troop_id"]);
 
@@ -134,35 +145,42 @@ namespace Game.Logic.Actions
             var list = new List<ITroopStub> {stub};
             originalUnitCount = stub.TotalCount;
 
+            // If battle already exists, then we just join it in
             if (targetCity.Battle != null)
             {
-                RegisterBattleListeners(targetCity);
-
                 Procedure.Current.AddLocalToBattle(targetCity.Battle, targetCity, ReportState.Reinforced);
 
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 
                 targetCity.Battle.AddToAttack(list);
             }
+            // otherwise, the battle has to be created
             else
             {
-                targetCity.Battle = Ioc.Kernel.Get<BattleManager.Factory>()(targetCity);
+                targetCity.Battle = battleManagerFactory.CreateBattleManager(targetCity);
 
-                RegisterBattleListeners(targetCity);
-
-                var ba = new BattlePassiveAction(targetCityId);
+                var ba = actionFactory.CreateBattlePassiveAction(targetCityId);
 
                 targetCity.Battle.AddToLocal(GetStructuresInRadius(targetCity, stub.TroopObject));
 
                 targetCity.Battle.AddToAttack(list);
-                targetCity.Worker.DoPassive(targetCity, ba, false);
+
+                Error result = targetCity.Worker.DoPassive(targetCity, ba, false);
+                if (result != Error.Ok)
+                {
+                    throw new Exception(string.Format("Failed to start a battle due to error {0}", result));
+                }
             }
 
+            RegisterBattleListeners(targetCity);
+
+            // Set the attacking troop object to the correct state and stamina
             stub.TroopObject.BeginUpdate();
             stub.TroopObject.State = GameObjectState.BattleState(targetCity.Id);
             stub.TroopObject.Stats.Stamina = BattleFormulas.Current.GetStamina(stub, targetCity);
             stub.TroopObject.EndUpdate();
 
+            // Set the troop stub to the correct state
             stub.TroopObject.Stub.BeginUpdate();
             stub.TroopObject.Stub.State = TroopState.Battle;
             stub.TroopObject.Stub.EndUpdate();
@@ -205,7 +223,7 @@ namespace Game.Logic.Actions
                 throw new ArgumentException();
 
             // If this combat object is ours and all the units are dead, then remove it
-            if (!(co is AttackCombatUnit) || ((AttackCombatUnit)co).TroopStub != stub || ((AttackCombatUnit)co).TroopStub.TotalCount > 0)
+            if (!(co is AttackCombatUnit) || co.TroopStub != stub || co.TroopStub.TotalCount > 0)
                 return;
 
             DeregisterBattleListeners(targetCity);
@@ -280,7 +298,7 @@ namespace Game.Logic.Actions
                 if (target.ClassType == BattleClass.Structure && target.IsDead)
                 {
                     // if our troop knocked down a building, we get the bonus.
-                    if (((AttackCombatUnit)source).TroopStub == stub)
+                    if (source.TroopStub == stub)
                     {
                         bonus.Add(Ioc.Kernel.Get<StructureFactory>().GetCost(target.Type, target.Lvl)/2);
 

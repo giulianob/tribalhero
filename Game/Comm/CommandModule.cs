@@ -27,5 +27,17 @@ namespace Game.Comm
 
             return reply;
         }
+
+        protected void ReplyWithResult(Session session, Packet packet, Error error)
+        {
+            if (error == Error.Ok)
+            {
+                ReplyError(session, packet, error);
+            }
+            else
+            {
+                ReplySuccess(session, packet);
+            }
+        }
     }
 }

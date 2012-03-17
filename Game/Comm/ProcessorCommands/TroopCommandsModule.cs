@@ -423,28 +423,14 @@ namespace Game.Comm.ProcessorCommands
             {
                 ITroopStub stub;
 
-                if (!city.Troops.TryGetStub(troopId, out stub) || stub.StationedCity == null)
+                if (!city.Troops.TryGetStub(troopId, out stub))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
 
                 //Make sure that the person sending the retreat is either the guy who owns the troop or the guy who owns the stationed city
-                if (city.Owner != session.Player && stub.StationedCity.Owner != session.Player)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
-
-                if (stub.StationedCity.Battle != null)
-                {
-                    ReplyError(session, packet, Error.Unexpected);
-                    return;
-                }
-
-                stationedCity = stub.StationedCity;
-
-                if (!Procedure.Current.TroopObjectCreateFromStation(stub, stub.StationedCity.X, stub.StationedCity.Y))
+                if (city.Owner != session.Player && stub.StationedCity != null && stub.StationedCity.Owner != session.Player)
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -453,13 +439,7 @@ namespace Game.Comm.ProcessorCommands
                 var ra = new RetreatChainAction(cityId, troopId);
 
                 Error ret = city.Worker.DoPassive(city, ra, true);
-                if (ret != 0)
-                {
-                    Procedure.Current.TroopObjectStation(stub.TroopObject, stationedCity);
-                    ReplyError(session, packet, ret);
-                }
-                else
-                    ReplySuccess(session, packet);
+                ReplyWithResult(session, packet, ret);
             }
         }
     }

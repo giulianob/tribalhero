@@ -30,10 +30,13 @@ namespace Game.Database
 
         private readonly DbLoaderActionFactory actionFactory;
 
-        public DbLoader(IDbManager dbManager, DbLoaderActionFactory actionFactory)
+        private readonly IBattleManagerFactory battleManagerFactory;
+
+        public DbLoader(IDbManager dbManager, DbLoaderActionFactory actionFactory, IBattleManagerFactory battleManagerFactory)
         {
             this.dbManager = dbManager;
             this.actionFactory = actionFactory;
+            this.battleManagerFactory = battleManagerFactory;
         }
 
         public bool LoadFromDatabase()
@@ -720,7 +723,7 @@ namespace Game.Database
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    var bm = Ioc.Kernel.Get<BattleManager.Factory>()(city);
+                    var bm = battleManagerFactory.CreateBattleManager(city);
                     city.Battle = bm;
                     bm.DbPersisted = true;
                     bm.BattleId = (uint)reader["battle_id"];

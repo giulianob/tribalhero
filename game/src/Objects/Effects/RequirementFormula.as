@@ -9,10 +9,6 @@
 	import src.Util.StringHelper;
 	import src.Util.Util;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	public class RequirementFormula {
 
 		private static var methodLookup: Array = new Array(
@@ -255,7 +251,7 @@
 			return "Less than " + value + " defense points" + (city.defensePoint >= value ? ". You currently have " + city.defensePoint + " defense points." : "");
 
 			if (comparison == "gt")
-			return "More than " + value + " defense points" + (city.defensePoint <= value ? ". You currently have " + city.defensePoint + " defense points." : "");
+			return (value + 1) + " or more defense points" + (city.defensePoint <= value ? ". You currently have " + city.defensePoint + " defense points." : "");
 
 			return "";
 		}
@@ -289,7 +285,7 @@
 			return "Less than " + value + " player defense points" + (totalDefensePoints >= value ? ". You currently have " + totalDefensePoints + " player defense points." : "");
 
 			if (comparison == "gt")
-			return "More than " + value + " player defense points" + (totalDefensePoints <= value ? ". You currently have " + totalDefensePoints + " player defense points. You receive defense points when players attack you." : "");
+			return (value + 1) + " or more player defense points" + (totalDefensePoints <= value ? ". You currently have " + totalDefensePoints + " player defense points. You receive defense points when players attack you." : "");
 
 			return "";
 		}
@@ -320,7 +316,7 @@
 			return "Less than " + value + " attack points" + (city.attackPoint >= value ? ". You currently have " + city.attackPoint + " attack points." : "");
 
 			if (comparison == "gt")
-			return "More than " + value + " attack points" + (city.attackPoint <= value ? ". You currently have " + city.attackPoint + " attack points. Attack other players to receive attack points." : "");
+			return (value + 1) + " or more attack points" + (city.attackPoint <= value ? ". You currently have " + city.attackPoint + " attack points. Attack other players to receive attack points." : "");
 
 			return "";
 		}
@@ -353,7 +349,7 @@
 			return "Less than " + value + " player attack points" + (totalAttackPoints >= value ? ". You currently have " + totalAttackPoints + " player attack points." : "");
 
 			if (comparison == "gt")
-			return "More than " + value + " player attack points" + (totalAttackPoints <= value ? ". You currently have " + totalAttackPoints + " player attack points. Attack other players to receive attack points." : "");
+			return (value + 1) + " or more player attack points" + (totalAttackPoints <= value ? ". You currently have " + totalAttackPoints + " player attack points. Attack other players to receive attack points." : "");
 
 			return "";
 		}

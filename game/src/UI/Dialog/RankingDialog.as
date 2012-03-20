@@ -83,12 +83,12 @@ package src.UI.Dialog{
 			new SimpleTooltip(cityLootRanking, "Sort by total loot stolen");
 			new SimpleTooltip(cityInfluenceRanking, "Sort by influence points");
 			new SimpleTooltip(playerAttackRanking, "Sort by attack points");
-			new SimpleTooltip(playerDefenseRanking, "Sort by attack points");
+			new SimpleTooltip(playerDefenseRanking, "Sort by defense points");
 			new SimpleTooltip(playerLootRanking, "Sort by total loot stolen");
 			new SimpleTooltip(playerInfluenceRanking, "Sort by influence points");
 			new SimpleTooltip(tribeLevelRanking, "Sort by level");
 			new SimpleTooltip(tribeAttackRanking, "Sort by attack points");
-			new SimpleTooltip(tribeDefenseRanking, "Sort by defenese points");
+			new SimpleTooltip(tribeDefenseRanking, "Sort by defense points");
 			
 			// Handle different buttons being pressed
 			cityAttackRanking.addActionListener(onChangeRanking);

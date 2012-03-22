@@ -32,27 +32,34 @@
 			return new JSONDecoder(loader.data).getValue();
 		}
 		
+		private function addParameter(request: Object, key: String, value: *): Object {
+			if (value is Array) {
+				for (var i: int = 0; i < (value as Array).length; i++) {
+					request += escape(key) + "[]=" + escape(value[i]) + "&";
+				}
+			}
+			else {
+				request += escape(key) + "=" + escape(value) + "&";
+			}
+			
+			return request;
+		}
+		
 		public function load(path: String, params: Array, includeLoginInfo: Boolean = true, showLoadingMessage: Boolean = true) : void {			
 			var request: URLRequest = new URLRequest("http://" + Constants.hostname + path);			
 			var variables :URLVariables = new URLVariables();
 			
+			request.data = "";
+			
 			if (includeLoginInfo) {
-				variables.sessionId = Constants.sessionId;
-				variables.playerId = Constants.playerId;
+				request.data = addParameter(request.data, "sessionId", Constants.sessionId);
+				request.data = addParameter(request.data, "playerId", Constants.playerId);
 			}
 
 			for each (var obj: * in params) {
-				if (obj.value is Array) {
-					for (var i: int = 0; i < (obj.value as Array).length; i++) {
-						variables[obj.key + "[]"] = obj.value[i];
-					}
-				}
-				else {
-					variables[obj.key] = obj.value;
-				}
+				request.data = addParameter(request.data, obj.key, obj.value);
 			}
 			
-			request.data = variables;			
 			request.method = URLRequestMethod.POST;
 			
 			if (showLoadingMessage)

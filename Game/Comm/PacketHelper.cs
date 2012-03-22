@@ -431,27 +431,5 @@ namespace Game.Comm
 
             return stub;
         }
-        public static TroopStub ReadStub(Packet packet, int formationCount)
-        {
-            var stub = new TroopStub();
-
-            for(int i=0; i<formationCount; ++i) {
-                FormationType formationType = (FormationType)packet.GetByte();
-                byte unitCount = packet.GetByte();
-
-                stub.AddFormation(formationType);
-
-                for (int u = 0; u < unitCount; ++u)
-                {
-                    ushort type = packet.GetUInt16();
-                    ushort count = packet.GetUInt16();
-
-                    stub.AddUnit(formationType, type, count);
-                }
-            }
-
-            return stub;
-        }
-
     }
 }

@@ -19,6 +19,13 @@ namespace Game.Comm.ProcessorCommands
 {
     class TribeCommandsModule : CommandModule
     {
+        private readonly ITribeFactory tribeFactory;
+
+        public TribeCommandsModule(ITribeFactory tribeFactory)
+        {
+            this.tribeFactory = tribeFactory;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.TribeNameGet, GetName);
@@ -251,7 +258,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                ITribe tribe = new Tribe(session.Player, name);
+                ITribe tribe = tribeFactory.CreateTribe(session.Player, name);
                 Global.Tribes.Add(tribe.Id, tribe);
                 DbPersistance.Current.Save(tribe);
 

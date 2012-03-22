@@ -50,6 +50,12 @@ namespace Game
 
             #endregion
 
+            #region Tribe Objects
+
+            Bind<ITribe>().To<Tribe>();
+            
+            #endregion
+
             #region Locking
 
             Bind<ILocker>().ToMethod(c =>
@@ -169,6 +175,7 @@ namespace Game
             Bind<ICombatListFactory>().ToFactory();
             Bind<IAssignmentFactory>().ToFactory();
             Bind<IActionFactory>().ToFactory();
+            Bind<ITribeFactory>().ToFactory();
 
             #endregion
         }

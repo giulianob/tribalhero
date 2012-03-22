@@ -32,11 +32,14 @@ namespace Game.Database
 
         private readonly IBattleManagerFactory battleManagerFactory;
 
-        public DbLoader(IDbManager dbManager, DbLoaderActionFactory actionFactory, IBattleManagerFactory battleManagerFactory)
+        private readonly ITribeFactory tribeFactory;
+
+        public DbLoader(IDbManager dbManager, DbLoaderActionFactory actionFactory, IBattleManagerFactory battleManagerFactory, ITribeFactory tribeFactory)
         {
             this.dbManager = dbManager;
             this.actionFactory = actionFactory;
             this.battleManagerFactory = battleManagerFactory;
+            this.tribeFactory = tribeFactory;
         }
 
         public bool LoadFromDatabase()
@@ -136,13 +139,15 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var resource = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
-                    var tribe = new Tribe(World.Current.Players[(uint)reader["player_id"]],
-                                          (string)reader["name"],
-                                          (string)reader["desc"],
-                                          (byte)reader["level"],
-                                          (int)reader["attack_point"],
-                                          (int)reader["defense_point"],
-                                          resource) {DbPersisted = true};
+                    var tribe = tribeFactory.CreateTribe(World.Current.Players[(uint)reader["player_id"]],
+                                                         (string)reader["name"],
+                                                         (string)reader["desc"],
+                                                         (byte)reader["level"],
+                                                         (int)reader["attack_point"],
+                                                         (int)reader["defense_point"],
+                                                         resource);
+                    tribe.DbPersisted = true;
+
                     Global.Tribes.Add(tribe.Id, tribe);
                 }
             }
@@ -171,7 +176,7 @@ namespace Game.Database
 
             IAssignmentFactory assignmentFactory = Ioc.Kernel.Get<IAssignmentFactory>();
 
-            Global.Logger.Info("Loading assignements...");
+            Global.Logger.Info("Loading assignments...");
             using (var reader = dbManager.Select(Assignment.DB_TABLE))
             {
                 while (reader.Read())

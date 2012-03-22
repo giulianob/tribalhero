@@ -1,5 +1,8 @@
 #region
 
+using System.Collections.Generic;
+using System.Linq;
+
 using Game.Data;
 using Game.Data.Stats;
 using Game.Data.Troop;
@@ -12,12 +15,16 @@ namespace Game.Logic.Procedures
 {
     public partial class Procedure
     {
-        public virtual bool TroopStubCreate(ICity city, ITroopStub stub, TroopState initialState = TroopState.Idle) {
-            if (!RemoveFromNormal(city.DefaultTroop, stub))
+        public virtual bool TroopStubCreate(ICity city, ITroopStub stub, TroopState initialState = TroopState.Idle, params FormationType[] formations) {
+            if (!RemoveFromNormal(city.DefaultTroop, stub, formations))
+            {
                 return false;
+            }
 
             stub.State = initialState;
             city.Troops.Add(stub);
+
+            dbManager.Save(stub);
             
             return true;
         }
@@ -57,29 +64,30 @@ namespace Game.Logic.Procedures
             return true;
         }
 
-        private bool RemoveFromNormal(ITroopStub source, ITroopStub unitsToRemove)
+        private bool RemoveFromNormal(ITroopStub source, IEnumerable<Formation> unitsToRemove, params FormationType[] formations)
         {
             if (!source.HasFormation(FormationType.Normal))
+            {
                 return false;
+            }
 
-            var totalUnits = unitsToRemove.ToUnitList();
+            var acceptableUnits = unitsToRemove.Where(formation => formations == null || formations.Length == 0 || formations.Contains(formation.Type)).ToList();
 
             // Make sure there are enough units
-            foreach (var unit in totalUnits)
+            foreach (var unit in acceptableUnits.SelectMany(formation => formation))
             {
                 ushort count;
-                if (!source[FormationType.Normal].TryGetValue(unit.Type, out count) || count < unit.Count)
+                if (!source[FormationType.Normal].TryGetValue(unit.Key, out count) || count < unit.Value)
+                {
                     return false;
+                }
             }
 
             // Remove them, shouldnt fail since we've already checked
             source.BeginUpdate();
-            foreach (var formation in unitsToRemove)
+            foreach (var unit in acceptableUnits.SelectMany(formation => formation))
             {
-                foreach (var unit in formation)
-                {
-                    source[FormationType.Normal].Remove(unit.Key, unit.Value);
-                }
+                source[FormationType.Normal].Remove(unit.Key, unit.Value);
             }
             source.EndUpdate();
 

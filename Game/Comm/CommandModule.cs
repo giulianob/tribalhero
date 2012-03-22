@@ -32,11 +32,11 @@ namespace Game.Comm
         {
             if (error == Error.Ok)
             {
-                ReplyError(session, packet, error);
+                ReplySuccess(session, packet);                
             }
             else
             {
-                ReplySuccess(session, packet);
+                ReplyError(session, packet, error);
             }
         }
     }

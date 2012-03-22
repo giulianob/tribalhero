@@ -2,6 +2,8 @@
 
 using Game.Data.Troop;
 using Game.Logic.Procedures;
+using Moq;
+using Persistance;
 using Xunit;
 
 #endregion
@@ -26,10 +28,12 @@ namespace Testing.Troop
         [Fact]
         public void TestMoveFromBattleToNormal()
         {
+            Mock<IDbManager> dbManager = new Mock<IDbManager>();
+
             stub.AddUnit(FormationType.Normal, 101, 10);
 
-            new Procedure().MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
-            new Procedure().MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
+            new Procedure(dbManager.Object).MoveUnitFormation(stub, FormationType.Normal, FormationType.InBattle);
+            new Procedure(dbManager.Object).MoveUnitFormation(stub, FormationType.InBattle, FormationType.Normal);
 
             Assert.True(stub[FormationType.Normal].Type == FormationType.Normal);
             Assert.True(stub[FormationType.InBattle].Type == FormationType.InBattle);

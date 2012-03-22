@@ -23,6 +23,13 @@ namespace Game.Comm
 {
     class TribeCommandLineModule : CommandLineModule
     {
+        private readonly ITribeFactory tribeFactory;
+
+        public TribeCommandLineModule(ITribeFactory tribeFactory)
+        {
+            this.tribeFactory = tribeFactory;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("TribeInfo", CmdTribeInfo, true);
@@ -139,7 +146,7 @@ namespace Game.Comm
 
                 if (Global.Tribes.ContainsKey(player.PlayerId)) return "Tribe already exists!";
 
-                ITribe tribe = new Tribe(player, tribeName);
+                ITribe tribe = tribeFactory.CreateTribe(player, tribeName);
 
                 Global.Tribes.Add(tribe.Id, tribe);
                 DbPersistance.Current.Save(tribe);

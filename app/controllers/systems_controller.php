@@ -21,12 +21,29 @@ class SystemsController extends AppController {
         $Player = & ClassRegistry::init('Player');
 
         $onlinePlayers = $Player->find('all', array(
-                    'contains' => array(),
-                    'conditions' => array('Player.online' => true)
+            'contains' => array(),
+            'conditions' => array('Player.online' => true)
                 ));
 
         $this->set('onlinePlayers', $onlinePlayers);
         $this->set('variables', $variables);
+    }
+
+    function admin_pachube() {
+        $SystemVariable = & ClassRegistry::init('SystemVariable');
+
+        $variables = $SystemVariable->find('all');
+
+        $data = array('version' => '1.0.0', 'datastreams' => array());
+
+        foreach ($variables as $variable) {
+            if (!is_numeric($variable['SystemVariable']['value'])) continue;
+            $data['datastreams'][] = array('id' => $variable['SystemVariable']['name'], 'current_value' => intval($variable['SystemVariable']['value']));
+        }        
+        
+        $this->layout = null;
+        $this->set(compact('data'));
+        $this->render('/elements/to_json');
     }
 
     function admin_clear_cache() {
@@ -43,14 +60,14 @@ class SystemsController extends AppController {
         $TroopStubList = & ClassRegistry::init('TroopStubList');
 
         $stats = $TroopStubList->find('all', array(
-                    'link' => array(
-                    ),
-                    'fields' => array(
-                        'type',
-                        'SUM(`count`) as count',
-                    ),
-                    'group' => array('TroopStubList.type'),
-                    'order' => array('TroopStubList.type ASC'),
+            'link' => array(
+            ),
+            'fields' => array(
+                'type',
+                'SUM(`count`) as count',
+            ),
+            'group' => array('TroopStubList.type'),
+            'order' => array('TroopStubList.type ASC'),
                 ));
 
         $this->set('stats', $stats);
@@ -58,15 +75,15 @@ class SystemsController extends AppController {
         // Top player by troop size        
 
         $troopSizeStats = $TroopStubList->find('all', array(
-                    'link' => array(
-                        'City' => array(
-                            'fields' => array('City.name')
-                        )
-                    ),
-                    'order' => array('troop_count' => 'desc'),
-                    'fields' => array('SUM(count) as troop_count'),
-                    'group' => array('TroopStubList.city_id'),
-                    'limit' => 50
+            'link' => array(
+                'City' => array(
+                    'fields' => array('City.name')
+                )
+            ),
+            'order' => array('troop_count' => 'desc'),
+            'fields' => array('SUM(count) as troop_count'),
+            'group' => array('TroopStubList.city_id'),
+            'limit' => 50
                 ));
 
         $this->set('troopSizeStats', $troopSizeStats);
@@ -75,10 +92,10 @@ class SystemsController extends AppController {
         $City = & ClassRegistry::init('City');
 
         $resourceStats = $City->find('all', array(
-                    'link' => array(),
-                    'order' => array('resource_total' => 'desc'),
-                    'fields' => array('name', 'gold', 'wood', 'crop', 'iron', 'labor', '(gold+wood+crop+iron+labor) as resource_total'),
-                    'limit' => 50
+            'link' => array(),
+            'order' => array('resource_total' => 'desc'),
+            'fields' => array('name', 'gold', 'wood', 'crop', 'iron', 'labor', '(gold+wood+crop+iron+labor) as resource_total'),
+            'limit' => 50
                 ));
 
         $this->set('resourceStats', $resourceStats);

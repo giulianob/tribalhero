@@ -155,6 +155,8 @@ namespace Game.Comm
         BattleEnded = 705,
         BattleSkipped = 706,
         BattleNewRound = 707,
+        BattleWithdrawAttacker = 708,
+        BattleWithdrawDefender = 709,
 
         #endregion
 

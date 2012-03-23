@@ -16,7 +16,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class TroopMovePassiveAction : ScheduledPassiveAction
+    public class TroopMovePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private readonly Boolean isReturningHome;
@@ -26,7 +26,7 @@ namespace Game.Logic.Actions
         private int distanceRemaining;
         private uint nextX;
         private uint nextY;
-        private int moveTime;
+        private double moveTime;
 
         // non-persist variable
         private Boolean isAttacking;
@@ -52,7 +52,7 @@ namespace Game.Logic.Actions
             nextY = uint.Parse(properties["next_y"]);
             distanceRemaining = int.Parse(properties["distance_remaining"]);
             isReturningHome = Boolean.Parse(properties["returning_home"]);
-            moveTime = int.Parse(properties["move_time"]);
+            moveTime = double.Parse(properties["move_time"]);
         }
 
         public override ActionType Type
@@ -128,13 +128,13 @@ namespace Game.Logic.Actions
             distanceRemaining = troopObj.TileDistance(x, y);
 
 
-            var moveTimeTotal = Formula.Current.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
+            double moveTimeTotal = Formula.Current.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 
-            moveTime = Config.battle_instant_move ? 0 : moveTime = moveTimeTotal/distanceRemaining;
+            moveTime = Config.battle_instant_move ? 0 : moveTimeTotal/distanceRemaining;
             
             beginTime = DateTime.UtcNow;
             endTime = DateTime.UtcNow.AddSeconds(moveTimeTotal);
-            nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false));
+            nextTime = DateTime.UtcNow.AddSeconds(moveTime);
 
             troopObj.Stub.BeginUpdate();
             troopObj.Stub.State = !isReturningHome ? TroopState.Moving : TroopState.ReturningHome;
@@ -202,7 +202,7 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                nextTime = DateTime.UtcNow.AddSeconds(CalculateTime(moveTime, false));
+                nextTime = DateTime.UtcNow.AddSeconds(moveTime);
                 StateChange(ActionState.Rescheduled);
             }
         }

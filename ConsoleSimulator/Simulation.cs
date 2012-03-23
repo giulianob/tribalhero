@@ -31,7 +31,7 @@ namespace ConsoleSimulator
             CurrentRound = 0;
             TurnIntervalInSecond = 0;
 
-            bm = Ioc.Kernel.Get<BattleManager.Factory>()(Defender.City);
+            bm = Ioc.Kernel.Get<IBattleManagerFactory>().CreateBattleManager(Defender.City);
             bm.BattleReport.Battle = bm;
             bv = new BattleViewer(bm);
             using (Concurrency.Current.Lock(Defender.Local)) {

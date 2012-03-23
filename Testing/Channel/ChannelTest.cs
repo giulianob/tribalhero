@@ -13,7 +13,7 @@ namespace Testing.Channel
     /// <summary>
     ///   Summary description for ChannelTest
     /// </summary>    
-    public class ChannelTest : TestBase
+    public class ChannelTest
     {
         private readonly Packet msg1 = new Packet();
         private readonly Packet msg2 = new Packet();

@@ -52,7 +52,7 @@ namespace Game.Logic
                 outNextFire = nextFire;
 
                 lastScheduleSize = schedulerSize;
-                lastProbe = DateTime.UtcNow;
+                lastProbe = SystemClock.Now;
                 actionsFired = 0;
             }
         }
@@ -67,7 +67,7 @@ namespace Game.Logic
             else
             {
                 Global.Logger.Debug(String.Format("Next schedule in {0} milliseconds.", ms));
-                nextFire = DateTime.UtcNow.AddMilliseconds(ms);
+                nextFire = SystemClock.Now.AddMilliseconds(ms);
             }
 
             timer.Change(ms, Timeout.Infinite);
@@ -207,7 +207,7 @@ namespace Game.Logic
                 return;
             }
 
-            TimeSpan ts = schedules[0].Time.Subtract(DateTime.UtcNow);
+            TimeSpan ts = schedules[0].Time.Subtract(SystemClock.Now);
             long ms = Math.Max(0, (long)ts.TotalMilliseconds);
             SetTimer(ms);
         }

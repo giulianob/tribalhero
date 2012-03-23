@@ -50,9 +50,19 @@ namespace Game
 
             #endregion
 
-            #region Locking
+            #region Tribe Objects
+
+            Bind<ITribe>().To<Tribe>();
             
-            Bind<ILocker>().ToMethod(c => new DefaultLocker(() => new TransactionalMultiObjectLock(new DefaultMultiObjectLock()), () => new CallbackLock())).InSingletonScope();
+            #endregion
+
+            #region Locking
+
+            Bind<ILocker>().ToMethod(c =>
+                {
+                    DefaultMultiObjectLock.Factory multiObjectLockFactory = () => new TransactionalMultiObjectLock(new DefaultMultiObjectLock());
+                    return new DefaultLocker(multiObjectLockFactory, () => new CallbackLock(multiObjectLockFactory));
+                }).InSingletonScope();
 
             #endregion
 
@@ -105,12 +115,7 @@ namespace Game
 
             Bind<IBattleReport>().To<BattleReport>();
 
-            Bind<BattleManager.Factory>().ToMethod(ctx => delegate(ICity city)
-                {
-                    var bm = Kernel.Get<BattleManager>(new ConstructorArgument("owner", city));
-                    bm.BattleReport.Battle = bm;
-                    return bm;
-                });
+            Bind<IBattleManagerFactory>().To<BattleManagerFactory>();
 
             Bind<IBattleReportWriter>().To<SqlBattleReportWriter>();
             
@@ -170,6 +175,7 @@ namespace Game
             Bind<ICombatListFactory>().ToFactory();
             Bind<IAssignmentFactory>().ToFactory();
             Bind<IActionFactory>().ToFactory();
+            Bind<ITribeFactory>().ToFactory();
 
             #endregion
         }

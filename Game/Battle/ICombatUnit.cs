@@ -14,5 +14,7 @@ namespace Game.Battle
         ITroopStub TroopStub { get; }
 
         FormationType Formation { get; }
+
+        bool IsAttacker { get; }
     }
 }

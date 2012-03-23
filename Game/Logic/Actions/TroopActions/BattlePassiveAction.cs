@@ -20,38 +20,66 @@ using Persistance;
 
 namespace Game.Logic.Actions
 {
-    class BattlePassiveAction : ScheduledPassiveAction
+    public class BattlePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
+
+        private readonly IActionFactory actionFactory;
+
+        private readonly Procedure procedure;
+
+        private readonly ILocker locker;
+
+        private readonly IGameObjectLocator gameObjectLocator;
+
+        private readonly IDbManager dbManager;
+
+        private readonly Formula formula;
+
         private uint destroyedHp;
 
-        public BattlePassiveAction(uint cityId)
+        public BattlePassiveAction(uint cityId, IActionFactory actionFactory, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator, IDbManager dbManager, Formula formula)
         {
             this.cityId = cityId;
+            this.actionFactory = actionFactory;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.dbManager = dbManager;
+            this.formula = formula;
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
-                throw new Exception();
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
+            {
+                throw new Exception("Did not find city that was supposed to be having a battle");
+            }
 
             city.Battle.ActionAttacked += BattleActionAttacked;
             city.Battle.UnitRemoved += BattleUnitRemoved;
         }
 
-        public BattlePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, IDictionary<string, string> properties)
+        public BattlePassiveAction(uint id, DateTime beginTime, DateTime nextTime, DateTime endTime, bool isVisible, string nlsDescription, IDictionary<string, string> properties, IActionFactory actionFactory, Procedure procedure, ILocker locker, IGameObjectLocator gameObjectLocator, IDbManager dbManager, Formula formula)
                 : base(id, beginTime, nextTime, endTime, isVisible, nlsDescription)
         {
+            this.actionFactory = actionFactory;
+            this.procedure = procedure;
+            this.locker = locker;
+            this.gameObjectLocator = gameObjectLocator;
+            this.dbManager = dbManager;
+            this.formula = formula;
+
             cityId = uint.Parse(properties["city_id"]);
             destroyedHp = uint.Parse(properties["destroyed_hp"]);
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
+            {
                 throw new Exception();
+            }
 
             city.Battle.ActionAttacked += BattleActionAttacked;
             city.Battle.UnitRemoved += BattleUnitRemoved;
         }
-
-
 
         public override ActionType Type
         {
@@ -72,71 +100,71 @@ namespace Game.Logic.Actions
         public override void Callback(object custom)
         {
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
+            {
                 throw new Exception("City is missing");
+            }
 
             CallbackLock.CallbackLockHandler lockHandler = delegate
                 {
                     var toBeLocked = new List<ILockable>();
                     toBeLocked.AddRange(city.Battle.LockList);
-                    toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City).Cast<ILockable>());
+                    toBeLocked.AddRange(city.Troops.StationedHere().Select(stub => stub.City));
                     return toBeLocked.ToArray();
                 };
 
-            using (Concurrency.Current.Lock(lockHandler, null, city))
+            using (locker.Lock(lockHandler, null, city))
             {
-                if (!city.Battle.ExecuteTurn())
+                if (city.Battle.ExecuteTurn())
                 {
-                    city.Battle.ActionAttacked -= BattleActionAttacked;
-                    city.Battle.UnitRemoved -= BattleUnitRemoved;
-                    DbPersistance.Current.Delete(city.Battle);
-                    city.Battle = null;
-
-                    city.DefaultTroop.BeginUpdate();
-                    city.DefaultTroop.Template.ClearStats();
-                    Procedure.Current.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
-                    city.DefaultTroop.EndUpdate();
-
-                    //Copy troop stubs from city since the foreach loop below will modify it during the loop
-                    var stubsCopy = new List<ITroopStub>(city.Troops);
-
-                    foreach (var stub in stubsCopy)
-                    {
-                        //only set back the state to the local troop or the ones stationed in this city
-                        if (stub != city.DefaultTroop && stub.StationedCity != city)
-                            continue;
-
-                        if (stub.StationedCity == city && stub.TotalCount == 0)
-                        {
-                            city.Troops.RemoveStationed(stub.StationedTroopId);
-                            stub.City.Troops.Remove(stub.TroopId);
-                            continue;
-                        }
-
-                        stub.BeginUpdate();
-                        switch(stub.State)
-                        {
-                            case TroopState.BattleStationed:
-                                stub.State = TroopState.Stationed;
-                                break;
-                            case TroopState.Battle:
-                                stub.State = TroopState.Idle;
-                                break;
-                        }
-                        stub.EndUpdate();
-                    }
-					
-                    if(destroyedHp>0)                    
-                        Procedure.Current.SenseOfUrgency(city, destroyedHp);                    
-					
-                    StateChange(ActionState.Completed);
-                }
-                else
-                {
-                    DbPersistance.Current.Save(city.Battle);
-                    endTime = DateTime.UtcNow.AddSeconds(Formula.Current.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
+                    // Battle continues, just save it and reschedule
+                    dbManager.Save(city.Battle);
+                    endTime = SystemClock.Now.AddSeconds(formula.GetBattleInterval(city.Battle.Defender.Count + city.Battle.Attacker.Count));
                     StateChange(ActionState.Fired);
+                    return;
                 }
+
+                // Battle has ended
+                // Delete the battle
+                city.Battle.ActionAttacked -= BattleActionAttacked;
+                city.Battle.UnitRemoved -= BattleUnitRemoved;
+                dbManager.Delete(city.Battle);
+                city.Battle = null;
+
+                // Move the default troop back into normal and clear its temporary battle stats
+                city.DefaultTroop.BeginUpdate();
+                city.DefaultTroop.Template.ClearStats();
+                procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
+                city.DefaultTroop.EndUpdate();
+
+                // Get a COPY of the stubs that are stationed in the town since the loop below will modify city.Troops
+                var stationedTroops = city.Troops.StationedHere().Where(stub => stub.State == TroopState.BattleStationed).ToList();
+
+                // Go through each stationed troop and either remove them from the city if they died
+                // or set their states back to normal
+                foreach (var stub in stationedTroops)
+                {
+                    // Check if stub has died, if so, remove it completely from both cities
+                    if (stub.TotalCount == 0)
+                    {
+                        city.Troops.RemoveStationed(stub.StationedTroopId);
+                        stub.City.Troops.Remove(stub.TroopId);
+                        continue;
+                    }
+
+                    // Set the stationed stub back to just TroopState.Stationed
+                    stub.BeginUpdate();
+                    stub.State = TroopState.Stationed;
+                    stub.EndUpdate();
+                }
+
+                // Handle SenseOfUrgency technology
+                if (destroyedHp > 0)
+                {
+                    procedure.SenseOfUrgency(city, destroyedHp);
+                }
+
+                StateChange(ActionState.Completed);
             }
         }
 
@@ -148,22 +176,21 @@ namespace Game.Logic.Actions
         public override Error Execute()
         {
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
+            {
                 return Error.ObjectNotFound;
+            }
 
-            DbPersistance.Current.Save(city.Battle);
+            dbManager.Save(city.Battle);
 
             //Add local troop
-            Procedure.Current.AddLocalToBattle(city.Battle, city, ReportState.Entering);
+            procedure.AddLocalToBattle(city.Battle, city, ReportState.Entering);
 
             var list = new List<ITroopStub>();
 
             //Add reinforcement
-            foreach (var stub in city.Troops)
+            foreach (var stub in city.Troops.Where(stub => stub != city.DefaultTroop && stub.State == TroopState.Stationed && stub.StationedCity == city))
             {
-                if (stub == city.DefaultTroop || stub.State != TroopState.Stationed || stub.StationedCity != city)
-                    continue; //skip if troop is the default troop or isn't stationed here
-
                 stub.BeginUpdate();
                 stub.State = TroopState.BattleStationed;
                 stub.EndUpdate();
@@ -172,23 +199,37 @@ namespace Game.Logic.Actions
             }
 
             city.Battle.AddToDefense(list);
-            beginTime = DateTime.UtcNow;
-            endTime = DateTime.UtcNow;
+            beginTime = SystemClock.Now;
+            endTime = SystemClock.Now;
 
             return Error.Ok;
         }
 
         private void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
         {
-            var cu = target as DefenseCombatUnit;
-
-            if (cu == null)
-                return;
+            var combatUnit = target as ICombatUnit;
 
             ICity city;
-            if (!World.Current.TryGetObjects(cityId, out city))
+            if (!gameObjectLocator.TryGetObjects(cityId, out city))
+            {
                 return;
+            }
 
+            // Handle sending stationed troops back if they are below the set threshold
+            if (combatUnit != null && !combatUnit.IsAttacker && target.TroopStub.StationedCity == city && target.TroopStub.TotalCount > 0 && target.TroopStub.TotalCount <= target.TroopStub.StationedRetreatCount)
+            {
+                ITroopStub stub = combatUnit.TroopStub;
+
+                // Remove the object from the battle
+                city.Battle.RemoveFromDefense(new List<ITroopStub> {combatUnit.TroopStub}, ReportState.Retreating);                
+                stub.BeginUpdate();
+                stub.State = TroopState.Stationed;
+                stub.EndUpdate();
+
+                // Send the defender back to their city but restation them if there's a problem
+                var retreatChainAction = actionFactory.CreateRetreatChainAction(stub.City.Id, stub.TroopId);
+                stub.City.Worker.DoPassive(stub.City, retreatChainAction, true);
+            }
         }
 
         private void BattleUnitRemoved(CombatObject obj) {

@@ -379,6 +379,7 @@ namespace Game.Comm
             packet.AddByte((byte)assignment.AttackMode);
             packet.AddUInt32(assignment.DispatchCount);
             packet.AddString(assignment.Description);
+            packet.AddByte((byte)(assignment.IsAttack?1:0));
             packet.AddInt32(assignment.TroopCount);
             foreach (var assignmentTroop in (IEnumerable<Assignment.AssignmentTroop>)assignment)
             {

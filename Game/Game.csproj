@@ -109,9 +109,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Battle\BattleClass.cs" />
+    <Compile Include="Battle\BattleManagerFactory.cs" />
     <Compile Include="Battle\CombatListFactory.cs" />
     <Compile Include="Battle\CombatObjectFactory.cs" />
     <Compile Include="Battle\IBattleManager.cs" />
+    <Compile Include="Battle\IBattleManagerFactory.cs" />
     <Compile Include="Battle\IBattleReport.cs" />
     <Compile Include="Battle\IBattleReportWriter.cs" />
     <Compile Include="Battle\ICombatUnitFactory.cs" />
@@ -168,6 +170,7 @@
     <Compile Include="Comm\Thrift\Notification.cs" />
     <Compile Include="Comm\Thrift\PlayerUnreadCount.cs" />
     <Compile Include="Database\DbLoader.cs" />
+    <Compile Include="Database\DbLoaderActionFactory.cs" />
     <Compile Include="Database\Persistance.cs" />
     <Compile Include="Data\City.cs" />
     <Compile Include="Comm\Processor.cs" />
@@ -189,6 +192,7 @@
     <Compile Include="Data\Tribe\Assignment.cs" />
     <Compile Include="Data\Tribe\IAssignmentFactory.cs" />
     <Compile Include="Data\Tribe\ITribe.cs" />
+    <Compile Include="Data\Tribe\ITribeFactory.cs" />
     <Compile Include="Data\Tribe\ITribesman.cs" />
     <Compile Include="Data\Tribe\Tribe.cs" />
     <Compile Include="Data\Tribe\Tribesman.cs" />
@@ -379,7 +383,6 @@
     <Compile Include="Setup\SystemVariable.cs" />
     <Compile Include="Util\DataTypeSerializer.cs" />
     <Compile Include="Util\LargeIdGenerator.cs" />
-    <Compile Include="Util\ListDictionary.cs" />
     <Compile Include="Util\SmallIdGenerator.cs" />
     <Compile Include="Util\SystemClock.cs" />
   </ItemGroup>

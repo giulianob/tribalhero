@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Data.Troop;
@@ -25,7 +26,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TribeAssignmentJoin, Join);
         }
 
-        private void Create(Session session, Packet packet) {
+        public void Create(Session session, Packet packet) {
             uint cityId;
             uint targetCityId;
             uint targetObjectId;
@@ -33,6 +34,7 @@ namespace Game.Comm.ProcessorCommands
             DateTime time;
             TroopStub stub;
             string description;
+            bool isAttack;
             try
             {
                 mode = (AttackMode)packet.GetByte();
@@ -40,7 +42,8 @@ namespace Game.Comm.ProcessorCommands
                 targetCityId = packet.GetUInt32();
                 targetObjectId = packet.GetUInt32();
                 time = DateTime.UtcNow.AddSeconds(packet.GetInt32());
-                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
+                isAttack = packet.GetByte() == 1;
+                stub = PacketHelper.ReadStub(packet, isAttack?FormationType.Attack:FormationType.Defense);
                 description = packet.GetString();
             }
             catch (Exception) {
@@ -104,28 +107,23 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                // Create troop stub                                
-                if (!Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment)) {
-                    ReplyError(session, packet, Error.TroopChanged);
-                    return;
-                }
-
-                DbPersistance.Current.Save(stub);
 
                 int id;
-                Error ret = session.Player.Tribesman.Tribe.CreateAssignment(stub, targetStructure.X, targetStructure.Y, targetCity, time, mode, description, out id);
-                if (ret != 0) {
-                    Procedure.Current.TroopStubDelete(city, stub);
-                    ReplyError(session, packet, ret);
-                }
-                else
-                {
-                    ReplySuccess(session, packet);
-                }
+                Error ret = session.Player.Tribesman.Tribe.CreateAssignment(city,
+                                                                            stub,
+                                                                            targetStructure.X,
+                                                                            targetStructure.Y,
+                                                                            targetCity,
+                                                                            time,
+                                                                            mode,
+                                                                            description,
+                                                                            isAttack,
+                                                                            out id);
+                ReplyWithResult(session, packet, ret);
             }
         }
  
-        private void Join(Session session, Packet packet) {
+        public void Join(Session session, Packet packet) {
             uint cityId;
             int assignmentId;
             TroopStub stub;
@@ -133,7 +131,6 @@ namespace Game.Comm.ProcessorCommands
             {
                 cityId = packet.GetUInt32();
                 assignmentId = packet.GetInt32();
-                stub = PacketHelper.ReadStub(packet, FormationType.Attack);
             }
             catch (Exception) {
                 ReplyError(session, packet, Error.Unexpected);
@@ -149,24 +146,27 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                // Create stub
-                if (!Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
+                // TODO: Clean this up
+                Assignment assignment = tribe.Assignments.FirstOrDefault(x => x.Id == assignmentId);
+                if (assignment == null)
                 {
-                    ReplyError(session, packet, Error.TroopChanged);
-                    return;                        
+                    ReplyError(session, packet, Error.AssignmentDone);
+                    return;
                 }
 
-                DbPersistance.Current.Save(stub);
-
-                Error error = tribe.JoinAssignment(assignmentId, stub);
-                if (error != Error.Ok) {
-                    Procedure.Current.TroopStubDelete(city, stub);                    
-                    ReplyError(session, packet, error);
-                }
-                else
+                try
                 {
-                    ReplySuccess(session, packet);
+                    stub = PacketHelper.ReadStub(packet, assignment.IsAttack ? FormationType.Attack : FormationType.Defense);
                 }
+                catch (Exception)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                Error result = tribe.JoinAssignment(assignmentId, city, stub);
+
+                ReplyWithResult(session, packet, result);
             }
         }
     }

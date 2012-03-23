@@ -15,7 +15,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class UnitTrainActiveAction : ScheduledActiveAction
+    public class UnitTrainActiveAction : ScheduledActiveAction
     {
         private readonly uint cityId;
         private readonly ushort count;

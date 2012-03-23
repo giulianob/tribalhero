@@ -15,7 +15,7 @@ using Game.Util.Locking;
 
 namespace Game.Logic.Actions
 {
-    class ResourceSellActiveAction : ScheduledActiveAction
+    public class ResourceSellActiveAction : ScheduledActiveAction
     {
         private const int TRADE_SIZE = 100;
         private readonly uint cityId;

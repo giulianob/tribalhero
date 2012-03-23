@@ -13,7 +13,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class StructureDowngradePassiveAction : ScheduledPassiveAction
+    public class StructureDowngradePassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private readonly uint structureId;

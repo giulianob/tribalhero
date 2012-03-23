@@ -10,7 +10,7 @@ namespace Testing.City
     /// <summary>
     ///   Summary description for ChannelTest
     /// </summary>
-    public class CityTest : TestBase
+    public class CityTest
     {
         [Fact]
         public void TestValidName()

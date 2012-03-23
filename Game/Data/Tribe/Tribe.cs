@@ -5,18 +5,25 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Game.Comm;
 using Game.Data.Troop;
-using Game.Database;
 using Game.Logic.Actions;
 using Game.Logic.Formulas;
+using Game.Logic.Procedures;
 using Game.Setup;
 using Game.Util.Locking;
-using Ninject;
 using Persistance;
 
 namespace Game.Data.Tribe
 {
     public class Tribe : ITribe
     {
+        private readonly Procedure procedure;
+
+        private readonly IDbManager dbManager;
+
+        private readonly Formula formula;
+
+        private readonly IAssignmentFactory assignmentFactory;
+
         public class IncomingListItem
         {
             public ICity City { get; set; }
@@ -48,7 +55,7 @@ namespace Game.Data.Tribe
                 attackPoint = value;
                 if (DbPersisted)
                 {
-                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    dbManager.Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("attack_point", attackPoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -67,7 +74,7 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    dbManager.Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("defense_point", defensePoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -86,7 +93,7 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    DbPersistance.Current.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    dbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("desc", description, DbType.String, Player.MAX_DESCRIPTION_LENGTH), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -121,14 +128,18 @@ namespace Game.Data.Tribe
             }
         }
 
-        public Tribe(IPlayer owner, string name) :
-            this(owner, name, string.Empty, 1, 0, 0, new Resource())
+        public Tribe(IPlayer owner, string name, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory) :
+            this(owner, name, string.Empty, 1, 0, 0, new Resource(), procedure, dbManager, formula, assignmentFactory)
         {
 
         }
 
-        public Tribe(IPlayer owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource)
+        public Tribe(IPlayer owner, string name, string desc, byte level, int attackPoints, int defensePoints, Resource resource, Procedure procedure, IDbManager dbManager, Formula formula, IAssignmentFactory assignmentFactory)
         {
+            this.procedure = procedure;
+            this.dbManager = dbManager;
+            this.formula = formula;
+            this.assignmentFactory = assignmentFactory;
             Owner = owner;
             Level = level;
             Resource = resource;
@@ -156,7 +167,7 @@ namespace Game.Data.Tribe
             if (save)
             {
                 DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
-                DbPersistance.Current.Save(tribesman);
+                dbManager.Save(tribesman);
             }
             return Error.Ok;
         }
@@ -169,7 +180,7 @@ namespace Game.Data.Tribe
 
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Player.Tribesman = null;
-            DbPersistance.Current.Delete(tribesman);
+            dbManager.Delete(tribesman);
             return !tribesmen.Remove(playerId) ? Error.TribesmanNotFound : Error.Ok;
         }
 
@@ -194,7 +205,7 @@ namespace Game.Data.Tribe
                 return Error.TribesmanIsOwner;
 
             tribesman.Rank = rank;
-            DbPersistance.Current.Save(tribesman);
+            dbManager.Save(tribesman);
             tribesman.Player.TribeUpdate();
 
             return Error.Ok;
@@ -209,7 +220,7 @@ namespace Game.Data.Tribe
             DefaultMultiObjectLock.ThrowExceptionIfNotLocked(tribesman);
             tribesman.Contribution += resource;
             Resource += resource;
-            DbPersistance.Current.Save(tribesman, this);
+            dbManager.Save(tribesman, this);
 
             return Error.Ok;
         }
@@ -324,9 +335,16 @@ namespace Game.Data.Tribe
 
         #endregion
 
-        public Error CreateAssignment(ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string desc, out int id)
+        public Error CreateAssignment(ICity city, ITroopStub stub, uint x, uint y, ICity targetCity, DateTime time, AttackMode mode, string desc, bool isAttack, out int id)
         {
             id = 0;
+
+            if (!procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
+            {
+                return Error.TroopChanged;
+            }
+
+            dbManager.Save(stub);
 
             // Max of 48 hrs for planning assignments
             if (DateTime.UtcNow.AddDays(2) < time)
@@ -352,7 +370,7 @@ namespace Game.Data.Tribe
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
             int distance = SimpleGameObject.TileDistance(stub.City.X, stub.City.Y, x, y);
-            DateTime reachTime = DateTime.UtcNow.AddSeconds(Formula.Current.MoveTimeTotal(stub, distance, true));
+            DateTime reachTime = DateTime.UtcNow.AddSeconds(formula.MoveTimeTotal(stub, distance, true));
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
@@ -360,32 +378,36 @@ namespace Game.Data.Tribe
             }
 
             // Create assignment
-            Assignment assignment = Ioc.Kernel.Get<IAssignmentFactory>().CreateAssignment(this, x, y, targetCity, mode, time, stub, desc);
+            Assignment assignment = assignmentFactory.CreateAssignment(this, x, y, targetCity, mode, time, desc, isAttack);
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
-            assignment.Reschedule();
+            assignment.Add(stub);
 
             SendUpdate();
             return Error.Ok;
         }
-
-        public Error JoinAssignment(int id, ITroopStub stub)
+        
+        public Error JoinAssignment(int id, ICity city, ITroopStub stub)
         {
             Assignment assignment;
-            if (assignments.TryGetValue(id, out assignment))
-            {
-                Error error = assignment.Add(stub);
-                if (error != Error.Ok)
-                {
-                    return error;
-                }
-            }
-            else
+
+            if (!assignments.TryGetValue(id, out assignment))
             {
                 return Error.AssignmentNotFound;
             }
-            return Error.Ok;
+
+            if (stub.TotalCount == 0)
+            {
+                return Error.TroopEmpty;
+            }
+
+            if (!procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment, assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
+            {
+                return Error.TroopChanged;
+            }            
+
+            return assignment.Add(stub);
         }
 
         public void RemoveAssignment(Assignment assignment)
@@ -406,9 +428,9 @@ namespace Game.Data.Tribe
             if (Level >= 20)
                 return;
 
-            Resource.Subtract(Formula.Current.GetTribeUpgradeCost(Level));
+            Resource.Subtract(formula.GetTribeUpgradeCost(Level));
             Level++;
-            DbPersistance.Current.Save(this);
+            dbManager.Save(this);
         }
 
         public void SendUpdate()

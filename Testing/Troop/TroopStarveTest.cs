@@ -10,7 +10,7 @@ namespace Testing.Troop
     /// <summary>
     ///   Summary description for TroopProcedureTest
     /// </summary>
-    public class TroopStarveTest : TestBase
+    public class TroopStarveTest
     {
         public ITroopStub CreateSimpleStub()
         {

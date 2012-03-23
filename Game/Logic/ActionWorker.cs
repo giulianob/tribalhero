@@ -20,11 +20,11 @@ namespace Game.Logic
     {
         private readonly LargeIdGenerator actionIdGen = new LargeIdGenerator(ushort.MaxValue);
 
-        private readonly ListDictionary<uint, ActiveAction> active = new ListDictionary<uint, ActiveAction>();
+        private readonly IDictionary<uint, ActiveAction> active = new Dictionary<uint, ActiveAction>();
         private readonly ICity city;
 
         private readonly NotificationManager notifications;
-        private readonly ListDictionary<uint, PassiveAction> passive = new ListDictionary<uint, PassiveAction>();
+        private readonly IDictionary<uint, PassiveAction> passive = new Dictionary<uint, PassiveAction>();
         private readonly ReferenceManager references;
 
         public ActionWorker(ICity owner)
@@ -36,7 +36,7 @@ namespace Game.Logic
 
         #region Properties
 
-        public ListDictionary<uint, ActiveAction> ActiveActions
+        public IDictionary<uint, ActiveAction> ActiveActions
         {
             get
             {
@@ -44,7 +44,7 @@ namespace Game.Logic
             }
         }
 
-        public ListDictionary<uint, PassiveAction> PassiveActions
+        public IDictionary<uint, PassiveAction> PassiveActions
         {
             get
             {
@@ -224,10 +224,11 @@ namespace Game.Logic
             var ignoreActionList = new List<GameAction>(ignoreActions);
 
             // Cancel Active actions
-            List<ActiveAction> activeList;
+            IList<ActiveAction> activeList;
             using (Concurrency.Current.Lock(City))
             {
-                activeList = active.FindAll(actionStub => actionStub.WorkerObject == workerObject);
+                // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
+                activeList = active.Values.Where(actionStub => actionStub.WorkerObject == workerObject).ToList();
             }
 
             foreach (var stub in activeList)
@@ -239,10 +240,11 @@ namespace Game.Logic
             }
 
             // Cancel Passive actions
-            List<PassiveAction> passiveList;
+            IList<PassiveAction> passiveList;
             using (Concurrency.Current.Lock(City))
             {
-                passiveList = passive.FindAll(action => action.WorkerObject == workerObject);
+                // Very important to keep the ToList() here since we will be modifying the collection in the loop below and an IEnumerable will crash!
+                passiveList = passive.Values.Where(action => action.WorkerObject == workerObject).ToList();
             }
 
             foreach (var stub in passiveList)
@@ -436,7 +438,7 @@ namespace Game.Logic
 
         public void DoOnce(IGameObject workerObject, PassiveAction action)
         {
-            if (passive.Exists(a => a.Type == action.Type))
+            if (passive.Values.Any(a => a.Type == action.Type))
                 return;
 
             int actionId = actionIdGen.GetNext();
@@ -462,8 +464,8 @@ namespace Game.Logic
         {
             var actions = new List<GameAction>();
 
-            actions.AddRange(PassiveActions.FindAll(x => x.WorkerObject == gameObject));
-            actions.AddRange(ActiveActions.FindAll(x => x.WorkerObject == gameObject));
+            actions.AddRange(PassiveActions.Values.Where(x => x.WorkerObject == gameObject));
+            actions.AddRange(ActiveActions.Values.Where(x => x.WorkerObject == gameObject));
 
             return actions;
         }

@@ -15,7 +15,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class ObjectRemovePassiveAction : ScheduledPassiveAction
+    public class ObjectRemovePassiveAction : ScheduledPassiveAction
     {
         private readonly List<uint> cancelActions;
         private readonly uint cityId;

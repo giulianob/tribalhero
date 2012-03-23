@@ -13,7 +13,7 @@ using Ninject;
 
 namespace Game.Logic.Actions
 {
-    class ForestCampHarvestPassiveAction : ScheduledPassiveAction
+    public class ForestCampHarvestPassiveAction : ScheduledPassiveAction
     {
         private readonly uint cityId;
         private readonly uint forestId;

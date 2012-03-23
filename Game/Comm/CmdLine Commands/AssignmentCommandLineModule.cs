@@ -83,6 +83,7 @@ namespace Game.Comm
             uint y = 0;
             TimeSpan time = TimeSpan.MinValue;
             AttackMode mode = AttackMode.Normal;
+            bool? isAttack = null;
             try
             {
                 var p = new OptionSet
@@ -92,7 +93,8 @@ namespace Game.Comm
                                 {"x=", v => x = uint.Parse(v)},
                                 {"y=", v => y = uint.Parse(v)},
                                 {"timespan=", v => time = TimeSpan.Parse(v.TrimMatchingQuotes())},
-                                {"mode=", v => mode = (AttackMode)Enum.Parse(typeof(AttackMode), v)},
+                                {"mode=", v => mode = (AttackMode)Enum.Parse(typeof(AttackMode), v, true)},
+                                {"isattack=", v => isAttack = Boolean.Parse(v)}
                         };
                 p.Parse(parms);
             }
@@ -100,13 +102,17 @@ namespace Game.Comm
             {
                 help = true;
             }
-
-            if (help || string.IsNullOrEmpty(cityName) || x == 0 || y == 0 || time == TimeSpan.MinValue)
-                return "AssignmentCreate --city=city_name --x=x --y=y --timespan=0:0:0 [--mode=attack_mode]";
+            
+            if (help || string.IsNullOrEmpty(cityName) || x == 0 || y == 0 || time == TimeSpan.MinValue || !isAttack.HasValue)
+            {
+                return "AssignmentCreate --city=city_name --x=x --y=y --timespan=00:00:00 --isattack=true/false [--mode=attack_mode]";
+            }
 
             uint cityId;
             if (!World.Current.FindCityId(cityName, out cityId))
+            {
                 return "City not found";
+            }
 
             ICity city;
             if (!World.Current.TryGetObjects(cityId, out city))
@@ -120,7 +126,7 @@ namespace Game.Comm
             }
 
             ITribe tribe = city.Owner.Tribesman.Tribe;
-            IStructure targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();           
+            IStructure targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().FirstOrDefault();           
             if (targetStructure == null)
             {
                 return "Could not find a structure for the given coordinates";
@@ -133,10 +139,6 @@ namespace Game.Comm
                     return "No troops in the city!";
                 }
 
-                TroopStub stub = new TroopStub { city.DefaultTroop };
-                Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                DbPersistance.Current.Save(stub);
-
                 targetStructure = World.Current.GetObjects(x, y).OfType<IStructure>().First();
 
                 if (targetStructure == null)
@@ -144,8 +146,17 @@ namespace Game.Comm
                     return "Could not find a structure for the given coordinates";
                 }
 
+                // TODO: Clean this up.. shouldnt really need to do this here
+                TroopStub stub = new TroopStub();
+                FormationType formation = isAttack.GetValueOrDefault() ? FormationType.Attack : FormationType.Defense;
+                stub.AddFormation(formation);
+                foreach (var unit in city.DefaultTroop[FormationType.Normal])
+                {
+                    stub.AddUnit(formation, unit.Key, unit.Value);
+                }
+
                 int id;
-                Error error = tribe.CreateAssignment(stub, x, y, targetStructure.City, DateTime.UtcNow.Add(time), mode, "", out id);
+                Error error = tribe.CreateAssignment(city, stub, x, y, targetStructure.City, DateTime.UtcNow.Add(time), mode, "", isAttack.GetValueOrDefault(), out id);
                 if (error != Error.Ok)
                 {
                     city.Troops.Remove(stub.TroopId);
@@ -178,8 +189,7 @@ namespace Game.Comm
             if (!World.Current.FindCityId(cityName, out cityId))
                 return "City not found";
 
-            ICity city;
-            TroopStub stub = new TroopStub();
+            ICity city;            
             if (!World.Current.TryGetObjects(cityId, out city))
             {
                 return "City not found!";
@@ -197,14 +207,26 @@ namespace Game.Comm
                 {
                     return "No troops in the city!";
                 }
-                stub.Add(city.DefaultTroop);
-                Procedure.Current.TroopStubCreate(city, stub, TroopState.WaitingInAssignment);
-                DbPersistance.Current.Save(stub);
 
-                Error error = tribe.JoinAssignment(id, stub);
+                Assignment assignment = tribe.Assignments.FirstOrDefault(x => x.Id == id);
+
+                if (assignment == null)
+                {
+                    return "Assignment not found";
+                }
+
+                // TODO: Clean this up.. shouldnt really need to do this here
+                TroopStub stub = new TroopStub();
+                FormationType formation = assignment.IsAttack ? FormationType.Attack : FormationType.Defense;
+                stub.AddFormation(formation);
+                foreach (var unit in city.DefaultTroop[FormationType.Normal])
+                {
+                    stub.AddUnit(formation, unit.Key, unit.Value);
+                }
+
+                Error error = tribe.JoinAssignment(id, city, stub);
                 if (error != Error.Ok)
                 {
-                    Procedure.Current.TroopStubDelete(city, stub);
                     return Enum.GetName(typeof(Error), error);
                 }
 

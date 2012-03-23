@@ -2,30 +2,33 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Data;
 using Game.Data.Troop;
+using Game.Logic.Formulas;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
 namespace Game.Logic.Actions
 {
-    class DefenseChainAction : ChainAction
+    public class DefenseChainAction : ChainAction
     {
         private readonly uint cityId;
         private readonly byte stubId;
         private readonly uint targetCityId;
+        private readonly AttackMode mode;
 
-        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId)
+        public DefenseChainAction(uint cityId, byte stubId, uint targetCityId, AttackMode mode)
         {
             this.cityId = cityId;
             this.stubId = stubId;
             this.targetCityId = targetCityId;
+            this.mode = mode;
         }
 
         public DefenseChainAction(uint id, string chainCallback, PassiveAction current, ActionState chainState, bool isVisible, Dictionary<string, string> properties)
@@ -64,8 +67,11 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
                 return Error.ObjectNotFound;
 
-            if (city.Troops.Size > 12)
+            int currentReinforcements = city.Worker.PassiveActions.Values.Count(action => action is DefenseChainAction);
+            if (currentReinforcements > 20)
+            {
                 return Error.TooManyTroops;
+            }
 
             ICity targetCity;
             if (!World.Current.TryGetObjects(targetCityId, out targetCity))
@@ -82,6 +88,7 @@ namespace Game.Logic.Actions
             //Load the units stats into the stub
             stub.BeginUpdate();
             stub.Template.LoadStats(TroopBattleGroup.Defense);
+            stub.StationedRetreatCount = (ushort)Formula.Current.GetAttackModeTolerance(stub.TotalCount, mode);
             stub.EndUpdate();
 
             city.Worker.References.Add(stub.TroopObject, this);

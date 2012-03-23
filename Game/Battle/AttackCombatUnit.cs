@@ -242,6 +242,14 @@ namespace Game.Battle
             }
         }
 
+        public bool IsAttacker
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         #endregion
 
         public override bool InRange(CombatObject obj)

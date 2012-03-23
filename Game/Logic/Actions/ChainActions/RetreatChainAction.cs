@@ -59,7 +59,19 @@ namespace Game.Logic.Actions
             ICity city;
             ITroopStub stub;
             if (!World.Current.TryGetObjects(cityId, stubId, out city, out stub))
+            {
                 throw new Exception();
+            }
+
+            if (stub.State != TroopState.Stationed)
+            {
+                return Error.CityInBattle;
+            }
+
+            if (!Procedure.Current.TroopObjectCreateFromStation(stub))
+            {
+                return Error.Unexpected;
+            }
 
             var tma = new TroopMovePassiveAction(cityId, stub.TroopObject.ObjectId, stub.City.X, stub.City.Y, true, false);
 
@@ -95,6 +107,19 @@ namespace Game.Logic.Actions
                         var eda = new EngageDefensePassiveAction(cityId, stubId);
                         ExecuteChainAndWait(eda, AfterEngageDefense);
                     }
+                }
+            }
+            else if (state == ActionState.Failed)
+            {
+                ICity city;
+                using (Concurrency.Current.Lock(cityId, out city))
+                {
+                    ITroopStub stub;
+
+                    if (!city.Troops.TryGetStub(stubId, out stub))
+                        throw new Exception();
+
+                    Procedure.Current.TroopObjectStation(stub.TroopObject, city);
                 }
             }
         }

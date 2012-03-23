@@ -96,6 +96,11 @@ namespace Game.Data.Tribe
         public uint DispatchCount { get; private set; }
 
         /// <summary>
+        /// Type of assignnment, defensive or offensive
+        /// </summary>
+        public bool IsAttack { get; private set; }
+
+        /// <summary>
         /// Number of troops in this assignment (some might have been dispatched already)
         /// </summary>
         public int TroopCount { get { return assignmentTroops.Count; } }
@@ -109,7 +114,7 @@ namespace Game.Data.Tribe
         /// Creates a new assignment.
         /// An id will be assigned and the stub passed in will be added to the assignment. This will not schedule the assignment!
         /// </summary>
-        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, ITroopStub stub, string description, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -128,15 +133,14 @@ namespace Game.Data.Tribe
             AttackMode = mode;
             DispatchCount = 0;
             Description = description;
-
-            assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
+            IsAttack = isAttack;
         }
 
         /// <summary>
         /// Creates a new assignment. 
         /// NOTE: This constructor is used by the db loader. Use the other constructor when creating a new assignment from scratch.
         /// </summary>
-        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, string description, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
+        public Assignment(int id, ITribe tribe, uint x, uint y, ICity targetCity, AttackMode mode, DateTime targetTime, uint dispatchCount, string description, bool isAttack, Formula formula, IDbManager dbManager, IGameObjectLocator gameObjectLocator, IScheduler scheduler, Procedure procedure, TileLocator tileLocator, IActionFactory actionFactory)
         {
             this.formula = formula;
             this.dbManager = dbManager;
@@ -155,6 +159,7 @@ namespace Game.Data.Tribe
             AttackMode = mode;
             DispatchCount = dispatchCount;
             Description = description;
+            IsAttack = isAttack;
 
             IdGen.Set(id);
         }
@@ -203,7 +208,7 @@ namespace Game.Data.Tribe
                     return Error.AssignmentDone;
 
                 assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub)));
-                stub.OnRemoved += RemoveStub;
+                stub.OnRemoved += OnStubRemoved;
                 stub.OnStateSwitched += StubOnStateSwitched;
 
                 Reschedule();
@@ -232,6 +237,16 @@ namespace Game.Data.Tribe
         }
 
         /// <summary>
+        /// Called when a stub is deleted for good
+        /// </summary>
+        /// <param name="stub"></param>         
+        private void OnStubRemoved(ITroopStub stub)
+        {
+            RemoveStub(stub);
+            Reschedule();
+        }
+
+        /// <summary>
         /// Removes a stub from the assignment
         /// </summary>
         /// <param name="stub"></param>
@@ -246,7 +261,7 @@ namespace Game.Data.Tribe
                     return;
                 }
 
-                stub.OnRemoved -= RemoveStub;
+                stub.OnRemoved -= OnStubRemoved;
                 stub.OnStateSwitched -= StubOnStateSwitched;
                 assignmentTroops.Remove(assignmentTroop);
             }
@@ -280,8 +295,17 @@ namespace Game.Data.Tribe
 
             // Create troop object
             procedure.TroopObjectCreate(stub.City, stub);
+            
+            PassiveAction action;
+            if (IsAttack)
+            {
+                action = actionFactory.CreateAttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
+            }
+            else
+            {
+                action = actionFactory.CreateDefenseChainAction(stub.City.Id, stub.TroopId, structure.City.Id, AttackMode);
+            }
 
-            var action = actionFactory.CreateAttackChainAction(stub.City.Id, stub.TroopId, structure.City.Id, structure.ObjectId, AttackMode);
             if (stub.City.Worker.DoPassive(stub.City, action, true) != Error.Ok)
             {
                 procedure.TroopObjectDelete(stub.TroopObject, true);
@@ -418,7 +442,7 @@ namespace Game.Data.Tribe
                                new DbColumn("x", X, DbType.UInt32), new DbColumn("y", Y, DbType.UInt32),
                                new DbColumn("mode", Enum.GetName(typeof(AttackMode), AttackMode), DbType.String),
                                new DbColumn("attack_time", TargetTime, DbType.DateTime), new DbColumn("dispatch_count", DispatchCount, DbType.UInt32),
-                               new DbColumn("description", Description, DbType.String, 250),
+                               new DbColumn("description", Description, DbType.String, 250), new DbColumn("is_attack", IsAttack, DbType.Boolean)
                        };
             }
         }
@@ -462,7 +486,7 @@ namespace Game.Data.Tribe
         internal void DbLoaderAdd(ITroopStub stub, bool dispatched)
         {
             assignmentTroops.Add(new AssignmentTroop(stub, DepartureTime(stub), dispatched));
-            stub.OnRemoved += RemoveStub;
+            stub.OnRemoved += OnStubRemoved;
             stub.OnStateSwitched += StubOnStateSwitched;
         }
     }

@@ -22,8 +22,6 @@ namespace Game.Battle
 {
     public class BattleManager : IBattleManager
     {
-        public delegate IBattleManager Factory(ICity owner);
-
         public const string DB_TABLE = "battle_managers";
         private readonly CombatList attackers;
         private readonly object battleLock = new object();
@@ -66,6 +64,8 @@ namespace Game.Battle
             ReinforceDefender += battleChannel.BattleReinforceDefender;
             ExitBattle += battleChannel.BattleExitBattle;
             EnterRound += battleChannel.BattleEnterRound;
+            WithdrawAttacker += battleChannel.BattleWithdrawAtacker;
+            WithdrawDefender += battleChannel.BattleWithdrawDefender;
         }
 
         public uint BattleId

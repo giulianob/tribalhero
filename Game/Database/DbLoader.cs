@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Reflection;
 using Game.Battle;
 using Game.Data;
 using Game.Data.Stats;
@@ -20,7 +19,6 @@ using Game.Setup;
 using Game.Util;
 using Ninject;
 using Persistance;
-using DbTransaction = System.Data.Common.DbTransaction;
 
 #endregion
 
@@ -28,7 +26,23 @@ namespace Game.Database
 {
     public class DbLoader
     {
-        public static bool LoadFromDatabase(IDbManager dbManager)
+        private readonly IDbManager dbManager;
+
+        private readonly DbLoaderActionFactory actionFactory;
+
+        private readonly IBattleManagerFactory battleManagerFactory;
+
+        private readonly ITribeFactory tribeFactory;
+
+        public DbLoader(IDbManager dbManager, DbLoaderActionFactory actionFactory, IBattleManagerFactory battleManagerFactory, ITribeFactory tribeFactory)
+        {
+            this.dbManager = dbManager;
+            this.actionFactory = actionFactory;
+            this.battleManagerFactory = battleManagerFactory;
+            this.tribeFactory = tribeFactory;
+        }
+
+        public bool LoadFromDatabase()
         {
             SystemVariablesUpdater.Pause();
             Scheduler.Current.Pause();
@@ -96,7 +110,7 @@ namespace Game.Database
             return true;
         }
 
-        private static uint GetMaxId(IDbManager dbManager, string table)
+        private uint GetMaxId(IDbManager dbManager, string table)
         {
             using (var reader = dbManager.ReaderQuery(string.Format("SELECT max(`id`) FROM `{0}`", table)))
             {
@@ -108,14 +122,14 @@ namespace Game.Database
             }
         }
 
-        private static void LoadReportIds(IDbManager dbManager)
+        private void LoadReportIds(IDbManager dbManager)
         {
             BattleReport.BattleIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_DB));
             BattleReport.ReportIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_REPORTS_DB));
             BattleReport.BattleTroopIdGenerator.Set(GetMaxId(dbManager, SqlBattleReportWriter.BATTLE_REPORT_TROOPS_DB));
         }
 
-        private static void LoadTribes(IDbManager dbManager) 
+        private void LoadTribes(IDbManager dbManager) 
         {
             #region Tribes
 
@@ -125,20 +139,22 @@ namespace Game.Database
                 while (reader.Read())
                 {
                     var resource = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
-                    var tribe = new Tribe(World.Current.Players[(uint)reader["player_id"]],
-                                          (string)reader["name"],
-                                          (string)reader["desc"],
-                                          (byte)reader["level"],
-                                          (int)reader["attack_point"],
-                                          (int)reader["defense_point"],
-                                          resource) {DbPersisted = true};
+                    var tribe = tribeFactory.CreateTribe(World.Current.Players[(uint)reader["player_id"]],
+                                                         (string)reader["name"],
+                                                         (string)reader["desc"],
+                                                         (byte)reader["level"],
+                                                         (int)reader["attack_point"],
+                                                         (int)reader["defense_point"],
+                                                         resource);
+                    tribe.DbPersisted = true;
+
                     Global.Tribes.Add(tribe.Id, tribe);
                 }
             }
             #endregion
         }
 
-        private static void LoadTribesmen(IDbManager dbManager) {
+        private void LoadTribesmen(IDbManager dbManager) {
             #region Tribes
 
             Global.Logger.Info("Loading tribesmen...");
@@ -154,13 +170,13 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadAssignments(IDbManager dbManager, TimeSpan downTime)
+        private void LoadAssignments(IDbManager dbManager, TimeSpan downTime)
         {
             #region Assignments
 
             IAssignmentFactory assignmentFactory = Ioc.Kernel.Get<IAssignmentFactory>();
 
-            Global.Logger.Info("Loading assignements...");
+            Global.Logger.Info("Loading assignments...");
             using (var reader = dbManager.Select(Assignment.DB_TABLE))
             {
                 while (reader.Read())
@@ -178,7 +194,8 @@ namespace Game.Database
                                                            (AttackMode)Enum.Parse(typeof(AttackMode), (string)reader["mode"]),
                                                            DateTime.SpecifyKind((DateTime)reader["attack_time"], DateTimeKind.Utc).Add(downTime),
                                                            (uint)reader["dispatch_count"],
-                                                           (string)reader["description"]);
+                                                           (string)reader["description"],
+                                                           ((byte)reader["is_attack"])==1);
 
                     using (DbDataReader listReader = dbManager.SelectList(assignment))
                     {
@@ -208,7 +225,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadSystemVariables(IDbManager dbManager)
+        private void LoadSystemVariables(IDbManager dbManager)
         {
             #region System variables
 
@@ -234,7 +251,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadMarket(IDbManager dbManager)
+        private void LoadMarket(IDbManager dbManager)
         {
             #region Market
 
@@ -267,7 +284,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadPlayers(IDbManager dbManager)
+        private void LoadPlayers(IDbManager dbManager)
         {
             #region Players
 
@@ -289,7 +306,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadCities(IDbManager dbManager, TimeSpan downTime)
+        private void LoadCities(IDbManager dbManager, TimeSpan downTime)
         {
             #region Cities
 
@@ -351,7 +368,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadUnitTemplates(IDbManager dbManager)
+        private void LoadUnitTemplates(IDbManager dbManager)
         {
             #region Unit Template
 
@@ -378,7 +395,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadForests(IDbManager dbManager, TimeSpan downTime)
+        private void LoadForests(IDbManager dbManager, TimeSpan downTime)
         {
             Global.Logger.Info("Loading forests...");
             using (var reader = dbManager.Select(Forest.DB_TABLE))
@@ -434,7 +451,7 @@ namespace Game.Database
             }
         }
 
-        private static void LoadStructures(IDbManager dbManager)
+        private void LoadStructures(IDbManager dbManager)
         {
             #region Structures
 
@@ -471,7 +488,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadStructureProperties(IDbManager dbManager)
+        private void LoadStructureProperties(IDbManager dbManager)
         {
             #region Structure Properties
 
@@ -504,7 +521,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadTechnologies(IDbManager dbManager)
+        private void LoadTechnologies(IDbManager dbManager)
         {
             #region Technologies
 
@@ -554,7 +571,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadTroopStubs(IDbManager dbManager)
+        private void LoadTroopStubs(IDbManager dbManager)
         {
             #region Troop Stubs
 
@@ -575,7 +592,8 @@ namespace Game.Database
                                        TroopManager = city.Troops,
                                        TroopId = (byte)reader["id"],
                                        State = (TroopState)Enum.Parse(typeof(TroopState), reader["state"].ToString(), true),
-                                       DbPersisted = true
+                                       DbPersisted = true,
+                                       StationedRetreatCount = (ushort)reader["retreat_count"]
                                };
 
                     var formationMask = (ushort)reader["formations"];
@@ -595,7 +613,7 @@ namespace Game.Database
                     city.Troops.DbLoaderAdd((byte)reader["id"], stub);
 
                     var stationedCityId = (uint)reader["stationed_city_id"];
-                    if (stationedCityId != 0)
+                    if (stationedCityId != 0) 
                         stationedTroops.Add(new {stub, stationedCityId}); 
                 }
             }
@@ -611,7 +629,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadTroopStubTemplates(IDbManager dbManager)
+        private void LoadTroopStubTemplates(IDbManager dbManager)
         {
             #region Troop Stub's Templates
 
@@ -652,7 +670,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadTroops(IDbManager dbManager)
+        private void LoadTroops(IDbManager dbManager)
         {
             #region Troops
 
@@ -697,7 +715,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadBattleManagers(IDbManager dbManager)
+        private void LoadBattleManagers(IDbManager dbManager)
         {
             #region Battle Managers
 
@@ -710,7 +728,7 @@ namespace Game.Database
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
 
-                    var bm = Ioc.Kernel.Get<BattleManager.Factory>()(city);
+                    var bm = battleManagerFactory.CreateBattleManager(city);
                     city.Battle = bm;
                     bm.DbPersisted = true;
                     bm.BattleId = (uint)reader["battle_id"];
@@ -828,9 +846,9 @@ namespace Game.Database
                             ICity troopStubCity;
                             if (!World.Current.TryGetObjects((uint)listReader["troop_stub_city_id"], out troopStubCity))
                                 throw new Exception("City not found");
-                            ITroopStub troopStub = troopStubCity.Troops[(byte)listReader["troop_stub_id"]];
 
-                            if (troopStub == null)
+                            ITroopStub troopStub;
+                            if (!troopStubCity.Troops.TryGetStub((byte)listReader["troop_stub_id"], out troopStub))
                                 continue;
 
                             bm.ReportedTroops[troopStub] = (uint)listReader["combat_troop_id"];
@@ -858,25 +876,18 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadActions(IDbManager dbManager, TimeSpan downTime)
+        private void LoadActions(IDbManager dbManager, TimeSpan downTime)
         {
             #region Active Actions
 
             Global.Logger.Info("Loading active actions...");
-            var types = new[]
-                        {
-                                typeof(uint), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(int), typeof(byte), typeof(ushort),
-                                typeof(Dictionary<string, string>)
-                        };
 
             using (var reader = dbManager.Select(ActiveAction.DB_TABLE))
             {
                 while (reader.Read())
                 {
                     var actionType = (ActionType)((int)reader["type"]);
-                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
-
-                    ConstructorInfo cInfo = type.GetConstructor(types);
+                    Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);                    
 
                     DateTime beginTime = DateTime.SpecifyKind((DateTime)reader["begin_time"], DateTimeKind.Utc).Add(downTime);
 
@@ -887,18 +898,18 @@ namespace Game.Database
                     DateTime endTime = DateTime.SpecifyKind((DateTime)reader["end_time"], DateTimeKind.Utc).Add(downTime);
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
-                    var parms = new object[]
-                                {
-                                        (uint)reader["id"], beginTime, nextTime, endTime, (int)reader["worker_type"], (byte)reader["worker_index"],
-                                        (ushort)reader["count"], properties
-                                };
 
-                    if (cInfo == null)
-                    {
-                        throw new Exception(string.Format("Could not find matching constructor for {0}", actionType.ToString()));
-                    }
-
-                    var action = (ScheduledActiveAction)cInfo.Invoke(parms);
+                    var action =
+                            (ScheduledActiveAction)
+                            actionFactory.CreateScheduledActiveAction(type,
+                                                                      (uint)reader["id"],
+                                                                      beginTime,
+                                                                      nextTime,
+                                                                      endTime,
+                                                                      (int)reader["worker_type"],
+                                                                      (byte)reader["worker_index"],
+                                                                      (ushort)reader["count"],
+                                                                      properties);
                     action.DbPersisted = true;
 
                     ICity city;
@@ -922,12 +933,9 @@ namespace Game.Database
             #region Passive Actions
 
             Global.Logger.Info("Loading passive actions...");
-            var chainActions = new Dictionary<uint, List<PassiveAction>>();
+
             //this will hold chain actions that we encounter for the next phase
-
-            types = new[] {typeof(uint), typeof(bool), typeof(Dictionary<string, string>)};
-
-            var scheduledTypes = new[] {typeof(ushort), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(bool), typeof(string), typeof(Dictionary<string, string>)};
+            var chainActions = new Dictionary<uint, List<PassiveAction>>();            
 
             using (var reader = dbManager.Select(PassiveAction.DB_TABLE))
             {
@@ -936,19 +944,9 @@ namespace Game.Database
                     var actionType = (ActionType)((int)reader["type"]);
                     Type type = Type.GetType("Game.Logic.Actions." + actionType.ToString().Replace("_", "") + "Action", true, true);
 
-                    ConstructorInfo cInfo;
-
-                    if ((bool)reader["is_scheduled"])
-                        cInfo = type.GetConstructor(scheduledTypes);
-                    else
-                        cInfo = type.GetConstructor(types);
-
-                    if (cInfo == null)
-                        throw new Exception(type.Name + " is missing the db loader constructor");
-
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
 
-                    object[] parms;
+                    PassiveAction action;
 
                     if ((bool)reader["is_scheduled"])
                     {
@@ -964,12 +962,13 @@ namespace Game.Database
 
                         string nlsDescription = DBNull.Value.Equals(reader["nls_description"]) ? string.Empty : (string)reader["nls_description"];
 
-                        parms = new object[] {(uint)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], nlsDescription, properties};
+                        action = actionFactory.CreateScheduledPassiveAction(type, (uint)reader["id"], beginTime, nextTime, endTime, (bool)reader["is_visible"], nlsDescription, properties);
                     }
                     else
-                        parms = new object[] {(uint)reader["id"], (bool)reader["is_visible"], properties};
+                    {
+                        action = actionFactory.CreatePassiveAction(type, (uint)reader["id"], (bool)reader["is_visible"], properties);
+                    }
 
-                    var action = (PassiveAction)cInfo.Invoke(parms);
                     action.DbPersisted = true;
 
                     ICity city;
@@ -1010,7 +1009,6 @@ namespace Game.Database
             #region Chain Actions
 
             Global.Logger.Info("Loading chain actions...");
-            types = new[] {typeof(uint), typeof(string), typeof(PassiveAction), typeof(ActionState), typeof(bool), typeof(Dictionary<string, string>)};
 
             using (var reader = dbManager.Select(ChainAction.DB_TABLE))
             {
@@ -1018,7 +1016,6 @@ namespace Game.Database
                 {
                     var actionType = (ActionType)((int)reader["type"]);
                     Type type = Type.GetType("Game.Logic.Actions." + actionType + "Action", true, true);
-                    ConstructorInfo cInfo = type.GetConstructor(types);
 
                     ICity city;
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
@@ -1033,18 +1030,14 @@ namespace Game.Database
                         currentAction = chainList.Find(lookupAction => lookupAction.ActionId == currentActionId);
 
                     Dictionary<string, string> properties = XmlSerializer.Deserialize((string)reader["properties"]);
-                    var parms = new[]
-                                {
-                                        (uint)reader["id"], reader["chain_callback"], currentAction, (ActionState)((byte)reader["chain_state"]),
-                                        (bool)reader["is_visible"], properties
-                                };
-
-                    if (cInfo == null)
-                    {
-                        throw new Exception(string.Format("Could not find matching constructor for {0}", actionType.ToString()));
-                    }
-
-                    var action = (ChainAction)cInfo.Invoke(parms);
+                    var action = actionFactory.CreateChainAction(type,
+                                                                 (uint)reader["id"],
+                                                                 (string)reader["chain_callback"],
+                                                                 currentAction,
+                                                                 (ActionState)((byte)reader["chain_state"]),
+                                                                 (bool)reader["is_visible"],
+                                                                 properties);
+                    
                     action.DbPersisted = true;
 
                     var workerId = (uint)reader["object_id"];
@@ -1062,7 +1055,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadActionReferences(IDbManager dbManager)
+        private void LoadActionReferences(IDbManager dbManager)
         {
             #region Action References
 
@@ -1097,7 +1090,7 @@ namespace Game.Database
             #endregion
         }
 
-        private static void LoadActionNotifications(IDbManager dbManager)
+        private void LoadActionNotifications(IDbManager dbManager)
         {
             #region Action Notifications
 

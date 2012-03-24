@@ -134,6 +134,7 @@ namespace Game.Logic.Actions
                 // Move the default troop back into normal and clear its temporary battle stats
                 city.DefaultTroop.BeginUpdate();
                 city.DefaultTroop.Template.ClearStats();
+                city.DefaultTroop.State = TroopState.Idle;
                 procedure.MoveUnitFormation(city.DefaultTroop, FormationType.InBattle, FormationType.Normal);
                 city.DefaultTroop.EndUpdate();
 

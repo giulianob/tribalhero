@@ -910,12 +910,12 @@ namespace Game.Battle
         #endregion
 
         #region Events
-        public delegate void OnAttack(CombatObject source, CombatObject target, decimal damage);
-        public delegate void OnBattle(CombatList atk, CombatList def);
-        public delegate void OnReinforce(IEnumerable<CombatObject> list);
-        public delegate void OnRound(CombatList atk, CombatList def, uint round);
-        public delegate void OnTurn(CombatList atk, CombatList def, int turn);
-        public delegate void OnUnitUpdate(CombatObject obj);
+        public delegate void OnAttack(uint battleId, CombatObject source, CombatObject target, decimal damage);
+        public delegate void OnBattle(uint battleId, CombatList atk, CombatList def);
+        public delegate void OnReinforce(uint battleId, IEnumerable<CombatObject> list);
+        public delegate void OnRound(uint battleId, CombatList atk, CombatList def, uint round);
+        public delegate void OnTurn(uint battleId, CombatList atk, CombatList def, int turn);
+        public delegate void OnUnitUpdate(uint battleId, CombatObject obj);
 
         public event OnBattle EnterBattle;
         public event OnBattle ExitBattle;
@@ -935,85 +935,85 @@ namespace Game.Battle
         private void EventEnterBattle(CombatList atk, CombatList def)
         {
             if (EnterBattle != null)
-                EnterBattle(atk, def);
+                EnterBattle(BattleId, atk, def);
         }
 
         private void EventExitBattle(CombatList atk, CombatList def)
         {
             if (ExitBattle != null)
-                ExitBattle(atk, def);
+                ExitBattle(BattleId, atk, def);
         }
 
         private void EventEnterRound(CombatList atk, CombatList def, uint round)
         {
             if (EnterRound != null)
-                EnterRound(atk, def, round);
+                EnterRound(BattleId, atk, def, round);
         }
 
         private void EventEnterTurn(CombatList atk, CombatList def, int turn)
         {
             if (EnterTurn != null)
-                EnterTurn(atk, def, turn);
+                EnterTurn(BattleId, atk, def, turn);
         }
 
         private void EventExitTurn(CombatList atk, CombatList def, int turn)
         {
             if (ExitTurn != null)
-                ExitTurn(atk, def, turn);
+                ExitTurn(BattleId, atk, def, turn);
         }
 
         private void EventReinforceAttacker(IEnumerable<CombatObject> list)
         {
             if (ReinforceAttacker != null)
-                ReinforceAttacker(list);
+                ReinforceAttacker(BattleId, list);
         }
 
         private void EventReinforceDefender(IEnumerable<CombatObject> list)
         {
             if (ReinforceDefender != null)
-                ReinforceDefender(list);
+                ReinforceDefender(BattleId, list);
         }
 
         private void EventWithdrawAttacker(IEnumerable<CombatObject> list)
         {
             if (WithdrawAttacker != null)
-                WithdrawAttacker(list);
+                WithdrawAttacker(BattleId, list);
         }
 
         private void EventWithdrawDefender(IEnumerable<CombatObject> list)
         {
             if (WithdrawDefender != null)
-                WithdrawDefender(list);
+                WithdrawDefender(BattleId, list);
         }
 
         private void EventUnitRemoved(CombatObject obj)
         {
             if (UnitRemoved != null)
-                UnitRemoved(obj);
+                UnitRemoved(BattleId, obj);
         }
 
         private void EventUnitAdded(CombatObject obj)
         {
             if (UnitAdded != null)
-                UnitAdded(obj);
+                UnitAdded(BattleId, obj);
         }
 
         private void EventUnitUpdated(CombatObject obj)
         {
             if (UnitUpdated != null)
-                UnitUpdated(obj);
+                UnitUpdated(BattleId, obj);
         }
 
         private void EventActionAttacked(CombatObject source, CombatObject target, decimal dmg)
         {
             if (ActionAttacked != null)
-                ActionAttacked(source, target, dmg);
+                ActionAttacked(BattleId, source, target, dmg);
         }
 
         private void EventSkippedAttacker(CombatObject source)
         {
             if (SkippedAttacker != null)
-                SkippedAttacker(source);
+                SkippedAttacker(BattleId, source);
         }
         #endregion
     }

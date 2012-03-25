@@ -3,6 +3,7 @@
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
+	import flash.text.TextField;
 	import flash.ui.*;
 	import flash.utils.*;
 	import org.aswing.*;
@@ -120,6 +121,7 @@
 			// Add key down listener to stage
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+				stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
 				stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
 			});
 
@@ -301,7 +303,7 @@
 		}
 		
 		public function onZoomIn(e: Event) : void {		
-			if (camera.getZoomFactor() >= 0.99) return;
+			if (camera.getZoomFactor() >= 0.99 || minimapZoomed) return;
 			var center: Point = camera.GetCenter();
 			camera.setZoomFactor(Math.min(1, camera.getZoomFactor() + 0.1));
 			map.scrollRate = 1 * camera.getZoomFactorOverOne();
@@ -311,7 +313,7 @@
 		}		
 		
 		public function onZoomOut(e: Event) : void {
-			if (camera.getZoomFactor() <= 0.61) return;
+			if (camera.getZoomFactor() <= 0.61 || minimapZoomed) return;
 			var center: Point = camera.GetCenter();
 			camera.setZoomFactor(Math.max(0.6, camera.getZoomFactor() - 0.1));
 			map.scrollRate = 1 * camera.getZoomFactorOverOne();
@@ -381,6 +383,17 @@
 		public function isKeyDown(keyCode: int) : Boolean
 		{
 			return pressedKeys[keyCode];
+		}
+		
+		public function eventScroll(e: MouseEvent): void {		
+			if (e.target is Component || e.target is TextField || frames.length > 0) return;
+			
+			if (e.delta < 0) {
+				onZoomOut(e);
+			}
+			else if (e.delta > 0) {
+				onZoomIn(e);				
+			}
 		}
 		
 		public function eventKeyDown(e: KeyboardEvent):void

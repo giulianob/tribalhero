@@ -188,7 +188,7 @@ namespace Game.Logic.Actions
             return Error.Ok;
         }
 
-        private void BattleWithdrawAttacker(IEnumerable<CombatObject> list)
+        private void BattleWithdrawAttacker(uint battleId, IEnumerable<CombatObject> list)
         {
             ITroopStub stub;
             ICity targetCity;
@@ -214,7 +214,7 @@ namespace Game.Logic.Actions
         /// <summary>
         /// Takes care of finishing this action up if all our units are killed
         /// </summary>
-        private void BattleUnitRemoved(CombatObject co)
+        private void BattleUnitRemoved(uint battleId, CombatObject co)
         {
             ITroopStub stub;
             ICity targetCity;
@@ -264,7 +264,7 @@ namespace Game.Logic.Actions
             battle.BattleReport.SetLootedResources(stub.City.Id, stub.TroopId, battle.BattleId, looted, actual);
         }
 
-        private void BattleExitTurn(CombatList atk, CombatList def, int turn)
+        private void BattleExitTurn(uint battleId, CombatList atk, CombatList def, int turn)
         {
             ICity city;            
             ITroopStub stub;
@@ -283,7 +283,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
         {
             ICity city;
             ICity targetCity;
@@ -335,7 +335,7 @@ namespace Game.Logic.Actions
             }
         }
 
-        private void BattleExitBattle(CombatList atk, CombatList def)
+        private void BattleExitBattle(uint battleId, CombatList atk, CombatList def)
         {
             ICity city;
             ICity targetCity;
@@ -356,8 +356,8 @@ namespace Game.Logic.Actions
 
             StateChange(ActionState.Completed);
         }
-        
-        private void BattleEnterRound(CombatList atk, CombatList def, uint round)
+
+        private void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
         {
             ICity city;
             ITroopStub stub;

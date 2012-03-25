@@ -44,7 +44,7 @@
 			loader.addEventListener(Event.COMPLETE, onLoaded);
 			
 			tblReports.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tblReports.getCellEditor().stopCellEditing();
+				tblReports.getCellEditor().cancelCellEditing();
 			});
 
 			tblReports.addEventListener(SelectionEvent.ROW_SELECTION_CHANGED, function(e: SelectionEvent) : void {

@@ -70,7 +70,7 @@ package src.UI.Dialog{
 
 			// Disables editing the table
 			rankingTable.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				rankingTable.getCellEditor().stopCellEditing();
+				rankingTable.getCellEditor().cancelCellEditing();
 			});
 			
 			// Any special row selection stuff goes here

@@ -342,7 +342,7 @@ package src.UI.Dialog
 			tableThreads.getColumnAt(0).setCellFactory(new GeneralTableCellFactory(MessageBoardThreadListCell));
 			tableThreads.getColumnAt(0).setPreferredWidth(300);
 			tableThreads.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tableThreads.getCellEditor().stopCellEditing();
+				tableThreads.getCellEditor().cancelCellEditing();
 			});
 			
 			// Scroll panel to contain thread table

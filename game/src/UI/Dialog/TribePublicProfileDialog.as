@@ -79,7 +79,7 @@
 				[null, new TribeRankTranslator()]
 			));			
 			tableMembers.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e: TableCellEditEvent) : void {
-				tableMembers.getCellEditor().stopCellEditing();
+				tableMembers.getCellEditor().cancelCellEditing();
 			});			
 			tableMembers.setRowSelectionAllowed(false);
 			tableMembers.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

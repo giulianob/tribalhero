@@ -128,7 +128,7 @@ package src.UI.Dialog{
 			var selectedColumn: int = e.getColumn();
 			var selectedRow: int = e.getRow();
 
-			messageTable.getCellEditor().stopCellEditing();
+			messageTable.getCellEditor().cancelCellEditing();
 
 			if (selectedColumn != 2 || selectedRow == -1) {
 				return;

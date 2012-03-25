@@ -29,7 +29,7 @@
 					
 			tblUnits.addEventListener(TableCellEditEvent.EDITING_STARTED, function(e:TableCellEditEvent):void
 				{
-					tblUnits.getCellEditor().stopCellEditing();
+					tblUnits.getCellEditor().cancelCellEditing();
 				});
 			
 			unitList.appendAll(units);

@@ -29,7 +29,7 @@
 		{
 			super.setSelected(bool);
 			
-			var prototype: StructurePrototype = StructureFactory.getPrototype(type, level);
+			var prototype: StructurePrototype = getPrototype();
 			if (prototype != null) {
 				if (bool) radiusManager.showRadius(prototype.radius);
 				else radiusManager.hideRadius();
@@ -57,6 +57,11 @@
 				return false;
 				
 			return type == (obj as StructureObject).type && level == (obj as StructureObject).level;						
+		}
+		
+		public function getPrototype(): StructurePrototype 
+		{
+			return StructureFactory.getPrototype(type, level);
 		}
 			
 		override public function dispose():void

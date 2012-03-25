@@ -1,12 +1,10 @@
 ﻿package src.Map {
+	import src.Objects.Factories.StructureFactory;
 	import src.Objects.Prototypes.EffectPrototype;
+	import src.Objects.Prototypes.StructurePrototype;
 	import src.Objects.TechnologyManager;
 	import src.Util.BinaryList.*;
 
-	/**
-	 * ...
-	 * @author Default
-	 */
 	public class CityObject {
 
 		public var type: int;
@@ -71,6 +69,11 @@
 		public function radiusDistance(x_1: int, y_1: int): int
 		{
 			return MapUtil.radiusDistance(x, y, x_1, y_1);
+		}
+		
+		public function getStructurePrototype(): StructurePrototype 
+		{
+			return StructureFactory.getPrototype(type, level);
 		}
 
 		public static function compareCityIdAndObjId(a: CityObject, value: Array):int

@@ -39,14 +39,17 @@
 			this.battleCityId = battleCityId;
 
 			battle = Global.mapComm.Battle.battleSubscribe(battleCityId);
-			battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, onAddedAttack);
-			battle.addEventListener(BattleManager.OBJECT_REMOVED_ATTACK, onRemoved);
-			battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, onAddedDefense);
-			battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);
-			battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
-			battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
-			battle.addEventListener(BattleManager.END, onEnd);
-			battle.addEventListener(BattleManager.NEW_ROUND, onNewRound);
+			
+			if (battle) {
+				battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, onAddedAttack);
+				battle.addEventListener(BattleManager.OBJECT_REMOVED_ATTACK, onRemoved);
+				battle.addEventListener(BattleManager.OBJECT_ADDED_DEFENSE, onAddedDefense);
+				battle.addEventListener(BattleManager.OBJECT_REMOVED_DEFENSE, onRemoved);
+				battle.addEventListener(BattleManager.OBJECT_ATTACKED, onAttack);
+				battle.addEventListener(BattleManager.OBJECT_SKIPPED, onSkipped);
+				battle.addEventListener(BattleManager.END, onEnd);
+				battle.addEventListener(BattleManager.NEW_ROUND, onNewRound);
+			}
 		}
 
 		public function onClosed(e: *):void
@@ -303,7 +306,16 @@
 
 			frame.addEventListener(PopupEvent.POPUP_CLOSED, onClosed);
 
-			Global.gameContainer.showFrame(frame);
+			if (modal) {
+				Global.gameContainer.showFrame(frame);
+			}
+			else {
+				frame.show();
+			}
+			
+			frame.setResizable(true);
+			frame.setMinimumSize(new IntDimension(650, 545));
+			
 			return frame;
 		}
 

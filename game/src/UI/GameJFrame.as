@@ -1,5 +1,7 @@
 ﻿package src.UI
 {
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import org.aswing.JFrame;
 	import src.Constants;
 
@@ -13,6 +15,14 @@
 			super(owner, title, modal);
 
 			onDispose = dispose;
+			
+			addEventListener(MouseEvent.MOUSE_WHEEL, function(e: MouseEvent): void {
+				e.stopImmediatePropagation();
+			});			
+			
+			addEventListener(MouseEvent.MOUSE_DOWN, function(e: MouseEvent): void {
+				e.stopImmediatePropagation();
+			});
 		}
 
 		override public function dispose():void

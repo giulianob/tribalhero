@@ -25,9 +25,11 @@
 		public var attackers: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
 		public var defenders: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
 		public var all: BinaryList = new BinaryList(CombatObject.sortOnId, CombatObject.compareObjId);
+		public var battleId: int;
+		public var cityId: int;
 		
-		public function BattleManager() {
-			
+		public function BattleManager(cityId: int) {
+			this.cityId = cityId;
 		}
 		
 		public function end() : void {

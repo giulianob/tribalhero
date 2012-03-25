@@ -254,7 +254,7 @@
 			return;
 
 			var currentEventDialog: CityEventDialog = new CityEventDialog(selectedCity);
-			currentEventDialog.show();
+			currentEventDialog.show(null, false);
 		}
 
 		public function onViewRanking(e: MouseEvent) :void

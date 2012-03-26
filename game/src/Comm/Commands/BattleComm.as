@@ -120,6 +120,8 @@
 			// Set battle id
 			battle.battleId = packet.readUInt();
 			
+			battle.newRound(packet.readUInt());
+			
 			// Add units
 			var playerId: int;
 			var cityId: int;

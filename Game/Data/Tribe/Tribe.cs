@@ -349,23 +349,33 @@ namespace Game.Data.Tribe
             // Max of 48 hrs for planning assignments
             if (DateTime.UtcNow.AddDays(2) < time)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentBadTime;
             }
 
             if (stub.TotalCount == 0)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.TroopEmpty;
             }
 
             if (stub.City.Owner.Tribesman == null)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.TribeNotFound;
             }
 
             // Cant attack other tribesman
-            if (targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
+            if (isAttack && targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentCantAttackFriend;
+            }
+
+            if (targetCity.Owner == stub.City.Owner)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+                return Error.DefendSelf;                
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
@@ -374,6 +384,7 @@ namespace Game.Data.Tribe
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentUnitsTooSlow;
             }
 

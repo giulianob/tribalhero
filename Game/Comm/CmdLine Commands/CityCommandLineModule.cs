@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Game.Data;
+using Game.Data.Troop;
 using Game.Logic.Actions;
+using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
@@ -12,10 +14,69 @@ namespace Game.Comm.CmdLine_Commands
 {
     class CityCommandLineModule : CommandLineModule
     {
+        private readonly Procedure procedure;
+
+        public CityCommandLineModule(Procedure procedure)
+        {
+            this.procedure = procedure;
+        }
+
         public override void RegisterCommands(CommandLineProcessor processor)
         {
             processor.RegisterCommand("renamecity", RenameCity, true);
             processor.RegisterCommand("removestructure", RemoveStructure, true);
+            processor.RegisterCommand("deletestucktroop", DeleteStuckTroop, true);
+        }
+
+        public string DeleteStuckTroop(Session session, String[] parms)
+        {
+            bool help = false;
+            byte stubId = 0;
+            string cityName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "city=", v => cityName = v.TrimMatchingQuotes() },
+                                { "stubId=", v => stubId = byte.Parse(v.TrimMatchingQuotes()) }
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || cityName == string.Empty)
+                return "deletestucktroop --city=### --stubId=###";
+
+            uint cityId;
+            if (!World.Current.FindCityId(cityName, out cityId))
+                return "City not found";
+
+            ICity city;
+            using (Concurrency.Current.Lock(cityId, out city))
+            {
+                if (city == null)
+                    return "City not found";
+
+                ITroopStub stub;
+                if (!city.Troops.TryGetStub(stubId, out stub))
+                {
+                    return "Stub not found";
+                }
+
+                if (stub == city.DefaultTroop)
+                {
+                    return "Cant remove local troop";
+                }
+
+                procedure.TroopStubDelete(city, stub);
+            }
+
+            return "OK!";            
         }
 
         public string RemoveStructure(Session session, String[] parms)

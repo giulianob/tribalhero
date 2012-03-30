@@ -125,8 +125,7 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, troopObjectId, out city, out troopObj))
                 return Error.ObjectNotFound;
 
-            distanceRemaining = troopObj.TileDistance(x, y);
-
+            distanceRemaining = Math.Max(1, troopObj.TileDistance(x, y));
 
             double moveTimeTotal = Formula.Current.MoveTimeTotal(troopObj.Stub, distanceRemaining, isAttacking);
 

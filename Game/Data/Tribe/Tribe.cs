@@ -339,6 +339,7 @@ namespace Game.Data.Tribe
         {
             id = 0;
 
+            // Create troop             
             if (!procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
             {
                 return Error.TroopChanged;
@@ -372,7 +373,8 @@ namespace Game.Data.Tribe
                 return Error.AssignmentCantAttackFriend;
             }
 
-            if (targetCity.Owner == stub.City.Owner)
+            // Cant defend the same city
+            if (targetCity == stub.City)
             {
                 Procedure.Current.TroopStubDelete(city, stub);
                 return Error.DefendSelf;                
@@ -393,10 +395,15 @@ namespace Game.Data.Tribe
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
-            assignment.Add(stub);
+            var result = assignment.Add(stub);
+
+            if (result != Error.Ok)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+            }
 
             SendUpdate();
-            return Error.Ok;
+            return result;
         }
         
         public Error JoinAssignment(int id, ICity city, ITroopStub stub)
@@ -418,7 +425,14 @@ namespace Game.Data.Tribe
                 return Error.TroopChanged;
             }            
 
-            return assignment.Add(stub);
+            var error = assignment.Add(stub);
+
+            if (error != Error.Ok)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+            }
+
+            return error;
         }
 
         public void RemoveAssignment(Assignment assignment)

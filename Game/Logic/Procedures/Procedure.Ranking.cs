@@ -33,6 +33,11 @@ namespace Game.Logic.Procedures
             ThreadPool.QueueUserWorkItem(delegate {
                 ITribe tribe;
                 using (Concurrency.Current.Lock(id, out tribe)) {
+                    if (tribe == null)
+                    {
+                        return;
+                    }
+
                     tribe.AttackPoint += point;
                 }
             });

@@ -203,7 +203,7 @@ namespace ConsoleSimulator
             sw.WriteLine(",{0}", enemyCount);
         }
 
-        private void bm_UnitRemoved(CombatObject obj)
+        private void bm_UnitRemoved(uint battleId, CombatObject obj)
         {
             deadObject = obj;
             if (obj is DefenseCombatUnit)
@@ -213,7 +213,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private void bm_ExitBattle(CombatList atk, CombatList def)
+        private void bm_ExitBattle(uint battleId, CombatList atk, CombatList def)
         {
             if (def.Count > 0)
             {
@@ -227,7 +227,7 @@ namespace ConsoleSimulator
                 writeResultEnd(atk[0].Count);
         }
 
-        private void bm_UnitRemoved2(CombatObject obj)
+        private void bm_UnitRemoved2(uint battleId, CombatObject obj)
         {
             deadObject = obj;
             if (obj is AttackCombatUnit)
@@ -237,7 +237,7 @@ namespace ConsoleSimulator
             }
         }
 
-        private void bm_ExitBattle2(CombatList atk, CombatList def)
+        private void bm_ExitBattle2(uint battleId, CombatList atk, CombatList def)
         {
             if (atk.Count > 0)
             {

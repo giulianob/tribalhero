@@ -25,7 +25,8 @@ namespace Game.Battle
             battle.EnterRound += BattleEnterRound;
         }
 
-        void BattleEnterRound(CombatList atk, CombatList def, uint round) {
+        void BattleEnterRound(uint battleId, CombatList atk, CombatList def, uint round)
+        {
             Append("Round[" + round + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
@@ -56,7 +57,7 @@ namespace Game.Battle
             }
         }
 
-        private void BattleActionAttacked(CombatObject source, CombatObject target, decimal damage)
+        private void BattleActionAttacked(uint battleId, CombatObject source, CombatObject target, decimal damage)
         {
             Append("**************************************");
             Append("Attacker: ");
@@ -66,7 +67,7 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleUnitRemoved(CombatObject obj)
+        private void BattleUnitRemoved(uint battleId, CombatObject obj)
         {
             Append("**************************************");
             Append("Removing: ");
@@ -74,27 +75,28 @@ namespace Game.Battle
             Append("**************************************\n");
         }
 
-        private void BattleExitTurn(CombatList atk, CombatList def, int turn)
+        private void BattleExitTurn(uint battleId, CombatList atk, CombatList def, int turn)
         {
             Append("Turn[" + turn + "] Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterTurn(CombatList atk, CombatList def, int turn)
+        private void BattleEnterTurn(uint battleId, CombatList atk, CombatList def, int turn)
         {
             Append("Turn[" + turn + "] Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleExitBattle(CombatList atk, CombatList def)
+        private void BattleExitBattle(uint battleId, CombatList atk, CombatList def)
         {
             Append("Battle Ended with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        private void BattleEnterBattle(CombatList atk, CombatList def)
+        private void BattleEnterBattle(uint battleId, CombatList atk, CombatList def)
         {
             Append("Battle Started with atk_size[" + atk.Count + "] def_size[" + def.Count + "]\n");
         }
 
-        void BattleSkippedAttacker(CombatObject obj) {
+        void BattleSkippedAttacker(uint battleId, CombatObject obj)
+        {
             Append("**************************************");
             Append("Skipping: ");
             PrintCombatobject(obj);

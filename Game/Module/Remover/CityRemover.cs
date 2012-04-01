@@ -68,7 +68,7 @@ namespace Game.Module
 
         private void Reschedule(double interval)
         {
-            Time = DateTime.UtcNow.AddSeconds(interval*Config.seconds_per_unit);
+            Time = DateTime.UtcNow.AddMinutes(interval*Config.seconds_per_unit);
             Scheduler.Current.Put(this);
         }
 
@@ -106,7 +106,7 @@ namespace Game.Module
                 // if local city is in battle, try again later
                 if (city.Battle != null)
                 {
-                    Reschedule(LONG_RETRY);
+                    Reschedule(SHORT_RETRY);
                     return;
                 }
 
@@ -199,7 +199,7 @@ namespace Game.Module
             {
                 if (city.Worker.Notifications.Count > 0)
                 {
-                    Reschedule(LONG_RETRY);
+                    Reschedule(SHORT_RETRY);
                     return;
                 }
 

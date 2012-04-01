@@ -65,6 +65,8 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 var reply = new Packet(packet);
+                reply.AddUInt32(city.Battle.BattleId);
+                reply.AddUInt32(city.Battle.Round);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.Subscribe(session);
@@ -90,7 +92,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 if (city == null || city.Battle == null)
                 {
-                    ReplyError(session, packet, Error.Unexpected);
+                    ReplySuccess(session, packet);
                     return;
                 }
 

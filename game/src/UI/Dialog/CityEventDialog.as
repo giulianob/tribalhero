@@ -65,7 +65,16 @@
 					city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
 				});
 			
-			Global.gameContainer.showFrame(frame);
+			if (modal) {
+				Global.gameContainer.showFrame(frame);
+			}
+			else {
+				frame.setResizable(true);
+				frame.setMinimumSize(new IntDimension(640, 345));				
+				frame.show();								
+			}				
+			
+			frame.pack();
 			
 			return frame;
 		}
@@ -150,12 +159,7 @@
 					
 					laborersListModel.append(cityObj);
 				}
-			}
-			
-			if (getFrame() != null)
-			{
-				getFrame().pack();
-			}
+			}			
 		}
 		
 		public function maxLaborerTranslator(info:CityObject, key:String):String
@@ -171,11 +175,13 @@
 		
 		private function createUI():void
 		{
-			setLayout(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 10));
+			setLayout(new BorderLayout(0, 10));
 			
 			pnlResources = new JPanel(new GridLayout(0, 3, 20, 10));
+			pnlResources.setConstraints("North");
 			
 			pnlTabs = new JTabbedPane();
+			pnlTabs.setConstraints("Center");
 			pnlTabs.setPreferredSize(new IntDimension(540, 235));
 			
 			// Local Events Tab

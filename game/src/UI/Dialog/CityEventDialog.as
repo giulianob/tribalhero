@@ -65,14 +65,7 @@
 					city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
 				});
 			
-			if (modal) {
-				Global.gameContainer.showFrame(frame);
-			}
-			else {
-				frame.setResizable(true);
-				frame.setMinimumSize(new IntDimension(640, 345));
-				frame.show();				
-			}
+			Global.gameContainer.showFrame(frame);
 			
 			return frame;
 		}

@@ -126,6 +126,12 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(tribe))
             {
+                if (tribe == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
                 reply.AddUInt32(tribe.Id);
                 reply.AddUInt32(tribe.Owner.PlayerId);
                 reply.AddByte(tribe.Level);
@@ -204,6 +210,12 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(id, out tribe))
             {
+                if (tribe == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
                 reply.AddUInt32(tribe.Id);
                 reply.AddString(tribe.Name);
                 reply.AddInt16((short)tribe.Count);

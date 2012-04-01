@@ -166,6 +166,12 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player, tribe))
             {
+                if (tribe == null)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
                 var tribesman = new Tribesman(tribe, session.Player, 2);
                 var error = tribe.AddTribesman(tribesman);
                 if (error != Error.Ok)
@@ -263,16 +269,21 @@ namespace Game.Comm.ProcessorCommands
 
         public void Leave(Session session, Packet packet)
         {
-            if (session.Player.Tribesman == null)
+            var tribe = session.Player.Tribesman == null ? null : session.Player.Tribesman.Tribe;
+            if (tribe == null)
             {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe, session.Player))
-            {
-                ITribe tribe = session.Player.Tribesman.Tribe;
-
+            using (Concurrency.Current.Lock(tribe, session.Player))
+            {                
+                if (session.Player.Tribesman == null || session.Player.Tribesman.Tribe != tribe)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+				
                 if (tribe.IsOwner(session.Player))
                 {
                     ReplyError(session, packet, Error.TribesmanIsOwner);
@@ -299,16 +310,23 @@ namespace Game.Comm.ProcessorCommands
                 return;
             }
 
-            if (session.Player.Tribesman == null)
+            var tribe = session.Player.Tribesman != null ? session.Player.Tribesman.Tribe : null;
+
+            if (tribe == null)
             {
                 ReplyError(session, packet, Error.TribeIsNull);
                 return;
             }
 
-            using (Concurrency.Current.Lock(session.Player.Tribesman.Tribe, session.Player))
+            using (Concurrency.Current.Lock(tribe, session.Player))
             {
-                ICity city = session.Player.GetCity(cityId);
-                ITribe tribe = session.Player.Tribesman.Tribe;
+                if (session.Player.Tribesman == null || session.Player.Tribesman.Tribe != tribe)
+                {
+                    ReplyError(session, packet, Error.Unexpected);
+                    return;
+                }
+
+                ICity city = session.Player.GetCity(cityId);                
 
                 if (city == null)
                 {

@@ -469,8 +469,33 @@ package src.UI.LookAndFeel
 		private var Frame_chatIcon_disabledImage:Class;
 
 		[Embed(source="assets/chat_rolloverImage.png")]
-		private var Frame_chatIcon_rolloverImage:Class;		
+		private var Frame_chatIcon_rolloverImage:Class;	
+		
+		//========= Chat Enabled Image =======
+		[Embed(source="assets/chat_enabled_icon.png")]
+		private var Frame_chatEnabledIcon_defaultImage:Class;
 
+		[Embed(source="assets/chat_enabled_icon.png")]
+		private var Frame_chatEnabledIcon_pressedImage:Class;
+
+		[Embed(source="assets/chat_enabled_icon.png")]
+		private var Frame_chatEnabledIcon_disabledImage:Class;
+
+		[Embed(source="assets/chat_enabled_icon.png")]
+		private var Frame_chatEnabledIcon_rolloverImage:Class;				
+		
+		//========= Chat Enabled Image =======
+		[Embed(source="assets/chat_disabled_icon.png")]
+		private var Frame_chatDisabledIcon_defaultImage:Class;
+
+		[Embed(source="assets/chat_disabled_icon.png")]
+		private var Frame_chatDisabledIcon_pressedImage:Class;
+
+		[Embed(source="assets/chat_disabled_icon.png")]
+		private var Frame_chatDisabledIcon_disabledImage:Class;
+
+		[Embed(source="assets/chat_disabled_icon.png")]
+		private var Frame_chatDisabledIcon_rolloverImage:Class;	
 		//----------------------------------------------------------------------
 		//___________________________ ToolTip scale-9 __________________________
 		//======================================================================
@@ -1212,7 +1237,17 @@ package src.UI.LookAndFeel
 			"Frame.chatIcon.defaultImage", Frame_chatIcon_defaultImage,
 			"Frame.chatIcon.pressedImage", Frame_chatIcon_pressedImage,
 			"Frame.chatIcon.disabledImage", Frame_chatIcon_disabledImage,
-			"Frame.chatIcon.rolloverImage", Frame_chatIcon_rolloverImage			
+			"Frame.chatIcon.rolloverImage", Frame_chatIcon_rolloverImage,
+
+			"Frame.chatEnabledIcon.defaultImage", Frame_chatEnabledIcon_defaultImage,
+			"Frame.chatEnabledIcon.pressedImage", Frame_chatEnabledIcon_pressedImage,
+			"Frame.chatEnabledIcon.disabledImage", Frame_chatEnabledIcon_disabledImage,
+			"Frame.chatEnabledIcon.rolloverImage", Frame_chatEnabledIcon_rolloverImage,				
+			
+			"Frame.chatDisabledIcon.defaultImage", Frame_chatDisabledIcon_defaultImage,
+			"Frame.chatDisabledIcon.pressedImage", Frame_chatDisabledIcon_pressedImage,
+			"Frame.chatDisabledIcon.disabledImage", Frame_chatDisabledIcon_disabledImage,
+			"Frame.chatDisabledIcon.rolloverImage", Frame_chatDisabledIcon_rolloverImage				
 			];
 			table.putDefaults(comDefaults);
 

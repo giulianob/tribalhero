@@ -7,6 +7,7 @@ package src.UI.Dialog{
 	import org.aswing.geom.*;
 	import org.aswing.colorchooser.*;
 	import org.aswing.ext.*;
+	import src.Util.ProfanityFilter;
 
 	/**
 	 * ConnectionDialog
@@ -31,6 +32,11 @@ package src.UI.Dialog{
 
 			var self: InitialCityDialog = this;
 			btnOk.addActionListener(function():void {				
+				if (new ProfanityFilter().quickValidate(getCityName()) == false) {
+					InfoDialog.showMessageDialog("Oops", "It looks like you have entered an invalid city name. This may be because the name you have chosen is blacklisted.");
+					return;
+				}			
+				
 				if (onAccept != null) onAccept(self);
 			});
 		}

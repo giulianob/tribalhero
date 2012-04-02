@@ -51,9 +51,9 @@ package src.UI.Dialog
 		public function CmdLineViewer() {
 			createUI();
 			
-			log('<a href="http://tribalhero.com/pages/donate" target="_blank">Donate to improve</a> Tribal Hero if you are enjoying the game.', false, false);
+			log('<a href="http://tribalhero.com/pages/donate" target="_blank">Donate to improve</a> Tribal Hero if you are enjoying the game.', false, false);			
+			log('Remember to keep it classy. Chat is for talking about the game and profanity should be kept to a minimum.');
 			log('Not sure what to do? Visit the <a href="http://tribalhero.wikia.com" target="_blank">wiki</a>.', false, false);
-			log('Remember to keep it classy.');
 			
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event): void
 			{

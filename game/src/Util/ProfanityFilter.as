@@ -31,7 +31,7 @@ package src.Util {
     public class ProfanityFilter {
      
         //high always matches, low maches only as a seperate word
-        private var defaultListHigh:String = "bastard,bitch,fuck,nigger";
+        private var defaultListHigh:String = "bastard,bitch,fuck,nigger,spacedick,spaceclop,clop,clopclop";
         private var defaultListLow:String = "bull shit,nigga,chink,cooter,crap,jizz,shit,dildo,fag,faggot,homo,jackass,muff,pussy,queer,slut,twat,wetback,whore,dick,cock,nigglet";
         private var defaultIgnoreList:String ="craps";
         private var escaped:Array;

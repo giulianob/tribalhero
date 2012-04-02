@@ -13,6 +13,7 @@
 	import src.Comm.*;
 	import src.Map.*;
 	import src.Objects.Factories.*;
+	import src.UI.Components.RichLabel;
 	import src.UI.Dialog.InfoDialog;
 	import src.UI.Dialog.InitialCityDialog;
 	import src.UI.Dialog.LoginDialog;
@@ -239,12 +240,14 @@
 			var newPlayer: Boolean = Global.mapComm.General.onLogin(packet);
 
 			if (!newPlayer) {
-				completeLogin(packet);
+				completeLogin(packet, false);
 			}
 			else {
 				// Need to make the createInitialCity static and pass in the session
 				var createCityDialog: InitialCityDialog = new InitialCityDialog(function(sender: InitialCityDialog): void {
-					Global.mapComm.General.createInitialCity(sender.getCityName(), completeLogin);
+					Global.mapComm.General.createInitialCity(sender.getCityName(), function(packet: Packet):void {						
+						completeLogin(packet, true);
+					});
 				});
 
 				createCityDialog.show();
@@ -260,7 +263,7 @@
 			doConnect();
 		}
 
-		public function completeLogin(packet: Packet):void
+		private function completeLogin(packet: Packet, newPlayer: Boolean):void
 		{
 			Global.map = map = new Map();
 			miniMap = new MiniMap(Constants.miniMapScreenW, Constants.miniMapScreenH);
@@ -289,6 +292,10 @@
 				frameCounter = new FPSCounter();
 				frameCounter.y = Constants.screenH - 32;
 				addChild(frameCounter);
+			}
+			
+			if (newPlayer) {
+				InfoDialog.showMessageDialog("Welcome", new RichLabel('Your city has been founded. You should start by building a Farm and Lumbermill. These will give you some crop and wood which are used to further develop your city. If you need help, <a href="http://tribalhero.wikia.com" target="_blank">visit the wiki</a>. You can find the wiki link by clicking the menu on the top left corner of the game at anytime.', 0, 40));
 			}
 		}
 

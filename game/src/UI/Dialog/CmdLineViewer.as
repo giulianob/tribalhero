@@ -166,7 +166,7 @@ package src.UI.Dialog
 					}
 					
 					if (message.substr(0, 3) == "/t ") {
-						message = message.substr(4);
+						message = message.substr(3);
 						type = TYPE_TRIBE;
 					}
 					

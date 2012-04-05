@@ -298,7 +298,7 @@ namespace Game.Database
                                             DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
                                             (string)reader["name"],
                                             (string)reader["description"],
-                                            false) { DbPersisted = true, TribeRequest = (uint)reader["invitation_tribe_id"] };
+                                            PlayerRights.Basic) { DbPersisted = true, TribeRequest = (uint)reader["invitation_tribe_id"] };
                     World.Current.Players.Add(player.PlayerId, player);
                 }
             }

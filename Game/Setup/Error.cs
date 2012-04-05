@@ -18,6 +18,7 @@ namespace Game.Setup
         
         ChatFloodWarning = 20,
         ChatMessageTooLong = 21,
+        ChatMuted = 22,
 
         #endregion
 

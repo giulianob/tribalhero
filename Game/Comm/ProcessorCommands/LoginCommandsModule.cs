@@ -1,6 +1,6 @@
 #region
-// ReSharper disable RedundantUsingDirective
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -15,8 +15,6 @@ using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using Ninject;
-using Persistance;
-// ReSharper restore RedundantUsingDirective
 
 #endregion
 
@@ -53,7 +51,8 @@ namespace Game.Comm.ProcessorCommands
             string playerName;
             string playerPassword = string.Empty;
             uint playerId;
-            bool admin = false;
+            bool muted = false;
+            PlayerRights playerRights = PlayerRights.Basic;
 
             try
             {
@@ -61,8 +60,8 @@ namespace Game.Comm.ProcessorCommands
                 clientRevision = packet.GetInt16();
                 loginMode = packet.GetByte();
                 playerName = packet.GetString();
-                if (loginMode == 0)                
-                    loginKey = packet.GetString();                
+                if (loginMode == 0)
+                    loginKey = packet.GetString();
                 else
                     playerPassword = packet.GetString();
             }
@@ -72,7 +71,7 @@ namespace Game.Comm.ProcessorCommands
                 session.CloseSession();
                 return;
             }
-            
+
             if (clientVersion <= Config.client_min_version && clientRevision < Config.client_min_revision)
             {
                 ReplyError(session, packet, Error.ClientOldVersion);
@@ -85,7 +84,7 @@ namespace Game.Comm.ProcessorCommands
                 ApiResponse response;
                 try
                 {
-                    response = loginMode == 0 ? ApiCaller.CheckLoginKey(playerName, loginKey) : ApiCaller.CheckLogin(playerName, playerPassword);                    
+                    response = loginMode == 0 ? ApiCaller.CheckLoginKey(playerName, loginKey) : ApiCaller.CheckLogin(playerName, playerPassword);
                 }
                 catch(Exception e)
                 {
@@ -105,10 +104,11 @@ namespace Game.Comm.ProcessorCommands
                 playerId = uint.Parse(response.Data.player.id);
                 playerName = response.Data.player.name;
                 bool banned = int.Parse(response.Data.player.banned) == 1;
-                admin = int.Parse(response.Data.player.admin) == 1;
+                playerRights = (PlayerRights)Int32.Parse(response.Data.player.rights);
+                muted = int.Parse(response.Data.player.muted) == 1;
 
                 // If we are under admin only mode then kick out non admin
-                if (Config.server_admin_only && !admin)
+                if (Config.server_admin_only && playerRights == PlayerRights.Basic)
                 {
                     ReplyError(session, packet, Error.UnderMaintenance);
                     session.CloseSession();
@@ -136,17 +136,20 @@ namespace Game.Comm.ProcessorCommands
                 playerName = "Player " + playerId;
             }
 
-            //Create the session id that will be used for the calls to the web server                        
-#if DEBUG
-            string sessionId = playerId.ToString();
-            admin = true;
-#else
-            SHA1 sha = new SHA1CryptoServiceProvider();
+            //Create the session id that will be used for the calls to the web server
+            string sessionId;
+            if (Config.server_admin_always && !Config.server_production)
+            {
 
-            string sessionId = BitConverter.ToString(
-                sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.UtcNow.Ticks))).
-                Replace("-", String.Empty);
-#endif
+                sessionId = playerId.ToString(CultureInfo.InvariantCulture);
+                playerRights = PlayerRights.Bureaucrat;
+            }
+            else
+            {
+                SHA1 sha = new SHA1CryptoServiceProvider();
+                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(playerId + Config.database_salt + DateTime.UtcNow.Ticks));
+                sessionId = BitConverter.ToString(hash).Replace("-", String.Empty);
+            }
 
             bool newPlayer;
             lock (loginLock)
@@ -158,7 +161,7 @@ namespace Game.Comm.ProcessorCommands
                 {
                     Global.Logger.Info(string.Format("Creating new player {0}({1})", playerName, playerId));
 
-                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, admin, sessionId);
+                    player = new Player(playerId, SystemClock.Now, SystemClock.Now, playerName, string.Empty, playerRights, sessionId);
 
                     World.Current.Players.Add(player.PlayerId, player);
                 }
@@ -166,33 +169,27 @@ namespace Game.Comm.ProcessorCommands
                 {
                     Global.Logger.Info(string.Format("Player login in {0}({1})", player.Name, player.PlayerId));
 
-                    player.Name = playerName;
-                    player.Admin = admin;
-                    player.LastLogin = SystemClock.Now;
+                    player.Name = playerName;                    
                 }
             }
 
             using (Concurrency.Current.Lock(player))
             {
-                if (!newPlayer)
+                
+               // If someone is already connected as this player, kick them off
+                if (player.Session != null)
                 {
-                    // If someone is already connected as this player, kick them off
-                    if (player.Session != null)
-                    {
-                        player.Session.CloseSession();
-                        player.Session = null;
-                    }
+                    player.Session.CloseSession();
+                    player.Session = null;
+                }
 
-                    player.Session = session;
-                    player.SessionId = sessionId;
-                    DbPersistance.Current.Save(player);
-                }
-                else
-                {
-                    player.SessionId = sessionId;
-                    player.Session = session;
-                    DbPersistance.Current.Save(player);
-                }
+                player.SessionId = sessionId;
+                player.Session = session;
+                player.Rights = playerRights;
+                player.LastLogin = SystemClock.Now;
+                player.Muted = muted;
+
+                DbPersistance.Current.Save(player);
 
                 //User session backreference
                 session.Player = player;                
@@ -202,14 +199,16 @@ namespace Game.Comm.ProcessorCommands
 
                 // Subscribe him to the tribe channel if available
                 if (player.Tribesman != null)
+                {
                     Global.Channel.Subscribe(session, "/TRIBE/" + player.Tribesman.Tribe.Id);
+                }
 
                 // Subscribe to global channel
                 Global.Channel.Subscribe(session, "/GLOBAL");
 
                 //Player Info
                 reply.AddUInt32(player.PlayerId);
-                reply.AddByte((byte)(player.Admin ? 1 : 0));
+                reply.AddByte((byte)(player.Rights >= PlayerRights.Admin ? 1 : 0));
                 reply.AddString(sessionId);
                 reply.AddString(player.Name);
                 reply.AddInt32(Config.newbie_protection);
@@ -221,7 +220,7 @@ namespace Game.Comm.ProcessorCommands
                 reply.AddUInt32(UnixDateTime.DateTimeToUnix(DateTime.UtcNow.ToUniversalTime()));
 
                 //Server rate
-                reply.AddString(Config.seconds_per_unit.ToString());
+                reply.AddString(Config.seconds_per_unit.ToString(CultureInfo.InvariantCulture));
 
                 // If it's a new player we send simply a 1 which means the client will need to send back a city name
                 // Otherwise, we just send the whole login info

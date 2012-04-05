@@ -259,7 +259,7 @@ namespace Game.Module
 
                 uint idx = 50000 + i;
 
-                var npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, string.Empty, false);
+                var npc = new Player(idx, DateTime.MinValue, SystemClock.Now, "NPC " + i, string.Empty, PlayerRights.Basic);
                 var intelligence = new Intelligence(npc, Math.Max(0.5, rand.NextDouble()), Math.Max(0.5, rand.NextDouble()));
 
                 using (Concurrency.Current.Lock(npc))

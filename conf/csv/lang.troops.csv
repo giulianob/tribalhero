@@ -23,13 +23,13 @@ GLADIATOR_UNIT,Gladiator
 0_FIGHTER_UNIT_DESC,"Fighter is a basic unit that can do average damage to most units.  On top of that, fighter health is high enough for them to hold off much damage and protect the weaker units behind them.  Fighter is one of the few units that is good against cannon tower and catapult, but can fall to bow units if they receive no help.  Fighter also carries average amount of loot from the battle which makes up for their lack of damage."
 0_BOWMAN_UNIT,Bowman
 0_BOWMAN_PLURAL_UNIT,Bowmen
-0_BOWMAN_UNIT_DESC,"Bowman is strong against all  good against all except machine units and structures and their damage splashes among multiple targets; however they have relatively low health compare to the damage that they deal.  It is wise to protect them with other units.  When using bowmen, be very careful of enemy unit with high range (such as Cavalry, Knight) they can reach bowman from the beginning."
+0_BOWMAN_UNIT_DESC,"Bowman is strong against all except machine units and structures and their damage splashes among multiple targets; however they have relatively low health compare to the damage that they deal.  It is wise to protect them with other units.  When using bowmen, be very careful of enemy unit with high range (such as Cavalry, Knight) they can reach bowman from the beginning."
 1_SWORDSMAN_UNIT,Swordsman
 1_SWORDSMAN_PLURAL_UNIT,Swordsmen
 1_SWORDSMAN_UNIT_DESC,"Swordsman is a basic unit that can do average damage to most units.  On top of that, swordsman health is high enough for them to hold off much damage and protect the weaker units behind them.  Swordsman is one of the few units that is good against cannon tower and catapult, but can fall to bow units if they receive no help.   Swordsman also carries average amount of loot from the battle which makes up for their lack of damage."
 1_ARCHER_UNIT,Archer
 1_ARCHER_PLURAL_UNIT,Archers
-1_ARCHER_UNIT_DESC,"Archer is strong against all  good against all except machine units and structures and their damage splashes among multiple targets; however they have relatively low health compare to the damage that they deal.  It is wise to protect them with other units.  When using archer, be very careful of enemy unit with high range (such as Cavalry, Knight) they can reach bowman from the beginning."
+1_ARCHER_UNIT_DESC,"Archer is strong against all except machine units and structures and their damage splashes among multiple targets; however they have relatively low health compare to the damage that they deal.  It is wise to protect them with other units.  When using archer, be very careful of enemy unit with high range (such as Cavalry, Knight) they can reach bowman from the beginning."
 1_PIKEMAN_UNIT,Hoplite
 1_PIKEMAN_PLURAL_UNIT,Hoplites
 1_PIKEMAN_UNIT_DESC,"Hoplite is a very special trained unit  to take down mounted units such as Cavalry and Knight.  They are not very well equiped against anyone else, so do not expect to win a battle with just Hoplites."

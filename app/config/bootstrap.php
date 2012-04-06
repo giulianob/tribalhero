@@ -13,6 +13,11 @@ define('TROOP_STATE_OUT_OF_STAMINA', 6);
 
 define('BATTLE_VIEW_MIN_ROUND', 5);
 
+define('PLAYER_RIGHTS_BASIC', 0);
+define('PLAYER_RIGHTS_MODERATOR', 1);
+define('PLAYER_RIGHTS_ADMIN', 2);
+define('PLAYER_RIGHTS_BUREAUCRAT', 3);
+
 define('FLASH_DOMAIN', '*.tribalhero.com');
 
 App::import('Vendor', 'util');

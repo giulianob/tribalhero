@@ -4,6 +4,7 @@
  * @property EmailComponent $Email
  * @property SessionComponent $Session
  * @property ThriftComponent $Thrift
+ * @property AuthComponent $Auth
  */
 class AppController extends Controller {
 
@@ -20,6 +21,7 @@ class AppController extends Controller {
         ),        
     );
     var $helpers = array('Html', 'Js', 'Form', 'Session', 'Cache');
+    var $allowedFromGame = array();
 
     function beforeFilter() {
         $this->disableCache();
@@ -59,7 +61,7 @@ class AppController extends Controller {
     }
 
     function isAuthorized() {
-        if ((array_key_exists('admin', $this->params) && $this->params['admin']) && !$this->Auth->user('admin')) {
+        if ((array_key_exists('admin', $this->params) && $this->params['admin']) && $this->Auth->user('rights') < PLAYER_RIGHTS_ADMIN) {
             return false;
         }
 

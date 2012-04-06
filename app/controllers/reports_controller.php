@@ -16,7 +16,7 @@ class ReportsController extends AppController {
      */
     private function getCities() {
         $playerId = $this->params['form']['playerId'];
-        if ($this->Auth->user('admin') && !empty($this->params['form']['playerNameFilter'])) {
+        if ($this->Auth->user('rights') >= PLAYER_RIGHTS_ADMIN && !empty($this->params['form']['playerNameFilter'])) {
             if ($this->params['form']['playerNameFilter'] == '*')
                 return null;
 

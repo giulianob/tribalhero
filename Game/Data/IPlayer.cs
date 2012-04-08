@@ -40,6 +40,8 @@ namespace Game.Data
 
         bool IsLoggedIn { get; }
 
+        bool IsInTribe { get; }
+
         void Add(ICity city);
 
         int GetCityCount(bool includeDeleted = false);

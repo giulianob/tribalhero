@@ -6,6 +6,7 @@ using System.Linq;
 using Game.Data;
 using Game.Data.Tribe;
 using Game.Database;
+using Game.Logic.Actions;
 using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
@@ -19,6 +20,13 @@ namespace Game.Comm.ProcessorCommands
 {
     class TribesmanCommandsModule : CommandModule
     {
+        private readonly IActionFactory actionFactory;
+
+        public TribesmanCommandsModule(IActionFactory actionFactory)
+        {
+            this.actionFactory = actionFactory;
+        }
+
         public override void RegisterCommands(Processor processor)
         {
             processor.RegisterCommand(Command.TribesmanSetRank, SetRank);
@@ -28,7 +36,7 @@ namespace Game.Comm.ProcessorCommands
             processor.RegisterCommand(Command.TribesmanRequest, Request);
             processor.RegisterCommand(Command.TribesmanConfirm, Confirm);
             processor.RegisterCommand(Command.TribesmanLeave, Leave);
-            processor.RegisterCommand(Command.TribesmanContribute, Contribute);            
+            processor.RegisterCommand(Command.TribesmanContribute, Contribute);
         }
 
         public void SetRank(Session session, Packet packet)
@@ -40,7 +48,7 @@ namespace Game.Comm.ProcessorCommands
                 playerId = packet.GetUInt32();
                 rank = packet.GetByte();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -77,7 +85,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 playerName = packet.GetString();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -130,7 +138,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 isAccepting = packet.GetByte() != 0;
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -157,7 +165,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (!Global.Tribes.TryGetValue(tribeRequestId, out tribe))
+                if (!World.Current.Tribes.TryGetValue(tribeRequestId, out tribe))
                 {
                     ReplyError(session, packet, Error.TribeNotFound);
                     return;
@@ -189,7 +197,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 playerId = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -219,7 +227,7 @@ namespace Game.Comm.ProcessorCommands
             {
                 playerId = packet.GetUInt32();
             }
-            catch (Exception)
+            catch(Exception)
             {
                 ReplyError(session, packet, Error.Unexpected);
                 return;
@@ -252,7 +260,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
                 session.Player.Tribesman.Tribe.RemoveTribesman(playerId);
-                Procedure.Current.OnSessionTribesmanQuit(players[playerId].Session, tribe.Id, playerId,true);
+                Procedure.Current.OnSessionTribesmanQuit(players[playerId].Session, tribe.Id, playerId, true);
                 ReplySuccess(session, packet);
             }
         }
@@ -279,7 +287,7 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
                 tribe.RemoveTribesman(session.Player.PlayerId);
-                Procedure.Current.OnSessionTribesmanQuit(session, tribe.Id, session.Player.PlayerId,false);
+                Procedure.Current.OnSessionTribesmanQuit(session, tribe.Id, session.Player.PlayerId, false);
                 ReplySuccess(session, packet);
             }
         }
@@ -287,10 +295,12 @@ namespace Game.Comm.ProcessorCommands
         public void Contribute(Session session, Packet packet)
         {
             uint cityId;
+            uint structureId;
             Resource resource;
             try
             {
                 cityId = packet.GetUInt32();
+                structureId = packet.GetUInt32();
                 resource = new Resource(packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), packet.GetInt32(), 0);
             }
             catch(Exception)
@@ -309,29 +319,16 @@ namespace Game.Comm.ProcessorCommands
             {
                 ICity city = session.Player.GetCity(cityId);
                 ITribe tribe = session.Player.Tribesman.Tribe;
+                IStructure structure;
 
-                if (city == null)
+                if (city == null || tribe == null || !city.TryGetStructure(structureId, out structure))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
-
-                if (!city.Resource.HasEnough(resource))
-                {
-                    ReplyError(session, packet, Error.ResourceNotEnough);
-                    return;
-                }
-
-                Error error = tribe.Contribute(session.Player.PlayerId, resource);
-                if (error != Error.Ok)
-                {
-                    ReplyError(session, packet, error);
-                    return;
-                }
-                city.BeginUpdate();
-                city.Resource.Subtract(resource);
-                city.EndUpdate();
-                ReplySuccess(session, packet);
+                var action = actionFactory.CreateTribeContributeActiveAction(cityId, structureId, resource);
+                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure), structure, action, structure.Technologies);
+                ReplyWithResult(session, packet, ret);
             }
         }
 

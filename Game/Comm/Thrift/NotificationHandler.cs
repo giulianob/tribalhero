@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Comm.Protocol;
 using Game.Data;
 using Game.Data.Tribe;
+using Game.Map;
 using Game.Util.Locking;
 
 namespace Game.Comm.Thrift
@@ -38,7 +39,7 @@ namespace Game.Comm.Thrift
         public void NewTribeForumPost(int tribeId, int playerId)
         {
             ITribe tribe;
-            if (!Global.Tribes.TryGetValue((uint)tribeId, out tribe))
+            if (!World.Current.Tribes.TryGetValue((uint)tribeId, out tribe))
                 return;
 
             using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))

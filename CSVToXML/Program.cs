@@ -355,6 +355,9 @@ namespace CSVToXML {
                             case ActionType.ResourceGatherActive:
                                 writer.WriteStartElement("ResourceGather");
                                 break;
+                            case ActionType.TribeContributeActive:
+                                writer.WriteStartElement("TribeContribute");
+                                break;
                             default:
                                 writer.WriteStartElement("MISSING_WORKER_ACTION");
                                 writer.WriteAttributeString("name", Enum.GetName(typeof(ActionType), req.Type));

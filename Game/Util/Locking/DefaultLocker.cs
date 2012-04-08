@@ -118,6 +118,11 @@ namespace Game.Util.Locking
             return TryGetCityTroop(cityId, objectId, out city, out obj);
         }
 
+        public CallbackLock Lock(uint cityId, out ICity city, out ITribe tribe)
+        {
+            return TryGetCityTribe(cityId, out city, out tribe);
+        }
+
         public IMultiObjectLock Lock(params ILockable[] list)
         {
             var lck = multiObjectLockFactory();
@@ -167,7 +172,7 @@ namespace Game.Util.Locking
 
         private IMultiObjectLock TryGetTribe(uint tribeId, out ITribe tribe)
         {
-            if (!Global.Tribes.TryGetValue(tribeId, out tribe))
+            if (!World.Current.Tribes.TryGetValue(tribeId, out tribe))
                 return null;
 
             try {
@@ -216,6 +221,27 @@ namespace Game.Util.Locking
                 lck.UnlockAll();
                 return null;
             }
+
+            return lck;
+        }
+
+        private CallbackLock TryGetCityTribe(uint cityId, out ICity city, out ITribe tribe)
+        {
+            city = null;
+            tribe = null;
+
+            if (!World.Current.TryGetObjects(cityId, out city))
+                return null;
+
+            var lck = callbackLockFactory().Lock((custom) =>
+                {
+                    ICity cityParam = (ICity)custom[0];
+
+                    return !cityParam.Owner.IsInTribe ? new ILockable[] {} : new ILockable[] { cityParam.Owner.Tribesman.Tribe };
+                }, new object[] { city }, city);
+
+            if (city.Owner.IsInTribe)
+                tribe = city.Owner.Tribesman.Tribe;
 
             return lck;
         }

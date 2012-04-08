@@ -223,6 +223,7 @@
     <Compile Include="Logic\Actions\TechnologyActions\TechnologyDeletePassiveAction.cs" />
     <Compile Include="Logic\Actions\TechnologyActions\TechnologyCreatePassiveAction.cs" />
     <Compile Include="Logic\Actions\TechnologyActions\TechnologyUpgradeActiveAction.cs" />
+    <Compile Include="Logic\Actions\TribeActions\TribeContributeActiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\BattlePassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\EngageAttackPassiveAction.cs" />
     <Compile Include="Logic\Actions\TroopActions\UnitTrainActiveAction.cs" />

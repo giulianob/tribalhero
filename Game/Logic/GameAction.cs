@@ -56,21 +56,23 @@ namespace Game.Logic
         ForestCampHarvestPassive = 310,
         ResourceGatherActive = 311,
 
+        TechnologyCreatePassive = 400,
+        TechnologyDeletePassive = 401,
+        TechnologyUpgradeActive = 402,
+
         CityPassive = 502,
         CityRadiusChangePassive = 503,
         CityCreatePassive = 505,
         RoadBuildActive = 510,
         RoadDestroyActive = 511,
 
-        TechnologyCreatePassive = 400,
-        TechnologyDeletePassive = 401,
-        TechnologyUpgradeActive = 402,
-
         UnitTrainActive = 601,
         UnitUpgradeActive = 602,
         BattlePassive = 701,
         EngageAttackPassive = 702,
         EngageDefensePassive = 703,
+
+        TribeContributeActive = 1018,
     }
 
     public enum ActionInterrupt

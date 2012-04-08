@@ -135,6 +135,14 @@ namespace Game.Data
             }
         }
 
+        public bool IsInTribe
+        {
+            get
+            {
+                return tribesman != null;
+            }
+        }
+
         #region ILockable Members
 
         public int Hash

@@ -139,16 +139,16 @@ namespace Game.Comm
                     return Enum.GetName(typeof(Error), Error.TribesmanAlreadyInTribe);
                 }
 
-                if (Global.Tribes.Any(x => x.Value.Name.Equals(tribeName)))
+                if (World.Current.Tribes.Any(x => x.Value.Name.Equals(tribeName)))
                 {
                     return Enum.GetName(typeof(Error), Error.TribesmanAlreadyExists);
                 }
 
-                if (Global.Tribes.ContainsKey(player.PlayerId)) return "Tribe already exists!";
+                if (World.Current.Tribes.ContainsKey(player.PlayerId)) return "Tribe already exists!";
 
                 ITribe tribe = tribeFactory.CreateTribe(player, tribeName);
 
-                Global.Tribes.Add(tribe.Id, tribe);
+                World.Current.Tribes.Add(tribe.Id, tribe);
                 DbPersistance.Current.Save(tribe);
 
                 var tribesman = new Tribesman(tribe, player, 0);
@@ -185,7 +185,7 @@ namespace Game.Comm
                 return "Tribe not found";
 
             ITribe tribe;
-            if (!Global.Tribes.TryGetValue(tribeId, out tribe))
+            if (!World.Current.Tribes.TryGetValue(tribeId, out tribe))
                 return "Tribe not found seriously";
 
             using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))
@@ -194,7 +194,7 @@ namespace Game.Comm
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
-                Global.Tribes.Remove(tribe.Id);
+                World.Current.Tribes.Remove(tribe.Id);
                 DbPersistance.Current.Delete(tribe);
             }
             return "OK!";

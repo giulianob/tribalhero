@@ -130,7 +130,7 @@ namespace Game.Logic.Actions
                 city.EndUpdate();
 
                 BeginTime = DateTime.UtcNow;
-                endTime = DateTime.UtcNow.AddSeconds(CalculateTime((int)techBase.Time));
+                endTime = DateTime.UtcNow.AddSeconds(CalculateTime(Formula.Current.BuildTime((int)techBase.Time, city, city.Technologies)));
             }
 
             return Error.Ok;

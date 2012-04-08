@@ -33,11 +33,16 @@ package src.UI.Dialog
 		private var cmdIndex: int = -1;
 		private var scrollConsole: JScrollPane;
 		private var btnMinimize: JButton;
+		private var btnDisableGlobalChat: JButton;
 		private var btnClose: JButton;
 		private var btnOpen: JButton;
 		private var lstChatType: JComboBox;
 		
+		private var profanityFilter: ProfanityFilter = new ProfanityFilter();
+		
 		private var sizeMode: int;
+		
+		private var publicChatDisabled: Boolean;
 		
 		// We need to keep the chat separately from what's in the input.
 		// This means a bit more memory used for chat than what is ideal but it's what we gotta do.
@@ -46,9 +51,9 @@ package src.UI.Dialog
 		public function CmdLineViewer() {
 			createUI();
 			
-			log('<a href="http://tribalhero.com/pages/donate" target="_blank">Donate to improve</a> Tribal Hero if you are enjoying the game.', false, false);
+			log('<a href="http://tribalhero.com/pages/donate" target="_blank">Donate to improve</a> Tribal Hero if you are enjoying the game.', false, false);			
+			log('Remember to keep it classy. Chat is for talking about the game and profanity should be kept to a minimum.');
 			log('Not sure what to do? Visit the <a href="http://tribalhero.wikia.com" target="_blank">wiki</a>.', false, false);
-			log('Remember to keep it classy.');
 			
 			addEventListener(Event.ADDED_TO_STAGE, function(e: Event): void
 			{
@@ -112,8 +117,9 @@ package src.UI.Dialog
 
 			txtCommand.addEventListener(KeyboardEvent.KEY_DOWN, function(e: KeyboardEvent): void {
 				if (e.keyCode == Keyboard.ENTER) {
-					sendChat(lstChatType.getSelectedIndex() == 0 ? TYPE_GLOBAL : TYPE_TRIBE, txtCommand.getText());
-					txtCommand.setText("");
+					if (sendChat(lstChatType.getSelectedIndex() == 0 ? TYPE_GLOBAL : TYPE_TRIBE, txtCommand.getText())) {
+						txtCommand.setText("");
+					}
 				}
 				else if (e.keyCode == Keyboard.UP) {
 					if (cmdIndex == -1) cmdIndex = cmdHistory.length - 1;
@@ -133,9 +139,20 @@ package src.UI.Dialog
 
 				e.stopImmediatePropagation();
 			});
+			
+			btnDisableGlobalChat.addActionListener(function(e: Event):void {
+				if (publicChatDisabled) {
+					btnDisableGlobalChat.setIcon(new SkinCustomIcon("Frame.chatEnabledIcon"));
+				}
+				else {
+					btnDisableGlobalChat.setIcon(new SkinCustomIcon("Frame.chatDisabledIcon"));
+				}
+				
+				publicChatDisabled = !publicChatDisabled;
+			});
 		}
 		
-		private function sendChat(type: int, message: String) : void {
+		private function sendChat(type: int, message: String) : Boolean {			
 			switch (message) {
 				case "/clr":
 				case "/clear":
@@ -145,10 +162,25 @@ package src.UI.Dialog
 				break;
 				default:
 					if (message.length == 0) {																
-						return;
+						return false;
+					}
+					
+					if (message.substr(0, 3) == "/t ") {
+						message = message.substr(4);
+						type = TYPE_TRIBE;
+					}
+					
+					if (type == TYPE_GLOBAL && publicChatDisabled) {
+						log("You can't use global chat when you have it disabled. Enable it then try again.");
+						return false;
 					}
 					
 					message = StringHelper.trim(message);
+					
+					if (profanityFilter.quickValidate(message) == false) {
+						log('Looks like your chat message contains some offensive terms. Please keep it classy.', false);
+						return false;
+					}
 					
 					if (message.charAt(0) == '/')
 					{								
@@ -168,6 +200,8 @@ package src.UI.Dialog
 					saveToHistory(message);						
 				break;
 			}
+			
+			return true;
 		}
 
 		private function getCurrentCmd(): String {
@@ -198,6 +232,10 @@ package src.UI.Dialog
 						cssClass = 'tribe';
 						break;
 					default:
+						if (publicChatDisabled) {
+							return;
+						}
+						
 						cssClass = 'global';
 						break;
 				}
@@ -288,6 +326,10 @@ package src.UI.Dialog
 			
 			btnOpen = new JButton("", new SkinCustomIcon("Frame.chatIcon"));
 			btnOpen.setBackgroundDecorator(null);
+			
+			btnDisableGlobalChat = new JButton("", new SkinCustomIcon("Frame.chatEnabledIcon"));
+			btnDisableGlobalChat.setBackgroundDecorator(null);
+			new SimpleTooltip(btnDisableGlobalChat, "Mute global chat");
 
 			txtConsole = new JTextArea("", 15, 0);
 			txtConsole.setWordWrap(true);
@@ -334,7 +376,7 @@ package src.UI.Dialog
 			
 			pnlCommandHolder.appendAll(lstChatType, pnlCommandLineHolder);
 			
-			pnlToolbar.appendAll(btnMinimize, btnClose);
+			pnlToolbar.appendAll(btnDisableGlobalChat, btnMinimize, btnClose);
 			
 			pnlContent.append(pnlToolbar);
 			pnlContent.append(scrollConsole);

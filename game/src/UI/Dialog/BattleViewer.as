@@ -1,6 +1,8 @@
 ﻿package src.UI.Dialog {
 
+	import fl.lang.Locale;
 	import flash.display.DisplayObjectContainer;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import src.Constants;
 	import src.UI.GameJImagePanelBackground;
@@ -71,6 +73,8 @@
 
 		private function onNewRound(e: BattleRoundEvent = null) : void {
 			log(new JSeparator());
+			var cityName: Username = Global.gameContainer.map.usernames.cities.getUsername(battle.cityId);			
+			getFrame().setTitle(StringUtil.substitute("Battle - {0} - Round {1}", (cityName ? cityName.name : ""), (e.round + 1)));
 			logStr("Round " + (e.round + 1), null, true);
 		}
 

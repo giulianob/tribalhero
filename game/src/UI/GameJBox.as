@@ -14,7 +14,7 @@
 			return frame;
 		}
 
-		public function show(owner:* = null):JFrame
+		public function show(owner:* = null, hasTitle: Boolean = false):JFrame
 		{
 			if (!frame)
 			{
@@ -24,7 +24,9 @@
 			}
 
 			frame.setBackgroundDecorator(new GameJBoxBackground());
-			frame.setTitleBar(null);
+			if (!hasTitle) {
+				frame.setTitleBar(null);
+			}
 			frame.setDragable(false);
 			frame.setClosable(false);
 			frame.setResizable(false);

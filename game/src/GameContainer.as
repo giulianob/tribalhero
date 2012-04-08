@@ -212,6 +212,11 @@
 			navigateToURL(new URLRequest("http://" + Constants.mainWebsite + "/database"), "_blank");
 		}
 		
+		public function onWikiClick(e: Event): void
+		{
+			navigateToURL(new URLRequest("http://tribalhero.wikia.com"), "_blank");
+		}		
+		
 		public function onForumsClick(e: Event): void
 		{
 			navigateToURL(new URLRequest("http://forums.tribalhero.com"), "_blank");
@@ -526,6 +531,7 @@
 			menu = new JPopupMenu();
 			menu.addMenuItem("Account Options").addActionListener(onAccountOptionsClick);
 			menu.addMenuItem("Forums").addActionListener(onForumsClick);
+			menu.addMenuItem("Wiki").addActionListener(onWikiClick);
 			menu.addMenuItem("Help").addActionListener(onHelpClick);			
 			menu.addMenuItem("Logout").addActionListener(onLogoutClick);
 

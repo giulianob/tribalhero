@@ -115,6 +115,9 @@
 						case "ResourceGather":
 							action = new ResourceGatherAction();
 						break;
+						case "TribeContribute":
+							action = new TribeContributeAction();
+						break;
 						default:
 							Util.log("Unknown action '" + actionNode.name() + "' in worker '" + worker.type.toString() + "'");
 							action = new DefaultAction(actionNode.@command);

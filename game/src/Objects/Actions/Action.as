@@ -19,7 +19,7 @@ package src.Objects.Actions {
 			{ name: "Upgrade Units", icon: ICON_UPGRADE, actions: [ UnitUpgradeButton ] },				
 			{ name: "Convert Structure", icon: ICON_HAMMER, actions: [ StructureChangeButton ] },
 			{ name: "Research", icon: ICON_BOOK, actions: [ TechnologyButton ] },			
-			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton ] },
+			{ name: "Other", icon: ICON_QUESTION, actions: [ DefaultActionButton, ForestCampBuildButton, LaborMoveButton, BuildRoadButton, DestroyRoadButton, MarketButton, ViewDestinationButton, ViewBattleButton, ViewUnitsButton, ForestCampRemoveButton, StructureUserDowngradeButton, SendResourcesButton, StructureSelfDestroyButton, ResourceGatherButton, TribeContributeButton] },
 		];	
 		
 		public static const CONCURRENCY_STANDALONE: int = 1;
@@ -44,10 +44,11 @@ package src.Objects.Actions {
 			511: CONCURRENCY_CONCURRENT, // ROAD DESTROY
 			601: CONCURRENCY_CONCURRENT, // UNIT TRAIN
 			602: CONCURRENCY_NORMAL, // UNIT UPGRADE
-			801: CONCURRENCY_CONCURRENT // DEFAULT ACTION
+			801: CONCURRENCY_CONCURRENT, // DEFAULT ACTION
+			1018: CONCURRENCY_CONCURRENT// TRIBE CONTRIBUTE
 		};
 		
-		public static const costsToCancelActions: Array = [STRUCTURE_BUILD, STRUCTURE_UPGRADE, STRUCTURE_CHANGE, TECHNOLOGY_UPGRADE, UNIT_TRAIN, UNIT_UPGRADE, RESOURCE_SEND, RESOURCE_BUY, RESOURCE_SELL];
+		public static const costsToCancelActions: Array = [STRUCTURE_BUILD, STRUCTURE_UPGRADE, STRUCTURE_CHANGE, TECHNOLOGY_UPGRADE, UNIT_TRAIN, UNIT_UPGRADE, RESOURCE_SEND, RESOURCE_BUY, RESOURCE_SELL, TRIBE_CONTRIBUTE];
 		
 		public static const OPTION_UNCANCELABLE: int = 1;
 		
@@ -76,6 +77,7 @@ package src.Objects.Actions {
         public static const UNIT_TRAIN: int = 601;
         public static const UNIT_UPGRADE: int = 602;
 		public static const DEFAULT_ACTION: int = 801;
+		public static const TRIBE_CONTRIBUTE: int = 1018;
 		
 		public var actionType: int;
 		public var effectReq: EffectReqManager;

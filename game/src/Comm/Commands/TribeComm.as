@@ -57,10 +57,11 @@
 			Global.gameContainer.tribeNotificationIcon.visible = Constants.tribeInviteId > 0;
 		}
 		
-		public function contribute(cityId: int, resources: Resources, callback: Function): void {
+		public function contribute(cityId: int, structureId: int, resources: Resources, callback: Function): void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBESMAN_CONTRIBUTE;
 			packet.writeUInt(cityId);
+			packet.writeUInt(structureId);
 			packet.writeInt(resources.crop);
 			packet.writeInt(resources.gold);
 			packet.writeInt(resources.iron);

@@ -66,6 +66,7 @@ namespace Game.Comm.ProcessorCommands
 
                 var reply = new Packet(packet);
                 reply.AddUInt32(city.Battle.BattleId);
+                reply.AddUInt32(city.Battle.Round);
                 PacketHelper.AddToPacket(city.Battle.Attacker, reply);
                 PacketHelper.AddToPacket(city.Battle.Defender, reply);
                 city.Battle.Subscribe(session);

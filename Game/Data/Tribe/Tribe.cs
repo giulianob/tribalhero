@@ -339,6 +339,7 @@ namespace Game.Data.Tribe
         {
             id = 0;
 
+            // Create troop             
             if (!procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment))
             {
                 return Error.TroopChanged;
@@ -349,23 +350,34 @@ namespace Game.Data.Tribe
             // Max of 48 hrs for planning assignments
             if (DateTime.UtcNow.AddDays(2) < time)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentBadTime;
             }
 
             if (stub.TotalCount == 0)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.TroopEmpty;
             }
 
             if (stub.City.Owner.Tribesman == null)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.TribeNotFound;
             }
 
             // Cant attack other tribesman
-            if (targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
+            if (isAttack && targetCity.Owner.Tribesman != null && targetCity.Owner.Tribesman.Tribe == stub.City.Owner.Tribesman.Tribe)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentCantAttackFriend;
+            }
+
+            // Cant defend the same city
+            if (targetCity == stub.City)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+                return Error.DefendSelf;                
             }
 
             // Player creating the assignment cannot be late (Give a few minutes lead)
@@ -374,6 +386,7 @@ namespace Game.Data.Tribe
 
             if (reachTime.Subtract(new TimeSpan(0, 1, 0)) > time)
             {
+                Procedure.Current.TroopStubDelete(city, stub);
                 return Error.AssignmentUnitsTooSlow;
             }
 
@@ -382,10 +395,15 @@ namespace Game.Data.Tribe
             id = assignment.Id;
             assignments.Add(assignment.Id, assignment);
             assignment.AssignmentComplete += RemoveAssignment;
-            assignment.Add(stub);
+            var result = assignment.Add(stub);
+
+            if (result != Error.Ok)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+            }
 
             SendUpdate();
-            return Error.Ok;
+            return result;
         }
         
         public Error JoinAssignment(int id, ICity city, ITroopStub stub)
@@ -407,7 +425,14 @@ namespace Game.Data.Tribe
                 return Error.TroopChanged;
             }            
 
-            return assignment.Add(stub);
+            var error = assignment.Add(stub);
+
+            if (error != Error.Ok)
+            {
+                Procedure.Current.TroopStubDelete(city, stub);
+            }
+
+            return error;
         }
 
         public void RemoveAssignment(Assignment assignment)

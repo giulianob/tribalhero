@@ -1,10 +1,12 @@
 ﻿package src.Comm.Commands {
 
 	import src.Comm.*;
+	import src.GameContainer;
 	import src.Global;
 	import src.Map.MapComm;
 	import src.Objects.Battle.BattleManager;
 	import src.Objects.GameError;
+	import src.UI.Dialog.BattleViewer;
 	import src.UI.Dialog.InfoDialog;
 	import src.Util.Util;
 
@@ -75,7 +77,7 @@
 			}
 		}
 
-		public function battleSubscribe(cityId: int): BattleManager
+		public function battleSubscribe(cityId: int, battleViewer: BattleViewer): BattleManager
 		{
 			var battle: BattleManager = getBattleByCityId(cityId);
 			if (battle) {
@@ -86,7 +88,7 @@
 			packet.cmd = Commands.BATTLE_SUBSCRIBE;
 			packet.writeUInt(cityId);
 
-			mapComm.session.write(packet, onReceiveBattleSubscribe, cityId);
+			mapComm.session.write(packet, onReceiveBattleSubscribe, {cityId: cityId, battleViewer: battleViewer} );
 
 			battle = new BattleManager(cityId);
 			
@@ -97,7 +99,7 @@
 
 		public function onReceiveBattleSubscribe(packet: Packet, custom: *):void
 		{
-			var subscribeCityId: int = custom;
+			var subscribeCityId: int = custom.cityId;
 			
 			var battle: BattleManager = getBattleByCityId(subscribeCityId);
 
@@ -105,11 +107,15 @@
 			{			
 				battle.end();
 				battles.splice(battles.indexOf(battle), 1);
+				
+				if (custom.battleViewer.getFrame()) {
+					custom.battleViewer.getFrame().dispose();
+				}
 
 				var err: int = packet.readUInt();
 				var roundsLeft: int = packet.readInt();
 
-				InfoDialog.showMessageDialog("Battle", GameError.getMessage(err) + (roundsLeft > 0 ? " Battle will be viewable in approximately " + roundsLeft + " rounds." : ""));				
+				InfoDialog.showMessageDialog("Battle", GameError.getMessage(err) + (roundsLeft > 0 ? " Battle will be viewable in approximately " + roundsLeft + " round(s)." : ""));
 
 				return;
 			}

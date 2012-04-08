@@ -422,13 +422,13 @@
 		
 		/* CAN CREATE TRIBE */
 		public static function canCreateTribe() : Boolean {
-			var count: int = 0;
 			for each (var city: City in Global.map.cities.each()) {
-				if (city.MainBuilding.level >= 10)
-					count++;
+				if (city.MainBuilding.level >= 5) {
+					return true;
+				}
 			}
 			
-			return count >= 1;
+			return false;
 		}
 		
 	}

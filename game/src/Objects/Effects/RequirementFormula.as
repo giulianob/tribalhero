@@ -1,4 +1,5 @@
 ﻿package src.Objects.Effects {
+	import src.Constants;
 	import src.Global;
 	import src.Map.City;
 	import src.Map.CityObject;
@@ -23,7 +24,8 @@
 		{name: "AttackPoint", method: attackPoint, message: attackPointMsg },
 		{name: "PlayerAttackPoint", method: playerAttackPoint, message: playerAttackPointMsg },
 		{name: "HaveUnit", method: haveUnit, message: haveUnitMsg },
-		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg }
+		{name: "UniqueTechnology", method: uniqueTechnology, message: uniqueTechnologyMsg },
+		{name: "TribeRanking", method: tribeRanking, message: tribeRankingMsg }
 		);			
 
 		private static var methodsSorted: Boolean = false;
@@ -429,6 +431,25 @@
 			}
 			
 			return count >= 1;
+		}
+		
+		private static function tribeRanking(parentObj: GameObject, effects: Array, min: int, max: int, param3: int, param4: int, param5:int): Boolean
+		{
+			if ( Constants.tribeId == 0 ) return false;
+			if ( Constants.tribeRank < min) return false;
+			if ( Constants.tribeRank > max) return false;
+			return true;
+		}
+
+		private static function tribeRankingMsg(parentObj: GameObject, min: int, max: int, param3: int, param4: int, param5:int): String
+		{
+			if (min == 0 && max == 99 && Constants.tribeId == 0)
+				return "You must be in a tribe.";
+			if ( Constants.tribeRank < min )
+				return "Your tribe ranking is too low.";
+			if ( Constants.tribeRank > max)
+				return "your tribe ranking is too high.";
+			return "You just found a bug";
 		}
 		
 	}

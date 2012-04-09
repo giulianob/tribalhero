@@ -11,7 +11,7 @@
 	{		
 		private var prototype: UnitPrototype;
 		
-		public function CombatUnit(playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: int, maxHp: int)
+		public function CombatUnit(playerId: int, cityId: int, combatObjectId: int, troopStubId: int, type: int, level: int, hp: Number, maxHp: Number)
 		{
 			super(playerId, cityId, combatObjectId, troopStubId, type, level, hp, maxHp);
 			

@@ -195,6 +195,10 @@ package src.Util {
 
 			if (seconds > 30) //add 1 minute if seconds is greater than 30
 			minutes++;
+			if (minutes == 60) { // No idea why we "dd 1 minute if seconds is greater than 30", but if it's added up to 60 minutes, increments the hour.
+				minutes = 0;
+				hours++;
+			}
 
 			var nice: String = "";
 

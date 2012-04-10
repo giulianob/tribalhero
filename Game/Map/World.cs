@@ -44,6 +44,8 @@ namespace Game.Map
 
         private Dictionary<uint, ICity> Cities { get; set; }
 
+        public Dictionary<uint, ITribe> Tribes { get; private set; }
+
         private int RegionsCount { get; set; }
         private uint RegionSize { get; set; }
         private Stream RegionChanges { get; set; }
@@ -71,6 +73,7 @@ namespace Game.Map
             Lock = new object();
             Players = new Dictionary<uint, IPlayer>();
             Forests = new ForestManager();
+            Tribes = new Dictionary<uint, ITribe>();
         }
 
         #region Object Getters
@@ -83,6 +86,11 @@ namespace Game.Map
         public bool TryGetObjects(uint playerId, out IPlayer player)
         {
             return Players.TryGetValue(playerId, out player);
+        }
+
+        public bool TryGetObjects(uint tribeId, out ITribe tribe)
+        {
+            return Tribes.TryGetValue(tribeId, out tribe);
         }
 
         public bool TryGetObjects(uint cityId, byte troopStubId, out ICity city, out ITroopStub troopStub)
@@ -104,6 +112,20 @@ namespace Game.Map
             troopObject = null;
 
             return Cities.TryGetValue(cityId, out city) && city.TryGetTroop(troopObjectId, out troopObject);
+        }
+
+        public bool TryGetObjects(uint cityId, out ICity city, out ITribe tribe)
+        {
+            tribe = null;
+            if (Cities.TryGetValue(cityId, out city))
+            {
+                if (city.Owner.IsInTribe)
+                {
+                    tribe = city.Owner.Tribesman.Tribe;
+                    return true;
+                }
+            }
+            return false;
         }
 
         #endregion
@@ -656,5 +678,6 @@ namespace Game.Map
         }
 
         #endregion
+
     }
 }

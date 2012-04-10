@@ -44,6 +44,8 @@ namespace Game.Data
 
         bool Muted { get; set; }
 
+        bool IsInTribe { get; }
+
         void Add(ICity city);
 
         int GetCityCount(bool includeDeleted = false);

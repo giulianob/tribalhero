@@ -120,6 +120,8 @@ namespace Game.Setup
         TribesmanPendingRequest = 726,
         TribesmanNoRequest = 727,
         TribesmanNotPartOfTribe = 728,
+        TribesmanRankingTooLow = 729,
+        TribesmanRankingTooHigh = 730,
 
         AssignmentDone = 741,
         AssignmentNotFound = 742,

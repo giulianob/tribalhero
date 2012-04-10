@@ -4,12 +4,18 @@
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
+	import org.aswing.AbstractButton;
+	import org.aswing.AssetIcon;
+	import org.aswing.JButton;
 	import org.aswing.JFrame;
+	import org.aswing.skinbuilder.SkinCustomIcon;
 	import src.Constants;
+	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class GameJFrame extends JFrame
 	{
 		private var onDispose: Function;
+		private var closeButton: JButton;
 
 		public function GameJFrame(owner: * = null, title: String = "", modal: Boolean = true, dispose: Function = null)
 		{
@@ -30,13 +36,13 @@
 					tryToClose();
 					e.stopImmediatePropagation();
 				}				
-			});
+			});			
 			
 			getTitleBar().setMaximizeButton(null);
 			getTitleBar().setRestoreButton(null);
-			getTitleBar().setIconifiedButton(null);
+			getTitleBar().setIconifiedButton(null);	
 		}
-
+		
 		override public function dispose():void
 		{
 			super.dispose();

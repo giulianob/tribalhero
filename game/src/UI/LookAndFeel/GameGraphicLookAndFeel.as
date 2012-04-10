@@ -452,6 +452,18 @@ package src.UI.LookAndFeel
 		[Embed(source="assets/Frame_closeIcon_rolloverImage.png")]
 		private var Frame_closeIcon_rolloverImage:Class;
 		
+		[Embed(source="assets/Frame_largeCloseIcon_defaultImage.png")]
+		private var Frame_largeCloseIcon_defaultImage:Class;
+
+		[Embed(source="assets/Frame_largeCloseIcon_pressedImage.png")]
+		private var Frame_largeCloseIcon_pressedImage:Class;
+
+		[Embed(source="assets/clear.png")]
+		private var Frame_largeCloseIcon_disabledImage:Class;
+
+		[Embed(source="assets/Frame_largeCloseIcon_rolloverImage.png")]
+		private var Frame_largeCloseIcon_rolloverImage:Class;		
+		
 		//========= Chat Image =======
 		[Embed(source="assets/chat_defaultImage.png")]
 		private var Frame_chatIcon_defaultImage:Class;
@@ -1274,6 +1286,14 @@ package src.UI.LookAndFeel
 			"Frame.chatDisabledIcon.pressedImage", Frame_chatDisabledIcon_pressedImage,
 			"Frame.chatDisabledIcon.disabledImage", Frame_chatDisabledIcon_disabledImage,
 			"Frame.chatDisabledIcon.rolloverImage", Frame_chatDisabledIcon_rolloverImage				
+			];
+			table.putDefaults(comDefaults);
+			
+			comDefaults = [			
+			"Frame.largeCloseIcon.defaultImage", Frame_largeCloseIcon_defaultImage,
+			"Frame.largeCloseIcon.pressedImage", Frame_largeCloseIcon_pressedImage,
+			"Frame.largeCloseIcon.disabledImage", Frame_largeCloseIcon_disabledImage,
+			"Frame.largeCloseIcon.rolloverImage", Frame_largeCloseIcon_rolloverImage
 			];
 			table.putDefaults(comDefaults);
 

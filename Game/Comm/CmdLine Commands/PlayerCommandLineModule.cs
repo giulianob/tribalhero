@@ -7,11 +7,9 @@ using Game.Database;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
-using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -107,7 +105,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
-                return String.Format("setrights --player=player");
+                return String.Format("muteplayer --player=player");
 
             // Mute player in this world instantly
             uint playerId;
@@ -150,7 +148,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(playerName))
-                return String.Format("setrights --player=player");
+                return String.Format("unmuteplayer --player=player");
 
             // Mute player in this world instantly
             uint playerId;
@@ -187,7 +185,7 @@ namespace Game.Comm
                                 { "tribe=", v => tribeName = v.TrimMatchingQuotes() },
                                 { "newname=", v => newTribeName = v.TrimMatchingQuotes() }
                         };
-                p.Parse(parms);
+                p.Parse(parms);                
             }
             catch (Exception)
             {

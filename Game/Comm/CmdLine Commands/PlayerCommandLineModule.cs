@@ -7,11 +7,9 @@ using Game.Database;
 using Game.Map;
 using Game.Module;
 using Game.Module.Remover;
-using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
 using NDesk.Options;
-using Ninject;
 using Persistance;
 
 #endregion
@@ -22,16 +20,155 @@ namespace Game.Comm
     {
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("ban", BanPlayer, true);
-            processor.RegisterCommand("unban", UnbanPlayer, true);
-            processor.RegisterCommand("deleteplayer", DeletePlayer, true);
-            processor.RegisterCommand("clearplayerdescription", PlayerClearDescription, true);
-            processor.RegisterCommand("deletenewbies", DeleteNewbies, true);
-            processor.RegisterCommand("broadcast", SystemBroadcast, true);
-            processor.RegisterCommand("broadcastmail", SystemBroadcastMail, true);            
-            processor.RegisterCommand("setpassword", SetPassword, true);
-            processor.RegisterCommand("renameplayer", RenamePlayer, true);
-            processor.RegisterCommand("renametribe", RenameTribe, true);
+            processor.RegisterCommand("ban", BanPlayer, PlayerRights.Admin);
+            processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Admin);
+            processor.RegisterCommand("deleteplayer", DeletePlayer, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("clearplayerdescription", PlayerClearDescription, PlayerRights.Moderator);
+            processor.RegisterCommand("deletenewbies", DeleteNewbies, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("broadcast", SystemBroadcast, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("broadcastmail", SystemBroadcastMail, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("setpassword", SetPassword, PlayerRights.Admin);
+            processor.RegisterCommand("renameplayer", RenamePlayer, PlayerRights.Admin);
+            processor.RegisterCommand("renametribe", RenameTribe, PlayerRights.Admin);
+            processor.RegisterCommand("setrights", SetRights, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("muteplayer", Mute, PlayerRights.Moderator);
+            processor.RegisterCommand("unmuteplayer", Unmute, PlayerRights.Moderator);
+        }
+
+        public string SetRights(Session session, String[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+            PlayerRights? rights = null;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "player=", v => playerName = v.TrimMatchingQuotes() },
+                                { "rights=", v => rights = (PlayerRights?)Enum.Parse(typeof(PlayerRights), v.TrimMatchingQuotes(), true) }
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName) || !rights.HasValue)
+                return String.Format("setrights --player=player --rights={0}", String.Join("|", Enum.GetNames(typeof(PlayerRights))));
+
+            // Kick user out if they are logged in
+            uint playerId;
+            if (World.Current.FindPlayerId(playerName, out playerId))
+            {
+
+                IPlayer player;
+                using (Concurrency.Current.Lock(playerId, out player))
+                {
+                    if (player != null && player.Session != null)
+                    {
+                        try
+                        {
+                            player.Session.CloseSession();
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+            }
+
+            ApiResponse response = ApiCaller.SetPlayerRights(playerName, rights.GetValueOrDefault());
+
+            return response.Success ? "OK!" : response.ErrorMessage;
+        }
+
+        public string Mute(Session session, String[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "player=", v => playerName = v.TrimMatchingQuotes() },
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName))
+                return String.Format("muteplayer --player=player");
+
+            // Mute player in this world instantly
+            uint playerId;
+            if (World.Current.FindPlayerId(playerName, out playerId))
+            {
+
+                IPlayer player;
+                using (Concurrency.Current.Lock(playerId, out player))
+                {
+                    if (player != null)
+                    {
+                        player.Muted = true;
+                    }
+                }
+            }
+
+            // Globally mute them
+            ApiResponse response = ApiCaller.PlayerMute(playerName);
+
+            return response.Success ? "OK!" : response.ErrorMessage;
+        }
+
+        public string Unmute(Session session, String[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "player=", v => playerName = v.TrimMatchingQuotes() },
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName))
+                return String.Format("unmuteplayer --player=player");
+
+            // Mute player in this world instantly
+            uint playerId;
+            if (World.Current.FindPlayerId(playerName, out playerId))
+            {
+
+                IPlayer player;
+                using (Concurrency.Current.Lock(playerId, out player))
+                {
+                    if (player != null)
+                    {
+                        player.Muted = false;
+                    }
+                }
+            }
+
+            // Globally mute them
+            ApiResponse response = ApiCaller.PlayerUnmute(playerName);
+
+            return response.Success ? "OK!" : response.ErrorMessage;
         }
 
         public string RenameTribe(Session session, String[] parms)
@@ -48,7 +185,7 @@ namespace Game.Comm
                                 { "tribe=", v => tribeName = v.TrimMatchingQuotes() },
                                 { "newname=", v => newTribeName = v.TrimMatchingQuotes() }
                         };
-                p.Parse(parms);
+                p.Parse(parms);                
             }
             catch (Exception)
             {

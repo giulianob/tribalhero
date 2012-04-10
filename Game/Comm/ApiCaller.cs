@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
+using Game.Data;
 using Game.Setup;
 using JsonFx.Json;
 
@@ -124,6 +126,16 @@ namespace Game.Comm
             return MakeCall("player", "rename", parms);
         }
 
+        public static ApiResponse SetPlayerRights(string name, PlayerRights rights)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+                        {
+                                new KeyValuePair<string, string>("name", name),                                
+                                new KeyValuePair<string, string>("rights", ((int)rights).ToString(CultureInfo.InvariantCulture)),      
+                        };
+            return MakeCall("player", "set_rights ", parms);
+        }
+
         public static ApiResponse SetPassword(string name, string password)
         {
             var parms = new List<KeyValuePair<string, string>>
@@ -132,6 +144,24 @@ namespace Game.Comm
                                 new KeyValuePair<string, string>("password", password),      
                         };
             return MakeCall("player", "set_password ", parms);
+        }
+
+        public static ApiResponse PlayerUnmute(string playerName)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+                        {
+                                new KeyValuePair<string, string>("name", playerName)                               
+                        };
+            return MakeCall("player", "unmute ", parms);
+        }
+
+        public static ApiResponse PlayerMute(string playerName)
+        {
+            var parms = new List<KeyValuePair<string, string>>
+                        {
+                                new KeyValuePair<string, string>("name", playerName)                               
+                        };
+            return MakeCall("player", "mute ", parms);
         }
     }
 }

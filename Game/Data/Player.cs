@@ -16,24 +16,24 @@ using Persistance;
 namespace Game.Data
 {
     public class Player : IPlayer
-    {
+    {        
         public const string DB_TABLE = "players";
         public const int MAX_DESCRIPTION_LENGTH = 3000;
         private readonly List<ICity> list = new List<ICity>();
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin)
-            : this(playerid, created, lastLogin, name, description, admin, string.Empty)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, PlayerRights playerRights)
+            : this(playerid, created, lastLogin, name, description, playerRights, string.Empty)
         {
         }
 
-        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, bool admin, string sessionId)
+        public Player(uint playerid, DateTime created, DateTime lastLogin, string name, string description, PlayerRights playerRights, string sessionId)
         {
             PlayerId = playerid;
             LastLogin = lastLogin;
             Created = created;
             Name = name;
             SessionId = sessionId;
-            Admin = admin;
+            Rights = playerRights;
             ChatFloodTime = DateTime.MinValue;
             this.description = description;
         }
@@ -50,9 +50,11 @@ namespace Game.Data
 
         public string SessionId { get; set; }
 
-        public bool Admin { get; set; }
+        public PlayerRights Rights { get; set; }
 
         public DateTime ChatFloodTime { get; set; }
+
+        public DateTime ChatLastMessage { get; set; }
 
         public int ChatFloodCount { get; set; }
 
@@ -135,6 +137,8 @@ namespace Game.Data
             }
         }
 
+        public bool Muted { get; set; }
+
         public bool IsInTribe
         {
             get
@@ -179,9 +183,12 @@ namespace Game.Data
             {
                 return new[]
                        {
-                               new DbColumn("name", Name, DbType.String, 32), new DbColumn("created", Created, DbType.DateTime),
-                               new DbColumn("last_login", LastLogin, DbType.DateTime), new DbColumn("session_id", SessionId, DbType.String, 128),
-                               new DbColumn("online", Session != null, DbType.Boolean), new DbColumn("admin", Admin, DbType.Boolean),
+                               new DbColumn("name", Name, DbType.String, 32), 
+                               new DbColumn("created", Created, DbType.DateTime),
+                               new DbColumn("last_login", LastLogin, DbType.DateTime), 
+                               new DbColumn("session_id", SessionId, DbType.String, 128),
+                               new DbColumn("rights", (int)Rights, DbType.UInt16),
+                               new DbColumn("online", Session != null, DbType.Boolean),
                                new DbColumn("invitation_tribe_id", TribeRequest, DbType.UInt32), 
                        };
             }

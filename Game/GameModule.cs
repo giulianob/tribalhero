@@ -123,13 +123,17 @@ namespace Game
 
             #region Processor
 
-            Bind<CommandLineProcessor>().ToMethod(
-                                                  c =>
-                                                  new CommandLineProcessor(c.Kernel.Get<AssignmentCommandLineModule>(),
-                                                                           c.Kernel.Get<PlayerCommandLineModule>(),
-                                                                           c.Kernel.Get<CityCommandLineModule>(),
-                                                                           c.Kernel.Get<ResourcesCommandLineModule>(),
-                                                                           c.Kernel.Get<TribeCommandLineModule>())).InSingletonScope();
+            Bind<CommandLineProcessor>().ToMethod(c =>
+                {
+                    var writer = new StreamWriter("commandline.log", true, Encoding.UTF8);
+                    writer.AutoFlush = true;
+                    return new CommandLineProcessor(writer,
+                                                    c.Kernel.Get<AssignmentCommandLineModule>(),
+                                                    c.Kernel.Get<PlayerCommandLineModule>(),
+                                                    c.Kernel.Get<CityCommandLineModule>(),
+                                                    c.Kernel.Get<ResourcesCommandLineModule>(),
+                                                    c.Kernel.Get<TribeCommandLineModule>());
+                }).InSingletonScope();
             Bind<Processor>().ToMethod(
                                        c =>
                                        new Processor(c.Kernel.Get<AssignmentCommandsModule>(),

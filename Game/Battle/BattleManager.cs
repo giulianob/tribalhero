@@ -780,7 +780,7 @@ namespace Game.Battle
             #region Splash Damage Reduction
             if (attackIndex > 0)
             {
-                decimal reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.BaseStats, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
+                decimal reduction = defender.City.Technologies.GetEffects(EffectCode.SplashReduction, EffectInheritance.SelfAll).Where(effect => BattleFormulas.Current.UnitStatModCheck(defender.Stats.Base, TroopBattleGroup.Defense, (string)effect.Value[1])).DefaultIfEmpty().Max(x => x == null ? 0 : (int)x.Value[0]);
                 reduction = (100 - reduction)/100;
                 dmg = reduction*dmg;
             }

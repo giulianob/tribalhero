@@ -64,10 +64,11 @@ namespace Game.Battle
         }
 
         public virtual double GetDmgModifier(CombatObject attacker, CombatObject target) {
-            switch(attacker.BaseStats.Weapon)
+            switch(attacker.Stats.Base.Weapon)
             {
                 case WeaponType.Tower:
-                    switch (target.BaseStats.Armor) {
+                    switch (target.Stats.Base.Armor)
+                    {
                         case ArmorType.Building1:
                             return unitModFactory.GetModifier(1, 1);
                         case ArmorType.Building2:
@@ -78,7 +79,8 @@ namespace Game.Battle
                             return unitModFactory.GetModifier(1, target.Type);
                     }
                 case WeaponType.Cannon:
-                    switch (target.BaseStats.Armor) {
+                    switch (target.Stats.Base.Armor)
+                    {
                         case ArmorType.Building1:
                             return unitModFactory.GetModifier(2, 1);
                         case ArmorType.Building2:
@@ -89,7 +91,8 @@ namespace Game.Battle
                             return unitModFactory.GetModifier(2, target.Type);
                     }
                 case WeaponType.Barricade:
-                    switch (target.BaseStats.Armor) {
+                    switch (target.Stats.Base.Armor)
+                    {
                         case ArmorType.Building1:
                             return unitModFactory.GetModifier(3, 1);
                         case ArmorType.Building2:
@@ -100,7 +103,8 @@ namespace Game.Battle
                             return unitModFactory.GetModifier(3, target.Type);
                     }
                 default:
-                    switch(target.BaseStats.Armor) {
+                    switch (target.Stats.Base.Armor)
+                    {
                         case ArmorType.Building1:
                             return unitModFactory.GetModifier(attacker.Type, 1);
                         case ArmorType.Building2:
@@ -154,7 +158,7 @@ namespace Game.Battle
 
         public virtual short GetStaminaStructureDestroyed(short stamina, CombatStructure combatStructure)
         {
-            if (combatStructure.BaseStats.Armor != ArmorType.Building3)
+            if (combatStructure.Stats.Base.Armor != ArmorType.Building3)
                 return stamina;
 
             if (stamina < Config.battle_stamina_destroyed_deduction)

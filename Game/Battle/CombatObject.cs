@@ -64,8 +64,6 @@ namespace Game.Battle
 
         public abstract bool IsDead { get; }
 
-        public abstract BaseBattleStats BaseStats { get; }
-
         public abstract BattleStats Stats { get; }
 
         public abstract ushort Type { get; }

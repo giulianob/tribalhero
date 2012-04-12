@@ -46,10 +46,14 @@ package src.Objects.Process
 			
 			var target: GameObject = sender.getTargetObject();
 			
-			Global.mapComm.Troop.troopAttack(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, attackDialog.getMode(), attackDialog.getTroop());
+			Global.mapComm.Troop.troopAttack(Global.gameContainer.selectedCity.id, target.cityId, target.objectId, attackDialog.getMode(), attackDialog.getTroop(), onAttackFail);
 
 			Global.gameContainer.setOverlaySprite(null);
 			Global.gameContainer.setSidebar(null);
+		}
+		
+		public function onAttackFail(custom: *):void {
+			onChoseUnits(attackDialog);
 		}
 		
 		public function onChangeTroop(e: Event = null): void {

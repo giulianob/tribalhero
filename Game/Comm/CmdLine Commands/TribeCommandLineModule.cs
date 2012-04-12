@@ -32,14 +32,14 @@ namespace Game.Comm
 
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("TribeInfo", CmdTribeInfo, true);
-            processor.RegisterCommand("TribeCreate", CmdTribeCreate, true);
-            processor.RegisterCommand("TribeUpdate", CmdTribeUpdate, true);
-            processor.RegisterCommand("TribeDelete", CmdTribeDelete, true);
-            processor.RegisterCommand("TribesmanAdd", CmdTribesmanAdd, true);
-            processor.RegisterCommand("TribesmanRemove", CmdTribesmanRemove, true);
-            processor.RegisterCommand("TribesmanUpdate", CmdTribesmanUpdate, true);
-            processor.RegisterCommand("TribeIncomingList", CmdTribeIncomingList, true);
+            processor.RegisterCommand("TribeInfo", CmdTribeInfo, PlayerRights.Admin);
+            processor.RegisterCommand("TribeCreate", CmdTribeCreate, PlayerRights.Admin);
+            processor.RegisterCommand("TribeUpdate", CmdTribeUpdate, PlayerRights.Admin);
+            processor.RegisterCommand("TribeDelete", CmdTribeDelete, PlayerRights.Admin);
+            processor.RegisterCommand("TribesmanAdd", CmdTribesmanAdd, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("TribesmanRemove", CmdTribesmanRemove, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("TribesmanUpdate", CmdTribesmanUpdate, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("TribeIncomingList", CmdTribeIncomingList, PlayerRights.Bureaucrat);
         }
 
         private string CmdTribeInfo(Session session, string[] parms)
@@ -136,15 +136,18 @@ namespace Game.Comm
             {
                 if (player.Tribesman != null)
                 {
-                    return Enum.GetName(typeof(Error), Error.TribesmanAlreadyInTribe);
+                    return "Player already in tribe";
                 }
 
                 if (World.Current.Tribes.Any(x => x.Value.Name.Equals(tribeName)))
                 {
-                    return Enum.GetName(typeof(Error), Error.TribesmanAlreadyExists);
+                    return "Tribe name already taken";
                 }
 
-                if (World.Current.Tribes.ContainsKey(player.PlayerId)) return "Tribe already exists!";
+                if (!Tribe.IsNameValid(tribeName))
+                {
+                    return "Tribe name is not allowed";
+                }
 
                 ITribe tribe = tribeFactory.CreateTribe(player, tribeName);
 

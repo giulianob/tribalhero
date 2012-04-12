@@ -20,9 +20,11 @@ namespace Game.Data
 
         string SessionId { get; set; }
 
-        bool Admin { get; set; }
+        PlayerRights Rights { get; set; }
 
         DateTime ChatFloodTime { get; set; }
+
+        DateTime ChatLastMessage { get; set; }
 
         int ChatFloodCount { get; set; }
 
@@ -39,6 +41,8 @@ namespace Game.Data
         int Value { get; }
 
         bool IsLoggedIn { get; }
+
+        bool Muted { get; set; }
 
         bool IsInTribe { get; }
 

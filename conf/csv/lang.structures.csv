@@ -183,7 +183,7 @@ WORKSHOP_STRUCTURE_LVL_15,Decreases training time by 40%.,
 ,,
 UNIVERSITY_STRUCTURE_NAME,University,
 UNIVERSITY_STRUCTURE_NAME_PLURAL,Universities,
-UNIVERSITY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city in various ways and decreases build/upgrade time.,0
+UNIVERSITY_STRUCTURE_DESCRIPTION,Allows researching technologies that improve your city in various ways and decreases build/upgrade time for structures and technologies.,0
 UNIVERSITY_STRUCTURE_LVL_1,Allows a maximum of 20 laborers to help construction to decrease build/upgrade time (0.25% per labor) and allows building Foundry. ,20
 UNIVERSITY_STRUCTURE_LVL_2,Allows a maximum of 28 laborers to help construction to decrease build/upgrade time (0.25% per labor) and enables upgrading Archery Research to level 1.,28
 UNIVERSITY_STRUCTURE_LVL_3,Allows a maximum of 37 laborers to help construction to decrease build/upgrade time (0.25% per labor) and allows building Armory.,37
@@ -311,7 +311,7 @@ TRIBAL_CARNIVAL_STRUCTURE_LVL_1,Shorten time required to produce new laborers by
 ,,
 TRIBAL_FESTIVAL_STRUCTURE_NAME,Tribal Festival,
 TRIBAL_FESTIVAL_STRUCTURE_NAME_PLURAL,Tribal Festivals,
-TRIBAL_FESTIVAL_STRUCTURE_DESCRIPTION,"A temporary tent where tribesmen hang out, get drunk, and have a great time!",
+TRIBAL_FESTIVAL_STRUCTURE_DESCRIPTION,"A temporary tent where tribesmen hang out, get drunk, and derp around!",
 TRIBAL_FESTIVAL_STRUCTURE_LVL_1,Shorten time required to produce new laborers by 30% for 1 week.  Additional Tribal celebration structures shortens by another 8% each with diminishing returns.,
 ,,
 DESTROYED_FIELD_STRUCTURE_NAME,Destroyed Field,

@@ -181,6 +181,7 @@
     <Compile Include="Data\ISimpleGameObject.cs" />
     <Compile Include="Data\IStructure.cs" />
     <Compile Include="Data\ITechnologyManager.cs" />
+    <Compile Include="Data\PlayerRights.cs" />
     <Compile Include="Data\Stats\TroopStats.cs" />
     <Compile Include="Data\Effect.cs" />
     <Compile Include="Data\Global.cs" />

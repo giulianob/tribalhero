@@ -22,6 +22,7 @@ namespace Game.Setup
         public static int server_port = 48888;
         public static string server_listen_address = "0.0.0.0";
         public static bool server_admin_only;
+        public static bool server_admin_always;
         public static bool server_production = true;
 
         public static string flash_domain = "tribalhero.com";

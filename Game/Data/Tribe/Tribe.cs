@@ -420,6 +420,11 @@ namespace Game.Data.Tribe
                 return Error.TroopEmpty;
             }
 
+            if (assignment.TargetCity == city)
+            {
+                return Error.AssignmentNotEligible;
+            }
+
             if (!procedure.TroopStubCreate(city, stub, TroopState.WaitingInAssignment, assignment.IsAttack ? FormationType.Attack : FormationType.Defense))
             {
                 return Error.TroopChanged;

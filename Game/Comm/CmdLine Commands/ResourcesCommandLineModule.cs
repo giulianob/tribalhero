@@ -19,8 +19,8 @@ namespace Game.Comm
     {
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("sendresources", SendResources, true);
-            processor.RegisterCommand("trainunits", TrainUnits, true);
+            processor.RegisterCommand("sendresources", SendResources, PlayerRights.Admin);
+            processor.RegisterCommand("trainunits", TrainUnits, PlayerRights.Admin);
         }
 
         public string SendResources(Session session, string[] parms)

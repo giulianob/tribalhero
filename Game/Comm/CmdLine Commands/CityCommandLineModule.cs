@@ -23,9 +23,9 @@ namespace Game.Comm.CmdLine_Commands
 
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("renamecity", RenameCity, true);
-            processor.RegisterCommand("removestructure", RemoveStructure, true);
-            processor.RegisterCommand("deletestucktroop", DeleteStuckTroop, true);
+            processor.RegisterCommand("renamecity", RenameCity, PlayerRights.Admin);
+            processor.RegisterCommand("removestructure", RemoveStructure, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("deletestucktroop", DeleteStuckTroop, PlayerRights.Bureaucrat);
         }
 
         public string DeleteStuckTroop(Session session, String[] parms)
@@ -150,7 +150,7 @@ namespace Game.Comm.CmdLine_Commands
             }
 
             if (help || string.IsNullOrEmpty(cityName) || string.IsNullOrEmpty(newCityName))
-                return "renamecity --cityr=city --newname=name";
+                return "renamecity --city=city --newname=name";
 
             uint cityId;
             if (!World.Current.FindCityId(cityName, out cityId))

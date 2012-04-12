@@ -13,8 +13,9 @@ namespace Game.Comm.ProcessorCommands
 
         enum ChatType
         {
-            GLOBAL = 0,
-            TRIBE = 1
+            Global = 0,
+            Tribe = 1,
+            Offtopic = 2,
         }
 
         public ChatCommandsModule(StreamWriter writer)
@@ -29,8 +30,6 @@ namespace Game.Comm.ProcessorCommands
 
         public void Chat(Session session, Packet packet)
         {
-            var reply = new Packet(packet);
-
             ChatType type;
             string message;
 
@@ -57,25 +56,9 @@ namespace Game.Comm.ProcessorCommands
 
             using (Concurrency.Current.Lock(session.Player))
             {
-                if (SystemClock.Now.Subtract(session.Player.ChatFloodTime).TotalSeconds >= 5)
-                {
-                    session.Player.ChatFloodTime = SystemClock.Now;
-                    session.Player.ChatFloodCount = 1;
-                }
-                else
-                {
-                    session.Player.ChatFloodCount++;
-
-                    if (session.Player.ChatFloodCount >= 5)
-                    {
-                        ReplyError(session, packet, Error.ChatFloodWarning);
-                        return;
-                    }
-                }
-               
                 switch (type)
                 {
-                    case ChatType.TRIBE:
+                    case ChatType.Tribe:
                         if (session.Player.Tribesman == null)
                         {
                             ReplyError(session, packet, Error.TribesmanNotPartOfTribe);
@@ -83,9 +66,38 @@ namespace Game.Comm.ProcessorCommands
                         }
                         channel = string.Format("/TRIBE/{0}", session.Player.Tribesman.Tribe.Id);
                         break;
-                    case ChatType.GLOBAL:
+
+                    case ChatType.Global:
+                    case ChatType.Offtopic:
+                        // If player is muted then dont let him talk in global
+                        if (session.Player.Muted)
+                        {
+                            ReplyError(session, packet, Error.ChatMuted);
+                            return;
+                        }
+
+                        // Flood chat protection
+                        int secondsFromLastMessage = (int)SystemClock.Now.Subtract(session.Player.ChatLastMessage).TotalSeconds;
+                        if (secondsFromLastMessage <= 10)
+                        {
+                            session.Player.ChatFloodCount++;
+                        }
+                        else if (secondsFromLastMessage > 120)
+                        {
+                            session.Player.ChatFloodCount = 0;
+                        }                        
+
+                        if (session.Player.ChatFloodCount >= 15)
+                        {
+                            ReplyError(session, packet, Error.ChatFloodWarning);
+                            return;
+                        }
+
+                        session.Player.ChatLastMessage = SystemClock.Now;
+
                         channel = "/GLOBAL";
                         break;
+
                     default:
                         return;
                 }

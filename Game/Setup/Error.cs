@@ -18,6 +18,7 @@ namespace Game.Setup
         
         ChatFloodWarning = 20,
         ChatMessageTooLong = 21,
+        ChatMuted = 22,
 
         #endregion
 
@@ -119,12 +120,15 @@ namespace Game.Setup
         TribesmanPendingRequest = 726,
         TribesmanNoRequest = 727,
         TribesmanNotPartOfTribe = 728,
+        TribesmanRankingTooLow = 729,
+        TribesmanRankingTooHigh = 730,
 
         AssignmentDone = 741,
         AssignmentNotFound = 742,
         AssignmentBadTime = 743,
         AssignmentCantAttackFriend = 744,
         AssignmentUnitsTooSlow = 745,
+        AssignmentNotEligible = 746,
         #endregion
 
     }

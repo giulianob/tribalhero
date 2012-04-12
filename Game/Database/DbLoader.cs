@@ -148,7 +148,7 @@ namespace Game.Database
                                                          resource);
                     tribe.DbPersisted = true;
 
-                    Global.Tribes.Add(tribe.Id, tribe);
+                    World.Current.Tribes.Add(tribe.Id, tribe);
                 }
             }
             #endregion
@@ -160,7 +160,7 @@ namespace Game.Database
             Global.Logger.Info("Loading tribesmen...");
             using (var reader = dbManager.Select(Tribesman.DB_TABLE)) {
                 while (reader.Read()) {
-                    ITribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    ITribe tribe = World.Current.Tribes[(uint)reader["tribe_id"]];
                     var contribution = new Resource((int)reader["crop"], (int)reader["gold"], (int)reader["iron"], (int)reader["wood"], 0);
                     var tribesman = new Tribesman(tribe, World.Current.Players[(uint)reader["player_id"]], DateTime.SpecifyKind((DateTime)reader["join_date"], DateTimeKind.Utc), contribution, (byte)reader["rank"])
                                     {DbPersisted = true};
@@ -181,7 +181,7 @@ namespace Game.Database
             {
                 while (reader.Read())
                 {
-                    ITribe tribe = Global.Tribes[(uint)reader["tribe_id"]];
+                    ITribe tribe = World.Current.Tribes[(uint)reader["tribe_id"]];
                     ICity city;
                     if (!World.Current.TryGetObjects((uint)reader["city_id"], out city))
                         throw new Exception("City not found");
@@ -298,7 +298,7 @@ namespace Game.Database
                                             DateTime.SpecifyKind((DateTime)reader["last_login"], DateTimeKind.Utc),
                                             (string)reader["name"],
                                             (string)reader["description"],
-                                            false) { DbPersisted = true, TribeRequest = (uint)reader["invitation_tribe_id"] };
+                                            PlayerRights.Basic) { DbPersisted = true, TribeRequest = (uint)reader["invitation_tribe_id"] };
                     World.Current.Players.Add(player.PlayerId, player);
                 }
             }

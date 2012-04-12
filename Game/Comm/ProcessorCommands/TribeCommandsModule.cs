@@ -101,7 +101,7 @@ namespace Game.Comm.ProcessorCommands
                 uint tribeId = tribeIds[i];
                 ITribe tribe;
 
-                if (!Global.Tribes.TryGetValue(tribeId, out tribe))
+                if (!World.Current.Tribes.TryGetValue(tribeId, out tribe))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -264,14 +264,14 @@ namespace Game.Comm.ProcessorCommands
                     return;
                 }
 
-                if (session.Player.GetCityList().Count(city => city.Lvl >= 10) < 1)
+                if (!session.Player.GetCityList().Any(city => city.Lvl >= 5))
                 {
                     ReplyError(session, packet, Error.EffectRequirementNotMet);
                     return;
                 }
 
                 ITribe tribe = tribeFactory.CreateTribe(session.Player, name);
-                Global.Tribes.Add(tribe.Id, tribe);
+                World.Current.Tribes.Add(tribe.Id, tribe);
                 DbPersistance.Current.Save(tribe);
 
                 var tribesman = new Tribesman(tribe, session.Player, 0);
@@ -312,7 +312,7 @@ namespace Game.Comm.ProcessorCommands
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
 
-                Global.Tribes.Remove(tribe.Id);
+                World.Current.Tribes.Remove(tribe.Id);
                 DbPersistance.Current.Delete(tribe);
             }
 

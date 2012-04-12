@@ -79,14 +79,6 @@ namespace Game.Battle
             }
         }
 
-        public override BaseBattleStats BaseStats
-        {
-            get
-            {
-                return Ioc.Kernel.Get<UnitFactory>().GetBattleStats(type, lvl);
-            }
-        }
-
         public override BattleStats Stats
         {
             get
@@ -269,7 +261,7 @@ namespace Game.Battle
             if (Hp < (Hp + DmgRecv) / 5)
             {
                 var percent = TroopStub.City.Technologies.GetEffects(EffectCode.LastStand)
-                    .Where(tech => BattleFormulas.Current.UnitStatModCheck(BaseStats, TroopBattleGroup.Attack, (string)tech.Value[1]))
+                    .Where(tech => BattleFormulas.Current.UnitStatModCheck(Stats.Base, TroopBattleGroup.Attack, (string)tech.Value[1]))
                     .DefaultIfEmpty()
                     .Max(x => x == null ? 0 : (int)x.Value[0]);
 

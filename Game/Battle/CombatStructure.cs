@@ -23,6 +23,7 @@ namespace Game.Battle
         private readonly BattleFormulas battleFormula;
         private readonly ushort type;
         private decimal hp; //need to keep a copy track of the hp for reporting
+        private readonly BaseBattleStats baseBattleStats;
 
         public CombatStructure(IBattleManager owner, IStructure structure, BattleStats stats, Formula formula, BattleFormulas battleFormula)
         {
@@ -49,14 +50,6 @@ namespace Game.Battle
         }
 
         public IStructure Structure { get; private set; }
-
-        public override BaseBattleStats BaseStats
-        {
-            get
-            {
-                return Structure.Stats.Base.Battle;
-            }
-        }
 
         public override BattleStats Stats
         {

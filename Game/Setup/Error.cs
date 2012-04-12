@@ -128,6 +128,7 @@ namespace Game.Setup
         AssignmentBadTime = 743,
         AssignmentCantAttackFriend = 744,
         AssignmentUnitsTooSlow = 745,
+        AssignmentNotEligible = 746,
         #endregion
 
     }

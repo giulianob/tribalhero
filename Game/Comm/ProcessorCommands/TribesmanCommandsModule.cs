@@ -22,9 +22,12 @@ namespace Game.Comm.ProcessorCommands
     {
         private readonly IActionFactory actionFactory;
 
-        public TribesmanCommandsModule(IActionFactory actionFactory)
+        private readonly StructureFactory structureFactory;
+
+        public TribesmanCommandsModule(IActionFactory actionFactory, StructureFactory structureFactory)
         {
             this.actionFactory = actionFactory;
+            this.structureFactory = structureFactory;
         }
 
         public override void RegisterCommands(Processor processor)
@@ -339,13 +342,14 @@ namespace Game.Comm.ProcessorCommands
                 ICity city = session.Player.GetCity(cityId);                
                 IStructure structure;
 
-                if (city == null || tribe == null || !city.TryGetStructure(structureId, out structure))
+                if (city == null || !city.TryGetStructure(structureId, out structure))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
                 }
+
                 var action = actionFactory.CreateTribeContributeActiveAction(cityId, structureId, resource);
-                Error ret = city.Worker.DoActive(Ioc.Kernel.Get<StructureFactory>().GetActionWorkerType(structure), structure, action, structure.Technologies);
+                Error ret = city.Worker.DoActive(structureFactory.GetActionWorkerType(structure), structure, action, structure.Technologies);
                 ReplyWithResult(session, packet, ret);
             }
         }

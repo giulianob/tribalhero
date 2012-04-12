@@ -370,11 +370,7 @@
 			});		
 			
 			btnDonate.addActionListener(function(e: Event): void {
-				var tribeContributeDialog: TribeContributeDialog = new TribeContributeDialog(function(dialog: TribeContributeDialog): void {
-					dialog.getFrame().dispose();
-					update();
-				});
-				tribeContributeDialog.show();
+				InfoDialog.showMessageDialog("Contribue to tribe", "You have to use Trading Post to contribute resources.");
 			});
 			
 			// First row of header panel which contains player name + ranking

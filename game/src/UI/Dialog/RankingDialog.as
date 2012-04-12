@@ -296,6 +296,7 @@ package src.UI.Dialog{
 			var selectIdx: int = -1;
 
 			for each(var rank: Object in data.rankings) {
+				if (rank.tribeId == null || rank.tribName == null) continue;
 				rankingList.append( { "rank": rank.rank, "value": rank.value, "tribeId": rank.tribeId, "tribeName": rank.tribeName } );
 
 				if (rank.tribeId == Constants.tribeId)  {

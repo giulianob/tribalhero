@@ -40,7 +40,7 @@
 
 			this.battleCityId = battleCityId;
 
-			battle = Global.mapComm.Battle.battleSubscribe(battleCityId);
+			battle = Global.mapComm.Battle.battleSubscribe(battleCityId, this);
 			
 			if (battle) {
 				battle.addEventListener(BattleManager.OBJECT_ADDED_ATTACK, onAddedAttack);

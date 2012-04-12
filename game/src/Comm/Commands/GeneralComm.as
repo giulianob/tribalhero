@@ -246,7 +246,7 @@
 			packet.cmd = Commands.CMD_LINE;
 			packet.writeString(command);
 
-			session.write(packet, onReceiveCommandResponse, [callback]);
+			session.write(packet, onReceiveCommandResponse, [callback, 0]);
 		}
 		
 		public function sendChat(type: int, message: String, callback: Function) : void {			
@@ -255,11 +255,12 @@
 			packet.writeByte(type);
 			packet.writeString(message);
 
-			session.write(packet, onReceiveCommandResponse, [callback]);
+			session.write(packet, onReceiveCommandResponse, [callback, type]);
 		}		
 
 		private function onReceiveCommandResponse(packet: Packet, custom: *) : void {
 			var callback: Function = custom[0];
+			var type: Function = custom[0];
 
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
 				callback(GameError.getMessage(packet.readUInt()));				
@@ -267,7 +268,7 @@
 			}
 
 			if (packet.hasData()) {
-				callback(packet.readString());
+				callback(packet.readString(), type);
 			}
 		}
 		

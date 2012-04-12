@@ -419,9 +419,6 @@
 				
 				// Deselect objects
 				clearAllSelections();
-				
-				// Close top most frame if possible
-				closeTopmostFrame();
 			}
 			
 			// Keys that should only apply if we are on the map w/o any dialogs open
@@ -587,6 +584,7 @@
 
 			if (cmdLine) {
 				cmdLine.getFrame().dispose();
+				cmdLine = null;
 			}
 
 			message.hide();
@@ -693,9 +691,11 @@
 		}
 
 		public function showFrame(frame: JFrame):void {						
-			if (map != null) {
-				clearAllSelections();
-				map.disableMouse(true);				
+			if (frame.isModal()) {						
+				if (map != null) {
+					clearAllSelections();
+					map.disableMouse(true);				
+				}
 			}
 				
 			frames.push(frame);
@@ -719,7 +719,12 @@
 			var index: int = frames.indexOf(frame);
 			if (index == -1) Util.log("Closed a frame that did not call show through GameContainer");
 			frames.splice(index, 1);
-			if (frames.length == 0 && map != null) map.disableMouse(false);
+			if (frames.length == 0 && map != null) {
+				map.disableMouse(false);
+			}
+			if (frames.length > 0) {
+				frames[frames.length - 1].requestFocus();
+			}
 		}
 
 		public function minimapRefresh(e: Event = null):void {

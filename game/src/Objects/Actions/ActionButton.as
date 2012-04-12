@@ -17,7 +17,7 @@ package src.Objects.Actions {
 	import src.UI.LookAndFeel.GameLookAndFeel;
 
 	public class ActionButton extends JButton {
-		protected var parentObj: SimpleGameObject;
+		public var parentObj: SimpleGameObject;
 
 		public var parentAction: Action = new Action();
 		public var currentCount: int;

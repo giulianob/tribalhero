@@ -18,9 +18,9 @@ namespace Game.Comm
     {
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("assignmentlist", AssignmentList, true);
-            processor.RegisterCommand("assignmentcreate", AssignmentCreate, true);
-            processor.RegisterCommand("assignmentjoin", AssignmentJoin, true);
+            processor.RegisterCommand("assignmentlist", AssignmentList, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("assignmentcreate", AssignmentCreate, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("assignmentjoin", AssignmentJoin, PlayerRights.Bureaucrat);
         }
 
         private string AssignmentList(Session session, string[] parms)

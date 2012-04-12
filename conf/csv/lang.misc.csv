@@ -39,3 +39,7 @@ TRIBE_LVL_20,Allows 100 members to join the tribe
 ,
 CONCURRENT_UPGRADE_2,You can only build/upgrade two structures at a time
 CONCURRENT_UPGRADE_3,You can only build/upgrade three structures at a time
+,
+CHAT_CHANNEL_GLOBAL,Global
+CHAT_CHANNEL_OFFTOPIC,Off topic
+CHAT_CHANNEL_TRIBE,Tribe

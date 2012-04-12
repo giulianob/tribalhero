@@ -261,25 +261,26 @@ namespace Game.Battle
                 int defendersRoundsLeft = int.MaxValue;
                 int attackersRoundsLeft = int.MaxValue;
 
-                if (defenders.Count > 0)
-                {
-                    defendersRoundsLeft =
-                            defenders.Min(co => co.City.Owner == player ? Math.Max(0, Config.battle_min_rounds - co.RoundsParticipated) : int.MaxValue);
-                    if (defendersRoundsLeft == 0)
+                var playersDefenders = defenders.Where(co => co.City.Owner == player).ToList();
+                if (playersDefenders.Any()) {
+                    defendersRoundsLeft = playersDefenders.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
+                    if (defendersRoundsLeft < 0)
                         return true;
                 }
 
-                if (attackers.Count > 0)
+                var playersAttackers = attackers.Where(co => co.City.Owner == player).ToList();
+                if (attackers.Any())
                 {
-                    attackersRoundsLeft =
-                            attackers.Min(co => co.City.Owner == player ? Math.Max(0, Config.battle_min_rounds - co.RoundsParticipated) : int.MaxValue);
-                    if (attackersRoundsLeft == 0)
+                    attackersRoundsLeft = playersAttackers.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
+                    if (attackersRoundsLeft < 0)
                         return true;
                 }
 
                 roundsLeft = Math.Min(attackersRoundsLeft, defendersRoundsLeft);
                 if (roundsLeft == int.MaxValue)
                     roundsLeft = 0;
+                else
+                    roundsLeft++;
 
                 return false;
             }

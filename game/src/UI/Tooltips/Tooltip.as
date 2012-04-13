@@ -24,6 +24,7 @@ package src.UI.Tooltips {
 		protected var viewObj: DisplayObject;
 
 		public function Tooltip() {
+			ui.setFocusable(false);
 			ui.setBorder(new EmptyBorder(null, new Insets(3, 10, 3, 10)));		
 		}
 
@@ -55,6 +56,7 @@ package src.UI.Tooltips {
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().parent.tabEnabled = false;
+				ui.getFrame().setFocusable(false);
 			}
 			
 			

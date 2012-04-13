@@ -33,15 +33,17 @@
 			
 			addEventListener(KeyboardEvent.KEY_DOWN, function(e: KeyboardEvent): void {
 				if (e.keyCode == Keyboard.ESCAPE) {
-					tryToClose();
-					e.stopImmediatePropagation();
+					if (getTitleBar() && getTitleBar().getCloseButton() != null) {
+						getTitleBar().getCloseButton().doClick();
+						e.stopImmediatePropagation();
+					}
 				}				
 			});			
 			
 			getTitleBar().setMaximizeButton(null);
 			getTitleBar().setRestoreButton(null);
 			getTitleBar().setIconifiedButton(null);	
-		}
+		}		
 		
 		override public function dispose():void
 		{

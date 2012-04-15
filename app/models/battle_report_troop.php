@@ -8,7 +8,7 @@ class BattleReportTroop extends AppModel {
         'City'
     );
     var $hasMany = array(
-        'BattleReportObject'
+        'BattleReportObject' => array('dependentBatchDelete' => true)
     );
 
 }

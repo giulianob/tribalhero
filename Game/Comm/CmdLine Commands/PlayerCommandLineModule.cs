@@ -20,8 +20,8 @@ namespace Game.Comm
     {
         public override void RegisterCommands(CommandLineProcessor processor)
         {
-            processor.RegisterCommand("ban", BanPlayer, PlayerRights.Admin);
-            processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Admin);
+            processor.RegisterCommand("ban", BanPlayer, PlayerRights.Moderator);
+            processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("deleteplayer", DeletePlayer, PlayerRights.Bureaucrat);
             processor.RegisterCommand("clearplayerdescription", PlayerClearDescription, PlayerRights.Moderator);
             processor.RegisterCommand("deletenewbies", DeleteNewbies, PlayerRights.Bureaucrat);

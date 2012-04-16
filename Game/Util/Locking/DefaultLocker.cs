@@ -194,13 +194,7 @@ namespace Game.Util.Locking
             if (lck == null)
                 return null;
 
-            if (!city.TryGetStructure(objectId, out obj))
-            {
-                city = null;
-                obj = null;
-                lck.UnlockAll();
-                return null;
-            }
+            city.TryGetStructure(objectId, out obj);
 
             return lck;
         }

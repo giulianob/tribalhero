@@ -4,12 +4,10 @@ using System;
 using System.Collections.Generic;
 using Game.Data;
 using Game.Logic.Formulas;
-using Game.Logic.Procedures;
 using Game.Map;
 using Game.Setup;
 using Game.Util;
 using Game.Util.Locking;
-using Ninject;
 
 #endregion
 
@@ -20,10 +18,16 @@ namespace Game.Logic.Actions
         private readonly uint cityId;
         private readonly uint structureId;
 
-        public StructureDowngradeActiveAction(uint cityId, uint structureId)
+        private readonly ObjectTypeFactory objectTypeFactory;
+
+        private readonly StructureFactory structureFactory;
+
+        public StructureDowngradeActiveAction(uint cityId, uint structureId, ObjectTypeFactory objectTypeFactory, StructureFactory structureFactory)
         {
             this.cityId = cityId;
             this.structureId = structureId;
+            this.objectTypeFactory = objectTypeFactory;
+            this.structureFactory = structureFactory;
         }
 
         public StructureDowngradeActiveAction(uint id,
@@ -33,9 +37,13 @@ namespace Game.Logic.Actions
                                             int workerType,
                                             byte workerIndex,
                                             ushort actionCount,
-                                            Dictionary<string, string> properties)
-                : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
+                                            Dictionary<string, string> properties,
+                                            ObjectTypeFactory objectTypeFactory,
+                                            StructureFactory structureFactory)
+            : base(id, beginTime, nextTime, endTime, workerType, workerIndex, actionCount)
         {
+            this.objectTypeFactory = objectTypeFactory;
+            this.structureFactory = structureFactory;
             cityId = uint.Parse(properties["city_id"]);
             structureId = uint.Parse(properties["structure_id"]);
         }
@@ -64,18 +72,18 @@ namespace Game.Logic.Actions
             if (!World.Current.TryGetObjects(cityId, structureId, out city, out structure))
                 return Error.ObjectNotFound;
 
-            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("MainBuilding", structure))
+            if (objectTypeFactory.IsStructureType("MainBuilding", structure))
                 return Error.StructureUndowngradable;
 
-            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Unattackable", structure))
+            if (objectTypeFactory.IsStructureType("NonUserDestroyable", structure))
                 return Error.StructureUndowngradable;
 
-            if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", structure) && structure.Lvl <= 1)
+            if (objectTypeFactory.IsStructureType("Undestroyable", structure))
                 return Error.StructureUndestroyable;
 
             endTime =
                     DateTime.UtcNow.AddSeconds(
-                                               CalculateTime(Formula.Current.BuildTime(Ioc.Kernel.Get<StructureFactory>().GetTime(structure.Type, (byte)(structure.Lvl + 1)),
+                                               CalculateTime(Formula.Current.BuildTime(structureFactory.GetTime(structure.Type, (byte)(structure.Lvl + 1)),
                                                                                city,
                                                                                structure.Technologies)));
             BeginTime = DateTime.UtcNow;
@@ -114,12 +122,6 @@ namespace Game.Logic.Actions
                     return;
                 }
 
-                if (Ioc.Kernel.Get<ObjectTypeFactory>().IsStructureType("Undestroyable", structure))
-                {
-                    StateChange(ActionState.Failed);
-                    return;
-                }
-
                 if (structure.State.Type == ObjectState.Battle)
                 {
                     StateChange(ActionState.Failed);
@@ -140,6 +142,10 @@ namespace Game.Logic.Actions
 
                 // Unblock structure since we're done with it in this action and ObjectRemoveAction will take it from here
                 structure.IsBlocked = false;
+
+                // Send any laborers back
+                city.Resource.Labor.Add(structure.Stats.Labor);
+                structure.Stats.Labor = 0;
 
                 // Destroy structure
                 World.Current.Remove(structure);

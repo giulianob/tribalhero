@@ -35,13 +35,11 @@
 			setColsRows(2, 0);
 			setTracksWidth(true);
 
-			onUpdateActions(null);
-
 			timer = new Timer(1000);
 			timer.addEventListener(TimerEvent.TIMER, function(e: TimerEvent):void { updateTimes(); } );
 			timer.start();
 
-			city.currentActions.addEventListener(BinaryListEvent.CHANGED, onUpdateActions);
+			setCity(city);
 		}
 
 		public function dispose(): void {
@@ -55,8 +53,18 @@
 				cell.updateTime();
 			}
 		}
+		
+		public function setCity(city: City): void {
+			if (city) {
+				city.currentActions.removeEventListener(BinaryListEvent.CHANGED, onUpdateActions);
+			}
+			
+			this.city = city;			
+			onUpdateActions();
+			city.currentActions.addEventListener(BinaryListEvent.CHANGED, onUpdateActions);
+		}
 
-		public function onUpdateActions(e: Event): void {
+		public function onUpdateActions(e: Event = null): void {
 			(getModel() as VectorListModel).clear();
 
 			if (city.currentActions.size() == 0) {

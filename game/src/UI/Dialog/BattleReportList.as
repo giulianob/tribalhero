@@ -108,6 +108,7 @@
 			append(AsWingUtils.createPaneToHold(btnMarkAsRead, new FlowLayout()));
 			append(pnlLocal);
 			append(pnlRemote);
+			append(new JLabel("Reports are removed after two weeks.", null, AsWingConstants.LEFT));
 			
 			if (Constants.admin) {
 				pnlAdminSearch.append(txtAdminCityList);

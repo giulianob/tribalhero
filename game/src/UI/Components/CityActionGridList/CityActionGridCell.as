@@ -28,6 +28,7 @@
 		private var panel6:JPanel;
 		private var lblAction:JLabel;
 		private var lblTime:JLabel;
+		private var tooltip: SimpleTooltip;
 
 		public function CityActionGridCell()
 		{
@@ -55,6 +56,8 @@
 			}
 			
 			this.value = value;
+		
+			tooltip.setEnabled(value.cityObj != null);		
 
 			var currentAction: CurrentAction = value.currentAction as CurrentAction;
 
@@ -115,8 +118,10 @@
 
 			icon = new JPanel();
 			icon.setPreferredWidth(50);
-			new SimpleTooltip(this, "Click to go to event");
-
+			
+			tooltip = new SimpleTooltip(this, "Click to go to event");
+			tooltip.setEnabled(false);
+			
 			panel6 = new JPanel();
 			panel6.setPreferredSize(new IntDimension(175, 50));
 			var layout2:SoftBoxLayout = new SoftBoxLayout();

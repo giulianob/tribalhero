@@ -86,7 +86,7 @@
 		protected function updateSpeedInfo(e: Event = null): void {
 			var stub: TroopStub = getTroop();			
 			if (stub.getIndividualUnitCount() == 0) {
-				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops") 
+				lblTroopSpeed.setText("Hint: Drag units to assign to the different troops. Hold SHIFT while dragging to transfer all units at once.") 
 			}
 			else {
 				lblTroopSpeed.setText("Troop speed will be: " + Formula.moveTimeString(stub.getSpeed(city)));
@@ -174,7 +174,7 @@
 			btnOk.setSize(new IntDimension(22, 22));
 			btnOk.setText("Ok");
 
-			lblTroopSpeed = new MultilineLabel();
+			lblTroopSpeed = new MultilineLabel("", 2, 0);
 			
 			//component layoution
 			if (hasAttackStrength) {

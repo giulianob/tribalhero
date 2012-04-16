@@ -36,15 +36,14 @@ package src.UI.Dialog
 		private var cmdIndex:int = -1;
 		private var scrollConsole:JScrollPane;
 		private var channelTabs: JPanel;
-		private var btnMinimize:JButton;
 		private var btnClose:JButton;
 		private var btnOpen:JButton;
 		private var currentChatType:int;
 		private var tabbedPanel:int;
 		
-		private var profanityFilter:ProfanityFilter = new ProfanityFilter();
+		private var profanityFilter:ProfanityFilter = new ProfanityFilter();		
 		
-		private var sizeMode:int;
+		private var maximizedSize: IntDimension;
 		
 		// We need to keep the chat separately from what's in the input.
 		// This means a bit more memory used for chat than what is ideal but it's what we gotta do.
@@ -59,21 +58,9 @@ package src.UI.Dialog
 				chats[i] = "";
 			}
 			
-			log(TYPE_GLOBAL, '<a href="http://tribalhero.com/pages/donate" target="_blank">Donate to improve</a> Tribal Hero if you are enjoying the game.', false, false);
-			log(TYPE_GLOBAL, 'Remember to keep it classy. Chat is for talking about the game and profanity should be kept to a minimum.');
-			log(TYPE_GLOBAL, 'Not sure what to do? Visit the <a href="http://tribalhero.wikia.com" target="_blank">wiki</a>.', false, false);
-			
-			addEventListener(Event.ADDED_TO_STAGE, function(e:Event):void
-				{
-					if (Constants.screenH < 600)
-					{
-						onClose();
-					}
-					else
-					{
-						resizeAndReposition();
-					}
-				});
+			log(TYPE_GLOBAL, '<a href="http://tribalhero.com/pages/donate" target="_blank">We need donations</a> to keep improving the game.', false, false);
+			log(TYPE_GLOBAL, 'Remember to keep it classy.');
+			log(TYPE_GLOBAL, 'Not sure what to do? <a href="http://tribalhero.wikia.com" target="_blank">Visit the wiki for help</a>.', false, false);
 			
 			var stickScroll:Boolean = true;
 			var lastScrollValue:int = 0;
@@ -105,13 +92,7 @@ package src.UI.Dialog
 					var len:int = txtCommand.getText().length;
 					txtCommand.setSelection(len, len);
 				});
-			
-			btnMinimize.addActionListener(function(e:Event):void
-				{
-					sizeMode = 1 - sizeMode;
-					resizeAndReposition();
-				});
-			
+						
 			txtConsole.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:Event):void
 				{
 					scrollConsole.getVerticalScrollBar().dispatchEvent(e);
@@ -188,14 +169,14 @@ package src.UI.Dialog
 			{
 				log(currentChatType, message, true);				
 				
-				Global.mapComm.General.sendCommand(message.substr(1), function(resp:String, type: int):void
+				Global.mapComm.General.sendCommand(message.substr(1), function(resp:String, type: int = 0):void
 					{
 						log(currentChatType, resp, false);
 					});
 			}
 			else
 			{
-				Global.mapComm.General.sendChat(type, message, function(resp:String, type: int):void
+				Global.mapComm.General.sendChat(type, message, function(resp:String, type: int = 0):void
 					{
 						log(type, resp, false);
 					});
@@ -214,6 +195,27 @@ package src.UI.Dialog
 			frame.addEventListener(FrameEvent.FRAME_CLOSING, function(e: Event): void {
 				frame.removeEventListener(KeyboardEvent.KEY_DOWN, channelHotkeys);
 			});
+
+			frame.addEventListener(ResizedEvent.RESIZED, function(e: ResizedEvent): void {
+				// Only set the maximized size if we are actually maximized
+				if (pnlContent.getParent()) {
+					maximizedSize = getFrame().getSize();
+				}
+				
+				resizeAndReposition();				
+			});
+			
+			frame.setSize(new IntDimension(Math.min(550, Constants.screenW * 0.5), Math.min(Constants.screenH - 300, Constants.screenH * 0.3)));
+			maximizedSize = frame.getSize();
+			
+			if (Constants.screenH < 600)
+			{
+				onClose();
+			}
+			else
+			{						
+				resizeAndReposition();
+			}			
 			
 			return frame;
 		}
@@ -313,27 +315,28 @@ package src.UI.Dialog
 		}
 		
 		private function resizeAndReposition():void
-		{
-			var rowsInScreen:int = Constants.screenH / txtConsole.getFont().computeTextSize(" ", false).height;
-			
-			switch (sizeMode)
-			{
-				case 0: 
-					txtConsole.setRows(rowsInScreen * 0.20);
-					break;
-				case 1: 
-					txtConsole.setRows(rowsInScreen * 0.75);
-					break;
+		{								
+			if (pnlContent.getParent()) {
+				frame.setResizable(true);
+				frame.setMinimumSize(new IntDimension(360, 150));
+			}
+			else {
+				frame.setResizable(false);
+				frame.setMinimumSize(new IntDimension(0, 0));
 			}
 			
-			getFrame().pack();
-			getFrame().setLocationXY(300, Constants.screenH - getFrame().getHeight());
+			getFrame().setWidth(Math.min(getFrame().getWidth(), Constants.screenW - 5));
+			getFrame().setHeight(Math.min(getFrame().getHeight(), Constants.screenH - 75));
+			
+			getFrame().setLocationXY(5, Constants.screenH - getFrame().getHeight());
 		}
 		
 		private function onClose(e:Event = null):void
 		{
 			remove(pnlContent);
-			append(btnOpen);
+			append(btnOpen);	
+			resizeAndReposition();
+			getFrame().pack();
 			resizeAndReposition();
 		}
 		
@@ -341,6 +344,7 @@ package src.UI.Dialog
 		{
 			remove(btnOpen);
 			append(pnlContent);
+			getFrame().setSize(maximizedSize);
 			resizeAndReposition();
 		}
 		
@@ -376,22 +380,25 @@ package src.UI.Dialog
 		}
 		
 		private function createUI():void
-		{			
-			setLayout(new FlowLayout(AsWingConstants.LEFT, 0, 0, false));
+		{						
+			setLayout(new BorderLayout());
 			
-			pnlContent = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS));
+			pnlContent = new JPanel(new BorderLayout(SoftBoxLayout.Y_AXIS));
+			pnlContent.setConstraints("Center");
 			pnlContent.setBorder(new EmptyBorder(null, new Insets(5, 5, 5, 5)));
 			
 			var pnlToolbar:JPanel = new JPanel(new BorderLayout(0, 0));
-			pnlToolbar.setPreferredWidth(650);			
+			pnlToolbar.setConstraints("North");
 			
-			var pnlToolbarButtons:JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 5, 0, false));
+			var pnlToolbarButtons:JPanel = new JPanel(new FlowLayout(AsWingConstants.RIGHT, 0, 0, false));
 			pnlToolbarButtons.setConstraints("East");
 			
-			btnMinimize = new JButton("", new SkinFrameMaximizeIcon());
-			btnMinimize.setBackgroundDecorator(null);
-			
 			btnClose = new JButton("", new SkinFrameCloseIcon());
+			btnClose.setMargin(new Insets(3, 0, 0, 0));
+			btnClose.setStyleTune(null);
+			btnClose.setBackground(null);
+			btnClose.setForeground(null);
+			btnClose.setMideground(null);
 			btnClose.setBackgroundDecorator(null);
 			
 			btnOpen = new JButton("", new SkinCustomIcon("Frame.chatIcon"));
@@ -409,6 +416,7 @@ package src.UI.Dialog
 			txtConsole.setWordWrap(true);
 			txtConsole.setBackgroundDecorator(null);
 			txtConsole.setEditable(false);
+			txtConsole.setConstraints("Center");
 			
 			var consoleCss:StyleSheet = new StyleSheet();
 			consoleCss.setStyle("p", {marginBottom: '3px', leading: 3, fontFamily: 'Arial', fontSize: 12, color: '#FFFFFF'});
@@ -438,11 +446,12 @@ package src.UI.Dialog
 			pnlCommandLineHolder.appendAll(lblCommandCursor, txtCommand);
 			
 			var pnlCommandHolder:JPanel = new JPanel(new BorderLayout());
+			pnlCommandHolder.setConstraints("South");
 			
 			pnlCommandHolder.appendAll(pnlCommandLineHolder);
 			
 			pnlToolbar.appendAll(channelTabs, pnlToolbarButtons);
-			pnlToolbarButtons.appendAll(btnMinimize, btnClose);
+			pnlToolbarButtons.appendAll(btnClose);
 			
 			pnlContent.append(pnlToolbar);
 			pnlContent.append(scrollConsole);

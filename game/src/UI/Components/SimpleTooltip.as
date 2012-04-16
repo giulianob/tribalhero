@@ -15,6 +15,7 @@
 	{
 		private var ui: DisplayObject;
 		private var tooltip: TextTooltip;
+		private var enabled: Boolean = true;
 		
 		public function SimpleTooltip(ui: DisplayObject, tooltip: String = "")
 		{		
@@ -30,13 +31,19 @@
 			ui.removeEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
 		}
 		
+		public function setEnabled(enable: Boolean): void {
+			this.enabled = enable;
+		}
+		
 		public function setText(tooltip: String) : void {
 			this.tooltip.hide();
 			this.tooltip = new TextTooltip(tooltip);
 		}
 		
 		private function onRollOver(e: Event):void {
-			tooltip.show(ui);
+			if (enabled) {
+				tooltip.show(ui);
+			}
 		}
 		
 		private function onRollOut(e: Event):void {

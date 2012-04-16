@@ -260,10 +260,10 @@
 
 		private function onReceiveCommandResponse(packet: Packet, custom: *) : void {
 			var callback: Function = custom[0];
-			var type: Function = custom[0];
+			var type: int = custom[1];
 
 			if ((packet.option & Packet.OPTIONS_FAILED) == Packet.OPTIONS_FAILED) {
-				callback(GameError.getMessage(packet.readUInt()));				
+				callback(GameError.getMessage(packet.readUInt()), type);
 				return;
 			}
 

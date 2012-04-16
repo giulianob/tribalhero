@@ -19,7 +19,7 @@
 	import src.UI.*;
 	import src.UI.Components.*;
 	import src.UI.Components.CityActionGridList.*;
-	import src.UI.Components.TableCells.StructureCell;
+	import src.UI.Components.TableCells.*;
 	import src.Util.*;
 	
 	public class CityEventDialog extends GameJPanel
@@ -44,14 +44,22 @@
 		
 		private var city:City;
 		
+		private var lstCities: JComboBox;
+		
 		public function CityEventDialog(city:City)
 		{
-			this.city = city;
+			this.city = city;			
 			
-			title = "Overview - " + city.name;
+			title = "City Overview";
 			
-			gridLocalActions = new CityActionGridList(city, 530);
 			createUI();
+			
+			for each (var eachCity: City in Global.map.cities.each()) {
+				(lstCities.getModel() as VectorListModel).append( { id: eachCity.id, city: eachCity, toString: function() : String { return this.city.name; } } );
+				if (eachCity == city) {
+					lstCities.setSelectedIndex(lstCities.getItemCount() - 1);
+				}
+			}
 		}
 		
 		public function show(owner:* = null, modal:Boolean = true, onClose:Function = null):JFrame
@@ -82,6 +90,22 @@
 		private function dispose():void
 		{
 			gridLocalActions.dispose();
+		}
+		
+		public function onChangeCitySelection(e: InteractiveEvent):void {		
+			if (city) {
+				city.removeEventListener(City.RESOURCES_UPDATE, onResourceChange);
+			}
+			
+			city = null;
+			
+			if (lstCities.getSelectedIndex() == -1) return;
+			
+			city = lstCities.getSelectedItem().city;
+			gridLocalActions.setCity(city);
+			city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);
+			
+			drawResources();
 		}
 		
 		private function simpleLabelMaker(tooltip:String, icon:Icon = null):JLabel
@@ -136,6 +160,8 @@
 				lblAttackPoints.setText(city.attackPoint + " attack points");
 				lblDefensePoints.setText(city.defensePoint + " defense points");
 				lblValue.setText(city.value + " Influence points");
+				
+				pnlResources.pack();
 			}
 			
 			{
@@ -172,8 +198,18 @@
 		{
 			setLayout(new BorderLayout(0, 10));
 			
-			pnlResources = new JPanel(new GridLayout(0, 3, 20, 10));
-			pnlResources.setConstraints("North");
+			var pnlNorth: JPanel = new JPanel(new SoftBoxLayout(SoftBoxLayout.Y_AXIS, 5));
+			pnlNorth.setConstraints("North");
+			{
+				lstCities = new JComboBox();			
+				lstCities.setModel(new VectorListModel());
+				lstCities.addEventListener(InteractiveEvent.SELECTION_CHANGED, onChangeCitySelection);
+				lstCities.setPreferredSize(new IntDimension(150, 22));
+				
+				pnlResources = new JPanel(new GridLayout(0, 3, 20, 10));			
+				
+				pnlNorth.appendAll(AsWingUtils.createPaneToHold(lstCities, new FlowLayout()), pnlResources);
+			}
 			
 			pnlTabs = new JTabbedPane();
 			pnlTabs.setConstraints("Center");
@@ -181,6 +217,7 @@
 			
 			// Local Events Tab
 			{
+				gridLocalActions = new CityActionGridList(city, 530);
 				pnlTabs.appendTab(new JScrollPane(gridLocalActions), "Local Events");
 				
 				lblGold = resourceLabelMaker("Gold\n\n" + Locale.loadString("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));
@@ -227,9 +264,9 @@
 				pnlTabs.appendTab(new JScrollPane(laborersTable), "Laborers");
 			}
 			
-			//component layoution
+			//component layoution			
+			append(pnlNorth);
 			append(lblUpkeepMsg);
-			append(pnlResources);
 			append(pnlTabs);
 			
 			drawResources();

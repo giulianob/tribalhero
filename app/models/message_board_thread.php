@@ -8,7 +8,7 @@ class MessageBoardThread extends AppModel {
         'LastPostPlayer' => array('className' => 'Player', 'foreignKey' => 'last_post_player_id')
     );
     var $hasMany = array(
-        'MessageBoardPost'
+        'MessageBoardPost' => array('dependentBatchDelete' => true)
     );
     var $hasAndBelongsToMany = array(
         'Player' => array('with' => 'MessageBoardRead'),

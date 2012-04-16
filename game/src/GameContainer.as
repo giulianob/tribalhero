@@ -485,7 +485,7 @@
 			displayResources();
 
 			//Add minimap tools
-			addChild(minimapTools);
+			addChildAt(minimapTools, 1);
 
 			// Create and position command line if admin
 			cmdLine = new CmdLineViewer();
@@ -498,8 +498,8 @@
 			resizeManager.addObject(sidebarHolder, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			resizeManager.addObject(barBg, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_LEFT);
 			resizeManager.addObject(resourcesContainer, ResizeManager.ANCHOR_TOP | ResizeManager.ANCHOR_RIGHT);
-			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
-			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_LEFT | ResizeManager.ANCHOR_BOTTOM);
+			resizeManager.addObject(miniMap, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
+			resizeManager.addObject(minimapTools, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_BOTTOM);
 			resizeManager.addObject(chains, ResizeManager.ANCHOR_RIGHT | ResizeManager.ANCHOR_TOP);
 			if (cmdLine) resizeManager.addObject(cmdLine, ResizeManager.ANCHOR_BOTTOM | ResizeManager.ANCHOR_LEFT);
 
@@ -516,7 +516,7 @@
 
 			//Set minimap position and initial state
 			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
-			addChild(miniMap);
+			addChildAt(miniMap, 1);
 			zoomIntoMinimap(false, false);
 			
 			// Refresh unread messages

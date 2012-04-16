@@ -160,6 +160,8 @@
 				lblAttackPoints.setText(city.attackPoint + " attack points");
 				lblDefensePoints.setText(city.defensePoint + " defense points");
 				lblValue.setText(city.value + " Influence points");
+				
+				pnlResources.pack();
 			}
 			
 			{

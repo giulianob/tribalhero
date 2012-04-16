@@ -86,7 +86,7 @@
 
 			bg.graphics.clear();
 			var g: Graphics2D = new Graphics2D(bg.graphics);
-			bg.alpha = 0.6;
+			bg.alpha = 0.8;
 			g.fillRoundRect(new SolidBrush(ASColor.BLACK), 0, 0, this.miniMapWidth, this.miniMapHeight, 10);
 
 			mapMask.graphics.clear();

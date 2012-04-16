@@ -103,10 +103,10 @@ package src
 		public static const miniMapScreenH: int = 138;
 
 		public static const miniMapScreenX: Function = function(width: int) : int {
-			return 6;
+			return screenW - width - 6;
 		}
 		public static const miniMapScreenY: Function = function(height: int) : int {
-			return screenH - height - 6;
+			return screenH - height - 5;
 		}
 
 		// Expanded mini map constants

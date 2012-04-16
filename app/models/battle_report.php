@@ -8,7 +8,7 @@ class BattleReport extends AppModel {
         'Battle'
     );
     var $hasMany = array(
-        'BattleReportTroop'
+        'BattleReportTroop' => array('dependent' => true),
     );
 
     function paginateCount($conditions = array(), $recursive = 0, $extra = array()) {

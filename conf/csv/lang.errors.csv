@@ -46,7 +46,7 @@ ERROR_414,The city name must start with a letter and can only contain alpha nume
 ERROR_415,This object cannot be attacked.
 ERROR_416,You must perform this action within your city walls
 ERROR_417,This player is still under newbie protection and cannot be attacked yet
-ERROR_418,This structure cannot be attacked or destroyed at level 1.
+ERROR_418,This structure cannot be destroyed or attacked when its level 1.
 ERROR_419,This structure cannot be removed.
 ERROR_420,There must be an available road to perform this action
 ERROR_421,A road already exists there

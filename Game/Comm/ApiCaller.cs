@@ -19,7 +19,7 @@ namespace Game.Comm
             get
             {
                 if (Success || Data == null)
-                    return string.Empty;
+                    return "An error occurred";
                 
                 return String.Join(", ", Data.errorMessage);
             }
@@ -133,7 +133,7 @@ namespace Game.Comm
                                 new KeyValuePair<string, string>("name", name),                                
                                 new KeyValuePair<string, string>("rights", ((int)rights).ToString(CultureInfo.InvariantCulture)),      
                         };
-            return MakeCall("player", "set_rights ", parms);
+            return MakeCall("player", "set_rights", parms);
         }
 
         public static ApiResponse SetPassword(string name, string password)

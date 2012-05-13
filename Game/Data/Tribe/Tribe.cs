@@ -32,14 +32,9 @@ namespace Game.Data.Tribe
 
         public const string DB_TABLE = "tribes";
         public const int MEMBERS_PER_LEVEL = 5;
-        public uint Id
-        {
-            get
-            {
-                return Owner.PlayerId;
-            }
-        }
-        public IPlayer Owner { get; private set; }
+
+        public uint Id { set; get; }
+        public IPlayer Owner { get; set; }
         public string Name { get; set; }
         public byte Level { get; set; }
 
@@ -55,7 +50,7 @@ namespace Game.Data.Tribe
                 attackPoint = value;
                 if (DbPersisted)
                 {
-                    dbManager.Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    dbManager.Query(string.Format("UPDATE `{0}` SET `attack_point` = @attack_point WHERE `id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("attack_point", attackPoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -74,7 +69,7 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    dbManager.Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    dbManager.Query(string.Format("UPDATE `{0}` SET `defense_point` = @defense_point WHERE `id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("defense_point", defensePoint, DbType.Int32), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -93,7 +88,7 @@ namespace Game.Data.Tribe
 
                 if (DbPersisted)
                 {
-                    dbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `player_id` = @id LIMIT 1", DB_TABLE),
+                    dbManager.Query(string.Format("UPDATE `{0}` SET `desc` = @desc WHERE `id` = @id LIMIT 1", DB_TABLE),
                                            new[] { new DbColumn("desc", description, DbType.String, Player.MAX_DESCRIPTION_LENGTH), new DbColumn("id", Id, DbType.UInt32) });
                 }
             }
@@ -151,7 +146,7 @@ namespace Game.Data.Tribe
 
         public bool IsOwner(IPlayer player)
         {
-            return player.PlayerId == Id;
+            return player == Owner;
         }
 
         public Error AddTribesman(ITribesman tribesman, bool save = true)
@@ -187,6 +182,32 @@ namespace Game.Data.Tribe
         public bool TryGetTribesman(uint playerId, out ITribesman tribesman)
         {
             return tribesmen.TryGetValue(playerId, out tribesman);
+        }
+
+        public Error Transfer(uint newOwnerPlayerId)
+        {
+            if (Owner.PlayerId == newOwnerPlayerId)
+            {
+                return Error.TribesmanIsOwner;
+            }
+
+            ITribesman newOwnerTribesman;
+
+            if (!tribesmen.TryGetValue(newOwnerPlayerId, out newOwnerTribesman))
+                return Error.TribesmanNotFound;
+
+            var previousOwnerTribesman = Owner.Tribesman;
+
+            previousOwnerTribesman.Rank = 1;
+            newOwnerTribesman.Rank = 0;
+            Owner = newOwnerTribesman.Player;
+
+            dbManager.Save(previousOwnerTribesman, newOwnerTribesman, this);
+                        
+            previousOwnerTribesman.Player.TribeUpdate();
+            newOwnerTribesman.Player.TribeUpdate();
+
+            return Error.Ok;            
         }
 
         public Error SetRank(uint playerId, byte rank)
@@ -308,7 +329,7 @@ namespace Game.Data.Tribe
         {
             get
             {
-                return new[] { new DbColumn("player_id", Id, DbType.UInt32) };
+                return new[] { new DbColumn("id", Id, DbType.UInt32) };
             }
         }
 
@@ -326,9 +347,13 @@ namespace Game.Data.Tribe
             {
                 return new[]
                        {
-                               new DbColumn("name", Name, DbType.String, 20), new DbColumn("level", Level, DbType.Byte),
-                               new DbColumn("crop", Resource.Crop, DbType.Int32), new DbColumn("gold", Resource.Gold, DbType.Int32),
-                               new DbColumn("iron", Resource.Iron, DbType.Int32), new DbColumn("wood", Resource.Wood, DbType.Int32),
+                               new DbColumn("owner_player_id", Owner.PlayerId, DbType.UInt32),
+                               new DbColumn("name", Name, DbType.String, 20), 
+                               new DbColumn("level", Level, DbType.Byte),
+                               new DbColumn("crop", Resource.Crop, DbType.Int32), 
+                               new DbColumn("gold", Resource.Gold, DbType.Int32),
+                               new DbColumn("iron", Resource.Iron, DbType.Int32), 
+                               new DbColumn("wood", Resource.Wood, DbType.Int32),
                        };
             }
         }

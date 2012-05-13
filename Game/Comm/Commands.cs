@@ -180,6 +180,7 @@ namespace Game.Comm
         TribeUpgrade = 1005,
         TribeSetDescription = 1006,
         TribePublicInfo = 1007,
+        TribeTransfer = 1008,
         TribesmanAdd = 1011,
         TribesmanRemove = 1012,
         TribesmanUpdate = 1013,

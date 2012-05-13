@@ -3,6 +3,7 @@
 	import adobe.utils.CustomActions;
 	import flash.events.*;
 	import flash.utils.*;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -266,13 +267,14 @@
 			var btnSetDescription: JLabelButton = new JLabelButton("Set Announcement");
 			var btnDismantle: JLabelButton = new JLabelButton("Dismantle");
 			var btnLeave: JLabelButton = new JLabelButton("Leave");
+			var btnTransfer: JLabelButton = new JLabelButton("Transfer Tribe");
 			
 			var pnlActions: JPanel = new JPanel(new FlowLayout(AsWingConstants.LEFT, 10, 0, false));				
 			
 			// Show correct buttons depending on rank
 			switch (Constants.tribeRank) {
 				case 0: 
-					pnlActions.appendAll(btnSetDescription, btnInvite, btnDonate, btnUpgrade, btnDismantle);
+					pnlActions.appendAll(btnSetDescription, btnInvite, btnDonate, btnUpgrade, btnDismantle, btnTransfer);
 					break;
 				case 1:
 					pnlActions.appendAll(btnInvite, btnDonate, btnUpgrade, btnLeave);
@@ -356,14 +358,28 @@
 			});
 			
 			btnDismantle.addActionListener(function(e: Event): void {
-				var invitePlayerName: InfoDialog = InfoDialog.showInputDialog("Dismantle tribe", "If you really want to dismantle your tribe then type 'delete' below and click ok.", function(input: *) : void {
+				InfoDialog.showInputDialog("Dismantle tribe", "If you really want to dismantle your tribe then type 'delete' below and click ok.", function(input: *) : void {
 					if (input == "'delete'" || input == "delete")
 						Global.mapComm.Tribe.dismantle();
 				});				
 			});			
 			
+			btnTransfer.addActionListener(function(e: Event): void {
+				InfoDialog.showInputDialog("Transfer tribe", "Tribes can only be transferred to players that are already part of the tribe. Type in the player name you wish to give this tribe to. You will be demoted to Elder and the player promoted to Owner.", function(input: * ) : void {
+					
+					if (input == null) {
+						return;
+					}
+					
+					InfoDialog.showMessageDialog("Transfer Tribe", StringUtil.substitute("Transfer control to {0}? You cannot regain control of the tribe unless it is transferred back to you.", input), function(result: int): void {
+						if (result == JOptionPane.YES)
+							Global.mapComm.Tribe.transfer(input);						
+					}, null, true, true, JOptionPane.YES | JOptionPane.NO);					
+				});				
+			});					
+			
 			btnLeave.addActionListener(function(e: Event): void {
-				var invitePlayerName: InfoDialog = InfoDialog.showMessageDialog("Leave tribe", "Do you really want to leave the tribe?", function(result: *) : void {
+				InfoDialog.showMessageDialog("Leave tribe", "Do you really want to leave the tribe?", function(result: *) : void {
 					if (result == JOptionPane.YES)
 						Global.mapComm.Tribe.leave();
 				}, null, true, true, JOptionPane.YES | JOptionPane.NO);				

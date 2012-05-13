@@ -7,6 +7,7 @@ package src.UI.Dialog {
 	import org.aswing.JButton;
 	import org.aswing.JFrame;
 	import org.aswing.JLabel;
+	import org.aswing.JOptionPane;
 	import org.aswing.JPanel;
 	import org.aswing.SoftBoxLayout;
 	import src.Constants;
@@ -144,8 +145,13 @@ package src.UI.Dialog {
 		}
 
 		public function onClickRetreat(event: AWEvent):void
-		{
-			Global.mapComm.Troop.retreat(troop.cityId, troop.id);
+		{		
+			InfoDialog.showMessageDialog("Confirm", "Are you sure? Retreating will bring your troop back to your city..", function(result: int): void {				
+				if (result == JOptionPane.YES) {
+					Global.mapComm.Troop.retreat(troop.cityId, troop.id);
+				}
+				
+			}, null, true, true, JOptionPane.YES | JOptionPane.NO);						
 		}
 
 		public function onClickManage(e: AWEvent) :void

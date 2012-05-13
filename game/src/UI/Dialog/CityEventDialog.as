@@ -3,6 +3,7 @@
 	
 	import fl.lang.*;
 	import flash.events.*;
+	import mx.utils.StringUtil;
 	import org.aswing.*;
 	import org.aswing.border.*;
 	import org.aswing.colorchooser.*;
@@ -105,6 +106,7 @@
 			gridLocalActions.setCity(city);
 			city.addEventListener(City.RESOURCES_UPDATE, onResourceChange);
 			
+			recreateResourcesPanel();
 			drawResources();
 		}
 		
@@ -146,6 +148,25 @@
 			return value + (includeLimit ? "/" + resource.getLimit() : "") + (includeRate ? " (+" + resource.getHourlyRate() + " per hour)" : "");
 		}
 		
+		private function recreateResourcesPanel():void {
+			pnlResources.removeAll();
+			lblGold = resourceLabelMaker("Gold\n\n" + Locale.loadString("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));
+			lblWood = resourceLabelMaker("Wood\n\n" + Locale.loadString("WOOD_DESC"), new AssetIcon(new ICON_WOOD()));
+			lblCrop = resourceLabelMaker("Crop\n\n" + Locale.loadString("CROP_DESC"), new AssetIcon(new ICON_CROP()));
+			lblIron = resourceLabelMaker("Iron\n\n" + Locale.loadString("IRON_DESC"), new AssetIcon(new ICON_IRON()));
+			
+			var laborTime:String = Util.niceTime(Formula.laborRate(city), false);
+			
+			lblLabor = simpleLabelMaker("Laborer\n\n" + StringUtil.substitute(Locale.loadString("LABOR_DESC"), laborTime), new AssetIcon(new ICON_LABOR()));
+			
+			lblUpkeep = simpleLabelMaker("Troop Upkeep\n\n" + Locale.loadString("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
+			lblDefensePoints = simpleLabelMaker("Defense Points\n\n" + Locale.loadString("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
+			lblAttackPoints = simpleLabelMaker("Attack Points\n\n" + Locale.loadString("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
+			lblValue = simpleLabelMaker("Influence Points\n\n" + Locale.loadString("INFLUENCE_POINTS_DESC"), new AssetIcon(new ICON_UPGRADE()));		
+			
+			pnlResources.appendAll(lblGold, lblWood, lblCrop, lblIron, lblLabor, lblUpkeep, lblDefensePoints, lblAttackPoints, lblValue);				
+		}
+		
 		private function drawResources():void
 		{
 			{
@@ -159,9 +180,7 @@
 				lblUpkeepMsg.setVisible(city.resources.crop.getRate() < city.resources.crop.getUpkeep());
 				lblAttackPoints.setText(city.attackPoint + " attack points");
 				lblDefensePoints.setText(city.defensePoint + " defense points");
-				lblValue.setText(city.value + " Influence points");
-				
-				pnlResources.pack();
+				lblValue.setText(city.value + " Influence points");							
 			}
 			
 			{
@@ -181,6 +200,8 @@
 					laborersListModel.append(cityObj);
 				}
 			}			
+			
+			repaintAndRevalidate();
 		}
 		
 		public function maxLaborerTranslator(info:CityObject, key:String):String
@@ -206,6 +227,9 @@
 				lstCities.addEventListener(InteractiveEvent.SELECTION_CHANGED, onChangeCitySelection);
 				lstCities.setPreferredSize(new IntDimension(150, 22));
 				
+				lblUpkeepMsg = new JLabel("Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.", new AssetIcon(new ICON_CROP()));
+				lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 2, 10));				
+				
 				pnlResources = new JPanel(new GridLayout(0, 3, 20, 10));			
 				
 				pnlNorth.appendAll(AsWingUtils.createPaneToHold(lstCities, new FlowLayout()), pnlResources);
@@ -218,33 +242,7 @@
 			// Local Events Tab
 			{
 				gridLocalActions = new CityActionGridList(city, 530);
-				pnlTabs.appendTab(new JScrollPane(gridLocalActions), "Local Events");
-				
-				lblGold = resourceLabelMaker("Gold\n\n" + Locale.loadString("GOLD_DESC"), new AssetIcon(new ICON_GOLD()));
-				lblWood = resourceLabelMaker("Wood\n\n" + Locale.loadString("WOOD_DESC"), new AssetIcon(new ICON_WOOD()));
-				lblCrop = resourceLabelMaker("Crop\n\n" + Locale.loadString("CROP_DESC"), new AssetIcon(new ICON_CROP()));
-				lblIron = resourceLabelMaker("Iron\n\n" + Locale.loadString("IRON_DESC"), new AssetIcon(new ICON_IRON()));
-				
-				var laborTime:String = "Currently receiving 1 labor every " + Util.niceTime(Formula.laborRate(city), false);
-				lblLabor = simpleLabelMaker("Laborer\n\n" + Locale.loadString("LABOR_DESC") + "\n\n" + laborTime, new AssetIcon(new ICON_LABOR()));
-				
-				lblUpkeep = simpleLabelMaker("Troop Upkeep\n\n" + Locale.loadString("UPKEEP_DESC"), new AssetIcon(new ICON_CROP()));
-				lblDefensePoints = simpleLabelMaker("Defense Points\n\n" + Locale.loadString("DEFENSE_POINTS_DESC"), new AssetIcon(new ICON_SHIELD()));
-				lblAttackPoints = simpleLabelMaker("Attack Points\n\n" + Locale.loadString("ATTACK_POINTS_DESC"), new AssetIcon(new ICON_BATTLE()));
-				lblValue = simpleLabelMaker("Influence Points\n\n" + Locale.loadString("INFLUENCE_POINTS_DESC"), new AssetIcon(new ICON_UPGRADE()));
-				
-				lblUpkeepMsg = new JLabel("Your troop upkeep currently exceeds your crop production rate. Your units will slowly starve to death.", new AssetIcon(new ICON_CROP()));
-				lblUpkeepMsg.setBorder(new LineBorder(null, new ASColor(0xff0000), 1, 10));
-				
-				pnlResources.append(lblGold);
-				pnlResources.append(lblWood);
-				pnlResources.append(lblCrop);
-				pnlResources.append(lblIron);
-				pnlResources.append(lblLabor);
-				pnlResources.append(lblUpkeep);
-				pnlResources.append(lblDefensePoints);
-				pnlResources.append(lblAttackPoints);
-				pnlResources.append(lblValue);
+				pnlTabs.appendTab(new JScrollPane(gridLocalActions), "Local Events");				
 			}
 			
 			// Laborers Tab
@@ -269,6 +267,7 @@
 			append(lblUpkeepMsg);
 			append(pnlTabs);
 			
+			recreateResourcesPanel();
 			drawResources();
 		}
 	

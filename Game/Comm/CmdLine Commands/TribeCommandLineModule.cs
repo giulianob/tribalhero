@@ -40,6 +40,7 @@ namespace Game.Comm
             processor.RegisterCommand("TribesmanRemove", CmdTribesmanRemove, PlayerRights.Bureaucrat);
             processor.RegisterCommand("TribesmanUpdate", CmdTribesmanUpdate, PlayerRights.Bureaucrat);
             processor.RegisterCommand("TribeIncomingList", CmdTribeIncomingList, PlayerRights.Bureaucrat);
+            processor.RegisterCommand("TribeTransfer", CmdTribeTransfer, PlayerRights.Admin);
         }
 
         private string CmdTribeInfo(Session session, string[] parms)
@@ -139,7 +140,7 @@ namespace Game.Comm
                     return "Player already in tribe";
                 }
 
-                if (World.Current.Tribes.Any(x => x.Value.Name.Equals(tribeName)))
+                if (World.Current.TribeNameTaken(tribeName))
                 {
                     return "Tribe name already taken";
                 }
@@ -151,8 +152,7 @@ namespace Game.Comm
 
                 ITribe tribe = tribeFactory.CreateTribe(player, tribeName);
 
-                World.Current.Tribes.Add(tribe.Id, tribe);
-                DbPersistance.Current.Save(tribe);
+                World.Current.Add(tribe);
 
                 var tribesman = new Tribesman(tribe, player, 0);
                 tribe.AddTribesman(tribesman);
@@ -188,8 +188,8 @@ namespace Game.Comm
                 return "Tribe not found";
 
             ITribe tribe;
-            if (!World.Current.Tribes.TryGetValue(tribeId, out tribe))
-                return "Tribe not found seriously";
+            if (!World.Current.TryGetObjects(tribeId, out tribe))
+                return "Tribe not found";
 
             using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))
             {
@@ -197,9 +197,61 @@ namespace Game.Comm
                 {
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
-                World.Current.Tribes.Remove(tribe.Id);
-                DbPersistance.Current.Delete(tribe);
+                World.Current.Remove(tribe);
             }
+            return "OK!";
+        }
+
+        private string CmdTribeTransfer(Session session, string[] parms)
+        {
+            bool help = false;
+            string tribeName = string.Empty;
+            string newOwner = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                    {
+                        { "?|help|h", v => help = true }, 
+                        { "tribe=", v => tribeName = v.TrimMatchingQuotes()},
+                        { "newowner=", v => newOwner = v.TrimMatchingQuotes()},
+                    };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(tribeName))
+                return "TribeTransfer --name=tribe_name --newowner=player_name";
+
+
+            uint tribeId;
+            if (!World.Current.FindTribeId(tribeName, out tribeId))
+                return "Tribe not found";
+
+            ITribe tribe;
+            if (!World.Current.TryGetObjects(tribeId, out tribe))
+                return "Tribe not found";
+
+            uint newOwnerPlayerId;
+            IPlayer player;
+            if (!World.Current.FindPlayerId(newOwner, out newOwnerPlayerId) || !World.Current.TryGetObjects(newOwnerPlayerId, out player))
+            {
+                return "New owner not found";
+            }
+
+            using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe, player))
+            {
+                var ret = tribe.Transfer(newOwnerPlayerId);
+
+                if (ret != Error.Ok)
+                {
+                    return Enum.GetName(typeof(Error), ret);
+                }
+            }
+
             return "OK!";
         }
 

@@ -101,7 +101,7 @@ namespace Game.Comm.ProcessorCommands
                 uint tribeId = tribeIds[i];
                 ITribe tribe;
 
-                if (!World.Current.Tribes.TryGetValue(tribeId, out tribe))
+                if (!World.Current.TryGetObjects(tribeId, out tribe))
                 {
                     ReplyError(session, packet, Error.Unexpected);
                     return;
@@ -271,8 +271,8 @@ namespace Game.Comm.ProcessorCommands
                 }
 
                 ITribe tribe = tribeFactory.CreateTribe(session.Player, name);
-                World.Current.Tribes.Add(tribe.Id, tribe);
-                DbPersistance.Current.Save(tribe);
+                
+                World.Current.Add(tribe);
 
                 var tribesman = new Tribesman(tribe, session.Player, 0);
                 tribe.AddTribesman(tribesman);
@@ -312,8 +312,7 @@ namespace Game.Comm.ProcessorCommands
                     tribe.RemoveTribesman(tribesman.Player.PlayerId);
                 }
 
-                World.Current.Tribes.Remove(tribe.Id);
-                DbPersistance.Current.Delete(tribe);
+                World.Current.Remove(tribe);                
             }
 
             ReplySuccess(session, packet);

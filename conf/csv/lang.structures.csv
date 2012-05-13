@@ -116,7 +116,7 @@ REFINERY_STRUCTURE_LVL_15,Increases the refinery to support a maximum of 304 lab
 ,,
 FOUNDRY_STRUCTURE_NAME,Foundry,
 FOUNDRY_STRUCTURE_NAME_PLURAL,Foundries,
-FOUNDRY_STRUCTURE_DESCRIPTION,Allow the city's laborer to use wood to repair buildings after they have been damaged in combat. Ability to remove structures and build Refinery at higher levels.,
+FOUNDRY_STRUCTURE_DESCRIPTION,Allow using city's laborer to repair buildings after they have been damaged in combat. Ability to remove structures and build Refinery at higher levels.,
 FOUNDRY_STRUCTURE_LABOR_MOVE,Assign your city's laborers to repair damaged structures.,
 FOUNDRY_STRUCTURE_LVL_1,Increases to a maximum of 10 laborers.  One labor can repair up to 1 HP every 30 minutes.,
 FOUNDRY_STRUCTURE_LVL_2,Increases to a maximum of 17 laborers.  One labor can repair up to 1 HP every 30 minutes.  Enables researching A-Call-To-Arm.,

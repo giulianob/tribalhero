@@ -432,10 +432,7 @@ namespace Game.Comm
             IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
-                if (player == null)
-                    return "Player not found";
-
-                if (player.Session != null)
+                if (player != null && player.Session != null)
                 {
                     try
                     {

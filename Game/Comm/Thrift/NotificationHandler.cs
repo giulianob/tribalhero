@@ -39,7 +39,7 @@ namespace Game.Comm.Thrift
         public void NewTribeForumPost(int tribeId, int playerId)
         {
             ITribe tribe;
-            if (!World.Current.Tribes.TryGetValue((uint)tribeId, out tribe))
+            if (!World.Current.TryGetObjects((uint)tribeId, out tribe))
                 return;
 
             using (Concurrency.Current.Lock(custom => tribe.Tribesmen.ToArray(), new object[] { }, tribe))

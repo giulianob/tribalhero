@@ -78,6 +78,7 @@ namespace Game.Comm.ProcessorCommands
 
                         // Flood chat protection
                         int secondsFromLastMessage = (int)SystemClock.Now.Subtract(session.Player.ChatLastMessage).TotalSeconds;
+                        
                         if (secondsFromLastMessage <= 10)
                         {
                             session.Player.ChatFloodCount++;
@@ -85,7 +86,11 @@ namespace Game.Comm.ProcessorCommands
                         else if (secondsFromLastMessage > 120)
                         {
                             session.Player.ChatFloodCount = 0;
-                        }                        
+                        }
+                        else if (secondsFromLastMessage > 15)
+                        {
+                            session.Player.ChatFloodCount = Math.Max(0, session.Player.ChatFloodCount - 2);
+                        }
 
                         if (session.Player.ChatFloodCount >= 15)
                         {

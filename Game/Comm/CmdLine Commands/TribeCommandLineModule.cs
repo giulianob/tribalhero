@@ -224,7 +224,7 @@ namespace Game.Comm
             }
 
             if (help || string.IsNullOrEmpty(tribeName))
-                return "TribeTransfer --name=tribe_name --newowner=player_name";
+                return "TribeTransfer --tribe=tribe_name --newowner=player_name";
 
 
             uint tribeId;

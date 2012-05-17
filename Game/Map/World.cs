@@ -610,7 +610,7 @@ namespace Game.Map
         public bool FindTribeId(string name, out uint tribeId) {
             tribeId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
                                                                        new[] { new DbColumn("name", name, DbType.String) })) {
                 if (!reader.HasRows)
                     return false;

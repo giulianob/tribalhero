@@ -1,23 +1,17 @@
 ﻿package src
 {
-	import fl.lang.Locale;
-	import flash.display.MovieClip;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
+	import fl.lang.*;
+	import flash.display.*;
 	import flash.events.*;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.ui.ContextMenu;
-	import flash.ui.ContextMenuItem;
+	import flash.net.*;
+	import flash.ui.*;
 	import org.aswing.*;
 	import src.Comm.*;
 	import src.Map.*;
 	import src.Objects.Factories.*;
-	import src.UI.Components.RichLabel;
-	import src.UI.Dialog.InfoDialog;
-	import src.UI.Dialog.InitialCityDialog;
-	import src.UI.Dialog.LoginDialog;
-	import src.UI.LookAndFeel.GameLookAndFeel;
+	import src.UI.Components.*;
+	import src.UI.Dialog.*;
+	import src.UI.LookAndFeel.*;
 	import src.Util.*;
 
 	public class Main extends MovieClip
@@ -113,7 +107,7 @@
 		private function loadData(): void
 		{			
 			pnlLoading = InfoDialog.showMessageDialog("TribalHero", "Launching the game...", null, null, true, false, 0);
-					
+			
 			if (Constants.queryData) {
 				var loader: URLLoader = new URLLoader();
 				loader.addEventListener(Event.COMPLETE, function(e: Event) : void { 
@@ -205,8 +199,10 @@
 		}
 		
 		public function showConnectionError(wasStillLoading: Boolean) : void {
-			if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? "Unable to connect to server" : "Connection to Server Lost") + ". Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
-			else InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? "Unable to connect to server." : "Connection to Server Lost."), function(result: int):void { showLoginDialog(); }, null, true, false, 1, true);			
+			var unableToConnectMsg: String = "Unable to connect to server.\nIf you continue to have problems, try the following:\n\n1. Make sure your firewall allows access to ports 48888 and 8085. You may be unable to connect if you are behind a shared connection such as an office or school.\n2. Update to the latest version of Flash player.\n3. Check our main page to see if a server maintenance is in progress.\n\nIf none of these solved your problem, contact us by using the contact link on our website for more help.";
+			
+			if (parms.hostname) InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? unableToConnectMsg : "Connection to Server Lost") + ". Refresh the page to rejoin the battle.", null, null, true, false, 1, true);
+			else InfoDialog.showMessageDialog("Connection Lost", (wasStillLoading ? unableToConnectMsg : "Connection to Server Lost."), function(result: int):void { showLoginDialog(); }, null, true, false, 1, true);			
 		}
 
 		public function onConnected(event: Event, connected: Boolean):void

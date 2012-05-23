@@ -297,6 +297,14 @@
 			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true });
 		}
 		
+		public function transfer(playerName: String): void {
+			var packet: Packet = new Packet();
+			packet.cmd = Commands.TRIBE_TRANSFER;
+			packet.writeString(playerName);
+			
+			session.write(packet, showErrorOrRefreshTribePanel, { refresh: true } );
+		}
+		
 		public function invitePlayer(playerName: String) : void {
 			var packet: Packet = new Packet();
 			packet.cmd = Commands.TRIBESMAN_REQUEST;

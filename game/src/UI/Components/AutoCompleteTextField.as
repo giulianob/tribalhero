@@ -38,13 +38,25 @@ package src.UI.Components
 			});
 			
 			refreshTimer.addEventListener(TimerEvent.TIMER, callAutoComplete);
-						
+			
 			menuDropdown.getSelectionModel().addStateListener(function(e: AWEvent): void {
 				onMenuItemClick(e);
 			});
 			
-			// Fix flash trying to put cursor at the beginning/end when up/down is pressed
+			addEventListener(AWEvent.FOCUS_LOST, function(e: Event): void {
+				if (menuDropdown) {
+					menuDropdown.setVisible(false);
+				}
+			});
+			
 			var self: AutoCompleteTextField = this;
+			addEventListener(AWEvent.FOCUS_GAINED, function(e: Event): void {
+				if (getLength() >= 3 && menuDropdown && menuDropdown.getComponentCount()) {
+					menuDropdown.show(self, 0, self.getHeight());
+				}
+			});
+			
+			// Fix flash trying to put cursor at the beginning/end when up/down is pressed
 			addEventListener(KeyboardEvent.KEY_DOWN, function(e: KeyboardEvent): void {
 				if (e.keyCode == Keyboard.UP || e.keyCode == Keyboard.DOWN) {
 					AsWingManager.callNextFrame(function(): void {
@@ -88,10 +100,14 @@ package src.UI.Components
 			var menuItem: JMenuItem = e.target as JMenuItem;
 			setText(menuItem.getText());
 			setSelection(getLength(), getLength());
+			
+			if (menuDropdown.getComponentCount() == 1) {
+				menuDropdown.removeAll();
+			}
 		}
 		
 		public function setResults(data: *, originalName: String) : void {
-			if (!isVisible())
+			if (!isVisible() || !isFocusOwner())
 				return;
 			
 			if (originalName != null)
@@ -104,16 +120,20 @@ package src.UI.Components
 				return;
 			
 			// Don't show if only a single result and this is it
-			if (data.length == 1 && getText() == data[0])
+			if (data.length == 1 && getText().toLocaleLowerCase().localeCompare(data[0].toLocaleLowerCase()) == 0)
 				return;
-			
+				
 			for each (var name: String in data) {
 				var menuItem: JMenuItem = menuDropdown.addMenuItem(name);
-				menuItem.addStateListener(onMenuItemClick);
-			}
+				menuItem.addActionListener(onMenuItemClick);
+			}		
 			
 			menuDropdown.setPreferredWidth(this.getWidth());
 			menuDropdown.show(this, 0, this.getHeight());
+		}
+		
+		public function showIfNeeded(): void {
+			
 		}
 	}
 

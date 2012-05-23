@@ -87,7 +87,7 @@
 		}
 		
 		private function createUI():void {
-			setPreferredSize(new IntDimension(800, 375));
+			setPreferredSize(new IntDimension(825, 375));
 			title = "User Profile - " + profileData.username;
 			setLayout(new BorderLayout(5));
 			
@@ -155,7 +155,7 @@
 			
 			// Tab panel
 			var pnlTabs: JTabbedPane = new JTabbedPane();
-			pnlTabs.setPreferredSize(new IntDimension(375, 350));
+			pnlTabs.setPreferredSize(new IntDimension(400, 350));
 			pnlTabs.setConstraints("Center");
 			
 			// Cities tab

@@ -20,6 +20,7 @@ namespace Game.Comm
     {
         public override void RegisterCommands(CommandLineProcessor processor)
         {
+            processor.RegisterCommand("playerinfo", Info, PlayerRights.Moderator);
             processor.RegisterCommand("ban", BanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("unban", UnbanPlayer, PlayerRights.Moderator);
             processor.RegisterCommand("deleteplayer", DeletePlayer, PlayerRights.Bureaucrat);
@@ -83,6 +84,46 @@ namespace Game.Comm
             ApiResponse response = ApiCaller.SetPlayerRights(playerName, rights.GetValueOrDefault());
 
             return response.Success ? "OK!" : response.ErrorMessage;
+        }
+
+        public string Info(Session session, String[] parms)
+        {
+            bool help = false;
+            string playerName = string.Empty;
+
+            try
+            {
+                var p = new OptionSet
+                        {
+                                { "?|help|h", v => help = true }, 
+                                { "player=", v => playerName = v.TrimMatchingQuotes() },
+                        };
+                p.Parse(parms);
+            }
+            catch (Exception)
+            {
+                help = true;
+            }
+
+            if (help || string.IsNullOrEmpty(playerName))
+                return String.Format("playerinfo --player=player");
+
+            ApiResponse response = ApiCaller.PlayerInfo(playerName);
+
+            if (!response.Success)
+            {
+                return response.ErrorMessage;
+            }
+
+            return String.Format("id[{0}] created[{1}] emailAddress[{2}] lastLogin[{3}] ipAddress[{4}] banned[{5}] muted[{6}] deleted[{7}]",
+                                 response.Data.id,
+                                 response.Data.created,
+                                 response.Data.emailAddress,
+                                 response.Data.lastLogin,
+                                 response.Data.ipAddress,
+                                 response.Data.banned == "1" ? "YES" : "NO",
+                                 response.Data.muted == "1" ? "YES" : "NO",
+                                 response.Data.deleted == "1" ? "YES" : "NO");
         }
 
         public string Mute(Session session, String[] parms)
@@ -432,10 +473,7 @@ namespace Game.Comm
             IPlayer player;
             using (Concurrency.Current.Lock(playerId, out player))
             {
-                if (player == null)
-                    return "Player not found";
-
-                if (player.Session != null)
+                if (player != null && player.Session != null)
                 {
                     try
                     {

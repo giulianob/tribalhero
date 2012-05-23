@@ -172,7 +172,7 @@ namespace Game.Util.Locking
 
         private IMultiObjectLock TryGetTribe(uint tribeId, out ITribe tribe)
         {
-            if (!World.Current.Tribes.TryGetValue(tribeId, out tribe))
+            if (!World.Current.TryGetObjects(tribeId, out tribe))
                 return null;
 
             try {

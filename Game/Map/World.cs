@@ -32,6 +32,8 @@ namespace Game.Map
         private Region[] regions;
         public RoadManager RoadManager { get; private set; }
 
+        private readonly LargeIdGenerator tribeIdGen = new LargeIdGenerator(UInt32.MaxValue);
+
         public uint WorldWidth { get; private set; }
 
         public uint WorldHeight { get; private set; }
@@ -44,7 +46,7 @@ namespace Game.Map
 
         private Dictionary<uint, ICity> Cities { get; set; }
 
-        public Dictionary<uint, ITribe> Tribes { get; private set; }
+        private Dictionary<uint, ITribe> Tribes { get; set; }
 
         private int RegionsCount { get; set; }
         private uint RegionSize { get; set; }
@@ -56,6 +58,14 @@ namespace Game.Map
             get
             {
                 return Cities.Count;
+            }
+        }
+
+        public int TribeCount
+        {
+            get
+            {
+                return Tribes.Count;
             }
         }
 
@@ -176,8 +186,6 @@ namespace Game.Map
             WorldHeight = inWorldHeight;
 
             // creating regions;                    
-            //Global.Logger.InfoFormat("Region width[{0}] Region height[{1}] City region width[{2}] City region height[{3}]", regionWidth, regionHeight, cityRegionWidth, cityRegionHeight);            
-
             RegionSize = regionWidth*regionHeight;
 
             var column = (int)(inWorldWidth/regionWidth);
@@ -223,6 +231,25 @@ namespace Game.Map
             cityRegions = new CityRegion[cityRegionsCount];
             for (int regionId = 0; regionId < cityRegionsCount; ++regionId)
                 cityRegions[regionId] = new CityRegion();
+        }
+
+        public void Add(ITribe tribe)
+        {
+            lock (Lock)
+            {
+                tribe.Id = (uint)tribeIdGen.GetNext();
+                Tribes.Add(tribe.Id, tribe);
+                DbPersistance.Current.Save(tribe);
+            }
+        }
+
+        public void DbLoaderAdd(ITribe tribe)
+        {
+            lock (Lock)
+            {
+                tribeIdGen.Set(tribe.Id);
+                Tribes.Add(tribe.Id, tribe);
+            }
         }
 
         public bool Add(ICity city)
@@ -284,6 +311,15 @@ namespace Game.Map
                 city.EndUpdate();
 
                 Cities.Remove(city.Id);
+            }
+        }
+
+        public void Remove(ITribe tribe)
+        {
+            lock (Lock)
+            {
+                Tribes.Remove(tribe.Id);
+                DbPersistance.Current.Delete(tribe);
             }
         }
 
@@ -574,7 +610,7 @@ namespace Game.Map
         public bool FindTribeId(string name, out uint tribeId) {
             tribeId = UInt16.MaxValue;
             using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
                                                                        new[] { new DbColumn("name", name, DbType.String) })) {
                 if (!reader.HasRows)
                     return false;
@@ -597,7 +633,7 @@ namespace Game.Map
         public bool TribeNameTaken(string name)
         {
             using (
-                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `player_id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
+                    DbDataReader reader = DbPersistance.Current.ReaderQuery(String.Format("SELECT `id` FROM `{0}` WHERE name = @name LIMIT 1", Tribe.DB_TABLE),
                                                                        new[] { new DbColumn("name", name, DbType.String) }))
             {
                 return reader.HasRows;

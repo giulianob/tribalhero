@@ -269,7 +269,7 @@ namespace Game.Battle
                 }
 
                 var playersAttackers = attackers.Where(co => co.City.Owner == player).ToList();
-                if (attackers.Any())
+                if (playersAttackers.Any())
                 {
                     attackersRoundsLeft = playersAttackers.Min(co => Config.battle_min_rounds - co.RoundsParticipated);
                     if (attackersRoundsLeft < 0)

@@ -46,8 +46,9 @@ class Ruckusing_MySQLAdapter extends Ruckusing_BaseAdapter implements Ruckusing_
       'mediumtext'    => array('name' => 'mediumtext'                   ),
       'integer'       => array('name' => "int", 			'limit' 		=> 11 ),
       'smallinteger'  => array('name' => "smallint"                     ),
-      'float'         => array('name' => "float", 											),
-      'decimal'       => array('name' => "decimal", 										),
+      'biginteger'    => array('name' => "bigint"                     ),
+      'float'         => array('name' => "float"),
+      'decimal'       => array('name' => "decimal", 'scale' => 10, 'precision' => 0),
       'datetime'      => array('name' => "datetime", 										),
       'timestamp'     => array('name' => "timestamp",										),
       'time'          => array('name' => "time", 												),
@@ -159,6 +160,7 @@ class Ruckusing_MySQLAdapter extends Ruckusing_BaseAdapter implements Ruckusing_
 	*/
 	public function schema() {
 		$final = "";
+    $views = '';
 		$this->load_tables(true);
 		foreach($this->tables as $tbl => $idx) {
 
@@ -170,11 +172,15 @@ class Ruckusing_MySQLAdapter extends Ruckusing_BaseAdapter implements Ruckusing_
       if(is_array($result) && count($result) == 1) {
         $row = $result[0];
         if(count($row) == 2) {
-          $final .= $row['Create Table'] . ";\n\n";
+          if (isset($row['Create Table'])) {
+            $final .= $row['Create Table'] . ";\n\n";
+          } else if (isset($row['Create View'])) {
+            $views .= $row['Create View'] . ";\n\n";
+          }
         }
       }
 		}
-		return $final;
+		return $final.$views;
 	}
 	
 	public function table_exists($tbl, $reload_tables = false) {
@@ -210,6 +216,11 @@ class Ruckusing_MySQLAdapter extends Ruckusing_BaseAdapter implements Ruckusing_
 			if($this->isError($res)) { 
   			trigger_error(sprintf("Error executing 'query' with:\n%s\n\nReason: %s\n\n", $query, mysql_error($this->conn)));
 		  }
+
+		  if ($query_type == SQL_INSERT) {
+		  	return mysql_insert_id($this->conn);
+		  }
+		  
 		  return true;
 		}
 	}
@@ -508,10 +519,10 @@ class Ruckusing_MySQLAdapter extends Ruckusing_BaseAdapter implements Ruckusing_
 		}
 		if($type == "decimal") {
 			//ignore limit, use precison and scale
-			if( $precision == null || array_key_exists('precision', $native_type)) {
+			if( $precision == null && array_key_exists('precision', $native_type)) {
 				$precision = $native_type['precision'];
 			}
-			if( $scale == null || array_key_exists('scale', $native_type)) {
+			if( $scale == null && array_key_exists('scale', $native_type)) {
 				$scale = $native_type['scale'];
 			}
 			if($precision != null) {
@@ -525,7 +536,26 @@ class Ruckusing_MySQLAdapter extends Ruckusing_BaseAdapter implements Ruckusing_
 					throw new Ruckusing_ArgumentException("Error adding decimal column: precision cannot be empty if scale is specified");
 				}
 			}//precision			
-		} else {
+		} elseif($type == "float") {
+			//ignore limit, use precison and scale
+			if( $precision == null && array_key_exists('precision', $native_type)) {
+				$precision = $native_type['precision'];
+			}
+			if( $scale == null && array_key_exists('scale', $native_type)) {
+				$scale = $native_type['scale'];
+			}
+			if($precision != null) {
+				if(is_int($scale)) {
+					$column_type_sql .= sprintf("(%d, %d)", $precision, $scale);
+				} else {
+					$column_type_sql .= sprintf("(%d)", $precision);						
+				}//scale
+			} else {
+				if ($scale) {
+					throw new Ruckusing_ArgumentException("Error adding float column: precision cannot be empty if scale is specified");
+				}
+			}//precision			
+		}  {
 			//not a decimal column
 			if($limit == null && array_key_exists('limit', $native_type)) {
 				$limit = $native_type['limit'];
@@ -539,43 +569,46 @@ class Ruckusing_MySQLAdapter extends Ruckusing_BaseAdapter implements Ruckusing_
 	
 	public function add_column_options($type, $options) {
 		$sql = "";
+		
+		if(!is_array($options))
+		    return $sql;
 
-		if(is_array($options) && array_key_exists('unsigned', $options) && $options['unsigned'] === true) {
+		if(array_key_exists('unsigned', $options) && $options['unsigned'] === true) {
 			$sql .= ' UNSIGNED';
 		}
-    /*
-        if($type === 'primary_key') {
-      		if(is_array($options) && array_key_exists('auto_increment', $options) && $options['auto_increment'] === true) {
-      			$sql .= ' auto_increment';
-      		}
-      		$sql .= ' PRIMARY KEY';
-        }
-    */
 
-		if(is_array($options) && array_key_exists('auto_increment', $options) && $options['auto_increment'] === true) {
+		if(array_key_exists('auto_increment', $options) && $options['auto_increment'] === true) {
 			$sql .= ' auto_increment';
 		}
 
-		if(is_array($options) && array_key_exists('default', $options) && $options['default'] !== null) {
+		if(array_key_exists('default', $options) && $options['default'] !== null) {
 			if($this->is_sql_method_call($options['default'])) {
 				//$default_value = $options['default'];
 				throw new Exception("MySQL does not support function calls as default values, constants only.");
-			} else {
-			  if(is_int($options['default'])) {			    
-          $default_format = '%d';
-        } elseif(is_bool($options['default'])) {
-          $default_format = "'%d'";
-        } else {
-          $default_format = "'%s'";
-        }
-        $default_value = sprintf($default_format, $options['default']);			
-      }
+			}
+
+            if(is_int($options['default'])) {
+                $default_format = '%d';
+            } elseif(is_bool($options['default'])) {
+                $default_format = "'%d'";
+            } else {
+                $default_format = "'%s'";
+            }
+            $default_value = sprintf($default_format, $options['default']);
+
 			$sql .= sprintf(" DEFAULT %s", $default_value);
 		}
-		
-		if(is_array($options) && array_key_exists('null', $options) && $options['null'] === false) {
+
+		if(array_key_exists('null', $options) && $options['null'] === false) {
 			$sql .= " NOT NULL";
 		}
+		if(array_key_exists('comment', $options)) {
+            $sql .= sprintf(" COMMENT '%s'", $this->quote_string($options['comment']));
+        }
+		if(array_key_exists('after', $options)) {
+            $sql .= sprintf(" AFTER %s", $this->identifier($options['after']));
+        }
+
 		return $sql;
 	}//add_column_options
 	

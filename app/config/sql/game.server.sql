@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.8, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
--- Server version	5.5.8
+-- Server version	5.5.16
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -39,6 +39,46 @@ CREATE TABLE `active_actions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `assignments`
+--
+
+DROP TABLE IF EXISTS `assignments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `assignments` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `tribe_id` int(11) unsigned NOT NULL,
+  `x` int(11) unsigned NOT NULL,
+  `y` int(11) unsigned NOT NULL,
+  `attack_time` datetime NOT NULL,
+  `mode` varchar(20) DEFAULT NULL,
+  `dispatch_count` int(11) unsigned NOT NULL,
+  `city_id` int(11) unsigned DEFAULT NULL,
+  `description` varchar(250) NOT NULL DEFAULT '',
+  `is_attack` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `idx_assignments_tribe_id` (`tribe_id`),
+  KEY `idx_city_id` (`city_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `assignments_list`
+--
+
+DROP TABLE IF EXISTS `assignments_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `assignments_list` (
+  `id` int(11) DEFAULT NULL,
+  `city_id` int(11) unsigned NOT NULL,
+  `stub_id` tinyint(3) unsigned NOT NULL,
+  `dispatched` tinyint(1) unsigned NOT NULL,
+  KEY `idx_assignments_list_id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `battle_managers`
 --
 
@@ -71,10 +111,10 @@ CREATE TABLE `battle_report_objects` (
   `battle_report_troop_id` int(10) unsigned NOT NULL,
   `type` smallint(5) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
-  `hp` smallint(5) unsigned NOT NULL,
+  `hp` decimal(10,2) NOT NULL,
   `count` mediumint(8) unsigned NOT NULL,
-  `damage_taken` int(10) unsigned NOT NULL,
-  `damage_dealt` int(10) unsigned NOT NULL,
+  `damage_taken` decimal(10,2) NOT NULL,
+  `damage_dealt` decimal(10,2) NOT NULL,
   `formation_type` tinyint(3) unsigned NOT NULL,
   `hits_dealt` smallint(5) unsigned NOT NULL,
   `hits_dealt_by_unit` int(10) unsigned NOT NULL,
@@ -82,7 +122,7 @@ CREATE TABLE `battle_report_objects` (
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`battle_report_troop_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +133,7 @@ DROP TABLE IF EXISTS `battle_report_troops`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `battle_report_troops` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
   `battle_report_id` int(10) unsigned NOT NULL,
   `city_id` int(10) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
@@ -134,11 +174,13 @@ CREATE TABLE `battle_report_views` (
   `bonus_gold` int(11) NOT NULL DEFAULT '0',
   `read` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
+  `battle_report_enter_id` int(11) unsigned DEFAULT NULL,
+  `battle_report_exit_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `battle_report_troop_id` (`group_id`),
   KEY `city_id` (`city_id`),
   KEY `battle_id` (`battle_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +191,7 @@ DROP TABLE IF EXISTS `battle_reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `battle_reports` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
   `created` datetime NOT NULL,
   `battle_id` int(10) unsigned NOT NULL,
   `round` smallint(5) unsigned NOT NULL,
@@ -169,7 +211,7 @@ DROP TABLE IF EXISTS `battles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `battles` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
   `city_id` int(10) unsigned NOT NULL,
   `created` datetime NOT NULL,
   `ended` datetime DEFAULT NULL,
@@ -259,19 +301,19 @@ CREATE TABLE `combat_structures` (
   `city_id` int(10) unsigned NOT NULL,
   `last_round` int(10) unsigned NOT NULL,
   `rounds_participated` int(10) NOT NULL,
-  `damage_dealt` int(11) NOT NULL,
-  `damage_received` int(11) NOT NULL,
+  `damage_dealt` decimal(10,2) NOT NULL,
+  `damage_received` decimal(10,2) NOT NULL,
   `hits_dealt` smallint(6) unsigned NOT NULL,
   `hits_dealt_by_unit` int(10) unsigned NOT NULL,
   `hits_received` smallint(6) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `structure_city_id` int(10) unsigned NOT NULL,
   `structure_id` int(10) unsigned NOT NULL,
-  `hp` mediumint(8) unsigned NOT NULL,
+  `hp` decimal(10,2) NOT NULL,
   `type` smallint(5) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
-  `max_hp` smallint(5) unsigned NOT NULL,
-  `attack` smallint(5) unsigned NOT NULL,
+  `max_hp` decimal(10,2) NOT NULL,
+  `attack` decimal(10,2) NOT NULL,
   `splash` tinyint(3) unsigned NOT NULL,
   `defense` smallint(5) unsigned NOT NULL,
   `range` tinyint(3) unsigned NOT NULL,
@@ -293,14 +335,14 @@ CREATE TABLE `combat_units` (
   `city_id` int(10) unsigned NOT NULL,
   `last_round` int(10) unsigned NOT NULL,
   `rounds_participated` int(10) NOT NULL,
-  `damage_dealt` int(11) NOT NULL,
-  `damage_received` int(11) NOT NULL,
+  `damage_dealt` decimal(10,2) NOT NULL,
+  `damage_received` decimal(10,2) NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `formation_type` tinyint(3) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
   `type` smallint(5) unsigned NOT NULL,
   `count` smallint(5) unsigned NOT NULL,
-  `left_over_hp` smallint(5) unsigned NOT NULL,
+  `left_over_hp` decimal(10,2) NOT NULL,
   `troop_stub_city_id` int(10) unsigned NOT NULL,
   `troop_stub_id` tinyint(3) unsigned NOT NULL,
   `is_local` tinyint(1) NOT NULL,
@@ -362,6 +404,69 @@ CREATE TABLE `market` (
   `quantity_per_change` int(10) NOT NULL,
   PRIMARY KEY (`resource_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `message_board_posts`
+--
+
+DROP TABLE IF EXISTS `message_board_posts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `message_board_posts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message_board_thread_id` int(11) NOT NULL,
+  `player_id` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `message` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_message_board_posts_message_board_thread_id_and_created` (`message_board_thread_id`,`created`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `message_board_read`
+--
+
+DROP TABLE IF EXISTS `message_board_read`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `message_board_read` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) unsigned NOT NULL,
+  `message_board_thread_id` int(11) unsigned NOT NULL,
+  `last_read` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_message_board_read_player_id_and_message_board_thread_id` (`player_id`,`message_board_thread_id`),
+  KEY `idx_message_board_read_last_read` (`last_read`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `message_board_threads`
+--
+
+DROP TABLE IF EXISTS `message_board_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `message_board_threads` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tribe_id` int(11) unsigned NOT NULL,
+  `created` datetime NOT NULL,
+  `player_id` int(11) unsigned NOT NULL,
+  `last_post_date` datetime NOT NULL,
+  `last_post_player_id` int(11) unsigned NOT NULL,
+  `message_board_post_count` int(11) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL,
+  `sticky` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_message_board_threads_tribe_id_and_deleted` (`tribe_id`,`deleted`),
+  KEY `idx_message_board_threads_sticky` (`sticky`),
+  KEY `idx_message_board_threads_last_post_date` (`last_post_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -456,6 +561,9 @@ CREATE TABLE `players` (
   `last_login` datetime NOT NULL,
   `online` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
+  `rights` int(5) unsigned DEFAULT NULL,
+  `invitation_tribe_id` int(11) unsigned NOT NULL,
+  `description` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`),
   KEY `name` (`name`)
@@ -475,6 +583,7 @@ CREATE TABLE `rankings` (
   `rank` int(11) NOT NULL,
   `type` tinyint(4) NOT NULL,
   `value` int(11) NOT NULL,
+  `tribe_id` int(11) unsigned NOT NULL,
   KEY `player_id` (`player_id`),
   KEY `city_id` (`city_id`),
   KEY `type` (`type`),
@@ -565,7 +674,7 @@ DROP TABLE IF EXISTS `schema_migrations`;
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) DEFAULT NULL,
   UNIQUE KEY `idx_schema_migrations_version` (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -629,7 +738,7 @@ CREATE TABLE `structures` (
   `city_id` int(11) unsigned NOT NULL,
   `x` int(11) unsigned NOT NULL,
   `y` int(11) unsigned NOT NULL,
-  `hp` smallint(5) unsigned NOT NULL,
+  `hp` decimal(10,2) NOT NULL,
   `type` smallint(6) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
   `labor` smallint(5) unsigned DEFAULT NULL,
@@ -689,6 +798,48 @@ CREATE TABLE `technologies_list` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tribes`
+--
+
+DROP TABLE IF EXISTS `tribes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tribes` (
+  `player_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `desc` text NOT NULL,
+  `level` tinyint(3) unsigned DEFAULT NULL,
+  `crop` int(11) NOT NULL,
+  `gold` int(11) NOT NULL,
+  `iron` int(11) NOT NULL,
+  `wood` int(11) NOT NULL,
+  `attack_point` int(11) NOT NULL,
+  `defense_point` int(11) NOT NULL,
+  PRIMARY KEY (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tribesmen`
+--
+
+DROP TABLE IF EXISTS `tribesmen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tribesmen` (
+  `player_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `tribe_id` int(11) unsigned NOT NULL,
+  `join_date` datetime NOT NULL,
+  `rank` tinyint(3) unsigned DEFAULT NULL,
+  `crop` int(11) NOT NULL,
+  `gold` int(11) NOT NULL,
+  `iron` int(11) NOT NULL,
+  `wood` int(11) NOT NULL,
+  PRIMARY KEY (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `troop_stubs`
 --
 
@@ -701,6 +852,7 @@ CREATE TABLE `troop_stubs` (
   `stationed_city_id` int(10) unsigned NOT NULL,
   `state` tinyint(3) unsigned NOT NULL,
   `formations` smallint(5) unsigned NOT NULL,
+  `retreat_count` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`id`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -748,10 +900,9 @@ CREATE TABLE `troop_templates_list` (
   `troop_stub_id` tinyint(3) unsigned NOT NULL,
   `type` smallint(5) unsigned NOT NULL,
   `level` tinyint(3) unsigned NOT NULL,
-  `max_hp` smallint(5) unsigned NOT NULL,
-  `attack` smallint(5) unsigned NOT NULL,
+  `max_hp` decimal(10,2) NOT NULL,
+  `attack` decimal(10,2) NOT NULL,
   `splash` tinyint(3) unsigned NOT NULL,
-  `defense` smallint(5) unsigned NOT NULL,
   `range` tinyint(3) unsigned NOT NULL,
   `stealth` tinyint(3) unsigned NOT NULL,
   `speed` tinyint(3) unsigned NOT NULL,
@@ -828,12 +979,12 @@ CREATE TABLE `unit_templates_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-03-31 18:38:11
--- MySQL dump 10.13  Distrib 5.5.8, for Win32 (x86)
+-- Dump completed on 2012-05-13 14:59:44
+-- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: tribalhero_server
 -- ------------------------------------------------------
--- Server version	5.5.8
+-- Server version	5.5.16
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -852,7 +1003,7 @@ CREATE TABLE `unit_templates_list` (
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
-INSERT INTO `schema_migrations` VALUES ('20110327142607'),('20110331223432');
+INSERT INTO `schema_migrations` VALUES ('20110327142607'),('20110331223432'),('20110401005013'),('20110415000222'),('20110422195125'),('20110424175302'),('20110508180306'),('20110508185013'),('20110603183525'),('20110622234850'),('20110628033813'),('20110726003009'),('20110727233641'),('20110814195703'),('20111012033301'),('20111016215148'),('20111216214849'),('20120105031058'),('20120106005703'),('20120115204717'),('20120201004549'),('20120219190518'),('20120224020516'),('20120226204217'),('20120301012001'),('20120404021533');
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -865,4 +1016,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-03-31 18:38:11
+-- Dump completed on 2012-05-13 14:59:45

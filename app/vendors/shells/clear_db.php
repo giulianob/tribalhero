@@ -12,6 +12,7 @@ class ClearDbShell extends Shell {
     var $uses = array('Battle', 'Message', 'MessageBoardRead', 'MessageBoardThread');
 
     function main() {
+        gc_enable();
 
         // Delete reports 1 by 1
         $battles = $this->Battle->find('all', array(
@@ -28,14 +29,29 @@ class ClearDbShell extends Shell {
         $this->out(sprintf("Deleting %d battles", count($battles)));
 
         $deleted = 0;
+        $battleCount = count($battles);
         foreach ($battles as $battle) {
+
+            $reports = $this->Battle->BattleReport->findAllByBattleId($battle['Battle']['id']);
+
+            foreach ($reports as $report) {
+                if (!$this->Battle->BattleReport->delete($report['BattleReport']['id'])) {
+                    $this->out("Failed to delete battle report %d", $report['BattleReport']['id']);
+                    exit(1);
+                }
+            }
+
+            unset($reports);
+
             if (!$this->Battle->delete($battle['Battle']['id'])) {
                 $this->out("Failed to delete battle %d", $battle['Battle']['id']);
                 exit(1);
             }
+
             $deleted++;
             if ($deleted % 50 == 0) {
-                $this->out(sprintf("%d/%d", $deleted, count($battles)));
+                $this->out(sprintf("%d/%d", $deleted, $battleCount));
+                gc_collect_cycles();
             }
         }
 
@@ -53,7 +69,7 @@ class ClearDbShell extends Shell {
             ),
             'fields' => array('id'),
             'contain' => array()
-                ));
+        ));
         foreach ($posts as $post) {
             $this->MessageBoardThread->delete($post['MessageBoardThread']['id']);
         }

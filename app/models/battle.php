@@ -2,6 +2,8 @@
 
 /**
  * @property City $City
+ * @property BattleReport $BattleReport
+ * @property BattleReportView $BattleReportView
  */
 class Battle extends AppModel {
 

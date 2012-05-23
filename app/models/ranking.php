@@ -76,7 +76,7 @@ class Ranking extends AppModel {
                 'conditions' => array('type' => $type),
                 'limit' => $this->rankingsPerPage,
                 'page' => $page,
-                'fields' => array('Ranking.rank', 'Ranking.value', 'Tribe.player_id', 'Tribe.name'),
+                'fields' => array('Ranking.rank', 'Ranking.value', 'Tribe.id', 'Tribe.name'),
                 'order' => 'Ranking.rank ASC'
             );       
         }
@@ -309,8 +309,8 @@ class Ranking extends AppModel {
         $tribes = $this->Tribe->find('all', array(
                     'contain' => array(),
                     'conditions' => array(),
-                    'order' => array($field . ' ' . $order, 'player_id ASC'),
-                    'fields' => array('player_id', $field ),
+                    'order' => array($field . ' ' . $order, 'id ASC'),
+                    'fields' => array('id', $field ),
                 ));
 
         $itemsPerInsert = 500;
@@ -321,7 +321,7 @@ class Ranking extends AppModel {
 
         for ($i = 0; $i < $tribeCount; ++$i) {
             $tribe = $tribes[$i];
-            $rankings[] = '(' . $tribe['Tribe']['player_id'] . ",0,0," . ($i + 1) . "," . $type . "," . $tribe['Tribe'][$field] . ')';
+            $rankings[] = '(' . $tribe['Tribe']['id'] . ",0,0," . ($i + 1) . "," . $type . "," . $tribe['Tribe'][$field] . ')';
 
             if ((($i + 1) % $itemsPerInsert) == 0 || $i == count($tribes) - 1) {
                 $this->getDataSource()->insertMulti($this->table, $fields, $rankings);

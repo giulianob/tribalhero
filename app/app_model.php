@@ -4,7 +4,7 @@ class AppModel extends Model {
 
     var $recursive = -1;
     var $actsAs = array('Containable', 'Linkable.Linkable');
-    var $cacheQueries = true;
+    var $cacheQueries = false;
 
     //Lazy loading
     function __get($assoc) {

@@ -1,7 +1,6 @@
 <?php
 /**
- * @property Property $Property
- * @property PropertyHistory $PropertyHistory
+ * @property Ranking $Ranking
  */
 class RankingShell extends Shell {
 

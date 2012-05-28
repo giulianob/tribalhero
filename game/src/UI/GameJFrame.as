@@ -14,6 +14,7 @@
 
 	public class GameJFrame extends JFrame
 	{
+		
 		private var onDispose: Function;
 		private var closeButton: JButton;
 
@@ -31,6 +32,10 @@
 				e.stopImmediatePropagation();
 			});
 			
+			modalMC.addEventListener(MouseEvent.MOUSE_DOWN, function(e: Event): void {
+				e.stopImmediatePropagation();
+			});			
+			
 			addEventListener(KeyboardEvent.KEY_DOWN, function(e: KeyboardEvent): void {
 				if (e.keyCode == Keyboard.ESCAPE) {
 					if (getTitleBar() && getTitleBar().getCloseButton() != null) {
@@ -44,6 +49,7 @@
 			getTitleBar().setRestoreButton(null);
 			getTitleBar().setIconifiedButton(null);	
 		}		
+		
 		
 		override public function dispose():void
 		{

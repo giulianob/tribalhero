@@ -13,9 +13,10 @@
 			super(CurrentAction.sortOnId, CurrentAction.compareId);
 		}
 
-		public function hasAction(type: int): Boolean {
+		public function hasAction(type: int, objId: int = 0): Boolean {
 			for each(var currentAction: CurrentAction in each()) {
 				if (currentAction is CurrentActionReference) continue;		
+				if (objId > 0 && objId != currentAction.workerId) continue;
 				
 				if (currentAction.getType() == type) return true;
 			}

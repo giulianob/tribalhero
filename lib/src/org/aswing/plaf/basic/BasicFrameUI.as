@@ -143,13 +143,18 @@ public class BasicFrameUI extends BaseComponentUI implements FrameUI{
 	private function __flashTick(e:TimerEvent):void{
 		flashingActivedColor = !flashingActivedColor;
 		frame.repaint();
-		titleBar.getSelf().repaint();
+		if (titleBar) {
+			titleBar.getSelf().repaint();
+		}
 	}
     
 	private function __flashComplete(e:TimerEvent):void{
 		flashing = false;
 		frame.repaint();
-		titleBar.getSelf().repaint();
+		
+		if (titleBar) {
+			titleBar.getSelf().repaint();
+		}
 	}
 
 	/**

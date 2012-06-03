@@ -79,8 +79,12 @@ package src.UI.Tutorial
 			}
 		}
 		
-		protected function complete(): void {
+		public function dispose(): void {
 			hideAllMessages();
+		}
+		
+		protected function complete(): void {
+			dispose();
 			resume();
 		}		
 	}

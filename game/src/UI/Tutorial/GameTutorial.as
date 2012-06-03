@@ -31,7 +31,7 @@ package src.UI.Tutorial
 		
 		public function stop(): void {
 			if (this.currentStep) {
-				this.currentStep.hideAllMessages();
+				this.currentStep.dispose();
 				this.currentStep = null;
 			}
 		}

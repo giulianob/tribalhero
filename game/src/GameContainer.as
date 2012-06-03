@@ -19,6 +19,7 @@
 	import src.UI.Components.*;
 	import src.UI.Components.ScreenMessages.*;
 	import src.UI.Dialog.*;
+	import src.UI.Tutorial.GameTutorial;
 	import src.Util.*;
 
 
@@ -42,6 +43,7 @@
 
 		public var map: Map;
 		public var miniMap: MiniMap;				
+		public var minimapHolder: Sprite;
 		private var minimapRefreshTimer: Timer = new Timer(500000, 0);
 
 		//Holds any overlay. Overlays are used for different cursor types.
@@ -55,7 +57,7 @@
 		public var message: MessageContainer = new MessageContainer();
 
 		//Holds all currently open aswing frames
-		private var frames: Array = new Array();
+		public var frames: Array = new Array();
 
 		public var selectedCity: City;
 		public var camera: Camera = new Camera(0, 0);
@@ -85,6 +87,9 @@
 		
 		// Shows built in messages on the game screen
 		private var builtInMessages: BuiltInMessages;
+		
+		// Game tutorial handler
+		private var tutorial: GameTutorial;
 
 		public function GameContainer()
 		{							
@@ -100,11 +105,6 @@
 			lstCities.setLocation(new IntPoint(40, 12));
 			addChild(lstCities);
 
-			// Create barBg
-			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
-			barBg = new barBgClass() as DisplayObject;
-			addChildAt(barBg, 1);
-
 			// Hide the menu bubbles
 			tribeNotificationIcon.visible = false;
 			tribeNotificationIcon.mouseChildren = false;
@@ -117,13 +117,6 @@
 			txtUnreadReports.visible = false;
 			txtUnreadReports.mouseChildren = false;
 			txtUnreadReports.mouseEnabled = false;			
-
-			// Add key down listener to stage
-			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
-				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-				stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
-				stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
-			});
 
 			// Hide game container for now
 			visible = false;
@@ -173,21 +166,31 @@
 			
 			btnMenu.addEventListener(MouseEvent.CLICK, onMenuClick);		
 
-			// Set up sidebar holder
+			// Set up holders
 			sidebarHolder = new Sprite();
 			sidebarHolder.x = Constants.screenW - GameJSidebar.WIDTH - 15;
-			sidebarHolder.y = 60;
-			addChildAt(sidebarHolder, 1);
+			sidebarHolder.y = 60;			
+												
+			cmdLineHolder = new Sprite();				
+			minimapHolder = new Sprite();
 			
-			// Set up cmd line holder
-			cmdLineHolder = new Sprite();
-			addChildAt(cmdLineHolder, 1);		
+			addChild(cmdLineHolder);					
+			addChild(sidebarHolder);
+			addChild(minimapHolder);				
+			
+			// Bar bg			
+			var barBgClass: Class = UIManager.getDefaults().get("GameMenu.bar");
+			barBg = new barBgClass() as DisplayObject;						
+			addChildAt(barBg, 1);
+			
+			// Minimap tools
+			minimapHolder.addChild(minimapTools);
 
 			// Set up minimap refresh timer
 			minimapRefreshTimer.addEventListener(TimerEvent.TIMER, minimapRefresh);
 			
 			//Set up resources timer
-			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);			
+			resourcesTimer.addEventListener(TimerEvent.TIMER, displayResources);					
 		}
 
 		public function onMenuClick(e: MouseEvent): void
@@ -447,15 +450,20 @@
 		}
 
 		public function setMap(map: Map, miniMap: MiniMap):void
-		{
+		{		
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
+				
 			this.map = map;
 			this.miniMap = miniMap;
 
 			// Clear current city list
 			(lstCities.getModel() as VectorListModel).clear();
 
-			// Add map
+			// Add map			
 			mapHolder.addChild(map);
+			minimapHolder.addChild(miniMap);
 
 			// Create map overlay
 			this.mapOverlay = new MovieClip();
@@ -483,9 +491,6 @@
 			//Show resources box
 			resourcesContainer = new ResourcesContainer();
 			displayResources();
-
-			//Add minimap tools
-			addChildAt(minimapTools, 1);
 
 			// Create and position command line if admin
 			cmdLine = new CmdLineViewer();
@@ -515,12 +520,15 @@
 			}
 
 			//Set minimap position and initial state
-			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);
-			addChildAt(miniMap, 1);
+			miniMap.addEventListener(MiniMap.NAVIGATE_TO_POINT, onMinimapNavigateToPoint);			
 			zoomIntoMinimap(false, false);
 			
 			// Refresh unread messages
-			Global.mapComm.Messaging.refreshUnreadCounts();
+			Global.mapComm.Messaging.refreshUnreadCounts();		
+
+			// Begin game tutorial
+			tutorial = new GameTutorial();
+			tutorial.start(map);
 		}
 
 		public function show() : void {
@@ -557,6 +565,10 @@
 		}
 
 		public function dispose() : void {
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+			stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			stage.removeEventListener(KeyboardEvent.KEY_UP, eventKeyUp);			
+			
 			if (menu) {
 				menu.dispose();
 				menu = null;
@@ -586,6 +598,10 @@
 				cmdLine.getFrame().dispose();
 				cmdLine = null;
 			}
+			
+			if (tutorial) {
+				tutorial.stop();
+			}
 
 			message.hide();
 
@@ -612,8 +628,7 @@
 				map.dispose();
 				mapHolder.removeChild(map);
 				removeChild(mapOverlay);
-				removeChild(miniMap);
-				removeChild(minimapTools);
+				minimapHolder.removeChild(miniMap);
 
 				map = null;
 				miniMap = null;
@@ -637,6 +652,11 @@
 				map.selectObject(null);
 				
 			setSidebar(null);
+		}
+		
+		public function getSidebar(): GameJSidebar
+		{
+			return this.sidebar;
 		}
 		
 		public function setSidebar(sidebar: GameJSidebar):void

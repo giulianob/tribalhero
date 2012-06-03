@@ -40,9 +40,9 @@ package src.UI.Sidebars.ObjectInfo {
 		private var pnlActions:JPanel;
 		private var scrollGroups: JScrollPane;
 
-		private var gameObject: StructureObject;
+		public var gameObject: StructureObject;
 
-		private var buttons: Array = new Array();
+		public var buttons: Array = new Array();
 		private var t:Timer = new Timer(1000);
 
 		public function ObjectInfoSidebar(obj: StructureObject)

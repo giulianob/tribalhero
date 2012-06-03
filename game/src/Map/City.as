@@ -86,6 +86,20 @@ package src.Map {
 			return ret;
 		}
 
+		public function getStructureOfType(type: int): CityObject
+		{
+			for each(var obj: CityObject in objects.each())
+			{
+				if (ObjectFactory.getClassType(obj.type) != ObjectFactory.TYPE_STRUCTURE)
+					continue;
+				
+				if (obj.type == type)
+					return obj;				
+			}
+			
+			return null;
+		}
+		
 		public function hasStructureAt(mapPos: Point): Boolean
 		{
 			var ret: Array = new Array();

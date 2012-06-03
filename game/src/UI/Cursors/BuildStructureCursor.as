@@ -79,7 +79,7 @@ package src.UI.Cursors {
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 
 			if (!hasRoadNearby) {
-				src.Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build extra roads first then try again.");
+				src.Global.gameContainer.message.showMessage("This building must be connected to a road and there are no roads available. Build roads first by using your Town Center then try again.");
 			} else if (!hasBuildableArea) {
 				src.Global.gameContainer.message.showMessage("There are no spaces available to build on.");
 			} else {
@@ -275,7 +275,7 @@ package src.UI.Cursors {
 			// Get the screen position of the main building then we'll add the current tile x and y to get the point of this tile on the screen
 			var point: Point = MapUtil.getScreenCoord(city.MainBuilding.x, city.MainBuilding.y);
 
-			if (!validateTile(new Point(point.x + x, point.y + y))) return false;
+			if (!validateTile(new Point(point.x + x, point.y + y))) return new ColorTransform(1, 1, 1, 0.5, 255, 215);
 
 			return new ColorTransform(1.0, 1.0, 1.0, 1.0, 0, 100);
 		}

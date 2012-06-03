@@ -67,16 +67,10 @@ package src.UI.Tutorial.Steps
 			showMessageAtPosition(new IntPoint(20, 200), "TUTORIAL_CLICK_FARM");
 		}
 		
-		override protected function complete():void 
+		override public function dispose():void 
 		{
 			timer.stop();
-			super.complete();
-		}
-		
-		override public function hideAllMessages():void 
-		{
-			timer.stop();
-			super.hideAllMessages();
+			super.dispose();
 		}
 	}
 

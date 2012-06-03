@@ -72,6 +72,12 @@ package src.UI.Tutorial.Steps
 			timer.stop();
 			super.complete();
 		}
+		
+		override public function hideAllMessages():void 
+		{
+			timer.stop();
+			super.hideAllMessages();
+		}
 	}
 
 }

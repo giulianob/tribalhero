@@ -118,13 +118,6 @@
 			txtUnreadReports.mouseChildren = false;
 			txtUnreadReports.mouseEnabled = false;			
 
-			// Add key down listener to stage
-			addEventListener(Event.ADDED_TO_STAGE, function(e: Event):void {
-				stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
-				stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
-				stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
-			});
-
 			// Hide game container for now
 			visible = false;
 
@@ -458,6 +451,10 @@
 
 		public function setMap(map: Map, miniMap: MiniMap):void
 		{		
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+			stage.addEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			stage.addEventListener(KeyboardEvent.KEY_UP, eventKeyUp);
+				
 			this.map = map;
 			this.miniMap = miniMap;
 
@@ -568,6 +565,10 @@
 		}
 
 		public function dispose() : void {
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, eventKeyDown);
+			stage.removeEventListener(MouseEvent.MOUSE_WHEEL, eventScroll);
+			stage.removeEventListener(KeyboardEvent.KEY_UP, eventKeyUp);			
+			
 			if (menu) {
 				menu.dispose();
 				menu = null;

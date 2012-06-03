@@ -289,10 +289,6 @@
 				frameCounter.y = Constants.screenH - 32;
 				addChild(frameCounter);
 			}
-			
-			if (newPlayer) {
-				InfoDialog.showMessageDialog("Welcome", new RichLabel('Your city has been founded. You should start by building a Farm and Lumbermill. These will give you some crop and wood which are used to further develop your city. If you need help, <a href="http://tribalhero.wikia.com" target="_blank">visit the wiki</a>. You can find the wiki link by clicking the menu on the top left corner of the game at anytime.', 0, 40));
-			}
 		}
 
 		public function onReceive(packet: Packet):void

@@ -22,6 +22,8 @@ package src.UI.Tooltips {
 		protected var ui: GameJBox = new GameJBox();
 
 		protected var viewObj: DisplayObject;
+		
+		private var position: IntPoint;
 
 		public function Tooltip() {
 			ui.setFocusable(false);
@@ -45,22 +47,39 @@ package src.UI.Tooltips {
 		{
 			Global.map.camera.addEventListener(Camera.ON_MOVE, onCameraMove);
 			
-			if (this.viewObj == null || this.viewObj != obj)
-			{
+			if (this.viewObj == null || this.viewObj != obj) {
 				this.viewObj = obj;
 				viewObj.addEventListener(Event.REMOVED_FROM_STAGE, parentHidden);
-				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);
+				viewObj.addEventListener(MouseEvent.MOUSE_DOWN, parentHidden);				
+				
+				showFrame();
+			}
 
-				ui.addEventListener(AWEvent.PAINT, onPaint);
-				ui.show();				
+			this.position = new IntPoint(ui.getFrame().stage.mouseX, ui.getFrame().stage.mouseY);			
+			adjustPosition();
+		}
+		
+		public function showFixed(position: IntPoint):void
+		{			
+			this.position = position;
+			showFrame();
+			adjustPosition();
+		}		
+		
+		protected function showFrame(): void {
+			ui.addEventListener(AWEvent.PAINT, onPaint);
+			ui.show();
+			
+			if (!mouseInteractive()) {
 				ui.getFrame().parent.mouseEnabled = false;
 				ui.getFrame().parent.mouseChildren = false;
 				ui.getFrame().parent.tabEnabled = false;
 				ui.getFrame().setFocusable(false);
 			}
-			
-			
-			adjustPosition();
+		}
+		
+		protected function mouseInteractive(): Boolean {
+			return false;
 		}
 		
 		private function onCameraMove(e: Event): void {
@@ -90,11 +109,11 @@ package src.UI.Tooltips {
 				(viewObj as Component).requestFocus();
 			}
 
-			var mouseX: Number = ui.getFrame().stage.mouseX;
-			var mouseY: Number = ui.getFrame().stage.mouseY;
+			var posX: Number = position.x;
+			var posY: Number = position.y;
 
-			var boxX: Number = mouseX;
-			var boxY: Number = mouseY;
+			var boxX: Number = posX;
+			var boxY: Number = posY;
 
 			var boxWidth: Number = ui.getFrame().getPreferredWidth();
 			var boxHeight: Number = ui.getFrame().getPreferredHeight();
@@ -103,11 +122,11 @@ package src.UI.Tooltips {
 			var stageHeight: Number = ui.getFrame().stage.stageHeight;
 
 			if (boxX + boxWidth > stageWidth) {
-				boxX = mouseX - boxWidth + 5;
+				boxX = posX - boxWidth + 5;
 			}
 
 			if (boxY + boxHeight > stageHeight) {
-				boxY = mouseY - boxHeight + 5;
+				boxY = posY - boxHeight + 5;
 			}
 
 			if (boxY < 0) {

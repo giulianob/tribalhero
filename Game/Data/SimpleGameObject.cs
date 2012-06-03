@@ -197,9 +197,32 @@ namespace Game.Data
             return base.ToString() + "[" + X + "," + Y + "]";
         }
 
+        /// <summary>
+        /// Returns whether the two tiles are diagonal to one another.
+        /// NOTE: This function only handles case where the distance between both tiles is 1. If the distance is greater, you will get invalid results.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <returns></returns>
         public static bool IsDiagonal(uint x, uint y, uint x1, uint y1)
         {
             return y%2 != y1%2;
+        }
+
+        /// <summary>
+        /// Returns whether two tiles are perpendicular. This means that they are on the same lines if you were to just draw 
+        /// lines going up/down and left/right from a tile.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <returns></returns>
+        public static bool IsPerpendicular(uint x, uint y, uint x1, uint y1)
+        {
+            return y == y1 || (x == x1 && y%2 == y1%2);
         }
 
         public static int TileDistance(uint x, uint y, uint x1, uint y1)

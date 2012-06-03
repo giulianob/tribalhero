@@ -30,7 +30,7 @@ using Thrift.Transport;
 
 namespace Game
 {
-    class GameModule : NinjectModule
+    public class GameModule : NinjectModule
     {
         public override void Load()
         {

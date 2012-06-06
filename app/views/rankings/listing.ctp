@@ -31,7 +31,7 @@ foreach ($data as $rank) {
         $results['rankings'][] = array(
                 'rank' => $rank['Ranking']['rank'],
                 'value' => $rank['Ranking']['value'],
-                'tribeId' => $rank['Tribe']['player_id'],
+                'tribeId' => $rank['Tribe']['id'],
                 'tribeName' => $rank['Tribe']['name']
         );
     }

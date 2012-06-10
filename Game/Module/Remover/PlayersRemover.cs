@@ -22,7 +22,7 @@ namespace Game.Module {
             this.iPlayerSelector = iPlayerSelector;
         }
 
-        public void Start(double intervalInHours = 14 * 24) {
+        public void Start(double intervalInHours = 24) {
             this.intervalInHours = intervalInHours;
             started = true;
             Callback(null);

@@ -269,6 +269,7 @@
     <Compile Include="Map\ReverseTileLocator.cs" />
     <Compile Include="Map\RoadPathFinder.cs" />
     <Compile Include="Map\TileLocator.cs" />
+    <Compile Include="Logic\IGameTask.cs" />
     <Compile Include="Module\Remover\CityRemover.cs" />
     <Compile Include="Module\Remover\ActivePlayerSelector.cs" />
     <Compile Include="Module\Remover\NewbieIdleSelector.cs" />
